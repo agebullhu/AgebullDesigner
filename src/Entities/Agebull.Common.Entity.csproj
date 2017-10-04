@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0D626DDA-02C0-4BD8-B2FD-EFEE0971510F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Agebull.Common.Entity</RootNamespace>
+    <AssemblyName>Agebull.Common.Entity.Wpf</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;CLIENT</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>CLIENT</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Gboxt.Common.Extend, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Project\FundsManagement\Lib\Gboxt.Common.Extend.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.ScopeBase">
+      <HintPath>..\..\..\Project\FundsManagement\Lib\Gboxt.Common.ScopeBase.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.Text">
+      <HintPath>..\..\..\Project\FundsManagement\Lib\Gboxt.Common.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Entity\SimpleConfig.cs" />
+    <Compile Include="Interface\ISynchronousHelper.cs" />
+    <Compile Include="Base\NotificationObject.cs" />
+    <Compile Include="Base\WorkContext.cs" />
+    <Compile Include="Dictionaries\AttributeDictionary.cs" />
+    <Compile Include="Dictionaries\CommandStatus.cs" />
+    <Compile Include="Dictionaries\DependencyFunctions.cs" />
+    <Compile Include="Dictionaries\DependencyObjects.cs" />
+    <Compile Include="Dictionaries\ExtendObject.cs" />
+    <Compile Include="Dictionaries\FunctionDictionary.cs" />
+    <Compile Include="Dictionaries\FunctionDictionaryBase.cs" />
+    <Compile Include="Dictionaries\IDependencyDelegates.cs" />
+    <Compile Include="Dictionaries\IFunctionDictionary.cs" />
+    <Compile Include="Interface\ITackProxy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dictionaries\ModelFunctionDictionary.cs" />
+    <Compile Include="Entity\EntityObjectBase.cs" />
+    <Compile Include="Helper\LoadingModeScope.cs" />
+    <Compile Include="Interface\EditArrestMode.cs" />
+    <Compile Include="Interface\EntitySubsist.cs" />
+    <Compile Include="Interface\IEditObject.cs" />
+    <Compile Include="Interface\INotifyPropertyChanging.cs" />
+    <Compile Include="Interface\NotificationStatusType.cs" />
+    <Compile Include="Trigger\EventScope.cs" />
+    <Compile Include="Trigger\EventTrigger.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Trace\MessageTraceListener.cs" />
+    <Compile Include="Trace\TraceMessage.cs" />
+    <Compile Include="Trigger\GlobalTrigger.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

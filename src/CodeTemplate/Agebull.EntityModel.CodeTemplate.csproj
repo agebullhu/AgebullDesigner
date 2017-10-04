@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CFF81278-1124-4087-9A32-50623955E66D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Agebull.EntityModel.RobotCoder.CodeTemplate</RootNamespace>
+    <AssemblyName>Agebull.EntityModel.CodeTemplate</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>
+    </StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Gboxt.Common.Cache">
+      <HintPath>..\..\Extend\Lib\Gboxt.Common.Cache.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.Desing.Attribute">
+      <HintPath>..\..\Extend\Lib\Gboxt.Common.Desing.Attribute.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.Drawing">
+      <HintPath>..\..\Extend\Lib\Gboxt.Common.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.Exception">
+      <HintPath>..\..\Extend\Lib\Gboxt.Common.Exception.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.Extend">
+      <HintPath>..\..\Extend\Lib\Gboxt.Common.Extend.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.IO">
+      <HintPath>..\..\Extend\Lib\Gboxt.Common.IO.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.Logging">
+      <HintPath>..\..\Extend\Lib\Gboxt.Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.Logging.Log4">
+      <HintPath>..\..\Extend\Lib\Gboxt.Common.Logging.Log4.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.Reflection">
+      <HintPath>..\..\Extend\Lib\Gboxt.Common.Reflection.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.ScopeBase">
+      <HintPath>..\..\Extend\Lib\Gboxt.Common.ScopeBase.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.SystemExtend">
+      <HintPath>..\..\Extend\Lib\Gboxt.Common.SystemExtend.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.Text">
+      <HintPath>..\..\Extend\Lib\Gboxt.Common.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="KeraLua, Version=1.3.2.0, Culture=neutral, PublicKeyToken=04d04586786c6f34, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLua.1.3.2.1\lib\net45\KeraLua.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLua, Version=1.3.2.0, Culture=neutral, PublicKeyToken=8df2ab518030ea95, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLua.1.3.2.1\lib\net45\NLua.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Analyze\TemplateExecuter.cs" />
+    <Compile Include="Analyze\LuaAnalyzer.cs" />
+    <Compile Include="Analyze\LuaWordTypeAnalyzer.cs" />
+    <Compile Include="Analyze\LuaTypeAnalyzer.cs" />
+    <Compile Include="Analyze\TemplateConfig.cs" />
+    <Compile Include="Analyze\TemplateParseBase.cs" />
+    <Compile Include="Analyze\LuaWordSplit.cs" />
+    <Compile Include="Analyze\LuaTemplateParse.cs" />
+    <Compile Include="Base\AnalyzeBlock.cs" />
+    <Compile Include="Base\AnalyzeElement.cs" />
+    <Compile Include="Analyze\WordAnalyze.cs" />
+    <Compile Include="Base\AnalyzeUnitBase.cs" />
+    <Compile Include="Base\CodeItemFamily.cs" />
+    <Compile Include="Base\CodeItemRace.cs" />
+    <Compile Include="Base\CodeItemType.cs" />
+    <Compile Include="Base\CodeItemUse.cs" />
+    <Compile Include="Base\JoinFeature.cs" />
+    <Compile Include="Base\LuaDataType.cs" />
+    <Compile Include="Base\LuaDataTypeItem.cs" />
+    <Compile Include="Base\TemplateUnitType.cs" />
+    <Compile Include="Base\WordElement.cs" />
+    <Compile Include="Base\WordUnit.cs" />
+    <Compile Include="LuaContext.cs" />
+    <Compile Include="ColorCodeBox\ColorBlock.cs" />
+    <Compile Include="ColorCodeBox\LanguageEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ColorCodeBox\Coloration.cs" />
+    <Compile Include="ColorCodeBox\WordAndPosition.cs" />
+    <Compile Include="ColorCodeBox\TSynQuotaCollection.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Analyze\TemplateToLua.cs" />
+    <Compile Include="Analyze\TemplateToCs.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Coder\Agebull.EntityModel.RobotCoder.csproj">
+      <Project>{80D6ECF6-10DE-4B9E-9CD7-9B597610C482}</Project>
+      <Name>Agebull.EntityModel.RobotCoder</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Config\Agebull.EntityModel.Config.csproj">
+      <Project>{0af9f7a3-6aab-46a5-b3e8-45940ae26e5b}</Project>
+      <Name>Agebull.EntityModel.Config</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Entities\Agebull.Common.Entity.csproj">
+      <Project>{0D626DDA-02C0-4BD8-B2FD-EFEE0971510F}</Project>
+      <Name>Agebull.Common.Entity</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

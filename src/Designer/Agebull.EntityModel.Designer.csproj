@@ -1,0 +1,477 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{030A33C1-E68A-4ED1-914C-F84ECF1469E2}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Agebull.EntityModel.Designer</RootNamespace>
+    <AssemblyName>Agebull.EntityModel.Designer</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <HockeyAppResourceId>f797c69f6c584b05a1f32bf404413816</HockeyAppResourceId>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Program\Bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Gboxt.Common.Exception">
+      <HintPath>..\..\WeiYue\Lib\Gboxt.Common.Exception.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.Extend">
+      <HintPath>..\..\WeiYue\Lib\Gboxt.Common.Extend.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.IO">
+      <HintPath>..\..\WeiYue\Lib\Gboxt.Common.IO.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.Logging">
+      <HintPath>..\..\WeiYue\Lib\Gboxt.Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.Reflection">
+      <HintPath>..\..\WeiYue\Lib\Gboxt.Common.Reflection.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.ScopeBase, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\WeiYue\Lib\Gboxt.Common.ScopeBase.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.SystemExtend">
+      <HintPath>..\..\WeiYue\Lib\Gboxt.Common.SystemExtend.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.Text">
+      <HintPath>..\..\WeiYue\Lib\Gboxt.Common.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="KeraLua, Version=1.3.2.0, Culture=neutral, PublicKeyToken=04d04586786c6f34, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLua.1.3.2.1\lib\net45\KeraLua.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Expression.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\Microsoft SDKs\Expression\Blend\.NETFramework\v4.0\Libraries\Microsoft.Expression.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.Client, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\fg3e0agw.jkb\Microsoft.TeamFoundation.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\fg3e0agw.jkb\Microsoft.TeamFoundation.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.VersionControl.Client, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\fg3e0agw.jkb\Microsoft.TeamFoundation.VersionControl.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.VersionControl.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Program Files\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\fg3e0agw.jkb\Microsoft.TeamFoundation.VersionControl.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLua, Version=1.3.2.0, Culture=neutral, PublicKeyToken=8df2ab518030ea95, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLua.1.3.2.1\lib\net45\NLua.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NPOI, Version=2.3.0.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.3.0\lib\net40\NPOI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NPOI.OOXML, Version=2.3.0.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.3.0\lib\net40\NPOI.OOXML.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net, Version=2.3.0.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.3.0\lib\net40\NPOI.OpenXml4Net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats, Version=2.3.0.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.3.0\lib\net40\NPOI.OpenXmlFormats.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Windows.Presentation" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Card\ConfigForm.xaml.cs">
+      <DependentUpon>ConfigForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Global.cs" />
+    <Compile Include="Ioc\CommandIoc.cs" />
+    <Compile Include="NewConfig\NewConfigWindow.xaml.cs">
+      <DependentUpon>NewConfigWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NewConfig\NewConfigModel.cs" />
+    <Compile Include="NewConfig\NewConfigViewModel.cs" />
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Enum\EnumEditModel.cs" />
+    <Compile Include="Enum\EnumEditViewModel.cs" />
+    <Compile Include="NewEntity\NewEntityModel.cs" />
+    <Compile Include="NewEntity\NewEntityViewModel.cs" />
+    <Compile Include="Enum\EnumEdit.xaml.cs">
+      <DependentUpon>EnumEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="RegisterImporter.cs" />
+    <Compile Include="View\CodePanel.xaml.cs">
+      <DependentUpon>CodePanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ConfigTreePanel.xaml.cs">
+      <DependentUpon>ConfigTreePanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Card\ExtendPanel.xaml.cs">
+      <DependentUpon>ExtendPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\DesignEditPanel.xaml.cs">
+      <DependentUpon>DesignEditPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NewEntity\NewEntityWindow.xaml.cs">
+      <DependentUpon>NewEntityWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MenuPanel.xaml.cs">
+      <DependentUpon>MenuPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Card\PropertyPage.xaml.cs">
+      <DependentUpon>PropertyPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PropertyPanel.xaml.cs">
+      <DependentUpon>PropertyPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\StatusPanel.xaml.cs">
+      <DependentUpon>StatusPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TracePanel.xaml.cs">
+      <DependentUpon>TracePanel.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Card\ConfigForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NewConfig\NewConfigWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Enum\EnumEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Style\Button.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Style\Icon.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Style\Menu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Style\Form.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Style\ConfigDataTemplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Style\TreeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\CodePanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ConfigTreePanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Card\ExtendPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\DesignEditPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NewEntity\NewEntityWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MenuPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Card\PropertyPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PropertyPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\StatusPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TracePanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Style\Images\async_Executing.png" />
+    <Resource Include="Style\Images\async_Faulted.png" />
+    <Resource Include="Style\Images\async_None.png" />
+    <Resource Include="Style\Images\async_Succeed.png" />
+    <Resource Include="Style\Images\check.png" />
+    <Resource Include="Style\Images\clear.png" />
+    <Resource Include="Style\Images\code.png" />
+    <Resource Include="Style\Images\defBackup.jpg" />
+    <Resource Include="Style\Images\filter.png" />
+    <Resource Include="Style\Images\Icon.png" />
+    <Resource Include="Style\Images\inte.png" />
+    <Resource Include="Style\Images\link.png" />
+    <Resource Include="Style\Images\lock.png" />
+    <Resource Include="Style\Images\man.png" />
+    <Resource Include="Style\Images\reDo.png" />
+    <Resource Include="Style\Images\save.png" />
+    <Resource Include="Style\Images\SolutionManage.png" />
+    <Resource Include="Style\Images\sum.png" />
+    <Resource Include="Style\Images\tree_Assembly.png" />
+    <Resource Include="Style\Images\tree_Child1.png" />
+    <Resource Include="Style\Images\tree_Child2.png" />
+    <Resource Include="Style\Images\tree_Child4.png" />
+    <Resource Include="Style\Images\tree_Child5.png" />
+    <Resource Include="Style\Images\tree_Close.png" />
+    <Resource Include="Style\Images\tree_default.png" />
+    <Resource Include="Style\Images\tree_File.png" />
+    <Resource Include="Style\Images\tree_Folder.png" />
+    <Resource Include="Style\Images\tree_item.png" />
+    <Resource Include="Style\Images\tree_Open.png" />
+    <Resource Include="Style\Images\tree_Para.png" />
+    <Resource Include="Style\Images\tree_Project.png" />
+    <Resource Include="Style\Images\tree_Solution.png" />
+    <Resource Include="Style\Images\tree_Type.png" />
+    <Resource Include="Schema.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Coder\Agebull.EntityModel.RobotCoder.csproj">
+      <Project>{80d6ecf6-10de-4b9e-9cd7-9b597610c482}</Project>
+      <Name>Agebull.EntityModel.RobotCoder</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CodeTemplate\Agebull.EntityModel.CodeTemplate.csproj">
+      <Project>{cff81278-1124-4087-9a32-50623955e66d}</Project>
+      <Name>Agebull.EntityModel.CodeTemplate</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Command\Agebull.EntityModel.Designer.Command.csproj">
+      <Project>{5b2850e3-c1ac-4d1e-be96-5be0f9f659b7}</Project>
+      <Name>Agebull.EntityModel.Designer.Command</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Config.Cpp\Agebull.EntityModel.Config.Cpp.csproj">
+      <Project>{3ef55f58-0802-453c-8ce0-c227544584b1}</Project>
+      <Name>Agebull.EntityModel.Config.Cpp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Config\Agebull.EntityModel.Config.csproj">
+      <Project>{0AF9F7A3-6AAB-46A5-B3E8-45940AE26E5B}</Project>
+      <Name>Agebull.EntityModel.Config</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Entities\Agebull.Common.Entity.csproj">
+      <Project>{0d626dda-02c0-4bd8-b2fd-efee0971510f}</Project>
+      <Name>Agebull.Common.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Helper\Agebull.EntityModel.Config.Helper.csproj">
+      <Project>{A7888162-CFBD-4087-8C4A-978445BBE02A}</Project>
+      <Name>Agebull.EntityModel.Config.Helper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Logical\Agebull.EntityModel.Designer.Logical.csproj">
+      <Project>{0c9fd8f0-2c65-49e7-86ec-f135e56ec846}</Project>
+      <Name>Agebull.EntityModel.Designer.Logical</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Model\Agebull.EntityModel.Designer.Model.csproj">
+      <Project>{675ee1a7-84fe-47e4-968f-1e3d43c8c019}</Project>
+      <Name>Agebull.EntityModel.Designer.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WpfMvvmBase\Agebull.Common.Mvvm.csproj">
+      <Project>{6f6dc5d2-85ef-4bb5-82fa-bd21f7aa3053}</Project>
+      <Name>Agebull.Common.Mvvm</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="B.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Style\Images\audit.png" />
+    <Resource Include="Style\Images\a_again.png" />
+    <Resource Include="Style\Images\a_deny.png" />
+    <Resource Include="Style\Images\a_end.png" />
+    <Resource Include="Style\Images\a_none.png" />
+    <Resource Include="Style\Images\a_pass.png" />
+    <Resource Include="Style\Images\a_submit.png" />
+    <Resource Include="Style\Images\bm.png" />
+    <Resource Include="Style\Images\cancel.png" />
+    <Resource Include="Style\Images\com.png" />
+    <Resource Include="Style\Images\cus.png" />
+    <Resource Include="Style\Images\disable.png" />
+    <Resource Include="Style\Images\enable.png" />
+    <Resource Include="Style\Images\end.png" />
+    <Resource Include="Style\Images\excel.png" />
+    <Resource Include="Style\Images\export.png" />
+    <Resource Include="Style\Images\file.png" />
+    <Resource Include="Style\Images\global.png" />
+    <Resource Include="Style\Images\join.png" />
+    <Resource Include="Style\Images\left.png" />
+    <Resource Include="Style\Images\ok.png" />
+    <Resource Include="Style\Images\pause.png" />
+    <Resource Include="Style\Images\Pay.png" />
+    <Resource Include="Style\Images\root.png" />
+    <Resource Include="Style\Images\self.png" />
+    <Resource Include="Style\Images\self_left.png" />
+    <Resource Include="Style\Images\start.png" />
+    <Resource Include="Style\Images\switch.png" />
+    <Resource Include="Style\Images\trans.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Style\Images\cpp2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Style\Images\cpp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Style\Images\lua.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Style\Images\add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Style\Images\del.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Style\Images\bull.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Style\Images\bull.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Style\Images\bull2.jpg" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /s /y "$(SolutionDir)packages\NLua.1.3.2.1\lib\native\*.*" "$(TargetDir)"
+xcopy /s /y "C:\Projects\AgebullDesigner\packages\NLua.1.3.2.1\lib\native\*.*" "$(TargetDir)"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
