@@ -1,0 +1,98 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:defaults="clr-namespace:Agebull.Common.Defaults;assembly=Logical">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Form.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+    <DataTemplate x:Key="Template"/>
+    <DataTemplate x:Key="ClassUpgradeConfigTemplate">
+        <StackPanel DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}},Path=DataContext}">
+            <GroupBox Header="类对象" Margin="5">
+                <WrapPanel>
+                    <StackPanel Orientation ="Horizontal" Margin="5">
+                        <Label Content = "类型名称" />
+                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding TypeName,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Orientation ="Horizontal" Margin="5">
+                        <Label Content= "基类" />
+                        <TextBox Text="{Binding BaseType,Mode=TwoWay}" />
+                    </StackPanel>
+                </WrapPanel>
+            </GroupBox>
+        </StackPanel>
+    </DataTemplate>
+    <DataTemplate x:Key="FieldUpgradeConfigTemplate">
+        <StackPanel DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}},Path=DataContext}">
+            <GroupBox Header="字段" Margin="5">
+                <WrapPanel>
+                    <StackPanel Orientation ="Horizontal" Margin="5">
+                        <Label Content = "字段类型" />
+                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding TypeName,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Orientation ="Horizontal" Margin="5">
+                        <Label Content= "JsonName" />
+                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding JsonName,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Orientation ="Horizontal" Margin="5">
+                        <Label Content= "关联属性" />
+                        <TextBox Text="{Binding PairProperty,Mode=TwoWay}" />
+                    </StackPanel>
+                </WrapPanel>
+            </GroupBox>
+        </StackPanel>
+    </DataTemplate>
+    <DataTemplate x:Key="PropertyUpgradeConfigTemplate">
+        <StackPanel DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}},Path=DataContext}">
+            <GroupBox Header="属性" Margin="5">
+                <WrapPanel>
+                    <StackPanel Orientation ="Horizontal" Margin="5">
+                        <Label Content = "字段类型" />
+                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding TypeName,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Orientation ="Horizontal" Margin="5">
+                        <Label Content= "JsonName" />
+                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding JsonName,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Orientation ="Horizontal" Margin="5">
+                        <Label Content = "分类" />
+                        <TextBox  Text="{Binding Category,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Orientation ="Horizontal" Margin="5">
+                        <Label Content = "列表数据" />
+                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsList,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Orientation ="Horizontal" Margin="5">
+                        <Label Content= "关联字段" />
+                        <TextBox Text="{Binding PairField,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Orientation ="Horizontal" Margin="5">
+                        <Label Content= "可读" />
+                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding CanRead,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Orientation ="Horizontal" Margin="5">
+                        <Label Content= "可写" />
+                        <ComboBox Style="{StaticResource BoolCombo}"  SelectedValue="{Binding CanWrite,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Orientation ="Horizontal" Margin="5">
+                        <Label Content= "代码" />
+                        <TextBox Text="{Binding Code,Mode=TwoWay}" Width="910" Height="320" TextWrapping="Wrap" AcceptsReturn="True" />
+                    </StackPanel>
+                </WrapPanel>
+            </GroupBox>
+        </StackPanel>
+    </DataTemplate>
+    <Style x:Key="Style" TargetType="{x:Type ContentControl}">
+        <Setter Property="ContentTemplate" Value="{StaticResource  Template}"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=Type}" Value="ClassUpgradeConfig">
+                <Setter Property="ContentTemplate" Value="{StaticResource ClassUpgradeConfigTemplate}"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Path=Type}" Value="FieldUpgradeConfig">
+                <Setter Property="ContentTemplate" Value="{StaticResource FieldUpgradeConfigTemplate}"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Path=Type}" Value="PropertyUpgradeConfig">
+                <Setter Property="ContentTemplate" Value="{StaticResource PropertyUpgradeConfigTemplate}"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+</ResourceDictionary>

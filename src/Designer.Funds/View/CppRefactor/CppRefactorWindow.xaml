@@ -1,0 +1,119 @@
+﻿<Window x:Class="Agebull.Common.SimpleDesign.View.CppRefactorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Agebull.Common.SimpleDesign.View"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:behaviors="clr-namespace:Gboxt.Common.WpfMvvmBase.Behaviors;assembly=WpfMvvmBase"
+        xmlns:solutionManager="clr-namespace:Agebull.CodeRefactor.SolutionManager"
+        xmlns:av="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        Title="C++代码分析" Height="600" Width="1000" WindowState="Maximized" 
+        Icon="/Style/Images/cpp2.png">
+    <Window.DataContext>
+        <solutionManager:CppRefactorViewModel />
+    </Window.DataContext>
+    <i:Interaction.Behaviors>
+        <behaviors:DependencyBehavior BehaviorAction="{Binding ViewBehavior}" />
+    </i:Interaction.Behaviors>
+    <DockPanel>
+        <ToolBar DockPanel.Dock="Top" Height="28">
+            <Label>系统名称:</Label>
+            <TextBox Width="200" DataContext="{Binding Model}" Text="{Binding SystemName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+            <ItemsControl VerticalAlignment="Stretch"
+                          HorizontalAlignment="Stretch"
+                          ItemsSource="{Binding ExCommands,Mode=OneWay}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Style="{StaticResource CommandButton}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel VerticalAlignment="Stretch"
+                                    HorizontalAlignment="Stretch"
+                                    Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </ToolBar>
+        <TabControl Margin="0" Background="White">
+            <TabControl.Items>
+                <TabItem Header="代码">
+                    <TextBox Text="{Binding Model.Code,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Bottom" 
+                 HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible"
+                 AcceptsReturn="True" AcceptsTab="True" AutoWordSelection="True"
+                 TextOptions.TextFormattingMode="Display" TextWrapping="Wrap" />
+                </TabItem>
+                <TabItem Header="自定义类型">
+                    <DataGrid AutoGenerateColumns="True"
+                              CanUserAddRows="True"
+                              CanUserDeleteRows="True"
+                              ItemsSource="{Binding Model.TypedefItems}">
+                        <i:Interaction.Behaviors>
+                            <behaviors:DataGridGenertColumnsBehavior />
+                        </i:Interaction.Behaviors>
+                    </DataGrid>
+                </TabItem>
+                <TabItem Header="解析结构">
+
+                    <DataGrid AutoGenerateColumns="True"
+                              CanUserAddRows="True"
+                              CanUserDeleteRows="True"
+                              ItemsSource="{Binding Model.Entities}">
+                        <i:Interaction.Behaviors>
+                            <behaviors:DataGridGenertColumnsBehavior />
+                        </i:Interaction.Behaviors>
+                    </DataGrid>
+                </TabItem>
+                <TabItem Header="跟踪消息"
+                             Background="{x:Static SystemColors.ControlBrush}">
+                    <Border>
+                        <DockPanel>
+                            <Border DockPanel.Dock="Top"
+                                        Style="{StaticResource ToolBar}">
+                                <StackPanel DataContext="{Binding Model.CurrentTrace}"
+                                                Orientation="Horizontal">
+                                    <CheckBox Content="记录跟踪消息"
+                                                  IsChecked="{Binding MessageToTrace}" />
+                                    <ContentControl DataContext="{Binding ClearTraceCommand}">
+                                        <Button Style="{StaticResource  CommandButton}" />
+                                    </ContentControl>
+                                    <ContentControl DataContext="{Binding CopyTraceCommand}">
+                                        <Button Style="{StaticResource  CommandButton}" />
+                                    </ContentControl>
+                                    <ContentControl DataContext="{Binding ShowDefaultMessageCommand}">
+                                        <Button Style="{StaticResource  CommandButton}" />
+                                    </ContentControl>
+                                </StackPanel>
+                            </Border>
+                            <Border DataContext="{Binding Model.CurrentTrace.TraceMessage}"
+                                        DockPanel.Dock="Top"
+                                        BorderThickness="1"
+                                    BorderBrush="Silver"
+                                        Padding="3">
+                                <StackPanel>
+                                    <TextBlock TextWrapping="Wrap"
+                                                   Text="{Binding Message1}" />
+                                    <TextBlock TextWrapping="Wrap"
+                                                   Text="{Binding Message2}" />
+                                    <TextBlock TextWrapping="Wrap"
+                                                   Text="{Binding Message3}" />
+                                    <TextBlock TextWrapping="Wrap"
+                                                   Text="{Binding Message4}" />
+                                    <TextBlock TextWrapping="Wrap"
+                                                   Text="{Binding Status}" />
+                                </StackPanel>
+                            </Border>
+                            <ListBox DataContext="{Binding Model.CurrentTrace.TraceMessage}"
+                                         ItemsSource="{Binding Tracks}"
+                                         SelectedIndex="{Binding LastMessageIndex}"
+                                         BorderThickness="1"
+                                         Margin="3" />
+                        </DockPanel>
+                    </Border>
+                </TabItem>
+            </TabControl.Items>
+        </TabControl>
+    </DockPanel>
+</Window>

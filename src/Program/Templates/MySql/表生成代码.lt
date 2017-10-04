@@ -1,0 +1,61 @@
+@#
+	名称 : MySqlCreateTable
+	标题 : 表生成代码
+	Classify:'MySql',
+	Description:'MySql生成表',
+	ModelType:'EntityConfig',
+	Language:SQL
+	Condition:
+	CodeSavePath:
+#@
+@{
+repeat
+
+	abc = 3
+until(true)
+	pk = model.PrimaryColumn or {}
+	if(pk.IsIdentity) then
+		pkauto =" AUTO_INCREMENT"
+		autostep=' AUTO_INCREMENT=1'
+	else
+		pkauto =""
+		autostep=''
+	end
+}
+/*@model.Caption*/
+CREATE TABLE `@model.SaveTable`
+    `@pk.ColumnName` @(toDataBaseType(pk.Key)) NOT NULL@pkauto COMMENT '@pk.Caption'
+@{
+
+
+for n,col in pairs(model.Properties) 
+do
+	if not col.IsPrimaryKey then
+		if col.CsType == "string" or col.DbNullable 
+		then
+			cannull = "NOT "
+		else
+			cannull =""
+		end
+		if col.Initialization 
+		then
+			if col.CsType == "string" then
+			
+				def = "DEFAULT '"..col.Initialization.."' "
+			elseif col.CsType == "bool" then
+			
+				def = "DEFAULT b'"..col.Initialization.."' "
+			else
+				def = "DEFAULT "..col.Initialization.." "
+			end
+		else
+			def = ""
+		end
+}
+
+     ,`@col.ColumnName`  @(toDataBaseType(col.Key)) @(cannull)NULL @def COMMENT '@col.Caption'
+	@end
+
+@end
+    ,PRIMARY KEY (`@pk.ColumnName`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '@model.Caption'@autostep

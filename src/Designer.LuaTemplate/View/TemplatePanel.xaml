@@ -1,0 +1,76 @@
+﻿<UserControl x:Class="Agebull.Common.SimpleDesign.TemplatePanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:behaviors="clr-namespace:Gboxt.Common.WpfMvvmBase.Behaviors;assembly=WpfMvvmBase"
+             xmlns:codeTemplate="clr-namespace:Agebull.CodeRefactor.CodeTemplate;assembly=CodeTemplate"
+             mc:Ignorable="d"
+             d:DesignHeight="600"
+             d:DesignWidth="1000">
+    <Grid Background="{x:Static SystemColors.ControlBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TabControl Grid.Column="0" Grid.Row="0" Margin="0">
+            <TabControl.Items>
+                <TabItem Header="模板列表">
+                    <TreeView ItemsSource="{Binding TemplateTreeRoot.Items}"
+                              ItemContainerStyle="{DynamicResource SimpleTree}"
+                              VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,0,3,0" />
+                </TabItem>
+                <TabItem Header="语法树">
+                    <TreeView ItemsSource="{Binding LuaTreeRoot.Items}"
+                              ItemContainerStyle="{DynamicResource SimpleTree}"
+                              VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,0,3,0" />
+                </TabItem>
+            </TabControl.Items>
+        </TabControl>
+        <GridSplitter Grid.Column="0" Grid.Row="0" Width="3" BorderThickness="1" BorderBrush="Silver" />
+        <TabControl Grid.Column="1" Grid.Row="0" Margin="0" SelectedIndex="{Binding TabIndex}">
+            <TabControl.Items>
+                <TabItem Header="模板定义">
+                    <WindowsFormsHost HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <codeTemplate:LanguageEditor Dock="Fill" />
+                        <i:Interaction.Behaviors>
+                            <behaviors:DependencyBehavior BehaviorAction="{Binding TemplateBehavior}" />
+                        </i:Interaction.Behaviors>
+                    </WindowsFormsHost>
+                </TabItem>
+                <TabItem Header="LUA源码">
+                    <WindowsFormsHost HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <codeTemplate:LanguageEditor Dock="Fill" />
+                        <i:Interaction.Behaviors>
+                            <behaviors:DependencyBehavior BehaviorAction="{Binding LuaEditorBehavior}" />
+                        </i:Interaction.Behaviors>
+                    </WindowsFormsHost>
+                </TabItem>
+                <TabItem Header="结果代码">
+                    <TextBox Margin="0" Text="{Binding ExtendCode,Mode=OneWay}"
+                             HorizontalScrollBarVisibility="Disabled"
+                             VerticalScrollBarVisibility="Auto"
+                             AcceptsReturn="True"
+                             AcceptsTab="True"
+                             AutoWordSelection="True"
+                             TextOptions.TextFormattingMode="Display"
+                             TextWrapping="Wrap" />
+                </TabItem>
+                <TabItem Header="属性">
+                    <WindowsFormsHost HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <forms:PropertyGrid Dock="Fill" />
+                        <i:Interaction.Behaviors>
+                            <behaviors:DependencyBehavior BehaviorAction="{Binding PropertyGridBehavior}" />
+                        </i:Interaction.Behaviors>
+                    </WindowsFormsHost>
+                </TabItem>
+            </TabControl.Items>
+        </TabControl>
+    </Grid>
+</UserControl>

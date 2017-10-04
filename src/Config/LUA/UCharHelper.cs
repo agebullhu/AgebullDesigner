@@ -1,0 +1,111 @@
+﻿using System.Globalization;
+using System.Text;
+
+namespace Agebull.Common.LUA
+{
+    public static class UCharHelper
+    {
+        public static string ToLuaString(this string str)
+        {
+            if (string.IsNullOrWhiteSpace(str))
+                return str;
+            StringBuilder builder = new StringBuilder();
+            foreach (var ch in str)
+            {
+                if (ch > 255 || ch == '\\' || ch == '\'' || ch == '\"' || ch == '{' || ch == '}')
+                {
+                    builder.AppendFormat("/u{0:x4}", (int)ch);
+                }
+                else
+                {
+                    builder.Append(ch);
+                }
+            }
+            return builder.ToString();
+        }
+        public static string FromLuaChar(this string str)
+        {
+            if (string.IsNullOrWhiteSpace(str))
+                return str;
+            StringBuilder builder = new StringBuilder();
+            int u = 0;
+            StringBuilder ubuilder = new StringBuilder();
+            foreach (var ch in str)
+            {
+                switch (ch)
+                {
+                    case '/':
+                        if (u > 0)
+                        {
+                            builder.Append(ubuilder);
+                            ubuilder.Clear();
+                        }
+                        u = 1;
+                        ubuilder.Append(ch);
+                        continue;
+                    case 'u':
+                        if (u == 1)
+                        {
+                            u = 2;
+                            ubuilder.Append(ch);
+                            continue;
+                        }
+                        break;
+                    case '\r':
+                        continue;
+                    case '\t':
+                    case ' ':
+                    case '\u2028':
+                    case '\u2029':
+                    case '\u000B':
+                    case '\u000C':
+                        if (u > 0)
+                        {
+                            builder.Append(ubuilder);
+                            ubuilder.Clear();
+                            u = 0;
+                        }
+                        builder.Append(ch);
+                        continue;
+                    case '\n':
+                        if (u > 0)
+                        {
+                            builder.Append(ubuilder);
+                            ubuilder.Clear();
+                            u = 0;
+                        }
+                        builder.Append('\r');
+                        builder.Append(ch);
+                        continue;
+
+                }
+                if (u == 2)
+                {
+                    ubuilder.Append(ch);
+                    if (ubuilder.Length < 6)
+                        continue;
+                    int nch;
+                    if (int.TryParse(ubuilder.ToString().Substring(2),NumberStyles.AllowHexSpecifier , null, out nch))
+                    {
+                        builder.Append((char) nch);
+                    }
+                    else
+                    {
+                        builder.Append(ubuilder);
+                    }
+                    ubuilder.Clear();
+                    u = 0;
+                    continue;
+                }
+                if (u > 0)
+                {
+                    builder.Append(ubuilder);
+                    ubuilder.Clear();
+                    u = 0;
+                }
+                builder.Append(ch);
+            }
+            return builder.ToString();
+        }
+    }
+}

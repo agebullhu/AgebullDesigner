@@ -1,0 +1,175 @@
+﻿<UserControl x:Class="Agebull.Common.Designer.ModelCodePanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:behaviors="clr-namespace:Gboxt.Common.WpfMvvmBase.Behaviors;assembly=WpfMvvmBase"
+             mc:Ignorable="d"
+             d:DesignHeight="900"
+             d:DesignWidth="1100">
+    <DockPanel>
+        <WrapPanel DataContext="{Binding Model.Context.SelectEntity}" DockPanel.Dock="Top">
+            <WrapPanel.Resources>
+                <ResourceDictionary Source="Form.xaml" />
+            </WrapPanel.Resources>
+            <StackPanel Style="{StaticResource FieldPanel}">
+                <Label Content = "实体名称" />
+                <TextBox Text="{Binding EntityName,Mode=TwoWay}" />
+            </StackPanel>
+            <StackPanel>
+                <Label Content="内部数据" />
+                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsInternal,Mode=TwoWay}" />
+            </StackPanel>
+            <StackPanel>
+                <Label Content="普通类" />
+                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsClass,Mode=TwoWay}" />
+            </StackPanel>
+            <!--<StackPanel>
+                <Label Content="模型" />
+                <TextBox Text="{Binding ModelInclude,Mode=TwoWay}" />
+            </StackPanel>-->
+            <StackPanel Style="{StaticResource FieldPanel}">
+                <Label Content = "接口定义" />
+                <ComboBox Style="{StaticResource BoolCombo}"  SelectedValue="{Binding IsInterface,Mode=TwoWay}" />
+            </StackPanel>
+            <StackPanel>
+                <Label Content="基类继承" />
+                <TextBox Text="{Binding ModelBase,Mode=TwoWay}" />
+            </StackPanel>
+            <StackPanel>
+                <Label Content="接口继承" />
+                <TextBox Style="{StaticResource MidTextBox}" Text="{Binding Interfaces,Mode=TwoWay}" />
+            </StackPanel>
+        </WrapPanel>
+        <TabControl DataContext="{Binding Model.Context.SelectProperty}" DockPanel.Dock="Bottom" Height="262">
+            <TabControl.Resources>
+                <ResourceDictionary Source="Form.xaml" />
+            </TabControl.Resources>
+            <TabItem Header="C#">
+                <StackPanel Style="{StaticResource LayoutPanel}">
+                    <GroupBox Header="C#数据类型" Margin="5">
+                        <WrapPanel>
+                            <StackPanel>
+                                <Label Content="空类型" />
+                                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding Nullable,Mode=TwoWay}" />
+                            </StackPanel>
+                            <StackPanel>
+                                <Label Content="基本类型" />
+                                <TextBox Text="{Binding CsType,Mode=TwoWay}" />
+                            </StackPanel>
+                            <StackPanel>
+                                <Label Content="自定义类型" />
+                                <TextBox Text="{Binding CustomType,Mode=TwoWay}" />
+                            </StackPanel>
+                            <StackPanel>
+                                <Label Content="最终类型" />
+                                <TextBox IsReadOnly="True" Text="{Binding LastCsType,Mode=OneWay}" />
+                            </StackPanel>
+                        </WrapPanel>
+                    </GroupBox>
+                    <GroupBox Header="代码控制" Margin="5">
+                        <WrapPanel>
+                            <StackPanel>
+                                <Label Content="访问范围" />
+                                <TextBox Text="{Binding AccessType,Mode=OneWay}" />
+                            </StackPanel>
+                            <StackPanel>
+                                <Label Content="内部字段" />
+                                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding InnerField,Mode=TwoWay}" />
+                            </StackPanel>
+                            <StackPanel>
+                                <Label Content="系统字段" />
+                                <ComboBox Style="{StaticResource BoolCombo}"
+                                          SelectedValue="{Binding IsSystemField,Mode=TwoWay}" />
+                            </StackPanel>
+                            <StackPanel>
+                                <Label Content="接口字段" />
+                                <ComboBox Style="{StaticResource BoolCombo}"
+                                          SelectedValue="{Binding IsInterfaceField,Mode=TwoWay}" />
+                            </StackPanel>
+                            <StackPanel>
+                                <Label Content="别名" />
+                                <TextBox Style="{StaticResource MidTextBox}" Text="{Binding Alias,Mode=TwoWay}" />
+                            </StackPanel>
+                        </WrapPanel>
+                    </GroupBox>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="自定义代码" IsEnabled="{Binding IsCustomCompute,Mode=OneWay}">
+                <WrapPanel>
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="读" />
+                        <TextBox Style="{StaticResource MidTextBox}" Width="490" Height="200"
+                                 Text="{Binding ComputeGetCode,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="写" />
+                        <TextBox Style="{StaticResource MidTextBox}" Width="490" Height="200"
+                                 Text="{Binding ComputeSetCode,Mode=TwoWay}" />
+                    </StackPanel>
+                </WrapPanel>
+            </TabItem>
+            <TabItem Header="C++" IsEnabled="{Binding Solution.IsWeb,Mode=OneWay,Converter={StaticResource BoolReversalConverter}}">
+                <WrapPanel>
+                    <StackPanel>
+                        <Label Content="数组长度" />
+                        <TextBox Text="{Binding ArrayLen,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="C++字段类型" />
+                        <TextBox Text="{Binding CppTypeObject,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="转为小数的整数" />
+                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsIntDecimal,Mode=OneWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="字段类型(代码)" />
+                        <TextBox Text="{Binding CppType,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="字段名称" />
+                        <TextBox Text="{Binding CppName,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="字段类型（模型）" />
+                        <TextBox Text="{Binding CppLastType,Mode=TwoWay}" />
+                    </StackPanel>
+                </WrapPanel>
+            </TabItem>
+        </TabControl>
+
+        <DataGrid AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  DataContext="{Binding Model.Context}"
+                  ItemsSource="{Binding SelectItemChildrens}">
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn Binding="{Binding Discard,Mode=TwoWay}" Header="废弃" />
+                <DataGridTextColumn Binding="{Binding Index,Mode=TwoWay}" Header="序号" />
+                <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
+                <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />
+                <DataGridCheckBoxColumn Binding="{Binding IsPrimaryKey,Mode=TwoWay}" Header="主键" />
+                <DataGridCheckBoxColumn Binding="{Binding IsIdentity,Mode=TwoWay}" Header="自增" />
+                <DataGridCheckBoxColumn Binding="{Binding IsCaption,Mode=TwoWay}" Header="标题" />
+                <DataGridCheckBoxColumn Binding="{Binding DenyClient,Mode=TwoWay}" Header="非用户" />
+                <!--<DataGridCheckBoxColumn Binding="{Binding IsSystemField,Mode=TwoWay}" Header="系统" />-->
+                <!--<DataGridCheckBoxColumn Binding="{Binding DbInnerField,Mode=TwoWay}" Header="数据库字段" />-->
+                <!--<DataGridCheckBoxColumn Binding="{Binding IsMiddleField,Mode=TwoWay}" Header="中间字段" />-->
+                <DataGridTextColumn Binding="{Binding CsType,Mode=TwoWay}" Header="C#类型" />
+                <DataGridCheckBoxColumn Binding="{Binding Nullable,Mode=TwoWay}" Header="空类型" />
+                <DataGridTextColumn Binding="{Binding CustomType,Mode=TwoWay}" Header="C#自定义类型" />
+                <DataGridCheckBoxColumn Binding="{Binding IsCompute,Mode=TwoWay}" Header="计算列" />
+                <DataGridCheckBoxColumn Binding="{Binding IsCustomCompute,Mode=TwoWay}" Header="自定义代码" />
+                <!--<DataGridTextColumn Binding="{Binding CppName,Mode=TwoWay}" Header="C++别名" />
+                <DataGridTextColumn Binding="{Binding CppType,Mode=TwoWay}" Header="C++类型" />
+                <DataGridTextColumn Binding="{Binding CppLastType,Mode=TwoWay}" Header="C++最终" />
+                <DataGridTextColumn Binding="{Binding UniqueIndex,Mode=TwoWay}" Header="组合主键顺序" />-->
+            </DataGrid.Columns>
+            <i:Interaction.Behaviors>
+                <behaviors:DataGridGenertColumnsBehavior />
+            </i:Interaction.Behaviors>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

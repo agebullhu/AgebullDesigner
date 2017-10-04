@@ -1,0 +1,16 @@
+
+Agebull.Common.Config.Coder.Entity.dll
+
+Agebull.Common.Config.Coder.ProjectBuilder.dll
+Agebull.Common.Config.Coder.Sql.dll
+
+Agebull.Common.Config.Designer.Entity.dll
+Agebull.Common.Config.Designer.Project.dll
+Agebull.Common.Config.Designer.Solution.dll
+Agebull.Common.Config.Designer.DataBase.Mysql.dll
+
+*Agebull.Common.Config.Coder.Upgrade.dll
+*Agebull.Common.Config.Coder.Funds.dll
+
+*Agebull.Common.Config.Coder.EasyUiCoder.dll
+*Agebull.Common.Config.Designer.EasyUi.dll

@@ -1,0 +1,126 @@
+﻿<UserControl x:Class="Agebull.Common.SimpleDesign.RegularPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:behaviors="clr-namespace:Gboxt.Common.WpfMvvmBase.Behaviors;assembly=WpfMvvmBase"
+             mc:Ignorable="d"
+             d:DesignHeight="1000" d:DesignWidth="1000">
+    <DockPanel>
+        <GroupBox DockPanel.Dock="Bottom"  Header="数据规则" Margin="5"  DataContext="{Binding Model.Context.SelectProperty}">
+            <GroupBox.Resources>
+                <ResourceDictionary Source="Form.xaml" />
+            </GroupBox.Resources>
+            <StackPanel Style="{StaticResource LayoutPanel}">
+                <StackPanel Style="{StaticResource FieldPanel}">
+                    <Label Content = "初始值" />
+                    <TextBox Text="{Binding Initialization,Mode=TwoWay}" />
+                    <TextBlock Style="{StaticResource HelpText}">
+                        新增一条数据的默认值.
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Style="{StaticResource FieldPanel}">
+                    <Label Content = "最大值&lt;=" /> 
+                    <TextBox Text="{Binding Max,Mode=TwoWay}" />
+                    <TextBlock Style="{StaticResource HelpText}">
+                        当为数字时，为最大的数字；当为时间时，为最大的时间。默认不校验。
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Style="{StaticResource FieldPanel}">
+                    <Label Content = "最小值&gt;=" />
+                    <TextBox Text="{Binding Min,Mode=TwoWay}" />
+                    <TextBlock Style="{StaticResource HelpText}">
+                        当为数字时，为最小的数字；当为时间时，为最小的时间。默认不校验。
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Style="{StaticResource FieldPanel}">
+                    <Label Content = "空类型" />
+                    <ComboBox Style="{StaticResource BoolCombo}"  SelectedValue="{Binding Nullable,Mode=TwoWay}" />
+                    <TextBlock Style="{StaticResource HelpText}">
+                        为真生成的代码是空类型(如int?)；当不是空类型但[可存储空]时用0表示数字的空值,最小日期(1-1-1)表示日期的空值，文本还是用null表示。
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Style="{StaticResource FieldPanel}">
+                    <Label Content = "可存储空" />
+                    <ComboBox Style="{StaticResource BoolCombo}"  SelectedValue="{Binding DbNullable,Mode=TwoWay}" />
+                    <TextBlock Style="{StaticResource HelpText}">
+                        指在数据存储时可为空值,即数据库中的NULL类型,否则使用的是初始值设置的内容(如果未设置,则数字为0,其它类型不可预知)
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Style="{StaticResource FieldPanel}">
+                    <Label Content = "最小可空" />
+                    <ComboBox Style="{StaticResource BoolCombo}"  SelectedValue="{Binding CanEmpty,Mode=TwoWay}" />
+                    <TextBlock Style="{StaticResource HelpText}">
+                        当为否时,每次保存(新增或修改)都必须不为空,为真则以正式必填为准.
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Style="{StaticResource FieldPanel}">
+                    <Label Content = "正式必填" />
+                    <ComboBox Style="{StaticResource BoolCombo}"  SelectedValue="{Binding IsRequired,Mode=TwoWay}" />
+                    <TextBlock Style="{StaticResource HelpText}">
+                        当为真时：非审核对象每次录入都会校验；审核对象在提交时校验，即正式数据必填，草稿状态随意。
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Style="{StaticResource FieldPanel}">
+                    <Label Content = "首次写入" />
+                    <ComboBox Style="{StaticResource BoolCombo}"  SelectedValue="{Binding KeepUpdate,Mode=TwoWay}" />
+                    <TextBlock Style="{StaticResource HelpText}">
+                        新增时录入后不再被更改(即INSERT的SQL包括此字段,UPDATE的SQL不包括)
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Style="{StaticResource FieldPanel}">
+                    <Label Content = "用户只读" />
+                    <ComboBox Style="{StaticResource BoolCombo}"  SelectedValue="{Binding IsUserReadOnly,Mode=TwoWay}" />
+                    <TextBlock Style="{StaticResource HelpText}">
+                        即用户是不能修改的,而由系统内部按需求修改
+                    </TextBlock>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+        <DataGrid AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  DataContext="{Binding Model.Context}"
+                  ItemsSource="{Binding SelectItemChildrens}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Index,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                    Header="序号" />
+                <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                    Header="标题" />
+                <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                    Header="属性" />
+                <DataGridTextColumn Binding="{Binding Group,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                    Header="分组" />
+                <DataGridCheckBoxColumn
+                    Binding="{Binding KeepUpdate,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="首次写入" />
+                <DataGridCheckBoxColumn
+                    Binding="{Binding IsSystemField,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="系统" />
+                <DataGridCheckBoxColumn
+                    Binding="{Binding DenyClient,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BoolReversalConverter}}"
+                    Header="用户" />
+                <DataGridCheckBoxColumn
+                    Binding="{Binding IsCompute,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="计算列" />
+                <DataGridCheckBoxColumn
+                    Binding="{Binding DbNullable,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="可存储空" />
+                <DataGridCheckBoxColumn
+                    Binding="{Binding Nullable,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="空类型" />
+                <DataGridCheckBoxColumn
+                    Binding="{Binding CanEmpty,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="最小可空" />
+                <DataGridCheckBoxColumn
+                    Binding="{Binding IsRequired,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="正式必填" />
+                <DataGridCheckBoxColumn
+                    Binding="{Binding IsUserReadOnly,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                    Header="用户只读" />
+                <!--<DataGridTextColumn Binding="{Binding Max,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                        Header="最大数字或时间" />
+                    <DataGridTextColumn Binding="{Binding Min,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                        Header="最小数字或时间" />-->
+            </DataGrid.Columns>
+            <i:Interaction.Behaviors>
+                <behaviors:DataGridGenertColumnsBehavior />
+            </i:Interaction.Behaviors>
+        </DataGrid>
+    </DockPanel>
+
+</UserControl>

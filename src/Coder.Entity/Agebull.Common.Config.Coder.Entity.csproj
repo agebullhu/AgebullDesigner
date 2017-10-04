@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F088FC1D-1FBB-4224-97FA-A9535F6DC58F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Agebull.Common.Config.Coder</RootNamespace>
+    <AssemblyName>Agebull.Common.Config.Coder.Entity</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Gboxt.Common.Exception">
+      <HintPath>..\..\Library\Extend\Gboxt.Common.Exception.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.Extend">
+      <HintPath>..\..\Library\Extend\Gboxt.Common.Extend.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.IO">
+      <HintPath>..\..\Library\Extend\Gboxt.Common.IO.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.Logging">
+      <HintPath>..\..\Library\Extend\Gboxt.Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.Reflection">
+      <HintPath>..\..\Library\Extend\Gboxt.Common.Reflection.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.ScopeBase">
+      <HintPath>..\..\Library\Extend\Gboxt.Common.ScopeBase.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.SystemExtend">
+      <HintPath>..\..\Library\Extend\Gboxt.Common.SystemExtend.dll</HintPath>
+    </Reference>
+    <Reference Include="Gboxt.Common.Text">
+      <HintPath>..\..\Library\Extend\Gboxt.Common.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EntityMomentCoder.cs" />
+    <Compile Include="ExtendMomentCoder.cs" />
+    <Compile Include="OrtherMomentCoder.cs" />
+    <Compile Include="ProjectMomentCoder.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnitTestCoder.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Coder\Agebull.Common.Config.Coder.csproj">
+      <Project>{80d6ecf6-10de-4b9e-9cd7-9b597610c482}</Project>
+      <Name>Agebull.Common.Config.Coder</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Config\Agebull.Common.Config.csproj">
+      <Project>{0af9f7a3-6aab-46a5-b3e8-45940ae26e5b}</Project>
+      <Name>Agebull.Common.Config</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Entities\Agebull.Common.Entities.csproj">
+      <Project>{0d626dda-02c0-4bd8-b2fd-efee0971510f}</Project>
+      <Name>Agebull.Common.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Helper\Agebull.Common.Config.Helper.csproj">
+      <Project>{A7888162-CFBD-4087-8C4A-978445BBE02A}</Project>
+      <Name>Agebull.Common.Config.Helper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Logical\Agebull.Common.Config.Logical.csproj">
+      <Project>{0C9FD8F0-2C65-49E7-86EC-F135E56EC846}</Project>
+      <Name>Agebull.Common.Config.Logical</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WpfMvvmBase\Agebull.Common.WpfBase.csproj">
+      <Project>{6f6dc5d2-85ef-4bb5-82fa-bd21f7aa3053}</Project>
+      <Name>Agebull.Common.WpfBase</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>COPY $(TargetPath) "..\..\..\Program\AddIn\Bin\" /Y
+COPY $(ProjectDir)$(OutDir)$(TargetName).xml "..\..\..\Program\AddIn\Bin\" /Y
+COPY $(ProjectDir)$(OutDir)$(TargetName).pdb "..\..\..\Program\AddIn\Bin\" /Y</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
