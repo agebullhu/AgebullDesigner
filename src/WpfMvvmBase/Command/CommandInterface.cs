@@ -14,7 +14,7 @@ using System.Windows.Input;
 
 #endregion
 
-namespace Gboxt.Common.WpfMvvmBase.Commands
+namespace Agebull.Common.Mvvm
 {
     /// <summary>
     ///     表明提供状态信息的命令

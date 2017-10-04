@@ -1,8 +1,8 @@
 using System.Windows;
 using System.Windows.Controls;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     public class ConfigTemplateSelector : DataTemplateSelector
     {

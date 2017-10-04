@@ -1,12 +1,11 @@
 ﻿using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Media;
-using Agebull.Common.SimpleDesign;
-using Gboxt.Common.DataAccess.Schemas;
-using Gboxt.Common.WpfMvvmBase.Commands;
-using WpfMvvmBase.Coefficient;
+using Agebull.Common;
+using Agebull.EntityModel.Config;
+using Agebull.Common.Mvvm;
 
-namespace Agebull.Common.Defaults.Command
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     ///     百度翻译的命令

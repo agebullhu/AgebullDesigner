@@ -12,7 +12,7 @@ using Agebull.Common.Base;
 
 #endregion
 
-namespace Agebull.Common.DataModel
+namespace Agebull.EntityModel
 {
     /// <summary>
     /// 数据载入范围

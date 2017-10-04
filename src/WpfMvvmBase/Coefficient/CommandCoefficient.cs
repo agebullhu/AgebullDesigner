@@ -2,9 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Gboxt.Common.WpfMvvmBase.Commands;
 
-namespace WpfMvvmBase.Coefficient
+namespace Agebull.Common.Mvvm
 {
     /// <summary>
     /// 对象与命令的适配器

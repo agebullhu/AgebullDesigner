@@ -1,4 +1,4 @@
-﻿namespace Gboxt.Common.DataAccess.Schemas
+﻿namespace Agebull.EntityModel.Config
 {
     /// <summary>
     /// 实体配置校验器

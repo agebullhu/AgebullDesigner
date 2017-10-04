@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
-namespace Agebull.CodeRefactor.CodeAnalyze
+namespace Agebull.EntityModel.RobotCoder.CodeTemplate
 {
     /// <summary>
     ///     分析时使用的单元

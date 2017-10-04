@@ -1,4 +1,4 @@
-﻿namespace Agebull.CodeRefactor.CodeAnalyze
+﻿namespace Agebull.EntityModel.RobotCoder.CodeTemplate
 {
     /// <summary>
     ///     代码基本单元用途

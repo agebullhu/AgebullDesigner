@@ -1,7 +1,4 @@
-﻿using System.Windows;
-using Agebull.Common.Designer;
-
-namespace Agebull.Common.SimpleDesign
+﻿namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     ///     App.xaml 的交互逻辑

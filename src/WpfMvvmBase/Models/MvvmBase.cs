@@ -1,9 +1,9 @@
 using System;
 using System.Windows.Input;
 using System.Windows.Threading;
-using Gboxt.Common.WpfMvvmBase.Commands;
+using Agebull.Common.Mvvm;
 
-namespace Agebull.Common.DataModel
+namespace Agebull.EntityModel
 {
     /// <summary>
     /// MVVM模式的基类

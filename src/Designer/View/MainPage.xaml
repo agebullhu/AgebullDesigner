@@ -3,11 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:b="clr-namespace:Gboxt.Common.WpfMvvmBase.Behaviors;assembly=WpfMvvmBase"
+             xmlns:b="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:cp="clr-namespace:Agebull.Common.SimpleDesign"
-             xmlns:simpleDesign="clr-namespace:Agebull.Common.SimpleDesign;assembly=Model"
-             xmlns:view="clr-namespace:Agebull.Common.Designer.View"
+             xmlns:cp="clr-namespace:Agebull.EntityModel.Designer"
+             xmlns:simpleDesign="clr-namespace:Agebull.EntityModel.Designer;assembly=Agebull.EntityModel.Designer.Model"
+             xmlns:view="clr-namespace:Agebull.EntityModel.Designer"
              mc:Ignorable="d"
              d:DesignHeight="600"
              d:DesignWidth="1000">
@@ -37,7 +37,7 @@
 
             <TabControl Margin="0" SelectedIndex="{Binding Model.Context.RootJobIndex}"
                         Grid.Column="1"
-                        Grid.Row="1">
+                        Grid.Row="1" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" TabStripPlacement="Bottom">
                 <TabItem Header="属性编辑">
                     <view:PropertyPage />
                 </TabItem>

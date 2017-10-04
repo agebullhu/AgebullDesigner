@@ -1,4 +1,4 @@
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     /// <summary>
     /// 数据库类型

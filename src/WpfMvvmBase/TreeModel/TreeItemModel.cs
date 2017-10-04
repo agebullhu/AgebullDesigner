@@ -4,10 +4,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Gboxt.Common.WpfMvvmBase.Commands;
-using WpfMvvmBase.Coefficient;
+using Agebull.Common.Mvvm;
 
-namespace Agebull.Common.DataModel
+namespace Agebull.EntityModel
 {
     /// <summary>
     ///     树节点模型

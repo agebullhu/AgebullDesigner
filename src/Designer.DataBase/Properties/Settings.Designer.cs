@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Agebull.Common.Config.Designer.DataBase.Mysql.Properties {
+namespace Agebull.EntityModel.Designer.DataBase.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

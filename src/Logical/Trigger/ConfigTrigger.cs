@@ -1,6 +1,7 @@
 using System;
+using Agebull.EntityModel.Config;
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// TargetConfig´¥·¢Æ÷

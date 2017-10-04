@@ -12,12 +12,11 @@ using System;
 using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 using System.Windows;
-using Gboxt.Common.WpfMvvmBase.Behaviors;
-using Gboxt.Common.WpfMvvmBase.Commands;
+using Agebull.Common.Mvvm;
 
 #endregion
 
-namespace Agebull.Common.DataModel
+namespace Agebull.EntityModel
 {
     /// <summary>
     ///     MVVM的ViewModel的基类

@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.RobotCoder
 {
     /// <summary>
     /// 项目代码生成基类
@@ -34,7 +33,7 @@ namespace Agebull.Common.SimpleDesign
         {
             get
             {
-                return _traceMessage ?? DataModel.TraceMessage.DefaultTrace;
+                return _traceMessage ?? TraceMessage.DefaultTrace;
             }
             set
             {

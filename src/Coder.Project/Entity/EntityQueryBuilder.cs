@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Agebull.Common.SimpleDesign.Coder.Cs
+namespace Agebull.EntityModel.RobotCoder
 {
     public sealed class EntityQueryBuilder : EntityBuilderBase
     {

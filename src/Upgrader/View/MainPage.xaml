@@ -3,10 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:b="clr-namespace:Gboxt.Common.WpfMvvmBase.Behaviors;assembly=WpfMvvmBase"
+             xmlns:b="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:cp="clr-namespace:Agebull.Common.SimpleDesign"
-             xmlns:card="clr-namespace:Agebull.Common.Designer.Card"
+             xmlns:cp="clr-namespace:Agebull.EntityModel.Designer"
+             xmlns:card="clr-namespace:Agebull.EntityModel.Designer.Card"
              mc:Ignorable="d"
              d:DesignHeight="600"
              d:DesignWidth="1000">

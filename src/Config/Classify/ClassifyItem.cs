@@ -2,10 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Agebull.Common.DataModel;
 using Newtonsoft.Json;
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     /// <summary>
     /// ∑÷¿‡≈‰÷√

@@ -1,10 +1,10 @@
 using System;
 using System.ComponentModel;
 using System.Windows;
-using Agebull.Common.DataModel;
+using Agebull.EntityModel;
 using Agebull.Common.Logging;
 
-namespace Gboxt.Common.WpfMvvmBase.Commands
+namespace Agebull.Common.Mvvm
 {
     /// <summary>
     ///     √¸¡Óª˘¿‡

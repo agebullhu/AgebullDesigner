@@ -1,4 +1,4 @@
-﻿namespace Agebull.Common.Designer.View
+﻿namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     ///     RelationPanel.xaml 的交互逻辑

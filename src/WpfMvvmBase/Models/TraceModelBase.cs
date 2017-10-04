@@ -1,6 +1,6 @@
 ﻿using Agebull.CodeRefactor.CodeRefactor;
 
-namespace Agebull.Common.DataModel
+namespace Agebull.EntityModel
 {
     /// <summary>
     ///     MVVM的Model的基类

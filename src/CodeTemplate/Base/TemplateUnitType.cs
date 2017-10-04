@@ -1,4 +1,4 @@
-namespace Agebull.CodeRefactor.CodeAnalyze
+namespace Agebull.EntityModel.RobotCoder.CodeTemplate
 {
     /// <summary>
     /// 模板内容节点类型

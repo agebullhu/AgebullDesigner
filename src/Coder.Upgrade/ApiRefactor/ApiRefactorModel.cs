@@ -13,10 +13,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using Agebull.Common.DataModel;
-using Agebull.Common.SimpleDesign.Upgrade;
-using Gboxt.Common.DataAccess.Schemas;
-using Gboxt.Common.WpfMvvmBase.Commands;
+using Agebull.EntityModel.RobotCoder.Upgrade;
+using Agebull.EntityModel.Config;
+using Agebull.Common.Mvvm;
 using Microsoft.Win32;
 using System.IO;
 using System.Web.Http;
@@ -24,7 +23,7 @@ using Agebull.Common;
 
 #endregion
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     public sealed class ApiRefactorModel : TraceModelBase
     {

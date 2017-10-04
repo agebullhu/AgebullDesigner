@@ -4,12 +4,12 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     /// <summary>
     /// 解决方案的基础逻辑
     /// </summary>
-    public partial class SolutionModel : ConfigModelBase
+    public class SolutionModel : ConfigModelBase
     {
         /// <summary>
         /// 解决方案

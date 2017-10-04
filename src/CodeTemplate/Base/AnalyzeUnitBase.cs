@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace Agebull.CodeRefactor.CodeAnalyze
+namespace Agebull.EntityModel.RobotCoder.CodeTemplate
 {
     public class AnalyzeUnitBase
     {

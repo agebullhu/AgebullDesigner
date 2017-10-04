@@ -12,11 +12,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 
 #endregion
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.Designer
 {
     public sealed class EdmxReader
     {

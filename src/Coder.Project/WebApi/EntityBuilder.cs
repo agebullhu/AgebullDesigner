@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 
-namespace Agebull.Common.SimpleDesign.Coder.Cs
+namespace Agebull.EntityModel.RobotCoder
 {
 
 

@@ -7,7 +7,7 @@
 // // *****************************************************/
 
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     internal class ProjectBusinessModel : ConfigModelBase
     {

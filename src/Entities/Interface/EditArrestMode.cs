@@ -1,6 +1,6 @@
 using System;
 
-namespace Agebull.Common.DataModel
+namespace Agebull.EntityModel
 {
     /// <summary>
     ///     ±à¼­µÄ×èÖ¹Ä£Ê½

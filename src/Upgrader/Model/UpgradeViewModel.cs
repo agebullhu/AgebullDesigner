@@ -10,14 +10,12 @@
 
 using System.Collections.Generic;
 using System.Windows.Media;
-using Agebull.CodeRefactor.SolutionManager;
-using Agebull.Common.DataModel;
-using Gboxt.Common.WpfMvvmBase.Commands;
+using Agebull.Common.Mvvm;
 using Application = System.Windows.Application;
 
 #endregion
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.Designer
 {
     public sealed class UpgradeViewModel : ViewModelBase<UpgradeModel>
     {

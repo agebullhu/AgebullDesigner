@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Agebull.Common.Config.Designer.EasyUi.Properties {
+namespace Agebull.EntityModel.Designer.EasyUi.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

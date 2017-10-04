@@ -1,9 +1,8 @@
-﻿using Agebull.Common.DataModel;
-using Agebull.Common.Designer.NewConfig;
-using Agebull.Common.SimpleDesign.View;
-using Gboxt.Common.DataAccess.Schemas;
+﻿using Agebull.EntityModel.Designer.NewConfig;
+using Agebull.EntityModel.Designer.View;
+using Agebull.EntityModel.Config;
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// 命令注入器

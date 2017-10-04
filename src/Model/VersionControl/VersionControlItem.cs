@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// 版本控制节点

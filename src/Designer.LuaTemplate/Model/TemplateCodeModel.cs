@@ -19,16 +19,12 @@ using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Agebull.CodeRefactor.CodeAnalyze;
-using Agebull.CodeRefactor.CodeTemplate;
-using Agebull.CodeRefactor.CodeTemplate.LUA;
 using Agebull.Common;
-using Agebull.Common.DataModel;
 using Agebull.Common.LUA;
-using CodeTemplate.Analyze;
-using Gboxt.Common.DataAccess.Schemas;
-using Gboxt.Common.WpfMvvmBase.Behaviors;
-using Gboxt.Common.WpfMvvmBase.Commands;
+using Agebull.EntityModel.Config;
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.RobotCoder.CodeTemplate;
+using Agebull.EntityModel.RobotCoder.CodeTemplate.LuaTemplate;
 using Application = System.Windows.Application;
 using Clipboard = System.Windows.Clipboard;
 using Color = System.Drawing.Color;
@@ -36,7 +32,7 @@ using MessageBox = System.Windows.MessageBox;
 
 #endregion
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     internal class TemplateCodeModel : DesignModelBase
     {

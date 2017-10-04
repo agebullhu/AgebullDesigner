@@ -13,11 +13,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
-using Gboxt.Common.WpfMvvmBase.Commands;
+using Agebull.Common.Mvvm;
 
 #endregion
 
-namespace Agebull.Common.DataModel
+namespace Agebull.EntityModel
 {
     /// <summary>
     ///     表示一个树的根节点

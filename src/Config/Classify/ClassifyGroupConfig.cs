@@ -8,10 +8,9 @@ using System.Linq.Expressions;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using Agebull.Common.DataModel;
 using Newtonsoft.Json;
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     /// <summary>
     /// ∑÷¿‡≈‰÷√

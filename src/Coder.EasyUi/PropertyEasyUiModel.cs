@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Text;
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     public class PropertyEasyUiModel : ConfigModelBase
     {

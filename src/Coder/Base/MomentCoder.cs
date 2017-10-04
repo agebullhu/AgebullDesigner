@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.RobotCoder
 {
     public class MomentCoder
     {

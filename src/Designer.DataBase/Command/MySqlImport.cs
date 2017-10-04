@@ -14,13 +14,14 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Windows.Threading;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.Common;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.RobotCoder;
 using MySql.Data.MySqlClient;
 
 #endregion
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.Designer
 {
     public class MySqlImport : NotificationObject
     {

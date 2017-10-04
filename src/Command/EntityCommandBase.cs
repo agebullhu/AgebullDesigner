@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
-using Gboxt.Common.DataAccess.Schemas;
-using Gboxt.Common.WpfMvvmBase.Commands;
+using Agebull.EntityModel.Config;
+using Agebull.Common.Mvvm;
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// 实体命令基类

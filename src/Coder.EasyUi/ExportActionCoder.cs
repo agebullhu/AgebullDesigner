@@ -1,6 +1,7 @@
 using System.ComponentModel.Composition;
+using Agebull.EntityModel.Designer;
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.RobotCoder.EasyUi
 {
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]

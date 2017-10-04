@@ -3,9 +3,9 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Agebull.Common.Logging;
-using Gboxt.Common.WpfMvvmBase.Commands;
+using Agebull.Common.Mvvm;
 
-namespace Agebull.Common.DataModel
+namespace Agebull.EntityModel
 {
     /// <summary>
     ///     异步工作节点

@@ -2,9 +2,9 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-using Agebull.Common.SimpleDesign;
+using Agebull.EntityModel.Designer;
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     internal class FundsSolutionModel : ConfigModelBase
     {

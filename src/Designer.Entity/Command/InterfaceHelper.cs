@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using Agebull.Common.SimpleDesign;
-using Gboxt.Common.DataAccess.Schemas;
-using WpfMvvmBase.Coefficient;
+using Agebull.EntityModel.Designer;
+using Agebull.EntityModel.Config;
+using Agebull.Common.Mvvm;
 
 namespace Agebull.Common.Config.Designer
 {

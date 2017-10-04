@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 
-namespace Agebull.Common.SimpleDesign.Upgrade
+namespace Agebull.EntityModel.RobotCoder.Upgrade
 {
     public class XmlMember
     {

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 
 namespace Agebull.Common.LUA
 {

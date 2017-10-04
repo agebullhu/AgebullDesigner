@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Agebull.Common.Base;
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.RobotCoder
 {
     public class CppNameSpaceScope : ScopeBase
     {

@@ -1,4 +1,4 @@
-namespace Agebull.CodeRefactor.CodeAnalyze
+namespace Agebull.EntityModel.RobotCoder.CodeTemplate
 {
     /// <summary>
     /// LUA的数据类型

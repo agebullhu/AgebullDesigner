@@ -1,4 +1,4 @@
-﻿namespace Agebull.Common.Designer.NewConfig
+﻿namespace Agebull.EntityModel.Designer.NewConfig
 {
     /// <summary>
     /// NewConfigWindow.xaml 的交互逻辑

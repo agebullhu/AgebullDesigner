@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 using Newtonsoft.Json;
 
-namespace Gboxt.Common.Designer.DataModel
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     ///     ≈‰÷√ª˘¥°

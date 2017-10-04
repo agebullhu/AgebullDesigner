@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.RobotCoder
 {
     /// <summary>
     /// ´úÂëÆ¬¶Ï»ùÀà

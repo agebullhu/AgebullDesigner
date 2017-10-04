@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.Composition;
+using Agebull.EntityModel.Designer;
 
-namespace Agebull.Common.SimpleDesign.Upgrade
+namespace Agebull.EntityModel.RobotCoder.Upgrade
 {
     /// <summary>
     /// 自升级代码

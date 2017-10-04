@@ -1,10 +1,9 @@
-﻿using System.ComponentModel.Composition;
-/*using System.Windows;
-using Agebull.CodeRefactor.SolutionManager;
-using Agebull.Common.SimpleDesign.View;
-using Gboxt.Common.DataAccess.Schemas;
+﻿/*using System.Windows;
+using Agebull.EntityModel.Designer;
+using Agebull.EntityModel.Designer.View;
+using Agebull.EntityModel.Config;
 
-namespace Agebull.Common.SimpleDesign.Upgrade
+namespace Agebull.EntityModel.RobotCoder.Upgrade
 {
     /// <summary>
     /// 自升级代码

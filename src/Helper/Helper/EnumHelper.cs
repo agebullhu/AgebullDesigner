@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataAccess.Schemas;
 
-namespace Agebull.Common.Defaults
+namespace Agebull.EntityModel.Config
 {
     /// <summary>
     /// 枚举列表集合

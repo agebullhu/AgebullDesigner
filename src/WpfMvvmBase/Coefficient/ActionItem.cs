@@ -14,11 +14,11 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 
 #endregion
 
-namespace Gboxt.Common.WpfMvvmBase.Commands
+namespace Agebull.Common.Mvvm
 {
     /// <summary>
     ///     表示一个命令集合的节点

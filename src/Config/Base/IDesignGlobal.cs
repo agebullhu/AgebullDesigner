@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     /// <summary>
     /// 表示设计器的全局对象

@@ -7,7 +7,7 @@ using System.Text;
 using Agebull.Common.LUA;
 using Newtonsoft.Json;
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     /// <summary>
     ///     ≈‰÷√ª˘¥°

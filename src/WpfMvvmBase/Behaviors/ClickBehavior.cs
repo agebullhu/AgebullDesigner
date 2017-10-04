@@ -15,7 +15,7 @@ using System.Windows.Interactivity;
 
 #endregion
 
-namespace Gboxt.Common.WpfMvvmBase.Behaviors
+namespace Agebull.Common.Mvvm
 {
     /// <summary>
     ///     单击事件行为类

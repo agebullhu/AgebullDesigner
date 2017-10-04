@@ -8,11 +8,10 @@
 
 #region 引用
 
-using Agebull.Common.DataModel;
 
 #endregion
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// 新增配置

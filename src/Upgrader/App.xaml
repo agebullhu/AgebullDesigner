@@ -1,7 +1,7 @@
-﻿<Application x:Class="Agebull.Common.SimpleDesign.App"
+﻿<Application x:Class="Agebull.EntityModel.Designer.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:client="clr-namespace:Agebull.Common.Client;assembly=WpfMvvmBase"
+             xmlns:client="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>

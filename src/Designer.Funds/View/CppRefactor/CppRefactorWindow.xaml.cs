@@ -1,4 +1,4 @@
-﻿namespace Agebull.Common.SimpleDesign.View
+﻿namespace Agebull.EntityModel.Designer.View
 {
     /// <summary>
     /// CppRefactor.xaml 的交互逻辑

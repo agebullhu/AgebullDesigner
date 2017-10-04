@@ -6,7 +6,7 @@
 // 修改:2014-11-08
 // *****************************************************/
 
-namespace Agebull.CodeRefactor.CodeAnalyze
+namespace Agebull.EntityModel.RobotCoder.CodeTemplate
 {
     /// <summary>
     ///     表示代码基元的家族

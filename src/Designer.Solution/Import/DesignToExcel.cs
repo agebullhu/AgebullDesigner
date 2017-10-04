@@ -14,7 +14,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
@@ -23,7 +23,7 @@ using VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment;
 
 #endregion
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.Designer
 {
     public sealed class DesignToExcel
     {

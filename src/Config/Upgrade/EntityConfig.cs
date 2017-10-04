@@ -13,11 +13,10 @@ using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Runtime.Serialization;
-using Agebull.Common.DataModel;
 
 using Newtonsoft.Json;
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     /// <summary>
     /// 实体配置

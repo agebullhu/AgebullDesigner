@@ -1,5 +1,5 @@
 // /***********************************************************************************************************************
-// 工程：Agebull.Common.SimpleDesign
+// 工程：Agebull.EntityModel.Designer
 // 项目：CodeRefactor
 // 文件：DataBaseSchema.cs
 // 作者：Administrator/
@@ -27,7 +27,7 @@
 
 #endregion
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     /// <summary>
     /// 解决方案配置

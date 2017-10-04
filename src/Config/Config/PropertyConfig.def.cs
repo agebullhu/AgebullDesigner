@@ -6,7 +6,7 @@
 // // 修改:2016-09-18
 // // *****************************************************/
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     partial class PropertyConfig
     {
@@ -17,14 +17,14 @@ namespace Gboxt.Common.DataAccess.Schemas
         /// <param name="source"></param>
         public void CopyFrom(PropertyConfig source)
         {
-            //Gboxt.Common.DataAccess.Schemas.SimpleConfig
+            //Agebull.EntityModel.Config.SimpleConfig
             Name = source.Name;//_name
             Caption = source.Caption;//_caption
             Description = source.Description;//_description
-            //Gboxt.Common.DataAccess.Schemas.ConfigBase
+            //Agebull.EntityModel.Config.ConfigBase
             DenyScope = source.DenyScope;//阻止使用的范围
             IsReference = source.IsReference;//_isReference
-            //Gboxt.Common.DataAccess.Schemas.PropertyConfig
+            //Agebull.EntityModel.Config.PropertyConfig
             Alias = source.Alias;//Alias
             Group = source.Group;//Group
             CreateIndex = source.CreateIndex;//CreateIndex
@@ -110,7 +110,7 @@ namespace Gboxt.Common.DataAccess.Schemas
                 Description = source.Description;//_description
                 Alias = source.Alias;//Alias
             }
-            //Gboxt.Common.DataAccess.Schemas.ConfigBase
+            //Agebull.EntityModel.Config.ConfigBase
             DenyScope = source.DenyScope;//阻止使用的范围
 
 

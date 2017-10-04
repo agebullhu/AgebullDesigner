@@ -12,7 +12,7 @@ using System.ComponentModel;
 
 #endregion
 
-namespace Agebull.Common.DataModel
+namespace Agebull.EntityModel
 {
     public interface IEntityObject
     {

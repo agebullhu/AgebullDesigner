@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataAccess.Schemas;
 
-namespace Agebull.Common.Defaults.SqlServer
+namespace Agebull.EntityModel.Config.SqlServer
 {
     /// <summary>
     ///     实体实现接口的命令

@@ -1,6 +1,4 @@
-﻿using Gboxt.Common.DataAccess.Schemas;
-
-namespace Agebull.Common.Defaults
+﻿namespace Agebull.EntityModel.Config
 {
     /// <summary>
     ///     实体实现接口的命令

@@ -5,7 +5,7 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Agebull.Common.Client
+namespace Agebull.Common.Mvvm
 {
     /// <summary>
     ///   布尔到可视的转换

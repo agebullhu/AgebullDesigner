@@ -14,12 +14,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Agebull.Common.DataModel;
+using Agebull.EntityModel;
 using Agebull.Common.Logging;
 
 #endregion
 
-namespace Gboxt.Common.WpfMvvmBase.Commands
+namespace Agebull.Common.Mvvm
 {
     /// <summary>
     ///     “Ï≤Ω√¸¡Ó

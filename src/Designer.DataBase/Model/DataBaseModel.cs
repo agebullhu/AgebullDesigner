@@ -12,13 +12,12 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
-using Gboxt.Common.DataAccess.Schemas;
-using Gboxt.Common.SimpleDataAccess.Design.Schemas;
-using Gboxt.Common.WpfMvvmBase.Commands;
+using Agebull.EntityModel.Config;
+using Agebull.Common.Mvvm;
 
 #endregion
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// 数据库相关命令

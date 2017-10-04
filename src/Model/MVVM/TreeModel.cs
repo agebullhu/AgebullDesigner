@@ -2,11 +2,10 @@ using System;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataAccess.Schemas;
-using Gboxt.Common.WpfMvvmBase.Commands;
+using Agebull.EntityModel.Config;
+using Agebull.Common.Mvvm;
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// 树形呈现模型

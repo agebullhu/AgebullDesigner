@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Data;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataAccess.Schemas;
 using MySql.Data.MySqlClient;
 
-namespace Agebull.Common.Defaults.Mysql
+namespace Agebull.EntityModel.Config.Mysql
 {
     /// <summary>
     ///     实体实现接口的命令

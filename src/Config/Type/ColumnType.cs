@@ -12,7 +12,7 @@ using System;
 
 #endregion
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     /// <summary>
     ///     字段使用范围类型

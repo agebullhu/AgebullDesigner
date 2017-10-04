@@ -1,5 +1,5 @@
 #if CLIENT
-namespace Agebull.Common.DataModel
+namespace Agebull.EntityModel
 {
     /// <summary>
     /// 使用的上下文汇总

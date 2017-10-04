@@ -5,11 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataAccess.Schemas;
-using Gboxt.Common.WpfMvvmBase.Behaviors;
+using Agebull.EntityModel.Config;
+using Agebull.Common.Mvvm;
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     ///     设计器上下文

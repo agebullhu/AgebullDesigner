@@ -1,9 +1,9 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.RobotCoder
 {
     public sealed class WebServiceBuilder : FileCoder
     {
@@ -177,7 +177,7 @@ namespace GBS.Fuctures.Manage.WCF
                     ? $"e:{entity.Parent.Abbreviation}:{entity.Abbreviation}:{{uid}}:{{{field.Name.ToLower()}}}"
                     : $"e:{entity.Parent.Abbreviation}:{entity.Abbreviation}:{{{field.Name.ToLower()}}}";
             }
-            var code = $@"using Agebull.Common.DataModel.Redis;
+            var code = $@"using Agebull.EntityModel.Redis;
 namespace {entity.Parent.NameSpace}
 {{
     /// <summary>

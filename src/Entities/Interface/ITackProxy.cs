@@ -1,7 +1,7 @@
 using System;
-using Gboxt.Common.WpfMvvmBase.Commands;
+using Agebull.Common.Mvvm;
 
-namespace Agebull.Common.DataModel
+namespace Agebull.EntityModel
 {
 
     /// <summary>

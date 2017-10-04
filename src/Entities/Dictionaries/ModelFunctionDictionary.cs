@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace Agebull.Common.DataModel
+namespace Agebull.EntityModel
 {
     /// <summary>
     ///     模型扩展方法字典

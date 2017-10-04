@@ -1,4 +1,4 @@
-﻿namespace Agebull.CodeRefactor.SolutionManager
+﻿namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     ///     NewEntityWindow.xaml 的交互逻辑

@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Windows;
-using Agebull.Common.SimpleDesign;
-using Gboxt.Common.DataAccess.Schemas;
-using Gboxt.Common.WpfMvvmBase.Commands;
+using Agebull.EntityModel.Config;
+using Agebull.Common.Mvvm;
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// 扩展节点

@@ -1,4 +1,4 @@
-﻿namespace Agebull.Common.DataModel
+﻿namespace Agebull.EntityModel
 {
     /// <summary>
     /// 通知对象的状态类型

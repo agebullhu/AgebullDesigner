@@ -16,20 +16,15 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms.Integration;
 using System.Windows.Media;
-using Agebull.CodeRefactor.SolutionManager;
-using Agebull.Common.Config.Model;
-using Agebull.Common.DataModel;
-using Agebull.Common.Defaults;
-using Gboxt.Common.DataAccess.Schemas;
-using Gboxt.Common.WpfMvvmBase.Behaviors;
-using Gboxt.Common.WpfMvvmBase.Commands;
+using Agebull.EntityModel.Config;
+using Agebull.Common.Mvvm;
 using Application = System.Windows.Application;
 using PropertyGrid = System.Windows.Forms.PropertyGrid;
 using PropertyValueChangedEventArgs = System.Windows.Forms.PropertyValueChangedEventArgs;
 
 #endregion
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.Designer
 {
     public sealed class DataModelDesignViewModel : ViewModelBase<DataModelDesignModel>, IGridSelectionBinding
     {

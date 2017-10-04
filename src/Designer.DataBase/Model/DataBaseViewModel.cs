@@ -1,6 +1,5 @@
 using System.Windows;
-using Agebull.CodeRefactor.SolutionManager;
-using Agebull.Common.Designer.View;
+using Agebull.EntityModel.Designer;
 
 namespace Agebull.Common.Config.Designer.DataBase.Mysql
 {

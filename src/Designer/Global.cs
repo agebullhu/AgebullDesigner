@@ -1,10 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Windows;
-using Agebull.CodeRefactor.SolutionManager;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataAccess.Schemas;
 
-namespace Agebull.Common.Designer
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// 全局对象

@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     /// <summary>
     /// ÊµÌåÅÅĞòÆ÷

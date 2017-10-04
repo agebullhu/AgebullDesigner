@@ -1,6 +1,6 @@
 using System;
 
-namespace Agebull.CodeRefactor.CodeTemplate
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// 字符串定义，在着色的时候，作为一个整体处理

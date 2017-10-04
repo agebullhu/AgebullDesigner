@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Agebull.CodeRefactor.CodeAnalyze
+namespace Agebull.EntityModel.RobotCoder.CodeTemplate
 {
     /// <summary>
     ///     LUA数据类型表节点

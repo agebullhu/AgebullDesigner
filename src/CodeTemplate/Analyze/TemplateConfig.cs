@@ -1,8 +1,7 @@
 using System.Runtime.Serialization;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 
-namespace Agebull.CodeRefactor.CodeTemplate
+namespace Agebull.EntityModel.RobotCoder.CodeTemplate
 {
     /// <summary>
     /// ƒ£∞Â≈‰÷√

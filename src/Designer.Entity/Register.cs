@@ -1,7 +1,6 @@
 using System.ComponentModel.Composition;
-using Agebull.CodeRefactor.SolutionManager;
-using Agebull.Common.SimpleDesign;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Designer;
+using Agebull.EntityModel.Config;
 
 namespace Agebull.Common.Config.Designer.EasyUi
 {

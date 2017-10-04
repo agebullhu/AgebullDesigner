@@ -1,9 +1,9 @@
 ﻿using System.Text;
 using Agebull.Common.LUA;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 using NLua;
 
-namespace CodeTemplate.Analyze
+namespace Agebull.EntityModel.RobotCoder.CodeTemplate
 {
     /// <summary>
     ///     模板执行器

@@ -3,11 +3,9 @@ using System.Collections;
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Media;
-using Agebull.CodeRefactor.SolutionManager;
-using Agebull.Common.SimpleDesign;
-using Gboxt.Common.DataAccess.Schemas;
-using Gboxt.Common.WpfMvvmBase.Commands;
-using WpfMvvmBase.Coefficient;
+using Agebull.EntityModel.Designer;
+using Agebull.EntityModel.Config;
+using Agebull.Common.Mvvm;
 
 namespace Agebull.Common.Config.Designer
 {

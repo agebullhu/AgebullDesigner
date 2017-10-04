@@ -6,10 +6,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using Agebull.CodeRefactor.CodeAnalyze;
-using Agebull.CodeRefactor.CodeTemplate.LUA;
+using Agebull.EntityModel.RobotCoder.CodeTemplate;
+using Agebull.EntityModel.RobotCoder.CodeTemplate.LuaTemplate;
 
-namespace Agebull.CodeRefactor.CodeTemplate
+namespace Agebull.EntityModel.Designer
 {
 
     /// <summary>

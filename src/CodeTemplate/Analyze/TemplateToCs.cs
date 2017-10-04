@@ -146,11 +146,10 @@
 #region 引用
 
 using System.Text;
-using Agebull.CodeRefactor.CodeAnalyze;
 
 #endregion
 
-namespace Agebull.CodeRefactor.CodeTemplate.CSharp
+namespace Agebull.EntityModel.RobotCoder.CodeTemplate.CSharp
 {
     /// <summary>
     ///     代码单元分析器

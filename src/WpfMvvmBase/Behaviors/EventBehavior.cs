@@ -12,7 +12,7 @@ using System.Windows;
 
 #endregion
 
-namespace Gboxt.Common.WpfMvvmBase.Behaviors
+namespace Agebull.Common.Mvvm
 {
     /// <summary>
     ///     控件事件行为基类,请使用ElementEventBehavior或派生强类型的对象,以便在XAML中构造

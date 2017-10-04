@@ -6,7 +6,7 @@ using System.Net;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Text;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 using Newtonsoft.Json;
 
 namespace Agebull.Common

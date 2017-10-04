@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Agebull.Common.DataModel
+namespace Agebull.EntityModel
 {
     /// <summary>
     /// È«¾Ö´¥·¢Æ÷

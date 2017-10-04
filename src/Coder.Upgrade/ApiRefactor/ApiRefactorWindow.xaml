@@ -1,12 +1,12 @@
-﻿<Window x:Class="Agebull.Common.SimpleDesign.View.ApiRefactorWindow"
+﻿<Window x:Class="Agebull.EntityModel.Designer.View.ApiRefactorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Agebull.Common.SimpleDesign.View"
+        xmlns:local="clr-namespace:Agebull.EntityModel.Designer.View"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:behaviors="clr-namespace:Gboxt.Common.WpfMvvmBase.Behaviors;assembly=WpfMvvmBase"
-        xmlns:solutionManager="clr-namespace:Agebull.CodeRefactor.SolutionManager"
+        xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
+        xmlns:solutionManager="clr-namespace:Agebull.EntityModel.Designer"
         xmlns:av="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         Title="API分析" Height="600" Width="1000" WindowState="Maximized" >
     <Window.DataContext>

@@ -1,4 +1,4 @@
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.RobotCoder
 {
     public sealed class EsPublishCoder : CoderWithProject
     {

@@ -14,14 +14,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using Agebull.Common;
-using Agebull.Common.DataModel;
-using Agebull.Common.SimpleDesign;
-using Gboxt.Common.DataAccess.Schemas;
-using Gboxt.Common.WpfMvvmBase.Commands;
+using Agebull.EntityModel.Config;
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.RobotCoder;
 
 #endregion
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     public sealed class NewEntityModel : TraceModelBase
     {

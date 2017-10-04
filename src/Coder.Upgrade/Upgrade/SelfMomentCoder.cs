@@ -6,9 +6,10 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Agebull.Common.LUA;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Designer;
 
-namespace Agebull.Common.SimpleDesign.Upgrade
+namespace Agebull.EntityModel.RobotCoder.Upgrade
 {
 
     [Export(typeof(IAutoRegister))]

@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 using Newtonsoft.Json;
 
-namespace Agebull.Common.SimpleDesign.Upgrade
+namespace Agebull.EntityModel.RobotCoder.Upgrade
 {
     /// <summary>
     /// 程序集自升级

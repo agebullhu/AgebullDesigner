@@ -13,7 +13,7 @@ using System.Windows;
 
 #endregion
 
-namespace Gboxt.Common.WpfMvvmBase.Behaviors
+namespace Agebull.Common.Mvvm
 {
     /// <summary>
     ///     事件行为的附加方法

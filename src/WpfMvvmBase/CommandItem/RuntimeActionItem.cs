@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using System.Windows;
-using Agebull.Common.DataModel;
+using Agebull.EntityModel;
 
-namespace Gboxt.Common.WpfMvvmBase.Commands
+namespace Agebull.Common.Mvvm
 {
     /// <summary>
     ///     表示一个命令集合的节点

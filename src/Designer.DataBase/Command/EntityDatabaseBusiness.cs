@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Agebull.Common.Defaults;
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     /// <summary>
     ///  µÃÂ≈≈–Ú∆˜

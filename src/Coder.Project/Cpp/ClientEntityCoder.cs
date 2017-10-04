@@ -1,9 +1,9 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.RobotCoder
 {
     public sealed class ClientEntityCoder : EntityCoderBase
     {
@@ -34,7 +34,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Runtime.Serialization;
 using Agebull.Common;
-using Agebull.Common.DataModel;
+using Agebull.EntityModel;
 using Agebull.Common.Entity.Generic;
 
 using Newtonsoft.Json;
@@ -95,7 +95,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
-using Agebull.Common.DataModel;
+using Agebull.EntityModel;
 using Agebull.Common.Entity.Generic;
 using Newtonsoft.Json;
 namespace {NameSpace}

@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace Agebull.CodeRefactor.CodeTemplate
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// 字符串定义集合，一般的开发语言，只有一个

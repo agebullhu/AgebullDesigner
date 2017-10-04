@@ -1,4 +1,4 @@
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// 生自注册对象

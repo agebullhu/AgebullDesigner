@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:defaults="clr-namespace:Agebull.Common.Defaults;assembly=Agebull.Common.Config.Helper">
+                    xmlns:defaults="clr-namespace:Agebull.EntityModel.Config;assembly=Agebull.Common.Config.Helper">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Form.xaml"/>
     </ResourceDictionary.MergedDictionaries>

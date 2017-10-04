@@ -1,7 +1,8 @@
 using System.IO;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Designer;
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.RobotCoder
 {
     /// <summary>
     /// 实体扩展代码生成基类

@@ -12,7 +12,7 @@ using System.Diagnostics;
 
 #endregion
 
-namespace Agebull.Common.DataModel
+namespace Agebull.EntityModel
 {
     /// <summary>
     ///    消息侦测器

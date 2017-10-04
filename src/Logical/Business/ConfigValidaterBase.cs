@@ -1,6 +1,4 @@
-using Agebull.Common.DataModel;
-
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     /// <summary>
     /// 配置数据校验器基类

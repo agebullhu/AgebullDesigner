@@ -1,7 +1,7 @@
 using System.Collections.Specialized;
-using Agebull.Common.DataModel;
+using Agebull.EntityModel.Config;
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// 解决方案配置触发器

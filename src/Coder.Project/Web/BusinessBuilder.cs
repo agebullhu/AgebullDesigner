@@ -1,8 +1,8 @@
 using System.Linq;
 using System.Text;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.RobotCoder
 {
     public sealed class BusinessBuilder : CoderWithEntity
     {
@@ -37,7 +37,7 @@ using System.Text;
 using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
 using Gboxt.Common.DataModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
 
-using Agebull.Common.DataModel.Redis;
+using Agebull.EntityModel.Redis;
 
 using Gboxt.Common.DataModel;
 using Gboxt.Common.DataModel.BusinessLogic;
@@ -169,7 +169,7 @@ namespace {NameSpace}.BusinessLogic
             ? ""
             : @"
 using Fuctures.Manage.BusinessLogical.WCF;
-using Agebull.Common.Client.ServiceAccess;
+using Agebull.Common.Mvvm.ServiceAccess;
 ";
 
         private string EntityType => $"{Entity.Parent.DataBaseObjectName}.Table_{Entity.Name}";

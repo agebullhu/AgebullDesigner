@@ -17,7 +17,7 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace Agebull.Common.DataModel
+namespace Agebull.EntityModel
 {
     /// <summary>
     ///     有属性通知的对象

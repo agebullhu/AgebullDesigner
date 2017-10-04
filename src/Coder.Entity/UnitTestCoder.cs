@@ -1,10 +1,14 @@
 using System;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Designer;
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.RobotCoder
 {
+    [Export(typeof(IAutoRegister))]
+    [ExportMetadata("Symbol", '%')]
     public class UnitTestCoder : MomentCoderBase, IAutoRegister
     {
         #region зЂВс

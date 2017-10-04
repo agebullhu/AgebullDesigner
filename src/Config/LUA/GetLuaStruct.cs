@@ -2,7 +2,7 @@
 using Agebull.Common.LUA;
 #pragma warning disable 168
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     partial class ApiItem
     {

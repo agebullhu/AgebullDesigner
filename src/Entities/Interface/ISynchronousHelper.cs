@@ -1,7 +1,7 @@
 #if CLIENT
 using System;
 
-namespace Agebull.Common.DataModel
+namespace Agebull.EntityModel
 {
     /// <summary>
     /// Õ¨≤Ω÷˙ ÷

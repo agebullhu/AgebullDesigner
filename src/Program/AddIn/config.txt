@@ -1,16 +1,15 @@
 
-Agebull.Common.Config.Coder.Entity.dll
+Agebull.EntityModel.RobotCoder.Entity.dll
+Agebull.EntityModel.RobotCoder.Project.dll
+Agebull.EntityModel.RobotCoder.DataBase.dll
 
-Agebull.Common.Config.Coder.ProjectBuilder.dll
-Agebull.Common.Config.Coder.Sql.dll
+Agebull.EntityModel.Designer.Entity.dll
+Agebull.EntityModel.Designer.Project.dll
+Agebull.EntityModel.Designer.Solution.dll
+Agebull.EntityModel.Designer.DataBase.dll
 
-Agebull.Common.Config.Designer.Entity.dll
-Agebull.Common.Config.Designer.Project.dll
-Agebull.Common.Config.Designer.Solution.dll
-Agebull.Common.Config.Designer.DataBase.Mysql.dll
+*Agebull.EntityModel.RobotCoder.Upgrade.dll
+*Agebull.EntityModel.RobotCoder.Funds.dll
 
-*Agebull.Common.Config.Coder.Upgrade.dll
-*Agebull.Common.Config.Coder.Funds.dll
-
-*Agebull.Common.Config.Coder.EasyUiCoder.dll
-*Agebull.Common.Config.Designer.EasyUi.dll
+*Agebull.EntityModel.RobotCoder.EasyUi.dll
+*Agebull.EntityModel.Designer.EasyUi.dll

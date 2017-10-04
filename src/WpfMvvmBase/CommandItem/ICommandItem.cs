@@ -1,4 +1,4 @@
-namespace Gboxt.Common.WpfMvvmBase.Commands
+namespace Agebull.Common.Mvvm
 {
     /// <summary>
     /// 表示一个命令生成器

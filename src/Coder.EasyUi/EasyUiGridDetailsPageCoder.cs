@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Text;
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.RobotCoder.EasyUi
 {
 
     public class EasyUiListDetailsPageCoder : EasyUiCoderBase

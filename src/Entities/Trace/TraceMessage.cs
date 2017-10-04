@@ -16,7 +16,7 @@ using System.Threading;
 
 #endregion
 
-namespace Agebull.Common.DataModel
+namespace Agebull.EntityModel
 {
     /// <summary>
     /// 一个跟踪消息的类

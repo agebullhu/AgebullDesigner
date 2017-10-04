@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Agebull.Common.DataModel
+namespace Agebull.EntityModel
 {
     /// <summary>
     /// 事件触发器

@@ -2,11 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Agebull.CodeRefactor.CodeAnalyze;
-using Agebull.CodeRefactor.CodeTemplate;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 
-namespace CodeTemplate.Analyze
+namespace Agebull.EntityModel.RobotCoder.CodeTemplate.LuaTemplate
 {
     /// <summary>
     ///     LUA¿‡–Õ∑÷Œˆ∆˜

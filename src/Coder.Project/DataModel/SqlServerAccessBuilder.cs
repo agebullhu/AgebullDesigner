@@ -4,10 +4,9 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Agebull.Common.Access.ADO.Sqlite;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 
-namespace Agebull.Common.SimpleDesign.Coder.Cs
+namespace Agebull.EntityModel.RobotCoder
 {
     public sealed class SqlServerAccessBuilder : CoderWithEntity
     {

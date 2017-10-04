@@ -4,10 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Agebull.Common;
-using Agebull.Common.DataModel;
+using Agebull.EntityModel.Config;
 using Newtonsoft.Json;
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// ≈‰÷√∂¡–¥∆˜

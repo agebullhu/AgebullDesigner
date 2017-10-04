@@ -1,10 +1,9 @@
 using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Controls;
-using Agebull.Common.DataModel;
-using Gboxt.Common.WpfMvvmBase.Behaviors;
+using Agebull.Common.Mvvm;
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// À©Õ¹ViewModel»ùÀà

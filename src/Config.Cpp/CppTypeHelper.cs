@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-using Gboxt.Common.DataAccess.Schemas;
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.Config
 {
+    /// <summary>
+    /// C++与C#类型转换辅助类
+    /// </summary>
     public static class CppTypeHelper
     {
         #region 类型处理通用方法

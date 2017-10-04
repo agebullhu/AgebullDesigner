@@ -14,7 +14,7 @@ using System.Text;
 
 #endregion
 
-namespace Agebull.CodeRefactor.CodeAnalyze
+namespace Agebull.EntityModel.RobotCoder.CodeTemplate
 {
     /// <summary>
     ///     表示一个单词单元

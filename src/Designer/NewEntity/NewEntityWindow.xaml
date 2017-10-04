@@ -1,9 +1,9 @@
-﻿<Window x:Class="Agebull.CodeRefactor.SolutionManager.NewEntityWindow"
+﻿<Window x:Class="Agebull.EntityModel.Designer.NewEntityWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:behaviors="clr-namespace:Gboxt.Common.WpfMvvmBase.Behaviors;assembly=WpfMvvmBase"
-        xmlns:solutionManager="clr-namespace:Agebull.CodeRefactor.SolutionManager"
+        xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
+        xmlns:solutionManager="clr-namespace:Agebull.EntityModel.Designer"
         Title="添加新实体" Height="600" Width="945.923" WindowState="Maximized"
         >
     <Window.DataContext>

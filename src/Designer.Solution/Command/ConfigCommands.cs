@@ -14,14 +14,12 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using Agebull.Common.DataModel;
-using Agebull.Common.SimpleDesign;
-using Gboxt.Common.DataAccess.Schemas;
-using Gboxt.Common.WpfMvvmBase.Commands;
+using Agebull.EntityModel.Config;
+using Agebull.Common.Mvvm;
 
 #endregion
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// 导入导出相关模型

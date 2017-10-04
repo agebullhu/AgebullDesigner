@@ -9,10 +9,9 @@
 #region 引用
 
 using System.Collections.Generic;
-using Agebull.CodeRefactor.CodeAnalyze;
 
 #endregion
-namespace Agebull.CodeRefactor.CodeTemplate
+namespace Agebull.EntityModel.RobotCoder.CodeTemplate
 {
     /// <summary>
     ///     基本单词分析

@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Text;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.RobotCoder.EasyUi
 {
 
     public class EasyUiHelperCoder : MomentCoderBase

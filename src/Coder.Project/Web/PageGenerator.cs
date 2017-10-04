@@ -1,7 +1,9 @@
 ﻿using System.IO;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.Common;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.RobotCoder.EasyUi;
 
-namespace Agebull.Common.SimpleDesign.AspNet
+namespace Agebull.EntityModel.RobotCoder.AspNet
 {
     /// <summary>
     ///     页面代码生成器

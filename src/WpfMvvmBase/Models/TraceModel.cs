@@ -1,7 +1,7 @@
 using System.Windows;
 using System.Windows.Media;
-using Agebull.Common.DataModel;
-using Gboxt.Common.WpfMvvmBase.Commands;
+using Agebull.EntityModel;
+using Agebull.Common.Mvvm;
 
 namespace Agebull.CodeRefactor.CodeRefactor
 {

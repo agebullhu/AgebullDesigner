@@ -9,11 +9,10 @@
 #region 引用
 
 using System.Windows;
-using Agebull.Common.SimpleDesign;
 
 #endregion
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     internal class AllFieldsViewModel : ExtendViewModelBase<EntityDesignModel>
     {

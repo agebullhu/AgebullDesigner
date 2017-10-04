@@ -1,5 +1,5 @@
 ﻿// /***********************************************************************************************************************
-// 工程：Agebull.Common.SimpleDesign
+// 工程：Agebull.EntityModel.Designer
 // 项目：CodeRefactor
 // 文件：DataAccessDesignModel.cs
 // 作者：Administrator/
@@ -28,20 +28,18 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Agebull.Common;
 using Agebull.Common.Config.Upgrader.View;
-using Agebull.Common.DataModel;
-using Agebull.Common.SimpleDesign.Upgrade;
-using Gboxt.Common.DataAccess.Schemas;
-using Gboxt.Common.WpfMvvmBase.Commands;
-using WpfMvvmBase.Coefficient;
+
+using Agebull.EntityModel.Config;
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.RobotCoder.Upgrade;
 using Application = System.Windows.Application;
 
 #endregion
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     public sealed class UpgradeModel : ModelBase
     {

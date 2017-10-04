@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Agebull.Common.Base;
 
-namespace Agebull.Common.DataModel
+namespace Agebull.EntityModel
 {
     /// <summary>
     /// 事件范围,防止事件重入

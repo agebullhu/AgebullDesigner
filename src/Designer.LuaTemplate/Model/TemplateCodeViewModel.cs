@@ -1,7 +1,6 @@
 using System.Windows;
-using Agebull.Common.SimpleDesign;
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     internal class TemplateCodeViewModel : ExtendViewModelBase<TemplateCodeModel>
     {

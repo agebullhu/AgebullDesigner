@@ -3,13 +3,11 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Forms;
-using Agebull.CodeRefactor.SolutionManager;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 using MessageBox = System.Windows.MessageBox;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// 配置读写模型

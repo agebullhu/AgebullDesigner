@@ -2,11 +2,11 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
-using Agebull.Common.Defaults;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Designer;
 using static System.String;
 
-namespace Agebull.Common.SimpleDesign.MySql
+namespace Agebull.EntityModel.RobotCoder.DataBase
 {
     /// <summary>
     /// SQL´úÂëÆ¬¶Ï

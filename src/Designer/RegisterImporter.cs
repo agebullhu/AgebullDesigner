@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.IO;
-using Agebull.Common.SimpleDesign;
+using Agebull.Common;
 
-namespace Agebull.Common.Designer
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// 全局对象注册器MEF自动处理类

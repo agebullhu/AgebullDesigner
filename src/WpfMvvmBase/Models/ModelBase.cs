@@ -6,7 +6,7 @@
 // 修改:2014-11-29
 // *****************************************************/
 
-namespace Agebull.Common.DataModel
+namespace Agebull.EntityModel
 {
     /// <summary>
     ///     MVVM的Model的基类

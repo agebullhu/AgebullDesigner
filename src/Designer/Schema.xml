@@ -1,4 +1,4 @@
-﻿<DataBaseSchema xmlns="http://schemas.datacontract.org/2004/07/Gboxt.Common.DataAccess.Schemas" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+﻿<DataBaseSchema xmlns="http://schemas.datacontract.org/2004/07/Agebull.EntityModel.Config" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
   <_codePath i:nil="true"/>
   <_dbHost>192.168.2.221</_dbHost>
   <_dbName>LocalDataBase</_dbName>

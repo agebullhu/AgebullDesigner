@@ -1,8 +1,8 @@
 ﻿using System.Collections;
-using Gboxt.Common.DataAccess.Schemas;
-using WpfMvvmBase.Coefficient;
+using Agebull.EntityModel.Config;
+using Agebull.Common.Mvvm;
 
-namespace Agebull.Common.Defaults
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     ///     实体实现接口的命令

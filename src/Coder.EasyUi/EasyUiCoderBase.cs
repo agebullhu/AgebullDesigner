@@ -1,6 +1,7 @@
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Designer;
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.RobotCoder.EasyUi
 {
     /// <summary>
     /// EasyUi基类，以实现自动注册

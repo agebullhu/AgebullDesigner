@@ -1,6 +1,6 @@
 using System;
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     /// <summary>
     /// ≈‰÷√◊¥Ã¨¿‡–Õ

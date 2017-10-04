@@ -1,10 +1,10 @@
-﻿<UserControl x:Class="Agebull.Common.Designer.ModelCodePanel"
+﻿<UserControl x:Class="Agebull.EntityModel.Designer.ModelCodePanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:behaviors="clr-namespace:Gboxt.Common.WpfMvvmBase.Behaviors;assembly=WpfMvvmBase"
+             xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
              mc:Ignorable="d"
              d:DesignHeight="900"
              d:DesignWidth="1100">

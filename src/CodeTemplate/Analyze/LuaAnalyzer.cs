@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Agebull.CodeRefactor.CodeAnalyze;
-using Agebull.CodeRefactor.CodeTemplate;
 
-namespace CodeTemplate.Analyze
+namespace Agebull.EntityModel.RobotCoder.CodeTemplate.LuaTemplate
 {
     /// <summary>
     ///     LUA深度分析

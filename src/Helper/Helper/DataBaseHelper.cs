@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using Agebull.Common.DataModel;
-using Agebull.Common.Defaults.SqlServer;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config.SqlServer;
 
-namespace Agebull.Common.Defaults
+namespace Agebull.EntityModel.Config
 {
     /// <summary>
     ///     实体实现接口的命令
@@ -66,9 +64,9 @@ namespace Agebull.Common.Defaults
     }
 }
 
-namespace Agebull.Common.Defaults.Mysql
+namespace Agebull.EntityModel.Config.Mysql
 {
 }
-namespace Agebull.Common.Defaults.SqlServer
+namespace Agebull.EntityModel.Config.SqlServer
 {
 }

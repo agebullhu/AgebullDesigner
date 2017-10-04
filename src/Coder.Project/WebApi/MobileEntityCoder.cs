@@ -1,5 +1,5 @@
 using System.IO;
-namespace Agebull.Common.SimpleDesign.Coder.Cs
+namespace Agebull.EntityModel.RobotCoder
 {
     public sealed class MobileEntityCoder : EntityCoderBase
     {
@@ -22,7 +22,7 @@ namespace Agebull.Common.SimpleDesign.Coder.Cs
             var code = $@"using System;
 using System.Collections.Generic;
 using System.Text;
-using Agebull.Common.DataModel;
+using Agebull.EntityModel;
 
 namespace {NameSpace}
 {{

@@ -16,7 +16,7 @@ using Agebull.Common.Logging;
 
 #endregion
 
-namespace Gboxt.Common.WpfMvvmBase.Commands
+namespace Agebull.Common.Mvvm
 {
     /// <summary>
     ///     无参数的标准委托命令

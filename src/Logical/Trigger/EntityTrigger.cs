@@ -3,9 +3,9 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using Agebull.Common.DataModel;
+using Agebull.EntityModel.Config;
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// 实体配置触发器

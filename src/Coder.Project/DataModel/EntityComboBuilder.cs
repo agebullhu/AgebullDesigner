@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace Agebull.Common.SimpleDesign.Coder.Cs
+namespace Agebull.EntityModel.RobotCoder
 {
     public sealed class EntityComboBuilder : EntityBuilderBase
     {
@@ -26,7 +26,7 @@ namespace Agebull.Common.SimpleDesign.Coder.Cs
                 filter = "p => p.DataState == DataStateType.Enable";
             return  $@"using System.Collections.Generic;
 using System.Linq;
-using Agebull.Common.DataModel.Redis;
+using Agebull.EntityModel.Redis;
 using Agebull.ProjectDeveloper.WebDomain.Models;
 using Gboxt.Common.DataModel;
 using Gboxt.Common.DataModel.MySql;

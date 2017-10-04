@@ -1,9 +1,9 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.RobotCoder
 {
     public sealed class MobileGlobalCoder : CoderWithProject
     {
@@ -24,7 +24,7 @@ namespace Agebull.Common.SimpleDesign
             var code = $@"using System;
 using System.Collections.Generic;
 using System.Text;
-using Agebull.Common.DataModel;
+using Agebull.EntityModel;
 using Agebull.ZmqCommand;
 
 namespace {SolutionConfig.Current.NameSpace}

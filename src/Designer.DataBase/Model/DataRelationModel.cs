@@ -11,7 +11,7 @@
 
 #endregion
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     internal class DataRelationModel : EntityDesignModel
     {

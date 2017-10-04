@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Agebull.CodeRefactor.CodeAnalyze;
-using Agebull.CodeRefactor.CodeTemplate;
 
-namespace CodeTemplate.Analyze
+namespace Agebull.EntityModel.RobotCoder.CodeTemplate.LuaTemplate
 {
     /// <summary>
     ///     LUA¿‡–Õ∑÷Œˆ∆˜

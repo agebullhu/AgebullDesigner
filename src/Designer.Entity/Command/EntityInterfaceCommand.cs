@@ -2,13 +2,10 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using Agebull.Common.DataModel;
-using Agebull.Common.SimpleDesign;
-using Gboxt.Common.DataAccess.Schemas;
-using Gboxt.Common.WpfMvvmBase.Commands;
-using WpfMvvmBase.Coefficient;
+using Agebull.EntityModel.Config;
+using Agebull.Common.Mvvm;
 
-namespace Agebull.Common.Defaults.Command
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     ///     实体实现接口的命令

@@ -14,7 +14,7 @@ using System.Linq;
 
 #endregion
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     partial class PropertyConfig
     {

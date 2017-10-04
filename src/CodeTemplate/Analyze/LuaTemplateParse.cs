@@ -10,11 +10,10 @@
 
 using System.Collections.Generic;
 using System.Text;
-using Agebull.CodeRefactor.CodeAnalyze;
 
 #endregion
 
-namespace Agebull.CodeRefactor.CodeTemplate.LUA
+namespace Agebull.EntityModel.RobotCoder.CodeTemplate.LuaTemplate
 {
     /// <summary>
     ///     代码单元分析器

@@ -1,8 +1,8 @@
 using System.Collections.ObjectModel;
 using System.IO;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// 设计器全局对象

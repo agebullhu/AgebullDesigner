@@ -11,15 +11,15 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
-using Agebull.Common.SimpleDesign;
-using Gboxt.Common.DataAccess.Schemas;
-using Gboxt.Common.WpfMvvmBase.Commands;
+using Agebull.EntityModel.Config;
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.RobotCoder;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 
 #endregion
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     internal class EasyUiViewModel : ExtendViewModelBase<EasyUiModel>
     {

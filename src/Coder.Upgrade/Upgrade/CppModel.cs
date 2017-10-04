@@ -14,17 +14,17 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataAccess.Schemas;
-using Gboxt.Common.WpfMvvmBase.Commands;
+using Agebull.EntityModel;
+using Agebull.EntityModel.Config;
+using Agebull.Common.Mvvm;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
-using Agebull.CodeRefactor.SolutionManager;
-using Agebull.Common.SimpleDesign;
+using Agebull.EntityModel.Designer;
+using Agebull.EntityModel.Designer;
 
 #endregion
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// Cpp相关的模型

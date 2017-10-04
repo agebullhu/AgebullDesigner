@@ -6,10 +6,10 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Agebull.Common.DataModel;
-using Gboxt.Common.WpfMvvmBase.Commands;
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     ///     树节点模型

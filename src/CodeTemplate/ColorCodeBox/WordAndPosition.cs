@@ -1,4 +1,4 @@
-namespace Agebull.CodeRefactor.CodeTemplate
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     ///   匹配到的单词的结构体

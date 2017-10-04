@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace Agebull.CodeRefactor.CodeTemplate
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// ×ÅÉ«Æ÷

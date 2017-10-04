@@ -1,8 +1,9 @@
 using System;
 using System.IO;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.RobotCoder;
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// 项目代码命令对象的抽象类

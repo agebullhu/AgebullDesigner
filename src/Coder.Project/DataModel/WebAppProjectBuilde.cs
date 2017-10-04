@@ -1,8 +1,10 @@
 using System.ComponentModel.Composition;
-using Agebull.Common.SimpleDesign.AspNet;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.Common;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Designer;
+using Agebull.EntityModel.RobotCoder.AspNet;
 
-namespace Agebull.Common.SimpleDesign.Coder.Cs
+namespace Agebull.EntityModel.RobotCoder
 {
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]

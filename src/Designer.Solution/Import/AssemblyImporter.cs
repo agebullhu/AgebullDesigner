@@ -14,13 +14,12 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
-using Agebull.Common.Defaults;
+using Agebull.EntityModel.Config;
 using Agebull.Common.Reflection;
-using Gboxt.Common.DataAccess.Schemas;
 
 #endregion
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.Designer
 {
     public sealed class AssemblyImporter
     {

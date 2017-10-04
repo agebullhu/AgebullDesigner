@@ -1,9 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Windows;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataAccess.Schemas;
 
-namespace Agebull.Common.SimpleDesign
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     ///     App.xaml 的交互逻辑

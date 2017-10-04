@@ -126,13 +126,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using Agebull.CodeRefactor.CodeAnalyze;
 using Agebull.Common.LUA;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 
 #endregion
 
-namespace Agebull.CodeRefactor.CodeTemplate.LUA
+namespace Agebull.EntityModel.RobotCoder.CodeTemplate.LuaTemplate
 {
     /// <summary>
     ///     基本单词分析

@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataAccess.Schemas;
-using Gboxt.Common.WpfMvvmBase.Commands;
+using Agebull.EntityModel.Config;
+using Agebull.Common.Mvvm;
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     public sealed class EnumEditViewModel : ViewModelBase<EnumEditModel>
     {

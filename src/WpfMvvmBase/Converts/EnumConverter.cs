@@ -17,7 +17,7 @@ using Agebull.Common.Reflection;
 
 #endregion
 
-namespace Agebull.Common.Client
+namespace Agebull.Common.Mvvm
 {
     /// <summary>
     ///   表示一个枚举的值(转换为long)文本对应表节点

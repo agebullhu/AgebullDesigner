@@ -1,6 +1,6 @@
-using Agebull.Common.DataModel;
+using Agebull.EntityModel.Config;
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Designer
 {
 
     /// <summary>

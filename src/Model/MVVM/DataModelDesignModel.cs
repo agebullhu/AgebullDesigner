@@ -1,5 +1,5 @@
 ﻿// /***********************************************************************************************************************
-// 工程：Agebull.Common.SimpleDesign
+// 工程：Agebull.EntityModel.Designer
 // 项目：CodeRefactor
 // 文件：DataAccessDesignModel.cs
 // 作者：Administrator/
@@ -25,13 +25,11 @@
 #region 命名空间引用
 
 using System.Collections.Generic;
-using Agebull.Common.DataModel;
-using Agebull.Common.SimpleDesign;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 
 #endregion
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     /// 数据模型设计模型

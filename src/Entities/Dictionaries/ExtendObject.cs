@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace Agebull.Common.DataModel
+namespace Agebull.EntityModel
 {
     /// <summary>
     /// 表示有扩展属性的对象

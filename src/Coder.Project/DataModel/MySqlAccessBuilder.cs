@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Agebull.Common.Defaults.Mysql;
-using Agebull.Common.SimpleDesign.MySql;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config.Mysql;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.RobotCoder.DataBase;
 
-namespace Agebull.Common.SimpleDesign.Coder.Cs
+namespace Agebull.EntityModel.RobotCoder
 {
     public sealed class MySqlAccessBuilder : CoderWithEntity
     {

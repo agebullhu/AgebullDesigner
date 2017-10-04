@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Agebull.Common.Config.Designer.EasyUi.Properties {
+namespace Agebull.EntityModel.Designer.EasyUi.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Agebull.Common.Config.Designer.EasyUi.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Agebull.Common.Config.Designer.EasyUi.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Agebull.EntityModel.Designer.EasyUi.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

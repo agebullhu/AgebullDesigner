@@ -1,11 +1,10 @@
 ﻿using System;
-using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
 
-namespace Agebull.Common.SimpleDesign.Upgrade
+namespace Agebull.EntityModel.RobotCoder.Upgrade
 {
     /// <summary>
     /// 配置对象升级代码生成器
@@ -57,11 +56,11 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Runtime.Serialization;
 using Agebull.Common;
-using Agebull.Common.DataModel;
+using Agebull.EntityModel;
 
 using Newtonsoft.Json;
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {{
     /// <summary>
     /// {Config.Description}

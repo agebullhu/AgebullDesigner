@@ -15,7 +15,7 @@ using Agebull.Common.Logging;
 
 #endregion
 
-namespace Gboxt.Common.WpfMvvmBase.Behaviors
+namespace Agebull.Common.Mvvm
 {
     /// <summary>
     ///     普通控件的事件行为类

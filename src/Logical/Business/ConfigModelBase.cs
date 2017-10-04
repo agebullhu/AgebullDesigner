@@ -1,9 +1,8 @@
 using System;
 using System.Text;
 using Agebull.Common;
-using Agebull.Common.DataModel;
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     /// <summary>
         /// 实体配置业务模型

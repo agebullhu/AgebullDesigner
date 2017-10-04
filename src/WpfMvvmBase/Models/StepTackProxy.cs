@@ -3,9 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using Agebull.Common.Logging;
-using Gboxt.Common.WpfMvvmBase.Commands;
+using Agebull.Common.Mvvm;
 
-namespace Agebull.Common.DataModel
+namespace Agebull.EntityModel
 {
 
 

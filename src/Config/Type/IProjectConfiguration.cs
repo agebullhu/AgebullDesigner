@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     /// <summary>
     ///     ÏîÄ¿ÅäÖÃ

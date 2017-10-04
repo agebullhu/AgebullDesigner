@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Interactivity;
 
-namespace Gboxt.Common.WpfMvvmBase.Behaviors
+namespace Agebull.Common.Mvvm
 {
     public interface IGridSelectionBinding
     {

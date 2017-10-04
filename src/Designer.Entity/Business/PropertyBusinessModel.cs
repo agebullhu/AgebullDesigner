@@ -1,10 +1,8 @@
 using System;
 using System.Linq;
 using System.Text;
-using Agebull.Common.DataModel;
-using Agebull.Common.Defaults;
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     internal class PropertyBusinessModel : ConfigModelBase
     {

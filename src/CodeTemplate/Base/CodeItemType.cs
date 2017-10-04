@@ -6,7 +6,7 @@
 // 修改:2014-11-08
 // *****************************************************/
 
-namespace Agebull.CodeRefactor.CodeAnalyze
+namespace Agebull.EntityModel.RobotCoder.CodeTemplate
 {
     // ReSharper disable InconsistentNaming
     /// <summary>

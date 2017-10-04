@@ -1,6 +1,4 @@
-using Agebull.Common.Defaults;
-
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     public class PropertyValidater : ConfigValidaterBase
     {

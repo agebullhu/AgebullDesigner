@@ -1,9 +1,7 @@
 using System;
-using System.Linq;
 using System.Text;
-using Agebull.Common.SimpleDesign;
 
-namespace Gboxt.Common.DataAccess.Schemas
+namespace Agebull.EntityModel.Config
 {
     internal class EntityBusinessModel : ConfigModelBase
     {

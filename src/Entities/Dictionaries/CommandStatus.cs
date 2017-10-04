@@ -6,7 +6,7 @@
 // ÐÞ¸Ä:2014-12-07
 // *****************************************************/
 
-namespace Gboxt.Common.WpfMvvmBase.Commands
+namespace Agebull.Common.Mvvm
 {
     /// <summary>
     ///     ÃüÁî×´Ì¬

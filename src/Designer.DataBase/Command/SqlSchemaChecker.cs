@@ -5,12 +5,10 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using Agebull.Common;
-using Agebull.Common.DataModel;
-using Agebull.Common.Defaults;
-using Agebull.Common.SimpleDesign;
-using Gboxt.Common.DataAccess.Schemas;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.RobotCoder;
 
-namespace Gboxt.Common.SimpleDataAccess.Design.Schemas
+namespace Agebull.EntityModel.Designer
 {
     public class SqlSchemaChecker : CoderBase
     {

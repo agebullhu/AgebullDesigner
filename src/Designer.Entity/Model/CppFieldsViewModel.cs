@@ -1,8 +1,6 @@
 ﻿using System.Windows;
-using Agebull.Common.Designer;
-using Agebull.Common.SimpleDesign;
 
-namespace Agebull.CodeRefactor.SolutionManager
+namespace Agebull.EntityModel.Designer
 {
     internal class CppFieldsViewModel : ExtendViewModelBase<EntityDesignModel>
     {
