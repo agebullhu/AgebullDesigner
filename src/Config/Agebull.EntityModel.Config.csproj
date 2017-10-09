@@ -97,6 +97,14 @@
     <Compile Include="Classify\ClassifyConfig.cs" />
     <Compile Include="Classify\ClassifyGroupConfig.cs" />
     <Compile Include="Classify\ClassifyItem.cs" />
+    <Compile Include="Schemas\AssemblyConfig.cs" />
+    <Compile Include="Schemas\AttributeInfo.cs" />
+    <Compile Include="Schemas\FieldConfig.cs" />
+    <Compile Include="Schemas\MethodConfig.cs" />
+    <Compile Include="Schemas\PropertyUpgradeConfig.cs" />
+    <Compile Include="Schemas\TypeConfig.cs" />
+    <Compile Include="Schemas\UpgradeConfig.cs" />
+    <Compile Include="Schemas\XmlMember.cs" />
     <Compile Include="Type\PanelType.cs" />
     <Compile Include="Type\ColumnType.cs" />
     <Compile Include="Base\ConfigBase.cs" />
@@ -130,9 +138,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Schemas\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

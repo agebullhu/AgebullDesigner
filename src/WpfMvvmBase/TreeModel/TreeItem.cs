@@ -370,7 +370,8 @@ namespace Agebull.EntityModel
         }
 
         #endregion
-
+        
+        public ICommand Command { get; set; }
     }
 
 }

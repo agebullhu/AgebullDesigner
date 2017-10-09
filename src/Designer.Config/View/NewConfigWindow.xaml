@@ -1,0 +1,78 @@
+﻿<Window x:Class="Agebull.EntityModel.Designer.NewConfig.NewConfigWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:solutionManager="clr-namespace:Agebull.EntityModel.Designer"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
+        mc:Ignorable="d"
+        
+        Title="新增配置" WindowState="Maximized" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/DataTemplate/Form.xaml"/>
+    </Window.Resources>
+    <Window.DataContext>
+        <solutionManager:NewConfigViewModel/>
+    </Window.DataContext>
+    <i:Interaction.Behaviors>
+        <behaviors:DependencyBehavior BehaviorAction="{Binding ViewBehavior}" />
+    </i:Interaction.Behaviors>
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Style="{StaticResource ToolBar}">
+            <ItemsControl VerticalAlignment="Stretch"
+                          HorizontalAlignment="Stretch"
+                          ItemsSource="{Binding Commands,Mode=OneWay}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Style="{StaticResource CommandButton}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel VerticalAlignment="Stretch"
+                                    HorizontalAlignment="Stretch"
+                                    Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </Border>
+        <StackPanel Style="{StaticResource LayoutPanel}" DataContext="{Binding Config}">
+            <GroupBox Header="名称(设计时)" Margin="5">
+                <WrapPanel>
+                    <StackPanel>
+                        <Label Content = "名称" />
+                        <TextBox Text="{Binding Name,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content = "标题" />
+                        <TextBox Text="{Binding Caption,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content = "说明" />
+                        <TextBox Style="{StaticResource MidTextBox}" Height="40" Text="{Binding Description,Mode=TwoWay}" />
+                    </StackPanel>
+                </WrapPanel>
+            </GroupBox>
+            <GroupBox Header="标识(设计时)" Margin="5">
+                <WrapPanel>
+                    <StackPanel>
+                        <Label Content = "全局标识" />
+                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding Key, Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content = "唯一标识" />
+                        <TextBox Text="{Binding Identity,Mode=TwoWay,StringFormat=X}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content = "排序编号" />
+                        <TextBox Text="{Binding Index,Mode=TwoWay,StringFormat=X}" />
+                    </StackPanel>
+                </WrapPanel>
+            </GroupBox>
+            <Border DataContext="{Binding}">
+                <ContentControl Style="{DynamicResource Style}"/>
+            </Border>
+        </StackPanel>
+    </DockPanel>
+</Window>

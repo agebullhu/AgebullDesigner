@@ -10,11 +10,8 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <TabControl TabStripPlacement="Top">
         <TabControl.Items>
-            <TabItem Header="对象属性">
-                <card:ConfigForm/>
-            </TabItem>
             <TabItem Header="设计属性">
-                <card:ConfigForm/>
+                <card:DesignInfoForm/>
             </TabItem>
             <TabItem Header="扩展属性">
                 <designer:ExtendPanel />

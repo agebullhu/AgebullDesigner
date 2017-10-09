@@ -10,7 +10,7 @@
     <DockPanel>
         <GroupBox DockPanel.Dock="Bottom"  Header="数据规则" Margin="5"  DataContext="{Binding Model.Context.SelectProperty}">
             <GroupBox.Resources>
-                <ResourceDictionary Source="Form.xaml" />
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/DataTemplate/Form.xaml"/>
             </GroupBox.Resources>
             <StackPanel Style="{StaticResource LayoutPanel}">
                 <StackPanel Style="{StaticResource FieldPanel}">

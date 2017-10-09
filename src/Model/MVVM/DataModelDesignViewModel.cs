@@ -115,38 +115,9 @@ namespace Agebull.EntityModel.Designer
 
         public DependencyAction TabControlBehavior => new DependencyAction
         {
-            AttachAction = AddExtend
+            AttachAction =  obj => Model.ExtendControl = (TabControl)obj
         };
 
-
-        private void AddExtend(DependencyObject obj)
-        {
-            var tabControl = (TabControl)obj;
-            Dictionary<string, Func<ExtendViewModelBase>> exts;
-            if (!DesignerManager.ExtendDictionary.TryGetValue(typeof(EntityConfig), out exts))
-                return;
-            foreach (var item in exts)
-            {
-                var vm = item.Value();
-                if (vm.Catalog != null)
-                    vm.DesignModel.Catalog = vm.Catalog;
-                vm.BaseModel = this.Model;
-                this.Model.ExtendModels.Add(item.Key, vm.DesignModel);
-                int idx = tabControl.Items.Add(new TabItem
-                {
-                    Header = item.Key,
-                    Content = new ExtendPanel
-                    {
-                        DataContext = vm
-                    }
-                });
-                if (!Model.Context.ChildrenJobs.ContainsKey(item.Key))
-                    Model.Context.ChildrenJobs.Add(item.Key, idx);
-                else
-                    Trace.WriteLine(item.Key, "同名扩展设计器");
-            }
-            Model.Context.RaisePropertyChanged(nameof(Model.Context.Jobs));
-        }
         #endregion
     }
 }

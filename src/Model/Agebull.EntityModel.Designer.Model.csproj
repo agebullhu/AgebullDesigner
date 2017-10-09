@@ -103,6 +103,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -134,6 +135,7 @@
   <ItemGroup>
     <Compile Include="Command\CommandIoc.cs" />
     <Compile Include="Config\ConfigDataModel.cs" />
+    <Compile Include="DataTemplate\DataTemplateResource.cs" />
     <Compile Include="Extend\DesignerManager.cs" />
     <Compile Include="Extend\ExtendViewModelBase.cs" />
     <Compile Include="Extend\ExtendPanel.xaml.cs">
@@ -153,6 +155,7 @@
     <Compile Include="Model\NormalCodeModel.cs" />
     <Compile Include="MVVM\TreeModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AddInImporter.cs" />
     <Compile Include="TreeItem\ConfigTreeItem.cs" />
     <Compile Include="Type\TypeConvert.cs" />
   </ItemGroup>
@@ -195,6 +198,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="DataTemplate\Form.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Extend\ExtendPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

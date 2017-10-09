@@ -11,7 +11,7 @@
     <DockPanel>
         <WrapPanel DataContext="{Binding Model.Context.SelectEntity}" DockPanel.Dock="Top">
             <WrapPanel.Resources>
-                <ResourceDictionary Source="Form.xaml" />
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/DataTemplate/Form.xaml"/>
             </WrapPanel.Resources>
             <StackPanel Style="{StaticResource FieldPanel}">
                 <Label Content = "实体名称" />
@@ -44,7 +44,7 @@
         </WrapPanel>
         <TabControl DataContext="{Binding Model.Context.SelectProperty}" DockPanel.Dock="Bottom" Height="262">
             <TabControl.Resources>
-                <ResourceDictionary Source="Form.xaml" />
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/DataTemplate/Form.xaml"/>
             </TabControl.Resources>
             <TabItem Header="C#">
                 <StackPanel Style="{StaticResource LayoutPanel}">

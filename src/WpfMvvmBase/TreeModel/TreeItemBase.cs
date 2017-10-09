@@ -16,6 +16,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using Agebull.Common.Reflection;
+using Agebull.EntityModel.Config;
 
 #endregion
 
@@ -24,7 +25,7 @@ namespace Agebull.EntityModel
     /// <summary>
     ///     表示一个树的节点
     /// </summary>
-    public abstract class TreeItemBase : NotificationObject
+    public abstract class TreeItemBase : SimpleConfig
     {
         private bool _isUiSelected;
 

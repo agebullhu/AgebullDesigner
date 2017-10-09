@@ -148,6 +148,10 @@
       <Project>{0c9fd8f0-2c65-49e7-86ec-f135e56ec846}</Project>
       <Name>Agebull.EntityModel.Designer.Logical</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Model\Agebull.EntityModel.Designer.Model.csproj">
+      <Project>{675ee1a7-84fe-47e4-968f-1e3d43c8c019}</Project>
+      <Name>Agebull.EntityModel.Designer.Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WpfMvvmBase\Agebull.Common.Mvvm.csproj">
       <Project>{6f6dc5d2-85ef-4bb5-82fa-bd21f7aa3053}</Project>
       <Name>Agebull.Common.Mvvm</Name>

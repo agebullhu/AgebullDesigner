@@ -8,6 +8,7 @@
              xmlns:cp="clr-namespace:Agebull.EntityModel.Designer"
              xmlns:simpleDesign="clr-namespace:Agebull.EntityModel.Designer;assembly=Agebull.EntityModel.Designer.Model"
              xmlns:view="clr-namespace:Agebull.EntityModel.Designer"
+             xmlns:card="clr-namespace:Agebull.EntityModel.Designer.Card"
              mc:Ignorable="d"
              d:DesignHeight="600"
              d:DesignWidth="1000">
@@ -38,11 +39,12 @@
             <TabControl Margin="0" SelectedIndex="{Binding Model.Context.RootJobIndex}"
                         Grid.Column="1"
                         Grid.Row="1" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" TabStripPlacement="Bottom">
-                <TabItem Header="属性编辑">
-                    <view:PropertyPage />
+                <TabItem Header="基本信息">
+                    <card:ConfigForm/>
                 </TabItem>
                 <TabItem Header="对象编辑">
                     <TabControl SelectedIndex="{Binding Model.Context.SubJobIndex}" Margin="0">
+                        
                         <i:Interaction.Behaviors>
                             <b:DependencyBehavior BehaviorAction="{Binding TabControlBehavior}" />
                         </i:Interaction.Behaviors>
@@ -50,6 +52,9 @@
                 </TabItem>
                 <TabItem Header="扩展代码">
                     <cp:CodePanel />
+                </TabItem>
+                <TabItem Header="属性编辑">
+                    <view:PropertyPage />
                 </TabItem>
                 <TabItem Header="跟踪消息">
                     <cp:TracePanel />

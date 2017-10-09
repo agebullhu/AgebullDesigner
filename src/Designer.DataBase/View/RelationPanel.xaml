@@ -11,7 +11,7 @@
     <DockPanel Margin="0" Background="White">
         <WrapPanel DockPanel.Dock="Bottom" DataContext="{Binding Model.Context.SelectProperty}">
             <WrapPanel.Resources>
-                <ResourceDictionary Source="Form.xaml" />
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/DataTemplate/Form.xaml"/>
             </WrapPanel.Resources>
             <!--<StackPanel>
                 <Label Content="是否连接字段" />

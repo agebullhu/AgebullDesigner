@@ -10,6 +10,8 @@ namespace Agebull.EntityModel.Designer.Card
         public ConfigForm()
         {
             InitializeComponent();
+            foreach (var res in DataTemplateResource.Resources)
+                this.Resources.MergedDictionaries.Add(res);
         }
     }
 }

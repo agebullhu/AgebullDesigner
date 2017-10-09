@@ -93,7 +93,9 @@ namespace Agebull.EntityModel.Designer
         /// <param name="body"></param>
         protected override void OnBodyCreating(FrameworkElement body)
         {
-            body.DataContext = Model;
+            //body.DataContext = Model;
+            //RaisePropertyChanged(nameof(Context));
+            //RaisePropertyChanged(nameof(DesignModel));
         }
 
         /// <summary>

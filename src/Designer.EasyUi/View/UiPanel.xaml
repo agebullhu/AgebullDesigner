@@ -11,7 +11,7 @@
     <DockPanel>
         <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal" DataContext="{Binding Model.Context.SelectEntity}">
             <WrapPanel.Resources>
-                <ResourceDictionary Source="Form.xaml" />
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/DataTemplate/Form.xaml"/>
             </WrapPanel.Resources>
             <StackPanel>
                 <Label Content="页面文件夹名称" />
@@ -48,7 +48,7 @@
                     DataContext="{Binding Model.Context.SelectProperty}"
                     IsEnabled="{Binding DenyClient,Converter={StaticResource BoolReversalConverter},Mode=OneWay}">
             <TabControl.Resources>
-                <ResourceDictionary Source="Form.xaml" />
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/DataTemplate/Form.xaml"/>
             </TabControl.Resources>
             <TabItem Header="显示内容">
                 <WrapPanel>

@@ -24,7 +24,11 @@
 
 #region 命名空间引用
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Windows;
+using System.Windows.Controls;
 using Agebull.EntityModel.Config;
 
 #endregion
@@ -92,16 +96,7 @@ namespace Agebull.EntityModel.Designer
         }
 
         #endregion
-
-        #region 扩展对象
-
-        /// <summary>
-        /// 扩展模型
-        /// </summary>
-        public Dictionary<string, DesignModelBase> ExtendModels { get; } = new Dictionary<string, DesignModelBase>();
-
-        #endregion
-
+        
         #region 初始化
 
         /// <summary>
@@ -114,16 +109,15 @@ namespace Agebull.EntityModel.Designer
             Context.Initialize();
             ConfigIo.Initialize();
             NormalCode.Initialize();
-
-            foreach (var ex in ExtendModels.Values)
-            {
-                ex.Model = this;
-                ex.Dispatcher = Dispatcher;
-                ex.Context = Context;
-                ex.Initialize();
-            }
+            Context.PropertyChanged += Context_PropertyChanged;
+            //foreach (var ex in ExtendModels.Values)
+            //{
+            //    ex.Model = this;
+            //    ex.Dispatcher = Dispatcher;
+            //    ex.Context = Context;
+            //    ex.Initialize();
+            //}
         }
-
         /// <summary>
         /// 新增对象
         /// </summary>
@@ -137,6 +131,66 @@ namespace Agebull.EntityModel.Designer
             return CommandIoc.NewConfigCommand(config);
         }
 
+        #endregion
+
+        #region 扩展对象
+
+        /// <summary>
+        /// 扩展对象插入的控件
+        /// </summary>
+        internal TabControl ExtendControl { get; set; }
+
+        /// <summary>
+        /// 扩展模型
+        /// </summary>
+        public Dictionary<string, DesignModelBase> ExtendModels { get; } = new Dictionary<string, DesignModelBase>();
+
+        private void Context_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Context.SelectConfig))
+                AddExtend();
+        }
+
+
+        private void AddExtend()
+        {
+            ExtendModels.Clear();
+            ExtendControl.Items.Clear();
+            while (ExtendControl.Items.Count > 1)
+                ExtendControl.Items.RemoveAt(1);
+            if (Context.SelectConfig == null)
+            {
+                return;
+            }
+            Dictionary<string, Func<ExtendViewModelBase>> exts;
+            if (!DesignerManager.ExtendDictionary.TryGetValue(Context.SelectConfig.GetType(), out exts))
+                return;
+            foreach (var ext in exts)
+            {
+                var vm = ext.Value();
+                if (vm.Catalog != null)
+                    vm.DesignModel.Catalog = vm.Catalog;
+                vm.BaseModel = this;
+                vm.DesignModel.Initialize();
+                this.ExtendModels.Add(ext.Key, vm.DesignModel);
+                var item = new TabItem
+                {
+                    Header = ext.Key,
+                    Content = new ExtendPanel
+                    {
+                        DataContext = vm
+                    },
+                    DataContext = ExtendControl.DataContext 
+                };
+                int idx = ExtendControl.Items.Add(item);
+                if (!Context.ChildrenJobs.ContainsKey(ext.Key))
+                    Context.ChildrenJobs.Add(ext.Key, idx);
+                else
+                    Trace.WriteLine(ext.Key, "同名扩展设计器");
+            }
+            Context.RaisePropertyChanged(nameof(Context.Jobs));
+        }
+        
         #endregion
 
     }

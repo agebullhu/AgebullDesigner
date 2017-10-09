@@ -153,27 +153,15 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Card\DesignInfoForm.xaml.cs">
+      <DependentUpon>DesignInfoForm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Card\ConfigForm.xaml.cs">
       <DependentUpon>ConfigForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Global.cs" />
-    <Compile Include="Ioc\CommandIoc.cs" />
-    <Compile Include="NewConfig\NewConfigWindow.xaml.cs">
-      <DependentUpon>NewConfigWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="NewConfig\NewConfigModel.cs" />
-    <Compile Include="NewConfig\NewConfigViewModel.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Enum\EnumEditModel.cs" />
-    <Compile Include="Enum\EnumEditViewModel.cs" />
-    <Compile Include="NewEntity\NewEntityModel.cs" />
-    <Compile Include="NewEntity\NewEntityViewModel.cs" />
-    <Compile Include="Enum\EnumEdit.xaml.cs">
-      <DependentUpon>EnumEdit.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="RegisterImporter.cs" />
     <Compile Include="View\CodePanel.xaml.cs">
       <DependentUpon>CodePanel.xaml</DependentUpon>
     </Compile>
@@ -191,9 +179,6 @@
     </Compile>
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="NewEntity\NewEntityWindow.xaml.cs">
-      <DependentUpon>NewEntityWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MenuPanel.xaml.cs">
       <DependentUpon>MenuPanel.xaml</DependentUpon>
@@ -237,15 +222,11 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Card\DesignInfoForm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Card\ConfigForm.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="NewConfig\NewConfigWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Enum\EnumEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -260,14 +241,6 @@
     <Page Include="Style\Menu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Style\Form.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Style\ConfigDataTemplate.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Style\TreeView.xaml">
       <SubType>Designer</SubType>
@@ -294,10 +267,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\MainWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="NewEntity\NewEntityWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

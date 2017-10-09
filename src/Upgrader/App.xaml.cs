@@ -10,8 +10,8 @@ namespace Agebull.EntityModel.Designer
     {
         public App()
         {
-            GlobalTrigger.RegistTrigger<EntityTrigger>();
-            GlobalTrigger.RegistTrigger<PropertyTrigger>();
+            //GlobalTrigger.RegistTrigger<EntityTrigger>();
+            //GlobalTrigger.RegistTrigger<PropertyTrigger>();
 
             WorkContext.SynchronousContext = new DispatcherSynchronousContext
             {

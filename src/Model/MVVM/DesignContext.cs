@@ -451,6 +451,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public Dictionary<string, int> ChildrenJobs { get; } = new Dictionary<string, int>
         {
+            {JobConfig,-1 },
             {JobPropertyGrid,-1 },
             {JobExtendCode,-1 },
             {JobTrace,-1 }
@@ -461,7 +462,8 @@ namespace Agebull.EntityModel.Designer
         public const string JobPropertyGrid = "属性编辑";
         public const string JobExtendCode = "扩展代码";
         public const string JobTrace = "跟踪消息";
-        
+        public const string JobConfig = "基本信息"; 
+
         private int _rootJobIndex;
 
         /// <summary>
@@ -480,12 +482,15 @@ namespace Agebull.EntityModel.Designer
                 switch (value)
                 {
                     case 0:
-                        NowJob = JobPropertyGrid;
+                        NowJob = JobConfig;
                         break;
                     case 2:
                         NowJob = JobExtendCode;
                         break;
                     case 3:
+                        NowJob = JobPropertyGrid;
+                        break;
+                    case 4:
                         NowJob = JobTrace;
                         break;
                 }
@@ -527,20 +532,23 @@ namespace Agebull.EntityModel.Designer
                 _nowJob = value ?? JobPropertyGrid;
                 switch (value)
                 {
-                    case JobPropertyGrid:
+                    case JobConfig:
                         RootJobIndex = 0;
-                        break;
-                    case JobExtendCode:
-                        RootJobIndex = 2;
-                        break;
-                    case JobTrace:
-                        RootJobIndex = 3;
                         break;
                     default:
                         RootJobIndex = 1;
                         int idx = 0;
                         ChildrenJobs.TryGetValue(_nowJob, out idx);
                         SubJobIndex = idx;
+                        break;
+                    case JobExtendCode:
+                        RootJobIndex = 2;
+                        break;
+                    case JobPropertyGrid:
+                        RootJobIndex = 3;
+                        break;
+                    case JobTrace:
+                        RootJobIndex = 4;
                         break;
                 }
                 SaveJob();

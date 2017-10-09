@@ -1,12 +1,15 @@
 
+Agebull.EntityModel.Designer.Config.dll
+Agebull.EntityModel.Designer.Solution.dll
+Agebull.EntityModel.Designer.Project.dll
+Agebull.EntityModel.Designer.Enum.dll
+Agebull.EntityModel.Designer.Entity.dll
+Agebull.EntityModel.Designer.DataBase.dll
+
+
 Agebull.EntityModel.RobotCoder.Entity.dll
 Agebull.EntityModel.RobotCoder.Project.dll
 Agebull.EntityModel.RobotCoder.DataBase.dll
-
-Agebull.EntityModel.Designer.Entity.dll
-Agebull.EntityModel.Designer.Project.dll
-Agebull.EntityModel.Designer.Solution.dll
-Agebull.EntityModel.Designer.DataBase.dll
 
 *Agebull.EntityModel.RobotCoder.Upgrade.dll
 *Agebull.EntityModel.RobotCoder.Funds.dll
