@@ -325,7 +325,6 @@
     <Resource Include="Style\Images\tree_Project.png" />
     <Resource Include="Style\Images\tree_Solution.png" />
     <Resource Include="Style\Images\tree_Type.png" />
-    <Resource Include="Schema.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Coder\Agebull.EntityModel.RobotCoder.csproj">
