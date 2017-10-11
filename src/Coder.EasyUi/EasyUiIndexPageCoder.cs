@@ -29,13 +29,13 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             page = Object.create({Entity.Name}Page);
             page.tree = tree;
             page.formUrl = '/{Entity["File_Web_Form"]?.Replace('\\','/')}';
-            page.cmdPath = '/{Path.GetDirectoryName(Entity["File_Web_Action"])?.Replace('\\', '/')}/'; 
+            //page.cmdPath = '/{Path.GetDirectoryName(Entity["File_Web_Action"])?.Replace('\\', '/')}/'; 
             page.autoLoad = false;
             page.initialize();";
         private string gridInit => $@"
             page = Object.create({Entity.Name}Page);
             page.formUrl = '/{Entity["File_Web_Form"]?.Replace('\\', '/')}';
-            page.cmdPath = '/{Path.GetDirectoryName(Entity["File_Web_Action"])?.Replace('\\', '/')}/'; 
+            //page.cmdPath = '/{Path.GetDirectoryName(Entity["File_Web_Action"])?.Replace('\\', '/')}/'; 
             page.initialize();";
         public override string Code()
         {

@@ -177,7 +177,7 @@ namespace GBS.Fuctures.Manage.WCF
                     ? $"e:{entity.Parent.Abbreviation}:{entity.Abbreviation}:{{uid}}:{{{field.Name.ToLower()}}}"
                     : $"e:{entity.Parent.Abbreviation}:{entity.Abbreviation}:{{{field.Name.ToLower()}}}";
             }
-            var code = $@"using Agebull.EntityModel.Redis;
+            var code = $@"
 namespace {entity.Parent.NameSpace}
 {{
     /// <summary>

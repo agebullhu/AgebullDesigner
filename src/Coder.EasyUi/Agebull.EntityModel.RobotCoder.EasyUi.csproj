@@ -58,7 +58,9 @@
     <Compile Include="EasyUiItemCoder.cs" />
     <Compile Include="EasyUiMomentCoder.cs" />
     <Compile Include="EasyUiPageScriptCoder.cs" />
+    <Compile Include="EasyUiProjectBuilde.cs" />
     <Compile Include="ExportActionCoder.cs" />
+    <Compile Include="PageGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyEasyUiModel.cs" />
   </ItemGroup>

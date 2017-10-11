@@ -21,7 +21,6 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
         /// </summary>
         protected override void CreateBaCode(string path)
         {
-            return;
             if (Entity.IsInternal || Entity.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
             WebCode(path);
@@ -32,7 +31,6 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
         /// </summary>
         protected override void CreateExCode(string path)
         {
-            return;
             if (Entity.IsInternal || Entity.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
             IOHelper.CheckPath(path, "Page");

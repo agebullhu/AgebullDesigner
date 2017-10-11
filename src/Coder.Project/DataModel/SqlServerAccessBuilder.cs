@@ -17,7 +17,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         private string SqlCode()
         {
-            return string.Format(@"
+            return $@"
         #region 基本SQL语句
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         public override int TableId
         {{
-            get {{ return {6}.Table_{8}; }}
+            get {{ return {Project.DataBaseObjectName}.Table_{Entity.Name}; }}
         }}
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace Agebull.EntityModel.RobotCoder
         {{
             get
             {{
-                return @""{0}"";
+                return @""{Entity.ReadTableName}"";
             }}
         }}
 
@@ -46,7 +46,7 @@ namespace Agebull.EntityModel.RobotCoder
         {{
             get
             {{
-                return @""{1}"";
+                return @""{Entity.SaveTable}"";
             }}
         }}
 
@@ -57,7 +57,7 @@ namespace Agebull.EntityModel.RobotCoder
         {{
             get
             {{
-                return @""{2}"";
+                return @""{Entity.PrimaryColumn.PropertyName}"";
             }}
         }}
 
@@ -68,7 +68,7 @@ namespace Agebull.EntityModel.RobotCoder
         {{
             get
             {{
-                return @""{3}"";
+                return @""{FullLoadSql()}"";
             }}
         }}
 
@@ -81,7 +81,7 @@ namespace Agebull.EntityModel.RobotCoder
         {{
             get
             {{
-                return @""{4}"";
+                return @""{InsertSql()}"";
             }}
         }}
 
@@ -92,32 +92,23 @@ namespace Agebull.EntityModel.RobotCoder
         {{
             get
             {{
-                return @""{5}"";
+                return @""{UpdateSql()}"";
             }}
         }}
 
         /// <summary>
         /// 取得仅更新的SQL语句
         /// </summary>
-        internal string GetModifiedSqlCode({8} data)
+        internal string GetModifiedSqlCode({Entity.EntityName} data)
         {{
             if (data.__EntityStatusNull || !data.__EntityStatus.IsModified)
                 return "";"";
-            StringBuilder sql = new StringBuilder();{7}
+            StringBuilder sql = new StringBuilder();{UpdateSqlByModify()}
             return sql.ToString();
         }}
 
         #endregion
-"
-                , Entity.ReadTableName
-                , Entity.SaveTable
-                , Entity.PrimaryColumn.PropertyName
-                , FullLoadSql()
-                , InsertSql()
-                , UpdateSql()
-                , Project.DataBaseObjectName
-                , UpdateSqlByModify()
-                , Entity.EntityName);
+";
         }
 
         private string FieldCode()
@@ -162,25 +153,17 @@ namespace Agebull.EntityModel.RobotCoder
 
         private string CreateCode()
         {
-            var innerCode = string.Format(@"{0}{1}
+            var innerCode = $@"{SqlCode()}{FieldCode()}
 
         #region 方法实现
-{2}
-{3}
-{4}
-{5}
-{6}
-{7}
+{LoadEntityCode()}
+{GetDbTypeCode()}
+{CreateFullSqlParameter()}
+{UpdateCode()}
+{InsertCode()}
+{CreateScope()}
         #endregion
-"
-                , SqlCode()
-                , FieldCode()
-                , LoadEntityCode()
-                , GetDbTypeCode()
-                , CreateFullSqlParameter()
-                , UpdateCode()
-                , InsertCode()
-                , CreateScope());
+";
 
             return string.Format(@"
 using System;
@@ -216,7 +199,7 @@ namespace {0}.DataAccess
                 , NameSpace
                 , Entity.Description
                 , Entity.IsInternal ? "internal" : "public"
-                , Entity.EntityName
+                , Entity.Name
                 , null //ec.MakeSource()
                 , innerCode
                 , Project.DataBaseObjectName
@@ -230,7 +213,7 @@ namespace {0}.DataAccess
         /// </summary>
         protected override void CreateBaCode(string path)
         {
-            var file = Path.Combine(path, Entity.EntityName + "DataAccess.Designer.cs");
+            var file = Path.Combine(path, Entity.Name + "DataAccess.Designer.cs");
             if (Entity.IsClass)
             {
                 if (File.Exists(file))
@@ -248,7 +231,7 @@ namespace {0}.DataAccess
         /// </summary>
         protected override void CreateExCode(string path)
         {
-            var file = Path.Combine(path, Entity.EntityName + "DataAccess.cs");
+            var file = Path.Combine(path, Entity.Name + "DataAccess.cs");
             if (Entity.IsClass)
             {
                 if (File.Exists(file))
@@ -257,7 +240,7 @@ namespace {0}.DataAccess
                 }
                 return;
             }
-            var code = string.Format(@"
+            var code = ($@"
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -269,20 +252,17 @@ using System.Text;
 
 using Gboxt.Common.DataModel.SqlServer;
 
-namespace {0}.DataAccess
+namespace {NameSpace}.DataAccess
 {{
     /// <summary>
-    /// {1}
+    /// {Entity.Description}
     /// </summary>
-    sealed partial class {2}DataAccess : SqlServerTable<{2}>
+    sealed partial class {Entity.Name}DataAccess : SqlServerTable<{Entity.EntityName}>
     {{
 
     }}
 }}
-"
-                , NameSpace
-                , Entity.Description
-                , Entity.EntityName);
+");
             SaveCode(file, code);
         }
 
@@ -301,43 +281,38 @@ namespace {0}.DataAccess
         }
         private string TableObject()
         {
-            var name = Entity.EntityName.ToPluralism();
-            return string.Format(@"
+            var name = Entity.Name.ToPluralism();
+            return ($@"
 
         /// <summary>
-        /// {0}数据访问对象
+        /// {Entity.Description}数据访问对象
         /// </summary>
-        private {2}DataAccess _{1};
+        private {Entity.Name}DataAccess _{name.ToLWord()};
 
         /// <summary>
-        /// {0}数据访问对象
+        /// {Entity.Description}数据访问对象
         /// </summary>
-        {4} {2}DataAccess {3}
+        {(Entity.IsInternal ? "internal" : "public")} {Entity.Name}DataAccess {name}
         {{
             get
             {{
-                return this._{1} ?? ( this._{1} = new {2}DataAccess{{ DataBase = this}});
+                return this._{name.ToLWord()} ?? ( this._{name.ToLWord()} = new {Entity.Name}DataAccess{{ DataBase = this}});
             }}
-        }}"
-                , Entity.Description
-                , name.ToLWord()
-                , Entity.EntityName
-                , name
-                , Entity.IsInternal ? "internal" : "public");
+        }}");
         }
 
         private string TableSql()
         {
-            return string.Format(@"
+            return ($@"
 
         /// <summary>
-        /// {0}的结构语句
+        /// {Entity.Description}的结构语句
         /// </summary>
-        private TableSql _{1}Sql = new TableSql
+        private TableSql _{Entity.ReadTableName}Sql = new TableSql
         {{
-            TableName = ""{1}"",
-            PimaryKey = ""{2}""
-        }};", Entity.Description, Entity.ReadTableName, Entity.PrimaryColumn.PropertyName);
+            TableName = ""{Entity.ReadTableName}"",
+            PimaryKey = ""{Entity.PrimaryColumn.PropertyName}""
+        }};");
         }
 
         private string Fields()
@@ -392,8 +367,8 @@ namespace {0}.DataAccess
                 {
                     sql.Append(",");
                 }
-                sql.AppendFormat(@"
-            {{ ""{0}"" , ""{1}"" }}", field.PropertyName, field.ColumnName);
+                sql.Append($@"
+            {{ ""{field.PropertyName}"" , ""{field.ColumnName}"" }}");
                 names.Add(field.PropertyName);
 
                 var alias = field.GetAliasPropertys();
@@ -404,14 +379,14 @@ namespace {0}.DataAccess
                         continue;
                     }
                     names.Add(a);
-                    sql.AppendFormat(@",
-            {{ ""{0}"" , ""{1}"" }}", a, field.ColumnName);
+                    sql.Append($@",
+            {{ ""{a}"" , ""{field.ColumnName}"" }}");
                 }
             }
             if (!table.DbFields.Any(p => p.PropertyName.Equals("Id", StringComparison.OrdinalIgnoreCase)))
             {
-                sql.AppendFormat(@",
-            {{ ""Id"" , ""{0}"" }}", table.PrimaryColumn.ColumnName);
+                sql.Append($@",
+            {{ ""Id"" , ""{table.PrimaryColumn.ColumnName}"" }}");
             }
         }
 
@@ -443,7 +418,7 @@ namespace {0}.DataAccess
         private string UniqueCondition()
         {
             if (!Entity.DbFields.Any(p => p.UniqueIndex > 0))
-                return string.Format(@"[{0}] = @{1}", Entity.PrimaryColumn.ColumnName, Entity.PrimaryColumn.PropertyName);
+                return $@"[{Entity.PrimaryColumn.ColumnName}] = @{Entity.PrimaryColumn.PropertyName}";
 
             var code = new StringBuilder();
             var uniqueFields = Entity.DbFields.Where(p => p.UniqueIndex > 0).OrderBy(p => p.UniqueIndex).ToArray();
@@ -469,24 +444,20 @@ namespace {0}.DataAccess
                 return OnlyInsertSql();
             }
             var code = new StringBuilder();
-            code.AppendFormat(@"
+            code.Append($@"
 DECLARE @__myId INT;
-SELECT @__myId = [{0}] FROM [{1}] WHERE {2}", Entity.PrimaryColumn.ColumnName, Entity.SaveTable, UniqueCondition());
+SELECT @__myId = [{Entity.PrimaryColumn.ColumnName}] FROM [{Entity.SaveTable}] WHERE {UniqueCondition()}");
 
-            code.AppendFormat(@"
+            code.Append($@"
 IF @__myId IS NULL
-BEGIN{0}
-    SET @__myId = {3};
+BEGIN{OnlyInsertSql(true)}
+    SET @__myId = {(Entity.PrimaryColumn.IsIdentity ? "SCOPE_IDENTITY()" : Entity.PrimaryColumn.ColumnName)};
 END
 ELSE
 BEGIN
-    SET @{2}=@__myId;{1}
+    SET @{Entity.PrimaryColumn.PropertyName}=@__myId;{UpdateSql(true)}
 END
-SELECT @__myId;"
-                , OnlyInsertSql(true)
-                , UpdateSql(true)
-                , Entity.PrimaryColumn.PropertyName
-                , Entity.PrimaryColumn.IsIdentity ? "SCOPE_IDENTITY()" : Entity.PrimaryColumn.ColumnName);
+SELECT @__myId;");
             return code.ToString();
         }
 
@@ -494,9 +465,9 @@ SELECT @__myId;"
         {
             var sql = new StringBuilder();
             var columns = Entity.DbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
-            sql.AppendFormat(@"
-INSERT INTO [{0}]
-(", Entity.SaveTable);
+            sql.Append($@"
+INSERT INTO [{Entity.SaveTable}]
+(");
             var isFirst = true;
             foreach (var field in columns)
             {
@@ -508,8 +479,8 @@ INSERT INTO [{0}]
                 {
                     sql.Append(",");
                 }
-                sql.AppendFormat(@"
-    [{0}]", field.ColumnName);
+                sql.Append($@"
+    [{field.ColumnName}]");
             }
             sql.Append(@"
 )
@@ -526,8 +497,8 @@ VALUES
                 {
                     sql.Append(",");
                 }
-                sql.AppendFormat(@"
-    @{0}", field.PropertyName);
+                sql.Append($@"
+    @{field.PropertyName}");
             }
             sql.Append(@"
 );");
@@ -605,7 +576,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
 
         private string CreateScope()
         {
-            return string.Format(@"
+            return ($@"
 
         /// <summary>
         /// 构造一个缺省可用的数据库对象
@@ -613,23 +584,23 @@ UPDATE [{0}] SET", Entity.SaveTable);
         /// <returns></returns>
         protected override SqlServerDataBase CreateDefaultDataBase()
         {{
-            return {1}.Default ?? new {1}();
+            return {Project.DataBaseObjectName}.Default ?? new {Project.DataBaseObjectName}();
         }}
         
         /// <summary>
         /// 生成数据库访问范围
         /// </summary>
-        internal static SqlServerDataTableScope<{0}> CreateScope()
+        internal static SqlServerDataTableScope<{Entity.EntityName}> CreateScope()
         {{
-            var db = {1}.Default ?? new {1}();
-            return SqlServerDataTableScope<{0}>.CreateScope(db, db.{2});
-        }}", Entity.EntityName, Project.DataBaseObjectName, Entity.EntityName.ToPluralism());
+            var db = {Project.DataBaseObjectName}.Default ?? new {Project.DataBaseObjectName}();
+            return SqlServerDataTableScope<{Entity.EntityName}>.CreateScope(db, db.{Entity.Name.ToPluralism()});
+        }}");
         }
 
         private string CreateFullSqlParameter()
         {
             var code = new StringBuilder();
-            code.AppendFormat(@"
+            code.Append($@"
 
         /// <summary>
         /// 设置插入数据的命令
@@ -637,8 +608,8 @@ UPDATE [{0}] SET", Entity.SaveTable);
         /// <param name=""entity"">实体对象</param>
         /// <param name=""cmd"">命令</param>
         /// <returns>返回真说明要取主键</returns>
-        private void CreateFullSqlParameter({0} entity, SqlCommand cmd)
-        {{", Entity.EntityName);
+        private void CreateFullSqlParameter({Entity.EntityName} entity, SqlCommand cmd)
+        {{");
 
             var isFirstNull = true;
             foreach (var field in Entity.DbFields.OrderBy(p => p.Index))

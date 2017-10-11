@@ -37,7 +37,6 @@ using System.Text;
 using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
 using Gboxt.Common.DataModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
 
-using Agebull.EntityModel.Redis;
 
 using Gboxt.Common.DataModel;
 using Gboxt.Common.DataModel.BusinessLogic;

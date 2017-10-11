@@ -155,7 +155,13 @@ DROP TABLE `{entity.SaveTable}`;";
             var projectConfig = config as ProjectConfig;
             if (projectConfig != null)
                 return PageInsertSql(projectConfig);
-            return null;
+            var soluction = config as SolutionConfig;
+            if (soluction == null)
+                return null;
+            StringBuilder code = new StringBuilder();
+            foreach(var project in SolutionConfig.Current.Projects)
+                code.AppendLine(PageInsertSql(project));
+            return code.ToString();
         }
 
 
@@ -165,13 +171,13 @@ DROP TABLE `{entity.SaveTable}`;";
             sb.Append(
                 $@"
 /*{project.Caption}*/
-INSERT INTO `tb_sys_page_item` (`ItemType`,`Name`,`Caption`,`Folder`,`Url`,`Memo`,`ParentId`)
-VALUES(0,'{project.Caption}','{project.Caption}','Root',NULL,'{project.Description}',0);
+INSERT INTO `tb_sys_page_item` (`ItemType`,`Name`,`Caption`,`Url`,`Memo`,`ParentId`)
+VALUES(0,'{project.Caption}','{project.Caption}',NULL,'{project.Description}',0);
 set @pid = @@IDENTITY;");
             foreach (var entity in project.Entities.Where(p => !p.IsClass))
                 sb.Append($@"
-INSERT INTO `tb_sys_page_item` (`ItemType`,`Name`,`Caption`,`Folder`,`Url`,`Memo`,`ParentId`)
-VALUES(1,'{entity.Name}','{entity.Caption}','{entity.Parent.Caption}','/{entity.Parent.Name}/{entity.Name}/Index.aspx','{entity.Description}',@pid);");
+INSERT INTO `tb_sys_page_item` (`ItemType`,`Name`,`Caption`,`Url`,`Memo`,`ParentId`)
+VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Name}/Index.aspx','{entity.Description}',@pid);");
             return sb.ToString();
         }
         #endregion

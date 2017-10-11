@@ -184,12 +184,13 @@ namespace Agebull.EntityModel
         {
             _commands = new List<CommandItem>();
             var actions = CommandCoefficient.Coefficient(Source);
-            foreach (var action in actions)
-            {
-                action.Tag = Source;
-                action.Parameter = Source;
-                _commands.Add(action);
-            }
+            if (actions != null)
+                foreach (var action in actions)
+                {
+                    action.Tag = Source;
+                    action.Parameter = Source;
+                    _commands.Add(action);
+                }
             CreateCommandList(_commands);
             RaisePropertyChanged(nameof(Buttons));
             RaisePropertyChanged(nameof(Menus));

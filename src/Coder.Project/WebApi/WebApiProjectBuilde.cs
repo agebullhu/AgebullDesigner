@@ -7,14 +7,14 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
 {
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal sealed class WebApiProjectBuilde : ProjectBuilder, IAutoRegister
+    internal sealed class EntityModelBuilde : ProjectBuilder, IAutoRegister
     {
         /// <summary>
         /// 执行自动注册
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            RegistBuilder<WebApiProjectBuilde>();
+            RegistBuilder<EntityModelBuilde>();
         }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
         /// <param name="project"></param>
         public override void CreateProjectCode(ProjectConfig project)
         {
-            var dbPath = IOHelper.CheckPath(project.ModelPath, "DataBase");
+            var dbPath = IOHelper.CheckPath(project.ModelPath, "DataAccess", "DataBase");
             var db = new DataBaseBuilder
             {
                 Project = project
@@ -35,7 +35,7 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
         /// <summary>
         /// 名称
         /// </summary>
-        protected override string Name => "WebApi";
+        protected override string Name => "Entity & Model";
 
         /// <summary>
         /// 标题
@@ -68,7 +68,7 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
             {
                 CreateCode<SqlServerAccessBuilder>(project, schema, IOHelper.CheckPath(accessPath, "DataAccess"));
             }
-            CreateCode<BusinessBuilder>(project, schema, IOHelper.CheckPath(accessPath, "DataBusiness"));
+            CreateCode<BusinessBuilder>(project, schema, IOHelper.CheckPath(rootPath, "Business","EntityModel"));
         }
 
     }

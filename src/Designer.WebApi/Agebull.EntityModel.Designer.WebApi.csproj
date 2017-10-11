@@ -46,6 +46,7 @@
       <HintPath>..\..\..\..\..\Program Files (x86)\Microsoft SDKs\Expression\Blend\.NETFramework\v4.5\Libraries\Microsoft.Expression.Drawing.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows" />
@@ -66,6 +67,11 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Coder\ApiInterfaceBuilder.cs" />
+    <Compile Include="Coder\ApiBuilder.cs" />
+    <Compile Include="Coder\ApiControlerBuilder.cs" />
+    <Compile Include="Coder\ApiLogicalBuilder.cs" />
+    <Compile Include="Coder\EntityBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -93,6 +99,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Coder.Project\Agebull.EntityModel.RobotCoder.Project.csproj">
+      <Project>{2162E0EC-B6B5-443A-B3FC-C3890934727F}</Project>
+      <Name>Agebull.EntityModel.RobotCoder.Project</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Coder\Agebull.EntityModel.RobotCoder.csproj">
       <Project>{80d6ecf6-10de-4b9e-9cd7-9b597610c482}</Project>
       <Name>Agebull.EntityModel.RobotCoder</Name>
@@ -129,6 +139,11 @@
     <Folder Include="View\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>COPY $(TargetPath) "..\..\..\Program\AddIn\Bin\" /Y
+COPY $(ProjectDir)$(OutDir)$(TargetName).xml "..\..\..\Program\AddIn\Bin\" /Y
+COPY $(ProjectDir)$(OutDir)$(TargetName).pdb "..\..\..\Program\AddIn\Bin\" /Y</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

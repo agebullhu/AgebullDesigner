@@ -48,6 +48,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                 Project = schema.Parent,
             };
             pg.CreateBaseCode(project.PagePath);
+            pg.CreateExtendCode(project.PagePath);
         }
     }
 }

@@ -724,9 +724,7 @@ var {Entity.Name}Page = {{
     [
        [
             {{ styler: vlStyle, halign: 'center', align: 'center', field: 'IsSelected', checkbox: true}}
-            //, {{ styler: vlStyle, halign: 'center', align: 'center', sortable: true, field: '{
-                    Entity.PrimaryColumn.Name
-                }', title: 'ID'}}");
+            , {{ styler: vlStyle, halign: 'center', align: 'center', sortable: true, field: '{Entity.PrimaryColumn.Name}', title: 'ID'}}");
 
             if (Entity.Interfaces != null)
                 if (Entity.Interfaces.Contains("IAuditData"))
@@ -842,7 +840,7 @@ var {Entity.Name}Page = {{
                         break;
                     default:
                         validType.Add(field.InputType.Contains("combo")
-                            ? $"'selectNoZero[\"#{field.Name}\"]'"
+                            ? $@"'selectNoZero[\'#{field.Name}\']'"
                             : @"'noZero[0]'");
                         break;
                 }

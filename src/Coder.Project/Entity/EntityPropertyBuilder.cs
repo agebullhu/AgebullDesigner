@@ -126,7 +126,7 @@ namespace {NameSpace}
             var code = new StringBuilder();
             if (Entity.PrimaryColumn != null)
             {
-                if (Entity.PrimaryColumn.Name != "Id")
+                if (Entity.PrimaryColumn.Name != "Id" && Entity.Properties.All(p => p.Name != "Id"))
                 {
                     code.AppendFormat(@"
 
@@ -146,7 +146,7 @@ namespace {NameSpace}
             }}
         }}", Entity.PrimaryColumn.LastCsType, Entity.PrimaryColumn.Name);
                 }
-
+                if(Entity.PrimaryColumn.CsType == "int")
                 code.AppendFormat(@"
 
         /// <summary>
@@ -163,6 +163,22 @@ namespace {NameSpace}
                 this.{1} = {0}value;
             }}
         }}", Entity.PrimaryColumn.LastCsType == "int" ? string.Empty : "(int)", Entity.PrimaryColumn.Name);
+                else
+                    code.AppendFormat(@"
+
+        /// <summary>
+        /// Id键
+        /// </summary>
+        int IIdentityData.Id
+        {{
+            get
+            {{
+                throw new Exception(""不支持"");//BUG:ID不是INT类型
+            }}
+            set
+            {{
+            }}
+        }}");
                 if (Entity.PrimaryColumn.IsGlobalKey)
                 {
                     code.AppendFormat(@"

@@ -2,7 +2,6 @@ using System.ComponentModel.Composition;
 using Agebull.Common;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Designer;
-using Agebull.EntityModel.RobotCoder.AspNet;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -133,14 +132,7 @@ namespace Agebull.EntityModel.RobotCoder
                 builder.CreateBaseCode(businessPath);
                 builder.CreateExtendCode(businessPath);
             }
-
-            var pg = new PageGenerator
-            {
-                Entity = schema,
-                Project = project
-            };
-            pg.CreateExtendCode(IOHelper.CheckPath(Solution.IsWeb ? project.ModelPath : project.BusinessPath));
-            pg.CreateBaseCode(project.PagePath);
+            
         }
     }
 }

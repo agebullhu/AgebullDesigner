@@ -113,14 +113,15 @@ using System.Linq;
 using System.Text;
 
 using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.MySql;
+using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
+using Gboxt.Common.DataModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
 
 namespace {Project.NameSpace}.DataAccess
 {{
     /// <summary>
     /// 本地数据库
     /// </summary>
-    sealed partial class {Project.DataBaseObjectName} : MySqlDataBase
+    sealed partial class {Project.DataBaseObjectName} : {(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")}DataBase
     {{
         
         /// <summary>

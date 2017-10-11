@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
-using Agebull.EntityModel.RobotCoder.EasyUi;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -259,7 +258,42 @@ namespace Agebull.EntityModel.RobotCoder
 
         private string ConvertCode(PropertyConfig column, string arg)
         {
-            return EasyUiHelperCoder.InputConvert3(column, arg);
+            switch (column.CsType)
+            {
+                case "string":
+                case "String":
+                    return string.Format("{0} == null ? null : {0}.ToString()", arg);
+                case "long":
+                case "Int64":
+                    if (column.Nullable)
+                        return string.Format("{0} == null ? null : (long?)Convert.ToInt64({0})", arg);
+                    return $"Convert.ToInt64({arg})";
+                case "int":
+                case "Int32":
+                    if (column.Nullable)
+                        return string.Format("{0} == null ? null : (int?)Convert.ToInt32({0})", arg);
+                    return $"Convert.ToInt32({arg})";
+                case "decimal":
+                case "Decimal":
+                    if (column.Nullable)
+                        return string.Format("{0} == null ? null : (decimal?)Convert.ToDecimal({0})", arg);
+                    return $"Convert.ToDecimal({arg})";
+                case "float":
+                case "Float":
+                    if (column.Nullable)
+                        return string.Format("{0} == null ? null : (float?)Convert.ToSingle({0})", arg);
+                    return $"Convert.ToSingle({arg})";
+                case "bool":
+                case "Boolean":
+                    if (column.Nullable)
+                        return string.Format("{0} == null ? null : (bool?)Convert.ToBoolean({0})", arg);
+                    return $"Convert.ToBoolean({arg})";
+                case "DateTime":
+                    if (column.Nullable)
+                        return string.Format("{0} == null ? null : (DateTime?)Convert.ToDateTime({0})", arg);
+                    return $"Convert.ToDateTime({arg})";
+            }
+            return $"({column.LastCsType}){arg}";
         }
         #endregion
     }
