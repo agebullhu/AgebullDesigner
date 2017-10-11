@@ -34,29 +34,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Gboxt.Common.Exception">
-      <HintPath>..\..\Library\Extend\Gboxt.Common.Exception.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Extend">
-      <HintPath>..\..\Library\Extend\Gboxt.Common.Extend.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.IO">
-      <HintPath>..\..\Library\Extend\Gboxt.Common.IO.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Logging">
-      <HintPath>..\..\Library\Extend\Gboxt.Common.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Reflection">
-      <HintPath>..\..\Library\Extend\Gboxt.Common.Reflection.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.ScopeBase">
-      <HintPath>..\..\Library\Extend\Gboxt.Common.ScopeBase.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.SystemExtend">
-      <HintPath>..\..\Library\Extend\Gboxt.Common.SystemExtend.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Text">
-      <HintPath>..\..\Library\Extend\Gboxt.Common.Text.dll</HintPath>
+    <Reference Include="Agebull.Common.Extend">
+      <HintPath>..\Lib\Agebull.Common.Extend.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Drawing, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

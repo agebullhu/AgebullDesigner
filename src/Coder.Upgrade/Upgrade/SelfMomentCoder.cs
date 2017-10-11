@@ -151,7 +151,7 @@ namespace Agebull.EntityModel.RobotCoder.Upgrade
             var code = new StringBuilder();
             foreach (var field in pros.Where(p => p.CanRead))
             {
-                var display = field.GetAttribute<DisplayNameAttribute>();
+                var display = field.GetCustomAttribute<DisplayNameAttribute>();
                 var caption = display != null ? display.DisplayName : field.Name;
                 var model = field.CanWrite ? "TwoWay" : "OneWay";
                 if (field.PropertyType == typeof(bool))

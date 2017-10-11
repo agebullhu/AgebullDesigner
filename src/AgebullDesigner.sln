@@ -89,6 +89,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agebull.EntityModel.Designe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agebull.EntityModel.Designer.Config", "Designer.Config\Agebull.EntityModel.Designer.Config.csproj", "{87D7AC41-7225-477E-B854-A58A196EC4E7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EntityModel", "EntityModel", "{2F242AEA-6584-483E-AD22-09B8C809B02C}"
+	ProjectSection(SolutionItems) = preProject
+		Lib\Agebull.Common.Extend.dll = Lib\Agebull.Common.Extend.dll
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

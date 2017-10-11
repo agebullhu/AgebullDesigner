@@ -47,30 +47,8 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Gboxt.Common.Exception">
-      <HintPath>..\..\WeiYue\Lib\Gboxt.Common.Exception.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Extend">
-      <HintPath>..\..\WeiYue\Lib\Gboxt.Common.Extend.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.IO">
-      <HintPath>..\..\WeiYue\Lib\Gboxt.Common.IO.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Logging">
-      <HintPath>..\..\WeiYue\Lib\Gboxt.Common.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Reflection">
-      <HintPath>..\..\WeiYue\Lib\Gboxt.Common.Reflection.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.ScopeBase, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\WeiYue\Lib\Gboxt.Common.ScopeBase.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.SystemExtend">
-      <HintPath>..\..\WeiYue\Lib\Gboxt.Common.SystemExtend.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Text">
-      <HintPath>..\..\WeiYue\Lib\Gboxt.Common.Text.dll</HintPath>
+    <Reference Include="Agebull.Common.Extend">
+      <HintPath>..\Lib\Agebull.Common.Extend.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -432,8 +410,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /s /y "$(SolutionDir)packages\NLua.1.3.2.1\lib\native\*.*" "$(TargetDir)"
-xcopy /s /y "C:\Projects\AgebullDesigner\packages\NLua.1.3.2.1\lib\native\*.*" "$(TargetDir)"</PostBuildEvent>
+    <PostBuildEvent>xcopy /s /y "$(SolutionDir)packages\NLua.1.3.2.1\lib\native\*.*" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
