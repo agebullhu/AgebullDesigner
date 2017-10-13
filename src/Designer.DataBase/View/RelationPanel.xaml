@@ -9,7 +9,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
     <DockPanel Margin="0" Background="White">
-        <WrapPanel DockPanel.Dock="Bottom" DataContext="{Binding Model.Context.SelectProperty}">
+        <WrapPanel DockPanel.Dock="Bottom" DataContext="{Binding Context.SelectProperty}">
             <WrapPanel.Resources>
                 <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/DataTemplate/Form.xaml"/>
             </WrapPanel.Resources>
@@ -39,7 +39,7 @@
         <DataGrid AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
-                  DataContext="{Binding Model.Context}"
+                  DataContext="{Binding Context}"
                   ItemsSource="{Binding SelectItemChildrens}">
             <DataGrid.Columns>
                 <DataGridCheckBoxColumn Binding="{Binding Discard,Mode=TwoWay}" IsReadOnly="True"

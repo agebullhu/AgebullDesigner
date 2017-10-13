@@ -81,7 +81,7 @@
         <DataGrid AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
-                  DataContext="{Binding Model.Context}"
+                  DataContext="{Binding Context}"
                   ItemsSource="{Binding SelectItemChildrens}">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Index,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"

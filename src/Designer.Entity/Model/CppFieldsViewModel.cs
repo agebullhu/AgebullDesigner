@@ -4,6 +4,10 @@ namespace Agebull.EntityModel.Designer
 {
     internal class CppFieldsViewModel : ExtendViewModelBase<EntityDesignModel>
     {
+        public CppFieldsViewModel()
+        {
+            Catalog = "C++";
+        }
         /// <summary>
         /// 主面板
         /// </summary>
@@ -11,6 +15,10 @@ namespace Agebull.EntityModel.Designer
     }
     internal class FieldsViewModel : ExtendViewModelBase<EntityDesignModel>
     {
+        public FieldsViewModel()
+        {
+            Catalog = "基本";
+        }
         /// <summary>
         /// 主面板
         /// </summary>

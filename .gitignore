@@ -1,0 +1,11 @@
+/src/packages
+/src/AssemblyAnalyzer/obj
+/src/AssemblyAnalyzer/bin
+/src/.vs
+obj
+bin
+/src/Program/Soluctions
+/src/Program/AddIn/Runtime
+.vs
+packages
+/demo

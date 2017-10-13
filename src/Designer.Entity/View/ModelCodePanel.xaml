@@ -9,7 +9,7 @@
              d:DesignHeight="900"
              d:DesignWidth="1100">
     <DockPanel>
-        <WrapPanel DataContext="{Binding Model.Context.SelectEntity}" DockPanel.Dock="Top">
+        <WrapPanel DataContext="{Binding Context.SelectEntity}" DockPanel.Dock="Top">
             <WrapPanel.Resources>
                 <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/DataTemplate/Form.xaml"/>
             </WrapPanel.Resources>
@@ -42,7 +42,7 @@
                 <TextBox Style="{StaticResource MidTextBox}" Text="{Binding Interfaces,Mode=TwoWay}" />
             </StackPanel>
         </WrapPanel>
-        <TabControl DataContext="{Binding Model.Context.SelectProperty}" DockPanel.Dock="Bottom" Height="262">
+        <TabControl DataContext="{Binding Context.SelectProperty}" DockPanel.Dock="Bottom" Height="262">
             <TabControl.Resources>
                 <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/DataTemplate/Form.xaml"/>
             </TabControl.Resources>
@@ -143,7 +143,7 @@
         <DataGrid AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
-                  DataContext="{Binding Model.Context}"
+                  DataContext="{Binding Context}"
                   ItemsSource="{Binding SelectItemChildrens}">
             <DataGrid.Columns>
                 <DataGridCheckBoxColumn Binding="{Binding Discard,Mode=TwoWay}" Header="废弃" />
