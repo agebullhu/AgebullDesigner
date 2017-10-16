@@ -197,7 +197,7 @@ VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Name}
         public static string CreateTableCode(EntityConfig entity, bool signle = false)
         {
             if (entity.IsClass)
-                return null;
+                return "这个设置为普通类，无法生成SQL";
             var code = new StringBuilder();
             if (entity.PrimaryColumn != null)
             {

@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MySql\SqlMomentCoder.cs" />
+    <Compile Include="SqlServer\SqlMomentCoder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Coder\Agebull.EntityModel.RobotCoder.csproj">

@@ -3,6 +3,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.SqlServer;
 using Agebull.EntityModel.Designer;
 using static System.String;
 
@@ -25,7 +26,6 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.Sqlerver
             MomentCoder.RegisteCoder("Sqlerver", "生成表(SQL)", cfg => RunByEntity(cfg, CreateTable));
             MomentCoder.RegisteCoder("Sqlerver", "插入表字段(SQL)", cfg => RunByEntity(cfg, AddColumnCode));
             MomentCoder.RegisteCoder("Sqlerver", "修改表字段(SQL)", cfg => Run(cfg, ChangeColumnCode));
-            MomentCoder.RegisteCoder("Sqlerver", "修改BOOL字段(SQL)", cfg => Run(cfg, ChangeBoolColumnCode));
             MomentCoder.RegisteCoder("Sqlerver", "生成视图(SQL)", cfg => Run(cfg, CreateView));
             MomentCoder.RegisteCoder("Sqlerver", "插入页面表(SQL)", PageInsertSql);
             MomentCoder.RegisteCoder("Sqlerver", "删除视图(SQL)", cfg => Run(cfg, DropView));
@@ -159,7 +159,7 @@ DROP TABLE [{entity.SaveTable}];";
             if (soluction == null)
                 return null;
             StringBuilder code = new StringBuilder();
-            foreach(var project in SolutionConfig.Current.Projects)
+            foreach (var project in SolutionConfig.Current.Projects)
                 code.AppendLine(PageInsertSql(project));
             return code.ToString();
         }
@@ -171,12 +171,12 @@ DROP TABLE [{entity.SaveTable}];";
             sb.Append(
                 $@"
 /*{project.Caption}*/
-INSERT INTO [tb_sys_page_item[ ([ItemType[,[Name[,[Caption[,[Url[,[Memo[,[ParentId[)
+INSERT INTO [tb_sys_page_item] ([ItemType],[Name],[Caption],[Url],[Memo],[ParentId])
 VALUES(0,'{project.Caption}','{project.Caption}',NULL,'{project.Description}',0);
 set @pid = @@IDENTITY;");
             foreach (var entity in project.Entities.Where(p => !p.IsClass))
                 sb.Append($@"
-INSERT INTO [tb_sys_page_item[ ([ItemType[,[Name[,[Caption[,[Url[,[Memo[,[ParentId[)
+INSERT INTO [tb_sys_page_item[ ([ItemType],[Name],[Caption],[Url],[Memo],[ParentId])
 VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Name}/Index.aspx','{entity.Description}',@pid);");
             return sb.ToString();
         }
@@ -184,52 +184,55 @@ VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Name}
 
         #region 表结构
 
-        private static string ColumnDefault(PropertyConfig col)
-        {
-            if (col.Initialization == null)
-                return null;
-            if (col.CsType == "string")
-                return $"DEFAULT '{col.Initialization}'";
-            return $"DEFAULT {col.Initialization}";
-        }
-
 
         public static string CreateTableCode(EntityConfig entity, bool signle = false)
         {
             if (entity.IsClass)
-                return null;
+                return "这个设置为普通类，无法生成SQL";
             var code = new StringBuilder();
-            if (entity.PrimaryColumn != null)
-            {
-                code.AppendFormat(@"
-/*{1}*/
-CREATE TABLE [{0}]("
-                    , entity.SaveTable
-                    , entity.Caption);
-
-                code.Append($@"
-    [{entity.PrimaryColumn.ColumnName}] {DataBaseHelper.ColumnType(entity.PrimaryColumn)} NOT NULL{
-                        (entity.PrimaryColumn.IsIdentity ? " AUTO_INCREMENT" : null)
-                    } COMMENT '{entity.PrimaryColumn.Caption}'");
-            }
+            code.Append($@"
+/*{entity.Caption}*/
+CREATE TABLE [{entity.SaveTable}](");
+            bool isFirst = true;
             foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
             {
-                if (col.IsPrimaryKey)
-                    continue;
                 code.Append($@"
-   ,{FieldDefault(col)}");
-            }
-            if (entity.PrimaryColumn != null)
-                code.Append($@"
-    ,PRIMARY KEY ([{entity.PrimaryColumn.ColumnName}])");
-            //if (entity.PrimaryColumn.IsIdentity)
+   {(isFirst ? "" : ",")}{FieldDefault(col)}");
 
-            code.Append($@"
-)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '{entity.Caption}'");
-            //if (entity.PrimaryColumn.IsIdentity)
-            //    code.Append(@" AUTO_INCREMENT=1");
-            code.Append(@";");
+                isFirst = false;
+            }
+            code.Append(@"
+);");
+            MemCode(entity, code);
             return code.ToString();
+        }
+
+        private static void MemCode(EntityConfig entity, StringBuilder code)
+        {
+            code.Append($@"
+GO
+---------------------------主键-------------------------------
+ALTER TABLE dbo.{entity.SaveTableName} ADD CONSTRAINT
+	PK_{entity.SaveTableName} PRIMARY KEY CLUSTERED 
+	(
+	    {entity.PrimaryField}
+	) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY];
+GO
+---------------------------注释-------------------------------
+DECLARE @v sql_variant 
+SET @v = N'{entity.Caption?.Replace('\'', '‘')}:{entity.Description?.Replace('\'', '‘')}'
+EXECUTE sp_addextendedproperty N'MS_Description', @v, N'SCHEMA', N'dbo', N'TABLE', N'{
+                    entity.SaveTableName
+                }', NULL, NULL;");
+
+            foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
+            {
+                code.Append($@"
+SET @v = N'{col.Caption?.Replace('\'', '‘')}:{col.Description?.Replace('\'', '‘')}'
+EXECUTE sp_addextendedproperty N'MS_Description', @v, N'SCHEMA', N'dbo', N'TABLE', N'Table_1', N'COLUMN', N'{
+                        col.ColumnName
+                    }';");
+            }
         }
 
         private static string AddColumnCode(EntityConfig entity)
@@ -248,53 +251,14 @@ ALTER TABLE [{entity.SaveTable}]");
                 else
                     code.Append(',');
                 code.Append($@"
-    ADD COLUMN {FieldDefault(col)}");
+    ADD {FieldDefault(col)}");
             }
-            code.Append(@";");
+            code.AppendLine(@";");
+
+            MemCode(entity, code);
             return code.ToString();
         }
-
-
-        //static string ChangeColumnCode(ConfigBase config)
-        //{
-        //    return ChangeColumnCode(config as EntityConfig);
-        //}
-
-        private string ChangeBoolColumnCode(EntityConfig entity)
-        {
-            if (entity == null || entity.IsClass)
-                return null;
-            var code = new StringBuilder();
-            foreach (var ent in SolutionConfig.Current.Entities)
-                ChangeBoolColumnCode(code, ent);
-            return code.ToString();
-        }
-
-        private void ChangeBoolColumnCode(StringBuilder code, EntityConfig entity)
-        {
-            if (entity == null || entity.IsClass)
-                return;
-            var fields = entity.DbFields.Where(p => !p.IsCompute && p.CsType == "bool").ToArray();
-            if (fields.Length == 0)
-                return;
-            code.Append($@"
-/*{entity.Caption}*/
-ALTER TABLE [{entity.SaveTable}]");
-            bool isFirst = true;
-            foreach (PropertyConfig col in fields)
-            {
-                col.DbType = "BOOL";
-                col.Initialization = "0";
-                if (isFirst)
-                    isFirst = false;
-                else
-                    code.Append(',');
-                code.Append($@"
-    CHANGE COLUMN [{col.ColumnName}] {FieldDefault(col)}");
-            }
-            code.Append(@";");
-        }
-
+        
         private string ChangeColumnCode(EntityConfig entity)
         {
             if (entity == null || entity.IsClass)
@@ -306,28 +270,28 @@ ALTER TABLE [{entity.SaveTable}]");
             bool isFirst = true;
             foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
             {
-                if (col.IsPrimaryKey)
-                    continue;
                 if (isFirst)
                     isFirst = false;
                 else
                     code.Append(',');
                 code.Append($@"
-    CHANGE COLUMN [{col.ColumnName}] {FieldDefault(col)}");
+    ALTER COLUMN [{col.ColumnName}] {FieldDefault(col)}");
             }
             code.Append(@";");
+            MemCode(entity, code);
             return code.ToString();
         }
 
         private static string FieldDefault(PropertyConfig col)
         {
-            return $"[{col.ColumnName}] {DataBaseHelper.ColumnType(col)}{NullKeyWord(col)} {ColumnDefault(col)} COMMENT '{col.Caption}'";
+            var def = (col.Initialization == null)
+                ? null
+                : col.CsType == "string" ? $"DEFAULT '{col.Initialization}'" : $"DEFAULT {col.Initialization}";
+            var nulldef = col.CsType == "string" || col.DbNullable ? " NULL" : " NOT NULL";
+            var identity = (col.IsIdentity ? " IDENTITY(1,1)" : null);
+            return $"[{col.ColumnName}] {SqlServerHelper.ColumnType(col)}{identity}{nulldef} {def} -- '{col.Caption}'";
         }
 
-        private static string NullKeyWord(PropertyConfig col)
-        {
-            return col.CsType == "string" || col.DbNullable ? " NULL" : " NOT NULL";
-        }
         #endregion
 
         #region 数据读取

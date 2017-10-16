@@ -433,20 +433,16 @@ namespace Agebull.EntityModel.Config.SqlServer
                     return $"DECIMAL({column.Datalen},{column.Scale})";
                 case "binary":
                 case "varbinary":
-                    if (column.IsBlob)
-                        return "LONGBLOB";
-                    if (column.Datalen <= 0 || column.Datalen >= 4000)
-                        return "BLOB";
+                    if (column.IsBlob || column.Datalen <= 0 || column.Datalen >= 4000)
+                        return "VARBINARY(max)";
                     else
                         return $"{column.DbType.ToUpper()}({column.Datalen})";
                 case "char":
                 case "nchar":
                 case "varchar":
                 case "nvarchar":
-                    if (column.IsBlob)
-                        return "LONGTEXT";
-                    if (column.Datalen < 0 || column.Datalen > 4000)
-                        return "TEXT";
+                    if (column.IsBlob || column.Datalen < 0 || column.Datalen > 4000)
+                        return "VARCHAR(max)";
                     return $"{column.DbType.ToUpper()}({column.Datalen})";
                 default:
                     return column.DbType.ToUpper();
