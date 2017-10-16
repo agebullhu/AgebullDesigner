@@ -79,6 +79,105 @@ namespace Agebull.EntityModel.Designer
         #endregion
 
         #region ¿ì½Ý±éÀú
+        #region Config
+
+
+        private void DoAction(Action<ConfigBase> action, ConfigBase config)
+        {
+            if (config != null)
+                action(config);
+        }
+        
+        private void Foreach(Action<ConfigBase> action, EntityConfig entity)
+        {
+            DoAction(action, entity);
+            foreach (var property in entity.Properties)
+                DoAction(action, property);
+        }
+        private void Foreach(Action<ConfigBase> action, ProjectConfig project)
+        {
+            DoAction(action, project);
+            foreach (var entity in project.Entities)
+                Foreach(action, entity);
+        }
+        private void Foreach(Action<ConfigBase> action, SolutionConfig solution)
+        {
+            DoAction(action, solution);
+            foreach (var project in solution.Projects)
+                Foreach(action, project);
+        }
+
+        protected void Foreach(Action<ConfigBase> action)
+        {
+            var property = Context.SelectConfig as PropertyConfig;
+            if (property != null)
+            {
+                Foreach(action, property);
+                return;
+            }
+            var entity = Context.SelectConfig as EntityConfig;
+            if (entity != null)
+            {
+                Foreach(action, entity);
+                return;
+            }
+            var project = Context.SelectConfig as ProjectConfig;
+            if (project != null)
+            {
+                Foreach(action, project);
+                return;
+            }
+            Foreach(action, Context.Solution);
+        }
+
+        private void DoAction(Func<ConfigBase, bool> condition, Action<ConfigBase> action, ConfigBase config)
+        {
+            if (config != null && condition(config))
+                action(config);
+        }
+        private void Foreach(Func<ConfigBase, bool> condition, Action<ConfigBase> action, EntityConfig entity)
+        {
+            DoAction(condition, action, entity);
+            foreach (var property in entity.Properties)
+                DoAction(condition, action, property);
+        }
+        private void Foreach(Func<ConfigBase, bool> condition, Action<ConfigBase> action, ProjectConfig project)
+        {
+            DoAction(condition, action, project);
+            foreach (var entity in project.Entities)
+                Foreach(condition, action, entity);
+        }
+        private void Foreach(Func<ConfigBase, bool> condition, Action<ConfigBase> action, SolutionConfig solution)
+        {
+            DoAction(condition, action, solution);
+            foreach (var project in solution.Projects)
+                Foreach(condition, action, project);
+        }
+
+        protected void Foreach(Func<ConfigBase, bool> condition, Action<ConfigBase> action)
+        {
+            var property = Context.SelectConfig as PropertyConfig;
+            if (property != null)
+            {
+                Foreach(condition, action, property);
+                return;
+            }
+            var entity = Context.SelectConfig as EntityConfig;
+            if (entity != null)
+            {
+                Foreach(condition, action, entity);
+                return;
+            }
+            var project = Context.SelectConfig as ProjectConfig;
+            if (project != null)
+            {
+                Foreach(condition, action, project);
+                return;
+            }
+
+            Foreach(condition, action, Context.Solution);
+        }
+        #endregion
 
         #region Property
 

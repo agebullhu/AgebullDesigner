@@ -74,7 +74,7 @@
     <Compile Include="Cpp\EsPublishCoder.cs" />
     <Compile Include="Cpp\ProjectBuilde.cs" />
     <Compile Include="DataModel\DataBaseBuilder.cs" />
-    <Compile Include="Project\EntityBuilder.cs" />
+    <Compile Include="Entity\EntityBuilder.cs" />
     <Compile Include="DataModel\EntityComboBuilder.cs" />
     <Compile Include="Entity\EntityDictionaryBuilder.cs" />
     <Compile Include="Entity\EntityIndexBuilder.cs" />

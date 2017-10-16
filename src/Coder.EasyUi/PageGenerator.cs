@@ -40,8 +40,7 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
 
         private void WebCode(string path)
         {
-            var folder = ConfigPath(path, "File_Web_Script", $"{Entity.Parent.Name}\\{Entity.Name}");
-            var file = $"{folder}\\Index.aspx";
+            var file = ConfigPath(Entity, "File_Web_Index", path, $"{Entity.Parent.Name}\\{Entity.Name}", "Index.aspx");
             {
                 var coder = new EasyUiIndexPageCoder
                 {
@@ -50,15 +49,15 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
                 };
                 WriteFile(file, coder.Code());
             }
-            file = $"{folder}\\Action.aspx";
+            file = ConfigPath(Entity, "File_Web_Action", path, $"{Entity.Parent.Name}\\{Entity.Name}", "Action.aspx");
             {
                 WriteFile(file, ActionAspxCode());
             }
-            file = $"{folder}\\Export.aspx";
+            file = ConfigPath(Entity, "File_Web_Export", path, $"{Entity.Parent.Name}\\{Entity.Name}", "Export.aspx");
             {
                 WriteFile(file, ExportAspxCode());
             }
-            file = ConfigPath(path, "File_Web_Form", $"{Entity.Parent.Name}\\{Entity.Name}\\Form.htm");
+            file = ConfigPath(Entity, "File_Web_Form", path, $"{Entity.Parent.Name}\\{Entity.Name}", "Form.htm");
             {
                 var coder = new EasyUiFormCoder
                 {
@@ -67,7 +66,7 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
                 };
                 WriteFile(file, coder.Code());
             }
-            file = ConfigPath(path, "File_Web_Item", $"{Entity.Parent.Name}\\{Entity.Name}\\Item.aspx");
+            file = ConfigPath(Entity, "File_Web_Item", path, $"{Entity.Parent.Name}\\{Entity.Name}", "Item.aspx");
             {
                 var coder = new EasyUiItemCoder
                 {
@@ -79,7 +78,7 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
 
             if (Entity.ListDetails)
             {
-                file = ConfigPath(path, "File_Web_Details", $"{Entity.Parent.Name}\\{Entity.Name}\\Details.aspx");
+                file = ConfigPath(Entity, "File_Web_Details", path, $"{Entity.Parent.Name}\\{Entity.Name}", "Details.aspx");
                 {
                     var coder = new EasyUiListDetailsPageCoder
                     {
@@ -90,18 +89,17 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
                 }
             }
             {
-                if (folder.Contains(".js"))
-                    folder = Path.GetDirectoryName(folder);
-                // ReSharper disable once PossibleNullReferenceException
-                Entity["File_Web_Script"] = folder.Replace(path, "").Trim('\\');
                 var coder = new EasyUiPageScriptCoder
                 {
                     Entity = Entity,
                     Project = Project
                 };
-                WriteFile($"{folder}\\script.js", coder.Code());
-                WriteFile($"{folder}\\form.js", coder.FormJsCode());
-                WriteFile($"{folder}\\page.js", coder.PageJsCode());
+                file = ConfigPath(Entity, "File_Web_Script_js", path, $"{Entity.Parent.Name}\\{Entity.Name}", "script.js");
+                WriteFile(file, coder.Code());
+                file = ConfigPath(Entity, "File_Web_Form_js", path, $"{Entity.Parent.Name}\\{Entity.Name}", "form.js");
+                WriteFile(file, coder.FormJsCode());
+                file = ConfigPath(Entity, "File_Web_Page_js", path, $"{Entity.Parent.Name}\\{Entity.Name}", "page.js");
+                WriteFile(file, coder.PageJsCode());
             }
         }
 
@@ -111,15 +109,15 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
 
         private void ActionCsCode(string path)
         {
-            var file = Entity.TryGetExtendConfig("File_Model_Action", $"Page\\{Entity.Name}\\{Entity.Name}PageAction");
+            var file = ConfigPath(Entity, "File_Web_Action_cs", path, $"Page\\{Entity.Parent.Name}\\{Entity.Name}", "PageAction");
             var coder = new ApiActionCoder
             {
                 Entity = Entity,
                 Project = Project
             };
-            IOHelper.CheckPaths(path, Path.GetDirectoryName(file));
-            WriteFile(SetPath(path, file, ".cs"), coder.Code());
-            WriteFile(SetPath(path, file, ".Designer.cs"), coder.BaseCode());
+            IOHelper.CheckPaths(Path.GetDirectoryName(file));
+            WriteFile(file + ".cs", coder.Code());
+            WriteFile(file + ".Designer.cs", coder.BaseCode());
         }
 
         private string ActionAspxCode()
@@ -133,14 +131,13 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
 
         private void ExportCsCode(string path)
         {
-            var file = Entity["File_Model_Action"];
+            var file = ConfigPath(Entity, "File_Web_Export_cs", path, $"Page\\{Entity.Parent.Name}\\{Entity.Name}", "Export.cs");
             var coder = new ExportActionCoder
             {
                 Entity = Entity,
                 Project = Project
             };
-            path =IOHelper.CheckPaths(path, Path.GetDirectoryName(file));
-            WriteFile(Path.Combine(path, "Export.cs"), coder.Code());
+            WriteFile(file, coder.Code());
         }
 
         private string ExportAspxCode()

@@ -67,6 +67,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command\EnumModel.cs" />
     <Compile Include="Model\NewConfigModel.cs" />
     <Compile Include="Model\NewConfigViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -139,7 +140,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Business\" />
-    <Folder Include="Command\" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="DataTemplate\ConfigDataTemplate.xaml">

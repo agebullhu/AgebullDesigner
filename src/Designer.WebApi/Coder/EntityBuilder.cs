@@ -33,8 +33,6 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// </summary>
         protected override void CreateBaCode(string path)
         {
-            string file = Path.Combine(path, Entity.Name + ".Designer.cs");
-
             string code = $@"using System;
 using System.IO;
 using System.Collections.Generic;
@@ -64,7 +62,8 @@ namespace {NameSpace}.WebApi
         {ValidateCode()}
     }}
 }}";
-            SaveCode(file, code);
+            var file = ConfigPath(Project, FileSaveConfigName, path, "Model", Entity.Name);
+            SaveCode(file + ".Designer.cs", code);
         }
 
         /// <summary>
@@ -92,7 +91,8 @@ namespace {NameSpace}.WebApi
         partial void ValidateEx(ValidateResult result);*/
     }}
 }}";
-            SaveCode(Path.Combine(path, Entity.Name + ".cs"), code);
+            var file = ConfigPath(Project, FileSaveConfigName, path, "Model", Entity.Name);
+            SaveCode(file + ".cs", code);
         }
 
 

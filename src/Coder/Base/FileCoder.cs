@@ -76,13 +76,41 @@ namespace Agebull.EntityModel.RobotCoder
         #endregion
 
         #region 保存代码
-
-        protected string SetPath(string path, string name, string ext = "")
+        
+        /// <summary>
+        /// 取得扩展配置的路径
+        /// </summary>
+        /// <param name="config">对应配置</param>
+        /// <param name="key">保存键名称</param>
+        /// <param name="path">根路径</param>
+        /// <param name="defDir">默认目录</param>
+        /// <param name="defName">默认名称（扩展名随意）</param>
+        /// <returns></returns>
+        protected static string ConfigPath(ConfigBase config, string key, string path, string defDir, string defName)
         {
-            name += ext;
-            IOHelper.CheckPaths(path, Path.GetDirectoryName(name));
-            return Path.Combine(path, name);
+            key = key.ToLower();
+            var old = config.TryGetExtendConfig(key, null);
+            string full;
+            if (old == null)
+            {
+                var p2 = Path.Combine(defDir, defName);
+                config.ExtendConfig.Add(new ConfigItem { Name = key, Value = p2 });
+
+                full = Path.Combine(path, defDir, defName);
+            }
+            else
+            {
+                full = Path.Combine(path, old);
+            }
+
+            string file = Path.GetFileName(full);
+            full = IOHelper.CheckPaths(Path.GetDirectoryName(full));
+            return Path.Combine(full, file);
         }
+        #endregion
+
+        #region 保存代码
+
 
         /// <summary>
         /// 保存代码
@@ -120,7 +148,7 @@ namespace Agebull.EntityModel.RobotCoder
                 using (var reader = File.OpenText(file))
                 {
                     var mark = reader.ReadLine();
-                    if (string.IsNullOrWhiteSpace(mark) || !mark.Contains("此标记表明此文件可被设计器更新"))
+                    if (String.IsNullOrWhiteSpace(mark) || !mark.Contains("此标记表明此文件可被设计器更新"))
                         return;
                     reader.Close();
                 }
@@ -157,7 +185,7 @@ namespace Agebull.EntityModel.RobotCoder
                 {
                     old = old.Split(new[] {'\n'}, 2)[1].Trim();
                 }
-                if (string.Equals(code, old))
+                if (String.Equals(code, old))
                     return;
             }
             else

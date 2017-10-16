@@ -37,18 +37,17 @@ namespace Agebull.EntityModel.Designer.WebApi
         public override void CreateProjectCode(ProjectConfig project)
         {
             Message = project.Caption;
-            var root = IOHelper.CheckPath(Path.GetDirectoryName(project.ModelPath), "Api");
+            var root = IOHelper.CheckPath(project.ModelPath,"src", "Api");
             {
-                var path = IOHelper.CheckPath(root, "Contract", "Interface");
+                var path = IOHelper.CheckPath(root, "Contract");
                 var builder = new ApiInterfaceBuilder
                 {
-                    Project = project,
-                    
+                    Project = project
                 };
                 builder.CreateExtendCode(path);
             }
             {
-                var path = IOHelper.CheckPath(root, "Contract", "Proxy");
+                var path = IOHelper.CheckPath(root, "Contract");
                 var builder = new ApiProxyBuilder
                 {
                     Project = project
@@ -56,7 +55,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 builder.CreateExtendCode(path);
             }
             {
-                var path = IOHelper.CheckPath(root, "WebApi", "Controllers");
+                var path = IOHelper.CheckPath(root, "WebApi");
                 var builder = new ApiControlerBuilder
                 {
                     Project = project
@@ -72,7 +71,15 @@ namespace Agebull.EntityModel.Designer.WebApi
                 builder.CreateExtendCode(path);
             }
             {
-                var path = IOHelper.CheckPath(Path.GetDirectoryName(Path.GetDirectoryName(root)), "doc");
+                var path = IOHelper.CheckPath(root, "WebApi");
+                var builder = new ApiControlerBuilder
+                {
+                    Project = project
+                };
+                builder.CreateExtendCode(path);
+            }
+            {
+                var path = IOHelper.CheckPath(project.ModelPath, "doc");
                 var builder = new ApiMarkBuilder
                 {
                     Project = project
@@ -89,9 +96,9 @@ namespace Agebull.EntityModel.Designer.WebApi
         public override void CreateEntityCode(ProjectConfig project, EntityConfig schema)
         {
             Message = schema.Caption;
-            var root = IOHelper.CheckPath(Path.GetDirectoryName(project.ModelPath), "Api");
+            var root = IOHelper.CheckPath(Path.GetDirectoryName(project.ModelPath),"src", "Api");
             {
-                var path = IOHelper.CheckPath(root, "Contract", "Entity");
+                var path = IOHelper.CheckPath(root, "Contract");
                 var builder = new EntityBuilder
                 {
                     Project = project,
@@ -106,11 +113,11 @@ namespace Agebull.EntityModel.Designer.WebApi
                     Project = project,
                     Entity = schema
                 };
-                var path = IOHelper.CheckPath(root, "Contract", "Interface");
+                var path = IOHelper.CheckPath(root, "Contract");
                 builder.CreateBaseCode(path);
             }
             {
-                var path = IOHelper.CheckPath(root, "Contract", "Proxy");
+                var path = IOHelper.CheckPath(root, "Contract");
                 var builder = new ApiProxyBuilder
                 {
                     Project = project,
@@ -129,7 +136,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 builder.CreateBaseCode(path);
             }
             {
-                var path = IOHelper.CheckPath(root, "WebApi", "Controllers");
+                var path = IOHelper.CheckPath(root, "WebApi");
                 var builder = new ApiControlerBuilder
                 {
                     Project = project,
@@ -138,6 +145,5 @@ namespace Agebull.EntityModel.Designer.WebApi
                 builder.CreateBaseCode(path);
             }
         }
-        
     }
 }

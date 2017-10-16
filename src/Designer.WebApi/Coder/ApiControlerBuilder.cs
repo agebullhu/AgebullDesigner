@@ -16,7 +16,7 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// <summary>
         /// 名称
         /// </summary>
-        protected override string FileSaveConfigName => "File_API_Controller_cs";
+        protected override string FileSaveConfigName => "File_Api_Controller_cs";
 
         /// <summary>
         /// 是否客户端代码
@@ -28,7 +28,6 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// </summary>
         protected override void CreateBaCode(string path)
         {
-            string file = Path.Combine(path, Entity.Name + "Controller.cs");
 
             string code = $@"using System;
 using System.Web.Http;
@@ -101,6 +100,7 @@ namespace {NameSpace}.WebApi.EntityApi
     }}
 }}
 ";
+            var file = ConfigPath(Entity, FileSaveConfigName, path, "Controllers", $"{Entity.Name}Controller.cs");
             SaveCode(file, code);
         }
 
@@ -110,9 +110,6 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         protected override void CreateExCode(string path)
         {
-            if (Project.ApiItems.Count == 0)
-                return;
-            string file = Path.Combine(path, Project.Name + "Controller.cs");
             StringBuilder code = new StringBuilder();
             code.Append($@"using System;
 using System.Web.Http;
@@ -179,6 +176,7 @@ namespace {NameSpace}.WebApi
     }
 }
 ");
+            var file = ConfigPath(Project, FileSaveConfigName, path, "Controllers", $"{Project.Name}_Controller.cs");
             SaveCode(file, code.ToString());
         }
     }

@@ -13,7 +13,7 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// 名称
         /// </summary>
         protected override string FileSaveConfigName => "File_Api_Proxy_cs";
-        
+
         /// <summary>
         ///     生成基础代码
         /// </summary>
@@ -79,7 +79,7 @@ namespace {NameSpace}.WebApi.EntityApi
 
     }}
 }}";
-            var file = ConfigPath(path, FileSaveConfigName, $"{Entity.Name}EntityApi", ".cs");
+            var file = ConfigPath(Entity, FileSaveConfigName, path, "Proxy", $"{Entity.Name}EntityApi.cs");
             SaveCode(file, code);
         }
 
@@ -138,7 +138,7 @@ namespace {NameSpace}.WebApi
             code.Append(@"
     }
 }");
-            var file = ConfigPath(path, "ProjectApiProxy", $"{Project.Name}ApiProxy", ".cs");
+            var file = ConfigPath(Project, FileSaveConfigName, path, "Proxy", $"{Project.Name}ApiProxy.cs");
             SaveCode(file, code.ToString());
         }
 

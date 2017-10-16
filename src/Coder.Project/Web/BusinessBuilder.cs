@@ -94,8 +94,8 @@ namespace {NameSpace}.BusinessLogic
     }}
 }}
 ";
-            var file = ConfigPath(path, "File_Model_Business", Entity.Name + "BusinessLogic", ".cs");
-            SaveCode(file, code);
+            var file = ConfigPath(Entity, FileSaveConfigName, path, "Business", Entity.Name + "BusinessLogic") ;
+            SaveCode(file + ".cs", code);
         }
         private string CommandExCode()
         {
@@ -210,8 +210,8 @@ namespace {NameSpace}.BusinessLogic
 {CommandCode()}
     }}
 }}";
-            var file = ConfigPath(path, "File_Model_Business", Entity.Name + "BusinessLogic", ".Designer.cs");
-            SaveCode(file, code);
+            var file = ConfigPath(Entity, FileSaveConfigName, path, "Business", Entity.Name + "BusinessLogic");
+            SaveCode(file + ".Designer.cs", code);
         }
 
         private string SyncCode()

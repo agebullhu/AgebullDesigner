@@ -1,3 +1,4 @@
+using System.IO;
 using System.Linq;
 using Agebull.EntityModel.Config;
 
@@ -68,25 +69,12 @@ namespace Agebull.EntityModel.RobotCoder
                 }
             }
         }
-        
+
         private EntityConfig _entity;
-        
+
         /// <summary>
         /// 是否可写
         /// </summary>
         protected override bool CanWrite => base.CanWrite && Entity != null && !Entity.IsFreeze && !Entity.Discard;
-
-        /// <summary>
-        /// 取得扩展配置的路径
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="key"></param>
-        /// <param name="def"></param>
-        /// <param name="ext"></param>
-        /// <returns></returns>
-        protected string ConfigPath(string path, string key, string def, string ext = "")
-        {
-            return SetPath(path, CurrentConfig.TryGetExtendConfig(key, def).Trim('\\'), ext);
-        }
     }
 }

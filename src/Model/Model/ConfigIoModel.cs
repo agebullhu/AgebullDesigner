@@ -132,7 +132,6 @@ namespace Agebull.EntityModel.Designer
             LoadFile(sluFile);
             using (LoadingModeScope.CreateScope())
                 Model.Tree.CreateTree();
-            Context.NowJob = DesignContext.JobPropertyGrid;
             Context.StateMessage = "载入成功";
         }
 

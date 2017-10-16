@@ -31,8 +31,6 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// </summary>
         protected override void CreateBaCode(string path)
         {
-            string file = Path.Combine(path, Entity.Name + "ApiLogical.cs");
-
             string code = $@"using System;
 using System.IO;
 using System.Collections.Generic;
@@ -228,6 +226,8 @@ namespace {NameSpace}.WebApi.EntityApi
         }}
     }}
 }}";
+            var file = ConfigPath(Entity, FileSaveConfigName, path, "Logical", $"{Entity.Name}ApiLogical.cs");
+
             SaveCode(file, code);
         }
 
@@ -303,7 +303,7 @@ namespace {NameSpace}.WebApi
             code.Append(@"
     }
 }");
-            var file = ConfigPath(path, "ProjectApiLogical", $"{Project.Name}ApiLogical", ".cs");
+            var file = ConfigPath(Project, FileSaveConfigName, path, "Logical",  $"{Project.Name}Api_Logical.cs");
             SaveCode(file, code.ToString());
         }
 

@@ -67,7 +67,7 @@ namespace {NameSpace}.WebApi.EntityApi
 
     }}
 }}";
-            var file = ConfigPath(path, FileSaveConfigName, $"I{Entity.Name}EntityApi", ".cs");
+            var file = ConfigPath(Entity, FileSaveConfigName, path, "Interface", $"I{Entity.Name}EntityApi.cs");
             SaveCode(file, code);
         }
 
@@ -125,7 +125,7 @@ namespace {NameSpace}.WebApi
     }
 }
 ");
-            var file = ConfigPath(path, "IProjectApi", "I" + Project.Name + "Api", ".cs");
+            var file = ConfigPath(Project, FileSaveConfigName, path,  "Interface", $"I{Project.Name}Api.cs");
             SaveCode(file, code.ToString());
         }
 
