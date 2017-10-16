@@ -383,7 +383,14 @@ namespace Agebull.EntityModel.Config
         /// 参数实体
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        public EntityConfig Argument => CallArg == null ? null : _argument ?? (_argument = GlobalConfig.GetEntity(CallArg));
+        public EntityConfig Argument
+        {
+            get
+            {
+                return CallArg == null ? null : _argument ?? (_argument = GlobalConfig.GetEntity(CallArg));
+            }
+            set { CallArg = value?.Name; }
+        }
 
         /// <summary>
         /// 返回值
@@ -395,7 +402,14 @@ namespace Agebull.EntityModel.Config
         /// 本地对象名称
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        public EntityConfig Result => ResultArg == null ? null: _result ?? (_result = GlobalConfig.GetEntity(ResultArg));
+        public EntityConfig Result
+        {
+            get
+            {
+                return ResultArg == null ? null : _result ?? (_result = GlobalConfig.GetEntity(ResultArg));
+            }
+            set { ResultArg = value?.Name; }
+        }
 
 
         /// <summary>

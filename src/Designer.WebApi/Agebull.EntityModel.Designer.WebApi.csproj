@@ -72,6 +72,7 @@
     <Compile Include="Coder\ApiBuilder.cs" />
     <Compile Include="Coder\ApiControlerBuilder.cs" />
     <Compile Include="Coder\ApiLogicalBuilder.cs" />
+    <Compile Include="Coder\ApiMarkBuilder.cs" />
     <Compile Include="Coder\EntityBuilder.cs" />
     <Compile Include="Command\ProjectModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

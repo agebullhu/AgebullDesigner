@@ -71,6 +71,15 @@ namespace Agebull.EntityModel.Designer.WebApi
                 };
                 builder.CreateExtendCode(path);
             }
+            {
+                var path = IOHelper.CheckPath(Path.GetDirectoryName(Path.GetDirectoryName(root)), "doc");
+                var builder = new ApiMarkBuilder
+                {
+                    Project = project
+                };
+                builder.CreateBaseCode(path);
+                builder.CreateExtendCode(path);
+            }
         }
         /// <summary>
         /// 生成实体代码
@@ -128,7 +137,6 @@ namespace Agebull.EntityModel.Designer.WebApi
                 };
                 builder.CreateBaseCode(path);
             }
-
         }
         
     }

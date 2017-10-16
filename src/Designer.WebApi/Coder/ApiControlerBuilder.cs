@@ -154,6 +154,7 @@ namespace {NameSpace}.WebApi
                 var arg = item.Argument == null ? null : ($"[FromBody]{item.Argument.Name} arg");
 
                 code.Append($@"
+        [HttpPost, Route(""{item.RoutePath}"")]
         [ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Anymouse)]
         public ApiResponseMessage{res} {item.Name}({arg})
         {{
