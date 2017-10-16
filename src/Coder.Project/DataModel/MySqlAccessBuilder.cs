@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config.Mysql;
 using Agebull.EntityModel.Config;
-using Agebull.EntityModel.RobotCoder.DataBase;
+using Agebull.EntityModel.RobotCoder.DataBase.MySql;
 
 namespace Agebull.EntityModel.RobotCoder
 {

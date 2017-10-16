@@ -37,7 +37,7 @@ namespace Agebull.EntityModel.Designer.WebApi
         public override void CreateProjectCode(ProjectConfig project)
         {
             Message = project.Caption;
-            var root = IOHelper.CheckPath(Path.GetDirectoryName(Path.GetDirectoryName(project.ModelPath)), "Api");
+            var root = IOHelper.CheckPath(Path.GetDirectoryName(project.ModelPath), "Api");
             {
                 var path = IOHelper.CheckPath(root, "Contract", "Interface");
                 var builder = new ApiInterfaceBuilder
@@ -80,7 +80,7 @@ namespace Agebull.EntityModel.Designer.WebApi
         public override void CreateEntityCode(ProjectConfig project, EntityConfig schema)
         {
             Message = schema.Caption;
-            var root = IOHelper.CheckPath(Path.GetDirectoryName(Path.GetDirectoryName(project.ModelPath)),"Api");
+            var root = IOHelper.CheckPath(Path.GetDirectoryName(project.ModelPath), "Api");
             {
                 var path = IOHelper.CheckPath(root, "Contract", "Entity");
                 var builder = new EntityBuilder

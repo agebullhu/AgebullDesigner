@@ -6,14 +6,14 @@ using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Designer;
 using static System.String;
 
-namespace Agebull.EntityModel.RobotCoder.DataBase.MySql
+namespace Agebull.EntityModel.RobotCoder.DataBase.Sqlerver
 {
     /// <summary>
     /// SQL代码片断
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    public class SqlMomentCoder : MomentCoderBase, IAutoRegister
+    internal class SqlMomentCoder : MomentCoderBase, IAutoRegister
     {
         #region 注册
 
@@ -22,15 +22,15 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.MySql
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("MySql", "生成表(SQL)", cfg => RunByEntity(cfg, CreateTable));
-            MomentCoder.RegisteCoder("MySql", "插入表字段(SQL)", cfg => RunByEntity(cfg, AddColumnCode));
-            MomentCoder.RegisteCoder("MySql", "修改表字段(SQL)", cfg => Run(cfg, ChangeColumnCode));
-            MomentCoder.RegisteCoder("MySql", "修改BOOL字段(SQL)", cfg => Run(cfg, ChangeBoolColumnCode));
-            MomentCoder.RegisteCoder("MySql", "生成视图(SQL)", cfg => Run(cfg, CreateView));
-            MomentCoder.RegisteCoder("MySql", "插入页面表(SQL)", PageInsertSql);
-            MomentCoder.RegisteCoder("MySql", "删除视图(SQL)", cfg => Run(cfg, DropView));
-            MomentCoder.RegisteCoder("MySql", "删除表(SQL)", cfg => RunByEntity(cfg, DropTable));
-            MomentCoder.RegisteCoder("MySql", "清除表(SQL)", cfg => RunByEntity(cfg, TruncateTable));
+            MomentCoder.RegisteCoder("Sqlerver", "生成表(SQL)", cfg => RunByEntity(cfg, CreateTable));
+            MomentCoder.RegisteCoder("Sqlerver", "插入表字段(SQL)", cfg => RunByEntity(cfg, AddColumnCode));
+            MomentCoder.RegisteCoder("Sqlerver", "修改表字段(SQL)", cfg => Run(cfg, ChangeColumnCode));
+            MomentCoder.RegisteCoder("Sqlerver", "修改BOOL字段(SQL)", cfg => Run(cfg, ChangeBoolColumnCode));
+            MomentCoder.RegisteCoder("Sqlerver", "生成视图(SQL)", cfg => Run(cfg, CreateView));
+            MomentCoder.RegisteCoder("Sqlerver", "插入页面表(SQL)", PageInsertSql);
+            MomentCoder.RegisteCoder("Sqlerver", "删除视图(SQL)", cfg => Run(cfg, DropView));
+            MomentCoder.RegisteCoder("Sqlerver", "删除表(SQL)", cfg => RunByEntity(cfg, DropTable));
+            MomentCoder.RegisteCoder("Sqlerver", "清除表(SQL)", cfg => RunByEntity(cfg, TruncateTable));
         }
 
         #endregion
@@ -45,7 +45,7 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.MySql
         {
             return $@"
 /*******************************{entity.Caption}*******************************/
-TRUNCATE TABLE `{entity.SaveTable}`;
+TRUNCATE TABLE [{entity.SaveTable}];
 ";
         }
 
@@ -55,7 +55,7 @@ TRUNCATE TABLE `{entity.SaveTable}`;
                 return Empty;
             return $@"
 /*******************************{entity.Caption}*******************************/
-DROP VIEW `{entity.ReadTableName}`;
+DROP VIEW [{entity.ReadTableName}];
 ";
         }
         public static string CreateView(EntityConfig entity)
@@ -67,7 +67,7 @@ DROP VIEW `{entity.ReadTableName}`;
             var builder = new StringBuilder();
             builder.Append($@"
 /*******************************{entity.Caption}*******************************/
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS 
+CREATE VIEW [{viewName}] AS 
     SELECT ");
             var tables = new Dictionary<string, EntityConfig>();
             foreach (var name in names)
@@ -97,21 +97,21 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
                                 p => p.ColumnName == field.LinkField || p.Name == field.LinkField);
                         if (linkField != null)
                         {
-                            builder.AppendFormat(@"`{0}`.`{1}` as `{2}`", friend.SaveTable.Replace("tb_", ""), linkField.ColumnName, field.ColumnName);
+                            builder.AppendFormat(@"[{0}].[{1}] as [{2}]", friend.SaveTable.Replace("tb_", ""), linkField.ColumnName, field.ColumnName);
                             continue;
                         }
                     }
                 }
-                builder.AppendFormat(@"`{0}`.`{1}` as `{1}`", entity.SaveTable, field.ColumnName);
+                builder.AppendFormat(@"[{0}].[{1}] as [{1}]", entity.SaveTable, field.ColumnName);
             }
             builder.Append($@"
-    FROM `{entity.SaveTable}`");
+    FROM [{entity.SaveTable}]");
             foreach (var table in tables.Values)
             {
                 var field = entity.Properties.FirstOrDefault(p => p.IsLinkKey && p.LinkTable == table.SaveTable);
                 if (field != null)
                     builder.AppendFormat(@"
-    LEFT JOIN `{1}` `{4}` ON `{0}`.`{2}` = `{4}`.`{3}`"
+    LEFT JOIN [{1}] [{4}] ON [{0}].[{2}] = [{4}].[{3}]"
                         , entity.SaveTable, table.SaveTable, field.ColumnName, table.PrimaryColumn.ColumnName, table.SaveTable.Replace("tb_", ""));
             }
             builder.Append(';');
@@ -126,7 +126,7 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
         {
             return $@"
 /*******************************{entity.Caption}*******************************/
-DROP TABLE `{entity.SaveTable}`;";
+DROP TABLE [{entity.SaveTable}];";
             //            return string.Format(@"
             //truncate TABLE dbo.{0};
             //GO
@@ -171,12 +171,12 @@ DROP TABLE `{entity.SaveTable}`;";
             sb.Append(
                 $@"
 /*{project.Caption}*/
-INSERT INTO `tb_sys_page_item` (`ItemType`,`Name`,`Caption`,`Url`,`Memo`,`ParentId`)
+INSERT INTO [tb_sys_page_item[ ([ItemType[,[Name[,[Caption[,[Url[,[Memo[,[ParentId[)
 VALUES(0,'{project.Caption}','{project.Caption}',NULL,'{project.Description}',0);
 set @pid = @@IDENTITY;");
             foreach (var entity in project.Entities.Where(p => !p.IsClass))
                 sb.Append($@"
-INSERT INTO `tb_sys_page_item` (`ItemType`,`Name`,`Caption`,`Url`,`Memo`,`ParentId`)
+INSERT INTO [tb_sys_page_item[ ([ItemType[,[Name[,[Caption[,[Url[,[Memo[,[ParentId[)
 VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Name}/Index.aspx','{entity.Description}',@pid);");
             return sb.ToString();
         }
@@ -203,12 +203,12 @@ VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Name}
             {
                 code.AppendFormat(@"
 /*{1}*/
-CREATE TABLE `{0}`("
+CREATE TABLE [{0}]("
                     , entity.SaveTable
                     , entity.Caption);
 
                 code.Append($@"
-    `{entity.PrimaryColumn.ColumnName}` {DataBaseHelper.ColumnType(entity.PrimaryColumn)} NOT NULL{
+    [{entity.PrimaryColumn.ColumnName}] {DataBaseHelper.ColumnType(entity.PrimaryColumn)} NOT NULL{
                         (entity.PrimaryColumn.IsIdentity ? " AUTO_INCREMENT" : null)
                     } COMMENT '{entity.PrimaryColumn.Caption}'");
             }
@@ -221,7 +221,7 @@ CREATE TABLE `{0}`("
             }
             if (entity.PrimaryColumn != null)
                 code.Append($@"
-    ,PRIMARY KEY (`{entity.PrimaryColumn.ColumnName}`)");
+    ,PRIMARY KEY ([{entity.PrimaryColumn.ColumnName}])");
             //if (entity.PrimaryColumn.IsIdentity)
 
             code.Append($@"
@@ -239,7 +239,7 @@ CREATE TABLE `{0}`("
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
-ALTER TABLE `{entity.SaveTable}`");
+ALTER TABLE [{entity.SaveTable}]");
             bool isFirst = true;
             foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
             {
@@ -279,7 +279,7 @@ ALTER TABLE `{entity.SaveTable}`");
                 return;
             code.Append($@"
 /*{entity.Caption}*/
-ALTER TABLE `{entity.SaveTable}`");
+ALTER TABLE [{entity.SaveTable}]");
             bool isFirst = true;
             foreach (PropertyConfig col in fields)
             {
@@ -290,7 +290,7 @@ ALTER TABLE `{entity.SaveTable}`");
                 else
                     code.Append(',');
                 code.Append($@"
-    CHANGE COLUMN `{col.ColumnName}` {FieldDefault(col)}");
+    CHANGE COLUMN [{col.ColumnName}] {FieldDefault(col)}");
             }
             code.Append(@";");
         }
@@ -302,7 +302,7 @@ ALTER TABLE `{entity.SaveTable}`");
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
-ALTER TABLE `{entity.SaveTable}`");
+ALTER TABLE [{entity.SaveTable}]");
             bool isFirst = true;
             foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
             {
@@ -313,7 +313,7 @@ ALTER TABLE `{entity.SaveTable}`");
                 else
                     code.Append(',');
                 code.Append($@"
-    CHANGE COLUMN `{col.ColumnName}` {FieldDefault(col)}");
+    CHANGE COLUMN [{col.ColumnName}] {FieldDefault(col)}");
             }
             code.Append(@";");
             return code.ToString();
@@ -321,7 +321,7 @@ ALTER TABLE `{entity.SaveTable}`");
 
         private static string FieldDefault(PropertyConfig col)
         {
-            return $"`{col.ColumnName}` {DataBaseHelper.ColumnType(col)}{NullKeyWord(col)} {ColumnDefault(col)} COMMENT '{col.Caption}'";
+            return $"[{col.ColumnName}] {DataBaseHelper.ColumnType(col)}{NullKeyWord(col)} {ColumnDefault(col)} COMMENT '{col.Caption}'";
         }
 
         private static string NullKeyWord(PropertyConfig col)
@@ -373,7 +373,7 @@ ALTER TABLE `{entity.SaveTable}`");
                     sql.Append(",");
                 }
                 sql.AppendFormat(@"
-    `{0}` AS `{1}`", field.ColumnName, field.Name);
+    [{0}] AS [{1}]", field.ColumnName, field.Name);
             }
             return sql.ToString();
         }
