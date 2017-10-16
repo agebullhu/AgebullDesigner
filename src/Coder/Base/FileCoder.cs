@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -174,6 +175,7 @@ namespace Agebull.EntityModel.RobotCoder
             //    //helper.CheckOut();
             //    //helper.CheckIn(file);
             //}
+            Trace.WriteLine(file);
         }
         #endregion
     }

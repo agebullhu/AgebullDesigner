@@ -330,7 +330,7 @@ void GbsTradeCommand::{head}{item.Name}(const PNetCommand cmd_arg)
                 code.Append($@"
 /** 
 * @brief {item.Caption}
-* @param {{PNetCommand}} cmd_arg 命令对象{(item.LocalEntity == null ? "(未使用，仅支持统一格式)" : null)}
+* @param {{PNetCommand}} cmd_arg 命令对象{(item.Argument == null ? "(未使用，仅支持统一格式)" : null)}
 * @return 无
 */
 void Do{item.Name}(const PNetCommand cmd_arg);");
@@ -351,7 +351,7 @@ void Do{item.Name}(const PNetCommand cmd_arg);");
 
         private static void CallEsApi(StringBuilder code, ApiItem item)
         {
-            var entity = item.LocalEntity;
+            var entity = item.Argument;
             if (entity == null)
             {
                 code.Append($@"
@@ -614,7 +614,7 @@ void CommandProxy::{item.Name}({type})
 
         private static void ApiBusinessHCode(ApiItem item)
         {
-            var entity = item.LocalEntity;
+            var entity = item.Argument;
             var code = new StringBuilder();
 
             code.Append($@"#ifndef _{item.Name.ToUpper()}_BUSINESS_H
@@ -691,7 +691,7 @@ namespace GBS
 
         public static void ApiBusinessCppCode(ApiItem item)
         {
-            var entity = item.LocalEntity;
+            var entity = item.Argument;
             StringBuilder code = new StringBuilder();
             code.Append($@"#include <stdafx.h>
 #include ""{item.Name}Business.h""

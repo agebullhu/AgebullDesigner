@@ -51,9 +51,12 @@ namespace Agebull.Common.Config.Designer.EasyUi
         /// …˙≥…–¬≈‰÷√
         /// </summary>
         /// <returns></returns>
-        public static bool NewConfigCommand(ConfigBase config)
+        public static bool NewConfigCommand(string title,ConfigBase config)
         {
-            var window = new NewConfigWindow();
+            var window = new NewConfigWindow
+            {
+                Title = title 
+            };
             var vm = (NewConfigViewModel)window.DataContext;
             vm.Config = config;
             if (window.ShowDialog() != true)

@@ -49,26 +49,29 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
         /// <param name="schema"></param>
         public override void CreateEntityCode(ProjectConfig project, EntityConfig schema)
         {
-            Message = schema.Caption;
-            var rootPath = RootPath(project);
-            var entityPath = IOHelper.CheckPath(rootPath, "Entity");
-            CreateCode<EntityBuilder>(project, schema, IOHelper.CheckPath(entityPath, "Model"));
-
             if (schema.IsClass)
                 return;
-            CreateCode<EntityValidateBuilder>(project, schema, IOHelper.CheckPath(entityPath, "Extend"));
+            var rootPath = project.ModelPath;
+            var entityPath = IOHelper.CheckPath(rootPath, "Entity");
+            Message = entityPath;
+            CreateCode<EntityBuilder>(project, schema, IOHelper.CheckPath(entityPath, "Model"));
 
-            var accessPath = IOHelper.CheckPath(rootPath, "DataAccess");
+            CreateCode<EntityValidateBuilder>(project, schema, entityPath);
+            
+            var accessPath = IOHelper.CheckPath(rootPath, "DataAccess", "DataAccess");
+            Message = accessPath;
 
             if (project.DbType == DataBaseType.MySql)
             {
-                CreateCode<MySqlAccessBuilder>(project, schema, IOHelper.CheckPath(accessPath, "DataAccess"));
+                CreateCode<MySqlAccessBuilder>(project, schema, accessPath);
             }
             else
             {
                 CreateCode<SqlServerAccessBuilder>(project, schema, IOHelper.CheckPath(accessPath, "DataAccess"));
             }
-            CreateCode<BusinessBuilder>(project, schema, IOHelper.CheckPath(rootPath, "Business","EntityModel"));
+            var blPath = IOHelper.CheckPath(rootPath, "Business", "EntityModel");
+            CreateCode<BusinessBuilder>(project, schema, blPath);
+            Message = blPath;
         }
 
     }

@@ -333,13 +333,13 @@ namespace Agebull.EntityModel.Designer
         internal PropertyGrid PropertyGrid { get; set; }
 
 
-        internal void SetSelectItem(ConfigBase cfg, string title)
+        internal void OnTreeSelectItemChanged(ConfigBase cfg, string title)
         {
             SelectConfig = cfg;
 
             if (SelectConfig == null)
             {
-                NowJob = JobTrace;
+                RootJobIndex = IndexTrace;
                 SelecReleation = null;
                 SelectProperty = null;
                 SelectEntity = null;
@@ -352,6 +352,22 @@ namespace Agebull.EntityModel.Designer
             }
             if (PropertyGrid != null)
                 PropertyGrid.SelectedObject = SelectConfig;
+
+            if (cfg is EntityConfig)
+            {
+                NowJob = NowJob;
+                SelectItemChildrens = SelectEntity.Properties;
+                SelectChildrens = SelectItemChildrens;
+                FindKey = SelectEntity.Tag;
+                SubJobIndex = SubJobIndex;
+                return;
+            }
+
+            if (RootJobs.ContainsKey( NowJob))
+                NowJob = NowJob;
+            else
+                RootJobIndex = IndexProperty;
+
             if (cfg is SolutionConfig)
             {
                 SelectChildrens = Solution.Projects;
@@ -363,21 +379,9 @@ namespace Agebull.EntityModel.Designer
                 SelectChildrens = SelectProject?.Entities;
                 return;
             }
-
-            if (cfg is EntityConfig)
-            {
-                SelectItemChildrens = SelectEntity.Properties;
-                SelectChildrens = SelectItemChildrens;
-                FindKey = SelectEntity.Tag;
-                SubJobIndex = SubJobIndex; 
-                return;
-            }
-
-            NowJob = JobPropertyGrid;
             if (cfg is PropertyConfig)
             {
                 SelectItemChildrens = SelectEntity?.Properties;
-
                 SelectChildrens = SelectProperty?.EnumConfig?.Items;
                 FindKey = SelectProperty?.CppLastType;
             }
@@ -445,24 +449,41 @@ namespace Agebull.EntityModel.Designer
         ///     可用工作列表
         /// </summary>
         public string[] Jobs => ChildrenJobs.Keys.ToArray();
-        
+        /// <summary>
+        ///     可用工作列表
+        /// </summary>
+        Dictionary<string, int> RootJobs { get; } = new Dictionary<string, int>
+        {
+            {JobProperty,IndexProperty},
+            {JobPropertyGrid,IndexPropertyGrid},
+            {JobExtendCode,IndexExtendCode},
+            {JobTrace,IndexTrace}
+        };
+
         /// <summary>
         ///     可用工作列表
         /// </summary>
         public Dictionary<string, int> ChildrenJobs { get; } = new Dictionary<string, int>
         {
-            {JobConfig,-1 },
+            {JobProperty,-1 },
             {JobPropertyGrid,-1 },
             {JobExtendCode,-1 },
             {JobTrace,-1 }
         };
 
-        
 
-        public const string JobPropertyGrid = "属性编辑";
+
+        public const string JobProperty = "基本信息";
+        public const string JobConfig = "对象设计";
         public const string JobExtendCode = "扩展代码";
+        public const string JobPropertyGrid = "其它属性";
         public const string JobTrace = "跟踪消息";
-        public const string JobConfig = "基本信息"; 
+
+        public const int IndexProperty = 0;
+        public const int IndexConfig = 1;
+        public const int IndexExtendCode = 2;
+        public const int IndexPropertyGrid = 3;
+        public const int IndexTrace = 4;
 
         private int _rootJobIndex;
 
@@ -479,21 +500,21 @@ namespace Agebull.EntityModel.Designer
                     _rootJobIndex = value;
                     RaisePropertyChanged(() => RootJobIndex);
                 }
-                switch (value)
-                {
-                    case 0:
-                        NowJob = JobConfig;
-                        break;
-                    case 2:
-                        NowJob = JobExtendCode;
-                        break;
-                    case 3:
-                        NowJob = JobPropertyGrid;
-                        break;
-                    case 4:
-                        NowJob = JobTrace;
-                        break;
-                }
+                //switch (value)
+                //{
+                //    case 0:
+                //        NowJob = JobConfig;
+                //        break;
+                //    case 2:
+                //        NowJob = JobExtendCode;
+                //        break;
+                //    case 3:
+                //        NowJob = JobPropertyGrid;
+                //        break;
+                //    case 4:
+                //        NowJob = JobTrace;
+                //        break;
+                //}
             }
         }
         private int _subJobIndex;
@@ -511,11 +532,11 @@ namespace Agebull.EntityModel.Designer
                     _subJobIndex = value;
                     RaisePropertyChanged(() => SubJobIndex);
                 }
-                var job = ChildrenJobs.FirstOrDefault(p => p.Value == value);
-                if (job.Value >= 0)
-                {
-                    NowJob = job.Key;
-                }
+                //var job = ChildrenJobs.FirstOrDefault(p => p.Value == value);
+                //if (job.Value >= 0)
+                //{
+                //    NowJob = job.Key;
+                //}
             }
         }
 
@@ -527,12 +548,15 @@ namespace Agebull.EntityModel.Designer
             get { return _nowJob; }
             set
             {
-                if (Equals(_nowJob, value))
-                    return;
-                _nowJob = value ?? JobPropertyGrid;
+                if (!Equals(_nowJob, value))
+                {
+                    _nowJob = value ?? JobPropertyGrid;
+                    SaveJob();
+                    RaisePropertyChanged(() => NowJob);
+                }
                 switch (value)
                 {
-                    case JobConfig:
+                    case JobProperty:
                         RootJobIndex = 0;
                         break;
                     default:
@@ -551,8 +575,6 @@ namespace Agebull.EntityModel.Designer
                         RootJobIndex = 4;
                         break;
                 }
-                SaveJob();
-                RaisePropertyChanged(() => NowJob);
             }
         }
 

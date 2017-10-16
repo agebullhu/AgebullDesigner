@@ -100,7 +100,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""dataKey"">数据主键</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        ApiResult I{Entity.Name}Api.Delete(Argument<{Entity.PrimaryColumn.LastCsType}> dataKey)
+        ApiResult I{Entity.Name}Api.Delete(Argument<{Entity.PrimaryColumn?.LastCsType ?? "int"}> dataKey)
         {{
             return Delete(dataKey);
         }}
@@ -174,7 +174,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""arg"">数据主键</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        private ApiResult Delete(Argument<{Entity.PrimaryColumn.LastCsType}> arg)
+        private ApiResult Delete(Argument<{Entity.PrimaryColumn?.LastCsType ?? "int"}> arg)
         {{
             try
             {{
@@ -245,6 +245,68 @@ namespace {NameSpace}.WebApi.EntityApi
             }
             return code.ToString();
         }
+
+
+        /// <summary>
+        ///     生成实体代码
+        /// </summary>
+        protected override void CreateExCode(string path)
+        {
+            StringBuilder code = new StringBuilder();
+            code.Append($@"using System;
+using System.Web.Http;
+using GoodLin.Common.Ioc;
+using GoodLin.OAuth.Api;
+using Yizuan.Service.Api;
+using Yizuan.Service.Api.WebApi;
+
+namespace {NameSpace}.WebApi
+{{
+    /// <summary>
+    /// {Project.Caption}API
+    /// </summary>
+    public class {Project.Name}ApiLogical : I{Project.Name}
+    {{");
+
+            foreach (var item in Project.ApiItems)
+            {
+                code.Append($@"
+        /// <summary>
+        ///     {item.Caption}:{item.Description}:
+        /// </summary>");
+                if (item.Argument != null)
+                {
+                    code.Append($@"
+        /// <param name=""arg"">{item.Argument?.Caption}</param>");
+                }
+                if (item.Result == null)
+                {
+                    code.Append(@"
+        /// <returns>操作结果</returns>");
+                }
+                else
+                {
+                    code.Append($@"
+        /// <returns>{item.Result.Caption}</returns>");
+                }
+                var res = item.Result == null ? null : ("<" + item.Result.Name + ">");
+                var arg = item.Argument == null ? null : ($"{item.Argument.Name} arg");
+
+                code.Append($@"
+        public ApiResult{res} {item.Name}({arg})
+        {{
+            //TO DO:实现API
+            return null;
+        }}");
+            }
+
+            code.Append(@"
+    }
+}");
+            var file = ConfigPath(path, "ProjectApiLogical", $"{Project.Name}ApiLogical", ".cs");
+            SaveCode(file, code.ToString());
+        }
+
     }
 
 }

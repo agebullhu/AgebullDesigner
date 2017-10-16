@@ -67,11 +67,13 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Coder\ApiProxyBuilder.cs" />
     <Compile Include="Coder\ApiInterfaceBuilder.cs" />
     <Compile Include="Coder\ApiBuilder.cs" />
     <Compile Include="Coder\ApiControlerBuilder.cs" />
     <Compile Include="Coder\ApiLogicalBuilder.cs" />
     <Compile Include="Coder\EntityBuilder.cs" />
+    <Compile Include="Command\ProjectModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -134,7 +136,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Business\" />
-    <Folder Include="Command\" />
     <Folder Include="Model\" />
     <Folder Include="View\" />
   </ItemGroup>

@@ -64,7 +64,7 @@ namespace Agebull.EntityModel.RobotCoder
             return code.ToString();
         }
 
-        private static void DateTimeCheck(StringBuilder code, PropertyConfig field)
+        public static void DateTimeCheck(StringBuilder code, PropertyConfig field)
         {
             if (!field.CanEmpty)
             {
@@ -109,39 +109,43 @@ namespace Agebull.EntityModel.RobotCoder
             }");
         }
 
-        private static void NumberCheck(StringBuilder code, PropertyConfig field)
+        public static void NumberCheck(StringBuilder code, PropertyConfig field)
         {
-            if (field.Datalen > 0 || field.Min != null)
+            if (field.Datalen <= 0 && field.Min == null)
+                return;
+            ulong max = 1;
+            for (int i = 0; i < field.Datalen; i++)
             {
-                if (field.CanEmpty)
-                    code.Append($@"
-            if({field.Name} != null)
-            {{");
-                if (field.Datalen > 0 && field.Min != null)
-                {
-                    code.Append($@"
-            if({field.Name} > {field.Datalen} ||{field.Name} < {field.Min})
-                result.Add(""{field.Caption}"",nameof({field.Name}),$""不能大于{field.Datalen}或小于{field.Min}"");");
-                }
-                else if (field.Datalen > 0)
-                {
-                    code.Append($@"
-            if({field.Name} > {field.Datalen})
-                result.Add(""{field.Caption}"",nameof({field.Name}),$""不能大于{field.Datalen}"");");
-                }
-                else if (field.Min != null)
-                {
-                    code.Append($@"
-            if({field.Name} < {field.Min})
-                result.Add(""{field.Caption}"",nameof({field.Name}),$""不能小于{field.Min}"");");
-                }
-                if (field.CanEmpty)
-                    code.Append(@"
-            }");
+                max *= 10;
             }
+            if (field.CanEmpty && field.Nullable)
+                code.Append($@"
+            if((ulong){field.Name} != null)
+            {{");
+            if (max > 1 && field.Min != null)
+            {
+                code.Append($@"
+            if((ulong){field.Name} > {max}UL ||(ulong){field.Name} < {field.Min})
+                result.Add(""{field.Caption}"",nameof({field.Name}),$""不能大于{max}UL或小于{field.Min}"");");
+            }
+            else if (max > 1)
+            {
+                code.Append($@"
+            if((ulong){field.Name} > {max}UL)
+                result.Add(""{field.Caption}"",nameof({field.Name}),$""不能大于{max}UL"");");
+            }
+            else if (field.Min != null)
+            {
+                code.Append($@"
+            if((ulong){field.Name} < {field.Min})
+                result.Add(""{field.Caption}"",nameof({field.Name}),$""不能小于{field.Min}"");");
+            }
+            if (field.CanEmpty && field.Nullable)
+                code.Append(@"
+            }");
         }
 
-        private static void StringCheck(StringBuilder code, PropertyConfig field)
+        public static void StringCheck(StringBuilder code, PropertyConfig field)
         {
             if (!field.CanEmpty)
             {
@@ -183,7 +187,7 @@ namespace Agebull.EntityModel.RobotCoder
             }
         }
 
-        private static void ConvertEmptyValue(StringBuilder code, PropertyConfig field)
+        public static void ConvertEmptyValue(StringBuilder code, PropertyConfig field)
         {
             var ems = field.EmptyValue.Split(new[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
             code.Append(@"

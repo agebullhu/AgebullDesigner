@@ -249,7 +249,7 @@ namespace Agebull.EntityModel.RobotCoder
         {
             code.Append($@"
         {{//{config.Project}.{config.Name}
-                var result = caller.{config.Method.ToString().ToLower().ToUWord()}/*<{config.ResultArg}>*/(""{config.Org}""");
+                var result = caller.{config.Method.ToString().ToLower().ToUWord()}<{config.Result?.Name}>(""{config.RoutePath}""");
             if (config.Argument != null)
             {
                 code.Append($@", new Dictionary<string, string>

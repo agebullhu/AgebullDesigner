@@ -240,7 +240,7 @@ namespace Agebull.EntityModel.Designer
         public void AddProject()
         {
             ProjectConfig config;
-            if (Model.CreateNew(out config))
+            if (Model.CreateNew("新增项目",out config))
                 Context.Solution.Projects.Add(config);
         }
         /// <summary>
@@ -250,7 +250,7 @@ namespace Agebull.EntityModel.Designer
         public void AddCommand(EntityConfig entity)
         {
             UserCommandConfig config;
-            if (Model.CreateNew(out config))
+            if (Model.CreateNew("新增命令",out config))
                 entity.Commands.Add(config);
         }
         /// <summary>

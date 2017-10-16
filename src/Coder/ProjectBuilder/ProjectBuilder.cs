@@ -40,16 +40,7 @@ namespace Agebull.EntityModel.RobotCoder
                 _traceMessage = value;
             }
         }
-        /// <summary>
-        /// 取得默认的根路径
-        /// </summary>
-        /// <param name="project"></param>
-        /// <returns></returns>
-        protected virtual string RootPath(ProjectConfig project)
-        {
-            return project["project_path_" + Name] ?? (project["project_path_" + Name] = project.ModelPath);
-        }
-
+        
         /// <summary>
         /// 名称
         /// </summary>

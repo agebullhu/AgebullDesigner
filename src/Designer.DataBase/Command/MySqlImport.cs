@@ -228,19 +228,7 @@ from information_schema.columns where table_schema='{
                     _trace.Track = $@"属性名称:{column.Name}";
                     if (string.IsNullOrWhiteSpace(column.Caption))
                     {
-                        column.Caption = BaiduFanYi.FanYi(column.Name);
-                        _trace.Track = $@"通过百度翻译得到中文名称:{column.Caption}";
-                    }
-                    else
-                    {
-                        CheckEnum(column);
-                        if (column.EnumConfig != null)
-                        {
-                            column.EnumConfig.Name = column.Name + "Type";
-                            column.EnumConfig.Caption = column.Caption + "自定义类型";
-                            column.CustomType = column.EnumConfig.Name;
-                            _trace.Track = $@"解析得到枚举类型:{column.EnumConfig.Name},参考内容{column.EnumConfig.Description}";
-                        }
+                        column.Caption = column.Name;
                     }
                     if (string.IsNullOrWhiteSpace(column.Description))
                     {
@@ -250,117 +238,7 @@ from information_schema.columns where table_schema='{
                 }
             }
         }
-
-
-        #region 方法
-
-        public static void CheckEnum(PropertyConfig column)
-        {
-            var line = column.Description?.Trim(CoderBase.NoneLanguageChar) ?? "";
-
-            StringBuilder sb = new StringBuilder();
-            StringBuilder caption = new StringBuilder();
-            bool preIsNumber = false;
-            bool startEnum = false;
-            EnumConfig ec = new EnumConfig
-            {
-                Name = column.Parent.Name.ToUWord() + column.Name.ToUWord(),
-                Description = column.Description,
-                Caption = column.Caption,
-                Items = new ConfigCollection<EnumItem>()
-            };
-            EnumItem ei = new EnumItem();
-            foreach (var c in line)
-            {
-                if (c >= '0' && c <= '9')
-                {
-                    if (!preIsNumber)
-                    {
-                        if (!startEnum)
-                        {
-                            caption.Append(sb);
-                        }
-                        else if (sb.Length > 0)
-                        {
-                            new List<string>().Add(sb.ToString());
-                            ei.Caption = sb.ToString();
-                        }
-                        sb = new StringBuilder();
-                        startEnum = true;
-                    }
-                    preIsNumber = true;
-                }
-                else
-                {
-                    if (preIsNumber)
-                    {
-                        if (sb.Length > 0)
-                        {
-                            ei = new EnumItem
-                            {
-                                Value = sb.ToString()
-                            };
-                            ec.Items.Add(ei);
-                            sb = new StringBuilder();
-                        }
-                    }
-                    preIsNumber = false;
-                }
-                sb.Append(c);
-            }
-
-            if (!startEnum)
-                return;
-            if (sb.Length > 0)
-            {
-                if (preIsNumber)
-                {
-                    ec.Items.Add(new EnumItem
-                    {
-                        Value = sb.ToString()
-                    });
-                }
-                else
-                {
-                    ei.Caption = sb.ToString();
-                }
-            }
-
-            if (ec.Items.Count > 0)
-            {
-                ec.LinkField = column.Key;
-                column.EnumConfig = ec;
-                column.CustomType = ec.Name;
-                column.Description = line;
-                foreach (var item in ec.Items)
-                {
-                    if (string.IsNullOrEmpty(item.Caption))
-                    {
-                        column.EnumConfig = null;
-                        column.CustomType = null;
-                        return;
-                    }
-                    var arr = item.Caption.Trim(CoderBase.NoneNameChar).Split(CoderBase.NoneNameChar, StringSplitOptions.RemoveEmptyEntries);
-                    if (arr.Length == 0)
-                    {
-                        column.EnumConfig = null;
-                        column.CustomType = null;
-                        return;
-                    }
-                    item.Caption = arr[0];
-                    item.Name = BaiduFanYi.FanYiWord(item.Caption.MulitReplace2("", "表示"));
-                }
-                if (caption.Length > 0)
-                    column.Caption = caption.ToString();
-            }
-            else
-            {
-                column.EnumConfig = null;
-                column.CustomType = null;
-            }
-        }
-
-        #endregion
+        
 
         private string FirstBy(string str, params string[] args)
         {

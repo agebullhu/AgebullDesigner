@@ -473,6 +473,31 @@
 
     </DataTemplate>
 
+    <DataTemplate x:Key="ApiTemplate"  DataType="config:ApiItem">
+        <StackPanel
+            DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type Border}},Path=DataContext}">
+            <GroupBox Header="Web API" Margin="5">
+                <WrapPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="路由名称" />
+                        <TextBox Text="{Binding RoutePath,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="参数实体名称" />
+                        <TextBox Text="{Binding CallArg,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="返回实体名称" />
+                        <TextBox Text="{Binding ResultArg,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="Http Method" />
+                        <TextBox Text="{Binding Method,Mode=TwoWay}" />
+                    </StackPanel>
+                </WrapPanel>
+            </GroupBox>
+        </StackPanel>
+    </DataTemplate>
     <DataTemplate x:Key="UserCommandConfigTemplate"  DataType="config:UserCommandConfig">
         <StackPanel
             DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type Border}},Path=DataContext}">
@@ -508,6 +533,9 @@
     <Style x:Key="Style" TargetType="{x:Type ContentControl}">
         <Setter Property="ContentTemplate" Value="{StaticResource configTemplate}" />
         <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=Type}" Value="ApiItem">
+                <Setter Property="ContentTemplate" Value="{StaticResource ApiTemplate}" />
+            </DataTrigger>
             <DataTrigger Binding="{Binding Path=Type}" Value="EntityConfig">
                 <Setter Property="ContentTemplate" Value="{StaticResource EntityConfigTemplate}" />
             </DataTrigger>

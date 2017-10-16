@@ -33,7 +33,7 @@ namespace Agebull.EntityModel.Designer
         /// 生成新配置
         /// </summary>
         /// <returns></returns>
-        public static Func<ConfigBase,bool> NewConfigCommand;
+        public static Func<string, ConfigBase,bool> NewConfigCommand;
         
     }
 

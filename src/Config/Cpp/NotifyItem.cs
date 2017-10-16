@@ -44,12 +44,7 @@ namespace Agebull.EntityModel.Config
         string ICommandItem.OrgArg => NotifyEntity;
 
         string ICommandItem.CurArg => ClientEntity;
-
-        /// <summary>
-        /// 原始定义内容
-        /// </summary>
-        string ICommandItem.DefaultCode => Org;
-
+        
         #endregion
 
         #region

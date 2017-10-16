@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -58,7 +59,7 @@ namespace Agebull.EntityModel.Designer
             if (item != null)
                 Model.Context.CurrentTrace.TraceMessage = item.Extend.DependencyObjects.AutoDependency<TraceMessage>();
             SelectItem = item;
-            Model.Context.SetSelectItem(item?.Source as ConfigBase, item?.Header);
+            Model.Context.OnTreeSelectItemChanged(item?.Source as ConfigBase, item?.Header);
         }
 
         /// <summary>
@@ -442,21 +443,114 @@ namespace Agebull.EntityModel.Designer
             }
             //if (SolutionConfig.Current.SolutionType != SolutionType.Cpp)
             //    return item;
-            //var citem = new ConfigTreeItem<ProjectConfig>(project)
-            //{
-            //    IsAssist = true,
-            //    Header = "API",
-            //    HeaderField = null,
-            //    CreateChildFunc = Model.CppModel.CreateApiItemTreeItem,
-            //    SoruceItemsExpression = () => project.ApiItems,
-            //    SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
-            //};
-            //Model.CppModel.AddProjectTypedefCommand(citem, project);
-            //item.Items.Add(citem);
+            var citem = new ConfigTreeItem<ProjectConfig>(project)
+            {
+                IsAssist = true,
+                Header = "API",
+                HeaderField = null,
+                CreateChildFunc = CreateApiItemTreeItem,
+                SoruceItemsExpression = () => project.ApiItems,
+                SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
+            };
+            item.Items.Add(citem);
             return item;
         }
 
         #endregion
 
+        #region 树形支持
+
+        public TreeItem CreateApiItemTreeItem(object arg)
+        {
+            var child = (ApiItem)arg;
+            var item = new ConfigTreeItem<ApiItem>(child)
+            {
+                //IsExpanded = true,
+                Header = child.Name,
+                HeaderField = "Name,Caption,CallArg",
+                HeaderExtendExpression = m =>
+                {
+                    var fri = GlobalConfig.GetNotify(p => p.FriendKey == m.Key) ??
+                              GlobalConfig.GetNotify(p => p.Friend == m.Name);
+                    return fri == null
+                        ? $"{m.Caption}〖{m.Name}({m.CallArg})〗"
+                        : $"{m.Caption}〖{m.Name}({m.CallArg})〗=>{fri.Caption}";
+                },
+                SoruceTypeIcon = Application.Current.Resources["tree_item"] as BitmapImage
+            };
+            var item2 = new ConfigTreeItem<ApiItem>(child)
+            {
+                IsAssist = true,
+                Header = "参数",
+                HeaderField = null,
+                SoruceTypeIcon = Application.Current.Resources["tree_item"] as BitmapImage
+            };
+            if (child.Argument != null)
+            {
+                item2.Items.Add(Model.Tree.CreateEntityTreeItem(child.Argument));
+                item2.ModelPropertyChanged += ApiPropertyChangedBy;
+            }
+            item.Items.Add(item2);
+            var item3 = new ConfigTreeItem<ApiItem>(child)
+            {
+                IsAssist = true,
+                Header = "返回",
+                HeaderField = null,
+                SoruceTypeIcon = Application.Current.Resources["tree_item"] as BitmapImage
+            };
+            if (child.Result != null)
+            {
+                item3.Items.Add(Model.Tree.CreateEntityTreeItem(child.Result));
+                item3.ModelPropertyChanged += ApiPropertyChangedBy;
+            }
+            item.Items.Add(item3);
+            CheckApiColor(item);
+            item.ModelPropertyChanged += TreeModelPropertyChangedByApiItem;
+            return item;
+        }
+
+        private void ApiPropertyChangedBy(object sender, PropertyChangedEventArgs e)
+        {
+            var item = (TreeItem)sender;
+            var child = (ApiItem)item.Source;
+            if (e.PropertyName == "Argument")
+            {
+                item.Items.Clear();
+                if (child.Argument != null)
+                    item.Items.Add(Model.Tree.CreateEntityTreeItem(child.Argument));
+            }
+            if (e.PropertyName == "Result")
+            {
+                item.Items.Clear();
+                if (child.Result != null)
+                    item.Items.Add(Model.Tree.CreateEntityTreeItem(child.Result));
+            }
+        }
+
+        private void TreeModelPropertyChangedByApiItem(object sender, PropertyChangedEventArgs e)
+        {
+            var item = (TreeItem)sender;
+            if (e.PropertyName == "Argument" || e.PropertyName == "Result")
+                CheckApiColor(item);
+        }
+
+        private static void CheckApiColor(TreeItem item)
+        {
+            var child = (ApiItem)item.Source;
+            if (child.Argument != null)
+            {
+                item.Color = Brushes.Red;
+            }
+            else if (child.Result != null)
+            {
+                item.Color = Brushes.Blue;
+            }
+            else
+            {
+                item.Color = Brushes.Black;
+            }
+        }
+
+        #endregion
     }
 }

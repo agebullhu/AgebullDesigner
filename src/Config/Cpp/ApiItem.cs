@@ -35,13 +35,13 @@ namespace Agebull.EntityModel.Config
         private const string Method_Description = @"Api调用方式（GET、POST）";
 
         /// <summary>
-        /// 对应的另一半
+        /// Api调用方式
         /// </summary>
         [DataMember, JsonProperty("Method", NullValueHandling = NullValueHandling.Ignore)]
         internal HttpMethod _Method;
 
         /// <summary>
-        /// 对应的另一半
+        /// Api调用方式
         /// </summary>
         /// <remark>
         /// Api调用方式（GET、POST)
@@ -78,7 +78,7 @@ namespace Agebull.EntityModel.Config
         /// 所在的项目
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName("对应的另一半"), Description(Project_Description)]
+        [Category(""), DisplayName("所在的项目"), Description(Project_Description)]
         public string Project
         {
             get
@@ -92,6 +92,188 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(Project), _Project, value);
                 _Project = value;
                 OnPropertyChanged(nameof(Project));
+            }
+        }
+
+        /// <summary>
+        /// 请求参数名称
+        /// </summary>
+        [DataMember, JsonProperty("CallArg", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _callArg;
+
+        /// <summary>
+        /// 请求参数名称
+        /// </summary>
+        /// <remark>
+        /// 请求参数名称
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName("请求参数名称"), Description("请求参数名称")]
+        public string CallArg
+        {
+            get
+            {
+                return _callArg;
+            }
+            set
+            {
+                if (_callArg == value)
+                    return;
+                BeforePropertyChanged(nameof(CallArg), _callArg, value);
+                _callArg = value;
+                OnPropertyChanged(nameof(CallArg));
+                OnPropertyChanged(nameof(Argument));
+            }
+        }
+
+        /// <summary>
+        /// 返回参数名称
+        /// </summary>
+        [DataMember, JsonProperty("ResultArg", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _resultArg;
+
+        /// <summary>
+        /// 返回参数名称
+        /// </summary>
+        /// <remark>
+        /// 返回参数名称
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName("返回参数名称"), Description("返回参数名称")]
+        public string ResultArg
+        {
+            get
+            {
+                return _resultArg;
+            }
+            set
+            {
+                if (_resultArg == value)
+                    return;
+                BeforePropertyChanged(nameof(ResultArg), _resultArg, value);
+                _resultArg = value;
+                OnPropertyChanged(nameof(ResultArg));
+                OnPropertyChanged(nameof(Result));
+            }
+        }
+
+        /// <summary>
+        /// 路由路径
+        /// </summary>
+        [DataMember, JsonProperty("RoutePath", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _routePath;
+
+        /// <summary>
+        /// 路由路径
+        /// </summary>
+        /// <remark>
+        /// 路由路径
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName("路由路径"), Description("路由路径")]
+        public string RoutePath
+        {
+            get
+            {
+                return _routePath;
+            }
+            set
+            {
+                if (_routePath == value)
+                    return;
+                BeforePropertyChanged(nameof(RoutePath), _routePath, value);
+                _routePath = value;
+                OnPropertyChanged(nameof(RoutePath));
+            }
+        }
+
+        /// <summary>
+        /// 是否用户命令
+        /// </summary>
+        [DataMember, JsonProperty("IsUserCommand", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isUserCommand;
+
+        /// <summary>
+        /// 是否用户命令
+        /// </summary>
+        /// <remark>
+        /// 是否用户命令
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName("是否用户命令"), Description("是否用户命令")]
+        public bool IsUserCommand
+        {
+            get
+            {
+                return _isUserCommand;
+            }
+            set
+            {
+                if (_isUserCommand == value)
+                    return;
+                BeforePropertyChanged(nameof(IsUserCommand), _isUserCommand, value);
+                _isUserCommand = value;
+                OnPropertyChanged(nameof(IsUserCommand));
+            }
+        }
+        /*// <summary>
+        /// 原始内容
+        /// </summary>
+        [DataMember, JsonProperty("Org", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _org;
+
+        /// <summary>
+        /// 原始内容
+        /// </summary>
+        /// <remark>
+        /// 原始内容
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName("原始内容"), Description("原始内容")]
+        public string Org
+        {
+            get
+            {
+                return _org;
+            }
+            set
+            {
+                if (_org == value)
+                    return;
+                BeforePropertyChanged(nameof(Org), _org, value);
+                _org = value;
+                OnPropertyChanged(nameof(Org));
+            }
+        }
+        
+        
+        /// <summary>
+        /// 是否用户命令
+        /// </summary>
+        [DataMember, JsonProperty("IsUserCommand", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isUserCommand;
+
+        /// <summary>
+        /// 是否用户命令
+        /// </summary>
+        /// <remark>
+        /// 是否用户命令
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName("是否用户命令"), Description("是否用户命令")]
+        public bool IsUserCommand
+        {
+            get
+            {
+                return _isUserCommand;
+            }
+            set
+            {
+                if (_isUserCommand == value)
+                    return;
+                BeforePropertyChanged(nameof(IsUserCommand), _isUserCommand, value);
+                _isUserCommand = value;
+                OnPropertyChanged(nameof(IsUserCommand));
             }
         }
 
@@ -187,174 +369,24 @@ namespace Agebull.EntityModel.Config
                 _localCommand = value;
                 OnPropertyChanged(nameof(LocalCommand));
             }
-        }
-
-        /// <summary>
-        /// API原始命令请求参数名称
-        /// </summary>
-        [DataMember, JsonProperty("CallArg", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _callArg;
-
-        /// <summary>
-        /// API原始命令请求参数名称
-        /// </summary>
-        /// <remark>
-        /// API原始命令请求参数名称
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName("API原始命令请求参数名称"), Description("API原始命令请求参数名称")]
-        public string CallArg
-        {
-            get
-            {
-                return _callArg;
-            }
-            set
-            {
-                if (_callArg == value)
-                    return;
-                BeforePropertyChanged(nameof(CallArg), _callArg, value);
-                _callArg = value;
-                OnPropertyChanged(nameof(CallArg));
-            }
-        }
-        
-        /// <summary>
-        /// 是否用户命令
-        /// </summary>
-        [DataMember, JsonProperty("IsUserCommand", NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isUserCommand;
-
-        /// <summary>
-        /// 是否用户命令
-        /// </summary>
-        /// <remark>
-        /// 是否用户命令
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName("是否用户命令"), Description("是否用户命令")]
-        public bool IsUserCommand
-        {
-            get
-            {
-                return _isUserCommand;
-            }
-            set
-            {
-                if (_isUserCommand == value)
-                    return;
-                BeforePropertyChanged(nameof(IsUserCommand), _isUserCommand, value);
-                _isUserCommand = value;
-                OnPropertyChanged(nameof(IsUserCommand));
-            }
-        }
-
-        /// <summary>
-        /// 命令返回参数名称
-        /// </summary>
-        [DataMember, JsonProperty("ResultArg", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _resultArg;
-
-        /// <summary>
-        /// 命令返回参数名称
-        /// </summary>
-        /// <remark>
-        /// 命令返回参数名称
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName("命令返回参数名称"), Description("命令返回参数名称")]
-        public string ResultArg
-        {
-            get
-            {
-                return _resultArg;
-            }
-            set
-            {
-                if (_resultArg == value)
-                    return;
-                BeforePropertyChanged(nameof(ResultArg), _resultArg, value);
-                _resultArg = value;
-                OnPropertyChanged(nameof(ResultArg));
-            }
-        }
-
-        /// <summary>
-        /// 原始内容
-        /// </summary>
-        [DataMember, JsonProperty("Org", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _org;
-
-        /// <summary>
-        /// 原始内容
-        /// </summary>
-        /// <remark>
-        /// 原始内容
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName("原始内容"), Description("原始内容")]
-        public string Org
-        {
-            get
-            {
-                return _org;
-            }
-            set
-            {
-                if (_org == value)
-                    return;
-                BeforePropertyChanged(nameof(Org), _org, value);
-                _org = value;
-                OnPropertyChanged(nameof(Org));
-            }
-        }
-
-        /// <summary>
-        /// API对应的命令号
-        /// </summary>
-        [DataMember, JsonProperty("CommandId", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _commandId;
-
-        /// <summary>
-        /// API对应的命令号
-        /// </summary>
-        /// <remark>
-        /// API对应的命令号
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName("API对应的命令号"), Description("API对应的命令号")]
-        public string CommandId
-        {
-            get
-            {
-                return _commandId;
-            }
-            set
-            {
-                if (_commandId == value)
-                    return;
-                BeforePropertyChanged(nameof(CommandId), _commandId, value);
-                _commandId = value;
-                OnPropertyChanged(nameof(CommandId));
-            }
-        }
+        }*/
         #endregion
         #region 接口
 
         /// <summary>
-        /// 易盛对象名称
+        /// 参数实体
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
         private EntityConfig _argument;
 
         /// <summary>
-        /// 易盛对象名称
+        /// 参数实体
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        public EntityConfig Argument => _argument ?? (_argument = GlobalConfig.GetEntity(CallArg));
+        public EntityConfig Argument => CallArg == null ? null : _argument ?? (_argument = GlobalConfig.GetEntity(CallArg));
 
         /// <summary>
-        /// 客户端调用对象名称
+        /// 返回值
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
         private EntityConfig _result;
@@ -363,20 +395,20 @@ namespace Agebull.EntityModel.Config
         /// 本地对象名称
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        public EntityConfig Result => _result ?? (_result = GlobalConfig.GetEntity(ResultArg));
+        public EntityConfig Result => ResultArg == null ? null: _result ?? (_result = GlobalConfig.GetEntity(ResultArg));
 
 
         /// <summary>
-        /// API原始命令请求参数名称
+        /// 请求参数名称
         /// </summary>
         string ICommandItem.OrgArg => CallArg;
 
         string ICommandItem.CurArg => ResultArg;
 
-        /// <summary>
+        /*// <summary>
         /// 原始定义内容
         /// </summary>
-        string ICommandItem.DefaultCode => Org;
+        string ICommandItem.DefaultCode => Org;*/
 
         #endregion
     }

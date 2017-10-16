@@ -256,7 +256,7 @@ namespace Agebull.EntityModel.Designer
                 var item = new ApiItem
                 {
                     Name = method.Name,
-                    Org = route.Template,
+                    //Org = route.Template,
                     Project = project.Name
                 };
                 items.Add(item);

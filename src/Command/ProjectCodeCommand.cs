@@ -21,7 +21,7 @@ namespace Agebull.EntityModel.Designer
         {
             foreach (var project in argument.Projects)
             {
-                if (string.IsNullOrWhiteSpace(project.ModelPath) || !Directory.Exists(project.ModelPath))
+                if (string.IsNullOrWhiteSpace(project.ModelPath))
                 {
                     StateMessage = $"项目【{project}】的路径设置不正确！"; 
                     return false;

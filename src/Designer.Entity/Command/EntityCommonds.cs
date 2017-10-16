@@ -13,10 +13,8 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    public class EntityModel : DesignCommondBase<EntityConfig>
+    internal class EntityCommonds : DesignCommondBase<EntityConfig>
     {
-        public override string SourceType => typeof(EntityConfig).Name;
-
 
         #region 操作命令
 
@@ -28,17 +26,16 @@ namespace Agebull.EntityModel.Designer
         {
             commands.Add(new CommandItemBuilder
             {
-                Signle = true,
+                Signle = false,
                 Command = new DelegateCommand(SortFieldByIndex),
-                Catalog="字段",
-                Name = "按序号重排(无规则)",
+                Name = "按序号重排",
                 IconName = "tree_item"
             });
             commands.Add(new CommandItemBuilder
             {
                 Signle = true,
                 Command = new DelegateCommand<EntityConfig>(SortField),
-                Name = "按序号重排",
+                Name = "重排字段(主键-标题最前面，相同表关联的字段临近，其它按序号)",
                 Catalog = "字段",
                 IconName = "img_filter"
             });
@@ -72,9 +69,9 @@ namespace Agebull.EntityModel.Designer
             {
                 Command = new DelegateCommand<EntityConfig>(AddNewProperty),
                 Name = "新增字段",
-                Signle=true,
-                NoButton=true,
-                Catalog="字段",
+                Signle = true,
+                NoButton = true,
+                Catalog = "字段",
                 IconName = "tree_Open"
             });
             commands.Add(new CommandItemBuilder
@@ -102,40 +99,14 @@ namespace Agebull.EntityModel.Designer
                 Signle = true,
                 NoButton = true,
                 IconName = "img_del"
-            });
-            commands.Add(new CommandItemBuilder
-            {
-                NoButton = true,
-                Catalog = "字段",
-                Command = new DelegateCommand(ToEnglish),
-                Name = "字段翻译",
-                IconName = "tree_item"
-            });
-            
+            });//
         }
 
         #endregion
 
-
+        
 
         #region 字段编辑
-
-        public void ToEnglish()
-        {
-            try
-            {
-                var tables = Context.GetSelectEntities();
-                foreach (var entity in tables)
-                {
-                    var model = new EntityBusinessModel { Entity = entity };
-                    model.ToEnglish();
-                }
-            }
-            catch (Exception ex)
-            {
-                Context.CurrentTrace.TraceMessage.Status = ex.ToString();
-            }
-        }
         public void SortByGroup()
         {
             if (Context.SelectEntity == null ||
@@ -170,19 +141,15 @@ namespace Agebull.EntityModel.Designer
             {
                 return;
             }
-            var tables = Context.GetSelectEntities();
-            foreach (var entity in tables)
+            var business = new EntitySorter();
+            Foreach(e =>
             {
-                var business = new EntitySorter
-                {
-                    Entity = entity
-                };
+                business.Entity = e;
                 business.SortFieldByIndex(result == MessageBoxResult.Yes);
-            }
+            });
         }
 
-
-
+        
         #endregion
 
 
@@ -198,7 +165,7 @@ namespace Agebull.EntityModel.Designer
                 ForeignKey = column.Name,
                 PrimaryKey = Context.SelectRelationColumn.Name
             };
-            if (CommandIoc.NewConfigCommand(config))
+            if (CommandIoc.NewConfigCommand("新增关联信息", config))
                 Context.SelectRelationTable.Releations.Add(config);
         }
 
@@ -214,7 +181,7 @@ namespace Agebull.EntityModel.Designer
                 Name = "NewField",
                 CsType = "string"
             };
-            if (CommandIoc.NewConfigCommand(config))
+            if (CommandIoc.NewConfigCommand("新增字段", config))
                 entity.Properties.Add(config);
         }
 
@@ -250,7 +217,7 @@ namespace Agebull.EntityModel.Designer
             var oldTable = Context.SelectEntity;
             var newTable = new EntityConfig();
             newTable.CopyValue(oldTable, true);
-            if (!CommandIoc.NewConfigCommand(newTable))
+            if (!CommandIoc.NewConfigCommand("拆分到新实体", newTable))
                 return;
             if (oldTable.PrimaryColumn != null)
             {

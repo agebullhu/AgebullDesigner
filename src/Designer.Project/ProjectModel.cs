@@ -90,7 +90,7 @@ namespace Agebull.EntityModel.Designer
                 return;
             }
             EntityConfig entity;
-            if (!Model.CreateNew(out entity))
+            if (!Model.CreateNew("新增实体",out entity))
             {
                 return;
             }

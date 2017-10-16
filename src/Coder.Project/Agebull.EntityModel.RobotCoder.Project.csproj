@@ -74,7 +74,7 @@
     <Compile Include="Cpp\EsPublishCoder.cs" />
     <Compile Include="Cpp\ProjectBuilde.cs" />
     <Compile Include="DataModel\DataBaseBuilder.cs" />
-    <Compile Include="WebApi\EntityBuilder.cs" />
+    <Compile Include="Project\EntityBuilder.cs" />
     <Compile Include="DataModel\EntityComboBuilder.cs" />
     <Compile Include="Entity\EntityDictionaryBuilder.cs" />
     <Compile Include="Entity\EntityIndexBuilder.cs" />
@@ -91,11 +91,11 @@
     <Compile Include="Entity\EntityQueryBuilder.cs" />
     <Compile Include="Entity\EntityReleationBuilder.cs" />
     <Compile Include="Entity\EntityStructBuilder.cs" />
-    <Compile Include="WebApi\MobileEntityCoder.cs" />
+    <Compile Include="Mobile\MobileEntityCoder.cs" />
     <Compile Include="Mobile\MobileGlobalCoder.cs" />
     <Compile Include="Mobile\ProjectBuilde.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WebApi\WebApiProjectBuilde.cs" />
+    <Compile Include="Project\EntityModelBuilde.cs" />
     <Compile Include="Web\BusinessBuilder.cs" />
     <Compile Include="Web\WebserviceProjectBuilde.cs" />
     <Compile Include="Web\WebServiceBuilder.cs" />

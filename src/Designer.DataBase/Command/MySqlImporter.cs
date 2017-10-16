@@ -34,17 +34,17 @@ namespace Agebull.Common.Config.Designer
                 NoButton = true,
                 Signle = true,
                 SourceType = typeof(SolutionConfig).Name,
-                Command = new AsyncCommand<string, string>(SyncMySqlStructParpare, SyncMySqlStruct, SyncMySqlStructEnd),
+                Command = new AsyncCommand<string, string>(ImportStructParpare, ImportStruct, ImportStructEnd),
                 Name = "导入MySql数据库",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             };
         }
 
-        public bool SyncMySqlStructParpare(string arg, Action<string> setAction)
+        public bool ImportStructParpare(string arg, Action<string> setAction)
         {
             var ctx = DataModelDesignModel.Current.Context;
             ctx.NowJob = DesignContext.JobTrace;
-            return MessageBox.Show("确认执行同步数据库结构操作吗?", "对象编辑", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+            return MessageBox.Show("确认执行【导入MySql数据库】操作吗?", "对象编辑", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
         }
 
 
@@ -52,14 +52,14 @@ namespace Agebull.Common.Config.Designer
         ///     导入MySql数据库
         /// </summary>
         /// <returns></returns>
-        internal string SyncMySqlStruct(string arg)
+        internal string ImportStruct(string arg)
         {
             var ctx = DataModelDesignModel.Current.Context;
             new MySqlImport().Import(ctx.CurrentTrace.TraceMessage, ctx.Solution, DataModelDesignModel.Current.Dispatcher);
             return string.Empty;
         }
 
-        internal void SyncMySqlStructEnd(CommandStatus status, Exception ex, string code)
+        internal void ImportStructEnd(CommandStatus status, Exception ex, string code)
         {
             DataModelDesignModel.Current.Context.NowJob = DesignContext.JobTrace;
             if (ex != null)

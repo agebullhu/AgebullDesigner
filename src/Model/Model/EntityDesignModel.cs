@@ -18,6 +18,8 @@ namespace Agebull.EntityModel.Designer
         public EntityDesignModel()
         {
             Catalog = "×Ö¶Î";
+            Model = DataModelDesignModel.Current;
+            Context = DataModelDesignModel.Current?.Context;
         }
 
         /// <summary>

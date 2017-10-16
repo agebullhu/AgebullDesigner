@@ -695,7 +695,7 @@ namespace Agebull.EntityModel.Config
                 Global.CurrentConfig = value;
             }
         }
-        
+
         /// <summary>
         ///     解决方案集合
         /// </summary>
@@ -705,31 +705,47 @@ namespace Agebull.EntityModel.Config
         ///     枚举集合
         /// </summary>
         public static ObservableCollection<EnumConfig> Enums => Global.Enums;
-        
+
         /// <summary>
         ///     类型(C++)集合
         /// </summary>
         public static ObservableCollection<TypedefItem> TypedefItems => Global.TypedefItems;
-        
+
         /// <summary>
         ///     实体集合
         /// </summary>
         public static ObservableCollection<EntityConfig> Entities => Global.Entities;
-        
+
         /// <summary>
         ///     项目集合
         /// </summary>
         public static ObservableCollection<ProjectConfig> Projects => Global.Projects;
-        
+
         /// <summary>
         ///     API集合
         /// </summary>
         public static ObservableCollection<ApiItem> ApiItems => Global.ApiItems;
-        
+
         /// <summary>
         ///     通知集合
         /// </summary>
         public static ObservableCollection<NotifyItem> NotifyItems => Global.NotifyItems;
+
+        /// <summary>
+        /// 如果不存在就加入
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="values"></param>
+        /// <typeparam name="TConfig"></typeparam>
+        public static void TryAdd<TConfig>(ObservableCollection<TConfig> collection, IEnumerable<TConfig> values)
+            where TConfig : ConfigBase
+        {
+            foreach (var vl in values)
+            {
+                if (collection.All(p => p.Key != vl.Key))
+                    collection.Add(vl);
+            }
+        }
 
         #endregion
     }

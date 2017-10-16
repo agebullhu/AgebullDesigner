@@ -42,7 +42,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 当前对象
         /// </summary>
-        public sealed override ConfigBase CurrentConfig => Entity;
+        public sealed override ConfigBase CurrentConfig => (ConfigBase)Entity ?? Project;
 
         /// <summary>
         /// 当前表对象
@@ -86,7 +86,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <returns></returns>
         protected string ConfigPath(string path, string key, string def, string ext = "")
         {
-            return SetPath(path, Entity.TryGetExtendConfig(key, def).Trim('\\'), ext);
+            return SetPath(path, CurrentConfig.TryGetExtendConfig(key, def).Trim('\\'), ext);
         }
     }
 }

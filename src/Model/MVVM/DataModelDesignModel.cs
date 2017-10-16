@@ -118,17 +118,19 @@ namespace Agebull.EntityModel.Designer
             //    ex.Initialize();
             //}
         }
+
         /// <summary>
         /// 新增对象
         /// </summary>
         /// <typeparam name="TConfig"></typeparam>
+        /// <param name="title"></param>
         /// <param name="config"></param>
         /// <returns></returns>
-        public bool CreateNew<TConfig>(out TConfig config)
+        public bool CreateNew<TConfig>(string title,out TConfig config)
             where TConfig : ConfigBase, new()
         {
             config = new TConfig();
-            return CommandIoc.NewConfigCommand(config);
+            return CommandIoc.NewConfigCommand(title, config);
         }
 
         #endregion

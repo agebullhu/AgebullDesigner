@@ -6,15 +6,14 @@ using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer.WebApi
 {
-    public sealed class ApiInterfaceBuilder : CoderWithEntity
+    public sealed class ApiProxyBuilder : CoderWithEntity
     {
         protected override bool CanWrite => true;
-
         /// <summary>
         /// 名称
         /// </summary>
-        protected override string FileSaveConfigName => "File_Api_Interface_cs";
-
+        protected override string FileSaveConfigName => "File_Api_Proxy_cs";
+        
         /// <summary>
         ///     生成基础代码
         /// </summary>
@@ -30,44 +29,57 @@ using System.Text;
 
 using Gboxt.Common.DataModel;
 using Yizuan.Service.Api;
+using Yizuan.Service.Api.WebApi;
 
 
 namespace {NameSpace}.WebApi.EntityApi
 {{
     /// <summary>
-    /// {Entity.Description}的实体数据操作接口
+    /// {Entity.Description}的实体数据操作接口代理类
     /// </summary>
-    public interface I{Entity.Name}Api
+    public class {Entity.Name}ApiProxy : I{Entity.Name}Api
     {{
         /// <summary>
         ///     新增
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <returns>如果为真并返回结果数据</returns>
-        ApiResult<{Entity.Name}> AddNew({Entity.Name} data);
+        public ApiResult<{Entity.Name}> AddNew({Entity.Name} data)
+        {{
+            return InternalApiCaller.Post<{Entity.Name}>(""entity/{Entity.Name}/AddNew"", data);
+        }}
 
         /// <summary>
         ///     修改
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <returns>如果为真并返回结果数据</returns>
-        ApiResult<{Entity.Name}> Update({Entity.Name} data);
+        public ApiResult<{Entity.Name}> Update({Entity.Name} data)
+        {{
+            return InternalApiCaller.Post<{Entity.Name}>(""entity/{Entity.Name}/Update"", data);
+        }}
 
         /// <summary>
         ///     删除
         /// </summary>
         /// <param name=""dataKey"">数据主键</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        ApiResult Delete(Argument<{Entity.PrimaryColumn?.LastCsType ?? "int"}> dataKey);
+        public ApiResult Delete(Argument<{Entity.PrimaryColumn?.LastCsType ?? "int"}> dataKey)
+        {{
+            return InternalApiCaller.Post(""entity/{Entity.Name}/Delete"", dataKey);
+        }}
 
         /// <summary>
         ///     分页
         /// </summary>
-        ApiResult<ApiPageData<{Entity.Name}>> Query(PageArgument arg);
+        public ApiResult<ApiPageData<{Entity.Name}>> Query(PageArgument arg)
+        {{
+            return InternalApiCaller.Post<ApiPageData<{Entity.Name}>>(""entity/{Entity.Name}/Query"", arg);
+        }}
 
     }}
 }}";
-            var file = ConfigPath(path, FileSaveConfigName, $"I{Entity.Name}EntityApi", ".cs");
+            var file = ConfigPath(path, FileSaveConfigName, $"{Entity.Name}EntityApi", ".cs");
             SaveCode(file, code);
         }
 
@@ -89,13 +101,12 @@ namespace {NameSpace}.WebApi
     /// <summary>
     /// 身份验证服务API
     /// </summary>
-    public interface I{Project.Name}Api
+    public class {Project.Name}ApiController : ApiController
     {{");
 
             foreach (var item in Project.ApiItems)
             {
                 code.Append($@"
-
         /// <summary>
         ///     {item.Caption}:{item.Description}:
         /// </summary>");
@@ -118,14 +129,16 @@ namespace {NameSpace}.WebApi
                 var arg = item.Argument == null ? null : ($"{item.Argument.Name} arg");
 
                 code.Append($@"
-        ApiResult{res} {item.Name}({arg});");
+        public ApiResult{res} {item.Name}({arg})
+        {{
+            return InternalApiCaller.Post{res}({item.RoutePath}, arg);
+        }}");
             }
 
             code.Append(@"
     }
-}
-");
-            var file = ConfigPath(path, "IProjectApi", "I" + Project.Name + "Api", ".cs");
+}");
+            var file = ConfigPath(path, "ProjectApiProxy", $"{Project.Name}ApiProxy", ".cs");
             SaveCode(file, code.ToString());
         }
 

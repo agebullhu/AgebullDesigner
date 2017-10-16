@@ -36,7 +36,41 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// <param name="project"></param>
         public override void CreateProjectCode(ProjectConfig project)
         {
-            var root = IOHelper.CheckPath(Path.GetDirectoryName(project.ModelPath), "Contract");
+            Message = project.Caption;
+            var root = IOHelper.CheckPath(Path.GetDirectoryName(Path.GetDirectoryName(project.ModelPath)), "Api");
+            {
+                var path = IOHelper.CheckPath(root, "Contract", "Interface");
+                var builder = new ApiInterfaceBuilder
+                {
+                    Project = project,
+                    
+                };
+                builder.CreateExtendCode(path);
+            }
+            {
+                var path = IOHelper.CheckPath(root, "Contract", "Proxy");
+                var builder = new ApiProxyBuilder
+                {
+                    Project = project
+                };
+                builder.CreateExtendCode(path);
+            }
+            {
+                var path = IOHelper.CheckPath(root, "WebApi", "Controllers");
+                var builder = new ApiControlerBuilder
+                {
+                    Project = project
+                };
+                builder.CreateExtendCode(path);
+            }
+            {
+                var path = IOHelper.CheckPath(root, "Logical");
+                var builder = new ApiLogicalBuilder
+                {
+                    Project = project
+                };
+                builder.CreateExtendCode(path);
+            }
         }
         /// <summary>
         /// 生成实体代码
@@ -65,9 +99,17 @@ namespace Agebull.EntityModel.Designer.WebApi
                 };
                 var path = IOHelper.CheckPath(root, "Contract", "Interface");
                 builder.CreateBaseCode(path);
-                path = IOHelper.CheckPath(root, "Proxy");
-                builder.CreateExtendCode(path);
             }
+            {
+                var path = IOHelper.CheckPath(root, "Contract", "Proxy");
+                var builder = new ApiProxyBuilder
+                {
+                    Project = project,
+                    Entity = schema
+                };
+                builder.CreateBaseCode(path);
+            }
+            
             {
                 var path = IOHelper.CheckPath(root, "Logical");
                 var builder = new ApiLogicalBuilder

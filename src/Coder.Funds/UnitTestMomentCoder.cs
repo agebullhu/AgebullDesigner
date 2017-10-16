@@ -169,9 +169,9 @@ bool ut_{config.Name}()
             {
                 foreach (var api in apis)
                 {
-                    if (api.LocalEntity != null)
+                    if (api.Argument != null)
                         code.Append($@"
-#include ""{api.LocalEntity.Parent.Name}/{api.LocalEntity.Name}.h""");
+#include ""{api.Argument.Parent.Name}/{api.Argument.Name}.h""");
                 }
                 foreach (var api in apis)
                 {
@@ -206,12 +206,12 @@ api_ut_{api.Name}(command);");
         {
             if (api == null)
                 return;
-            if (api.LocalEntity != null)
+            if (api.Argument != null)
                 code.Append($@"
 //{api.Caption}API请求测试
 bool api_ut_{api.Name}(EsTradeCommand& command)
 {{
-    //初始化{CreateEntityCode(api.LocalEntity, "field_org")}
+    //初始化{CreateEntityCode(api.Argument, "field_org")}
     //序列化
     PNetCommand cmd_arg;
     cmd_arg << field_org;

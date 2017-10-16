@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -12,14 +14,15 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    public class EntityInterfaceCommand : IAutoRegister
+    public class InterfaceCommand : DesignCommondBase<EntityConfig>
     {
         #region 命令注入
 
         /// <summary>
-        /// 注册代码
+        /// 生成命令对象
         /// </summary>
-        void IAutoRegister.AutoRegist()
+        /// <returns></returns>
+        protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
             CommandCoefficient.RegisterCommand<EntityConfig, ActionItem>(new ActionItem
             {
@@ -34,7 +37,7 @@ namespace Agebull.EntityModel.Designer
             CommandCoefficient.RegisterCommand<EntityConfig, ActionItem>(new ActionItem
             {
                 Action = ToIHistory,
-                Name = "实现IHistory接口",
+                Name = "实现IHistoryData接口",
                 Catalog = "数据模型",
                 Tag = "Model,Struct",
                 Signle = true,
@@ -71,34 +74,42 @@ namespace Agebull.EntityModel.Designer
                 NoButton = true,
                 Image = Application.Current.Resources["img_link"] as ImageSource
             });
+            CommandCoefficient.RegisterCommand<EntityConfig, ActionItem>(new ActionItem
+            {
+                Action = CheckIHistory,
+                Name = "规范历史信息(IHistoryData)",
+                Signle = false,
+                NoButton = true,
+                Image = Application.Current.Resources["img_link"] as ImageSource
+            });
         }
         public static void ToSelfRelation(RuntimeActionItem item, object arg)
         {
-            var cmd = new EntityInterfaceCommand { _entity = arg as EntityConfig };
+            var cmd = new InterfaceCommand { _entity = arg as EntityConfig };
             cmd.ToSelfRelation();
         }
 
         public static void ToMemo(RuntimeActionItem item, object arg)
         {
-            var cmd = new EntityInterfaceCommand { _entity = arg as EntityConfig };
+            var cmd = new InterfaceCommand { _entity = arg as EntityConfig };
             cmd.ToMemo();
         }
 
         public static void ToIDataState(RuntimeActionItem item, object arg)
         {
-            var cmd = new EntityInterfaceCommand { _entity = arg as EntityConfig };
+            var cmd = new InterfaceCommand { _entity = arg as EntityConfig };
             cmd.ToIDataState();
         }
 
         public static void ToIHistory(RuntimeActionItem item, object arg)
         {
-            var cmd = new EntityInterfaceCommand { _entity = arg as EntityConfig };
+            var cmd = new InterfaceCommand { _entity = arg as EntityConfig };
             cmd.ToIHistory();
         }
 
         public static void ToIAudit(RuntimeActionItem item, object arg)
         {
-            var cmd = new EntityInterfaceCommand { _entity = arg as EntityConfig };
+            var cmd = new InterfaceCommand { _entity = arg as EntityConfig };
             cmd.ToIAudit();
         }
 
@@ -132,7 +143,7 @@ namespace Agebull.EntityModel.Designer
         private void ToIAudit()
         {
             CheckGroup();
-            TryAdd(_dataState,_isFreeze, _authorId, _addDate, _lastReviserId, _lastModifyDate, _auditState, _auditorId, _auditDate);
+            TryAdd(_dataState, _isFreeze, _authorId, _addDate, _lastReviserId, _lastModifyDate, _auditState, _auditorId, _auditDate);
             TrySetInterface("IStateData", "IHistoryData", "IAuditData");
         }
 
@@ -158,7 +169,7 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        private void TryAdd(params  PropertyConfig[] properties)
+        private void TryAdd(params PropertyConfig[] properties)
         {
             foreach (var property in properties)
             {
@@ -229,7 +240,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public static PropertyConfig _slaveOId;
 
-        static EntityInterfaceCommand()
+        static InterfaceCommand()
         {
             using (LoadingModeScope.CreateScope())
             {
@@ -275,6 +286,7 @@ namespace Agebull.EntityModel.Designer
                     Name = "AuthorID",
                     CsType = "int",
                     ColumnName = "author_id",
+
                     DbType = "int",
                     Initialization = "0",
                     DbNullable = false,
@@ -429,5 +441,55 @@ namespace Agebull.EntityModel.Designer
 
         #endregion
 
+        #region 历史信息检查
+
+
+        void CheckIHistory(RuntimeActionItem item, object arg)
+        {
+            Foreach(CheckIHistory);
+        }
+        /*
+         CreatedDate	datetime	Unchecked
+CreatedBy	varchar(50)	Unchecked
+UpdatedDate	datetime	Checked
+UpdatedBy	varchar(50)	Checked
+*/
+        void CheckIHistory(EntityConfig entity)
+        {
+            if (entity.Properties.Count == 0)
+                return;
+            if (entity.Interfaces == null || !entity.Interfaces.Contains("IHistoryData"))
+            {
+                if (!entity.Properties.Any(p => string.Equals(p.Name, "CreatedDate", StringComparison.OrdinalIgnoreCase)))
+                    return;
+                if (!entity.Properties.Any(p => string.Equals(p.Name, "CreatedBy", StringComparison.OrdinalIgnoreCase)))
+                    return;
+                if (!entity.Properties.Any(p => string.Equals(p.Name, "UpdatedDate", StringComparison.OrdinalIgnoreCase)))
+                    return;
+                if (!entity.Properties.Any(p => string.Equals(p.Name, "UpdatedBy", StringComparison.OrdinalIgnoreCase)))
+                    return;
+                _entity = entity;
+                TrySetInterface("IHistoryData");
+            }
+            var history = GlobalConfig.Entities.Where(p => p.IsInterface && p.Name == "IHistoryData").ToArray();
+            CheckField(entity, history[0], "CreatedDate", "AddDate");
+            CheckField(entity, history[0], "CreatedBy", "Author");
+            CheckField(entity, history[0], "UpdatedDate", "LastModifyDate");
+            CheckField(entity, history[0], "UpdatedBy", "LastReviser");
+        }
+
+        void CheckField(EntityConfig entity, EntityConfig history, string f1, string f2)
+        {
+            var a = entity.Properties.FirstOrDefault(p => string.Equals(p.Name, f1, StringComparison.OrdinalIgnoreCase)) ?? entity.Properties.First(p => string.Equals(p.Name, f2, StringComparison.OrdinalIgnoreCase));
+            var b = history.Properties.First(p => string.Equals(p.Name, f2, StringComparison.OrdinalIgnoreCase));
+            
+            a.CopyFrom(b);
+
+            a.IsSystemField = true;
+            a.IsInterfaceField = true;
+            a.IsReference = true;
+            a.ReferenceKey = b.Key;
+        }
+        #endregion
     }
 }

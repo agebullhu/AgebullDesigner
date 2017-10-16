@@ -82,7 +82,7 @@ namespace Agebull.EntityModel.Config
                     var cls = project.Entities.Select(p => p.Classify).Distinct().ToArray();
                     if (!cls.All(string.IsNullOrEmpty))
                     {
-                        foreach (var cl in project.Entities.GroupBy( p=>p.Classify))
+                        foreach (var cl in project.Entities.GroupBy(p => p.Classify))
                         {
                             var name = cl.Key ?? "None";
                             var item = new ClassifyItem<EntityConfig>
@@ -321,12 +321,12 @@ namespace Agebull.EntityModel.Config
         {
             if (!Solutions.Contains(Solution))
                 Solutions.Add(Solution);
-            Entities.AddRange(Solution.Entities);
-            Projects.AddRange(Solution.Projects);
-            Enums.AddRange(Solution.Enums);
-            TypedefItems.AddRange(Solution.TypedefItems);
-            NotifyItems.AddRange(Solution.NotifyItems);
-            ApiItems.AddRange(Solution.ApiItems);
+            TryAdd(Entities, Solution.Entities);
+            TryAdd(Projects, Solution.Projects);
+            TryAdd(Enums, Solution.Enums);
+            TryAdd(TypedefItems, Solution.TypedefItems);
+            TryAdd(NotifyItems, Solution.NotifyItems);
+            TryAdd(ApiItems, Solution.ApiItems);
 
             Solution.Entities.CollectionChanged += (s, e) => CollectionChanged(Entities, e);
             Solution.Projects.CollectionChanged += (s, e) => CollectionChanged(Projects, e);

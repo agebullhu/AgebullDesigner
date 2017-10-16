@@ -243,8 +243,6 @@ ALTER TABLE `{entity.SaveTable}`");
             bool isFirst = true;
             foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
             {
-                if (col.IsPrimaryKey)
-                    continue;
                 if (isFirst)
                     isFirst = false;
                 else

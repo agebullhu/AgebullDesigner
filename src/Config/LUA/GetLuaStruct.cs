@@ -13,15 +13,6 @@ namespace Agebull.EntityModel.Config
         public override void GetLuaStruct(StringBuilder code)
         {
             base.GetLuaStruct(code);
-            if (!string.IsNullOrWhiteSpace(Friend))
-                code.AppendLine($@"['Friend'] = '{Friend.ToLuaString()}',");
-            else
-                code.AppendLine($@"['Friend'] = nil,");
-
-            code.AppendLine($@"['FriendKey'] ='{FriendKey}',");
-
-            code.AppendLine($@"['LocalCommand'] ={(LocalCommand.ToString().ToLower())},");
-
             if (!string.IsNullOrWhiteSpace(CallArg))
                 code.AppendLine($@"['CallArg'] = '{CallArg.ToLuaString()}',");
             else
@@ -31,35 +22,15 @@ namespace Agebull.EntityModel.Config
                 code.AppendLine($@"['ClientArg'] = '{ResultArg.ToLuaString()}',");
             else
                 code.AppendLine($@"['ClientArg'] = nil,");
-
-            code.AppendLine($@"['IsUserCommand'] ={(IsUserCommand.ToString().ToLower())},");
-
+            
             if (!string.IsNullOrWhiteSpace(ResultArg))
                 code.AppendLine($@"['ResultArg'] = '{ResultArg.ToLuaString()}',");
             else
                 code.AppendLine($@"['ResultArg'] = nil,");
-
-            if (!string.IsNullOrWhiteSpace(Org))
-                code.AppendLine($@"['Org'] = '{Org.ToLuaString()}',");
-            else
-                code.AppendLine($@"['Org'] = nil,");
-
-            if (EsEntity != null)
-                code.AppendLine($@"['EsEntity'] = {EsEntity.GetLuaStruct()},");
-
-            if (LocalEntity != null)
-                code.AppendLine($@"['LocalEntity'] = {LocalEntity.GetLuaStruct()},");
-
-            if (!string.IsNullOrWhiteSpace(CommandId))
-                code.AppendLine($@"['CommandId'] = '{CommandId.ToLuaString()}',");
-            else
-                code.AppendLine($@"['CommandId'] = nil,");
+            
 
         }
-
-        public EntityConfig LocalEntity { get; set; }
-
-        public EntityConfig EsEntity { get; set; }
+        
     }
 
     partial class ClassifyConfig

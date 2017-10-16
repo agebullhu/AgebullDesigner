@@ -51,7 +51,7 @@ using Yizuan.Service.Api;
 
 using Newtonsoft.Json;
 
-namespace {NameSpace}.WebApi.EntityApi
+namespace {NameSpace}.WebApi
 {{
     /// <summary>
     /// {Entity.Description}
@@ -81,7 +81,7 @@ using System.Text;
 using System.Runtime.Serialization;
 using Gboxt.Common.DataModel;
 
-namespace {NameSpace}.WebApi.EntityApi
+namespace {NameSpace}.WebApi
 {{
     sealed partial class {Entity.Name}
     {{
@@ -126,7 +126,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// {ToRemString(property.Description)}
         /// </remarks>
         {Attribute(property)}
-        public {property.LastCsType} {property.Name}
+        public {property?.LastCsType ?? "int"} {property.Name}
         {{
             get;
             set;
@@ -220,7 +220,7 @@ namespace {NameSpace}.WebApi.EntityApi
             var fields = Entity.PublishProperty.Where(p => p.CanUserInput).ToArray();
             foreach (PropertyConfig field in fields.Where(p => !string.IsNullOrWhiteSpace(p.EmptyValue)))
             {
-                ConvertEmptyValue(code, field);
+                EntityValidateBuilder.ConvertEmptyValue(code, field);
             }
 
             foreach (PropertyConfig field in fields.Where(p => string.IsNullOrWhiteSpace(p.ExtendRole)))
@@ -228,185 +228,21 @@ namespace {NameSpace}.WebApi.EntityApi
                 switch (field.CsType)
                 {
                     case "string":
-                        StringCheck(code, field);
+                        EntityValidateBuilder.StringCheck(code, field);
                         continue;
                     case "int":
                     case "long":
                     case "decimal":
-                        NumberCheck(code, field);
+                        EntityValidateBuilder.NumberCheck(code, field);
                         break;
                     case "DateTime":
-                        DateTimeCheck(code, field);
+                        EntityValidateBuilder.DateTimeCheck(code, field);
                         break;
                 }
             }
             return code.ToString();
         }
-
-        private static void DateTimeCheck(StringBuilder code, PropertyConfig field)
-        {
-            if (!field.CanEmpty)
-            {
-                code.Append($@"
-            if({field.Name} == DateTime.MinValue)
-                 result.AddNoEmpty(""{field.Caption}"",nameof({field.Name}));");
-            }
-            if (field.Max == null && field.Min == null)
-                return;
-            if (field.CanEmpty)
-                code.Append($@"
-            if({field.Name} != null)
-            {{");
-            else
-                code.Append(@"
-            else 
-            {");
-
-            if (field.Max != null && field.Min != null)
-            {
-                code.Append($@"
-                if({field.Name} > new DateTime({field.Max}) ||{field.Name} < new DateTime({field.Min}))
-                    result.Add(""{field.Caption}"",nameof({field.Name}),$""不能大于{field.Max}或小于{field.Min}"");");
-            }
-            else if (field.Max != null)
-            {
-                if (!field.CanEmpty)
-                    code.Append(@" else ");
-                code.Append($@"
-                if({field.Name} > new DateTime({field.Max}))
-                    result.Add(""{field.Caption}"",nameof({field.Name}),$""不能大于{field.Max}"");");
-            }
-            else if (field.Min != null)
-            {
-                if (!field.CanEmpty)
-                    code.Append(@" else ");
-                code.Append($@"
-                if({field.Name} < new DateTime({field.Min}))
-                    result.Add(""{field.Caption}"",nameof({field.Name}),$""不能小于{field.Min}"");");
-            }
-            code.Append(@"
-            }");
-        }
-
-        private static void NumberCheck(StringBuilder code, PropertyConfig field)
-        {
-            if (field.Datalen > 0 || field.Min != null)
-            {
-                if (field.CanEmpty)
-                    code.Append($@"
-            if({field.Name} != null)
-            {{");
-                if (field.Datalen > 0 && field.Min != null)
-                {
-                    code.Append($@"
-            if({field.Name} > {field.Datalen} ||{field.Name} < {field.Min})
-                result.Add(""{field.Caption}"",nameof({field.Name}),$""不能大于{field.Datalen}或小于{field.Min}"");");
-                }
-                else if (field.Datalen > 0)
-                {
-                    code.Append($@"
-            if({field.Name} > {field.Datalen})
-                result.Add(""{field.Caption}"",nameof({field.Name}),$""不能大于{field.Datalen}"");");
-                }
-                else if (field.Min != null)
-                {
-                    code.Append($@"
-            if({field.Name} < {field.Min})
-                result.Add(""{field.Caption}"",nameof({field.Name}),$""不能小于{field.Min}"");");
-                }
-                if (field.CanEmpty)
-                    code.Append(@"
-            }");
-            }
-        }
-
-        private static void StringCheck(StringBuilder code, PropertyConfig field)
-        {
-            if (!field.CanEmpty)
-            {
-                code.Append($@"
-            if(string.IsNullOrWhiteSpace({field.Name}))
-                 result.AddNoEmpty(""{field.Caption}"",nameof({field.Name}));");
-            }
-            if (field.Datalen > 0 || field.Min != null)
-            {
-                if (field.CanEmpty)
-                    code.Append($@"
-            if({field.Name} != null)
-            {{");
-                else
-                    code.Append(@"
-            else 
-            {");
-
-                if (field.Datalen > 0 && field.Min != null)
-                {
-                    code.Append($@"
-                if({field.Name}.Length > {field.Datalen} ||{field.Name}.Length < {field.Min})
-                    result.Add(""{field.Caption}"",nameof({field.Name}),$""不能少于{field.Datalen}多于{field.Min}个字"");");
-                }
-                else if (field.Datalen > 0)
-                {
-                    code.Append($@"
-                if({field.Name}.Length > {field.Datalen})
-                    result.Add(""{field.Caption}"",nameof({field.Name}),$""不能多于{field.Datalen}个字"");");
-                }
-                else
-                {
-                    code.Append($@"
-                if({field.Name}.Length < {field.Min})
-                   result.Add(""{field.Caption}"",nameof({field.Name}),$""不能少于{field.Min}个字"");");
-                }
-                code.Append(@"
-            }");
-            }
-        }
-
-        private static void ConvertEmptyValue(StringBuilder code, PropertyConfig field)
-        {
-            var ems = field.EmptyValue.Split(new[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
-            code.Append(@"
-            if(");
-            bool isFirst = true;
-            foreach (var em in ems)
-            {
-                if (isFirst)
-                    isFirst = false;
-                else
-                    code.Append(@" || ");
-                switch (field.CsType)
-                {
-                    case "string":
-                        code.Append($@"{field.Name} == ""{em}""");
-                        break;
-                    case "Guid":
-                        code.Append($@"{field.Name} == new Guid(""{em}"")");
-                        break;
-                    case "DataTime":
-                        code.Append($@"{field.Name} == DataTime.Parse(""{em}"")");
-                        break;
-                    //case "int":
-                    //case "long":
-                    //case "decimal":
-                    //case "float":
-                    //case "double":
-                    default:
-                        code.Append($@"{field.Name} == {em}");
-                        break;
-                }
-            }
-            if (field.CanEmpty || field.CsType == "string")
-            {
-                code.Append($@")
-                {field.Name} = null;");
-            }
-            else
-            {
-                code.Append($@")
-                {field.Name} = default({field.CsType});");
-            }
-        }
-
+        
         #endregion
     }
 
