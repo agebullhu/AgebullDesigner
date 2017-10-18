@@ -39,6 +39,27 @@ namespace {NameSpace}.WebApi.EntityApi
     /// </summary>
     public class {Entity.Name}ApiProxy : I{Entity.Name}Api
     {{
+        
+        /// <summary>
+        ///     服务地址
+        /// </summary>
+        public string Host
+        {{
+            get
+            {{
+                return caller.Host;
+            }}
+            set
+            {{
+                caller.Host = value;
+            }}
+        }}
+        
+        /// <summary>
+        ///     服务调用对象
+        /// </summary>
+        WebApiCaller caller = new WebApiCaller();
+
         /// <summary>
         ///     新增
         /// </summary>
@@ -46,7 +67,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// <returns>如果为真并返回结果数据</returns>
         public ApiResult<{Entity.Name}> AddNew({Entity.Name} data)
         {{
-            return InternalApiCaller.Post<{Entity.Name}>(""entity/{Entity.Name}/AddNew"", data);
+            return caller.Post<{Entity.Name}>(""entity/{Entity.Name}/AddNew"", data);
         }}
 
         /// <summary>
@@ -56,7 +77,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// <returns>如果为真并返回结果数据</returns>
         public ApiResult<{Entity.Name}> Update({Entity.Name} data)
         {{
-            return InternalApiCaller.Post<{Entity.Name}>(""entity/{Entity.Name}/Update"", data);
+            return caller.Post<{Entity.Name}>(""entity/{Entity.Name}/Update"", data);
         }}
 
         /// <summary>
@@ -66,17 +87,18 @@ namespace {NameSpace}.WebApi.EntityApi
         /// <returns>如果为否将阻止后续操作</returns>
         public ApiResult Delete(Argument<{Entity.PrimaryColumn?.LastCsType ?? "int"}> dataKey)
         {{
-            return InternalApiCaller.Post(""entity/{Entity.Name}/Delete"", dataKey);
+            return caller.Post(""entity/{Entity.Name}/Delete"", dataKey);
         }}
 
         /// <summary>
         ///     分页
         /// </summary>
+        /// <param name=""arg"">分页参数</param>
+        /// <returns>结果数据</returns>
         public ApiResult<ApiPageData<{Entity.Name}>> Query(PageArgument arg)
         {{
-            return InternalApiCaller.Post<ApiPageData<{Entity.Name}>>(""entity/{Entity.Name}/Query"", arg);
+            return caller.Post<ApiPageData<{Entity.Name}>>(""entity/{Entity.Name}/Query"", arg);
         }}
-
     }}
 }}";
             var file = ConfigPath(Entity, FileSaveConfigName, path, "Proxy", $"{Entity.Name}EntityApi.cs");
@@ -99,10 +121,29 @@ using Yizuan.Service.Api.WebApi;
 namespace {NameSpace}.WebApi
 {{
     /// <summary>
-    /// 身份验证服务API
+    /// {Project.Caption}服务API
     /// </summary>
-    public class {Project.Name}ApiController : ApiController
-    {{");
+    public class {Project.Name}ApiProxy : I{Project.Name}Api
+    {{
+        /// <summary>
+        ///     服务地址
+        /// </summary>
+        public string Host
+        {{
+            get
+            {{
+                return caller.Host;
+            }}
+            set
+            {{
+                caller.Host = value;
+            }}
+        }}
+        
+        /// <summary>
+        ///     服务调用对象
+        /// </summary>
+        WebApiCaller caller = new WebApiCaller();");
 
             foreach (var item in Project.ApiItems)
             {
@@ -131,7 +172,7 @@ namespace {NameSpace}.WebApi
                 code.Append($@"
         public ApiResult{res} {item.Name}({arg})
         {{
-            return InternalApiCaller.Post{res}({item.RoutePath}, arg);
+            return caller.Post{res}({item.RoutePath}, arg);
         }}");
             }
 
