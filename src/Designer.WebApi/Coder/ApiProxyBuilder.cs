@@ -172,7 +172,7 @@ namespace {NameSpace}.WebApi
                 code.Append($@"
         public ApiResult{res} {item.Name}({arg})
         {{
-            return caller.Post{res}({item.RoutePath}, arg);
+            return caller.Post{res}(""{item.RoutePath}"", arg);
         }}");
             }
 

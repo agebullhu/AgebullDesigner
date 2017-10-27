@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -62,22 +63,40 @@ DROP VIEW [{entity.ReadTableName}];
         {
             if (entity.DbFields.All(p => IsNullOrEmpty(p.LinkTable)))
                 return null;
-            var names = entity.DbFields.Where(p => !IsNullOrEmpty(p.LinkTable)).Select(p => p.LinkTable).DistinctBy().ToArray();
-            var viewName = "view_" + entity.SaveTable.Replace("tb_", "");
+            var tables = new Dictionary<string, EntityConfig>();
+            foreach (var field in entity.DbFields)
+            {
+                if (string.IsNullOrWhiteSpace(field.LinkTable))
+                    continue;
+                if (field.LinkTable == entity.Name || field.LinkTable == entity.ReadTableName ||
+                    field.LinkTable == entity.SaveTableName)
+                {
+                    continue;
+                }
+                if (tables.ContainsKey(field.LinkTable))
+                    continue;
+                string name = field.LinkTable;
+                var table = GlobalConfig.GetEntity(p => p.SaveTableName == name || p.ReadTableName == name || p.Name == name);
+                if (table==null || table == entity)
+                {
+                    continue;
+                }
+                tables.Add(name, table);
+            }
+            string viewName;
+            if (string.IsNullOrWhiteSpace(entity.ReadTableName) || entity.ReadTableName == entity.SaveTable)
+            {
+                viewName = "view_" + GlobalConfig.ToLinkWordName(entity.Name, "_", false);
+            }
+            else
+            {
+                viewName = entity.ReadTableName;
+            }
             var builder = new StringBuilder();
             builder.Append($@"
 /*******************************{entity.Caption}*******************************/
 CREATE VIEW [{viewName}] AS 
     SELECT ");
-            var tables = new Dictionary<string, EntityConfig>();
-            foreach (var name in names)
-            {
-                if (tables.ContainsKey(name))
-                    continue;
-                var table = GlobalConfig.GetEntity(p => p.SaveTable == name);
-                if (table != null)
-                    tables.Add(name, table);
-            }
             bool first = true;
             foreach (PropertyConfig field in entity.PublishProperty)
             {
@@ -97,7 +116,7 @@ CREATE VIEW [{viewName}] AS
                                 p => p.ColumnName == field.LinkField || p.Name == field.LinkField);
                         if (linkField != null)
                         {
-                            builder.AppendFormat(@"[{0}].[{1}] as [{2}]", friend.SaveTable.Replace("tb_", ""), linkField.ColumnName, field.ColumnName);
+                            builder.AppendFormat(@"[{0}].[{1}] as [{2}]", friend.Name, linkField.ColumnName, field.ColumnName);
                             continue;
                         }
                     }
@@ -109,10 +128,15 @@ CREATE VIEW [{viewName}] AS
             foreach (var table in tables.Values)
             {
                 var field = entity.Properties.FirstOrDefault(p => p.IsLinkKey && p.LinkTable == table.SaveTable);
-                if (field != null)
-                    builder.AppendFormat(@"
+                if (field == null)
+                    continue;
+                var linkField = table.Properties.FirstOrDefault(
+                    p => p.Name == field.LinkField || p.ColumnName == field.LinkField);
+                if (linkField == null)
+                    continue;
+                builder.AppendFormat(@"
     LEFT JOIN [{1}] [{4}] ON [{0}].[{2}] = [{4}].[{3}]"
-                        , entity.SaveTable, table.SaveTable, field.ColumnName, table.PrimaryColumn.ColumnName, table.SaveTable.Replace("tb_", ""));
+                        , entity.SaveTable, table.SaveTable, field.ColumnName, linkField.ColumnName, table.Name);
             }
             builder.Append(';');
             builder.AppendLine();
@@ -258,7 +282,7 @@ ALTER TABLE [{entity.SaveTable}]");
             MemCode(entity, code);
             return code.ToString();
         }
-        
+
         private string ChangeColumnCode(EntityConfig entity)
         {
             if (entity == null || entity.IsClass)

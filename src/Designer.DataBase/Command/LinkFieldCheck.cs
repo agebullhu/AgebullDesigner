@@ -44,28 +44,36 @@ namespace Agebull.Common.Config.Designer
             {
                 if (!string.IsNullOrWhiteSpace(field.LinkTable))
                 {
+                    if (field.LinkTable == entity.Name || field.LinkTable == entity.ReadTableName ||
+                        field.LinkTable == entity.SaveTableName)
+                    {
+                        field.LinkTable = null;
+                        field.IsLinkCaption = false;
+                        field.IsLinkKey = false;
+                        field.IsLinkField = false;
+                        continue;
+                    }
+
                     var table = GlobalConfig.GetEntity(
                         p => p.Name == field.LinkTable || p.SaveTable == field.LinkTable ||
                              p.ReadTableName == field.LinkTable);
-                    var pro = table?.Properties.FirstOrDefault(
-                        p => p.Name == field.LinkField || p.ColumnName == field.LinkField);
-                    if (pro != null)
+                    if (table != null && table != entity)
                     {
-                        field.IsLinkField = true;
-                        field.IsLinkKey = pro.IsPrimaryKey;
-                        field.IsLinkCaption = pro.IsCaption;
-                        if (!field.IsLinkKey)
-                            field.IsCompute = true;
-                        field.ReferenceKey = field.Key;
-                        continue;
+                        var pro = table.Properties.FirstOrDefault(p => p.Name == field.LinkField || p.ColumnName == field.LinkField);
+                        if (pro != null)
+                        {
+                            field.IsLinkField = true;
+                            field.IsLinkKey = pro.IsPrimaryKey;
+                            field.IsLinkCaption = pro.IsCaption;
+                            if (!field.IsLinkKey)
+                                field.IsCompute = true;
+                            field.ReferenceKey = field.Key;
+                            continue;
+                        }
                     }
                 }
-                else
-                {
-                    field.LinkTable=field.LinkField = null;
-                    field.IsLinkKey = field.IsLinkCaption = false;
-                }
-                field.IsLinkField = false;
+                field.LinkTable = field.LinkField = null;
+                field.IsLinkField = field.IsLinkKey = field.IsLinkCaption = false;
                 field.ReferenceKey = Guid.Empty;
             }
             StateMessage = "¼ì²éÍê³É:" + entity.Caption;

@@ -72,12 +72,13 @@ namespace {NameSpace}.WebApi
         protected override void CreateExCode(string path)
         {
             string code = $@"
-using System;
+using System.;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using System;Web;
 using Gboxt.Common.DataModel;
 
 namespace {NameSpace}.WebApi
@@ -161,15 +162,10 @@ namespace {NameSpace}.WebApi
                 if (isFirst)
                     isFirst = false;
                 else
-                    code.AppendLine("&");
-                if (property.CsType == "string")
-                {
-                    code.Append($"{property.Name}={{{property.Name}}}");
-                }
-                else
-                {
-                    code.Append($"{property.Name}={{{property.Name}}}");
-                }
+                    code.Append("&");
+                code.Append(property.CsType == "string"
+                    ? $"{property.Name} = HttpUtility.UrlEncode({{{property.Name}}}, Encoding.UTF8)"
+                    : $"{property.Name}={{{property.Name}}}");
             }
             code.Append(@""";
         }
