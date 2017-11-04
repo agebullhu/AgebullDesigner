@@ -42,7 +42,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="str">旧名称</param>
         /// <param name="head">名称头</param>
         /// <returns>新名称</returns>
-        public static string ToTfWordName(string str,string head="")
+        public static string ToTfWordName(string str, string head = "")
         {
             try
             {
@@ -353,6 +353,60 @@ namespace Agebull.EntityModel.RobotCoder
             caption = caption.Replace("blackcard", "黑卡");
             caption = caption.Replace("vleader", "V领队");
             return caption;
+        }
+        #endregion
+
+        #region 目录扩展
+        /// <summary>
+        /// 检查并组成代码文件路径
+        /// </summary>
+        /// <param name="project"></param>
+        /// <param name="root"></param>
+        /// <param name="names"></param>
+        /// <returns></returns>
+        public static string CheckPath(ProjectConfig project, string root, params string[] names)
+        {
+            if (names.Length == 0)
+            {
+                return string.IsNullOrWhiteSpace(project.BranchPath) 
+                    ? root
+                    : IOHelper.CheckPath(root, project.BranchPath);
+            }
+            if (string.IsNullOrWhiteSpace(project.BranchPath))
+                return IOHelper.CheckPath(root, names);
+            var list = new List<string>();
+            list.AddRange(names);
+            list.Add(project.BranchPath);
+            return IOHelper.CheckPath(root, list.ToArray());
+        }
+
+        /// <summary>
+        /// 检查并组成代码文件路径
+        /// </summary>
+        /// <param name="project"></param>
+        /// <param name="type"></param>
+        /// <param name="names"></param>
+        /// <returns></returns>
+        public static string GetCodePath(ProjectConfig project, string type, params string[] names)
+        {
+            var root = IOHelper.CheckPath(project.ModelPath, SolutionConfig.Current.SrcFolder, type);
+
+            return names.Length == 0 
+                ? root
+                : IOHelper.CheckPath(root, names);
+        }
+
+        /// <summary>
+        /// 检查并组成文档文件路径
+        /// </summary>
+        /// <param name="project"></param>
+        /// <returns></returns>
+        public static string GetDocumentPath(ProjectConfig project)
+        {
+            var root = IOHelper.CheckPath(project.ModelPath, SolutionConfig.Current.DocFolder);
+            return string.IsNullOrWhiteSpace(project.BranchPath)
+                ? root
+                : IOHelper.CheckPath(root, project.BranchPath);
         }
         #endregion
     }

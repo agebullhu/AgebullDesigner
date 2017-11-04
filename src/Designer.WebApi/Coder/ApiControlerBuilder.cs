@@ -147,8 +147,8 @@ namespace {NameSpace}.WebApi
                     code.Append($@"
         /// <returns>{item.Result.Caption}</returns>");
                 }
-                var res = item.Result == null ? null : ("<" + item.Result.Name + ">");
-                var arg = item.Argument == null ? null : ($"[FromBody]{item.Argument.Name} arg");
+                var res = item.ResultArg == null ? null : ("<ApiResult<" + item.ResultArg + ">>");
+                var arg = item.CallArg == null ? null : ($"[FromBody]{item.CallArg} arg");
 
                 code.Append($@"
         [HttpPost, Route(""{item.RoutePath}"")]

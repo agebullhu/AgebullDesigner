@@ -75,7 +75,7 @@ namespace {NameSpace}
         /// </summary>
         private string FullCode()
         {
-            if (Entity.IsClass)
+            if (Entity.IsClass || Entity.PrimaryColumn?.CsType != "int")
                 return null;
             return $@"
         #region IIdentityData接口
@@ -99,7 +99,7 @@ namespace {NameSpace}
                 list.AddRange(Entity.Interfaces.Split(NoneLanguageChar, StringSplitOptions.RemoveEmptyEntries));
             }
             //code.Append("IEntityPoolSetting");
-            if (!Entity.IsClass)
+            if (!Entity.IsClass && Entity.PrimaryColumn?.CsType == "int")
                 list.Add("IIdentityData");
             //if (!Entity.IsLog)
             //{
@@ -163,22 +163,22 @@ namespace {NameSpace}
                 this.{1} = {0}value;
             }}
         }}", Entity.PrimaryColumn.LastCsType == "int" ? string.Empty : "(int)", Entity.PrimaryColumn.Name);
-                else
-                    code.AppendFormat(@"
+        //        else
+        //            code.AppendFormat(@"
 
-        /// <summary>
-        /// Id键
-        /// </summary>
-        int IIdentityData.Id
-        {{
-            get
-            {{
-                throw new Exception(""不支持"");//BUG:ID不是INT类型
-            }}
-            set
-            {{
-            }}
-        }}");
+        ///// <summary>
+        ///// Id键
+        ///// </summary>
+        //int IIdentityData.Id
+        //{{
+        //    get
+        //    {{
+        //        throw new Exception(""不支持"");//BUG:ID不是INT类型
+        //    }}
+        //    set
+        //    {{
+        //    }}
+        //}}");
                 if (Entity.PrimaryColumn.IsGlobalKey)
                 {
                     code.AppendFormat(@"

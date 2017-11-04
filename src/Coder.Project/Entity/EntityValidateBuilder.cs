@@ -29,7 +29,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name=""result"">结果存放处</param>
         public override void Validate(ValidateResult result)
         {{
-            result.Id = Id.ToString(); 
+            result.Id = {Entity.PrimaryColumn.Name}.ToString(); 
             base.Validate(result);{Code()}
             ValidateEx(result);
         }}";
@@ -168,7 +168,7 @@ namespace Agebull.EntityModel.RobotCoder
                 {
                     code.Append($@"
                 if({field.Name}.Length > {field.Datalen} ||{field.Name}.Length < {field.Min})
-                    result.Add(""{field.Caption}"",nameof({field.Name}),$""不能少于{field.Datalen}多于{field.Min}个字"");");
+                    result.Add(""{field.Caption}"",nameof({field.Name}),$""不能少于{field.Datalen}或多于{field.Min}个字"");");
                 }
                 else if (field.Datalen > 0)
                 {

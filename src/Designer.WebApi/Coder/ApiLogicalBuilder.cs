@@ -252,10 +252,14 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         protected override void CreateExCode(string path)
         {
+            ProjectApiBase(path);
+            ProjectApiExtend(path);
+        }
+
+        private void ProjectApiBase(string path)
+        {
             StringBuilder code = new StringBuilder();
             code.Append($@"using System;
-using System.Web.Http;
-using GoodLin.Common.Ioc;
 using GoodLin.OAuth.Api;
 using Yizuan.Service.Api;
 using Yizuan.Service.Api.WebApi;
@@ -265,11 +269,12 @@ namespace {NameSpace}.WebApi
     /// <summary>
     /// {Project.Caption}API
     /// </summary>
-    public class {Project.Name}ApiLogical : I{Project.Name}
+    public partial class {Project.Name}ApiLogical : I{Project.Name}Api
     {{");
 
             foreach (var item in Project.ApiItems)
             {
+
                 code.Append($@"
         /// <summary>
         ///     {item.Caption}:{item.Description}:
@@ -295,18 +300,86 @@ namespace {NameSpace}.WebApi
                 code.Append($@"
         public ApiResult{res} {item.Name}({arg})
         {{
+            var result = new ApiResult{res}();
+            {item.Name}(");
+                if (item.Argument != null)
+                    code.Append("arg,");
+                code.Append($@"result);
+            return result;
+        }}
+
+        partial void {item.Name}(");
+                if (item.Argument != null)
+                    code.Append($"{arg},");
+                code.Append($@"ApiResult{res} result);");
+            }
+
+            code.Append(@"
+    }
+}");
+            var file = ConfigPath(Project, FileSaveConfigName, path, "Logical", $"{Project.Name}Api_Logical.Designer.cs");
+            WriteFile(file, code.ToString());
+        }
+
+
+        private void ProjectApiExtend(string path)
+        {
+            StringBuilder code = new StringBuilder();
+            code.Append($@"using System;
+using GoodLin.OAuth.Api;
+using Yizuan.Service.Api;
+using Yizuan.Service.Api.WebApi;
+
+namespace {NameSpace}.WebApi
+{{
+    /// <summary>
+    /// {Project.Caption}API
+    /// </summary>
+    partial class {Project.Name}ApiLogical
+    {{");
+
+            foreach (var item in Project.ApiItems)
+            {
+                code.Append($@"
+        /// <summary>
+        ///     {item.Caption}:{item.Description}:
+        /// </summary>");
+                if (item.Argument != null)
+                {
+                    code.Append($@"
+        /// <param name=""arg"">{item.Argument?.Caption}</param>");
+                }
+                code.Append(@"
+        /// <param name=""result"">返回值</param>");
+                if (item.Result == null)
+                {
+                    code.Append(@"
+        /// <returns>操作结果</returns>");
+                }
+                else
+                {
+                    code.Append($@"
+        /// <returns>{item.Result.Caption}</returns>");
+                }
+                var res = item.Result == null ? null : ("<" + item.Result.Name + ">");
+                var arg = item.Argument == null ? null : ($"{item.Argument.Name} arg");
+
+                code.Append($@"
+        partial void {item.Name}(");
+                if (item.Argument != null)
+                    code.Append($"{arg},");
+                code.Append($@"ApiResult{res} result)
+        {{
             //TO DO:实现API
-            return null;
         }}");
             }
 
             code.Append(@"
     }
 }");
-            var file = ConfigPath(Project, FileSaveConfigName, path, "Logical",  $"{Project.Name}Api_Logical.cs");
-            SaveCode(file, code.ToString());
+            var file = ConfigPath(Project, FileSaveConfigName+"_2", path, "Logical", $"{Project.Name}Api_Logical.cs");
+            WriteFile(file, code.ToString());
         }
-
     }
 
 }

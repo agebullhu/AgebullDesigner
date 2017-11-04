@@ -32,7 +32,6 @@ namespace Agebull.EntityModel.Config
         }
 
         #endregion
-        
         #region 子级
 
         /// <summary>
@@ -209,6 +208,7 @@ namespace Agebull.EntityModel.Config
             }
         }
 
+
         /// <summary>
         /// 数据模型(C#)
         /// </summary>
@@ -362,8 +362,40 @@ namespace Agebull.EntityModel.Config
                 _clientCsPath = value;
                 OnPropertyChanged(nameof(ClientCsPath));
             }
-        } 
-        #endregion 
+        }
+
+
+
+        /// <summary>
+        /// 子级文件夹
+        /// </summary>
+        [DataMember, JsonProperty("_branchPath", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _branchPath;
+
+        /// <summary>
+        /// 子级文件夹
+        /// </summary>
+        /// <remark>
+        /// 子级文件夹
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"解决方案"), DisplayName(@"子级文件夹"), Description("子级文件夹")]
+        public string BranchPath
+        {
+            get
+            {
+                return _branchPath;
+            }
+            set
+            {
+                if (_branchPath == value)
+                    return;
+                BeforePropertyChanged(nameof(BranchPath), _branchPath, value);
+                _branchPath = value;
+                OnPropertyChanged(nameof(BranchPath));
+            }
+        }
+        #endregion
         #region 数据库
 
         /// <summary>

@@ -280,9 +280,69 @@ namespace Agebull.EntityModel.Config
                 _notifyItems = value;
                 OnPropertyChanged(nameof(NotifyItems));
             }
-        } 
-        #endregion 
+        }
+        #endregion
         #region 代码生成
+
+        /// <summary>
+        /// 文档文件夹名称
+        /// </summary>
+        [DataMember, JsonProperty("_docFolder", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _docFolder;
+
+        /// <summary>
+        /// 文档文件夹名称
+        /// </summary>
+        /// <remark>
+        /// 文档文件夹名称
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"解决方案"), DisplayName(@"文档文件夹名称"), Description("文档文件夹名称")]
+        public string DocFolder
+        {
+            get
+            {
+                return _docFolder ?? "doc";
+            }
+            set
+            {
+                if (_docFolder == value)
+                    return;
+                BeforePropertyChanged(nameof(DocFolder), _docFolder, value);
+                _docFolder = value;
+                OnPropertyChanged(nameof(DocFolder));
+            }
+        }
+
+        /// <summary>
+        /// 代码文件夹名称
+        /// </summary>
+        [DataMember, JsonProperty("_srcFolder", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _srcFolder;
+
+        /// <summary>
+        /// 代码文件夹名称
+        /// </summary>
+        /// <remark>
+        /// 代码文件夹名称
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"解决方案"), DisplayName(@"代码文件夹名称"), Description("代码文件夹名称")]
+        public string SrcFolder
+        {
+            get
+            {
+                return _srcFolder ?? "src";
+            }
+            set
+            {
+                if (_srcFolder == value)
+                    return;
+                BeforePropertyChanged(nameof(SrcFolder), _srcFolder, value);
+                _srcFolder = value;
+                OnPropertyChanged(nameof(SrcFolder));
+            }
+        }
 
         /// <summary>
         /// 解决方案根路径

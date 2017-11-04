@@ -23,7 +23,7 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
         /// <param name="project"></param>
         public override void CreateProjectCode(ProjectConfig project)
         {
-            var dbPath = IOHelper.CheckPath(project.ModelPath, "src", "Model", "DataAccess", "DataBase");
+            var dbPath = GetCodePath(project, "Model", "DataAccess", "DataBase");
             var db = new DataBaseBuilder
             {
                 Project = project
@@ -51,14 +51,14 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
         {
             if (schema.IsClass)
                 return;
-            var rootPath = IOHelper.CheckPath(project.ModelPath,"src", "Model");
-            var entityPath = IOHelper.CheckPath(rootPath, "Entity");
+            var root = GetCodePath(project, "Model");
+            var entityPath = GetCodePath(project, "Model", "Entity");
             Message = entityPath;
-            CreateCode<EntityBuilder>(project, schema, IOHelper.CheckPath(entityPath, "Model"));
+            CreateCode<EntityBuilder>(project, schema, CheckPath(project, root, "Entity", "Model"));
 
             CreateCode<EntityValidateBuilder>(project, schema, entityPath);
 
-            var accessPath = IOHelper.CheckPath(rootPath, "DataAccess", "DataAccess");
+            var accessPath = GetCodePath(project, "Model", "DataAccess", "DataAccess");
             Message = accessPath;
 
             if (project.DbType == DataBaseType.MySql)
@@ -69,8 +69,8 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
             {
                 CreateCode<SqlServerAccessBuilder>(project, schema, accessPath);
             }
-            var blPath = IOHelper.CheckPath(rootPath, "Business");
-            CreateCode<BusinessBuilder>(project, schema, blPath);
+            var blPath = GetCodePath(project, "Model", "Business");
+            CreateCode<BusinessBuilder>(project, schema, CheckPath(project, blPath, "Business"));
             Message = blPath;
         }
 

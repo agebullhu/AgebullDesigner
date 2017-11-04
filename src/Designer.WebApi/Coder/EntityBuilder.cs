@@ -43,6 +43,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Runtime.Serialization;
+using System.Web;
 using Agebull.Common;
 using Gboxt.Common.DataModel;
 using Yizuan.Service.Api;
@@ -72,13 +73,13 @@ namespace {NameSpace}.WebApi
         protected override void CreateExCode(string path)
         {
             string code = $@"
-using System.;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
-using System;Web;
+using System.Web;
 using Gboxt.Common.DataModel;
 
 namespace {NameSpace}.WebApi
@@ -164,11 +165,20 @@ namespace {NameSpace}.WebApi
                 else
                     code.Append("&");
                 code.Append(property.CsType == "string"
-                    ? $"{property.Name} = HttpUtility.UrlEncode({{{property.Name}}}, Encoding.UTF8)"
+                    ? $"{property.Name}={{HttpUtility.UrlEncode({property.Name}, Encoding.UTF8)}}"
                     : $"{property.Name}={{{property.Name}}}");
             }
             code.Append(@""";
         }
+
+        /// <summary>到文本</summary>
+        /// <returns>文本</returns>
+        /// <filterpriority>2</filterpriority>
+        public override string ToString()
+        {
+            return ToFormString();
+        }
+
         #endregion");
 
             return code.ToString();
