@@ -149,7 +149,9 @@ namespace Agebull.EntityModel.Designer
 
         internal TreeItem CreateEntityTreeItem(object arg)
         {
-            var entity = (EntityConfig)arg;
+            var entity = arg as EntityConfig;
+            if (entity == null)
+                return null;
             foreach (var col in entity.Properties)
                 col.Parent = entity;
             foreach (var relation in entity.Releations)

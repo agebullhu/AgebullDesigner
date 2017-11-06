@@ -34,9 +34,10 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder
             {
                 Signle = true,
+                NoButton = true,
                 Command = new DelegateCommand<EntityConfig>(SortField),
                 Name = "重排字段(主键-标题最前面，相同表关联的字段临近，其它按序号)",
-                Catalog = "字段",
+                //Catalog = "字段",
                 IconName = "img_filter"
             });
             commands.Add(new CommandItemBuilder
@@ -45,15 +46,16 @@ namespace Agebull.EntityModel.Designer
                 NoButton = true,
                 Command = new DelegateCommand(SortByGroup),
                 Name = "按组重新排",
-                Catalog = "字段",
+                //Catalog = "字段",
                 IconName = "img_filter"
             });
             commands.Add(new CommandItemBuilder
             {
                 Signle = true,
+                NoButton = true,
                 Command = new DelegateCommand(SplitTable),
                 Name = "拆分到新表",
-                Catalog = "字段",
+                //Catalog = "字段",
                 IconName = "img_add"
             });
             commands.Add(new CommandItemBuilder
@@ -62,7 +64,7 @@ namespace Agebull.EntityModel.Designer
                 Name = "规则修复",
                 Signle = true,
                 NoButton = true,
-                Catalog = "规则",
+                //Catalog = "规则",
                 IconName = "tree_item"
             });
             commands.Add(new CommandItemBuilder
@@ -71,7 +73,7 @@ namespace Agebull.EntityModel.Designer
                 Name = "新增字段",
                 Signle = true,
                 NoButton = true,
-                Catalog = "字段",
+                //Catalog = "字段",
                 IconName = "tree_Open"
             });
             commands.Add(new CommandItemBuilder
@@ -80,7 +82,7 @@ namespace Agebull.EntityModel.Designer
                 Name = "新增多个字段",
                 Signle = true,
                 NoButton = true,
-                Catalog = "字段",
+                //Catalog = "字段",
                 IconName = "tree_Open"
             });
             commands.Add(new CommandItemBuilder
@@ -89,7 +91,7 @@ namespace Agebull.EntityModel.Designer
                 Name = "复制表",
                 Signle = true,
                 NoButton = true,
-                Catalog = "字段",
+                //Catalog = "字段",
                 IconName = "tree_Child1"
             });
             commands.Add(new CommandItemBuilder
