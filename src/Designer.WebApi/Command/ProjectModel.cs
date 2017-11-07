@@ -45,6 +45,7 @@ namespace Agebull.EntityModel.Designer
             {
                 return;
             }
+            api.Method = HttpMethod.POST;
             api.Project = Context.SelectProject.Name;
             Context.SelectProject.ApiItems.Add(api);
             Context.Solution.ApiItems.Add(api);
@@ -72,7 +73,7 @@ namespace Agebull.EntityModel.Designer
             var nentity = CommandIoc.AddFieldsCommand();
             if (nentity != null)
                 entity.Properties.AddRange(nentity.Properties);
-            return nentity;
+            return entity;
         }
     }
 }

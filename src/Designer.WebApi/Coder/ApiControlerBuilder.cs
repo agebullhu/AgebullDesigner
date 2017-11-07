@@ -231,7 +231,7 @@ namespace {NameSpace}.WebApi
         [HttpPost, Route(""{item.RoutePath}"")]
         public ApiResponseMessage{res} {item.Name}({arg})
         {{");
-                if (item.ResultArg != null)
+                if (item.Result != null)
                 {
                     code.Append($@"
             return Request.ToResponse({res}.Success({HelloCode(item.Result)}));
