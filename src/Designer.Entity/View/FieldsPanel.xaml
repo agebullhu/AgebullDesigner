@@ -63,6 +63,7 @@
                 <DataGridTextColumn Binding="{Binding CppType,Mode=TwoWay}" Header="C++类型" />
                 <DataGridTextColumn Binding="{Binding CppLastType,Mode=TwoWay}" Header="C++最终" />
                 <DataGridTextColumn Binding="{Binding UniqueIndex,Mode=TwoWay}" Header="组合主键顺序" />
+                <DataGridTextColumn Binding="{Binding HelloCode,Mode=TwoWay}" Header="示例内容" MinWidth="120"/>
             </DataGrid.Columns>
             <i:Interaction.Behaviors>
                 <behaviors:DataGridGenertColumnsBehavior />

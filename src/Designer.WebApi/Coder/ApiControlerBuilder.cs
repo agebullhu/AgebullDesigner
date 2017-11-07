@@ -110,6 +110,12 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         protected override void CreateExCode(string path)
         {
+            Default1(path);
+            Default2(path);
+        }
+
+        void Default1(string path)
+        {
             StringBuilder code = new StringBuilder();
             code.Append($@"using System;
 using System.Web.Http;
@@ -152,7 +158,7 @@ namespace {NameSpace}.WebApi
 
                 code.Append($@"
         [HttpPost, Route(""{item.RoutePath}"")]
-        [ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Anymouse)]
+        //[ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Anymouse)]
         public ApiResponseMessage{res} {item.Name}({arg})
         {{
             var lg = new {Project.Name}ApiLogical() as I{Project.Name}Api;");
@@ -177,6 +183,71 @@ namespace {NameSpace}.WebApi
 }
 ");
             var file = ConfigPath(Project, FileSaveConfigName, path, "Controllers", $"{Project.Name}_Controller.cs");
+            SaveCode(file, code.ToString());
+        }
+        void Default2(string path)
+        {
+            StringBuilder code = new StringBuilder();
+            code.Append($@"using System;
+using System.Web.Http;
+using GoodLin.Common.Ioc;
+using GoodLin.OAuth.Api;
+using Yizuan.Service.Api;
+using Yizuan.Service.Api.WebApi;
+
+namespace {NameSpace}.WebApi
+{{
+    /// <summary>
+    /// 身份验证服务API
+    /// </summary>
+    public class {Project.Name}ApiController : ApiController
+    {{");
+
+            foreach (var item in Project.ApiItems)
+            {
+                code.Append($@"
+        /// <summary>
+        ///     {item.Caption}:{item.Description}:
+        /// </summary>");
+                if (item.Argument != null)
+                {
+                    code.Append($@"
+        /// <param name=""arg"">{item.Argument?.Caption}</param>");
+                }
+                if (item.Result == null)
+                {
+                    code.Append(@"
+        /// <returns>操作结果</returns>");
+                }
+                else
+                {
+                    code.Append($@"
+        /// <returns>{item.Result.Caption}</returns>");
+                }
+                var res = item.Result == null ? null : ("<ApiResult<" + item.ResultArg + ">>");
+                var arg = item.Argument == null ? null : ($"[FromBody]{item.CallArg} arg");
+
+                code.Append($@"
+        [HttpPost, Route(""{item.RoutePath}"")]
+        public ApiResponseMessage{res} {item.Name}({arg})
+        {{");
+                if (item.ResultArg != null)
+                {
+                    code.Append($@"
+            return Request.ToResponse({res}.Success({HelloCode(item.Result)}));
+        }}");
+                }
+                else
+                code.Append($@"
+            return Request.ToResponse({res}.Success());
+        }}");
+            }
+
+            code.Append(@"
+    }
+}
+");
+            var file = ConfigPath(Project, FileSaveConfigName+"_HelloCode", path, "Controllers", $"{Project.Name}_Controller.HelloCode.cs");
             SaveCode(file, code.ToString());
         }
     }

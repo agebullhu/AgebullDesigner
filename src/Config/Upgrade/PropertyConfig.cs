@@ -2210,7 +2210,33 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(CanEmpty));
             }
         }
+        /// <summary>
+        /// 示例内容
+        /// </summary>
+        [DataMember, JsonProperty("_helloCode", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _helloCode;
 
+        /// <summary>
+        /// 示例内容
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据规则"), DisplayName(@"示例内容"), Description(CanEmpty_Description)]
+        public string HelloCode
+        {
+            get
+            {
+                return _helloCode;
+            }
+            set
+            {
+                if (_helloCode == value)
+                    return;
+                BeforePropertyChanged(nameof(HelloCode), _helloCode, value);
+                _helloCode = value;
+                OnPropertyChanged(nameof(HelloCode));
+            }
+        }
+        
         /// <summary>
         /// 最大值
         /// </summary>

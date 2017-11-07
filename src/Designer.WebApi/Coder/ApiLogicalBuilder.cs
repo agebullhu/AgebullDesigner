@@ -370,16 +370,27 @@ namespace {NameSpace}.WebApi
                     code.Append($"{arg},");
                 code.Append($@"ApiResult{res} result)
         {{
-            //TO DO: µœ÷API
+            result.Result = true;");
+                code.Append($@"
+        partial void {item.Name}(");
+                if (item.Result != null)
+                    code.Append($@"
+            result.ResultData = {HelloCode(item.Result)};
         }}");
+
+                code.Append($@"
+        partial void {item.Name}(");
+                code.Append(@"
+        }");
             }
 
             code.Append(@"
     }
 }");
-            var file = ConfigPath(Project, FileSaveConfigName+"_2", path, "Logical", $"{Project.Name}Api_Logical.cs");
+            var file = ConfigPath(Project, FileSaveConfigName + "_2", path, "Logical", $"{Project.Name}Api_Logical.cs");
             WriteFile(file, code.ToString());
         }
+
     }
 
 }

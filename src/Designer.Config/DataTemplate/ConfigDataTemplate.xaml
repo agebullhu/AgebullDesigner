@@ -84,6 +84,10 @@
                         <Label Content="数据模型" />
                         <TextBox Style="{StaticResource MidTextBox}" Text="{Binding ModelPath,Mode=TwoWay}" />
                     </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="子路径名称" />
+                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding BranchPath,Mode=TwoWay}" />
+                    </StackPanel>
                 </WrapPanel>
             </GroupBox>
             <GroupBox Header="C++代码" Margin="5"
@@ -249,7 +253,11 @@
                         <Label Content="数据库类型" />
                         <TextBox Text="{Binding DbType,Mode=TwoWay}" />
                     </StackPanel>
-                </WrapPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="示例内容" />
+                        <TextBox Text="{Binding HelloCode,Mode=TwoWay}" />
+                    </StackPanel>
+                </WrapPanel> 
             </GroupBox>
             <GroupBox Header="*设计" Margin="5">
                 <WrapPanel>

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
@@ -73,6 +74,38 @@ namespace Agebull.EntityModel.RobotCoder
                 attribute.AppendFormat(@" , DisplayName(@""{0}"")", property.Caption);
             attribute.Append("]");
             return attribute.ToString();
+        }
+
+        public static string HelloCode(EntityConfig entity)
+        {
+            StringBuilder code = new StringBuilder();
+            code.Append($@"new {entity.Name}
+            {{");
+            foreach (var property in entity.Properties.Where(p => p.CanUserInput))
+            {
+                var value = property.HelloCode;
+                if (property.CsType == "string")
+                {
+                    value = value == null ? "null" : $"\"{value}\"";
+                }
+                else if (property.CsType == "DateTime")
+                {
+                    value = value == null ? DateTime.Today.ToString() : $"DateTime.Parse(\"{value}\")";
+                }
+                else if (property.CustomType != null)
+                {
+                    value = value == null ? $"default({property.CustomType})" : $"{property.CustomType}.{value}";
+                }
+                else
+                {
+                    value = value ?? $"default({property.CsType})";
+                }
+                code.Append($@"
+                {property.Name} = {value},");
+            }
+            code.Append(@"
+            }");
+            return code.ToString();
         }
 
         #region √∂æŸ Ù–‘
