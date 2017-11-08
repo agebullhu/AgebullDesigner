@@ -31,6 +31,8 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// </summary>
         protected override void CreateBaCode(string path)
         {
+            if (Entity.ExtendConfigListBool["NoApi"])
+                return;
             string code = $@"using System;
 using System.IO;
 using System.Collections.Generic;

@@ -185,6 +185,7 @@ namespace {NameSpace}.WebApi
         }
 
         #endregion
+
         #region 数据校验
 
         public string ValidateCode()

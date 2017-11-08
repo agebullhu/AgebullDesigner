@@ -19,6 +19,8 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// </summary>
         protected override void CreateBaCode(string path)
         {
+            if (Entity.ExtendConfigListBool["NoApi"])
+                return;
             var code = $@"
 using System;
 using System.Collections.Generic;
@@ -169,10 +171,11 @@ namespace {NameSpace}.WebApi
                 var res = item.Result == null ? null : ("<" + item.Result.Name + ">");
                 var arg = item.Argument == null ? null : ($"{item.Argument.Name} arg");
 
+                var arg2 = item.Argument == null ? "\"\"" : "arg";
                 code.Append($@"
         public ApiResult{res} {item.Name}({arg})
         {{
-            return caller.Post{res}(""{item.RoutePath}"", arg);
+            return caller.Post{res}(""{item.RoutePath}"", {arg2});
         }}");
             }
 

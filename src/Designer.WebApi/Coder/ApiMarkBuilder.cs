@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.IO;
 using System.Text;
@@ -80,6 +81,8 @@ namespace Agebull.EntityModel.Designer.WebApi
 # {Project.Caption} 实体操作 API 列表：");
             foreach (var entity in Project.Entities)
             {
+                if (entity.ExtendConfigListBool["NoApi"])
+                    continue;
                 code.Append($@"
     # {entity.Caption}
             *POST[entity/{entity.Name}/AddNew](#{entity.Name}) - 创建{entity.Caption}
@@ -90,6 +93,8 @@ namespace Agebull.EntityModel.Designer.WebApi
 
             foreach (var entity in Project.Entities)
             {
+                if (entity.ExtendConfigListBool["NoApi"])
+                    continue;
                 ItemReadMe(code, new ApiItem
                 {
                     RoutePath = $"entity/{entity.Name}/AddNew",
@@ -256,16 +261,22 @@ namespace Agebull.EntityModel.Designer.WebApi
                         isFirst = false;
                     else
                         code.Append(",");
+                    var value = property.HelloCode;
                     if (property.CsType == "string")
                     {
-                        code.Append($@"
-    ""{property.Name}"":""你的例子""");
+                        value = value == null ? $"\"{property.Caption}\"" : $"\"{value}\"   /*{property.Caption}*/";
+                    }
+                    else if (property.CsType == "DateTime")
+                    {
+                        value = value == null ? "\"2017/11/8\"    /*{property.Caption}*/" : $"\"{value}\"    /*{property.Caption}*/";
                     }
                     else
                     {
-                        code.Append($@"
-    ""{property.Name}"":*你的参数");
+                        value = (value ?? "0") + $"/*{property.Caption}*/";
                     }
+
+                    code.Append($@"
+    ""{property.Name}"" : {value}");
                 }
                 code.Append(@"
 }");
@@ -279,7 +290,7 @@ namespace Agebull.EntityModel.Designer.WebApi
             if (item.Result != null)
             {
                 code.Append(@",
-    ""ResultData"",{ ");
+    ""ResultData"":{ ");
                 bool isFirst = true;
                 foreach (var property in item.Result.Properties.Where(p => p.CanUserInput))
                 {
@@ -287,16 +298,21 @@ namespace Agebull.EntityModel.Designer.WebApi
                         isFirst = false;
                     else
                         code.Append(",");
+                    var value = property.HelloCode;
                     if (property.CsType == "string")
                     {
-                        code.Append($@"
-        ""{property.Name}"":""你的数据""");
+                        value = value == null ? $"\"{property.Caption}\"" : $"\"{value}\"   /*{property.Caption}*/";
+                    }
+                    else if (property.CsType == "DateTime")
+                    {
+                        value = value == null ? DateTime.Today.ToString(CultureInfo.InvariantCulture) : $"\"{value}\"    /*{property.Caption}*/";
                     }
                     else
                     {
-                        code.Append($@"
-        ""{property.Name}"":*你的数据");
+                        value = (value ?? "0") + $"/*{property.Caption}*/";
                     }
+                    code.Append($@"
+        ""{property.Name}"" : {value}");
                 }
                 code.Append(@" 
     }");

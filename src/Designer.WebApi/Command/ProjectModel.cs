@@ -28,8 +28,31 @@ namespace Agebull.EntityModel.Designer
                 Command = new DelegateCommand(AddApi),
                 IconName = "tree_Open"
             });
+            
+            commands.Add(new CommandItemBuilder
+            {
+                NoButton = true,
+                Name = "取消实体的API",
+                Command = new DelegateCommand(ClearEntityApi),
+                IconName = "tree_Open"
+            });
         }
-        
+
+        /// <summary>
+        /// 取消所有实体的API
+        /// </summary>
+        public void ClearEntityApi()
+        {
+            Foreach(ClearApi);
+        }
+        /// <summary>
+        /// 取消实体的API
+        /// </summary>
+        public void ClearApi(EntityConfig entity)
+        {
+            entity.ExtendConfigListBool["NoApi"] = true;
+        }
+
         /// <summary>
         /// 
         /// </summary>
