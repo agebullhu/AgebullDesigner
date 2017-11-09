@@ -75,7 +75,7 @@ namespace {NameSpace}
         /// </summary>
         private string FullCode()
         {
-            if (Entity.IsClass || Entity.PrimaryColumn?.CsType != "int")
+            if (Entity.IsClass || Entity.PrimaryColumn?.CsType != "long")
                 return null;
             return $@"
         #region IIdentityData½Ó¿Ú
@@ -99,7 +99,7 @@ namespace {NameSpace}
                 list.AddRange(Entity.Interfaces.Split(NoneLanguageChar, StringSplitOptions.RemoveEmptyEntries));
             }
             //code.Append("IEntityPoolSetting");
-            if (!Entity.IsClass && Entity.PrimaryColumn?.CsType == "int")
+            if (!Entity.IsClass && Entity.PrimaryColumn?.CsType == "long")
                 list.Add("IIdentityData");
             //if (!Entity.IsLog)
             //{
@@ -147,22 +147,22 @@ namespace {NameSpace}
         }}", Entity.PrimaryColumn.LastCsType, Entity.PrimaryColumn.Name);
                 }
                 if(Entity.PrimaryColumn.CsType == "int")
-                code.AppendFormat(@"
+                code.Append($@"
 
         /// <summary>
         /// Id¼ü
         /// </summary>
-        int IIdentityData.Id
+        long IIdentityData.Id
         {{
             get
             {{
-                return (int)this.{1};
+                return (long)this.{Entity.PrimaryColumn.Name};
             }}
             set
             {{
-                this.{1} = {0}value;
+                this.{Entity.PrimaryColumn.Name} = value;
             }}
-        }}", Entity.PrimaryColumn.LastCsType == "int" ? string.Empty : "(int)", Entity.PrimaryColumn.Name);
+        }}");
         //        else
         //            code.AppendFormat(@"
 

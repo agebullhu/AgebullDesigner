@@ -137,7 +137,7 @@ namespace {NameSpace}
                 list.AddRange(Entity.Interfaces.Split(NoneLanguageChar, StringSplitOptions.RemoveEmptyEntries));
             }
             //code.Append("IEntityPoolSetting");
-            if (!Entity.IsClass && Entity.PrimaryColumn?.CsType == "int")
+            if (!Entity.IsClass && Entity.PrimaryColumn?.CsType == "long")
                 list.Add("IIdentityData");
             //if (!Entity.IsLog)
             //{

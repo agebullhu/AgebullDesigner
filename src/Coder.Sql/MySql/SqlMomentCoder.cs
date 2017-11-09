@@ -149,6 +149,8 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
         }
         private static string DropTable(EntityConfig entity)
         {
+            if (entity.IsClass)
+                return Empty;
             return $@"
 /*******************************{entity.Caption}*******************************/
 DROP TABLE `{entity.SaveTable}`;";
@@ -222,7 +224,7 @@ VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Name}
         public static string CreateTableCode(EntityConfig entity, bool signle = false)
         {
             if (entity.IsClass)
-                return "这个设置为普通类，无法生成SQL";
+                return "";//这个设置为普通类，无法生成SQL
             var code = new StringBuilder();
             if (entity.PrimaryColumn != null)
             {

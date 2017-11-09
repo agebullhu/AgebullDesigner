@@ -44,6 +44,8 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.Sqlerver
 
         public static string TruncateTable(EntityConfig entity)
         {
+            if (entity.IsClass)
+                return Empty;
             return $@"
 /*******************************{entity.Caption}*******************************/
 TRUNCATE TABLE [{entity.SaveTable}];
@@ -52,7 +54,7 @@ TRUNCATE TABLE [{entity.SaveTable}];
 
         public static string DropView(EntityConfig entity)
         {
-            if (entity.SaveTable == entity.ReadTableName)
+            if (entity.IsClass || entity.SaveTable == entity.ReadTableName)
                 return Empty;
             return $@"
 /*******************************{entity.Caption}*******************************/
@@ -61,7 +63,7 @@ DROP VIEW [{entity.ReadTableName}];
         }
         public static string CreateView(EntityConfig entity)
         {
-            if (entity.DbFields.All(p => IsNullOrEmpty(p.LinkTable)))
+            if (entity.IsClass || entity.DbFields.All(p => IsNullOrEmpty(p.LinkTable)))
                 return null;
             var tables = new Dictionary<string, EntityConfig>();
             foreach (var field in entity.DbFields)
@@ -148,6 +150,8 @@ CREATE VIEW [{viewName}] AS
         }
         private static string DropTable(EntityConfig entity)
         {
+            if (entity.IsClass)
+                return null;
             return $@"
 /*******************************{entity.Caption}*******************************/
 DROP TABLE [{entity.SaveTable}];";
@@ -212,7 +216,7 @@ VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Name}
         public static string CreateTableCode(EntityConfig entity, bool signle = false)
         {
             if (entity.IsClass)
-                return "这个设置为普通类，无法生成SQL";
+                return "";//这个设置为普通类，无法生成SQL
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
