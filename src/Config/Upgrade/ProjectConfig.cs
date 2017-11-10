@@ -10,8 +10,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.Serialization;
-
+using Agebull.Common;
 using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
@@ -147,82 +148,208 @@ namespace Agebull.EntityModel.Config
         }
         #endregion
         #region 代码路径
-
         /// <summary>
-        /// 项目类型
+        /// 接口代码主文件夹
         /// </summary>
-        [DataMember, JsonProperty("_projectType", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _projectType;
+        [DataMember, JsonProperty("_apiFolder", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _apiFolder;
 
         /// <summary>
-        /// 项目类型
+        /// 接口代码主文件夹
         /// </summary>
         /// <remark>
-        /// 项目类型
+        /// 接口代码主文件夹
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(@"解决方案"), DisplayName(@"项目类型"), Description("项目类型")]
-        public string ProjectType
+        [Category(@"解决方案"), DisplayName(@"接口代码主文件夹"), Description("接口代码主文件夹")]
+        public string ApiFolder
         {
             get
             {
-                return _projectType ?? "WebApp";
+                return _apiFolder;
             }
             set
             {
-                if (_projectType == value)
+                if (_apiFolder == value)
                     return;
-                BeforePropertyChanged(nameof(ProjectType), _pagePath, value);
-                _projectType = value;
-                OnPropertyChanged(nameof(ProjectType));
+                BeforePropertyChanged(nameof(ApiFolder), _apiFolder, value);
+                _apiFolder = value;
+                OnPropertyChanged(nameof(ApiFolder));
+                ResetPath();
             }
         }
 
         /// <summary>
-        /// WEB页面(C#)
+        /// 模型代码主文件夹
         /// </summary>
-        [DataMember,JsonProperty("_pagePath", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _pagePath;
+        [DataMember, JsonProperty("_modelFolder", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _modelFolder;
 
         /// <summary>
-        /// WEB页面(C#)
+        /// 模型代码主文件夹
         /// </summary>
         /// <remark>
-        /// 页面代码路径
+        /// 模型代码主文件夹
         /// </remark>
-        [IgnoreDataMember,JsonIgnore]
-        [Category(@"解决方案"),DisplayName(@"WEB页面(C#)"),Description("页面代码路径")]
-        public string PagePath
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"解决方案"), DisplayName(@"模型代码主文件夹"), Description("模型代码主文件夹")]
+        public string ModelFolder
         {
             get
             {
-                return _pagePath;
+                return _modelFolder;
             }
             set
             {
-                if(_pagePath == value)
+                if (_modelFolder == value)
                     return;
-                BeforePropertyChanged(nameof(PagePath), _pagePath,value);
-                _pagePath = value;
-                OnPropertyChanged(nameof(PagePath));
+                BeforePropertyChanged(nameof(ModelFolder), _modelFolder, value);
+                _modelFolder = value;
+                OnPropertyChanged(nameof(ModelFolder));
+                ResetPath();
             }
         }
 
+        /// <summary>
+        /// 子级文件夹
+        /// </summary>
+        [DataMember, JsonProperty("_branchPath", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _branchFolder;
 
         /// <summary>
-        /// 数据模型(C#)
+        /// 子级文件夹
+        /// </summary>
+        /// <remark>
+        /// 子级文件夹
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"解决方案"), DisplayName(@"子级文件夹"), Description("子级文件夹")]
+        public string BranchFolder
+        {
+            get
+            {
+                return _branchFolder;
+            }
+            set
+            {
+                if (_branchFolder == value)
+                    return;
+                BeforePropertyChanged(nameof(BranchFolder), _branchFolder, value);
+                _branchFolder = value;
+                OnPropertyChanged(nameof(BranchFolder));
+            }
+        }
+
+        /// <summary>
+        /// 重置模型路径
+        /// </summary>
+        public void ResetPath()
+        {
+            string root = IOHelper.CheckPath(Solution.RootPath, Solution.SrcFolder);
+            ModelPath = string.IsNullOrWhiteSpace(_modelFolder)
+                ? IOHelper.CheckPath(root, "Model")
+                : IOHelper.CheckPath(root, _modelFolder);
+
+            ApiPath = string.IsNullOrWhiteSpace(_apiFolder)
+                ? IOHelper.CheckPath(root, "Api")
+                : IOHelper.CheckPath(root, _apiFolder);
+        }
+
+        /// <summary>
+        /// 重置模型路径
+        /// </summary>
+        public string GetPath(params string[] folders)
+        {
+            string root = IOHelper.CheckPath(Solution.RootPath, Solution.SrcFolder);
+            return IOHelper.CheckPath(root, folders);
+        }
+        
+        /// <summary>
+        /// 重置模型路径
+        /// </summary>
+        public string GetModelPath(string type)
+        {
+            ResetPath();
+            return string.IsNullOrWhiteSpace(_branchFolder)
+                ? IOHelper.CheckPath(ModelPath, type)
+                : IOHelper.CheckPath(ModelPath, type, _branchFolder);
+        }
+
+        /// <summary>
+        /// 重置模型路径
+        /// </summary>
+        public string GetModelPath(string type, string sub)
+        {
+            ResetPath();
+            return string.IsNullOrWhiteSpace(_branchFolder)
+                ? IOHelper.CheckPath(ModelPath, type, sub)
+                : IOHelper.CheckPath(ModelPath, type, sub, _branchFolder);
+        }
+        /// <summary>
+        /// 重置模型路径
+        /// </summary>
+        public string GetApiPath(string type)
+        {
+            ResetPath();
+            return string.IsNullOrWhiteSpace(_branchFolder)
+                ? IOHelper.CheckPath(ApiPath, type)
+                : IOHelper.CheckPath(ApiPath, type, _branchFolder);
+        }
+
+        /// <summary>
+        /// 重置模型路径
+        /// </summary>
+        public string GetApiPath(string type,string sub)
+        {
+            ResetPath();
+            return string.IsNullOrWhiteSpace(_branchFolder)
+                ? IOHelper.CheckPath(ApiPath, type, sub)
+                : IOHelper.CheckPath(ApiPath, type, sub, _branchFolder);
+        }
+
+        /// <summary>
+        /// 接口代码路径
+        /// </summary>
+        [DataMember, JsonProperty("_apiPath", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _apiPath;
+
+        /// <summary>
+        /// 接口代码路径
+        /// </summary>
+        /// <remark>
+        /// 接口代码路径
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"解决方案"), DisplayName(@"接口代码路径"), Description("接口代码路径")]
+        public string ApiPath
+        {
+            get
+            {
+                return _apiPath;
+            }
+            set
+            {
+                if (_apiPath == value)
+                    return;
+                BeforePropertyChanged(nameof(ApiPath), _apiPath, value);
+                _apiPath = value;
+                OnPropertyChanged(nameof(ApiPath));
+            }
+        }
+        /// <summary>
+        /// 模型代码路径
         /// </summary>
         [DataMember,JsonProperty("_modelPath", NullValueHandling = NullValueHandling.Ignore)]
         internal string _modelPath;
 
         /// <summary>
-        /// 数据模型(C#)
+        /// 模型代码路径
         /// </summary>
         /// <remark>
         /// 模型代码路径
         /// </remark>
         [IgnoreDataMember,JsonIgnore]
-        [Category(@"解决方案"),DisplayName(@"数据模型(C#)"),Description("模型代码路径")]
+        [Category(@"解决方案"),DisplayName(@"模型代码路径"),Description("模型代码路径")]
         public string ModelPath
         {
             get
@@ -239,6 +366,36 @@ namespace Agebull.EntityModel.Config
             }
         }
 
+
+        /// <summary>
+        /// WEB页面(C#)
+        /// </summary>
+        [DataMember, JsonProperty("_pagePath", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _pagePath;
+
+        /// <summary>
+        /// WEB页面(C#)
+        /// </summary>
+        /// <remark>
+        /// 页面代码路径
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"解决方案"), DisplayName(@"WEB页面(C#)"), Description("页面代码路径")]
+        public string PagePath
+        {
+            get
+            {
+                return _pagePath;
+            }
+            set
+            {
+                if (_pagePath == value)
+                    return;
+                BeforePropertyChanged(nameof(PagePath), _pagePath, value);
+                _pagePath = value;
+                OnPropertyChanged(nameof(PagePath));
+            }
+        }
         /// <summary>
         /// 移动端(C#)
         /// </summary>
@@ -273,7 +430,7 @@ namespace Agebull.EntityModel.Config
         /// 服务端(C++)
         /// </summary>
         [DataMember,JsonProperty("_codePath", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _codePath;
+        internal string _cppCodePath;
 
         /// <summary>
         /// 服务端(C++)
@@ -283,19 +440,19 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember,JsonIgnore]
         [Category(@"解决方案"),DisplayName(@"服务端(C++)"),Description("C++代码地址")]
-        public string CodePath
+        public string CppCodePath
         {
             get
             {
-                return _codePath;
+                return _cppCodePath;
             }
             set
             {
-                if(_codePath == value)
+                if(_cppCodePath == value)
                     return;
-                BeforePropertyChanged(nameof(CodePath), _codePath,value);
-                _codePath = value;
-                OnPropertyChanged(nameof(CodePath));
+                BeforePropertyChanged(nameof(CppCodePath), _cppCodePath,value);
+                _cppCodePath = value;
+                OnPropertyChanged(nameof(CppCodePath));
             }
         }
 
@@ -365,36 +522,6 @@ namespace Agebull.EntityModel.Config
         }
 
 
-
-        /// <summary>
-        /// 子级文件夹
-        /// </summary>
-        [DataMember, JsonProperty("_branchPath", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _branchPath;
-
-        /// <summary>
-        /// 子级文件夹
-        /// </summary>
-        /// <remark>
-        /// 子级文件夹
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"解决方案"), DisplayName(@"子级文件夹"), Description("子级文件夹")]
-        public string BranchPath
-        {
-            get
-            {
-                return _branchPath;
-            }
-            set
-            {
-                if (_branchPath == value)
-                    return;
-                BeforePropertyChanged(nameof(BranchPath), _branchPath, value);
-                _branchPath = value;
-                OnPropertyChanged(nameof(BranchPath));
-            }
-        }
         #endregion
         #region 数据库
 
@@ -546,9 +673,39 @@ namespace Agebull.EntityModel.Config
                 _dbUser = value;
                 OnPropertyChanged(nameof(DbUser));
             }
-        } 
-        #endregion 
+        }
+        #endregion
         #region 数据模型
+
+        /// <summary>
+        /// 项目类型
+        /// </summary>
+        [DataMember, JsonProperty("_projectType", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _projectType;
+
+        /// <summary>
+        /// 项目类型
+        /// </summary>
+        /// <remark>
+        /// 项目类型
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"解决方案"), DisplayName(@"项目类型"), Description("项目类型")]
+        public string ProjectType
+        {
+            get
+            {
+                return _projectType ?? "WebApp";
+            }
+            set
+            {
+                if (_projectType == value)
+                    return;
+                BeforePropertyChanged(nameof(ProjectType), _pagePath, value);
+                _projectType = value;
+                OnPropertyChanged(nameof(ProjectType));
+            }
+        }
 
         /// <summary>
         /// 运行时只读

@@ -498,8 +498,8 @@ namespace Agebull.EntityModel.Config
             else
                 code.AppendLine($@"['ModelPath'] = nil,");
 
-            if (!string.IsNullOrWhiteSpace(CodePath))
-                code.AppendLine($@"['CodePath'] = '{CodePath.ToLuaString()}',");
+            if (!string.IsNullOrWhiteSpace(CppCodePath))
+                code.AppendLine($@"['CodePath'] = '{CppCodePath.ToLuaString()}',");
             else
                 code.AppendLine($@"['CodePath'] = nil,");
 

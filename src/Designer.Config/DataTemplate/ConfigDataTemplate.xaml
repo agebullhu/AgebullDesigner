@@ -23,12 +23,20 @@
                     <TextBox Text="{Binding Abbreviation,Mode=TwoWay}" />
                 </StackPanel>
                 <StackPanel Style="{StaticResource FieldPanel}">
+                    <Label Content="命名空间" />
+                    <TextBox Style="{StaticResource MidTextBox}" Text="{Binding NameSpace,Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Style="{StaticResource FieldPanel}">
                     <Label Content="根路径" />
                     <TextBox Style="{StaticResource MidTextBox}" Text="{Binding RootPath,Mode=TwoWay}" />
                 </StackPanel>
                 <StackPanel Style="{StaticResource FieldPanel}">
-                    <Label Content="命名空间" />
-                    <TextBox Style="{StaticResource MidTextBox}" Text="{Binding NameSpace,Mode=TwoWay}" />
+                    <Label Content="代码文件夹" />
+                    <TextBox Text="{Binding SrcFolder,Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Style="{StaticResource FieldPanel}">
+                    <Label Content="文档文件夹" />
+                    <TextBox Text="{Binding DocFolder,Mode=TwoWay}" />
                 </StackPanel>
             </WrapPanel>
         </GroupBox>
@@ -77,15 +85,23 @@
             <GroupBox Header="代码路径" Margin="5">
                 <WrapPanel>
                     <StackPanel Style="{StaticResource FieldPanel}">
-                        <Label Content="WEB页面" />
-                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding PagePath,Mode=TwoWay}" />
+                        <Label Content="模型根文件夹" />
+                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding ModelFolder,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource FieldPanel}">
-                        <Label Content="数据模型" />
-                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding ModelPath,Mode=TwoWay}" />
+                        <Label Content="接口根文件夹" />
+                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding ApiFolder,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource FieldPanel}">
-                        <Label Content="子路径名称" />
+                        <Label Content="模型路径" />
+                        <TextBox BorderThickness="0" IsReadOnly="True"  Style="{StaticResource MidTextBox}" Text="{Binding ModelPath,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="接口路径" />
+                        <TextBox BorderThickness="0" IsReadOnly="True"  Style="{StaticResource MidTextBox}" Text="{Binding ApiPath,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="分类文件夹" />
                         <TextBox Style="{StaticResource MidTextBox}" Text="{Binding BranchPath,Mode=TwoWay}" />
                     </StackPanel>
                 </WrapPanel>

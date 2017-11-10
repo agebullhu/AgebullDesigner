@@ -376,8 +376,8 @@ namespace Agebull.EntityModel.Config
                     project.ClientCsPath = project.ClientCsPath.Replace(old, path);
                 if (project.ModelPath != null)
                     project.ModelPath = project.ModelPath.Replace(old, path);
-                if (project.CodePath != null)
-                    project.CodePath = project.CodePath.Replace(old, path);
+                if (project.CppCodePath != null)
+                    project.CppCodePath = project.CppCodePath.Replace(old, path);
             }
         }
         #endregion

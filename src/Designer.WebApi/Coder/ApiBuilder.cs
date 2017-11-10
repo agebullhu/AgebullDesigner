@@ -35,9 +35,8 @@ namespace Agebull.EntityModel.Designer.WebApi
         public override void CreateProjectCode(ProjectConfig project)
         {
             Message = project.Caption;
-            var root = GetCodePath(project, "Api");
             {
-                var path = CheckPath(project, root, "Contract");
+                var path = project.GetApiPath("Contract");
                 var builder = new ApiInterfaceBuilder
                 {
                     Project = project
@@ -45,7 +44,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 builder.CreateExtendCode(path);
             }
             {
-                var path = CheckPath(project, root, "Contract");
+                var path = project.GetApiPath("Contract");
                 var builder = new ApiProxyBuilder
                 {
                     Project = project
@@ -53,7 +52,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 builder.CreateExtendCode(path);
             }
             {
-                var path = CheckPath(project, root, "WebApi");
+                var path = project.GetApiPath("WebApi");
                 var builder = new ApiControlerBuilder
                 {
                     Project = project
@@ -61,7 +60,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 builder.CreateExtendCode(path);
             }
             {
-                var path = CheckPath(project, root, "Logical");
+                var path = project.GetApiPath("Logical");
                 var builder = new ApiLogicalBuilder
                 {
                     Project = project
@@ -69,7 +68,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 builder.CreateExtendCode(path);
             }
             {
-                var path = CheckPath(project, root, "WebApi");
+                var path = project.GetApiPath("WebApi");
                 var builder = new ApiControlerBuilder
                 {
                     Project = project
@@ -94,9 +93,8 @@ namespace Agebull.EntityModel.Designer.WebApi
         public override void CreateEntityCode(ProjectConfig project, EntityConfig schema)
         {
             Message = schema.Caption;
-            var root = GetCodePath(project, "Api");
             {
-                var path = CheckPath(project, root, "Contract");
+                var path = project.GetApiPath("Contract");
                 var builder = new EntityBuilder
                 {
                     Project = project,
@@ -111,11 +109,11 @@ namespace Agebull.EntityModel.Designer.WebApi
                     Project = project,
                     Entity = schema
                 };
-                var path = CheckPath(project, root, "Contract");
+                var path = project.GetApiPath("Contract");
                 builder.CreateBaseCode(path);
             }
             {
-                var path = CheckPath(project, root, "Contract");
+                var path = project.GetApiPath("Contract");
                 var builder = new ApiProxyBuilder
                 {
                     Project = project,
@@ -125,7 +123,7 @@ namespace Agebull.EntityModel.Designer.WebApi
             }
 
             {
-                var path = CheckPath(project, root, "Logical");
+                var path = project.GetApiPath("Logical");
                 var builder = new ApiLogicalBuilder
                 {
                     Project = project,
@@ -134,7 +132,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 builder.CreateBaseCode(path);
             }
             {
-                var path = CheckPath(project, root, "WebApi");
+                var path = project.GetApiPath("WebApi");
                 var builder = new ApiControlerBuilder
                 {
                     Project = project,

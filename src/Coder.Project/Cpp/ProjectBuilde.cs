@@ -54,9 +54,9 @@ namespace Agebull.EntityModel.RobotCoder.Cpp
                 builder.CreateBaseCode(entityPath);
                 builder.CreateExtendCode(entityPath);
             }
-            if (!string.IsNullOrEmpty(project.CodePath))
+            if (!string.IsNullOrEmpty(project.CppCodePath))
             {
-                var cppPath = IOHelper.CheckPath(project.CodePath);
+                var cppPath = IOHelper.CheckPath(project.CppCodePath);
                 var builder = new CppStructCoder
                 {
                     Entity = schema,
@@ -65,9 +65,9 @@ namespace Agebull.EntityModel.RobotCoder.Cpp
                 builder.CreateBaseCode(cppPath);
                 builder.CreateExtendCode(cppPath);
             }
-            if (!schema.IsClass && !string.IsNullOrEmpty(project.CodePath))
+            if (!schema.IsClass && !string.IsNullOrEmpty(project.CppCodePath))
             {
-                var cppPath = IOHelper.CheckPath(project.CodePath);
+                var cppPath = IOHelper.CheckPath(project.CppCodePath);
                 {
                     var builder = new CppModelCoder
                     {

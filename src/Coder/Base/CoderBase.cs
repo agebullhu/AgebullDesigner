@@ -368,33 +368,18 @@ namespace Agebull.EntityModel.RobotCoder
         {
             if (names.Length == 0)
             {
-                return string.IsNullOrWhiteSpace(project.BranchPath) 
+                return string.IsNullOrWhiteSpace(project.BranchFolder) 
                     ? root
-                    : IOHelper.CheckPath(root, project.BranchPath);
+                    : IOHelper.CheckPath(root, project.BranchFolder);
             }
-            if (string.IsNullOrWhiteSpace(project.BranchPath))
+            if (string.IsNullOrWhiteSpace(project.BranchFolder))
                 return IOHelper.CheckPath(root, names);
             var list = new List<string>();
             list.AddRange(names);
-            list.Add(project.BranchPath);
+            list.Add(project.BranchFolder);
             return IOHelper.CheckPath(root, list.ToArray());
         }
-
-        /// <summary>
-        /// 检查并组成代码文件路径
-        /// </summary>
-        /// <param name="project"></param>
-        /// <param name="type"></param>
-        /// <param name="names"></param>
-        /// <returns></returns>
-        public static string GetCodePath(ProjectConfig project, string type, params string[] names)
-        {
-            var root = IOHelper.CheckPath(project.ModelPath, SolutionConfig.Current.SrcFolder, type);
-
-            return names.Length == 0 
-                ? root
-                : IOHelper.CheckPath(root, names);
-        }
+        
 
         /// <summary>
         /// 检查并组成文档文件路径
@@ -404,9 +389,9 @@ namespace Agebull.EntityModel.RobotCoder
         public static string GetDocumentPath(ProjectConfig project)
         {
             var root = IOHelper.CheckPath(project.ModelPath, SolutionConfig.Current.DocFolder);
-            return string.IsNullOrWhiteSpace(project.BranchPath)
+            return string.IsNullOrWhiteSpace(project.BranchFolder)
                 ? root
-                : IOHelper.CheckPath(root, project.BranchPath);
+                : IOHelper.CheckPath(root, project.BranchFolder);
         }
         #endregion
     }

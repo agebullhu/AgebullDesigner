@@ -130,7 +130,7 @@ namespace Agebull.EntityModel.Designer
                 //if (string.IsNullOrWhiteSpace(project.ModelPath))
                 project.ModelPath = Context.SelectProject.ModelPath;
                 //if (string.IsNullOrWhiteSpace(project.CodePath))
-                project.CodePath = Context.SelectProject.CodePath;
+                project.CppCodePath = Context.SelectProject.CppCodePath;
                 //if (string.IsNullOrWhiteSpace(project.DataBaseObjectName))
                 project.DataBaseObjectName = Context.SelectProject.DataBaseObjectName;
                 //if (string.IsNullOrWhiteSpace(project.DataBaseObjectName))
