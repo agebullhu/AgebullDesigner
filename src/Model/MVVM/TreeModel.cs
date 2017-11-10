@@ -399,7 +399,7 @@ namespace Agebull.EntityModel.Designer
         {
             var project = (ProjectConfig)arg;
             TreeItem item;
-            if (project.Entities.Count > 15)
+            /*if (project.Entities.Count > 15)
             {
                 var group = new ClassifyGroupConfig<EntityConfig>(project.Entities, p => p.Classify,
                     (name, cfg) => cfg.Classify = name, project.Classifies);
@@ -442,7 +442,25 @@ namespace Agebull.EntityModel.Designer
                     SoruceItemsExpression = () => project.Entities,
                     SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
                 };
+            }*/
+            foreach (var entity in project.Entities)
+            {
+                //if (string.IsNullOrWhiteSpace(entity.Classify))
+                {
+                    entity.Classify = entity.IsClass ? "参数与返回值" : "数据实体";
+                }
             }
+            var group = new ClassifyGroupConfig<EntityConfig>(project.Entities, p => p.Classify,
+                (name, cfg) => cfg.Classify = name, project.Classifies);
+
+            item = new ConfigTreeItem<ProjectConfig>(project)
+            {
+                IsAssist = true,
+                IsExpanded = true,
+                CreateChildFunc = CreateEntityClassifiesTreeItem,
+                SoruceItemsExpression = () => group.Classifies,
+                SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
+            };
             //if (SolutionConfig.Current.SolutionType != SolutionType.Cpp)
             //    return item;
             var citem = new ConfigTreeItem<ProjectConfig>(project)

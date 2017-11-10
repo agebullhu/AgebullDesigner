@@ -83,7 +83,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (string.IsNullOrWhiteSpace(item.Name))
                     item.Name = item.Caption;
-                if (!items.ContainsKey(item.Name))
+                if (!string.IsNullOrWhiteSpace(item.Name) && !items.ContainsKey(item.Name))
                     items.Add(item.Name, item);
                 else
                     Classifies.Remove(item);
