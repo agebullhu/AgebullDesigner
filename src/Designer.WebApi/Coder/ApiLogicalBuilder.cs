@@ -262,7 +262,7 @@ namespace {NameSpace}.WebApi.EntityApi
         {
             StringBuilder code = new StringBuilder();
             code.Append($@"using System;
-using GoodLin.OAuth.Api;
+using System.Linq;
 using Yizuan.Service.Api;
 using Yizuan.Service.Api.WebApi;
 
@@ -301,7 +301,22 @@ namespace {NameSpace}.WebApi
 
                 code.Append($@"
         public ApiResult{res} {item.Name}({arg})
-        {{
+        {{");
+                if (item.Argument != null)
+                {
+                    if(item.Result != null)
+                        code.Append($@"
+            var vr = arg.Validate();
+            if (!vr.succeed)
+                return ApiResult{res}.ErrorResult(ErrorCode.ArgumentError, vr.ToString());");
+                    else
+                        code.Append(@"
+            var vr = arg.Validate();
+            if (!vr.succeed)
+                return ApiResult.Error(ErrorCode.ArgumentError, vr.Messages.ToString());");
+                }
+
+                code.Append($@"
             var result = new ApiResult{res}();
             {item.Name}(");
                 if (item.Argument != null)
@@ -328,7 +343,6 @@ namespace {NameSpace}.WebApi
         {
             StringBuilder code = new StringBuilder();
             code.Append($@"using System;
-using GoodLin.OAuth.Api;
 using Yizuan.Service.Api;
 using Yizuan.Service.Api.WebApi;
 
@@ -373,15 +387,9 @@ namespace {NameSpace}.WebApi
                 code.Append($@"ApiResult{res} result)
         {{
             result.Result = true;");
-                code.Append($@"
-        partial void {item.Name}(");
                 if (item.Result != null)
                     code.Append($@"
-            result.ResultData = {HelloCode(item.Result)};
-        }}");
-
-                code.Append($@"
-        partial void {item.Name}(");
+            result.ResultData = {HelloCode(item.Result)};");
                 code.Append(@"
         }");
             }

@@ -1635,36 +1635,6 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 必填字段
-        /// </summary>
-        [DataMember,JsonProperty("_isRequired", NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isRequired;
-
-        /// <summary>
-        /// 必填字段
-        /// </summary>
-        /// <remark>
-        /// 是否必填字段
-        /// </remark>
-        [IgnoreDataMember,JsonIgnore]
-        [Category(@"用户界面"),DisplayName(@"必填字段"),Description("是否必填字段")]
-        public bool IsRequired
-        {
-            get
-            {
-                return _isRequired;
-            }
-            set
-            {
-                if(_isRequired == value)
-                    return;
-                BeforePropertyChanged(nameof(IsRequired), _isRequired,value);
-                _isRequired = value;
-                OnPropertyChanged(nameof(IsRequired));
-            }
-        }
-
-        /// <summary>
         /// 多行文本
         /// </summary>
         [DataMember,JsonProperty("MulitLine", NullValueHandling = NullValueHandling.Ignore)]
@@ -2172,10 +2142,68 @@ namespace Agebull.EntityModel.Config
                 _gridDetailsCode = value;
                 OnPropertyChanged(nameof(GridDetailsCode));
             }
-        } 
-        #endregion 
+        }
+        #endregion
         #region 数据规则
 
+        /// <summary>
+        /// 校验代码
+        /// </summary>
+        [DataMember, JsonProperty("_validateCode", NullValueHandling = NullValueHandling.Ignore)]
+        private string _validateCode;
+        /// <summary>
+        /// 校验代码
+        /// </summary>
+        /// <remark>
+        /// 校验代码,本字段用{0}代替
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据规则"), DisplayName(@"校验代码"), Description("校验代码,本字段用{0}代替")]
+        public string ValidateCode
+        {
+            get
+            {
+                return _validateCode;
+            }
+            set
+            {
+                if (_validateCode == value)
+                    return;
+                BeforePropertyChanged(nameof(ValidateCode), _validateCode, value);
+                _validateCode = value;
+                OnPropertyChanged(nameof(ValidateCode));
+            }
+        }
+
+        /// <summary>
+        /// 必填字段
+        /// </summary>
+        [DataMember, JsonProperty("_isRequired", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isRequired;
+
+        /// <summary>
+        /// 必填字段
+        /// </summary>
+        /// <remark>
+        /// 是否必填字段
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据规则"), DisplayName(@"必填字段"), Description("是否必填字段")]
+        public bool IsRequired
+        {
+            get
+            {
+                return _isRequired;
+            }
+            set
+            {
+                if (_isRequired == value)
+                    return;
+                BeforePropertyChanged(nameof(IsRequired), _isRequired, value);
+                _isRequired = value;
+                OnPropertyChanged(nameof(IsRequired));
+            }
+        }
         /// <summary>
         /// 能否为空的说明文字
         /// </summary>

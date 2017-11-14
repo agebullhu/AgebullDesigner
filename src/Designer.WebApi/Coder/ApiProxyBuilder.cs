@@ -49,18 +49,18 @@ namespace {NameSpace}.WebApi.EntityApi
         {{
             get
             {{
-                return caller.Host;
+                return Caller.Host;
             }}
             set
             {{
-                caller.Host = value;
+                Caller.Host = value;
             }}
         }}
         
         /// <summary>
         ///     服务调用对象
         /// </summary>
-        WebApiCaller caller = new WebApiCaller();
+        public readonly WebApiCaller Caller = new WebApiCaller();
 
         /// <summary>
         ///     新增
@@ -69,7 +69,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// <returns>如果为真并返回结果数据</returns>
         public ApiResult<{Entity.Name}> AddNew({Entity.Name} data)
         {{
-            return caller.Post<{Entity.Name}>(""entity/{Entity.Name}/AddNew"", data);
+            return Caller.Post<{Entity.Name}>(""entity/{Entity.Name}/AddNew"", data);
         }}
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// <returns>如果为真并返回结果数据</returns>
         public ApiResult<{Entity.Name}> Update({Entity.Name} data)
         {{
-            return caller.Post<{Entity.Name}>(""entity/{Entity.Name}/Update"", data);
+            return Caller.Post<{Entity.Name}>(""entity/{Entity.Name}/Update"", data);
         }}
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// <returns>如果为否将阻止后续操作</returns>
         public ApiResult Delete(Argument<{Entity.PrimaryColumn?.LastCsType ?? "int"}> dataKey)
         {{
-            return caller.Post(""entity/{Entity.Name}/Delete"", dataKey);
+            return Caller.Post(""entity/{Entity.Name}/Delete"", dataKey);
         }}
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// <returns>结果数据</returns>
         public ApiResult<ApiPageData<{Entity.Name}>> Query(PageArgument arg)
         {{
-            return caller.Post<ApiPageData<{Entity.Name}>>(""entity/{Entity.Name}/Query"", arg);
+            return Caller.Post<ApiPageData<{Entity.Name}>>(""entity/{Entity.Name}/Query"", arg);
         }}
     }}
 }}";
@@ -116,7 +116,6 @@ namespace {NameSpace}.WebApi.EntityApi
             code.Append($@"using System;
 using System.Web.Http;
 using GoodLin.Common.Ioc;
-using GoodLin.OAuth.Api;
 using Yizuan.Service.Api;
 using Yizuan.Service.Api.WebApi;
 

@@ -58,12 +58,12 @@ namespace Agebull.EntityModel.Config
                 if (string.IsNullOrWhiteSpace(Entity.ReadTableName))
                 {
                     string head = "tb_";
-                    if (Entity.Classify != null)
+                    /*if (Entity.Classify != null)
                     {
                         var cls = Entity.Parent.Classifies.FirstOrDefault(p => p.Name == Entity.Classify);
                         if (cls != null)
-                            head = cls.Abbreviation.ToLower() + "_";
-                    }
+                            head = cls.Abbreviation?.ToLower() + "_";
+                    }*/
                     //if (!string.IsNullOrWhiteSpace(Entity.Parent.Abbreviation))
                     //    head += Entity.Parent.Abbreviation.ToLower() + "_";
                     Entity.ReadTableName = head + Entity.Name;//SplitWords(Entity.Name).Select(p => p.ToLower()).LinkToString(head, "_");

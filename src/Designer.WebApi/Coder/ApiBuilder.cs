@@ -84,32 +84,55 @@ namespace Agebull.EntityModel.Designer.WebApi
                 builder.CreateBaseCode(path);
                 builder.CreateExtendCode(path);
             }
+            {
+                string path;
+                if (!string.IsNullOrWhiteSpace(project.ModelFolder))
+                {
+                    var folders = project.ModelFolder.Split('\\');
+                    path = folders.Length == 1 
+                        ? project.GetPath("Test", "UnitTest")
+                        : project.GetPath(folders[0], "Test", "UnitTest");
+                }
+                else
+                {
+                    path = project.GetPath("Test", "UnitTest");
+                }
+                var builder = new UnitTestBuilder
+                {
+                    Project = project
+                };
+                builder.CreateExtendCode(path);
+            }
         }
         /// <summary>
         /// 生成实体代码
         /// </summary>
         /// <param name="project"></param>
-        /// <param name="schema"></param>
-        public override void CreateEntityCode(ProjectConfig project, EntityConfig schema)
+        /// <param name="entity"></param>
+        public override void CreateEntityCode(ProjectConfig project, EntityConfig entity)
         {
-            Message = schema.Caption;
+            if (entity.ExtendConfigListBool["NoApi"])
+                return;
+            Message = entity.Caption;
             {
                 var path = project.GetApiPath("Contract");
                 var builder = new EntityBuilder
                 {
                     Project = project,
-                    Entity = schema
+                    Entity = entity
                 };
                 builder.CreateBaseCode(path);
                 builder.CreateExtendCode(path);
             }
+            if (entity.IsClass)
+                return;
             {
+                var path = project.GetApiPath("Contract");
                 var builder = new ApiInterfaceBuilder
                 {
                     Project = project,
-                    Entity = schema
+                    Entity = entity
                 };
-                var path = project.GetApiPath("Contract");
                 builder.CreateBaseCode(path);
             }
             {
@@ -117,7 +140,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 var builder = new ApiProxyBuilder
                 {
                     Project = project,
-                    Entity = schema
+                    Entity = entity
                 };
                 builder.CreateBaseCode(path);
             }
@@ -127,7 +150,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 var builder = new ApiLogicalBuilder
                 {
                     Project = project,
-                    Entity = schema
+                    Entity = entity
                 };
                 builder.CreateBaseCode(path);
             }
@@ -136,7 +159,33 @@ namespace Agebull.EntityModel.Designer.WebApi
                 var builder = new ApiControlerBuilder
                 {
                     Project = project,
-                    Entity = schema
+                    Entity = entity
+                };
+                builder.CreateBaseCode(path);
+            }
+            {
+
+                string path;
+                if (!string.IsNullOrWhiteSpace(project.ModelFolder))
+                {
+                    var folders = project.ModelFolder.Split('\\');
+                    if (folders.Length == 1)
+                    {
+                        path = project.GetPath("Test", "UnitTest");
+                    }
+                    else
+                    {
+                        path = project.GetPath(folders[0], "Test", "UnitTest");
+                    }
+                }
+                else
+                {
+                    path = project.GetPath("Test", "UnitTest");
+                }
+                var builder = new UnitTestBuilder
+                {
+                    Project = project,
+                    Entity = entity
                 };
                 builder.CreateBaseCode(path);
             }

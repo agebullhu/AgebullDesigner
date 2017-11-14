@@ -67,6 +67,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Coder\UnitTestBuilder.cs" />
     <Compile Include="Coder\ApiProxyBuilder.cs" />
     <Compile Include="Coder\ApiInterfaceBuilder.cs" />
     <Compile Include="Coder\ApiBuilder.cs" />

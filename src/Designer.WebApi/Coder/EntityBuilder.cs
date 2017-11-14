@@ -64,7 +64,7 @@ namespace {NameSpace}.WebApi
     }}
 }}";
             var file = ConfigPath(Project, FileSaveConfigName, path, "Model", Entity.Name);
-            SaveCode(file + ".Designer.cs", code);
+            WriteFile(file + ".Designer.cs", code);
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace {NameSpace}.WebApi
     }}
 }}";
             var file = ConfigPath(Project, FileSaveConfigName, path, "Model", Entity.Name);
-            SaveCode(file + ".cs", code);
+            WriteFile(file + ".cs", code);
         }
 
 
@@ -112,10 +112,10 @@ namespace {NameSpace}.WebApi
             {
                 var attribute = new StringBuilder();
                 attribute.Append("[DataMember");
-                if (!IsClient)
+                //if (!IsClient)
                 {
                     attribute.Append(!property.NoneJson
-                        ? $@" , JsonProperty(""{property.Name.ToLWord()}"", NullValueHandling = NullValueHandling.Ignore)"
+                        ? $@" , JsonProperty(""{property.Name}"", NullValueHandling = NullValueHandling.Ignore)"
                         : " , JsonIgnore");
                 }
                 attribute.Append("]");
@@ -127,8 +127,8 @@ namespace {NameSpace}.WebApi
         /// <remarks>
         /// {ToRemString(property.Description)}
         /// </remarks>
-        {Attribute(property)}
-        public {property?.LastCsType ?? "int"} {property.Name}
+        {attribute}
+        public {property.LastCsType ?? "int"} {property.Name}
         {{
             get;
             set;

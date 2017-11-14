@@ -28,13 +28,10 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// </summary>
         protected override void CreateBaCode(string path)
         {
-            if (Entity.ExtendConfigListBool["NoApi"])
-                return;
 
             string code = $@"using System;
 using System.Web.Http;
 using GoodLin.Common.Ioc;
-using GoodLin.OAuth.Api;
 using Yizuan.Service.Api;
 using Yizuan.Service.Api.WebApi;
 
@@ -112,6 +109,8 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         protected override void CreateExCode(string path)
         {
+            if (Project.ApiItems.Count == 0)
+                return;
             Default1(path);
             Default2(path);
         }
@@ -123,7 +122,6 @@ namespace {NameSpace}.WebApi.EntityApi
 using System.Collections.Generic;
 using System.Web.Http;
 using GoodLin.Common.Ioc;
-using GoodLin.OAuth.Api;
 using Yizuan.Service.Api;
 using Yizuan.Service.Api.WebApi;
 
@@ -195,7 +193,6 @@ namespace {NameSpace}.WebApi
 using System.Collections.Generic;
 using System.Web.Http;
 using GoodLin.Common.Ioc;
-using GoodLin.OAuth.Api;
 using Yizuan.Service.Api;
 using Yizuan.Service.Api.WebApi;
 

@@ -49,17 +49,17 @@
                     </TextBlock>
                 </StackPanel>
                 <StackPanel Style="{StaticResource FieldPanel}">
-                    <Label Content = "最小可空" />
+                    <Label Content = "可为空值" />
                     <ComboBox Style="{StaticResource BoolCombo}"  SelectedValue="{Binding CanEmpty,Mode=TwoWay}" />
                     <TextBlock Style="{StaticResource HelpText}">
-                        当为否时,每次保存(新增或修改)都必须不为空,为真则以正式必填为准.
+                        当为否时,每次保存(新增或修改)都必须不为空,为真则以【正式必填】为准.
                     </TextBlock>
                 </StackPanel>
                 <StackPanel Style="{StaticResource FieldPanel}">
                     <Label Content = "正式必填" />
                     <ComboBox Style="{StaticResource BoolCombo}"  SelectedValue="{Binding IsRequired,Mode=TwoWay}" />
                     <TextBlock Style="{StaticResource HelpText}">
-                        当为真时：非审核对象每次录入都会校验；审核对象在提交时校验，即正式数据必填，草稿状态随意。
+                        当为真时：非审核对象每次录入都会校验；审核对象在提交时校验，即正式数据必填，草稿状态按【可为空值】设置来。
                     </TextBlock>
                 </StackPanel>
                 <StackPanel Style="{StaticResource FieldPanel}">

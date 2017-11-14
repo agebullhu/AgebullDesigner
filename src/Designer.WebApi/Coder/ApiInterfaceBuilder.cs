@@ -82,7 +82,6 @@ namespace {NameSpace}.WebApi.EntityApi
             code.Append($@"using System;
 using System.Web.Http;
 using GoodLin.Common.Ioc;
-using GoodLin.OAuth.Api;
 using Yizuan.Service.Api;
 using Yizuan.Service.Api.WebApi;
 

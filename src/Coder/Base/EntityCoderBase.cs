@@ -108,6 +108,33 @@ namespace Agebull.EntityModel.RobotCoder
             return code.ToString();
         }
 
+        public static string HelloCode(EntityConfig entity,string name)
+        {
+            StringBuilder code = new StringBuilder();
+            foreach (var property in entity.Properties.Where(p => p.CanUserInput))
+            {
+                var value = property.HelloCode;
+                if (property.CsType == "string")
+                {
+                    value = value == null ? "null" : $"\"{value}\"";
+                }
+                else if (property.CsType == "DateTime")
+                {
+                    value = value == null ? DateTime.Today.ToString() : $"DateTime.Parse(\"{value}\")";
+                }
+                else if (property.CustomType != null)
+                {
+                    value = value == null ? $"default({property.CustomType})" : $"{property.CustomType}.{value}";
+                }
+                else
+                {
+                    value = value ?? $"default({property.CsType})";
+                }
+                code.Append($@"
+            {name}.{property.Name} = {value};");
+            }
+            return code.ToString();
+        }
         #region √∂æŸ Ù–‘
 
         protected static void EnumContentProperty(PropertyConfig property, StringBuilder code)
