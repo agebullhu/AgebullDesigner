@@ -82,7 +82,8 @@ namespace Agebull.EntityModel.RobotCoder
                 if (string.IsNullOrWhiteSpace(msg))
                     code.Append($@"
                     result.Add(""{field.Caption}"",nameof({field.Name}),$""不能大于{field.Max}或小于{field.Min}"");");
-                code.Append($@"
+                else
+                    code.Append($@"
                     result.Add(""{field.Caption}"",nameof({field.Name}),$""{msg}"");");
             }
             else if (field.Max != null)
@@ -94,7 +95,8 @@ namespace Agebull.EntityModel.RobotCoder
                 if (string.IsNullOrWhiteSpace(msg))
                     code.Append($@"
                     result.Add(""{field.Caption}"",nameof({field.Name}),$""不能大于{field.Max}"");");
-                code.Append($@"
+                else
+                    code.Append($@"
                     result.Add(""{field.Caption}"",nameof({field.Name}),$""{msg}"");");
             }
             else if (field.Min != null)
@@ -106,7 +108,8 @@ namespace Agebull.EntityModel.RobotCoder
                 if (string.IsNullOrWhiteSpace(msg))
                     code.Append($@"
                     result.Add(""{field.Caption}"",nameof({field.Name}),$""不能小于{field.Min}"");");
-                code.Append($@"
+                else
+                    code.Append($@"
                     result.Add(""{field.Caption}"",nameof({field.Name}),$""{msg}"");");
             }
             code.Append(@"
@@ -134,7 +137,8 @@ namespace Agebull.EntityModel.RobotCoder
                 if (string.IsNullOrWhiteSpace(msg))
                     code.Append($@"
                 result.Add(""{field.Caption}"",nameof({field.Name}),$""不能大于{max}UL或小于{field.Min}"");");
-                code.Append($@"
+                else
+                    code.Append($@"
                     result.Add(""{field.Caption}"",nameof({field.Name}),$""{msg}"");");
             }
             else if (max > 1)
@@ -144,7 +148,8 @@ namespace Agebull.EntityModel.RobotCoder
                 if (string.IsNullOrWhiteSpace(msg))
                     code.Append($@"
                 result.Add(""{field.Caption}"",nameof({field.Name}),$""不能大于{max}UL"");");
-                code.Append($@"
+                else
+                    code.Append($@"
                     result.Add(""{field.Caption}"",nameof({field.Name}),$""{msg}"");");
             }
             else if (field.Min != null)
@@ -154,7 +159,8 @@ namespace Agebull.EntityModel.RobotCoder
                 if (string.IsNullOrWhiteSpace(msg))
                     code.Append($@"
                 result.Add(""{field.Caption}"",nameof({field.Name}),$""不能小于{field.Min}"");");
-                code.Append($@"
+                else
+                    code.Append($@"
                     result.Add(""{field.Caption}"",nameof({field.Name}),$""{msg}"");");
             }
             if (field.CanEmpty && field.Nullable)
@@ -200,7 +206,8 @@ namespace Agebull.EntityModel.RobotCoder
                     if (string.IsNullOrWhiteSpace(msg))
                         code.Append($@"
                     result.Add(""{field.Caption}"",nameof({field.Name}),$""不能多于{field.Datalen}个字"");");
-                    code.Append($@"
+                    else
+                        code.Append($@"
                     result.Add(""{field.Caption}"",nameof({field.Name}),$""{msg}"");");
                 }
                 else
@@ -210,7 +217,8 @@ namespace Agebull.EntityModel.RobotCoder
                     if (string.IsNullOrWhiteSpace(msg))
                         code.Append($@"
                    result.Add(""{field.Caption}"",nameof({field.Name}),$""不能少于{field.Min}个字"");");
-                    code.Append($@"
+                    else
+                        code.Append($@"
                     result.Add(""{field.Caption}"",nameof({field.Name}),$""{msg}"");");
                 }
                 code.Append(@"
