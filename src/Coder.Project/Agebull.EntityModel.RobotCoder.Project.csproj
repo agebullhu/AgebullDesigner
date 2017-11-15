@@ -91,6 +91,7 @@
     <Compile Include="Entity\EntityQueryBuilder.cs" />
     <Compile Include="Entity\EntityReleationBuilder.cs" />
     <Compile Include="Entity\EntityStructBuilder.cs" />
+    <Compile Include="Entity\EntityValidateCoder.cs" />
     <Compile Include="Mobile\MobileEntityCoder.cs" />
     <Compile Include="Mobile\MobileGlobalCoder.cs" />
     <Compile Include="Mobile\ProjectBuilde.cs" />

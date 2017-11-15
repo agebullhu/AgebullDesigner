@@ -190,6 +190,7 @@ namespace {NameSpace}.WebApi
 
         public string ValidateCode()
         {
+            EntityValidateCoder coder = new EntityValidateCoder { Entity = Entity };
             return $@"
         #region 数据校验
         /// <summary>数据校验</summary>
@@ -214,42 +215,13 @@ namespace {NameSpace}.WebApi
         /// <returns>数据校验对象</returns>
         public ValidateResult Validate()
         {{
-            var result = new ValidateResult();{ValidateInner()}
+            var result = new ValidateResult();{coder.Code()}
             ValidateEx(result);
             return result;
         }}
         #endregion";
         }
 
-        public string ValidateInner()
-        {
-            var code = new StringBuilder();
-            var fields = Entity.PublishProperty.Where(p => p.CanUserInput).ToArray();
-            foreach (PropertyConfig field in fields.Where(p => !string.IsNullOrWhiteSpace(p.EmptyValue)))
-            {
-                EntityValidateBuilder.ConvertEmptyValue(code, field);
-            }
-
-            foreach (PropertyConfig field in fields.Where(p => string.IsNullOrWhiteSpace(p.ExtendRole)))
-            {
-                switch (field.CsType)
-                {
-                    case "string":
-                        EntityValidateBuilder.StringCheck(code, field);
-                        continue;
-                    case "int":
-                    case "long":
-                    case "decimal":
-                        EntityValidateBuilder.NumberCheck(code, field);
-                        break;
-                    case "DateTime":
-                        EntityValidateBuilder.DateTimeCheck(code, field);
-                        break;
-                }
-            }
-            return code.ToString();
-        }
-        
         #endregion
     }
 

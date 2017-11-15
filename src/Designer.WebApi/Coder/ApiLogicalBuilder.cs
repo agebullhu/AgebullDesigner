@@ -313,7 +313,7 @@ namespace {NameSpace}.WebApi
                         code.Append(@"
             var vr = arg.Validate();
             if (!vr.succeed)
-                return ApiResult.Error(ErrorCode.ArgumentError, vr.Messages.ToString());");
+                return ApiResult.Error(ErrorCode.ArgumentError, vr.ToString());");
                 }
 
                 code.Append($@"

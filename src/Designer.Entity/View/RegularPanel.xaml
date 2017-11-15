@@ -21,7 +21,7 @@
                     </TextBlock>
                 </StackPanel>
                 <StackPanel Style="{StaticResource FieldPanel}">
-                    <Label Content = "最大值&lt;=" /> 
+                    <Label Content = "最大值&lt;=" />
                     <TextBox Text="{Binding Max,Mode=TwoWay}" />
                     <TextBlock Style="{StaticResource HelpText}">
                         当为数字时，为最大的数字；当为时间时，为最大的时间。默认不校验。
@@ -106,16 +106,16 @@
                 <DataGridCheckBoxColumn
                     Binding="{Binding Nullable,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="空类型" />
                 <DataGridCheckBoxColumn
-                    Binding="{Binding CanEmpty,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="最小可空" />
+                    Binding="{Binding CanEmpty,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="可为空值" />
                 <DataGridCheckBoxColumn
                     Binding="{Binding IsRequired,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="正式必填" />
                 <DataGridCheckBoxColumn
                     Binding="{Binding IsUserReadOnly,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                     Header="用户只读" />
-                <!--<DataGridTextColumn Binding="{Binding Max,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                        Header="最大数字或时间" />
-                    <DataGridTextColumn Binding="{Binding Min,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                        Header="最小数字或时间" />-->
+                <DataGridTextColumn Binding="{Binding ExtendConfigList[EmptyMessage],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                        Header="不为空的消息文本"  MinWidth="100"/>
+                <DataGridTextColumn Binding="{Binding ExtendConfigList[ErrorMessage],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                        Header="不合格的消息文本" MinWidth="100"/>
             </DataGrid.Columns>
             <i:Interaction.Behaviors>
                 <behaviors:DataGridGenertColumnsBehavior />
