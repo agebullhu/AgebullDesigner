@@ -388,10 +388,8 @@ namespace Agebull.EntityModel.RobotCoder
         /// <returns></returns>
         public static string GetDocumentPath(ProjectConfig project)
         {
-            var root = IOHelper.CheckPath(project.ModelPath, SolutionConfig.Current.DocFolder);
-            return string.IsNullOrWhiteSpace(project.BranchFolder)
-                ? root
-                : IOHelper.CheckPath(root, project.BranchFolder);
+            return IOHelper.CheckPath(SolutionConfig.Current.RootPath, SolutionConfig.Current.DocFolder);
+            
         }
         #endregion
     }

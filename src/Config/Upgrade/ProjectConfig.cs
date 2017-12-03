@@ -112,21 +112,23 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(Entities));
             }
         }
+        #endregion
+        #region API节点集合
 
         /// <summary>
-        /// 类型集合
+        /// API节点集合
         /// </summary>
-        [IgnoreDataMember,JsonIgnore]
+        [IgnoreDataMember, JsonIgnore]
         internal ObservableCollection<ApiItem> _apiItems;
 
         /// <summary>
-        /// 类型集合
+        /// API节点集合
         /// </summary>
         /// <remark>
-        /// 导入的C++类型对象集合
+        /// API节点集合
         /// </remark>
-        [IgnoreDataMember,JsonIgnore]
-        [Category(@"子级"),DisplayName(@"类型集合"),Description("导入的C++类型对象集合")]
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"子级"), DisplayName(@"API节点集合"), Description("API节点集合")]
         public ObservableCollection<ApiItem> ApiItems
         {
             get
@@ -139,14 +141,44 @@ namespace Agebull.EntityModel.Config
             }
             set
             {
-                if(_apiItems == value)
+                if (_apiItems == value)
                     return;
-                BeforePropertyChanged(nameof(ApiItems), _apiItems,value);
+                BeforePropertyChanged(nameof(ApiItems), _apiItems, value);
                 _apiItems = value;
                 OnPropertyChanged(nameof(ApiItems));
             }
         }
+        /// <summary>
+        /// 接口名称
+        /// </summary>
+        [DataMember, JsonProperty("_apiName", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _apiName;
+
+        /// <summary>
+        /// 接口名称
+        /// </summary>
+        /// <remark>
+        /// 接口名称
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"解决方案"), DisplayName(@"接口名称"), Description("接口名称")]
+        public string ApiName
+        {
+            get
+            {
+                return _apiName ?? (Name + "Api");
+            }
+            set
+            {
+                if (_apiName == value)
+                    return;
+                BeforePropertyChanged(nameof(ApiName), _apiName, value);
+                _apiName = value;
+                OnPropertyChanged(nameof(ApiName));
+            }
+        }
         #endregion
+
         #region 代码路径
         /// <summary>
         /// 接口代码主文件夹

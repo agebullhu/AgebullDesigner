@@ -128,13 +128,13 @@ namespace {NameSpace}
     [TestFixture]
     public class {Project.Name}UnitTest
     {{
-        private {Project.Name}ApiLogical logical;
+        private {Project.ApiName}Logical logical;
         [SetUp]
         public void Initialize()
         {{
             MySqlDataBase.CreateDefaultFunc = () => new YizuanDataBase();
             IocHelper.Regist<IOAuthBusiness, OAuthServerProxy>();
-            logical = new {Project.Name}ApiLogical();
+            logical = new {Project.ApiName}Logical();
         }}
         [TearDown]
         public void Cleanup()

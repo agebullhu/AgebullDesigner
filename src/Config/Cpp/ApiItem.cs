@@ -47,7 +47,7 @@ namespace Agebull.EntityModel.Config
         /// Api调用方式（GET、POST)
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName("Api调用方式（GET、POST)"), Description(Method_Description)]
+        [Category(""), DisplayName(Method_Description), Description(Method_Description)]
         public HttpMethod Method
         {
             get

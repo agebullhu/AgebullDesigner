@@ -90,7 +90,7 @@ namespace {NameSpace}.WebApi
     /// <summary>
     /// 身份验证服务API
     /// </summary>
-    public interface I{Project.Name}Api
+    public interface I{Project.ApiName}
     {{");
 
             foreach (var item in Project.ApiItems)
@@ -126,7 +126,7 @@ namespace {NameSpace}.WebApi
     }
 }
 ");
-            var file = ConfigPath(Project, FileSaveConfigName, path,  "Interface", $"I{Project.Name}Api.cs");
+            var file = ConfigPath(Project, FileSaveConfigName, path,  "Interface", $"I{Project.ApiName}.cs");
             SaveCode(file, code.ToString());
         }
 

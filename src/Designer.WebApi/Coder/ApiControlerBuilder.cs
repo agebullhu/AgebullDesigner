@@ -130,7 +130,7 @@ namespace {NameSpace}.WebApi
     /// <summary>
     /// 身份验证服务API
     /// </summary>
-    public class {Project.Name}ApiController : ApiController
+    public class {Project.ApiName}Controller : ApiController
     {{");
 
             foreach (var item in Project.ApiItems)
@@ -162,7 +162,7 @@ namespace {NameSpace}.WebApi
         //[ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Anymouse)]
         public ApiResponseMessage{res} {item.Name}({arg})
         {{
-            var lg = new {Project.Name}ApiLogical() as I{Project.Name}Api;");
+            var lg = new {Project.ApiName}Logical() as I{Project.ApiName};");
 
                 if (item.Argument == null)
                 {
@@ -201,7 +201,7 @@ namespace {NameSpace}.WebApi
     /// <summary>
     /// 身份验证服务API
     /// </summary>
-    public class {Project.Name}ApiController : ApiController
+    public class {Project.ApiName}Controller : ApiController
     {{");
 
             foreach (var item in Project.ApiItems)

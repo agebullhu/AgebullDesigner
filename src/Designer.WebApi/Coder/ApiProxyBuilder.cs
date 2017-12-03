@@ -124,7 +124,7 @@ namespace {NameSpace}.WebApi
     /// <summary>
     /// {Project.Caption}服务API
     /// </summary>
-    public class {Project.Name}ApiProxy : I{Project.Name}Api
+    public class {Project.ApiName}Proxy : I{Project.ApiName}
     {{
         /// <summary>
         ///     服务地址
@@ -181,7 +181,7 @@ namespace {NameSpace}.WebApi
             code.Append(@"
     }
 }");
-            var file = ConfigPath(Project, FileSaveConfigName, path, "Proxy", $"{Project.Name}ApiProxy.cs");
+            var file = ConfigPath(Project, FileSaveConfigName, path, "Proxy", $"{Project.ApiName}Proxy.cs");
             SaveCode(file, code.ToString());
         }
 

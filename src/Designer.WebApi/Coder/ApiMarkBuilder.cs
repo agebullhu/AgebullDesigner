@@ -34,7 +34,7 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// </summary>
         protected override void CreateBaCode(string path)
         {
-            string file = Path.Combine(path, "project_api.md");
+            string file = Path.Combine(path, Project.ApiName + ".md");
             StringBuilder code = new StringBuilder();
             code.Append($@"## Best practice
 ## 版本信息：
@@ -46,11 +46,13 @@ namespace Agebull.EntityModel.Designer.WebApi
 |--------|:----------:|:----------:|:---------------|");
             code.Append($@"
 
-# {Project.Caption} 项目 API 列表：");
+# {Project.Caption} 项目 API 列表：
+|名称|地址|Method|参数|返回值|说明|
+|-|-|-|-|-|-|");
             foreach (var item in Project.ApiItems)
             {
                 code.Append($@"
-            *{item.Method}[{item.RoutePath}){item.Name}({item.Argument?.Name}) - {item.Caption}");
+|{item.Name}|{item.RoutePath}|{item.Method}|{item.CallArg}|{item.ResultArg}|{item.Description}|");
             }
 
             foreach (var item in Project.ApiItems)
@@ -59,7 +61,7 @@ namespace Agebull.EntityModel.Designer.WebApi
             }
 
 
-            SaveCode(file, code.ToString());
+            WriteFile(file, code.ToString());
         }
 
         /// <summary>
@@ -175,18 +177,17 @@ namespace Agebull.EntityModel.Designer.WebApi
             }
 
             string file = Path.Combine(path, "entity_api.md");
-            SaveCode(file, code.ToString());
+            WriteFile(file, code.ToString());
         }
 
 
-        private static void ItemReadMe(StringBuilder code, ApiItem item)
+        private void ItemReadMe(StringBuilder code, ApiItem item)
         {
             code.Append($@"
-<a id=""{item.Name}""></a>
-## {item.Name}
+----------------
+## {item.Caption}({item.Name})
 
-#### 功能
-{item.Caption}
+### 说明
 {item.Description}
 ### url
 **{item.RoutePath}**
@@ -194,9 +195,9 @@ namespace Agebull.EntityModel.Designer.WebApi
 ### 请求方法
 **{item.Method}**
 
-#### 身份验证
-**HeaderParams**
-*[Authorization: Bearer #AccessToken/*DeviceId]*
+### 身份验证
+#### Header
+Authorization: Bearer **AccessToken/DeviceId**
 
 ### 请求参数");
             if (item.Argument == null)
@@ -206,15 +207,14 @@ namespace Agebull.EntityModel.Designer.WebApi
             else
             {
                 code.Append($@"
-    参数类型：{item.Name}({item.Argument.Caption})
-    参数结构：
-        | 名称  | 类型 |  必填 |  说明 |");
+#### 参数类型：{item.Name}({item.Argument.Caption})
+#### 参数结构：
+|名称|类型|必填|说明|
+|-|-|-|-|");
                 foreach (var property in item.Argument.Properties.Where(p => p.CanUserInput))
                 {
                     code.Append($@"
-        {property.Name} | {property.LastCsType} | {(property.CanEmpty ? "是" : "否")} | {property.Caption}:{
-                            property.Description
-                        }");
+|{property.Name}|{property.LastCsType}|{(property.CanEmpty ? "是" : "否")}|{property.Caption}:{property.Description}|");
                 }
             }
             code.Append(@"
@@ -226,33 +226,30 @@ namespace Agebull.EntityModel.Designer.WebApi
             else
             {
                 code.Append($@"
-    返回类型：{item.Name}({item.Argument.Caption})
-    数据结构：
-        | 名称  | 类型 |  必填 |  说明 |");
+#### 返回类型：{item.Name}({item.Argument.Caption})
+#### 数据结构：
+|名称|类型|必填|说明|
+|-|-|-|-|");
                 foreach (var property in item.Argument.Properties.Where(p => p.CanUserInput))
                 {
                     code.Append($@"
-        {property.Name} | {property.LastCsType} | {(property.CanEmpty ? "是" : "否")} | {property.Caption}:{
-                            property.Description
-                        }");
+|{property.Name}|{property.LastCsType}|{(property.CanEmpty ? "是" : "否")}|{property.Caption}:{property.Description}|");
                 }
             }
-
             code.Append($@"
-}}
-```
-
 ### 请求示例
-    *URL：http://基地址/{item.RoutePath}");
+>URL：http://test.yizuanbao.cn/{Project.ApiName}/{item.RoutePath}
+");
             if (item.Argument == null)
             {
                 code.Append(@"
-    *Request>(无参数)");
+>Request (无参数)");
             }
             else
             {
                 code.Append(@"
 >Request
+```
 {");
                 bool isFirst = true;
                 foreach (var property in item.Argument.Properties.Where(p => p.CanUserInput))
@@ -279,11 +276,13 @@ namespace Agebull.EntityModel.Designer.WebApi
     ""{property.Name}"" : {value}");
                 }
                 code.Append(@"
-}");
+}
+```");
             }
 
             code.Append(@"    
 >Success
+```
 {
     ""Result"": true,
     ""Message"": ""操作成功""");
@@ -321,10 +320,14 @@ namespace Agebull.EntityModel.Designer.WebApi
 }
 ```
 >Failed
+```
 {
     ""Result"": false,
-    ""Message"": ""错误消息"",
-    ""ErrorCode"": 错误代码
+    ""ResponseStatus"":
+    {
+        ""Message"": ""错误消息"",
+        ""ErrorCode"": -1
+    }
 }
 ```");
         }

@@ -271,7 +271,7 @@ namespace {NameSpace}.WebApi
     /// <summary>
     /// {Project.Caption}API
     /// </summary>
-    public partial class {Project.Name}ApiLogical : I{Project.Name}Api
+    public partial class {Project.ApiName}Logical : I{Project.ApiName}
     {{");
 
             foreach (var item in Project.ApiItems)
@@ -334,7 +334,7 @@ namespace {NameSpace}.WebApi
             code.Append(@"
     }
 }");
-            var file = ConfigPath(Project, FileSaveConfigName, path, "Logical", $"{Project.Name}Api_Logical.Designer.cs");
+            var file = ConfigPath(Project, FileSaveConfigName, path, "Logical", $"{Project.ApiName}_Logical.Designer.cs");
             WriteFile(file, code.ToString());
         }
 
@@ -351,7 +351,7 @@ namespace {NameSpace}.WebApi
     /// <summary>
     /// {Project.Caption}API
     /// </summary>
-    partial class {Project.Name}ApiLogical
+    partial class {Project.ApiName}Logical
     {{");
 
             foreach (var item in Project.ApiItems)
@@ -397,7 +397,7 @@ namespace {NameSpace}.WebApi
             code.Append(@"
     }
 }");
-            var file = ConfigPath(Project, FileSaveConfigName + "_2", path, "Logical", $"{Project.Name}Api_Logical.cs");
+            var file = ConfigPath(Project, FileSaveConfigName + "_2", path, "Logical", $"{Project.ApiName}_Logical.cs");
             WriteFile(file, code.ToString());
         }
 
