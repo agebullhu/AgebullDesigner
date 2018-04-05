@@ -19,7 +19,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     GlobalTrigger.OnLoad(cfg);
                 }
-                TargetConfig.IsReference = TargetConfig.Entities.All(p => p.IsReference);
+                TargetConfig.IsReference = TargetConfig.Entities.Count > 0 && TargetConfig.Entities.All(p => p.IsReference);
                 foreach (var entity in TargetConfig.Entities)
                 {
                     entity.Project = TargetConfig.Name;

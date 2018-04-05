@@ -23,8 +23,6 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder
             {
                 Signle = true,
-                NoButton = true,
-                
                 Name = "增加表",
                 Command = new DelegateCommand(AddEntity),
                 IconName = "tree_Open"
@@ -34,7 +32,6 @@ namespace Agebull.EntityModel.Designer
                 Signle = true,
                 NoButton = true,
                 Name = "粘贴表",
-                
                 Command = new DelegateCommand(PasteTable),
                 IconName = "tree_item"
             });

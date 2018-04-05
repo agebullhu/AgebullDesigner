@@ -38,6 +38,7 @@ namespace Agebull.EntityModel.Designer
             var node = new ConfigTreeItem<SolutionConfig>(Context.Solution)
             {
                 IsExpanded = true,
+                Header = Context.Solution.Caption,
                 HeaderField = "Caption",
                 HeaderExtendExpression = p => p.Caption,
                 SoruceTypeIcon = Application.Current.Resources["tree_Solution"] as BitmapImage
@@ -46,7 +47,6 @@ namespace Agebull.EntityModel.Designer
             //Model.CppModel.AddCppApiNode(node);
             AddCustomTypeNode(node);
             TreeRoot.Items.Add(node);
-            SelectItem = TreeRoot.Items[0];
         }
 
         #endregion

@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Forms;
@@ -133,6 +134,7 @@ namespace Agebull.EntityModel.Designer
             using (LoadingModeScope.CreateScope())
                 Model.Tree.CreateTree();
             Context.StateMessage = "载入成功";
+            Model.FirstSelect();
         }
 
         private void LoadFile(string sluFile)
@@ -147,10 +149,6 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void CreateNew()
         {
-            Context.Solution = new SolutionConfig
-            {
-                Entities = new ObservableCollection<EntityConfig>()
-            };
             var sfd = new SaveFileDialog
             {
                 Filter = @"简单数据结构文件|*.xml"
@@ -159,7 +157,12 @@ namespace Agebull.EntityModel.Designer
             {
                 return;
             }
-            SolutionConfig.SetCurrentSolution(Context.Solution);
+            SolutionConfig.SetCurrentSolution(Context.Solution = new SolutionConfig
+            {
+                Name = Path.GetFileNameWithoutExtension(sfd.FileName),
+                Caption = Path.GetFileNameWithoutExtension(sfd.FileName),
+                Entities = new ObservableCollection<EntityConfig>()
+            });
             Context.FileName = sfd.FileName;
             SaveSolution();
             Load(sfd.FileName);

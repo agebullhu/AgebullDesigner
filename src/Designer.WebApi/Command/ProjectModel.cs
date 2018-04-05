@@ -23,7 +23,6 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder
             {
                 Signle = true,
-                NoButton = true,
                 Name = "增加新接口",
                 Command = new DelegateCommand(AddApi),
                 IconName = "tree_Open"
