@@ -150,7 +150,11 @@ namespace Agebull.EntityModel.Config
 
         #region C++类型辅助
 
-
+        /// <summary>
+        /// 转为基本C++类型
+        /// </summary>
+        /// <param name="cppType">C++类型</param>
+        /// <returns></returns>
         public static object ToCppLastType(string cppType)
         {
             if (string.IsNullOrEmpty(cppType))
@@ -249,6 +253,11 @@ namespace Agebull.EntityModel.Config
 
 
         #region C++类型帮助
+        /// <summary>
+        /// C++类型与C#类型对应
+        /// </summary>
+        /// <param name="type">C++类型</param>
+        /// <returns>C#类型</returns>
         public static string CppTypeToCs(string type)
         {
             type = type.MulitReplace2("", " ", "\t").ToLower();
@@ -284,7 +293,11 @@ namespace Agebull.EntityModel.Config
                     return type;
             }
         }
-
+        /// <summary>
+        /// 是否C++的基本类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static bool IsCppBaseType(string type)
         {
             switch (type.MulitReplace2("", " ", "\t").ToLower())

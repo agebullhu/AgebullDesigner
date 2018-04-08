@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
-             xmlns:Commands="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm">
+             xmlns:commands="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm">
 
     <Style TargetType="Border"
                x:Key="ToolBar">
@@ -292,7 +292,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <DataTemplate x:Key="CommandButtonTemplate" DataType="{x:Type Commands:CommandItem}">
+    <DataTemplate x:Key="CommandButtonTemplate" DataType="{x:Type commands:CommandItem}">
         <Border x:Name="ctrBorder"
                     BorderBrush="Transparent"
                     BorderThickness="1"

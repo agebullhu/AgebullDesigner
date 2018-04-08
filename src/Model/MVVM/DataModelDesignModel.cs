@@ -118,7 +118,16 @@ namespace Agebull.EntityModel.Designer
             //    ex.Initialize();
             //}
         }
-
+        /// <summary>
+        /// 保证载入后选择正常
+        /// </summary>
+        internal void FirstSelect()
+        {
+            GlobalConfig.CurrentConfig = null;
+            Tree.SelectItem = null;
+            Tree.SelectItem = Tree.TreeRoot.Items[0];
+            GlobalConfig.CurrentSolution.GodMode = true;
+        }
         /// <summary>
         /// 新增对象
         /// </summary>
