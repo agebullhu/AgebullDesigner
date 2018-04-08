@@ -495,6 +495,7 @@ void {Entity.Name}::SetValue(const char* field, const char* value)
 
         private static string FriendInc(EntityConfig entity)
         {
+
             var code = new StringBuilder();
             foreach (var pro in entity.CppProperty)
             {

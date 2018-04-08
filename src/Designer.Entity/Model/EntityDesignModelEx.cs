@@ -56,7 +56,7 @@ namespace Agebull.EntityModel.Designer
                 Name = "规则修复",
                 Signle = true,
                 NoButton = true,
-                Catalog = "规则",
+                Catalog = "数据校验",
                 IconName = "tree_item"
             });
             commands.Add(new CommandItem

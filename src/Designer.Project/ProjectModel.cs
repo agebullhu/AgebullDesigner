@@ -125,8 +125,6 @@ namespace Agebull.EntityModel.Designer
                 project.PagePath = Context.SelectProject.PagePath;
                 //if (string.IsNullOrWhiteSpace(project.BusinessPath))
                 project.BusinessPath = Context.SelectProject.BusinessPath;
-                //if (string.IsNullOrWhiteSpace(project.ClientCsPath))
-                project.ClientCsPath = Context.SelectProject.ClientCsPath;
                 //if (string.IsNullOrWhiteSpace(project.ModelPath))
                 project.ModelPath = Context.SelectProject.ModelPath;
                 //if (string.IsNullOrWhiteSpace(project.CodePath))

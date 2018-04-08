@@ -14,10 +14,6 @@ namespace Agebull.EntityModel.Designer
 {
     internal class FieldsViewModel : ExtendViewModelBase<FieldsModel>
     {
-        public FieldsViewModel()
-        {
-            Catalog = "基本";
-        }
         /// <summary>
         /// 主面板
         /// </summary>

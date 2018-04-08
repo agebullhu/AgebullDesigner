@@ -170,8 +170,7 @@ namespace Agebull.EntityModel.Designer
             foreach (var ext in exts)
             {
                 var vm = ext.Value();
-                if (vm.Catalog != null)
-                    vm.DesignModel.Catalog = vm.Catalog;
+                vm.DesignModel.Catalog = vm.Catalog;
                 vm.BaseModel = this;
                 vm.DesignModel.Initialize();
                 this.ExtendModels.Add(ext.Key, vm.DesignModel);

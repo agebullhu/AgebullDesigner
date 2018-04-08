@@ -69,8 +69,10 @@
     <Compile Include="Cpp\ClrCoder.cs" />
     <Compile Include="Cpp\CppAccessCoder.cs" />
     <Compile Include="Cpp\CppDataFactoryCode.cs" />
+    <Compile Include="Cpp\CppDataFactoryProjectBuilde.cs" />
     <Compile Include="Cpp\CppModelCoder.cs" />
     <Compile Include="Cpp\CppStructCoder.cs" />
+    <Compile Include="Cpp\EsFundsProjectBuilde.cs" />
     <Compile Include="Cpp\EsPublishCoder.cs" />
     <Compile Include="Cpp\ProjectBuilde.cs" />
     <Compile Include="DataModel\DataBaseBuilder.cs" />

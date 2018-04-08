@@ -115,15 +115,11 @@
                     </StackPanel>
                     <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="服务端" />
-                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding CodePath,Mode=TwoWay}" />
+                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding CppCodePath,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource FieldPanel}">
-                        <Label Content="管理端" />
-                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding BusinessPath,Mode=TwoWay}" />
-                    </StackPanel>
-                    <StackPanel Style="{StaticResource FieldPanel}">
-                        <Label Content="PC端" />
-                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding ClientCsPath,Mode=TwoWay}" />
+                        <Label Content="C++名称" />
+                        <TextBox Text="{Binding CppName,Mode=TwoWay}" />
                     </StackPanel>
                 </WrapPanel>
             </GroupBox>
@@ -223,15 +219,6 @@
                     </StackPanel>
                 </WrapPanel>
             </GroupBox>
-            <GroupBox Header="C++" Margin="5"
-                      Visibility="{Binding Solution.IsWeb,Mode=OneWay,Converter={StaticResource ReversionBoolToVisibleConverter}}">
-                <WrapPanel>
-                    <StackPanel Style="{StaticResource FieldPanel}">
-                        <Label Content="C++名称" />
-                        <TextBox Text="{Binding CppName,Mode=TwoWay}" />
-                    </StackPanel>
-                </WrapPanel>
-            </GroupBox>
         </StackPanel>
     </DataTemplate>
     <DataTemplate x:Key="PropertyConfigTemplate"  DataType="config:PropertyConfig">
@@ -242,11 +229,6 @@
                     <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="C#名称" />
                         <TextBox Text="{Binding Name,Mode=TwoWay}" />
-                    </StackPanel>
-                    <StackPanel Style="{StaticResource FieldPanel}"
-                                Visibility="{Binding Solution.IsWeb,Mode=OneWay,Converter={StaticResource ReversionBoolToVisibleConverter}}">
-                        <Label Content="C++名称" />
-                        <TextBox Text="{Binding CppName,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="数据库名称" />
@@ -259,11 +241,6 @@
                     <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="C#类型" />
                         <TextBox Text="{Binding LastCsType,Mode=OneWay}" />
-                    </StackPanel>
-                    <StackPanel Style="{StaticResource FieldPanel}"
-                                Visibility="{Binding Solution.IsWeb,Mode=OneWay,Converter={StaticResource ReversionBoolToVisibleConverter}}">
-                        <Label Content="C++类型" />
-                        <TextBox Text="{Binding CppLastType,Mode=OneWay}" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="数据库类型" />
@@ -343,6 +320,11 @@
                     <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="字段名称" />
                         <TextBox Text="{Binding CppName,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}"
+                                Visibility="{Binding Solution.IsWeb,Mode=OneWay,Converter={StaticResource ReversionBoolToVisibleConverter}}">
+                        <Label Content="C++类型" />
+                        <TextBox Text="{Binding CppLastType,Mode=OneWay}" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="转为小数的整数" />

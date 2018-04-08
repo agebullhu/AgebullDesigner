@@ -25,14 +25,14 @@ namespace Agebull.EntityModel.Designer
                 NoButton = true,
                 Command = new DelegateCommand(CheckDouble),
                 Name = "修复数据精度",
-                Catalog = "规则",
+                Catalog = "C++字段",
                 IconName = "tree_item"
             });
             commands.Add(new CommandItemBuilder
             {
                 Signle = true,
                 NoButton = true,
-                Catalog = "规则",
+                Catalog = "C++字段",
                 Command = new DelegateCommand(RepairByArrayLen),
                 Name = "修复文本长度",
                 IconName = "tree_item"
@@ -43,7 +43,7 @@ namespace Agebull.EntityModel.Designer
                 Name = "C++引用修复",
                 Signle = true,
                 NoButton = true,
-                Catalog = "C++",
+                Catalog = "C++字段",
                 IconName = "tree_item"
             });
         }

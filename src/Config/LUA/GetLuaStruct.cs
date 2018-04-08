@@ -487,12 +487,7 @@ namespace Agebull.EntityModel.Config
                 code.AppendLine($@"['BusinessPath'] = '{BusinessPath.ToLuaString()}',");
             else
                 code.AppendLine($@"['BusinessPath'] = nil,");
-
-            if (!string.IsNullOrWhiteSpace(ClientCsPath))
-                code.AppendLine($@"['ClientCsPath'] = '{ClientCsPath.ToLuaString()}',");
-            else
-                code.AppendLine($@"['ClientCsPath'] = nil,");
-
+            
             if (!string.IsNullOrWhiteSpace(ModelPath))
                 code.AppendLine($@"['ModelPath'] = '{ModelPath.ToLuaString()}',");
             else

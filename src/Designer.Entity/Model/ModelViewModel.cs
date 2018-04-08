@@ -4,10 +4,6 @@ namespace Agebull.EntityModel.Designer
 {
     internal class ModelViewModel : ExtendViewModelBase<EntityDesignModelEx>
     {
-        public ModelViewModel()
-        {
-            Catalog = "模型";
-        }
         /// <summary>
         /// 主面板
         /// </summary>

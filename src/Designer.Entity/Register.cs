@@ -18,7 +18,7 @@ namespace Agebull.Common.Config.Designer.EasyUi
         void IAutoRegister.AutoRegist()
         {
             DesignerManager.Registe<EntityConfig, FieldsViewModel>("字段基本");
-            DesignerManager.Registe<EntityConfig, CppFieldsViewModel>("字段类型");
+            DesignerManager.Registe<EntityConfig, CppFieldsViewModel>("C++字段");
             DesignerManager.Registe<EntityConfig, RegularViewModel>("数据校验");
             DesignerManager.Registe<EntityConfig, ModelViewModel>("实体模型");
             DesignerManager.Registe<EntityConfig, AllFieldsViewModel>("所有字段");

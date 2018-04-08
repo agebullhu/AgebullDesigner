@@ -29,9 +29,9 @@ namespace Agebull.EntityModel.Designer
                 ExtendDictionary.Add(typeof(TConfig), exts = new Dictionary<string, Func<ExtendViewModelBase>>(StringComparer.OrdinalIgnoreCase));
 
             if (exts.ContainsKey(name))
-                exts[name] = () => new TExtend();
+                exts[name] = () => new TExtend {Catalog = name};
             else
-                exts.Add(name, () => new TExtend());
+                exts.Add(name, () => new TExtend { Catalog = name });
         }
     }
 }

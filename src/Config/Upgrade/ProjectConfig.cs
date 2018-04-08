@@ -522,38 +522,7 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(BusinessPath));
             }
         }
-
-        /// <summary>
-        /// PC端(C#)
-        /// </summary>
-        [DataMember,JsonProperty("_clientPath", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _clientCsPath;
-
-        /// <summary>
-        /// PC端(C#)
-        /// </summary>
-        /// <remark>
-        /// 模型代码路径
-        /// </remark>
-        [IgnoreDataMember,JsonIgnore]
-        [Category(@"解决方案"),DisplayName(@"PC端(C#)"),Description("模型代码路径")]
-        public string ClientCsPath
-        {
-            get
-            {
-                return _clientCsPath;
-            }
-            set
-            {
-                if(_clientCsPath == value)
-                    return;
-                BeforePropertyChanged(nameof(ClientCsPath), _clientCsPath,value);
-                _clientCsPath = value;
-                OnPropertyChanged(nameof(ClientCsPath));
-            }
-        }
-
-
+        
         #endregion
         #region 数据库
 

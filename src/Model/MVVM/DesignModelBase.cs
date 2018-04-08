@@ -12,7 +12,7 @@ namespace Agebull.EntityModel.Designer
         
         protected override void DoInitialize()
         {
-            Catalog = GetType().Name;
+            //Catalog = GetType().Name;
             base.DoInitialize();
         }
 

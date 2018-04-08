@@ -372,8 +372,7 @@ namespace Agebull.EntityModel.Config
                     project.MobileCsPath = project.MobileCsPath.Replace(old, path);
                 else
                     project.MobileCsPath = path.Trim('\\') + @"\TradeApp\TradeApp\Model\" + project.Name;
-                if (project.ClientCsPath != null)
-                    project.ClientCsPath = project.ClientCsPath.Replace(old, path);
+                
                 if (project.ModelPath != null)
                     project.ModelPath = project.ModelPath.Replace(old, path);
                 if (project.CppCodePath != null)

@@ -112,7 +112,7 @@ namespace Agebull.Common.Mvvm
                     continue;
                 foreach (var action in item.Value)
                 {
-                    if (action.Catalog == null && !result.ContainsKey(action))
+                    if (!result.ContainsKey(action))
                         result.Add(action, action.ToCommand(arg, null));
                 }
             }
@@ -147,61 +147,7 @@ namespace Agebull.Common.Mvvm
             }
             return result.Values.ToList();
         }
-
-        /// <summary>
-        /// 对象匹配
-        /// </summary>
-        /// <param name="arg"></param>
-        /// <param name="catalog">分类</param>
-        /// <returns></returns>
-        public static List<CommandItem> Coefficient(object arg,string catalog)
-        {
-            if (arg == null)
-                return null;
-            var result = new Dictionary<ICommandItemBuilder, CommandItem>();
-            var type = arg.GetType();
-            foreach (var item in Commands)
-            {
-                if (item.Key != type && !type.IsSubclassOf(item.Key))
-                    continue;
-                foreach (var action in item.Value)
-                {
-                    if (action.Catalog  != null && action.Catalog.Contains(catalog) && !result.ContainsKey(action))
-                        result.Add(action, action.ToCommand(arg, null));
-                }
-            }
-
-            foreach (var item in SourceTypeMap)
-            {
-                if (item.Key != type && !type.IsSubclassOf(item.Key))
-                    continue;
-                foreach (var convert in item.Value)
-                {
-                    foreach (var cmd in Commands)
-                    {
-                        foreach (var action in cmd.Value.Where(p => !p.Signle && p.Catalog != null && p.Catalog.Contains(catalog)))
-                        {
-                            if (result.ContainsKey(action))
-                                continue;
-                            if (cmd.Key == convert.Key || convert.Key.IsSubclassOf(cmd.Key))
-                            {
-                                result.Add(action, action.ToCommand(arg, convert.Value));
-                            }
-                            else if (action.SourceType == convert.Key.FullName)
-                            {
-                                result.Add(action, action.ToCommand(arg, convert.Value));
-                            }
-                            else if (action.SourceType != null && action.SourceType.Contains(convert.Key.Name))
-                            {
-                                result.Add(action, action.ToCommand(arg, convert.Value));
-                            }
-                        }
-                    }
-                }
-            }
-            return result.Values.ToList();
-        }
-
+        
 
         /// <summary>
         /// 对象匹配
@@ -211,6 +157,10 @@ namespace Agebull.Common.Mvvm
         /// <returns></returns>
         public static List<CommandItem> Coefficient(Type type, string catalog)
         {
+            if (string.IsNullOrWhiteSpace(catalog))
+            {
+                return Coefficient(type);
+            }
             var result = new Dictionary<ICommandItemBuilder, CommandItem>();
             foreach (var item in Commands)
             {
