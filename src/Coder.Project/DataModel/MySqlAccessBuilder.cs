@@ -13,7 +13,7 @@ namespace Agebull.EntityModel.RobotCoder
     {
 
         /// <summary>
-        ///     ¹«¿ªµÄÊı¾İ¿â×Ö¶Î
+        ///     å…¬å¼€çš„æ•°æ®åº“å­—æ®µ
         /// </summary>
         private IEnumerable<PropertyConfig> PublishDbFields
         {
@@ -24,17 +24,17 @@ namespace Agebull.EntityModel.RobotCoder
             }
         }
         /// <summary>
-        /// Ãû³Æ
+        /// åç§°
         /// </summary>
         protected override string FileSaveConfigName => "File_Model_MySqlAccess";
 
         private string SqlCode()
         {
             return $@"
-        #region »ù±¾SQLÓï¾ä
+        #region åŸºæœ¬SQLè¯­å¥
 
         /// <summary>
-        /// ±íµÄÎ¨Ò»±êÊ¶
+        /// è¡¨çš„å”¯ä¸€æ ‡è¯†
         /// </summary>
         public override int TableId
         {{
@@ -42,7 +42,7 @@ namespace Agebull.EntityModel.RobotCoder
         }}
 
         /// <summary>
-        /// ¶ÁÈ¡±íÃû
+        /// è¯»å–è¡¨å
         /// </summary>
         protected sealed override string ReadTableName
         {{
@@ -53,7 +53,7 @@ namespace Agebull.EntityModel.RobotCoder
         }}
 
         /// <summary>
-        /// Ğ´Èë±íÃû
+        /// å†™å…¥è¡¨å
         /// </summary>
         protected sealed override string WriteTableName
         {{
@@ -64,7 +64,7 @@ namespace Agebull.EntityModel.RobotCoder
         }}
 
         /// <summary>
-        /// Ö÷¼ü
+        /// ä¸»é”®
         /// </summary>
         protected sealed override string PrimaryKey
         {{
@@ -75,7 +75,7 @@ namespace Agebull.EntityModel.RobotCoder
         }}
 
         /// <summary>
-        /// È«±í¶ÁÈ¡µÄSQLÓï¾ä
+        /// å…¨è¡¨è¯»å–çš„SQLè¯­å¥
         /// </summary>
         protected sealed override string FullLoadFields
         {{
@@ -88,7 +88,7 @@ namespace Agebull.EntityModel.RobotCoder
         
 
         /// <summary>
-        /// ²åÈëµÄSQLÓï¾ä
+        /// æ’å…¥çš„SQLè¯­å¥
         /// </summary>
         protected sealed override string InsertSqlCode
         {{
@@ -99,7 +99,7 @@ namespace Agebull.EntityModel.RobotCoder
         }}
 
         /// <summary>
-        /// È«²¿¸üĞÂµÄSQLÓï¾ä
+        /// å…¨éƒ¨æ›´æ–°çš„SQLè¯­å¥
         /// </summary>
         protected sealed override string UpdateSqlCode
         {{
@@ -110,7 +110,7 @@ namespace Agebull.EntityModel.RobotCoder
         }}
 
         /// <summary>
-        /// È¡µÃ½ö¸üĞÂµÄSQLÓï¾ä
+        /// å–å¾—ä»…æ›´æ–°çš„SQLè¯­å¥
         /// </summary>
         internal string GetModifiedSqlCode({Entity.EntityName} data)
         {{
@@ -129,10 +129,10 @@ namespace Agebull.EntityModel.RobotCoder
             var fields = Entity.DbFields.Where(p => p.ExtendConfigListBool["db_simple"]).ToArray();
             var code = new StringBuilder();
             code.Append($@"
-        #region ¼òµ¥¶ÁÈ¡
+        #region ç®€å•è¯»å–
 
         /// <summary>
-        /// SQLÓï¾ä
+        /// SQLè¯­å¥
         /// </summary>
         public override string SimpleFields
         {{
@@ -144,10 +144,10 @@ namespace Agebull.EntityModel.RobotCoder
 
 
         /// <summary>
-        /// ÔØÈëÊı¾İ
+        /// è½½å…¥æ•°æ®
         /// </summary>
-        /// <param name=""reader"">Êı¾İ¶ÁÈ¡Æ÷</param>
-        /// <param name=""entity"">¶ÁÈ¡Êı¾İµÄÊµÌå</param>
+        /// <param name=""reader"">æ•°æ®è¯»å–å™¨</param>
+        /// <param name=""entity"">è¯»å–æ•°æ®çš„å®ä½“</param>
         public override void SimpleLoad(MySqlDataReader reader,{Entity.EntityName} entity)
         {{
             using (new EditScope(entity.__EntityStatus, EditArrestMode.All, false))
@@ -168,15 +168,15 @@ namespace Agebull.EntityModel.RobotCoder
         private string FieldCode()
         {
             return $@"
-        #region ×Ö¶Î
+        #region å­—æ®µ
 
         /// <summary>
-        ///  ËùÓĞ×Ö¶Î
+        ///  æ‰€æœ‰å­—æ®µ
         /// </summary>
         static string[] _fields = new string[]{{ {Fields()} }};
 
         /// <summary>
-        ///  ËùÓĞ×Ö¶Î
+        ///  æ‰€æœ‰å­—æ®µ
         /// </summary>
         public sealed override string[] Fields
         {{
@@ -187,14 +187,14 @@ namespace Agebull.EntityModel.RobotCoder
         }}
 
         /// <summary>
-        ///  ×Ö¶Î×Öµä
+        ///  å­—æ®µå­—å…¸
         /// </summary>
         public static Dictionary<string, string> fieldMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {{{FieldMap()}
         }};
 
         /// <summary>
-        ///  ×Ö¶Î×Öµä
+        ///  å­—æ®µå­—å…¸
         /// </summary>
         public sealed override Dictionary<string, string> FieldMap
         {{
@@ -208,7 +208,7 @@ namespace Agebull.EntityModel.RobotCoder
             var innerCode = $@"
 {SqlCode()}
 {FieldCode()}
-        #region ·½·¨ÊµÏÖ
+        #region æ–¹æ³•å®ç°
 {LoadEntityCode()}
 {GetDbTypeCode()}
 {CreateFullSqlParameter()}
@@ -239,7 +239,17 @@ namespace {NameSpace}.DataAccess
     /// {Entity.Description}
     /// </summary>
     {(Entity.IsInternal ? "internal" : "public")} partial class {Entity.Name}DataAccess
-    {{{innerCode}
+    {{
+        /// <summary>
+        /// æ„é€ 
+        /// </summary>
+        public {Entity.Name}DataAccess()
+        {{
+            Name = @""{Entity.Name}"";
+            Caption = @""{Entity.Caption}"";
+            Description = @""{Entity.Description.Replace("\"", "\"\"")}"";
+        }}
+{innerCode}
     }}
 
     partial class {Project.DataBaseObjectName}
@@ -266,7 +276,7 @@ namespace {NameSpace}.DataAccess
         public const int Table_{Entity.Name} = 0x{Entity.Index:x};";
         }
         /// <summary>
-        ///     Éú³É»ù´¡´úÂë
+        ///     ç”ŸæˆåŸºç¡€ä»£ç 
         /// </summary>
         protected override void CreateBaCode(string path)
         {
@@ -283,7 +293,7 @@ namespace {NameSpace}.DataAccess
         }
 
         /// <summary>
-        ///     Éú³ÉÀ©Õ¹´úÂë
+        ///     ç”Ÿæˆæ‰©å±•ä»£ç 
         /// </summary>
         protected override void CreateExCode(string path)
         {
@@ -331,12 +341,12 @@ namespace {NameSpace}.DataAccess
             return ($@"
 
         /// <summary>
-        /// {Entity.Description}Êı¾İ·ÃÎÊ¶ÔÏó
+        /// {Entity.Description}æ•°æ®è®¿é—®å¯¹è±¡
         /// </summary>
         private {Entity.Name}DataAccess _{name.ToLWord()};
 
         /// <summary>
-        /// {Entity.Description}Êı¾İ·ÃÎÊ¶ÔÏó
+        /// {Entity.Description}æ•°æ®è®¿é—®å¯¹è±¡
         /// </summary>
         {(Entity.IsInternal ? "internal" : "public")} {Entity.Name}DataAccess {name}
         {{
@@ -352,7 +362,7 @@ namespace {NameSpace}.DataAccess
             return ($@"
 
         /// <summary>
-        /// {Entity.Description}µÄ½á¹¹Óï¾ä
+        /// {Entity.Description}çš„ç»“æ„è¯­å¥
         /// </summary>
         private TableSql _{Entity.ReadTableName}Sql = new TableSql
         {{
@@ -440,7 +450,7 @@ namespace {NameSpace}.DataAccess
 
 
         /// <summary>
-        /// ×Ö¶ÎÎ¨Ò»Ìõ¼ş(Ö÷¼ü»ò×éºÏ¼ü)
+        /// å­—æ®µå”¯ä¸€æ¡ä»¶(ä¸»é”®æˆ–ç»„åˆé”®)
         /// </summary>
         /// <returns></returns>
         private string UniqueCondition()
@@ -607,7 +617,7 @@ UPDATE `{Entity.SaveTable}` SET");
             return $@"
 
         /// <summary>
-        /// ¹¹ÔìÒ»¸öÈ±Ê¡¿ÉÓÃµÄÊı¾İ¿â¶ÔÏó
+        /// æ„é€ ä¸€ä¸ªç¼ºçœå¯ç”¨çš„æ•°æ®åº“å¯¹è±¡
         /// </summary>
         /// <returns></returns>
         protected override MySqlDataBase CreateDefaultDataBase()
@@ -616,7 +626,7 @@ UPDATE `{Entity.SaveTable}` SET");
         }}
         
         /// <summary>
-        /// Éú³ÉÊı¾İ¿â·ÃÎÊ·¶Î§
+        /// ç”Ÿæˆæ•°æ®åº“è®¿é—®èŒƒå›´
         /// </summary>
         internal static MySqlDataTableScope<{Entity.EntityName}> CreateScope()
         {{
@@ -631,11 +641,11 @@ UPDATE `{Entity.SaveTable}` SET");
             code.Append($@"
 
         /// <summary>
-        /// ÉèÖÃ²åÈëÊı¾İµÄÃüÁî
+        /// è®¾ç½®æ’å…¥æ•°æ®çš„å‘½ä»¤
         /// </summary>
-        /// <param name=""entity"">ÊµÌå¶ÔÏó</param>
-        /// <param name=""cmd"">ÃüÁî</param>
-        /// <returns>·µ»ØÕæËµÃ÷ÒªÈ¡Ö÷¼ü</returns>
+        /// <param name=""entity"">å®ä½“å¯¹è±¡</param>
+        /// <param name=""cmd"">å‘½ä»¤</param>
+        /// <returns>è¿”å›çœŸè¯´æ˜è¦å–ä¸»é”®</returns>
         private void CreateFullSqlParameter({Entity.EntityName} entity, MySqlCommand cmd)
         {{");
 
@@ -747,11 +757,11 @@ UPDATE `{Entity.SaveTable}` SET");
             return$@"
 
         /// <summary>
-        /// ÉèÖÃ²åÈëÊı¾İµÄÃüÁî
+        /// è®¾ç½®æ’å…¥æ•°æ®çš„å‘½ä»¤
         /// </summary>
-        /// <param name=""entity"">ÊµÌå¶ÔÏó</param>
-        /// <param name=""cmd"">ÃüÁî</param>
-        /// <returns>·µ»ØÕæËµÃ÷ÒªÈ¡Ö÷¼ü</returns>
+        /// <param name=""entity"">å®ä½“å¯¹è±¡</param>
+        /// <param name=""cmd"">å‘½ä»¤</param>
+        /// <returns>è¿”å›çœŸè¯´æ˜è¦å–ä¸»é”®</returns>
         protected sealed override bool SetInsertCommand({Entity.EntityName} entity, MySqlCommand cmd)
         {{
             cmd.CommandText = InsertSqlCode;
@@ -766,10 +776,10 @@ UPDATE `{Entity.SaveTable}` SET");
                 $@"
 
         /// <summary>
-        /// ÉèÖÃ¸üĞÂÊı¾İµÄÃüÁî
+        /// è®¾ç½®æ›´æ–°æ•°æ®çš„å‘½ä»¤
         /// </summary>
-        /// <param name=""entity"">ÊµÌå¶ÔÏó</param>
-        /// <param name=""cmd"">ÃüÁî</param>
+        /// <param name=""entity"">å®ä½“å¯¹è±¡</param>
+        /// <param name=""cmd"">å‘½ä»¤</param>
         protected sealed override void SetUpdateCommand({Entity.EntityName} entity, MySqlCommand cmd)
         {{
             cmd.CommandText = {(Entity.UpdateByModified ? "GetModifiedSqlCode(entity)" : "UpdateSqlCode")};
@@ -792,10 +802,10 @@ UPDATE `{Entity.SaveTable}` SET");
             return
                 $@"
         /// <summary>
-        /// µÃµ½×Ö¶ÎµÄDbTypeÀàĞÍ
+        /// å¾—åˆ°å­—æ®µçš„DbTypeç±»å‹
         /// </summary>
-        /// <param name=""field"">×Ö¶ÎÃû³Æ</param>
-        /// <returns>²ÎÊı</returns>
+        /// <param name=""field"">å­—æ®µåç§°</param>
+        /// <returns>å‚æ•°</returns>
         protected sealed override MySqlDbType GetDbType(string field)
         {{
             switch (field)
@@ -811,10 +821,10 @@ UPDATE `{Entity.SaveTable}` SET");
             code.Append($@"
 
         /// <summary>
-        /// ÔØÈëÊı¾İ
+        /// è½½å…¥æ•°æ®
         /// </summary>
-        /// <param name=""reader"">Êı¾İ¶ÁÈ¡Æ÷</param>
-        /// <param name=""entity"">¶ÁÈ¡Êı¾İµÄÊµÌå</param>
+        /// <param name=""reader"">æ•°æ®è¯»å–å™¨</param>
+        /// <param name=""entity"">è¯»å–æ•°æ®çš„å®ä½“</param>
         protected sealed override void LoadEntity(MySqlDataReader reader,{Entity.EntityName} entity)
         {{
             using (new EditScope(entity.__EntityStatus, EditArrestMode.All, false))
@@ -831,7 +841,7 @@ UPDATE `{Entity.SaveTable}` SET");
         }
 
         ///// <summary>
-        /////     ´ÓC#µÄÀàĞÍ×ªÎªDBType
+        /////     ä»C#çš„ç±»å‹è½¬ä¸ºDBType
         ///// </summary>
         ///// <param name="csharpType"> </param>
         //public static MySqlDbType ToSqlDbType(string csharpType)
