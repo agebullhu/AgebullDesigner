@@ -112,7 +112,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 取得仅更新的SQL语句
         /// </summary>
-        internal string GetModifiedSqlCode({Entity.EntityName} data)
+        public string GetModifiedSqlCode({Entity.EntityName} data)
         {{
             if (data.__EntityStatusNull || !data.__EntityStatus.IsModified)
                 return "";"";
@@ -224,7 +224,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.Sql;
 using System.Linq;
 using System.Text;
 using Gboxt.Common.DataModel;
@@ -628,7 +627,7 @@ UPDATE `{Entity.SaveTable}` SET");
         /// <summary>
         /// 生成数据库访问范围
         /// </summary>
-        internal static MySqlDataTableScope<{Entity.EntityName}> CreateScope()
+        public static MySqlDataTableScope<{Entity.EntityName}> CreateScope()
         {{
             var db = {Project.DataBaseObjectName}.Default ?? new {Project.DataBaseObjectName}();
             return MySqlDataTableScope<{Entity.EntityName}>.CreateScope(db, db.{Entity.Name.ToPluralism()});

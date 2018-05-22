@@ -5,14 +5,14 @@ using Agebull.EntityModel.Designer;
 namespace Agebull.EntityModel.RobotCoder
 {
     /// <summary>
-    /// ÊµÌåÀ©Õ¹´úÂëÉú³É»ùÀà
+    /// å®ä½“æ‰©å±•ä»£ç ç”ŸæˆåŸºç±»
     /// </summary>
     public abstract class EntityBuilderBase : EntityCoderBase, IAutoRegister
     {
-        #region ×¢²á
+        #region æ³¨å†Œ
 
         /// <summary>
-        /// Ö´ĞĞ×Ô¶¯×¢²á
+        /// æ‰§è¡Œè‡ªåŠ¨æ³¨å†Œ
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
@@ -41,54 +41,54 @@ namespace Agebull.EntityModel.RobotCoder
         #endregion
 
         /// <summary>
-        /// ÊÇ·ñ¿Í»§¶Ë´úÂë
+        /// æ˜¯å¦å®¢æˆ·ç«¯ä»£ç 
         /// </summary>
         protected override bool IsClient => false;
 
         /// <summary>
-        /// ±£´æÂ·¾¶Ê¹ÓÃµÄÃû³Æ
+        /// ä¿å­˜è·¯å¾„ä½¿ç”¨çš„åç§°
         /// </summary>
         protected sealed override string FileSaveConfigName => $"File_Model_Entity_{Folder}_cs";
 
         /// <summary>
-        /// À©Õ¹µÄUsing
+        /// æ‰©å±•çš„Using
         /// </summary>
         protected virtual string ExtendUsing => null;
 
         /// <summary>
-        /// »ù±¾´úÂë
+        /// åŸºæœ¬ä»£ç 
         /// </summary>
         public abstract string BaseCode { get; }
 
         /// <summary>
-        /// À©Õ¹´úÂë
+        /// æ‰©å±•ä»£ç 
         /// </summary>
         public virtual string ExtendCode => null;
 
         /// <summary>
-        /// Àà¶¨ÒåÖ®Ç°µÄ´úÂë
+        /// ç±»å®šä¹‰ä¹‹å‰çš„ä»£ç 
         /// </summary>
         protected virtual string ClassHead => $@"/* {Entity.Description}*/
 ";
 
         /// <summary>
-        /// Àà¼Ì³ĞµÄÀ©Õ¹
+        /// ç±»ç»§æ‰¿çš„æ‰©å±•
         /// </summary>
         protected virtual string ClassExtend => null;
 
         /// <summary>
-        /// ´úÂëÀàĞÍ
+        /// ä»£ç ç±»å‹
         /// </summary>
-        protected virtual string CodeType => "ÊµÌå¶¨Òå";
+        protected virtual string CodeType => "å®ä½“å®šä¹‰";
 
         /// <summary>
-        /// ´úÂëÎÄ¼ş¼ĞÃû³Æ
+        /// ä»£ç æ–‡ä»¶å¤¹åç§°
         /// </summary>
         protected abstract string Folder { get; }
 
 
         /// <summary>
-        ///     Éú³É»ù±¾´úÂë
+        ///     ç”ŸæˆåŸºæœ¬ä»£ç 
         /// </summary>
         protected sealed override void CreateBaCode(string path)
         {
@@ -96,7 +96,7 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
         /// <summary>
-        ///     Éú³ÉÀ©Õ¹´úÂë
+        ///     ç”Ÿæˆæ‰©å±•ä»£ç 
         /// </summary>
         protected sealed override void CreateExCode(string path)
         {
@@ -104,7 +104,7 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
         /// <summary>
-        ///     Éú³É»ù±¾´úÂë
+        ///     ç”ŸæˆåŸºæœ¬ä»£ç 
         /// </summary>
         protected virtual string CreateBaCode()
         {
@@ -113,8 +113,6 @@ using System.IO;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
@@ -135,7 +133,7 @@ namespace {NameSpace}
         }
 
         /// <summary>
-        ///     Éú³ÉÀ©Õ¹´úÂë
+        ///     ç”Ÿæˆæ‰©å±•ä»£ç 
         /// </summary>
         public virtual string CreateExCode()
         {

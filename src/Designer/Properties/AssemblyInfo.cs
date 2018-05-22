@@ -1,17 +1,17 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 // 有关程序集的常规信息通过以下
 // 特性集控制。更改这些特性值可修改
 // 与程序集关联的信息。
 
-[assembly: AssemblyTitle("FundsDesigner")]
-[assembly: AssemblyDescription("系统模型设计与资管端代码生成")]
+[assembly: AssemblyTitle("Agebull.EntityModel.Designer")]
+[assembly: AssemblyDescription("系统模型设计代码生成")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SimpleDataAccess.Design")]
-[assembly: AssemblyCopyright("Copyright ©www.gboxt.com  2014-2016")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCompany("Agebull")]
+[assembly: AssemblyProduct("AgebullDesigner")]
+[assembly: AssemblyCopyright("Copyright ©ageull  2014-2018")]
+[assembly: AssemblyTrademark("Agebull")]
 [assembly: AssemblyCulture("")]
 
 // 将 ComVisible 设置为 false 使此程序集中的类型

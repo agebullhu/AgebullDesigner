@@ -9,20 +9,17 @@ namespace Agebull.EntityModel.RobotCoder
 
     public sealed class EntityBuilder : EntityCoderBase
     {
-
-        #region Ö÷Ìå´úÂë
-
         /// <summary>
-        /// Ãû³Æ
+        /// åç§°
         /// </summary>
         protected override string FileSaveConfigName => "File_Model_Entity_Base_cs";
         /// <summary>
-        /// ÊÇ·ñ¿Í»§¶Ë´úÂë
+        /// æ˜¯å¦å®¢æˆ·ç«¯ä»£ç 
         /// </summary>
         protected override bool IsClient => false;
 
         /// <summary>
-        ///     Éú³ÉÊµÌå´úÂë
+        ///     ç”Ÿæˆå®ä½“ä»£ç 
         /// </summary>
         protected override void CreateBaCode(string path)
         {
@@ -33,8 +30,6 @@ using System.IO;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
@@ -43,8 +38,6 @@ using System.Runtime.Serialization;
 using Agebull.Common;
 using Gboxt.Common.DataModel;
 
-//using {NameSpace}.DataAccess;
-//using Gboxt.Common.DataModel.SqlServer;
 using Newtonsoft.Json;
 
 namespace {NameSpace}
@@ -52,14 +45,13 @@ namespace {NameSpace}
     /// <summary>
     /// {Entity.Description}
     /// </summary>
-    [Table(""GL_OAuth_ClientManager"")]
     [JsonObject(MemberSerialization.OptIn)]
     public partial class {Entity.EntityName} {ExtendInterface()}
     {{
-        #region ¹¹Ôì
+        #region æ„é€ 
         
         /// <summary>
-        /// ¹¹Ôì
+        /// æ„é€ 
         /// </summary>
         public {Entity.EntityName}()
         {{
@@ -67,7 +59,7 @@ namespace {NameSpace}
         }}
 
         /// <summary>
-        /// ³õÊ¼»¯
+        /// åˆå§‹åŒ–
         /// </summary>
         partial void Initialize();
         #endregion
@@ -79,7 +71,7 @@ namespace {NameSpace}
         }
 
         /// <summary>
-        ///     Éú³ÉÀ©Õ¹´úÂë
+        ///     ç”Ÿæˆæ‰©å±•ä»£ç 
         /// </summary>
         protected override void CreateExCode(string path)
         {
@@ -102,7 +94,7 @@ namespace {NameSpace}
     {{
         
         /// <summary>
-        /// ³õÊ¼»¯
+        /// åˆå§‹åŒ–
         /// </summary>
         partial void Initialize()
         {{
@@ -116,7 +108,7 @@ namespace {NameSpace}
 
 
         /// <summary>
-        ///     Éú³ÉÊµÌå´úÂë
+        ///     ç”Ÿæˆå®ä½“ä»£ç 
         /// </summary>
         private string FullCode()
         {
@@ -158,8 +150,6 @@ namespace {NameSpace}
             //}
             return list.Count == 0 ? null : list.DistinctBy().LinkToString(" : ", " , ");
         }
-
-        #endregion
     }
 
 }

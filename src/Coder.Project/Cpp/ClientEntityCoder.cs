@@ -9,15 +9,15 @@ namespace Agebull.EntityModel.RobotCoder
     {
 
         /// <summary>
-        /// Ãû³Æ
+        /// åç§°
         /// </summary>
         protected override string FileSaveConfigName => "File_Client_Entity_cs";
         protected override bool IsClient => true;
 
-        #region Ö÷Ìå´úÂë
+        #region ä¸»ä½“ä»£ç 
 
         /// <summary>
-        ///     Éú³ÉÊµÌå´úÂë
+        ///     ç”Ÿæˆå®ä½“ä»£ç 
         /// </summary>
         protected override void CreateBaCode(string path)
         {
@@ -46,10 +46,10 @@ namespace {NameSpace}
     /// </summary>
     public partial class {Entity.EntityName}
     {{
-        #region ¹¹Ôì
+        #region æ„é€ 
         
         /// <summary>
-        /// ¹¹Ôì
+        /// æ„é€ 
         /// </summary>
         public {Entity.EntityName}()
         {{
@@ -57,22 +57,22 @@ namespace {NameSpace}
         }}
 
         /// <summary>
-        /// ³õÊ¼»¯
+        /// åˆå§‹åŒ–
         /// </summary>
         partial void Initialize();
 
         #endregion
 
 
-        #region ÊôĞÔ×ÖÒå
+        #region å±æ€§å­—ä¹‰
 {Properties()}
         #endregion
 
 
-        #region ¸´ÖÆ
+        #region å¤åˆ¶
 {Copy()}
         #endregion
-        #region ÎÄ±¾
+        #region æ–‡æœ¬
 {ToStringCode()}
         #endregion
     }}
@@ -82,7 +82,7 @@ namespace {NameSpace}
         }
 
         /// <summary>
-        ///     Éú³ÉÀ©Õ¹´úÂë
+        ///     ç”Ÿæˆæ‰©å±•ä»£ç 
         /// </summary>
         protected override void CreateExCode(string path)
         {
@@ -111,14 +111,14 @@ namespace {NameSpace}
             /*
         
         /// <summary>
-        /// ³õÊ¼»¯
+        /// åˆå§‹åŒ–
         /// </summary>
         partial void Initialize()
         {{
 { DefaultValueCode()}
         }}
              
-        #region »º´æ
+        #region ç¼“å­˜
 {CacheCode()}
         #endregion
              */
@@ -126,7 +126,7 @@ namespace {NameSpace}
         }
 
         #endregion
-        #region »º´æ
+        #region ç¼“å­˜
 
         private string CacheCode()
         {
@@ -135,12 +135,12 @@ namespace {NameSpace}
                 $@"
 
         /// <summary>
-        /// »º´æÊı¾İ
+        /// ç¼“å­˜æ•°æ®
         /// </summary>
         public static EntityList<{Entity.EntityName}> Caches{{get;}} = new EntityList<{Entity.EntityName}>();
         
         /// <summary>
-        /// Ìí¼Óµ½»º´æ
+        /// æ·»åŠ åˆ°ç¼“å­˜
         /// </summary>
         public static void AddToCache({Entity.EntityName} value)
         {{
@@ -155,12 +155,12 @@ namespace {NameSpace}
 
 #pragma warning disable 659
         /// <summary>
-        /// È·¶¨Ö¸¶¨µÄ¶ÔÏóÊÇ·ñµÈÓÚµ±Ç°¶ÔÏó¡£
+        /// ç¡®å®šæŒ‡å®šçš„å¯¹è±¡æ˜¯å¦ç­‰äºå½“å‰å¯¹è±¡ã€‚
         /// </summary>
         /// <returns>
-        /// Èç¹ûÖ¸¶¨µÄ¶ÔÏóµÈÓÚµ±Ç°¶ÔÏó£¬ÔòÎª true£»·ñÔòÎª false¡£
+        /// å¦‚æœæŒ‡å®šçš„å¯¹è±¡ç­‰äºå½“å‰å¯¹è±¡ï¼Œåˆ™ä¸º trueï¼›å¦åˆ™ä¸º falseã€‚
         /// </returns>
-        /// <param name=""obj"">ÒªÓëµ±Ç°¶ÔÏó½øĞĞ±È½ÏµÄ¶ÔÏó¡£</param><filterpriority>2</filterpriority>
+        /// <param name=""obj"">è¦ä¸å½“å‰å¯¹è±¡è¿›è¡Œæ¯”è¾ƒçš„å¯¹è±¡ã€‚</param><filterpriority>2</filterpriority>
         public override bool Equals(object obj)
         {{
             var data = obj as {Entity.EntityName};
@@ -173,7 +173,7 @@ namespace {NameSpace}
         }
 
         #endregion
-        #region ÊôĞÔ
+        #region å±æ€§
 
         private string Properties()
         {
@@ -201,7 +201,7 @@ namespace {NameSpace}
             return string.Format(@"
 
         /// <summary>
-        /// ĞŞ¸ÄÖ÷¼ü
+        /// ä¿®æ”¹ä¸»é”®
         /// </summary>
         public void ChangePrimaryKey({3} {1})
         {{
@@ -209,15 +209,15 @@ namespace {NameSpace}
         }}
         
         /// <summary>
-        /// {0}µÄÊµÊ±¼ÇÂ¼Ë³Ğò
+        /// {0}çš„å®æ—¶è®°å½•é¡ºåº
         /// </summary>
-        internal const int Real_{2} = 0;
+        public const int Real_{2} = 0;
 
         /// <summary>
         /// {0}
         /// </summary>
         [DataMember,JsonIgnore]
-        internal {3} _{1};
+        public {3} _{1};
 
         partial void On{2}Get();
 
@@ -246,7 +246,7 @@ namespace {NameSpace}
                 if(this._{1} == value)
                     return;
                 //if(this._{1} > 0)
-                //    throw new Exception(""Ö÷¼üÒ»µ©ÉèÖÃ¾Í²»¿ÉÒÔĞŞ¸Ä"");
+                //    throw new Exception(""ä¸»é”®ä¸€æ—¦è®¾ç½®å°±ä¸å¯ä»¥ä¿®æ”¹"");
                 On{2}Set(ref value);
                 this._{1} = value;
                 {6}this.OnPropertyChanged(nameof({2}));
@@ -266,15 +266,15 @@ namespace {NameSpace}
         {
             code.AppendFormat(@"
         /// <summary>
-        /// {0}µÄÊµÊ±¼ÇÂ¼Ë³Ğò
+        /// {0}çš„å®æ—¶è®°å½•é¡ºåº
         /// </summary>
-        internal const int Real_{2} = {6};
+        public const int Real_{2} = {6};
 
         /// <summary>
         /// {0}
         /// </summary>
         [DataMember,JsonIgnore]
-        internal {3} _{1};
+        public {3} _{1};
 
         partial void On{2}Get();
 
@@ -324,7 +324,7 @@ namespace {NameSpace}
         }
         
         /// <summary>
-        ///     ¼ÆËãÁĞÊôĞÔ
+        ///     è®¡ç®—åˆ—å±æ€§
         /// </summary>
         /// <param name="property"></param>
         /// <param name="index"></param>
@@ -419,7 +419,7 @@ namespace {NameSpace}
             }
         }
         #endregion
-        #region ÎÄ±¾
+        #region æ–‡æœ¬
 
         private object ToStringCode()
         {
@@ -427,9 +427,9 @@ namespace {NameSpace}
             code.Append(@"
 
         /// <summary>
-        /// ÏÔÊ¾ÎªÎÄ±¾
+        /// æ˜¾ç¤ºä¸ºæ–‡æœ¬
         /// </summary>
-        /// <returns>ÎÄ±¾</returns>
+        /// <returns>æ–‡æœ¬</returns>
         public override string ToString()
         {
             return $@""");
@@ -476,7 +476,7 @@ namespace {NameSpace}
 
         #endregion
 
-        #region ¸´ÖÆ
+        #region å¤åˆ¶
         
         private string Copy()
         {
@@ -487,9 +487,9 @@ namespace {NameSpace}
         partial void CopyExtendValue({Entity.EntityName} source);
 
         /// <summary>
-        /// ¸´ÖÆÖµ
+        /// å¤åˆ¶å€¼
         /// </summary>
-        /// <param name=""source"">¸´ÖÆµÄÔ´×Ö¶Î</param>
+        /// <param name=""source"">å¤åˆ¶çš„æºå­—æ®µ</param>
         protected override void CopyValueInner({type} source)
         {{");
 
@@ -524,9 +524,9 @@ namespace {NameSpace}
             code.Append($@"
 
         /// <summary>
-        /// ¸´ÖÆ
+        /// å¤åˆ¶
         /// </summary>
-        /// <param name=""source"">¸´ÖÆµÄÔ´×Ö¶Î</param>
+        /// <param name=""source"">å¤åˆ¶çš„æºå­—æ®µ</param>
         public void Copy({Entity.EntityName} source)
         {{");
 

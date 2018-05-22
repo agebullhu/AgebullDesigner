@@ -5,8 +5,6 @@ namespace Agebull.EntityModel.RobotCoder
         public override string BaseCode=> ValidateCode();
 
         protected override string Folder => "Validate";
-        
-        #region Êı¾İĞ£Ñé
 
         public string ValidateCode()
         {
@@ -14,15 +12,15 @@ namespace Agebull.EntityModel.RobotCoder
             return $@"
 
         /// <summary>
-        /// À©Õ¹Ğ£Ñé
+        /// æ‰©å±•æ ¡éªŒ
         /// </summary>
-        /// <param name=""result"">½á¹û´æ·Å´¦</param>
+        /// <param name=""result"">ç»“æœå­˜æ”¾å¤„</param>
         partial void ValidateEx(ValidateResult result);
 
         /// <summary>
-        /// Êı¾İĞ£Ñé
+        /// æ•°æ®æ ¡éªŒ
         /// </summary>
-        /// <param name=""result"">½á¹û´æ·Å´¦</param>
+        /// <param name=""result"">ç»“æœå­˜æ”¾å¤„</param>
         public override void Validate(ValidateResult result)
         {{
             {(Entity.IsClass || Entity.PrimaryColumn== null ? "" : "result.Id = " + Entity.PrimaryColumn.Name + ".ToString()") }; 
@@ -30,8 +28,5 @@ namespace Agebull.EntityModel.RobotCoder
             ValidateEx(result);
         }}";
         }
-
-        #endregion
-
     }
 }

@@ -9,15 +9,13 @@ namespace Agebull.EntityModel.RobotCoder
     internal sealed class EntityPropertyBuilder : EntityBuilderBase
     {
 
-        #region Ö÷Ìå´úÂë
+        #region ä¸»ä½“ä»£ç 
 
         protected override string ExtendUsing => $@"
 using System.IO;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
 //using {NameSpace}.DataAccess;
@@ -27,7 +25,6 @@ using Newtonsoft.Json;
         protected override string ClassHead => $@"/// <summary>
     /// {ToRemString(Entity.Description)}
     /// </summary>
-    [Table(""GL_OAuth_ClientManager"")]
     [JsonObject(MemberSerialization.OptIn)]
     public ";
         protected override string ClassExtend => ExtendInterface();
@@ -35,13 +32,13 @@ using Newtonsoft.Json;
         protected override string Folder => "Base";
 
         public override string BaseCode => $@"
-        #region ÊôĞÔ×ÖÒå
+        #region å±æ€§å­—ä¹‰
 {Properties()}
 {FullCode()}
         #endregion";
 
         public override string ExtendCode => $@"/// <summary>
-        /// ³õÊ¼»¯
+        /// åˆå§‹åŒ–
         /// </summary>
         partial void Initialize()
         {{
@@ -71,17 +68,17 @@ namespace {NameSpace}
 
 
         /// <summary>
-        ///     Éú³ÉÊµÌå´úÂë
+        ///     ç”Ÿæˆå®ä½“ä»£ç 
         /// </summary>
         private string FullCode()
         {
             if (Entity.IsClass || Entity.PrimaryColumn?.CsType != "long")
                 return null;
             return $@"
-        #region IIdentityData½Ó¿Ú
+        #region IIdentityDataæ¥å£
 { ExtendProperty()}
         #endregion
-        #region ÊôĞÔÀ©Õ¹
+        #region å±æ€§æ‰©å±•
 {AccessProperties()}
         #endregion";
         }
@@ -89,7 +86,7 @@ namespace {NameSpace}
         #endregion
 
 
-        #region À©Õ¹
+        #region æ‰©å±•
 
         private string ExtendInterface()
         {
@@ -131,7 +128,7 @@ namespace {NameSpace}
                     code.AppendFormat(@"
 
         /// <summary>
-        /// ¶ÔÏó±êÊ¶
+        /// å¯¹è±¡æ ‡è¯†
         /// </summary>
         [IgnoreDataMember,Browsable(false)]
         public {0} Id
@@ -150,7 +147,7 @@ namespace {NameSpace}
                 code.Append($@"
 
         /// <summary>
-        /// Id¼ü
+        /// Idé”®
         /// </summary>
         long IIdentityData.Id
         {{
@@ -167,13 +164,13 @@ namespace {NameSpace}
         //            code.AppendFormat(@"
 
         ///// <summary>
-        ///// Id¼ü
+        ///// Idé”®
         ///// </summary>
         //int IIdentityData.Id
         //{{
         //    get
         //    {{
-        //        throw new Exception(""²»Ö§³Ö"");//BUG:ID²»ÊÇINTÀàĞÍ
+        //        throw new Exception(""ä¸æ”¯æŒ"");//BUG:IDä¸æ˜¯INTç±»å‹
         //    }}
         //    set
         //    {{
@@ -184,7 +181,7 @@ namespace {NameSpace}
                     code.AppendFormat(@"
 
         /// <summary>
-        /// Key¼ü
+        /// Keyé”®
         /// </summary>
         Guid IKey.Key
         {{
@@ -205,7 +202,7 @@ namespace {NameSpace}
             code.Append(@"
 
         /// <summary>
-        /// ×éºÏºóµÄÎ¨Ò»Öµ
+        /// ç»„åˆåçš„å”¯ä¸€å€¼
         /// </summary>
         public string UniqueValue
         {
@@ -233,17 +230,17 @@ namespace {NameSpace}
         #endregion
 
 
-        #region ÊôĞÔ
+        #region å±æ€§
 
         private string PrimaryKeyPropertyCode()
         {
             var property = Entity.PrimaryColumn;
             if (property == null)
-                return null;//"\nÃ»ÓĞÉèÖÃÖ÷¼ü×Ö¶Î£¬Éú³ÉµÄ´úÂëÊÇ´íÎóµÄ";
+                return null;//"\næ²¡æœ‰è®¾ç½®ä¸»é”®å­—æ®µï¼Œç”Ÿæˆçš„ä»£ç æ˜¯é”™è¯¯çš„";
             return string.Format(@"
 
         /// <summary>
-        /// ĞŞ¸ÄÖ÷¼ü
+        /// ä¿®æ”¹ä¸»é”®
         /// </summary>
         public void ChangePrimaryKey({3} {1})
         {{
@@ -251,15 +248,15 @@ namespace {NameSpace}
         }}
         
         /// <summary>
-        /// {0}µÄÊµÊ±¼ÇÂ¼Ë³Ğò
+        /// {0}çš„å®æ—¶è®°å½•é¡ºåº
         /// </summary>
-        internal const int Real_{2} = 0;
+        public const int Real_{2} = 0;
 
         /// <summary>
         /// {0}
         /// </summary>
         [DataMember,JsonIgnore]
-        internal {3} _{1};
+        public {3} _{1};
 
         partial void On{2}Get();
 
@@ -275,7 +272,7 @@ namespace {NameSpace}
         /// <remarks>
         /// {5}
         /// </remarks>
-        {4}[Key]
+        {4}
         public {3} {2}
         {{
             get
@@ -288,7 +285,7 @@ namespace {NameSpace}
                 if(this._{1} == value)
                     return;
                 //if(this._{1} > 0)
-                //    throw new Exception(""Ö÷¼üÒ»µ©ÉèÖÃ¾Í²»¿ÉÒÔĞŞ¸Ä"");
+                //    throw new Exception(""ä¸»é”®ä¸€æ—¦è®¾ç½®å°±ä¸å¯ä»¥ä¿®æ”¹"");
                 On{2}Set(ref value);
                 this._{1} = value;
                 {6}this.OnPropertyChanged(Real_{2});
@@ -308,15 +305,15 @@ namespace {NameSpace}
         {
             code.AppendFormat(@"
         /// <summary>
-        /// {0}µÄÊµÊ±¼ÇÂ¼Ë³Ğò
+        /// {0}çš„å®æ—¶è®°å½•é¡ºåº
         /// </summary>
-        internal const int Real_{2} = {6};
+        public const int Real_{2} = {6};
 
         /// <summary>
         /// {0}
         /// </summary>
         [DataMember,JsonIgnore]
-        internal {3} _{1};
+        public {3} _{1};
 
         partial void On{2}Get();
 
@@ -353,7 +350,7 @@ namespace {NameSpace}
         }
 
         /// <summary>
-        /// ¼ÆËãÁĞÊôĞÔ
+        /// è®¡ç®—åˆ—å±æ€§
         /// </summary>
         /// <param name="property"></param>
         /// <param name="index"></param>
@@ -363,9 +360,9 @@ namespace {NameSpace}
             EnumContentProperty(property, code);
             code.Append($@"
         /// <summary>
-        /// {ToRemString(property.Caption + ":" + property.Description)}µÄÊµÊ±¼ÇÂ¼Ë³Ğò
+        /// {ToRemString(property.Caption + ":" + property.Description)}çš„å®æ—¶è®°å½•é¡ºåº
         /// </summary>
-        internal const int Real_{property.Name} = {index};
+        public const int Real_{property.Name} = {index};
 ");
             if (string.IsNullOrWhiteSpace(property.ComputeGetCode) && string.IsNullOrWhiteSpace(property.ComputeSetCode))
             {
@@ -374,7 +371,7 @@ namespace {NameSpace}
         /// {ToRemString(property.Caption + ":" + property.Description)}
         /// </summary>
         [DataMember,JsonIgnore]
-        internal {property.LastCsType} _{property.Name.ToLower()};
+        public {property.LastCsType} _{property.Name.ToLower()};
 
         /// <summary>
         /// {ToRemString(property.Caption + ":" + property.Description)}
@@ -455,7 +452,7 @@ namespace {NameSpace}
             }
         }
         /// <summary>
-        /// ±ğÃûÊôĞÔ
+        /// åˆ«åå±æ€§
         /// </summary>
         /// <param name="property"></param>
         /// <param name="code"></param>
@@ -514,14 +511,14 @@ namespace {NameSpace}
         /// {ToRemString(property.Caption + ":" + property.Description)}
         /// </summary>
         /// <remarks>
-        /// ½öÏŞÓÃÓÚ²éÑ¯µÄLambda±í´ïÊ½Ê¹ÓÃ
+        /// ä»…é™ç”¨äºæŸ¥è¯¢çš„Lambdaè¡¨è¾¾å¼ä½¿ç”¨
         /// </remarks>
         [IgnoreDataMember , Browsable(false),JsonIgnore]
         public {property.LastCsType} {property.Name}
         {{
             get
             {{
-                throw new Exception(""{ToRemString(property.Caption + ":" + property.Description)}ÊôĞÔ½öÏŞÓÃÓÚ²éÑ¯µÄLambda±í´ïÊ½Ê¹ÓÃ"");
+                throw new Exception(""{ToRemString(property.Caption + ":" + property.Description)}å±æ€§ä»…é™ç”¨äºæŸ¥è¯¢çš„Lambdaè¡¨è¾¾å¼ä½¿ç”¨"");
             }}
         }}");
         }
@@ -540,13 +537,13 @@ namespace {NameSpace}
         partial void On{property.StorageProperty}Seted();
 
         /// <summary>
-        /// {ToRemString(property.Caption + ":" + property.Description)}µÄ´æ´¢Öµ¶ÁĞ´×Ö¶Î
+        /// {ToRemString(property.Caption + ":" + property.Description)}çš„å­˜å‚¨å€¼è¯»å†™å­—æ®µ
         /// </summary>
         /// <remarks>
-        /// ½ö´æ´¢Ê¹ÓÃ
+        /// ä»…å­˜å‚¨ä½¿ç”¨
         /// </remarks>
         [DataMember , Browsable(false),JsonIgnore]
-        internal string {property.StorageProperty}
+        public string {property.StorageProperty}
         {{
             get
             {{
