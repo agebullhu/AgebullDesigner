@@ -204,7 +204,7 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
         private string CreateCode()
-        {
+        {//{CreateScope()}
             var innerCode = $@"
 {SqlCode()}
 {FieldCode()}
@@ -214,7 +214,7 @@ namespace Agebull.EntityModel.RobotCoder
 {CreateFullSqlParameter()}
 {UpdateCode()}
 {InsertCode()}
-{CreateScope()}
+
         #endregion
 {SimpleCode()}
 ";
@@ -325,7 +325,7 @@ namespace {NameSpace}.DataAccess
     /// <summary>
     /// {Entity.Description}
     /// </summary>
-    sealed partial class {Entity.Name}DataAccess : {baseClass}<{Entity.EntityName}>
+    sealed partial class {Entity.Name}DataAccess : {baseClass}<{Entity.EntityName},{Project.DataBaseObjectName}>
     {{
 
     }}
@@ -611,7 +611,7 @@ UPDATE `{Entity.SaveTable}` SET");
             return col.CustomType == null ? $"{pre}{col.Name}" : $"({col.CsType}){pre}{col.Name}";
         }
 
-        private string CreateScope()
+        /*private string CreateScope()
         {
             return $@"
 
@@ -632,7 +632,7 @@ UPDATE `{Entity.SaveTable}` SET");
             var db = {Project.DataBaseObjectName}.Default ?? new {Project.DataBaseObjectName}();
             return MySqlDataTableScope<{Entity.EntityName}>.CreateScope(db, db.{Entity.Name.ToPluralism()});
         }}";
-        }
+        }*/
 
         private string CreateFullSqlParameter()
         {
