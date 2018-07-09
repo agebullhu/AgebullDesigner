@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -17,7 +18,6 @@ namespace Agebull.EntityModel.Designer
 
         public EntityDesignModel()
         {
-            Catalog = "字段";
             Model = DataModelDesignModel.Current;
             Context = DataModelDesignModel.Current?.Context;
         }
@@ -26,39 +26,37 @@ namespace Agebull.EntityModel.Designer
         /// 生成命令对象
         /// </summary>
         /// <returns></returns>
-        protected override List<CommandItem> CreateCommands()
+        public override ObservableCollection<CommandItem> CreateCommands()
         {
-            List<CommandItem> commands = new List<CommandItem>
+            ObservableCollection<CommandItem> commands = new ObservableCollection<CommandItem>
             {
                 new CommandItem
                 {
                     Command = new DelegateCommand(CopyColumns),
-                    Name = "复制列",
+                    Caption = "复制列",
                     Image = Application.Current.Resources["tree_item"] as ImageSource
                 },
                 new CommandItem
                 {
                     Command = new DelegateCommand(PasteColumns),
-                    Name = "粘贴列",
+                    Caption = "粘贴列",
                     Image = Application.Current.Resources["tree_item"] as ImageSource
                 },
                 new CommandItem
                 {
-                    NoButton=true,
                     Command = new DelegateCommand(ClearColumns),
-                    Name = "清除列",
+                    Caption = "清除列",
                     Image = Application.Current.Resources["img_del"] as ImageSource
                 },
                 new CommandItem
                 {
-                    NoButton=true,
                     Command = new DelegateCommand(DeleteColumns),
-                    Name = "删除所选列",
+                    Caption = "删除所选列",
                     Image = Application.Current.Resources["img_del"] as ImageSource
                 }
             };
             CreateCommands(commands);
-            var extends = CommandCoefficient.Coefficient(typeof(EntityConfig), Catalog);
+            var extends = CommandCoefficient.CoefficientEditor(typeof(EntityConfig), EditorName);
             if (extends.Count > 0)
                 commands.AddRange(extends);
             return commands;
@@ -86,7 +84,7 @@ namespace Agebull.EntityModel.Designer
                 Context.StateMessage = "没可粘贴的行";
                 return;
             }
-            var yes = MessageBox.Show(Application.Current.MainWindow, "是否粘贴关系信息?", "粘贴行", MessageBoxButton.YesNo) ==
+            var yes = MessageBox.Show("是否粘贴关系信息?", "粘贴行", MessageBoxButton.YesNo) ==
                       MessageBoxResult.Yes;
             
             PateFields(yes, Context.CopiedTable, Context.SelectEntity, Context.CopyColumns);
@@ -165,7 +163,7 @@ namespace Agebull.EntityModel.Designer
                         newColumn.Caption = copyColumn.Parent.Caption;
                         newColumn.ColumnName = GlobalConfig.SplitWords(newColumn.Name).Select(p => p.ToLower()).LinkToString("_");
                     }
-                    Entity.Properties.Add(newColumn);
+                    Entity.Add(newColumn);
                 }
                 newColumn.Parent = Entity;
                 if (yes)

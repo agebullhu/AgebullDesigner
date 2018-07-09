@@ -31,7 +31,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     Detect = Model
                 },
-                Name = "分析宏类型",
+                Caption = "分析宏类型",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             },
             new CommandItem
@@ -41,13 +41,13 @@ namespace Agebull.EntityModel.Designer
                 {
                     Detect = Model
                 },
-                Name = "分析C++结构文本",
+                Caption = "分析C++结构文本",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             },
             new CommandItem
             {
                 Command = new DelegateCommand(Model.End),
-                Name = "接收到系统中",
+                Caption = "接收到系统中",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             }
         });
@@ -57,7 +57,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public string SystemName
         {
-            get { return _systemName; }
+            get => _systemName;
             set
             {
                 if (_systemName == value)

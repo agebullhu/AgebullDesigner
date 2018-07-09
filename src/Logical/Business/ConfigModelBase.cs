@@ -5,9 +5,9 @@ using Agebull.Common;
 namespace Agebull.EntityModel.Config
 {
     /// <summary>
-        /// 实体配置业务模型
-        /// </summary>
-        public class ConfigModelBase : GlobalConfig
+    /// 实体配置业务模型
+    /// </summary>
+    public class ConfigModelBase : GlobalConfig
     {
         /// <summary>
         /// 设置当前解决方案

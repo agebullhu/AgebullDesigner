@@ -23,10 +23,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public new string Text
         {
-            get
-            {
-                return base.Text;
-            }
+            get => base.Text;
             set
             {
                 base.Text = value;

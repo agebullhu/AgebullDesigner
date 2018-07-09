@@ -18,21 +18,16 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("其它","新增 CS代码",cfg=> DoCode(cfg, NewCsCode));
-            MomentCoder.RegisteCoder("其它","修改 CS代码",cfg=> DoCode(cfg, EditCsCode));
-            MomentCoder.RegisteCoder("其它","数据库测试",cfg=> DoCode(cfg, DbTestCode));
-            MomentCoder.RegisteCoder("其它","用户子级操作", cfg => DoCode(cfg, UserChildProcessMothes));
-            MomentCoder.RegisteCoder("其它","用户子级删除", cfg => DoCode(cfg, UserChildDefaution));
-            MomentCoder.RegisteCoder("其它","用户子级对象", cfg => DoCode(cfg, UserChildDefaution));
-            MomentCoder.RegisteCoder("其它","用户子级保存", cfg => DoCode(cfg, UserChildSave));
-            MomentCoder.RegisteCoder("其它","用户子级模板",cfg=> DoCode(cfg, UserSwitchUid));
-            MomentCoder.RegisteCoder("其它","保存Redis到数据库", cfg => DoCode(cfg, SaveToDb));
-            MomentCoder.RegisteCoder("其它","Mvc菜单", cfg => DoCode(cfg, MvcMenu));
-            MomentCoder.RegisteCoder("其它","EasyUi表单", cfg => DoCode(cfg, EasyUiForm));
-            //MomentCoder.RegisteCoder("其它","EasyUi表单保存",EasyUiHelperCoder.InputConvert4(Entity));
-            MomentCoder.RegisteCoder("其它","EasyUi表格", cfg => DoCode(cfg, EasyUiGrid));
-            MomentCoder.RegisteCoder("其它","EasyUi详情", cfg => DoCode(cfg, EasyUiInfo));
-            MomentCoder.RegisteCoder("其它","代码的代码", cfg => DoCode(cfg, ToCode));
+            MomentCoder.RegisteCoder("其它","新增 CS代码","cs", cfg => DoCode(cfg, NewCsCode));
+            MomentCoder.RegisteCoder("其它","修改 CS代码","cs", cfg => DoCode(cfg, EditCsCode));
+            MomentCoder.RegisteCoder("其它","数据库测试","cs", cfg => DoCode(cfg, DbTestCode));
+            MomentCoder.RegisteCoder("其它","用户子级操作","cs", cfg => DoCode(cfg, UserChildProcessMothes));
+            MomentCoder.RegisteCoder("其它","用户子级删除","cs", cfg => DoCode(cfg, UserChildDefaution));
+            MomentCoder.RegisteCoder("其它","用户子级对象","cs", cfg => DoCode(cfg, UserChildDefaution));
+            MomentCoder.RegisteCoder("其它","用户子级保存","cs", cfg => DoCode(cfg, UserChildSave));
+            MomentCoder.RegisteCoder("其它","用户子级模板","cs", cfg => DoCode(cfg, UserSwitchUid));
+            MomentCoder.RegisteCoder("其它","保存Redis到数据库","cs", cfg => DoCode(cfg, SaveToDb));
+            MomentCoder.RegisteCoder("其它", "字段静态化","cs", cfg => DoCode(cfg, ToCSharpCode));
         }
         #endregion
 
@@ -89,19 +84,19 @@ namespace Agebull.EntityModel.RobotCoder
             return null;
         }
 
-        public string ToCode()
+        public string ToCSharpCode()
         {
             var code = new StringBuilder();
             foreach (var field in Entity.Properties)
             {
-                code.AppendLine(ToCode(field));
+                code.AppendLine(ToCSharpCode(field));
             }
             return code.ToString();
         }
 
-        public string ToCode(PropertyConfig property)
+        public string ToCSharpCode(PropertyConfig property)
         {
-            return $@"static ColumnSchema {property.Name.ToLWord()} = new ColumnSchema
+            return $@"static PropertyConfig _{property.Name.ToLWord()} = new PropertyConfig
             {{
                 Caption = ""{property.Caption}"",
                 Description = ""{property.Description}"",
@@ -166,8 +161,19 @@ namespace Agebull.EntityModel.RobotCoder
                 if (first)
                     first = false;
                 else builder.Append(',');
-                builder.AppendFormat(@"
-                {0} = default({1})", field.Name, field.LastCsType);
+                if (field.HelloCode != null)
+                {
+                    builder.Append(field.CsType == "string"
+                        ? $@"
+                {field.Name} = ""{field.HelloCode}"""
+                        : $@"
+                {field.Name} = {field.HelloCode}");
+                }
+                else
+                {
+                    builder.Append($@"
+                {field.Name} = default({field.LastCsType})");
+                }
             }
             builder.Append(@"
             };");
@@ -216,49 +222,6 @@ namespace Agebull.EntityModel.RobotCoder
            </div>";
         }
 
-        private string EasyUiForm()
-        {
-            var jsonBuilder = new StringBuilder();
-
-            jsonBuilder.AppendFormat(@"
-<form name='{0}Form' id='{0}Form'>
-    <div style='width:490px;display: block;'>", Entity.Name.ToLowerInvariant());
-            foreach (PropertyConfig field in Entity.PublishProperty)
-            {
-                string ext = null;
-                if (field.IsRequired)
-                    ext = " data-options='required:true'";
-                string type = " easyui-text";
-                jsonBuilder.AppendFormat(@"
-       <div class='inputField'>
-            <div class='inputRegion'>
-                <div class='inputLabel'>{0}:</div>
-                <input name='{1}' class='inputValue inputS {4}'{3}/>
-            </div>
-            <div class='inputHelp'>{2}</div>
-        </div>"
-                    , field.Caption, field.Name, field.Description, ext, type);
-
-            }
-            jsonBuilder.Append(@"
-    </div>
-</form>");
-            return jsonBuilder.ToString();
-        }
-
-        private string EasyUiGrid()
-        {
-            var jsonBuilder = new StringBuilder();
-            foreach (PropertyConfig field in Entity.PublishProperty)
-            {
-                string align = field.CsType == "string" ? "left " : "center";
-                string sortable = field.CsType == "string" ? "true " : "false";
-                jsonBuilder.AppendFormat(@"
-{{ width: 100, align: '{0}', sortable: {1}, field: '{2}', title: '{3}' }},"
-                    , align, sortable, field.Name, field.Caption ?? field.Name);
-            }
-            return jsonBuilder.ToString();
-        }
 
         private string SaveToDb()
         {
@@ -285,12 +248,6 @@ namespace Agebull.EntityModel.RobotCoder
             return string.Format($@"
             Console.WriteLine(""{Entity.Name}"");
             LocalDataBase.{Entity.Name.ToPluralism()}.All();");
-        }
-
-        private string DbIndex()
-        {
-            return $@"
-            {{""{Entity.Name}"",{Entity.DbIndex}}},";
         }
 
         private string UserChildSave()

@@ -59,12 +59,12 @@
     <Compile Include="Base\GlobalConfig.cs" />
     <Compile Include="Base\ConfigCollection.cs" />
     <Compile Include="Base\IDesignGlobal.cs" />
+    <Compile Include="Base\ProjectChildConfigBase.cs" />
     <Compile Include="Config\EntityConfig.cs" />
     <Compile Include="Config\PropertyConfig.cs" />
     <Compile Include="Config\PropertyConfig.def.cs" />
     <Compile Include="Config\SolutionConfig.cs" />
     <Compile Include="Config\TableReleation.cs" />
-    <Compile Include="Cpp\TypedefItem.cs" />
     <Compile Include="ExtendConfig\ConfigItem.cs" />
     <Compile Include="ExtendConfig\ConfigItemDictionary.cs" />
     <Compile Include="LUA\GetLuaStruct.cs" />
@@ -91,7 +91,6 @@
     <Compile Include="Base\FileConfigBase.cs" />
     <Compile Include="Type\ICommandItem.cs" />
     <Compile Include="Type\IProjectConfiguration.cs" />
-    <Compile Include="Cpp\NotifyItem.cs" />
     <Compile Include="Base\ParentConfigBase.cs" />
     <Compile Include="Type\SaveStateType.cs" />
     <Compile Include="Type\SolutionType.cs" />

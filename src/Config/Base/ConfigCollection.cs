@@ -103,10 +103,7 @@ namespace Agebull.EntityModel
                 statusChanged -= value;
                 statusChanged += value;
             }
-            remove
-            {
-                statusChanged -= value;
-            }
+            remove => statusChanged -= value;
         }
         /// <summary>
         ///     发出状态变化事件

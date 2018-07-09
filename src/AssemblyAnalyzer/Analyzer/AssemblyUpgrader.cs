@@ -64,7 +64,7 @@ namespace Agebull.EntityModel.Designer.AssemblyAnalyzer
             Config = new AssemblyConfig
             {
                 Name = _assembly.FullName,
-                FileName = FileName
+                SaveName = FileName
             };
             string path = FileName.Replace("dll", "xml");
             _helpXml = !File.Exists(path) ? new List<XmlMember>() : XmlMember.Load(path);
@@ -207,9 +207,9 @@ namespace Agebull.EntityModel.Designer.AssemblyAnalyzer
             return config;
         }
 
-        private PropertyConfig GetConfig(Type type, PropertyInfo property)
+        private PropertyUpgradeConfig GetConfig(Type type, PropertyInfo property)
         {
-            PropertyConfig config = new PropertyConfig
+            PropertyUpgradeConfig config = new PropertyUpgradeConfig
             {
                 Name = property.Name,
                 ConfigType = property.PropertyType,

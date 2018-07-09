@@ -10,7 +10,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Agebull.EntityModel.Config;
@@ -24,33 +28,33 @@ namespace Agebull.EntityModel.Designer
     public class NormalCodeModel : DesignModelBase
     {
 
-        #region 操作命令
-
         /// <summary>
         ///     分类
         /// </summary>
         public NormalCodeModel()
         {
-            Catalog = "代码生成";
-        } 
-        
+            EditorName = "Code";
+        }
+
+        #region 操作命令
+
         /// <summary>
         /// 生成命令对象
         /// </summary>
         /// <param name="commands"></param>
-        protected override void CreateCommands(List<CommandItem> commands)
+        protected override void CreateCommands(ObservableCollection<CommandItem> commands)
         {
             commands.Add(new CommandItem
             {
                 Command = new DelegateCommand(DoMomentCode),
-                Name = "生成代码片断",
+                Caption = "生成代码片断",
                 Image = Application.Current.Resources["cpp"] as ImageSource
             });
 
             commands.Add(new CommandItem
             {
                 Command = new DelegateCommand(CopyCode),
-                Name = "复制代码",
+                Caption = "复制代码",
                 Image = Application.Current.Resources["img_file"] as ImageSource
             });
             foreach (var builder in ProjectBuilder.Builders.Values)
@@ -58,11 +62,78 @@ namespace Agebull.EntityModel.Designer
                 var b = builder();
                 commands.Add(new ProjectCodeCommand(builder)
                 {
-                    Name = b.Caption,
+                    Caption = b.Caption,
                     IconName = b.Icon,
-                    NoButton = true
+                    NoButton = true,
+                    OnCodeSuccess = OnCodeSuccess
                 }.ToCommand(null));
             }
+        }
+        #endregion
+
+        #region 文件代码
+
+        /// <summary>
+        /// 代码命令树根
+        /// </summary>
+        public TreeRoot FileTreeRoot { get; } = new TreeRoot();
+
+        internal WebBrowser Browser;
+
+
+        private void OnCodeSuccess(Dictionary<string, string> fields)
+        {
+            FileTreeRoot.SelectItemChanged -= OnFileSelectItemChanged;
+            FileTreeRoot.Items.Clear();
+            if (fields == null)
+                return;
+            int first = SolutionConfig.Current.RootPath == null ? 0 : SolutionConfig.Current.RootPath.Length;
+            foreach (var file in fields)
+            {
+                string name = Path.GetFileName(file.Key);
+                string path = Path.GetDirectoryName(file.Key);
+                var folder = path?.Substring(first,path.Length - first) ?? "未知目录";
+                folder= folder.Trim('\\', '/');
+                var item = FileTreeRoot.Items.FirstOrDefault(p=>p.Name == folder);
+                if (item == null)
+                {
+                    FileTreeRoot.Items.Add(item = new TreeItem(file.Key)
+                    {
+                        Header = folder,
+                        Name = folder,
+                        IsExpanded = true,
+                        SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
+                    });
+                }
+                item.Items.Add(new TreeItem<string>(file.Value)
+                {
+                    Header = name,
+                    Name = name,
+                    Tag = Path.GetExtension(file.Key),
+                    SoruceTypeIcon = Application.Current.Resources["img_code"] as BitmapImage
+                });
+            }
+            
+           ViewIndex = 1;
+            FileTreeRoot.SelectItemChanged += OnFileSelectItemChanged;
+        }
+
+        private void OnFileSelectItemChanged(object sender, EventArgs e)
+        {
+            var value = sender as TreeItem<string>;
+            _codeType = value?.Tag ?? ".cs";
+            switch (_codeType.ToLower().Trim('.'))
+            {
+                case "h":
+                    _codeType = "cpp";
+                    break;
+                case "aspx":
+                case "htm":
+                case "html":
+                    _codeType = "xml";
+                    break;
+            }
+            ExtendCode = value?.Model;
         }
 
         #endregion
@@ -71,8 +142,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 代码命令树根
         /// </summary>
-        public TreeRoot CodeTreeRoot { get; } = new TreeRoot();
-
+        public TreeRoot MomentTreeRoot { get; } = new TreeRoot();
 
         /// <summary>
         /// 初始化
@@ -90,34 +160,52 @@ namespace Agebull.EntityModel.Designer
                     IsExpanded = false,
                     SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
                 };
-                CodeTreeRoot.Items.Add((TreeItem)parent);
+                MomentTreeRoot.Items.Add((TreeItem)parent);
                 foreach (var item in clasf.Value)
                 {
-                    parent.Items.Add(new TreeItem<Func<ConfigBase, string>>(item.Value)
+                    parent.Items.Add(new TreeItem<CoderDefine>(item.Value)
                     {
                         Header = item.Key,
                         SoruceTypeIcon = Application.Current.Resources["img_code"] as BitmapImage
                     });
                 }
             }
-            CodeTreeRoot.SelectItemChanged += OnTreeSelectItemChanged;
+            MomentTreeRoot.SelectItemChanged += OnMomentSelectItemChanged;
         }
-        private void OnTreeSelectItemChanged(object sender, EventArgs e)
+        private void OnMomentSelectItemChanged(object sender, EventArgs e)
         {
-            var value = sender as TreeItem<Func<ConfigBase, string>>;
-            SelectCodeModel = value?.Model;
-            if (SelectCodeModel != null)
+            var value = sender as TreeItem<CoderDefine>;
+            if (value == null)
+                return;
+            _codeType = value.Model.Lang;
+            MomentCodeModel = value.Model.Func;
+            if (MomentCodeModel != null)
             {
                 DoMomentCode();
             }
+            else
+            {
+                ExtendCode = "无生成器";
+            }
         }
-
 
         /// <summary>
         /// 选中的代码片断对象的方法体
         /// </summary>
-        private Func<ConfigBase, string> SelectCodeModel;
+        private Func<ConfigBase, string> MomentCodeModel;
 
+        private int _ViewIndex;
+        public int ViewIndex
+        {
+            get => _ViewIndex;
+            set
+            {
+                if (_ViewIndex == value)
+                    return;
+                _ViewIndex = value;
+                OnPropertyChanged(nameof(ViewIndex));
+            }
+        }
         #endregion
         #region 代码片断
         /// <summary>
@@ -139,6 +227,11 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 生成的代码片断
         /// </summary>
+        private string _codeType="cs";
+
+        /// <summary>
+        /// 生成的代码片断
+        /// </summary>
         private string _extendCode;
 
         /// <summary>
@@ -146,31 +239,57 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public string ExtendCode
         {
-            get { return _extendCode; }
+            get => _extendCode;
             set
             {
                 if (Equals(_extendCode, value))
                     return;
                 _extendCode = value;
-                RaisePropertyChanged(() => ExtendCode);
-                Context.NowJob = DesignContext.JobExtendCode;
+                var code = System.Web.HttpUtility.HtmlEncode(value ?? "");
+                var html = $@"
+<html style='padding:0;margin:0'>
+    <head>
+        <meta charset='utf-8'/>
+        <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+        <meta name='viewport' content='width=device-width, initial-scale=1' />
+        <meta name='referrer' content='never' />
+        <script src='https://code.jquery.com/jquery-1.11.3.js'></script>
+        <link href='https://highlightjs.org/static/demo/styles/vs.css' rel='stylesheet'>  
+        <script src='http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js'></script>  
+        <script>
+            hljs.initHighlightingOnLoad();
+            $(document).ready(function() {{
+                    $('pre code').each(function(i, block) {{
+                    hljs.highlightBlock(block);
+                }});
+            }});
+        </script>
+    <head>
+    <body style='padding:0;margin:0'>
+        <pre><code class='{_codeType}'>{code}</code></pre>
+    </body>
+</html>
+";
+                Browser.NavigateToString(html);
+                Editor.ShowCode();
             }
         }
 
         private void DoMomentCode()
         {
-            if (SelectCodeModel == null)
+            ViewIndex = 0;
+            if (MomentCodeModel == null)
             {
-                MessageBox.Show("请选择一个生成方法", "生成代码片断");
+                ExtendCode = "请选择一个生成方法";
                 return;
             }
             try
             {
-                ExtendCode = SelectCodeModel(Model.Context.SelectConfig);
+                ExtendCode = MomentCodeModel(Model.Context.SelectConfig);
             }
             catch (Exception e)
             {
-                MessageBox.Show("因为【" + e.Message + "】未能生成对应的代码片断", "生成代码片断");
+                ExtendCode = $"因为【{e.Message}】未能生成对应的代码片断\n{e}";
             }
         }
         #endregion

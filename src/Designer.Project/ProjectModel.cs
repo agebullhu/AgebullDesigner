@@ -22,16 +22,18 @@ namespace Agebull.EntityModel.Designer
         {
             commands.Add(new CommandItemBuilder
             {
+                Catalog="编辑",
                 Signle = true,
-                Name = "增加表",
+                Caption = "增加表",
                 Command = new DelegateCommand(AddEntity),
                 IconName = "tree_Open"
             });
             commands.Add(new CommandItemBuilder
             {
+                Catalog = "编辑",
                 Signle = true,
                 NoButton = true,
-                Name = "粘贴表",
+                Caption = "粘贴表",
                 Command = new DelegateCommand(PasteTable),
                 IconName = "tree_item"
             });
@@ -40,8 +42,8 @@ namespace Agebull.EntityModel.Designer
             {
                 Signle = true,
                 NoButton = true,
-                
-                Name = "复制到其它项目",
+                Catalog = "编辑",
+                Caption = "复制到其它项目",
                 Command = new DelegateCommand(CopyToProject),
                 IconName = "tree_item"
             });
@@ -68,9 +70,9 @@ namespace Agebull.EntityModel.Designer
                 {
                     pro.Tag = $"{entity.Tag},{pro.CppType},{pro.Name}";
                 }
+
+                Context.SelectProject.Add(entity);
             }
-            Context.SelectProject.Entities.AddRange(Context.CopiedTables);
-            Context.Entities.AddRange(Context.CopiedTables);
 
             //this.Context.CopiedTable = null;
             //this.Context.CopiedTables.Clear();
@@ -91,11 +93,8 @@ namespace Agebull.EntityModel.Designer
             {
                 return;
             }
-            entity.Parent = Context.SelectProject;
-            entity.Project = Context.SelectProject.Name;
-            //Context.SelectProject.Entities.Add(entity);
-            //Context.Entities.Add(entity);
-            Model.Tree.SetSelect(entity);
+            Context.SelectProject.Add(entity);
+            Model.Tree.SetSelectEntity(entity);
             Context.SelectColumns = null;
             var nentity = CommandIoc.AddFieldsCommand();
             if (nentity == null)

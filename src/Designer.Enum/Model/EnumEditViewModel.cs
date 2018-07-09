@@ -1,45 +1,33 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Designer.View;
 
 namespace Agebull.EntityModel.Designer
 {
-    public sealed class EnumEditViewModel : ViewModelBase<EnumEditModel>
+    public sealed class EnumEditViewModel : ExtendViewModelBase<EnumEditModel>
     {
+        /// <summary>
+        /// 主面板
+        /// </summary>
+        public override FrameworkElement Body { get; } = new EnumEdit();
 
-        private List<CommandItem> _exCommands;
 
-        public IEnumerable<CommandItem> ExCommands => _exCommands ?? (_exCommands = new List<CommandItem>
+        protected override ObservableCollection<CommandItem> CreateCommands()
         {
-            new CommandItem
+            return new ObservableCollection<CommandItem>
             {
-                Command = new AsyncCommand<string, List<EnumItem>>
-                    (Model.CheckFieldesPrepare, Model.DoCheckFieldes, Model.CheckFieldesEnd)
+                new CommandItem
                 {
-                    Detect = Model
-                },
-                Name = "分析文本",
-                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-            },
-            new CommandItem
-            {
-                Command = new DelegateCommand(DoClose),
-                Name = "完成",
-                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-            }
-        });
-
-        private void DoClose()
-        {
-            if (string.IsNullOrWhiteSpace(Model.Config.Name) || Model.Config.Items.Count == 0)
-            {
-                MessageBox.Show("实体名称为空或没有字段,请检查");
-                return;
-            }
-            var window = (Window)View;
-            window.DialogResult = true;
+                    Command = new DelegateCommand(Model. DoCheckFieldes),
+                    Caption = "分析文本",
+                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                }
+            };
         }
     }
 }

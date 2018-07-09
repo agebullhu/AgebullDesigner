@@ -171,7 +171,7 @@
                     Binding="{Binding ExtendConfigListBool[db_simple],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                     Header="列表数据" />
                 <DataGridCheckBoxColumn
-                    Binding="{Binding NoSort,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BoolReversalConverter}}"
+                    Binding="{Binding ExtendConfigListBool[NoSort],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                     Header="排序" />
                 <DataGridCheckBoxColumn
                     Binding="{Binding ExtendConfigListBool[CanImport],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"

@@ -76,7 +76,7 @@ namespace Agebull.EntityModel.RobotCoder
                 var words = ToWords(str);
                 StringBuilder sb = new StringBuilder();
                 bool preEn = words[0][0] < 255;
-                sb.Append(words[0]);
+                sb.Append(uWord ? words[0].ToUWord() : words[0].ToLower());
                 for (var index = 1; index < words.Count; index++)
                 {
                     var word = words[index];
@@ -355,7 +355,6 @@ namespace Agebull.EntityModel.RobotCoder
             return caption;
         }
         #endregion
-
         #region 目录扩展
         /// <summary>
         /// 检查并组成代码文件路径

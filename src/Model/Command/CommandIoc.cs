@@ -16,19 +16,7 @@ namespace Agebull.EntityModel.Designer
         /// 新增多个字段的方法(UI后期实现)
         /// </summary>
         public static Func<EntityConfig> AddFieldsCommand;
-
-        /// <summary>
-        /// 枚举编辑的方法(UI后期实现)
-        /// </summary>
-        /// <returns></returns>
-        public static Func<PropertyConfig, EnumConfig> EditPropertyEnumCommand;
-
-        /// <summary>
-        /// 枚举编辑的方法(UI后期实现)
-        /// </summary>
-        /// <returns></returns>
-        public static Action<EnumConfig> EditEnumCommand;
-
+        
         /// <summary>
         /// 生成新配置
         /// </summary>

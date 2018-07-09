@@ -11,7 +11,7 @@ namespace Agebull.EntityModel.Config
 
         public PropertyConfig Property { get; set; }
         #endregion
-        
+
         #region ÐÞ¸´
 
         /// <summary>
@@ -19,8 +19,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public void RepairByArrayLen()
         {
-            var type = CppTypeHelper.ToCppLastType(Property.CppLastType) as TypedefItem;
-            if (type != null)
+            if (CppTypeHelper2.ToCppLastType(Property.CppLastType) is TypedefItem type)
             {
                 if (type.KeyWork == "char" && !string.IsNullOrWhiteSpace(type.ArrayLen))
                 {
@@ -67,7 +66,7 @@ namespace Agebull.EntityModel.Config
                 Property.DbType = "decimal";
             }
         }
-        
+
 
         internal void RepairCpp(bool repair, EntityConfig friend = null)
         {
@@ -75,7 +74,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (RepairTag(friend, Property.Parent.Tag))
                 {
-                    Property.CsType = CppTypeHelper.CppTypeToCsType(Property);
+                    Property.CsType = CppTypeHelper2.CppTypeToCsType(Property);
                 }
             }
             if (!repair)
@@ -91,13 +90,12 @@ namespace Agebull.EntityModel.Config
             if (Property.IsSystemField || Property.EnumConfig != null)
                 return;
             if (Property.CppType == null)
-                Property.CppType = CppTypeHelper.CsTypeToCppType(Property);
+                Property.CppType = CppTypeHelper2.CsTypeToCppType(Property);
             if (Property.CppLastType == null)
                 Property.CppLastType = Property.CppType;
 
-            var type = CppTypeHelper.ToCppLastType(Property.CppType);
-            var entity = type as EntityConfig;
-            if (entity != null)
+            var type = CppTypeHelper2.ToCppLastType(Property.CppType);
+            if (type is EntityConfig entity)
             {
                 Property.CppLastType = entity.Name;
                 Property.CsType = entity.Name + "Data";
@@ -111,8 +109,8 @@ namespace Agebull.EntityModel.Config
                 }
                 return;
             }
-            var typedef = type as TypedefItem;
-            if (typedef != null)
+
+            if (type is TypedefItem typedef)
             {
                 ReBindingEnum(typedef);
             }
@@ -121,8 +119,8 @@ namespace Agebull.EntityModel.Config
                 Property.CppLastType = type.ToString();
             }
         }
-        
-        
+
+
         internal bool RepairTag(EntityConfig friend, string head)
         {
             if (Property.IsSystemField)
@@ -158,16 +156,14 @@ namespace Agebull.EntityModel.Config
             if (friend.Tag != null && friend.Tag.Contains(tag + ",[Skip]"))
                 return false;
             Property.Tag = tag;
-            var cpptype = CppTypeHelper.ToCppLastType(link.CppType);
+            var cpptype = CppTypeHelper2.ToCppLastType(link.CppType);
 
-            var stru = cpptype as EntityConfig;
-            if (stru != null)
+            if (cpptype is EntityConfig stru)
             {
                 link.CppLastType = Property.CppType = GetEntity(p => p.Tag == stru.Tag && p != stru)?.Name;
                 return true;
             }
-            var type = cpptype as TypedefItem;
-            if (type == null)
+            if (!(cpptype is TypedefItem type))
             {
                 Property.CppType = link.CppType;
                 Property.CppLastType = link.CppType;
@@ -211,7 +207,7 @@ namespace Agebull.EntityModel.Config
 
         private void ReBindingEnum(TypedefItem type)
         {
-            var enumcfg = EnumBusinessModel.RepairByTypedef(type);
+            var enumcfg = EnumBusinessModel.RepairByTypedef(type.Parent, type);
             if (enumcfg == null)
             {
                 Property.CustomType = null;

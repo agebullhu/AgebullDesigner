@@ -32,6 +32,7 @@ namespace Agebull.EntityModel
             {
                 Command = ToCommand(),
                 Name = JobName,
+                Caption = JobName,
                 Image = ImageName == null ? null : Application.Current.Resources[ImageName] as ImageSource
             };
         }
@@ -43,10 +44,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public string JobName
         {
-            get
-            {
-                return _jobName;
-            }
+            get => _jobName;
             set
             {
                 if (_jobName == value)
@@ -65,10 +63,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public string ImageName
         {
-            get
-            {
-                return _imageName;
-            }
+            get => _imageName;
             set
             {
                 if (_imageName == value)
@@ -87,10 +82,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public CommandStatus Status
         {
-            get
-            {
-                return _status;
-            }
+            get => _status;
             set
             {
                 if (_status == value)
@@ -115,10 +107,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public TParameter Parameter
         {
-            get
-            {
-                return _parameter;
-            }
+            get => _parameter;
             set
             {
                 if (Equals(_parameter, value))
@@ -137,10 +126,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public TResult Result
         {
-            get
-            {
-                return _result;
-            }
+            get => _result;
             set
             {
                 if (Equals(_result, value))

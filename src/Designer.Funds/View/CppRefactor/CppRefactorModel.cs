@@ -30,7 +30,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public string Code
         {
-            get { return _code; }
+            get => _code;
             set
             {
                 if (_code == value)
@@ -46,7 +46,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public string SystemName
         {
-            get { return _systemName; }
+            get => _systemName;
             set
             {
                 if (_systemName == value)
@@ -65,7 +65,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public ProjectConfig Project
         {
-            get { return _selectProjectConfig; }
+            get => _selectProjectConfig;
             set
             {
                 if (_selectProjectConfig == value)
@@ -310,7 +310,7 @@ namespace Agebull.EntityModel.Designer
                 if (!isInStruct)
                     continue;
                 PropertyConfig column;
-                entity.Properties.Add(column = new PropertyConfig
+                entity.Add(column = new PropertyConfig
                 {
                     Index = idx++,
                     DbType = "nvarchar"
@@ -349,8 +349,8 @@ namespace Agebull.EntityModel.Designer
                     pro.Parent = t;
                     pro.CppName = pro.CppName;
                     CoderBase.RepairConfigName(pro, true);
-                    pro.CppLastType = CppTypeHelper.CppLastType(pro.CppType);
-                    pro.CsType = CppTypeHelper.CppTypeToCsType(pro);
+                    pro.CppLastType = CppTypeHelper2.CppLastType(pro.CppType);
+                    pro.CsType = CppTypeHelper2.CppTypeToCsType(pro);
                 }
                 t.IsClass = true;
 
@@ -375,10 +375,7 @@ namespace Agebull.EntityModel.Designer
                     var old = SolutionConfig.Current.Entities.FirstOrDefault(p => p.Name == item.Name);
                     if (old == null)
                     {
-                        Project.Entities.Add(item);
-                        item.Parent = Project;
-                        item.Project = Project.Name;
-                        SolutionConfig.Current.Entities.Add(item);
+                        Project.Add(item);
                     }
                 }
                 Entities.Clear();
@@ -406,7 +403,7 @@ namespace Agebull.EntityModel.Designer
 
         private TypedefItem FindTypedef(string name)
         {
-            return SolutionConfig.Current.TypedefItems.FirstOrDefault(p => p.Name == name) ?? TypedefItems.FirstOrDefault(p => p.Name == name);
+            return CppProject.Instance.TypedefItems.FirstOrDefault(p => p.Name == name) ?? TypedefItems.FirstOrDefault(p => p.Name == name);
         }
     }
 

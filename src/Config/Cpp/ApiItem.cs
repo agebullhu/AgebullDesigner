@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -27,7 +28,7 @@ namespace Agebull.EntityModel.Config
     /// 表示一个API节点
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public partial class ApiItem : FileConfigBase, ICommandItem
+    public partial class ApiItem : ProjectChildConfigBase, ICommandItem
     {
 
         #region 字段定义
@@ -50,10 +51,7 @@ namespace Agebull.EntityModel.Config
         [Category(""), DisplayName(Method_Description), Description(Method_Description)]
         public HttpMethod Method
         {
-            get
-            {
-                return _Method;
-            }
+            get => _Method;
             set
             {
                 if (_Method == value)
@@ -64,36 +62,6 @@ namespace Agebull.EntityModel.Config
             }
         }
         private const string Project_Description = @"所在的项目";
-
-        /// <summary>
-        /// 所在的项目
-        /// </summary>
-        [DataMember, JsonProperty("Project", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _Project;
-
-        /// <summary>
-        /// 所在的项目
-        /// </summary>
-        /// <remark>
-        /// 所在的项目
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName("所在的项目"), Description(Project_Description)]
-        public string Project
-        {
-            get
-            {
-                return _Project;
-            }
-            set
-            {
-                if (_Project == value)
-                    return;
-                BeforePropertyChanged(nameof(Project), _Project, value);
-                _Project = value;
-                OnPropertyChanged(nameof(Project));
-            }
-        }
 
         /// <summary>
         /// 请求参数名称
@@ -111,16 +79,13 @@ namespace Agebull.EntityModel.Config
         [Category(""), DisplayName("请求参数名称"), Description("请求参数名称")]
         public string CallArg
         {
-            get
-            {
-                return _callArg;
-            }
+            get => _callArg;
             set
             {
                 if (_callArg == value)
                     return;
                 BeforePropertyChanged(nameof(CallArg), _callArg, value);
-                _callArg = value;
+                _callArg = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(CallArg));
                 OnPropertyChanged(nameof(Argument));
             }
@@ -142,16 +107,13 @@ namespace Agebull.EntityModel.Config
         [Category(""), DisplayName("返回参数名称"), Description("返回参数名称")]
         public string ResultArg
         {
-            get
-            {
-                return _resultArg;
-            }
+            get => _resultArg;
             set
             {
                 if (_resultArg == value)
                     return;
                 BeforePropertyChanged(nameof(ResultArg), _resultArg, value);
-                _resultArg = value;
+                _resultArg = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(ResultArg));
                 OnPropertyChanged(nameof(Result));
             }
@@ -173,16 +135,13 @@ namespace Agebull.EntityModel.Config
         [Category(""), DisplayName("路由路径"), Description("路由路径")]
         public string RoutePath
         {
-            get
-            {
-                return _routePath;
-            }
+            get => _routePath;
             set
             {
                 if (_routePath == value)
                     return;
                 BeforePropertyChanged(nameof(RoutePath), _routePath, value);
-                _routePath = value;
+                _routePath = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(RoutePath));
             }
         }
@@ -203,10 +162,7 @@ namespace Agebull.EntityModel.Config
         [Category(""), DisplayName("是否用户命令"), Description("是否用户命令")]
         public bool IsUserCommand
         {
-            get
-            {
-                return _isUserCommand;
-            }
+            get => _isUserCommand;
             set
             {
                 if (_isUserCommand == value)
@@ -385,11 +341,8 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore]
         public EntityConfig Argument
         {
-            get
-            {
-                return CallArg == null ? null : _argument ?? (_argument = GlobalConfig.GetEntity(CallArg));
-            }
-            set { CallArg = value?.Name; }
+            get => CallArg == null ? null : _argument ?? (_argument = GlobalConfig.GetEntity(CallArg));
+            set => CallArg = value?.Name;
         }
 
         /// <summary>
@@ -404,11 +357,8 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore]
         public EntityConfig Result
         {
-            get
-            {
-                return ResultArg == null ? null : _result ?? (_result = GlobalConfig.GetEntity(ResultArg));
-            }
-            set { ResultArg = value?.Name; }
+            get => ResultArg == null ? null : _result ?? (_result = GlobalConfig.GetEntity(ResultArg));
+            set => ResultArg = value?.Name;
         }
 
 
@@ -418,6 +368,11 @@ namespace Agebull.EntityModel.Config
         string ICommandItem.OrgArg => CallArg;
 
         string ICommandItem.CurArg => ResultArg;
+
+        /// <summary>
+        /// 子级
+        /// </summary>
+        public override IEnumerable<ConfigBase> MyChilds => new ConfigBase[]{Argument,Result};
 
         /*// <summary>
         /// 原始定义内容

@@ -52,10 +52,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public bool MessageToTrace
         {
-            get
-            {
-                return _doTrace;
-            }
+            get => _doTrace;
             set
             {
                 if (_doTrace == value)
@@ -71,10 +68,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public string Message1
         {
-            get
-            {
-                return _message1;
-            }
+            get => _message1;
             set
             {
                 if (MessageToTrace) WriteTrace($"【{value}】");
@@ -91,10 +85,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public string Message2
         {
-            get
-            {
-                return _message2;
-            }
+            get => _message2;
             set
             {
                 if (MessageToTrace) WriteTrace($"〖{value}〗");
@@ -111,10 +102,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public string Message3
         {
-            get
-            {
-                return _message3;
-            }
+            get => _message3;
             set
             {
                 if (MessageToTrace) WriteTrace($"［{value}］");
@@ -132,10 +120,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public string Message4
         {
-            get
-            {
-                return _message4;
-            }
+            get => _message4;
             set
             {
                 if (MessageToTrace) WriteTrace($"〈{value}〉");
@@ -153,10 +138,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public string Status
         {
-            get
-            {
-                return _status;
-            }
+            get => _status;
             set
             {
                 WriteTrace(
@@ -212,10 +194,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public string SelectLine
         {
-            get
-            {
-                return _selectLine;
-            }
+            get => _selectLine;
             set
             {
                 if (Equals(_selectLine, value))
@@ -283,10 +262,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public int LastMessageIndex
         {
-            get
-            {
-                return _lastMessageIndex;
-            }
+            get => _lastMessageIndex;
             set
             {
                 if (Equals(_lastMessageIndex, value))

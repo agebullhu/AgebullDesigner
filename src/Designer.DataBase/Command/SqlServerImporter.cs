@@ -26,16 +26,16 @@ namespace Agebull.Common.Config.Designer
             CommandCoefficient.RegisterCommand<ProjectConfig, SqlServerImporter>();
         }
 
-        
+
         public override CommandItem ToCommand(object arg, Func<object, IEnumerator> enumerator = null)
         {
             return new CommandItem
             {
                 NoButton = true,
                 Signle = true,
-                SourceType = typeof(SolutionConfig).Name,
-                Command = new AsyncCommand<ProjectConfig, int>(BeginImportSqlServer, DoImportSqlServer, EndImportSqlServer),
-                Name = "导入SQLSERVER数据库",
+                Catalog = "解决方案",
+                Command = new AsyncCommand<int>(BeginImportSqlServer, DoImportSqlServer, EndImportSqlServer),
+                Caption = "导入SQLSERVER数据库",
                 Image = Application.Current.Resources["img_open"] as ImageSource
             };
         }
@@ -43,31 +43,34 @@ namespace Agebull.Common.Config.Designer
         /// <summary>
         /// 导入数据库
         /// </summary>
-        /// <param name="p"></param>
-        /// <param name="setArgument"></param>
         /// <returns></returns>
-        public bool BeginImportSqlServer(ProjectConfig p, Action<ProjectConfig> setArgument)
+        public bool BeginImportSqlServer(object _)
         {
-            var project = GlobalConfig.CurrentConfig as ProjectConfig;
-            if (project == null)
+            if (DataModelDesignModel.Current.Context.SelectProject == null)
+            {
+                MessageBox.Show("请选择一个项目并正确设置连接信息后继续");
                 return false;
-            setArgument(project);
+            }
+            if (MessageBox.Show($"确认在【{DataModelDesignModel.Current.Context.SelectProject.Caption}】中执行【导入SQLSERVER数据库】操作吗?",
+                          "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                return false;
+
+            DataModelDesignModel.Current.Editor.ShowTrace();
             return true;
         }
 
         /// <summary>
         /// 导入数据库
         /// </summary>
-        /// <param name="project"></param>
         /// <returns></returns>
-        public int DoImportSqlServer(ProjectConfig project)
+        public int DoImportSqlServer(object _)
         {
             var checker = new SqlSchemaChecker
             {
-                Project = project
+                Project = DataModelDesignModel.Current.Context.SelectProject
             };
             checker.ImportProject();
-            return project.Entities.Count;
+            return checker.Project.Entities.Count;
         }
         /// <summary>
         /// 导入数据库完成
@@ -77,15 +80,7 @@ namespace Agebull.Common.Config.Designer
         /// <param name="cnt">导入的表的数量</param>
         internal void EndImportSqlServer(CommandStatus status, Exception ex, int cnt)
         {
-            if (status == CommandStatus.Succeed)
-            {
-                MessageBox.Show($"成功导入{cnt}个表");
-            }
-            else
-            {
-                MessageBox.Show($"导入失败");
-            }
-
+            MessageBox.Show(status == CommandStatus.Succeed ? $"成功导入{cnt}个表" : "导入失败");
         }
     }
 }

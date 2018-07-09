@@ -19,10 +19,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         public string Message
         {
-            set
-            {
-                MessageSetter(value);
-            }
+            set => MessageSetter(value);
         }
 
         private TraceMessage _traceMessage;
@@ -31,14 +28,8 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         public TraceMessage TraceMessage
         {
-            get
-            {
-                return _traceMessage ?? TraceMessage.DefaultTrace;
-            }
-            set
-            {
-                _traceMessage = value;
-            }
+            get => _traceMessage ?? TraceMessage.DefaultTrace;
+            set => _traceMessage = value;
         }
         
         /// <summary>

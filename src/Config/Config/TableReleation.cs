@@ -43,16 +43,13 @@ namespace Agebull.EntityModel.Config
         [Category(""), DisplayName("关联表的外键名称"), Description("关联表的外键名称")]
         public string ForeignKey
         {
-            get
-            {
-                return _foreignKey;
-            }
+            get => _foreignKey;
             set
             {
                 if (_foreignKey == value)
                     return;
                 BeforePropertyChanged(nameof(ForeignKey), _foreignKey, value);
-                _foreignKey = value;
+                _foreignKey = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(ForeignKey));
             }
         }
@@ -73,16 +70,13 @@ namespace Agebull.EntityModel.Config
         [Category(""), DisplayName("与关联表的外键对应的字段名称"), Description("上级关联到当前对象名称")]
         public string PrimaryKey
         {
-            get
-            {
-                return _primaryKey;
-            }
+            get => _primaryKey;
             set
             {
                 if (_primaryKey == value)
                     return;
                 BeforePropertyChanged(nameof(PrimaryKey), _primaryKey, value);
-                _primaryKey = value;
+                _primaryKey = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(PrimaryKey));
             }
         }
@@ -103,16 +97,13 @@ namespace Agebull.EntityModel.Config
         [Category(""), DisplayName("关联表"), Description("关联表")]
         public string Friend
         {
-            get
-            {
-                return _friend;
-            }
+            get => _friend;
             set
             {
                 if (_friend == value)
                     return;
                 BeforePropertyChanged(nameof(Friend), _friend, value);
-                _friend = value;
+                _friend = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Friend));
             }
         }
@@ -135,10 +126,7 @@ namespace Agebull.EntityModel.Config
         [Category(""), DisplayName("关系类型"), Description(Releation_Description)]
         public int Releation
         {
-            get
-            {
-                return _releation;
-            }
+            get => _releation;
             set
             {
                 if (_releation == value)
@@ -165,16 +153,13 @@ namespace Agebull.EntityModel.Config
         [Category(""), DisplayName("扩展条件"), Description("扩展条件")]
         public string Condition
         {
-            get
-            {
-                return _condition;
-            }
+            get => _condition;
             set
             {
                 if (_condition == value)
                     return;
                 BeforePropertyChanged(nameof(Condition), _condition, value);
-                _condition = value;
+                _condition = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Condition));
             }
         }

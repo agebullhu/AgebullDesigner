@@ -58,14 +58,8 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         public ICommand Command
         {
-            get
-            {
-                return (ICommand)GetValue(CommandProperty);
-            }
-            set
-            {
-                SetValue(CommandProperty, value);
-            }
+            get => (ICommand)GetValue(CommandProperty);
+            set => SetValue(CommandProperty, value);
         }
 
         /// <summary>
@@ -73,14 +67,8 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         public bool IsDoubleClick
         {
-            get
-            {
-                return (bool)GetValue(IsDoubleClickProperty);
-            }
-            set
-            {
-                SetValue(IsDoubleClickProperty, value);
-            }
+            get => (bool)GetValue(IsDoubleClickProperty);
+            set => SetValue(IsDoubleClickProperty, value);
         }
 
         /// <summary>
@@ -88,14 +76,8 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         public object CommandParameter
         {
-            get
-            {
-                return GetValue(CommandParameterProperty);
-            }
-            set
-            {
-                SetValue(CommandParameterProperty, value);
-            }
+            get => GetValue(CommandParameterProperty);
+            set => SetValue(CommandParameterProperty, value);
         }
 
         private static void OnCommandPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

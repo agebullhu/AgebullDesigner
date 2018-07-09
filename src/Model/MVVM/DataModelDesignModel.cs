@@ -24,11 +24,6 @@
 
 #region 命名空间引用
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Windows;
-using System.Windows.Controls;
 using Agebull.EntityModel.Config;
 
 #endregion
@@ -45,13 +40,18 @@ namespace Agebull.EntityModel.Designer
         public DesignContext Context { get; }
         public DesignGlobal Global { get; }
         public TreeModel Tree { get; }
-        public ConfigIoModel  ConfigIo { get; }
+        public ConfigIoModel ConfigIo { get; }
         public NormalCodeModel NormalCode { get; }
 
-        
+        /// <summary>
+        /// 编辑器模型
+        /// </summary>
+        public EditorModel Editor { get;}
+
+
         public ExtendConfigModel ExtendConfig { get; }
 
-        
+
         public static DataModelDesignModel Current { get; set; }
 
         /// <summary>
@@ -60,43 +60,53 @@ namespace Agebull.EntityModel.Designer
         public DataModelDesignModel()
         {
             Current = this;
-            Context = new DesignContext();
+            Context = new DesignContext
+            {
+                Model = this
+            };
 
             Global = new DesignGlobal
             {
                 Model = this,
-                Dispatcher = Dispatcher,
                 Context = Context
             };
             GlobalConfig.SetGlobal(Global);
             ExtendConfig = new ExtendConfigModel
             {
                 Model = this,
-                Dispatcher = Dispatcher,
                 Context = Context
             };
             Tree = new TreeModel
             {
                 Model = this,
-                Dispatcher = Dispatcher,
                 Context = Context
             };
             ConfigIo = new ConfigIoModel
             {
                 Model = this,
-                Dispatcher = Dispatcher,
                 Context = Context
             };
             NormalCode = new NormalCodeModel
             {
                 Model = this,
-                Dispatcher = Dispatcher,
                 Context = Context
             };
+            Editor = new EditorModel
+            {
+                Model = this,
+                Context = Context
+            };
+            Editor.CreateMenus(this);
+            ExtendConfig.Editor = Editor;
+            Context.Editor = Editor;
+            ConfigIo.Editor = Editor;
+            NormalCode.Editor = Editor;
+            Tree.Editor = Editor;
+            Global.Editor = Editor;
         }
 
         #endregion
-        
+
         #region 初始化
 
         /// <summary>
@@ -105,18 +115,44 @@ namespace Agebull.EntityModel.Designer
         protected override void DoInitialize()
         {
             base.DoInitialize();
-            ExtendConfig.Initialize();
+            ExtendConfig.ViewModel = ViewModel;
+            Context.ViewModel = ViewModel;
+            ConfigIo.ViewModel = ViewModel;
+            NormalCode.ViewModel = ViewModel;
+            Tree.ViewModel = ViewModel;
+            Global.ViewModel = ViewModel;
+
+            ExtendConfig.Dispatcher = Dispatcher;
+            Context.Dispatcher = Dispatcher;
+            ConfigIo.Dispatcher = Dispatcher;
+            NormalCode.Dispatcher = Dispatcher;
+            Tree.Dispatcher = Dispatcher;
+            Global.Dispatcher = Dispatcher;
+
+
+            Editor.Initialize();
             Context.Initialize();
-            ConfigIo.Initialize();
+            Global.Initialize();
+            Tree.Initialize();
+            ExtendConfig.Initialize();
             NormalCode.Initialize();
-            Context.PropertyChanged += Context_PropertyChanged;
-            //foreach (var ex in ExtendModels.Values)
-            //{
-            //    ex.Model = this;
-            //    ex.Dispatcher = Dispatcher;
-            //    ex.Context = Context;
-            //    ex.Initialize();
-            //}
+            ConfigIo.Initialize();
+        }
+
+        /// <summary>
+        /// 同步解决方案变更
+        /// </summary>
+        public void OnSolutionChanged()
+        {
+            Global.OnSolutionChanged();
+            Editor.OnSolutionChanged();
+            ExtendConfig.OnSolutionChanged();
+            Context.OnSolutionChanged();
+            ConfigIo.OnSolutionChanged();
+            Tree.OnSolutionChanged();
+            NormalCode.OnSolutionChanged();
+            FirstSelect();
+
         }
         /// <summary>
         /// 保证载入后选择正常
@@ -124,8 +160,8 @@ namespace Agebull.EntityModel.Designer
         internal void FirstSelect()
         {
             GlobalConfig.CurrentConfig = null;
-            Tree.SelectItem = null;
-            Tree.SelectItem = Tree.TreeRoot.Items[0];
+            Tree.SetSelect(null);
+            Tree.SetSelect(Tree.TreeRoot.Items[0]);
             GlobalConfig.CurrentSolution.GodMode = true;
         }
         /// <summary>
@@ -135,72 +171,13 @@ namespace Agebull.EntityModel.Designer
         /// <param name="title"></param>
         /// <param name="config"></param>
         /// <returns></returns>
-        public bool CreateNew<TConfig>(string title,out TConfig config)
+        public bool CreateNew<TConfig>(string title, out TConfig config)
             where TConfig : ConfigBase, new()
         {
             config = new TConfig();
             return CommandIoc.NewConfigCommand(title, config);
         }
 
-        #endregion
-
-        #region 扩展对象
-
-        /// <summary>
-        /// 扩展对象插入的控件
-        /// </summary>
-        internal TabControl ExtendControl { get; set; }
-
-        /// <summary>
-        /// 扩展模型
-        /// </summary>
-        public Dictionary<string, DesignModelBase> ExtendModels { get; } = new Dictionary<string, DesignModelBase>();
-
-        private void Context_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Context.SelectConfig))
-                AddExtend();
-        }
-
-
-        private void AddExtend()
-        {
-            ExtendModels.Clear();
-            ExtendControl.Items.Clear();
-            while (ExtendControl.Items.Count > 1)
-                ExtendControl.Items.RemoveAt(1);
-            if (Context.SelectConfig == null)
-            {
-                return;
-            }
-            Dictionary<string, Func<ExtendViewModelBase>> exts;
-            if (!DesignerManager.ExtendDictionary.TryGetValue(Context.SelectConfig.GetType(), out exts))
-                return;
-            foreach (var ext in exts)
-            {
-                var vm = ext.Value();
-                vm.DesignModel.Catalog = vm.Catalog;
-                vm.BaseModel = this;
-                vm.DesignModel.Initialize();
-                this.ExtendModels.Add(ext.Key, vm.DesignModel);
-                var item = new TabItem
-                {
-                    Header = ext.Key,
-                    Content = new ExtendPanel
-                    {
-                        DataContext = vm
-                    },
-                    DataContext = ExtendControl.DataContext 
-                };
-                int idx = ExtendControl.Items.Add(item);
-                if (!Context.ChildrenJobs.ContainsKey(ext.Key))
-                    Context.ChildrenJobs.Add(ext.Key, idx);
-                else
-                    Trace.WriteLine(ext.Key, "同名扩展设计器");
-            }
-            Context.RaisePropertyChanged(nameof(Context.Jobs));
-        }
-        
         #endregion
 
     }

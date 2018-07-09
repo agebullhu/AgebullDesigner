@@ -22,16 +22,18 @@ namespace Agebull.EntityModel.Designer
         {
             commands.Add(new CommandItemBuilder
             {
+                Catalog = "编辑",
                 Signle = true,
-                Name = "增加新接口",
+                Caption = "增加新接口",
                 Command = new DelegateCommand(AddApi),
                 IconName = "tree_Open"
             });
             
             commands.Add(new CommandItemBuilder
             {
+                Catalog = "编辑",
                 NoButton = true,
-                Name = "取消实体的API",
+                Caption = "取消实体的API",
                 Command = new DelegateCommand(ClearEntityApi),
                 IconName = "tree_Open"
             });
@@ -68,9 +70,7 @@ namespace Agebull.EntityModel.Designer
                 return;
             }
             api.Method = HttpMethod.POST;
-            api.Project = Context.SelectProject.Name;
-            Context.SelectProject.ApiItems.Add(api);
-            Context.Solution.ApiItems.Add(api);
+            Context.SelectProject.Add(api);
             var arg = AddEntity("参数");
             api.CallArg = arg?.Name;
             var result = AddEntity("返回值");
@@ -86,11 +86,8 @@ namespace Agebull.EntityModel.Designer
                 return null;
             }
             entity.IsClass = true;
-            entity.Parent = Context.SelectProject;
-            entity.Project = Context.SelectProject.Name;
-            //Context.SelectProject.Entities.Add(entity);
-            //Context.Entities.Add(entity);
-            Model.Tree.SetSelect(entity);
+            Context.SelectProject.Add(entity);
+            Model.Tree.SetSelectEntity(entity);
             Context.SelectColumns = null;
             var nentity = CommandIoc.AddFieldsCommand();
             if (nentity != null)

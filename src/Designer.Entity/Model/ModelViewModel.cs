@@ -2,8 +2,12 @@ using System.Windows;
 
 namespace Agebull.EntityModel.Designer
 {
-    internal class ModelViewModel : ExtendViewModelBase<EntityDesignModelEx>
+    internal class ModelViewModel : ExtendViewModelBase<EntityDesignModel>
     {
+        public ModelViewModel()
+        {
+            EditorName = "Entity";
+        }
         /// <summary>
         /// Ö÷Ãæ°å
         /// </summary>

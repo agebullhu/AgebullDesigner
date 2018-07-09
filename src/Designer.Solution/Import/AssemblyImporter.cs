@@ -16,6 +16,12 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using Agebull.EntityModel.Config;
 using Agebull.Common.Reflection;
+using System.IO;
+using System.Collections.Generic;
+using Agebull.EntityModel.Designer.AssemblyAnalyzer;
+using Newtonsoft.Json;
+using Agebull.Common;
+using System.Diagnostics;
 
 #endregion
 
@@ -23,129 +29,505 @@ namespace Agebull.EntityModel.Designer
 {
     public sealed class AssemblyImporter
     {
-        private Assembly _assembly;
+        #region 程序集
 
+        private static readonly Dictionary<string, Assembly> loaded = new Dictionary<string, Assembly>();
+        void LoadAssembly(string path, string name)
+        {
+            if (loaded.ContainsKey(name))
+                return;
+            var file = Path.Combine(path, name);
+            try
+            {
+                var asm = Assembly.LoadFile(file);
+                loaded.Add(name, asm);
+                Trace.WriteLine(file, "Success");
+                foreach (var friend in asm.GetReferencedAssemblies())
+                {
+                    var dll = friend.Name + ".dll";
+                    if (FindSdk(dll, out file))
+                    {
+                        LoadAssembly(Path.GetDirectoryName(file), Path.GetFileName(file));
+                    }
+                    else
+                    {
+                        Trace.WriteLine(dll, "Error");
+                    }
+                }
+            }
+            catch
+            {
+                Trace.WriteLine(file, "Error");
+            }
+        }
+        Assembly LoadReflection(string file)
+        {
+            try
+            {
+                var asm = Assembly.LoadFile(file);
+                Trace.WriteLine(file, "Success");
+                string xml = file.Replace(".dll", ".xml");
+                if (File.Exists(xml))
+                {
+                    HelpXml.AddRange(XmlMember.Load(xml));
+                }
+                return asm;
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                foreach (var err in ex.LoaderExceptions)
+                {
+                    if (FindSdk(err.Message, out file))
+                    {
+                        LoadAssembly(Path.GetDirectoryName(file), Path.GetFileName(file));
+                    }
+                    else
+                    {
+                        Trace.WriteLine(err.Message, "Error");
+                    }
+                }
+                return LoadReflection(file);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex, "Error");
+                return null;
+            }
+        }
+        bool FindSdk(string dll, out string file)
+        {
+            var sdk = @"C:\Program Files\dotnet\sdk\2.1.300";
+            var nuget = @"C:\Users\Agebull\.nuget\packages";
+            return Find(nuget, dll, out file) ||
+                Find(sdk, dll, out file);
+        }
+
+        bool Find(string path, string name, out string fullName)
+        {
+            if (!Path.GetFileName(path).ToLower().Contains("net4"))
+            {
+                foreach (var file in Directory.GetFiles(path))
+                {
+                    if (file.IndexOf(name) > 0)
+                    {
+                        fullName = file;
+                        return true;
+                    }
+                }
+            }
+            foreach (var folder in Directory.GetDirectories(path))
+            {
+                var fn = Path.GetFileName(folder).ToLower();
+                if (fn.Contains("linux"))
+                    continue;
+                if (Find(folder, name, out fullName))
+                {
+                    return true;
+                }
+            }
+            fullName = null;
+            return false;
+        }
+
+        private Assembly _assembly;
+        private readonly List<Type> _types = new List<Type>();
+
+        /// <summary>
+        ///     读取实体结构
+        /// </summary>
+        private void ReadTypes()
+        {
+            try
+            {
+                var types = _assembly.GetTypes();
+                _types.AddRange(types);
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                _types.AddRange(ex.Types.Where(p => p != null));
+                //foreach (FileNotFoundException err in ex.LoaderExceptions)
+                //{
+                //    string dll = err.FileName.Split(',')[0].Trim() + ".dll";
+                //    if (FindSdk(dll, out var file))
+                //    {
+                //        LoadAssembly(Path.GetDirectoryName(file), Path.GetFileName(file));
+                //    }
+                //    else
+                //    {
+                //        System.Diagnostics.Trace.WriteLine(dll, "Error");
+                //    }
+                //}
+            }
+        }
+
+        #endregion
+        #region 外部调用
+        public AssemblyImporter(ProjectConfig project, string file)
+        {
+            _project = project;
+            if (project == null)
+            {
+                SolutionConfig.Current.Add(_project = new ProjectConfig
+                {
+                    Name = Path.GetFileNameWithoutExtension(file)
+                });
+            }
+        }
         /// <summary>
         ///     分析出的表结构
         /// </summary>
-        private SolutionConfig _project;
+        private readonly ProjectConfig _project;
 
         /// <summary>
         ///     打开并分析文件
         /// </summary>
+        /// <param name="project"></param>
         /// <param name="file"></param>
-        public static SolutionConfig Import(string file)
+        public static ProjectConfig Import(ProjectConfig project, string file)
         {
-            var importer = new AssemblyImporter
+            var importer = new AssemblyImporter(project, file);
+            try
             {
-                _assembly = Assembly.LoadFile(file),
-                _project = new SolutionConfig
-                {
-                    Entities = new ObservableCollection<EntityConfig>()
-                }
-            };
-            importer.ReadEntities();
+                importer._assembly = importer.LoadReflection(file);
+                importer.ReadTypes();
+                importer.ReadEntities();
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex);
+            }
             return importer._project;
         }
+        #endregion
+        #region 内部分析
 
-        /// <summary>
-        ///     分析文件程序集
-        /// </summary>
-        /// <param name="assembly"></param>
-        public static SolutionConfig Import(Assembly assembly)
-        {
-            var importer = new AssemblyImporter
-            {
-                _assembly = assembly,
-                _project = new SolutionConfig
-                {
-                    Entities = new ObservableCollection<EntityConfig>()
-                }
-            };
-            importer.ReadEntities();
-            return importer._project;
-        }
         /// <summary>
         ///     读取实体结构
         /// </summary>
         private void ReadEntities()
         {
-            foreach (var type in _assembly.GetTypes())
+            foreach (var type in _types)
             {
-                if (type.IsGenericType || type.IsValueType || type.IsInterface || !type.IsPublic || type.GetAttribute<DataContractAttribute>() == null)
-                    continue;
-
-                ReadEntity(type);
+                if (type.IsSubclassOf(typeof(Enum)))
+                {
+                    ReadEnum(type);
+                }
+                else
+                {
+                    ReadEntity(type);
+                }
             }
         }
+        private void ReadEnum(Type type)
+        {
+            EnumConfig config = _project.Enums.FirstOrDefault(p => p.Name == type.Name) ?? new EnumConfig
+            {
+                Name = type.Name
+            };
+            _project.Add(config);
+            GetInfo(config, type);
+            foreach (var field in type.GetFields(BindingFlags.Static | BindingFlags.Public))
+            {
+                var col = config.Items.FirstOrDefault(p=>p.Name == field.Name);
+                if (col == null)
+                {
+                    config.Items.Add(col= new EnumItem
+                    {
+                        Name = field.Name,
+                        Value = Convert.ToInt64(field.GetValue(null)).ToString()
+                    });
+                }
+                GetInfo(col, type, field);
+            }
+        }
+
 
         private void ReadEntity(Type type)
         {
-            EntityConfig entity = new EntityConfig
+            var enName = ReflectionHelper.GetTypeName(type);
+            if (!char.IsLetter(enName[0]))
+                return;
+            if (type.GetAttribute<DataContractAttribute>() == null && type.GetAttribute<JsonObjectAttribute>() == null)
             {
-                Name = type.Name,
-                ReadTableName = type.Name
-            };
-            foreach (var field in type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+                Trace.WriteLine(enName, "Skip");
+                return;
+            }
+            var entity = _project.Entities.FirstOrDefault(p => p.Name == type.Name || p.Name == enName);
+            if (entity != null)
             {
-                if (!IsField(field))
+                entity.Name = enName;
+            }
+            else
+            {
+                entity = new EntityConfig
                 {
-                    continue;
-                }
-                if (entity.Properties.Any(p => string.Equals(field.Name, p.Caption, StringComparison.OrdinalIgnoreCase)))
-                    continue;
-                var pt = ReflectionHelper.GetTypeShowName(field.PropertyType.IsSubclassOf(typeof(Nullable<>)) ? field.PropertyType.GetGenericArguments()[0].Name : field.PropertyType.Name);
-                var col = new PropertyConfig
-                {
-                    ColumnName = field.Name,
-                    Name = field.Name,
-                    CsType = pt,
-                    Nullable = field.PropertyType.IsSubclassOf(typeof(Nullable<>)),
-                    DbType = DataBaseHelper. ToDataBaseType(pt)
+                    Name = enName,
+                    ReadTableName = enName
                 };
-                entity.Properties.Add(col);
-                var ca = GetAttribute<DisplayNameAttribute>(field);
-                if (ca != null)
-                    col.Caption = ca.DisplayName;
-                var ct = GetAttribute<CategoryAttribute>(field);
-                if (ct != null)
+                _project.Add(entity);
+            }
+            entity.IsClass = true;
+            Trace.WriteLine(enName, "Entity");
+            GetInfo(entity, type);
+            ReadEntity(entity, type);
+        }
+        void ReadEntity(EntityConfig entity, Type type)
+        {
+            try
+            {
+                if (type.BaseType != typeof(object))
                 {
-                    col.Description = ct.Category;
+                    ReadEntity(entity, type.BaseType);
                 }
-                var de = GetAttribute<DescriptionAttribute>(field);
-                if (de != null)
+            }
+            catch
+            {
+                Trace.WriteLine(entity.Name, "Exception");
+            }
+
+            if (type.IsGenericType)
+            {
+                entity.ReferenceType = type.GetGenericParameter();
+                entity.Name = entity.Name.Split(new char[] { '<' }, 2)[0];
+            }
+
+            entity.IsInterface = type.IsInterface;
+            entity.Interfaces = type.GetInterfaces().Select(ReflectionHelper.GetTypeName).LinkToString(",");
+            PropertyInfo[] properties;
+            FieldInfo[] fields;
+            try
+            {
+                fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+                properties = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            }
+            catch
+            {
+                Trace.WriteLine(entity.Name, "Exception");
+                return;
+            }
+            var dc = type.GetAttribute<DataContractAttribute>();
+            var jo = type.GetAttribute<JsonObjectAttribute>();
+            foreach (var pro in properties)
+            {
+                if (pro.IsSpecialName || !char.IsLetter(pro.Name[0]))
                 {
-                    col.Description = (ct != null) ? ct.Category + "," + de.Description : de.Description;
+                    continue;
                 }
+                bool interFace = pro.Name.Contains('.');
+                var name = interFace ? pro.Name.Split('(')[0].Split('.').Last() : pro.Name;
+                var col = entity.Properties.FirstOrDefault(p => string.Equals(name, p.Name, StringComparison.OrdinalIgnoreCase));
+                if (col == null)
+                {
+                    entity.Add(col = new PropertyConfig
+                    {
+                        Name = name,
+                        ColumnName = name
+                    });
+                }
+                else if (interFace)//重名接口
+                    continue;
                 col.Index = entity.Properties.Count;
+                GetInfo(col, type, pro);
+                
+                col.IsInterfaceField = interFace;
+                CheckPropertyType(type, entity, col, pro, pro.PropertyType, jo != null, dc != null);
+
+                var gm = pro.GetGetMethod();
+                if (gm == null || gm.IsPrivate)
+                {
+                    col.CanGet = false;
+                }
+                var sm = pro.GetSetMethod();
+                if (sm == null || sm.IsPrivate)
+                {
+                    col.CanSet = false;
+                }
             }
-            _project.Entities.Add(entity);
+            foreach (var field in fields)
+            {
+                if (field.IsSpecialName || !char.IsLetter(field.Name[0]))
+                {
+                    continue;
+                }
+                string name = field.Name.Trim('_');
+                var col = entity.Properties.FirstOrDefault(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
+                if (col == null)
+                {
+                    entity.Add(col = new PropertyConfig
+                    {
+                        Name = name,
+                        ColumnName = name
+                    });
+                    col.Index = entity.Properties.Count;
+                    GetInfo(col, type, field);
+                }
+                CheckPropertyType(type, entity, col, field, field.FieldType, jo != null, dc != null);
+            }
+        }
+        private static void CheckPropertyType(Type type,EntityConfig entity, PropertyConfig prperty, MemberInfo field, Type fieldType,bool json,bool dataMember)
+        {
+            try
+            {
+                prperty.Nullable = fieldType.IsSubclassOf(typeof(Nullable<>));
+                Type type1 = prperty.Nullable ? fieldType.GetGenericArguments()[0] : fieldType;
+                if (type1.IsArray)
+                {
+                    prperty.ReferenceType = ReflectionHelper.GetTypeName(type1);
+                    prperty.IsArray = true;
+                    type1 = type1.MakeArrayType();
+                }
+                else if (type1.IsSupperInterface(typeof(ICollection<>)))
+                {
+                    prperty.ReferenceType = ReflectionHelper.GetTypeName(type1);
+                    prperty.IsArray = true;
+                    type1 = type1.GetGenericArguments()[0];
+                }
+                else if (type1.IsSupperInterface(typeof(IDictionary<,>)))
+                {
+                    prperty.ReferenceType = ReflectionHelper.GetTypeName(type1);
+                    var pars = type1.GetGenericArguments();
+                    prperty.IsArray = true;
+                    prperty.CsType = ReflectionHelper.GetTypeName(type1);
+                    type1 = pars[1];
+                }
+
+                var typeName = ReflectionHelper.GetTypeName(type1);
+                if (type1.IsEnum)
+                {
+                    prperty.CustomType = typeName;
+                    prperty.CsType = "int";
+                    prperty.IsEnum = true;
+                }
+                else if (entity.ReferenceType != null && entity.ReferenceType.Contains(typeName))
+                {
+                    prperty.CsType = typeName;
+                }
+                else if (type1.IsBaseType())
+                {
+                    prperty.CsType = typeName;
+                }
+                else
+                {
+                    prperty.CustomType = ReflectionHelper.GetTypeName(type1);
+                    prperty.NoStorage = true;
+                    prperty.IsLinkField = true;
+                    prperty.LinkTable = prperty.CustomType;
+                }
+            }
+            catch // (Exception ex)
+            {
+                prperty.CsType = "object";
+                Trace.WriteLine($"{type.FullName}.{field.Name}", "Error");
+            }
+
+            if (json)
+            {
+                var ji = field.GetAttribute<JsonIgnoreAttribute>();
+                if (ji != null)
+                {
+                    prperty.NoneJson = true;
+                }
+                else
+                {
+                    var jp = field.GetAttribute<JsonPropertyAttribute>();
+                    if (jp == null) return;
+                    prperty.NoneJson = false;
+                    if (!string.IsNullOrWhiteSpace(jp.PropertyName))
+                        prperty.JsonName = jp.PropertyName;
+                }
+            }
+            else if (dataMember)
+            {
+                var id = field.GetAttribute<IgnoreDataMemberAttribute>();
+                if (id != null)
+                {
+                    prperty.NoneJson = true;
+                }
+                var dm = field.GetAttribute<DataMemberAttribute>();
+                if (dm == null) return;
+                prperty.NoneJson = false;
+                if (!string.IsNullOrWhiteSpace(dm.Name))
+                    prperty.JsonName = dm.Name;
+            }
         }
 
-        private TAttribute GetAttribute<TAttribute>(PropertyInfo prop) where TAttribute : Attribute
+        #endregion
+        #region XML文档
+
+        /// <summary>
+        /// 读取的帮助XML
+        /// </summary>
+        private readonly List<XmlMember> HelpXml = new List<XmlMember>();
+
+
+        private void GetInfo(ClassifyConfig config, Type type)
         {
-            var arrs = prop.GetCustomAttributes(typeof(TAttribute), false);
-            return arrs.Length == 0 ? null : (TAttribute)arrs[0];
+            var member = HelpXml.FirstOrDefault(p => p.Name == type.FullName);
+            if (member != null)
+            {
+                config.Caption = member.DisplayName;
+                config.Description = member.Summary;
+                config.Remark = member.Remark;
+            }
+            var ca = type.GetAttribute<DisplayNameAttribute>();
+            if (ca != null)
+                config.Caption = ca.DisplayName;
+            var ct = type.GetAttribute<CategoryAttribute>();
+            if (ct != null)
+            {
+                config.Classify = ct.Category;
+            }
+            var de = type.GetAttribute<DescriptionAttribute>();
+            if (de != null)
+            {
+                config.Description = de.Description;
+            }
+        }
+        private void GetInfo(EnumItem config, Type type, MemberInfo field)
+        {
+            string name = $"{type.FullName}.{field.Name}";
+            var member = HelpXml.FirstOrDefault(p => p.Name == name);
+            if (member != null)
+            {
+                config.Description = member.Summary;
+                config.Caption = member.DisplayName;
+                config.Remark = member.Remark;
+            }
+            var ca = field.GetAttribute<DisplayNameAttribute>();
+            if (ca != null)
+                config.Caption = ca.DisplayName;
+            var de = field.GetAttribute<DescriptionAttribute>();
+            if (de != null)
+            {
+                config.Description = de.Description;
+            }
         }
 
-        private bool IsField(PropertyInfo property)
+        private void GetInfo(PropertyConfig config, Type type, MemberInfo field)
         {
-            if (property.IsSpecialName)
+            string name = $"{type.FullName}.{field.Name}";
+            var member = HelpXml.FirstOrDefault(p => p.Name == name);
+            if (member != null)
             {
-                return false;
+                config.Description = member.Summary;
+                config.Caption = member.DisplayName;
+                config.Remark = member.Remark;
             }
-            var im = property.GetAttribute<DataMemberAttribute>();
-            if (im == null && property.GetAttribute<IgnoreDataMemberAttribute>() == null)
+            var ca = field.GetAttribute<DisplayNameAttribute>();
+            if (ca != null)
+                config.Caption = ca.DisplayName;
+            var ct = field.GetAttribute<CategoryAttribute>();
+            if (ct != null)
             {
-                return false;
+                config.Group = ct.Category;
             }
-            var gm = property.GetGetMethod();
-            if (gm == null || gm.IsPrivate)
-                return false;
-            var sm = property.GetSetMethod();
-            if (sm == null || sm.IsPrivate)
-                return false;
-            return true;
+            var de = field.GetAttribute<DescriptionAttribute>();
+            if (de != null)
+            {
+                config.Description = de.Description;
+            }
         }
+
+        #endregion
     }
 }

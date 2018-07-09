@@ -46,12 +46,24 @@ namespace Agebull.EntityModel.Config
                 if (field.IsPrimaryKey)
                     nf.IsPrimaryKey = true;
                 nf.Tag = $"{source.Tag},{source.Name},{field.CppType},{field.Name}";
-                Properties.Add(nf);
+                Add(nf);
             }
         }
 
         #endregion
 
         #endregion
+        /// <summary>
+        /// 加入子级
+        /// </summary>
+        /// <param name="propertyConfig"></param>
+        public void Add(PropertyConfig propertyConfig)
+        {
+            if (!Properties.Contains(propertyConfig))
+            {
+                propertyConfig.Parent = this;
+                Properties.Add(propertyConfig);
+            }
+        }
     }
 }

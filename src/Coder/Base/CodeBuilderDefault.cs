@@ -5,7 +5,7 @@ using MySql.Data.MySqlClient;
 namespace Agebull.EntityModel.RobotCoder
 {
     /// <summary>
-    ///     节点编译器
+    ///     代码生成器缺省支持
     /// </summary>
     public static class CodeBuilderDefault
     {
@@ -279,7 +279,7 @@ namespace Agebull.EntityModel.RobotCoder
                     return readerName + ".GetString";
 
                 default:
-                    return string.Format("/*({0})*/{1}.GetValue", csharpType, readerName);
+                    return $"/*({csharpType})*/{readerName}.GetValue";
             }
         }
 
@@ -330,7 +330,7 @@ namespace Agebull.EntityModel.RobotCoder
                 case "byte[]":
                     return "null";
                 default:
-                    return string.Format("default({0})", csharpType);
+                    return $"default({csharpType})";
             }
         }
 

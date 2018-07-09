@@ -53,13 +53,11 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public void RepairByLoaded()
         {
-            Solution.Entities = new ObservableCollection<EntityConfig>();
             foreach (var project in Solution.Projects)
             {
                 project.IsReference = project.Entities.Count > 0 && project.Entities.All(p => p.IsReference);
-                Solution.Entities.AddRange(project.Entities);
             }
-            int projectid = Solution.Projects.Count == 0 ? 0 : Solution.Projects.Max(p => p.Index);
+            int projectid = Solution.ProjectList.Count == 0 ? 0 : Solution.Projects.Max(p => p.Index);
             foreach (var project in Solution.Projects)
             {
                 if (project.Key == Guid.Empty)
@@ -141,7 +139,7 @@ namespace Agebull.EntityModel.Config
                     continue;
                 foreach (var key in repairs)
                 {
-                    if (field.Caption.Length < key.Key.Length)
+                    if (field.Caption == null || field.Caption.Length < key.Key.Length)
                         continue;
 
                     var last = field.Caption.Substring(field.Caption.Length - key.Key.Length, key.Key.Length);
@@ -159,7 +157,7 @@ namespace Agebull.EntityModel.Config
                         break;
                     }
                 }
-                entity.Properties.Add(field);
+                entity.Add(field);
                 if (field["user_help"] == null)
                     field["user_help"] = field.Description ?? field.Caption;
                 if (field.Tag == null)
@@ -272,10 +270,6 @@ namespace Agebull.EntityModel.Config
                     en.Items.Add(item);
                 }
             }
-            foreach (var en in Solution.TypedefItems.Where(p => !p.IsReference))
-            {
-                en.IsReference = true;
-            }
             //var group = Solution.TypedefItems.GroupBy(p => p.Tag);
             //foreach (var g in group.ToArray())
             //{
@@ -302,8 +296,6 @@ namespace Agebull.EntityModel.Config
             Entities.Clear();
             Projects.Clear();
             Enums.Clear();
-            TypedefItems.Clear();
-            NotifyItems.Clear();
             ApiItems.Clear();
             foreach (var solution in Solutions)
             {
@@ -324,16 +316,12 @@ namespace Agebull.EntityModel.Config
             TryAdd(Entities, Solution.Entities);
             TryAdd(Projects, Solution.Projects);
             TryAdd(Enums, Solution.Enums);
-            TryAdd(TypedefItems, Solution.TypedefItems);
-            TryAdd(NotifyItems, Solution.NotifyItems);
             TryAdd(ApiItems, Solution.ApiItems);
 
-            Solution.Entities.CollectionChanged += (s, e) => CollectionChanged(Entities, e);
-            Solution.Projects.CollectionChanged += (s, e) => CollectionChanged(Projects, e);
-            Solution.Enums.CollectionChanged += (s, e) => CollectionChanged(Projects, e);
-            Solution.TypedefItems.CollectionChanged += (s, e) => CollectionChanged(TypedefItems, e);
-            Solution.ApiItems.CollectionChanged += (s, e) => CollectionChanged(Projects, e);
-            Solution.NotifyItems.CollectionChanged += (s, e) => CollectionChanged(Projects, e);
+            Solution.EntityList.CollectionChanged += (s, e) => CollectionChanged(Entities, e);
+            Solution.ProjectList.CollectionChanged += (s, e) => CollectionChanged(Projects, e);
+            Solution.EnumList.CollectionChanged += (s, e) => CollectionChanged(Projects, e);
+            Solution.ApiList.CollectionChanged += (s, e) => CollectionChanged(Projects, e);
         }
         private static void CollectionChanged<TConfig>(ObservableCollection<TConfig> collection, NotifyCollectionChangedEventArgs e)
             where TConfig : ConfigBase

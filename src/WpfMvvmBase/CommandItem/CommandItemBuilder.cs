@@ -20,19 +20,10 @@ namespace Agebull.Common.Mvvm
         /// <returns>√¸¡Ó∂‘œÛ</returns>
         public CommandItem ToCommand(object arg, Func<object, IEnumerator> enumerator)
         {
-            return new CommandItem
-            {
-                Name = Caption,
-                Parameter = arg,
-                IconName = IconName,
-                SourceType = SourceType,
-                Catalog = Catalog,
-                Caption = Caption,
-                Description = Description,
-                NoButton = NoButton,
-                Command = Command
-            };
+            var item = this.CopyCreate<CommandItem>();
+            item.Parameter = arg;
+            item.Command = Command;
+            return item;
         }
-
     }
 }

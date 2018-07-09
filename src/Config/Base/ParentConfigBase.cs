@@ -34,16 +34,13 @@ namespace Agebull.EntityModel.Config
         [Category(@"设计器支持"), DisplayName(@"简称"), Description(@"简称")]
         public string Abbreviation
         {
-            get
-            {
-                return _abbreviation;
-            }
+            get => _abbreviation;
             set
             {
                 if (_abbreviation == value)
                     return;
                 BeforePropertyChanged(nameof(Abbreviation), _abbreviation, value);
-                _abbreviation = value;
+                _abbreviation = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Abbreviation));
             }
         }
@@ -63,10 +60,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"设计器支持"), DisplayName(@"全局项目"), Description("全局项目,是作为设计器支持的基础项目")]
         public bool IsGlobal
         {
-            get
-            {
-                return _isGlobal;
-            }
+            get => _isGlobal;
             set
             {
                 if (_isGlobal == value)

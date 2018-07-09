@@ -26,18 +26,22 @@ namespace Agebull.EntityModel.Designer
             {
                 NoButton = true,
                 Signle = false,
-                Catalog = "字段",
+                Catalog = "编辑",
+
                 Command = new DelegateCommand(ToEnglish),
-                Name = "字段翻译",
-                IconName = "tree_item"
+                Caption = "字段翻译",
+                Description = "通过百度翻译接口,将字段的英文名称翻译成中文(需要网络连接)",
+                IconName = "imgBaidu"
             });
 
             commands.Add(new CommandItemBuilder
             {
                 NoButton = true,
                 Signle = false,
+                Catalog = "字段",
                 Command = new DelegateCommand(CheckName),
-                Name = "字段名称规范(第一个[逗号/括号]后解析为说明）",
+                Caption = "字段名称规范",
+                Description= "第一个[逗号/括号]后解析为说明",
                 IconName = "tree_item"
             });
         }
@@ -46,7 +50,7 @@ namespace Agebull.EntityModel.Designer
 
         public void CheckName()
         {
-            if (MessageBox.Show("确认执行【字段名称规范(第一个[逗号]后解析为说明】的操作吗?", "字段编辑", MessageBoxButton.YesNo) !=
+            if (MessageBox.Show("确认执行【字段名称规范】的操作吗?", "字段编辑", MessageBoxButton.YesNo) !=
                 MessageBoxResult.Yes)
             {
                 return;
@@ -83,7 +87,7 @@ namespace Agebull.EntityModel.Designer
                 foreach (var entity in tables)
                 {
                     var model = new EntityBusinessModel { Entity = entity };
-                    model.ToEnglish();
+                    model.EnglishToChiness();
                 }
             }
             catch (Exception ex)

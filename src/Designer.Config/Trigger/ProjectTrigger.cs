@@ -13,7 +13,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         protected override void OnLoad()
         {
-            using (LoadingModeScope.CreateScope())
+            using (WorkModelScope.CreateScope(WorkModel.Repair))
             {
                 foreach (var cfg in TargetConfig.Classifies)
                 {
@@ -26,6 +26,16 @@ namespace Agebull.EntityModel.Designer
                     entity.Parent = TargetConfig;
                     foreach (var field in entity.Properties)
                         field.Parent = entity;
+                }
+                foreach (var entity in TargetConfig.ApiItems)
+                {
+                    entity.Project = TargetConfig.Name;
+                    entity.Parent = TargetConfig;
+                }
+                foreach (var entity in TargetConfig.Enums)
+                {
+                    entity.Project = TargetConfig.Name;
+                    entity.Parent = TargetConfig;
                 }
             }
         }

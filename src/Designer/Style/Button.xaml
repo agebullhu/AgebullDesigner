@@ -94,7 +94,7 @@
                                                Height="48" />
                                     <TextBlock Grid.Row="1"
                                                    HorizontalAlignment="Center"
-                                                   Text="{Binding Name}"
+                                                   Text="{Binding Caption}"
                                                    Margin="0,5" />
                                 </Grid>
                             </Border>
@@ -168,7 +168,7 @@
                                                Height="16" />
                                     <TextBlock Grid.Column="1"
                                                VerticalAlignment="Center" 
-                                                   Text="{Binding Name}"
+                                                   Text="{Binding Caption}"
                                                    Margin="5,0" />
                                     <ed:Arc Grid.Column="0"
                                                 x:Name="ctrBusy"
@@ -308,7 +308,7 @@
                            Width="16"
                            Height="16" />
                 <TextBlock Grid.Column="1"
-                               Text="{Binding Name}"
+                               Text="{Binding Caption}"
                                Margin="5,0" />
                 <ed:Arc Grid.Column="0"
                             x:Name="ctrBusy"

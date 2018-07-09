@@ -38,10 +38,7 @@ namespace Agebull.EntityModel
         #endregion
 
         #region 属性修改通知
-        /// <summary>
-        /// 是否载入模式(不引发任何事件)
-        /// </summary>
-        [IgnoreDataMember] public static bool IsLoadingMode { get; internal set; }
+
 #if CLIENT
         [IgnoreDataMember]
         private bool _isModify;
@@ -55,7 +52,7 @@ namespace Agebull.EntityModel
             set
             {
                 _isModify = value;
-                if (IsLoadingMode)
+                if (WorkContext.IsNoChangedNotify)
                     return;
 #if CLIENT
                 RaisePropertyChangedEventInner(nameof(IsModify));
@@ -78,10 +75,7 @@ namespace Agebull.EntityModel
                 propertyChanged -= value;
                 propertyChanged += value;
             }
-            remove
-            {
-                propertyChanged -= value;
-            }
+            remove => propertyChanged -= value;
         }
 
         /// <summary>
@@ -90,7 +84,6 @@ namespace Agebull.EntityModel
         /// <param name="args">属性</param>
         private void RaisePropertyChangedInner(PropertyChangedEventArgs args)
         {
-
             try
             {
                 propertyChanged?.Invoke(this, args);
@@ -99,7 +92,6 @@ namespace Agebull.EntityModel
             catch (Exception ex)
             {
                 Trace.WriteLine(ex, "NotificationObject.RaisePropertyChangedInner");
-                throw;
             }
         }
 
@@ -169,7 +161,19 @@ namespace Agebull.EntityModel
         /// <param name="newValue">新值</param>
         protected void BeforePropertyChanged(string propertyName, object oldValue, object newValue)
         {
-            if (IsLoadingMode)
+            if (WorkContext.IsNoChangedNotify)
+                return;
+            GlobalTrigger.BeforePropertyChanged(this, propertyName, oldValue, newValue);
+        }
+        /// <summary>
+        ///     发出属性修改前事件
+        /// </summary>
+        /// <param name="propertyName">属性</param>
+        /// <param name="oldValue">旧值</param>
+        /// <param name="newValue">新值</param>
+        protected void BeforePropertyChanged(string propertyName, string oldValue, string newValue)
+        {
+            if (WorkContext.IsNoChangedNotify)
                 return;
             GlobalTrigger.BeforePropertyChanged(this, propertyName, oldValue, newValue);
         }
@@ -179,7 +183,7 @@ namespace Agebull.EntityModel
         /// <param name="propertyName">属性</param>
         protected void OnPropertyChanged(string propertyName)
         {
-            if (IsLoadingMode)
+            if (WorkContext.IsNoChangedNotify)
                 return;
             RecordModifiedInner(propertyName);
 #if CLIENT
@@ -301,10 +305,7 @@ namespace Agebull.EntityModel
                 statusChanged -= value;
                 statusChanged += value;
             }
-            remove
-            {
-                statusChanged -= value;
-            }
+            remove => statusChanged -= value;
         }
 
         /// <summary>

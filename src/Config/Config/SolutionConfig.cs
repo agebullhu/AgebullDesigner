@@ -47,6 +47,75 @@ namespace Agebull.EntityModel.Config
         ///     当前实例
         /// </summary>
         public static SolutionConfig Current { get; private set; }
-        
+
+        #region 设计器支持
+        /// <summary>
+        /// 试图加入
+        /// </summary>
+        /// <param name="project"></param>
+        public void Add(ProjectConfig project)
+        {
+            if (!ProjectList.Contains(project))
+                ProjectList.Add(project);
+        }
+
+        /// <summary>
+        /// 加入
+        /// </summary>
+        /// <param name="entity"></param>
+        internal void Add(EntityConfig entity)
+        {
+            if (!EntityList.Contains(entity))
+                EntityList.Add(entity);
+        }
+
+        /// <summary>
+        /// 加入
+        /// </summary>
+        /// <param name="enumConfig"></param>
+        internal void Add(EnumConfig enumConfig)
+        {
+            if (!EnumList.Contains(enumConfig))
+                EnumList.Add(enumConfig);
+        }
+
+        /// <summary>
+        /// 加入
+        /// </summary>
+        /// <param name="api"></param>
+        internal void Add(ApiItem api)
+        {
+            if (!ApiList.Contains(api))
+                ApiList.Add(api);
+        }
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="entity"></param>
+        internal void Remove(EntityConfig entity)
+        {
+            if (!EntityList.Contains(entity))
+                EntityList.Remove(entity);
+        }
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="enumConfig"></param>
+        internal void Remove(EnumConfig enumConfig)
+        {
+                EnumList.Remove(enumConfig);
+        }
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="api"></param>
+        internal void Remove(ApiItem api)
+        {
+                ApiList.Remove(api);
+        }
+        #endregion
     }
 }

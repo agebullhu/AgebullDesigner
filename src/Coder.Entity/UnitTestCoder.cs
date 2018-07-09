@@ -18,9 +18,9 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("单元测试", "数据读取单元测试(C#)", EntityUt);
-            MomentCoder.RegisteCoder("单元测试", "数据操作单元测试(C#)", UpdateUt);
-            MomentCoder.RegisteCoder("单元测试", "API单元测试(C#)", ApiUt);
+            MomentCoder.RegisteCoder("单元测试", "数据读取单元测试(C#)", "cs", EntityUt);
+            MomentCoder.RegisteCoder("单元测试", "数据操作单元测试(C#)", "cs", UpdateUt);
+            MomentCoder.RegisteCoder("单元测试", "API单元测试(C#)", "cs", ApiUt);
         }
         #endregion
 

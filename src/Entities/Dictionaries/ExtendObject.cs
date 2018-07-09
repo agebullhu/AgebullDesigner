@@ -99,14 +99,8 @@ namespace Agebull.EntityModel
         [DataMember]
         public AttributeDictionary Attribute
         {
-            get
-            {
-                return _attribute ?? (_attribute = new AttributeDictionary() );
-            }
-            set
-            {
-                _attribute = value;
-            }
+            get => _attribute ?? (_attribute = new AttributeDictionary() );
+            set => _attribute = value;
         }
 
         /// <summary>
@@ -115,14 +109,8 @@ namespace Agebull.EntityModel
         [IgnoreDataMember]
         public DependencyDelegates DependencyDelegates
         {
-            get
-            {
-                return _dependencyFunction ?? (_dependencyFunction = new DependencyDelegates() );
-            }
-            set
-            {
-                _dependencyFunction = value;
-            }
+            get => _dependencyFunction ?? (_dependencyFunction = new DependencyDelegates() );
+            set => _dependencyFunction = value;
         }
 
         /// <summary>
@@ -131,14 +119,8 @@ namespace Agebull.EntityModel
         [IgnoreDataMember]
         public DependencyObjects DependencyObjects
         {
-            get
-            {
-                return _dependencyObject ?? (_dependencyObject = new DependencyObjects() );
-            }
-            set
-            {
-                _dependencyObject = value;
-            }
+            get => _dependencyObject ?? (_dependencyObject = new DependencyObjects() );
+            set => _dependencyObject = value;
         }
     }
 
@@ -157,14 +139,8 @@ namespace Agebull.EntityModel
         [IgnoreDataMember]
         public ModelFunctionDictionary<TModel> ModelFunction
         {
-            get
-            {
-                return _modelFunction ?? (_modelFunction = new ModelFunctionDictionary<TModel>() );
-            }
-            set
-            {
-                _modelFunction = value;
-            }
+            get => _modelFunction ?? (_modelFunction = new ModelFunctionDictionary<TModel>() );
+            set => _modelFunction = value;
         }
     }
 }

@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="Agebull.EntityModel.Designer.JsonPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
+             mc:Ignorable="d"
+             d:DesignHeight="1000" d:DesignWidth="1000">
+    <DataGrid AutoGenerateColumns="False"
+              CanUserAddRows="False"
+              CanUserDeleteRows="False"
+              DataContext="{Binding Context}"
+              ItemsSource="{Binding SelectItemChildrens}">
+        <DataGrid.Columns>
+            <DataGridTextColumn Binding="{Binding Index,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                Header="序号" />
+            <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                Header="标题" />
+            <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                Header="属性" />
+            <DataGridTextColumn Binding="{Binding JsonName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                Header="Json名称" />
+            <DataGridCheckBoxColumn
+                Binding="{Binding NoneJson,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="不序列化" />
+        </DataGrid.Columns>
+        <i:Interaction.Behaviors>
+            <behaviors:DataGridGenertColumnsBehavior />
+        </i:Interaction.Behaviors>
+    </DataGrid>
+</UserControl>

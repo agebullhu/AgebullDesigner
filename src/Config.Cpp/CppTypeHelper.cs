@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Text;
 
 namespace Agebull.EntityModel.Config
@@ -24,23 +23,9 @@ namespace Agebull.EntityModel.Config
             Action<PropertyConfig, string, bool> generalAction)
         {
             var type = ToCppLastType(field.CppLastType ?? field.CppType);
-            var stru = type as EntityConfig;
-            if (stru != null)
+            if (type is EntityConfig stru)
             {
                 entityAction(field, stru, !string.IsNullOrWhiteSpace(field.ArrayLen));
-                return;
-            }
-            var tdef = type as TypedefItem;
-            if (tdef != null)
-            {
-                if (tdef.KeyWork == "char" && !string.IsNullOrWhiteSpace(tdef.ArrayLen))
-                {
-                    stringAction(field);
-                }
-                else
-                {
-                    generalAction(field, tdef.KeyWork, !string.IsNullOrWhiteSpace(tdef.ArrayLen));
-                }
                 return;
             }
             var tp = type.ToString();
@@ -61,7 +46,6 @@ namespace Agebull.EntityModel.Config
         /// <param name="field">字段</param>
         /// <param name="entityAction">实体类型的动作(最后一个参数为是否数组)</param>
         /// <param name="stringAction">文本类型的动作(最后一个参数为是否数组)</param>
-        /// <param name="typeAction">自定义类型</param>
         /// <param name="enumAction">枚举类型的处理</param>
         /// <param name="generalAction">一般类型的动作(最后一个参数为是否数组)</param>
         /// <code>
@@ -86,7 +70,6 @@ namespace Agebull.EntityModel.Config
             Action<PropertyConfig, int> stringAction,
             Action<PropertyConfig, string, int> generalAction,
             Action<PropertyConfig, EntityConfig, int> entityAction,
-            Action<PropertyConfig, TypedefItem, int> typeAction,
             Action<PropertyConfig, EnumConfig, int> enumAction)
         {
             var type = ToCppLastType(field.CppLastType ?? field.CppType);
@@ -98,34 +81,6 @@ namespace Agebull.EntityModel.Config
             {
                 int.TryParse(field.ArrayLen, out len);
                 entityAction(field, stru, len);
-                return;
-            }
-            var tdef = type as TypedefItem;
-            if (tdef != null)
-            {
-                int.TryParse(tdef.ArrayLen, out len);
-                if (tdef.KeyWork == "char")
-                {
-                    if (len == 0)
-                        len = field.Datalen;
-                    if (len > 1)
-                        stringAction(field, len);
-                    else
-                        generalAction(field, tdef.KeyWork, len);
-                }
-                else
-                {
-                    if (len == 0)
-                        int.TryParse(field.ArrayLen, out len);
-                    if (tdef.Items.Count > 0)
-                    {
-                        typeAction(field, tdef, len);
-                    }
-                    else
-                    {
-                        generalAction(field, tdef.KeyWork, len);
-                    }
-                }
                 return;
             }
             var tp = type.ToString();
@@ -162,13 +117,6 @@ namespace Agebull.EntityModel.Config
                 return null;
             }
             cppType = cppType.Trim();
-            var typedef = SolutionConfig.Current.TypedefItems.FirstOrDefault(p => p.Name == cppType);
-            if (typedef != null)
-            {
-                typedef.KeyWork = typedef.KeyWork.Trim();
-                var type = ToCppLastType(typedef.KeyWork);
-                return type.ToString() == typedef.KeyWork ? typedef : type;
-            }
             var stru = GlobalConfig.GetEntity(cppType);
             if (stru != null)
             {
@@ -186,11 +134,7 @@ namespace Agebull.EntityModel.Config
             {
                 return stru.Name;
             }
-            var typedef = SolutionConfig.Current.TypedefItems.FirstOrDefault(p => p.Name == cppType);
-            if (typedef == null)
-                return cppType;
-            typedef.KeyWork = typedef.KeyWork.Trim();
-            return CppLastType(typedef.KeyWork);
+            return cppType;
         }
 
         /// <summary>
@@ -220,34 +164,13 @@ namespace Agebull.EntityModel.Config
         public static string CppTypeToCsType(PropertyConfig property)
         {
             var type = property.CppTypeObject = ToCppLastType(property.CppLastType ?? property.CppType);
-            if (type == null)
-                return null;
-            var stru = type as EntityConfig;
-            if (stru != null)
+            switch (type)
             {
-                return stru.Name;
+                default:
+                    return null;
+                case EntityConfig stru:
+                    return stru.Name;
             }
-            var typedef = type as TypedefItem;
-            string typ = typedef == null ? type.ToString() : typedef.KeyWork;
-            var len = typedef == null
-                ? typ == "char"
-                    ? property.Datalen.ToString()
-                    : property.ArrayLen
-                : typedef.ArrayLen;
-            int l;
-            var arr = int.TryParse(len, out l) && l > 1;
-
-            switch (typ)
-            {
-                case "char":
-                    if (arr)
-                        return "string";
-                    break;
-                case "tm":
-                    return "DateTime";
-            }
-            var tp = CppTypeToCs(typ);
-            return arr ? $"List<{tp}>" : tp;
         }
         #endregion
 

@@ -29,16 +29,6 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        ///     取得类型定义对象
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static TypedefItem GetTypedef(string name)
-        {
-            return TypedefItems.FirstOrDefault(p => p.Name == name);
-        }
-
-        /// <summary>
         ///     取得枚举对象
         /// </summary>
         /// <param name="name"></param>
@@ -68,15 +58,6 @@ namespace Agebull.EntityModel.Config
             return GetEntity(func);
         }
 
-        /// <summary>
-        ///     查找类型定义对象
-        /// </summary>
-        /// <param name="func"></param>
-        /// <returns></returns>
-        public static TypedefItem Find(Func<TypedefItem, bool> func)
-        {
-            return TypedefItems.FirstOrDefault(func);
-        }
 
         /// <summary>
         ///     查找枚举对象
@@ -108,15 +89,6 @@ namespace Agebull.EntityModel.Config
             return ApiItems.FirstOrDefault(func);
         }
 
-        /// <summary>
-        ///     查找通知对象
-        /// </summary>
-        /// <param name="func"></param>
-        /// <returns></returns>
-        public static NotifyItem Find(Func<NotifyItem, bool> func)
-        {
-            return NotifyItems.FirstOrDefault(func);
-        }
 
         /// <summary>
         ///     查找实体对象
@@ -128,30 +100,6 @@ namespace Agebull.EntityModel.Config
             return Entities.FirstOrDefault(func);
         }
 
-        /// <summary>
-        ///     查找类型定义对象
-        /// </summary>
-        /// <param name="func"></param>
-        /// <returns></returns>
-        public static TypedefItem GetTypedef(Func<TypedefItem, bool> func)
-        {
-            return TypedefItems.FirstOrDefault(func);
-        }
-
-        /// <summary>
-        ///     通过标签查找类型定义对象
-        /// </summary>
-        /// <param name="tag"></param>
-        /// <returns></returns>
-        public static TypedefItem GetTypedefByTag(string tag)
-        {
-            if (string.IsNullOrWhiteSpace(tag))
-                return null;
-            var array = tag.Split(',');
-            if (array.Length != 2)
-                return null;
-            return TypedefItems.FirstOrDefault(p => p.Tag == array[0] && p.Name == array[1]);
-        }
 
         /// <summary>
         ///     查找枚举对象
@@ -181,16 +129,6 @@ namespace Agebull.EntityModel.Config
         public static ApiItem GetApi(Func<ApiItem, bool> func)
         {
             return ApiItems.FirstOrDefault(func);
-        }
-
-        /// <summary>
-        ///     查找通知对象
-        /// </summary>
-        /// <param name="func"></param>
-        /// <returns></returns>
-        public static NotifyItem GetNotify(Func<NotifyItem, bool> func)
-        {
-            return NotifyItems.FirstOrDefault(func);
         }
 
         #endregion
@@ -604,28 +542,16 @@ namespace Agebull.EntityModel.Config
                     foreach (var command in entity.Commands)
                         action(command);
                 }
-            }
-            foreach (var config in solution.Enums)
-            {
-                action(config);
-                foreach (var item in config.Items)
-                    action(item);
-            }
-            foreach (var config in solution.TypedefItems)
-            {
-                action(config);
-                foreach (var item in config.Items.Values)
-                    action(item);
-            }
-            foreach (var item in solution.TypedefItems)
-                action(item);
-            foreach (var config in solution.ApiItems)
-            {
-                action(config);
-            }
-            foreach (var config in solution.NotifyItems)
-            {
-                action(config);
+                foreach (var config in project.ApiItems)
+                {
+                    action(config);
+                }
+                foreach (var config in project.Enums)
+                {
+                    action(config);
+                    foreach (var item in config.Items)
+                        action(item);
+                }
             }
         }
 
@@ -657,14 +583,8 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public static SolutionConfig GlobalSolution
         {
-            get
-            {
-                return Global.GlobalSolution;
-            }
-            set
-            {
-                Global.GlobalSolution = value;
-            }
+            get => Global.GlobalSolution;
+            set => Global.GlobalSolution = value;
         }
 
         /// <summary>
@@ -672,28 +592,16 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public static SolutionConfig CurrentSolution
         {
-            get
-            {
-                return Global.CurrentSolution;
-            }
-            set
-            {
-                Global.CurrentSolution = value;
-            }
+            get => Global.CurrentSolution;
+            set => Global.CurrentSolution = value;
         }
         /// <summary>
         /// 当前选择
         /// </summary>
         public static ConfigBase CurrentConfig
         {
-            get
-            {
-                return Global.CurrentConfig;
-            }
-            set
-            {
-                Global.CurrentConfig = value;
-            }
+            get => Global.CurrentConfig;
+            set => Global.CurrentConfig = value;
         }
 
         /// <summary>
@@ -705,11 +613,6 @@ namespace Agebull.EntityModel.Config
         ///     枚举集合
         /// </summary>
         public static ObservableCollection<EnumConfig> Enums => Global.Enums;
-
-        /// <summary>
-        ///     类型(C++)集合
-        /// </summary>
-        public static ObservableCollection<TypedefItem> TypedefItems => Global.TypedefItems;
 
         /// <summary>
         ///     实体集合
@@ -725,11 +628,6 @@ namespace Agebull.EntityModel.Config
         ///     API集合
         /// </summary>
         public static ObservableCollection<ApiItem> ApiItems => Global.ApiItems;
-
-        /// <summary>
-        ///     通知集合
-        /// </summary>
-        public static ObservableCollection<NotifyItem> NotifyItems => Global.NotifyItems;
 
         /// <summary>
         /// 如果不存在就加入

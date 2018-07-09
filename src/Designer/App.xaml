@@ -5,16 +5,17 @@
              StartupUri="View/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
+            <client:NullVisibleConverter x:Key="NullVisibleConverter"/>
+            <client:BoolToVisibleConverter x:Key="BoolToVisibleConverter"/>
+            <client:ReversionVisibleConverter x:Key="ReversionVisibleConverter"/>
+            <client:ReversionBoolToVisibleConverter x:Key="ReversionBoolToVisibleConverter"/>
+            <client:BoolReversalConverter x:Key="BoolReversalConverter"/>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Style\Icon.xaml"/>
                 <ResourceDictionary Source="Style\Button.xaml"/>
                 <ResourceDictionary Source="Style\TreeView.xaml"/>
                 <ResourceDictionary Source="Style\Menu.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <client:BoolToVisibleConverter x:Key="BoolToVisibleConverter"/>
-            <client:ReversionVisibleConverter x:Key="ReversionVisibleConverter"/>
-            <client:ReversionBoolToVisibleConverter x:Key="ReversionBoolToVisibleConverter"/>
-            <client:BoolReversalConverter x:Key="BoolReversalConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

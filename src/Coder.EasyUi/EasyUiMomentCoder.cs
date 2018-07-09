@@ -15,24 +15,24 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("Web-EasyUi", "Index.aspx", IndexPage);
-            MomentCoder.RegisteCoder("Web-EasyUi", "Form.htm", FormCode);
-            MomentCoder.RegisteCoder("Web-EasyUi", "Form服务端读取", InputConvert);
-            MomentCoder.RegisteCoder("Web-EasyUi", "Script.js", PageScript);
-            MomentCoder.RegisteCoder("Web-EasyUi", "Details.aspx", GridDetailsPage);
-            MomentCoder.RegisteCoder("Web-EasyUi", "下拉列表方法", ApiCode);
-            MomentCoder.RegisteCoder("Web-EasyUi", "下拉列表选择", ApiSwitch);
-            MomentCoder.RegisteCoder("Web-EasyUi", "Mvc菜单", MvcMenu);
-            MomentCoder.RegisteCoder("Web-EasyUi", "EasyUi表单", EasyUiForm);
-            MomentCoder.RegisteCoder("Web-EasyUi", "EasyUi表单保存", FormSaveCode);
-            MomentCoder.RegisteCoder("Web-EasyUi", "EasyUi表格", EasyUiGrid);
-            MomentCoder.RegisteCoder("Web-EasyUi", "EasyUi详情", EasyUiInfo);
-            MomentCoder.RegisteCoder("Web-EasyUi", "枚举(JS)", EnumJs);
-            MomentCoder.RegisteCoder("Web-EasyUi", "枚举(CS)名称", EnumCs);
-            MomentCoder.RegisteCoder("Web-EasyUi", "工作流注入式编辑代码", WorkflowInfo);
-            //MomentCoder.RegisteCoder("Web-EasyUi", "对象名称(JS)", DataInfoCs);
-            MomentCoder.RegisteCoder("Web-EasyUi", "对象名称(CS)", DataInfoCs);
-            //MomentCoder.RegisteCoder("Web-EasyUi", "数据校验(CS)", WorkflowInfo);
+            MomentCoder.RegisteCoder("Web-EasyUi", "Index.aspx", "xml", IndexPage);
+            MomentCoder.RegisteCoder("Web-EasyUi", "Form.htm", "xml", FormCode);
+            MomentCoder.RegisteCoder("Web-EasyUi", "Form服务端读取", "cs", InputConvert);
+            MomentCoder.RegisteCoder("Web-EasyUi", "Script.js", "js", PageScript);
+            MomentCoder.RegisteCoder("Web-EasyUi", "Details.aspx", "xml", GridDetailsPage);
+            MomentCoder.RegisteCoder("Web-EasyUi", "下拉列表方法", "xml", ApiCode);
+            MomentCoder.RegisteCoder("Web-EasyUi", "下拉列表选择", "xml", ApiSwitch);
+            MomentCoder.RegisteCoder("Web-EasyUi", "Mvc菜单", "xml", MvcMenu);
+            MomentCoder.RegisteCoder("Web-EasyUi", "EasyUi表单", "xml", EasyUiForm);
+            MomentCoder.RegisteCoder("Web-EasyUi", "EasyUi表单保存", "cs", FormSaveCode);
+            MomentCoder.RegisteCoder("Web-EasyUi", "EasyUi表格", "xml", EasyUiGrid);
+            MomentCoder.RegisteCoder("Web-EasyUi", "EasyUi详情", "xml", EasyUiInfo);
+            MomentCoder.RegisteCoder("Web-EasyUi", "枚举(JS)", "js", EnumJs);
+            MomentCoder.RegisteCoder("Web-EasyUi", "枚举(CS)名称", "cs", EnumCs);
+            MomentCoder.RegisteCoder("Web-EasyUi", "工作流注入式编辑代码", "cs", WorkflowInfo);
+            //MomentCoder.RegisteCoder("Web-EasyUi", "对象名称(JS)","js", DataInfoCs);
+            MomentCoder.RegisteCoder("Web-EasyUi", "对象名称(CS)", "cs", DataInfoCs);
+            //MomentCoder.RegisteCoder("Web-EasyUi", "数据校验(CS)", "cs",WorkflowInfo);
         }
         #endregion
 

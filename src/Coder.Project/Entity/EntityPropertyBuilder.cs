@@ -6,7 +6,7 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    internal sealed class EntityPropertyBuilder : EntityBuilderBase
+    public sealed class EntityPropertyBuilder : EntityBuilderBase
     {
 
         #region 主体代码

@@ -9,6 +9,8 @@
 #region 引用
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using Agebull.EntityModel.Config;
@@ -21,46 +23,34 @@ using MessageBox = System.Windows.MessageBox;
 
 namespace Agebull.EntityModel.Designer
 {
-    internal class EasyUiViewModel : ExtendViewModelBase<EasyUiModel>
-    {
-        /// <summary>
-        /// 主面板
-        /// </summary>
-        public override FrameworkElement Body { get; } = new UiPanel();
-    }
     internal class EasyUiModel : DesignModelBase
     {
-        public EasyUiModel()
-        {
-            Catalog = "EasyUi";
-        }
-
-        protected override void CreateCommands(List<CommandItem> commandItems)
+        protected override void CreateCommands(ObservableCollection<CommandItem> commandItems)
         {
             commandItems.AddRange(new[]
             {
                 new CommandItem
                 {
                     Command = new DelegateCommand(CheckUiType),
-                    Name = "控件类型修复",
+                    Caption = "控件类型修复",
                     Image = Application.Current.Resources["tree_item"] as ImageSource
                 },
                 new CommandItem
                 {
                     Command = new DelegateCommand(CheckExport),
-                    Name = "导出导出初始化",
+                    Caption = "导出导出初始化",
                     Image = Application.Current.Resources["tree_item"] as ImageSource
                 },
                 new CommandItem
                 {
                     Command = new DelegateCommand(CheckSimple),
-                    Name = "列表字段初始化",
+                    Caption = "列表字段初始化",
                     Image = Application.Current.Resources["tree_item"] as ImageSource
                 },
                 new CommandItem
                 {
                     Command = new DelegateCommand(CreateUiCode),
-                    Name = "生成UI代码（WEB）",
+                    Caption = "生成UI代码（WEB）",
                     Image = Application.Current.Resources["tree_item"] as ImageSource
                 }
             });

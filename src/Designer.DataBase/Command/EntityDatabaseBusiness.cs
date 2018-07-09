@@ -43,7 +43,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (Entity.PrimaryColumn == null)
                 {
-                    Entity.Properties.Add(new PropertyConfig
+                    Entity.Add(new PropertyConfig
                     {
                         Name = "Id",
                         Caption = Entity.Caption + "ID",

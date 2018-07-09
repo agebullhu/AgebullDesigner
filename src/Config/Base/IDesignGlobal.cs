@@ -47,11 +47,6 @@ namespace Agebull.EntityModel.Config
         ObservableCollection<EnumConfig> Enums { get; }
 
         /// <summary>
-        ///     类型(C++)集合
-        /// </summary>
-        ObservableCollection<TypedefItem> TypedefItems { get; }
-
-        /// <summary>
         ///     实体集合
         /// </summary>
         ObservableCollection<EntityConfig> Entities { get; }
@@ -66,9 +61,5 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         ObservableCollection<ApiItem> ApiItems { get; }
 
-        /// <summary>
-        ///     通知集合
-        /// </summary>
-        ObservableCollection<NotifyItem> NotifyItems { get; }
     }
 }

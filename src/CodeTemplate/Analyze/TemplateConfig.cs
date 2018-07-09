@@ -27,7 +27,7 @@ namespace Agebull.EntityModel.RobotCoder.CodeTemplate
         [DataMember]
         public string Name
         {
-            get { return _name; }
+            get => _name;
             set
             {
                 var now = !string.IsNullOrWhiteSpace(value) ? value.Trim() : null;
@@ -49,7 +49,7 @@ namespace Agebull.EntityModel.RobotCoder.CodeTemplate
         [DataMember]
         public string Caption
         {
-            get { return _caption ?? _name; }
+            get => _caption ?? _name;
             set
             {
                 if (_caption == value)
@@ -70,7 +70,7 @@ namespace Agebull.EntityModel.RobotCoder.CodeTemplate
         [DataMember]
         public string Description
         {
-            get { return _description ?? _caption ?? _name; }
+            get => _description ?? _caption ?? _name;
             set
             {
                 if (_description == value)

@@ -53,7 +53,7 @@ namespace Agebull.EntityModel.Config
                     Entity.ReadTableName = ToWords(Entity.Name).LinkToString("tb_", "_");
                 if (Entity.PrimaryColumn == null)
                 {
-                    Entity.Properties.Add(new PropertyConfig
+                    Entity.Add(new PropertyConfig
                     {
                         Name = Entity.Name + "Id",
                         Caption = Entity.Caption + "ID",
@@ -109,9 +109,9 @@ namespace Agebull.EntityModel.Config
         #endregion
         #region 修复
         /// <summary>
-        ///     中译英
+        ///     英译中
         /// </summary>
-        public void ToEnglish()
+        public void EnglishToChiness()
         {
             if (Entity.IsFreeze)
                 return;
@@ -331,7 +331,7 @@ namespace Agebull.EntityModel.Config
             {
                 var nf = new PropertyConfig();
                 nf.CopyFrom(field);
-                Entity.Properties.Add(nf);
+                Entity.Add(nf);
             }
         }
 

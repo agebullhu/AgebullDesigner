@@ -31,6 +31,7 @@ namespace Agebull.Common.Mvvm
 
         }
 
+        public object Tag { get; set; }
 
         /// <summary>
         ///     属性修改事件(属性为空表示删除)
@@ -42,10 +43,7 @@ namespace Agebull.Common.Mvvm
                 propertyChanged -= value;
                 propertyChanged += value;
             }
-            remove
-            {
-                propertyChanged -= value;
-            }
+            remove => propertyChanged -= value;
         }
 
         /// <summary>
@@ -425,10 +423,7 @@ namespace Agebull.Common.Mvvm
                 propertyChanged -= value;
                 propertyChanged += value;
             }
-            remove
-            {
-                propertyChanged -= value;
-            }
+            remove => propertyChanged -= value;
         }
 
         /// <summary>
@@ -474,10 +469,7 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         public Visibility Visibility
         {
-            get
-            {
-                return _visibility;
-            }
+            get => _visibility;
             set
             {
                 if (_visibility == value)

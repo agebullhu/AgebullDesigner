@@ -38,9 +38,7 @@
     <Reference Include="Agebull.Common.Extend">
       <HintPath>..\Lib\Agebull.Common.Extend.dll</HintPath>
     </Reference>
-    <Reference Include="MySql.Data, Version=6.10.6.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.6.10.6\lib\net452\MySql.Data.dll</HintPath>
-    </Reference>
+    <Reference Include="MySql.Data, Version=6.10.6.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d" />
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -70,16 +68,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cpp\ClientEntityCoder.cs" />
-    <Compile Include="Cpp\ClrCoder.cs" />
-    <Compile Include="Cpp\CppAccessCoder.cs" />
-    <Compile Include="Cpp\CppDataFactoryCode.cs" />
-    <Compile Include="Cpp\CppDataFactoryProjectBuilde.cs" />
-    <Compile Include="Cpp\CppModelCoder.cs" />
-    <Compile Include="Cpp\CppStructCoder.cs" />
-    <Compile Include="Cpp\EsFundsProjectBuilde.cs" />
-    <Compile Include="Cpp\EsPublishCoder.cs" />
-    <Compile Include="Cpp\ProjectBuilde.cs" />
     <Compile Include="DataModel\DataBaseBuilder.cs" />
     <Compile Include="Entity\EntityBuilder.cs" />
     <Compile Include="DataModel\EntityComboBuilder.cs" />
@@ -99,9 +87,6 @@
     <Compile Include="Entity\EntityReleationBuilder.cs" />
     <Compile Include="Entity\EntityStructBuilder.cs" />
     <Compile Include="Entity\EntityValidateCoder.cs" />
-    <Compile Include="Mobile\MobileEntityCoder.cs" />
-    <Compile Include="Mobile\MobileGlobalCoder.cs" />
-    <Compile Include="Mobile\ProjectBuilde.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Project\EntityModelBuilde.cs" />
     <Compile Include="Web\BusinessBuilder.cs" />
@@ -133,10 +118,6 @@
       <Project>{f088fc1d-1fbb-4224-97fa-a9535f6dc58f}</Project>
       <Name>Agebull.EntityModel.RobotCoder.Entity</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Coder.Funds\Agebull.EntityModel.RobotCoder.Funds.csproj">
-      <Project>{637F256E-2488-428F-B933-DF1213AAC005}</Project>
-      <Name>Agebull.EntityModel.RobotCoder.Funds</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Helper\Agebull.EntityModel.Config.Helper.csproj">
       <Project>{A7888162-CFBD-4087-8C4A-978445BBE02A}</Project>
       <Name>Agebull.EntityModel.Config.Helper</Name>
@@ -149,19 +130,6 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="docs\MySqlCommand.xml" />
-    <Content Include="docs\MySqlCommandBuilder.xml" />
-    <Content Include="docs\MySqlConnection.xml" />
-    <Content Include="docs\MySqlConnectionStringBuilder.xml" />
-    <Content Include="docs\MySqlDataAdapter.xml" />
-    <Content Include="docs\MySqlDataReader.xml" />
-    <Content Include="docs\MySqlException.xml" />
-    <Content Include="docs\MySqlHelper.xml" />
-    <Content Include="docs\MySqlParameter.xml" />
-    <Content Include="docs\MySqlParameterCollection.xml" />
-    <Content Include="docs\MySqlTransaction.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

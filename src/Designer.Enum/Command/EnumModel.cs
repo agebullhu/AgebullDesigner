@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using Agebull.Common;
@@ -20,42 +21,56 @@ namespace Agebull.EntityModel.Designer
 
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
-            string type = $"{typeof(PropertyConfig).Name}";
+            var type = typeof(PropertyConfig);
             commands.Add(new CommandItemBuilder
             {
+                Catalog = "枚举",
                 Command = new DelegateCommand(ReadEnum),
                 SourceType = type,
-                Name = "识别枚举(形如【类型，1操作，2返回，3未知】样式的说明文字)",
+                Caption = "识别枚举",
+                Description = "形如【类型，1操作，2返回，3未知】样式的说明文字",
                 Signle = false,
                 NoButton = true,
                 IconName = "tree_item"
             });
             commands.Add(new CommandItemBuilder
             {
-                Command = new DelegateCommand(EditEnum),
+                Catalog = "枚举",
+                Command = new DelegateCommand(CheckEnum),
                 SourceType = type,
-                Name = "编辑枚举",
-                Signle = true,
+                Caption = "刷新枚举引用",
                 NoButton = true,
                 IconName = "tree_item"
             });
             commands.Add(new CommandItemBuilder
             {
+                Catalog = "枚举",
+                Command = new DelegateCommand(BindEnum),
+                SourceType = type,
+                Caption = "绑定枚举",
+                Signle = true,
+                NoButton = true,
+                IconName = "tree_item"
+            }); 
+            commands.Add(new CommandItemBuilder
+            {
+                Catalog = "枚举",
                 Command = new DelegateCommand(DeleteEnum),
                 SourceType = type,
-                Name = "清除枚举",
+                Caption = "清除枚举",
                 Signle = true,
                 NoButton = true,
                 IconName = "tree_item"
             });
             commands.Add(new CommandItemBuilder
             {
+                Catalog = "编辑",
                 Command = new DelegateCommand(EnumToEnglish),
-                SourceType = $"{typeof(EnumConfig).Name}",
-                Name = "翻译枚举",
+                SourceType = typeof(EnumConfig),
+                Caption = "翻译枚举",
                 Signle = true,
                 NoButton = true,
-                IconName = "tree_item"
+                IconName = "imgBaidu"
             });
         }
 
@@ -77,19 +92,37 @@ namespace Agebull.EntityModel.Designer
         }
 
 
-        public void EditEnum()
+        public void BindEnum()
         {
             PropertyConfig property = Context.SelectProperty;
-            var cfg = CommandIoc.EditPropertyEnumCommand(property);
-            if (cfg == null)
+            property.EnumConfig = null;
+            if (property.CustomType != null)
             {
-                return;
+                property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
             }
-            property.EnumConfig = cfg;
-            Model.Tree.SelectItem.Items.Clear();
-            Model.Tree.PropertyChildTreeItem(Model.Tree.SelectItem, property);
+            if (property.EnumConfig != null)
+                return;
+            if (MessageBox.Show("是否新增一个枚举?", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                return;
+            property.Parent.Parent.Add(property.EnumConfig = new EnumConfig
+            {
+                Name = property.CustomType?? (property.Name.Contains("Type") ? property.Name : (property.Name + "Type")),
+                Caption = property.Caption + "枚举类型"
+            });
         }
 
+        public void CheckEnum()
+        {
+            Foreach(CheckPropertyEnum);
+        }
+        public void CheckPropertyEnum(PropertyConfig property)
+        {
+            property.EnumConfig = null;
+            if (property.CustomType != null)
+            {
+                property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
+            }
+        }
         /// <summary>
         /// 删除枚举
         /// </summary>
@@ -97,8 +130,6 @@ namespace Agebull.EntityModel.Designer
         {
             PropertyConfig property = Context.SelectProperty;
             property.CustomType = null;
-            if (property.EnumConfig == null)
-                return;
             property.EnumConfig = null;
         }
 
@@ -106,7 +137,7 @@ namespace Agebull.EntityModel.Designer
 
         public void ReadEnum()
         {
-            if (MessageBox.Show("确认执行【识别枚举(形如【类型，1操作，2返回，3未知】样式的说明文字)】操作吗?", "对象编辑", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            if (MessageBox.Show("确认执行【识别枚举】操作吗?\n形如【类型，1操作，2返回，3未知样式】的说明文字", "对象编辑", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 Foreach(ReadEnum);
         }
 
@@ -114,14 +145,14 @@ namespace Agebull.EntityModel.Designer
         {
             if (column.CsType == "bool" || column.EnumConfig != null)
                 return;
-            CheckEnum(column);
+            ReadPropertyEnum(column);
             if (column.EnumConfig != null)
             {
                 column.EnumConfig.Name = column.Name + "Type";
                 column.EnumConfig.Caption = column.Caption + "自定义类型";
                 column.CustomType = column.EnumConfig.Name;
                 Context.StateMessage = $@"解析得到枚举类型:{column.EnumConfig.Name},参考内容{column.EnumConfig.Description}";
-                SolutionConfig.Current.Enums.Add(column.EnumConfig);
+                column.EnumConfig.Parent.Add(column.EnumConfig);
             }
             else
             {
@@ -130,7 +161,7 @@ namespace Agebull.EntityModel.Designer
         }
 
 
-        public static void CheckEnum(PropertyConfig column)
+        public static void ReadPropertyEnum(PropertyConfig column)
         {
             var line = column.Description?.Trim(CoderBase.NoneLanguageChar) ?? "";
 
@@ -223,7 +254,7 @@ namespace Agebull.EntityModel.Designer
                         column.CustomType = null;
                         return;
                     }
-                    item.Caption = arr[0].MulitReplace2( "","表示","代表","是","为");
+                    item.Caption = arr[0].MulitReplace2("", "表示", "代表", "是", "为");
                     item.Name = BaiduFanYi.FanYiWord(item.Caption.MulitReplace2("", "表示"));
                 }
                 if (caption.Length > 0)

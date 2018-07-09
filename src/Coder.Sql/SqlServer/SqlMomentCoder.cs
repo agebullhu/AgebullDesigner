@@ -24,14 +24,14 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.Sqlerver
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("Sqlerver", "生成表(SQL)", cfg => RunByEntity(cfg, CreateTable));
-            MomentCoder.RegisteCoder("Sqlerver", "插入表字段(SQL)", cfg => RunByEntity(cfg, AddColumnCode));
-            MomentCoder.RegisteCoder("Sqlerver", "修改表字段(SQL)", cfg => Run(cfg, ChangeColumnCode));
-            MomentCoder.RegisteCoder("Sqlerver", "生成视图(SQL)", cfg => Run(cfg, CreateView));
-            MomentCoder.RegisteCoder("Sqlerver", "插入页面表(SQL)", PageInsertSql);
-            MomentCoder.RegisteCoder("Sqlerver", "删除视图(SQL)", cfg => Run(cfg, DropView));
-            MomentCoder.RegisteCoder("Sqlerver", "删除表(SQL)", cfg => RunByEntity(cfg, DropTable));
-            MomentCoder.RegisteCoder("Sqlerver", "清除表(SQL)", cfg => RunByEntity(cfg, TruncateTable));
+            MomentCoder.RegisteCoder("Sqlerver", "生成表(SQL)","sql", cfg => RunByEntity(cfg, CreateTable));
+            MomentCoder.RegisteCoder("Sqlerver", "插入表字段(SQL)","sql", cfg => RunByEntity(cfg, AddColumnCode));
+            MomentCoder.RegisteCoder("Sqlerver", "修改表字段(SQL)","sql", cfg => Run(cfg, ChangeColumnCode));
+            MomentCoder.RegisteCoder("Sqlerver", "生成视图(SQL)","sql", cfg => Run(cfg, CreateView));
+            MomentCoder.RegisteCoder("Sqlerver", "插入页面表(SQL)", "sql", PageInsertSql);
+            MomentCoder.RegisteCoder("Sqlerver", "删除视图(SQL)","sql", cfg => Run(cfg, DropView));
+            MomentCoder.RegisteCoder("Sqlerver", "删除表(SQL)","sql", cfg => RunByEntity(cfg, DropTable));
+            MomentCoder.RegisteCoder("Sqlerver", "清除表(SQL)","sql", cfg => RunByEntity(cfg, TruncateTable));
         }
 
         #endregion
@@ -64,7 +64,7 @@ DROP VIEW [{entity.ReadTableName}];
         public static string CreateView(EntityConfig entity)
         {
             if (entity.IsClass || entity.DbFields.All(p => IsNullOrEmpty(p.LinkTable)))
-                return null;
+                return "--这个设置为普通类(IsClass=true)或没有关联表，无法生成SQL";//这个设置为普通类，无法生成SQL
             var tables = new Dictionary<string, EntityConfig>();
             foreach (var field in entity.DbFields)
             {
@@ -151,7 +151,7 @@ CREATE VIEW [{viewName}] AS
         private static string DropTable(EntityConfig entity)
         {
             if (entity.IsClass)
-                return null;
+                return "--这个设置为普通类(IsClass=true)，无法生成SQL";//这个设置为普通类，无法生成SQL
             return $@"
 /*******************************{entity.Caption}*******************************/
 DROP TABLE [{entity.SaveTable}];";
@@ -266,7 +266,7 @@ EXECUTE sp_addextendedproperty N'MS_Description', @v, N'SCHEMA', N'dbo', N'TABLE
         private static string AddColumnCode(EntityConfig entity)
         {
             if (entity.IsClass)
-                return null;
+                return "--这个设置为普通类(IsClass=true)，无法生成SQL";//这个设置为普通类，无法生成SQL
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
@@ -290,7 +290,7 @@ ALTER TABLE [{entity.SaveTable}]");
         private string ChangeColumnCode(EntityConfig entity)
         {
             if (entity == null || entity.IsClass)
-                return null;
+                return "--这个设置为普通类(IsClass=true)，无法生成SQL";//这个设置为普通类，无法生成SQL
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/

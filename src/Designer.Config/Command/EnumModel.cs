@@ -24,7 +24,8 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder
             {
                 Command = new DelegateCommand(ClearFileConfig),
-                Name = "清除文件相关的扩展信息",
+                Caption = "清除文件相关的扩展信息",
+                Catalog = "工具",
                 Signle = false,
                 NoButton = true,
                 IconName = "tree_item"
@@ -32,7 +33,8 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder
             {
                 Command = new DelegateCommand(ClearFileConfig2),
-                Name = "清除所有扩展信息",
+                Caption = "清除所有扩展信息",
+                Catalog = "工具",
                 Signle = false,
                 NoButton = true,
                 IconName = "tree_item"

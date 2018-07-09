@@ -17,12 +17,15 @@ namespace Agebull.EntityModel.RobotCoder
         public string GetBaseCode<TBuilder>()
             where TBuilder : EntityBuilderBase, new()
         {
-            var builder = new TBuilder
+            using (WorkModelScope.CreateScope(WorkModel.Coder))
             {
-                Entity = Entity,
-                Project = Project
-            };
-            return builder.BaseCode;
+                var builder = new TBuilder
+                {
+                    Entity = Entity,
+                    Project = Project
+                };
+                return builder.BaseCode;
+            }
         }
         /// <summary>
         /// 取得其它生成器的能力
@@ -32,12 +35,15 @@ namespace Agebull.EntityModel.RobotCoder
         public string GetExtendCode<TBuilder>()
             where TBuilder : EntityBuilderBase, new()
         {
-            var builder = new TBuilder
+            using (WorkModelScope.CreateScope(WorkModel.Coder))
             {
-                Entity = Entity,
-                Project = Project
-            };
-            return builder.ExtendCode;
+                var builder = new TBuilder
+                {
+                    Entity = Entity,
+                    Project = Project
+                };
+                return builder.ExtendCode;
+            }
         }
 
         /// <summary>
@@ -50,7 +56,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         public EntityConfig Entity
         {
-            get { return _entity; }
+            get => _entity;
             set
             {
                 _entity = value;

@@ -50,19 +50,33 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据模型"),DisplayName(@"值"),Description("值")]
         public string Value
         {
-            get
-            {
-                return _value;
-            }
+            get => _value;
             set
             {
                 if(_value == value)
                     return;
                 BeforePropertyChanged(nameof(Value), _value,value);
-                _value = value;
+                _value = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Value));
             }
-        } 
+        }
+
+        /// <summary>
+        /// 值
+        /// </summary>
+        /// <remark>
+        /// 值
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        public long Number
+        {
+            get
+            {
+                if (_value == null)
+                    return -1;
+                return long.TryParse(Value, out var num) ? num : Value[0];
+            }
+        }
         #endregion
 
     }

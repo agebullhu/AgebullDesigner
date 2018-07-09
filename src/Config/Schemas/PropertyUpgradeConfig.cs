@@ -6,13 +6,8 @@ namespace Agebull.EntityModel.Designer.AssemblyAnalyzer
     /// 属性配置
     /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
-    public class PropertyConfig : UpgradeConfig
+    public class PropertyUpgradeConfig : UpgradeConfig
     {
-        /// <summary>
-        /// JSON序列化名称
-        /// </summary>
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string JsonName { get; set; }
         /// <summary>
         /// 对应的字段
         /// </summary>

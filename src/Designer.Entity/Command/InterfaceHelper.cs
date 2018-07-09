@@ -21,6 +21,8 @@ namespace Agebull.Common.Config.Designer
             Name = "规范实体名";
             Caption = "规范实体名([Name]Data)";
             NoButton = true;
+            Catalog = "工具";
+            ViewModel = "entity";
         }
 
         /// <summary>
@@ -70,6 +72,8 @@ namespace Agebull.Common.Config.Designer
         {
             Name = "Interface Check";
             Caption = "接口实现检查";
+            Catalog = "工具";
+            ViewModel = "entity";
             NoButton = true;
         }
         /// <summary>

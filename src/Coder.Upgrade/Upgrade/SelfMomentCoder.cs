@@ -23,13 +23,13 @@ namespace Agebull.EntityModel.RobotCoder.Upgrade
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("自升级代码", "配置转为LUA结构", ToLuaCode);
-            MomentCoder.RegisteCoder("自升级代码", "LUA方法注册", RegLuaFunc);
-            MomentCoder.RegisteCoder("自升级代码", "表格内容", WpfDataGrid);
-            MomentCoder.RegisteCoder("自升级代码", "基础录入内容", BaseDataForm);
-            MomentCoder.RegisteCoder("自升级代码", "配置录入内容", EntityDataForm);
-            MomentCoder.RegisteCoder("自升级代码", "枚举列表", EnumList);
-            MomentCoder.RegisteCoder("自升级代码", "字段配置的复制", ToCopyCode);
+            MomentCoder.RegisteCoder("自升级代码", "配置转为LUA结构", "cs", ToLuaCode);
+            MomentCoder.RegisteCoder("自升级代码", "LUA方法注册", "cs", RegLuaFunc);
+            MomentCoder.RegisteCoder("自升级代码", "表格内容", "cs", WpfDataGrid);
+            MomentCoder.RegisteCoder("自升级代码", "基础录入内容", "cs", BaseDataForm);
+            MomentCoder.RegisteCoder("自升级代码", "配置录入内容", "cs", EntityDataForm);
+            MomentCoder.RegisteCoder("自升级代码", "枚举列表", "cs", EnumList);
+            MomentCoder.RegisteCoder("自升级代码", "字段配置的复制", "cs", ToCopyCode);
         }
 
 

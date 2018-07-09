@@ -11,12 +11,12 @@ namespace Agebull.EntityModel.Config
 
         public static void RepairEnum(EnumConfig config)
         {
-            var type = GetTypedefByTag(config.Tag);
+            var type = CppProject.Instance.GetTypedefByTag(config.Tag);
             if (type != null)
-                RepairByTypedef(type);
+                RepairByTypedef(config.Parent, type);
         }
 
-        public static EnumConfig RepairByTypedef(TypedefItem type)
+        public static EnumConfig RepairByTypedef(ProjectConfig project, TypedefItem type)
         {
             var tag = type.Tag + "," + type.Name;
             var enumcfg = SolutionConfig.Current.Enums.FirstOrDefault(p => p.Tag == tag);
@@ -70,7 +70,7 @@ namespace Agebull.EntityModel.Config
                     Value = (++id).ToString()
                 });
             }
-            SolutionConfig.Current.Enums.Add(enumcfg);
+            project.Add(enumcfg);
             return enumcfg;
         }
 

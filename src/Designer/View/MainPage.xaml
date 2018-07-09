@@ -21,7 +21,7 @@
     <DockPanel>
         <cp:StatusPanel DockPanel.Dock="Bottom" />
         <cp:MenuPanel DockPanel.Dock="Top" />
-        <Grid>
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -36,30 +36,39 @@
                           Width="5"
                           BorderThickness="1,0" />
 
-            <TabControl Margin="0" SelectedIndex="{Binding Model.Context.RootJobIndex}"
+            <TabControl Margin="0" 
+                        Visibility="{Binding Model.Editor.ExtendPanelVisibility}"
+                        SelectedIndex="{Binding Model.Editor.SubJobIndex}" 
                         Grid.Column="1"
-                        Grid.Row="1" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" TabStripPlacement="Bottom">
-                <TabItem Header="基本信息">
-                    <card:ConfigForm/>
-                </TabItem>
-                <TabItem Header="对象编辑">
-                    <TabControl SelectedIndex="{Binding Model.Context.SubJobIndex}" Margin="0">
-                        
-                        <i:Interaction.Behaviors>
-                            <b:DependencyBehavior BehaviorAction="{Binding TabControlBehavior}" />
-                        </i:Interaction.Behaviors>
-                    </TabControl>
-                </TabItem>
-                <TabItem Header="扩展代码">
-                    <cp:CodePanel />
-                </TabItem>
-                <TabItem Header="属性编辑">
-                    <view:PropertyPage />
-                </TabItem>
-                <TabItem Header="跟踪消息">
-                    <cp:TracePanel />
-                </TabItem>
+                        Grid.Row="1" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" TabStripPlacement="Top">
+                <i:Interaction.Behaviors>
+                    <b:DependencyBehavior BehaviorAction="{Binding TabControlBehavior}" />
+                </i:Interaction.Behaviors>
             </TabControl>
+            <Border
+                Visibility="{Binding Model.Editor.ConfigFormVisibility}"
+                Grid.Column="1"
+                Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <card:ConfigForm  />
+            </Border>
+            <Border
+                Visibility="{Binding Model.Editor.CodePanelVisibility}"
+                Grid.Column="1"
+                Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <cp:CodePanel />
+            </Border>
+            <Border
+                Visibility="{Binding Model.Editor.TracePanelVisibility}"
+                Grid.Column="1"
+                Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <cp:TracePanel />
+            </Border>
+            <Border
+                Visibility="{Binding Model.Editor.PropertyPageVisibility}"
+                Grid.Column="1"
+                Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <view:PropertyPage />
+            </Border>
         </Grid>
     </DockPanel>
 </UserControl>

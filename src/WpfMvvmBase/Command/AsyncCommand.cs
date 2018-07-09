@@ -38,10 +38,7 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         public TParameter Parameter
         {
-            get
-            {
-                return _parameter;
-            }
+            get => _parameter;
             set
             {
                 if (Equals(_parameter, value))
@@ -59,10 +56,7 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         public INotifyPropertyChanged Detect
         {
-            get
-            {
-                return _detect;
-            }
+            get => _detect;
             set
             {
                 if (_detect != null)
@@ -107,14 +101,8 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         event EventHandler ICommand.CanExecuteChanged
         {
-            add
-            {
-                _canExecuteChanged += value;
-            }
-            remove
-            {
-                _canExecuteChanged -= value;
-            }
+            add => _canExecuteChanged += value;
+            remove => _canExecuteChanged -= value;
         }
 
 
@@ -145,10 +133,7 @@ namespace Agebull.Common.Mvvm
                 propertyChanged -= value;
                 propertyChanged += value;
             }
-            remove
-            {
-                propertyChanged -= value;
-            }
+            remove => propertyChanged -= value;
         }
 
         /// <summary>
@@ -251,10 +236,7 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         public Visibility Visibility
         {
-            get
-            {
-                return _visibility;
-            }
+            get => _visibility;
             set
             {
                 if (_visibility == value)
@@ -402,10 +384,7 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         public CommandStatus Status
         {
-            get
-            {
-                return _status;
-            }
+            get => _status;
             set
             {
                 if (_status == value)

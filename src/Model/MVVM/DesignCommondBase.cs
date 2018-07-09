@@ -32,7 +32,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     目标类型
         /// </summary>
-        public virtual string SourceType => typeof(TConfig).Name;
+        public virtual Type SourceType => typeof(TConfig);
 
         #region 操作命令
 

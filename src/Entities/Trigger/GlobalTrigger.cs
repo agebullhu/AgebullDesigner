@@ -46,7 +46,7 @@ namespace Agebull.EntityModel
         /// <param name="property"></param>
         public static void OnPropertyChanged(NotificationObject config, string property)
         {
-            if (NotificationObject.IsLoadingMode)
+            if (WorkContext.IsNoChangedNotify)
                 return;
             var type = config.GetType();
             var scope = EventScope.CreateScope(config, property);
@@ -71,7 +71,7 @@ namespace Agebull.EntityModel
         /// <param name="newValue">ÐÂÖµ</param>
         public static void BeforePropertyChanged(NotificationObject config, string property, object oldValue, object newValue)
         {
-            if (NotificationObject.IsLoadingMode)
+            if (WorkContext.IsNoChangedNotify)
                 return;
             var type = config.GetType();
             var scope = EventScope.CreateScope(config, property);
@@ -113,7 +113,7 @@ namespace Agebull.EntityModel
         /// <param name="config"></param>
         public static void OnCreate(NotificationObject config)
         {
-            if (NotificationObject.IsLoadingMode)
+            if (WorkContext.IsNoChangedNotify)
                 return;
             var type = config.GetType();
             var scope = EventScope.CreateScope(config, "_create_");

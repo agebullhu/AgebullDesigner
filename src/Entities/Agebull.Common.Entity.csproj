@@ -54,6 +54,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base\FileCodeScope.cs" />
+    <Compile Include="Base\WorkModel.cs" />
+    <Compile Include="Base\WorkModelScope.cs" />
     <Compile Include="Entity\SimpleConfig.cs" />
     <Compile Include="Interface\ISynchronousHelper.cs" />
     <Compile Include="Base\NotificationObject.cs" />
@@ -72,7 +75,6 @@
     </Compile>
     <Compile Include="Dictionaries\ModelFunctionDictionary.cs" />
     <Compile Include="Entity\EntityObjectBase.cs" />
-    <Compile Include="Helper\LoadingModeScope.cs" />
     <Compile Include="Interface\EditArrestMode.cs" />
     <Compile Include="Interface\EntitySubsist.cs" />
     <Compile Include="Interface\IEditObject.cs" />

@@ -31,13 +31,13 @@ namespace Agebull.EntityModel.Designer
                 {
                     Detect = Model
                 },
-                Name = "分析接口",
+                Caption = "分析接口",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             },
             new CommandItem
             {
                 Command = new DelegateCommand(Model.End),
-                Name = "接收到系统中",
+                Caption = "接收到系统中",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             }
         });

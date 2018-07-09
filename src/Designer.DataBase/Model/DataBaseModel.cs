@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Media;
 using Agebull.EntityModel.Config;
@@ -26,17 +27,12 @@ namespace Agebull.EntityModel.Designer
     {
         #region 基础
         
-        public DataBaseModel()
-        {
-            Catalog = "DataBase";
-        }
-        
 
         /// <summary>
         /// 生成命令对象
         /// </summary>
         /// <param name="commands"></param>
-        protected override void CreateCommands(List<CommandItem> commands)
+        protected override void CreateCommands(ObservableCollection<CommandItem> commands)
         {
             commands.Add(NormalDb);
         }
@@ -54,7 +50,7 @@ namespace Agebull.EntityModel.Designer
         {
             NoButton = true,
             Command = new DelegateCommand(RepairByDb),
-            Name = "数据库设计检查",
+            Caption = "数据库设计检查",
             Image = Application.Current.Resources["tree_item"] as ImageSource
         });
 

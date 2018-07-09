@@ -43,10 +43,20 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         public void CreateExtendCode(string path)
         {
-            CurrentIsExtend = true;
-            CurrentPath = path;
-            if (CanWrite)
-                CreateExCode(path);
+            using (WorkModelScope.CreateScope(WorkModel.Coder))
+            {
+                try
+                {
+                    CurrentIsExtend = true;
+                    CurrentPath = path;
+                    if (CanWrite)
+                        CreateExCode(path);
+                }
+                catch (Exception e)
+                {
+                    Trace.Write(e, this.GetTypeName());
+                }
+            }
         }
 
         /// <summary>
@@ -54,10 +64,20 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         public void CreateBaseCode(string path)
         {
-            CurrentIsExtend = false;
-            CurrentPath = path;
-            if (CanWrite)
-                CreateBaCode(path);
+            using (WorkModelScope.CreateScope(WorkModel.Coder))
+            {
+                try
+                {
+                    CurrentIsExtend = false;
+                    CurrentPath = path;
+                    if (CanWrite)
+                        CreateBaCode(path);
+                }
+                catch (Exception e)
+                {
+                    Trace.Write(e, this.GetTypeName());
+                }
+            }
         }
         /// <summary>
         ///     生成扩展代码
@@ -76,7 +96,7 @@ namespace Agebull.EntityModel.RobotCoder
         #endregion
 
         #region 保存代码
-        
+
         /// <summary>
         /// 取得扩展配置的路径
         /// </summary>
@@ -135,8 +155,11 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 代码写入文件
         /// </summary>
-        public static void WriteFile(string file, string code, bool overWirte = true)
+        public void WriteFile(string file, string code, bool overWirte = true)
         {
+            WorkContext.FileCodes?.AddOrSwitch(file, code);
+            if (!WorkContext.WriteToFile)
+                return;
             if (File.Exists(file))
             {
                 FileInfo f = new FileInfo(file);
@@ -161,20 +184,20 @@ namespace Agebull.EntityModel.RobotCoder
                 switch (ex)
                 {
                     case "htm":
-                    {
-                        sb.Append($"<!--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:{DateTime.Now}-->\r\n");
-                        break;
-                    }
+                        {
+                            sb.Append($"<!--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:{DateTime.Now}-->\r\n");
+                            break;
+                        }
                     case "aspx":
-                    {
-                        sb.Append($"<%--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:{DateTime.Now}--%>\r\n");
-                        break;
-                    }
+                        {
+                            sb.Append($"<%--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:{DateTime.Now}--%>\r\n");
+                            break;
+                        }
                     default:
-                    {
-                        sb.Append($"/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:{DateTime.Now}*/\r\n");
-                        break;
-                    }
+                        {
+                            sb.Append($"/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:{DateTime.Now}*/\r\n");
+                            break;
+                        }
                 }
             }
             code = code.Trim();
@@ -183,7 +206,7 @@ namespace Agebull.EntityModel.RobotCoder
                 string old = File.ReadAllText(file, Encoding.UTF8);
                 if (old.Contains('\n'))
                 {
-                    old = old.Split(new[] {'\n'}, 2)[1].Trim();
+                    old = old.Split(new[] { '\n' }, 2)[1].Trim();
                 }
                 if (String.Equals(code, old))
                     return;
@@ -192,8 +215,11 @@ namespace Agebull.EntityModel.RobotCoder
             {
                 var dir = Path.GetDirectoryName(file);
                 var root = Path.GetPathRoot(dir);
-                var folders = dir.Substring(root.Length, dir.Length - root.Length).Split( '\\');
-                IOHelper.CheckPath(root, folders);
+                if (dir != null)
+                {
+                    var folders = dir.Substring(root.Length, dir.Length - root.Length).Split('\\');
+                    IOHelper.CheckPath(root, folders);
+                }
             }
             sb.Append(code);
             code = sb.ToString();

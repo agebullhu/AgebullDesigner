@@ -36,7 +36,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public string Code
         {
-            get { return _code; }
+            get => _code;
             set
             {
                 if (_code == value)
@@ -52,7 +52,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public string SystemName
         {
-            get { return _systemName; }
+            get => _systemName;
             set
             {
                 if (_systemName == value)
@@ -64,21 +64,21 @@ namespace Agebull.EntityModel.Designer
 
         public ConfigCollection<ApiItem> ApiItems { get; } = new ConfigCollection<ApiItem>();
 
-        private SolutionConfig _solution;
+        private ProjectConfig _project;
         /// <summary>
         ///     当前配置
         /// </summary>
-        public SolutionConfig Solution
+        public ProjectConfig Project
         {
-            get { return _solution; }
+            get => _project;
             set
             {
-                if (_solution == value)
+                if (_project == value)
                 {
                     return;
                 }
-                _solution = value;
-                RaisePropertyChanged(() => Solution);
+                _project = value;
+                RaisePropertyChanged(() => Project);
             }
         }
         #endregion
@@ -128,19 +128,19 @@ namespace Agebull.EntityModel.Designer
         }
 
 
-        private static List<string> loaded = new List<string>();
+        private static readonly List<string> Loaded = new List<string>();
         Assembly LoadAssembly(string path, string name)
         {
             var file = Path.Combine(path, name);
-            if (loaded.Contains(file))
+            if (Loaded.Contains(file))
                 return null;
-            loaded.Add(file);
+            Loaded.Add(file);
             string path2 = file.Replace("dll", "xml");
             if (File.Exists(path2))
                 HelpXml.AddRange(XmlMember.LoadHelpXml(path2));
             var p2 = Path.GetDirectoryName(GetType().Assembly.Location);
             var asm = Assembly.LoadFile(file);
-            IOHelper.CopyPath(path, p2, "*.dll", false, false);
+            IOHelper.CopyPath(path, p2, "*.dll", false);
             System.Diagnostics.Trace.WriteLine(Path.Combine(path, name));
             foreach (var friend in asm.GetReferencedAssemblies())
             {
@@ -237,7 +237,7 @@ namespace Agebull.EntityModel.Designer
                 Name = controler.Name
             };
             GetInfo(project, controler);
-            Solution.Projects.Add(project);
+            Project.Solution.Add(project);
             var ctors = controler.GetConstructors();
             Dictionary<string, ApiItem> interfaces = new Dictionary<string, ApiItem>(StringComparer.OrdinalIgnoreCase);
             foreach (var method in ctors)
@@ -260,7 +260,7 @@ namespace Agebull.EntityModel.Designer
                     Project = project.Name
                 };
                 items.Add(item);
-                project.ApiItems.Add(item);
+                project.Add(item);
                 GetInfo(item, controler, method);
                 var post = method.GetCustomAttribute<HttpPostAttribute>();
                 if (post != null)
@@ -287,7 +287,7 @@ namespace Agebull.EntityModel.Designer
                     };
                     foreach (var pro in up.Properties.Values)
                     {
-                        entity.Properties.Add(new PropertyConfig
+                        entity.Add(new PropertyConfig
                         {
                             Name = pro.Name,
                             Caption = pro.Caption,
@@ -296,7 +296,7 @@ namespace Agebull.EntityModel.Designer
                             Parent = entity
                         });
                     }
-                    Solution.Entities.Add(entity);
+                    Project.Add(entity);
                     item.CallArg = entity.Name;
                     break;
                 }
@@ -308,31 +308,6 @@ namespace Agebull.EntityModel.Designer
                     continue;
                 }
                 noItems.Add(item);
-                
-                /*if (method.ReturnType == typeof(void))
-                    continue;
-                {
-                    var up = upgrader.GetConfig(method.ReturnType);
-                    var entity = new EntityConfig
-                    {
-                        Name = up.Name,
-                        Caption = up.Caption,
-                        Description = up.Description,
-                        IsClass = true
-                    };
-                    foreach (var pro in up.Properties.Values)
-                    {
-                        entity.Properties.Add(new PropertyConfig
-                        {
-                            Name = pro.Name,
-                            Caption = pro.Caption,
-                            Description = pro.Description,
-                            CsType = pro.TypeName
-                        });
-                    }
-                    Solution.Entities.Add(entity);
-                    item.ResultArg = entity.Name;
-                }*/
             }
             if (noItems.Count == 1 && interfaces.Count == 1)
                 noItems[0].ResultArg = interfaces.Values.First().ResultArg;
@@ -365,7 +340,7 @@ namespace Agebull.EntityModel.Designer
                     };
                     foreach (var pro in up.Properties.Values)
                     {
-                        entity.Properties.Add(new PropertyConfig
+                        entity.Add(new PropertyConfig
                         {
                             Name = pro.Name,
                             Caption = pro.Caption,
@@ -374,7 +349,7 @@ namespace Agebull.EntityModel.Designer
                             Parent = entity
                         });
                     }
-                    Solution.Entities.Add(entity);
+                    Project.Add(entity);
                     item.CallArg = entity.Name;
                     break;
                 }
@@ -390,11 +365,11 @@ namespace Agebull.EntityModel.Designer
                         IsClass = true,
                         Parent = project
                     };
-                    project.Entities.Add(entity);
+                    project.Add(entity);
                     item.ResultArg = entity.Name;
                     foreach (var pro in up.Properties.Values)
                     {
-                        entity.Properties.Add(new PropertyConfig
+                        entity.Add(new PropertyConfig
                         {
                             Name = pro.Name,
                             Caption = pro.Caption,
@@ -413,10 +388,10 @@ namespace Agebull.EntityModel.Designer
         {
             foreach (var item in ApiItems)
             {
-                var old = Solution.Entities.FirstOrDefault(p => p.Name == item.Name);
+                var old = Project.ApiItems.FirstOrDefault(p => p.Name == item.Name);
                 if (old == null)
                 {
-                    Solution.ApiItems.Add(item);
+                    Project.Add(item);
                 }
             }
             ApiItems.Clear();

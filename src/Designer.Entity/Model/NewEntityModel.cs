@@ -38,7 +38,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public string EntityName
         {
-            get { return Entity.Name; }
+            get => Entity.Name;
             set
             {
                 Entity.Name = value;
@@ -60,7 +60,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public string Fields
         {
-            get { return _fields; }
+            get => _fields;
             set
             {
                 if (_fields == value)

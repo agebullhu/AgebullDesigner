@@ -50,16 +50,13 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据模型"),DisplayName(@"按钮名称"),Description("按钮名称")]
         public string Button
         {
-            get
-            {
-                return _button;
-            }
+            get => _button;
             set
             {
                 if(_button == value)
                     return;
                 BeforePropertyChanged(nameof(Button), _button,value);
-                _button = value;
+                _button = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Button));
             }
         }
@@ -80,16 +77,13 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据模型"),DisplayName(@"按钮图标"),Description("按钮图标")]
         public string Icon
         {
-            get
-            {
-                return _icon;
-            }
+            get => _icon;
             set
             {
                 if(_icon == value)
                     return;
                 BeforePropertyChanged(nameof(Icon), _icon,value);
-                _icon = value;
+                _icon = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Icon));
             }
         }
@@ -115,10 +109,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据模型"),DisplayName(@"本地操作"),Description(IsLocalAction_Description)]
         public bool IsLocalAction
         {
-            get
-            {
-                return _isLocalAction;
-            }
+            get => _isLocalAction;
             set
             {
                 if(_isLocalAction == value)
@@ -145,10 +136,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据模型"),DisplayName(@"单对象操作"),Description("是否单对象操作,即操作对象只能是一行数据")]
         public bool IsSingleObject
         {
-            get
-            {
-                return _isSingleObject;
-            }
+            get => _isSingleObject;
             set
             {
                 if(_isSingleObject == value)
@@ -175,16 +163,13 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据模型"),DisplayName(@"打开链接"),Description("在本地操作时打开的链接")]
         public string Url
         {
-            get
-            {
-                return _url;
-            }
+            get => _url;
             set
             {
                 if(_url == value)
                     return;
                 BeforePropertyChanged(nameof(Url), _url,value);
-                _url = value;
+                _url = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Url));
             }
         } 

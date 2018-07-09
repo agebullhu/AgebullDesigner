@@ -43,14 +43,8 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         public BehaviorAction<TDependency> BehaviorAction
         {
-            get
-            {
-                return (BehaviorAction<TDependency>)GetValue(BehaviorActionProperty);
-            }
-            set
-            {
-                SetValue(BehaviorActionProperty, value);
-            }
+            get => (BehaviorAction<TDependency>)GetValue(BehaviorActionProperty);
+            set => SetValue(BehaviorActionProperty, value);
         }
 
         private static void OnBehaviorActionPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

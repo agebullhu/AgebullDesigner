@@ -24,7 +24,7 @@ using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer
 {
-    internal class AllFieldsViewModel : ExtendViewModelBase<EntityDesignModelEx>
+    internal class AllFieldsViewModel : ExtendViewModelBase<EntityDesignModel>
     {
         /// <summary>
         /// 主面板

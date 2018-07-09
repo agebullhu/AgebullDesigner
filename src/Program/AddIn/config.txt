@@ -12,8 +12,10 @@ Agebull.EntityModel.RobotCoder.Project.dll
 Agebull.EntityModel.RobotCoder.DataBase.dll
 
 *Agebull.EntityModel.RobotCoder.Upgrade.dll
-Agebull.EntityModel.RobotCoder.Funds.dll
-Agebull.EntityModel.Designer.Funds.dll
+*Agebull.EntityModel.RobotCoder.Funds.dll
+*Agebull.EntityModel.Designer.Funds.dll
+
+Agebull.EntityModel.RobotCoder.Vue.dll
 
 Agebull.EntityModel.RobotCoder.EasyUi.dll
 Agebull.EntityModel.Designer.EasyUi.dll

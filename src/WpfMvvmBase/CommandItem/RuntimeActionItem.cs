@@ -31,7 +31,7 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         public bool Prepare(object arg)
         {
-            if (MessageBox.Show($"确认要执行{Action.Name}吗?", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+            if (MessageBox.Show($"确认要执行{Action.Caption}吗?", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
             {
                 return false;
             }

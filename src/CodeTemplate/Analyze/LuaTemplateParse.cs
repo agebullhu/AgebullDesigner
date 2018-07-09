@@ -30,8 +30,8 @@ namespace Agebull.EntityModel.RobotCoder.CodeTemplate.LuaTemplate
 
         public TemplateConfig Config
         {
-            get { return Spliter.Config; }
-            set { Spliter.Config = value; }
+            get => Spliter.Config;
+            set => Spliter.Config = value;
         }
 
         public string Code => Config.Code;

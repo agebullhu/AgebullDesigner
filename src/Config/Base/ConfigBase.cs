@@ -183,10 +183,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public string this[string classify, string name]
         {
-            get
-            {
-                return Extend[classify,name];
-            }
+            get => Extend[classify,name];
             set
             {
                 Extend[classify, name] = value;
@@ -213,10 +210,7 @@ namespace Agebull.EntityModel.Config
         [Category("设计标识"), DisplayName("标识"), Description("名称")]
         public Guid Key
         {
-            get
-            {
-                return _key;
-            }
+            get => _key;
             set
             {
                 if (_key == value)
@@ -242,10 +236,7 @@ namespace Agebull.EntityModel.Config
         [Category("设计标识"), DisplayName("唯一标识"), Description("唯一标识")]
         public int Identity
         {
-            get
-            {
-                return _identity;
-            }
+            get => _identity;
             set
             {
                 if (_identity == value)
@@ -271,10 +262,7 @@ namespace Agebull.EntityModel.Config
         [Category("设计标识"), DisplayName("编号"), Description("编号")]
         public int Index
         {
-            get
-            {
-                return _index;
-            }
+            get => _index;
             set
             {
                 if (_index == value)
@@ -308,10 +296,7 @@ namespace Agebull.EntityModel.Config
         [Category("设计器支持"), DisplayName("引用对象键"), Description("引用对象键，指内部对象的引用")]
         public Guid ReferenceKey
         {
-            get
-            {
-                return _referenceKey;
-            }
+            get => _referenceKey;
             set
             {
                 if (_referenceKey == value)
@@ -337,10 +322,7 @@ namespace Agebull.EntityModel.Config
         [Category("设计器支持"), DisplayName("是否参照对象"), Description("是否参照对象，是则永远只读")]
         public bool IsReference
         {
-            get
-            {
-                return _isReference;
-            }
+            get => _isReference;
             set
             {
                 if (_isReference == value)
@@ -367,10 +349,7 @@ namespace Agebull.EntityModel.Config
         [Category("设计器支持"), DisplayName("废弃"), Description("废弃")]
         public bool Discard
         {
-            get
-            {
-                return _discard;
-            }
+            get => _discard;
             set
             {
                 if (_discard == value)
@@ -396,10 +375,7 @@ namespace Agebull.EntityModel.Config
         [Category("设计器支持"), DisplayName("冻结"), Description("如为真,此配置的更改将不生成代码")]
         public bool IsFreeze
         {
-            get
-            {
-                return _isFreeze;
-            }
+            get => _isFreeze;
             set
             {
                 if (_isFreeze == value)
@@ -425,10 +401,7 @@ namespace Agebull.EntityModel.Config
         [Category("设计器支持"), DisplayName("标记删除"), Description("如为真,保存时删除")]
         public bool IsDelete
         {
-            get
-            {
-                return _isDelete;
-            }
+            get => _isDelete;
             set
             {
                 if (_isDelete == value)
@@ -461,16 +434,13 @@ namespace Agebull.EntityModel.Config
         [Category("*设计"), DisplayName("标签（对应关系等）"), Description("值")]
         public string Tag
         {
-            get
-            {
-                return _tag;
-            }
+            get => _tag;
             set
             {
                 if (_tag == value)
                     return;
                 BeforePropertyChanged(nameof(Tag), _tag, value);
-                _tag = value;
+                _tag = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Tag));
             }
         }
@@ -489,10 +459,7 @@ namespace Agebull.EntityModel.Config
         [Category("运行时"), DisplayName("曾用名"), Description("曾用名")]
         public List<string> OldNames
         {
-            get
-            {
-                return _oldNames ??(_oldNames = new List<string>());
-            }
+            get => _oldNames ??(_oldNames = new List<string>());
             set
             {
                 if (_oldNames == value)

@@ -32,22 +32,32 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    public class ImportModel : DesignCommondBase<SolutionConfig>
+    public class ImportModel : DesignCommondBase<ProjectConfig>
     {
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
             commands.Add(new CommandItemBuilder
             {
+                Catalog = "解决方案",
                 NoButton = true,
-                Command = new DelegateCommand(ImportToExcel),
-                Name = "导出Excel文档",
+                Command = new AsyncCommand<string, ProjectConfig>(OpenAssemblyFile, AnalyzeAssemblyFile, AnalyzeAssemblyEnd),
+                Caption = "导入程序集",
                 IconName = "tree_Assembly"
             });
             commands.Add(new CommandItemBuilder
             {
+                Catalog = "解决方案",
                 NoButton = true,
                 Command = new AsyncCommand<string, List<EntityConfig>>(OpenEdmxFile, AnalyzeEdmxFile, AnalyzeEdmxFilenEnd),
-                Name = "导入EF配置文件",
+                Caption = "导入EF配置文件",
+                IconName = "tree_Assembly"
+            });
+            commands.Add(new CommandItemBuilder
+            {
+                Catalog = "解决方案",
+                NoButton = true,
+                Command = new DelegateCommand(ImportToExcel),
+                Caption = "导出Excel文档",
                 IconName = "tree_Assembly"
             });
         }
@@ -89,8 +99,9 @@ namespace Agebull.EntityModel.Designer
             {
                 return;
             }
-            Context.Entities.Clear();
-            Context.Entities.AddRange(tables);
+            Context.SelectProject.Entities.Clear();
+            foreach(var table in tables)
+            Context.SelectProject.Add(table);
         }
 
         #endregion
@@ -99,18 +110,15 @@ namespace Agebull.EntityModel.Designer
 
         internal bool OpenAssemblyFile(string path, Action<string> setPath)
         {
-            //var dialog = new OpenFileDialog
-            //{
-            //    Filter = "程序集|*.dll",
-            //    InitialDirectory = Path.Combine(_rootPath, "DataAccess", "Model")
-            //};
-            //if (dialog.ShowDialog() != true)
-            //{
-            //    return false;
-            //}
-            //CurrentTrace.TraceMessage = TraceMessage.DefaultTrace;
-            //setPath(dialog.FileName);
-            //CurrentTrace.TraceMessage.Clear();
+            var dialog = new OpenFileDialog
+            {
+                Filter = "程序集|*.dll"
+            };
+            if (dialog.ShowDialog() != true)
+            {
+                return false;
+            }
+            setPath(dialog.FileName);
             return true;
         }
 
@@ -118,18 +126,19 @@ namespace Agebull.EntityModel.Designer
         ///     分析程序集
         /// </summary>
         /// <returns></returns>
-        internal SolutionConfig AnalyzeAssemblyFile(string file)
+        internal ProjectConfig AnalyzeAssemblyFile(string file)
         {
-            return AssemblyImporter.Import(typeof(PropertyConfig).Assembly);
+            return AssemblyImporter.Import(Model.Context.SelectProject, file);
         }
 
-        internal void AnalyzeAssemblyEnd(CommandStatus status, Exception ex, SolutionConfig schema)
+        internal void AnalyzeAssemblyEnd(CommandStatus status, Exception ex, ProjectConfig schema)
         {
             if (status != CommandStatus.Succeed)
             {
+                MessageBox.Show("错误");
                 return;
             }
-            GlobalConfig.CurrentSolution = schema;
+            MessageBox.Show("完成");
         }
 
         #endregion
@@ -443,7 +452,7 @@ namespace Agebull.EntityModel.Designer
                 else
                 {
                     Model.Context.CurrentTrace.TraceMessage.Track = "新增字段:" + field;
-                    entity.Properties.Add(new PropertyConfig
+                    entity.Add(new PropertyConfig
                     {
                         Name = field,
                         Description = desc,

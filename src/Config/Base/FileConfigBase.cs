@@ -1,5 +1,7 @@
+using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using System.Text;
 using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
@@ -21,19 +23,32 @@ namespace Agebull.EntityModel.Config
         ///     保存地址
         /// </summary>
         [IgnoreDataMember,JsonIgnore,Category("系统"), DisplayName("保存地址")]
-        public string FileName
+        public string SaveFileName
         {
-            get { return _fileName; }
+            get => _fileName;
             set
             {
                 if (Equals(_fileName, value))
                 {
                     return;
                 }
-                BeforePropertyChanged(nameof(FileName), _fileName, value);
-                _fileName = value;
-                RaisePropertyChanged(() => FileName);
+                BeforePropertyChanged(nameof(SaveFileName), _fileName, value);
+                _fileName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                RaisePropertyChanged(() => SaveFileName);
             }
+        }
+        /// <summary>
+        /// 取文件名
+        /// </summary>
+        /// <param name="ext"></param>
+        /// <returns></returns>
+        public string GetFileName(string ext)
+        {
+            if (string.IsNullOrEmpty(Name))
+            {
+                return Name = Guid.NewGuid().ToString("N").ToUpper() + ext;
+            }
+            return Name.Trim().Replace(' ', '_').Replace('>', '_').Replace('<', '_') + ext;
         }
     }
 }

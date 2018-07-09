@@ -20,6 +20,8 @@ namespace Agebull.Common.Config.Designer
         {
             Name = "Link Field Check";
             Caption = "关系连接检查";
+            Catalog = "工具";
+            ViewModel = "database,model";
             NoButton = true;
         }
         /// <summary>

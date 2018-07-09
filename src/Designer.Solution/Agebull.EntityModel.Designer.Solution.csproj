@@ -53,6 +53,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files (x86)\Microsoft SDKs\Expression\Blend\.NETFramework\v4.5\Libraries\Microsoft.Expression.Drawing.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NPOI, Version=2.3.0.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <HintPath>..\packages\NPOI.2.3.0\lib\net40\NPOI.dll</HintPath>
       <Private>True</Private>
@@ -95,7 +98,12 @@
     <Compile Include="Business\ProjectBusiness.cs" />
     <Compile Include="Command\BaiduFanYiCommand.cs" />
     <Compile Include="Command\ConfigCommands.cs" />
+    <Compile Include="Command\EntityCommands1.cs" />
     <Compile Include="Command\ImportModel.cs" />
+    <Compile Include="Command\ProjectCommands.cs" />
+    <Compile Include="Command\PropertyCommands.cs" />
+    <Compile Include="Command\SolutionCommands.cs" />
+    <Compile Include="Command\UserCommandConfigCommands.cs" />
     <Compile Include="Import\AssemblyImporter.cs" />
     <Compile Include="Import\DesignToExcel.cs" />
     <Compile Include="Import\EdmxReader.cs" />

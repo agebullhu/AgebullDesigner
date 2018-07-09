@@ -218,7 +218,7 @@ namespace {0}.DataAccess
             {
                 if (File.Exists(file))
                 {
-                    File.Delete(file);
+                    Directory.Move(file, file + ".bak");
                 }
                 return;
             }
@@ -236,7 +236,7 @@ namespace {0}.DataAccess
             {
                 if (File.Exists(file))
                 {
-                    File.Delete(file);
+                    Directory.Move(file, file + ".bak");
                 }
                 return;
             }

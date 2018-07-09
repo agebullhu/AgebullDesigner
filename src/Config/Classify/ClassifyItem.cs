@@ -56,7 +56,7 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore, Browsable(false)]
         public ConfigCollection<TConfig> Items
         {
-            get { return _items; }
+            get => _items;
             set
             {
                 if (_items == value)

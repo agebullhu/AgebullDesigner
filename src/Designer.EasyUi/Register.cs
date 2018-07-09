@@ -18,7 +18,7 @@ namespace Agebull.Common.Config.Designer.EasyUi
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            DesignerManager.Registe<EntityConfig, EasyUiViewModel>("EasyUi界面");
+            DesignerManager.Registe<EntityConfig, EasyUiViewModel>("EasyUi界面","Model");
         }
 
 

@@ -20,19 +20,11 @@ namespace Agebull.EntityModel.Designer
         /// <returns>命令对象</returns>
         public override CommandItem ToCommand(object arg, Func<object, IEnumerator> enumerator = null)
         {
-            return new CommandItem
-            {
-                Command = new AsyncCommand<object, bool>(Prepare, Doing, End),
-                Parameter = arg,
-                Name = Caption,
-                NoButton = NoButton,
-                IconName = IconName,
-                SourceType = SourceType,
-                Catalog = Catalog,
-                Caption = Caption,
-                Description = Description,
-                Image = Application.Current.Resources[IconName ?? "imgDefault"] as ImageSource
-            };
+            var item = this.CopyCreate<CommandItem>();
+            item.Parameter = arg;
+            item.Command = new AsyncCommand<object, bool>(Prepare, Doing, End);
+            item.Image = Application.Current.Resources[IconName ?? "imgDefault"] as ImageSource;
+            return item;
         }
 
         public class RuntimeArgument
@@ -42,7 +34,7 @@ namespace Agebull.EntityModel.Designer
             /// </summary>
             public object Argument
             {
-                get { return _argument; }
+                get => _argument;
                 set
                 {
                     _argument = value;
@@ -69,22 +61,21 @@ namespace Agebull.EntityModel.Designer
             void GetEntities()
             {
                 var list = new List<EntityConfig>();
-                var entityConfig = _argument as EntityConfig;
-                if (entityConfig != null)
+                if (_argument is EntityConfig entityConfig)
                 {
                     list.Add(entityConfig);
                 }
                 else
                 {
-                    var propertyConfig = _argument as PropertyConfig;
-                    if (propertyConfig != null)
+                    if (_argument is PropertyConfig propertyConfig)
                     {
                         list.Add(propertyConfig.Parent);
                     }
                     else
                     {
-                        var projectConfig = _argument as ProjectConfig;
-                        list.AddRange(projectConfig != null ? projectConfig.Entities : SolutionConfig.Current.Entities);
+                        list.AddRange(_argument is ProjectConfig projectConfig 
+                            ? projectConfig.Entities 
+                            : SolutionConfig.Current.Entities);
                     }
                 }
 
@@ -186,31 +177,59 @@ namespace Agebull.EntityModel.Designer
             return success;
         }
 
+        /// <summary>
+        /// 处理前
+        /// </summary>
+        /// <param name="argument"></param>
+        /// <returns></returns>
+        public virtual bool BeginDo(RuntimeArgument argument)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// 处理后
+        /// </summary>
+        /// <param name="argument"></param>
+        /// <returns></returns>
+        public virtual void EndDo(RuntimeArgument argument)
+        {
+        }
         private bool Doing(object args)
         {
             var argument = (RuntimeArgument)args;
-            foreach (var entity in argument.Entities)
+            if (!BeginDo(argument))
+                return false;
+            try
             {
-                Execute(entity);
+                foreach (var entity in argument.Entities)
+                {
+                    Execute(entity);
+                }
+                foreach (var project in argument.Projects)
+                {
+                    Execute(project);
+                }
+
+                return true;
             }
-            foreach (var project in argument.Projects)
+            finally
             {
-                Execute(project);
+                EndDo(argument);
             }
-            return true;
         }
 
         protected void End(CommandStatus status, Exception ex, bool result)
         {
             if (status == CommandStatus.Succeed)
             {
-                MessageBox.Show(Name + "执行成功！");
+                MessageBox.Show(Caption + "执行成功！");
                 OnSuccees();
             }
             else
             {
-                MessageBox.Show(Name + "出错" + ex?.Message);
-                Trace.WriteLine(ex?.ToString(), Name);
+                MessageBox.Show(Caption + "出错" + ex?.Message);
+                Trace.WriteLine(ex?.ToString(), Caption);
             }
         }
     }

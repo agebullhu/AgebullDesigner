@@ -8,11 +8,13 @@
 
 #region 引用
 
+using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using Agebull.EntityModel;
 
 #endregion
 
@@ -24,26 +26,67 @@ namespace Agebull.Common.Mvvm
     public class CommandItem : CommandConfig
     {
         #region 设置
-        
-        private ImageSource _image;
+
+        /// <summary>
+        ///     图标
+        /// </summary>
+        ImageSource _image;
 
         /// <summary>
         ///     图标
         /// </summary>
         public ImageSource Image
         {
-            get { return _image ?? Application.Current.Resources[IconName ?? "imgDefault"] as BitmapImage; }
-            set { _image = value; }
+            get => IsRoot
+                ? null
+                : _image ?? (_image = IconName == null ? null : Application.Current.Resources[IconName] as ImageSource);
+            set => _image = value;
         }
 
+        /// <summary>
+        ///     是否根
+        /// </summary>
+        public bool IsRoot { get; set; }
+
+        /// <summary>
+        ///     是否线
+        /// </summary>
+        public bool IsLine { get; set; }
+
+        /// <summary>
+        /// 表示分隔线
+        /// </summary>
+        public static CommandItem Line { get; } = new CommandItem
+        {
+            IsLine = true
+        };
+
+
+        private bool _isChecked;
+
+        /// <summary>
+        ///     是否选中
+        /// </summary>
+        public bool IsChecked
+        {
+            get => _isChecked;
+            set
+            {
+                _isChecked = value;
+                RaisePropertyChanged(nameof(IsChecked));
+            }
+        }
+
+        public object Source { get; set; }
         #endregion
 
         #region 参数
 
         /// <summary>
-        ///     标签
+        ///     命令的目标类型
         /// </summary>
-        public object Tag { get; set; }
+        public Type TargetType => SourceType;
+
 
         /// <summary>
         ///     对应的命令参数
@@ -61,7 +104,7 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         public bool IsBusy
         {
-            get { return _isBusy; }
+            get => _isBusy;
             set
             {
                 if (_isBusy == value)
@@ -74,11 +117,11 @@ namespace Agebull.Common.Mvvm
         private Visibility _visibility;
 
         /// <summary>
-        ///     图标
+        ///     可见
         /// </summary>
         public Visibility Visibility
         {
-            get { return _visibility; }
+            get => _visibility;
             set
             {
                 if (_visibility == value)
@@ -115,16 +158,39 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         public ICommand Command
         {
-            get { return _command; }
+            get => _command;
             set
             {
                 _command = value;
-                var pp = value as INotifyPropertyChanged;
-                if (pp != null)
+                if (value is INotifyPropertyChanged pp)
                     pp.PropertyChanged += OnCommandPropertyChanged;
             }
         }
 
         #endregion
+
+        #region 子级
+
+        /// <summary>
+        /// 所有按钮
+        /// </summary>
+        public ObservableCollection<CommandItem> Items { get; set; } = new ObservableCollection<CommandItem>();
+
+        #endregion
+    }
+
+
+    /// <summary>
+    ///     表示一个命令节点
+    /// </summary>
+    public class CommandItem<TTargetType> : CommandConfig
+    {
+        /// <summary>
+        /// 构造
+        /// </summary>
+        public CommandItem()
+        {
+            SourceType = typeof(TTargetType);
+        }
     }
 }

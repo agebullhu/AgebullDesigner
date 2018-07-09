@@ -10,7 +10,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -22,20 +21,8 @@ namespace Agebull.EntityModel.Config
     /// 实体配置
     /// </summary>
     [DataContract,JsonObject(MemberSerialization.OptIn)]
-    public partial class EntityConfig : ParentConfigBase
+    public partial class EntityConfig : ProjectChildConfigBase
     {
-        #region 构造
-        
-        /// <summary>
-        /// 构造
-        /// </summary>
-        public EntityConfig()
-        {
-        }
-
-        #endregion
-
- 
         #region 系统
 
         /// <summary>
@@ -54,10 +41,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"系统"),DisplayName(@"阻止编辑"),Description("阻止使用的范围")]
         public AccessScopeType DenyScope
         {
-            get
-            {
-                return _denyScope;
-            }
+            get => _denyScope;
             set
             {
                 if(_denyScope == value)
@@ -84,10 +68,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"系统"),DisplayName(@"最大字段标识号"),Description("最大字段标识号")]
         public int MaxIdentity
         {
-            get
-            {
-                return _maxIdentity;
-            }
+            get => _maxIdentity;
             set
             {
                 if(_maxIdentity == value)
@@ -118,7 +99,9 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember,JsonIgnore]
         [Category(@"数据标识"),DisplayName(@"主键字段"),Description("主键字段")]
-        public PropertyConfig PrimaryColumn=>Properties.FirstOrDefault(p => p.IsPrimaryKey);
+        public PropertyConfig PrimaryColumn=> WorkContext.InCoderGenerating 
+            ? Properties.FirstOrDefault(p => p.IsPrimaryKey) ?? Properties.FirstOrDefault()
+            : Properties.FirstOrDefault(p => p.IsPrimaryKey) ;
 
         /// <summary>
         /// 主键字段
@@ -146,16 +129,13 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据标识"),DisplayName(@"Redis唯一键模板"),Description("保存在Redis中使用的键模板")]
         public string RedisKey
         {
-            get
-            {
-                return _redisKey;
-            }
+            get => _redisKey;
             set
             {
                 if(_redisKey == value)
                     return;
                 BeforePropertyChanged(nameof(RedisKey), _redisKey,value);
-                _redisKey = value;
+                _redisKey = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(RedisKey));
             }
         } 
@@ -178,20 +158,44 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据模型"),DisplayName(@"实体名称"),Description("实体名称")]
         public string EntityName
         {
-            get
-            {
-                return _entityName ?? Name;
-            }
+            get => WorkContext.InCoderGenerating ? (_entityName ?? Name) : _entityName;
             set
             {
                 if(_entityName == value)
                     return;
+                if (value == Name)
+                    value = null;
                 BeforePropertyChanged(nameof(EntityName), _entityName,value);
-                _entityName = value;
+                _entityName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(EntityName));
             }
         }
 
+        /// <summary>
+        /// 参考类型
+        /// </summary>
+        [DataMember, JsonProperty("ReferenceType", NullValueHandling = NullValueHandling.Ignore)]
+        private string _referenceType;
+        /// <summary>
+        /// 参考类型
+        /// </summary>
+        /// <remark>
+        /// 字段类型
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"模型设计(C#)"), DisplayName(@"参考类型(C#)"), Description("字段类型")]
+        public string ReferenceType
+        {
+            get => _referenceType;
+            set
+            {
+                if (_referenceType == value)
+                    return;
+                BeforePropertyChanged(nameof(ReferenceType), _referenceType, value);
+                _referenceType = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                OnPropertyChanged(nameof(ReferenceType));
+            }
+        }
         /// <summary>
         /// 字段列表
         /// </summary>
@@ -242,16 +246,13 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据模型"),DisplayName(@"模型"),Description("模型")]
         public string ModelInclude
         {
-            get
-            {
-                return _modelInclude;
-            }
+            get => _modelInclude;
             set
             {
                 if(_modelInclude == value)
                     return;
                 BeforePropertyChanged(nameof(ModelInclude), _modelInclude,value);
-                _modelInclude = value;
+                _modelInclude = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(ModelInclude));
             }
         }
@@ -272,16 +273,13 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据模型"),DisplayName(@"基类"),Description("模型")]
         public string ModelBase
         {
-            get
-            {
-                return _modelBase;
-            }
+            get => _modelBase;
             set
             {
                 if(_modelBase == value)
                     return;
                 BeforePropertyChanged(nameof(ModelBase), _modelBase,value);
-                _modelBase = value;
+                _modelBase = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(ModelBase));
             }
         }
@@ -302,10 +300,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据模型"),DisplayName(@"数据版本"),Description("数据版本")]
         public int DataVersion
         {
-            get
-            {
-                return _dataVersion;
-            }
+            get => _dataVersion;
             set
             {
                 if(_dataVersion == value)
@@ -332,10 +327,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据模型"),DisplayName(@"内部数据"),Description("服务器内部数据,即只在服务器内部使用")]
         public bool IsInternal
         {
-            get
-            {
-                return _isInternal;
-            }
+            get => _isInternal;
             set
             {
                 if(_isInternal == value)
@@ -362,10 +354,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据模型"),DisplayName(@"是否类"),Description("是否类，即无数据访问的对象")]
         public bool IsClass
         {
-            get
-            {
-                return _isClass;
-            }
+            get => _isClass;
             set
             {
                 if(_isClass == value)
@@ -392,49 +381,14 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据模型"),DisplayName(@"继承的接口集合"),Description("说明")]
         public string Interfaces
         {
-            get
-            {
-                return _interfaces;
-            }
+            get => _interfaces;
             set
             {
                 if(_interfaces == value)
                     return;
                 BeforePropertyChanged(nameof(Interfaces), _interfaces,value);
-                _interfaces = value;
+                _interfaces = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Interfaces));
-            }
-        } 
-        #endregion 
-        #region 项目管理
-
-        /// <summary>
-        /// 上级项目
-        /// </summary>
-        [IgnoreDataMember,JsonIgnore]
-        internal ProjectConfig _parent;
-
-        /// <summary>
-        /// 上级项目
-        /// </summary>
-        /// <remark>
-        /// 上级项目
-        /// </remark>
-        [IgnoreDataMember,JsonIgnore]
-        [Category(@"项目管理"),DisplayName(@"上级项目"),Description("上级项目")]
-        public ProjectConfig Parent
-        {
-            get
-            {
-                return _parent;
-            }
-            set
-            {
-                if(_parent == value)
-                    return;
-                BeforePropertyChanged(nameof(Parent), _parent,value);
-                _parent = value;
-                OnPropertyChanged(nameof(Parent));
             }
         } 
         #endregion 
@@ -534,10 +488,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"设计器支持"),DisplayName(@"列序号起始值"),Description("列序号起始值")]
         public int ColumnIndexStart
         {
-            get
-            {
-                return _columnIndexStart;
-            }
+            get => _columnIndexStart;
             set
             {
                 if(_columnIndexStart == value)
@@ -548,40 +499,6 @@ namespace Agebull.EntityModel.Config
             }
         }
 
-        /// <summary>
-        /// 项目的说明文字
-        /// </summary>
-        const string Project_Description = @"存在于哪个项目,用于键盘录入来改变项目归属";
-
-        /// <summary>
-        /// 项目
-        /// </summary>
-        [DataMember,JsonProperty("_project", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _project;
-
-        /// <summary>
-        /// 项目
-        /// </summary>
-        /// <remark>
-        /// 存在于哪个项目,用于键盘录入来改变项目归属
-        /// </remark>
-        [IgnoreDataMember,JsonIgnore]
-        [Category(@"设计器支持"),DisplayName(@"项目"),Description(Project_Description)]
-        public string Project
-        {
-            get
-            {
-                return _project;
-            }
-            set
-            {
-                if(_project == value)
-                    return;
-                BeforePropertyChanged(nameof(Project), _project,value);
-                _project = value;
-                OnPropertyChanged(nameof(Project));
-            }
-        }
 
         /// <summary>
         /// 名称
@@ -659,10 +576,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"设计器支持"),DisplayName(@"不同版本读数据的代码"),Description("不同版本读数据的代码")]
         public Dictionary<int,string> ReadCoreCodes
         {
-            get
-            {
-                return _readCoreCodes;
-            }
+            get => _readCoreCodes;
             set
             {
                 if(_readCoreCodes == value)
@@ -689,10 +603,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"设计器支持"),DisplayName(@"接口定义"),Description("作为系统的接口的定义")]
         public bool IsInterface
         {
-            get
-            {
-                return _isInterface;
-            }
+            get => _isInterface;
             set
             {
                 if(_isInterface == value)
@@ -777,16 +688,15 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"),DisplayName(@"存储表名(设计录入)"),Description(ReadTableName_Description)]
         public string ReadTableName
         {
-            get
-            {
-                return _readTableName;
-            }
+            get => WorkContext.InCoderGenerating ? (_readTableName ?? SaveTableName) : _readTableName;
             set
             {
-                if(_readTableName == value)
+                if (_readTableName == value)
                     return;
+                if (SaveTableName == value)
+                    value = null;
                 BeforePropertyChanged(nameof(ReadTableName), _readTableName,value);
-                _readTableName = value;
+                _readTableName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(ReadTableName));
             }
         }
@@ -807,16 +717,15 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"),DisplayName(@"存储表名"),Description("存储表名")]
         public string SaveTableName
         {
-            get
-            {
-                return _saveTableName;
-            }
+            get => WorkContext.InCoderGenerating ? (_saveTableName ?? Name) : _saveTableName;
             set
             {
                 if(_saveTableName == value)
                     return;
+                if (Name == value)
+                    value = null;
                 BeforePropertyChanged(nameof(SaveTableName), _saveTableName,value);
-                _saveTableName = value;
+                _saveTableName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(SaveTableName));
             }
         }
@@ -837,10 +746,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"),DisplayName(@"数据库编号"),Description("数据库编号")]
         public int DbIndex
         {
-            get
-            {
-                return _dbIndex;
-            }
+            get => _dbIndex;
             set
             {
                 if(_dbIndex == value)
@@ -867,10 +773,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"),DisplayName(@"按修改更新"),Description("按修改更新")]
         public bool UpdateByModified
         {
-            get
-            {
-                return _updateByModified;
-            }
+            get => _updateByModified;
             set
             {
                 if(_updateByModified == value)
@@ -899,16 +802,13 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"),DisplayName(@"页面文件夹名称"),Description("页面文件夹名称")]
         public string PageFolder
         {
-            get
-            {
-                return _pageFolder;
-            }
+            get => _pageFolder;
             set
             {
                 if(_pageFolder == value)
                     return;
                 BeforePropertyChanged(nameof(PageFolder), _pageFolder,value);
-                _pageFolder = value;
+                _pageFolder = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(PageFolder));
             }
         }
@@ -929,10 +829,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"),DisplayName(@"树形界面"),Description("树形界面")]
         public bool TreeUi
         {
-            get
-            {
-                return _treeUi;
-            }
+            get => _treeUi;
             set
             {
                 if(_treeUi == value)
@@ -959,10 +856,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"),DisplayName(@"编辑页面最大化"),Description("编辑页面最大化")]
         public bool MaxForm
         {
-            get
-            {
-                return _maxForm;
-            }
+            get => _maxForm;
             set
             {
                 if(_maxForm == value)
@@ -989,10 +883,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"),DisplayName(@"编辑页面分几列"),Description("编辑页面分几列")]
         public int FormCloumn
         {
-            get
-            {
-                return _formCloumn;
-            }
+            get => _formCloumn;
             set
             {
                 if(_formCloumn == value)
@@ -1019,10 +910,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"),DisplayName(@"列表详细页"),Description("列表详细页")]
         public bool ListDetails
         {
-            get
-            {
-                return _listDetails;
-            }
+            get => _listDetails;
             set
             {
                 if(_listDetails == value)
@@ -1049,10 +937,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"),DisplayName(@"主键正序"),Description("主键正序")]
         public bool NoSort
         {
-            get
-            {
-                return _noSort;
-            }
+            get => _noSort;
             set
             {
                 if(_noSort == value)
@@ -1079,10 +964,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"),DisplayName(@"主页面类型"),Description("主页面类型")]
         public PanelType PanelType
         {
-            get
-            {
-                return _panelType;
-            }
+            get => _panelType;
             set
             {
                 if(_panelType == value)
@@ -1111,16 +993,15 @@ namespace Agebull.EntityModel.Config
         [Category(@"C++"),DisplayName(@"C++名称"),Description("C++字段名称")]
         public string CppName
         {
-            get
-            {
-                return _cppName;
-            }
+            get => WorkContext.InCoderGenerating ? (_cppName ?? Name) : _cppName;
             set
             {
-                if(_cppName == value)
+                if (_cppName == value)
                     return;
+                if (Name == value)
+                    value = null;
                 BeforePropertyChanged(nameof(CppName), _cppName,value);
-                _cppName = value;
+                _cppName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(CppName));
             }
         } 

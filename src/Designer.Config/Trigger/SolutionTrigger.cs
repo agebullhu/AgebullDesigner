@@ -13,7 +13,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         protected override void OnLoad()
         {
-            using (LoadingModeScope.CreateScope())
+            using (WorkModelScope.CreateScope(WorkModel.Repair))
             {
                 SolutionModel model = new SolutionModel
                 {
@@ -24,21 +24,16 @@ namespace Agebull.EntityModel.Designer
                 model.ResetStatus();
                 model.OnSolutionLoad();
 
-                TargetConfig.Projects.CollectionChanged += ConfigCollectionChanged;
-                TargetConfig.Enums.CollectionChanged += ConfigCollectionChanged;
-                TargetConfig.ApiItems.CollectionChanged += ConfigCollectionChanged;
-                TargetConfig.NotifyItems.CollectionChanged += ConfigCollectionChanged;
-                TargetConfig.Entities.CollectionChanged += EntitiesCollectionChanged;
+                TargetConfig.ProjectList.CollectionChanged += ConfigCollectionChanged;
+                TargetConfig.EnumList.CollectionChanged += ConfigCollectionChanged;
+                TargetConfig.ApiList.CollectionChanged += ConfigCollectionChanged;
+                TargetConfig.EntityList.CollectionChanged += EntitiesCollectionChanged;
 
                 foreach (var cfg in TargetConfig.Enums)
                 {
                     GlobalTrigger.OnLoad(cfg);
                 }
                 foreach (var cfg in TargetConfig.ApiItems)
-                {
-                    GlobalTrigger.OnLoad(cfg);
-                }
-                foreach (var cfg in TargetConfig.NotifyItems)
                 {
                     GlobalTrigger.OnLoad(cfg);
                 }
@@ -54,19 +49,16 @@ namespace Agebull.EntityModel.Designer
             switch (property)
             {
                 case nameof(TargetConfig.Entities):
-                    TargetConfig.Entities.CollectionChanged += EntitiesCollectionChanged;
+                    TargetConfig.EntityList.CollectionChanged += EntitiesCollectionChanged;
                     break;
                 case nameof(TargetConfig.Projects):
-                    TargetConfig.Projects.CollectionChanged += ConfigCollectionChanged;
-                    break;
-                case nameof(TargetConfig.NotifyItems):
-                    TargetConfig.NotifyItems.CollectionChanged += ConfigCollectionChanged;
+                    TargetConfig.ProjectList.CollectionChanged += ConfigCollectionChanged;
                     break;
                 case nameof(TargetConfig.ApiItems):
-                    TargetConfig.ApiItems.CollectionChanged += ConfigCollectionChanged;
+                    TargetConfig.ApiList.CollectionChanged += ConfigCollectionChanged;
                     break;
                 case nameof(TargetConfig.Enums):
-                    TargetConfig.Enums.CollectionChanged += ConfigCollectionChanged;
+                    TargetConfig.EnumList.CollectionChanged += ConfigCollectionChanged;
                     break;
             }
         }
@@ -86,10 +78,6 @@ namespace Agebull.EntityModel.Designer
                         ((INotifyCollectionChanged)oldValue).CollectionChanged -= EntitiesCollectionChanged;
                     break;
                 case nameof(TargetConfig.Projects):
-                    if (oldValue != null)
-                        ((INotifyCollectionChanged)oldValue).CollectionChanged -= ConfigCollectionChanged;
-                    break;
-                case nameof(TargetConfig.NotifyItems):
                     if (oldValue != null)
                         ((INotifyCollectionChanged)oldValue).CollectionChanged -= ConfigCollectionChanged;
                     break;
@@ -135,10 +123,7 @@ namespace Agebull.EntityModel.Designer
             {
                 foreach (var item in TargetConfig.Entities)
                 {
-                    if (item.Parent.Entities.Contains(item))
-                    {
-                        item.Parent.Entities.Remove(item);
-                    }
+                    item.Parent.Remove(item);
                     GlobalTrigger.OnRemoved(TargetConfig, item);
                 }
                 foreach (var item in TargetConfig.Entities)
@@ -156,10 +141,7 @@ namespace Agebull.EntityModel.Designer
                 return;
             foreach (EntityConfig item in e.OldItems)
             {
-                if (item.Parent.Entities.Contains(item))
-                {
-                    item.Parent.Entities.Remove(item);
-                }
+                item.Parent.Remove(item);
                 GlobalTrigger.OnRemoved(TargetConfig, item);
             }
         }

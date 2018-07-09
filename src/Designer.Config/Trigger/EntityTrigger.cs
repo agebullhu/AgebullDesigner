@@ -26,14 +26,6 @@ namespace Agebull.EntityModel.Designer
             TargetConfig.Properties.CollectionChanged += OnPropertiesCollectionChanged;
         }
 
-        /// <summary>
-        /// 载入事件处理
-        /// </summary>
-        protected override void OnCreate()
-        {
-            if (!SolutionConfig.Current.Entities.Contains(TargetConfig))
-                SolutionConfig.Current.Entities.Add(TargetConfig);
-        }
 
         /// <summary>
         /// 属性事件处理
@@ -132,7 +124,7 @@ namespace Agebull.EntityModel.Designer
         private static bool _inPropertiesCollectionChanged;
         private static void OnPropertiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (NotificationObject.IsLoadingMode || _inPropertiesCollectionChanged)
+            if (WorkContext.IsNoChangedNotify || _inPropertiesCollectionChanged)
                 return;
             var entity = sender as EntityConfig;
             if (entity == null)
@@ -185,13 +177,12 @@ namespace Agebull.EntityModel.Designer
 
         private void CheckEntityProject()
         {
-            if (NotificationObject.IsLoadingMode)
+            if (WorkContext.IsNoChangedNotify)
             {
                 return;
             }
             EntityConfig entity = TargetConfig;
-            if (entity.Parent != null && entity.Parent.Entities.Contains(entity))
-                entity.Parent.Entities.Remove(entity);
+            entity.Parent?.Remove(entity);
             if (string.IsNullOrWhiteSpace(entity.Project))
             {
                 entity.Project = "默认";
@@ -200,35 +191,24 @@ namespace Agebull.EntityModel.Designer
                 p => string.Equals(p.Name, entity.Project, StringComparison.OrdinalIgnoreCase));
             if (project == null)
             {
-                var friend = SolutionConfig.Current.Projects[0];
-                SolutionConfig.Current.Projects.Add(project = new ProjectConfig
+                var friend = SolutionConfig.Current.ProjectList[0];
+                SolutionConfig.Current.Add(project = new ProjectConfig
                 {
                     Name = entity.Project,
                     Caption = entity.Project,
                     ModelPath = friend.ModelPath,
                     PagePath = friend.PagePath,
-                    DataBaseObjectName = friend.DataBaseObjectName,
-                    Entities = new ConfigCollection<EntityConfig>
-                    {
-                        entity
-                    }
+                    DataBaseObjectName = friend.DataBaseObjectName
                 });
-                entity.Parent = project;
-                return;
             }
-            entity.Parent = project;
-            if (project.Entities == null)
-                project.Entities = new ConfigCollection<EntityConfig>();
-            if (!project.Entities.Contains(entity))
-            {
-                project.Entities.Add(entity);
-            }
+
+            project.Add(entity);
         }
 
 
         private static void OnFieldStatusChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (NotificationObject.IsLoadingMode)
+            if (WorkContext.IsNoChangedNotify)
             {
                 return;
             }

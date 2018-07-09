@@ -358,65 +358,14 @@ namespace Agebull.EntityModel.Config
         {
             base.GetLuaStruct(code);
             int idx;
-            if (!string.IsNullOrWhiteSpace(FileName))
-                code.AppendLine($@"['FileName'] = '{FileName.ToLuaString()}',");
+            if (!string.IsNullOrWhiteSpace(SaveFileName))
+                code.AppendLine($@"['FileName'] = '{SaveFileName.ToLuaString()}',");
             else
                 code.AppendLine($@"['FileName'] = nil,");
 
         }
     }
 
-    partial class NotifyItem
-    {
-        /// <summary>
-        /// LUA结构支持
-        /// </summary>
-        /// <returns></returns>
-        public override void GetLuaStruct(StringBuilder code)
-        {
-            base.GetLuaStruct(code);
-            int idx;
-            if (!string.IsNullOrWhiteSpace(Friend))
-                code.AppendLine($@"['Friend'] = '{Friend.ToLuaString()}',");
-            else
-                code.AppendLine($@"['Friend'] = nil,");
-
-            code.AppendLine($@"['FriendKey'] ='{FriendKey}',");
-
-            code.AppendLine($@"['LocalCommand'] ={(LocalCommand.ToString().ToLower())},");
-
-            if (!string.IsNullOrWhiteSpace(CommandId))
-                code.AppendLine($@"['CommandId'] = '{CommandId.ToLuaString()}',");
-            else
-                code.AppendLine($@"['CommandId'] = nil,");
-
-            if (!string.IsNullOrWhiteSpace(NotifyEntity))
-                code.AppendLine($@"['NotifyEntity'] = '{NotifyEntity.ToLuaString()}',");
-            else
-                code.AppendLine($@"['NotifyEntity'] = nil,");
-
-            if (!string.IsNullOrWhiteSpace(ClientEntity))
-                code.AppendLine($@"['ClientEntity'] = '{ClientEntity.ToLuaString()}',");
-            else
-                code.AppendLine($@"['ClientEntity'] = nil,");
-
-            code.AppendLine($@"['IsCommandResult'] ={(IsCommandResult.ToString().ToLower())},");
-
-            code.AppendLine($@"['IsMulit'] ={(IsMulit.ToString().ToLower())},");
-
-            if (!string.IsNullOrWhiteSpace(Org))
-                code.AppendLine($@"['Org'] = '{Org.ToLuaString()}',");
-            else
-                code.AppendLine($@"['Org'] = nil,");
-
-            if (EsEntity != null)
-                code.AppendLine($@"['EsEntity'] = {EsEntity.GetLuaStruct()},");
-
-            if (LocalEntity != null)
-                code.AppendLine($@"['LocalEntity'] = {LocalEntity.GetLuaStruct()},");
-
-        }
-    }
 
     partial class ParentConfigBase
     {
@@ -841,15 +790,6 @@ namespace Agebull.EntityModel.Config
             }
             code.AppendLine("},");
 
-            idx = 0;
-            code.AppendLine("['TypedefItems'] ={");
-            foreach (var val in TypedefItems)
-            {
-                if (idx++ > 0)
-                    code.Append(',');
-                code.AppendLine($@"{val.GetLuaStruct()}");
-            }
-            code.AppendLine("},");
 
             idx = 0;
             code.AppendLine("['Entities'] ={");
@@ -877,16 +817,6 @@ namespace Agebull.EntityModel.Config
             idx = 0;
             code.AppendLine("['ApiItems'] ={");
             foreach (var val in ApiItems)
-            {
-                if (idx++ > 0)
-                    code.Append(',');
-                code.AppendLine($@"{val.GetLuaStruct()}");
-            }
-            code.AppendLine("},");
-
-            idx = 0;
-            code.AppendLine("['NotifyItems'] ={");
-            foreach (var val in NotifyItems)
             {
                 if (idx++ > 0)
                     code.Append(',');
@@ -933,39 +863,6 @@ namespace Agebull.EntityModel.Config
                 code.AppendLine($@"['Condition'] = '{Condition.ToLuaString()}',");
             else
                 code.AppendLine($@"['Condition'] = nil,");
-
-        }
-    }
-
-    partial class TypedefItem
-    {
-        /// <summary>
-        /// LUA结构支持
-        /// </summary>
-        /// <returns></returns>
-        public override void GetLuaStruct(StringBuilder code)
-        {
-            base.GetLuaStruct(code);
-            int idx;
-            if (!string.IsNullOrWhiteSpace(KeyWork))
-                code.AppendLine($@"['KeyWork'] = '{KeyWork.ToLuaString()}',");
-            else
-                code.AppendLine($@"['KeyWork'] = nil,");
-
-            if (!string.IsNullOrWhiteSpace(ArrayLen))
-                code.AppendLine($@"['ArrayLen'] = '{ArrayLen.ToLuaString()}',");
-            else
-                code.AppendLine($@"['ArrayLen'] = nil,");
-
-            idx = 0;
-            code.AppendLine("['Items'] ={");
-            foreach (var val in Items.Values)
-            {
-                if (idx++ > 0)
-                    code.Append(',');
-                code.AppendLine($@"{val.GetLuaStruct()}");
-            }
-            code.AppendLine("},");
 
         }
     }

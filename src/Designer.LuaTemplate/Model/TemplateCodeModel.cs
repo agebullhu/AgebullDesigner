@@ -59,7 +59,7 @@ namespace Agebull.EntityModel.Designer
 
         public TemplateConfig CurrentTemplateConfig
         {
-            get { return _currentTemplateConfig; }
+            get => _currentTemplateConfig;
             set
             {
                 if (_currentTemplateConfig == value)
@@ -82,7 +82,7 @@ namespace Agebull.EntityModel.Designer
         /// 
         public string Classify
         {
-            get { return _classify; }
+            get => _classify;
             set
             {
                 if (_classify == value)
@@ -96,7 +96,7 @@ namespace Agebull.EntityModel.Designer
 
         public string ExtendCode
         {
-            get { return _extendCode; }
+            get => _extendCode;
             set
             {
                 if (Equals(_extendCode, value))
@@ -116,50 +116,50 @@ namespace Agebull.EntityModel.Designer
         /// 生成命令对象
         /// </summary>
         /// <param name="commands"></param>
-        protected override void CreateCommands(List<CommandItem> commands)
+        protected override void CreateCommands(ObservableCollection<CommandItem> commands)
         {
             commands.AddRange(new []
             {
                 new CommandItem
                 {
                     Command = new DelegateCommand(CreateNew),
-                    Name = "新增模板",
+                    Caption = "新增模板",
                     Image = Application.Current.Resources["img_add"] as ImageSource
                 },
                 new CommandItem
                 {
                     Command = new DelegateCommand(SaveTemplate),
-                    Name = "代码解析",
+                    Caption = "代码解析",
                     Image = Application.Current.Resources["img_save"] as ImageSource
                 },
                 new CommandItem
                 {
                     Command = new DelegateCommand(CheckTemplate),
-                    Name = "代码检查",
+                    Caption = "代码检查",
                     Image = Application.Current.Resources["img_flush"] as ImageSource
                 },
                 new CommandItem
                 {
                     Command = new DelegateCommand(DeleteTemplate),
-                    Name = "删除模板",
+                    Caption = "删除模板",
                     Image = Application.Current.Resources["img_del"] as ImageSource
                 },
                 new CommandItem
                 {
                     Command = new AsyncCommand<TemplateConfig, string>(RunLuaPrepare, RunLua, RunLuaEnd),
-                    Name = "生成代码",
+                    Caption = "生成代码",
                     Image = Application.Current.Resources["img_code"] as ImageSource
                 },
                 new CommandItem
                 {
                     Command = new DelegateCommand(()=>Clipboard.SetText(ExtendCode ?? "")),
-                    Name = "复制代码",
+                    Caption = "复制代码",
                     Image = Application.Current.Resources["img_file"] as ImageSource
                 },
                 new CommandItem
                 {
                     Command = new DelegateCommand(LoadTemplates),
-                    Name = "重新载入",
+                    Caption = "重新载入",
                     Image = Application.Current.Resources["img_flush"] as ImageSource
                 }
             });
@@ -430,7 +430,7 @@ namespace Agebull.EntityModel.Designer
 
         public int TabIndex
         {
-            get { return _tabIndex; }
+            get => _tabIndex;
             set
             {
                 if (_tabIndex == value)
@@ -582,7 +582,7 @@ namespace Agebull.EntityModel.Designer
 
         public string CurrentTemplate
         {
-            get { return Editor?.Text; }
+            get => Editor?.Text;
             set
             {
                 if (Editor != null)
@@ -609,7 +609,7 @@ namespace Agebull.EntityModel.Designer
         public string CurrentLua
         {
 
-            get { return LuaEditor?.Text; }
+            get => LuaEditor?.Text;
             set
             {
                 if (LuaEditor != null)
@@ -632,7 +632,7 @@ namespace Agebull.EntityModel.Designer
 
         private object SelectObject
         {
-            set { PropertyGrid.SelectedObject = value; }
+            set => PropertyGrid.SelectedObject = value;
         }
         protected PropertyGrid PropertyGrid;
         public DependencyAction PropertyGridBehavior => new DependencyAction

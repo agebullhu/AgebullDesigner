@@ -19,31 +19,33 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
+            //if (SolutionConfig.Current.SolutionType != SolutionType.Cpp)
+            //    return;
             commands.Add(new CommandItemBuilder
             {
                 Signle = true,
                 NoButton = true,
                 Command = new DelegateCommand(CheckDouble),
-                Name = "修复数据精度",
-                Catalog = "C++字段",
+                Caption = "修复数据精度",
+                Editor = "C++字段",
                 IconName = "tree_item"
             });
             commands.Add(new CommandItemBuilder
             {
                 Signle = true,
                 NoButton = true,
-                Catalog = "C++字段",
+                Editor = "C++字段",
                 Command = new DelegateCommand(RepairByArrayLen),
-                Name = "修复文本长度",
+                Caption = "修复文本长度",
                 IconName = "tree_item"
             });
             commands.Add(new CommandItemBuilder
             {
                 Command = new DelegateCommand(RepairRegular),
-                Name = "C++引用修复",
+                Caption = "C++引用修复",
                 Signle = true,
                 NoButton = true,
-                Catalog = "C++字段",
+                Editor = "C++字段",
                 IconName = "tree_item"
             });
         }

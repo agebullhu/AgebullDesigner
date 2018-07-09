@@ -21,6 +21,8 @@ namespace Agebull.Common.Config.Designer
         {
             Name = "规范实体主键";
             Caption = "规范实体主键";
+            Catalog = "工具";
+            ViewModel = "database";
             NoButton = true;
         }
 
@@ -62,7 +64,7 @@ namespace Agebull.Common.Config.Designer
             }
             Debug.WriteLine($@"ALTER TABLE dbo.{entity.SaveTableName} ADD [number_id] int NOT NULL IDENTITY (1, 1);");
             Debug.WriteLine("GO");
-            entity.Properties.Add(new PropertyConfig
+            entity.Add(new PropertyConfig
             {
                 Name = "NumberId",
                 Caption = "数字ID",

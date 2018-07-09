@@ -8,7 +8,7 @@
              xmlns:defaults="clr-namespace:Agebull.EntityModel.Config;assembly=Agebull.Common.Config.Helper"
              xmlns:mysql1="clr-namespace:Agebull.EntityModel.Config.Mysql;assembly=Agebull.Common.Config.Helper"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="1018.434">
 
     <DockPanel Margin="0" Background="White">
         <WrapPanel DockPanel.Dock="Top" DataContext="{Binding Context.SelectEntity}">

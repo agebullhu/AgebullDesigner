@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Forms;
@@ -43,7 +42,7 @@ namespace Agebull.EntityModel.Designer
             ConfigWriter writer = new ConfigWriter
             {
                 Solution = Context.Solution,
-                Directory = Path.GetDirectoryName(Context.Solution.FileName)
+                Directory = Path.GetDirectoryName(Context.Solution.SaveFileName)
             };
             if (Context.SelectProject != null)
             {
@@ -131,10 +130,8 @@ namespace Agebull.EntityModel.Designer
         {
             Context.StateMessage = "正在载入...";
             LoadFile(sluFile);
-            using (LoadingModeScope.CreateScope())
-                Model.Tree.CreateTree();
             Context.StateMessage = "载入成功";
-            Model.FirstSelect();
+            Model.OnSolutionChanged();
         }
 
         private void LoadFile(string sluFile)
@@ -160,8 +157,7 @@ namespace Agebull.EntityModel.Designer
             SolutionConfig.SetCurrentSolution(Context.Solution = new SolutionConfig
             {
                 Name = Path.GetFileNameWithoutExtension(sfd.FileName),
-                Caption = Path.GetFileNameWithoutExtension(sfd.FileName),
-                Entities = new ObservableCollection<EntityConfig>()
+                Caption = Path.GetFileNameWithoutExtension(sfd.FileName)
             });
             Context.FileName = sfd.FileName;
             SaveSolution();

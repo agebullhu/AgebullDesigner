@@ -62,7 +62,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (repair)
                     foreach (var col in Entity.Properties)
-                        col.CppLastType = CppTypeHelper.CppLastType(col.CppType);
+                        col.CppLastType = CppTypeHelper2.CppLastType(col.CppType);
                 return;
             }
             RepairEsName(repair);

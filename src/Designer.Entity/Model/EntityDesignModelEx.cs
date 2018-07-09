@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using Agebull.Common.Mvvm;
@@ -15,21 +16,21 @@ namespace Agebull.EntityModel.Designer
         /// 构造命令列表
         /// </summary>
         /// <returns></returns>
-        protected override void CreateCommands(List<CommandItem> commands)
+        protected override void CreateCommands(ObservableCollection<CommandItem> commands)
         {
             commands.Add(new CommandItem
             {
                 Signle = true,
                 Command = new DelegateCommand(SortFieldByIndex),
                 Catalog = "字段",
-                Name = "按序号重排(无规则)",
+                Caption = "按序号重排(无规则)",
                 IconName = "tree_item"
             });
             commands.Add(new CommandItem
             {
                 Signle = true,
                 Command = new DelegateCommand(SortField),
-                Name = "按序号重排",
+                Caption = "按序号重排",
                 Catalog = "字段",
                 IconName = "img_filter"
             });
@@ -38,7 +39,7 @@ namespace Agebull.EntityModel.Designer
                 Signle = true,
                 NoButton = true,
                 Command = new DelegateCommand(SortByGroup),
-                Name = "按组重新排",
+                Caption = "按组重新排",
                 Catalog = "字段",
                 IconName = "img_filter"
             });
@@ -46,14 +47,14 @@ namespace Agebull.EntityModel.Designer
             {
                 Signle = true,
                 Command = new DelegateCommand(SplitTable),
-                Name = "拆分到新表",
+                Caption = "拆分到新表",
                 Catalog = "字段",
                 IconName = "img_add"
             });
             commands.Add(new CommandItem
             {
                 Command = new DelegateCommand(RepairRegular),
-                Name = "规则修复",
+                Caption = "规则修复",
                 Signle = true,
                 NoButton = true,
                 Catalog = "数据校验",
@@ -62,7 +63,7 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItem
             {
                 Command = new DelegateCommand(AddNewProperty),
-                Name = "新增字段",
+                Caption = "新增字段",
                 Signle = true,
                 NoButton = true,
                 Catalog = "字段",
@@ -71,7 +72,7 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItem
             {
                 Command = new DelegateCommand(AddFields),
-                Name = "新增多个字段",
+                Caption = "新增多个字段",
                 Signle = true,
                 NoButton = true,
                 Catalog = "字段",
@@ -80,7 +81,7 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItem
             {
                 Command = new DelegateCommand(CopyTable),
-                Name = "复制表",
+                Caption = "复制表",
                 Signle = true,
                 NoButton = true,
                 Catalog = "字段",
@@ -89,7 +90,7 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItem
             {
                 Command = new DelegateCommand(DeleteTable),
-                Name = "删除表",
+                Caption = "删除表",
                 Signle = true,
                 NoButton = true,
                 IconName = "img_del"
@@ -99,7 +100,7 @@ namespace Agebull.EntityModel.Designer
                 NoButton = true,
                 Catalog = "字段",
                 Command = new DelegateCommand(ToEnglish),
-                Name = "字段翻译",
+                Caption = "字段翻译",
                 IconName = "tree_item"
             });
         }
@@ -118,7 +119,7 @@ namespace Agebull.EntityModel.Designer
                 foreach (var entity in tables)
                 {
                     var model = new EntityBusinessModel { Entity = entity };
-                    model.ToEnglish();
+                    model.EnglishToChiness();
                 }
             }
             catch (Exception ex)
@@ -206,7 +207,7 @@ namespace Agebull.EntityModel.Designer
                 CsType = "string"
             };
             if (CommandIoc.NewConfigCommand("新增字段", config))
-                entity.Properties.Add(config);
+                entity.Add(config);
         }
 
         private bool CanAddRelation(PropertyConfig column)
@@ -247,14 +248,14 @@ namespace Agebull.EntityModel.Designer
             {
                 var kc = new PropertyConfig();
                 kc.CopyFrom(oldTable.PrimaryColumn);
-                newTable.Properties.Add(kc);
+                newTable.Add(kc);
             }
             foreach (var col in Context.SelectColumns.OfType<PropertyConfig>().ToArray())
             {
                 oldTable.Properties.Remove(col);
-                newTable.Properties.Add(col);
+                newTable.Add(col);
             }
-            Context.Entities.Add(newTable);
+            Context.SelectProject.Add(newTable);
             //Model.Tree.SetSelect(newTable);
             Context.SelectColumns = null;
         }
@@ -269,7 +270,7 @@ namespace Agebull.EntityModel.Designer
             {
                 return;
             }
-            Context.Entities.Remove(entity);
+            Context.SelectProject.Remove(entity);
             Context.SelectColumns = null;
         }
 

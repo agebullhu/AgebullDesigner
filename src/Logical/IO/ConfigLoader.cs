@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using Agebull.Common;
@@ -24,27 +23,27 @@ namespace Agebull.EntityModel.Designer
         public static SolutionConfig Load(string sluFile)
         {
             ConfigLoader loader = new ConfigLoader();
-            loader.LoadSolution(IOHelper.CheckPath(GlobalConfig.ProgramRoot, "Global"),"global.json",true);
+            loader.LoadSolution(IOHelper.CheckPath(GlobalConfig.ProgramRoot, "Global"), "global.json", true);
             GlobalConfig.GlobalSolution = loader._solution;
             if (string.IsNullOrEmpty(sluFile) ||
-                string.Equals( sluFile, GlobalConfig.GlobalSolution.FileName,StringComparison.OrdinalIgnoreCase))
+                string.Equals(sluFile, GlobalConfig.GlobalSolution.SaveFileName, StringComparison.OrdinalIgnoreCase))
                 return GlobalConfig.GlobalSolution;
             loader = new ConfigLoader();
-            loader.LoadSolution(Path.GetDirectoryName(sluFile), Path.GetFileName(sluFile),false);
+            loader.LoadSolution(Path.GetDirectoryName(sluFile), Path.GetFileName(sluFile), false);
 
             return loader._solution;
         }
 
-        private void LoadSolution(string directory,string file,bool isGlobal)
+        private void LoadSolution(string directory, string file, bool isGlobal)
         {
             var sluFile = Path.Combine(directory, file);
-            using (LoadingModeScope.CreateScope())
+            using (WorkModelScope.CreateScope(WorkModel.Loding))
             {
                 try
                 {
                     _solution = DeSerializer<SolutionConfig>(sluFile) ?? new SolutionConfig
                     {
-                        Name="GlobalConfig",
+                        Name = "GlobalConfig",
                         Caption = "全局配置",
                         Description = "全局配置"
                     };
@@ -54,15 +53,12 @@ namespace Agebull.EntityModel.Designer
                     Debug.WriteLine(exception);
                     _solution = new SolutionConfig();
                 }
+                SolutionConfig.SetCurrentSolution(_solution  );
                 _solution.IsGlobal = isGlobal;
-                _solution.FileName = sluFile;
+                _solution.SaveFileName = sluFile;
                 try
                 {
                     LoadProjects(directory);
-                    LoadTypedefs(directory);
-                    LoadEnums(directory);
-                    LoadApi(directory);
-                    LoadNotify(directory);
                 }
                 catch (Exception ex)
                 {
@@ -72,7 +68,7 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        private  void LoadProjects(string directory)
+        private void LoadProjects(string directory)
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             var path = Path.Combine(directory, "Projects");
@@ -82,58 +78,57 @@ namespace Agebull.EntityModel.Designer
                 ProjectConfig project = DeSerializer<ProjectConfig>(prjFile);
                 if (project.IsDelete)
                     continue;
-                project.Entities.Clear();
-                _solution.Projects.Add(project);
-                // ReSharper disable once AssignNullToNotNullAttribute
-                foreach (var entFile in IOHelper.GetAllFiles(Path.Combine(path, project.Name), "ent"))
-                {
-                    var entity = DeSerializer<EntityConfig>(entFile);
-                    if (entity.IsDelete)
-                        continue;
-                    foreach (var field in entity.Properties)
-                    {
-                        if (field.DbType != null)
-                            field.DbType = field.DbType.ToUpper();
-                    }
-                    project.Entities.Add(entity);
-                }
-                //_solution.ApiItems.AddRange(project.ApiItems);
-                //_solution.NotifyItems.AddRange(project.NotifyItems);
+                _solution.Add(project);
+                var dir = Path.Combine(path, project.Name);
+                LoadEntity(project, dir);
+                LoadEnums(project, dir);
+                LoadApi(project, dir);
             }
-        }
 
-        private  void LoadTypedefs(string directory)
-        {
-            // ReSharper disable once AssignNullToNotNullAttribute
-            string path = Path.Combine(directory, "Typedefs");
-            var typedefs = IOHelper.GetAllFiles(path, "typ");
-            foreach (var file in typedefs)
+            if (_solution.ProjectList.Count != 0) return;
+            _solution.Add(new ProjectConfig
             {
-                TypedefItem type = DeSerializer<TypedefItem>(file);
-                if (!type.IsDelete)
+                Name = _solution.Name,
+                Caption = _solution.Caption,
+                Description = _solution.Description,
+            });
+        }
+
+        private void LoadEntity(ProjectConfig project, string directory)
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            string path = Path.Combine(directory, "entities");
+            foreach (var entFile in IOHelper.GetAllFiles(path, "ent"))
+            {
+                var entity = DeSerializer<EntityConfig>(entFile);
+                if (entity.IsDelete)
+                    continue;
+                foreach (var field in entity.Properties)
                 {
-                    _solution.TypedefItems.Add(type);
+                    if (field.DbType != null)
+                        field.DbType = field.DbType.ToUpper();
                 }
+                project.Add(entity);
             }
         }
 
-        private  void LoadEnums(string directory)
+        private void LoadEnums(ProjectConfig project, string directory)
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            string path = Path.Combine(directory, "Enums");
+            string path = Path.Combine(directory, "enums");
             var enums = IOHelper.GetAllFiles(path, "enm");
             foreach (var file in enums)
             {
                 var type = DeSerializer<EnumConfig>(file);
-                type.FileName = file;
+                type.SaveFileName = file;
                 type.IsFreeze = true;
-                if (!type.IsDelete)
-                    _solution.Enums.Add(type);
+                if (type.IsDelete)
+                    continue;
+                project.Add(type);
             }
         }
 
-
-        private  void LoadApi(string directory)
+        private void LoadApi(ProjectConfig project,string directory)
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             string path = Path.Combine(directory, "apis");
@@ -141,28 +136,11 @@ namespace Agebull.EntityModel.Designer
             foreach (var file in apis)
             {
                 var api = DeSerializer<ApiItem>(file);
-                api.FileName = file;
+                api.SaveFileName = file;
                 api.IsFreeze = false;
                 if (api.IsDelete)
                     continue;
-                _solution.ApiItems.Add(api);
-                var par = _solution.Projects.FirstOrDefault(p => p.Name == api.Project);
-                par?.ApiItems.Add(api);
-            }
-        }
-
-        private  void LoadNotify(string directory)
-        {
-            // ReSharper disable once AssignNullToNotNullAttribute
-            string path = Path.Combine(directory, "notifies");
-            var notifies = IOHelper.GetAllFiles(path, "ent");
-            foreach (var file in notifies)
-            {
-                var notify = DeSerializer<NotifyItem>(file);
-                notify.FileName = file;
-                notify.IsFreeze = false;
-                if (!notify.IsDelete)
-                    _solution.NotifyItems.Add(notify);
+                project.Add(api);
             }
         }
 
@@ -193,13 +171,13 @@ namespace Agebull.EntityModel.Designer
                 TConfig config;
                 if (args[0] != '<')
                 {
-                    config= JsonConvert.DeserializeObject<TConfig>(args);
+                    config = JsonConvert.DeserializeObject<TConfig>(args);
                 }
                 else using (var pteam = File.OpenRead(file))
-                {
-                    config = (TConfig)new DataContractSerializer(typeof(TConfig)).ReadObject(pteam);
-                }
-                config.FileName = file;
+                    {
+                        config = (TConfig)new DataContractSerializer(typeof(TConfig)).ReadObject(pteam);
+                    }
+                config.SaveFileName = file;
                 return config;
             }
             catch (Exception e)

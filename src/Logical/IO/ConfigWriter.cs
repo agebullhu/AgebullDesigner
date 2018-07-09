@@ -29,7 +29,7 @@ namespace Agebull.EntityModel.Designer
             }
             else
             {
-                solution.FileName = filename;
+                solution.SaveFileName = filename;
                 SaveSolution(solution, Path.GetDirectoryName(filename));
             }
         }
@@ -41,7 +41,7 @@ namespace Agebull.EntityModel.Designer
         {
             var global = Path.GetDirectoryName(Path.GetDirectoryName(typeof(ConfigWriter).Assembly.Location));
             var directory = IOHelper.CheckPath(global, "Global");
-            GlobalConfig.GlobalSolution.FileName = Path.Combine(directory, "global.json");
+            GlobalConfig.GlobalSolution.SaveFileName = Path.Combine(directory, "global.json");
             SaveSolution(GlobalConfig.GlobalSolution, directory);
         }
         /// <summary>
@@ -64,14 +64,12 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         private void SaveSolution()
         {
-            using (LoadingModeScope.CreateScope())
+            using (WorkModelScope.CreateScope(WorkModel.Saving))
             {
                 SaveProjects();
-                SaveTypedefs();
                 SaveEnums();
                 SaveApies();
-                SaveNotifies();
-                Serializer(Solution.FileName, Solution);
+                Serializer(Solution.SaveFileName, Solution);
             }
             //VersionControlItem.Current.TfsCheckIn();
         }
@@ -84,14 +82,6 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        private void SaveTypedefs()
-        {
-            var path = IOHelper.CheckPath(Directory, "Typedefs");
-            foreach (var type in Solution.TypedefItems.ToArray())
-            {
-                SaveTypedef(type, path);
-            }
-        }
 
         private void SaveEnums()
         {
@@ -102,17 +92,6 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        /// <summary>
-        /// 保存通知对象
-        /// </summary>
-        public void SaveNotifies()
-        {
-            string path = IOHelper.CheckPath(Directory, "notifies");
-            foreach (var notify in Solution.NotifyItems.ToArray())
-            {
-                Save(notify, path, ".ent");
-            }
-        }
         /// <summary>
         /// 保存API对象
         /// </summary>
@@ -131,7 +110,7 @@ namespace Agebull.EntityModel.Designer
         /// <param name="config">对象</param>
         /// <param name="fileName">保存路径</param>
         /// <returns>是否可以保存</returns>
-        private bool CheckCanSave(FileConfigBase config, string fileName)
+        public bool CheckCanSave(FileConfigBase config, string fileName)
         {
             if (!File.Exists(fileName))
                 return true;
@@ -142,25 +121,25 @@ namespace Agebull.EntityModel.Designer
             return !(config.Discard && config.OriginalState.HasFlag(ConfigStateType.IsDiscard));
         }
 
-        private static void DeleteOldFile(FileConfigBase config, string fileName, bool haseChild)
+        public static void DeleteOldFile(FileConfigBase config, string fileName, bool haseChild)
         {
-            if (config.FileName == null || string.Equals(config.FileName, fileName, StringComparison.OrdinalIgnoreCase))
+            if (config.SaveFileName == null || string.Equals(config.SaveFileName, fileName, StringComparison.OrdinalIgnoreCase))
                 return;
-            File.Delete(config.FileName);
+            File.Delete(config.SaveFileName);
             if (haseChild)
-                IOHelper.DeleteDirectory(Path.Combine(config.FileName));
+                IOHelper.DeleteDirectory(Path.Combine(config.SaveFileName));
         }
 
         private void SaveEnum(EnumConfig type, string path, bool checkState = true)
         {
-            var filename = Path.Combine(path, type.Name + ".enm");
+            var filename = Path.Combine(path, type.GetFileName(".enm"));
             if (checkState && !CheckCanSave(type, filename))
                 return;
             DeleteOldFile(type, filename, false);
 
             if (type.IsDelete)
             {
-                Solution.Enums.Remove(type);
+                type.Parent.Remove(type);
             }
             else
             {
@@ -171,28 +150,6 @@ namespace Agebull.EntityModel.Designer
             }
             Serializer(filename, type);
         }
-
-        private void SaveTypedef(TypedefItem type, string path, bool checkState = true)
-        {
-            var filename = Path.Combine(path, type.Name + ".typ");
-            if (checkState && !CheckCanSave(type, filename))
-                return;
-            DeleteOldFile(type, filename, false);
-            if (type.IsDelete)
-            {
-                Solution.TypedefItems.Remove(type);
-            }
-            else
-            {
-                foreach (var field in type.Items.Where(p => p.Value.IsDelete).ToArray())
-                {
-                    type.Items.Remove(field.Key);
-                }
-            }
-            if (type.IsDelete)
-                Solution.TypedefItems.Remove(type);
-            Serializer(filename, type);
-        }
         /// <summary>
         /// 保存解决方案
         /// </summary>
@@ -200,7 +157,7 @@ namespace Agebull.EntityModel.Designer
         /// <param name="checkState"></param>
         public void SaveProject(ProjectConfig project, bool checkState = true)
         {
-            string filename = Path.Combine(Directory, "Projects", project.Name + ".prj");
+            string filename = Path.Combine(Directory, "Projects", project.GetFileName(".prj"));
             DeleteOldFile(project, filename, true);
 
             IOHelper.CheckPath(Directory, "Projects", project.Name);
@@ -211,7 +168,7 @@ namespace Agebull.EntityModel.Designer
 
             if (project.IsDelete)
             {
-                SolutionConfig.Current.Projects.Remove(project);
+                SolutionConfig.Current.ProjectList.Remove(project);
             }
             Serializer(filename, project);
         }
@@ -222,13 +179,13 @@ namespace Agebull.EntityModel.Designer
         /// <param name="checkState"></param>
         public void SaveEntity(EntityConfig entity, bool checkState = true)
         {
-            var filename = Path.Combine(Directory, "Projects", entity.Parent.Name, entity.Name + ".ent");
+            var filename = Path.Combine(Directory, "Projects", entity.Parent.Name, entity.GetFileName(".ent"));
             if (checkState && !CheckCanSave(entity, filename))
                 return;
             DeleteOldFile(entity, filename, false);
             if (entity.IsDelete)
             {
-                entity.Parent.Entities.Remove(entity);
+                entity.Parent.Remove(entity);
             }
             else
             {
@@ -267,10 +224,10 @@ namespace Agebull.EntityModel.Designer
         /// <param name="path"></param>
         /// <param name="ext"></param>
         /// <param name="checkState"></param>
-        private void Save<TConfig>(TConfig config, string path, string ext, bool checkState = true)
+        public void Save<TConfig>(TConfig config, string path, string ext, bool checkState = true)
             where TConfig : FileConfigBase
         {
-            var filename = Path.Combine(path, config.Name + ext);
+            var filename = Path.Combine(path, config.GetFileName(ext));
             if (checkState && !CheckCanSave(config, filename))
                 return;
             DeleteOldFile(config, filename, false);
@@ -291,7 +248,7 @@ namespace Agebull.EntityModel.Designer
             {
                 string json = JsonConvert.SerializeObject(config);
                 File.WriteAllText(filename, json, Encoding.UTF8);
-                config.FileName = filename;
+                config.SaveFileName = filename;
                 return true;
             }
             catch (Exception e)

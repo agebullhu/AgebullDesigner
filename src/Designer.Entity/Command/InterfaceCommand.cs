@@ -27,8 +27,8 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder
             {
                 Command = new DelegateCommand(ToIDataState),
-                Name = "实现状态数据(IStateData)接口",
-                //Catalog = "字段",
+                Caption = "实现状态数据(IStateData)接口",
+                Editor = "Entity",
                 Signle=false,
                 
                 NoButton = true,
@@ -37,50 +37,43 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder
             {
                 Command = new DelegateCommand(ToIHistory),
-                Name = "实现历史数据(IHistoryData)接口",
-                //Catalog = "字段",
-
-                Signle = false,
-
+                Caption = "实现历史数据(IHistoryData)接口",
+                Editor = "Entity",
+                Signle = true,
                 NoButton = true,
-                IconName ="img_link"
+                IconName = "img_link"
             });
             commands.Add(new CommandItemBuilder
             {
                 Command = new DelegateCommand(ToIAudit),
-                Name = "实现审核(IAudit)接口",
-                //Catalog = "字段",
-
-                Signle = false,
-
+                Caption = "实现审核(IAudit)接口",
+                Editor = "Entity",
+                Signle = true,
                 NoButton = true,
-                IconName ="img_link"
+                IconName = "img_link"
             });
             commands.Add(new CommandItemBuilder
             {
                 Command = new DelegateCommand(ToMemo),
-                Name = "添加备注(Memo)字段",
-                //Catalog = "字段",
-
-                Signle = false,
+                Caption = "添加备注(Memo)字段",
+                Editor = "Entity",
+                Signle = true,
                 NoButton = true,
-                IconName ="img_link"
+                IconName = "img_link"
             });
             commands.Add(new CommandItemBuilder
             {
                 Command = new DelegateCommand(ToSelfRelation),
-                Name = "添加上级关联(ParentId)字段",
-                //Catalog = "字段",
-
-                Signle = false,
-
+                Caption = "添加上级关联(ParentId)字段",
+                Editor = "Entity",
+                Signle = true,
                 NoButton = true,
-                IconName ="img_link"
+                IconName = "img_link"
             });
             //commands.Add(new CommandItemBuilder
             //{
             //    Command = new DelegateCommand(CheckIHistory),
-            //    Name = "规范历史信息(IHistoryData)",
+            //    Caption = "规范历史信息(IHistoryData)",
             //    Signle = false,
             //    NoButton = true,
             //    IconName ="img_link"
@@ -239,7 +232,7 @@ UpdatedBy	varchar(50)	Checked
                 if (pr == null)
                 {
                     pr = new PropertyConfig();
-                    _entity.Properties.Add(pr);
+                    _entity.Add(pr);
                 }
                 pr.CopyFrom(property);
                 if (pr.Index <= 0)
@@ -304,7 +297,7 @@ UpdatedBy	varchar(50)	Checked
 
         static EntityInterfaceSeter()
         {
-            using (LoadingModeScope.CreateScope())
+            using (WorkModelScope.CreateScope(WorkModel.Repair))
             {
                 _dataState = new PropertyConfig
                 {

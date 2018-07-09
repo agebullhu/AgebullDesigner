@@ -84,13 +84,20 @@ namespace Agebull.EntityModel
     public abstract class ViewModelBase<TModel> : ViewModelBase
             where TModel : ModelBase, new()
     {
+        private TModel _model;
+
         /// <summary>
         ///     模型
         /// </summary>
         public TModel Model
         {
-            get;
-            set;
+            get => _model;
+            set
+            {
+                _model = value;
+                if (value != null)
+                    value.ViewModel = this;
+            }
         }
 
 

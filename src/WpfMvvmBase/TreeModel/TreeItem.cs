@@ -125,7 +125,7 @@ namespace Agebull.EntityModel
             {
                 commands.Add(new CommandItem
                 {
-                    Name = "载入子级",
+                    Caption = "载入子级",
                     Image = Application.Current.Resources["async_Executing"] as BitmapImage,
                     Command = cmd
                 });
@@ -239,10 +239,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public bool HaseChilds
         {
-            get
-            {
-                return _haseChilds;
-            }
+            get => _haseChilds;
             set
             {
                 if (_haseChilds == value)
@@ -266,10 +263,7 @@ namespace Agebull.EntityModel
         [Browsable(false)]
         public Expression<Func<TModel, BitmapImage>> StatusExpression
         {
-            get
-            {
-                return _statusExpression;
-            }
+            get => _statusExpression;
             set
             {
                 _statusExpression = value;
@@ -288,10 +282,7 @@ namespace Agebull.EntityModel
         [Browsable(false)]
         public Expression<Func<TModel, Brush>> ColorExpression
         {
-            get
-            {
-                return _colorExpression;
-            }
+            get => _colorExpression;
             set
             {
                 _colorExpression = value;
@@ -312,10 +303,7 @@ namespace Agebull.EntityModel
         [Browsable(false)]
         public Func<TModel, string> HeaderExtendExpression
         {
-            get
-            {
-                return _headerExpression;
-            }
+            get => _headerExpression;
             set
             {
                 _headerExpression = value;

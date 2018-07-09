@@ -85,6 +85,7 @@
     <Compile Include="CommandItem\CommandItem.cs" />
     <Compile Include="Command\DelegateCommand.cs" />
     <Compile Include="Command\CommandInterface.cs" />
+    <Compile Include="Command\SimpleCommand.cs" />
     <Compile Include="Converts\BoolToVisibleConverter.cs" />
     <Compile Include="Converts\DateTimeConverter.cs" />
     <Compile Include="Converts\EnumConverter.cs" />

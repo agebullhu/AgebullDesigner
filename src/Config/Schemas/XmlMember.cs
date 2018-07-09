@@ -82,10 +82,7 @@ namespace Agebull.EntityModel.Designer.AssemblyAnalyzer
         /// </summary>
         public string Summary
         {
-            get
-            {
-                return _summary;
-            }
+            get => _summary;
             set
             {
                 if (string.IsNullOrEmpty(value))
@@ -102,10 +99,7 @@ namespace Agebull.EntityModel.Designer.AssemblyAnalyzer
         /// </summary>
         public string Remark
         {
-            get
-            {
-                return _remark;
-            }
+            get => _remark;
             set
             {
                 if (string.IsNullOrEmpty(value))

@@ -39,42 +39,41 @@ namespace Agebull.EntityModel.Designer
 
         private void InitDef()
         {
-            Source.PropertyChanged += OnModelPropertyChanged;
-            if (typeof(TModel).IsSubclassOf(typeof(ParentConfigBase)))
-            {
-                HeaderField = "Name,Caption,Abbreviation";
-                HeaderExtendExpression = m => $"{m.Caption}({m.Name})[{(m as ParentConfigBase).Abbreviation}]";
-            }
-            else
-            {
-                HeaderField = "Name,Caption";
-                HeaderExtendExpression = m => $"{m.Caption}({m.Name})";
-            }
+            HeaderField = "Name,Caption,Abbreviation";
+            HeaderExtendExpression = FormatTitle;
             StatusField = "IsReference,IsDelete,IsFreeze,Discard";
             StatusExpression = p => GetImage(p);
+            Source.PropertyChanged += OnModelPropertyChanged;
 
         }
 
-        /// <summary>
-        /// 构建命令列表
-        /// </summary>
-        protected override void CreateCommandList(List<CommandItem> commands)
+        private string FormatTitle(TModel m)
         {
-            commands.Add(new CommandItem
-            {
-                NoButton = true,
-                Parameter = this,
-                Name = "刷新",
-                Command = new DelegateCommand(ReBuildChild),
-                Image = Application.Current.Resources["img_flush"] as ImageSource
-            });
+            var pi = m as ParentConfigBase;
+            return pi?.Abbreviation == null
+                ? $"{m.Caption}({m.Name})"
+                : $"{m.Caption}({m.Name})[{pi.Abbreviation}]";
         }
 
         private void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             ModelPropertyChanged?.Invoke(this, e);
         }
-
+        protected override void CreateCommandList(List<CommandItem> commands)
+        {
+            var treeItem = Parent as TreeItem;
+            if (treeItem?.CreateChildFunc != null)
+                commands.Add(new CommandItem
+                {
+                    NoButton = true,
+                    Parameter = this,
+                    Caption = "刷新",
+                    Catalog = "视图",
+                    Command = new DelegateCommand(ReBuildChild),
+                    Image = Application.Current.Resources["img_flush"] as ImageSource
+                });
+            base.CreateCommandList(commands);
+        }
         public event EventHandler<PropertyChangedEventArgs> ModelPropertyChanged;
         /// <summary>
         /// 重新生成子级
@@ -83,7 +82,7 @@ namespace Agebull.EntityModel.Designer
         private void ReBuildChild()
         {
             var treeItem = Parent as TreeItem;
-            if (treeItem == null)
+            if (treeItem?.CreateChildFunc == null)
                 return;
             TreeItem item = treeItem.CreateChild(Source);
             Items.Clear();
@@ -169,6 +168,6 @@ namespace Agebull.EntityModel.Designer
         private static readonly BitmapImage imgDefault = Application.Current.Resources["img_no_modify"] as BitmapImage;
 
         #endregion
-        
+
     }
 }

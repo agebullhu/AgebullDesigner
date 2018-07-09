@@ -38,7 +38,7 @@ namespace Agebull.EntityModel.Designer.AssemblyAnalyzer
         ///  Ù–‘
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public Dictionary<string, PropertyConfig> Properties { get; set; } = new Dictionary<string, PropertyConfig>(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, PropertyUpgradeConfig> Properties { get; set; } = new Dictionary<string, PropertyUpgradeConfig>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// ª˘¿‡

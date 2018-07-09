@@ -31,7 +31,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public string Code
         {
-            get { return _code; }
+            get => _code;
             set
             {
                 if (_code == value)
@@ -47,7 +47,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public string SystemName
         {
-            get { return _systemName; }
+            get => _systemName;
             set
             {
                 if (_systemName == value)
@@ -59,13 +59,13 @@ namespace Agebull.EntityModel.Designer
 
         public ConfigCollection<NotifyItem> NotifyItems { get; } = new ConfigCollection<NotifyItem>();
 
-        private SolutionConfig _selectProjectConfig;
+        private ProjectConfig _selectProjectConfig;
         /// <summary>
         ///     当前配置
         /// </summary>
-        public SolutionConfig Solution
+        public ProjectConfig Project
         {
-            get { return _selectProjectConfig; }
+            get => _selectProjectConfig;
             set
             {
                 if (_selectProjectConfig == value)
@@ -73,7 +73,7 @@ namespace Agebull.EntityModel.Designer
                     return;
                 }
                 _selectProjectConfig = value;
-                RaisePropertyChanged(() => Solution);
+                RaisePropertyChanged(() => Project);
             }
         }
         #endregion
@@ -103,8 +103,8 @@ namespace Agebull.EntityModel.Designer
 
         public void End()
         {
-            Solution.NotifyItems.Clear();
-            Solution.NotifyItems.AddRange(NotifyItems);
+            CppProject.Instance.NotifyItems.Clear();
+            CppProject.Instance.NotifyItems.AddRange(NotifyItems);
             NotifyItems.Clear();
         }
 

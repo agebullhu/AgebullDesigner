@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.RobotCoder;
@@ -11,31 +12,41 @@ namespace Agebull.EntityModel.Designer
     public class ProjectCodeCommand : EntityCommandBase
     {
         private readonly Func<ProjectBuilder> _creater;
-        ProjectBuilder _builder;
+
+        private ProjectBuilder _builder;
+
         public ProjectCodeCommand(Func<ProjectBuilder> creater)
         {
             _creater = creater;
         }
-
+        bool noWriteFile;
+        /// <summary>
+        /// 能否执行的检查
+        /// </summary>
         public override bool CanDo(RuntimeArgument argument)
         {
+            if (string.IsNullOrWhiteSpace(SolutionConfig.Current.RootPath) || !Directory.Exists(SolutionConfig.Current.RootPath))
+            {
+                noWriteFile = true;
+                StateMessage = "解决方案根路径设置不正确,已禁用文件生成！";
+            }
             foreach (var project in argument.Projects)
             {
                 if (string.IsNullOrWhiteSpace(project.ModelPath))
                 {
-                    StateMessage = $"项目【{project}】的路径设置不正确！"; 
-                    return false;
+                    noWriteFile = true;
+                    StateMessage = $"项目【{project}】的路径设置不正确,已禁用文件生成！"; 
                 }
             }
             return true;
         }
 
-        public override void Prepare(RuntimeArgument argument)
-        {
-            _builder = _creater();
-            _builder.MessageSetter = MessageSetter;
-        }
 
+        /// <summary>
+        /// 单个检查
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public override bool Validate(EntityConfig entity)
         {
             return _builder.Validate(entity.Parent, entity);
@@ -62,6 +73,43 @@ namespace Agebull.EntityModel.Designer
             _builder.CreateProjectCode(project);
             StateMessage = project.Caption + "已完成";
             return true;
+        }
+
+        public override void Prepare(RuntimeArgument argument)
+        {
+            _builder = _creater();
+            _builder.MessageSetter = MessageSetter;
+        }
+        public Action<Dictionary<string, string>> OnCodeSuccess;
+        /// <summary>
+        /// 最后的处理（成功）
+        /// </summary>
+        public override void OnSuccees()
+        {
+            OnCodeSuccess?.Invoke(_codes);
+        }
+        IDisposable codeScope;
+        Dictionary<string, string> _codes;
+        /// <summary>
+        /// 处理前
+        /// </summary>
+        /// <param name="argument"></param>
+        /// <returns></returns>
+        public override bool BeginDo(RuntimeArgument argument)
+        {
+            codeScope = FileCodeScope.CreateScope(noWriteFile);
+            return true;
+        }
+
+        /// <summary>
+        /// 处理后
+        /// </summary>
+        /// <param name="argument"></param>
+        /// <returns></returns>
+        public override void EndDo(RuntimeArgument argument)
+        {
+            _codes = WorkContext.FileCodes;
+            codeScope.Dispose();
         }
     }
 }

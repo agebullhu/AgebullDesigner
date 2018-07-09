@@ -31,7 +31,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public ConfigBase Config
         {
-            get { return _config; }
+            get => _config;
             set
             {
                 if (_config == value)
@@ -55,19 +55,19 @@ namespace Agebull.EntityModel.Designer
                 new CommandItem
                 {
                     Command = new DelegateCommand(DoInitKey),
-                    Name = "更新标识",
+                    Caption = "更新标识",
                     Image = Application.Current.Resources["img_add"] as ImageSource
                 },
                 new CommandItem
                 {
                     Command = new DelegateCommand(DoCancel),
-                    Name = "取消",
+                    Caption = "取消",
                     Image = Application.Current.Resources["img_error"] as ImageSource
                 },
                 new CommandItem
                 {
                     Command = new DelegateCommand(DoClose),
-                    Name = "完成",
+                    Caption = "完成",
                     Image = Application.Current.Resources["imgSave"] as ImageSource
                 }
             };

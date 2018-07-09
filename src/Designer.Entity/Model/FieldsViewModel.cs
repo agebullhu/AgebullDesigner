@@ -14,13 +14,17 @@ namespace Agebull.EntityModel.Designer
 {
     internal class FieldsViewModel : ExtendViewModelBase<FieldsModel>
     {
+        public FieldsViewModel()
+        {
+            EditorName = "Fields";
+        }
         /// <summary>
         /// 主面板
         /// </summary>
         public override FrameworkElement Body { get; } = new FieldsPanel();
     }
 
-    internal class FieldsModel : EntityDesignModelEx
+    internal class FieldsModel : EntityDesignModel
     {
         #region 操作命令
 
@@ -34,7 +38,7 @@ namespace Agebull.EntityModel.Designer
                     {
                         Detect = Model
                     },
-                Name = "分析文本",
+                Caption = "分析文本",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             },
             new CommandItem
@@ -44,7 +48,7 @@ namespace Agebull.EntityModel.Designer
                     {
                         Detect = Model
                     },
-                Name = "格式化(类型 名称)",
+                Caption = "格式化(类型 名称)",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             },
             new CommandItem
@@ -54,7 +58,7 @@ namespace Agebull.EntityModel.Designer
                     {
                         Detect = Model
                     },
-                Name = "格式化(名称 类型 标题)",
+                Caption = "格式化(名称 类型 标题)",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             },
             new CommandItem
@@ -64,7 +68,7 @@ namespace Agebull.EntityModel.Designer
                     {
                         Detect = Model
                     },
-                Name = "格式化(MySql数据库)",
+                Caption = "格式化(MySql数据库)",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             },
             new CommandItem
@@ -74,13 +78,13 @@ namespace Agebull.EntityModel.Designer
                     {
                         Detect = Model
                     },
-                Name = "格式化(SqlServer数据库)",
+                Caption = "格式化(SqlServer数据库)",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             },
             new CommandItem
             {
                 Command = new DelegateCommand(DoClose),
-                Name = "接收字段",
+                Caption = "接收字段",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             }
         });
@@ -104,7 +108,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public string Fields
         {
-            get { return _fields; }
+            get => _fields;
             set
             {
                 if (_fields == value)

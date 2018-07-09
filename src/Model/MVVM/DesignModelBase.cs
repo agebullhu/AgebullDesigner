@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
@@ -10,48 +11,27 @@ namespace Agebull.EntityModel.Designer
     {
         #region 操作命令
         
-        protected override void DoInitialize()
-        {
-            //Catalog = GetType().Name;
-            base.DoInitialize();
-        }
-
         /// <summary>
         ///     分类
         /// </summary>
-        public string Catalog { get; set; } 
+        public string EditorName { get; set; }
 
-        /// <summary>
-        /// 所有命令
-        /// </summary>
-        private List<CommandItem> _commands;
-        /// <summary>
-        /// 所有命令
-        /// </summary>
-        public List<CommandItem> Commands => _commands ?? (_commands = CreateCommands());
-
-        /// <summary>
-        /// 所有按钮
-        /// </summary>
-        public IEnumerable<CommandItem> Buttons => Commands.Where(p => !p.NoButton);
-
-        /// <summary>
-        /// 所有按钮
-        /// </summary>
-        public IEnumerable<CommandItem> Menus => Commands.Where(p => p.NoButton);
+        ObservableCollection<CommandItem> _commands;
+        public ObservableCollection<CommandItem> Commands => _commands ??  (_commands=CreateCommands());
 
         /// <summary>
         /// 生成命令对象
         /// </summary>
         /// <returns></returns>
-        protected virtual List<CommandItem> CreateCommands()
+        public virtual ObservableCollection<CommandItem> CreateCommands()
         {
-            var commands = new List<CommandItem>();
+            var commands = new ObservableCollection<CommandItem>();
             CreateCommands(commands);
 
-            var extends = CommandCoefficient.Coefficient(typeof(EntityConfig), Catalog);
+            var extends = CommandCoefficient.CoefficientEditor(typeof(EntityConfig), EditorName);
             if (extends.Count > 0)
                 commands.AddRange(extends);
+
             return commands;
         }
 
@@ -59,13 +39,20 @@ namespace Agebull.EntityModel.Designer
         /// 生成命令对象
         /// </summary>
         /// <param name="commands"></param>
-        protected virtual void CreateCommands(List<CommandItem> commands)
+        protected virtual void CreateCommands(ObservableCollection<CommandItem> commands)
         {
         }
 
         #endregion
 
         #region 基本设置
+
+        /// <summary>
+        /// 同步解决方案变更
+        /// </summary>
+        public virtual void OnSolutionChanged()
+        {
+        }
 
         /// <summary>
         /// 上下文
@@ -75,12 +62,19 @@ namespace Agebull.EntityModel.Designer
         /// 基本模型
         /// </summary>
         public DataModelDesignModel Model { get; set; }
+
+        /// <summary>
+        /// 编辑器模型
+        /// </summary>
+        public EditorModel Editor { get; set; }
+
+        
         /// <summary>
         /// 上下文
         /// </summary>
         public DesignContext Context
         {
-            get { return _context; }
+            get => _context;
             set
             {
                 if (_context == value)

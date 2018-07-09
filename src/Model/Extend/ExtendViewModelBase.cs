@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,9 +16,24 @@ namespace Agebull.EntityModel.Designer
         #region 基本设置
 
         /// <summary>
+        ///     对应的命令集合
+        /// </summary>
+        public IEnumerable<CommandItem> Buttons => Commands.Where(p => !p.NoButton);
+
+        /// <summary>
+        ///     对应的命令集合
+        /// </summary>
+        public CommandItem Menus =>
+            new CommandItem
+            {
+                IsRoot = true,
+                Caption = "扩展操作",
+                Items = Commands.Where(p => p.NoButton).ToObservableCollection<CommandItem>()
+            };
+        /// <summary>
         ///     分类
         /// </summary>
-        public string Catalog { get; set; }
+        public string EditorName { get; set; }
 
 
         /// <summary>
@@ -27,7 +45,12 @@ namespace Agebull.EntityModel.Designer
         /// 上下文
         /// </summary>
         public DesignContext Context => BaseModel?.Context;
-        
+
+        /// <summary>
+        /// 设计器
+        /// </summary>
+        public EditorModel Editor => BaseModel?.Editor;
+
         #endregion
 
         #region 主面板
@@ -80,7 +103,10 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         protected ExtendViewModelBase()
         {
-            Model = new TModel();
+            Model = new TModel
+            {
+                ViewModel = this
+            };
             ModelFunction = new ModelFunctionDictionary<TModel>
             {
                 Model = Model
@@ -97,7 +123,10 @@ namespace Agebull.EntityModel.Designer
             //RaisePropertyChanged(nameof(Context));
             //RaisePropertyChanged(nameof(DesignModel));
         }
-
+        protected override ObservableCollection<CommandItem> CreateCommands()
+        {
+            return Model.CreateCommands();
+        }
         /// <summary>
         ///     模型
         /// </summary>
@@ -106,10 +135,22 @@ namespace Agebull.EntityModel.Designer
             get;
         }
 
+        private DesignModelBase _designModel;
         /// <summary>
         ///     模型
         /// </summary>
-        public sealed override DesignModelBase DesignModel => Model;
+        public sealed override DesignModelBase DesignModel
+        {
+            get
+            {
+                if (_designModel != null)
+                    return _designModel;
+                Model.EditorName = EditorName;
+                Model.Context = Context;
+                Model.Dispatcher = Dispatcher;
+                return _designModel = Model;
+            }
+        }
 
 
         /// <summary>
@@ -117,6 +158,6 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         [IgnoreDataMember]
         public ModelFunctionDictionary<TModel> ModelFunction { get; }
-        
+
     }
 }

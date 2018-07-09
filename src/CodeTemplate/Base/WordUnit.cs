@@ -173,8 +173,8 @@ namespace Agebull.EntityModel.RobotCoder.CodeTemplate
         /// </summary>
         public sealed override string Word
         {
-            get { return _cusWord ?? (Chars.Count == 0 ? string.Empty : string.Concat(Chars)); }
-            set { _cusWord = value; }
+            get => _cusWord ?? (Chars.Count == 0 ? string.Empty : string.Concat(Chars));
+            set => _cusWord = value;
         }
 
 

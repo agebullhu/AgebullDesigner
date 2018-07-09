@@ -15,10 +15,6 @@ namespace Agebull.EntityModel.Designer
 {
     internal class DataRelationModel : EntityDesignModel
     {
-        public DataRelationModel()
-        {
-            Catalog = "DataRelation";
-        }
         
     }
 }

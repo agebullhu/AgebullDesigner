@@ -76,10 +76,10 @@
     <Compile Include="Command\PropertyModel.cs" />
     <Compile Include="Model\CppFieldsViewModel.cs" />
     <Compile Include="Command\EntityCommonds.cs" />
-    <Compile Include="Model\EntityDesignModelEx.cs" />
     <Compile Include="Model\EntitySorter.cs" />
     <Compile Include="Model\AllFieldsViewModel.cs" />
     <Compile Include="Model\FieldsViewModel.cs" />
+    <Compile Include="Model\JsonViewModel.cs" />
     <Compile Include="Model\ModelViewModel.cs" />
     <Compile Include="Model\NewEntityModel.cs" />
     <Compile Include="Model\NewEntityViewModel.cs" />
@@ -100,6 +100,9 @@
     </Compile>
     <Compile Include="View\NewEntityWindow.xaml.cs">
       <DependentUpon>NewEntityWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\JsonPanel.xaml.cs">
+      <DependentUpon>JsonPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\RegularPanel.xaml.cs">
       <DependentUpon>RegularPanel.xaml</DependentUpon>
@@ -160,6 +163,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\NewEntityWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\JsonPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

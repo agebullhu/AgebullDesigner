@@ -37,16 +37,13 @@ namespace Agebull.EntityModel.Config
         [Category("*设计"), DisplayName("分类"), Description("分类(仅引用可行)")]
         public string Classify
         {
-            get
-            {
-                return _classify;
-            }
+            get => _classify;
             set
             {
                 if (_classify == value)
                     return;
                 BeforePropertyChanged(nameof(Classify), _classify, value);
-                _classify = value;
+                _classify = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Classify));
             }
         }

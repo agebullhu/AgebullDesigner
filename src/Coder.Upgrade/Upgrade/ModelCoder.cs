@@ -18,7 +18,7 @@ namespace Agebull.EntityModel.RobotCoder.Upgrade
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("自升级代码","配置类升级", cfg => NewConfigDefault());
+            MomentCoder.RegisteCoder("自升级代码","配置类升级", "cs", cfg => NewConfigDefault());
         }
         #endregion
 

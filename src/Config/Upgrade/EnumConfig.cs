@@ -21,7 +21,7 @@ namespace Agebull.EntityModel.Config
     /// 枚举配置
     /// </summary>
     [DataContract,JsonObject(MemberSerialization.OptIn)]
-    public partial class EnumConfig : ParentConfigBase
+    public partial class EnumConfig : ProjectChildConfigBase
     {
         #region 构造
         
@@ -33,8 +33,6 @@ namespace Agebull.EntityModel.Config
         }
 
         #endregion
-
- 
         #region 数据模型
 
         /// <summary>
@@ -53,10 +51,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据模型"),DisplayName(@"是否位域"),Description("是否位域")]
         public bool IsFlagEnum
         {
-            get
-            {
-                return _isFlagEnum;
-            }
+            get => _isFlagEnum;
             set
             {
                 if(_isFlagEnum == value)
@@ -85,10 +80,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"设计器支持"),DisplayName(@"连接对应的字段"),Description("是否位域")]
         public Guid LinkField
         {
-            get
-            {
-                return _linkField;
-            }
+            get => _linkField;
             set
             {
                 if(_linkField == value)

@@ -18,8 +18,8 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("枚举", "枚举(C#)", (EnumFunc));
-            MomentCoder.RegisteCoder("枚举", "枚举(C++)", (EnumCpp));
+            MomentCoder.RegisteCoder("枚举", "枚举(C#)", "cs",(EnumFunc));
+            MomentCoder.RegisteCoder("枚举", "枚举(C++)","cpp", (EnumCpp));
         }
         #endregion
 

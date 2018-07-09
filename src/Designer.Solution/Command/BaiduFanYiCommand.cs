@@ -24,22 +24,22 @@ namespace Agebull.EntityModel.Designer
             CommandCoefficient.RegisterCommand<ConfigBase, ActionItem>(new ActionItem
             {
                 Action = ToChiness2,
-                Name = "翻译成中文(名称到标题)",
-                Catalog = "数据模型",
+                Caption = "翻译成中文(名称到标题)",
+                Catalog = "编辑",
                 NoButton = true,
-                Tag = "Model,Struct",
-                SourceType = "EntityConfig,PropertyConfig",
-                Image = Application.Current.Resources["img_link"] as ImageSource
+                ViewModel = "Entity",
+                SourceType = typeof(ConfigBase),
+                Image = Application.Current.Resources["imgBaidu"] as ImageSource
             });
             CommandCoefficient.RegisterCommand<ConfigBase, ActionItem>(new ActionItem
             {
                 Action = ToChiness,
-                Name = "翻译成中文(标题到注释)",
-                Catalog = "数据模型",
+                Caption = "翻译成中文(标题到注释)",
+                Catalog = "编辑",
                 NoButton = true,
-                Tag = "Model,Struct",
-                SourceType = "EntityConfig,PropertyConfig",
-                Image = Application.Current.Resources["img_link"] as ImageSource
+                ViewModel = "Entity",
+                SourceType = typeof(ConfigBase),
+                Image = Application.Current.Resources["imgBaidu"] as ImageSource
             });
         }
         public static void ToChiness(RuntimeActionItem item, object arg)

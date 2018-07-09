@@ -128,7 +128,7 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                         StringComparison.OrdinalIgnoreCase));
                     if (project == null)
                     {
-                        SolutionConfig.Current.Projects.Add(project = new ProjectConfig
+                        SolutionConfig.Current.Add(project = new ProjectConfig
                         {
                             Name = pro,
                             Caption = BaiduFanYi.FanYi(pro),
@@ -156,7 +156,7 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                     Parent = project
                 };
                 CheckColumns(cmd, entity);
-                project.Entities.Add(entity);
+                project.Add(entity);
             }
         }
         private void CheckColumns(SqlCommand cmd, EntityConfig schema)
@@ -172,7 +172,7 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                     PropertyConfig col = schema.DbFields.FirstOrDefault(p => string.Equals(p.ColumnName, field, StringComparison.OrdinalIgnoreCase));
                     if (col == null)
                     {
-                        schema.Properties.Add(col = new PropertyConfig
+                        schema.Add(col = new PropertyConfig
                         {
                             Name = field,
                             Caption = BaiduFanYi.FanYi(field),

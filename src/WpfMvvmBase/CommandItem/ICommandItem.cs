@@ -1,3 +1,6 @@
+using System;
+using Agebull.EntityModel.Config;
+
 namespace Agebull.Common.Mvvm
 {
     /// <summary>
@@ -6,42 +9,104 @@ namespace Agebull.Common.Mvvm
     public interface ICommandItem
     {
         /// <summary>
-        ///     不显示为按钮
+        ///     名称
         /// </summary>
-        bool NoButton
+        string Name
         {
             get;
+            set;
         }
+
+        /// <summary>
+        ///     标题
+        /// </summary>
+        string Caption
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        ///     说明
+        /// </summary>
+        string Description
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        ///     不显示为按钮
+        /// </summary>
+        bool NoButton { get; set; }
 
         /// <summary>
         ///     分类
         /// </summary>
-        string Catalog
+        string Catalog { get; set; }
+
+        /// <summary>
+        ///     视角
+        /// </summary>
+        string ViewModel { get; set; }
+
+        /// <summary>
+        ///     面对的编辑器
+        /// </summary>
+        string Editor
         {
             get;
             set;
         }
+
         /// <summary>
         ///     只能单个操作
         /// </summary>
-        bool Signle
-        {
-            get;
-        }
+        bool Signle { get; set; }
+
         /// <summary>
         ///     目标类型
         /// </summary>
-        string SourceType
-        {
-            get;
-            set;
-        }
+        Type SourceType { get; set; }
+
         /// <summary>
         ///     图标
         /// </summary>
-        string IconName
+        string IconName { get; set; }
+    }
+
+    /// <summary>
+    /// 表示一个命令生成器
+    /// </summary>
+    public static class ICommandItemExtend
+    {
+        /// <summary>
+        /// 构造一个对象并复制
+        /// </summary>
+        /// <typeparam name="TCommandItem">ICommandItem实现</typeparam>
+        /// <param name="sour">源</param>
+        /// <returns></returns>
+        public static TCommandItem CopyCreate<TCommandItem>(this ICommandItem sour) where TCommandItem : class, ICommandItem, new()
         {
-            get;
+            var item = new TCommandItem();
+            CopyFrom(item, sour);
+            return item;
+        }
+        /// <summary>
+        /// 从源中复制
+        /// </summary>
+        /// <param name="dest">目标</param>
+        /// <param name="sour">源</param>
+        public static void CopyFrom(this ICommandItem dest, ICommandItem sour)
+        {
+            dest.Name = sour.Name ?? sour.Caption;
+            dest.Caption = sour.Caption?? sour.Name;
+            dest.Description = sour.Description;
+            dest.NoButton = sour.NoButton;
+            dest.Signle = sour.Signle;
+            dest.Catalog = sour.Catalog;
+            dest.ViewModel = sour.ViewModel;
+            dest.SourceType = sour.SourceType;
+            dest.IconName = sour.IconName;
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Agebull.Common.Config.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal sealed class MySqlImporter : ConfigCommandBase<SolutionConfig>, IAutoRegister
+    internal sealed class MySqlImporter : ConfigCommandBase<ProjectConfig>, IAutoRegister
     {
         /// <summary>
         /// 注册代码
@@ -23,7 +23,7 @@ namespace Agebull.Common.Config.Designer
         {
             NoButton = true;
             Signle = true;
-            CommandCoefficient.RegisterCommand<SolutionConfig, MySqlImporter>();
+            CommandCoefficient.RegisterCommand<ProjectConfig, MySqlImporter>();
         }
 
 
@@ -32,19 +32,25 @@ namespace Agebull.Common.Config.Designer
             return new CommandItem
             {
                 NoButton = true,
-                Signle = true,
-                SourceType = typeof(SolutionConfig).Name,
                 Command = new AsyncCommand<string, string>(ImportStructParpare, ImportStruct, ImportStructEnd),
-                Name = "导入MySql数据库",
+                Caption = "导入MySql数据库",
+                Catalog = "解决方案",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             };
         }
 
         public bool ImportStructParpare(string arg, Action<string> setAction)
         {
-            var ctx = DataModelDesignModel.Current.Context;
-            ctx.NowJob = DesignContext.JobTrace;
-            return MessageBox.Show("确认执行【导入MySql数据库】操作吗?", "对象编辑", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+            if (DataModelDesignModel.Current.Context.SelectProject == null)
+            {
+                MessageBox.Show("请选择一个项目并正确设置连接信息后继续");
+                return false;
+            }
+            if(MessageBox.Show($"确认在【{DataModelDesignModel.Current.Context.SelectProject.Caption}】中执行【导入MySql数据库】操作吗?",
+                           "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                return false;
+            DataModelDesignModel.Current.Editor.ShowTrace();
+            return true;
         }
 
 
@@ -55,13 +61,13 @@ namespace Agebull.Common.Config.Designer
         internal string ImportStruct(string arg)
         {
             var ctx = DataModelDesignModel.Current.Context;
-            new MySqlImport().Import(ctx.CurrentTrace.TraceMessage, ctx.Solution, DataModelDesignModel.Current.Dispatcher);
+            new MySqlImport().Import(ctx.CurrentTrace.TraceMessage, ctx.SelectProject, DataModelDesignModel.Current.Dispatcher);
             return string.Empty;
         }
 
         internal void ImportStructEnd(CommandStatus status, Exception ex, string code)
         {
-            DataModelDesignModel.Current.Context.NowJob = DesignContext.JobTrace;
+            DataModelDesignModel.Current.Editor.ShowTrace();
             if (ex != null)
                 DataModelDesignModel.Current.Context.CurrentTrace.TraceMessage.Track = ex.ToString();
         }

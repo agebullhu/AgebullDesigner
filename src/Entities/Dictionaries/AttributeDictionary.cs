@@ -33,14 +33,8 @@ namespace Agebull.EntityModel
         /// </summary>
         public Dictionary<string, object> Dictionary
         {
-            get
-            {
-                return _dictionary ?? (_dictionary = new Dictionary<string, object>() );
-            }
-            set
-            {
-                _dictionary = value;
-            }
+            get => _dictionary ?? (_dictionary = new Dictionary<string, object>() );
+            set => _dictionary = value;
         }
 
         /// <summary>

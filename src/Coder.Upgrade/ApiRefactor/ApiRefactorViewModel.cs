@@ -21,11 +21,11 @@ namespace Agebull.EntityModel.Designer
 {
     public sealed class ApiRefactorViewModel : ViewModelBase<ApiRefactorModel>
     {
-        public static void ApiRefactor(SolutionConfig project)
+        public static void ApiRefactor(ProjectConfig project)
         {
             var win = new ApiRefactorWindow();
             var vm = (ApiRefactorViewModel)win.DataContext;
-            vm.Model.Solution = project;
+            vm.Model.Project = project;
             win.Show();
         }
 
@@ -40,13 +40,13 @@ namespace Agebull.EntityModel.Designer
                 {
                     Detect = Model
                 },
-                Name = "分析接口",
+                Caption = "分析接口",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             },
             new CommandItem
             {
                 Command = new DelegateCommand(Model.End),
-                Name = "接收到系统中",
+                Caption = "接收到系统中",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             }
         });

@@ -16,8 +16,8 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder(CodeType, "Action.cs", GetBaseCode);
-            MomentCoder.RegisteCoder(CodeType, "Action.Designer.cs", GetExtendCode);
+            MomentCoder.RegisteCoder(CodeType, "Action.cs","cs", GetBaseCode);
+            MomentCoder.RegisteCoder(CodeType, "Action.Designer.cs", "cs", GetExtendCode);
         }
 
 
