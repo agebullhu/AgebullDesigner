@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Controls;
 using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.Designer
@@ -15,27 +16,27 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 注册扩展
         /// </summary>
-        /// <typeparam name="TExtend">扩展类型</typeparam>
+        /// <typeparam name="TEditor">扩展类型</typeparam>
         /// <typeparam name="TConfig">对应的类型</typeparam>
         /// <param name="name">扩展名称</param>
         /// <param name="filter">关联的工作模式</param>
-        public static void Registe<TConfig, TExtend>(string name, params string[] filter)
-            where TExtend : ExtendViewModelBase, new()
+        public static void Registe<TConfig, TEditor>(string name, params string[] filter)
+            where TEditor : UserControl, new()
             where TConfig : ConfigBase
         {
-            Registe<TConfig, TExtend>(name, -1, filter);
+            Registe<TConfig, TEditor>(name, -1, filter);
         }
 
         /// <summary>
         /// 注册扩展
         /// </summary>
-        /// <typeparam name="TExtend">扩展类型</typeparam>
+        /// <typeparam name="TEditor">扩展类型</typeparam>
         /// <typeparam name="TConfig">对应的类型</typeparam>
         /// <param name="name">扩展名称</param>
         /// <param name="index">显示顺序</param>
         /// <param name="filter">关联的工作模式</param>
-        public static void Registe<TConfig, TExtend>(string name, int index, params string[] filter)
-            where TExtend : ExtendViewModelBase, new()
+        public static void Registe<TConfig, TEditor>(string name, int index, params string[] filter)
+            where TEditor : UserControl, new()
             where TConfig : ConfigBase
         {
             if (!ExtendDictionary.TryGetValue(typeof(TConfig), out var exts))
@@ -47,7 +48,7 @@ namespace Agebull.EntityModel.Designer
                     Index = index,
                     Name = name,
                     Caption = name,
-                    Create = () => new TExtend()
+                    Create = () => new TEditor()
                 };
             else
                 exts.Add(name, new ExtendViewOption
@@ -55,7 +56,7 @@ namespace Agebull.EntityModel.Designer
                     Index = index,
                     Name = name,
                     Caption = name,
-                    Create = () => new TExtend()
+                    Create = () => new TEditor()
                 });
             if (filter.Length > 0)
                 exts[name].Filter.AddRange(filter.Select(p => p.ToLower()));
@@ -73,9 +74,10 @@ namespace Agebull.EntityModel.Designer
         /// 关联的工作模式
         /// </summary>
         public List<string> Filter { get; } = new List<string>();
+
         /// <summary>
         /// 构造器
         /// </summary>
-        public Func<ExtendViewModelBase> Create { get; set; }
+        public Func<UserControl> Create { get; set; }
     }
 }

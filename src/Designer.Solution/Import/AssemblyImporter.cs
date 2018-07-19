@@ -18,10 +18,10 @@ using Agebull.EntityModel.Config;
 using Agebull.Common.Reflection;
 using System.IO;
 using System.Collections.Generic;
-using Agebull.EntityModel.Designer.AssemblyAnalyzer;
 using Newtonsoft.Json;
 using Agebull.Common;
 using System.Diagnostics;
+using Agebull.EntityModel.Designer.AssemblyAnalyzer;
 
 #endregion
 
@@ -29,6 +29,7 @@ namespace Agebull.EntityModel.Designer
 {
     public sealed class AssemblyImporter
     {
+        public bool IncludeBaseType { get; set; }
         #region 程序集
 
         private static readonly Dictionary<string, Assembly> loaded = new Dictionary<string, Assembly>();
@@ -64,14 +65,7 @@ namespace Agebull.EntityModel.Designer
         {
             try
             {
-                var asm = Assembly.LoadFile(file);
-                Trace.WriteLine(file, "Success");
-                string xml = file.Replace(".dll", ".xml");
-                if (File.Exists(xml))
-                {
-                    HelpXml.AddRange(XmlMember.Load(xml));
-                }
-                return asm;
+                return Assembly.LoadFile(file);
             }
             catch (ReflectionTypeLoadException ex)
             {
@@ -108,7 +102,7 @@ namespace Agebull.EntityModel.Designer
             {
                 foreach (var file in Directory.GetFiles(path))
                 {
-                    if (file.IndexOf(name) > 0)
+                    if (file.IndexOf(name, StringComparison.Ordinal) > 0)
                     {
                         fullName = file;
                         return true;
@@ -117,8 +111,8 @@ namespace Agebull.EntityModel.Designer
             }
             foreach (var folder in Directory.GetDirectories(path))
             {
-                var fn = Path.GetFileName(folder).ToLower();
-                if (fn.Contains("linux"))
+                var fn = Path.GetFileName(folder)?.ToLower();
+                if (fn != null && fn.Contains("linux"))
                     continue;
                 if (Find(folder, name, out fullName))
                 {
@@ -198,6 +192,29 @@ namespace Agebull.EntityModel.Designer
             }
             return importer._project;
         }
+        /// <summary>
+        ///     打开并分析文件
+        /// </summary>
+        /// <param name="project"></param>
+        /// <param name="assembly"></param>
+        public static ProjectConfig Import(ProjectConfig project, Assembly assembly)
+        {
+            var importer = new AssemblyImporter(project, assembly.Location)
+            {
+                IncludeBaseType = false
+            };
+            try
+            {
+                importer._assembly = assembly;
+                importer.ReadTypes();
+                importer.ReadEntities();
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex);
+            }
+            return importer._project;
+        }
         #endregion
         #region 内部分析
 
@@ -231,7 +248,7 @@ namespace Agebull.EntityModel.Designer
                 var col = config.Items.FirstOrDefault(p=>p.Name == field.Name);
                 if (col == null)
                 {
-                    config.Items.Add(col= new EnumItem
+                    config.Add(col= new EnumItem
                     {
                         Name = field.Name,
                         Value = Convert.ToInt64(field.GetValue(null)).ToString()
@@ -252,7 +269,8 @@ namespace Agebull.EntityModel.Designer
                 Trace.WriteLine(enName, "Skip");
                 return;
             }
-            var entity = _project.Entities.FirstOrDefault(p => p.Name == type.Name || p.Name == enName);
+            
+           var entity = _project.Entities.FirstOrDefault(p => p.Name == type.Name || p.Name == enName);
             if (entity != null)
             {
                 entity.Name = enName;
@@ -266,7 +284,7 @@ namespace Agebull.EntityModel.Designer
                 };
                 _project.Add(entity);
             }
-            entity.IsClass = true;
+            entity.NoDataBase = true;
             Trace.WriteLine(enName, "Entity");
             GetInfo(entity, type);
             ReadEntity(entity, type);
@@ -275,7 +293,7 @@ namespace Agebull.EntityModel.Designer
         {
             try
             {
-                if (type.BaseType != typeof(object))
+                if (IncludeBaseType && type.BaseType != typeof(object))
                 {
                     ReadEntity(entity, type.BaseType);
                 }
@@ -290,7 +308,7 @@ namespace Agebull.EntityModel.Designer
                 entity.ReferenceType = type.GetGenericParameter();
                 entity.Name = entity.Name.Split(new char[] { '<' }, 2)[0];
             }
-
+            entity.ModelBase = type.BaseType != typeof(object) ? type.BaseType.GetTypeName() : null;
             entity.IsInterface = type.IsInterface;
             entity.Interfaces = type.GetInterfaces().Select(ReflectionHelper.GetTypeName).LinkToString(",");
             PropertyInfo[] properties;
@@ -320,32 +338,23 @@ namespace Agebull.EntityModel.Designer
                 {
                     entity.Add(col = new PropertyConfig
                     {
-                        Name = name,
-                        ColumnName = name
+                        Name = name
                     });
                 }
                 else if (interFace)//重名接口
                     continue;
-                col.Index = entity.Properties.Count;
+                col.Option.Index = entity.Properties.Count;
                 GetInfo(col, type, pro);
                 
                 col.IsInterfaceField = interFace;
                 CheckPropertyType(type, entity, col, pro, pro.PropertyType, jo != null, dc != null);
 
-                var gm = pro.GetGetMethod();
-                if (gm == null || gm.IsPrivate)
-                {
-                    col.CanGet = false;
-                }
-                var sm = pro.GetSetMethod();
-                if (sm == null || sm.IsPrivate)
-                {
-                    col.CanSet = false;
-                }
+                col.CanGet = pro.GetGetMethod() != null;
+                col.CanSet = pro.GetSetMethod() != null;
             }
             foreach (var field in fields)
             {
-                if (field.IsSpecialName || !char.IsLetter(field.Name[0]))
+                if (field.IsSpecialName || (field.Name[0]!='_' && !char.IsLetter(field.Name[0])))
                 {
                     continue;
                 }
@@ -355,10 +364,9 @@ namespace Agebull.EntityModel.Designer
                 {
                     entity.Add(col = new PropertyConfig
                     {
-                        Name = name,
-                        ColumnName = name
+                        Name = field.Name
                     });
-                    col.Index = entity.Properties.Count;
+                    col.Option.Index = entity.Properties.Count;
                     GetInfo(col, type, field);
                 }
                 CheckPropertyType(type, entity, col, field, field.FieldType, jo != null, dc != null);
@@ -376,50 +384,41 @@ namespace Agebull.EntityModel.Designer
                     prperty.IsArray = true;
                     type1 = type1.MakeArrayType();
                 }
-                else if (type1.IsSupperInterface(typeof(ICollection<>)))
+                else if (type1.IsSupperInterface(typeof(IDictionary<,>)))
+                {
+                    prperty.ReferenceType = ReflectionHelper.GetTypeName(type1);
+                    var pars = type1.GetGenericArguments();
+                    prperty.IsDictionary = true;
+                    prperty.CsType = ReflectionHelper.GetTypeName(type1);
+                    type1 = pars[1];
+                }
+                else if (type1.IsGenericType && type1.IsSupperInterface(typeof(IEnumerable<>)))
                 {
                     prperty.ReferenceType = ReflectionHelper.GetTypeName(type1);
                     prperty.IsArray = true;
                     type1 = type1.GetGenericArguments()[0];
                 }
-                else if (type1.IsSupperInterface(typeof(IDictionary<,>)))
-                {
-                    prperty.ReferenceType = ReflectionHelper.GetTypeName(type1);
-                    var pars = type1.GetGenericArguments();
-                    prperty.IsArray = true;
-                    prperty.CsType = ReflectionHelper.GetTypeName(type1);
-                    type1 = pars[1];
-                }
 
-                var typeName = ReflectionHelper.GetTypeName(type1);
+                CsharpHelper.CheckType(prperty, type1.GetTypeName());
                 if (type1.IsEnum)
                 {
-                    prperty.CustomType = typeName;
+                    prperty.CustomType = ReflectionHelper.GetTypeName(type1);
                     prperty.CsType = "int";
                     prperty.IsEnum = true;
                 }
-                else if (entity.ReferenceType != null && entity.ReferenceType.Contains(typeName))
+                else if (!type1.IsBaseType())
                 {
-                    prperty.CsType = typeName;
-                }
-                else if (type1.IsBaseType())
-                {
-                    prperty.CsType = typeName;
-                }
-                else
-                {
-                    prperty.CustomType = ReflectionHelper.GetTypeName(type1);
+                    //prperty.CustomType = ReflectionHelper.GetTypeName(type1);
                     prperty.NoStorage = true;
                     prperty.IsLinkField = true;
                     prperty.LinkTable = prperty.CustomType;
                 }
             }
-            catch // (Exception ex)
+            catch  (Exception ex)
             {
                 prperty.CsType = "object";
-                Trace.WriteLine($"{type.FullName}.{field.Name}", "Error");
+                Trace.WriteLine(ex, $"Error : {type.FullName}.{field.Name}");
             }
-
             if (json)
             {
                 var ji = field.GetAttribute<JsonIgnoreAttribute>();
@@ -430,7 +429,8 @@ namespace Agebull.EntityModel.Designer
                 else
                 {
                     var jp = field.GetAttribute<JsonPropertyAttribute>();
-                    if (jp == null) return;
+                    if (jp == null)
+                        return;
                     prperty.NoneJson = false;
                     if (!string.IsNullOrWhiteSpace(jp.PropertyName))
                         prperty.JsonName = jp.PropertyName;
@@ -454,15 +454,10 @@ namespace Agebull.EntityModel.Designer
         #endregion
         #region XML文档
 
-        /// <summary>
-        /// 读取的帮助XML
-        /// </summary>
-        private readonly List<XmlMember> HelpXml = new List<XmlMember>();
-
 
         private void GetInfo(ClassifyConfig config, Type type)
         {
-            var member = HelpXml.FirstOrDefault(p => p.Name == type.FullName);
+            var member = XmlMember.Find(type);
             if (member != null)
             {
                 config.Caption = member.DisplayName;
@@ -486,7 +481,7 @@ namespace Agebull.EntityModel.Designer
         private void GetInfo(EnumItem config, Type type, MemberInfo field)
         {
             string name = $"{type.FullName}.{field.Name}";
-            var member = HelpXml.FirstOrDefault(p => p.Name == name);
+            var member = XmlMember.Find(name);
             if (member != null)
             {
                 config.Description = member.Summary;
@@ -506,7 +501,7 @@ namespace Agebull.EntityModel.Designer
         private void GetInfo(PropertyConfig config, Type type, MemberInfo field)
         {
             string name = $"{type.FullName}.{field.Name}";
-            var member = HelpXml.FirstOrDefault(p => p.Name == name);
+            var member = XmlMember.Find(name);
             if (member != null)
             {
                 config.Description = member.Summary;

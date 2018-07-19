@@ -43,7 +43,7 @@ namespace Agebull.EntityModel.Designer
             string type = null;
             var typeCell = GetCellStyle(workbook, HorizontalAlignment.Left, VerticalAlignment.Center, true, CreateFontStyle(workbook, "黑体", 12, true));
             var tableCell = GetCellStyle(workbook, HorizontalAlignment.Left, VerticalAlignment.Center, true, CreateFontStyle(workbook, "宋体"));
-            foreach (var entity in tables.Where(p => !p.IsClass).OrderBy(p => p.Project))
+            foreach (var entity in tables.Where(p => !p.NoDataBase).OrderBy(p => p.Project))
             {
                 var row = sheet.CreateRow(line++);
                 row.HeightInPoints = 20;//行高

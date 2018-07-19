@@ -109,11 +109,10 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
 
                 if (!field.IsLinkKey && !IsNullOrEmpty(field.LinkTable))
                 {
-                    EntityConfig friend;
-                    if (tables.TryGetValue(field.LinkTable, out friend))
+                    if (tables.TryGetValue(field.LinkTable, out EntityConfig friend))
                     {
                         var linkField =
-                            friend.Properties.FirstOrDefault(
+                            friend.DbFields.FirstOrDefault(
                                 p => p.ColumnName == field.LinkField || p.Name == field.LinkField);
                         if (linkField != null)
                         {
@@ -128,10 +127,10 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
     FROM `{entity.SaveTable}`");
             foreach (var table in tables.Values)
             {
-                var field = entity.Properties.FirstOrDefault(p => p.IsLinkKey && p.LinkTable == table.SaveTable);
+                var field = entity.DbFields.FirstOrDefault(p => p.IsLinkKey && p.LinkTable == table.SaveTable);
                 if (field == null)
                     continue;
-                var linkField = table.Properties.FirstOrDefault(
+                var linkField = table.DbFields.FirstOrDefault(
                     p => p.Name == field.LinkField || p.ColumnName == field.LinkField);
                 if (linkField == null)
                     continue;
@@ -149,7 +148,7 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
         }
         private static string DropTable(EntityConfig entity)
         {
-            if (entity.IsClass)
+            if (entity.NoDataBase)
                 return Empty;
             return $@"
 /*******************************{entity.Caption}*******************************/
@@ -179,11 +178,9 @@ DROP TABLE `{entity.SaveTable}`;";
 
         private static string PageInsertSql(ConfigBase config)
         {
-            var projectConfig = config as ProjectConfig;
-            if (projectConfig != null)
+            if (config is ProjectConfig projectConfig)
                 return PageInsertSql(projectConfig);
-            var soluction = config as SolutionConfig;
-            if (soluction == null)
+            if (!(config is SolutionConfig soluction))
                 return null;
             StringBuilder code = new StringBuilder();
             foreach (var project in SolutionConfig.Current.Projects)
@@ -201,7 +198,7 @@ DROP TABLE `{entity.SaveTable}`;";
 INSERT INTO `tb_sys_page_item` (`ItemType`,`Name`,`Caption`,`Url`,`Memo`,`ParentId`)
 VALUES(0,'{project.Caption}','{project.Caption}',NULL,'{project.Description}',0);
 set @pid = @@IDENTITY;");
-            foreach (var entity in project.Entities.Where(p => !p.IsClass))
+            foreach (var entity in project.Entities.Where(p => !p.NoDataBase))
                 sb.Append($@"
 INSERT INTO `tb_sys_page_item` (`ItemType`,`Name`,`Caption`,`Url`,`Memo`,`ParentId`)
 VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Name}/Index.aspx','{entity.Description}',@pid);");
@@ -223,7 +220,7 @@ VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Name}
 
         public static string CreateTableCode(EntityConfig entity, bool signle = false)
         {
-            if (entity.IsClass)
+            if (entity.NoDataBase)
                 return "--这个设置为普通类(IsClass=true)，无法生成SQL";//这个设置为普通类，无法生成SQL
             var code = new StringBuilder();
             code.AppendFormat(@"
@@ -260,7 +257,7 @@ CREATE TABLE `{0}`("
 
         private static string AddColumnCode(EntityConfig entity)
         {
-            if (entity.IsClass)
+            if (entity.NoDataBase)
                 return "--这个设置为普通类(IsClass=true)，无法生成SQL";//这个设置为普通类，无法生成SQL
             var code = new StringBuilder();
             code.Append($@"
@@ -288,7 +285,7 @@ ALTER TABLE `{entity.SaveTable}`");
 
         private string ChangeBoolColumnCode(EntityConfig entity)
         {
-            if (entity == null || entity.IsClass)
+            if (entity == null || entity.NoDataBase)
                 return "--这个设置为普通类(IsClass=true)，无法生成SQL";//这个设置为普通类，无法生成SQL
             var code = new StringBuilder();
             foreach (var ent in SolutionConfig.Current.Entities)
@@ -298,7 +295,7 @@ ALTER TABLE `{entity.SaveTable}`");
 
         private void ChangeBoolColumnCode(StringBuilder code, EntityConfig entity)
         {
-            if (entity == null || entity.IsClass)
+            if (entity == null || entity.NoDataBase)
                 return;
             var fields = entity.DbFields.Where(p => !p.IsCompute && p.CsType == "bool").ToArray();
 
@@ -322,7 +319,7 @@ ALTER TABLE `{entity.SaveTable}`");
 
         private string ChangeColumnCode(EntityConfig entity)
         {
-            if (entity == null || entity.IsClass)
+            if (entity == null || entity.NoDataBase)
                 return "--这个设置为普通类(IsClass=true)，无法生成SQL";//这个设置为普通类，无法生成SQL
             var code = new StringBuilder();
             code.Append($@"
@@ -371,10 +368,9 @@ ALTER TABLE `{entity.SaveTable}`");
         {{
             using (new EditScope(entity.__EntityStatus, EditArrestMode.All, false))
             {{");
-            var idx = 0;
             foreach (var field in fields)
             {
-                FieldReadCode(field, code, idx++);
+                FieldReadCode(field, code);
             }
             code.Append(@"
             }
@@ -408,9 +404,9 @@ ALTER TABLE `{entity.SaveTable}`");
         /// </summary>
         /// <param name="field">字段</param>
         /// <param name="code">代码</param>
-        /// <param name="idx">序号</param>
-        public static void FieldReadCode(PropertyConfig field, StringBuilder code, int idx)
+        public static void FieldReadCode(PropertyConfig field, StringBuilder code)
         {
+            string idx = $"{field.Parent.EntityName}.Real_{field.Name}";
             if (!IsNullOrWhiteSpace(field.CustomType))
             {
                 code.Append($@"

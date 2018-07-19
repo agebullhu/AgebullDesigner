@@ -7,13 +7,17 @@
              xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
              xmlns:defaults="clr-namespace:Agebull.EntityModel.Config;assembly=Agebull.Common.Config.Helper"
              xmlns:mysql1="clr-namespace:Agebull.EntityModel.Config.Mysql;assembly=Agebull.Common.Config.Helper"
+             xmlns:mysql="clr-namespace:Agebull.Common.Config.Designer.DataBase.Mysql"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="1018.434">
 
+    <UserControl.DataContext>
+        <mysql:DataBaseViewModel/>
+    </UserControl.DataContext>
     <DockPanel Margin="0" Background="White">
         <WrapPanel DockPanel.Dock="Top" DataContext="{Binding Context.SelectEntity}">
             <WrapPanel.Resources>
-                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/DataTemplate/Form.xaml"/>
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
             </WrapPanel.Resources>
             <!--<StackPanel>
                 <Label Content="RedisKey" />
@@ -42,7 +46,7 @@
         </WrapPanel>
         <TabControl DockPanel.Dock="Bottom" DataContext="{Binding Context.SelectProperty}">
             <TabControl.Resources>
-                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/DataTemplate/Form.xaml"/>
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
             </TabControl.Resources>
             <TabItem Header="字段">
                 <WrapPanel>
@@ -127,9 +131,9 @@
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
                   DataContext="{Binding Context}"
-                  ItemsSource="{Binding SelectItemChildrens}">
+                  ItemsSource="{Binding SelectEntity.Properties}">
             <DataGrid.Columns>
-                <DataGridCheckBoxColumn Binding="{Binding Discard,Mode=TwoWay}" IsReadOnly="True" Header="废" />
+                <DataGridCheckBoxColumn Binding="{Binding IsDiscard,Mode=OneWay}" IsReadOnly="True" Header="废" />
                 <DataGridCheckBoxColumn Binding="{Binding NoStorage,Mode=TwoWay}" Header="不存储" />
                 <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
                 <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="属性" />

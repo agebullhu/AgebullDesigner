@@ -24,7 +24,11 @@
 
 #region 命名空间引用
 
+using System;
+using System.Diagnostics;
+using System.IO;
 using Agebull.EntityModel.Config;
+using Newtonsoft.Json;
 
 #endregion
 
@@ -38,7 +42,6 @@ namespace Agebull.EntityModel.Designer
         #region 设计对象 
 
         public DesignContext Context { get; }
-        public DesignGlobal Global { get; }
         public TreeModel Tree { get; }
         public ConfigIoModel ConfigIo { get; }
         public NormalCodeModel NormalCode { get; }
@@ -64,13 +67,12 @@ namespace Agebull.EntityModel.Designer
             {
                 Model = this
             };
-
-            Global = new DesignGlobal
+            GlobalConfig.SetGlobal(new DesignGlobal
             {
                 Model = this,
                 Context = Context
-            };
-            GlobalConfig.SetGlobal(Global);
+            });
+            LoadUserScreen();
             ExtendConfig = new ExtendConfigModel
             {
                 Model = this,
@@ -102,7 +104,6 @@ namespace Agebull.EntityModel.Designer
             ConfigIo.Editor = Editor;
             NormalCode.Editor = Editor;
             Tree.Editor = Editor;
-            Global.Editor = Editor;
         }
 
         #endregion
@@ -120,19 +121,16 @@ namespace Agebull.EntityModel.Designer
             ConfigIo.ViewModel = ViewModel;
             NormalCode.ViewModel = ViewModel;
             Tree.ViewModel = ViewModel;
-            Global.ViewModel = ViewModel;
 
             ExtendConfig.Dispatcher = Dispatcher;
             Context.Dispatcher = Dispatcher;
             ConfigIo.Dispatcher = Dispatcher;
             NormalCode.Dispatcher = Dispatcher;
             Tree.Dispatcher = Dispatcher;
-            Global.Dispatcher = Dispatcher;
 
 
             Editor.Initialize();
             Context.Initialize();
-            Global.Initialize();
             Tree.Initialize();
             ExtendConfig.Initialize();
             NormalCode.Initialize();
@@ -144,7 +142,8 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void OnSolutionChanged()
         {
-            Global.OnSolutionChanged();
+            Editor.WorkView = Screen.WorkView;
+            Editor.AdvancedView = Screen.AdvancedView;
             Editor.OnSolutionChanged();
             ExtendConfig.OnSolutionChanged();
             Context.OnSolutionChanged();
@@ -162,7 +161,6 @@ namespace Agebull.EntityModel.Designer
             GlobalConfig.CurrentConfig = null;
             Tree.SetSelect(null);
             Tree.SetSelect(Tree.TreeRoot.Items[0]);
-            GlobalConfig.CurrentSolution.GodMode = true;
         }
         /// <summary>
         /// 新增对象
@@ -180,5 +178,61 @@ namespace Agebull.EntityModel.Designer
 
         #endregion
 
+
+        #region 现场记录
+
+        /// <summary>
+        /// 用户操作的现场记录
+        /// </summary>
+        public static UserScreen Screen { get; set; } = new UserScreen
+        {
+            NowEditor = EditorModel.EditorConfig,
+            WorkView = "entity"
+        };
+
+        /// <summary>
+        /// 用户操作现场
+        /// </summary>
+        internal static void LoadUserScreen()
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            var path = Path.Combine(GlobalConfig.ProgramRoot, "Config", "screen.json");
+            if (!File.Exists(path))
+                return;
+            var json = File.ReadAllText(path);
+            if (string.IsNullOrEmpty(json) || json[0] != '{')
+            {
+                return;
+            }
+
+            try
+            {
+                var sc = JsonConvert.DeserializeObject<UserScreen>(json);
+                if (sc != null)
+                    Screen = sc;
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e, "LoadUserScreen");
+            }
+        }
+
+        /// <summary>
+        /// 用户操作现场
+        /// </summary>
+        internal static void SaveUserScreen()
+        {
+            try
+            {
+                var json = JsonConvert.SerializeObject(Screen);
+                var path = Path.Combine(GlobalConfig.ProgramRoot, "Config", "screen.json");
+                File.WriteAllText(path, json);
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e, "SaveUserScreen");
+            }
+        }
+        #endregion
     }
 }

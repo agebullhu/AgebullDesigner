@@ -19,7 +19,7 @@ namespace Agebull.EntityModel.RobotCoder
         {
             get
             {
-                return Entity.Properties.Where(p => !p.Discard && !p.NoStorage && !p.DbInnerField &&
+                return Entity.DbFields.Where(p => !p.DbInnerField &&
                                                   !string.Equals(p.DbType, "EMPTY", StringComparison.OrdinalIgnoreCase));
             }
         }
@@ -153,10 +153,9 @@ namespace Agebull.EntityModel.RobotCoder
             using (new EditScope(entity.__EntityStatus, EditArrestMode.All, false))
             {{");
 
-            var idx = 0;
             foreach (var field in fields)
             {
-                SqlMomentCoder.FieldReadCode(field, code, idx++);
+                SqlMomentCoder.FieldReadCode(field, code);
             }
             code.Append(@"
             }
@@ -280,7 +279,7 @@ namespace {NameSpace}.DataAccess
         protected override void CreateBaCode(string path)
         {
             var file = Path.Combine(path, Entity.Name + "DataAccess.Designer.cs");
-            if (Entity.IsClass)
+            if (Entity.NoDataBase)
             {
                 if (File.Exists(file))
                 {
@@ -297,7 +296,7 @@ namespace {NameSpace}.DataAccess
         protected override void CreateExCode(string path)
         {
             var file = Path.Combine(path, $"{Entity.Name}DataAccess.cs");
-            if (Entity.IsClass)
+            if (Entity.NoDataBase)
             {
                 if (File.Exists(file))
                 {
@@ -828,10 +827,9 @@ UPDATE `{Entity.SaveTable}` SET");
         {{
             using (new EditScope(entity.__EntityStatus, EditArrestMode.All, false))
             {{");
-            var idx = 0;
             foreach (var field in PublishDbFields)
             {
-                SqlMomentCoder.FieldReadCode(field, code, idx++);
+                SqlMomentCoder.FieldReadCode(field, code);
             }
             code.Append(@"
             }

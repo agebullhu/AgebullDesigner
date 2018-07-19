@@ -6,6 +6,10 @@ namespace Agebull.EntityModel.Config
     public enum DataBaseType
     {
         /// <summary>
+        /// None
+        /// </summary>
+        None,
+        /// <summary>
         /// SqlServer
         /// </summary>
         SqlServer,
@@ -13,6 +17,10 @@ namespace Agebull.EntityModel.Config
         /// MySql
         /// </summary>
         MySql,
+        /// <summary>
+        /// Oracle
+        /// </summary>
+        Oracle,
         /// <summary>
         /// Sqlite
         /// </summary>

@@ -6,12 +6,16 @@
              xmlns:defaults="clr-namespace:Agebull.EntityModel.Config;assembly=Agebull.Common.Config.Helper"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
+             xmlns:designer="clr-namespace:Agebull.EntityModel.Designer"
              mc:Ignorable="d"
              d:DesignHeight="900" d:DesignWidth="1051">
+    <UserControl.DataContext>
+        <designer:EasyUiViewModel/>
+    </UserControl.DataContext>
     <DockPanel>
         <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal" DataContext="{Binding Model.Context.SelectEntity}">
             <WrapPanel.Resources>
-                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/DataTemplate/Form.xaml"/>
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
             </WrapPanel.Resources>
             <StackPanel>
                 <Label Content="页面文件夹名称" />
@@ -48,7 +52,7 @@
                     DataContext="{Binding Model.Context.SelectProperty}"
                     IsEnabled="{Binding DenyClient,Converter={StaticResource BoolReversalConverter},Mode=OneWay}">
             <TabControl.Resources>
-                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/DataTemplate/Form.xaml"/>
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
             </TabControl.Resources>
             <TabItem Header="显示内容">
                 <WrapPanel>
@@ -145,7 +149,7 @@
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
                   DataContext="{Binding Context}"
-                  ItemsSource="{Binding SelectItemChildrens}">
+                  ItemsSource="{Binding SelectEntity.Properties}">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                     Header="标题" IsReadOnly="True" />
@@ -160,7 +164,7 @@
                 <DataGridCheckBoxColumn
                     Binding="{Binding IsRequired,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="必要" />
                 <DataGridCheckBoxColumn
-                    Binding="{Binding ExtendConfigList[user_form_hide],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                    Binding="{Binding ExtendConfigListBool[user_form_hide],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                     Header="隐藏" />
                 <DataGridCheckBoxColumn
                     Binding="{Binding IsUserReadOnly,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="只读" />

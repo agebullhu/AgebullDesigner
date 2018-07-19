@@ -29,6 +29,7 @@ namespace Agebull.EntityModel
             if (source is INotifyPropertyChanged pp)
             {
                 pp.PropertyChanged += OnModelPropertyChanged;
+                
             }
             Source = source as NotificationObject;
         }
@@ -53,8 +54,7 @@ namespace Agebull.EntityModel
 
         public T FindParentModel<T>() where T : class
         {
-            var itemModel = Parent as TreeItem;
-            if (itemModel == null)
+            if (!(Parent is TreeItem itemModel))
                 return null;
             var model = itemModel.Source as T;
             return model ?? itemModel.FindParentModel<T>();
@@ -93,7 +93,23 @@ namespace Agebull.EntityModel
             }
         }
 
+        /// <summary>
+        ///     切换展开
+        /// </summary>
+        public void ExpandedChild(object arg)
+        {
+            ExpandedChild(!_isExpend);
+        }
 
+        /// <summary>
+        ///     展开
+        /// </summary>
+        public void ExpandedChild(bool ext)
+        {
+            IsExpanded = ext;
+            foreach (var child in Items)
+                child.ExpandedChild(ext);
+        }
         private string _header;
 
         /// <summary>
@@ -157,32 +173,42 @@ namespace Agebull.EntityModel
             }
         }
 
-        private List<CommandItem> _commands;
+        private List<CommandItemBase> _commands;
 
-        public List<CommandItem> Commands => _commands;
+        public List<CommandItemBase> Commands => _commands;
 
         /// <summary>
         /// 构建命令列表
         /// </summary>
-        public List<CommandItem> CreateCommandList()
+        public List<CommandItemBase> CreateCommandList()
         {
-            var commands = new List<CommandItem>();
+            var commands = new List<CommandItemBase>();
             var actions = CommandCoefficient.Coefficient(Source);
             if (actions != null)
+            {
                 foreach (var action in actions)
                 {
                     action.Source = Source;
-                    action.Parameter = Source;
                     commands.Add(action);
                 }
+            }
             CreateCommandList(commands);
+            commands.Add(new CommandItem
+            {
+                IsButton=true,
+                Name= "ExpandedChild",
+                Caption = "切换展开",
+                Catalog = "视图",
+                IconName = "tree_Open",
+                Action = ExpandedChild
+            });
             return _commands = commands;
         }
 
         /// <summary>
         /// 构建命令列表
         /// </summary>
-        protected virtual void CreateCommandList(List<CommandItem> commands)
+        protected virtual void CreateCommandList(List<CommandItemBase> commands)
         {
         }
 
@@ -196,7 +222,6 @@ namespace Agebull.EntityModel
             foreach (var command in _commands)
             {
                 command.Source = null;
-                command.Parameter = null;
             }
             _commands.Clear();
             _commands = null;
@@ -368,9 +393,21 @@ namespace Agebull.EntityModel
                 BeginInvokeInUiThread(SyncColorAutomatic);
             }
 
+            OnStatePropertyChanged(Source, e);
             _customPropertyChanged?.Invoke(this, Source, e.PropertyName);
         }
 
+        protected void OnStatePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(NotificationObject.IsModify))
+            {
+                BackgroundColor = Source.IsModify ? Brushes.Silver : Brushes.Transparent;
+            }
+            else if (StatusField != null && StatusField.Contains(e.PropertyName))
+            {
+                BeginInvokeInUiThread(SyncStatusImageAutomatic);
+            }
+        }
         private Action<TreeItem, NotificationObject, string> _customPropertyChanged;
         /// <summary>
         /// 同步自动处理

@@ -20,23 +20,19 @@ namespace Agebull.EntityModel.Designer
 {
     public sealed class NotifyRefactorViewModel : ViewModelBase<NotifyRefactorModel>
     {
-        private List<CommandItem> _exCommands;
+        private List<CommandItemBase> _exCommands;
 
-        public IEnumerable<CommandItem> ExCommands => _exCommands ?? (_exCommands = new List<CommandItem>
+        public IEnumerable<CommandItemBase> ExCommands => _exCommands ?? (_exCommands = new List<CommandItemBase>
         {
-            new CommandItem
-            {
-                Command = new AsyncCommand<string, List<NotifyItem>>
+            new AsyncCommandItem<string, List<NotifyItem>>
                     (Model.CheckNotifyPrepare, Model.DoCheckNotify, Model.CheckNotifyEnd)
-                {
-                    Detect = Model
-                },
+            {
                 Caption = "分析接口",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             },
             new CommandItem
             {
-                Command = new DelegateCommand(Model.End),
+                Action = arg=>Model.End(),
                 Caption = "接收到系统中",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             }

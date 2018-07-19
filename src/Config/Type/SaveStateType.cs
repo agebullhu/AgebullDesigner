@@ -13,23 +13,37 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         None = 0x0,
         /// <summary>
-        /// 引用
-        /// </summary>
-        /// <remarks>
-        /// 来源是导入的第三方对象,不可更改
-        /// </remarks>
-        IsReference = 0x1,
-        /// <summary>
         /// 已删除
         /// </summary>
-        IsDelete = 0x2,
+        Delete = 0x2,
         /// <summary>
         /// 已锁定
         /// </summary>
-        IsFreeze = 0x4,
+        Freeze = 0x4,
         /// <summary>
         /// 已废弃
         /// </summary>
-        IsDiscard = 0x8
+        Discard = 0x8,
+        /// <summary>
+        /// 引用
+        /// </summary>
+        /// <remarks>
+        /// 来源引用对象,不可更改
+        /// </remarks>
+        Reference = 0x10,
+        /// <summary>
+        /// 引用
+        /// </summary>
+        /// <remarks>
+        /// 预定义对象,不可更改
+        /// </remarks>
+        Predefined = 0x20,
+        /// <summary>
+        /// 引用
+        /// </summary>
+        /// <remarks>
+        /// 锁定
+        /// </remarks>
+        Lock = 0x10000
     }
 }

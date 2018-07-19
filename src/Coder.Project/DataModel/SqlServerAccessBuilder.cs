@@ -113,13 +113,13 @@ namespace Agebull.EntityModel.RobotCoder
 
         private string FieldCode()
         {
-            return string.Format(@"
+            return $@"
         #region 字段
 
         /// <summary>
         ///  所有字段
         /// </summary>
-        static string[] _fields = new string[]{{ {0} }};
+        static string[] _fields = new string[]{{ {Fields()} }};
 
         /// <summary>
         ///  所有字段
@@ -136,7 +136,7 @@ namespace Agebull.EntityModel.RobotCoder
         ///  字段字典
         /// </summary>
         public static Dictionary<string, string> fieldMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-        {{{1}
+        {{{FieldMap()}
         }};
 
         /// <summary>
@@ -146,9 +146,7 @@ namespace Agebull.EntityModel.RobotCoder
         {{
             get {{ return fieldMap ; }}
         }}
-        #endregion"
-                , Fields()
-                , FieldMap());
+        #endregion";
         }
 
         private string CreateCode()
@@ -165,7 +163,7 @@ namespace Agebull.EntityModel.RobotCoder
         #endregion
 ";
 
-            return string.Format(@"
+            return $@"
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -179,33 +177,23 @@ using Gboxt.Common.DataModel;
 using Gboxt.Common.DataModel.SqlServer;
 
 
-namespace {0}.DataAccess
+namespace {NameSpace}.DataAccess
 {{
     /// <summary>
-    /// {1}
+    /// {Entity.Description}
     /// </summary>
-    {2} partial class {3}DataAccess
-    {{{4}{5}
+    {(Entity.IsInternal ? "internal" : "public")} partial class {Entity.Name}DataAccess
+    {{{null}{innerCode}
     }}
 
-    sealed partial class {6}
+    sealed partial class {Project.DataBaseObjectName}
     {{
-{7}
-{8}
-{9}
+{TableSql()}
+{TableObject()}
+{TablesEnum()}
     }}
 }}
-"
-                , NameSpace
-                , Entity.Description
-                , Entity.IsInternal ? "internal" : "public"
-                , Entity.Name
-                , null //ec.MakeSource()
-                , innerCode
-                , Project.DataBaseObjectName
-                , TableSql()
-                , TableObject()
-                , TablesEnum());
+";
         }
 
         /// <summary>
@@ -214,7 +202,7 @@ namespace {0}.DataAccess
         protected override void CreateBaCode(string path)
         {
             var file = Path.Combine(path, Entity.Name + "DataAccess.Designer.cs");
-            if (Entity.IsClass)
+            if (Entity.NoDataBase)
             {
                 if (File.Exists(file))
                 {
@@ -232,7 +220,7 @@ namespace {0}.DataAccess
         protected override void CreateExCode(string path)
         {
             var file = Path.Combine(path, Entity.Name + "DataAccess.cs");
-            if (Entity.IsClass)
+            if (Entity.NoDataBase)
             {
                 if (File.Exists(file))
                 {
@@ -544,7 +532,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
             return sql.ToString();
         }
 
-        private string UpdateSqlByModify(bool isInner = false)
+        private string UpdateSqlByModify()
         {
             var code = new StringBuilder();
             IEnumerable<PropertyConfig> columns = Entity.DbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
@@ -657,9 +645,8 @@ UPDATE [{0}] SET", Entity.SaveTable);
                         break;
                     case "DateTime":
                         field.DbNullable = true;
-                        if (field.Nullable)
-                        {
-                            code.AppendFormat(@"
+                        code.AppendFormat(field.Nullable
+                                ? @"
             {1}isNull = entity.{0} == null || entity.{0}.Value.Year < 1900;
             {1}parameter = new SqlParameter(""{0}"",SqlDbType.DateTime);
             if(isNull)
@@ -667,12 +654,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
             else
                 parameter.Value = entity.{0};
             cmd.Parameters.Add(parameter);"
-                                , field.PropertyName
-                                , isFirstNull ? "var " : "");
-                        }
-                        else
-                        {
-                            code.AppendFormat(@"
+                                : @"
             {1}isNull = entity.{0}.Year < 1900;
             {1}parameter = new SqlParameter(""{0}"",SqlDbType.DateTime);
             if(isNull)
@@ -680,9 +662,8 @@ UPDATE [{0}] SET", Entity.SaveTable);
             else
                 parameter.Value = entity.{0};
             cmd.Parameters.Add(parameter);"
-                                , field.PropertyName
-                                , isFirstNull ? "var " : "");
-                        }
+                            , field.PropertyName
+                            , isFirstNull ? "var " : "");
                         break;
                     default:
                         if (!field.Nullable)
@@ -796,12 +777,13 @@ UPDATE [{0}] SET", Entity.SaveTable);
             var idx = 0;
             foreach (var field in Entity.DbFields)
             {
+                string fieldName = field.PropertyName.ToLWord();
                 if (!string.IsNullOrWhiteSpace(field.CustomType))
                 {
                     code.AppendFormat(@"
                 if (!reader.IsDBNull({2}))
                     entity._{0} = ({1})reader.GetInt32({2});"
-                        , field.PropertyName.ToLower()
+                        , fieldName
                         , field.CustomType
                         , idx++);
                     continue;
@@ -812,47 +794,31 @@ UPDATE [{0}] SET", Entity.SaveTable);
                         code.AppendFormat(@"
                 if (!reader.IsDBNull({1}))
                     entity._{0} = reader.GetSqlBinary({1}).Value;"
-                            , field.PropertyName.ToLower()
+                            , fieldName
                             , idx++);
                         continue;
                     case "string":
-                        if (field.DbType.ToLower() == "nvarchar")
-                        {
-                            code.AppendFormat(@"
+                        code.AppendFormat(field.DbType?.ToLower() == "nvarchar"
+                                ? @"
                 if (!reader.IsDBNull({2}))
                     entity._{0} = {1}({2});"
-                                , field.PropertyName.ToLower()
-                                , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
-                                , idx++);
-                        }
-                        else
-                        {
-                            code.AppendFormat(@"
+                                : @"
                 if (!reader.IsDBNull({2}))
                     entity._{0} = {1}({2}).ToString();"
-                                , field.PropertyName.ToLower()
-                                , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
-                                , idx++);
-                        }
+                            , fieldName
+                            , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
+                            , idx++);
                         continue;
                     case "decimal":
-                        if (field.DbNullable)
-                        {
-                            code.AppendFormat(@"
+                        code.AppendFormat(field.DbNullable
+                                ? @"
                 if (!reader.IsDBNull({2}))
                     entity._{0} = (decimal){1}({2});"
-                                , field.PropertyName.ToLower()
-                                , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
-                                , idx++);
-                        }
-                        else
-                        {
-                            code.AppendFormat(@"
+                                : @"
                 entity._{0} = (decimal){1}({2});"
-                                , field.PropertyName.ToLower()
-                                , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
-                                , idx++);
-                        }
+                            , fieldName
+                            , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
+                            , idx++);
                         continue;
                 }
                 if (field.DbNullable)
@@ -862,7 +828,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
                         code.AppendFormat(@"
                 if (!reader.IsDBNull({2}))
                     entity._{0} = {1}({2});"
-                            , field.PropertyName.ToLower()
+                            , fieldName
                             , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
                             , idx++);
                     }
@@ -871,7 +837,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
                         code.AppendFormat(@"
                 if (!reader.IsDBNull({2}))
                     entity._{0} = {1}({2}) == 1;"
-                            , field.PropertyName.ToLower()
+                            , fieldName
                             , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
                             , idx++);
                     }
@@ -880,7 +846,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
                         code.AppendFormat(@"
                 if (!reader.IsDBNull({2}))
                     entity._{0} = new decimal({1}({2}));"
-                            , field.PropertyName.ToLower()
+                            , fieldName
                             , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
                             , idx++);
                     }
@@ -889,7 +855,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
                         code.AppendFormat(@"
                 if (!reader.IsDBNull({3}))
                     entity._{0} = ({1}){2}({3});"
-                            , field.PropertyName.ToLower()
+                            , fieldName
                             , field.CsType
                             , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
                             , idx++);
@@ -901,35 +867,25 @@ UPDATE [{0}] SET", Entity.SaveTable);
                     {
                         code.AppendFormat(@"
                 entity._{0} = ({3}){1}({2});"
-                            , field.PropertyName.ToLower()
+                            , fieldName
                             , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
                             , idx++
                             , field.CustomType ?? field.CsType);
                     }
                     else if (field.CsType.ToLower() == "bool" && field.DbType.ToLower() == "int")
                     {
-                        code.AppendFormat(@"
-                entity._{0} = {1}({2}) == 1;"
-                            , field.PropertyName.ToLower()
-                            , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
-                            , idx++);
+                        code.Append($@"
+                entity._{fieldName} = {CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)}({idx++}) == 1;");
                     }
                     else if (field.CsType.ToLower() == "decimal")
                     {
-                        code.AppendFormat(@"
-                entity._{0} = new decimal({1}({2}));"
-                            , field.PropertyName.ToLower()
-                            , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
-                            , idx++);
+                        code.Append($@"
+                entity._{fieldName} = new decimal({CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)}({idx++}));");
                     }
                     else
                     {
-                        code.AppendFormat(@"
-                entity._{0} = ({1}){2}({3});"
-                            , field.PropertyName.ToLower()
-                            , field.CustomType ?? field.CsType
-                            , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
-                            , idx++);
+                        code.Append($@"
+                entity._{fieldName} = ({field.CustomType ?? field.CsType}){CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)}({idx++});");
                     }
                 }
             }

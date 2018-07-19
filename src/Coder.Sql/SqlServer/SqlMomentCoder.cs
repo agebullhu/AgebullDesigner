@@ -44,7 +44,7 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.Sqlerver
 
         public static string TruncateTable(EntityConfig entity)
         {
-            if (entity.IsClass)
+            if (entity.NoDataBase)
                 return Empty;
             return $@"
 /*******************************{entity.Caption}*******************************/
@@ -54,7 +54,7 @@ TRUNCATE TABLE [{entity.SaveTable}];
 
         public static string DropView(EntityConfig entity)
         {
-            if (entity.IsClass || entity.SaveTable == entity.ReadTableName)
+            if (entity.NoDataBase || entity.SaveTable == entity.ReadTableName)
                 return Empty;
             return $@"
 /*******************************{entity.Caption}*******************************/
@@ -63,7 +63,7 @@ DROP VIEW [{entity.ReadTableName}];
         }
         public static string CreateView(EntityConfig entity)
         {
-            if (entity.IsClass || entity.DbFields.All(p => IsNullOrEmpty(p.LinkTable)))
+            if (entity.NoDataBase || entity.DbFields.All(p => IsNullOrEmpty(p.LinkTable)))
                 return "--这个设置为普通类(IsClass=true)或没有关联表，无法生成SQL";//这个设置为普通类，无法生成SQL
             var tables = new Dictionary<string, EntityConfig>();
             foreach (var field in entity.DbFields)
@@ -110,11 +110,10 @@ CREATE VIEW [{viewName}] AS
 
                 if (!field.IsLinkKey && !IsNullOrEmpty(field.LinkTable))
                 {
-                    EntityConfig friend;
-                    if (tables.TryGetValue(field.LinkTable, out friend))
+                    if (tables.TryGetValue(field.LinkTable, out EntityConfig friend))
                     {
                         var linkField =
-                            friend.Properties.FirstOrDefault(
+                            friend.DbFields.FirstOrDefault(
                                 p => p.ColumnName == field.LinkField || p.Name == field.LinkField);
                         if (linkField != null)
                         {
@@ -129,10 +128,10 @@ CREATE VIEW [{viewName}] AS
     FROM [{entity.SaveTable}]");
             foreach (var table in tables.Values)
             {
-                var field = entity.Properties.FirstOrDefault(p => p.IsLinkKey && p.LinkTable == table.SaveTable);
+                var field = entity.DbFields.FirstOrDefault(p => p.IsLinkKey && p.LinkTable == table.SaveTable);
                 if (field == null)
                     continue;
-                var linkField = table.Properties.FirstOrDefault(
+                var linkField = table.DbFields.FirstOrDefault(
                     p => p.Name == field.LinkField || p.ColumnName == field.LinkField);
                 if (linkField == null)
                     continue;
@@ -150,7 +149,7 @@ CREATE VIEW [{viewName}] AS
         }
         private static string DropTable(EntityConfig entity)
         {
-            if (entity.IsClass)
+            if (entity.NoDataBase)
                 return "--这个设置为普通类(IsClass=true)，无法生成SQL";//这个设置为普通类，无法生成SQL
             return $@"
 /*******************************{entity.Caption}*******************************/
@@ -202,7 +201,7 @@ DROP TABLE [{entity.SaveTable}];";
 INSERT INTO [tb_sys_page_item] ([ItemType],[Name],[Caption],[Url],[Memo],[ParentId])
 VALUES(0,'{project.Caption}','{project.Caption}',NULL,'{project.Description}',0);
 set @pid = @@IDENTITY;");
-            foreach (var entity in project.Entities.Where(p => !p.IsClass))
+            foreach (var entity in project.Entities.Where(p => !p.NoDataBase))
                 sb.Append($@"
 INSERT INTO [tb_sys_page_item[ ([ItemType],[Name],[Caption],[Url],[Memo],[ParentId])
 VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Name}/Index.aspx','{entity.Description}',@pid);");
@@ -215,7 +214,7 @@ VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Name}
 
         public static string CreateTableCode(EntityConfig entity, bool signle = false)
         {
-            if (entity.IsClass)
+            if (entity.NoDataBase)
                 return "";//这个设置为普通类，无法生成SQL
             var code = new StringBuilder();
             code.Append($@"
@@ -265,7 +264,7 @@ EXECUTE sp_addextendedproperty N'MS_Description', @v, N'SCHEMA', N'dbo', N'TABLE
 
         private static string AddColumnCode(EntityConfig entity)
         {
-            if (entity.IsClass)
+            if (entity.NoDataBase)
                 return "--这个设置为普通类(IsClass=true)，无法生成SQL";//这个设置为普通类，无法生成SQL
             var code = new StringBuilder();
             code.Append($@"
@@ -289,7 +288,7 @@ ALTER TABLE [{entity.SaveTable}]");
 
         private string ChangeColumnCode(EntityConfig entity)
         {
-            if (entity == null || entity.IsClass)
+            if (entity == null || entity.NoDataBase)
                 return "--这个设置为普通类(IsClass=true)，无法生成SQL";//这个设置为普通类，无法生成SQL
             var code = new StringBuilder();
             code.Append($@"

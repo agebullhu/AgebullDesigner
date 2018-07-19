@@ -5,69 +5,44 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
+             xmlns:designer="clr-namespace:Agebull.EntityModel.Designer"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="800">
-    <DockPanel>
-        <DockPanel DockPanel.Dock="Bottom">
-            <ToolBar DockPanel.Dock="Top" Height="28">
-                <TextBlock Text="新增字段" VerticalAlignment="Center" Margin="5,0,0,0" />
-                <ToolBarTray Width="2" />
-                <ItemsControl VerticalAlignment="Stretch"
-                              HorizontalAlignment="Stretch"
-                              ItemsSource="{Binding Model.ExCommands,Mode=OneWay}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Button Style="{StaticResource CommandButton}" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel VerticalAlignment="Stretch"
-                                        HorizontalAlignment="Stretch"
-                                        Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
-            </ToolBar>
-            <TextBlock DockPanel.Dock="Right" Background="Silver" Width="200" TextWrapping="WrapWithOverflow">
-                <Run FontSize="14" Foreground="Blue">说明:</Run><LineBreak/>
-                格式1(空白分隔) * 名称 字段类型 标题文本 说明文本<LineBreak/><LineBreak/>
-                格式1(空白分隔) * 名称，字段类型，标题文本，说明文本<LineBreak/>
-            </TextBlock>
-            <TextBox Text="{Binding Model.Fields,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Top"
-                     Height="200" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible"
-                     AcceptsReturn="True" AcceptsTab="True" AutoWordSelection="True"
-                     TextOptions.TextFormattingMode="Display" TextWrapping="Wrap" />
-        </DockPanel>
-        <DataGrid AutoGenerateColumns="False"
-                  CanUserAddRows="False"
-                  CanUserDeleteRows="False"
-                  DataContext="{Binding Context}"
-                  ItemsSource="{Binding SelectItemChildrens}">
-            <DataGrid.Columns>
-                <DataGridCheckBoxColumn Binding="{Binding Discard,Mode=TwoWay}" Header="废弃" />
-                <DataGridTextColumn Binding="{Binding Index,Mode=TwoWay}" Header="序号" />
-                <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
-                <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />
-                <DataGridCheckBoxColumn Binding="{Binding IsPrimaryKey,Mode=TwoWay}" Header="主键" />
-                <DataGridCheckBoxColumn Binding="{Binding IsIdentity,Mode=TwoWay}" Header="自列" />
-                <DataGridCheckBoxColumn Binding="{Binding IsCaption,Mode=TwoWay}" Header="标题" />
-                <DataGridCheckBoxColumn Binding="{Binding DenyClient,Mode=TwoWay}" Header="非用户" />
-                <DataGridCheckBoxColumn Binding="{Binding IsSystemField,Mode=TwoWay}" Header="系统" />
-                <DataGridCheckBoxColumn Binding="{Binding DbInnerField,Mode=TwoWay}" Header="数据库字段" />
-                <DataGridCheckBoxColumn Binding="{Binding IsMiddleField,Mode=TwoWay}" Header="中间字段" />
-                <DataGridTextColumn Binding="{Binding CsType,Mode=TwoWay}" Header="C#类型" />
-                <DataGridCheckBoxColumn Binding="{Binding Nullable,Mode=TwoWay}" Header="空类型" />
-                <DataGridTextColumn Binding="{Binding CustomType,Mode=TwoWay}" Header="C#自定义" />
-                <DataGridTextColumn Binding="{Binding CppName,Mode=TwoWay}" Header="C++别名" />
-                <DataGridTextColumn Binding="{Binding CppType,Mode=TwoWay}" Header="C++类型" />
-                <DataGridTextColumn Binding="{Binding CppLastType,Mode=TwoWay}" Header="C++最终" />
-                <DataGridTextColumn Binding="{Binding UniqueIndex,Mode=TwoWay}" Header="组合主键顺序" />
-                <DataGridTextColumn Binding="{Binding HelloCode,Mode=TwoWay}" Header="示例内容" MinWidth="120"/>
-            </DataGrid.Columns>
-            <i:Interaction.Behaviors>
-                <behaviors:DataGridGenertColumnsBehavior />
-            </i:Interaction.Behaviors>
-        </DataGrid>
-    </DockPanel>
+
+    <UserControl.DataContext>
+        <designer:FieldsViewModel/>
+    </UserControl.DataContext>
+    <DataGrid AutoGenerateColumns="False"
+              CanUserAddRows="False"
+              CanUserDeleteRows="False"
+              DataContext="{Binding Context}"
+              ItemsSource="{Binding SelectEntity.Properties}">
+        <DataGrid.Columns>
+            <DataGridCheckBoxColumn Binding="{Binding Option.IsDiscard,Mode=TwoWay}" Header="废弃" />
+            <DataGridCheckBoxColumn Binding="{Binding Option.IsDelete,Mode=TwoWay}" Header="删除" />
+            <DataGridTextColumn Binding="{Binding Option.Index,Mode=TwoWay}" Header="序号" />
+            <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
+            <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />
+            <DataGridTextColumn Binding="{Binding Group,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                Header="分组" />
+            <DataGridCheckBoxColumn Binding="{Binding IsPrimaryKey,Mode=TwoWay}" Header="主键" />
+            <DataGridCheckBoxColumn Binding="{Binding IsIdentity,Mode=TwoWay}" Header="自增" />
+            <DataGridCheckBoxColumn Binding="{Binding IsCaption,Mode=TwoWay}" Header="标题" />
+            <DataGridCheckBoxColumn Binding="{Binding IsSystemField,Mode=TwoWay}" Header="系统" />
+            <DataGridCheckBoxColumn Binding="{Binding IsMiddleField,Mode=TwoWay}" Header="中间字段" />
+            <DataGridTextColumn Binding="{Binding DataType,Mode=TwoWay}" Header="数据类型" />
+            <DataGridTextColumn Binding="{Binding CsType,Mode=TwoWay}" Header="C#类型" />
+            <DataGridTextColumn Binding="{Binding CustomType,Mode=TwoWay}" Header="自定义类型" />
+            <DataGridCheckBoxColumn Binding="{Binding Nullable,Mode=TwoWay}" Header="可空类型" />
+            <DataGridCheckBoxColumn Binding="{Binding CanGet,Mode=TwoWay}" Header="可读" />
+            <DataGridCheckBoxColumn Binding="{Binding CanSet,Mode=TwoWay}" Header="可写" />
+            <DataGridCheckBoxColumn Binding="{Binding IsArray,Mode=TwoWay}" Header="数组" />
+            <DataGridCheckBoxColumn Binding="{Binding IsEnum,Mode=TwoWay}" Header="枚举" />
+            <DataGridCheckBoxColumn Binding="{Binding IsDictionary,Mode=TwoWay}" Header="字典" />
+            <DataGridTextColumn Binding="{Binding HelloCode,Mode=TwoWay}" Header="示例内容" MinWidth="260"/>
+        </DataGrid.Columns>
+        <i:Interaction.Behaviors>
+            <behaviors:DataGridGenertColumnsBehavior />
+        </i:Interaction.Behaviors>
+    </DataGrid>
 </UserControl>

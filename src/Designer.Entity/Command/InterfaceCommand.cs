@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Windows;
-using System.Windows.Media;
 using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
 
@@ -24,105 +22,93 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Command = new DelegateCommand(ToIDataState),
+                Action = (ToIDataState),
                 Caption = "实现状态数据(IStateData)接口",
                 Editor = "Entity",
-                Signle=false,
-                
-                NoButton = true,
+                SignleSoruce=false,
+                Catalog = "工具",
                 IconName ="img_link"
             });
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Command = new DelegateCommand(ToIHistory),
+                Action = (ToIHistory),
                 Caption = "实现历史数据(IHistoryData)接口",
                 Editor = "Entity",
-                Signle = true,
-                NoButton = true,
+                SignleSoruce = true,
+                Catalog = "工具",
                 IconName = "img_link"
             });
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Command = new DelegateCommand(ToIAudit),
+                Action = (ToIAudit),
                 Caption = "实现审核(IAudit)接口",
                 Editor = "Entity",
-                Signle = true,
-                NoButton = true,
+                SignleSoruce = true,
+                Catalog = "工具",
                 IconName = "img_link"
             });
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Command = new DelegateCommand(ToMemo),
+                Action = (ToMemo),
                 Caption = "添加备注(Memo)字段",
                 Editor = "Entity",
-                Signle = true,
-                NoButton = true,
+                SignleSoruce = true,
+                Catalog = "工具",
                 IconName = "img_link"
             });
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Command = new DelegateCommand(ToSelfRelation),
+                Action = (ToSelfRelation),
                 Caption = "添加上级关联(ParentId)字段",
+                Catalog = "工具",
                 Editor = "Entity",
-                Signle = true,
-                NoButton = true,
+                SignleSoruce = true,
                 IconName = "img_link"
             });
-            //commands.Add(new CommandItemBuilder
-            //{
-            //    Command = new DelegateCommand(CheckIHistory),
-            //    Caption = "规范历史信息(IHistoryData)",
-            //    Signle = false,
-            //    NoButton = true,
-            //    IconName ="img_link"
-            //});
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                Action = (CheckIHistory),
+                Caption = "规范历史信息(IHistoryData)",
+                Catalog = "工具",
+                SignleSoruce = true,
+                IconName = "img_link"
+            });
         }
-        public void ToSelfRelation()
+        public void ToSelfRelation(EntityConfig entity)
         {
             var cmd = new EntityInterfaceSeter();
-            Foreach(cmd.ToSelfRelation);
-        }
-
-        public void ToMemo()
-        {
-            var cmd = new EntityInterfaceSeter();
-            Foreach(cmd.ToMemo);
+            cmd.ToSelfRelation(entity);
         }
 
-        public void ToIDataState()
+        public void ToMemo(EntityConfig entity)
         {
             var cmd = new EntityInterfaceSeter();
-            Foreach(cmd.ToIDataState);
+            cmd.ToMemo(entity);
         }
 
-        public void ToIHistory()
+        public void ToIDataState(EntityConfig entity)
         {
             var cmd = new EntityInterfaceSeter();
-            Foreach(cmd.ToIHistory);
+            cmd.ToIDataState(entity);
         }
 
-        public void ToIAudit()
+        public void ToIHistory(EntityConfig entity)
         {
             var cmd = new EntityInterfaceSeter();
-            Foreach(cmd.ToIAudit);
+            cmd.ToIHistory(entity);
+        }
+
+        public void ToIAudit(EntityConfig entity)
+        {
+            var cmd = new EntityInterfaceSeter();
+            cmd.ToIAudit(entity);
         }
 
 
         #region 历史信息检查
 
-
-        void CheckIHistory()
-        {
-            Foreach(CheckIHistory);
-        }
-        /*
-         CreatedDate	datetime	Unchecked
-CreatedBy	varchar(50)	Unchecked
-UpdatedDate	datetime	Checked
-UpdatedBy	varchar(50)	Checked
-*/
         void CheckIHistory(EntityConfig entity)
         {
             if (entity.Properties.Count == 0)
@@ -155,8 +141,8 @@ UpdatedBy	varchar(50)	Checked
 
             a.IsSystemField = true;
             a.IsInterfaceField = true;
-            a.IsReference = true;
-            a.ReferenceKey = b.Key;
+            a.Option.IsReference = true;
+            a.Option.ReferenceKey = b.Key;
         }
         #endregion
     }
@@ -237,7 +223,7 @@ UpdatedBy	varchar(50)	Checked
                 pr.CopyFrom(property);
                 if (pr.Index <= 0)
                 {
-                    pr.Index = _entity.MaxIdentity;
+                    pr.Option.Index = _entity.MaxIdentity;
                     _entity.MaxIdentity++;
                 }
             }
@@ -295,204 +281,6 @@ UpdatedBy	varchar(50)	Checked
         /// </summary>
         public static PropertyConfig _slaveOId;
 
-        static EntityInterfaceSeter()
-        {
-            using (WorkModelScope.CreateScope(WorkModel.Repair))
-            {
-                _dataState = new PropertyConfig
-                {
-                    IsPredefined = true,
-                    Caption = "数据状态",
-                    Description = "数据状态",
-                    Index = -1,//100,
-                    Name = "DataState",
-                    CustomType = "DataStateType",
-                    CsType = "int",
-                    ColumnName = "data_state",
-                    Initialization = "0",
-                    DbType = "INT",
-                    DbNullable = false,
-                    IsSystemField = true,
-                    IsInterfaceField = true,
-                    Group = "系统_数据状态"
-                };
-                _isFreeze = new PropertyConfig
-                {
-                    IsPredefined = true,
-                    Caption = "数据是否已冻结",
-                    Description = "数据是否已冻结",
-                    Index = -1,//101,
-                    Name = "IsFreeze",
-                    CsType = "bool",
-                    ColumnName = "is_freeze",
-                    Initialization = "0",
-                    DbType = "BOOL",
-                    DbNullable = false,
-                    IsSystemField = true,
-                    IsInterfaceField = true,
-                    Group = "系统_数据状态"
-                };
-                _authorId = new PropertyConfig
-                {
-                    IsPredefined = true,
-                    Caption = "制作人",
-                    Description = "制作人",
-                    Index = -1,//102,
-                    Name = "AuthorID",
-                    CsType = "int",
-                    ColumnName = "author_id",
-
-                    DbType = "int",
-                    Initialization = "0",
-                    DbNullable = false,
-                    IsSystemField = true,
-                    IsInterfaceField = true,
-                    Group = "系统_历史"
-                };
-                _addDate = new PropertyConfig
-                {
-                    IsPredefined = true,
-                    Caption = "制作时间",
-                    Description = "制作时间",
-                    Index = -1,//103,
-                    Name = "AddDate",
-                    CsType = "DateTime",
-                    //IsCompute = true,
-                    ColumnName = "add_date",
-                    DbType = "DateTime",
-                    DbNullable = true,
-                    IsSystemField = true,
-                    IsInterfaceField = true,
-                    Group = "系统_历史"
-                };
-                _lastReviserId = new PropertyConfig
-                {
-                    IsPredefined = true,
-                    Caption = "最后修改者",
-                    Description = "最后修改者",
-                    Index = -1,//104,
-                    Name = "LastReviserID",
-                    CsType = "int",
-                    ColumnName = "last_reviser_id",
-                    DbType = "int",
-                    Initialization = "0",
-                    DbNullable = false,
-                    IsSystemField = true,
-                    IsInterfaceField = true,
-                    Group = "系统_历史"
-                };
-                _lastModifyDate = new PropertyConfig
-                {
-                    IsPredefined = true,
-                    Caption = "最后修改日期",
-                    Description = "最后修改日期",
-                    Index = -1,//105,
-                    Name = "LastModifyDate",
-                    CsType = "DateTime",
-                    ColumnName = "last_modify_date",
-                    DbType = "DateTime",
-                    DbNullable = true,
-                    IsSystemField = true,
-                    IsInterfaceField = true,
-                    Group = "系统_历史"
-                };
-                _auditState = new PropertyConfig
-                {
-                    IsPredefined = true,
-                    Caption = "审核状态",
-                    Description = "审核状态",
-                    Index = -1,//106,
-                    Name = "AuditState",
-                    CustomType = "AuditStateType",
-                    CsType = "int",
-                    ColumnName = "audit_state",
-                    DbType = "int",
-                    Initialization = "0",
-                    DbNullable = false,
-                    IsSystemField = true,
-                    IsInterfaceField = true,
-                    Group = "系统_审核"
-                };
-                _auditorId = new PropertyConfig
-                {
-                    IsPredefined = true,
-                    Caption = "审核人",
-                    Description = "审核人",
-                    Index = -1,//107,
-                    Name = "AuditorId",
-                    CsType = "int",
-                    ColumnName = "auditor_id",
-                    DbType = "int",
-                    Initialization = "0",
-                    DbNullable = false,
-                    IsSystemField = true,
-                    IsInterfaceField = true,
-                    Group = "系统_审核"
-                };
-                _auditDate = new PropertyConfig
-                {
-                    IsPredefined = true,
-                    Caption = "审核时间",
-                    Description = "审核时间",
-                    Index = -1,//108,
-                    Name = "AuditDate",
-                    CsType = "DateTime",
-                    ColumnName = "audit_date",
-                    DbType = "DateTime",
-                    DbNullable = true,
-                    IsSystemField = true,
-                    IsInterfaceField = true,
-                    Group = "系统_审核"
-                };
-                _memo = new PropertyConfig
-                {
-                    IsPredefined = true,
-                    Caption = "备注",
-                    Description = "备注",
-                    Index = -1,//27,
-                    Name = "Memo",
-                    CsType = "string",
-                    CanEmpty = true,
-                    ColumnName = "memo",
-                    DbType = "TEXT",
-                    DbNullable = true,
-                    IsSystemField = false,
-                    IsInterfaceField = false,
-                    Group = "备注",
-                    IsMemo = true
-                };
-                _parent = new PropertyConfig
-                {
-                    IsPredefined = true,
-                    Caption = "上级标识",
-                    Description = "上级标识，顶级为0",
-                    Index = -1,//27,
-                    Name = "ParentId",
-                    CsType = "int",
-                    ColumnName = "parent_id",
-                    DbType = "int",
-                    DbNullable = false,
-                    IsSystemField = true,
-                    IsInterfaceField = true,
-                    Group = "树形"
-                };
-                _slaveOId = new PropertyConfig
-                {
-                    IsPredefined = true,
-                    Caption = "下级机构ID",
-                    Description = "用于下级机构ID查找到对应的上级",
-                    Index = -1,//28,
-                    Name = "SlaveOrgId",
-                    CsType = "int",
-                    ColumnName = "slave_org_id",
-                    DbType = "int",
-                    DbNullable = false,
-                    IsSystemField = false,
-                    IsInterfaceField = false,
-                    Group = "行级权限"
-                };
-            }
-        }
 
         #endregion
     }

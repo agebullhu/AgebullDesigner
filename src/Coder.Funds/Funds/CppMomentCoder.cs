@@ -53,7 +53,7 @@ namespace Agebull.EntityModel.RobotCoder.Funds
             var code = new StringBuilder();
             foreach (var project in SolutionConfig.Current.Projects)
             {
-                foreach (var entity in project.Entities.Where(p => p.Properties.Any(f => f.IsUserId)))
+                foreach (var entity in project.Entities.Where(p => p.LastProperties.Any(f => f.IsUserId)))
                 {
                     code.Append($@"
                 case {entity.Parent.NameSpace.Replace(".", "::")}::TYPE_INDEX_{entity.Name.ToUpper()}:
@@ -84,7 +84,7 @@ namespace Agebull.EntityModel.RobotCoder.Funds
         {
             EntityConfig entityConfig = (EntityConfig)config;
             var code = new StringBuilder();
-            foreach (var field in entityConfig.Properties.Where(p => p.CsType == "decimal"))
+            foreach (var field in entityConfig.LastProperties.Where(p => p.CsType == "decimal"))
             {
                 code.Append($@"
         /// <summary>
@@ -126,7 +126,7 @@ namespace Agebull.EntityModel.RobotCoder.Funds
         {
             EntityConfig entityConfig = (EntityConfig)config;
             var code = new StringBuilder();
-            foreach (var field in entityConfig.Properties)
+            foreach (var field in entityConfig.LastProperties)
             {
                 if (field.CsType == "bool")
                 {
@@ -158,7 +158,7 @@ namespace Agebull.EntityModel.RobotCoder.Funds
 
             EntityConfig entityConfig = (EntityConfig)config;
             var code = new StringBuilder();
-            foreach (var field in entityConfig.Properties)
+            foreach (var field in entityConfig.LastProperties)
             {
                 var typedef = CppTypeHelper.ToCppLastType(field.CppLastType) as TypedefItem;
                 if (typedef != null && typedef.Items.Count > 0)
@@ -189,7 +189,7 @@ namespace Agebull.EntityModel.RobotCoder.Funds
         {
             EntityConfig entityConfig = (EntityConfig)config;
             var code = new StringBuilder();
-            foreach (var field in entityConfig.Properties)
+            foreach (var field in entityConfig.LastProperties)
             {
                 //var typedef = CppTypeHelper.ToCppLastType(field.CppType) as TypedefItem;
                 //if (typedef == null || (typedef.KeyWork == "char" && typedef.ArrayLen != null))
@@ -259,7 +259,7 @@ namespace Agebull.EntityModel.RobotCoder.Funds
             var point = $"{entity.Parent.Abbreviation}:{entity.Abbreviation}";
             if (entity.RedisKey != null)
             {
-                var field = entity.Properties.FirstOrDefault(p => p.Name == entity.RedisKey);
+                var field = entity.LastProperties.FirstOrDefault(p => p.Name == entity.RedisKey);
                 if (field != null)
                     return RedisKey(entity, name, point);
             }
@@ -291,7 +291,7 @@ inline int generate_{name}_id()
 {{
     return static_cast<int>(incr_redis(""i:{point}""));
 }}");
-            var ufield = entity.Properties.FirstOrDefault(p => p.IsUserId);
+            var ufield = entity.LastProperties.FirstOrDefault(p => p.IsUserId);
             if (ufield == null)
             {
                 code.Append($@"
@@ -365,11 +365,11 @@ inline int save_to_redis({entity.Name}* field)
 
         private static string RedisKey(EntityConfig entity, string name, string point)
         {
-            var field = entity.Properties.FirstOrDefault(p => p.Name == entity.RedisKey);
+            var field = entity.LastProperties.FirstOrDefault(p => p.Name == entity.RedisKey);
             if (field == null)
                 return null;
             var code = new StringBuilder();
-            var ufield = entity.Properties.FirstOrDefault(p => p.IsUserId);
+            var ufield = entity.LastProperties.FirstOrDefault(p => p.IsUserId);
             if (ufield == null)
             {
                 code.Append($@"
@@ -470,7 +470,7 @@ void Deserialize(Deserializer& io, TEsAddressField* field)
 
 /*******************{0}字段序列化顺序定义(不可更改)*******************/"
                 , entityConfig.Caption);
-            foreach (PropertyConfig field in entityConfig.Properties)
+            foreach (PropertyConfig field in entityConfig.LastProperties)
             {
                 code.AppendFormat(@"
 const FIELD_INDEX IDX_{1}_{2} = {3};// {0}", field.Caption, entityConfig.ReadTableName, field.PropertyName, field.Index);
@@ -500,7 +500,7 @@ void Serialize(Serializer& wtiter, {1}* field)
         return;
     }}"
                 , entityConfig.Caption, entityConfig.ReadTableName);
-            foreach (PropertyConfig field in entityConfig.Properties)
+            foreach (PropertyConfig field in entityConfig.LastProperties)
             {
                 code.AppendFormat(@"
     wtiter.WriteIndex(IDX_{0}_{1});//{2}", entityConfig.ReadTableName, field.Name, field.Caption);
@@ -521,7 +521,7 @@ void Deserialize(Deserializer& reader, {1}* field)
         //OBJ_TYPE type = reader.ReadByte();
 		switch(idx)
 		{{", entityConfig.Caption, entityConfig.ReadTableName);
-            foreach (PropertyConfig t in entityConfig.Properties)
+            foreach (PropertyConfig t in entityConfig.LastProperties)
             {
                 ToCppReadCode(code, t);
             }
@@ -711,7 +711,7 @@ void CopyToCache({entityConfig.ReadTableName}* field)
 	char buf[2];
 	buf[1] = '\0';
     {entityConfig.Name}^ item = gcnew {entityConfig.Name}();");
-            foreach (PropertyConfig t in entityConfig.Properties)
+            foreach (PropertyConfig t in entityConfig.LastProperties)
             {
                 ToCppCopyCode(code, t);
             }
@@ -839,7 +839,7 @@ string toJson(const {entityConfig.Name}* value)
     int idx,len;
     ostringstream ostr;
     ostr << ""{{\""__i__\"":0"";");
-            foreach (PropertyConfig t in entityConfig.Properties)
+            foreach (PropertyConfig t in entityConfig.LastProperties)
             {
                 ToJsonCode(code, t, false);
             }
@@ -978,7 +978,7 @@ void print_screen(const {0}* value)
     if(value == nullptr)
         return;
     int idx,len; ", entityConfig.Name, entityConfig.Caption);
-            foreach (PropertyConfig field in entityConfig.Properties)
+            foreach (PropertyConfig field in entityConfig.LastProperties)
             {
                 ToCppCoutCode(code, field);
             }
@@ -1320,7 +1320,7 @@ string to_log_text(const {entityConfig.Name}* value)
     int idx,len;
     ostringstream ostr;
     ostr << ""{{\""__i__\"":0"";");
-            foreach (PropertyConfig field in entityConfig.Properties)
+            foreach (PropertyConfig field in entityConfig.LastProperties)
             {
                 ToLogCode(code, field);
             }

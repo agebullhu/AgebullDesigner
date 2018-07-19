@@ -35,9 +35,17 @@ namespace Agebull.Common.Mvvm
             set;
         }
         /// <summary>
+        ///     显示为按钮
+        /// </summary>
+        bool IsButton
+        {
+            get;
+            set;
+        }
+        /// <summary>
         ///     不显示为按钮
         /// </summary>
-        bool NoButton { get; set; }
+        bool NoButton { get; }
 
         /// <summary>
         ///     分类
@@ -61,17 +69,23 @@ namespace Agebull.Common.Mvvm
         /// <summary>
         ///     只能单个操作
         /// </summary>
-        bool Signle { get; set; }
+        bool SignleSoruce { get; set; }
 
         /// <summary>
         ///     目标类型
         /// </summary>
-        Type SourceType { get; set; }
+        Type TargetType { get; set; }
 
         /// <summary>
         ///     图标
         /// </summary>
         string IconName { get; set; }
+
+        /// <summary>
+        /// 确认消息
+        /// </summary>
+        string ConfirmMessage { get; set; }
+
     }
 
     /// <summary>
@@ -79,18 +93,6 @@ namespace Agebull.Common.Mvvm
     /// </summary>
     public static class ICommandItemExtend
     {
-        /// <summary>
-        /// 构造一个对象并复制
-        /// </summary>
-        /// <typeparam name="TCommandItem">ICommandItem实现</typeparam>
-        /// <param name="sour">源</param>
-        /// <returns></returns>
-        public static TCommandItem CopyCreate<TCommandItem>(this ICommandItem sour) where TCommandItem : class, ICommandItem, new()
-        {
-            var item = new TCommandItem();
-            CopyFrom(item, sour);
-            return item;
-        }
         /// <summary>
         /// 从源中复制
         /// </summary>
@@ -101,12 +103,13 @@ namespace Agebull.Common.Mvvm
             dest.Name = sour.Name ?? sour.Caption;
             dest.Caption = sour.Caption?? sour.Name;
             dest.Description = sour.Description;
-            dest.NoButton = sour.NoButton;
-            dest.Signle = sour.Signle;
+            dest.IsButton = sour.IsButton;
+            dest.SignleSoruce = sour.SignleSoruce;
             dest.Catalog = sour.Catalog;
             dest.ViewModel = sour.ViewModel;
-            dest.SourceType = sour.SourceType;
+            dest.TargetType = sour.TargetType;
             dest.IconName = sour.IconName;
+            dest.ConfirmMessage = sour.ConfirmMessage;
         }
     }
 }

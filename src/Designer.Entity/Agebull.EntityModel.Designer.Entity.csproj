@@ -74,10 +74,10 @@
     <Compile Include="Command\EntityPrimaryKeyHelper.cs" />
     <Compile Include="Command\InterfaceHelper.cs" />
     <Compile Include="Command\PropertyModel.cs" />
-    <Compile Include="Model\CppFieldsViewModel.cs" />
     <Compile Include="Command\EntityCommonds.cs" />
     <Compile Include="Model\EntitySorter.cs" />
     <Compile Include="Model\AllFieldsViewModel.cs" />
+    <Compile Include="Model\FieldFormatCommand.cs" />
     <Compile Include="Model\FieldsViewModel.cs" />
     <Compile Include="Model\JsonViewModel.cs" />
     <Compile Include="Model\ModelViewModel.cs" />
@@ -86,11 +86,8 @@
     <Compile Include="Model\RegularViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Register.cs" />
-    <Compile Include="View\AllEntityFieldsControl.xaml.cs">
-      <DependentUpon>AllEntityFieldsControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\CppFieldsPanel.xaml.cs">
-      <DependentUpon>CppFieldsPanel.xaml</DependentUpon>
+    <Compile Include="View\AllFieldsPanel.xaml.cs">
+      <DependentUpon>AllFieldsPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\FieldsPanel.xaml.cs">
       <DependentUpon>FieldsPanel.xaml</DependentUpon>
@@ -146,11 +143,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="View\AllEntityFieldsControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\CppFieldsPanel.xaml">
+    <Page Include="View\AllFieldsPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

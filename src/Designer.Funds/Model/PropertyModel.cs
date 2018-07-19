@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -10,15 +8,11 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal sealed class PropertyModel : DesignCommondBase<PropertyConfig>
+    internal sealed class PropertyModel : IAutoRegister
     {
-        /// <summary>
-        /// 生成命令对象
-        /// </summary>
-        /// <returns></returns>
-        protected override void CreateCommands(List<ICommandItemBuilder> commands)
+        void IAutoRegister.AutoRegist()
         {
+            DesignerManager.Registe<EntityConfig, CppFieldsPanel>("C++字段", "Entity");
         }
-
     }
 }

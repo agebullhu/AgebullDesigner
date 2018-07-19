@@ -17,7 +17,7 @@ namespace Agebull.EntityModel.RobotCoder
         public string GetBaseCode<TBuilder>()
             where TBuilder : EntityBuilderBase, new()
         {
-            using (WorkModelScope.CreateScope(WorkModel.Coder))
+            using (CodeGeneratorScope.CreateScope())
             {
                 var builder = new TBuilder
                 {
@@ -35,7 +35,7 @@ namespace Agebull.EntityModel.RobotCoder
         public string GetExtendCode<TBuilder>()
             where TBuilder : EntityBuilderBase, new()
         {
-            using (WorkModelScope.CreateScope(WorkModel.Coder))
+            using (CodeGeneratorScope.CreateScope())
             {
                 var builder = new TBuilder
                 {
@@ -54,33 +54,11 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 当前表对象
         /// </summary>
-        public EntityConfig Entity
-        {
-            get => _entity;
-            set
-            {
-                _entity = value;
-                if (value == null)
-                    return;
-                foreach (var property in value.Properties.Where(p => !p.Discard))
-                {
-                    if (property.IsReference)
-                    {
-                        var pp = GlobalConfig.GetConfig<PropertyConfig>(property.ReferenceKey);
-                        if (pp != null)
-                        {
-                            property.CopyConfig(pp);
-                        }
-                    }
-                }
-            }
-        }
-
-        private EntityConfig _entity;
+        public EntityConfig Entity { get; set; }
 
         /// <summary>
         /// 是否可写
         /// </summary>
-        protected override bool CanWrite => base.CanWrite && Entity != null && !Entity.IsFreeze && !Entity.Discard;
+        protected override bool CanWrite => base.CanWrite && Entity != null && !Entity.IsFreeze && !Entity.IsDiscard;
     }
 }

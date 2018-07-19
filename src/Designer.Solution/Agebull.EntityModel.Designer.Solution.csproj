@@ -95,8 +95,9 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaiduFanYi\BaiduFanYi.cs" />
     <Compile Include="Business\ProjectBusiness.cs" />
-    <Compile Include="Command\BaiduFanYiCommand.cs" />
+    <Compile Include="BaiduFanYi\BaiduFanYiCommand.cs" />
     <Compile Include="Command\ConfigCommands.cs" />
     <Compile Include="Command\EntityCommands1.cs" />
     <Compile Include="Command\ImportModel.cs" />
@@ -104,6 +105,10 @@
     <Compile Include="Command\PropertyCommands.cs" />
     <Compile Include="Command\SolutionCommands.cs" />
     <Compile Include="Command\UserCommandConfigCommands.cs" />
+    <Compile Include="DataType\DataTypePanel.xaml.cs">
+      <DependentUpon>DataTypePanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DataType\DataTypeViewModel.cs" />
     <Compile Include="Import\AssemblyImporter.cs" />
     <Compile Include="Import\DesignToExcel.cs" />
     <Compile Include="Import\EdmxReader.cs" />
@@ -168,6 +173,12 @@
       <Project>{6f6dc5d2-85ef-4bb5-82fa-bd21f7aa3053}</Project>
       <Name>Agebull.Common.Mvvm</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="DataType\DataTypePanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

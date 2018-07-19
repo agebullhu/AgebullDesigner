@@ -211,7 +211,7 @@ Authorization: Bearer **AccessToken/DeviceId**
 #### 参数结构：
 |名称|类型|必填|说明|
 |-|-|-|-|");
-                foreach (var property in item.Argument.Properties.Where(p => p.CanUserInput))
+                foreach (var property in item.Argument.LastProperties.Where(p => p.CanUserInput))
                 {
                     code.Append($@"
 |{property.Name}|{property.LastCsType}|{(property.CanEmpty ? "是" : "否")}|{property.Caption}:{property.Description}|");
@@ -230,7 +230,7 @@ Authorization: Bearer **AccessToken/DeviceId**
 #### 数据结构：
 |名称|类型|必填|说明|
 |-|-|-|-|");
-                foreach (var property in item.Argument.Properties.Where(p => p.CanUserInput))
+                foreach (var property in item.Argument.LastProperties.Where(p => p.CanUserInput))
                 {
                     code.Append($@"
 |{property.Name}|{property.LastCsType}|{(property.CanEmpty ? "是" : "否")}|{property.Caption}:{property.Description}|");
@@ -252,7 +252,7 @@ Authorization: Bearer **AccessToken/DeviceId**
 ```
 {");
                 bool isFirst = true;
-                foreach (var property in item.Argument.Properties.Where(p => p.CanUserInput))
+                foreach (var property in item.Argument.LastProperties.Where(p => p.CanUserInput))
                 {
                     if (isFirst)
                         isFirst = false;
@@ -291,7 +291,7 @@ Authorization: Bearer **AccessToken/DeviceId**
                 code.Append(@",
     ""ResultData"":{ ");
                 bool isFirst = true;
-                foreach (var property in item.Result.Properties.Where(p => p.CanUserInput))
+                foreach (var property in item.Result.LastProperties.Where(p => p.CanUserInput))
                 {
                     if (isFirst)
                         isFirst = false;

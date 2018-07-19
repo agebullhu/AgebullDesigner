@@ -5,13 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
+             xmlns:designer="clr-namespace:Agebull.EntityModel.Designer"
              mc:Ignorable="d"
              d:DesignHeight="900"
              d:DesignWidth="1100">
+    <UserControl.DataContext>
+        <designer:ModelViewModel/>
+    </UserControl.DataContext>
     <DockPanel>
         <WrapPanel DataContext="{Binding Context.SelectEntity}" DockPanel.Dock="Top">
             <WrapPanel.Resources>
-                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/DataTemplate/Form.xaml"/>
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
             </WrapPanel.Resources>
             <StackPanel Style="{StaticResource FieldPanel}">
                 <Label Content = "实体名称" />
@@ -22,8 +26,8 @@
                 <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsInternal,Mode=TwoWay}" />
             </StackPanel>
             <StackPanel>
-                <Label Content="普通类" />
-                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsClass,Mode=TwoWay}" />
+                <Label Content="无数据库支持" />
+                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding NoDataBase,Mode=TwoWay}" />
             </StackPanel>
             <!--<StackPanel>
                 <Label Content="模型" />
@@ -44,7 +48,7 @@
         </WrapPanel>
         <TabControl DataContext="{Binding Context.SelectProperty}" DockPanel.Dock="Bottom" Height="262">
             <TabControl.Resources>
-                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/DataTemplate/Form.xaml"/>
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
             </TabControl.Resources>
             <TabItem Header="C#">
                 <StackPanel Style="{StaticResource LayoutPanel}">
@@ -144,10 +148,10 @@
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
                   DataContext="{Binding Context}"
-                  ItemsSource="{Binding SelectItemChildrens}">
+                  ItemsSource="{Binding SelectEntity.Properties}">
             <DataGrid.Columns>
-                <DataGridCheckBoxColumn Binding="{Binding Discard,Mode=TwoWay}" Header="废弃" />
-                <DataGridTextColumn Binding="{Binding Index,Mode=TwoWay}" Header="序号" />
+                <DataGridCheckBoxColumn Binding="{Binding IsDiscard,Mode=OneWay}" IsReadOnly="True" Header="废" />
+                <DataGridTextColumn Binding="{Binding Index,Mode=OneWay}" Header="序号" />
                 <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
                 <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />
                 <DataGridCheckBoxColumn Binding="{Binding IsPrimaryKey,Mode=TwoWay}" Header="主键" />

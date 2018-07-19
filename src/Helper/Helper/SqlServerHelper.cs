@@ -280,6 +280,10 @@ namespace Agebull.EntityModel.Config.SqlServer
         /// <param name="property">字段</param>
         public static string ToDataBaseType(PropertyConfig property)
         {
+            if (string.IsNullOrWhiteSpace(property.CsType))
+            {
+                return "VARBINARY";
+            }
             switch (property.CsType.ToLower())
             {
                 case "byte":
@@ -319,7 +323,7 @@ namespace Agebull.EntityModel.Config.SqlServer
                 case "guid":
                     return "UNIQUEIDENTIFIER";
                 default:
-                    return property.CsType.ToUpper();
+                    return property.CsType?.ToUpper();
             }
         }
 
@@ -329,6 +333,10 @@ namespace Agebull.EntityModel.Config.SqlServer
         /// <param name="csharpType"> C#的类型</param>
         public static string ToDataBaseType(string csharpType)
         {
+            if (string.IsNullOrWhiteSpace(csharpType))
+            {
+                return "VARBINARY";
+            }
             switch (csharpType.ToLower())
             {
                 case "byte":

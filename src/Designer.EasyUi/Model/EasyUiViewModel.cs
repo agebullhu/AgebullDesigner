@@ -20,9 +20,5 @@ namespace Agebull.EntityModel.Designer
         {
             EditorName = "EasyUi";
         }
-        /// <summary>
-        /// 主面板
-        /// </summary>
-        public override FrameworkElement Body { get; } = new UiPanel();
     }
 }

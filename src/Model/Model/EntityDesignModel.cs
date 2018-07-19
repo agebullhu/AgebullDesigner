@@ -26,34 +26,45 @@ namespace Agebull.EntityModel.Designer
         /// 生成命令对象
         /// </summary>
         /// <returns></returns>
-        public override ObservableCollection<CommandItem> CreateCommands()
+        public override ObservableCollection<CommandItemBase> CreateCommands()
         {
-            ObservableCollection<CommandItem> commands = new ObservableCollection<CommandItem>
+            ObservableCollection<CommandItemBase> commands = new ObservableCollection<CommandItemBase>
             {
                 new CommandItem
                 {
-                    Command = new DelegateCommand(CopyColumns),
+                    IsButton=true,
+                    Action = (CopyColumns),
                     Caption = "复制列",
                     Image = Application.Current.Resources["tree_item"] as ImageSource
                 },
                 new CommandItem
                 {
-                    Command = new DelegateCommand(PasteColumns),
+                    IsButton=true,
+                    Action = (PasteColumns),
                     Caption = "粘贴列",
                     Image = Application.Current.Resources["tree_item"] as ImageSource
                 },
                 new CommandItem
                 {
-                    Command = new DelegateCommand(ClearColumns),
+                    IsButton=true,
+                    Action = (ClearColumns),
                     Caption = "清除列",
                     Image = Application.Current.Resources["img_del"] as ImageSource
                 },
                 new CommandItem
                 {
-                    Command = new DelegateCommand(DeleteColumns),
+                    IsButton=true,
+                    Action = (DeleteColumns),
                     Caption = "删除所选列",
                     Image = Application.Current.Resources["img_del"] as ImageSource
-                }
+                },
+                new CommandItem
+                {
+                IsButton=true,
+                Action = (AddProperty),
+                Caption = "新增字段",
+                Image = Application.Current.Resources["tree_Open"] as ImageSource
+            }
             };
             CreateCommands(commands);
             var extends = CommandCoefficient.CoefficientEditor(typeof(EntityConfig), EditorName);
@@ -63,20 +74,30 @@ namespace Agebull.EntityModel.Designer
         }
 
         #endregion
+        /// <summary>
+        /// 复制字段
+        /// </summary>
+        public void AddProperty(object arg)
+        {
+            var perperty = new PropertyConfig();
+            if (CommandIoc.NewConfigCommand("新增字段", perperty))
+                Context.SelectEntity.Add(perperty);
+        }
 
         /// <summary>
         /// 复制字段
         /// </summary>
-        public void CopyColumns()
+        public void CopyColumns(object arg)
         {
             Context.CopiedTable = Context.SelectEntity;
             Context.CopyColumns = Context.SelectColumns.OfType<PropertyConfig>().ToList();
             Context.StateMessage = $"复制了{Context.CopyColumns.Count}行";
         }
+
         /// <summary>
         /// 复制字段
         /// </summary>
-        public void PasteColumns()
+        public void PasteColumns(object arg)
         {
             if (Context.CopyColumns == null || Context.CopyColumns.Count == 0 || Context.CopiedTable == Context.SelectEntity ||
                 Context.SelectEntity == null || Context.CopiedTable == null)
@@ -86,7 +107,7 @@ namespace Agebull.EntityModel.Designer
             }
             var yes = MessageBox.Show("是否粘贴关系信息?", "粘贴行", MessageBoxButton.YesNo) ==
                       MessageBoxResult.Yes;
-            
+
             PateFields(yes, Context.CopiedTable, Context.SelectEntity, Context.CopyColumns);
 
             //this.Context.CopiedTable = null;
@@ -94,7 +115,7 @@ namespace Agebull.EntityModel.Designer
             //Context.SelectColumns = null;
             //this.RaisePropertyChanged(() => this.Context.CopiedTableCounts);
         }
-        public void ClearColumns()
+        public void ClearColumns(object arg)
         {
             if (Context.SelectEntity == null ||
                 MessageBox.Show("确认删除所有字段吗?", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
@@ -105,9 +126,9 @@ namespace Agebull.EntityModel.Designer
             Context.SelectEntity.Properties.Clear();
         }
 
-        public void DeleteColumns()
+        public void DeleteColumns(object arg)
         {
-            if (Context.SelectEntity == null ||
+            if (Context.SelectEntity == null || Context.SelectColumns ==null||
                 MessageBox.Show("确认删除所选字段吗?", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
             {
                 return;

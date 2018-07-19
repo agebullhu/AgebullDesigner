@@ -100,6 +100,13 @@
     </Compile>
     <Compile Include="Model\UpgradeModel.cs" />
     <Compile Include="Model\UpgradeViewModel.cs" />
+    <Compile Include="SelfUpgrade\AssemblyConfig.cs" />
+    <Compile Include="SelfUpgrade\AttributeInfo.cs" />
+    <Compile Include="SelfUpgrade\FieldConfig.cs" />
+    <Compile Include="SelfUpgrade\MethodConfig.cs" />
+    <Compile Include="SelfUpgrade\PropertyUpgradeConfig.cs" />
+    <Compile Include="SelfUpgrade\TypeConfig.cs" />
+    <Compile Include="SelfUpgrade\UpgradeConfig.cs" />
     <Compile Include="TreeItem\ConfigTreeItem.cs" />
     <Compile Include="View\ConfigForm.xaml.cs">
       <DependentUpon>ConfigForm.xaml</DependentUpon>

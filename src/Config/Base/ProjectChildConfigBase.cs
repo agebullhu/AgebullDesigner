@@ -8,7 +8,7 @@ namespace Agebull.EntityModel.Config
     ///     配置基础
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public abstract class ProjectChildConfigBase : ParentConfigBase
+    public abstract partial class ProjectChildConfigBase : ParentConfigBase
     {
         /// <summary>
         /// 项目的说明文字

@@ -133,7 +133,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="func"></param>
         /// <returns></returns>
-        public  NotifyItem GetNotify(Func<NotifyItem, bool> func)
+        public NotifyItem GetNotify(Func<NotifyItem, bool> func)
         {
             return NotifyItems.FirstOrDefault(func);
         }
@@ -143,7 +143,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="func"></param>
         /// <returns></returns>
-        public  TypedefItem GetTypedef(Func<TypedefItem, bool> func)
+        public TypedefItem GetTypedef(Func<TypedefItem, bool> func)
         {
             return TypedefItems.FirstOrDefault(func);
         }
@@ -153,21 +153,21 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="tag"></param>
         /// <returns></returns>
-        public  TypedefItem GetTypedefByTag(string tag)
+        public TypedefItem GetTypedefByTag(string tag)
         {
             if (string.IsNullOrWhiteSpace(tag))
                 return null;
             var array = tag.Split(',');
             if (array.Length != 2)
                 return null;
-            return TypedefItems.FirstOrDefault(p => p.Tag == array[0] && p.Name == array[1]);
+            return TypedefItems.FirstOrDefault(p => p.Option.ReferenceTag == array[0] && p.Name == array[1]);
         }
         /// <summary>
         ///     查找通知对象
         /// </summary>
         /// <param name="func"></param>
         /// <returns></returns>
-        public  NotifyItem Find(Func<NotifyItem, bool> func)
+        public NotifyItem Find(Func<NotifyItem, bool> func)
         {
             return NotifyItems.FirstOrDefault(func);
         }
@@ -176,39 +176,53 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="func"></param>
         /// <returns></returns>
-        public  TypedefItem Find(Func<TypedefItem, bool> func)
+        public TypedefItem Find(Func<TypedefItem, bool> func)
         {
             return TypedefItems.FirstOrDefault(func);
+        }
+
+        public override void ForeachChild(Action<ConfigBase> action)
+        {
+            base.ForeachChild(action);
+
+            if (_notifyItems != null)
+                foreach (var item in _notifyItems)
+                    action(item);
+
+            if (_typedefItems != null)
+                foreach (var item in _typedefItems)
+                    action(item);
         }
 
         /// <summary>
         /// 保存
         /// </summary>
-        public void SaveProject(ConfigWriter write)
+        public void SaveProject(string dir, ConfigWriter write)
         {
             using (WorkModelScope.CreateScope(WorkModel.Saving))
             {
-                SaveTypedefs(write);
-                SaveNotifies(write);
+                dir = write.SaveProject(this, dir);
+                SaveTypedefs(dir, write);
+                SaveNotifies(dir, write);
             }
         }
-        public void SaveTypedefs(ConfigWriter write)
+        public void SaveTypedefs(string dir, ConfigWriter write)
         {
-            var path = IOHelper.CheckPath(write.Directory, "Typedefs");
+            var path = GlobalConfig.CheckPath(dir, "Typedef");
             foreach (var type in TypedefItems.ToArray())
             {
-                SaveTypedef(write,type, path);
+                SaveTypedef(write, type, path);
             }
         }
         /// <summary>
         /// 保存通知对象
         /// </summary>
-        public void SaveNotifies(ConfigWriter write)
+        public void SaveNotifies(string dir, ConfigWriter write)
         {
-            string path = IOHelper.CheckPath(write.Directory, "notifies");
+            string path = GlobalConfig.CheckPath(dir, "Notify");
             foreach (var notify in NotifyItems.ToArray())
             {
-                write.Save(notify, path, ".ent");
+                write.SaveConfig(notify, path, true);
             }
         }
         /// <summary>
@@ -216,18 +230,23 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public  TypedefItem GetTypedef(string name)
+        public TypedefItem GetTypedef(string name)
         {
             return TypedefItems.FirstOrDefault(p => p.Name == name);
         }
 
-
-        public void SaveTypedef(ConfigWriter write,TypedefItem type, string path, bool checkState = true)
+        /// <summary>
+        ///     取得类型定义对象
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public TypedefItem GetTypedef(Guid key)
         {
-            var filename = Path.Combine(path, type.GetFileName(".typ"));
-            if (checkState && !write.CheckCanSave(type, filename))
-                return;
-            ConfigWriter.DeleteOldFile(type, filename, false);
+            return TypedefItems.FirstOrDefault(p => p.Key == key);
+        }
+
+        public void SaveTypedef(ConfigWriter write, TypedefItem type, string path, bool checkState = true)
+        {
             if (type.IsDelete)
             {
                 Remove(type);
@@ -239,22 +258,19 @@ namespace Agebull.EntityModel.Config
                     type.Items.Remove(field.Key);
                 }
             }
-            if (type.IsDelete)
-                Remove(type);
-            ConfigWriter.Serializer(filename, type);
+            write.SaveConfig(type, path, true);
         }
 
 
         private void LoadNotify(string directory)
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            string path = Path.Combine(directory, "notifies");
-            var notifies = IOHelper.GetAllFiles(path, "ent");
+            string path = Path.Combine(directory, "Notify");
+            var notifies = IOHelper.GetAllFiles(path, "json");
             foreach (var file in notifies)
             {
                 var notify = JsonConvert.DeserializeObject<NotifyItem>(file);
                 notify.SaveFileName = file;
-                notify.IsFreeze = false;
                 if (!notify.IsDelete)
                     Add(notify);
             }
@@ -263,11 +279,11 @@ namespace Agebull.EntityModel.Config
         private void LoadTypedefs(string directory)
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            string path = Path.Combine(directory, "Typedefs");
-            var typedefs = IOHelper.GetAllFiles(path, "typ");
+            string path = Path.Combine(directory, "Typedef");
+            var typedefs = IOHelper.GetAllFiles(path, "json");
             foreach (var file in typedefs)
             {
-                TypedefItem type = JsonConvert.DeserializeObject< TypedefItem>(file);
+                TypedefItem type = JsonConvert.DeserializeObject<TypedefItem>(file);
                 if (!type.IsDelete)
                 {
                     Add(type);

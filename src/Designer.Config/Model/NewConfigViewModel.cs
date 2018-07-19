@@ -36,55 +36,32 @@ namespace Agebull.EntityModel.Designer
             {
                 if (_config == value)
                     return;
-                if (value.Key == Guid.Empty)
-                    value.Key = Guid.NewGuid();
                 _config = value;
                 RaisePropertyChanged(nameof(Config));
             }
         }
 
-
-        /// <summary>
-        /// 构造命令列表
-        /// </summary>
-        /// <returns></returns>
-        protected override ObservableCollection<CommandItem> CreateCommands()
+        public CommandItem CancelCommand => new CommandItem
         {
-            return new ObservableCollection<CommandItem>
-            {
-                new CommandItem
-                {
-                    Command = new DelegateCommand(DoInitKey),
-                    Caption = "更新标识",
-                    Image = Application.Current.Resources["img_add"] as ImageSource
-                },
-                new CommandItem
-                {
-                    Command = new DelegateCommand(DoCancel),
-                    Caption = "取消",
-                    Image = Application.Current.Resources["img_error"] as ImageSource
-                },
-                new CommandItem
-                {
-                    Command = new DelegateCommand(DoClose),
-                    Caption = "完成",
-                    Image = Application.Current.Resources["imgSave"] as ImageSource
-                }
-            };
-        }
+            Action = (DoCancel),
+            Caption = "取消",
+            Image = Application.Current.Resources["img_error"] as ImageSource
+        };
 
-        private void DoCancel()
+        public CommandItem OkCommand => new CommandItem
+        {
+            Action = (DoClose),
+            Caption = "完成",
+            Image = Application.Current.Resources["imgSave"] as ImageSource
+        };
+
+        private void DoCancel(object arg)
         {
             var window = (Window)View;
             window.DialogResult = false;
         }
 
-        private void DoInitKey()
-        {
-            Config.Key = Guid.NewGuid();
-        }
-
-        private void DoClose()
+        private void DoClose(object arg)
         {
             if (string.IsNullOrWhiteSpace(Config.Name))
             {

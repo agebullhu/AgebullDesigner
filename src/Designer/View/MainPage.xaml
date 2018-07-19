@@ -38,7 +38,6 @@
 
             <TabControl Margin="0" 
                         Visibility="{Binding Model.Editor.ExtendPanelVisibility}"
-                        SelectedIndex="{Binding Model.Editor.SubJobIndex}" 
                         Grid.Column="1"
                         Grid.Row="1" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" TabStripPlacement="Top">
                 <i:Interaction.Behaviors>

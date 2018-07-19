@@ -136,22 +136,22 @@ namespace Agebull.EntityModel.Config
             new ComboItem<ConfigStateType>
             {
                 name = "引用",
-                value= ConfigStateType.IsReference
+                value= ConfigStateType.Reference
             },
             new ComboItem<ConfigStateType>
             {
                 name = "已删除",
-                value= ConfigStateType.IsDelete
+                value= ConfigStateType.Delete
             },
             new ComboItem<ConfigStateType>
             {
                 name = "已锁定",
-                value= ConfigStateType.IsFreeze
+                value= ConfigStateType.Freeze
             },
             new ComboItem<ConfigStateType>
             {
                 name = "已废弃",
-                value= ConfigStateType.IsDiscard
+                value= ConfigStateType.Discard
             },
         };
         /// <summary>

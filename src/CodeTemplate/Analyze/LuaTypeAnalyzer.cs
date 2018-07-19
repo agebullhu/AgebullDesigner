@@ -68,8 +68,7 @@ namespace Agebull.EntityModel.RobotCoder.CodeTemplate.LuaTemplate
                 var word = unit as WordUnit;
                 if (word == null || word.IsPunctuate)
                     continue;
-                LuaDataTypeItem type;
-                if (_vers.TryGetValue(word.Name, out type))
+                if (_vers.TryGetValue(word.Name, out LuaDataTypeItem type))
                     word.ValueType = type;
                 else
                     _vers.Add(word.Name, LuaDataTypeItem.Error);
@@ -213,9 +212,8 @@ namespace Agebull.EntityModel.RobotCoder.CodeTemplate.LuaTemplate
         {
             if (block.Parent.ItemType == CodeItemType.Table_Child)
                 return;
-            LuaDataTypeItem type;
             var name = block.Name ?? block.Word;
-            if (_vers.TryGetValue(name, out type))
+            if (_vers.TryGetValue(name, out LuaDataTypeItem type))
             {
                 block.IsError = false;
                 block.ValueType = type;
@@ -270,8 +268,7 @@ namespace Agebull.EntityModel.RobotCoder.CodeTemplate.LuaTemplate
         private void AnalyzeTableChild(AnalyzeBlock block)
         {
             var name = block.Name ?? block.Word;
-            LuaDataTypeItem type;
-            if (_vers.TryGetValue(name, out type))
+            if (_vers.TryGetValue(name, out LuaDataTypeItem type))
             {
                 block.ValueType = type;
                 return;
@@ -323,8 +320,7 @@ namespace Agebull.EntityModel.RobotCoder.CodeTemplate.LuaTemplate
                         item.IsError = error = true;
                         continue;
                     }
-                    LuaDataTypeItem chType;
-                    if (_vers.TryGetValue(type.Name, out chType))
+                    if (_vers.TryGetValue(type.Name, out LuaDataTypeItem chType))
                     {
                         item.IsError = false;
                         item.ValueType = type = chType;
@@ -372,8 +368,7 @@ namespace Agebull.EntityModel.RobotCoder.CodeTemplate.LuaTemplate
                     continue;
                 }
 
-                LuaDataTypeItem chtype;
-                if (type.ValueType == LuaDataType.Function && _vers.TryGetValue(type.Name, out chtype))
+                if (type.ValueType == LuaDataType.Function && _vers.TryGetValue(type.Name, out LuaDataTypeItem chtype))
                 {
                     block.Elements[i].ValueType = type;
                     type = chtype;

@@ -19,7 +19,7 @@ namespace Agebull.EntityModel.Designer
             p.Model.CustomType = null;
             if (p.Model.EnumConfig == null)
                 return;
-            p.Model.EnumConfig.IsDelete = true;
+            p.Model.EnumConfig.Option.IsDelete = true;
             p.Model.EnumConfig = null;
             p.ReShow();
         }
@@ -65,13 +65,13 @@ namespace Agebull.EntityModel.Designer
         /// 生成命令对象
         /// </summary>
         /// <returns></returns>
-        public override ObservableCollection<CommandItem> CreateCommands()
+        public override ObservableCollection<CommandItemBase> CreateCommands()
         {
-            return new ObservableCollection<CommandItem>
+            return new ObservableCollection<CommandItemBase>
             {
                 new CommandItem
                 {
-                    Command = new DelegateCommand(Add),
+                    Action = Add,
                     Caption = "增加",
                     Image = Application.Current.Resources["tree_item"] as ImageSource
                 }
@@ -79,7 +79,7 @@ namespace Agebull.EntityModel.Designer
         }
         public string NewName { get; set; }
 
-        private void Add()
+        private void Add(object arg)
         {
             if (Context.SelectConfig == null)
                 return;

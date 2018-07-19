@@ -1,7 +1,5 @@
-using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using System.Text;
 using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
@@ -117,8 +115,37 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public override string ToString()
         {
-            return $"{Name}({Caption})";
+            return Name == null
+                ? Caption
+                : Caption == null
+                    ? Name
+                    : $"{Name}({Caption})";
         }
 
+        /// <summary>
+        /// ×Ö¶Î¸´ÖÆ
+        /// </summary>
+        /// <param name="dest"></param>
+        /// <returns></returns>
+        public void Copy(SimpleConfig dest)
+        {
+            using (WorkModelScope.CreateScope(WorkModel.Loding))
+            {
+                CopyFrom(dest);
+            }
+        }
+
+        /// <summary>
+        /// ×Ö¶Î¸´ÖÆ
+        /// </summary>
+        /// <param name="dest"></param>
+        /// <returns></returns>
+        protected virtual void CopyFrom(SimpleConfig dest)
+        {
+            Name = dest.Name;
+            Caption = dest.Caption;
+            Description = dest.Description;
+            Remark = dest.Remark;
+        }
     }
 }

@@ -61,8 +61,7 @@ namespace Agebull.EntityModel
         public TValue GetDelegate<TValue>() where TValue : class
         {
             var type = typeof(TValue);
-            object value;
-            if (!_dictionary.TryGetValue(type, out value))
+            if (!_dictionary.TryGetValue(type, out object value))
             {
                 return null;
             }

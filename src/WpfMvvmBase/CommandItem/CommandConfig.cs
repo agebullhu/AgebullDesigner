@@ -1,4 +1,6 @@
 using System;
+using System.Windows;
+using System.Windows.Media;
 using Agebull.EntityModel;
 
 namespace Agebull.Common.Mvvm
@@ -8,7 +10,6 @@ namespace Agebull.Common.Mvvm
     /// </summary>
     public class CommandConfig : NotificationObject, ICommandItem
     {
-
         /// <summary>
         ///     名称
         /// </summary>
@@ -36,13 +37,18 @@ namespace Agebull.Common.Mvvm
             set;
         }
         /// <summary>
-        ///     不显示为按钮
+        ///     显示为按钮
         /// </summary>
-        public bool NoButton
+        public bool IsButton
         {
             get;
             set;
         }
+
+        /// <summary>
+        ///     不显示为按钮
+        /// </summary>
+        public bool NoButton => !IsButton;
 
         /// <summary>
         ///     图标
@@ -74,7 +80,7 @@ namespace Agebull.Common.Mvvm
         /// <summary>
         ///     只能单个操作
         /// </summary>
-        public bool Signle
+        public bool SignleSoruce
         {
             get;
             set;
@@ -89,15 +95,25 @@ namespace Agebull.Common.Mvvm
             set;
         }
 
-
+        private Type _targetType;
         /// <summary>
         ///     目标类型
         /// </summary>
-        public Type SourceType
+        public Type TargetType
         {
-            get;
-            set;
+            get => SignleSoruce ? _targetType : (SuppertType ?? _targetType);
+            set => _targetType = value;
         }
 
+
+        /// <summary>
+        ///     代替类型
+        /// </summary>
+        public virtual Type SuppertType => null;
+
+        /// <summary>
+        /// 确认消息
+        /// </summary>
+        public string ConfirmMessage { get; set; }
     }
 }

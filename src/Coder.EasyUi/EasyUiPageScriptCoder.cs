@@ -473,7 +473,7 @@ var {1}Page = {{
         private string CommandJsCode()
         {
             var code = new StringBuilder();
-            foreach (var cmd in Entity.Commands.Where(p => !p.Discard))
+            foreach (var cmd in Entity.Commands.Where(p => !p.IsDiscard))
             {
                 if (!cmd.IsSingleObject)
                     code.Append($@"
@@ -490,7 +490,7 @@ var {1}Page = {{
         private string CommandJsCode2()
         {
             var code = new StringBuilder();
-            foreach (var cmd in Entity.Commands.Where(p => !p.Discard))
+            foreach (var cmd in Entity.Commands.Where(p => !p.IsDiscard))
             {
                 if (!string.IsNullOrWhiteSpace(cmd.Url))
                 {
@@ -809,8 +809,7 @@ var {1}Page = {{
             {
                 if (field.InputType == null)
                     field.InputType = "easyui-textbox";
-                bool required;
-                var validType = ValidType(field, out required);
+                var validType = ValidType(field, out bool required);
                 if (validType.Count == 0 && !required)
                     continue;
                 var type = field.InputType.Split('-').Last();

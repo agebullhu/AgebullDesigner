@@ -66,9 +66,8 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 准备生成实体代码
         /// </summary>
-        /// <param name="project"></param>
         /// <param name="schema"></param>
-        public virtual bool Validate(ProjectConfig project, EntityConfig schema)
+        public virtual bool Validate(EntityConfig schema)
         {
             return true;
         }

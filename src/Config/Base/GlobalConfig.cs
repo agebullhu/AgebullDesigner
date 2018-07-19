@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using Agebull.Common;
 
 namespace Agebull.EntityModel.Config
 {
     /// <summary>
     ///     全局配置
     /// </summary>
-    public class GlobalConfig : NotificationObject
+    public partial class GlobalConfig : NotificationObject
     {
         #region 类型取得
 
@@ -145,19 +147,26 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     加入配置
         /// </summary>
-        /// <param name="config"></param>
-        public static void AddConfig(ConfigBase config)
+        /// <param name="option"></param>
+        public static void AddConfig(ConfigDesignOption option)
         {
-            if (config.Key == Guid.Empty)
-                return;
-            if (!ConfigDictionary.ContainsKey(config.Key))
+            if (!ConfigDictionary.ContainsKey(option.Key))
             {
-                ConfigDictionary.Add(config.Key, config);
+                ConfigDictionary.Add(option.Key, option.Config);
             }
             else
             {
-                ConfigDictionary[config.Key] = config;
+                ConfigDictionary[option.Key] = option.Config;
             }
+        }
+
+        /// <summary>
+        ///     加入配置
+        /// </summary>
+        /// <param name="option"></param>
+        public static void RemoveConfig(ConfigDesignOption option)
+        {
+            ConfigDictionary.Remove(option.Key);
         }
 
         /// <summary>
@@ -174,9 +183,21 @@ namespace Agebull.EntityModel.Config
             var guid = new Guid(key);
             if (guid == Guid.Empty)
                 return null;
-            ConfigBase config;
-            ConfigDictionary.TryGetValue(guid, out config);
+            ConfigDictionary.TryGetValue(guid, out ConfigBase config);
             return config as TConfig;
+        }
+
+        /// <summary>
+        ///     取得配置对象
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static ConfigBase GetConfig(Guid key)
+        {
+            if (key == Guid.Empty)
+                return null;
+            ConfigDictionary.TryGetValue(key, out ConfigBase config);
+            return config;
         }
 
         /// <summary>
@@ -190,8 +211,7 @@ namespace Agebull.EntityModel.Config
         {
             if (key == Guid.Empty)
                 return null;
-            ConfigBase config;
-            ConfigDictionary.TryGetValue(key, out config);
+            ConfigDictionary.TryGetValue(key, out ConfigBase config);
             return config as TConfig;
         }
 
@@ -287,7 +307,7 @@ namespace Agebull.EntityModel.Config
         public static string ToName(List<string> words, char link = '_', bool uWord = false)
         {
             if (words.Count == 0)
-                return string.Empty;
+                return String.Empty;
             var sb = new StringBuilder();
             var preEn = words[0][0] < 255;
             sb.Append(words[0]);
@@ -310,7 +330,7 @@ namespace Agebull.EntityModel.Config
         public static List<string> SplitWords(string str)
         {
             var words = new List<string>();
-            if (string.IsNullOrWhiteSpace(str))
+            if (String.IsNullOrWhiteSpace(str))
                 return words;
             str = str.Replace("ID", "Id").Replace("URL", "Url");
             var baseWords = str.Split(NoneLanguageChar, StringSplitOptions.RemoveEmptyEntries);
@@ -414,7 +434,7 @@ namespace Agebull.EntityModel.Config
         /// <returns>正确表示为C#注释的文本</returns>
         protected static string ToRemString(string str, int space = 8)
         {
-            if (string.IsNullOrWhiteSpace(str))
+            if (String.IsNullOrWhiteSpace(str))
                 return null;
             var rp = str.Replace("&", "或").Replace("\r", "").Replace("<", "〈").Replace(">", "〉");
             var sp = rp.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
@@ -422,7 +442,7 @@ namespace Agebull.EntityModel.Config
             var isFirst = true;
             foreach (var line in sp)
             {
-                if (string.IsNullOrWhiteSpace(line))
+                if (String.IsNullOrWhiteSpace(line))
                     continue;
                 if (isFirst)
                 {
@@ -512,52 +532,28 @@ namespace Agebull.EntityModel.Config
 
         #endregion
 
-        #region 对象遍历
-
-        /// <summary>
-        ///     所有对象遍历
-        /// </summary>
-        public static void ForeachAll(Action<ConfigBase> action)
-        {
-            foreach (var solution in Solutions)
-            {
-                ForeachAll(solution, action);
-            }
-        }
-
-        /// <summary>
-        ///     所有对象遍历
-        /// </summary>
-        public static void ForeachAll(SolutionConfig solution, Action<ConfigBase> action)
-        {
-            action(solution);
-            foreach (var project in solution.Projects)
-            {
-                action(project);
-                foreach (var entity in project.Entities)
-                {
-                    action(entity);
-                    foreach (var field in entity.Properties)
-                        action(field);
-                    foreach (var command in entity.Commands)
-                        action(command);
-                }
-                foreach (var config in project.ApiItems)
-                {
-                    action(config);
-                }
-                foreach (var config in project.Enums)
-                {
-                    action(config);
-                    foreach (var item in config.Items)
-                        action(item);
-                }
-            }
-        }
-
-        #endregion
 
         #region 对象集合
+
+        /// <summary>
+        /// 设置当前解决方案
+        /// </summary>
+        /// <param name="solution"></param>
+        public static void SetCurrentSolution(SolutionConfig solution)
+        {
+            SolutionConfig.SetCurrentSolution(solution);
+            GlobalTrigger.Reset();
+        }
+
+
+        /// <summary>
+        /// 设置当前解决方案
+        /// </summary>
+        /// <param name="solution"></param>
+        public static void OnSolutionLoad(SolutionConfig solution)
+        {
+            GlobalTrigger.OnLoad(solution);
+        }
 
         /// <summary>
         /// 设置设计器全局对象
@@ -645,6 +641,115 @@ namespace Agebull.EntityModel.Config
             }
         }
 
+        #endregion
+
+
+        #region 设计器支持
+
+        /// <summary>
+        /// 检查路径
+        /// </summary>
+        /// <param name="root"></param>
+        /// <param name="floders"></param>
+        /// <returns></returns>
+        public static string CheckPath(string root, params string[] floders)
+        {
+            if (WorkContext.WriteToFile)
+            {
+                return IOHelper.CheckPath(root, floders);
+            }
+            if (root == null)
+                return null;
+            if (floders == null || floders.Length == 0)
+                return root;
+            List<string> stringList = new List<string>();
+            foreach (string floder in floders)
+                stringList.AddRange(floder.Split('\\').Where(p => !string.IsNullOrWhiteSpace(p)).Select(s => s.Trim()));
+            foreach (string path2 in stringList)
+            {
+                root = Path.Combine(root, path2);
+            }
+            return root;
+        }
+
+        /// <summary>
+        /// 检查路径
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static string CheckPaths(string path)
+        {
+            if (path == null)
+                return null;
+            return WorkContext.WriteToFile ? IOHelper.CheckPaths(path) : path;
+        }
+
+        /// <summary>
+        /// 试图加入
+        /// </summary>
+        /// <param name="project"></param>
+        public static void Add(ProjectConfig project)
+        {
+            if (!Projects.Contains(project))
+                Projects.Add(project);
+        }
+
+        /// <summary>
+        /// 加入
+        /// </summary>
+        /// <param name="entity"></param>
+        internal static void Add(EntityConfig entity)
+        {
+            if (!Entities.Contains(entity))
+                Entities.Add(entity);
+        }
+
+        /// <summary>
+        /// 加入
+        /// </summary>
+        /// <param name="enumConfig"></param>
+        internal static void Add(EnumConfig enumConfig)
+        {
+            if (!Enums.Contains(enumConfig))
+                Enums.Add(enumConfig);
+        }
+
+        /// <summary>
+        /// 加入
+        /// </summary>
+        /// <param name="api"></param>
+        internal static void Add(ApiItem api)
+        {
+            if (!ApiItems.Contains(api))
+                ApiItems.Add(api);
+        }
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="entity"></param>
+        internal static void Remove(EntityConfig entity)
+        {
+            Entities.Remove(entity);
+        }
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="enumConfig"></param>
+        internal static void Remove(EnumConfig enumConfig)
+        {
+            Enums.Remove(enumConfig);
+        }
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="api"></param>
+        internal static void Remove(ApiItem api)
+        {
+            ApiItems.Remove(api);
+        }
         #endregion
     }
 }

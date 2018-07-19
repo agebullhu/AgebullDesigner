@@ -3,8 +3,16 @@ using System.Text;
 
 namespace Agebull.Common.LUA
 {
+    /// <summary>
+    /// LUA支持
+    /// </summary>
     public static class UCharHelper
     {
+        /// <summary>
+        /// 转为LUA格式
+        /// </summary>
+        /// <param name="str">文本</param>
+        /// <returns>LUA格式文本</returns>
         public static string ToLuaString(this string str)
         {
             if (string.IsNullOrWhiteSpace(str))
@@ -23,6 +31,11 @@ namespace Agebull.Common.LUA
             }
             return builder.ToString();
         }
+        /// <summary>
+        /// 转为LUA格式
+        /// </summary>
+        /// <param name="str">文本</param>
+        /// <returns>LUA格式文本</returns>
         public static string FromLuaChar(this string str)
         {
             if (string.IsNullOrWhiteSpace(str))
@@ -84,8 +97,7 @@ namespace Agebull.Common.LUA
                     ubuilder.Append(ch);
                     if (ubuilder.Length < 6)
                         continue;
-                    int nch;
-                    if (int.TryParse(ubuilder.ToString().Substring(2),NumberStyles.AllowHexSpecifier , null, out nch))
+                    if (int.TryParse(ubuilder.ToString().Substring(2),NumberStyles.AllowHexSpecifier , null, out var nch))
                     {
                         builder.Append((char) nch);
                     }

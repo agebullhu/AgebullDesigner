@@ -14,30 +14,19 @@ namespace Agebull.Common.Config.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal sealed class SqlServerImporter : ConfigCommandBase<ProjectConfig>, IAutoRegister
+    internal sealed class SqlServerImporter : IAutoRegister
     {
         /// <summary>
         /// 注册代码
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            NoButton = true;
-            Signle = true;
-            CommandCoefficient.RegisterCommand<ProjectConfig, SqlServerImporter>();
-        }
-
-
-        public override CommandItem ToCommand(object arg, Func<object, IEnumerator> enumerator = null)
-        {
-            return new CommandItem
+            CommandCoefficient.RegisterCommand(new CommandItemBuilder<object, int>(BeginImportSqlServer, DoImportSqlServer, EndImportSqlServer)
             {
-                NoButton = true,
-                Signle = true,
-                Catalog = "解决方案",
-                Command = new AsyncCommand<int>(BeginImportSqlServer, DoImportSqlServer, EndImportSqlServer),
-                Caption = "导入SQLSERVER数据库",
-                Image = Application.Current.Resources["img_open"] as ImageSource
-            };
+                Caption = "导入SqlServer数据库",
+                Catalog = "文件",
+                IconName = "tree_Assembly"
+            });
         }
         
         /// <summary>

@@ -57,7 +57,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 
                 if (field.IsLinkKey)
                 {
-                    var friend = Entity.Properties.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
+                    var friend = Entity.ClientProperty.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
                     if (friend != null)
                         caption = friend.Caption;
                     if (friend != null)
@@ -142,7 +142,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                         attributes += $" style='width:{wid}px'";
                     if (field.IsLinkKey)
                     {
-                        var title = field.Parent.Properties.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
+                        var title = field.Parent.ClientProperty.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
                         if (title != null)
                         {
                             attributes += $" readfield='{title.Name}'";
@@ -197,8 +197,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             {
                 options.Append($",url:'{field.ComboBoxUrl}'");
             }
-            bool required;
-            var validType = EasyUiPageScriptCoder.ValidType(field, out required);
+            var validType = EasyUiPageScriptCoder.ValidType(field, out bool required);
             if (validType.Count > 0)
             {
                 options.Append($",validType:[{validType.LinkToString(",")}]");

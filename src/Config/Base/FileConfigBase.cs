@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
+using Agebull.Common;
 using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
@@ -40,15 +43,15 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 取文件名
         /// </summary>
-        /// <param name="ext"></param>
         /// <returns></returns>
-        public string GetFileName(string ext)
+        public string GetFileName()
         {
             if (string.IsNullOrEmpty(Name))
             {
-                return Name = Guid.NewGuid().ToString("N").ToUpper() + ext;
+                return Name = Guid.NewGuid().ToString("N").ToUpper() + ".json";
             }
-            return Name.Trim().Replace(' ', '_').Replace('>', '_').Replace('<', '_') + ext;
+            return Name.Trim().Replace(' ', '_').Replace('>', '_').Replace('<', '_') + ".json";
         }
+
     }
 }

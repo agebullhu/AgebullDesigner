@@ -136,7 +136,7 @@ namespace Agebull.EntityModel.Config
                 {
                     field.ComboBoxUrl = $"/Api/Index.aspx?action={entity.Name.ToLower()}";
                     field.FormOption = "valueField:'id', textField:'text'";
-                    var title = field.Parent.Properties.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
+                    var title = field.Parent.ClientProperty.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
                     if (title != null)
                     {
                         field.InputType = "easyui-combobox";
@@ -202,7 +202,7 @@ namespace Agebull.EntityModel.Config
                 var entity = Find(p => p.SaveTable == field.LinkTable);
                 if (entity != null)
                 {
-                    var title = field.Parent.Properties.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
+                    var title = field.Parent.ClientProperty.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
                     if (title != null)
                     {
                         field.NoneGrid = true;

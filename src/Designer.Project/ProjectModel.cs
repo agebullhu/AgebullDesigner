@@ -8,6 +8,24 @@ using Agebull.Common.Mvvm;
 namespace Agebull.EntityModel.Designer
 {
     /// <summary>
+    /// 关系连接检查
+    /// </summary>
+    [Export(typeof(IAutoRegister))]
+    [ExportMetadata("Symbol", '%')]
+    internal sealed class Register : IAutoRegister
+    {
+        /// <summary>
+        /// 注册代码
+        /// </summary>
+        void IAutoRegister.AutoRegist()
+        {
+            DesignerManager.Registe<ProjectConfig, EntityListPanel>("实体列表");
+            DesignerManager.Registe<ProjectConfig, EnumListPanel>("枚举列表");
+            DesignerManager.Registe<ProjectConfig, ApiListPanel>("接口列表");
+        }
+    }
+
+    /// <summary>
     /// 扩展节点
     /// </summary>
     [Export(typeof(IAutoRegister))]
@@ -22,34 +40,35 @@ namespace Agebull.EntityModel.Designer
         {
             commands.Add(new CommandItemBuilder
             {
-                Catalog="编辑",
-                Signle = true,
+                Catalog = "编辑",
+                SignleSoruce = true,
+                IsButton = true,
                 Caption = "增加表",
-                Command = new DelegateCommand(AddEntity),
+                Action = (AddEntity),
                 IconName = "tree_Open"
             });
             commands.Add(new CommandItemBuilder
             {
                 Catalog = "编辑",
-                Signle = true,
-                NoButton = true,
+                SignleSoruce = true,
+                IsButton = true,
                 Caption = "粘贴表",
-                Command = new DelegateCommand(PasteTable),
+                Action = (PasteTable),
                 IconName = "tree_item"
             });
 
             commands.Add(new CommandItemBuilder
             {
-                Signle = true,
-                NoButton = true,
+                SignleSoruce = true,
+                IsButton = true,
                 Catalog = "编辑",
                 Caption = "复制到其它项目",
-                Command = new DelegateCommand(CopyToProject),
+                Action = (CopyToProject),
                 IconName = "tree_item"
             });
         }
 
-        public void PasteTable()
+        public void PasteTable(object arg)
         {
             if (Context.SelectProject == null)
             {
@@ -80,33 +99,28 @@ namespace Agebull.EntityModel.Designer
             //this.RaisePropertyChanged(() => this.Context.CopiedTableCounts);
         }
 
-
-        public void AddEntity()
+        public void AddEntity(object arg)
         {
             if (Context.SelectProject == null)
             {
                 MessageBox.Show("请选择一个项目");
                 return;
             }
-            EntityConfig entity;
-            if (!Model.CreateNew("新增实体",out entity))
+
+            var project = Context.SelectProject;
+            var entity = new EntityConfig();
+            if (CommandIoc.EditEntityCommand(entity))
             {
+                project.Add(entity);
+                Model.Tree.SetSelectEntity(entity);
                 return;
             }
-            Context.SelectProject.Add(entity);
-            Model.Tree.SetSelectEntity(entity);
-            Context.SelectColumns = null;
-            var nentity = CommandIoc.AddFieldsCommand();
-            if (nentity == null)
-            {
-                return;
-            }
-            entity.Properties.AddRange(nentity.Properties);
+            project.Remove(entity);
         }
         /// <summary>
         /// 复制项目
         /// </summary>
-        public void CopyToProject()
+        public void CopyToProject(object arg)
         {
             if (Context.SelectProject == null)
             {
@@ -122,7 +136,6 @@ namespace Agebull.EntityModel.Designer
                 //if (string.IsNullOrWhiteSpace(project.BusinessPath))
                 project.BusinessPath = Context.SelectProject.BusinessPath;
                 //if (string.IsNullOrWhiteSpace(project.ModelPath))
-                project.ModelPath = Context.SelectProject.ModelPath;
                 //if (string.IsNullOrWhiteSpace(project.CodePath))
                 project.CppCodePath = Context.SelectProject.CppCodePath;
                 //if (string.IsNullOrWhiteSpace(project.DataBaseObjectName))

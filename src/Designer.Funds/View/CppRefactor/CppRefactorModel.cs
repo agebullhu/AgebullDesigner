@@ -73,7 +73,7 @@ namespace Agebull.EntityModel.Designer
                     return;
                 }
                 _selectProjectConfig = value;
-                SystemName = value?.Tag;
+                SystemName = value?.Option.ReferenceTag;
                 RaisePropertyChanged(() => Project);
             }
         }
@@ -82,9 +82,8 @@ namespace Agebull.EntityModel.Designer
 
         #region 类型分析
 
-        internal bool CheckTypedefPrepare(string arg, Action<string> setArg)
+        internal bool CheckTypedefPrepare(string arg)
         {
-            setArg(Code);
             return !string.IsNullOrWhiteSpace(Code);
         }
 
@@ -106,9 +105,8 @@ namespace Agebull.EntityModel.Designer
 
         #region 类型分析
 
-        internal bool CheckCppPrepare(string arg, Action<string> setArg)
+        internal bool CheckCppPrepare(string arg)
         {
-            setArg(Code);
             return !string.IsNullOrWhiteSpace(Code);
         }
 
@@ -213,7 +211,7 @@ namespace Agebull.EntityModel.Designer
                     {
                         tp.Items.Add(words[2], new EnumItem
                         {
-                            Tag = SystemName,
+                            ReferenceKey = item == null ? Guid.Empty : item.Key,
                             Name = words[2].Trim(CoderBase.NoneLanguageChar),
                             Value = words[3],
                             Caption = words.Length > 4 ? words[4].Trim(CoderBase.NoneLanguageChar) : item?.Description.Trim(CoderBase.NoneLanguageChar),
@@ -292,7 +290,7 @@ namespace Agebull.EntityModel.Designer
                         {
                             item.KeyWork += " " + words[index];
                         }
-                        InvokeInUiThread(()=> TypedefItems.Add(item));
+                        InvokeInUiThread(() => TypedefItems.Add(item));
                         continue;
                     case "struct":
                         entity.Name = words[1];
@@ -312,9 +310,9 @@ namespace Agebull.EntityModel.Designer
                 PropertyConfig column;
                 entity.Add(column = new PropertyConfig
                 {
-                    Index = idx++,
                     DbType = "nvarchar"
                 });
+                column.Option.Index = idx++;
                 words = line.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                 if (words.Length > 1)
                 {
@@ -341,7 +339,7 @@ namespace Agebull.EntityModel.Designer
             foreach (var t in tables)
             {
                 t.Parent = Project;
-                t.Tag = SystemName + "," + t.Name;
+                t.Option.ReferenceTag = SystemName + "," + t.Name;
                 t.CppName = t.Name;
                 CoderBase.RepairConfigName(t, true);
                 foreach (var pro in t.Properties)
@@ -352,7 +350,7 @@ namespace Agebull.EntityModel.Designer
                     pro.CppLastType = CppTypeHelper2.CppLastType(pro.CppType);
                     pro.CsType = CppTypeHelper2.CppTypeToCsType(pro);
                 }
-                t.IsClass = true;
+                t.NoDataBase = true;
 
                 //EntityBusinessModel business = new EntityBusinessModel
                 //{

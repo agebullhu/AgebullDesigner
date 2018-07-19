@@ -178,146 +178,130 @@ namespace {NameSpace}
         private string Properties()
         {
             var code = new StringBuilder();
-            code.Append(PrimaryKeyPropertyCode());
-            var index = 1;
+            var index = 0;
+            if (PrimaryKeyPropertyCode(code))
+                ++index;
             foreach (var property in Columns.Where(p => !p.IsPrimaryKey))
             {
                 if (property.IsCompute)
                     ComputePropertyCode(property, index++, code);
                 else
-                {
                     PropertyCode(property, index++, code);
-                }
             }
             return code.ToString();
         }
         
 
-        private string PrimaryKeyPropertyCode()
+        private bool PrimaryKeyPropertyCode(StringBuilder builder)
         {
             var property = Entity.PrimaryColumn;
             if (property == null)
-                return "";
-            return string.Format(@"
+                return false;
+            builder.Append($@"
 
         /// <summary>
         /// 修改主键
         /// </summary>
-        public void ChangePrimaryKey({3} {1})
+        public void ChangePrimaryKey({property.LastCsType} {property.PropertyName.ToLower()})
         {{
-            _{1} = {1};
+            _{property.PropertyName.ToLower()} = {property.PropertyName.ToLower()};
         }}
         
         /// <summary>
-        /// {0}的实时记录顺序
+        /// {ToRemString(property.Caption)}的实时记录顺序
         /// </summary>
-        public const int Real_{2} = 0;
+        public const int Real_{property.PropertyName} = 0;
 
         /// <summary>
-        /// {0}
+        /// {ToRemString(property.Caption)}
         /// </summary>
         [DataMember,JsonIgnore]
-        public {3} _{1};
+        public {property.LastCsType} _{property.PropertyName.ToLower()};
 
-        partial void On{2}Get();
+        partial void On{property.PropertyName}Get();
 
-        partial void On{2}Set(ref {3} value);
+        partial void On{property.PropertyName}Set(ref {property.LastCsType} value);
 
-        partial void On{2}Load(ref {3} value);
+        partial void On{property.PropertyName}Load(ref {property.LastCsType} value);
 
-        partial void On{2}Seted();
+        partial void On{property.PropertyName}Seted();
 
         /// <summary>
-        /// {0}
+        /// {ToRemString(property.Caption)}
         /// </summary>
         /// <remarks>
-        /// {5}
+        /// {ToRemString(property.Description)}
         /// </remarks>
-        {4}
-        public {3} {2}
+        {Attribute(property)}
+        public {property.LastCsType} {property.PropertyName}
         {{
             get
             {{
-                On{2}Get();
-                return this._{1};
+                On{property.PropertyName}Get();
+                return this._{property.PropertyName.ToLower()};
             }}
             set
             {{
-                if(this._{1} == value)
+                if(this._{property.PropertyName.ToLower()} == value)
                     return;
-                //if(this._{1} > 0)
+                //if(this._{property.PropertyName.ToLower()} > 0)
                 //    throw new Exception(""主键一旦设置就不可以修改"");
-                On{2}Set(ref value);
-                this._{1} = value;
-                {6}this.OnPropertyChanged(nameof({2}));
-                On{2}Seted();
+                On{property.PropertyName}Set(ref value);
+                this._{property.PropertyName.ToLower()} = value;
+                this.OnPropertyChanged(nameof({property.PropertyName}));
+                On{property.PropertyName}Seted();
             }}
-        }}"
-                , ToRemString(property.Caption + ":" + property.Description)
-                , property.PropertyName.ToLower()
-                , property.PropertyName
-                , property.LastCsType
-                , Attribute(property)
-                , ToRemString(property.Description)
-                , null /*Table.UpdateByModified ? "//" : property.IsIdentity ? "//" : ""*/);
+        }}");
+            return true;
         }
 
         private void PropertyCode(PropertyConfig property, int index, StringBuilder code)
         {
-            code.AppendFormat(@"
+            code.Append($@"
         /// <summary>
-        /// {0}的实时记录顺序
+        /// {ToRemString(property.Caption)}的实时记录顺序
         /// </summary>
-        public const int Real_{2} = {6};
+        public const int Real_{property.PropertyName} = {index};
 
         /// <summary>
-        /// {0}
+        /// {ToRemString(property.Caption)}
         /// </summary>
         [DataMember,JsonIgnore]
-        public {3} _{1};
+        public {property.LastCsType} _{property.PropertyName.ToLower()};
 
-        partial void On{2}Get();
+        partial void On{property.PropertyName}Get();
 
-        partial void On{2}Set(ref {3} value);
+        partial void On{property.PropertyName}Set(ref {property.LastCsType} value);
 
-        partial void On{2}Seted();
+        partial void On{property.PropertyName}Seted();
 
         /// <summary>
-        /// {0}
+        /// {ToRemString(property.Caption)}
         /// </summary>
         /// <remarks>
-        /// {5}
+        /// {ToRemString(property.Description)}
         /// </remarks>
-        {4}
-        {7} {3} {2}
+        {Attribute(property)}
+        {property.AccessType} {property.LastCsType} {property.PropertyName}
         {{
             get
             {{
-                On{2}Get();
-                return this._{1};
+                On{property.PropertyName}Get();
+                return this._{property.PropertyName.ToLower()};
             }}
             set
             {{
-                if(this._{1} == value)
+                if(this._{property.PropertyName.ToLower()} == value)
                     return;
-                On{2}Set(ref value);
-                this._{1} = value;
-                On{2}Seted();
-                OnPropertyChanged(nameof({2}));
-                {8}
-            }}
-        }}"
-                , ToRemString(property.Caption + ":" + property.Description)
-                , property.PropertyName.ToLower()
-                , property.PropertyName
-                , property.LastCsType
-                , Attribute(property)
-                , ToRemString(property.Description)
-                , index
-                , property.AccessType
-                , property.EnumConfig == null
+                On{property.PropertyName}Set(ref value);
+                this._{property.PropertyName.ToLower()} = value;
+                On{property.PropertyName}Seted();
+                OnPropertyChanged(nameof({property.PropertyName}));
+                {(property.EnumConfig == null
                     ? null
-                    : $@"OnPropertyChanged(""{property.PropertyName}_Content"");" /*Table.UpdateByModified ? "//" : ""*/);
+                    : $@"OnPropertyChanged(""{property.PropertyName}_Content"");")}
+            }}
+        }}" /*Table.UpdateByModified ? "//" : ""*/);
 
 
             EnumContentProperty(property, code);
@@ -337,85 +321,63 @@ namespace {NameSpace}
             }
             else if (string.IsNullOrWhiteSpace(property.ComputeSetCode))
             {
-                code.AppendFormat(@"
+                code.Append($@"
         /// <summary>
-        /// {0}
+        /// {ToRemString(property.Caption + ":" + property.Description)}
         /// </summary>
         /// <remarks>
-        /// {5}
+        /// {ToRemString(property.Description)}
         /// </remarks>
-        {4}
-        {6} {3} {2}
+        {Attribute(property)}
+        {property.AccessType} {property.LastCsType} {property.PropertyName}
         {{
             get
             {{
-                {1}
+                {property.ComputeGetCode}
             }}
-        }}"
-                    , ToRemString(property.Caption + ":" + property.Description)
-                    , property.ComputeGetCode
-                    , property.PropertyName
-                    , property.LastCsType
-                    , Attribute(property)
-                    , ToRemString(property.Description)
-                    , property.AccessType);
+        }}");
             }
             else if (string.IsNullOrWhiteSpace(property.ComputeGetCode))
             {
-                code.AppendFormat(@"
+                code.Append($@"
         /// <summary>
-        /// {0}
+        /// {ToRemString(property.Caption)}
         /// </summary>
         /// <remarks>
-        /// {5}
+        /// {ToRemString(property.Description)}
         /// </remarks>
-        [{4}]
-        [JsonProperty(""{2}"", NullValueHandling = NullValueHandling.Ignore)]
-        {6} {3} {2}
+        [{Attribute(property)}]
+        [JsonProperty(""{property.PropertyName}"", NullValueHandling = NullValueHandling.Ignore)]
+        {property.AccessType} {property.LastCsType} {property.PropertyName}
         {{
             set
             {{
-                {1}
+                {property.ComputeSetCode}
             }}
-        }}"
-                    , ToRemString(property.Caption)
-                    , property.ComputeSetCode
-                    , property.PropertyName
-                    , property.LastCsType
-                    , Attribute(property)
-                    , ToRemString(property.Description)
-                    , property.AccessType);
+        }}");
             }
             else
             {
-                code.AppendFormat(@"
+                code.Append($@"
         /// <summary>
-        /// {0}
+        /// {ToRemString(property.Caption + ":" + property.Description)}
         /// </summary>
         /// <remarks>
-        /// {5}
+        /// {ToRemString(property.Description)}
         /// </remarks>
-        {4}
-        [JsonProperty(""{2}"", NullValueHandling = NullValueHandling.Ignore)]
-        {6} {3} {2}
+        {Attribute(property)}
+        [JsonProperty(""{property.PropertyName}"", NullValueHandling = NullValueHandling.Ignore)]
+        {property.AccessType} {property.LastCsType} {property.PropertyName}
         {{
             set
             {{
-                {1}
+                {property.ComputeSetCode}
             }}
             get
             {{
-                {7}
+                {property.ComputeGetCode}
             }}
-        }}"
-                    , ToRemString(property.Caption + ":" + property.Description)
-                    , property.ComputeSetCode
-                    , property.PropertyName
-                    , property.LastCsType
-                    , Attribute(property)
-                    , ToRemString(property.Description)
-                    , property.AccessType
-                    , property.ComputeGetCode);
+        }}");
             }
         }
         #endregion
@@ -447,29 +409,19 @@ namespace {NameSpace}
             string caption = string.IsNullOrWhiteSpace(field.Caption) ? field.Name : field.Caption;
             if (!string.IsNullOrWhiteSpace(field.ArrayLen))
             {
-                if (field.EnumConfig != null)
-                {
-                    code.Append($@"
-[{caption}]:{{string.Join("","", {field.Name}_Content)}}");
-                }
-                else
-                {
-                    code.Append($@"
+                code.Append(field.EnumConfig != null
+                    ? $@"
+[{caption}]:{{string.Join("","", {field.Name}_Content)}}"
+                    : $@"
 [{caption}]:{{string.Join("","", {field.Name})}}");
-                }
             }
             else
             {
-                if (field.EnumConfig != null)
-                {
-                    code.Append($@"
-[{caption}]:{{{field.Name}_Content}}");
-                }
-                else
-                {
-                    code.Append($@"
+                code.Append(field.EnumConfig != null
+                    ? $@"
+[{caption}]:{{{field.Name}_Content}}"
+                    : $@"
 [{caption}]:{{{field.Name}}}");
-                }
             }
         }
 

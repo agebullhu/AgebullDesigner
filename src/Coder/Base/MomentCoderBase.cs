@@ -14,61 +14,65 @@ namespace Agebull.EntityModel.RobotCoder
         #region 代码生成代理接口
 
 
-        public static string DoCoder(Func<string> func)
-        {
-            using (WorkModelScope.CreateScope(WorkModel.Coder))
-            {
-                return func();
-            }
-        }
-
         public static string DoCoder<T>(Func<T, string> func, T t)
+            //where T : ConfigBase, new()
         {
-            using (WorkModelScope.CreateScope(WorkModel.Coder))
+            using (CodeGeneratorScope.CreateScope())
             {
                 return func(t);
+                //var arg = new T();
+                //arg.Copy(t);
+                //return func(arg);
             }
         }
 
-        public static string DoCoder<T1, T2>(Func<T1, T2, string> func, T1 t1, T2 t2)
-        {
-            using (WorkModelScope.CreateScope(WorkModel.Coder))
-            {
-                return func(t1, t2);
-            }
-        }
+        //public static string DoCoder(Func<string> func)
+        //{
+        //    using (CodeGeneratorScope.CreateScope())
+        //    {
+        //        return func();
+        //    }
+        //}
 
-        public static string DoCoder<T1, T2, T3>(Func<T1, T2, T3, string> func, T1 t1, T2 t2, T3 t3)
-        {
-            using (WorkModelScope.CreateScope(WorkModel.Coder))
-            {
-                return func(t1, t2, t3);
-            }
-        }
+        //public static string DoCoder<T1, T2>(Func<T1, T2, string> func, T1 t1, T2 t2)
+        //{
+        //    using (CodeGeneratorScope.CreateScope())
+        //    {
+        //        return func(t1, t2);
+        //    }
+        //}
 
-        public static string DoCoder<T1, T2, T3, T4>(Func<T1, T2, T3, T4, string> func, T1 t1, T2 t2, T3 t3, T4 t4)
-        {
-            using (WorkModelScope.CreateScope(WorkModel.Coder))
-            {
-                return func(t1, t2, t3, t4);
-            }
-        }
+        //public static string DoCoder<T1, T2, T3>(Func<T1, T2, T3, string> func, T1 t1, T2 t2, T3 t3)
+        //{
+        //    using (CodeGeneratorScope.CreateScope())
+        //    {
+        //        return func(t1, t2, t3);
+        //    }
+        //}
 
-        public static string DoCoder<T1, T2, T3, T4, T5>(Func<T1, T2, T3, T4, T5, string> func, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5)
-        {
-            using (WorkModelScope.CreateScope(WorkModel.Coder))
-            {
-                return func(t1, t2, t3, t4, t5);
-            }
-        }
+        //public static string DoCoder<T1, T2, T3, T4>(Func<T1, T2, T3, T4, string> func, T1 t1, T2 t2, T3 t3, T4 t4)
+        //{
+        //    using (CodeGeneratorScope.CreateScope())
+        //    {
+        //        return func(t1, t2, t3, t4);
+        //    }
+        //}
 
-        public static string DoCoder<T1, T2, T3, T4, T5, T6>(Func<T1, T2, T3, T4, T5, T6, string> func, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6)
-        {
-            using (WorkModelScope.CreateScope(WorkModel.Coder))
-            {
-                return func(t1, t2, t3, t4, t5, t6);
-            }
-        }
+        //public static string DoCoder<T1, T2, T3, T4, T5>(Func<T1, T2, T3, T4, T5, string> func, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5)
+        //{
+        //    using (CodeGeneratorScope.CreateScope())
+        //    {
+        //        return func(t1, t2, t3, t4, t5);
+        //    }
+        //}
+
+        //public static string DoCoder<T1, T2, T3, T4, T5, T6>(Func<T1, T2, T3, T4, T5, T6, string> func, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6)
+        //{
+        //    using (CodeGeneratorScope.CreateScope())
+        //    {
+        //        return func(t1, t2, t3, t4, t5, t6);
+        //    }
+        //}
 
         #endregion
 
@@ -85,6 +89,28 @@ namespace Agebull.EntityModel.RobotCoder
         ///     表配置集合
         /// </summary>
         public IEnumerable<EntityConfig> Entities => Project.Entities;
+
+        /// <summary>
+        /// 执行目标的动作
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="coder"></param>
+        /// <returns></returns>
+        public string CreateCode<TConfig>(ConfigBase config, Func<TConfig, string> coder)
+            where TConfig : ConfigBase
+        {
+            StringBuilder code = new StringBuilder();
+
+            using (CodeGeneratorScope.CreateScope())
+            {
+                config.Foreach<TConfig>(arg =>
+                {
+                    code.AppendLine(coder(arg));
+                });
+            }
+
+            return code.ToString();
+        }
 
         /// <summary>
         /// 执行以实体为目标的动作
@@ -211,7 +237,7 @@ namespace Agebull.EntityModel.RobotCoder
         }
         private static void ForeachByCurrent(Action<PropertyConfig> action, EntityConfig entity)
         {
-            foreach (var property in entity.Properties)
+            foreach (var property in entity.LastProperties)
                 ForeachByCurrent(action, property);
         }
         private static void ForeachByCurrent(Action<PropertyConfig> action, ProjectConfig project)
@@ -260,7 +286,7 @@ namespace Agebull.EntityModel.RobotCoder
         }
         private static void ForeachByCurrent(Func<PropertyConfig, bool> condition, Action<PropertyConfig> action, EntityConfig entity)
         {
-            foreach (var property in entity.Properties)
+            foreach (var property in entity.LastProperties)
                 ForeachByCurrent(condition, action, property);
         }
         private static void ForeachByCurrent(Func<PropertyConfig, bool> condition, Action<PropertyConfig> action, ProjectConfig project)
@@ -315,7 +341,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         private static void ForeachByCurrent(Action<EnumConfig> action, EntityConfig entity)
         {
-            foreach (var property in entity.Properties.Where(p => p.EnumConfig != null))
+            foreach (var property in entity.LastProperties.Where(p => p.EnumConfig != null))
                 action(property.EnumConfig);
         }
         private static void ForeachByCurrent(Action<EnumConfig> action, ProjectConfig project)
@@ -370,7 +396,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         private static void ForeachByCurrent(Func<EnumConfig, bool> condition, Action<EnumConfig> action, EntityConfig entity)
         {
-            foreach (var property in entity.Properties.Where(p => p.EnumConfig != null))
+            foreach (var property in entity.LastProperties.Where(p => p.EnumConfig != null))
                 ForeachByCurrent(condition, action, property.EnumConfig);
         }
         private static void ForeachByCurrent(Func<EnumConfig, bool> condition, Action<EnumConfig> action, ProjectConfig project)

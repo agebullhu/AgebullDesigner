@@ -52,8 +52,8 @@ namespace Agebull.EntityModel.Designer
             {
                 IsExpanded = true,
                 Header = Context.Solution.Caption,
-                HeaderField = "Caption",
-                HeaderExtendExpression = p => p.Caption,
+                HeaderField = "Caption,Name",
+                HeaderExtendExpression = p => p.Caption ?? p.Name,
                 CreateChildFunc = CreateProjectTreeItem,
                 SoruceItemsExpression = () => Context.Solution.ProjectList,
                 SoruceTypeIcon = Application.Current.Resources["tree_Solution"] as BitmapImage
@@ -129,23 +129,33 @@ namespace Agebull.EntityModel.Designer
 
         internal TreeItem CreateEntityTreeItem(object arg)
         {
-            var entity = arg as EntityConfig;
-            if (entity == null)
+            if (!(arg is EntityConfig entity))
                 return null;
             foreach (var col in entity.Properties)
                 col.Parent = entity;
             foreach (var relation in entity.Releations)
                 relation.Parent = entity;
-            var icon = Application.Current.Resources[entity.IsClass ? "tree_Type" : "tree_Child4"] as BitmapImage;
             var tableItem = new ConfigTreeItem<EntityConfig>(entity)
             {
                 Catalog = "字段",
-                SoruceTypeIcon = icon,
                 CreateChildFunc = CreatePropertyTreeItem,
                 SoruceItemsExpression = () => entity.Properties,
+                CustomPropertyChanged = Entity_PropertyChanged
             };
             return tableItem;
         }
+        private void Entity_PropertyChanged(TreeItem item, NotificationObject arg, string name)
+        {
+            var entity = (EntityConfig)arg;
+            switch (name)
+            {
+                case null:
+                case nameof(EntityConfig.NoDataBase):
+                    item.SoruceTypeIcon = Application.Current.Resources[entity.NoDataBase ? "tree_Type" : "tree_Child4"] as BitmapImage;
+                    break;
+            }
+        }
+
 
 
         private TreeItem CreatePropertyTreeItem(object arg)
@@ -166,26 +176,30 @@ namespace Agebull.EntityModel.Designer
             {
                 case null:
                 case nameof(PropertyConfig.IsPrimaryKey):
-                case nameof(PropertyConfig.Discard):
+                case nameof(PropertyConfig.IsEnum):
+                case nameof(PropertyConfig.IsDiscard):
                 case nameof(PropertyConfig.DbInnerField):
                 case nameof(PropertyConfig.IsInterfaceField):
                 case nameof(PropertyConfig.CustomType):
                 case nameof(PropertyConfig.CustomWrite):
                 case nameof(PropertyConfig.IsCompute):
+                case nameof(PropertyConfig.ComputeGetCode):
+                case nameof(PropertyConfig.ComputeSetCode):
                     if (property.IsPrimaryKey)
                         item.SoruceTypeIcon = Application.Current.Resources["tree_default"] as BitmapImage;
-                    else if (property.Discard)
+                    else if (property.IsDiscard)
                         item.SoruceTypeIcon = Application.Current.Resources["img_clear"] as BitmapImage;
                     else if (property.DbInnerField)
                         item.SoruceTypeIcon = Application.Current.Resources["img_lock"] as BitmapImage;
                     else if (property.IsInterfaceField)
                         item.SoruceTypeIcon = Application.Current.Resources["img_face"] as BitmapImage;
+                    else if (property.IsEnum)
+                        item.SoruceTypeIcon = Application.Current.Resources["tree_Child4"] as BitmapImage;
                     else if (!string.IsNullOrWhiteSpace(property.CustomType))
                         item.SoruceTypeIcon = Application.Current.Resources["img_man"] as BitmapImage;
                     else if (property.CustomWrite)
                         item.SoruceTypeIcon = Application.Current.Resources["tree_item"] as BitmapImage;
-                    else if (!string.IsNullOrWhiteSpace(property.ComputeGetCode) ||
-                             !string.IsNullOrWhiteSpace(property.ComputeSetCode))
+                    else if (!string.IsNullOrWhiteSpace(property.ComputeGetCode) || !string.IsNullOrWhiteSpace(property.ComputeSetCode))
                         item.SoruceTypeIcon = Application.Current.Resources["img_code"] as BitmapImage;
                     else if (property.IsCompute)
                         item.SoruceTypeIcon = Application.Current.Resources["img_sum"] as BitmapImage;
@@ -198,15 +212,19 @@ namespace Agebull.EntityModel.Designer
                 case null:
                 case nameof(PropertyConfig.CustomType):
                 case nameof(PropertyConfig.ReferenceType):
-                    property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
-                    if (property.EnumConfig != null)//修改成功会有下一次的处理
-                        return;
                     item.Items.Clear();
                     if (property.CustomType == null)
                         return;
-                    var config = GlobalConfig.GetEntity(property.CustomType);
-                    if (config != null && !LoopCheck(item, config))
-                        item.Items.Add(CreateEntityTreeItem(config));
+                    property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
+                    if (property.EnumConfig != null)
+                    {
+                        if (name == null)
+                            item.Items.Add(CreateEnumTreeItem(property.EnumConfig));
+                        return;
+                    }
+                    //var config = GlobalConfig.GetEntity(property.CustomType);
+                    //if (config != null && !LoopCheck(item, config))
+                    //    item.Items.Add(CreateEntityTreeItem(config));
                     break;
                 case nameof(PropertyConfig.EnumConfig):
                     item.Items.Clear();
@@ -371,7 +389,6 @@ namespace Agebull.EntityModel.Designer
 
         #endregion
 
-        #region 响应
 
         #region 选择
 
@@ -407,39 +424,37 @@ namespace Agebull.EntityModel.Designer
         public CommandItem FindCommand => new CommandItem
         {
             Caption = "查找",
-            Command = new DelegateCommand(Find)
+            Action = Find
         };
 
         /// <summary>
         /// 查找
         /// </summary>
-        public void Find()
+        public void Find(object arg)
         {
             if (string.IsNullOrWhiteSpace(Context.FindKey))
                 return;
             var item = TreeRoot.Find(p =>
             {
-                var cfg = p.Source as ConfigBase;
-                if (cfg == null)
+                if (!(p.Source is ConfigBase cfg))
                     return false;
                 if (p.Source == Context.SelectConfig)
                     return false;
-                if (cfg.Name == Context.FindKey || cfg.Caption == Context.FindKey || cfg.Tag == Context.FindKey)
+                if (cfg.Name == Context.FindKey || cfg.Caption == Context.FindKey || cfg.Option.ReferenceTag == Context.FindKey)
                     return true;
                 if (p.Source is ApiItem || p.Source is EnumConfig)
                     return null;
                 return false;
             }) ?? TreeRoot.Find(p =>
             {
-                var cfg = p.Source as ConfigBase;
-                if (cfg == null)
+                if (!(p.Source is ConfigBase cfg))
                     return false;
                 if (p.Source == Context.SelectConfig)
                     return false;
                 if (cfg.Name != null && cfg.Name.Contains(Context.FindKey) ||
                     cfg.Caption != null && cfg.Caption.Contains(Context.FindKey))
                     return true;
-                if (p.Source is ApiItem  || p.Source is EnumConfig)
+                if (p.Source is ApiItem || p.Source is EnumConfig)
                     return null;
                 return false;
             });
@@ -459,8 +474,6 @@ namespace Agebull.EntityModel.Designer
             Context.StateMessage = "查找成功-" + Context.SelectConfig.Caption;
 
         }
-
-        #endregion
 
         #endregion
     }

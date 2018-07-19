@@ -22,7 +22,7 @@ namespace Agebull.EntityModel.RobotCoder
 * @brief {Entity.Name}的结构定义
 */
 struct {Entity.Name}");
-                if (!Entity.IsClass && !Entity.IsInternal)
+                if (!Entity.NoDataBase && !Entity.IsInternal)
                     code.Append(@"
 /*#ifdef SERVER
  : DataModel::IData
@@ -71,7 +71,7 @@ struct {Entity.Name}");
         Deserialize(cmd, this);
 		return *this;
 	}}");
-                if (!Entity.IsClass && !Entity.IsInternal)
+                if (!Entity.NoDataBase && !Entity.IsInternal)
                     code.Append(@"
 #ifdef DATAACCESS
 	/**
@@ -99,7 +99,7 @@ const size_t TSON_BUFFER_LEN_{Entity.Name.ToUpper()} = {GetEntitySerializeLen(En
         {
             var code = new StringBuilder();
             code.Append($"SERIALIZE_BASE_LEN + sizeof({entity.Name})");
-            int len = entity.Properties.Count;
+            int len = entity.LastProperties.Count;
             foreach (var property in entity.CppProperty)
             {
                 len += GetFieldSerializeLen(code, property);
@@ -111,7 +111,7 @@ const size_t TSON_BUFFER_LEN_{Entity.Name.ToUpper()} = {GetEntitySerializeLen(En
         private static int GetFieldSerializeLen(StringBuilder code, PropertyConfig field)
         {
             int flen = 0;
-            Debug.WriteLine(field.Caption);
+            Trace.WriteLine(field.Caption);
             CppTypeHelper2.DoByCppType(field.Parent, field,
                 (pro, len) =>
                 {
@@ -341,7 +341,7 @@ void Serialize(Serializer& writer,const {Entity.Name}* field)
 void Deserialize(Deserializer& reader, {Entity.Name}* field)
 {{
     memset(field, 0 , sizeof({Entity.Name}));");
-            if (Entity.Properties.Count > 0)
+            if (Entity.LastProperties.Count > 0)
             {
                 code.Append(@"
     reader.Begin();	
@@ -458,7 +458,7 @@ void Deserialize(Deserializer& reader, {Entity.Name}* field)
 
         private string SetValueFromDb()
         {
-            if (Entity.IsReference || Entity.IsClass)
+            if (Entity.IsReference || Entity.NoDataBase)
                 return null;
             StringBuilder code = new StringBuilder();
             code.Append($@"
@@ -508,7 +508,7 @@ void {Entity.Name}::SetValue(const char* field, const char* value)
             }
             if (!entity.IsReference)
                 return code.ToString();
-            var lc_entity = GlobalConfig.GetEntity(p => !p.IsReference && p.Tag != null && p.Tag.Contains(entity.Tag));
+            var lc_entity = GlobalConfig.GetEntity(p => !p.IsReference && p.Option.ReferenceTag != null && p.Option.ReferenceTag.Contains(entity.Option.ReferenceTag));
             if (lc_entity == null)
                 return code.ToString();
             code.Append($@"
@@ -528,7 +528,7 @@ using namespace {lc_entity.Parent.NameSpace.Replace(".", "::")};");
         {
             if (!es_entity.IsReference)
                 return null;
-            var lc_entity = GlobalConfig.GetEntity(p => !p.IsReference && p.Tag != null && p.Tag.Contains(es_entity.Tag));
+            var lc_entity = GlobalConfig.GetEntity(p => !p.IsReference && p.Option.ReferenceTag != null && p.Option.ReferenceTag.Contains(es_entity.Option.ReferenceTag));
             if (lc_entity == null)
                 return null;
             var code = new StringBuilder();
@@ -555,21 +555,21 @@ void CopyToEs(const {lc_entity.Name}* lc_field, {es_entity.Name}* es_field);");
         {
             if (!es_entity.IsReference)
                 return null;
-            var lc_entity = GlobalConfig.GetEntity(p => !p.IsReference && p.Tag != null && p.Tag.Contains(es_entity.Tag));
+            var lc_entity = GlobalConfig.GetEntity(p => !p.IsReference && p.Option.ReferenceTag != null && p.Option.ReferenceTag.Contains(es_entity.Option.ReferenceTag));
             if (lc_entity == null)
                 return null;
             Dictionary<PropertyConfig, PropertyConfig> maps = new Dictionary<PropertyConfig, PropertyConfig>();
-            foreach (PropertyConfig property in es_entity.CppProperty.Where(p => p.Tag != null))
+            foreach (PropertyConfig property in es_entity.CppProperty.Where(p => p.Option.ReferenceTag != null))
             {
-                PropertyConfig link = lc_entity.Properties.FirstOrDefault(p => p.Tag != null && p.Tag.Contains(property.Tag));
+                PropertyConfig link = lc_entity.LastProperties.FirstOrDefault(p => p.Option.ReferenceTag != null && p.Option.ReferenceTag.Contains(property.Option.ReferenceTag));
                 if (link == null)
                 {
-                    string tag = $"{es_entity.Tag},{property.CppType},{property.Name}";
-                    link = lc_entity.Properties.FirstOrDefault(p => p.Tag != null && p.Tag.Contains(tag));
+                    string tag = $"{es_entity.Option.ReferenceTag},{property.CppType},{property.Name}";
+                    link = lc_entity.LastProperties.FirstOrDefault(p => p.Option.ReferenceTag != null && p.Option.ReferenceTag.Contains(tag));
                 }
                 if (link == null)
                 {
-                    link = lc_entity.Properties.FirstOrDefault(p => p.Tag != null && p.Tag.Contains(property.Name));
+                    link = lc_entity.LastProperties.FirstOrDefault(p => p.Option.ReferenceTag != null && p.Option.ReferenceTag.Contains(property.Name));
                 }
                 if (link != null)
                 {
@@ -653,25 +653,24 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
         {
             if (srcField.EnumConfig == null)
                 return false;
-            var type = CppProject.Instance.GetTypedefByTag(srcField.EnumConfig.Tag);
+            var type = CppProject.Instance.GetTypedefByTag(srcField.EnumConfig.Option.ReferenceTag);
             return type != null;
         }
         public static bool EnumFieldCopyToTypedef(StringBuilder code, PropertyConfig srcField, string src_field_name,
             string dest_field_name)
         {
-            var type = CppProject.Instance.GetTypedefByTag(srcField.EnumConfig.Tag);
+            var type = CppProject.Instance.GetTypedefByTag(srcField.EnumConfig.Option.ReferenceTag);
             code.Append($@"
     switch({src_field_name})//{srcField.Caption}
     {{");
             foreach (var item in srcField.EnumConfig.Items)
             {
-                if (string.IsNullOrWhiteSpace(item.Tag))
+                if (string.IsNullOrWhiteSpace(item.Option.ReferenceTag))
                 {
                     continue;
                 }
-                var tag = item.Tag.Split(',').Last();
-                EnumItem titem;
-                if (!type.Items.TryGetValue(tag, out titem))
+                var tag = item.Option.ReferenceTag.Split(',').Last();
+                if (!type.Items.TryGetValue(tag, out EnumItem titem))
                 {
                     code.Append($@"
     case {srcField.EnumConfig.Name}Classify::{item.Name}://{item.Caption}
@@ -699,7 +698,7 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
         {
             if (srcField.EnumConfig == null)
                 return false;
-            var type = CppProject.Instance.GetTypedefByTag(srcField.EnumConfig.Tag);
+            var type = CppProject.Instance.GetTypedefByTag(srcField.EnumConfig.Option.ReferenceTag);
             if (type == null)
                 return false;
             code.Append($@"
@@ -707,7 +706,7 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
     {{");
             foreach (var item in type.Items.Values)
             {
-                var eitem = srcField.EnumConfig.Items.FirstOrDefault(p => p.Tag != null && p.Tag.Contains(item.Name));
+                var eitem = srcField.EnumConfig.Items.FirstOrDefault(p => p.Option.ReferenceTag != null && p.Option.ReferenceTag.Contains(item.Name));
                 var vl = item.Value.Trim('\'');
                 if (string.IsNullOrWhiteSpace(vl))
                     continue;
@@ -1036,7 +1035,7 @@ inline void operator << ({Entity.Name}& field, PNetCommand cmd)
 #pragma unmanaged
 
 #include <stdafx.h>");
-            if (!Entity.IsReference && !Entity.IsClass)
+            if (!Entity.IsReference && !Entity.NoDataBase)
             {
                 code.Append(@"
 #include <DataModel/ModelBase.h>

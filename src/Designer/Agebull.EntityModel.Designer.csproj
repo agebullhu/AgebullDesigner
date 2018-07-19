@@ -122,15 +122,13 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Card\DesignInfoForm.xaml.cs">
-      <DependentUpon>DesignInfoForm.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Card\ConfigForm.xaml.cs">
       <DependentUpon>ConfigForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Card\DesignInfoPanel.xaml.cs" />
     <Compile Include="View\CodePanel.xaml.cs">
       <DependentUpon>CodePanel.xaml</DependentUpon>
     </Compile>
@@ -191,17 +189,13 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Card\DesignInfoForm.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Card\ConfigForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Style\Button.xaml">
+    <Page Include="Card\DesignInfoPanel.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
     <Page Include="Style\Icon.xaml">
       <SubType>Designer</SubType>
@@ -307,10 +301,6 @@
     <ProjectReference Include="..\Command\Agebull.EntityModel.Designer.Command.csproj">
       <Project>{5b2850e3-c1ac-4d1e-be96-5be0f9f659b7}</Project>
       <Name>Agebull.EntityModel.Designer.Command</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Config.Cpp\Agebull.EntityModel.Config.Cpp.csproj">
-      <Project>{3ef55f58-0802-453c-8ce0-c227544584b1}</Project>
-      <Name>Agebull.EntityModel.Config.Cpp</Name>
     </ProjectReference>
     <ProjectReference Include="..\Config\Agebull.EntityModel.Config.csproj">
       <Project>{0AF9F7A3-6AAB-46A5-B3E8-45940AE26E5B}</Project>

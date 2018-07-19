@@ -26,19 +26,12 @@ namespace Agebull.EntityModel.Designer
     {
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<UserCommandConfig>
             {
-                Command = new DelegateCommand<ConfigTreeItem<UserCommandConfig>>(p =>
-                {
-                    var par = p.Parent as ConfigTreeItem<EntityConfig>;
-                    if (par == null)
-                        return;
-                    par.Model.Commands.Remove(p.Model);
-                    par.Items.Remove(p);
-                }),
+                Action = p => p.Parent?.Commands.Remove(p),
                 Catalog = "编辑",
-                Signle = true,
-                SourceType = typeof(UserCommandConfig),
+                SignleSoruce = true,
+                TargetType = typeof(UserCommandConfig),
                 Caption = "删除命令",
                 IconName = "img_del"
             });

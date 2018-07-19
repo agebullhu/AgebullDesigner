@@ -56,7 +56,7 @@ namespace Agebull.EntityModel.RobotCoder.Funds
             code.Append(@"
 		switch (cmd_call->cmd_id)
 		{");
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.Discard))
+            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
             {
                 code.Append($@"
             case NET_COMMAND_ES_{item.Name.ToUpper()}://{item.Caption}
@@ -91,7 +91,7 @@ void server_message_pump()
 		}
 		switch (cmd_call->cmd_id)
 		{");
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.Discard))
+            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
             {
                 code.Append($@"
                 case NET_COMMAND_ES_{item.Name.ToUpper()}://{item.Caption}
@@ -109,7 +109,7 @@ void server_message_pump()
         {
             var code = new StringBuilder();
 
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.Discard))
+            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
             {
                 code.Append($@"
 //{item.Caption}
@@ -125,14 +125,14 @@ const NET_COMMAND NET_COMMAND_ES_{item.Name.ToUpper()} = 0x{item.Index.ToString(
         {
             var code = new StringBuilder();
 
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.Discard))
+            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
             {
                 var entity = GlobalConfig.GetEntity(item.ResultArg);
                 if (entity != null)
                     code.Append($@"
 #include ""{entity.Parent.Name}/{entity.Name}.h""");
             }
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.Discard))
+            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
             {
                 if (string.IsNullOrWhiteSpace(item.ResultArg))
                 {
@@ -165,7 +165,7 @@ COMMAND_STATE {item.Name}({item.ResultArg}& arg);
             var code = new StringBuilder();
 
 
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.Discard))
+            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
             {
                 var type = item.ResultArg;
                 if (item.ResultArg == "char")
@@ -248,7 +248,7 @@ COMMAND_STATE {item.Name}({type})
         {
             var code = new StringBuilder();
 
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.Discard))
+            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
             {
                 code.Append($@"
 /** 
@@ -264,12 +264,12 @@ void Do{item.Name}(const PNetCommand cmd);");
         public static string CmdCallCodeByServer(ConfigBase config)
         {
             var code = new StringBuilder();
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.Discard))
+            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
             {
                 code.Append($@"
 #include ""GbsTrade/{item.Name}Business.h""");
             }
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.Discard))
+            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
             {
                 code.Append(CmdCallCodeByServer(item, "Do"));
 
@@ -334,7 +334,7 @@ void GbsTradeCommand::{head}{item.Name}(const PNetCommand cmd_arg)
         {
             var code = new StringBuilder();
 
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.Discard))
+            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
             {
                 code.Append($@"
 /** 
@@ -351,7 +351,7 @@ void Do{item.Name}(const PNetCommand cmd_arg);");
         {
             var code = new StringBuilder();
 
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.Discard))
+            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
             {
                 CallEsApi(code, item);
             }
@@ -410,7 +410,7 @@ void EsTradeCommand::Do{item.Name}(const PNetCommand cmd_arg)
 		{item.CallArg} field;
 		memset(&field, 0, sizeof(field));
         CopyToEs(&arg,&field);");
-            var user = entity.Properties.FirstOrDefault(p => p.Name == "ClientNo");
+            var user = entity.LastProperties.FirstOrDefault(p => p.Name == "ClientNo");
             if (user != null)
             {
                 code.Append($@"
@@ -444,14 +444,14 @@ void EsTradeCommand::Do{item.Name}(const PNetCommand cmd_arg)
             var code = new StringBuilder();
 
 
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.Discard))
+            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
             {
                 var entity = GlobalConfig.GetEntity(item.ResultArg);
                 if (entity != null)
                     code.Append($@"
 #include ""{entity.Parent.Name}/{entity.Name}.h""");
             }
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.Discard))
+            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
             {/*static void Login(LoginArgData^ cs_field);*/
                 if (string.IsNullOrWhiteSpace(item.ResultArg))
                 {
@@ -490,7 +490,7 @@ static void {item.Name}({type} arg);
         {
             var code = new StringBuilder();
 
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.Discard))
+            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
             {
                 string type = item.ResultArg;
                 string init = null;
@@ -554,7 +554,7 @@ public void {item.Name}()
                 return null;
             var code = new StringBuilder();
 
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.Discard))
+            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
             {
                 string type = item.ResultArg;
                 var entity = GlobalConfig.GetEntity(item.ResultArg);
@@ -614,7 +614,7 @@ void CommandProxy::{item.Name}({type})
         public static string BusinessCodeByServer(ConfigBase config)
         {
             var code = new StringBuilder();
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.Discard))
+            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
             {
                 ApiBusinessHCode(item, code);
                 ApiBusinessCppCode(item, code);
@@ -842,7 +842,7 @@ namespace GBS
             var code = new StringBuilder();
             foreach (var project in SolutionConfig.Current.Projects)
             {
-                foreach (var enttiy in project.Entities.Where(p => !p.IsClass))
+                foreach (var enttiy in project.Entities.Where(p => !p.NoDataBase))
                 {
                     code.Append($@"
                 case 0x{enttiy.Index:X}://{enttiy.Caption}
@@ -852,7 +852,7 @@ namespace GBS
             }
             foreach (var project in SolutionConfig.Current.Projects)
             {
-                foreach (var enttiy in project.Entities.Where(p => !p.IsClass))
+                foreach (var enttiy in project.Entities.Where(p => !p.NoDataBase))
                 {
                     code.Append($@"
                 void On{enttiy.Name}Sended({enttiy.EntityName} data)

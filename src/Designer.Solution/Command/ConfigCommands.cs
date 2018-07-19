@@ -28,20 +28,6 @@ namespace Agebull.EntityModel.Designer
             return true;
         }
 
-
-        public bool DoCheckClientFieldes(string path)
-        {
-            foreach (var entity in Context.Solution.Entities)
-            {
-                if (entity.Properties.Any(p => p.IsUserId))
-                {
-                    entity.PrimaryColumn.CsType = "long";
-                    entity.PrimaryColumn.DbType = "BIGINT";
-                }
-            }
-            return true;
-        }
-
         public void CheckClientEnd(CommandStatus status, Exception ex, bool result)
         {
             if (status == CommandStatus.Succeed)
@@ -59,10 +45,9 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 新增项目
         /// </summary>
-        public void AddProject()
+        public void AddProject(object arg)
         {
-            ProjectConfig config;
-            if (Model.CreateNew("新增项目",out config))
+            if (Model.CreateNew("新增项目",out ProjectConfig config))
                 Context.Solution.Add(config);
         }
         /// <summary>
@@ -71,9 +56,8 @@ namespace Agebull.EntityModel.Designer
         /// <param name="entity"></param>
         public void AddCommand(EntityConfig entity)
         {
-            UserCommandConfig config;
-            if (Model.CreateNew("新增命令",out config))
-                entity.Commands.Add(config);
+            if (Model.CreateNew("新增命令",out UserCommandConfig config))
+                entity.Add(config);
         }
         /// <summary>
         /// 新增审核命令
@@ -83,14 +67,14 @@ namespace Agebull.EntityModel.Designer
         {
             if (entity.Commands.Count != 0 && entity.Commands.Any(p => p.Name == "Pass"))
                 return;
-            entity.Commands.Add(new UserCommandConfig
+            entity.Add(new UserCommandConfig
             {
                 Name = "Pass",
                 Button = "btnPass",
                 Caption = "审核通过",
                 Description = "审核通过"
             });
-            entity.Commands.Add(new UserCommandConfig
+            entity.Add(new UserCommandConfig
             {
                 Name = "Deny",
                 Button = "btnDeny",
@@ -138,7 +122,7 @@ namespace Agebull.EntityModel.Designer
         }
 
 
-        public bool ValidatePrepare(string arg, Action<string> setAction)
+        public bool ValidatePrepare(string arg)
         {
             DataModelDesignModel.Current.Editor.ShowTrace();
             Context.CurrentTrace.TraceMessage = TraceMessage.DefaultTrace;

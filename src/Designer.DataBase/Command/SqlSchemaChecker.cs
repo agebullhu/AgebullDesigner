@@ -131,8 +131,6 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                         SolutionConfig.Current.Add(project = new ProjectConfig
                         {
                             Name = pro,
-                            Caption = BaiduFanYi.FanYi(pro),
-                            Description = BaiduFanYi.FanYi(pro),
                             DbHost = Project.DbHost,
                             DbPassWord = Project.DbPassWord,
                             DbUser = Project.DbUser,
@@ -145,7 +143,6 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                     project = Project;
                 }
                 var name = ch.Length > 2 ? ch[2] : table;
-                var cap = BaiduFanYi.FanYi(name);
                 var entity = new EntityConfig
                 {
                     Name = name,
@@ -169,14 +166,12 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                 while (reader.Read())
                 {
                     string field = reader.GetString(0);
-                    PropertyConfig col = schema.DbFields.FirstOrDefault(p => string.Equals(p.ColumnName, field, StringComparison.OrdinalIgnoreCase));
+                    PropertyConfig col = schema.Properties.FirstOrDefault(p => string.Equals(p.ColumnName, field, StringComparison.OrdinalIgnoreCase));
                     if (col == null)
                     {
                         schema.Add(col = new PropertyConfig
                         {
                             Name = field,
-                            Caption = BaiduFanYi.FanYi(field),
-                            Description = BaiduFanYi.FanYi(field),
                             ColumnName = field,
                             DbType = reader.GetString(1),
                             Parent = Entity

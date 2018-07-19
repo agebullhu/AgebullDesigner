@@ -9,43 +9,51 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     public class DesignGlobal : DesignModelBase, IDesignGlobal
     {
+
+        private readonly string _programRoot;
+
+        internal DesignGlobal()
+        {
+            _programRoot = Path.GetDirectoryName(Path.GetDirectoryName(typeof(GlobalConfig).Assembly.Location));
+        }
+
         /// <summary>
         ///     状态消息
         /// </summary>
-        public string StateMessage
+        string IDesignGlobal.StateMessage
         {
             get => Context.StateMessage;
             set => Context.StateMessage = value;
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// 应用根目录
         /// </summary>
-        private string _programRoot;
-
-        /// <summary>
-        /// 应用根目录
-        /// </summary>
-        public string ProgramRoot => _programRoot ?? (_programRoot =
-                                                Path.GetDirectoryName(Path.GetDirectoryName(typeof(GlobalConfig).Assembly.Location)));
+        string IDesignGlobal.ProgramRoot => _programRoot;
 
         /// <summary>
         /// 解决方案
         /// </summary>
-        public SolutionConfig GlobalSolution { get; set; }
+        SolutionConfig IDesignGlobal.GlobalSolution { get; set; }
 
         /// <summary>
         /// 解决方案
         /// </summary>
-        public SolutionConfig CurrentSolution
+        SolutionConfig IDesignGlobal.CurrentSolution
         {
             get => Context.Solution;
             set => Context.Solution = value;
         }
+
         /// <summary>
         /// 当前选择
         /// </summary>
-        public ConfigBase CurrentConfig { get; set; }
+        ConfigBase IDesignGlobal.CurrentConfig
+        {
+            get => Context.SelectConfig;
+            set => Context.SelectConfig = value;
+        }
 
 
         /// <summary>
@@ -56,7 +64,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     解决方案集合
         /// </summary>
-        public ObservableCollection<SolutionConfig> Solutions
+        ObservableCollection<SolutionConfig> IDesignGlobal.Solutions
         {
             get
             {
@@ -75,7 +83,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     枚举集合
         /// </summary>
-        public ObservableCollection<EnumConfig> Enums
+        ObservableCollection<EnumConfig> IDesignGlobal.Enums
         {
             get
             {
@@ -94,7 +102,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     实体集合
         /// </summary>
-        public ObservableCollection<EntityConfig> Entities
+        ObservableCollection<EntityConfig> IDesignGlobal.Entities
         {
             get
             {
@@ -113,7 +121,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     项目集合
         /// </summary>
-        public ObservableCollection<ProjectConfig> Projects
+        ObservableCollection<ProjectConfig> IDesignGlobal.Projects
         {
             get
             {
@@ -132,7 +140,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     API集合
         /// </summary>
-        public ObservableCollection<ApiItem> ApiItems
+        ObservableCollection<ApiItem> IDesignGlobal.ApiItems
         {
             get
             {

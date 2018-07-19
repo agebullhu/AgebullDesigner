@@ -14,32 +14,22 @@ namespace Agebull.Common.Config.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal sealed class MySqlImporter : ConfigCommandBase<ProjectConfig>, IAutoRegister
+    internal sealed class MySqlImporter : IAutoRegister
     {
         /// <summary>
         /// 注册代码
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            NoButton = true;
-            Signle = true;
-            CommandCoefficient.RegisterCommand<ProjectConfig, MySqlImporter>();
-        }
-
-
-        public override CommandItem ToCommand(object arg, Func<object, IEnumerator> enumerator = null)
-        {
-            return new CommandItem
+            CommandCoefficient.RegisterCommand(new CommandItemBuilder<string, string>(ImportStructParpare, ImportStruct, ImportStructEnd)
             {
-                NoButton = true,
-                Command = new AsyncCommand<string, string>(ImportStructParpare, ImportStruct, ImportStructEnd),
                 Caption = "导入MySql数据库",
-                Catalog = "解决方案",
-                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-            };
+                Catalog = "文件",
+                IconName = "tree_Assembly"
+            });
         }
 
-        public bool ImportStructParpare(string arg, Action<string> setAction)
+        public bool ImportStructParpare(string arg)
         {
             if (DataModelDesignModel.Current.Context.SelectProject == null)
             {

@@ -97,7 +97,6 @@ namespace Agebull.EntityModel.Designer
                             Name = CoderBase.ToWordName(table)
                         };
                         _trace.Track = @"新增的表";
-                        entity.Caption = BaiduFanYi.FanYi(entity.Name);
                         _dispatcher.Invoke(() =>
                         {
                             _project.Add(entity);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Text;
@@ -15,13 +16,12 @@ namespace Agebull.EntityModel.Config
     {
         #region 子级
 
+        public override void ForeachChild(Action<ConfigBase> action)
+        {
+            foreach (var item in Items.Values)
+                action(item);
 
-        /// <summary>
-        /// 子级
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        public override IEnumerable<ConfigBase> MyChilds => Items.Values;
-
+        }
         /// <summary>
         /// 子级
         /// </summary>

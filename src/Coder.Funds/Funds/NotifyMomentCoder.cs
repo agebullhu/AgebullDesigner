@@ -33,7 +33,7 @@ namespace Agebull.EntityModel.RobotCoder.Funds
         {
             var code = new StringBuilder();
 
-            foreach (var item in CppProject.Instance.NotifyItems.Where(p => !p.Discard))
+            foreach (var item in CppProject.Instance.NotifyItems.Where(p => !p.IsDiscard))
             {
                 code.Append(item.Org
                     .TrimEnd('¡¡', ' ', '\t', '\n', '\r', '{', '}', '=', '0', ';')
@@ -114,7 +114,7 @@ namespace Agebull.EntityModel.RobotCoder.Funds
         private static string EsPublishCode(ConfigBase config)
         {
             Dictionary<EntityConfig, NotifyItem> dictionary = new Dictionary<EntityConfig, NotifyItem>();
-            foreach (var item in CppProject.Instance.NotifyItems.Where(p => !p.Discard))
+            foreach (var item in CppProject.Instance.NotifyItems.Where(p => !p.IsDiscard))
                 if (!dictionary.ContainsKey(item.EsEntity))
                     dictionary.Add(item.EsEntity, item);
 
@@ -179,7 +179,7 @@ inline void publishEsData(const char* user,const {item.EsEntity.Name}* value)
         public static string BusinessCodeByServer(ConfigBase config)
         {
             var code = new StringBuilder();
-            foreach (var item in CppProject.Instance.NotifyItems.Where(p => !p.Discard))
+            foreach (var item in CppProject.Instance.NotifyItems.Where(p => !p.IsDiscard))
             {
                 NotifyBusinessHCode(item, code);
                 NotifyBusinessCppCode(item, code);
@@ -362,7 +362,7 @@ namespace GBS
         public static string CmdCallCodeByServerDef(ConfigBase config)
         {
             Dictionary<EntityConfig, NotifyItem> dictionary = new Dictionary<EntityConfig, NotifyItem>();
-            foreach (var item in CppProject.Instance.NotifyItems.Where(p => !p.Discard))
+            foreach (var item in CppProject.Instance.NotifyItems.Where(p => !p.IsDiscard))
                 if (!dictionary.ContainsKey(item.LocalEntity))
                     dictionary.Add(item.LocalEntity, item);
             var code = new StringBuilder();
@@ -388,7 +388,7 @@ void {item.Name}(const PNetCommand cmd_arg);");
         public static string CmdCallCodeByServer(ConfigBase config)
         {
             Dictionary<EntityConfig, NotifyItem> dictionary = new Dictionary<EntityConfig, NotifyItem>();
-            foreach (var item in CppProject.Instance.NotifyItems.Where(p => !p.Discard))
+            foreach (var item in CppProject.Instance.NotifyItems.Where(p => !p.IsDiscard))
                 if (!dictionary.ContainsKey(item.LocalEntity))
                     dictionary.Add(item.LocalEntity, item);
             var code = new StringBuilder();

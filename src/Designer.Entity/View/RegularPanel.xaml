@@ -5,12 +5,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
+             xmlns:designer="clr-namespace:Agebull.EntityModel.Designer"
              mc:Ignorable="d"
              d:DesignHeight="1000" d:DesignWidth="1000">
+    <UserControl.DataContext>
+        <designer:RegularViewModel/>
+    </UserControl.DataContext>
     <DockPanel>
         <GroupBox DockPanel.Dock="Bottom"  Header="数据规则" Margin="5"  DataContext="{Binding Model.Context.SelectProperty}">
             <GroupBox.Resources>
-                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/DataTemplate/Form.xaml"/>
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
             </GroupBox.Resources>
             <StackPanel Style="{StaticResource LayoutPanel}">
                 <StackPanel Style="{StaticResource FieldPanel}">
@@ -82,16 +86,14 @@
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
                   DataContext="{Binding Context}"
-                  ItemsSource="{Binding SelectItemChildrens}">
+                  ItemsSource="{Binding SelectEntity.Properties}">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Index,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                <DataGridTextColumn Binding="{Binding Index,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                                     Header="序号" />
                 <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                     Header="标题" />
                 <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                     Header="属性" />
-                <DataGridTextColumn Binding="{Binding Group,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                    Header="分组" />
                 <DataGridCheckBoxColumn
                     Binding="{Binding KeepUpdate,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="首次写入" />
                 <DataGridCheckBoxColumn

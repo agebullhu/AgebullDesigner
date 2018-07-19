@@ -1,4 +1,5 @@
 using System.ComponentModel.Composition;
+using System.IO;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Designer;
 using Agebull.EntityModel.RobotCoder.AspNet;
@@ -47,8 +48,8 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                 Entity = schema,
                 Project = schema.Parent,
             };
-            pg.CreateBaseCode(project.PagePath);
-            pg.CreateExtendCode(project.PagePath);
+            pg.CreateBaseCode(project.FormatPath("Web"));
+            pg.CreateExtendCode(project.FormatPath("Page"));
         }
     }
 }

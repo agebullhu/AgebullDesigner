@@ -1,5 +1,4 @@
 using System.ComponentModel.Composition;
-using Agebull.EntityModel;
 using Agebull.EntityModel.Designer;
 using Agebull.EntityModel.Config;
 
@@ -17,45 +16,42 @@ namespace Agebull.Common.Config.Designer.EasyUi
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            DesignerManager.Registe<EntityConfig, FieldsViewModel>("字段基本", "Entity");
-            DesignerManager.Registe<EntityConfig, CppFieldsViewModel>("C++字段", "Entity");
-            DesignerManager.Registe<EntityConfig, RegularViewModel>("数据校验", "Entity");
-            DesignerManager.Registe<EntityConfig, ModelViewModel>("实体模型", "Entity");
-            DesignerManager.Registe<EntityConfig, JsonViewModel>("序列化设置", "Entity", "Model");
-            DesignerManager.Registe<EntityConfig, AllFieldsViewModel>("所有字段", short.MaxValue + 1);
-            
+            DesignerManager.Registe<EntityConfig, FieldsPanel>("字段基本", "Entity");
+            DesignerManager.Registe<EntityConfig, RegularPanel>("数据校验", "Entity");
+            DesignerManager.Registe<EntityConfig, ModelCodePanel>("实体模型", "Entity");
+            DesignerManager.Registe<EntityConfig, JsonPanel>("序列化设置", "Entity", "Model");
+            DesignerManager.Registe<EntityConfig, AllFieldsPanel>("所有字段", short.MaxValue + 1);
 
-            CommandIoc.NewEntityCommand = NewEntityCommand;
+
+            CommandIoc.EditEntityCommand = EditEntityCommand;
             CommandIoc.AddFieldsCommand = AddFieldsCommand;
         }
 
         /// <summary>
         /// 新增实体的方法(UI后期实现)
         /// </summary>
-        private static EntityConfig NewEntityCommand()
+        private static bool EditEntityCommand(EntityConfig entity)
         {
             var window = new NewEntityWindow();
             var vm = (NewEntityViewModel)window.DataContext;
             vm.IsNew = true;
-            if (window.ShowDialog() != true)
-            {
-                return null;
-            }
-            GlobalTrigger.OnCreate(vm.Model.Entity);
-            return vm.Model.Entity;
+            vm.Model.Entity = entity;
+            vm.Title = "新增实体";
+            var dl = window.ShowDialog();
+            return dl != null && dl.Value;
         }
 
         /// <summary>
-        /// 新增实体的方法(UI后期实现)
+        /// 新增字段
         /// </summary>
-        private static EntityConfig AddFieldsCommand()
+        private static bool AddFieldsCommand(EntityConfig entity)
         {
             var window = new NewEntityWindow();
             var vm = (NewEntityViewModel)window.DataContext;
-            if (window.ShowDialog() != true)
-                return null;
-            GlobalTrigger.OnCreate(vm.Model.Entity);
-            return vm.Model.Entity;
+            vm.Model.Entity = entity;
+            vm.Title = "新增字段";
+            var dl = window.ShowDialog();
+            return dl != null && dl.Value;
         }
     }
 }

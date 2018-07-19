@@ -64,15 +64,14 @@ namespace Agebull.EntityModel.Designer
             {
                 if (_config != null)
                     return _config;
-                ConfigBase model;
-                if (!GlobalConfig.ConfigDictionary.TryGetValue(ModelKey, out model) || !(model is TConfig))
+                if (!GlobalConfig.ConfigDictionary.TryGetValue(ModelKey, out ConfigBase model) || !(model is TConfig))
                 {
                     TraceMessage.DefaultTrace.Track = $"引用键{ModelKey}无效";
                     ModelKey = Guid.Empty;
                 }
                 else
                 {
-                    _config = (TConfig) model;
+                    _config = (TConfig)model;
                 }
                 return _config;
             }
@@ -390,22 +389,7 @@ namespace Agebull.EntityModel.Designer
         #endregion 系统 
 
         #region 扩展
-        /// <summary>
-        ///     原始状态
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        public ConfigStateType OriginalState;
         
-        /// <summary>
-        ///     曾用名
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [ReadOnly(true)]
-        [Category("系统")]
-        [DisplayName(@"曾用名")]
-        [Description("曾用名")]
-        public string NameHistory => Config?.OldNames.LinkToString(",");
-
         /// <summary>返回表示当前对象的字符串。</summary>
         /// <returns>表示当前对象的字符串。</returns>
         /// <filterpriority>2</filterpriority>

@@ -23,7 +23,7 @@ namespace Agebull.Common.Config.Designer
             Caption = "规范实体主键";
             Catalog = "工具";
             ViewModel = "database";
-            NoButton = true;
+            TargetType = typeof(EntityConfig);
         }
 
         /// <summary>
@@ -31,15 +31,15 @@ namespace Agebull.Common.Config.Designer
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            CommandCoefficient.RegisterCommand<EntityConfig, EntityPrimaryKeyHelper>();
+            CommandCoefficient.RegisterCommand<EntityPrimaryKeyHelper>();
         }
 
 
         #endregion
 
-        public override void Prepare(RuntimeArgument argument)
+        public override bool Prepare(RuntimeArgument argument)
         {
-
+            return true;
         }
 
         /// <summary>
@@ -50,8 +50,8 @@ namespace Agebull.Common.Config.Designer
             StateMessage = entity.Caption + "...";
             if (entity.Properties.Any(p => p.ColumnName == "number_id"))
             {
-                Debug.WriteLine($@"ALTER TABLE dbo.{entity.SaveTableName} ADD [number_id] int NOT NULL IDENTITY (1, 1);");
-                Debug.WriteLine("GO");
+                Trace.WriteLine($@"ALTER TABLE dbo.{entity.SaveTableName} ADD [number_id] int NOT NULL IDENTITY (1, 1);");
+                Trace.WriteLine("GO");
             }
             if (entity.PrimaryColumn != null && (entity.PrimaryColumn.CsType == "int"|| entity.PrimaryColumn.CsType == "long"))
                 return true;
@@ -62,8 +62,8 @@ namespace Agebull.Common.Config.Designer
                 pri.IsPrimaryKey = true;
                 return true;
             }
-            Debug.WriteLine($@"ALTER TABLE dbo.{entity.SaveTableName} ADD [number_id] int NOT NULL IDENTITY (1, 1);");
-            Debug.WriteLine("GO");
+            Trace.WriteLine($@"ALTER TABLE dbo.{entity.SaveTableName} ADD [number_id] int NOT NULL IDENTITY (1, 1);");
+            Trace.WriteLine("GO");
             entity.Add(new PropertyConfig
             {
                 Name = "NumberId",

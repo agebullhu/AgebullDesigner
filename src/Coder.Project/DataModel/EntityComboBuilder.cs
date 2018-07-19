@@ -18,7 +18,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         string ComboCode()
         {
-            var title = Entity.Properties.FirstOrDefault(p => p.IsCaption);
+            var title = Entity.LastProperties.FirstOrDefault(p => p.IsCaption);
             if (title == null)
                 return "";
             string filter = "";

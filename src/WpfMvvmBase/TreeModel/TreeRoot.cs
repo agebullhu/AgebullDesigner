@@ -112,7 +112,7 @@ namespace Agebull.EntityModel
 
         #region 扩展方法
 
-        private ObservableCollection<CommandItem> _commands;
+        private ObservableCollection<CommandItemBase> _commands;
 
         private ModelFunctionDictionary<TreeRoot> _modelFunction;
 
@@ -129,9 +129,9 @@ namespace Agebull.EntityModel
         /// <summary>
         ///     对应的命令集合
         /// </summary>
-        public ObservableCollection<CommandItem> Commands
+        public ObservableCollection<CommandItemBase> Commands
         {
-            get => _commands ?? (_commands = new ObservableCollection<CommandItem>() );
+            get => _commands ?? (_commands = new ObservableCollection<CommandItemBase>() );
             set
             {
                 if (_commands == value)

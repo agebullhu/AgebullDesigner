@@ -389,7 +389,7 @@ void CopyFromClr({Entity.EntityName}^ cs_field, {Entity.Name}& field)
 #pragma unmanaged
 #include <stdafx.h>
 #include ""{Entity.EntityName}.h""");
-            if (!Entity.IsClass)
+            if (!Entity.NoDataBase)
                 code.Append(@"
 #include <DataModel/ModelBase.h>
 #include <NetCommand/command_def.h>");

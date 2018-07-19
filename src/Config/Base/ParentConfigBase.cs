@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
@@ -12,10 +13,9 @@ namespace Agebull.EntityModel.Config
     public abstract partial class ParentConfigBase : FileConfigBase
     {
         /// <summary>
-        /// 子级
+        /// 遍历子级
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        public abstract IEnumerable<ConfigBase> MyChilds { get; }
+        public abstract void ForeachChild(Action<ConfigBase> action);
 
 
         /// <summary>

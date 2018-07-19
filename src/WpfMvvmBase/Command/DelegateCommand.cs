@@ -281,10 +281,9 @@ namespace Agebull.Common.Mvvm
             _executeAction = executeAction;
             _canExecuteAction = canExecuteAction;
             Parameter = model;
-            var changed = model as INotifyPropertyChanged;
-            if (changed != null)
+            if (model is INotifyPropertyChanged changed)
             {
-               changed.PropertyChanged += OnModelPropertyChanged;
+                changed.PropertyChanged += OnModelPropertyChanged;
             }
         }
 

@@ -11,7 +11,7 @@
     <TabControl TabStripPlacement="Top">
         <TabControl.Items>
             <TabItem Header="设计属性">
-                <card:DesignInfoForm/>
+                <card:DesignInfoPanel/>
             </TabItem>
             <TabItem Header="扩展属性">
                 <designer:ExtendPanel />

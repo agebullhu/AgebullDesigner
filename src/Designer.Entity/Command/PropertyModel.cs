@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Windows;
+using System.Linq;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
 
@@ -22,40 +22,53 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<PropertyConfig>
             {
-                NoButton = true,
-                Signle = false,
-                Catalog = "编辑",
-
-                Command = new DelegateCommand(ToEnglish),
-                Caption = "字段翻译",
-                Description = "通过百度翻译接口,将字段的英文名称翻译成中文(需要网络连接)",
-                IconName = "imgBaidu"
-            });
-
-            commands.Add(new CommandItemBuilder
-            {
-                NoButton = true,
-                Signle = false,
+                
+                SignleSoruce = false,
                 Catalog = "字段",
-                Command = new DelegateCommand(CheckName),
+                Action = CheckName,
                 Caption = "字段名称规范",
                 Description= "第一个[逗号/括号]后解析为说明",
-                IconName = "tree_item"
+                IconName = "tree_item",
+                ConfirmMessage= "确认执行【字段名称规范】的操作吗?"
+            });
+            commands.Add(new CommandItemBuilder<PropertyConfig>
+            {
+                Catalog = "工具",
+                Action = UpdateCustomType,
+                Caption = "修复用户类型",
+                IconName = "img_modify"
             });
         }
 
         #endregion
 
-        public void CheckName()
+        public void UpdateCustomType(PropertyConfig field)
         {
-            if (MessageBox.Show("确认执行【字段名称规范】的操作吗?", "字段编辑", MessageBoxButton.YesNo) !=
-                MessageBoxResult.Yes)
+            if (string.IsNullOrWhiteSpace(field.CustomType))
             {
-                return;
+                field.IsEnum = false;
+                field.CustomType = null;
             }
-            Foreach(CheckName);
+            else if (field.CustomType.Contains("[]"))
+            {
+                field.IsArray = false;
+                field.IsEnum = false;
+                field.CsType = field.CustomType.Split('[')[0];
+            }
+            else if (field.CustomType.IndexOf("List<", StringComparison.Ordinal) >= 0)
+            {
+                field.IsArray = true;
+                field.IsEnum = false;
+                field.CsType = field.CustomType.Split('<', '>')[1];
+            }
+            else
+            {
+                field.EnumConfig = SolutionConfig.Current.Enums.FirstOrDefault(p => p.Name == field.CustomType);
+                field.IsEnum = field.EnumConfig != null;
+
+            }
         }
         public void CheckName(PropertyConfig property)
         {
@@ -69,31 +82,5 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        public void ToEnglish()
-        {
-            if (MessageBox.Show("确认执行【字段翻译】的操作吗?", "字段编辑", MessageBoxButton.YesNo) !=
-                MessageBoxResult.Yes)
-            {
-                return;
-            }
-            Foreach(ToEnglish);
-        }
-
-        public void ToEnglish(PropertyConfig property)
-        {
-            try
-            {
-                var tables = Context.GetSelectEntities();
-                foreach (var entity in tables)
-                {
-                    var model = new EntityBusinessModel { Entity = entity };
-                    model.EnglishToChiness();
-                }
-            }
-            catch (Exception ex)
-            {
-                Context.CurrentTrace.TraceMessage.Status = ex.ToString();
-            }
-        }
     }
 }

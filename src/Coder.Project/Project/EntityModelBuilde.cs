@@ -23,7 +23,7 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
         /// <param name="project"></param>
         public override void CreateProjectCode(ProjectConfig project)
         {
-            var dbPath = IOHelper.CheckPath(project.ModelPath,"DataAccess", "DataBase");
+            var dbPath = GlobalConfig.CheckPath(project.ModelPath,"DataAccess", "DataBase");
             var db = new DataBaseBuilder
             {
                 Project = project
@@ -49,7 +49,7 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
         /// <param name="schema"></param>
         public override void CreateEntityCode(ProjectConfig project, EntityConfig schema)
         {
-            if (schema.IsClass)
+            if (schema.NoDataBase)
                 return;
             var entityPath = project.GetModelPath("Entity");
             Message = entityPath;

@@ -43,7 +43,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// 实体结构
         /// </summary>
         [IgnoreDataMember]
-        static readonly EntitySturct __struct = new EntitySturct
+        public static readonly EntitySturct __struct = new EntitySturct
         {{
             EntityName = ""{Entity.Name}"",
             PrimaryKey = ""{Entity.PrimaryColumn.Name}"",

@@ -22,14 +22,13 @@ namespace Agebull.Common.Config.Designer
             Caption = "关系连接检查";
             Catalog = "工具";
             ViewModel = "database,model";
-            NoButton = true;
         }
         /// <summary>
         /// 注册代码
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            CommandCoefficient.RegisterCommand<EntityConfig, LinkFieldCheck>();
+            CommandCoefficient.RegisterCommand<LinkFieldCheck>();
         }
 
 
@@ -69,14 +68,14 @@ namespace Agebull.Common.Config.Designer
                             field.IsLinkCaption = pro.IsCaption;
                             if (!field.IsLinkKey)
                                 field.IsCompute = true;
-                            field.ReferenceKey = field.Key;
+                            field.Option.ReferenceKey = field.Key;
                             continue;
                         }
                     }
                 }
                 field.LinkTable = field.LinkField = null;
                 field.IsLinkField = field.IsLinkKey = field.IsLinkCaption = false;
-                field.ReferenceKey = Guid.Empty;
+                field.Option.ReferenceKey = Guid.Empty;
             }
             StateMessage = "检查完成:" + entity.Caption;
             return true;

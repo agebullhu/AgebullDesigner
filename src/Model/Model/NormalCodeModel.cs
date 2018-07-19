@@ -42,18 +42,20 @@ namespace Agebull.EntityModel.Designer
         /// 生成命令对象
         /// </summary>
         /// <param name="commands"></param>
-        protected override void CreateCommands(ObservableCollection<CommandItem> commands)
+        protected override void CreateCommands(ObservableCollection<CommandItemBase> commands)
         {
             commands.Add(new CommandItem
             {
-                Command = new DelegateCommand(DoMomentCode),
+                IsButton = true,
+                Action = arg => DoMomentCode(),
                 Caption = "生成代码片断",
-                Image = Application.Current.Resources["cpp"] as ImageSource
+                Image = Application.Current.Resources["img_file"] as ImageSource
             });
 
             commands.Add(new CommandItem
             {
-                Command = new DelegateCommand(CopyCode),
+                IsButton = true,
+                Action = arg => CopyCode(),
                 Caption = "复制代码",
                 Image = Application.Current.Resources["img_file"] as ImageSource
             });
@@ -64,7 +66,6 @@ namespace Agebull.EntityModel.Designer
                 {
                     Caption = b.Caption,
                     IconName = b.Icon,
-                    NoButton = true,
                     OnCodeSuccess = OnCodeSuccess
                 }.ToCommand(null));
             }
@@ -109,7 +110,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     Header = name,
                     Name = name,
-                    Tag = Path.GetExtension(file.Key),
+                    Tag = Path.GetExtension(file.Key)?.Trim('.'),
                     SoruceTypeIcon = Application.Current.Resources["img_code"] as BitmapImage
                 });
             }
@@ -174,8 +175,7 @@ namespace Agebull.EntityModel.Designer
         }
         private void OnMomentSelectItemChanged(object sender, EventArgs e)
         {
-            var value = sender as TreeItem<CoderDefine>;
-            if (value == null)
+            if (!(sender is TreeItem<CoderDefine> value))
                 return;
             _codeType = value.Model.Lang;
             MomentCodeModel = value.Model.Func;
@@ -254,7 +254,7 @@ namespace Agebull.EntityModel.Designer
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <meta name='referrer' content='never' />
         <script src='https://code.jquery.com/jquery-1.11.3.js'></script>
-        <link href='https://highlightjs.org/static/demo/styles/vs.css' rel='stylesheet'>  
+        <link href='https://highlightjs.org/static/demo/styles/vs2015.css' rel='stylesheet'>  
         <script src='http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js'></script>  
         <script>
             hljs.initHighlightingOnLoad();
@@ -265,7 +265,7 @@ namespace Agebull.EntityModel.Designer
             }});
         </script>
     <head>
-    <body style='padding:0;margin:0'>
+    <body style='padding:0;margin:0;background-color:black'>
         <pre><code class='{_codeType}'>{code}</code></pre>
     </body>
 </html>

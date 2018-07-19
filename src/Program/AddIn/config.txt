@@ -21,3 +21,5 @@ Agebull.EntityModel.RobotCoder.EasyUi.dll
 Agebull.EntityModel.Designer.EasyUi.dll
 
 Agebull.EntityModel.Designer.WebApi.dll
+
+Agebull.EntityModel.Designer.Trigger.dll

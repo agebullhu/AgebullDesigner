@@ -30,7 +30,7 @@ namespace Agebull.EntityModel
         {
             return new CommandItem
             {
-                Command = ToCommand(),
+                //Action = ToCommand(),
                 Name = JobName,
                 Caption = JobName,
                 Image = ImageName == null ? null : Application.Current.Resources[ImageName] as ImageSource

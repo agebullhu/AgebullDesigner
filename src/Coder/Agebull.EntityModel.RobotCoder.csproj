@@ -70,8 +70,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base\CodeGeneratorTrigger.cs" />
     <Compile Include="Base\EntityBuilderBase.cs" />
-    <Compile Include="ProjectBuilder\IBuilderAutoRegister.cs" />
     <Compile Include="Base\CoderBase.cs" />
     <Compile Include="Base\CoderWithEntity.cs" />
     <Compile Include="Base\CoderWithProject.cs" />

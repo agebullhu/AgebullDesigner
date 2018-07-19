@@ -26,22 +26,12 @@ namespace Agebull.EntityModel.Designer
     {
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<PropertyConfig>
             {
-                Command = new DelegateCommand<ConfigTreeItem<PropertyConfig>>(p =>
-                {
-                    var par = p.Parent as ConfigTreeItem<EntityConfig>;
-                    if (par == null)
-                    {
-                        return;
-                    }
-                    par.Model.Properties.Remove(p.Model);
-                    par.Items.Remove(p);
-                }),
+                Action = p => p.Parent.Properties.Remove(p),
                 Catalog = "编辑",
                 Caption = "删除字段",
-                Signle = true,
-                NoButton = true,
+                SignleSoruce = true,
                 IconName = "img_del"
             });
         }

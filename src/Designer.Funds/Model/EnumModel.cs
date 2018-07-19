@@ -20,13 +20,12 @@ namespace Agebull.EntityModel.Designer
         {
             //if (SolutionConfig.Current.SolutionType != SolutionType.Cpp)
             //    return;
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<EnumConfig>
             {
                 Caption = "枚举",
-                Signle = true,
-                NoButton = true,
-                SourceType = typeof(EnumConfig),
-                Command = new DelegateCommand<EnumConfig>(EnumBusinessModel.RepairEnum),
+                SignleSoruce = true,
+                TargetType = typeof(EnumConfig),
+                Action = EnumBusinessModel.RepairEnum,
                 Editor = "C++字段",
                 IconName = "cpp"
             });

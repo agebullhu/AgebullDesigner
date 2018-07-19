@@ -52,15 +52,18 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Base\FileCodeScope.cs" />
-    <Compile Include="Base\WorkModel.cs" />
-    <Compile Include="Base\WorkModelScope.cs" />
+    <Compile Include="Context\CodeGeneratorScope.cs" />
+    <Compile Include="Context\FileCodeScope.cs" />
+    <Compile Include="Context\WorkModel.cs" />
+    <Compile Include="Context\WorkModelScope.cs" />
+    <Compile Include="Context\XmlMember.cs" />
     <Compile Include="Entity\SimpleConfig.cs" />
     <Compile Include="Interface\ISynchronousHelper.cs" />
-    <Compile Include="Base\NotificationObject.cs" />
-    <Compile Include="Base\WorkContext.cs" />
+    <Compile Include="Context\NotificationObject.cs" />
+    <Compile Include="Context\WorkContext.cs" />
     <Compile Include="Dictionaries\AttributeDictionary.cs" />
     <Compile Include="Dictionaries\CommandStatus.cs" />
     <Compile Include="Dictionaries\DependencyFunctions.cs" />

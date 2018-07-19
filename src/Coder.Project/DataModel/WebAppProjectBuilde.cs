@@ -30,9 +30,8 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 准备生成实体代码
         /// </summary>
-        /// <param name="project"></param>
         /// <param name="schema"></param>
-        public override bool Validate(ProjectConfig project, EntityConfig schema)
+        public override bool Validate(EntityConfig schema)
         {
             var model = new EntityValidater
             {
@@ -47,7 +46,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="project"></param>
         public override void CreateProjectCode(ProjectConfig project)
         {
-            var dbPath = IOHelper.CheckPath(project.ModelPath, "DataBase");
+            var dbPath = GlobalConfig.CheckPath(project.ModelPath, "DataBase");
             var db = new DataBaseBuilder
             {
                 Project = project
@@ -65,7 +64,7 @@ namespace Agebull.EntityModel.RobotCoder
         {
             Message = schema.Caption;
             var path = project.ModelPath;
-            var entityPath = IOHelper.CheckPath(path, "DataModel");
+            var entityPath = GlobalConfig.CheckPath(path, "DataModel");
             {
                 var builder = new EntityBuilder
                 {
@@ -75,9 +74,9 @@ namespace Agebull.EntityModel.RobotCoder
                 builder.CreateBaseCode(entityPath);
                 builder.CreateExtendCode(entityPath);
             }
-            if (schema.IsClass)
+            if (schema.NoDataBase)
                 return;
-            var exPath = IOHelper.CheckPath(path, "Extend");
+            var exPath = GlobalConfig.CheckPath(path, "Extend");
             {
                 var builder = new EntityValidateBuilder
                 {
@@ -87,7 +86,7 @@ namespace Agebull.EntityModel.RobotCoder
                 builder.CreateBaseCode(exPath);
                 builder.CreateExtendCode(exPath);
             }
-            var coPath = IOHelper.CheckPath(path, "Combo");
+            var coPath = GlobalConfig.CheckPath(path, "Combo");
             {
                 var builder = new EntityComboBuilder
                 {
@@ -97,7 +96,7 @@ namespace Agebull.EntityModel.RobotCoder
                 builder.CreateExtendCode(coPath);
             }
 
-            var accessPath = IOHelper.CheckPath(path, "DataAccess");
+            var accessPath = GlobalConfig.CheckPath(path, "DataAccess");
             if (project.DbType == DataBaseType.MySql)
             {
                 var builder = new MySqlAccessBuilder
@@ -121,8 +120,8 @@ namespace Agebull.EntityModel.RobotCoder
             //if (!string.IsNullOrEmpty(project.BusinessPath))
             {
                 var businessPath =
-                    IOHelper.CheckPath(
-                        IOHelper.CheckPath(Solution.IsWeb ? project.ModelPath : project.BusinessPath,
+                    GlobalConfig.CheckPath(
+                        GlobalConfig.CheckPath(Solution.IsWeb ? project.ModelPath : project.BusinessPath,
                             "Business"));
                 var builder = new BusinessBuilder
                 {

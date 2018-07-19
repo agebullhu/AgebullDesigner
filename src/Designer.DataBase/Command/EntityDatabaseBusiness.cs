@@ -29,12 +29,12 @@ namespace Agebull.EntityModel.Config
                     col.DbType = null;
                 }
                 Entity.IsModify = true;
-                Entity.IsClass = true;
+                Entity.NoDataBase = true;
                 Entity.ReadTableName = null;
                 Entity.SaveTableName = null;
                 return;
             }
-            if (Entity.IsClass)
+            if (Entity.NoDataBase)
             {
                 Entity.ReadTableName = null;
                 Entity.SaveTableName = null;
@@ -73,7 +73,7 @@ namespace Agebull.EntityModel.Config
             PropertyDatabaseBusiness model = new PropertyDatabaseBusiness();
             foreach (var col in Entity.Properties)
             {
-                if (col.Discard)
+                if (col.IsDiscard)
                 {
                     continue;
                 }
@@ -92,7 +92,7 @@ namespace Agebull.EntityModel.Config
 
         private void CheckRelation()
         {
-            if (Entity.DbFields.All(p => string.IsNullOrEmpty(p.LinkTable)))
+            if (Entity.Properties.All(p => string.IsNullOrEmpty(p.LinkTable)))
             {
                 return;
             }
@@ -102,8 +102,7 @@ namespace Agebull.EntityModel.Config
             }
             var tables = new Dictionary<string, EntityConfig>();
 
-            var names =
-                Entity.DbFields.Where(p => !string.IsNullOrEmpty(p.LinkTable))
+            var names = Entity.Properties.Where(p => !string.IsNullOrEmpty(p.LinkTable))
                     .Select(p => p.LinkTable)
                     .DistinctBy()
                     .ToArray();
@@ -119,8 +118,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (!string.IsNullOrEmpty(field.LinkTable))
                 {
-                    EntityConfig friend;
-                    if (tables.TryGetValue(field.LinkTable, out friend))
+                    if (tables.TryGetValue(field.LinkTable, out EntityConfig friend))
                     {
                         field.LinkTable = friend.SaveTable;
                         var linkField =
@@ -151,7 +149,7 @@ namespace Agebull.EntityModel.Config
 
         internal void CheckByDb(bool repair = false)
         {
-            if (Property.Parent.IsClass)
+            if (Property.Parent.NoDataBase)
             {
                 Property.ColumnName = null;
                 Property.DbType = null;

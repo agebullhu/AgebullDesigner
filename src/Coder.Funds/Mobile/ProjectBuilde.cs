@@ -43,12 +43,12 @@ namespace Agebull.EntityModel.RobotCoder.Mobile
         /// <param name="schema"></param>
         public override void CreateEntityCode(ProjectConfig project, EntityConfig schema)
         {
-            IOHelper.CheckPath(schema.Parent.MobileCsPath);
+            GlobalConfig.CheckPath(schema.Parent.MobileCsPath);
 
             Message = "正在生成" + schema.Caption + "...";
             if (!schema.IsReference && !string.IsNullOrWhiteSpace(project.MobileCsPath))
             {
-                var entityPath = IOHelper.CheckPath(project.MobileCsPath);
+                var entityPath = GlobalConfig.CheckPath(project.MobileCsPath);
                 var builder = new MobileEntityCoder
                 {
                     Entity = schema,
@@ -59,7 +59,7 @@ namespace Agebull.EntityModel.RobotCoder.Mobile
             }
             if (!string.IsNullOrEmpty(project.CppCodePath))
             {
-                var cppPath = IOHelper.CheckPath(project.CppCodePath);
+                var cppPath = GlobalConfig.CheckPath(project.CppCodePath);
                 var structCoder = new CppStructCoder
                 {
                     Entity = schema,
@@ -67,7 +67,7 @@ namespace Agebull.EntityModel.RobotCoder.Mobile
                 };
                 structCoder.CreateBaseCode(cppPath);
                 structCoder.CreateExtendCode(cppPath);
-                if (!schema.IsClass)
+                if (!schema.NoDataBase)
                 {
                     var modelCoder = new CppModelCoder
                     {

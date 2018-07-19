@@ -78,6 +78,10 @@
       <Project>{0d626dda-02c0-4bd8-b2fd-efee0971510f}</Project>
       <Name>Agebull.Common.Entity</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Helper\Agebull.EntityModel.Config.Helper.csproj">
+      <Project>{A7888162-CFBD-4087-8C4A-978445BBE02A}</Project>
+      <Name>Agebull.EntityModel.Config.Helper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Logical\Agebull.EntityModel.Designer.Logical.csproj">
       <Project>{0c9fd8f0-2c65-49e7-86ec-f135e56ec846}</Project>
       <Name>Agebull.EntityModel.Designer.Logical</Name>

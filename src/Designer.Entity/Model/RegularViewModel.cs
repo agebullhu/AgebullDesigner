@@ -1,6 +1,4 @@
-﻿using System.Windows;
-
-namespace Agebull.EntityModel.Designer
+﻿namespace Agebull.EntityModel.Designer
 {
     internal class RegularViewModel : ExtendViewModelBase<EntityDesignModel>
     {
@@ -8,11 +6,5 @@ namespace Agebull.EntityModel.Designer
         {
             EditorName = "Regular";
         }
-        /// <summary>
-        /// 主面板
-        /// </summary>
-        public override FrameworkElement Body { get; } = new RegularPanel();
-
-        
     }
 }

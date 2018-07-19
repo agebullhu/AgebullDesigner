@@ -63,6 +63,7 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -75,8 +76,8 @@
     <Compile Include="Behaviors\BehaviorAction.cs" />
     <Compile Include="Coefficient\CommandCoefficient.cs" />
     <Compile Include="Coefficient\ActionItem.cs" />
+    <Compile Include="CommandItem\AsyncCommandItem.cs" />
     <Compile Include="CommandItem\CommandConfig.cs" />
-    <Compile Include="CommandItem\CommandItemBuilder.cs" />
     <Compile Include="CommandItem\ICommandItem.cs" />
     <Compile Include="CommandItem\ICommandItemBuilder.cs" />
     <Compile Include="CommandItem\RuntimeActionItem.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="CommandItem\CommandItem.cs" />
     <Compile Include="Command\DelegateCommand.cs" />
     <Compile Include="Command\CommandInterface.cs" />
+    <Compile Include="Command\IAutoRegister.cs" />
     <Compile Include="Command\SimpleCommand.cs" />
     <Compile Include="Converts\BoolToVisibleConverter.cs" />
     <Compile Include="Converts\DateTimeConverter.cs" />

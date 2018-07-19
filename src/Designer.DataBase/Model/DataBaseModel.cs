@@ -10,9 +10,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.ComponentModel.Composition;
 using System.Windows;
-using System.Windows.Media;
 using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
 
@@ -23,58 +22,63 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// 数据库相关命令
     /// </summary>
-    internal class DataBaseModel: EntityDesignModel
+    [Export(typeof(IAutoRegister))]
+    [ExportMetadata("Symbol", '%')]
+    internal class DataBaseModel : DesignCommondBase<EntityConfig>
     {
-        #region 基础
-        
-
         /// <summary>
         /// 生成命令对象
         /// </summary>
         /// <param name="commands"></param>
-        protected override void CreateCommands(ObservableCollection<CommandItem> commands)
+        protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
-            commands.Add(NormalDb);
+            commands.Add(new CommandItemBuilder<EntityConfig>()
+            {
+                Action= RepairByDb,
+                Catalog = "数据库",
+                Caption = "重构数据库设计",
+                IconName = "tree_item",
+                ConfirmMessage = "是否执行【重构数据库设计】操作"
+            });
+            commands.Add(new CommandItemBuilder<EntityConfig>()
+            {
+                Action = CheckByDb,
+                Catalog = "数据库",
+                Caption = "修复数据库设计",
+                IconName = "tree_item",
+                ConfirmMessage = "是否执行【修复数据库设计】操作"
+            });
         }
+
+        #region 基础
 
         #endregion
 
 
         #region 数据库设计检查
 
-        private CommandItem _normalDb;
         /// <summary>
         /// 数据库设计检查
         /// </summary>
-        public CommandItem NormalDb => _normalDb ?? (_normalDb = new CommandItem
+        public void CheckByDb(EntityConfig entity)
         {
-            NoButton = true,
-            Command = new DelegateCommand(RepairByDb),
-            Caption = "数据库设计检查",
-            Image = Application.Current.Resources["tree_item"] as ImageSource
-        });
-
-        /// <summary>
-        /// 数据库设计检查
-        /// </summary>
-        public void RepairByDb()
-        {
-            var result = MessageBox.Show("是重构基础数据库设计,否仅检查并修改不正确的设置项", "数据库设计检查", MessageBoxButton.YesNoCancel);
-            if (result == MessageBoxResult.Cancel)
+            EntityDatabaseBusiness business = new EntityDatabaseBusiness
             {
-                return;
-            }
-            var tables = Context.GetSelectEntities();
-            foreach (var entity in tables)
-            {
-                EntityDatabaseBusiness business = new EntityDatabaseBusiness
-                {
-                    Entity = entity
-                };
-                business.CheckDbConfig(result == MessageBoxResult.Yes);
-            }
+                Entity = entity
+            };
+            business.CheckDbConfig(false);
         }
-
+        /// <summary>
+        /// 数据库设计检查
+        /// </summary>
+        public void RepairByDb(EntityConfig entity)
+        {
+            EntityDatabaseBusiness business = new EntityDatabaseBusiness
+            {
+                Entity = entity
+            };
+            business.CheckDbConfig(false);
+        }
         #endregion
 
         #region 校验数据库字段
@@ -106,7 +110,7 @@ namespace Agebull.EntityModel.Designer
         }
 
         #endregion
-        
+
         #region 重构数据库
 
         public bool AlertTablesPrepare(string arg, Action<string> setAction)

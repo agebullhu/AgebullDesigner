@@ -30,7 +30,7 @@ namespace Agebull.EntityModel.Designer
             else
             {
                 solution.SaveFileName = filename;
-                SaveSolution(solution, Path.GetDirectoryName(filename));
+                SaveSolution(solution);
             }
         }
 
@@ -40,21 +40,20 @@ namespace Agebull.EntityModel.Designer
         private static void SaveGlobal()
         {
             var global = Path.GetDirectoryName(Path.GetDirectoryName(typeof(ConfigWriter).Assembly.Location));
-            var directory = IOHelper.CheckPath(global, "Global");
+            var directory = GlobalConfig.CheckPath(global, "Global");
             GlobalConfig.GlobalSolution.SaveFileName = Path.Combine(directory, "global.json");
-            SaveSolution(GlobalConfig.GlobalSolution, directory);
+            SaveSolution(GlobalConfig.GlobalSolution);
         }
+
         /// <summary>
         /// 保存
         /// </summary>
         /// <param name="solution"></param>
-        /// <param name="directory"></param>
-        private static void SaveSolution(SolutionConfig solution, string directory)
+        private static void SaveSolution(SolutionConfig solution)
         {
             var writer = new ConfigWriter
             {
                 Solution = solution,
-                Directory = directory
             };
             writer.SaveSolution();
         }
@@ -64,125 +63,95 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         private void SaveSolution()
         {
+            var directory = Path.GetDirectoryName(Solution.SaveFileName);
             using (WorkModelScope.CreateScope(WorkModel.Saving))
             {
-                SaveProjects();
-                SaveEnums();
-                SaveApies();
-                Serializer(Solution.SaveFileName, Solution);
+                SaveProjects(directory);
+                SaveConfig(Solution.SaveFileName, Solution, true);
             }
+
+            Solution.Foreach<ConfigBase>(p => p.IsModify = false);
             //VersionControlItem.Current.TfsCheckIn();
         }
 
-        private void SaveProjects()
+        private void SaveProjects(string directory)
         {
             foreach (var project in Solution.Projects.ToArray())
             {
-                SaveProject(project);
+                SaveProject(project, directory);
             }
         }
 
-
-        private void SaveEnums()
-        {
-            var path = IOHelper.CheckPath(Directory, "Enums");
-            foreach (var type in Solution.Enums.ToArray())
-            {
-                SaveEnum(type, path);
-            }
-        }
-
-        /// <summary>
-        /// 保存API对象
-        /// </summary>
-        public void SaveApies()
-        {
-            var path = IOHelper.CheckPath(Directory, "apis");
-            foreach (var api in Solution.ApiItems.ToArray())
-            {
-                Save(api, path, ".ent");
-            }
-        }
-
-        /// <summary>
-        /// 检查对象是否可以保存
-        /// </summary>
-        /// <param name="config">对象</param>
-        /// <param name="fileName">保存路径</param>
-        /// <returns>是否可以保存</returns>
-        public bool CheckCanSave(FileConfigBase config, string fileName)
-        {
-            if (!File.Exists(fileName))
-                return true;
-            //if (config.IsReference && config.OriginalState.HasFlag(ConfigStateType.IsReference))
-            //    return false;
-            //if (config.IsFreeze && config.OriginalState.HasFlag(ConfigStateType.IsFreeze))
-            //    return false;
-            return !(config.Discard && config.OriginalState.HasFlag(ConfigStateType.IsDiscard));
-        }
-
-        public static void DeleteOldFile(FileConfigBase config, string fileName, bool haseChild)
-        {
-            if (config.SaveFileName == null || string.Equals(config.SaveFileName, fileName, StringComparison.OrdinalIgnoreCase))
-                return;
-            File.Delete(config.SaveFileName);
-            if (haseChild)
-                IOHelper.DeleteDirectory(Path.Combine(config.SaveFileName));
-        }
-
-        private void SaveEnum(EnumConfig type, string path, bool checkState = true)
-        {
-            var filename = Path.Combine(path, type.GetFileName(".enm"));
-            if (checkState && !CheckCanSave(type, filename))
-                return;
-            DeleteOldFile(type, filename, false);
-
-            if (type.IsDelete)
-            {
-                type.Parent.Remove(type);
-            }
-            else
-            {
-                foreach (var field in type.Items.Where(p => p.IsDelete).ToArray())
-                {
-                    type.Items.Remove(field);
-                }
-            }
-            Serializer(filename, type);
-        }
         /// <summary>
         /// 保存解决方案
         /// </summary>
-        /// <param name="project"></param>
-        /// <param name="checkState"></param>
-        public void SaveProject(ProjectConfig project, bool checkState = true)
+        public string SaveProject(ProjectConfig project, string directory, bool checkState = true)
         {
-            string filename = Path.Combine(Directory, "Projects", project.GetFileName(".prj"));
-            DeleteOldFile(project, filename, true);
+            var dir = GlobalConfig.CheckPath(directory, project.Name);
 
-            IOHelper.CheckPath(Directory, "Projects", project.Name);
-            foreach (var entity in project.Entities.ToArray())
-            {
-                SaveEntity(entity, checkState);
-            }
-
+            Saventities(project, dir, checkState);
+            SaveEnums(project, dir, checkState);
+            SaveApies(project, dir, checkState);
             if (project.IsDelete)
             {
                 SolutionConfig.Current.ProjectList.Remove(project);
             }
-            Serializer(filename, project);
+            SaveConfig(Path.Combine(dir, "project.json"), project, checkState);
+            return dir;
         }
+        private void Saventities(ProjectConfig project, string dir, bool checkState)
+        {
+            var path = GlobalConfig.CheckPath(dir, "Entity");
+            foreach (var entity in project.Entities.ToArray())
+            {
+                SaveEntity(entity, path, checkState);
+            }
+
+        }
+        private void SaveEnums(ProjectConfig project, string dir, bool checkState)
+        {
+            var path = GlobalConfig.CheckPath(dir, "Enum");
+            foreach (var type in project.Enums.ToArray())
+            {
+                if (type.IsDelete)
+                {
+                    project.Remove(type);
+                }
+                else
+                {
+                    //删除字段处理
+                    foreach (var field in type.Items.Where(p => p.IsDelete).ToArray())
+                    {
+                        type.Remove(field);
+                    }
+                }
+
+                SaveConfig(type, path, checkState);
+            }
+        }
+
+
+        /// <summary>
+        /// 保存API对象
+        /// </summary>
+        private void SaveApies(ProjectConfig project, string dir, bool checkState)
+        {
+            var path = GlobalConfig.CheckPath(dir, "Api");
+            foreach (var api in project.ApiItems.ToArray())
+            {
+                if (api.IsDelete)
+                {
+                    project.Remove(api);
+                }
+                SaveConfig(api, path, checkState);
+            }
+        }
+
         /// <summary>
         /// 保存实体
         /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="checkState"></param>
-        public void SaveEntity(EntityConfig entity, bool checkState = true)
+        public void SaveEntity(EntityConfig entity, string dir, bool checkState)
         {
-            var filename = Path.Combine(Directory, "Projects", entity.Parent.Name, entity.GetFileName(".ent"));
-            if (checkState && !CheckCanSave(entity, filename))
-                return;
-            DeleteOldFile(entity, filename, false);
             if (entity.IsDelete)
             {
                 entity.Parent.Remove(entity);
@@ -194,6 +163,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     entity.Properties.Remove(field);
                 }
+
                 //删除命令处理
                 foreach (var field in entity.Commands.Where(p => p.IsDelete).ToArray())
                 {
@@ -201,16 +171,11 @@ namespace Agebull.EntityModel.Designer
                 }
             }
 
-            Serializer(filename, entity);
+            SaveConfig(entity, dir, checkState);
         }
         #endregion
 
         #region 基础支持
-
-        /// <summary>
-        /// 解决方案目录
-        /// </summary>
-        public string Directory;
 
         /// <summary>
         ///     表结构对象
@@ -220,52 +185,54 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 保存通知对象
         /// </summary>
-        /// <param name="config"></param>
-        /// <param name="path"></param>
-        /// <param name="ext"></param>
-        /// <param name="checkState"></param>
-        public void Save<TConfig>(TConfig config, string path, string ext, bool checkState = true)
+        public void SaveConfig<TConfig>(TConfig config, string dir, bool checkState)
             where TConfig : FileConfigBase
         {
-            var filename = Path.Combine(path, config.GetFileName(ext));
-            if (checkState && !CheckCanSave(config, filename))
-                return;
-            DeleteOldFile(config, filename, false);
-            Serializer(filename, config);
+            SaveConfig(Path.Combine(dir, config.GetFileName()), config, checkState);
         }
 
         /// <summary>
-        /// 序列化
+        /// 保存通知对象
         /// </summary>
-        /// <typeparam name="TConfig"></typeparam>
-        /// <param name="filename"></param>
-        /// <param name="config"></param>
-        /// <returns></returns>
-        public static bool Serializer<TConfig>(string filename, TConfig config)
+        public void SaveConfig<TConfig>(string filename, TConfig config, bool checkState)
             where TConfig : FileConfigBase
         {
+            if (config.SaveFileName != null)
+            {
+                if (File.Exists(config.SaveFileName) && checkState)
+                {
+                    if (config.Option.IsDelete)
+                    {
+                        var old = ConfigLoader.DeSerializer<TConfig>(config.SaveFileName);
+                        if (old != null)
+                        {
+                            if (old.IsDelete)
+                                return;
+                            config = old;
+                            config.Option.IsDelete = true;
+                        }
+                    }
+                    if (config.Option.IsLock)
+                        return;
+                }
+
+                if (!string.Equals(config.SaveFileName, filename, StringComparison.OrdinalIgnoreCase) && File.Exists(config.SaveFileName))
+                {
+                    File.Delete(config.SaveFileName);
+                }
+            }
+            if (config.Option.CanLock)
+                config.Option.LockConfig();
             try
             {
                 string json = JsonConvert.SerializeObject(config);
                 File.WriteAllText(filename, json, Encoding.UTF8);
                 config.SaveFileName = filename;
-                return true;
             }
             catch (Exception e)
             {
                 Trace.WriteLine(e.ToString());
-                return false;
             }
-            //using (var psteam = File.Create(filename))
-            //{
-            //    if (Equals(args, default(T)))
-            //        return false;
-            //    psteam.SetLength(1L);
-            //    new DataContractSerializer(typeof(T)).WriteObject(psteam, (object)args);
-            //    psteam.Flush();
-            //    psteam.Close();
-            //    return true;
-            //}
         }
 
         #endregion

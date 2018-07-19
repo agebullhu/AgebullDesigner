@@ -24,7 +24,7 @@ namespace Agebull.EntityModel
     public sealed class TraceMessage : NotificationObject
     {
 
-        private Dictionary<int, int> threadIndex = new Dictionary<int, int>();
+        private readonly Dictionary<int, int> _threadIndex = new Dictionary<int, int>();
 
         private readonly ObservableCollection<string> _trace = new ObservableCollection<string>();
 
@@ -210,24 +210,24 @@ namespace Agebull.EntityModel
 #if CLIENT
             BeginInvokeInUiThread(p =>
             {
-                if (threadIndex.ContainsKey(Thread.CurrentThread.ManagedThreadId))
+                if (_threadIndex.ContainsKey(Thread.CurrentThread.ManagedThreadId))
                 {
-                    var idx = threadIndex[Thread.CurrentThread.ManagedThreadId] + 1;
+                    var idx = _threadIndex[Thread.CurrentThread.ManagedThreadId] + 1;
                     if (idx >= _trace.Count)
                     {
                         _trace.Add(time ? $"{DateTime.Now}:{p}" : p);
-                        threadIndex[Thread.CurrentThread.ManagedThreadId] = _trace.Count;
+                        _threadIndex[Thread.CurrentThread.ManagedThreadId] = _trace.Count;
                     }
                     else
                     {
                         _trace.Insert(idx, time ? $"{DateTime.Now}:{p}" : p);
-                        threadIndex[Thread.CurrentThread.ManagedThreadId] = idx;
+                        _threadIndex[Thread.CurrentThread.ManagedThreadId] = idx;
                     }
                 }
                 else
                 {
                     _trace.Add(time ? $"{DateTime.Now}:{p}" : p);
-                    threadIndex.Add(Thread.CurrentThread.ManagedThreadId, _trace.Count - 1);
+                    _threadIndex.Add(Thread.CurrentThread.ManagedThreadId, _trace.Count - 1);
                 }
                 RaisePropertyChanged(() => Track);
                 LastMessageIndex = _trace.Count - 1;
@@ -296,7 +296,7 @@ namespace Agebull.EntityModel
         /// <param name="message">消息</param>
         public void ShowMessage(int level, object message)
         {
-            ShowMessage(level, message == null ? null : message.ToString());
+            ShowMessage(level, message?.ToString());
         }
 
         /// <summary>

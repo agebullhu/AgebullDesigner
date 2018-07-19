@@ -10,6 +10,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -27,7 +28,6 @@ namespace Agebull.Common.Mvvm
     /// <typeparam name="TParameter">参数类型</typeparam>
     /// <typeparam name="TResult">命令返回值</typeparam>
     public class AsyncCommand<TParameter, TResult> : IAsyncCommand
-        where TParameter : class
     {
         #region 能否执行处理
 
@@ -87,7 +87,15 @@ namespace Agebull.Common.Mvvm
         /// <param name="parameter">此命令使用的数据。如果此命令不需要传递数据，则该对象可以设置为 null。</param>
         bool ICommand.CanExecute(object parameter)
         {
-            return CanExecute(!Equals(Parameter, default(TParameter)) ? Parameter : parameter as TParameter);
+            try
+            {
+                return CanExecute(!Equals(Parameter, default(TParameter)) ? Parameter : (TParameter)parameter);
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e, "CanExecute");
+                return false;
+            }
         }
 
         /// <summary>
@@ -163,10 +171,7 @@ namespace Agebull.Common.Mvvm
             try
             {
                 var onPropertyChanged = propertyChanged;
-                if (onPropertyChanged != null)
-                {
-                    onPropertyChanged(this, args);
-                }
+                onPropertyChanged?.Invoke(this, args);
             }
             catch (Exception ex)
             {
@@ -283,12 +288,8 @@ namespace Agebull.Common.Mvvm
         /// <param name="canExecuteAction">能否执行的方法.</param>
         public AsyncCommand(Func<TParameter, TResult> executeAction, Func<TParameter, bool> canExecuteAction)
         {
-            if (executeAction == null)
-            {
-                throw new ArgumentNullException("executeAction", "命令方法不能为空");
-            }
             _canExecuteAction = canExecuteAction;
-            _executeAction = executeAction;
+            _executeAction = executeAction ?? throw new ArgumentNullException(nameof(executeAction), @"命令方法不能为空");
         }
         /// <summary>
         ///     构造
@@ -403,7 +404,15 @@ namespace Agebull.Common.Mvvm
 
         void ICommand.Execute(object parameter)
         {
-            Execute(!Equals(Parameter, default(TParameter)) ? Parameter : parameter as TParameter);
+            try
+            {
+                Execute(!Equals(Parameter, default(TParameter)) ? Parameter : (TParameter)parameter);
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e, "Execute");
+                throw;
+            }
         }
 
         /// <summary>

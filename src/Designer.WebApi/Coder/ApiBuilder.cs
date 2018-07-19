@@ -124,7 +124,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 builder.CreateBaseCode(path);
                 builder.CreateExtendCode(path);
             }
-            if (entity.IsClass)
+            if (entity.NoDataBase)
                 return;
             {
                 var path = project.GetApiPath("Contract");

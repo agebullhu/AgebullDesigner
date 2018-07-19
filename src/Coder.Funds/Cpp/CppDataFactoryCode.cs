@@ -123,7 +123,7 @@ namespace GBS
             var code = new StringBuilder();
             foreach (var project in SolutionConfig.Current.Projects)
             {
-                foreach (var entity in project.Entities.Where(p => !p.IsReference && !p.IsClass && !p.IsInternal))
+                foreach (var entity in project.Entities.Where(p => !p.IsReference && !p.NoDataBase && !p.IsInternal))
                 {
                     code.Append($@"
 #include ""{entity.Parent.Name}/{entity.Name}.h""");
@@ -137,7 +137,7 @@ namespace GBS
             var code = new StringBuilder();
             foreach (var project in SolutionConfig.Current.Projects)
             {
-                foreach (var entity in project.Entities.Where(p => !p.IsReference && !p.IsClass && !p.IsInternal))
+                foreach (var entity in project.Entities.Where(p => !p.IsReference && !p.NoDataBase && !p.IsInternal))
                 {
                     code.Append($@"
         case {entity.Parent.NameSpace.Replace(".", "::")}::TYPE_INDEX_{entity.Name.ToUpper()}:

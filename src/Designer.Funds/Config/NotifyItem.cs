@@ -299,8 +299,9 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(Org));
             }
         }
-
-        public override IEnumerable<ConfigBase> MyChilds => new ConfigBase[0];
+        public override void ForeachChild(Action<ConfigBase> action)
+        {
+        }
         #endregion
   
 
@@ -311,7 +312,6 @@ namespace Agebull.EntityModel.Config
         public override void GetLuaStruct(StringBuilder code)
         {
             base.GetLuaStruct(code);
-            int idx;
             if (!String.IsNullOrWhiteSpace(Friend))
                 code.AppendLine($@"['Friend'] = '{Friend.ToLuaString()}',");
             else

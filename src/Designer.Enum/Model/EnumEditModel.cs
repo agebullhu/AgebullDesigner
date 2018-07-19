@@ -41,7 +41,7 @@ namespace Agebull.EntityModel.Designer
                 if (Config.Items == null)
                     Config.Items = new ObservableCollection<EnumItem>();
                 Items = Config.Items;
-                foreach (var item in Items.OrderBy(p=>p.Number))
+                foreach (var item in Items.OrderBy(p => p.Number))
                 {
                     if (item.Caption == item.Description)
                         sb.AppendFormat("{0}\t{1}\t{2}", item.Value, item.Name, item.Caption);
@@ -61,17 +61,32 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public EnumConfig Config
         {
-            get;
-            set;
+            get => _config;
+            set
+            {
+                _config = value;
+                RaisePropertyChanged(nameof(Config));
+            }
         }
 
         /// <summary>
         /// 生成的表格对象
         /// </summary>
-        public ObservableCollection<EnumItem> Items { get; private set; }
+        public ObservableCollection<EnumItem> Items
+        {
+            get => _items;
+            private set
+            {
+                _items = value;
+                RaisePropertyChanged(nameof(Items));
+            }
+        }
 
 
         private string _fields;
+        private EnumConfig _config;
+        private ObservableCollection<EnumItem> _items;
+
         /// <summary>
         ///     当前文件名
         /// </summary>
@@ -90,7 +105,102 @@ namespace Agebull.EntityModel.Designer
 
         #region 扩展代码
 
-        public void DoCheckFieldes()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public void DoFormatCSharp(object arg)
+        {
+            if (Config == null || string.IsNullOrWhiteSpace(Fields))
+                return;
+
+            StringBuilder code = new StringBuilder();
+            var columns = new List<EnumItem>();
+            var lines = Fields.Split(new[] { '\r', '\n', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            string descript = null, caption = null;
+            int next = 0;
+            int barket = 0;
+            int value = 0;
+            foreach (var l in lines)
+            {
+                if (string.IsNullOrEmpty(l))
+                    continue;
+                var line = l.Trim().TrimEnd(',');
+                if (barket > 0)
+                    continue;
+                var baseLine = line.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+                var words = baseLine[0].Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                if (words[0][0] == '/')
+                {
+                    if (words[1] == "<summary>")
+                    {
+                        caption = null;
+                        next = 1;
+                        continue;
+                    }
+                    if (words[1] == "<remark>")
+                    {
+                        descript = null;
+                        next = 2;
+                        continue;
+                    }
+                    if (words[1][0] == '<')
+                    {
+                        next = 0;
+                        continue;
+                    }
+                    if (next <= 1)
+                        caption = words.Skip(1).LinkToString();
+                    if (next == 2)
+                        descript = words.Skip(1).LinkToString();
+                    continue;
+                }
+                if (!Char.IsLetter(line[0]))
+                    continue;
+                string svl = value.ToString();
+                if (baseLine.Length > 1)
+                {
+                    svl = baseLine[1];
+                    if (int.TryParse(baseLine[1], out var vl))
+                    {
+                        value = vl;
+                    }
+                }
+                var name = words[words.Length - 1];
+                code.Append($"{svl}\t{name}");
+                if (caption != null)
+                    code.Append($"\t{caption}");
+                if (descript != null)
+                    code.Append($"\t{descript}");
+                code.AppendLine();
+                columns.Add(new EnumItem
+                {
+                    Name = name,
+                    Value = svl,
+                    Description = descript,
+                    Caption = caption
+                });
+                caption = null;
+                descript = null;
+                next = 0;
+                ++value;
+            }
+
+            Fields = code.ToString();
+            OnPropertyChanged(nameof(Fields));
+
+            MessageBox.Show("处理成功");
+            Items.Clear();
+            foreach (var col in columns)
+            {
+                Items.Add(col);
+            }
+            RaisePropertyChanged(() => Items);
+        }
+
+        public void DoCheckFieldes(object arg)
         {
             if (Config == null || string.IsNullOrWhiteSpace(Fields))
                 return;
@@ -103,7 +213,7 @@ namespace Agebull.EntityModel.Designer
             {
                 if (string.IsNullOrEmpty(l))
                     continue;
-                var  line = l.Trim().Split('>')[0];
+                var line = l.Trim().Split('>')[0];
                 code.Append(line);
                 string[] words = line.Split(new[] { ' ', '\t', '-' }, StringSplitOptions.RemoveEmptyEntries);
                 if (words.Length < 2)
@@ -112,7 +222,7 @@ namespace Agebull.EntityModel.Designer
                     error = true;
                     continue;
                 }
-                if(!int.TryParse(words[0],out var _))
+                if (!int.TryParse(words[0], out var _))
                 {
                     code.AppendLine(" ! 第一个单词无法转为数字");
                 }

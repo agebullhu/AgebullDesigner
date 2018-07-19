@@ -43,7 +43,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         public void CreateExtendCode(string path)
         {
-            using (WorkModelScope.CreateScope(WorkModel.Coder))
+            using (CodeGeneratorScope.CreateScope())
             {
                 try
                 {
@@ -64,7 +64,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         public void CreateBaseCode(string path)
         {
-            using (WorkModelScope.CreateScope(WorkModel.Coder))
+            using (CodeGeneratorScope.CreateScope())
             {
                 try
                 {
@@ -123,9 +123,8 @@ namespace Agebull.EntityModel.RobotCoder
                 full = Path.Combine(path, old);
             }
 
-            string file = Path.GetFileName(full);
-            full = IOHelper.CheckPaths(Path.GetDirectoryName(full));
-            return Path.Combine(full, file);
+            GlobalConfig.CheckPaths(Path.GetDirectoryName(full));
+            return full;
         }
         #endregion
 
@@ -218,7 +217,7 @@ namespace Agebull.EntityModel.RobotCoder
                 if (dir != null)
                 {
                     var folders = dir.Substring(root.Length, dir.Length - root.Length).Split('\\');
-                    IOHelper.CheckPath(root, folders);
+                    GlobalConfig.CheckPath(root, folders);
                 }
             }
             sb.Append(code);

@@ -17,7 +17,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         ///     是否可写
         /// </summary>
-        protected override bool CanWrite => Project != null && !Project.IsFreeze && !Project.Discard;
+        protected override bool CanWrite => Project != null && !Project.IsFreeze && !Project.IsDiscard;
 
         /// <summary>
         ///     数据库配置对象

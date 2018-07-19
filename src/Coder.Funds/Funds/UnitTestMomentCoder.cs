@@ -137,7 +137,7 @@ bool ut_{config.Name}()
     //校验结果
     bool succeed = true;
     cout << ""{config.Caption}测试结果:"" << endl;");
-            foreach (var field in config.Properties)
+            foreach (var field in config.LastProperties)
             {
                 FieldCmp(code, field);
             }
@@ -164,7 +164,7 @@ bool ut_{config.Name}()
         private static string ProjectApiUt(bool full = false)
         {
             var code = new StringBuilder();
-            var apis = SolutionConfig.Current.ApiItems.Where(p => !p.Discard).ToArray();
+            var apis = SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard).ToArray();
             if (full)
             {
                 foreach (var api in apis)
@@ -263,7 +263,7 @@ bool api_ut_{api.Name}(EsTradeCommand& command)
             if (def)
                 code.Append($@"
     {config.EntityName} {name} = new {config.EntityName}();");
-            foreach (var field in config.Properties)
+            foreach (var field in config.LastProperties)
             {
                 GetCsRandomValue(code, field, name);
             };
@@ -339,7 +339,7 @@ bool api_ut_{api.Name}(EsTradeCommand& command)
                 code.Append($@"
     {config.Name} {name};
     memset(&{name},0,sizeof({config.Name}));");
-            foreach (var field in config.Properties)
+            foreach (var field in config.LastProperties)
             {
                 GetRandomValue(code, field, name);
             };

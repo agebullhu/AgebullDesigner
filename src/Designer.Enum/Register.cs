@@ -18,7 +18,7 @@ namespace Agebull.Common.Config.Designer.EasyUi
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            DesignerManager.Registe<EnumConfig, EnumEditViewModel>("±à¼­Ã¶¾Ù");
+            DesignerManager.Registe<EnumConfig, EnumEdit>("±à¼­Ã¶¾Ù");
         }
 
     }

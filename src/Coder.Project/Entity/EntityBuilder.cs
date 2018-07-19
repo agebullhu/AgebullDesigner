@@ -90,7 +90,7 @@ namespace {NameSpace}
     /// {Entity.Description}
     /// </summary>
     [DataContract]
-    sealed partial class {Entity.EntityName} : {(Entity.IsClass ? "NotificationObject" : "EditDataObject")}
+    sealed partial class {Entity.EntityName} : {(Entity.NoDataBase ? "NotificationObject" : "EditDataObject")}
     {{
         
         /// <summary>
@@ -112,7 +112,7 @@ namespace {NameSpace}
         /// </summary>
         private string FullCode()
         {
-            if (Entity.IsClass)
+            if (Entity.NoDataBase)
                 return null;
             return $@"
 {GetBaseCode<EntityDictionaryBuilder>()}
@@ -129,7 +129,7 @@ namespace {NameSpace}
                 list.AddRange(Entity.Interfaces.Split(NoneLanguageChar, StringSplitOptions.RemoveEmptyEntries));
             }
             //code.Append("IEntityPoolSetting");
-            if (!Entity.IsClass && Entity.PrimaryColumn?.CsType == "long")
+            if (!Entity.NoDataBase && Entity.PrimaryColumn?.CsType == "long")
                 list.Add("IIdentityData");
             //if (!Entity.IsLog)
             //{

@@ -82,13 +82,11 @@ namespace Agebull.Common.Mvvm
 
         private static void OnCommandPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ClickBehavior eb = d as ClickBehavior;
-            if (eb == null || Equals(e.OldValue, e.NewValue))
+            if (!(d is ClickBehavior eb) || Equals(e.OldValue, e.NewValue))
             {
                 return;
             }
-            ICommand cmd = e.OldValue as ICommand;
-            if (cmd != null)
+            if (e.OldValue is ICommand cmd)
             {
                 cmd.CanExecuteChanged -= eb.OnCanExecuteChanged;
             }

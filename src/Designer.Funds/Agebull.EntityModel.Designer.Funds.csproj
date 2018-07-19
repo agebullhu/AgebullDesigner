@@ -82,6 +82,7 @@
     <Compile Include="Config\CppTypeHelper2.cs" />
     <Compile Include="Config\NotifyItem.cs" />
     <Compile Include="Config\TypedefItem.cs" />
+    <Compile Include="Model\CppFieldsViewModel.cs" />
     <Compile Include="Model\EntityModel.cs" />
     <Compile Include="Model\EnumModel.cs" />
     <Compile Include="Model\PropertyModel.cs" />
@@ -97,6 +98,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="View\CppFieldsPanel.xaml.cs">
+      <DependentUpon>CppFieldsPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\CppRefactor\CppRefactorModel.cs" />
     <Compile Include="View\CppRefactor\CppRefactorViewModel.cs" />
@@ -131,10 +135,6 @@
       <Project>{5b2850e3-c1ac-4d1e-be96-5be0f9f659b7}</Project>
       <Name>Agebull.EntityModel.Designer.Command</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Config.Cpp\Agebull.EntityModel.Config.Cpp.csproj">
-      <Project>{3EF55F58-0802-453C-8CE0-C227544584B1}</Project>
-      <Name>Agebull.EntityModel.Config.Cpp</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Config\Agebull.EntityModel.Config.csproj">
       <Project>{0af9f7a3-6aab-46a5-b3e8-45940ae26e5b}</Project>
       <Name>Agebull.EntityModel.Config</Name>
@@ -161,6 +161,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="View\CppFieldsPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\CppRefactor\CppRefactorWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

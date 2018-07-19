@@ -43,8 +43,8 @@ namespace Agebull.EntityModel.Config
         internal void CheckDouble()
         {
             //Property.IsIntDecimal = false;
-            //string tag = Property.Tag ?? "";
-            //var link = friend.Properties.FirstOrDefault(p => tag == p.Tag) ??
+            //string tag = Property.Option.ReferenceTag ?? "";
+            //var link = friend.Properties.FirstOrDefault(p => tag == p.Option.ReferenceTag) ??
             //    friend.Properties.FirstOrDefault(p => p.Name == Property.Name);
             //if (link != null)
             //{
@@ -72,7 +72,7 @@ namespace Agebull.EntityModel.Config
         {
             if (friend != null)
             {
-                if (RepairTag(friend, Property.Parent.Tag))
+                if (RepairTag(friend, Property.Parent.Option.ReferenceTag))
                 {
                     Property.CsType = CppTypeHelper2.CppTypeToCsType(Property);
                 }
@@ -101,7 +101,7 @@ namespace Agebull.EntityModel.Config
                 Property.CsType = entity.Name + "Data";
                 if (!entity.IsReference)
                     return;
-                var friend = GetEntity(p => !p.IsReference && p != entity && p.Tag == entity.Tag);
+                var friend = GetEntity(p => !p.IsReference && p != entity && p.Option.ReferenceTag == entity.Option.ReferenceTag);
                 if (friend != null)
                 {
                     Property.CppLastType = friend.Name;
@@ -125,24 +125,24 @@ namespace Agebull.EntityModel.Config
         {
             if (Property.IsSystemField)
             {
-                Property.Tag = "[SYSTEM]";
+                Property.Option.ReferenceTag = "[SYSTEM]";
                 return false;
             }
             if (friend == null)
             {
-                Property.Tag = null;
+                Property.Option.ReferenceTag = null;
                 return false;
             }
-            string tag = Property.Tag ?? "";
-            var link = friend.Properties.FirstOrDefault(p => tag == p.Tag) ??
+            string tag = Property.Option.ReferenceTag ?? "";
+            var link = friend.Properties.FirstOrDefault(p => tag == p.Option.ReferenceTag) ??
                 friend.Properties.FirstOrDefault(p => p.Name == Property.Name);
             if (link == null)
             {
-                Property.Tag = null;
+                Property.Option.ReferenceTag = null;
                 //Property.CppName = null;
                 if (Property.EnumConfig != null && Property.EnumConfig.Items.Count <= 1)
                 {
-                    Property.EnumConfig.IsDelete = true;
+                    Property.EnumConfig.Option.IsDelete = true;
                     Property.EnumConfig = null;
                     Property.CustomType = null;
                 }
@@ -153,14 +153,14 @@ namespace Agebull.EntityModel.Config
                 return false;
             }
             tag = head + "," + link.CppType + "," + link.Name;
-            if (friend.Tag != null && friend.Tag.Contains(tag + ",[Skip]"))
+            if (friend.Option.ReferenceTag != null && friend.Option.ReferenceTag.Contains(tag + ",[Skip]"))
                 return false;
-            Property.Tag = tag;
+            Property.Option.ReferenceTag = tag;
             var cpptype = CppTypeHelper2.ToCppLastType(link.CppType);
 
             if (cpptype is EntityConfig stru)
             {
-                link.CppLastType = Property.CppType = GetEntity(p => p.Tag == stru.Tag && p != stru)?.Name;
+                link.CppLastType = Property.CppType = GetEntity(p => p.Option.ReferenceTag == stru.Option.ReferenceTag && p != stru)?.Name;
                 return true;
             }
             if (!(cpptype is TypedefItem type))
@@ -175,8 +175,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (type.KeyWork == "char" && !string.IsNullOrWhiteSpace(type.ArrayLen))
                 {
-                    int len;
-                    if (Int32.TryParse(type.ArrayLen, out len))
+                    if (Int32.TryParse(type.ArrayLen, out int len))
                     {
                         link.Datalen = len;
                         Property.Datalen = len;
@@ -218,7 +217,7 @@ namespace Agebull.EntityModel.Config
                 Property.CsType = "int";
                 Property.CustomType = enumcfg.Name;
                 Property.EnumConfig = enumcfg;
-                enumcfg.LinkField = Property.Key;
+                enumcfg.Option.ReferenceKey = Property.Option.Key;
                 Property.CppType = type.KeyWork;
                 Property.CppLastType = enumcfg.Name;
             }
@@ -233,7 +232,7 @@ namespace Agebull.EntityModel.Config
             }
             if (Property.EnumConfig.Items.All(p => !string.Equals(p.Name, "None", StringComparison.OrdinalIgnoreCase)))
             {
-                Property.EnumConfig.Items.Add(new EnumItem
+                Property.EnumConfig.Add(new EnumItem
                 {
                     Name = "None",
                     Caption = "δ֪",

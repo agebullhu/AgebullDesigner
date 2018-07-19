@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
-using Agebull.Common;
 using Agebull.Common.Mvvm;
-using Agebull.EntityModel.Config;
 using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer
@@ -18,35 +13,34 @@ namespace Agebull.EntityModel.Designer
         {
             EditorName = "Json";
         }
-        /// <summary>
-        /// 主面板
-        /// </summary>
-        public override FrameworkElement Body { get; } = new JsonPanel();
     }
 
     internal class JsonModel : EntityDesignModel
     {
         #region 操作命令
 
-        public override ObservableCollection<CommandItem> CreateCommands()
+        public override ObservableCollection<CommandItemBase> CreateCommands()
         {
-            return new ObservableCollection<CommandItem>
+            return new ObservableCollection<CommandItemBase>
             {
                 new CommandItem
                 {
-                    Command = new DelegateCommand(Format1 ),
+                    Action = (Format1 ),
+                    IsButton=true,
                     Caption = "前后端名称一致(大驼峰名称)",
                     Image = Application.Current.Resources["tree_Assembly"] as ImageSource
                 },
                 new CommandItem
                 {
-                    Command = new DelegateCommand(Format2 ),
+                    Action = (Format2 ),
+                    IsButton=true,
                     Caption = "小驼峰名称",
                     Image = Application.Current.Resources["tree_Assembly"] as ImageSource
                 },
                 new CommandItem
                 {
-                    Command = new DelegateCommand(Format3 ),
+                    Action = (Format3 ),
+                    IsButton=true,
                     Caption = "小写下划线名称(C风格)",
                     Image = Application.Current.Resources["tree_Assembly"] as ImageSource
                 }
@@ -56,21 +50,21 @@ namespace Agebull.EntityModel.Designer
 
         #region 扩展代码
 
-        public void Format1()
+        public void Format1(object arg)
         {
             foreach (var property in Context.SelectEntity.Properties)
             {
                 property.JsonName = null;
             }
         }
-        internal void Format2()
+        internal void Format2(object arg)
         {
             foreach (var property in Context.SelectEntity.Properties)
             {
                 property.JsonName = property.Name.ToLWord();
             }
         }
-        internal void Format3()
+        internal void Format3(object arg)
         {
             foreach (var property in Context.SelectEntity.Properties)
             {

@@ -3,11 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:designer="clr-namespace:Agebull.EntityModel.Designer"
              mc:Ignorable="d" d:DesignWidth="1505.519" d:DesignHeight="434.126" >
+    <UserControl.DataContext>
+        <designer:EnumEditViewModel/>
+    </UserControl.DataContext>
     <DockPanel DataContext="{Binding Model}"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <GroupBox Header="名称(设计时)" Margin="5" DataContext="{Binding Config}"   DockPanel.Dock="Top">
             <GroupBox.Resources>
-                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/DataTemplate/Form.xaml"/>
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
             </GroupBox.Resources>
             <WrapPanel>
                 <StackPanel>
@@ -45,7 +49,7 @@
                       CanUserDeleteRows="False"
                       ItemsSource="{Binding Items}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Index,Mode=TwoWay}" Header="序号" />
+                    <DataGridTextColumn Binding="{Binding Option.Index,Mode=TwoWay}" Header="序号" />
                     <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" MinWidth="160"/>
                     <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" MinWidth="160"/>
                     <DataGridTextColumn Binding="{Binding Description,Mode=TwoWay}" Header="说明" MinWidth="300"/>

@@ -8,17 +8,6 @@
 
 #region 引用
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Media;
-using Agebull.Common;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.RobotCoder;
 
 #endregion
 
@@ -26,10 +15,6 @@ namespace Agebull.EntityModel.Designer
 {
     internal class AllFieldsViewModel : ExtendViewModelBase<EntityDesignModel>
     {
-        /// <summary>
-        /// 主面板
-        /// </summary>
-        public override FrameworkElement Body { get; } = new AllEntityFieldsControl();
     }
 
 }

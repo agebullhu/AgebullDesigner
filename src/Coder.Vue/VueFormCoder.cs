@@ -130,7 +130,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
                 if (field.IsLinkKey)
                 {
-                    var friend = Entity.Properties.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
+                    var friend = Entity.LastProperties.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
                     if (friend != null)
                         caption = friend.Caption;
                     if (friend != null)

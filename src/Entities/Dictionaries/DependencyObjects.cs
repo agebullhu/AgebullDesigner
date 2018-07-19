@@ -61,8 +61,7 @@ namespace Agebull.EntityModel
         /// <returns></returns>
         public T AutoDependency<T>() where T : class, new()
         {
-            object value1;
-            if (_dictionary.TryGetValue(typeof (T), out value1))
+            if (_dictionary.TryGetValue(typeof(T), out object value1))
             {
                 return value1 as T;
             }
@@ -76,8 +75,7 @@ namespace Agebull.EntityModel
         /// <returns></returns>
         public T Dependency<T>() where T : class
         {
-            object value1;
-            return _dictionary.TryGetValue(typeof (T), out value1) ? value1 as T : null;
+            return _dictionary.TryGetValue(typeof(T), out object value1) ? value1 as T : null;
         }
     }
 }

@@ -64,12 +64,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaiduFanYi\BaiduFanYi.cs" />
+    <Compile Include="DataType\InterfaceHelper.cs" />
+    <Compile Include="DataType\DataTypeHelper.cs" />
+    <Compile Include="Helper\CppTypeHelper.cs" />
     <Compile Include="Helper\CsharpHelper.cs" />
     <Compile Include="Helper\DataBaseHelper.cs" />
     <Compile Include="Helper\EnumHelper.cs" />
     <Compile Include="Helper\MySqlDataBaseHelper.cs" />
     <Compile Include="Helper\SqlServerHelper.cs" />
+    <Compile Include="Name\NameHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

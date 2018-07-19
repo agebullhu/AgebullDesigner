@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
@@ -81,7 +82,7 @@ namespace Agebull.EntityModel.RobotCoder
             StringBuilder code = new StringBuilder();
             code.Append($@"new {entity.Name}
             {{");
-            foreach (var property in entity.Properties.Where(p => p.CanUserInput))
+            foreach (var property in entity.LastProperties.Where(p => p.CanUserInput))
             {
                 var value = property.HelloCode;
                 if (property.CsType == "string")
@@ -90,7 +91,7 @@ namespace Agebull.EntityModel.RobotCoder
                 }
                 else if (property.CsType == "DateTime")
                 {
-                    value = value == null ? DateTime.Today.ToString() : $"DateTime.Parse(\"{value}\")";
+                    value = value == null ? DateTime.Today.ToString(CultureInfo.InvariantCulture) : $"DateTime.Parse(\"{value}\")";
                 }
                 else if (property.CustomType != null)
                 {
@@ -111,7 +112,7 @@ namespace Agebull.EntityModel.RobotCoder
         public static string HelloCode(EntityConfig entity,string name)
         {
             StringBuilder code = new StringBuilder();
-            foreach (var property in entity.Properties.Where(p => p.CanUserInput))
+            foreach (var property in entity.ClientProperty)
             {
                 var value = property.HelloCode;
                 if (property.CsType == "string")
@@ -120,7 +121,7 @@ namespace Agebull.EntityModel.RobotCoder
                 }
                 else if (property.CsType == "DateTime")
                 {
-                    value = value == null ? DateTime.Today.ToString() : $"DateTime.Parse(\"{value}\")";
+                    value = value == null ? DateTime.Today.ToString(CultureInfo.InvariantCulture) : $"DateTime.Parse(\"{value}\")";
                 }
                 else if (property.CustomType != null)
                 {

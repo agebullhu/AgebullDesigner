@@ -21,7 +21,7 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
         /// </summary>
         protected override void CreateBaCode(string path)
         {
-            if (Entity.IsInternal || Entity.IsClass || Entity.DenyScope.HasFlag(AccessScopeType.Client))
+            if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
             WebCode(path);
         }
@@ -31,9 +31,9 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
         /// </summary>
         protected override void CreateExCode(string path)
         {
-            if (Entity.IsInternal || Entity.IsClass || Entity.DenyScope.HasFlag(AccessScopeType.Client))
+            if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
-            IOHelper.CheckPath(path, "Page");
+            GlobalConfig.CheckPath(path, "Page");
             ActionCsCode(path);
             ExportCsCode(path);
         }
@@ -109,13 +109,13 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
 
         private void ActionCsCode(string path)
         {
-            var file = ConfigPath(Entity, "File_Web_Action_cs", path, $"Page\\{Entity.Parent.Name}\\{Entity.Name}", "PageAction");
+            var file = ConfigPath(Entity, "File_Web_Action_cs", path, $"{Entity.Parent.Name}\\{Entity.Name}", "PageAction");
             var coder = new ApiActionCoder
             {
                 Entity = Entity,
                 Project = Project
             };
-            IOHelper.CheckPaths(Path.GetDirectoryName(file));
+            GlobalConfig.CheckPaths(Path.GetDirectoryName(file));
             WriteFile(file + ".cs", coder.Code());
             WriteFile(file + ".Designer.cs", coder.BaseCode());
         }

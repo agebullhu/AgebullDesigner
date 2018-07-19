@@ -29,23 +29,19 @@ namespace Agebull.EntityModel.Designer
             win.Show();
         }
 
-        private List<CommandItem> _exCommands;
+        private List<CommandItemBase> _exCommands;
 
-        public IEnumerable<CommandItem> ExCommands => _exCommands ?? (_exCommands = new List<CommandItem>
+        public IEnumerable<CommandItemBase> ExCommands => _exCommands ?? (_exCommands = new List<CommandItemBase>
         {
-            new CommandItem
+            new AsyncCommandItem<string, List<ApiItem>>(Model.CheckApiPrepare, Model.DoCheckApi, Model.CheckApiEnd)
             {
-                Command = new AsyncCommand<string, List<ApiItem>>
-                    (Model.CheckApiPrepare, Model.DoCheckApi, Model.CheckApiEnd)
-                {
-                    Detect = Model
-                },
+                IsButton=true,
                 Caption = "分析接口",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             },
             new CommandItem
             {
-                Command = new DelegateCommand(Model.End),
+                Action =Model.End,
                 Caption = "接收到系统中",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             }

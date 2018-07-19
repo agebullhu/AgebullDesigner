@@ -28,10 +28,6 @@
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
         </DockPanel>
-        <Border>
-            <i:Interaction.Behaviors>
-                <behaviors:DependencyBehavior BehaviorAction="{Binding ContentBehavior}" />
-            </i:Interaction.Behaviors>
-        </Border>
+        <Border x:Name="child"/>
     </DockPanel>
 </UserControl>

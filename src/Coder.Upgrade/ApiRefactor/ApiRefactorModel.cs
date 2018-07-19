@@ -85,13 +85,10 @@ namespace Agebull.EntityModel.Designer
 
         #region 类型分析
 
-        internal bool CheckApiPrepare(string arg, Action<string> setArg)
+        internal string CheckApiPrepare()
         {
             var of = new OpenFileDialog();
-            if (of.ShowDialog() != true)
-                return false;
-            setArg(of.FileName);
-            return true;
+            return of.ShowDialog() == true ? of.FileName : null;
         }
 
 
@@ -283,7 +280,7 @@ namespace Agebull.EntityModel.Designer
                         Name = up.Name,
                         Caption = up.Caption,
                         Description = up.Description,
-                        IsClass = true
+                        NoDataBase = true
                     };
                     foreach (var pro in up.Properties.Values)
                     {
@@ -336,7 +333,7 @@ namespace Agebull.EntityModel.Designer
                         Name = up.Name,
                         Caption = up.Caption,
                         Description = up.Description,
-                        IsClass = true
+                        NoDataBase = true
                     };
                     foreach (var pro in up.Properties.Values)
                     {
@@ -362,7 +359,7 @@ namespace Agebull.EntityModel.Designer
                         Name = up.Name,
                         Caption = up.Caption,
                         Description = up.Description,
-                        IsClass = true,
+                        NoDataBase = true,
                         Parent = project
                     };
                     project.Add(entity);
@@ -384,7 +381,7 @@ namespace Agebull.EntityModel.Designer
         }
         #endregion
 
-        public void End()
+        public void End(object arg)
         {
             foreach (var item in ApiItems)
             {

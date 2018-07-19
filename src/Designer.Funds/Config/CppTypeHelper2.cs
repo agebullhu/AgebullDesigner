@@ -229,8 +229,7 @@ namespace Agebull.EntityModel.Config
                     ? property.Datalen.ToString()
                     : property.ArrayLen
                 : typedef.ArrayLen;
-            int l;
-            var arr = int.TryParse(len, out l) && l > 1;
+            var arr = int.TryParse(len, out int l) && l > 1;
 
             switch (typ)
             {

@@ -57,7 +57,7 @@ namespace Agebull.EntityModel.RobotCoder
                     continue;
                 }
                 code.Append($@"
-            this._{property.Name.ToLower()} = sourceEntity._{property.Name.ToLower()};");
+            this._{property.Name.ToLWord()} = sourceEntity._{property.Name.ToLWord()};");
             }
             code.Append(@"
             CopyExtendValue(sourceEntity);");

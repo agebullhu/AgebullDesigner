@@ -9,10 +9,6 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
         {
             EditorName = "DataRelation";
         }
-        /// <summary>
-        /// Ö÷Ãæ°å
-        /// </summary>
-        public override FrameworkElement Body { get; } = new RelationPanel();
         
     }
 }

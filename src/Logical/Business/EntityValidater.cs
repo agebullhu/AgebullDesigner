@@ -23,11 +23,7 @@
                 result = false;
                 Message.Track = "***实体名称不能为空";
             }
-            else
-            {
-                Entity.Name = Entity.Name.Trim();
-            }
-            if (!Entity.IsClass && !Entity.IsReference)
+            if (!Entity.NoDataBase && !Entity.IsReference)
             {
                 var pc = Entity.PrimaryColumn;
                 if (pc == null)
@@ -35,7 +31,7 @@
                     //result = false;
                     Message.Track = "***没有主键字段";
                 }
-                else if (pc.Discard)
+                else if (pc.IsDiscard)
                 {
                     //result = false;
                     Message.Track = "***主键字段被设置为过时";
@@ -57,7 +53,7 @@
             foreach (var col in Entity.Properties)
             {
                 col.Parent = Entity;
-                if (col.Discard)
+                if (col.IsDiscard)
                 {
                     continue;
                 }

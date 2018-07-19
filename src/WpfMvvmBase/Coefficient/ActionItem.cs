@@ -57,7 +57,7 @@ namespace Agebull.Common.Mvvm
             set => _image = value;
         }
 
-        CommandItem ICommandItemBuilder.ToCommand(object arg, Func<object, IEnumerator> enumerator)
+        CommandItemBase ICommandItemBuilder.ToCommand(object arg, Func<object, IEnumerator> enumerator)
         {
             var item = new RuntimeActionItem
             {
@@ -65,10 +65,10 @@ namespace Agebull.Common.Mvvm
                 Parameter = arg,
                 ToEnumerator = enumerator
             };
-            var r2 = this.CopyCreate<CommandItem>();
+            var r2 = new AsyncCommandItem<object, bool>(item.Prepare, item.Run, item.End);
+            r2.CopyFrom(this);
             r2.Image = Image;
-            r2.Parameter = arg;
-            r2.Command = new AsyncCommand<object, bool>(item.Prepare, item.Run, item.End);
+            r2.Source = arg;
             return r2;
         }
     }

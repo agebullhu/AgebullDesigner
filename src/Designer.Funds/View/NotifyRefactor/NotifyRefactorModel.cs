@@ -80,9 +80,8 @@ namespace Agebull.EntityModel.Designer
 
         #region 类型分析
 
-        internal bool CheckNotifyPrepare(string arg, Action<string> setArg)
+        internal bool CheckNotifyPrepare(string arg)
         {
-            setArg(Code);
             return !string.IsNullOrWhiteSpace(Code);
         }
 

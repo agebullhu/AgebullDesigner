@@ -57,20 +57,20 @@ namespace Agebull.CodeRefactor.CodeRefactor
 
         public CommandItem ClearTraceCommand => _clearTraceCommand ?? (_clearTraceCommand = new CommandItem
         {
-            Command = new DelegateCommand(ClearTrace),
+            Action = (ClearTrace),
             Caption = "清除跟踪信息",
             Image = Application.Current.Resources["tree_Close"] as ImageSource
         });
 
 
-        private void ClearTrace()
+        private void ClearTrace(object arg)
         {
             TraceMessage.Clear();
         }
 
         public CommandItem CopyTraceCommand => _copyTraceCommand ?? (_copyTraceCommand = new CommandItem
         {
-            Command = new DelegateCommand(CopyTrace),
+            Action = (CopyTrace),
             Caption = "复制跟踪信息",
             Image = Application.Current.Resources["tree_Close"] as ImageSource
         });
@@ -81,14 +81,14 @@ namespace Agebull.CodeRefactor.CodeRefactor
             {
                 return (new CommandItem
                 {
-                    Command = new DelegateCommand(() => TraceMessage = TraceMessage.DefaultTrace),
+                    Action = ((arg) => TraceMessage = TraceMessage.DefaultTrace),
                     Caption = "切换到全局消息",
                     Image = Application.Current.Resources["tree_default"] as ImageSource
                 });
             }
         }
 
-        private void CopyTrace()
+        private void CopyTrace(object arg)
         {
             if (!string.IsNullOrWhiteSpace(TraceMessage.Track))
                 Clipboard.SetText(TraceMessage.Track);

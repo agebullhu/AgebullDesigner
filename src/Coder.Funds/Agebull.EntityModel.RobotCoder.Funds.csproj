@@ -78,10 +78,6 @@
       <Project>{80d6ecf6-10de-4b9e-9cd7-9b597610c482}</Project>
       <Name>Agebull.EntityModel.RobotCoder</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Config.Cpp\Agebull.EntityModel.Config.Cpp.csproj">
-      <Project>{3EF55F58-0802-453C-8CE0-C227544584B1}</Project>
-      <Name>Agebull.EntityModel.Config.Cpp</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Config\Agebull.EntityModel.Config.csproj">
       <Project>{0af9f7a3-6aab-46a5-b3e8-45940ae26e5b}</Project>
       <Name>Agebull.EntityModel.Config</Name>

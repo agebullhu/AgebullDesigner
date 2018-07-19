@@ -28,14 +28,14 @@ namespace Agebull.EntityModel.Config
             }
             foreach (var item in Solution.ApiItems)
             {
-                var friend = GlobalConfig.GetEntity(item.CallArg);
+                var friend = GetEntity(item.CallArg);
                 if (friend == null)
                 {
                     item.ResultArg = null;
                     continue;
                 }
                 var kw = friend.Caption.MulitReplace2("", "查询", "请求", "结构", "应答", "操作");
-                var result = GlobalConfig.GetEntity(p => p != friend && p.Caption.Contains(kw));
+                var result = GetEntity(p => p != friend && p.Caption.Contains(kw));
                 if (result != null)
                     item.ResultArg = result.Name;
                 friend.Tag = Solution.Tag + "," + friend.Name;
@@ -52,29 +52,27 @@ namespace Agebull.EntityModel.Config
             }
             ConfigWriter writer = new ConfigWriter
             {
-                Solution = Solution,
-                Directory = Path.GetDirectoryName(Solution.SaveFileName)
+                Solution = Solution
             };
-            writer.SaveApies();
-            writer.SaveProject(apiProject, false);
+            writer.SaveProject(apiProject, Path.GetDirectoryName(Solution.SaveFileName));
         }
 
         private void FindApiClientArg(EntityConfig friend, ApiItem item, ProjectConfig apiProject)
         {
-            var entity = GlobalConfig.GetEntity(p => p != friend && p.Tag == friend.Tag);
+            var entity = GetEntity(p => p != friend && p.ReferenceKey == friend.Key);
             var count = friend.Properties.Count(p => p.Name != "ClientNo");
             switch (count)
             {
                 case 0:
                     item.ResultArg = null;
                     if (entity != null)
-                        entity.IsDelete = true;
+                        entity.Option .IsDelete = true;
                     return;
                 case 1:
                     item.ResultArg =
                         CppTypeHelper.CppTypeToCsType(friend.Properties.FirstOrDefault(p => p.Name != "ClientNo"));
                     if (entity != null)
-                        entity.IsDelete = true;
+                        entity.Option.IsDelete = true;
                     return;
             }
             if (entity == null)
@@ -84,25 +82,20 @@ namespace Agebull.EntityModel.Config
                     Parent = apiProject,
                     Project = apiProject.Name,
                     CppName = item.CallArg,
-                    Name = ToClientName(item.CallArg)
+                    Name = ToClientName(item.CallArg),
+                    Tag = friend.Tag
                 };
                 apiProject.Add(entity);
             }
-            entity.IsClass = true;
-            entity.Tag = friend.Tag;
+            entity.NoDataBase = true;
+            entity.ReferenceKey = friend.Key;
             entity.Caption = item.Caption + "命令调用参数";
             entity.Description = item.Caption + "命令调用参数";
             item.ResultArg = entity.Name;
 
             foreach (var property in friend.Properties)
             {
-                property.CsType = CppTypeHelper.CppTypeToCsType(property);
-                if (property.Name == "ClientNo")
-                {
-                    continue;
-                }
-                property.Tag = friend.Tag + "," + property.Name;
-                var fp = entity.Properties.FirstOrDefault(p => p.Tag != null && p.Tag == property.Tag)
+                var fp = entity.Properties.FirstOrDefault(p => p.ReferenceKey ==  property.Key)
                          ?? entity.Properties.FirstOrDefault(p => p.Name == property.Name);
                 if (fp == null)
                 {
@@ -112,8 +105,9 @@ namespace Agebull.EntityModel.Config
                     entity.Add(fp);
                 }
                 fp.Parent = entity;
-                fp.Tag = property.Tag;
+                fp.Option.ReferenceKey = property.Option.Key;
                 fp.Caption = property.Caption;
+                fp.Tag = entity.Tag + "," + property.Name;
             }
         }
 
@@ -179,15 +173,13 @@ namespace Agebull.EntityModel.Config
             ConfigWriter writer = new ConfigWriter
             {
                 Solution = Solution,
-                Directory = Path.GetDirectoryName(Solution.SaveFileName)
             };
-            CppProject.Instance.SaveNotifies(writer);
-            writer.SaveProject(apiProject, false);
+            writer.SaveProject(apiProject, Path.GetDirectoryName(Solution.SaveFileName));
         }
 
         private void FindNitifyClientEntity(EntityConfig friend, ProjectConfig apiProject, NotifyItem item)
         {
-            var entity = GlobalConfig.GetEntity(p => p != friend && p.Tag == friend.Tag);
+            var entity = GetEntity(p => p != friend && p.Tag == friend.Tag);
             if (entity == null)
             {
                 entity = new EntityConfig
@@ -198,9 +190,9 @@ namespace Agebull.EntityModel.Config
                     Name = ToClientName(friend.Name),
                     Caption = item.Caption,
                     Description = item.Caption + "(消息通知)",
-                    IsClass = false,
+                    NoDataBase = false,
                     Classify = friend.Classify,
-                    Tag = friend.Tag
+                    ReferenceKey = friend.Key
                 };
                 apiProject.Add(entity);
             }
@@ -223,7 +215,7 @@ namespace Agebull.EntityModel.Config
             {
                 property.CsType = CppTypeHelper.CppTypeToCsType(property);
                 property.Tag = friend.Tag + "," + property.Name;
-                var fp = entity.Properties.FirstOrDefault(p => p.Tag != null && p.Tag == property.Tag)
+                var fp = entity.Properties.FirstOrDefault(p => p.ReferenceKey == property.Key)
                          ?? entity.Properties.FirstOrDefault(p => p.Name == property.Name);
                 if (fp == null)
                 {
@@ -234,13 +226,14 @@ namespace Agebull.EntityModel.Config
                 }
                 fp.Parent = entity;
                 fp.Tag = property.Tag;
+                fp.ReferenceKey = property.Key;
                 fp.Caption = property.Caption;
             }
         }
 
         private static void FindNityfyApi(NotifyItem item, EntityConfig friend)
         {
-            var api = GlobalConfig.GetApi(p => p.Name == item.CommandId || p.ResultArg == item.NotifyEntity);
+            var api = GetApi(p => p.Name == item.CommandId || p.ResultArg == item.NotifyEntity);
             if (api != null)
             {
                 item.CommandId = api.Name;
@@ -248,7 +241,7 @@ namespace Agebull.EntityModel.Config
             }
             var kw = item.Name.MulitReplace2("", "On", "Rsp");
             var kw1 = kw;
-            api = GlobalConfig.GetApi(p => p.Name == kw1);
+            api = GetApi(p => p.Name == kw1);
             if (api != null)
             {
                 item.CommandId = api.Name;
@@ -257,7 +250,7 @@ namespace Agebull.EntityModel.Config
             kw = kw.MulitReplace2("", "Qry");
 
             var kw2 = kw;
-            api = GlobalConfig.GetApi(p => p.Name == kw2);
+            api = GetApi(p => p.Name == kw2);
             if (api != null)
             {
                 item.CommandId = api.Name;
@@ -266,7 +259,7 @@ namespace Agebull.EntityModel.Config
             kw = "Qry" + kw;
 
             var kw3 = kw;
-            api = GlobalConfig.GetApi(p => p.Name == kw3);
+            api = GetApi(p => p.Name == kw3);
 
             if (api != null)
             {
@@ -276,17 +269,17 @@ namespace Agebull.EntityModel.Config
             kw = item.Caption.MulitReplace2("", "时", "请求", "结构", "应答", "操作");
 
             var kw4 = kw;
-            api = GlobalConfig.GetApi(p => p.Caption == kw4);
+            api = GetApi(p => p.Caption == kw4);
             if (api != null)
             {
                 item.CommandId = api.Name;
                 return;
             }
             kw = friend.Caption.MulitReplace2("", "时", "请求", "结构", "应答", "操作");
-            var result = GlobalConfig.GetEntity(p => p != friend && p.Caption != null && p.Caption.Contains(kw));
+            var result = GetEntity(p => p != friend && p.Caption != null && p.Caption.Contains(kw));
             if (result != null)
             {
-                api = GlobalConfig.GetApi(p => p.CallArg == result.Name);
+                api = GetApi(p => p.CallArg == result.Name);
                 item.CommandId = api?.Name;
             }
             item.CommandId = null;

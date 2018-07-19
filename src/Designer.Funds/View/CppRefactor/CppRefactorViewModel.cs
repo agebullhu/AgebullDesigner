@@ -11,8 +11,8 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
-using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
 
 #endregion
 
@@ -20,38 +20,32 @@ namespace Agebull.EntityModel.Designer
 {
     public sealed class CppRefactorViewModel : ViewModelBase<CppRefactorModel>
     {
-        private List<CommandItem> _exCommands;
+        private List<CommandItemBase> _exCommands;
+        private string _systemName = "0";
 
-        public IEnumerable<CommandItem> ExCommands => _exCommands ?? (_exCommands = new List<CommandItem>
+        public IEnumerable<CommandItemBase> ExCommands => _exCommands ?? (_exCommands = new List<CommandItemBase>
         {
-            new CommandItem
+            new AsyncCommandItem<string, List<TypedefItem>>(Model.CheckTypedefPrepare, Model.DoCheckTypedef,
+                Model.CheckTypedefEnd)
             {
-                Command = new AsyncCommand<string, List<TypedefItem>>
-                    (Model.CheckTypedefPrepare, Model.DoCheckTypedef, Model.CheckTypedefEnd)
-                {
-                    Detect = Model
-                },
+                Source = Model,
                 Caption = "分析宏类型",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             },
-            new CommandItem
+            new AsyncCommandItem<string, List<EntityConfig>>(Model.CheckCppPrepare, Model.DoCheckCpp, Model.CheckCppEnd)
             {
-                Command = new AsyncCommand<string, List<EntityConfig>>
-                    (Model.CheckCppPrepare, Model.DoCheckCpp, Model.CheckCppEnd)
-                {
-                    Detect = Model
-                },
+                Source = Model,
                 Caption = "分析C++结构文本",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             },
             new CommandItem
             {
-                Command = new DelegateCommand(Model.End),
+                Action = arg=>Model.End(),
                 Caption = "接收到系统中",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             }
         });
-        private string _systemName = "0";
+
         /// <summary>
         ///     当前文件名
         /// </summary>

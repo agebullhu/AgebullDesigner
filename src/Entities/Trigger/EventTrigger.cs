@@ -27,7 +27,13 @@ namespace Agebull.EntityModel
         public void BeforePropertyChanged(NotificationObject config, string property, object oldValue, object newValue)
         {
             Target = config;
-            BeforePropertyChanged(property, oldValue, newValue);
+            var scope = EventScope.CreateScope(config,this.GetTypeName(), property);
+            if (scope == null)
+                return;
+            using (scope)
+            {
+                BeforePropertyChanged(property, oldValue, newValue);
+            }
         }
         /// <summary>
         ///     发出属性修改前事件
@@ -46,7 +52,13 @@ namespace Agebull.EntityModel
         internal void OnPropertyChanged(NotificationObject config, string property)
         {
             Target = config;
-            OnPropertyChanged(property);
+            var scope = EventScope.CreateScope(config, this.GetTypeName(), property);
+            if (scope == null)
+                return;
+            using (scope)
+            {
+                OnPropertyChanged(property);
+            }
         }
         /// <summary>
         /// 属性事件处理
@@ -64,8 +76,13 @@ namespace Agebull.EntityModel
         public void OnCreate(NotificationObject config)
         {
             Target = config;
-            OnCreate();
-            OnLoad();
+            var scope = EventScope.CreateScope(config, this.GetTypeName(), "_create_");
+            if (scope == null)
+                return;
+            using (scope)
+            {
+                OnCreate();
+            }
         }
         
         /// <summary>
@@ -82,7 +99,13 @@ namespace Agebull.EntityModel
         public void OnLoad(NotificationObject config)
         {
             Target = config;
-            OnLoad();
+            var scope = EventScope.CreateScope(config, this.GetTypeName(), "_load_");
+            if (scope == null)
+                return;
+            using (scope)
+            {
+                OnLoad();
+            }
         }
         /// <summary>
         /// 载入事件处理
@@ -99,7 +122,13 @@ namespace Agebull.EntityModel
         public void OnAdded(NotificationObject parent, NotificationObject config)
         {
             Target = parent;
-            OnAdded(config);
+            var scope = EventScope.CreateScope(config, this.GetTypeName(), "_add_");
+            if (scope == null)
+                return;
+            using (scope)
+            {
+                OnAdded(config);
+            }
         }
 
         /// <summary>
@@ -117,7 +146,13 @@ namespace Agebull.EntityModel
         public void OnRemoved(NotificationObject parent, NotificationObject config)
         {
             Target = parent;
-            OnRemoved(config);
+            var scope = EventScope.CreateScope(config, this.GetTypeName(), "_del_");
+            if (scope == null)
+                return;
+            using (scope)
+            {
+                OnRemoved(config);
+            }
         }
         /// <summary>
         /// 删除事件处理
@@ -125,6 +160,21 @@ namespace Agebull.EntityModel
         /// <param name="config"></param>
         protected virtual void OnRemoved(NotificationObject config)
         {
+        }
+
+        /// <summary>
+        /// 开始代码生成
+        /// </summary>
+        public virtual void OnCodeGeneratorBegin()
+        {
+           
+        }
+        /// <summary>
+        /// 完成代码生成
+        /// </summary>
+        public virtual void OnCodeGeneratorEnd()
+        {
+
         }
     }
 }

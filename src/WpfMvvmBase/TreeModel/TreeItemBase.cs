@@ -59,8 +59,7 @@ namespace Agebull.EntityModel
         {
             get
             {
-                var root = Parent as TreeRoot;
-                if (root != null)
+                if (Parent is TreeRoot root)
                     return 0;
                 var item = Parent as TreeItem;
                 return item?.Level + 1 ?? -1;
@@ -148,11 +147,9 @@ namespace Agebull.EntityModel
             get => isSelected;
             set
             {
-                if (isSelected != value)
-                {
-                    isSelected = value;
-                    RaisePropertyChanged(() => IsSelected);
-                }
+                if (isSelected == value) return;
+                isSelected = value;
+                RaisePropertyChanged(() => IsSelected);
                 OnIsSelectChanged();
             }
         }
@@ -268,8 +265,7 @@ namespace Agebull.EntityModel
         private void ReBuildItems()
         {
             Items.Clear();
-            var values = _friendItems as IEnumerable;
-            if (values == null)
+            if (!(_friendItems is IEnumerable values))
             {
                 return;
             }
@@ -412,8 +408,7 @@ namespace Agebull.EntityModel
                     Source = null;
                     return;
                 }
-                var mb = value.Body as MemberExpression;
-                if (mb == null)
+                if (!(value.Body is MemberExpression mb))
                 {
                     _soruceItemsName = null;
                     GetSoruceItems = null;

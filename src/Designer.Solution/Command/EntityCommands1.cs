@@ -10,6 +10,8 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.IO;
+using System.Windows;
 using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
 
@@ -28,42 +30,62 @@ namespace Agebull.EntityModel.Designer
         {
             commands.Add(new CommandItemBuilder
             {
-                Command = new DelegateCommand(() => Model.ConfigIo.SaveEntity()),
-                SourceType = typeof(EntityConfig),
-                Caption = "强制实体",
-                Signle = true,
-                NoButton = true,
+                Action = SaveEntity,
+                Caption = "保存所选对象",
+                SignleSoruce = true,
+                IsButton = true,
                 Catalog = "编辑",
+                ConfirmMessage= "确认强制保存吗?\n要知道这存在一定破坏性!",
                 IconName = "tree_item"
             });
 
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<string, string>(ValidatePrepare, Validate, ValidateEnd)
             {
-                SourceType = typeof(EntityConfig),
-                Command = new AsyncCommand<string, string>(ValidatePrepare, Validate, ValidateEnd),
+                TargetType = typeof(EntityConfig),
                 Caption = "检查设计",
                 Catalog = "工具",
                 IconName = "tree_item"
             });
 
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                SourceType = typeof(EntityConfig),
-                Command = new DelegateCommand<EntityConfig>(AddCommand),
+                SignleSoruce=true,
+                Action = AddCommand,
                 Caption = "新增命令",
                 Catalog = "编辑",
                 IconName = "tree_Open",
                 ViewModel = "Model"
             });
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                SourceType = typeof(EntityConfig),
-                Command = new DelegateCommand<EntityConfig>(AddAuditCommand),
+                SignleSoruce = true,
+                Action = AddAuditCommand,
                 Caption = "新增审核命令",
                 Catalog = "编辑",
                 IconName = "tree_Open",
                 ViewModel = "Model"
             });
+        }
+
+        /// <summary>
+        /// 强制保存
+        /// </summary>
+        public void SaveEntity(object arg)
+        {
+            ConfigWriter writer = new ConfigWriter
+            {
+                Solution = Context.Solution,
+            };
+            if (Context.SelectProject != null)
+            {
+                writer.SaveProject(Context.SelectProject, Path.GetDirectoryName(Context.Solution.SaveFileName));
+                return;
+            }
+            var tables = Context.GetSelectEntities();
+            foreach (var entity in tables)
+            {
+                writer.SaveEntity(entity, Path.GetDirectoryName(Context.Solution.SaveFileName),true);
+            }
         }
     }
 }

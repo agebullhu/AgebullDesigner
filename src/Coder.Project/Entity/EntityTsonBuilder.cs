@@ -118,7 +118,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         private static int GetEntitySerializeLen(EntityConfig entity)
         {
-            int len = entity.Properties.Count + 94;
+            int len = entity.LastProperties.Count + 94;
             foreach (var property in entity.CppProperty)
             {
                 len += GetFieldSerializeLen(property);
@@ -128,8 +128,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         private static int GetFieldSerializeLen(PropertyConfig field)
         {
-            int len = 0;
-            int.TryParse(field.ArrayLen, out len);
+            int.TryParse(field.ArrayLen, out int len);
 
             switch (field.CsType.ToLower())
             {
@@ -180,20 +179,20 @@ namespace Agebull.EntityModel.RobotCoder
                 {
                     code.Append($@"
             //{field.Caption}
-            if(this._{field.Name.ToLower()} != {field.EnumConfig.Name}.{field.EnumConfig.Items[0].Name})
+            if(this._{field.Name.ToLWord()} != {field.EnumConfig.Name}.{field.EnumConfig.Items[0].Name})
             {{
                 writer.WriteIndex(FIELD_INDEX_{Entity.Name.ToUpper()}_{field.Name.ToUpper()});
-                writer.Write((int)this._{field.Name.ToLower()});
+                writer.Write((int)this._{field.Name.ToLWord()});
             }}");
                 }
                 else
                 {
                     code.Append($@"
             //{field.Caption}
-            if(!writer.IsEmpty(this._{field.Name.ToLower()}))
+            if(!writer.IsEmpty(this._{field.Name.ToLWord()}))
             {{
                 writer.WriteIndex(FIELD_INDEX_{Entity.Name.ToUpper()}_{field.Name.ToUpper()});
-                writer.Write(this._{field.Name.ToLower()});
+                writer.Write(this._{field.Name.ToLWord()});
             }}");
                 }
             }
@@ -216,7 +215,7 @@ namespace Agebull.EntityModel.RobotCoder
                     {{
                         int val = 0;
                         reader.Read(ref val);
-                        this._{field.Name.ToLower()} = ({field.EnumConfig.Name})val;
+                        this._{field.Name.ToLWord()} = ({field.EnumConfig.Name})val;
                     }}");
 
                 }
@@ -226,12 +225,12 @@ namespace Agebull.EntityModel.RobotCoder
                     if (en != null)
                     {
                         code.Append($@"
-                    this._{field.Name.ToLower()} = reader.Read<{field.CsType}>();");
+                    this._{field.Name.ToLWord()} = reader.Read<{field.CsType}>();");
                     }
                     else
                     {
                         code.Append($@"
-                    reader.Read(ref this._{field.Name.ToLower()});");
+                    reader.Read(ref this._{field.Name.ToLWord()});");
                     }
                 }
                 code.Append(@"

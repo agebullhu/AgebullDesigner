@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using Agebull.CodeRefactor.CodeRefactor;
@@ -19,7 +18,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     当前文件名
         /// </summary>
-        public string FileName { get; set; }
+        public string FileName => DataModelDesignModel.Screen.LastFile;
 
         /// <summary>
         ///     当前解决方案
@@ -36,7 +35,7 @@ namespace Agebull.EntityModel.Designer
                 if (_solution != null)
                     return _solution;
                 _solution = new SolutionConfig();
-                ConfigModelBase.SetCurrentSolution(_solution);
+                GlobalConfig.SetCurrentSolution(_solution);
                 return _solution;
             }
             set
@@ -44,7 +43,7 @@ namespace Agebull.EntityModel.Designer
                 if (Equals(_solution, value))
                     return;
                 _solution = value;
-                ConfigModelBase.SetCurrentSolution(_solution);
+                GlobalConfig.SetCurrentSolution(_solution);
                 RaisePropertyChanged(() => Solution);
                 RaisePropertyChanged(() => Entities);
                 RaisePropertyChanged(() => FileName);
@@ -130,20 +129,20 @@ namespace Agebull.EntityModel.Designer
         private IEnumerable _selectItemChildrens;
 
         public ConfigBase PreSelectConfig;
-
+        private ConfigBase _selectConfig;
         /// <summary>
         ///     当前配置
         /// </summary>
         public ConfigBase SelectConfig
         {
-            get => GlobalConfig.CurrentConfig;
-            private set
+            get => _selectConfig;
+            internal set
             {
                 
-                if (GlobalConfig.CurrentConfig == value)
+                if (_selectConfig == value)
                     return;
-                PreSelectConfig = GlobalConfig.CurrentConfig;
-                GlobalConfig.CurrentConfig = value;
+                PreSelectConfig = _selectConfig;
+                _selectConfig = value;
                 RaisePropertyChanged(nameof(SelectConfig));
             }
         }
@@ -306,7 +305,7 @@ namespace Agebull.EntityModel.Designer
                         }
                         SelectItemChildrens = SelectEntity.Properties;
                         SelectChildrens = SelectItemChildrens;
-                        FindKey = SelectEntity.Tag;
+                        FindKey = SelectEntity.Option.ReferenceTag;
                         break;
                     case PropertyConfig property:
                         SelectProperty = property;

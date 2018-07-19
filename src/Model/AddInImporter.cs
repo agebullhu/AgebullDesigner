@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Diagnostics;
 using System.IO;
 using Agebull.Common;
+using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -12,13 +14,14 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     public class AddInImporter
     {
-        [ImportMany(typeof(IAutoRegister))] internal IEnumerable<IAutoRegister> Registers;
+        [ImportMany(typeof(IAutoRegister))] public IEnumerable<IAutoRegister> Registers;
 
         /// <summary>
         /// 执行自动注册
         /// </summary>
         private void AutoRegist()
         {
+            GlobalTrigger.RegistTrigger<CodeGeneratorTrigger>();
             foreach (var reg in Registers)
                 reg.AutoRegist();
         }
@@ -26,7 +29,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 保证只执行一次的变量
         /// </summary>
-        private static bool _isDoit = false;
+        private static readonly bool _isDoit = false;
         /// <summary>
         /// 导入
         /// </summary>
@@ -48,7 +51,7 @@ namespace Agebull.EntityModel.Designer
             var bin = Path.Combine(path, "Bin");
             var runtime = Path.Combine(path, "Runtime");
             IOHelper.DeleteDirectory(runtime);
-            IOHelper.CheckPath(runtime);
+            GlobalConfig.CheckPath(runtime);
             var files = File.ReadAllText(Path.Combine(path, "config.txt")).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
             int index = 1;
@@ -56,11 +59,18 @@ namespace Agebull.EntityModel.Designer
             {
                 if (file[0] == '*')
                     continue;
-                if (File.Exists(Path.Combine(bin, file)))
-                    File.Copy(Path.Combine(bin, file), Path.Combine(runtime, $"{index:D3}.{file}"), true);
-                var pdb = file.ToLower().Replace(".dll", ".pdb");
-                if (File.Exists(Path.Combine(bin, pdb)))
-                    File.Copy(Path.Combine(bin, pdb), Path.Combine(runtime, $"{index:D3}.{pdb}"), true);
+                try
+                {
+                    if (File.Exists(Path.Combine(bin, file)))
+                        File.Copy(Path.Combine(bin, file), Path.Combine(runtime, $"{index:D3}.{file}"), true);
+                    var pdb = file.ToLower().Replace(".dll", ".pdb");
+                    if (File.Exists(Path.Combine(bin, pdb)))
+                        File.Copy(Path.Combine(bin, pdb), Path.Combine(runtime, $"{index:D3}.{pdb}"), true);
+                }
+                catch (Exception e)
+                {
+                    Trace.WriteLine(e, "AddInImporter");
+                }
                 index++;
             }
             if (index <= 0)

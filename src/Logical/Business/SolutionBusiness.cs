@@ -23,25 +23,6 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public void ResetStatus()
         {
-            ForeachAll(Solution, FlushState);
-        }
-
-        /// <summary>
-        ///     更新对象的保存状态
-        /// </summary>
-        /// <param name="config">对象</param>
-        private static void FlushState(ConfigBase config)
-        {
-            config.OriginalState = ConfigStateType.None;
-            if (config.IsReference)
-                config.OriginalState |= ConfigStateType.IsReference;
-            if (config.IsDelete)
-                config.OriginalState |= ConfigStateType.IsDelete;
-            if (config.Discard)
-                config.OriginalState |= ConfigStateType.IsDiscard;
-            if (config.IsFreeze)
-                config.OriginalState |= ConfigStateType.IsFreeze;
-            config.IsModify = false;
         }
 
         #endregion
@@ -53,17 +34,11 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public void RepairByLoaded()
         {
-            foreach (var project in Solution.Projects)
-            {
-                project.IsReference = project.Entities.Count > 0 && project.Entities.All(p => p.IsReference);
-            }
             int projectid = Solution.ProjectList.Count == 0 ? 0 : Solution.Projects.Max(p => p.Index);
             foreach (var project in Solution.Projects)
             {
-                if (project.Key == Guid.Empty)
-                    project.Key = Guid.NewGuid();
-                if (project.Index == 0)
-                    project.Index = ++projectid;
+                if (project.Option.Index == 0)
+                    project.Option.Index = ++projectid;
                 if (project.Name.Contains("ES_"))
                     project.ReadOnly = true;
                 int typeid = project.Entities.Count == 0 ? 0 : project.Entities.Max(p => p.Index);
@@ -74,6 +49,14 @@ namespace Agebull.EntityModel.Config
                 foreach (var entity in project.Entities.Where(p => !p.IsReference))
                 {
                     RepairEntityByLoad(entity, project);
+                }
+                foreach (var cfg in project.ApiItems)
+                {
+                    cfg.Parent = project;
+                }
+                foreach (var cfg in project.Enums)
+                {
+                    cfg.Parent = project;
                 }
                 if (project.Classifies.Count == 0)
                 {
@@ -126,8 +109,7 @@ namespace Agebull.EntityModel.Config
             }
             if (entity.Tag == null)
                 entity.Tag = project.Tag + "," + entity.Name;
-            if (entity.Key == Guid.Empty)
-                entity.Key = Guid.NewGuid();
+
             if (entity.Properties.Count == 0)
                 return;
             var array = entity.Properties.OrderBy(p => p.Index).ToArray();
@@ -165,27 +147,28 @@ namespace Agebull.EntityModel.Config
                 if (field.LinkTable != null && field.LinkField == null)
                     field.LinkField = field.Name;
 
-                if (!string.IsNullOrEmpty(field.CustomType))
+                if (string.IsNullOrEmpty(field.CustomType))
+                    continue;
+                field.EnumConfig = Solution.Enums.FirstOrDefault(p => p.Name == field.CustomType);
+                if (field.EnumConfig != null)
                 {
-                    field.EnumConfig = Solution.Enums.FirstOrDefault(p => p.Name == field.CustomType);
-                    if (field.EnumConfig != null)
-                    {
-                        field.EnumConfig.LinkField = field.Key;
-                    }
+                    field.EnumConfig.Option.ReferenceKey = field.Key;
                 }
             }
+            foreach (var cmd in entity.Commands)
+            {
+                cmd.Parent = entity;
+            }
         }
-
         private void RepairIdentity(EntityConfig entity, ProjectConfig project, ref int typeid)
         {
-            if (entity.Index == 0)
-                entity.Index = (project.Index << 16) | (++typeid);
-            if (entity.Identity <= 0)
+            if (entity.Option.Index == 0)
+                entity.Option.Index = (project.Option.Index << 16) | (++typeid);
+            if (entity.Option.Identity <= 0)
             {
-                entity.Identity = entity.Index;
+                entity.Option.Identity = entity.Option.Index;
             }
-            if (entity.Key == Guid.Empty)
-                entity.Key = Guid.NewGuid();
+
             if (entity.Properties.Count == 0)
                 return;
             var idx = entity.Properties.Max(p => p.Index) + 1;
@@ -196,15 +179,13 @@ namespace Agebull.EntityModel.Config
 
             foreach (var field in entity.Properties)
             {
-                if (field.Key == Guid.Empty)
-                    field.Key = Guid.NewGuid();
                 if (field.IsPrimaryKey)
-                    field.Index = 1;
+                    field.Option.Index = 1;
                 else if (field.Index <= 0)
-                    field.Index = ++idx;
+                    field.Option.Index = ++idx;
                 if (field.Identity <= 0)
                 {
-                    field.Identity = ++entity.MaxIdentity;
+                    field.Option.Identity = ++entity.MaxIdentity;
                 }
             }
         }
@@ -266,8 +247,8 @@ namespace Agebull.EntityModel.Config
                 {
                     var old = en.Items.FirstOrDefault(p => p.Name == item.Name);
                     if (old != null)
-                        en.Items.Remove(old);
-                    en.Items.Add(item);
+                        en.Remove(old);
+                    en.Add(item);
                 }
             }
             //var group = Solution.TypedefItems.GroupBy(p => p.Tag);
@@ -360,9 +341,7 @@ namespace Agebull.EntityModel.Config
                     project.MobileCsPath = project.MobileCsPath.Replace(old, path);
                 else
                     project.MobileCsPath = path.Trim('\\') + @"\TradeApp\TradeApp\Model\" + project.Name;
-                
-                if (project.ModelPath != null)
-                    project.ModelPath = project.ModelPath.Replace(old, path);
+
                 if (project.CppCodePath != null)
                     project.CppCodePath = project.CppCodePath.Replace(old, path);
             }

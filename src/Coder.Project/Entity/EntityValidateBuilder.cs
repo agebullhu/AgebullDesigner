@@ -23,7 +23,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name=""result"">结果存放处</param>
         public override void Validate(ValidateResult result)
         {{
-            {(Entity.IsClass || Entity.PrimaryColumn== null ? "" : "result.Id = " + Entity.PrimaryColumn.Name + ".ToString()") }; 
+            {(Entity.NoDataBase || Entity.PrimaryColumn== null ? "" : "result.Id = " + Entity.PrimaryColumn.Name + ".ToString()") }; 
             base.Validate(result);{coder.Code()}
             ValidateEx(result);
         }}";

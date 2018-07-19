@@ -30,10 +30,19 @@ namespace Agebull.EntityModel.Designer
             set => Model.Context.SelectConfigs = value;
         }
 
-        public DataModelDesignViewModel()
+        /// <summary>
+        /// 视图绑定成功后的初始化动作
+        /// </summary>
+        protected override void OnViewSeted()
         {
-            TypeConvert.Register();
+            GlobalTrigger.Dispatcher = Dispatcher;
+            base.OnViewSeted();
         }
+
+        //public DataModelDesignViewModel()
+        //{
+        //    TypeConvert.Register();
+        //}
 
         #endregion
 

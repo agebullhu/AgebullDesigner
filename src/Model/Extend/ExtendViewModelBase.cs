@@ -13,12 +13,16 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     public abstract class ExtendViewModelBase : ViewModelBase
     {
+        private DataModelDesignModel _baseModel;
+        private DesignContext _context;
+        private EditorModel _editor;
+
         #region 基本设置
 
         /// <summary>
         ///     对应的命令集合
         /// </summary>
-        public IEnumerable<CommandItem> Buttons => Commands.Where(p => !p.NoButton);
+        public IEnumerable<CommandItemBase> Buttons => Commands.Where(p => !p.NoButton);
 
         /// <summary>
         ///     对应的命令集合
@@ -28,7 +32,7 @@ namespace Agebull.EntityModel.Designer
             {
                 IsRoot = true,
                 Caption = "扩展操作",
-                Items = Commands.Where(p => p.NoButton).ToObservableCollection<CommandItem>()
+                Items = Commands.Where(p => p.NoButton).ToObservableCollection<CommandItemBase>()
             };
         /// <summary>
         ///     分类
@@ -39,39 +43,56 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 基本模型
         /// </summary>
-        public DataModelDesignModel BaseModel { get; set; }
+        public DataModelDesignModel BaseModel
+        {
+            get => _baseModel;
+            set
+            {
+                _baseModel = value;
+                Context = value.Context;
+                Editor = value.Editor;
+                Dispatcher = value.Dispatcher;
+                OnBaseModelBinding();
+            }
+        }
+
+
+        /// <summary>
+        ///     模型
+        /// </summary>
+        public abstract void OnBaseModelBinding();
 
         /// <summary>
         /// 上下文
         /// </summary>
-        public DesignContext Context => BaseModel?.Context;
+        public DesignContext Context
+        {
+            set
+            {
+                _context = value;
+                RaisePropertyChanged(nameof(Context));
+            }
+
+            get => _context;
+        }
+
 
         /// <summary>
         /// 设计器
         /// </summary>
-        public EditorModel Editor => BaseModel?.Editor;
+        public EditorModel Editor
+        {
+            get => _editor;
+            set
+            {
+                _editor = value;
+                RaisePropertyChanged(nameof(Editor));
+            }
+        }
 
         #endregion
 
         #region 主面板
-
-        /// <summary>
-        /// 主面板注入动作
-        /// </summary>
-        public DependencyAction ContentBehavior => new DependencyAction
-        {
-            AttachAction = obj =>
-            {
-                var border = (Border)obj;
-                var body = Body;
-                OnBodyCreating(body);
-                border.Child = Body;
-            }
-        };
-        /// <summary>
-        /// 主面板
-        /// </summary>
-        public abstract FrameworkElement Body { get; }
 
         /// <summary>
         /// 主面板构造完成
@@ -98,6 +119,7 @@ namespace Agebull.EntityModel.Designer
     public abstract class ExtendViewModelBase<TModel> : ExtendViewModelBase
     where TModel : DesignModelBase, new()
     {
+        public TModel Model { get; }
         /// <summary>
         /// 构造
         /// </summary>
@@ -107,12 +129,19 @@ namespace Agebull.EntityModel.Designer
             {
                 ViewModel = this
             };
-            ModelFunction = new ModelFunctionDictionary<TModel>
-            {
-                Model = Model
-            };
         }
 
+        /// <summary>
+        ///     模型
+        /// </summary>
+        public override void OnBaseModelBinding()
+        {
+            Model.Model = BaseModel;
+            Model.Context = BaseModel.Context;
+            Model.Dispatcher = BaseModel.Dispatcher;
+            Model.EditorName = EditorName;
+            Model.Initialize();
+        }
         /// <summary>
         /// 主面板构造完成
         /// </summary>
@@ -123,34 +152,15 @@ namespace Agebull.EntityModel.Designer
             //RaisePropertyChanged(nameof(Context));
             //RaisePropertyChanged(nameof(DesignModel));
         }
-        protected override ObservableCollection<CommandItem> CreateCommands()
+        protected override ObservableCollection<CommandItemBase> CreateCommands()
         {
             return Model.CreateCommands();
         }
-        /// <summary>
-        ///     模型
-        /// </summary>
-        public TModel Model
-        {
-            get;
-        }
 
-        private DesignModelBase _designModel;
         /// <summary>
         ///     模型
         /// </summary>
-        public sealed override DesignModelBase DesignModel
-        {
-            get
-            {
-                if (_designModel != null)
-                    return _designModel;
-                Model.EditorName = EditorName;
-                Model.Context = Context;
-                Model.Dispatcher = Dispatcher;
-                return _designModel = Model;
-            }
-        }
+        public sealed override DesignModelBase DesignModel => Model;
 
 
         /// <summary>

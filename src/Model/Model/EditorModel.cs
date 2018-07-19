@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,7 +8,6 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
-using Newtonsoft.Json;
 using Application = System.Windows.Application;
 using TabControl = System.Windows.Controls.TabControl;
 
@@ -29,7 +26,6 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         protected override void DoInitialize()
         {
-            LoadUserScreen();
             OnPropertyChanged(nameof(Menus));
             CheckWindow();
             Context.PropertyChanged += Context_PropertyChanged;
@@ -68,14 +64,15 @@ namespace Agebull.EntityModel.Designer
             CreateExtendEditor();
             CheckEditorVisibility();
         }
-
         Type extendType;
         string extendWorkView;
         private bool HaseExtend => ExtendEditorPanel.Items.Count > 0;
         internal void CreateExtendEditor()
         {
             if (Context.SelectConfig == null || NowEditor != EditorConfig)
+            {
                 return;
+            }
             var type = Context.SelectConfig.GetType();
             if (extendType == type && extendWorkView == WorkView)
             {
@@ -84,12 +81,13 @@ namespace Agebull.EntityModel.Designer
             extendType = type;
             extendWorkView = WorkView;
 
-            int subSelect = SubJobIndex;
-            ExtendEditorPanel.Items.Clear();
             if (!DesignerManager.ExtendDictionary.TryGetValue(type, out var exts) || exts.Count == 0)
             {
+                ExtendEditorPanel.Items.Clear();
                 return;
             }
+
+            ExtendEditorPanel.Items.Clear();
             foreach (var ext in exts.OrderBy(p => p.Value.Index))
             {
                 if (WorkView != null && ext.Value.Filter.Count > 0 && !ext.Value.Filter.Contains(WorkView))
@@ -98,48 +96,37 @@ namespace Agebull.EntityModel.Designer
             }
             if (ExtendEditorPanel.Items.Count > 0)
             {
-                if (subSelect < 0 && subSelect >= ExtendEditorPanel.Items.Count)
-                    subSelect = 0;
-                ExtendEditorPanel.SelectedIndex = subSelect;
+                Model.Dispatcher.Invoke(() =>
+                {
+                    ExtendEditorPanel.UpdateLayout();
+                    ExtendEditorPanel.SelectedIndex = 0;
+                    ExtendEditorPanel.UpdateLayout();
+                });
             }
         }
         private void CreateExtendEditor(string title, ExtendViewOption option)
         {
-            var vm = option.Create();
+            var editor = option.Create();
+            var vm = (ExtendViewModelBase)editor.DataContext;
             vm.BaseModel = Model;
-            vm.DesignModel.Initialize();
-            ExtendEditorPanel.Items.Add(new TabItem
+            var item = new TabItem
             {
                 Header = title,
                 VerticalAlignment = VerticalAlignment.Stretch,
-                HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
-                Content = new ExtendPanel
-                {
-                    VerticalAlignment = VerticalAlignment.Stretch,
-                    HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
-                    DataContext = vm
-                },
-                DataContext = ExtendEditorPanel.DataContext
-            });
-        }
-        private int _subJobIndex;
-
-        /// <summary>
-        ///     当前选中的TableControl页序号
-        /// </summary>
-        public int SubJobIndex
-        {
-            get => _subJobIndex;
-            set
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch
+            };
+            var ext = new ExtendPanel
             {
-                if (NowEditor != EditorConfig)
-                    return;
-                if (Equals(_subJobIndex, value))
-                    return;
-                _subJobIndex = value;
-                RaisePropertyChanged(() => SubJobIndex);
-            }
+                Child = editor,
+                DataContext = editor.DataContext,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+            };
+            item.Content = ext;
+            ExtendEditorPanel.Items.Add(item);
+            item.UpdateLayout();
         }
+
         #endregion
 
 
@@ -148,14 +135,14 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 菜单
         /// </summary>
-        public ObservableCollection<CommandItem> Menus { get; set; }
+        public ObservableCollection<CommandItemBase> Menus { get; set; }
 
         private int fileMenuCount;
         /// <summary>
         /// 构造命令列表
         /// </summary>
         /// <returns></returns>
-        ObservableCollection<CommandItem> CreateMenus()
+        ObservableCollection<CommandItemBase> CreateMenus()
         {
             #region 文件菜单
 
@@ -163,42 +150,48 @@ namespace Agebull.EntityModel.Designer
             {
                 Caption = "文件",
                 IsRoot = true,
-                Items = new ObservableCollection<CommandItem>
+                Items = new ObservableCollection<CommandItemBase>
                 {
                     new CommandItem
                     {
-                        Command = new DelegateCommand(Model.ConfigIo.CreateNew),
+                        Action =arg=> Model.ConfigIo.CreateNew(),
                         Caption = "新建",
-                        NoButton=true,
                         Image = Application.Current.Resources["img_add"] as ImageSource
                     },
                     new CommandItem
                     {
-                        Command = new DelegateCommand(Model.ConfigIo.Load),
+                        IsButton=true,
+                        Action =arg=> Model.ConfigIo.Load(),
                         Caption = "打开",
-                        NoButton=true,
                         Image = Application.Current.Resources["img_open"] as ImageSource
                     },
                     new CommandItem
                     {
-                        Command = new DelegateCommand(Model.ConfigIo.ReLoad),
+                        Action =arg=> Model.ConfigIo.ReLoad(),
                         Caption = "重新载入",
                         Image = Application.Current.Resources["img_redo"] as ImageSource
                     },
-                    CommandItem.Line,
+                    CommandItemBase.Line,
                     new CommandItem
                     {
-                        Command = new DelegateCommand(Model.ConfigIo.LoadGlobal),
+                        Action = arg=>Model.ConfigIo.LoadGlobal(),
                         Caption = "全局",
-                        NoButton=true,
                         Image = Application.Current.Resources["img_open"] as ImageSource
                     },
-                    CommandItem.Line,
+                    CommandItemBase.Line,
                     new CommandItem
                     {
-                        Command = new DelegateCommand(Model.ConfigIo.Save),
+                        IsButton=true,
+                        Action = arg=>Model.ConfigIo.Save(),
                         Caption = "保存",
                         Image = Application.Current.Resources["imgSave"] as ImageSource
+                    },
+                    CommandItemBase.Line,
+                    CommandItemBase.Line,
+                    new CommandItem
+                    {
+                        Action = arg=>Application.Current.Shutdown(),
+                        Caption = "退出"
                     }
                 }
             };
@@ -213,14 +206,14 @@ namespace Agebull.EntityModel.Designer
             };
             foreach (var job in RootJobs)
             {
-                var item = new CommandItem
+                var item = new CommandItem<CommandItemBase>
                 {
+                    Action = OnJobSelect,
                     Caption = job.Key,
-                    NoButton = true,
                     IsChecked = job.Key == NowEditor,
-                    IconName= "tree_Child1"
+                    IconName = "tree_Child1"
                 };
-                item.Command = new SimpleCommand<CommandItem>(item, OnJobSelect);
+                item.Source = item;
                 WindowMenu.Items.Add(item);
             }
             #endregion
@@ -231,62 +224,72 @@ namespace Agebull.EntityModel.Designer
                 Caption = "设计",
                 IsRoot = true
             };
-            var vitem = new CommandItem
+            var vitem = new CommandItem<CommandItemBase>
             {
-                NoButton = true,
+                Action = OnWorkView,
                 Caption = "专家视角"
             };
-            vitem.Command = new SimpleCommand<CommandItem>(vitem, OnWorkView);
+            vitem.Source = vitem;
             viewMenu.Items.Add(vitem);
-            vitem = new CommandItem
+            vitem = new CommandItem<CommandItemBase>
             {
-                NoButton = true,
+                Action = OnWorkView,
                 Caption = "数据库设计",
                 Catalog = "DataBase"
             };
-            vitem.Command = new SimpleCommand<CommandItem>(vitem, OnWorkView);
+            vitem.Source = vitem;
             viewMenu.Items.Add(vitem);
-            vitem = new CommandItem
+            vitem = new CommandItem<CommandItemBase>
             {
-                NoButton = true,
+                Action = OnWorkView,
                 Caption = "实体设计",
                 Catalog = "Entity"
             };
-            vitem.Command = new SimpleCommand<CommandItem>(vitem, OnWorkView);
+            vitem.Source = vitem;
             viewMenu.Items.Add(vitem);
-            vitem = new CommandItem
+            vitem = new CommandItem<CommandItemBase>
             {
-                NoButton = true,
+                Action = OnWorkView,
                 Caption = "模型设计",
                 Catalog = "Model"
             };
-            vitem.Command = new SimpleCommand<CommandItem>(vitem, OnWorkView);
+            vitem.Source = vitem;
             viewMenu.Items.Add(vitem);
-            vitem = new CommandItem
+            vitem = new CommandItem<CommandItemBase>
             {
-                NoButton = true,
+                Action = OnWorkView,
                 Caption = "接口设计",
                 Catalog = "Api"
             };
-            vitem.Command = new SimpleCommand<CommandItem>(vitem, OnWorkView);
+            vitem.Source = vitem;
             viewMenu.Items.Add(vitem);
-            viewMenu.Items.Add(CommandItem.Line);
+            viewMenu.Items.Add(CommandItemBase.Line);
+            vitem = new CommandItem<CommandItemBase>
+            {
+                Action = OnAdvancedView,
+                Caption = "高级设置",
+                Catalog = "Api",
+                IsChecked = AdvancedView
+            };
+            vitem.Source = vitem;
+            viewMenu.Items.Add(vitem);
+            viewMenu.Items.Add(CommandItemBase.Line);
             #endregion
-            return new ObservableCollection<CommandItem>
+            return new ObservableCollection<CommandItemBase>
             {
                 fileMenu,
                 viewMenu,
                 WindowMenu
             };
         }
-        
-        private CommandItem[] _buttons;
+
+        private CommandItemBase[] _buttons;
 
 
         /// <summary>
         ///     对应的命令集合
         /// </summary>
-        public CommandItem[] Buttons
+        public CommandItemBase[] Buttons
         {
             get => _buttons;
             set
@@ -314,25 +317,25 @@ namespace Agebull.EntityModel.Designer
             while (menus.Count > 3)
                 menus.RemoveAt(2);
             while (fileMenu.Items.Count > fileMenuCount)
-                fileMenu.Items.RemoveAt(fileMenuCount - 1);
-            while (viewMenu.Items.Count > 6)
-                viewMenu.Items.RemoveAt(6);
+                fileMenu.Items.RemoveAt(fileMenuCount - 2);
+            while (viewMenu.Items.Count > 8)
+                viewMenu.Items.RemoveAt(8);
 
             menus.Insert(2, new CommandItem
             {
                 IsRoot = true,
                 Caption = "编辑",
-                Items = new ObservableCollection<CommandItem>()
+                Items = new ObservableCollection<CommandItemBase>()
             });
             menus.Insert(3, new CommandItem
             {
                 IsRoot = true,
                 Caption = "其它",
-                Items = new ObservableCollection<CommandItem>()
+                Items = new ObservableCollection<CommandItemBase>()
             });
             if (item.Commands == null || item.Commands.Count == 0)
             {
-                Buttons = new CommandItem[0];
+                Buttons = new CommandItemBase[0];
                 return;
             }
 
@@ -345,35 +348,48 @@ namespace Agebull.EntityModel.Designer
                     preIsLine = true;
                     continue;
                 }
-                if (cmd.Signle)
+                if (cmd.SignleSoruce)
                 {
-                    if (selType != cmd.TargetType && !selType.IsSubclassOf(cmd.TargetType))
+                    if (cmd.TargetType != null && selType != cmd.TargetType && !selType.IsSubclassOf(cmd.TargetType))
                         continue;
                 }
-                else if(WorkView != null && cmd.ViewModel != null && !cmd.ViewModel.Contains(WorkView))
+                else if (WorkView != null && cmd.ViewModel != null && !cmd.ViewModel.Contains(WorkView))
                 {
                     continue;
                 }
                 string cl = cmd.Catalog ?? "其它";
-                var sub = menus.FirstOrDefault(p => p.Caption == cl);
-                if (sub == null)
-                    menus.Insert(3, sub = new CommandItem
-                    {
-                        IsRoot = true,
-                        Name = cl,
-                        Caption = cl,
-                        Items = new ObservableCollection<CommandItem>()
-                    });
+                CommandItemBase sub;
+                switch (cl)
+                {
+                    case "文件":
+                        preIsLine = false;
+                        fileMenu.Items.Insert(fileMenu.Items.Count - 2, cmd);
+                        continue;
+                    case "窗口":
+                        sub = WindowMenu;
+                        break;
+                    default:
+                        sub = menus.FirstOrDefault(p => p.Caption == cl);
+                        if (sub == null)
+                            menus.Insert(menus.Count - 2, sub = new CommandItem
+                            {
+                                IsRoot = true,
+                                Name = cl,
+                                Caption = cl,
+                                Items = new ObservableCollection<CommandItemBase>()
+                            });
+                        break;
+                }
                 if (preIsLine)
                 {
                     if (sub.Items.Count > 0)
-                        sub.Items.Add(CommandItem.Line);
+                        sub.Items.Add(CommandItemBase.Line);
                     preIsLine = false;
                 }
                 sub.Items.Add(cmd);
             }
 
-            List<CommandItem> buttons = new List<CommandItem>();
+            List<CommandItemBase> buttons = new List<CommandItemBase>();
             foreach (var menu in menus)
             {
                 foreach (var cmd in menu.Items.Where(p => !p.IsLine && !p.NoButton))
@@ -386,8 +402,8 @@ namespace Agebull.EntityModel.Designer
         }
 
 
-        CommandItem preJobItem;
-        public void OnJobSelect(CommandItem item)
+        CommandItemBase preJobItem;
+        public void OnJobSelect(CommandItemBase item)
         {
             if (preJobItem != null)
                 preJobItem.IsChecked = false;
@@ -395,14 +411,14 @@ namespace Agebull.EntityModel.Designer
             preJobItem.IsChecked = true;
             Screen.NowEditor = item.Caption;
             CheckWindow();
-            SaveUserScreen();
+            DataModelDesignModel.SaveUserScreen();
         }
         #endregion
 
         #region 业务视角
 
-        CommandItem preWorkViewItem;
-        public void OnWorkView(CommandItem view)
+        CommandItemBase preWorkViewItem;
+        public void OnWorkView(CommandItemBase view)
         {
             if (preWorkViewItem != null)
                 preWorkViewItem.IsChecked = false;
@@ -410,7 +426,7 @@ namespace Agebull.EntityModel.Designer
             view.IsChecked = true;
             WorkView = view.Catalog;
             CheckWindow();
-            SaveUserScreen();
+            DataModelDesignModel.SaveUserScreen();
         }
 
         /// <summary>
@@ -427,6 +443,29 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
+        public void OnAdvancedView(CommandItemBase view)
+        {
+            view.IsChecked = AdvancedView = !view.IsChecked;
+        }
+        /// <summary>
+        /// 高级视角
+        /// </summary>
+        public bool AdvancedView
+        {
+            get => SolutionConfig.Current?.AdvancedView ?? false;
+            set
+            {
+                Screen.AdvancedView = value;
+                if (SolutionConfig.Current != null)
+                    SolutionConfig.Current.AdvancedView = value;
+                DataModelDesignModel.SaveUserScreen();
+            }
+        }
+
+        /// <summary>
+        /// 用户操作的现场记录
+        /// </summary>
+        public static UserScreen Screen => DataModelDesignModel.Screen;
 
         #endregion
 
@@ -574,55 +613,5 @@ namespace Agebull.EntityModel.Designer
 
         #endregion
 
-        #region 现场记录
-
-        /// <summary>
-        /// 用户操作的现场记录
-        /// </summary>
-        public UserScreen Screen { get; set; } = new UserScreen
-        {
-            NowEditor = EditorConfig,
-            WorkView = "entity"
-        };
-
-
-        internal void LoadUserScreen()
-        {
-            // ReSharper disable once AssignNullToNotNullAttribute
-            var path = Path.Combine(GlobalConfig.ProgramRoot, "Config", "screen.json");
-            if (!File.Exists(path))
-                return;
-            var json = File.ReadAllText(path);
-            if (string.IsNullOrEmpty(json) || json[0] != '{')
-            {
-                return;
-            }
-
-            try
-            {
-                var sc = JsonConvert.DeserializeObject<UserScreen>(json);
-                if (sc != null)
-                    Screen = sc;
-            }
-            catch (Exception e)
-            {
-                Trace.WriteLine(e, "LoadUserScreen");
-            }
-        }
-
-        private void SaveUserScreen()
-        {
-            try
-            {
-                var json = JsonConvert.SerializeObject(Screen);
-                var path = Path.Combine(GlobalConfig.ProgramRoot, "Config", "screen.json");
-                File.WriteAllText(path, json);
-            }
-            catch (Exception e)
-            {
-                Trace.WriteLine(e, "SaveUserScreen");
-            }
-        }
-        #endregion
     }
 }

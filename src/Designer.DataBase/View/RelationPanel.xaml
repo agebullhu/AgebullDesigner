@@ -5,13 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
+             xmlns:mysql="clr-namespace:Agebull.Common.Config.Designer.DataBase.Mysql"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
 
+    <UserControl.DataContext>
+        <mysql:DataRelationViewModel/>
+    </UserControl.DataContext>
     <DockPanel Margin="0" Background="White">
         <WrapPanel DockPanel.Dock="Bottom" DataContext="{Binding Context.SelectProperty}">
             <WrapPanel.Resources>
-                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/DataTemplate/Form.xaml"/>
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
             </WrapPanel.Resources>
             <!--<StackPanel>
                 <Label Content="是否连接字段" />
@@ -40,11 +44,10 @@
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
                   DataContext="{Binding Context}"
-                  ItemsSource="{Binding SelectItemChildrens}">
+                  ItemsSource="{Binding SelectEntity.Properties}">
             <DataGrid.Columns>
-                <DataGridCheckBoxColumn Binding="{Binding Discard,Mode=TwoWay}" IsReadOnly="True"
-                                        Header="废弃" />
-                <DataGridTextColumn Binding="{Binding Index,Mode=TwoWay}" Header="序号" />
+                <DataGridCheckBoxColumn Binding="{Binding IsDiscard,Mode=OneWay}" IsReadOnly="True" Header="废" />
+                <DataGridTextColumn Binding="{Binding Index,Mode=OneWay}" Header="序号" />
                 <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
                 <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="属性" />
                 <DataGridTextColumn Binding="{Binding ColumnName,Mode=TwoWay}" Header="字段" />

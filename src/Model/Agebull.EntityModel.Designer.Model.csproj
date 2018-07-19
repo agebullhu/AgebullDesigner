@@ -119,7 +119,6 @@
   <ItemGroup>
     <Compile Include="Command\CommandIoc.cs" />
     <Compile Include="Config\ConfigDataModel.cs" />
-    <Compile Include="DataTemplate\DataTemplateResource.cs" />
     <Compile Include="Extend\DesignerManager.cs" />
     <Compile Include="Extend\ExtendItem.cs" />
     <Compile Include="Extend\ExtendViewModelBase.cs" />
@@ -142,8 +141,8 @@
     <Compile Include="Model\UserScreen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AddInImporter.cs" />
+    <Compile Include="Extend\EditorExtend.cs" />
     <Compile Include="TreeItem\ConfigTreeItem.cs" />
-    <Compile Include="Type\TypeConvert.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Coder\Agebull.EntityModel.RobotCoder.csproj">
@@ -184,7 +183,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="DataTemplate\Form.xaml">
+    <Page Include="Style\ConfigDataTemplate.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Style\Form.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -192,6 +194,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Style\Button.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Style\TextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DataTemplate\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
