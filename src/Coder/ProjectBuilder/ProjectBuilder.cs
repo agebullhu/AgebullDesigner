@@ -19,10 +19,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         public string Message
         {
-            set
-            {
-                MessageSetter(value);
-            }
+            set => MessageSetter(value);
         }
 
         private TraceMessage _traceMessage;
@@ -31,25 +28,10 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         public TraceMessage TraceMessage
         {
-            get
-            {
-                return _traceMessage ?? TraceMessage.DefaultTrace;
-            }
-            set
-            {
-                _traceMessage = value;
-            }
+            get => _traceMessage ?? TraceMessage.DefaultTrace;
+            set => _traceMessage = value;
         }
-        /// <summary>
-        /// 取得默认的根路径
-        /// </summary>
-        /// <param name="project"></param>
-        /// <returns></returns>
-        protected virtual string RootPath(ProjectConfig project)
-        {
-            return project["project_path_" + Name] ?? (project["project_path_" + Name] = project.ModelPath);
-        }
-
+        
         /// <summary>
         /// 名称
         /// </summary>
@@ -84,9 +66,8 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 准备生成实体代码
         /// </summary>
-        /// <param name="project"></param>
         /// <param name="schema"></param>
-        public virtual bool Validate(ProjectConfig project, EntityConfig schema)
+        public virtual bool Validate(EntityConfig schema)
         {
             return true;
         }

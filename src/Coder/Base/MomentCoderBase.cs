@@ -11,6 +11,71 @@ namespace Agebull.EntityModel.RobotCoder
     /// </summary>
     public class MomentCoderBase : CoderBase
     {
+        #region 代码生成代理接口
+
+
+        public static string DoCoder<T>(Func<T, string> func, T t)
+            //where T : ConfigBase, new()
+        {
+            using (CodeGeneratorScope.CreateScope())
+            {
+                return func(t);
+                //var arg = new T();
+                //arg.Copy(t);
+                //return func(arg);
+            }
+        }
+
+        //public static string DoCoder(Func<string> func)
+        //{
+        //    using (CodeGeneratorScope.CreateScope())
+        //    {
+        //        return func();
+        //    }
+        //}
+
+        //public static string DoCoder<T1, T2>(Func<T1, T2, string> func, T1 t1, T2 t2)
+        //{
+        //    using (CodeGeneratorScope.CreateScope())
+        //    {
+        //        return func(t1, t2);
+        //    }
+        //}
+
+        //public static string DoCoder<T1, T2, T3>(Func<T1, T2, T3, string> func, T1 t1, T2 t2, T3 t3)
+        //{
+        //    using (CodeGeneratorScope.CreateScope())
+        //    {
+        //        return func(t1, t2, t3);
+        //    }
+        //}
+
+        //public static string DoCoder<T1, T2, T3, T4>(Func<T1, T2, T3, T4, string> func, T1 t1, T2 t2, T3 t3, T4 t4)
+        //{
+        //    using (CodeGeneratorScope.CreateScope())
+        //    {
+        //        return func(t1, t2, t3, t4);
+        //    }
+        //}
+
+        //public static string DoCoder<T1, T2, T3, T4, T5>(Func<T1, T2, T3, T4, T5, string> func, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5)
+        //{
+        //    using (CodeGeneratorScope.CreateScope())
+        //    {
+        //        return func(t1, t2, t3, t4, t5);
+        //    }
+        //}
+
+        //public static string DoCoder<T1, T2, T3, T4, T5, T6>(Func<T1, T2, T3, T4, T5, T6, string> func, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6)
+        //{
+        //    using (CodeGeneratorScope.CreateScope())
+        //    {
+        //        return func(t1, t2, t3, t4, t5, t6);
+        //    }
+        //}
+
+        #endregion
+
         /// <summary>
         /// 当前表对象
         /// </summary>
@@ -26,6 +91,28 @@ namespace Agebull.EntityModel.RobotCoder
         public IEnumerable<EntityConfig> Entities => Project.Entities;
 
         /// <summary>
+        /// 执行目标的动作
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="coder"></param>
+        /// <returns></returns>
+        public string CreateCode<TConfig>(ConfigBase config, Func<TConfig, string> coder)
+            where TConfig : ConfigBase
+        {
+            StringBuilder code = new StringBuilder();
+
+            using (CodeGeneratorScope.CreateScope())
+            {
+                config.Foreach<TConfig>(arg =>
+                {
+                    code.AppendLine(coder(arg));
+                });
+            }
+
+            return code.ToString();
+        }
+
+        /// <summary>
         /// 执行以实体为目标的动作
         /// </summary>
         /// <param name="config"></param>
@@ -39,8 +126,7 @@ namespace Agebull.EntityModel.RobotCoder
             {
                 return EntityCoder();
             }
-            var col = config as PropertyConfig;
-            if (col != null)
+            if (config is PropertyConfig col)
             {
                 Entity = col.Parent;
                 return EntityCoder();
@@ -59,8 +145,7 @@ namespace Agebull.EntityModel.RobotCoder
                 }
                 return code.ToString();
             }
-            var solution = GlobalConfig.CurrentConfig as SolutionConfig;
-            if (solution == null)
+            if (!(GlobalConfig.CurrentConfig is SolutionConfig solution))
                 return code.ToString();
             foreach (var project in solution.Projects)
             {
@@ -91,8 +176,7 @@ namespace Agebull.EntityModel.RobotCoder
             {
                 return entityCoder(Entity);
             }
-            var col = config as PropertyConfig;
-            if (col != null)
+            if (config is PropertyConfig col)
             {
                 return entityCoder(col.Parent);
             }
@@ -110,8 +194,7 @@ namespace Agebull.EntityModel.RobotCoder
                 }
                 return code.ToString();
             }
-            var solution = GlobalConfig.CurrentConfig as SolutionConfig;
-            if (solution == null)
+            if (!(GlobalConfig.CurrentConfig is SolutionConfig solution))
                 return code.ToString();
             foreach (var project in solution.Projects)
             {
@@ -137,8 +220,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <returns></returns>
         public string RunBy<TConfig>(ConfigBase config, Func<TConfig, string> func) where TConfig : ConfigBase
         {
-            var config1 = config as TConfig;
-            return config1 != null ? func(config1) : null;
+            return config is TConfig config1 ? func(config1) : null;
         }
 
         #region 系统当前选择对象
@@ -155,7 +237,7 @@ namespace Agebull.EntityModel.RobotCoder
         }
         private static void ForeachByCurrent(Action<PropertyConfig> action, EntityConfig entity)
         {
-            foreach (var property in entity.Properties)
+            foreach (var property in entity.LastProperties)
                 ForeachByCurrent(action, property);
         }
         private static void ForeachByCurrent(Action<PropertyConfig> action, ProjectConfig project)
@@ -176,26 +258,22 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="action">动作</param>
         protected static void ForeachByCurrent(Action<PropertyConfig> action)
         {
-            var property = GlobalConfig.CurrentConfig as PropertyConfig;
-            if (property != null)
+            if (GlobalConfig.CurrentConfig is PropertyConfig property)
             {
                 ForeachByCurrent(action, property);
                 return;
             }
-            var entity = GlobalConfig.CurrentConfig as EntityConfig;
-            if (entity != null)
+            if (GlobalConfig.CurrentConfig is EntityConfig entity)
             {
                 ForeachByCurrent(action, entity);
                 return;
             }
-            var project = GlobalConfig.CurrentConfig as ProjectConfig;
-            if (project != null)
+            if (GlobalConfig.CurrentConfig is ProjectConfig project)
             {
                 ForeachByCurrent(action, project);
                 return;
             }
-            var solution = GlobalConfig.CurrentConfig as SolutionConfig;
-            if (solution != null)
+            if (GlobalConfig.CurrentConfig is SolutionConfig solution)
             {
                 ForeachByCurrent(action, solution);
             }
@@ -208,7 +286,7 @@ namespace Agebull.EntityModel.RobotCoder
         }
         private static void ForeachByCurrent(Func<PropertyConfig, bool> condition, Action<PropertyConfig> action, EntityConfig entity)
         {
-            foreach (var property in entity.Properties)
+            foreach (var property in entity.LastProperties)
                 ForeachByCurrent(condition, action, property);
         }
         private static void ForeachByCurrent(Func<PropertyConfig, bool> condition, Action<PropertyConfig> action, ProjectConfig project)
@@ -229,26 +307,22 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="action">动作</param>
         protected static void ForeachByCurrent(Func<PropertyConfig, bool> condition, Action<PropertyConfig> action)
         {
-            var property = GlobalConfig.CurrentConfig as PropertyConfig;
-            if (property != null)
+            if (GlobalConfig.CurrentConfig is PropertyConfig property)
             {
                 ForeachByCurrent(condition, action, property);
                 return;
             }
-            var entity = GlobalConfig.CurrentConfig as EntityConfig;
-            if (entity != null)
+            if (GlobalConfig.CurrentConfig is EntityConfig entity)
             {
                 ForeachByCurrent(condition, action, entity);
                 return;
             }
-            var project = GlobalConfig.CurrentConfig as ProjectConfig;
-            if (project != null)
+            if (GlobalConfig.CurrentConfig is ProjectConfig project)
             {
                 ForeachByCurrent(condition, action, project);
                 return;
             }
-            var solution = GlobalConfig.CurrentConfig as SolutionConfig;
-            if (solution != null)
+            if (GlobalConfig.CurrentConfig is SolutionConfig solution)
             {
                 ForeachByCurrent(condition, action, solution);
             }
@@ -267,7 +341,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         private static void ForeachByCurrent(Action<EnumConfig> action, EntityConfig entity)
         {
-            foreach (var property in entity.Properties.Where(p => p.EnumConfig != null))
+            foreach (var property in entity.LastProperties.Where(p => p.EnumConfig != null))
                 action(property.EnumConfig);
         }
         private static void ForeachByCurrent(Action<EnumConfig> action, ProjectConfig project)
@@ -287,32 +361,27 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="action">动作</param>
         protected static void ForeachByCurrent(Action<EnumConfig> action)
         {
-            var enc = GlobalConfig.CurrentConfig as EnumConfig;
-            if (enc != null)
+            if (GlobalConfig.CurrentConfig is EnumConfig enc)
             {
                 action(enc);
                 return;
             }
-            var col = GlobalConfig.CurrentConfig as PropertyConfig;
-            if (col != null)
+            if (GlobalConfig.CurrentConfig is PropertyConfig col)
             {
                 action(col.EnumConfig);
                 return;
             }
-            var entity = GlobalConfig.CurrentConfig as EntityConfig;
-            if (entity != null)
+            if (GlobalConfig.CurrentConfig is EntityConfig entity)
             {
                 ForeachByCurrent(action, entity);
                 return;
             }
-            var project = GlobalConfig.CurrentConfig as ProjectConfig;
-            if (project != null)
+            if (GlobalConfig.CurrentConfig is ProjectConfig project)
             {
                 ForeachByCurrent(action, project);
                 return;
             }
-            var solution = GlobalConfig.CurrentConfig as SolutionConfig;
-            if (solution != null)
+            if (GlobalConfig.CurrentConfig is SolutionConfig solution)
             {
                 ForeachByCurrent(action, solution);
             }
@@ -327,7 +396,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         private static void ForeachByCurrent(Func<EnumConfig, bool> condition, Action<EnumConfig> action, EntityConfig entity)
         {
-            foreach (var property in entity.Properties.Where(p => p.EnumConfig != null))
+            foreach (var property in entity.LastProperties.Where(p => p.EnumConfig != null))
                 ForeachByCurrent(condition, action, property.EnumConfig);
         }
         private static void ForeachByCurrent(Func<EnumConfig, bool> condition, Action<EnumConfig> action, ProjectConfig project)
@@ -348,32 +417,27 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="action">动作</param>
         protected static void ForeachByCurrent(Func<EnumConfig, bool> condition, Action<EnumConfig> action)
         {
-            var enc = GlobalConfig.CurrentConfig as EnumConfig;
-            if (enc != null)
+            if (GlobalConfig.CurrentConfig is EnumConfig enc)
             {
                 ForeachByCurrent(condition, action, enc);
                 return;
             }
-            var col = GlobalConfig.CurrentConfig as PropertyConfig;
-            if (col != null)
+            if (GlobalConfig.CurrentConfig is PropertyConfig col)
             {
                 ForeachByCurrent(condition, action, col.EnumConfig);
                 return;
             }
-            var entity = GlobalConfig.CurrentConfig as EntityConfig;
-            if (entity != null)
+            if (GlobalConfig.CurrentConfig is EntityConfig entity)
             {
                 ForeachByCurrent(condition, action, entity);
                 return;
             }
-            var project = GlobalConfig.CurrentConfig as ProjectConfig;
-            if (project != null)
+            if (GlobalConfig.CurrentConfig is ProjectConfig project)
             {
                 ForeachByCurrent(condition, action, project);
                 return;
             }
-            var solution = GlobalConfig.CurrentConfig as SolutionConfig;
-            if (solution != null)
+            if (GlobalConfig.CurrentConfig is SolutionConfig solution)
             {
                 ForeachByCurrent(condition, action, solution);
             }
@@ -405,26 +469,22 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="action">动作</param>
         protected static void ForeachByCurrent(Action<EntityConfig> action)
         {
-            var col = GlobalConfig.CurrentConfig as PropertyConfig;
-            if (col != null)
+            if (GlobalConfig.CurrentConfig is PropertyConfig col)
             {
                 action(col.Parent);
                 return;
             }
-            var entity = GlobalConfig.CurrentConfig as EntityConfig;
-            if (entity != null)
+            if (GlobalConfig.CurrentConfig is EntityConfig entity)
             {
                 ForeachByCurrent(action, entity);
                 return;
             }
-            var project = GlobalConfig.CurrentConfig as ProjectConfig;
-            if (project != null)
+            if (GlobalConfig.CurrentConfig is ProjectConfig project)
             {
                 ForeachByCurrent(action, project);
                 return;
             }
-            var solution = GlobalConfig.CurrentConfig as SolutionConfig;
-            if (solution != null)
+            if (GlobalConfig.CurrentConfig is SolutionConfig solution)
             {
                 ForeachByCurrent(action, solution);
             }
@@ -454,26 +514,22 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="action">动作</param>
         protected static void ForeachByCurrent(Func<EntityConfig, bool> condition, Action<EntityConfig> action)
         {
-            var col = GlobalConfig.CurrentConfig as PropertyConfig;
-            if (col != null)
+            if (GlobalConfig.CurrentConfig is PropertyConfig col)
             {
                 ForeachByCurrent(condition, action, col.Parent);
                 return;
             }
-            var entity = GlobalConfig.CurrentConfig as EntityConfig;
-            if (entity != null)
+            if (GlobalConfig.CurrentConfig is EntityConfig entity)
             {
                 ForeachByCurrent(condition, action, entity);
                 return;
             }
-            var project = GlobalConfig.CurrentConfig as ProjectConfig;
-            if (project != null)
+            if (GlobalConfig.CurrentConfig is ProjectConfig project)
             {
                 ForeachByCurrent(condition, action, project);
                 return;
             }
-            var solution = GlobalConfig.CurrentConfig as SolutionConfig;
-            if (solution != null)
+            if (GlobalConfig.CurrentConfig is SolutionConfig solution)
             {
                 ForeachByCurrent(condition, action, solution);
             }
@@ -505,26 +561,22 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="action">动作</param>
         protected static void ForeachByCurrent(Action<ProjectConfig> action)
         {
-            var col = GlobalConfig.CurrentConfig as PropertyConfig;
-            if (col != null)
+            if (GlobalConfig.CurrentConfig is PropertyConfig col)
             {
                 ForeachByCurrent(action, col.Parent);
                 return;
             }
-            var entity = GlobalConfig.CurrentConfig as ProjectConfig;
-            if (entity != null)
+            if (GlobalConfig.CurrentConfig is ProjectConfig entity)
             {
                 ForeachByCurrent(action, entity);
                 return;
             }
-            var project = GlobalConfig.CurrentConfig as ProjectConfig;
-            if (project != null)
+            if (GlobalConfig.CurrentConfig is ProjectConfig project)
             {
                 ForeachByCurrent(action, project);
                 return;
             }
-            var solution = GlobalConfig.CurrentConfig as SolutionConfig;
-            if (solution != null)
+            if (GlobalConfig.CurrentConfig is SolutionConfig solution)
             {
                 ForeachByCurrent(action, solution);
             }
@@ -553,26 +605,22 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="action">动作</param>
         protected static void ForeachByCurrent(Func<ProjectConfig, bool> condition, Action<ProjectConfig> action)
         {
-            var col = GlobalConfig.CurrentConfig as PropertyConfig;
-            if (col != null)
+            if (GlobalConfig.CurrentConfig is PropertyConfig col)
             {
                 ForeachByCurrent(condition, action, col.Parent);
                 return;
             }
-            var entity = GlobalConfig.CurrentConfig as ProjectConfig;
-            if (entity != null)
+            if (GlobalConfig.CurrentConfig is ProjectConfig entity)
             {
                 ForeachByCurrent(condition, action, entity);
                 return;
             }
-            var project = GlobalConfig.CurrentConfig as ProjectConfig;
-            if (project != null)
+            if (GlobalConfig.CurrentConfig is ProjectConfig project)
             {
                 ForeachByCurrent(condition, action, project);
                 return;
             }
-            var solution = GlobalConfig.CurrentConfig as SolutionConfig;
-            if (solution != null)
+            if (GlobalConfig.CurrentConfig is SolutionConfig solution)
             {
                 ForeachByCurrent(condition, action, solution);
             }

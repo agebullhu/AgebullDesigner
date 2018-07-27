@@ -7,72 +7,43 @@
 // // *****************************************************/
 
 
+using System;
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Designer;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Linq;
+
 namespace Agebull.EntityModel.Config
 {
-    internal class ProjectBusinessModel : ConfigModelBase
+
+    /// <summary>
+    /// 实体配置相关模型
+    /// </summary>
+    [Export(typeof(IAutoRegister))]
+    [ExportMetadata("Symbol", '%')]
+    public class EnumModel : DesignCommondBase<EntityConfig>
     {
-        #region 编辑方法
 
-        /// <summary>
-        /// 项目对象
-        /// </summary>
-        public SolutionConfig Solution { get; set; }
-
-        public static void ToModify(ProjectConfig project)
+        protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
-            foreach (var entity in project.Entities)
+            commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                entity.IsModify = true;
-            }
+                Catalog = "升级",
+                Action = ClearOldInterface,
+                Caption = "清理接口强绑定",
+                IconName = "tree_sum"
+            });
         }
 
-        public static void ToReference(ProjectConfig project)
+
+        public void ClearOldInterface(EntityConfig entity)
         {
-            foreach (var entity in project.Entities)
+            foreach (var field in entity.Properties.ToArray())
             {
-                entity.IsReference = true;
+                if (field.IsSystemField)
+                    entity.Remove(field);
             }
         }
-
-        public static void ToClass(ProjectConfig project)
-        {
-            foreach (var entity in project.Entities)
-            {
-                entity.IsClass = true;
-            }
-        }
-
-        public static void UnLock(ProjectConfig project)
-        {
-            project.IsFreeze = false;
-            foreach (var entity in project.Entities)
-            {
-                entity.IsFreeze = false;
-                foreach (var field in entity.Properties)
-                {
-                    field.IsFreeze = false;
-                    if (field.EnumConfig != null)
-                        field.EnumConfig.IsFreeze = false;
-                }
-            }
-        }
-
-        public static void Lock(ProjectConfig project)
-        {
-            project.IsFreeze = true;
-            foreach (var entity in project.Entities)
-            {
-                entity.IsFreeze = true;
-                foreach (var field in entity.Properties)
-                {
-                    field.IsFreeze = true;
-                    if (field.EnumConfig != null)
-                        field.EnumConfig.IsFreeze = true;
-                }
-            }
-        }
-
-        #endregion
-
     }
 }

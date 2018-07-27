@@ -1,0 +1,37 @@
+﻿<UserControl x:Class="Agebull.EntityModel.Designer.EntityListPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:designer1="clr-namespace:Agebull.EntityModel.Designer"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="800">
+    <UserControl.DataContext>
+        <designer1:EntityListViewModel/>
+    </UserControl.DataContext>
+    <DataGrid AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  ItemsSource="{Binding Model.Context.SelectProject.Entities}">
+        <DataGrid.Columns>
+            <DataGridTemplateColumn>
+                <DataGridTemplateColumn.Header>
+                    <CheckBox Margin="0" Padding="0" IsChecked="{Binding Model.SelectAll}"
+                              DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=designer1:EntityListPanel,AncestorLevel=1}}"/>
+                </DataGridTemplateColumn.Header>
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <CheckBox Name="chk" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding Option.IsSelect,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridCheckBoxColumn Binding="{Binding Option.IsDelete,Mode=TwoWay}" Header="删除" />
+            <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />
+            <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
+            <DataGridTextColumn Binding="{Binding PrimaryField,Mode=OneWay}" IsReadOnly="true" Header="主键" />
+            <DataGridCheckBoxColumn Binding="{Binding NoDataBase,Mode=TwoWay}" Header="无数据库支持" />
+            <DataGridCheckBoxColumn Binding="{Binding IsInternal,Mode=TwoWay}" Header="内部类" />
+            <DataGridCheckBoxColumn Binding="{Binding IsInterface,Mode=TwoWay}" Header="接口定义" />
+        </DataGrid.Columns>
+    </DataGrid>
+</UserControl>

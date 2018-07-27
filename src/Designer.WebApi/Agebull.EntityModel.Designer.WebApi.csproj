@@ -38,35 +38,15 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Gboxt.Common.Exception">
-      <HintPath>..\..\..\..\..\Projects\Agebull\Library\Extend\Gboxt.Common.Exception.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Extend">
-      <HintPath>..\..\..\..\..\Projects\Agebull\Library\Extend\Gboxt.Common.Extend.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.IO">
-      <HintPath>..\..\..\..\..\Projects\Agebull\Library\Extend\Gboxt.Common.IO.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Logging">
-      <HintPath>..\..\..\..\..\Projects\Agebull\Library\Extend\Gboxt.Common.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Reflection">
-      <HintPath>..\..\..\..\..\Projects\Agebull\Library\Extend\Gboxt.Common.Reflection.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.ScopeBase">
-      <HintPath>..\..\..\..\..\Projects\Agebull\Library\Extend\Gboxt.Common.ScopeBase.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.SystemExtend">
-      <HintPath>..\..\..\..\..\Projects\Agebull\Library\Extend\Gboxt.Common.SystemExtend.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Text">
-      <HintPath>..\..\..\..\..\Projects\Agebull\Library\Extend\Gboxt.Common.Text.dll</HintPath>
+    <Reference Include="Agebull.Common.Extend">
+      <HintPath>..\Lib\Agebull.Common.Extend.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Drawing, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Program Files (x86)\Microsoft SDKs\Expression\Blend\.NETFramework\v4.5\Libraries\Microsoft.Expression.Drawing.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows" />
@@ -87,6 +67,15 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Coder\UnitTestBuilder.cs" />
+    <Compile Include="Coder\ApiProxyBuilder.cs" />
+    <Compile Include="Coder\ApiInterfaceBuilder.cs" />
+    <Compile Include="Coder\ApiBuilder.cs" />
+    <Compile Include="Coder\ApiControlerBuilder.cs" />
+    <Compile Include="Coder\ApiLogicalBuilder.cs" />
+    <Compile Include="Coder\ApiMarkBuilder.cs" />
+    <Compile Include="Coder\EntityBuilder.cs" />
+    <Compile Include="Command\ProjectModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -114,6 +103,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Coder.Project\Agebull.EntityModel.RobotCoder.Project.csproj">
+      <Project>{2162E0EC-B6B5-443A-B3FC-C3890934727F}</Project>
+      <Name>Agebull.EntityModel.RobotCoder.Project</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Coder\Agebull.EntityModel.RobotCoder.csproj">
       <Project>{80d6ecf6-10de-4b9e-9cd7-9b597610c482}</Project>
       <Name>Agebull.EntityModel.RobotCoder</Name>
@@ -145,11 +138,15 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Business\" />
-    <Folder Include="Command\" />
     <Folder Include="Model\" />
     <Folder Include="View\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>COPY $(TargetPath) "..\..\..\Program\AddIn\Bin\" /Y
+COPY $(ProjectDir)$(OutDir)$(TargetName).xml "..\..\..\Program\AddIn\Bin\" /Y
+COPY $(ProjectDir)$(OutDir)$(TargetName).pdb "..\..\..\Program\AddIn\Bin\" /Y</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

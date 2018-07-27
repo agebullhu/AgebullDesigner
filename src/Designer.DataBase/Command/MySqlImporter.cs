@@ -14,37 +14,33 @@ namespace Agebull.Common.Config.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal sealed class MySqlImporter : ConfigCommandBase<SolutionConfig>, IAutoRegister
+    internal sealed class MySqlImporter : IAutoRegister
     {
         /// <summary>
         /// 注册代码
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            NoButton = true;
-            Signle = true;
-            CommandCoefficient.RegisterCommand<SolutionConfig, MySqlImporter>();
-        }
-
-
-        public override CommandItem ToCommand(object arg, Func<object, IEnumerator> enumerator = null)
-        {
-            return new CommandItem
+            CommandCoefficient.RegisterCommand(new CommandItemBuilder<string, string>(ImportStructParpare, ImportStruct, ImportStructEnd)
             {
-                NoButton = true,
-                Signle = true,
-                SourceType = typeof(SolutionConfig).Name,
-                Command = new AsyncCommand<string, string>(SyncMySqlStructParpare, SyncMySqlStruct, SyncMySqlStructEnd),
-                Name = "导入MySql数据库",
-                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-            };
+                Caption = "导入MySql数据库",
+                Catalog = "文件",
+                IconName = "tree_Assembly"
+            });
         }
 
-        public bool SyncMySqlStructParpare(string arg, Action<string> setAction)
+        public bool ImportStructParpare(string arg)
         {
-            var ctx = DataModelDesignModel.Current.Context;
-            ctx.NowJob = DesignContext.JobTrace;
-            return MessageBox.Show("确认执行同步数据库结构操作吗?", "对象编辑", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+            if (DataModelDesignModel.Current.Context.SelectProject == null)
+            {
+                MessageBox.Show("请选择一个项目并正确设置连接信息后继续");
+                return false;
+            }
+            if(MessageBox.Show($"确认在【{DataModelDesignModel.Current.Context.SelectProject.Caption}】中执行【导入MySql数据库】操作吗?",
+                           "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                return false;
+            DataModelDesignModel.Current.Editor.ShowTrace();
+            return true;
         }
 
 
@@ -52,16 +48,16 @@ namespace Agebull.Common.Config.Designer
         ///     导入MySql数据库
         /// </summary>
         /// <returns></returns>
-        internal string SyncMySqlStruct(string arg)
+        internal string ImportStruct(string arg)
         {
             var ctx = DataModelDesignModel.Current.Context;
-            new MySqlImport().Import(ctx.CurrentTrace.TraceMessage, ctx.Solution, DataModelDesignModel.Current.Dispatcher);
+            new MySqlImport().Import(ctx.CurrentTrace.TraceMessage, ctx.SelectProject, DataModelDesignModel.Current.Dispatcher);
             return string.Empty;
         }
 
-        internal void SyncMySqlStructEnd(CommandStatus status, Exception ex, string code)
+        internal void ImportStructEnd(CommandStatus status, Exception ex, string code)
         {
-            DataModelDesignModel.Current.Context.NowJob = DesignContext.JobTrace;
+            DataModelDesignModel.Current.Editor.ShowTrace();
             if (ex != null)
                 DataModelDesignModel.Current.Context.CurrentTrace.TraceMessage.Track = ex.ToString();
         }

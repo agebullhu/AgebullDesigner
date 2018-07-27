@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -25,10 +26,10 @@ namespace Agebull.EntityModel
         /// <param name="source"></param>
         public TreeItem(object source)
         {
-            var pp = source as INotifyPropertyChanged;
-            if (pp != null)
+            if (source is INotifyPropertyChanged pp)
             {
                 pp.PropertyChanged += OnModelPropertyChanged;
+                
             }
             Source = source as NotificationObject;
         }
@@ -53,8 +54,7 @@ namespace Agebull.EntityModel
 
         public T FindParentModel<T>() where T : class
         {
-            var itemModel = Parent as TreeItem;
-            if (itemModel == null)
+            if (!(Parent is TreeItem itemModel))
                 return null;
             var model = itemModel.Source as T;
             return model ?? itemModel.FindParentModel<T>();
@@ -66,28 +66,58 @@ namespace Agebull.EntityModel
         {
             get
             {
-                var root = Parent as TreeRoot;
-                if (root != null)
+                if (Parent is TreeRoot root)
                     return root;
                 var item = Parent as TreeItem;
                 return item?.Root;
             }
         }
 
-
-        private string _header;
-
         private bool _isExpend;
+
+        /// <summary>
+        ///     展开
+        /// </summary>
+        public bool IsExpanded
+        {
+            get => _isExpend;
+            set
+            {
+                if (_isExpend == value)
+                {
+                    return;
+                }
+                _isExpend = value;
+                RaisePropertyChanged(() => IsExpanded);
+                OnIsExpandedChanged();
+            }
+        }
+
+        /// <summary>
+        ///     切换展开
+        /// </summary>
+        public void ExpandedChild(object arg)
+        {
+            ExpandedChild(!_isExpend);
+        }
+
+        /// <summary>
+        ///     展开
+        /// </summary>
+        public void ExpandedChild(bool ext)
+        {
+            IsExpanded = ext;
+            foreach (var child in Items)
+                child.ExpandedChild(ext);
+        }
+        private string _header;
 
         /// <summary>
         ///     标题
         /// </summary>
         public string Header
         {
-            get
-            {
-                return _header;
-            }
+            get => _header;
             set
             {
                 if (_header == value)
@@ -115,27 +145,6 @@ namespace Agebull.EntityModel
         }
 
         /// <summary>
-        ///     子级是否已载入
-        /// </summary>
-        public bool IsExpanded
-        {
-            get
-            {
-                return _isExpend;
-            }
-            set
-            {
-                if (_isExpend == value)
-                {
-                    return;
-                }
-                _isExpend = value;
-                RaisePropertyChanged(() => IsExpanded);
-                OnIsExpandedChanged();
-            }
-        }
-
-        /// <summary>
         /// 展开状态变化的处理
         /// </summary>
         protected virtual void OnIsExpandedChanged()
@@ -148,7 +157,7 @@ namespace Agebull.EntityModel
                 return;
             if (isRemove)
             {
-                foreach (var cmd in _commands.Where(p => p.Tag == Source).ToArray())
+                foreach (var cmd in _commands.Where(p => p.Source == Source).ToArray())
                 {
                     _commands.Remove(cmd);
                 }
@@ -158,47 +167,48 @@ namespace Agebull.EntityModel
                 var actions = CommandCoefficient.Coefficient(Source);
                 foreach (var action in actions)
                 {
-                    action.Tag = Source;
+                    action.Source = Source;
                     _commands.Add(action);
                 }
             }
         }
 
-        /// <summary>
-        ///     对应的命令集合
-        /// </summary>
-        public IEnumerable<CommandItem> Buttons => _commands?.Where(p => !p.NoButton && Catalog == p.Catalog);
+        private List<CommandItemBase> _commands;
 
-        /// <summary>
-        ///     对应的命令集合
-        /// </summary>
-        public IEnumerable<CommandItem> Menus => _commands?.Where(p => p.NoButton && Catalog== p.Catalog );
-
-        private List<CommandItem> _commands;
-        
+        public List<CommandItemBase> Commands => _commands;
 
         /// <summary>
         /// 构建命令列表
         /// </summary>
-        public void CreateCommandList()
+        public List<CommandItemBase> CreateCommandList()
         {
-            _commands = new List<CommandItem>();
+            var commands = new List<CommandItemBase>();
             var actions = CommandCoefficient.Coefficient(Source);
-            foreach (var action in actions)
+            if (actions != null)
             {
-                action.Tag = Source;
-                action.Parameter = Source;
-                _commands.Add(action);
+                foreach (var action in actions)
+                {
+                    action.Source = Source;
+                    commands.Add(action);
+                }
             }
-            CreateCommandList(_commands);
-            RaisePropertyChanged(nameof(Buttons));
-            RaisePropertyChanged(nameof(Menus));
+            CreateCommandList(commands);
+            commands.Add(new CommandItem
+            {
+                IsButton=true,
+                Name= "ExpandedChild",
+                Caption = "切换展开",
+                Catalog = "视图",
+                IconName = "tree_Open",
+                Action = ExpandedChild
+            });
+            return _commands = commands;
         }
 
         /// <summary>
         /// 构建命令列表
         /// </summary>
-        protected virtual void CreateCommandList(List<CommandItem> commands)
+        protected virtual void CreateCommandList(List<CommandItemBase> commands)
         {
         }
 
@@ -211,8 +221,7 @@ namespace Agebull.EntityModel
                 return;
             foreach (var command in _commands)
             {
-                command.Tag = null;
-                command.Parameter = null;
+                command.Source = null;
             }
             _commands.Clear();
             _commands = null;
@@ -225,10 +234,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public string SoruceType
         {
-            get
-            {
-                return _soruceType;
-            }
+            get => _soruceType;
             set
             {
                 if (_soruceType == value)
@@ -247,10 +253,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public FontWeight FontWeight
         {
-            get
-            {
-                return _font;
-            }
+            get => _font;
             set
             {
                 if (Equals(_font, value))
@@ -268,10 +271,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public Brush Color
         {
-            get
-            {
-                return _color;
-            }
+            get => _color;
             set
             {
                 if (Equals(_color, value))
@@ -289,10 +289,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public Brush BackgroundColor
         {
-            get
-            {
-                return _bcolor;
-            }
+            get => _bcolor;
             set
             {
                 if (Equals(_bcolor, value))
@@ -311,10 +308,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public BitmapImage SoruceTypeIcon
         {
-            get
-            {
-                return _soruceTypeIcon;
-            }
+            get => _soruceTypeIcon;
             set
             {
                 if (Equals(_soruceTypeIcon, value))
@@ -333,10 +327,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public BitmapImage StatusIcon
         {
-            get
-            {
-                return _statusIcon;
-            }
+            get => _statusIcon;
             set
             {
                 if (Equals(_statusIcon, value))
@@ -355,10 +346,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public CommandStatus ChildsStatus
         {
-            get
-            {
-                return _childsStatus;
-            }
+            get => _childsStatus;
             set
             {
                 if (_childsStatus == value)
@@ -385,8 +373,6 @@ namespace Agebull.EntityModel
         #region 内容自动更新
 
         private IFunctionDictionary _modelFunction;
-
-
         /// <summary>
         /// 方法字典
         /// </summary>
@@ -405,6 +391,34 @@ namespace Agebull.EntityModel
             if (ColorField != null && ColorField.Contains(e.PropertyName))
             {
                 BeginInvokeInUiThread(SyncColorAutomatic);
+            }
+
+            OnStatePropertyChanged(Source, e);
+            _customPropertyChanged?.Invoke(this, Source, e.PropertyName);
+        }
+
+        protected void OnStatePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(NotificationObject.IsModify))
+            {
+                BackgroundColor = Source.IsModify ? Brushes.Silver : Brushes.Transparent;
+            }
+            else if (StatusField != null && StatusField.Contains(e.PropertyName))
+            {
+                BeginInvokeInUiThread(SyncStatusImageAutomatic);
+            }
+        }
+        private Action<TreeItem, NotificationObject, string> _customPropertyChanged;
+        /// <summary>
+        /// 同步自动处理
+        /// </summary>
+        public Action<TreeItem, NotificationObject, string> CustomPropertyChanged
+        {
+            get => _customPropertyChanged;
+            set
+            {
+                _customPropertyChanged = value;
+                value?.Invoke(this, Source, null);
             }
         }
 

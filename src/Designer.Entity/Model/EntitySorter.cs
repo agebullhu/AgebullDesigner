@@ -24,27 +24,27 @@ namespace Agebull.EntityModel.Config
             var idx = Entity.ColumnIndexStart;
             if (pk != null)
             {
-                pk.Index = idx++;
-                Entity.Properties.Add(pk);
+                pk.Option.Index = idx++;
+                Entity.Add(pk);
             }
             if (pc != null)
             {
-                pc.Index = idx++;
-                Entity.Properties.Add(pc);
+                pc.Option.Index = idx++;
+                Entity.Add(pc);
             }
             var groups = columns.Where(p => !string.IsNullOrEmpty(p.Group)).Select(p => p.Group).Distinct();
             foreach (var group in groups)
             {
                 foreach (var column in columns.Where(p => p.Group == group).OrderBy(p => p.Index))
                 {
-                    column.Index = idx++;
-                    Entity.Properties.Add(column);
+                    column.Option.Index = idx++;
+                    Entity.Add(column);
                 }
             }
             foreach (var column in columns.Where(p => string.IsNullOrEmpty(p.Group)).OrderBy(p => p.Index))
             {
-                column.Index = idx++;
-                Entity.Properties.Add(column);
+                column.Option.Index = idx++;
+                Entity.Add(column);
             }
         }
         /// <summary>
@@ -52,8 +52,8 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public void SortFieldByIndex(bool reset)
         {
-            var columns = Entity.Properties.Where(p => !p.Discard && !p.IsPrimaryKey).OrderBy(p => p.Index).ToList();
-            var dcs = Entity.Properties.Where(p => p.Discard).OrderBy(p => p.Index).ToList();
+            var columns = Entity.Properties.Where(p => !p.IsDiscard && !p.IsPrimaryKey).OrderBy(p => p.Index).ToList();
+            var dcs = Entity.Properties.Where(p => p.IsDiscard).OrderBy(p => p.Index).ToList();
 
             int idx = 0;
             var pk = Entity.PrimaryColumn;
@@ -61,22 +61,22 @@ namespace Agebull.EntityModel.Config
             if (pk != null)
             {
                 if (reset)
-                    pk.Index = idx++;
-                Entity.Properties.Add(pk);
+                    pk.Option.Index = idx++;
+                Entity.Add(pk);
             }
 
             foreach (var field in columns.OrderBy(p => p.Index))
             {
                 if (reset)
-                    field.Index = idx++;
-                Entity.Properties.Add(field);
+                    field.Option.Index = idx++;
+                Entity.Add(field);
             }
 
             foreach (var field in dcs.OrderBy(p => p.Index))
             {
                 if (reset)
-                    field.Index = idx++;
-                Entity.Properties.Add(field);
+                    field.Option.Index = idx++;
+                Entity.Add(field);
             }
         }
         /// <summary>
@@ -86,25 +86,25 @@ namespace Agebull.EntityModel.Config
         {
             var pc = Entity.Properties.FirstOrDefault(p => p.IsCaption);
             var pk = Entity.PrimaryColumn;
-            var columns = Entity.Properties.Where(p => !p.Discard && !p.IsPrimaryKey && !p.IsCaption).OrderBy(p => p.Index).ToList();
-            var dcs = Entity.Properties.Where(p => p.Discard).OrderBy(p => p.Index).ToList();
+            var columns = Entity.Properties.Where(p => !p.IsDiscard && !p.IsPrimaryKey && !p.IsCaption).OrderBy(p => p.Index).ToList();
+            var dcs = Entity.Properties.Where(p => p.IsDiscard).OrderBy(p => p.Index).ToList();
             var idx = Entity.ColumnIndexStart;
             foreach (var field in columns)
             {
-                field.Index = idx++;
+                field.Option.Index = idx++;
             }
             Entity.Properties.Clear();
             idx = Entity.ColumnIndexStart;
             if (pk != null)
             {
-                pk.Index = idx++;
+                pk.Option.Index = idx++;
 
-                Entity.Properties.Add(pk);
+                Entity.Add(pk);
             }
             if (pc != null)
             {
-                pc.Index = idx++;
-                Entity.Properties.Add(pc);
+                pc.Option.Index = idx++;
+                Entity.Add(pc);
             }
 
             foreach (var group in columns.GroupBy(f => f.LinkTable))
@@ -113,20 +113,20 @@ namespace Agebull.EntityModel.Config
                 {
                     var gidx = group.First().Index;
                     foreach (var ch in group)
-                        ch.Index = gidx;
+                        ch.Option.Index = gidx;
                 }
             }
 
             foreach (var field in columns.OrderBy(p => p.Index))
             {
-                field.Index = idx++;
-                Entity.Properties.Add(field);
+                field.Option.Index = idx++;
+                Entity.Add(field);
             }
 
             foreach (var field in dcs.OrderBy(p => p.Index))
             {
-                field.Index = idx++;
-                Entity.Properties.Add(field);
+                field.Option.Index = idx++;
+                Entity.Add(field);
             }
         }
 
@@ -144,24 +144,24 @@ namespace Agebull.EntityModel.Config
             var pk = columns.FirstOrDefault(p => p.IsPrimaryKey);
             if (pk != null)
             {
-                pk.Index = idx++;
+                pk.Option.Index = idx++;
                 if (reInsert)
                 {
-                    Entity.Properties.Add(pk);
+                    Entity.Add(pk);
                 }
             }
             var tColumns =
-                columns.Where(p => !p.IsPrimaryKey && !p.Discard && string.IsNullOrWhiteSpace(p.Group))
+                columns.Where(p => !p.IsPrimaryKey && !p.IsDiscard && string.IsNullOrWhiteSpace(p.Group))
                     .OrderBy(p => p.Index)
                     .ToArray();
 
             var cols = tColumns.Where(p => !p.IsSystemField).OrderBy(p => p.Index).ToArray();
             foreach (var field in cols)
             {
-                field.Index = idx++;
+                field.Option.Index = idx++;
                 if (reInsert)
                 {
-                    Entity.Properties.Add(field);
+                    Entity.Add(field);
                 }
             }
             foreach (
@@ -170,45 +170,45 @@ namespace Agebull.EntityModel.Config
                     .OrderBy(p => p.Group)
                     .ThenBy(p => p.Index))
             {
-                field.Index = idx++;
+                field.Option.Index = idx++;
                 if (reInsert)
                 {
-                    Entity.Properties.Add(field);
+                    Entity.Add(field);
                 }
             }
 
             var sysColumns =
-                tColumns.Where(p => !p.IsPrimaryKey && p.IsSystemField && !p.Discard).OrderBy(p => p.Index).ToArray();
+                tColumns.Where(p => !p.IsPrimaryKey && p.IsSystemField && !p.IsDiscard).OrderBy(p => p.Index).ToArray();
             foreach (var field in sysColumns.Where(p => !p.IsInterfaceField && !p.CustomWrite).OrderBy(p => p.Index))
             {
-                field.Index = idx++;
+                field.Option.Index = idx++;
                 if (reInsert)
                 {
-                    Entity.Properties.Add(field);
+                    Entity.Add(field);
                 }
             }
             foreach (var field in sysColumns.Where(p => !p.IsInterfaceField && p.CustomWrite).OrderBy(p => p.Index))
             {
-                field.Index = idx++;
+                field.Option.Index = idx++;
                 if (reInsert)
                 {
-                    Entity.Properties.Add(field);
+                    Entity.Add(field);
                 }
             }
             foreach (var field in sysColumns.Where(p => p.IsInterfaceField))
             {
-                field.Index = idx++;
+                field.Option.Index = idx++;
                 if (reInsert)
                 {
-                    Entity.Properties.Add(field);
+                    Entity.Add(field);
                 }
             }
-            foreach (var field in columns.Where(p => p.Discard).OrderBy(p => p.Index))
+            foreach (var field in columns.Where(p => p.IsDiscard).OrderBy(p => p.Index))
             {
-                field.Index = idx++;
+                field.Option.Index = idx++;
                 if (reInsert)
                 {
-                    Entity.Properties.Add(field);
+                    Entity.Add(field);
                 }
             }
 

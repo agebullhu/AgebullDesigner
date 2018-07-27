@@ -7,11 +7,11 @@ namespace Agebull.EntityModel.RobotCoder
     public sealed class DataBaseBuilder : CoderWithProject
     {
         /// <summary>
-        /// Ãû³Æ
+        /// åç§°
         /// </summary>
         protected override string FileSaveConfigName => "File_Model_DataBase_cs";
         /// <summary>
-        ///     Éú³ÉÊµÌå´úÂë
+        ///     ç”Ÿæˆå®ä½“ä»£ç 
         /// </summary>
         protected override void CreateBaCode(string path)
         {
@@ -21,8 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.Sql;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
@@ -33,24 +31,27 @@ using Gboxt.Common.DataModel.MySql;
 namespace {Project.NameSpace}.DataAccess
 {{
     /// <summary>
-    /// ±¾µØÊı¾İ¿â
+    /// æœ¬åœ°æ•°æ®åº“
     /// </summary>
     public partial class {Project.DataBaseObjectName}
     {{
         /// <summary>
-        /// ¹¹Ôì
+        /// æ„é€ 
         /// </summary>
         public {Project.DataBaseObjectName}()
         {{
             /*tableSql = new Dictionary<string, TableSql>(StringComparer.OrdinalIgnoreCase)
             {{{Project.DataBaseObjectName}
             }};*/
+            Name = @""{Project.Name}"";
+            Caption = @""{Project.Caption}"";
+            Description = @""{Project.Description.Replace("\"","\"\"")}"";
             Initialize();
             //RegistToEntityPool();
         }}
         
         /// <summary>
-        /// ³õÊ¼»¯
+        /// åˆå§‹åŒ–
         /// </summary>
         partial void Initialize();
     }}
@@ -68,7 +69,7 @@ namespace {Project.NameSpace}.DataAccess
 namespace DALFactory
 {
     /// <summary>
-    /// Êı¾İ·ÃÎÊÆ÷¹¤³§
+    /// æ•°æ®è®¿é—®å™¨å·¥å‚
     /// </summary>
     public sealed class DataAccess
     {");
@@ -80,7 +81,7 @@ namespace DALFactory
                 code.Append($@"
 
         /// <summary>
-        /// ´´½¨{entity.EntityName}ÊµÀı
+        /// åˆ›å»º{entity.EntityName}å®ä¾‹
         /// </summary>
         public static IDAL.I{name} CreatGet{name}()
         {{
@@ -95,7 +96,7 @@ namespace DALFactory
         }
 
         /// <summary>
-        ///     Éú³ÉÀ©Õ¹´úÂë
+        ///     ç”Ÿæˆæ‰©å±•ä»£ç 
         /// </summary>
         protected override void CreateExCode(string path)
         {
@@ -106,32 +107,31 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data;
-using System.Data.Sql;
-using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text;
 
 using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.MySql;
+using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
+using Gboxt.Common.DataModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
 
 namespace {Project.NameSpace}.DataAccess
 {{
     /// <summary>
-    /// ±¾µØÊı¾İ¿â
+    /// æœ¬åœ°æ•°æ®åº“
     /// </summary>
-    sealed partial class {Project.DataBaseObjectName} : MySqlDataBase
+    sealed partial class {Project.DataBaseObjectName} : {(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")}DataBase
     {{
         
         /// <summary>
-        /// ³õÊ¼»¯
+        /// åˆå§‹åŒ–
         /// </summary>
         partial void Initialize()
         {{
         }}
         
         /// <summary>
-        /// Éú³ÉÈ±Ê¡Êı¾İ¿â
+        /// ç”Ÿæˆç¼ºçœæ•°æ®åº“
         /// </summary>
         public static void CreateDefault()
         {{
@@ -139,7 +139,7 @@ namespace {Project.NameSpace}.DataAccess
         }}
         static {Project.DataBaseObjectName} _default;
         /// <summary>
-        /// È±Ê¡Ç¿ÀàĞÍÊı¾İ¿â
+        /// ç¼ºçœå¼ºç±»å‹æ•°æ®åº“
         /// </summary>
         public static {Project.DataBaseObjectName} Default
         {{
@@ -151,7 +151,7 @@ namespace {Project.NameSpace}.DataAccess
         }}
 
         /// <summary>
-        /// ¶ÁÈ¡Á¬½Ó×Ö·û´®
+        /// è¯»å–è¿æ¥å­—ç¬¦ä¸²
         /// </summary>
         /// <returns></returns>
         protected override string LoadConnectionStringSetting()
@@ -216,12 +216,12 @@ namespace {Project.NameSpace}.DataAccess
 //        code.AppendFormat(@"
 
 ///// <summary>
-///// {0}Êı¾İ·ÃÎÊ¶ÔÏó
+///// {0}æ•°æ®è®¿é—®å¯¹è±¡
 ///// </summary>
 //private {2}BusinessEntity _{1};
 
 ///// <summary>
-///// {0}Êı¾İ·ÃÎÊ¶ÔÏó
+///// {0}æ•°æ®è®¿é—®å¯¹è±¡
 ///// </summary>
 //{4} {2}BusinessEntity {3}
 //{{
@@ -269,7 +269,7 @@ namespace {Project.NameSpace}.DataAccess
 //    return string.Format(@"
 
 ///// <summary>
-///// {0}µÄ½á¹¹Óï¾ä
+///// {0}çš„ç»“æ„è¯­å¥
 ///// </summary>
 //private TableSql _{1}Sql = new TableSql
 //{{

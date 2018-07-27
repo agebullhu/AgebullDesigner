@@ -1,10 +1,103 @@
-﻿namespace Agebull.EntityModel.Config
+﻿using System;
+using System.Linq;
+
+namespace Agebull.EntityModel.Config
 {
     /// <summary>
     ///     实体实现接口的命令
     /// </summary>
     public static class CsharpHelper
     {
+        public static void CheckType(PropertyConfig column, string type)
+        {
+            if (type[type.Length - 1] == '?')
+            {
+                column.Nullable = true;
+                type = type.TrimEnd('?');
+            }
+
+            var tp = type.TrimEnd('?');
+            var strs = tp.Split(new char[] { '-', '<', '>', '[' }, StringSplitOptions.RemoveEmptyEntries);
+            switch (strs[0].ToLower())
+            {
+                case "t":
+                case "s":
+                case "string":
+                case "nvarchar":
+                    column.CsType = "string";
+                    break;
+                case "ls":
+                    column.CsType = "string";
+                    column.IsBlob = true;
+                    break;
+                case "b":
+                case "bit":
+                case "bool":
+                    column.CsType = "bool";
+                    break;
+                case "i":
+                case "int":
+                    column.CsType = "int";
+                    break;
+                case "l":
+                case "long":
+                case "bigint":
+                    column.CsType = "long";
+                    break;
+                case "d":
+                case "decimal":
+                case "money":
+                case "numeric":
+                    column.CsType = "decimal";
+                    break;
+                case "f":
+                case "float":
+                    column.CsType = "double";
+                    break;
+                case "p":
+                    column.IsPrimaryKey = true;
+                    column.CsType = "int";
+                    break;
+                case "datetime":
+                    column.CsType = "DateTime";
+                    break;
+                case "list":
+                case "ilist":
+                case "collection":
+                case "icollection":
+                case "ienumerable":
+                case "arraylist":
+                case "stack":
+                case "queue":
+                case "sortedlist":
+                case "observablecollection":
+                    CheckType(column, strs.Last());
+                    column.ReferenceType = type;
+                    column.IsArray = true;
+                    break;
+                case "dictionary":
+                    CheckType(column, strs.Last());
+                    column.ReferenceType = type;
+                    column.IsDictionary = true;
+                    break;
+                default:
+                    column.CsType = "object";
+                    column.CustomType = type;
+                    column.ReferenceType = type;
+                    break;
+            }
+            if (strs.Length == 1)
+                return;
+            if (strs[strs.Length - 1].Length > 1 && strs[strs.Length - 1][0] == '#' && int.TryParse(strs[strs.Length - 1].Substring(1), out var len))
+                column.Datalen = len;
+            if (strs[1].LastOrDefault() == ']')
+            {
+                if (int.TryParse(strs[1].Substring(0, strs.Length - 1), out len))
+                    column.ArrayLen = len.ToString();
+                column.IsArray = true;
+            }
+        }
+
 
         /// <summary>
         /// 得到标准的C#类型

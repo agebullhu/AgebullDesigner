@@ -30,15 +30,13 @@ namespace Agebull.Common.Mvvm
 
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
         {
-            var binding = AssociatedObject.DataContext as IGridSelectionBinding;
-            if (binding != null)
+            if (AssociatedObject.DataContext is IGridSelectionBinding binding)
                 binding.SelectColumns = AssociatedObject.SelectedItems;
         }
 
         private void AssociatedObject_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
-            var descriptor = e.PropertyDescriptor as MemberDescriptor;
-            if (descriptor == null)
+            if (!(e.PropertyDescriptor is MemberDescriptor descriptor))
                 return;
             if (!descriptor.IsBrowsable)
             {

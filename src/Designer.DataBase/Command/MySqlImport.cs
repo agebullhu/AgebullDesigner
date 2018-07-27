@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Windows.Threading;
@@ -25,34 +26,26 @@ namespace Agebull.EntityModel.Designer
 {
     public class MySqlImport : NotificationObject
     {
-        private SolutionConfig _solution;
         private ProjectConfig _project;
         private TraceMessage _trace;
         private Dispatcher _dispatcher;
         private string _connectionString,_database;
 
 
-        public void Import(TraceMessage trace, SolutionConfig solution, Dispatcher dispatcher)
+        public void Import(TraceMessage trace, ProjectConfig project, Dispatcher dispatcher)
         {
-            var conStr = ConfigurationManager.ConnectionStrings["mysql"];
-            MySqlConnectionStringBuilder cb = new MySqlConnectionStringBuilder(conStr.ConnectionString);
-            _database = cb.Database;
+            _project = project;
+            _database = project.DbSoruce;
             _trace = trace;
             _dispatcher = dispatcher;
-            _solution = solution;
-            _project = solution.Projects.FirstOrDefault(p => p.Name == _database);
-            if (_project == null)
+            var csb = new MySqlConnectionStringBuilder
             {
-                _project = new ProjectConfig
-                {
-                    Name = _database,
-                    DataBaseObjectName = _database.ToUWord()
-                };
-
-                dispatcher.Invoke(() => solution.Projects.Add(_project));
-            }
-            _solution = solution;
-            _connectionString= conStr.ConnectionString;
+                Server = project.DbHost,
+                UserID = project.DbUser,
+                Password = project.DbPassWord,
+                Database = project.DbSoruce
+            };
+            _connectionString = csb.ConnectionString;
             DoImport();
         }
 
@@ -94,22 +87,19 @@ namespace Agebull.EntityModel.Designer
                     string table = t;
                     bool isnew = false;
                     _trace.Message2 = table;
-                    var entity = _solution.Entities.FirstOrDefault(p => string.Equals(p.SaveTable, table, StringComparison.OrdinalIgnoreCase));
+                    var entity = GlobalConfig.GetEntity(p => string.Equals(p.SaveTable, table, StringComparison.OrdinalIgnoreCase));
                     if (entity == null)
                     {
                         isnew = true;
                         entity = new EntityConfig
                         {
                             ReadTableName = table,
-                            Name = CoderBase.ToWordName(table),
-                            Project = _database
+                            Name = CoderBase.ToWordName(table)
                         };
                         _trace.Track = @"新增的表";
-                        entity.Caption = BaiduFanYi.FanYi(entity.Name);
                         _dispatcher.Invoke(() =>
                         {
-                            _project.Entities.Add(entity);
-                            _solution.Entities.Add(entity);
+                            _project.Add(entity);
                         });
                     }
                     _trace.Message3 = "列分析";
@@ -176,7 +166,7 @@ from information_schema.columns where table_schema='{
                             Parent=entity 
                         };
 
-                        InvokeInUiThread(() => entity.Properties.Add(column));
+                        InvokeInUiThread(() => entity.Add(column));
                         if (!reader.IsDBNull(5))
                         {
                             column.Caption = reader.GetString(5);
@@ -228,19 +218,7 @@ from information_schema.columns where table_schema='{
                     _trace.Track = $@"属性名称:{column.Name}";
                     if (string.IsNullOrWhiteSpace(column.Caption))
                     {
-                        column.Caption = BaiduFanYi.FanYi(column.Name);
-                        _trace.Track = $@"通过百度翻译得到中文名称:{column.Caption}";
-                    }
-                    else
-                    {
-                        CheckEnum(column);
-                        if (column.EnumConfig != null)
-                        {
-                            column.EnumConfig.Name = column.Name + "Type";
-                            column.EnumConfig.Caption = column.Caption + "自定义类型";
-                            column.CustomType = column.EnumConfig.Name;
-                            _trace.Track = $@"解析得到枚举类型:{column.EnumConfig.Name},参考内容{column.EnumConfig.Description}";
-                        }
+                        column.Caption = column.Name;
                     }
                     if (string.IsNullOrWhiteSpace(column.Description))
                     {
@@ -250,117 +228,7 @@ from information_schema.columns where table_schema='{
                 }
             }
         }
-
-
-        #region 方法
-
-        public static void CheckEnum(PropertyConfig column)
-        {
-            var line = column.Description?.Trim(CoderBase.NoneLanguageChar) ?? "";
-
-            StringBuilder sb = new StringBuilder();
-            StringBuilder caption = new StringBuilder();
-            bool preIsNumber = false;
-            bool startEnum = false;
-            EnumConfig ec = new EnumConfig
-            {
-                Name = column.Parent.Name.ToUWord() + column.Name.ToUWord(),
-                Description = column.Description,
-                Caption = column.Caption,
-                Items = new ConfigCollection<EnumItem>()
-            };
-            EnumItem ei = new EnumItem();
-            foreach (var c in line)
-            {
-                if (c >= '0' && c <= '9')
-                {
-                    if (!preIsNumber)
-                    {
-                        if (!startEnum)
-                        {
-                            caption.Append(sb);
-                        }
-                        else if (sb.Length > 0)
-                        {
-                            new List<string>().Add(sb.ToString());
-                            ei.Caption = sb.ToString();
-                        }
-                        sb = new StringBuilder();
-                        startEnum = true;
-                    }
-                    preIsNumber = true;
-                }
-                else
-                {
-                    if (preIsNumber)
-                    {
-                        if (sb.Length > 0)
-                        {
-                            ei = new EnumItem
-                            {
-                                Value = sb.ToString()
-                            };
-                            ec.Items.Add(ei);
-                            sb = new StringBuilder();
-                        }
-                    }
-                    preIsNumber = false;
-                }
-                sb.Append(c);
-            }
-
-            if (!startEnum)
-                return;
-            if (sb.Length > 0)
-            {
-                if (preIsNumber)
-                {
-                    ec.Items.Add(new EnumItem
-                    {
-                        Value = sb.ToString()
-                    });
-                }
-                else
-                {
-                    ei.Caption = sb.ToString();
-                }
-            }
-
-            if (ec.Items.Count > 0)
-            {
-                ec.LinkField = column.Key;
-                column.EnumConfig = ec;
-                column.CustomType = ec.Name;
-                column.Description = line;
-                foreach (var item in ec.Items)
-                {
-                    if (string.IsNullOrEmpty(item.Caption))
-                    {
-                        column.EnumConfig = null;
-                        column.CustomType = null;
-                        return;
-                    }
-                    var arr = item.Caption.Trim(CoderBase.NoneNameChar).Split(CoderBase.NoneNameChar, StringSplitOptions.RemoveEmptyEntries);
-                    if (arr.Length == 0)
-                    {
-                        column.EnumConfig = null;
-                        column.CustomType = null;
-                        return;
-                    }
-                    item.Caption = arr[0];
-                    item.Name = BaiduFanYi.FanYiWord(item.Caption.MulitReplace2("", "表示"));
-                }
-                if (caption.Length > 0)
-                    column.Caption = caption.ToString();
-            }
-            else
-            {
-                column.EnumConfig = null;
-                column.CustomType = null;
-            }
-        }
-
-        #endregion
+        
 
         private string FirstBy(string str, params string[] args)
         {

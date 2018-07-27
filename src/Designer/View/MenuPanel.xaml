@@ -3,12 +3,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d" Background="WhiteSmoke" BorderBrush="Silver" BorderThickness="1" Padding="2">
-
-    <StackPanel Orientation="Horizontal">
+             mc:Ignorable="d" Background="WhiteSmoke">
+    <StackPanel Orientation="Vertical">
+        <DockPanel>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                <TextBox Text="{Binding Model.Context.FindKey,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}" Margin="2" Width="300"  />
+                <ContentControl DataContext="{Binding Model.Tree.FindCommand}">
+                    <Button Style="{StaticResource  CommandButton}" />
+                </ContentControl>
+            </StackPanel>
+            <Menu ItemsSource="{Binding Model.Editor.WindowMenu.Items}"  DockPanel.Dock="Right"/>
+            <Menu ItemsSource="{Binding Model.Editor.Menus}"/>
+        </DockPanel>
+        <Border BorderBrush="WhiteSmoke" BorderThickness="0,0,1,0" Padding="2" MinHeight="32">
         <ItemsControl VerticalAlignment="Stretch"
                       HorizontalAlignment="Stretch"
-                      ItemsSource="{Binding SolutionCommands,Mode=OneWay}">
+                      ItemsSource="{Binding Model.Editor.Buttons}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Button Style="{StaticResource CommandButton}" />
@@ -16,45 +26,11 @@
             </ItemsControl.ItemTemplate>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <StackPanel VerticalAlignment="Stretch"
-                                HorizontalAlignment="Stretch"
-                                Orientation="Horizontal" />
+                        <WrapPanel VerticalAlignment="Stretch"
+                                   HorizontalAlignment="Stretch" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
-        </ItemsControl>
-        <Border Background="Silver" BorderBrush="Silver" BorderThickness="1" Width="1" Height="16"
-                Margin="3,0,0,3" />
-        <TextBlock Text="当前工作" VerticalAlignment="Center" Margin="5,0,3,0" />
-        <ComboBox Width="120" DataContext="{Binding Model.Context}"
-                  SelectedItem="{Binding NowJob}"
-                  ItemsSource="{Binding Jobs,Mode=OneWay}"
-                  VerticalAlignment="Center" Margin="5,0,3,0" />
-        <Border Background="Silver" BorderBrush="Silver"
-                BorderThickness="1" Width="1" Height="16" Margin="3,0,0,3" />
-        <ItemsControl VerticalAlignment="Stretch"
-                      HorizontalAlignment="Stretch"
-                      DataContext="{Binding Model.Tree.SelectItem}"
-                      ItemsSource="{Binding Buttons}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Button Style="{StaticResource CommandButton}" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel VerticalAlignment="Stretch"
-                               HorizontalAlignment="Stretch" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
-
-        <Menu>
-            <MenuItem Header="其它" 
-                      Icon="{DynamicResource imgDefault}"
-                      DataContext="{Binding Model.Tree.SelectItem}"
-                      ItemsSource="{Binding Menus}">
-                
-            </MenuItem>
-        </Menu>
+            </ItemsControl>
+        </Border>
     </StackPanel>
 </UserControl>

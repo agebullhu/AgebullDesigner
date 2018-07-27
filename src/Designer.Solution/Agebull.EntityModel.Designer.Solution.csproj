@@ -42,29 +42,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Gboxt.Common.Exception">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.Exception.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Extend">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.Extend.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.IO">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.IO.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Logging">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Reflection">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.Reflection.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.ScopeBase">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.ScopeBase.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.SystemExtend">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.SystemExtend.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Text">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.Text.dll</HintPath>
+    <Reference Include="Agebull.Common.Extend">
+      <HintPath>..\Lib\Agebull.Common.Extend.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -73,6 +52,9 @@
     <Reference Include="Microsoft.Expression.Drawing, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files (x86)\Microsoft SDKs\Expression\Blend\.NETFramework\v4.5\Libraries\Microsoft.Expression.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NPOI, Version=2.3.0.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <HintPath>..\packages\NPOI.2.3.0\lib\net40\NPOI.dll</HintPath>
@@ -113,11 +95,20 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaiduFanYi\BaiduFanYi.cs" />
     <Compile Include="Business\ProjectBusiness.cs" />
-    <Compile Include="Command\BaiduFanYiCommand.cs" />
+    <Compile Include="BaiduFanYi\BaiduFanYiCommand.cs" />
     <Compile Include="Command\ConfigCommands.cs" />
-    <Compile Include="Command\EnumModel.cs" />
+    <Compile Include="Command\EntityCommands1.cs" />
     <Compile Include="Command\ImportModel.cs" />
+    <Compile Include="Command\ProjectCommands.cs" />
+    <Compile Include="Command\PropertyCommands.cs" />
+    <Compile Include="Command\SolutionCommands.cs" />
+    <Compile Include="Command\UserCommandConfigCommands.cs" />
+    <Compile Include="DataType\DataTypePanel.xaml.cs">
+      <DependentUpon>DataTypePanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DataType\DataTypeViewModel.cs" />
     <Compile Include="Import\AssemblyImporter.cs" />
     <Compile Include="Import\DesignToExcel.cs" />
     <Compile Include="Import\EdmxReader.cs" />
@@ -182,6 +173,12 @@
       <Project>{6f6dc5d2-85ef-4bb5-82fa-bd21f7aa3053}</Project>
       <Name>Agebull.Common.Mvvm</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="DataType\DataTypePanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

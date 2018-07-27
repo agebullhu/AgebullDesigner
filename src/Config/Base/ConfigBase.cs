@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using Agebull.Common.LUA;
 using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
@@ -13,20 +11,48 @@ namespace Agebull.EntityModel.Config
     ///     配置基础
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public class ConfigBase : SimpleConfig
+    public partial class ConfigBase : SimpleConfig
     {
         #region 设计
+        /// <summary>
+        /// 构造
+        /// </summary>
+        protected ConfigBase()
+        {
+            GlobalTrigger.OnCtor(this);
+            Option.Config = this;
+        }
+
+
+        [IgnoreDataMember, JsonIgnore]
+        private ConfigDesignOption _option;
+
+        /// <summary>
+        /// 配置
+        /// </summary>
+        [DataMember, JsonProperty("option", NullValueHandling = NullValueHandling.Ignore)]
+        public ConfigDesignOption Option
+        {
+            get => _option ?? (_option = new ConfigDesignOption { Config = this });
+            set
+            {
+                _option = value;
+                if (_option == null)
+                    _option = new ConfigDesignOption
+                    {
+                        Config = this
+                    };
+                else
+                    _option.Config = this;
+                OnPropertyChanged(nameof(Option));
+            }
+        }
 
         /// <summary>
         ///     当前实例
         /// </summary>
-        public SolutionConfig Solution => SolutionConfig.Current;
+        public SolutionConfig Solution => Option.Solution;
 
-        /// <summary>
-        ///     当前类型
-        /// </summary>
-        public virtual string Type => GetType().Name;
-        
         #endregion
 
         #region 扩展配置
@@ -183,10 +209,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public string this[string classify, string name]
         {
-            get
-            {
-                return Extend[classify,name];
-            }
+            get => Extend[classify, name];
             set
             {
                 Extend[classify, name] = value;
@@ -195,13 +218,8 @@ namespace Agebull.EntityModel.Config
         }
 
         #endregion
+
         #region 设计标识
-
-
-        /// <summary>
-        /// 标识
-        /// </summary>
-        [DataMember, JsonProperty("_key", NullValueHandling = NullValueHandling.Ignore)] private Guid _key;
 
         /// <summary>
         /// 标识
@@ -211,26 +229,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category("设计标识"), DisplayName("标识"), Description("名称")]
-        public Guid Key
-        {
-            get
-            {
-                return _key;
-            }
-            set
-            {
-                if (_key == value)
-                    return;
-                BeforePropertyChanged(nameof(Key), _key, value);
-                _key = value;
-                OnPropertyChanged(nameof(Key));
-            }
-        }
-
-        /// <summary>
-        /// 唯一标识
-        /// </summary>
-        [DataMember, JsonProperty("Identity", NullValueHandling = NullValueHandling.Ignore)] private int _identity;
+        public Guid Key => Option.Key;
 
         /// <summary>
         /// 唯一标识
@@ -240,26 +239,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category("设计标识"), DisplayName("唯一标识"), Description("唯一标识")]
-        public int Identity
-        {
-            get
-            {
-                return _identity;
-            }
-            set
-            {
-                if (_identity == value)
-                    return;
-                BeforePropertyChanged(nameof(Identity), _identity, value);
-                _identity = value;
-                OnPropertyChanged(nameof(Identity));
-            }
-        }
-
-        /// <summary>
-        /// 编号
-        /// </summary>
-        [DataMember, JsonProperty("Index", NullValueHandling = NullValueHandling.Ignore)] private int _index;
+        public int Identity => Option.Identity;
 
         /// <summary>
         /// 编号
@@ -269,34 +249,9 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category("设计标识"), DisplayName("编号"), Description("编号")]
-        public int Index
-        {
-            get
-            {
-                return _index;
-            }
-            set
-            {
-                if (_index == value)
-                    return;
-                BeforePropertyChanged(nameof(Index), _index, value);
-                _index = value;
-                OnPropertyChanged(nameof(Index));
-            }
-        }
+        public int Index => Option.Index;
         #endregion
         #region 系统
-        /// <summary>
-        /// 是否预定义对象
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore,Browsable( false),ReadOnly(true)]
-        public bool IsPredefined;
-
-
-        /// <summary>
-        /// 引用对象键
-        /// </summary>
-        [DataMember, JsonProperty("ReferenceKey", NullValueHandling = NullValueHandling.Ignore)] private Guid _referenceKey;
 
         /// <summary>
         /// 引用对象键
@@ -308,24 +263,9 @@ namespace Agebull.EntityModel.Config
         [Category("设计器支持"), DisplayName("引用对象键"), Description("引用对象键，指内部对象的引用")]
         public Guid ReferenceKey
         {
-            get
-            {
-                return _referenceKey;
-            }
-            set
-            {
-                if (_referenceKey == value)
-                    return;
-                BeforePropertyChanged(nameof(ReferenceKey), _referenceKey, value);
-                _referenceKey = value;
-                OnPropertyChanged(nameof(ReferenceKey));
-            }
+            get => Option.ReferenceKey;
+            set => Option.ReferenceKey = value;
         }
-
-        /// <summary>
-        /// 是否参照对象
-        /// </summary>
-        [DataMember, JsonProperty("_isReference", NullValueHandling = NullValueHandling.Ignore)] private bool _isReference;
 
         /// <summary>
         /// 是否参照对象
@@ -335,27 +275,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category("设计器支持"), DisplayName("是否参照对象"), Description("是否参照对象，是则永远只读")]
-        public bool IsReference
-        {
-            get
-            {
-                return _isReference;
-            }
-            set
-            {
-                if (_isReference == value)
-                    return;
-                BeforePropertyChanged(nameof(IsReference), _isReference, value);
-                _isReference = value;
-                OnPropertyChanged(nameof(IsReference));
-            }
-        }
-
-        
-        /// <summary>
-        /// 废弃
-        /// </summary>
-        [DataMember, JsonProperty("Discard", NullValueHandling = NullValueHandling.Ignore)] private bool _discard;
+        public bool IsReference => Option.IsReference;
 
         /// <summary>
         /// 废弃
@@ -365,26 +285,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category("设计器支持"), DisplayName("废弃"), Description("废弃")]
-        public bool Discard
-        {
-            get
-            {
-                return _discard;
-            }
-            set
-            {
-                if (_discard == value)
-                    return;
-                BeforePropertyChanged(nameof(Discard), _discard, value);
-                _discard = value;
-                OnPropertyChanged(nameof(Discard));
-            }
-        }
-        
-        /// <summary>
-        /// 冻结
-        /// </summary>
-        [DataMember, JsonProperty("IsFreeze", NullValueHandling = NullValueHandling.Ignore)] private bool _isFreeze;
+        public bool IsDiscard => Option.IsDiscard;
 
         /// <summary>
         /// 冻结
@@ -394,26 +295,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category("设计器支持"), DisplayName("冻结"), Description("如为真,此配置的更改将不生成代码")]
-        public bool IsFreeze
-        {
-            get
-            {
-                return _isFreeze;
-            }
-            set
-            {
-                if (_isFreeze == value)
-                    return;
-                BeforePropertyChanged(nameof(IsFreeze), _isFreeze, value);
-                _isFreeze = value;
-                OnPropertyChanged(nameof(IsFreeze));
-            }
-        }
-
-        /// <summary>
-        /// 标记删除
-        /// </summary>
-        [DataMember, JsonProperty("_isDelete", NullValueHandling = NullValueHandling.Ignore)] private bool _isDelete;
+        public bool IsFreeze => Option.IsFreeze;
 
         /// <summary>
         /// 标记删除
@@ -423,33 +305,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category("设计器支持"), DisplayName("标记删除"), Description("如为真,保存时删除")]
-        public bool IsDelete
-        {
-            get
-            {
-                return _isDelete;
-            }
-            set
-            {
-                if (_isDelete == value)
-                    return;
-                BeforePropertyChanged(nameof(IsDelete), _isDelete, value);
-                _isDelete = value;
-                OnPropertyChanged(nameof(IsDelete));
-            }
-        }
+        public bool IsDelete => Option.IsDelete;
         #endregion 系统 
 
         #region 扩展
-        /// <summary>
-        ///     原始状态
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore] public ConfigStateType OriginalState;
-
-        /// <summary>
-        /// 标签（对应关系等）
-        /// </summary>
-        [DataMember, JsonProperty("Tag", NullValueHandling = NullValueHandling.Ignore)] private string _tag;
 
         /// <summary>
         /// 标签（对应关系等）
@@ -461,120 +320,8 @@ namespace Agebull.EntityModel.Config
         [Category("*设计"), DisplayName("标签（对应关系等）"), Description("值")]
         public string Tag
         {
-            get
-            {
-                return _tag;
-            }
-            set
-            {
-                if (_tag == value)
-                    return;
-                BeforePropertyChanged(nameof(Tag), _tag, value);
-                _tag = value;
-                OnPropertyChanged(nameof(Tag));
-            }
-        }
-        /// <summary>
-        /// 曾用名
-        /// </summary>
-        [DataMember, JsonProperty("_oldNames", NullValueHandling = NullValueHandling.Ignore)] private List<string> _oldNames;
-
-        /// <summary>
-        /// 曾用名
-        /// </summary>
-        /// <remark>
-        /// 曾用名
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category("运行时"), DisplayName("曾用名"), Description("曾用名")]
-        public List<string> OldNames
-        {
-            get
-            {
-                return _oldNames ??(_oldNames = new List<string>());
-            }
-            set
-            {
-                if (_oldNames == value)
-                    return;
-                BeforePropertyChanged(nameof(OldNames), _oldNames, value);
-                _oldNames = value;
-                OnPropertyChanged(nameof(OldNames));
-            }
-        }
-
-        /// <summary>
-        ///     曾用名
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [ReadOnly(true)]
-        [Category("设计器支持")]
-        [DisplayName(@"曾用名")]
-        [Description("曾用名")]
-        public string NameHistory => OldNames.LinkToString(",");
-
-        /// <summary>返回表示当前对象的字符串。</summary>
-        /// <returns>表示当前对象的字符串。</returns>
-        /// <filterpriority>2</filterpriority>
-        public override string ToString()
-        {
-            return $"{Caption}:{Name}";
-        }
-
-        #endregion
-        
-        #region LUA结构支持
-
-        /// <summary>
-        ///     LUA结构支持
-        /// </summary>
-        /// <returns></returns>
-        public virtual void GetLuaStruct(StringBuilder code)
-        {
-            if (!string.IsNullOrWhiteSpace(Name))
-                code.AppendLine($@"['Name'] = '{Name.ToLuaString()}',");
-
-            if (!string.IsNullOrWhiteSpace(Caption))
-                code.AppendLine($@"['Caption'] = ""{Caption.ToLuaString()}"",");
-
-            if (!string.IsNullOrWhiteSpace(Description))
-                code.AppendLine($@"['Description'] = '{Description.ToLuaString()}',");
-
-            code.AppendLine($@"['IsReference'] = {IsReference.ToString().ToLower()},");
-
-            code.AppendLine($@"['Key'] = '{Key}',");
-
-            code.AppendLine($@"['Identity'] = {Identity},");
-
-            code.AppendLine($@"['Index'] = {Index},");
-
-            //code.AppendLine($@"['Discard'] = {(Discard.ToString().ToLower())},");
-
-            //code.AppendLine($@"['IsFreeze'] = {(IsFreeze.ToString().ToLower())},");
-
-            //code.AppendLine($@"['IsDelete'] = {(IsDelete.ToString().ToLower())},");
-
-            if (!string.IsNullOrWhiteSpace(Tag))
-                code.AppendLine($@"['Tag'] = '{Tag.ToLuaString()}',");
-
-            //if (!string.IsNullOrWhiteSpace(NameHistory))
-            //    code.AppendLine($@"['NameHistory'] = ""{NameHistory.ToLuaString()}"",");
-
-            //int idx = 0;
-            //code.Append("'OldNames':'{");
-            //foreach (var val in OldNames)
-            //    code.AppendLine($@"{++idx}:{val.GetLuaStruct()},");
-        }
-
-        /// <summary>
-        ///     LUA结构支持
-        /// </summary>
-        /// <returns></returns>
-        public string GetLuaStruct()
-        {
-            var code = new StringBuilder();
-            GetLuaStruct(code);
-            return "{" + code.ToString().TrimEnd('\r', '\n', ' ', '\t', ',') + "}";
+            get => ExtendConfigList["Tag"];
+            set => ExtendConfigList["Tag"] = value;
         }
 
         #endregion

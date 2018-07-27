@@ -24,7 +24,7 @@ namespace Agebull.EntityModel
     public sealed class TraceMessage : NotificationObject
     {
 
-        private Dictionary<int, int> threadIndex = new Dictionary<int, int>();
+        private readonly Dictionary<int, int> _threadIndex = new Dictionary<int, int>();
 
         private readonly ObservableCollection<string> _trace = new ObservableCollection<string>();
 
@@ -52,10 +52,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public bool MessageToTrace
         {
-            get
-            {
-                return _doTrace;
-            }
+            get => _doTrace;
             set
             {
                 if (_doTrace == value)
@@ -71,10 +68,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public string Message1
         {
-            get
-            {
-                return _message1;
-            }
+            get => _message1;
             set
             {
                 if (MessageToTrace) WriteTrace($"【{value}】");
@@ -91,10 +85,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public string Message2
         {
-            get
-            {
-                return _message2;
-            }
+            get => _message2;
             set
             {
                 if (MessageToTrace) WriteTrace($"〖{value}〗");
@@ -111,10 +102,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public string Message3
         {
-            get
-            {
-                return _message3;
-            }
+            get => _message3;
             set
             {
                 if (MessageToTrace) WriteTrace($"［{value}］");
@@ -132,10 +120,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public string Message4
         {
-            get
-            {
-                return _message4;
-            }
+            get => _message4;
             set
             {
                 if (MessageToTrace) WriteTrace($"〈{value}〉");
@@ -153,10 +138,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public string Status
         {
-            get
-            {
-                return _status;
-            }
+            get => _status;
             set
             {
                 WriteTrace(
@@ -212,10 +194,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public string SelectLine
         {
-            get
-            {
-                return _selectLine;
-            }
+            get => _selectLine;
             set
             {
                 if (Equals(_selectLine, value))
@@ -231,24 +210,24 @@ namespace Agebull.EntityModel
 #if CLIENT
             BeginInvokeInUiThread(p =>
             {
-                if (threadIndex.ContainsKey(Thread.CurrentThread.ManagedThreadId))
+                if (_threadIndex.ContainsKey(Thread.CurrentThread.ManagedThreadId))
                 {
-                    var idx = threadIndex[Thread.CurrentThread.ManagedThreadId] + 1;
+                    var idx = _threadIndex[Thread.CurrentThread.ManagedThreadId] + 1;
                     if (idx >= _trace.Count)
                     {
                         _trace.Add(time ? $"{DateTime.Now}:{p}" : p);
-                        threadIndex[Thread.CurrentThread.ManagedThreadId] = _trace.Count;
+                        _threadIndex[Thread.CurrentThread.ManagedThreadId] = _trace.Count;
                     }
                     else
                     {
                         _trace.Insert(idx, time ? $"{DateTime.Now}:{p}" : p);
-                        threadIndex[Thread.CurrentThread.ManagedThreadId] = idx;
+                        _threadIndex[Thread.CurrentThread.ManagedThreadId] = idx;
                     }
                 }
                 else
                 {
                     _trace.Add(time ? $"{DateTime.Now}:{p}" : p);
-                    threadIndex.Add(Thread.CurrentThread.ManagedThreadId, _trace.Count - 1);
+                    _threadIndex.Add(Thread.CurrentThread.ManagedThreadId, _trace.Count - 1);
                 }
                 RaisePropertyChanged(() => Track);
                 LastMessageIndex = _trace.Count - 1;
@@ -283,10 +262,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public int LastMessageIndex
         {
-            get
-            {
-                return _lastMessageIndex;
-            }
+            get => _lastMessageIndex;
             set
             {
                 if (Equals(_lastMessageIndex, value))
@@ -320,7 +296,7 @@ namespace Agebull.EntityModel
         /// <param name="message">消息</param>
         public void ShowMessage(int level, object message)
         {
-            ShowMessage(level, message == null ? null : message.ToString());
+            ShowMessage(level, message?.ToString());
         }
 
         /// <summary>

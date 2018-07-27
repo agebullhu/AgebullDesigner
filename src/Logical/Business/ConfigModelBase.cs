@@ -1,24 +1,13 @@
 using System;
 using System.Text;
-using Agebull.Common;
 
 namespace Agebull.EntityModel.Config
 {
     /// <summary>
-        /// 实体配置业务模型
-        /// </summary>
-        public class ConfigModelBase : GlobalConfig
+    /// 实体配置业务模型
+    /// </summary>
+    public class ConfigModelBase : GlobalConfig
     {
-        /// <summary>
-        /// 设置当前解决方案
-        /// </summary>
-        /// <param name="solution"></param>
-        public static void SetCurrentSolution(SolutionConfig solution)
-        {
-            SolutionConfig.SetCurrentSolution(solution);
-            GlobalTrigger.Reset();
-            GlobalTrigger.OnLoad(solution);
-        }
         /// <summary>
         /// 修复配置名称
         /// </summary>
@@ -38,12 +27,7 @@ namespace Agebull.EntityModel.Config
 
         private static string ReplceWord(string caption, bool isEn)
         {
-            if (caption == null)
-                return null;
-            caption = caption.Trim(NoneLanguageChar);
-            if (isEn)
-                caption = BaiduFanYi.FanYi(caption);
-            return caption;
+            return caption?.Trim(NoneLanguageChar);
         }
     }
 }

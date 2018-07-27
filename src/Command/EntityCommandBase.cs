@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
@@ -14,92 +13,25 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     public abstract class EntityCommandBase : ConfigCommandBase<EntityConfig>
     {
+        protected EntityCommandBase()
+        {
+            TargetType = typeof(EntityConfig);
+        }
         /// <summary>
         /// 转为命令对象
         /// </summary>
         /// <returns>命令对象</returns>
-        public override CommandItem ToCommand(object arg, Func<object, IEnumerator> enumerator = null)
+        public override CommandItemBase ToCommand(object arg, Func<object, IEnumerator> enumerator = null)
         {
-            return new CommandItem
+            var item = new AsyncCommandItem<object, bool>(DoPrepare, Doing, End)
             {
-                Command = new AsyncCommand<object, bool>(Prepare, Doing, End),
-                Parameter = arg,
-                Name = Caption,
-                NoButton = NoButton,
-                IconName = IconName,
-                SourceType = SourceType,
-                Catalog = Catalog,
-                Caption = Caption,
-                Description = Description,
+                Source = arg,
                 Image = Application.Current.Resources[IconName ?? "imgDefault"] as ImageSource
             };
+            item.CopyFrom(this);
+            return item;
         }
 
-        public class RuntimeArgument
-        {
-            /// <summary>
-            /// 参数
-            /// </summary>
-            public object Argument
-            {
-                get { return _argument; }
-                set
-                {
-                    _argument = value;
-                    GetEntities();
-                }
-            }
-            
-            private object _argument;
-
-            /// <summary>
-            /// 当前实体对象
-            /// </summary>
-            public IList<EntityConfig> Entities { get; private set; }
-
-            /// <summary>
-            /// 当前关联项目
-            /// </summary>
-            public List<ProjectConfig> Projects { get; private set; }
-
-            /// <summary>
-            /// 默认的取当前实体的方法 
-            /// </summary>
-            /// <returns></returns>
-            void GetEntities()
-            {
-                var list = new List<EntityConfig>();
-                var entityConfig = _argument as EntityConfig;
-                if (entityConfig != null)
-                {
-                    list.Add(entityConfig);
-                }
-                else
-                {
-                    var propertyConfig = _argument as PropertyConfig;
-                    if (propertyConfig != null)
-                    {
-                        list.Add(propertyConfig.Parent);
-                    }
-                    else
-                    {
-                        var projectConfig = _argument as ProjectConfig;
-                        list.AddRange(projectConfig != null ? projectConfig.Entities : SolutionConfig.Current.Entities);
-                    }
-                }
-
-                Projects = new List<ProjectConfig>();
-                foreach (var entity in list)
-                {
-                    var project = entity.Parent;
-                    if (project == null)
-                        continue;
-                    if (!Projects.Contains(project))
-                        Projects.Add(project);
-                }
-                Entities = list;
-            }
-        }
 
         /// <summary>
         /// 当前跟踪消息
@@ -128,9 +60,9 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 能否执行的检查
         /// </summary>
-        public virtual void Prepare(RuntimeArgument argument)
+        public virtual bool Prepare(RuntimeArgument argument)
         {
-
+            return true;
         }
 
         /// <summary>
@@ -152,6 +84,15 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 单个检查
         /// </summary>
+        /// <param name="project"></param>
+        /// <returns></returns>
+        public virtual bool Validate(ProjectConfig project)
+        {
+            return true;
+        }
+        /// <summary>
+        /// 单个检查
+        /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
         public virtual bool Validate(EntityConfig entity)
@@ -164,7 +105,7 @@ namespace Agebull.EntityModel.Designer
         /// <param name="args"></param>
         /// <param name="setArgs"></param>
         /// <returns></returns>
-        private bool Prepare(object args, Action<object> setArgs)
+        private bool DoPrepare(object args, Action<object> setArgs)
         {
             var argument = new RuntimeArgument
             {
@@ -174,6 +115,13 @@ namespace Agebull.EntityModel.Designer
                 return false;
             Prepare(argument);
             bool success = true;
+            foreach (var project in argument.Projects)
+            {
+                if (Validate(project))
+                    continue;
+                success = false;
+                MessageBox.Show("有错误配置,请检查");
+            }
             foreach (var entity in argument.Entities)
             {
                 if (Validate(entity))
@@ -186,31 +134,60 @@ namespace Agebull.EntityModel.Designer
             return success;
         }
 
+        /// <summary>
+        /// 处理前
+        /// </summary>
+        /// <param name="argument"></param>
+        /// <returns></returns>
+        public virtual bool BeginDo(RuntimeArgument argument)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// 处理后
+        /// </summary>
+        /// <param name="argument"></param>
+        /// <returns></returns>
+        public virtual void EndDo(RuntimeArgument argument)
+        {
+        }
         private bool Doing(object args)
         {
             var argument = (RuntimeArgument)args;
-            foreach (var entity in argument.Entities)
+            if (!BeginDo(argument))
+                return false;
+            try
             {
-                Execute(entity);
+                foreach (var entity in argument.Entities)
+                {
+                    Execute(entity);
+                }
+                foreach (var project in argument.Projects)
+                {
+                    Execute(project);
+                }
+
+                return true;
             }
-            foreach (var project in argument.Projects)
+            finally
             {
-                Execute(project);
+                EndDo(argument);
             }
-            return true;
+
         }
 
         protected void End(CommandStatus status, Exception ex, bool result)
         {
             if (status == CommandStatus.Succeed)
             {
-                MessageBox.Show(Name + "执行成功！");
+                MessageBox.Show(Caption + "执行成功！");
                 OnSuccees();
             }
             else
             {
-                MessageBox.Show(Name + "出错" + ex?.Message);
-                Trace.WriteLine(ex?.ToString(), Name);
+                MessageBox.Show(Caption + "出错" + ex?.Message);
+                Trace.WriteLine(ex?.ToString(), Caption);
             }
         }
     }

@@ -85,7 +85,6 @@ namespace Agebull.EntityModel.RobotCoder.Upgrade
         public Dictionary<string, ClassUpgradeConfig> GetConfig()
         {
             var cb = typeof(SimpleConfig);
-            if (cb.Assembly.Location != null)
             {
                 string path = cb.Assembly.Location.Replace("dll", "xml");
                 HelpXml = !File.Exists(path) ? new List<XmlMember>() : XmlMember.LoadHelpXml(path);
@@ -106,7 +105,6 @@ namespace Agebull.EntityModel.RobotCoder.Upgrade
         /// <returns></returns>
         public Dictionary<string, ClassUpgradeConfig> GetConfig(Assembly assembly)
         {
-            if (assembly.Location != null)
             {
                 string path = assembly.Location.Replace("dll", "xml");
                 HelpXml = !File.Exists(path) ? new List<XmlMember>() : XmlMember.LoadHelpXml(path);

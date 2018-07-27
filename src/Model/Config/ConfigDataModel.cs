@@ -42,10 +42,7 @@ namespace Agebull.EntityModel.Designer
         [Category("系统"), DisplayName("引用对象键"), Description("引用对象键，指实际包装的配置对象的引用")]
         public Guid ModelKey
         {
-            get
-            {
-                return _modelKey;
-            }
+            get => _modelKey;
             set
             {
                 if (_modelKey == value)
@@ -67,15 +64,14 @@ namespace Agebull.EntityModel.Designer
             {
                 if (_config != null)
                     return _config;
-                ConfigBase model;
-                if (!GlobalConfig.ConfigDictionary.TryGetValue(ModelKey, out model) || !(model is TConfig))
+                if (!GlobalConfig.ConfigDictionary.TryGetValue(ModelKey, out ConfigBase model) || !(model is TConfig))
                 {
                     TraceMessage.DefaultTrace.Track = $"引用键{ModelKey}无效";
                     ModelKey = Guid.Empty;
                 }
                 else
                 {
-                    _config = (TConfig) model;
+                    _config = (TConfig)model;
                 }
                 return _config;
             }
@@ -218,10 +214,7 @@ namespace Agebull.EntityModel.Designer
         [Category("系统"), DisplayName("是否参照对象"), Description("是否参照对象，是则永远只读")]
         public bool IsReference
         {
-            get
-            {
-                return _isReference;
-            }
+            get => _isReference;
             set
             {
                 if (_isReference == value)
@@ -248,10 +241,7 @@ namespace Agebull.EntityModel.Designer
         [Category("系统"), DisplayName("标识"), Description("名称")]
         public Guid Key
         {
-            get
-            {
-                return _key;
-            }
+            get => _key;
             set
             {
                 if (_key == value)
@@ -278,10 +268,7 @@ namespace Agebull.EntityModel.Designer
         [Category("系统"), DisplayName("唯一标识"), Description("唯一标识")]
         public int Identity
         {
-            get
-            {
-                return _identity;
-            }
+            get => _identity;
             set
             {
                 if (_identity == value)
@@ -308,10 +295,7 @@ namespace Agebull.EntityModel.Designer
         [Category("系统"), DisplayName("编号"), Description("编号")]
         public int Index
         {
-            get
-            {
-                return _index;
-            }
+            get => _index;
             set
             {
                 if (_index == value)
@@ -338,10 +322,7 @@ namespace Agebull.EntityModel.Designer
         [Category("系统"), DisplayName("废弃"), Description("废弃")]
         public bool Discard
         {
-            get
-            {
-                return _discard;
-            }
+            get => _discard;
             set
             {
                 if (_discard == value)
@@ -368,10 +349,7 @@ namespace Agebull.EntityModel.Designer
         [Category("系统"), DisplayName("冻结"), Description("如为真,此配置的更改将不生成代码")]
         public bool IsFreeze
         {
-            get
-            {
-                return _isFreeze;
-            }
+            get => _isFreeze;
             set
             {
                 if (_isFreeze == value)
@@ -398,10 +376,7 @@ namespace Agebull.EntityModel.Designer
         [Category("系统"), DisplayName("标记删除"), Description("如为真,保存时删除")]
         public bool IsDelete
         {
-            get
-            {
-                return _isDelete;
-            }
+            get => _isDelete;
             set
             {
                 if (_isDelete == value)
@@ -414,22 +389,7 @@ namespace Agebull.EntityModel.Designer
         #endregion 系统 
 
         #region 扩展
-        /// <summary>
-        ///     原始状态
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        public ConfigStateType OriginalState;
         
-        /// <summary>
-        ///     曾用名
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [ReadOnly(true)]
-        [Category("系统")]
-        [DisplayName(@"曾用名")]
-        [Description("曾用名")]
-        public string NameHistory => Config?.OldNames.LinkToString(",");
-
         /// <summary>返回表示当前对象的字符串。</summary>
         /// <returns>表示当前对象的字符串。</returns>
         /// <filterpriority>2</filterpriority>

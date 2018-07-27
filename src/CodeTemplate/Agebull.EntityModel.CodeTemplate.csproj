@@ -38,49 +38,15 @@
     </StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Gboxt.Common.Cache">
-      <HintPath>..\..\Extend\Lib\Gboxt.Common.Cache.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Desing.Attribute">
-      <HintPath>..\..\Extend\Lib\Gboxt.Common.Desing.Attribute.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Drawing">
-      <HintPath>..\..\Extend\Lib\Gboxt.Common.Drawing.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Exception">
-      <HintPath>..\..\Extend\Lib\Gboxt.Common.Exception.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Extend">
-      <HintPath>..\..\Extend\Lib\Gboxt.Common.Extend.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.IO">
-      <HintPath>..\..\Extend\Lib\Gboxt.Common.IO.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Logging">
-      <HintPath>..\..\Extend\Lib\Gboxt.Common.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Logging.Log4">
-      <HintPath>..\..\Extend\Lib\Gboxt.Common.Logging.Log4.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Reflection">
-      <HintPath>..\..\Extend\Lib\Gboxt.Common.Reflection.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.ScopeBase">
-      <HintPath>..\..\Extend\Lib\Gboxt.Common.ScopeBase.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.SystemExtend">
-      <HintPath>..\..\Extend\Lib\Gboxt.Common.SystemExtend.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Text">
-      <HintPath>..\..\Extend\Lib\Gboxt.Common.Text.dll</HintPath>
+    <Reference Include="Agebull.Common.Extend">
+      <HintPath>..\Lib\Agebull.Common.Extend.dll</HintPath>
     </Reference>
     <Reference Include="KeraLua, Version=1.3.2.0, Culture=neutral, PublicKeyToken=04d04586786c6f34, processorArchitecture=MSIL">
       <HintPath>..\packages\NLua.1.3.2.1\lib\net45\KeraLua.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLua, Version=1.3.2.0, Culture=neutral, PublicKeyToken=8df2ab518030ea95, processorArchitecture=MSIL">
       <HintPath>..\packages\NLua.1.3.2.1\lib\net45\NLua.dll</HintPath>
@@ -145,6 +111,10 @@
     <ProjectReference Include="..\Entities\Agebull.Common.Entity.csproj">
       <Project>{0D626DDA-02C0-4BD8-B2FD-EFEE0971510F}</Project>
       <Name>Agebull.Common.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Helper\Agebull.EntityModel.Config.Helper.csproj">
+      <Project>{A7888162-CFBD-4087-8C4A-978445BBE02A}</Project>
+      <Name>Agebull.EntityModel.Config.Helper</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

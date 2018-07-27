@@ -41,29 +41,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Gboxt.Common.Exception">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.Exception.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Extend">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.Extend.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.IO">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.IO.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Logging">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Reflection">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.Reflection.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.ScopeBase">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.ScopeBase.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.SystemExtend">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.SystemExtend.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Text">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.Text.dll</HintPath>
+    <Reference Include="Agebull.Common.Extend">
+      <HintPath>..\Lib\Agebull.Common.Extend.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Drawing, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -91,21 +70,24 @@
   <ItemGroup>
     <Compile Include="Business\EntityBusinessModel.cs" />
     <Compile Include="Business\PropertyBusinessModel.cs" />
-    <Compile Include="Command\EntityInterfaceCommand.cs" />
+    <Compile Include="Command\InterfaceCommand.cs" />
+    <Compile Include="Command\EntityPrimaryKeyHelper.cs" />
     <Compile Include="Command\InterfaceHelper.cs" />
-    <Compile Include="Model\CppFieldsViewModel.cs" />
-    <Compile Include="Command\EntityModel.cs" />
+    <Compile Include="Command\PropertyModel.cs" />
+    <Compile Include="Command\EntityCommonds.cs" />
     <Compile Include="Model\EntitySorter.cs" />
+    <Compile Include="Model\AllFieldsViewModel.cs" />
+    <Compile Include="Model\FieldFormatCommand.cs" />
     <Compile Include="Model\FieldsViewModel.cs" />
+    <Compile Include="Model\JsonViewModel.cs" />
+    <Compile Include="Model\ModelViewModel.cs" />
     <Compile Include="Model\NewEntityModel.cs" />
     <Compile Include="Model\NewEntityViewModel.cs" />
+    <Compile Include="Model\RegularViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Register.cs" />
-    <Compile Include="View\AllEntityFieldsControl.xaml.cs">
-      <DependentUpon>AllEntityFieldsControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\CppFieldsPanel.xaml.cs">
-      <DependentUpon>CppFieldsPanel.xaml</DependentUpon>
+    <Compile Include="View\AllFieldsPanel.xaml.cs">
+      <DependentUpon>AllFieldsPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\FieldsPanel.xaml.cs">
       <DependentUpon>FieldsPanel.xaml</DependentUpon>
@@ -115,6 +97,9 @@
     </Compile>
     <Compile Include="View\NewEntityWindow.xaml.cs">
       <DependentUpon>NewEntityWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\JsonPanel.xaml.cs">
+      <DependentUpon>JsonPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\RegularPanel.xaml.cs">
       <DependentUpon>RegularPanel.xaml</DependentUpon>
@@ -158,11 +143,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="View\AllEntityFieldsControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\CppFieldsPanel.xaml">
+    <Page Include="View\AllFieldsPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -175,6 +156,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\NewEntityWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\JsonPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

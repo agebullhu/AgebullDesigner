@@ -11,6 +11,45 @@ namespace Agebull.Common.Mvvm
     /// <summary>
     ///   布尔到可视的转换
     /// </summary>
+    public class NullVisibleConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+            {
+                return Visibility.Collapsed;
+            }
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value != null;
+        }
+    }
+    /// <summary>
+    ///   布尔到可视的转换
+    /// </summary>
+    public class BoolAlignmentConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null || !(bool)value)
+            {
+                return HorizontalAlignment.Left;
+            }
+            return HorizontalAlignment.Center;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return false;
+        }
+    }
+    
+    /// <summary>
+    ///   布尔到可视的转换
+    /// </summary>
     public class BoolToVisibleConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

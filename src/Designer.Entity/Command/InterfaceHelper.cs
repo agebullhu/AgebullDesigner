@@ -12,6 +12,57 @@ namespace Agebull.Common.Config.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
+    internal sealed class EntityHelper : EntityCommandBase, IAutoRegister
+    {
+        #region 注册
+
+        public EntityHelper()
+        {
+            Name = "规范实体名";
+            Caption = "规范实体名([Name]Data)";
+            Catalog = "工具";
+            ViewModel = "entity";
+        }
+
+        /// <summary>
+        /// 注册代码
+        /// </summary>
+        void IAutoRegister.AutoRegist()
+        {
+            CommandCoefficient.RegisterCommand<EntityHelper>();
+        }
+
+
+        #endregion
+
+        public override bool Prepare(RuntimeArgument argument)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// 执行器
+        /// </summary>
+        public override bool Execute(EntityConfig entity)
+        {
+            StateMessage = entity.Caption + "...";
+            entity.EntityName = entity.Name + "Data";
+            return true;
+        }
+
+        /// <summary>
+        /// 执行器
+        /// </summary>
+        public override bool Execute(ProjectConfig project)
+        {
+            return true;
+        }
+    }
+    /// <summary>
+    /// 接口实现检查
+    /// </summary>
+    [Export(typeof(IAutoRegister))]
+    [ExportMetadata("Symbol", '%')]
     internal sealed class InterfaceHelper : EntityCommandBase, IAutoRegister
     {
         #region 注册
@@ -20,23 +71,25 @@ namespace Agebull.Common.Config.Designer
         {
             Name = "Interface Check";
             Caption = "接口实现检查";
-            NoButton = true;
+            Catalog = "工具";
+            ViewModel = "entity";
         }
         /// <summary>
         /// 注册代码
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            CommandCoefficient.RegisterCommand<EntityConfig, InterfaceHelper>();
+            CommandCoefficient.RegisterCommand<InterfaceHelper>();
         }
 
 
         #endregion
-        
+
         private List<EntityConfig> interfaces;
-        public override void Prepare(RuntimeArgument argument)
+        public override bool Prepare(RuntimeArgument argument)
         {
             interfaces = GlobalConfig.Entities.Where(p => p.IsInterface).ToList();
+            return true;
         }
 
         /// <summary>
@@ -57,12 +110,12 @@ namespace Agebull.Common.Config.Designer
                         if (pro != null)
                         {
                             pro.IsInterfaceField = true;
-                            pro.ReferenceKey = field.Key;
+                            pro.Option.ReferenceKey = field.Option.Key;
                         }
                     }
                 }
             }
-            StateMessage = "检查完成:" + entity.Caption ;
+            StateMessage = "检查完成:" + entity.Caption;
             return true;
         }
 

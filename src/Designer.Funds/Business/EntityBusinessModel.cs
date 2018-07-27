@@ -62,17 +62,17 @@ namespace Agebull.EntityModel.Config
             {
                 if (repair)
                     foreach (var col in Entity.Properties)
-                        col.CppLastType = CppTypeHelper.CppLastType(col.CppType);
+                        col.CppLastType = CppTypeHelper2.CppLastType(col.CppType);
                 return;
             }
             RepairEsName(repair);
 
-            EntityConfig friend = GetEntity(p => p != Entity && p.Tag == Entity.Tag);
+            EntityConfig friend = GetEntity(p => p != Entity && p.Option.ReferenceTag == Entity.Option.ReferenceTag);
 
             PropertyBusinessModel model = new PropertyBusinessModel();
             foreach (var col in Entity.Properties)
             {
-                if (col.Discard || Entity.IsFreeze)
+                if (col.IsDiscard || Entity.IsFreeze)
                 {
                     continue;
                 }
@@ -90,8 +90,6 @@ namespace Agebull.EntityModel.Config
             if (Entity.CppName != null && !repair)
                 return;
 
-            if (Entity.OldNames.Contains(Entity.CppName))
-                Entity.OldNames.Add(Entity.CppName);
             //Entity.Tag = "ES3.0," + Entity.CppName;
 
             if (string.IsNullOrWhiteSpace(Entity.Name))

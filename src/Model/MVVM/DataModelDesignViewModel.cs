@@ -8,17 +8,12 @@
 
 #region 引用
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms.Integration;
-using System.Windows.Media;
 using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
-using Application = System.Windows.Application;
 using PropertyGrid = System.Windows.Forms.PropertyGrid;
 using PropertyValueChangedEventArgs = System.Windows.Forms.PropertyValueChangedEventArgs;
 
@@ -32,52 +27,22 @@ namespace Agebull.EntityModel.Designer
 
         IList IGridSelectionBinding.SelectColumns
         {
-            set { Model.Context.SelectConfigs = value; }
+            set => Model.Context.SelectConfigs = value;
         }
 
-        public DataModelDesignViewModel()
+        /// <summary>
+        /// 视图绑定成功后的初始化动作
+        /// </summary>
+        protected override void OnViewSeted()
         {
-            TypeConvert.Register();
+            GlobalTrigger.Dispatcher = Dispatcher;
+            base.OnViewSeted();
         }
 
-        #endregion
-
-        #region 工程自有命令
-
-        private List<CommandItem> _solutionCommands;
-        public List<CommandItem> SolutionCommands => _solutionCommands ?? (_solutionCommands = new List<CommandItem>
-        {
-            new CommandItem
-            {
-                Command = new DelegateCommand(Model.ConfigIo.CreateNew),
-                Name = "新建",
-                Image = Application.Current.Resources["img_add"] as ImageSource
-            },
-            new CommandItem
-            {
-                Command = new DelegateCommand(Model.ConfigIo.Load),
-                Name = "打开",
-                Image = Application.Current.Resources["img_open"] as ImageSource
-            },
-            new CommandItem
-            {
-                Command = new DelegateCommand(Model.ConfigIo.LoadGlobal),
-                Name = "全局",
-                Image = Application.Current.Resources["img_open"] as ImageSource
-            },
-            new CommandItem
-            {
-                Command = new DelegateCommand(Model.ConfigIo.ReLoad),
-                Name = "重新载入",
-                Image = Application.Current.Resources["img_redo"] as ImageSource
-            },
-            new CommandItem
-            {
-                Command = new DelegateCommand(Model.ConfigIo.Save),
-                Name = "保存",
-                Image = Application.Current.Resources["imgSave"] as ImageSource
-            }
-        });
+        //public DataModelDesignViewModel()
+        //{
+        //    TypeConvert.Register();
+        //}
 
         #endregion
 
@@ -88,8 +53,8 @@ namespace Agebull.EntityModel.Designer
         {
             var host = obj as WindowsFormsHost;
             // ReSharper disable PossibleNullReferenceException
-            Model.Context.PropertyGrid = host.Child as PropertyGrid;
-            Model.Context.PropertyGrid.PropertyValueChanged += PropertyGrid_PropertyValueChanged;
+            Model.Editor.PropertyGrid = host.Child as PropertyGrid;
+            Model.Editor.PropertyGrid.PropertyValueChanged += PropertyGrid_PropertyValueChanged;
             // ReSharper restore PossibleNullReferenceException
         }
 
@@ -98,7 +63,7 @@ namespace Agebull.EntityModel.Designer
             string name = e.ChangedItem?.PropertyDescriptor?.Name;
             if (name == null)
                 return;
-            foreach (var obj in Model.Context.PropertyGrid.SelectedObjects)
+            foreach (var obj in Model.Editor.PropertyGrid.SelectedObjects)
             {
                 var config = obj as ConfigBase;
                 config?.RaisePropertyChanged(name);
@@ -115,9 +80,14 @@ namespace Agebull.EntityModel.Designer
 
         public DependencyAction TabControlBehavior => new DependencyAction
         {
-            AttachAction =  obj => Model.ExtendControl = (TabControl)obj
+            AttachAction = obj => Model.Editor.ExtendEditorPanel = (TabControl)obj
         };
 
+
+        public DependencyAction WebBrowserBehavior => new DependencyAction
+        {
+            AttachAction = obj => Model.NormalCode.Browser = (WebBrowser)obj
+        };
         #endregion
     }
 }

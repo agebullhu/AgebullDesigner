@@ -9,6 +9,8 @@
 #region 引用
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using Agebull.EntityModel.Config;
@@ -21,46 +23,34 @@ using MessageBox = System.Windows.MessageBox;
 
 namespace Agebull.EntityModel.Designer
 {
-    internal class EasyUiViewModel : ExtendViewModelBase<EasyUiModel>
-    {
-        /// <summary>
-        /// 主面板
-        /// </summary>
-        public override FrameworkElement Body { get; } = new UiPanel();
-    }
     internal class EasyUiModel : DesignModelBase
     {
-        public EasyUiModel()
-        {
-            Catalog = "EasyUi";
-        }
-
-        protected override void CreateCommands(List<CommandItem> commandItems)
+        protected override void CreateCommands(ObservableCollection<CommandItemBase> commandItems)
         {
             commandItems.AddRange(new[]
             {
                 new CommandItem
                 {
-                    Command = new DelegateCommand(CheckUiType),
-                    Name = "控件类型修复",
+                    Action = CheckUiType,
+                    Caption = "控件类型修复",
                     Image = Application.Current.Resources["tree_item"] as ImageSource
                 },
                 new CommandItem
                 {
-                    Command = new DelegateCommand(CheckExport),
-                    Name = "导出导出初始化",
+                    Action = (CheckExport),
+                    Caption = "导出导出初始化",
                     Image = Application.Current.Resources["tree_item"] as ImageSource
                 },
                 new CommandItem
                 {
-                    Command = new DelegateCommand(CheckSimple),
-                    Name = "列表字段初始化",
+                    Action = (CheckSimple),
+                    Caption = "列表字段初始化",
                     Image = Application.Current.Resources["tree_item"] as ImageSource
                 },
                 new CommandItem
                 {
-                    Command = new DelegateCommand(CreateUiCode),
-                    Name = "生成UI代码（WEB）",
+                    Action = (CreateUiCode),
+                    Caption = "生成UI代码（WEB）",
                     Image = Application.Current.Resources["tree_item"] as ImageSource
                 }
             });
@@ -68,7 +58,7 @@ namespace Agebull.EntityModel.Designer
 
         #region 代码
 
-        internal void CreateUiCode()
+        internal void CreateUiCode(object arg)
         {
             if (Context.SelectEntity == null)
             {
@@ -84,7 +74,7 @@ namespace Agebull.EntityModel.Designer
 
 
         #endregion
-        private void CheckUiType()
+        private void CheckUiType(object arg)
         {
             if (Context.SelectEntity == null)
                 return;
@@ -98,14 +88,14 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        private void CheckExport()
+        private void CheckExport(object arg)
         {
             var result = MessageBox.Show(Application.Current.MainWindow, "是否继续?", "导出导出初始化",
                 MessageBoxButton.YesNo);
             if (result == MessageBoxResult.No)
                 return;
             Foreach(field => field.IsPrimaryKey ||
-                            !field.Discard && !field.IsLinkKey && !field.DbInnerField &&
+                            !field.IsDiscard && !field.IsLinkKey && !field.DbInnerField &&
                             !field.InnerField && !field.IsSystemField && !field.DenyClient,
                     field =>
             {
@@ -119,7 +109,7 @@ namespace Agebull.EntityModel.Designer
             "AuditDate", "AuditorId", "AuditState", "LastModifyDate", "LastReviserID", "AddDate", "AuthorID"
         };
 
-        private void CheckSimple()
+        private void CheckSimple(object arg)
         {
             var result = MessageBox.Show(Application.Current.MainWindow, "是否继续?", "列表字段初始化",
                 MessageBoxButton.YesNo);
@@ -132,11 +122,11 @@ namespace Agebull.EntityModel.Designer
                     field.NoneDetails = true;
                 });
 
-            Foreach(field => !field.IsPrimaryKey && (field.Discard || field.IsLinkKey || field.DbInnerField ||
+            Foreach(field => !field.IsPrimaryKey && (field.IsDiscard || field.IsLinkKey || field.DbInnerField ||
                              field.InnerField || field.DenyClient),
                     field => field.NoneGrid = true);
 
-            Foreach(field => !field.IsPrimaryKey && (field.Discard || field.DbInnerField || field.InnerField || field.DenyClient),
+            Foreach(field => !field.IsPrimaryKey && (field.IsDiscard || field.DbInnerField || field.InnerField || field.DenyClient),
                     field => field.NoneDetails = true);
 
             Foreach(field => field.IsPrimaryKey || !field.NoneGrid ||

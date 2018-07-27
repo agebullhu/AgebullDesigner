@@ -63,10 +63,3 @@ namespace Agebull.EntityModel.Config
         }
     }
 }
-
-namespace Agebull.EntityModel.Config.Mysql
-{
-}
-namespace Agebull.EntityModel.Config.SqlServer
-{
-}

@@ -29,12 +29,12 @@ namespace Agebull.EntityModel.Config
                     col.DbType = null;
                 }
                 Entity.IsModify = true;
-                Entity.IsClass = true;
+                Entity.NoDataBase = true;
                 Entity.ReadTableName = null;
                 Entity.SaveTableName = null;
                 return;
             }
-            if (Entity.IsClass)
+            if (Entity.NoDataBase)
             {
                 Entity.ReadTableName = null;
                 Entity.SaveTableName = null;
@@ -43,7 +43,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (Entity.PrimaryColumn == null)
                 {
-                    Entity.Properties.Add(new PropertyConfig
+                    Entity.Add(new PropertyConfig
                     {
                         Name = "Id",
                         Caption = Entity.Caption + "ID",
@@ -58,12 +58,12 @@ namespace Agebull.EntityModel.Config
                 if (string.IsNullOrWhiteSpace(Entity.ReadTableName))
                 {
                     string head = "tb_";
-                    if (Entity.Classify != null)
+                    /*if (Entity.Classify != null)
                     {
                         var cls = Entity.Parent.Classifies.FirstOrDefault(p => p.Name == Entity.Classify);
                         if (cls != null)
-                            head = cls.Abbreviation.ToLower() + "_";
-                    }
+                            head = cls.Abbreviation?.ToLower() + "_";
+                    }*/
                     //if (!string.IsNullOrWhiteSpace(Entity.Parent.Abbreviation))
                     //    head += Entity.Parent.Abbreviation.ToLower() + "_";
                     Entity.ReadTableName = head + Entity.Name;//SplitWords(Entity.Name).Select(p => p.ToLower()).LinkToString(head, "_");
@@ -73,7 +73,7 @@ namespace Agebull.EntityModel.Config
             PropertyDatabaseBusiness model = new PropertyDatabaseBusiness();
             foreach (var col in Entity.Properties)
             {
-                if (col.Discard)
+                if (col.IsDiscard)
                 {
                     continue;
                 }
@@ -92,7 +92,7 @@ namespace Agebull.EntityModel.Config
 
         private void CheckRelation()
         {
-            if (Entity.DbFields.All(p => string.IsNullOrEmpty(p.LinkTable)))
+            if (Entity.Properties.All(p => string.IsNullOrEmpty(p.LinkTable)))
             {
                 return;
             }
@@ -102,8 +102,7 @@ namespace Agebull.EntityModel.Config
             }
             var tables = new Dictionary<string, EntityConfig>();
 
-            var names =
-                Entity.DbFields.Where(p => !string.IsNullOrEmpty(p.LinkTable))
+            var names = Entity.Properties.Where(p => !string.IsNullOrEmpty(p.LinkTable))
                     .Select(p => p.LinkTable)
                     .DistinctBy()
                     .ToArray();
@@ -119,8 +118,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (!string.IsNullOrEmpty(field.LinkTable))
                 {
-                    EntityConfig friend;
-                    if (tables.TryGetValue(field.LinkTable, out friend))
+                    if (tables.TryGetValue(field.LinkTable, out EntityConfig friend))
                     {
                         field.LinkTable = friend.SaveTable;
                         var linkField =
@@ -151,7 +149,7 @@ namespace Agebull.EntityModel.Config
 
         internal void CheckByDb(bool repair = false)
         {
-            if (Property.Parent.IsClass)
+            if (Property.Parent.NoDataBase)
             {
                 Property.ColumnName = null;
                 Property.DbType = null;

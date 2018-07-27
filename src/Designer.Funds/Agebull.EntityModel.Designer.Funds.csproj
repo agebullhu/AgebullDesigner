@@ -42,38 +42,21 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Gboxt.Common.Exception">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.Exception.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Extend">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.Extend.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.IO">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.IO.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Logging">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Reflection">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.Reflection.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.ScopeBase">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.ScopeBase.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.SystemExtend">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.SystemExtend.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Text">
-      <HintPath>..\..\Agebull\Library\Extend\Gboxt.Common.Text.dll</HintPath>
+    <Reference Include="Agebull.Common.Extend">
+      <HintPath>..\Lib\Agebull.Common.Extend.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Drawing, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Program Files (x86)\Microsoft SDKs\Expression\Blend\.NETFramework\v4.5\Libraries\Microsoft.Expression.Drawing.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -95,6 +78,11 @@
     <Compile Include="Business\EntityBusinessModel.cs" />
     <Compile Include="Business\EnumBusinessModel.cs" />
     <Compile Include="Business\PropertyBusinessModel.cs" />
+    <Compile Include="Config\CppProject.cs" />
+    <Compile Include="Config\CppTypeHelper2.cs" />
+    <Compile Include="Config\NotifyItem.cs" />
+    <Compile Include="Config\TypedefItem.cs" />
+    <Compile Include="Model\CppFieldsViewModel.cs" />
     <Compile Include="Model\EntityModel.cs" />
     <Compile Include="Model\EnumModel.cs" />
     <Compile Include="Model\PropertyModel.cs" />
@@ -111,6 +99,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="View\CppFieldsPanel.xaml.cs">
+      <DependentUpon>CppFieldsPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\CppRefactor\CppRefactorModel.cs" />
     <Compile Include="View\CppRefactor\CppRefactorViewModel.cs" />
     <Compile Include="View\CppRefactor\CppRefactorWindow.xaml.cs">
@@ -125,6 +116,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -142,10 +134,6 @@
     <ProjectReference Include="..\Command\Agebull.EntityModel.Designer.Command.csproj">
       <Project>{5b2850e3-c1ac-4d1e-be96-5be0f9f659b7}</Project>
       <Name>Agebull.EntityModel.Designer.Command</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Config.Cpp\Agebull.EntityModel.Config.Cpp.csproj">
-      <Project>{3EF55F58-0802-453C-8CE0-C227544584B1}</Project>
-      <Name>Agebull.EntityModel.Config.Cpp</Name>
     </ProjectReference>
     <ProjectReference Include="..\Config\Agebull.EntityModel.Config.csproj">
       <Project>{0af9f7a3-6aab-46a5-b3e8-45940ae26e5b}</Project>
@@ -173,6 +161,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="View\CppFieldsPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\CppRefactor\CppRefactorWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

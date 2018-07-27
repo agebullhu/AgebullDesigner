@@ -31,6 +31,7 @@ namespace Agebull.Common.Mvvm
 
         }
 
+        public object Tag { get; set; }
 
         /// <summary>
         ///     属性修改事件(属性为空表示删除)
@@ -42,10 +43,7 @@ namespace Agebull.Common.Mvvm
                 propertyChanged -= value;
                 propertyChanged += value;
             }
-            remove
-            {
-                propertyChanged -= value;
-            }
+            remove => propertyChanged -= value;
         }
 
         /// <summary>
@@ -283,10 +281,9 @@ namespace Agebull.Common.Mvvm
             _executeAction = executeAction;
             _canExecuteAction = canExecuteAction;
             Parameter = model;
-            var changed = model as INotifyPropertyChanged;
-            if (changed != null)
+            if (model is INotifyPropertyChanged changed)
             {
-               changed.PropertyChanged += OnModelPropertyChanged;
+                changed.PropertyChanged += OnModelPropertyChanged;
             }
         }
 
@@ -425,10 +422,7 @@ namespace Agebull.Common.Mvvm
                 propertyChanged -= value;
                 propertyChanged += value;
             }
-            remove
-            {
-                propertyChanged -= value;
-            }
+            remove => propertyChanged -= value;
         }
 
         /// <summary>
@@ -474,10 +468,7 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         public Visibility Visibility
         {
-            get
-            {
-                return _visibility;
-            }
+            get => _visibility;
             set
             {
                 if (_visibility == value)

@@ -23,7 +23,7 @@ namespace Agebull.Common.Mvvm
     /// <summary>
     ///     表示一个命令集合的节点
     /// </summary>
-    public class ActionItem : SimpleConfig, ICommandItemBuilder
+    public class ActionItem : CommandConfig, ICommandItemBuilder
     {
 
         //固定参数
@@ -45,59 +45,6 @@ namespace Agebull.Common.Mvvm
         public Action<CommandStatus, Exception, bool> End { get; set; }
 
 
-        /// <summary>
-        ///     不显示为按钮
-        /// </summary>
-        public bool NoButton
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        ///     只能单个操作
-        /// </summary>
-        public bool Signle
-        {
-            get;
-            set;
-        }
-        /// <summary>
-        ///     分类
-        /// </summary>
-        public string Catalog
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        ///     可以使用的源类型,号分开
-        /// </summary>
-        public string SourceType
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        ///     特征
-        /// </summary>
-        public string Tag
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        ///     图标
-        /// </summary>
-        public string IconName
-        {
-            get;
-            set;
-        }
-
         private ImageSource _image;
 
 
@@ -106,17 +53,11 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         public virtual ImageSource Image
         {
-            get
-            {
-                return _image ?? Application.Current.Resources[IconName ?? "imgDefault"] as BitmapImage;
-            }
-            set
-            {
-                _image = value;
-            }
+            get => _image ?? (IconName == null ? null : Application.Current.Resources[IconName] as BitmapImage);
+            set => _image = value;
         }
 
-        CommandItem ICommandItemBuilder.ToCommand(object arg, Func<object, IEnumerator> enumerator)
+        CommandItemBase ICommandItemBuilder.ToCommand(object arg, Func<object, IEnumerator> enumerator)
         {
             var item = new RuntimeActionItem
             {
@@ -124,20 +65,11 @@ namespace Agebull.Common.Mvvm
                 Parameter = arg,
                 ToEnumerator = enumerator
             };
-
-            return new CommandItem
-            {
-                Name = Caption,
-                Parameter = arg,
-                IconName = IconName,
-                SourceType = SourceType,
-                Catalog = Catalog,
-                Caption = Caption,
-                Description = Description,
-                NoButton = NoButton,
-                Image = _image,
-                Command = new AsyncCommand<object, bool>(item.Prepare, item.Run, item.End)
-            };
+            var r2 = new AsyncCommandItem<object, bool>(item.Prepare, item.Run, item.End);
+            r2.CopyFrom(this);
+            r2.Image = Image;
+            r2.Source = arg;
+            return r2;
         }
     }
 }

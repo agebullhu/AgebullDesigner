@@ -27,6 +27,12 @@ namespace Agebull.EntityModel
     /// </summary>
     public abstract class TreeItemBase : SimpleConfig
     {
+        /// <summary>
+        /// ±Í«©
+        /// </summary>
+        public string Tag { get; set; }
+
+
         private bool _isUiSelected;
 
         private string _selectedPath;
@@ -53,8 +59,7 @@ namespace Agebull.EntityModel
         {
             get
             {
-                var root = Parent as TreeRoot;
-                if (root != null)
+                if (Parent is TreeRoot root)
                     return 0;
                 var item = Parent as TreeItem;
                 return item?.Level + 1 ?? -1;
@@ -121,10 +126,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public bool IsUiSelected
         {
-            get
-            {
-                return _isUiSelected;
-            }
+            get => _isUiSelected;
             set
             {
                 if (_isUiSelected == value)
@@ -142,17 +144,12 @@ namespace Agebull.EntityModel
         /// </summary>
         public bool IsSelected
         {
-            get
-            {
-                return isSelected;
-            }
+            get => isSelected;
             set
             {
-                if (isSelected != value)
-                {
-                    isSelected = value;
-                    RaisePropertyChanged(() => IsSelected);
-                }
+                if (isSelected == value) return;
+                isSelected = value;
+                RaisePropertyChanged(() => IsSelected);
                 OnIsSelectChanged();
             }
         }
@@ -162,10 +159,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public string SelectPath
         {
-            get
-            {
-                return _selectedPath;
-            }
+            get => _selectedPath;
             set
             {
                 if (_selectedPath == value)
@@ -248,10 +242,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public IList FriendItems
         {
-            get
-            {
-                return _friendItems;
-            }
+            get => _friendItems;
             set
             {
                 if (Equals(_friendItems, value))
@@ -274,8 +265,7 @@ namespace Agebull.EntityModel
         private void ReBuildItems()
         {
             Items.Clear();
-            var values = _friendItems as IEnumerable;
-            if (values == null)
+            if (!(_friendItems is IEnumerable values))
             {
                 return;
             }
@@ -299,9 +289,7 @@ namespace Agebull.EntityModel
         /// <returns></returns>
         public TreeItem CreateChild(object value)
         {
-            TreeItem item = CreateChildFunc == null
-                ? new TreeItem(value)
-                : CreateChildFunc(value);
+            TreeItem item = CreateChildFunc(value);
 
             var extend = value as IExtendDependencyObjects;
             extend?.Dependency.Annex(item);
@@ -361,10 +349,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public NotificationObject Source
         {
-            get
-            {
-                return __source;
-            }
+            get => __source;
             set
             {
                 if (__source == value)
@@ -412,10 +397,7 @@ namespace Agebull.EntityModel
         [Browsable(false)]
         public Expression<Func<IList>> SoruceItemsExpression
         {
-            get
-            {
-                return _soruceItemsExpression;
-            }
+            get => _soruceItemsExpression;
             set
             {
                 _soruceItemsExpression = value;
@@ -426,8 +408,7 @@ namespace Agebull.EntityModel
                     Source = null;
                     return;
                 }
-                var mb = value.Body as MemberExpression;
-                if (mb == null)
+                if (!(value.Body is MemberExpression mb))
                 {
                     _soruceItemsName = null;
                     GetSoruceItems = null;
@@ -435,14 +416,14 @@ namespace Agebull.EntityModel
                     return;
                 }
                 _soruceItemsName = mb.Member.Name;
-                var constantExpression = mb.Expression as ConstantExpression;
-                if (constantExpression != null)
+                if (mb.Expression is ConstantExpression constantExpression)
                 {
                     Source = constantExpression.Value as NotificationObject;
                 }
                 GetSoruceItems = ReflectionHelper.GetFunc(value);
                 FriendItems = GetSoruceItems();
             }
+            
         }
 
         #endregion
@@ -456,10 +437,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public ExtendObject Extend
         {
-            get
-            {
-                return _extend ?? (_extend = CreateExtend());
-            }
+            get => _extend ?? (_extend = CreateExtend());
             set
             {
                 if (_extend == value)

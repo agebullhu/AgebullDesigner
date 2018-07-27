@@ -32,29 +32,41 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    public class ImportModel : DesignCommondBase<SolutionConfig>
+    public class ImportModel : DesignCommondBase
     {
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<string, ProjectConfig>(OpenAssemblyFile, AnalyzeAssemblyFile, AnalyzeAssemblyEnd)
             {
-                NoButton = true,
-                Command = new DelegateCommand(ImportToExcel),
-                Name = "导出Excel文档",
+                Catalog = "文件",
+                Caption = "导入程序集",
+                IconName = "tree_Assembly"
+            });
+            commands.Add(new CommandItemBuilder<ProjectConfig>
+            {
+                Catalog = "文件",
+                Action = AnalyzeConfig,
+                Caption = "导入配置对象(自升级)",
+                IconName = "tree_Assembly"
+            });
+            commands.Add(new CommandItemBuilder<string, List<EntityConfig>>(OpenEdmxFile, AnalyzeEdmxFile, AnalyzeEdmxFilenEnd)
+            {
+                Catalog = "文件",
+                Caption = "导入EF配置文件",
                 IconName = "tree_Assembly"
             });
             commands.Add(new CommandItemBuilder
             {
-                NoButton = true,
-                Command = new AsyncCommand<string, List<EntityConfig>>(OpenEdmxFile, AnalyzeEdmxFile, AnalyzeEdmxFilenEnd),
-                Name = "导入EF配置文件",
+                Catalog = "文件",
+                Action = (ImportToExcel),
+                Caption = "导出Excel文档",
                 IconName = "tree_Assembly"
             });
         }
-        
+
         #region 添加配置文件
 
-        internal bool OpenEdmxFile(string path, Action<string> setPath)
+        internal string OpenEdmxFile()
         {
             var dialog = new OpenFileDialog
             {
@@ -63,13 +75,12 @@ namespace Agebull.EntityModel.Designer
             };
             if (dialog.ShowDialog() != true)
             {
-                return false;
+                return null;
             }
-            
+
             Model.Context.CurrentTrace.TraceMessage = TraceMessage.DefaultTrace;
-            setPath(dialog.FileName);
             Model.Context.CurrentTrace.TraceMessage.Clear();
-            return true;
+            return dialog.FileName;
         }
 
         /// <summary>
@@ -89,54 +100,60 @@ namespace Agebull.EntityModel.Designer
             {
                 return;
             }
-            Context.Entities.Clear();
-            Context.Entities.AddRange(tables);
+            Context.SelectProject.Entities.Clear();
+            foreach (var table in tables)
+                Context.SelectProject.Add(table);
         }
 
         #endregion
 
         #region 添加程序集
 
-        internal bool OpenAssemblyFile(string path, Action<string> setPath)
+        internal string OpenAssemblyFile()
         {
-            //var dialog = new OpenFileDialog
-            //{
-            //    Filter = "程序集|*.dll",
-            //    InitialDirectory = Path.Combine(_rootPath, "DataAccess", "Model")
-            //};
-            //if (dialog.ShowDialog() != true)
-            //{
-            //    return false;
-            //}
-            //CurrentTrace.TraceMessage = TraceMessage.DefaultTrace;
-            //setPath(dialog.FileName);
-            //CurrentTrace.TraceMessage.Clear();
-            return true;
+            var dialog = new OpenFileDialog
+            {
+                Filter = "程序集|*.dll"
+            };
+            if (dialog.ShowDialog() != true)
+            {
+                return null;
+            }
+            return dialog.FileName;
         }
 
         /// <summary>
         ///     分析程序集
         /// </summary>
         /// <returns></returns>
-        internal SolutionConfig AnalyzeAssemblyFile(string file)
+        internal ProjectConfig AnalyzeAssemblyFile(string file)
         {
-            return AssemblyImporter.Import(typeof(PropertyConfig).Assembly);
+            return AssemblyImporter.Import(Model.Context.SelectProject, file);
         }
 
-        internal void AnalyzeAssemblyEnd(CommandStatus status, Exception ex, SolutionConfig schema)
+        /// <summary>
+        ///     分析程序集
+        /// </summary>
+        /// <returns></returns>
+        internal void AnalyzeConfig(ProjectConfig arg)
+        {
+            AssemblyImporter.Import(arg, typeof(ProjectConfig).Assembly);
+        }
+        internal void AnalyzeAssemblyEnd(CommandStatus status, Exception ex, ProjectConfig schema)
         {
             if (status != CommandStatus.Succeed)
             {
+                MessageBox.Show("错误");
                 return;
             }
-            GlobalConfig.CurrentSolution = schema;
+            MessageBox.Show("完成");
         }
 
         #endregion
 
         #region 导出到EXCEL
 
-        internal void ImportToExcel()
+        internal void ImportToExcel(object arg)
         {
             var dialog = new SaveFileDialog
             {
@@ -149,7 +166,7 @@ namespace Agebull.EntityModel.Designer
             DesignToExcel.Import(dialog.FileName, Context.Entities);
         }
         #endregion
-        
+
         #region 导入表信息
 
         public bool ReadFieldesPrepare(string arg, Action<string> setAction)
@@ -182,8 +199,7 @@ namespace Agebull.EntityModel.Designer
 
         public static void LoadFieldInfos(HSSFWorkbook workbook, EntityConfig entity)
         {
-            var sheet = workbook.GetSheet(entity.Name) as HSSFSheet;
-            if (sheet == null)
+            if (!(workbook.GetSheet(entity.Name) is HSSFSheet sheet))
                 return;
             for (int idx = 0; idx < 255; idx++)
             {
@@ -209,7 +225,7 @@ namespace Agebull.EntityModel.Designer
         }
 
         #endregion
-        
+
         #region 导入策划表
 
         public bool ImportPlotPrepare(string arg, Action<string> setAction)
@@ -413,7 +429,7 @@ namespace Agebull.EntityModel.Designer
                 return;
             }
             foreach (var col in entity.Properties)
-                col.Discard = true;
+                col.Option.IsDiscard = true;
 
             var row = sheet.GetRow(0);
             foreach (var cell in row.Cells)
@@ -424,12 +440,12 @@ namespace Agebull.EntityModel.Designer
                 if (string.IsNullOrWhiteSpace(field))
                     break;
                 var desc = string.Empty;
-                if (cell.CellComment != null && cell.CellComment.String != null)
+                if (cell.CellComment?.String != null)
                     desc = cell.CellComment.String.String;
                 var col = entity.Properties.FirstOrDefault(p => string.Equals(p.Name, field, StringComparison.OrdinalIgnoreCase));
                 if (col != null)
                 {
-                    col.Discard = false;
+                    col.Option.ResetState();
                     if (!string.IsNullOrWhiteSpace(desc))
                     {
                         string desco = col.Description;
@@ -443,21 +459,20 @@ namespace Agebull.EntityModel.Designer
                 else
                 {
                     Model.Context.CurrentTrace.TraceMessage.Track = "新增字段:" + field;
-                    entity.Properties.Add(new PropertyConfig
+                    entity.Add(new PropertyConfig
                     {
                         Name = field,
                         Description = desc,
                         ColumnName = field,
-                        Index = entity.Properties.Max(p => p.Index) + 1,
                         CsType = "string",
                         DbType = "nvarchar",
                         DbNullable = true,
                         Nullable = true,
-                        CanEmpty=true
+                        CanEmpty = true
                     });
                 }
             }
-            foreach (var col in entity.Properties.Where(p => p.Discard))
+            foreach (var col in entity.Properties.Where(p => p.IsDiscard))
             {
                 Model.Context.CurrentTrace.TraceMessage.Track = "过时字段:" + col.Name;
             }

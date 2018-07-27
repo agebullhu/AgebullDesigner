@@ -1,62 +1,62 @@
-﻿<Window x:Class="Agebull.EntityModel.Designer.View.EnumEdit"
+﻿<UserControl x:Class="Agebull.EntityModel.Designer.View.EnumEdit"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:solutionManager="clr-namespace:Agebull.EntityModel.Designer"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
-             mc:Ignorable="d" 
-             Title="枚举编辑" Height="600" Width="1200"
-        >
-    <Window.DataContext>
-        <solutionManager:EnumEditViewModel />
-    </Window.DataContext>
-    <i:Interaction.Behaviors>
-        <behaviors:DependencyBehavior BehaviorAction="{Binding ViewBehavior}" />
-    </i:Interaction.Behaviors>
-    <DockPanel>
-        <ToolBar DockPanel.Dock="Top" Height="28">
-            <StackPanel DataContext="{Binding Model}" Orientation="Horizontal" >
-                <TextBlock Text="名称" VerticalAlignment="Center" Margin="5,0,0,0" />
-                <TextBox Width="200" Text="{Binding Config.Name}" />
-                <TextBlock Text="标题" VerticalAlignment="Center" Margin="5,0,0,0" />
-                <TextBox Width="200" Text="{Binding Config.Caption}" />
-                <TextBlock Text="说明" VerticalAlignment="Center" Margin="5,0,0,0" />
-                <TextBox Width="500" Text="{Binding Config.Description}" />
-            </StackPanel>
-            <ToolBarTray Width="2" />
-            <ItemsControl VerticalAlignment="Stretch"
-                          HorizontalAlignment="Stretch"
-                          ItemsSource="{Binding ExCommands,Mode=OneWay}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Button Style="{StaticResource CommandButton}" />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel VerticalAlignment="Stretch"
-                                    HorizontalAlignment="Stretch"
-                                    Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
-            
-        </ToolBar>
-        <TextBlock DockPanel.Dock="Top" Background="Silver">
-                 <Run FontSize="14" Foreground="Blue">文本说明:</Run><LineBreak/>
-                 * 1 每行为一条数据<LineBreak/>
-                 * 2 每个单词用空格分开<LineBreak/>
-                 * 3 第一个单词:值; 第二个单词:名称;第三个单词:标题文本;第四个单词:说明文本<LineBreak/>
-        </TextBlock>
-        <TextBox Text="{Binding Model.Fields,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Top"
-                 Height="200" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible"
-                 AcceptsReturn="True" AcceptsTab="True" AutoWordSelection="True"
-                 TextOptions.TextFormattingMode="Display" TextWrapping="Wrap" />
-        <DataGrid AutoGenerateColumns="True"
-                  CanUserAddRows="True"
-                  CanUserDeleteRows="True"
-                  ItemsSource="{Binding Model.Items}" />
+             xmlns:designer="clr-namespace:Agebull.EntityModel.Designer"
+             mc:Ignorable="d" d:DesignWidth="1505.519" d:DesignHeight="434.126" >
+    <UserControl.DataContext>
+        <designer:EnumEditViewModel/>
+    </UserControl.DataContext>
+    <DockPanel DataContext="{Binding Model}"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <GroupBox Header="名称(设计时)" Margin="5" DataContext="{Binding Config}"   DockPanel.Dock="Top">
+            <GroupBox.Resources>
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
+            </GroupBox.Resources>
+            <WrapPanel>
+                <StackPanel>
+                    <Label Content = "名称" />
+                    <TextBox Text="{Binding Name,Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel>
+                    <Label Content = "标题" />
+                    <TextBox Text="{Binding Caption,Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel>
+                    <Label Content = "说明" />
+                    <TextBox Style="{StaticResource MaxTextBox}" Height="64" Text="{Binding Description,Mode=TwoWay}" />
+                </StackPanel>
+            </WrapPanel>
+        </GroupBox>
+        <GroupBox Header="快速识别" Margin="5" DockPanel.Dock="Left">
+            <DockPanel>
+                <TextBlock Background="Silver"   DockPanel.Dock="Top">
+                    <Run FontSize="14" Foreground="Blue">文本说明:</Run><LineBreak/>
+                    * 1 每行为一条数据<LineBreak/>
+                    * 2 每个单词用空格分开<LineBreak/>
+                    * 3 第一个单词:值; 第二个单词:名称;第三个单词:标题文本;第四个单词:说明文本<LineBreak/>
+                </TextBlock>
+                <TextBox Text="{Binding Fields,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                         VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
+                         HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible"
+                         AcceptsReturn="True" AcceptsTab="True" AutoWordSelection="True"
+                         TextOptions.TextFormattingMode="Display" TextWrapping="Wrap" />
+            </DockPanel>
+        </GroupBox>
+        <GroupBox Header="字段列表" Margin="5" >
+            <DataGrid AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      ItemsSource="{Binding Items}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding Option.Index,Mode=TwoWay}" Header="序号" />
+                    <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" MinWidth="160"/>
+                    <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" MinWidth="160"/>
+                    <DataGridTextColumn Binding="{Binding Description,Mode=TwoWay}" Header="说明" MinWidth="300"/>
+                    <DataGridTextColumn Binding="{Binding Value,Mode=TwoWay}" Header="值"  MinWidth="100"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+
     </DockPanel>
-</Window>
+</UserControl>

@@ -45,44 +45,25 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Gboxt.Common.Desing.Attribute">
-      <HintPath>..\..\..\Project\FundsManagement\Lib\Gboxt.Common.Desing.Attribute.dll</HintPath>
+    <Reference Include="Agebull.Common.Extend">
+      <HintPath>..\Lib\Agebull.Common.Extend.dll</HintPath>
     </Reference>
-    <Reference Include="Gboxt.Common.Exception">
-      <HintPath>..\..\..\Project\FundsManagement\Lib\Gboxt.Common.Exception.dll</HintPath>
+    <Reference Include="Microsoft.Expression.Drawing, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Expression.Drawing.3.0.0\lib\net45\Microsoft.Expression.Drawing.dll</HintPath>
     </Reference>
-    <Reference Include="Gboxt.Common.Extend">
-      <HintPath>..\..\..\Project\FundsManagement\Lib\Gboxt.Common.Extend.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.IO">
-      <HintPath>..\..\..\Project\FundsManagement\Lib\Gboxt.Common.IO.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Logging">
-      <HintPath>..\..\..\Project\FundsManagement\Lib\Gboxt.Common.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Reflection">
-      <HintPath>..\..\..\Project\FundsManagement\Lib\Gboxt.Common.Reflection.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.ScopeBase">
-      <HintPath>..\..\..\Project\FundsManagement\Lib\Gboxt.Common.ScopeBase.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Text">
-      <HintPath>..\..\..\Project\FundsManagement\Lib\Gboxt.Common.Text.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files\Microsoft SDKs\Expression\Blend\.NETFramework\v4.0\Libraries\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Expression.Blend.Sdk.1.0.2\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -95,8 +76,8 @@
     <Compile Include="Behaviors\BehaviorAction.cs" />
     <Compile Include="Coefficient\CommandCoefficient.cs" />
     <Compile Include="Coefficient\ActionItem.cs" />
+    <Compile Include="CommandItem\AsyncCommandItem.cs" />
     <Compile Include="CommandItem\CommandConfig.cs" />
-    <Compile Include="CommandItem\CommandItemBuilder.cs" />
     <Compile Include="CommandItem\ICommandItem.cs" />
     <Compile Include="CommandItem\ICommandItemBuilder.cs" />
     <Compile Include="CommandItem\RuntimeActionItem.cs" />
@@ -105,6 +86,8 @@
     <Compile Include="CommandItem\CommandItem.cs" />
     <Compile Include="Command\DelegateCommand.cs" />
     <Compile Include="Command\CommandInterface.cs" />
+    <Compile Include="Command\IAutoRegister.cs" />
+    <Compile Include="Command\SimpleCommand.cs" />
     <Compile Include="Converts\BoolToVisibleConverter.cs" />
     <Compile Include="Converts\DateTimeConverter.cs" />
     <Compile Include="Converts\EnumConverter.cs" />

@@ -8,6 +8,24 @@ using Agebull.Common.Mvvm;
 namespace Agebull.EntityModel.Designer
 {
     /// <summary>
+    /// 关系连接检查
+    /// </summary>
+    [Export(typeof(IAutoRegister))]
+    [ExportMetadata("Symbol", '%')]
+    internal sealed class Register : IAutoRegister
+    {
+        /// <summary>
+        /// 注册代码
+        /// </summary>
+        void IAutoRegister.AutoRegist()
+        {
+            DesignerManager.Registe<ProjectConfig, EntityListPanel>("实体列表");
+            DesignerManager.Registe<ProjectConfig, EnumListPanel>("枚举列表");
+            DesignerManager.Registe<ProjectConfig, ApiListPanel>("接口列表");
+        }
+    }
+
+    /// <summary>
     /// 扩展节点
     /// </summary>
     [Export(typeof(IAutoRegister))]
@@ -22,35 +40,35 @@ namespace Agebull.EntityModel.Designer
         {
             commands.Add(new CommandItemBuilder
             {
-                Signle = true,
-                NoButton = true,
-                
-                Name = "增加表",
-                Command = new DelegateCommand(AddEntity),
+                Catalog = "编辑",
+                SignleSoruce = true,
+                IsButton = true,
+                Caption = "增加表",
+                Action = (AddEntity),
                 IconName = "tree_Open"
             });
             commands.Add(new CommandItemBuilder
             {
-                Signle = true,
-                NoButton = true,
-                Name = "粘贴表",
-                
-                Command = new DelegateCommand(PasteTable),
+                Catalog = "编辑",
+                SignleSoruce = true,
+                IsButton = true,
+                Caption = "粘贴表",
+                Action = (PasteTable),
                 IconName = "tree_item"
             });
 
             commands.Add(new CommandItemBuilder
             {
-                Signle = true,
-                NoButton = true,
-                
-                Name = "复制到其它项目",
-                Command = new DelegateCommand(CopyToProject),
+                SignleSoruce = true,
+                IsButton = true,
+                Catalog = "编辑",
+                Caption = "复制到其它项目",
+                Action = (CopyToProject),
                 IconName = "tree_item"
             });
         }
 
-        public void PasteTable()
+        public void PasteTable(object arg)
         {
             if (Context.SelectProject == null)
             {
@@ -71,9 +89,9 @@ namespace Agebull.EntityModel.Designer
                 {
                     pro.Tag = $"{entity.Tag},{pro.CppType},{pro.Name}";
                 }
+
+                Context.SelectProject.Add(entity);
             }
-            Context.SelectProject.Entities.AddRange(Context.CopiedTables);
-            Context.Entities.AddRange(Context.CopiedTables);
 
             //this.Context.CopiedTable = null;
             //this.Context.CopiedTables.Clear();
@@ -81,36 +99,28 @@ namespace Agebull.EntityModel.Designer
             //this.RaisePropertyChanged(() => this.Context.CopiedTableCounts);
         }
 
-
-        public void AddEntity()
+        public void AddEntity(object arg)
         {
             if (Context.SelectProject == null)
             {
                 MessageBox.Show("请选择一个项目");
                 return;
             }
-            EntityConfig entity;
-            if (!Model.CreateNew(out entity))
+
+            var project = Context.SelectProject;
+            var entity = new EntityConfig();
+            if (CommandIoc.EditEntityCommand(entity))
             {
+                project.Add(entity);
+                Model.Tree.SetSelectEntity(entity);
                 return;
             }
-            entity.Parent = Context.SelectProject;
-            entity.Project = Context.SelectProject.Name;
-            //Context.SelectProject.Entities.Add(entity);
-            //Context.Entities.Add(entity);
-            Model.Tree.SetSelect(entity);
-            Context.SelectColumns = null;
-            var nentity = CommandIoc.AddFieldsCommand();
-            if (nentity == null)
-            {
-                return;
-            }
-            entity.Properties.AddRange(nentity.Properties);
+            project.Remove(entity);
         }
         /// <summary>
         /// 复制项目
         /// </summary>
-        public void CopyToProject()
+        public void CopyToProject(object arg)
         {
             if (Context.SelectProject == null)
             {
@@ -125,12 +135,9 @@ namespace Agebull.EntityModel.Designer
                 project.PagePath = Context.SelectProject.PagePath;
                 //if (string.IsNullOrWhiteSpace(project.BusinessPath))
                 project.BusinessPath = Context.SelectProject.BusinessPath;
-                //if (string.IsNullOrWhiteSpace(project.ClientCsPath))
-                project.ClientCsPath = Context.SelectProject.ClientCsPath;
                 //if (string.IsNullOrWhiteSpace(project.ModelPath))
-                project.ModelPath = Context.SelectProject.ModelPath;
                 //if (string.IsNullOrWhiteSpace(project.CodePath))
-                project.CodePath = Context.SelectProject.CodePath;
+                project.CppCodePath = Context.SelectProject.CppCodePath;
                 //if (string.IsNullOrWhiteSpace(project.DataBaseObjectName))
                 project.DataBaseObjectName = Context.SelectProject.DataBaseObjectName;
                 //if (string.IsNullOrWhiteSpace(project.DataBaseObjectName))

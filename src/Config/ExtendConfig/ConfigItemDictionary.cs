@@ -8,7 +8,7 @@ namespace Agebull.EntityModel.Config
     /// 扩展配置节点
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public class ConfigItemDictionary
+    public partial class ConfigItemDictionary
     {
         /// <summary>
         /// 构造
@@ -32,12 +32,9 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public string this[string classify, string name]
         {
-            get
-            {
-                return string.IsNullOrWhiteSpace(classify) || !Items.ContainsKey(classify) || string.IsNullOrWhiteSpace(name) || !Items[classify].ContainsKey(name)
-                    ? null 
-                    : Items[classify][name];
-            }
+            get => string.IsNullOrWhiteSpace(classify) || !Items.ContainsKey(classify) || string.IsNullOrWhiteSpace(name) || !Items[classify].ContainsKey(name)
+                ? null 
+                : Items[classify][name];
             set
             {
                 if (string.IsNullOrWhiteSpace(classify) || string.IsNullOrWhiteSpace(name))

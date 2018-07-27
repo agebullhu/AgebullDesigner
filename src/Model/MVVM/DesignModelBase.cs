@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
@@ -10,48 +11,27 @@ namespace Agebull.EntityModel.Designer
     {
         #region 操作命令
         
-        protected override void DoInitialize()
-        {
-            Catalog = GetType().Name;
-            base.DoInitialize();
-        }
-
         /// <summary>
         ///     分类
         /// </summary>
-        public string Catalog { get; set; } 
+        public string EditorName { get; set; }
 
-        /// <summary>
-        /// 所有命令
-        /// </summary>
-        private List<CommandItem> _commands;
-        /// <summary>
-        /// 所有命令
-        /// </summary>
-        public List<CommandItem> Commands => _commands ?? (_commands = CreateCommands());
-
-        /// <summary>
-        /// 所有按钮
-        /// </summary>
-        public IEnumerable<CommandItem> Buttons => Commands.Where(p => !p.NoButton);
-
-        /// <summary>
-        /// 所有按钮
-        /// </summary>
-        public IEnumerable<CommandItem> Menus => Commands.Where(p => p.NoButton);
+        ObservableCollection<CommandItemBase> _commands;
+        public ObservableCollection<CommandItemBase> Commands => _commands ??  (_commands=CreateCommands());
 
         /// <summary>
         /// 生成命令对象
         /// </summary>
         /// <returns></returns>
-        protected virtual List<CommandItem> CreateCommands()
+        public virtual ObservableCollection<CommandItemBase> CreateCommands()
         {
-            var commands = new List<CommandItem>();
+            var commands = new ObservableCollection<CommandItemBase>();
             CreateCommands(commands);
 
-            var extends = CommandCoefficient.Coefficient(typeof(EntityConfig), Catalog);
+            var extends = CommandCoefficient.CoefficientEditor(typeof(EntityConfig), EditorName);
             if (extends.Count > 0)
                 commands.AddRange(extends);
+
             return commands;
         }
 
@@ -59,7 +39,7 @@ namespace Agebull.EntityModel.Designer
         /// 生成命令对象
         /// </summary>
         /// <param name="commands"></param>
-        protected virtual void CreateCommands(List<CommandItem> commands)
+        protected virtual void CreateCommands(ObservableCollection<CommandItemBase> commands)
         {
         }
 
@@ -68,19 +48,53 @@ namespace Agebull.EntityModel.Designer
         #region 基本设置
 
         /// <summary>
+        /// 同步解决方案变更
+        /// </summary>
+        public virtual void OnSolutionChanged()
+        {
+        }
+
+        /// <summary>
         /// 上下文
         /// </summary>
         private DesignContext _context;
+
+        private DataModelDesignModel _model;
+        private EditorModel _editor;
+
         /// <summary>
         /// 基本模型
         /// </summary>
-        public DataModelDesignModel Model { get; set; }
+        public DataModelDesignModel Model
+        {
+            get => _model;
+            set
+            {
+                _model = value;
+                RaisePropertyChanged(nameof(Model));
+            }
+        }
+
+        /// <summary>
+        /// 编辑器模型
+        /// </summary>
+        public EditorModel Editor
+        {
+            get => _editor;
+            set
+            {
+                _editor = value;
+                RaisePropertyChanged(nameof(Editor));
+            }
+        }
+
+
         /// <summary>
         /// 上下文
         /// </summary>
         public DesignContext Context
         {
-            get { return _context; }
+            get => _context;
             set
             {
                 if (_context == value)
@@ -90,6 +104,7 @@ namespace Agebull.EntityModel.Designer
                 _context = value;
                 if (_context != null)
                     _context.PropertyChanged += Context_PropertyChanged;
+                RaisePropertyChanged(nameof(Context));
 
             }
         }
@@ -139,20 +154,17 @@ namespace Agebull.EntityModel.Designer
 
         protected void Foreach(Action<PropertyConfig> action)
         {
-            var property = Context.SelectConfig as PropertyConfig;
-            if (property != null)
+            if (Context.SelectConfig is PropertyConfig property)
             {
                 Foreach(action, property);
                 return;
             }
-            var entity = Context.SelectConfig as EntityConfig;
-            if (entity != null)
+            if (Context.SelectConfig is EntityConfig entity)
             {
                 Foreach(action, entity);
                 return;
             }
-            var project = Context.SelectConfig as ProjectConfig;
-            if (project != null)
+            if (Context.SelectConfig is ProjectConfig project)
             {
                 Foreach(action, project);
                 return;
@@ -184,20 +196,17 @@ namespace Agebull.EntityModel.Designer
 
         protected void Foreach(Func<PropertyConfig, bool> condition, Action<PropertyConfig> action)
         {
-            var property = Context.SelectConfig as PropertyConfig;
-            if (property != null)
+            if (Context.SelectConfig is PropertyConfig property)
             {
                 Foreach(condition, action, property);
                 return;
             }
-            var entity = Context.SelectConfig as EntityConfig;
-            if (entity != null)
+            if (Context.SelectConfig is EntityConfig entity)
             {
                 Foreach(condition, action, entity);
                 return;
             }
-            var project = Context.SelectConfig as ProjectConfig;
-            if (project != null)
+            if (Context.SelectConfig is ProjectConfig project)
             {
                 Foreach(condition, action, project);
                 return;
@@ -235,20 +244,17 @@ namespace Agebull.EntityModel.Designer
 
         protected void Foreach(Action<EnumConfig> action)
         {
-            var col = Context.SelectConfig as PropertyConfig;
-            if (col != null)
+            if (Context.SelectConfig is PropertyConfig col)
             {
                 action(col.EnumConfig);
                 return;
             }
-            var entity = Context.SelectConfig as EntityConfig;
-            if (entity != null)
+            if (Context.SelectConfig is EntityConfig entity)
             {
                 Foreach(action, entity);
                 return;
             }
-            var project = Context.SelectConfig as ProjectConfig;
-            if (project != null)
+            if (Context.SelectConfig is ProjectConfig project)
             {
                 Foreach(action, project);
                 return;
@@ -282,20 +288,17 @@ namespace Agebull.EntityModel.Designer
 
         protected void Foreach(Func<EnumConfig, bool> condition, Action<EnumConfig> action)
         {
-            var col = Context.SelectConfig as PropertyConfig;
-            if (col != null)
+            if (Context.SelectConfig is PropertyConfig col)
             {
                 Foreach(condition, action, col.EnumConfig);
                 return;
             }
-            var entity = Context.SelectConfig as EntityConfig;
-            if (entity != null)
+            if (Context.SelectConfig is EntityConfig entity)
             {
                 Foreach(condition, action, entity);
                 return;
             }
-            var project = Context.SelectConfig as ProjectConfig;
-            if (project != null)
+            if (Context.SelectConfig is ProjectConfig project)
             {
                 Foreach(condition, action, project);
                 return;
@@ -326,20 +329,17 @@ namespace Agebull.EntityModel.Designer
 
         protected void Foreach(Action<EntityConfig> action)
         {
-            var col = Context.SelectConfig as PropertyConfig;
-            if (col != null)
+            if (Context.SelectConfig is PropertyConfig col)
             {
                 action(col.Parent);
                 return;
             }
-            var entity = Context.SelectConfig as EntityConfig;
-            if (entity != null)
+            if (Context.SelectConfig is EntityConfig entity)
             {
                 Foreach(action, entity);
                 return;
             }
-            var project = Context.SelectConfig as ProjectConfig;
-            if (project != null)
+            if (Context.SelectConfig is ProjectConfig project)
             {
                 Foreach(action, project);
                 return;
@@ -366,20 +366,17 @@ namespace Agebull.EntityModel.Designer
 
         protected void Foreach(Func<EntityConfig, bool> condition, Action<EntityConfig> action)
         {
-            var col = Context.SelectConfig as PropertyConfig;
-            if (col != null)
+            if (Context.SelectConfig is PropertyConfig col)
             {
                 Foreach(condition, action, col.Parent);
                 return;
             }
-            var entity = Context.SelectConfig as EntityConfig;
-            if (entity != null)
+            if (Context.SelectConfig is EntityConfig entity)
             {
                 Foreach(condition, action, entity);
                 return;
             }
-            var project = Context.SelectConfig as ProjectConfig;
-            if (project != null)
+            if (Context.SelectConfig is ProjectConfig project)
             {
                 Foreach(condition, action, project);
                 return;
@@ -409,20 +406,17 @@ namespace Agebull.EntityModel.Designer
 
         protected void Foreach(Action<ProjectConfig> action)
         {
-            var col = Context.SelectConfig as PropertyConfig;
-            if (col != null)
+            if (Context.SelectConfig is PropertyConfig col)
             {
                 Foreach(action, col.Parent);
                 return;
             }
-            var entity = Context.SelectConfig as ProjectConfig;
-            if (entity != null)
+            if (Context.SelectConfig is ProjectConfig entity)
             {
                 Foreach(action, entity);
                 return;
             }
-            var project = Context.SelectConfig as ProjectConfig;
-            if (project != null)
+            if (Context.SelectConfig is ProjectConfig project)
             {
                 Foreach(action, project);
                 return;
@@ -448,20 +442,17 @@ namespace Agebull.EntityModel.Designer
 
         protected void Foreach(Func<ProjectConfig, bool> condition, Action<ProjectConfig> action)
         {
-            var col = Context.SelectConfig as PropertyConfig;
-            if (col != null)
+            if (Context.SelectConfig is PropertyConfig col)
             {
                 Foreach(condition, action, col.Parent);
                 return;
             }
-            var entity = Context.SelectConfig as ProjectConfig;
-            if (entity != null)
+            if (Context.SelectConfig is ProjectConfig entity)
             {
                 Foreach(condition, action, entity);
                 return;
             }
-            var project = Context.SelectConfig as ProjectConfig;
-            if (project != null)
+            if (Context.SelectConfig is ProjectConfig project)
             {
                 Foreach(condition, action, project);
                 return;

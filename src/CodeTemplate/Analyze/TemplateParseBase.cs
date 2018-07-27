@@ -832,15 +832,6 @@ namespace Agebull.EntityModel.RobotCoder.CodeTemplate
                         case "enumconfig":
                             Config.ModelType = typeof(EnumConfig).Name;
                             break;
-                        case "类型":
-                        case "类型定义":
-                        case "type":
-                        case "typedef":
-                        case "typedefitem":
-                        case "typeconfig":
-                        case "typedefconfig":
-                            Config.ModelType = typeof(TypedefItem).Name;
-                            break;
                         case "命令":
                         case "用户命令":
                         case "按钮":

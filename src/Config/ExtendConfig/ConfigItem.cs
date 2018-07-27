@@ -7,7 +7,7 @@ namespace Agebull.EntityModel.Config
     /// 扩展配置节点
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public class ConfigItem
+    public partial class ConfigItem
     {
         /// <summary>
         /// 名称

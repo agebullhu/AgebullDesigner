@@ -11,51 +11,53 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 当前正在处理的事件
         /// </summary>
-        private static readonly Dictionary<NotificationObject, List<string>> Events = new Dictionary<NotificationObject, List<string>>();
+        private static readonly Dictionary<string, List<object>> Events = new Dictionary<string, List<object>>();
         /// <summary>
         /// 当前配置
         /// </summary>
-        private readonly NotificationObject _config;
+        private readonly object _config;
         /// <summary>
         /// 当前属性
         /// </summary>
         private readonly string _property;
+
         /// <summary>
         /// 构造
         /// </summary>
         /// <param name="config">配置</param>
+        /// <param name="category">分类</param>
         /// <param name="property">属性</param>
         /// <returns>为空表示已重入,应该放弃处理,不为空则使用这个范围</returns>
-        public static EventScope CreateScope(NotificationObject config, string property)
+        public static EventScope CreateScope(object config,string category, string property)
         {
-            List<string> events;
-            if (Events.TryGetValue(config, out events))
+            string name = $"{category}.{property}";
+            if (Events.TryGetValue(name, out var configs))
             {
-                if (events.Contains(property))
+                if (configs.Contains(config))
                     return null;
             }
             else
             {
-                Events.Add(config, new List<string>());
+                Events.Add(name, new List<object>());
             }
-            return new EventScope(config, property);
+            return new EventScope(config, name);
         }
         /// <summary>
         /// 构造
         /// </summary>
         /// <param name="config"></param>
         /// <param name="property"></param>
-        private EventScope(NotificationObject config, string property)
+        private EventScope(object config, string property)
         {
             _config = config;
             _property = property;
-            Events[config].Add(property);
+            Events[property].Add(config);
         }
 
         /// <summary>清理资源</summary>
         protected override void OnDispose()
         {
-            Events[_config].Remove(_property);
+            Events[_property].Remove(_config);
         }
     }
 }

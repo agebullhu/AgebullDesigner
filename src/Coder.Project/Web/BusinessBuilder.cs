@@ -8,11 +8,11 @@ namespace Agebull.EntityModel.RobotCoder
     {
 
         /// <summary>
-        /// Ãû³Æ
+        /// åç§°
         /// </summary>
         protected override string FileSaveConfigName => "File_Model_Business_cs";
         /// <summary>
-        ///     Éú³É»ù´¡´úÂë
+        ///     ç”ŸæˆåŸºç¡€ä»£ç 
         /// </summary>
         protected override void CreateExCode(string path)
         {
@@ -37,7 +37,6 @@ using System.Text;
 using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
 using Gboxt.Common.DataModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
 
-using Agebull.EntityModel.Redis;
 
 using Gboxt.Common.DataModel;
 using Gboxt.Common.DataModel.BusinessLogic;
@@ -51,43 +50,43 @@ namespace {NameSpace}.BusinessLogic
     public sealed partial class {Entity.Name}BusinessLogic : {baseClass}<{Entity.EntityName},{Entity.Name}DataAccess>
     {{{CommandExCode()}
         /*// <summary>
-        ///     ±£´æÇ°µÄ²Ù×÷
+        ///     ä¿å­˜å‰çš„æ“ä½œ
         /// </summary>
-        /// <param name=""data"">Êı¾İ</param>
-        /// <param name=""isAdd"">ÊÇ·ñÎªĞÂÔö</param>
-        /// <returns>Èç¹ûÎª·ñ½«×èÖ¹ºóĞø²Ù×÷</returns>
+        /// <param name=""data"">æ•°æ®</param>
+        /// <param name=""isAdd"">æ˜¯å¦ä¸ºæ–°å¢</param>
+        /// <returns>å¦‚æœä¸ºå¦å°†é˜»æ­¢åç»­æ“ä½œ</returns>
         protected override bool OnSaving({Entity.EntityName} data, bool isAdd)
         {{
              return base.OnSaving(data, isAdd);
         }}
 
         /// <summary>
-        ///     ±£´æÍê³ÉºóµÄ²Ù×÷
+        ///     ä¿å­˜å®Œæˆåçš„æ“ä½œ
         /// </summary>
-        /// <param name=""data"">Êı¾İ</param>
-        /// <param name=""isAdd"">ÊÇ·ñÎªĞÂÔö</param>
-        /// <returns>Èç¹ûÎª·ñ½«×èÖ¹ºóĞø²Ù×÷</returns>
+        /// <param name=""data"">æ•°æ®</param>
+        /// <param name=""isAdd"">æ˜¯å¦ä¸ºæ–°å¢</param>
+        /// <returns>å¦‚æœä¸ºå¦å°†é˜»æ­¢åç»­æ“ä½œ</returns>
         protected override bool OnSaved({Entity.EntityName} data, bool isAdd)
         {{
              return base.OnSaved(data, isAdd);
         }}
         /// <summary>
-        ///     ±»ÓÃ»§±à¼­µÄÊı¾İµÄ±£´æÇ°²Ù×÷
+        ///     è¢«ç”¨æˆ·ç¼–è¾‘çš„æ•°æ®çš„ä¿å­˜å‰æ“ä½œ
         /// </summary>
-        /// <param name=""data"">Êı¾İ</param>
-        /// <param name=""isAdd"">ÊÇ·ñÎªĞÂÔö</param>
-        /// <returns>Èç¹ûÎª·ñ½«×èÖ¹ºóĞø²Ù×÷</returns>
+        /// <param name=""data"">æ•°æ®</param>
+        /// <param name=""isAdd"">æ˜¯å¦ä¸ºæ–°å¢</param>
+        /// <returns>å¦‚æœä¸ºå¦å°†é˜»æ­¢åç»­æ“ä½œ</returns>
         protected override bool LastSavedByUser(MeetingData data, bool isAdd)
         {{
             return base.LastSavedByUser(data, isAdd);
         }}
 
         /// <summary>
-        ///     ±»ÓÃ»§±à¼­µÄÊı¾İµÄ±£´æÇ°²Ù×÷
+        ///     è¢«ç”¨æˆ·ç¼–è¾‘çš„æ•°æ®çš„ä¿å­˜å‰æ“ä½œ
         /// </summary>
-        /// <param name=""data"">Êı¾İ</param>
-        /// <param name=""isAdd"">ÊÇ·ñÎªĞÂÔö</param>
-        /// <returns>Èç¹ûÎª·ñ½«×èÖ¹ºóĞø²Ù×÷</returns>
+        /// <param name=""data"">æ•°æ®</param>
+        /// <param name=""isAdd"">æ˜¯å¦ä¸ºæ–°å¢</param>
+        /// <returns>å¦‚æœä¸ºå¦å°†é˜»æ­¢åç»­æ“ä½œ</returns>
         protected override bool PrepareSaveByUser(MeetingData data, bool isAdd)
         {{
             return base.PrepareSaveByUser(data, isAdd);
@@ -95,8 +94,8 @@ namespace {NameSpace}.BusinessLogic
     }}
 }}
 ";
-            var file = ConfigPath(path, "File_Model_Business", Entity.Name + "BusinessLogic", ".cs");
-            SaveCode(file, code);
+            var file = ConfigPath(Entity, FileSaveConfigName, path, "Business", Entity.Name + "BusinessLogic") ;
+            SaveCode(file + ".cs", code);
         }
         private string CommandExCode()
         {
@@ -106,9 +105,9 @@ namespace {NameSpace}.BusinessLogic
                 code.Append($@"
 
         /// <summary>
-        ///     ÔØÈëÊ÷½Úµã
+        ///     è½½å…¥æ ‘èŠ‚ç‚¹
         /// </summary>
-        internal List<EasyUiTreeNode> LoadTree(int pid)
+        public List<EasyUiTreeNode> LoadTree(int pid)
         {{
             EasyUiTreeNode node;
             using (var proxy = new RedisProxy(RedisProxy.DbWebCache))
@@ -128,7 +127,7 @@ namespace {NameSpace}.BusinessLogic
         /// <remark>
         ///     {ToRemString(cmd.Description)}
         /// </remark>
-        internal bool {cmd.Name}(int id)
+        public bool {cmd.Name}(int id)
         {{
             //Access.SetValue(p => p.Id, 0, id);
             return true;
@@ -175,7 +174,7 @@ using Agebull.Common.Mvvm.ServiceAccess;
         private string EntityType => $"{Entity.Parent.DataBaseObjectName}.Table_{Entity.Name}";
 
         /// <summary>
-        ///     Éú³ÉÀ©Õ¹´úÂë
+        ///     ç”Ÿæˆæ‰©å±•ä»£ç 
         /// </summary>
         protected override void CreateBaCode(string path)
         {
@@ -203,7 +202,7 @@ namespace {NameSpace}.BusinessLogic
     {{
         
         /// <summary>
-        ///     ÊµÌåÀàĞÍ
+        ///     å®ä½“ç±»å‹
         /// </summary>
         public override int EntityType => {EntityType};
 
@@ -211,17 +210,17 @@ namespace {NameSpace}.BusinessLogic
 {CommandCode()}
     }}
 }}";
-            var file = ConfigPath(path, "File_Model_Business", Entity.Name + "BusinessLogic", ".Designer.cs");
-            SaveCode(file, code);
+            var file = ConfigPath(Entity, FileSaveConfigName, path, "Business", Entity.Name + "BusinessLogic");
+            SaveCode(file + ".Designer.cs", code);
         }
 
         private string SyncCode()
         {
             return SolutionConfig.Current.IsWeb ? "" : $@"
         /// <summary>
-        /// ½«ĞŞ¸Ä·¢ËÍµ½½»Ò×·şÎñÆ÷
+        /// å°†ä¿®æ”¹å‘é€åˆ°äº¤æ˜“æœåŠ¡å™¨
         /// </summary>
-        /// <param name=""data"">ĞŞ¸ÄµÄÊı¾İ</param>
+        /// <param name=""data"">ä¿®æ”¹çš„æ•°æ®</param>
         public void SendDataChanged({Entity.EntityName} data)
         {{
 #if LinkServer

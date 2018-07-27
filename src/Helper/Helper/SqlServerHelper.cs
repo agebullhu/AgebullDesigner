@@ -280,6 +280,10 @@ namespace Agebull.EntityModel.Config.SqlServer
         /// <param name="property">字段</param>
         public static string ToDataBaseType(PropertyConfig property)
         {
+            if (string.IsNullOrWhiteSpace(property.CsType))
+            {
+                return "VARBINARY";
+            }
             switch (property.CsType.ToLower())
             {
                 case "byte":
@@ -319,7 +323,7 @@ namespace Agebull.EntityModel.Config.SqlServer
                 case "guid":
                     return "UNIQUEIDENTIFIER";
                 default:
-                    return property.CsType.ToUpper();
+                    return property.CsType?.ToUpper();
             }
         }
 
@@ -329,6 +333,10 @@ namespace Agebull.EntityModel.Config.SqlServer
         /// <param name="csharpType"> C#的类型</param>
         public static string ToDataBaseType(string csharpType)
         {
+            if (string.IsNullOrWhiteSpace(csharpType))
+            {
+                return "VARBINARY";
+            }
             switch (csharpType.ToLower())
             {
                 case "byte":
@@ -433,20 +441,16 @@ namespace Agebull.EntityModel.Config.SqlServer
                     return $"DECIMAL({column.Datalen},{column.Scale})";
                 case "binary":
                 case "varbinary":
-                    if (column.IsBlob)
-                        return "LONGBLOB";
-                    if (column.Datalen <= 0 || column.Datalen >= 4000)
-                        return "BLOB";
+                    if (column.IsBlob || column.Datalen <= 0 || column.Datalen >= 4000)
+                        return "VARBINARY(max)";
                     else
                         return $"{column.DbType.ToUpper()}({column.Datalen})";
                 case "char":
                 case "nchar":
                 case "varchar":
                 case "nvarchar":
-                    if (column.IsBlob)
-                        return "LONGTEXT";
-                    if (column.Datalen < 0 || column.Datalen > 4000)
-                        return "TEXT";
+                    if (column.IsBlob || column.Datalen < 0 || column.Datalen > 4000)
+                        return "VARCHAR(max)";
                     return $"{column.DbType.ToUpper()}({column.Datalen})";
                 default:
                     return column.DbType.ToUpper();

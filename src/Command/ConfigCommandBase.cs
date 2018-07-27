@@ -13,18 +13,31 @@ namespace Agebull.EntityModel.Designer
     {
         protected ConfigCommandBase()
         {
-            Signle = false;
-            SourceType = typeof(TConfig).FullName;
+            SignleSoruce = false;
+            TargetType = typeof(TConfig);
         }
+
         /// <summary>
         /// 得到当前的消息跟踪器
         /// </summary>
-        public Action<string> MessageSetter { get; set; } = msg => GlobalConfig.Global.StateMessage = msg;
+        public Action<string> MessageSetter => msg => GlobalConfig.Global.StateMessage = msg;
 
         /// <summary>
         /// 转为命令对象
         /// </summary>
         /// <returns>命令对象</returns>
-        public abstract CommandItem ToCommand(object arg, Func<object, IEnumerator> enumerator = null);
+        CommandItemBase ICommandItemBuilder.ToCommand(object arg, Func<object, IEnumerator> enumerator)
+        {
+            var item= ToCommand(arg, enumerator);
+            item.Source = arg;
+            item.TargetType = TargetType;
+            return item;
+        }
+
+        /// <summary>
+        /// 转为命令对象
+        /// </summary>
+        /// <returns>命令对象</returns>
+        public abstract CommandItemBase ToCommand(object arg, Func<object, IEnumerator> enumerator = null);
     }
 }

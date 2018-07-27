@@ -8,10 +8,9 @@
 
 #region 引用
 
-using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
 
 #endregion
@@ -20,12 +19,21 @@ namespace Agebull.EntityModel.Designer
 {
     public sealed class NewEntityViewModel : ViewModelBase<NewEntityModel>
     {
-        private List<CommandItem> _exCommands;
         private bool _isNew;
+        private string _title;
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                _title = value;
+                RaisePropertyChanged(nameof(Title));
+            }
+        }
 
         public bool IsNew
         {
-            get { return _isNew; }
+            get => _isNew;
             set
             {
                 _isNew = value;
@@ -33,76 +41,58 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        public IEnumerable<CommandItem> ExCommands => _exCommands ?? (_exCommands = new List<CommandItem>
+        public CommandItem CancelCommand => new CommandItem
         {
-            new CommandItem
-            {
-                Command = new AsyncCommand<string, List<PropertyConfig>>
-                    (Model.CheckFieldesPrepare, Model.DoCheckFieldes, Model.CheckFieldesEnd)
-                {
-                    Detect = Model
-                },
-                Name = "分析文本",
-                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-            },
-            new CommandItem
-            {
-                Command = new AsyncCommand<string, string>
-                    (Model.Format1Prepare, Model.DoFormat1, Model.Format1End)
-                {
-                    Detect = Model
-                },
-                Name = "格式化(类型 名称)",
-                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-            },
-            new CommandItem
-            {
-                Command = new AsyncCommand<string, string>
-                    (Model.Format2Prepare, Model.DoFormat2, Model.Format2End)
-                    {
-                        Detect = Model
-                    },
-                Name = "格式化(名称 类型 标题)",
-                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-            },
-            new CommandItem
-            {
-                Command = new AsyncCommand<string, string>
-                    (Model.Format3Prepare, Model.DoFormat3, Model.Format3End)
-                    {
-                        Detect = Model
-                    },
-                Name = "格式化(MySql数据库)",
-                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-            },
-            new CommandItem
-            {
-                Command = new AsyncCommand<string, string>
-                    (Model.FormatSqlServerPrepare, Model.DoFormatSqlServer, Model.FormatSqlServerEnd)
-                    {
-                        Detect = Model
-                    },
-                Name = "格式化(SqlServer数据库)",
-                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-            },
-            new CommandItem
-            {
-                Command = new DelegateCommand(DoClose),
-                Name = "完成",
-                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-            }
-        });
+            Action = arg => DoCancel(),
+            Caption = "取消",
+            Image = Application.Current.Resources["img_error"] as ImageSource
+        };
 
+        public CommandItem OkCommand => new CommandItem
+        {
+            Action =arg=> DoClose(),
+            Caption = "完成",
+            Image = Application.Current.Resources["imgSave"] as ImageSource
+        };
+
+        private void DoCancel()
+        {
+            var window = (Window)View;
+            window.DialogResult = false;
+        }
         private void DoClose()
         {
-            if (IsNew && (string.IsNullOrWhiteSpace(Model.EntityName) || Model.Entity.Properties.Count == 0))
+            if (IsNew && (string.IsNullOrWhiteSpace(Model.Entity.Name) || Model.Columns.Count == 0))
             {
                 MessageBox.Show("实体名称为空或没有字段,请检查");
                 return;
             }
+            foreach (var field in Model.Columns)
+            {
+                if (field.IsDelete)
+                    continue;
+                var old = Model.Entity.Properties.FirstOrDefault(p => p != null && p.Name == field.Name);
+                if (old != null)
+                {
+                    old.CsType = field.CsType;
+                    old.Caption = field.Caption;
+                    old.Description = field.Description;
+                    old.CustomType = field.CustomType;
+                    old.Nullable  = field.Nullable;
+                    old.IsArray = field.IsArray;
+                    old.IsDictionary = field.IsDictionary;
+                    old.Datalen = field.Datalen;
+                }
+                else
+                {
+                    Model.Entity.Add(field);
+                }
+            }
             var window = (Window)View;
             window.Tag = Model.Entity;
+
             window.DialogResult = true;
         }
+
     }
 }

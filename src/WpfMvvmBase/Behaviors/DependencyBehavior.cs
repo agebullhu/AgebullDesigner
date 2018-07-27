@@ -43,27 +43,19 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         public BehaviorAction<TDependency> BehaviorAction
         {
-            get
-            {
-                return (BehaviorAction<TDependency>)GetValue(BehaviorActionProperty);
-            }
-            set
-            {
-                SetValue(BehaviorActionProperty, value);
-            }
+            get => (BehaviorAction<TDependency>)GetValue(BehaviorActionProperty);
+            set => SetValue(BehaviorActionProperty, value);
         }
 
         private static void OnBehaviorActionPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var eb = d as DependencyBehavior<TDependency>;
-            if (eb == null || !eb._isAttached || Equals(e.OldValue, e.NewValue))
+            if (!(d is DependencyBehavior<TDependency> eb) || !eb._isAttached || Equals(e.OldValue, e.NewValue))
             {
                 return;
             }
             try
             {
-                BehaviorAction<TDependency> action = e.OldValue as BehaviorAction<TDependency>;
-                if (action != null && action.DetachAction != null)
+                if (e.OldValue is BehaviorAction<TDependency> action && action.DetachAction != null)
                 {
                     action.DetachAction(eb.AssociatedObject);
                 }

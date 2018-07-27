@@ -56,8 +56,7 @@ namespace Agebull.Common.Mvvm
                 return value;
             if ((value is string))
             {
-                DateTime date;
-                if (DateTime.TryParse((string) value, out date))
+                if (DateTime.TryParse((string)value, out DateTime date))
                     return date;
             }
             return DateTime.MinValue;
@@ -88,8 +87,7 @@ namespace Agebull.Common.Mvvm
                 return value;
             if ((value is string))
             {
-                DateTime date;
-                if (DateTime.TryParse((string)value, out date))
+                if (DateTime.TryParse((string)value, out DateTime date))
                     return date;
             }
             return DateTime.MinValue;
@@ -120,8 +118,7 @@ namespace Agebull.Common.Mvvm
                 return value;
             if ((value is string))
             {
-                DateTime date;
-                if (DateTime.TryParse((string)value, out date))
+                if (DateTime.TryParse((string)value, out DateTime date))
                     return date;
             }
             return DateTime.MinValue;

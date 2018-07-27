@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Agebull.Common;
 
 namespace Agebull.EntityModel.Config
 {
@@ -34,7 +33,7 @@ namespace Agebull.EntityModel.Config
                     col.DbType = null;
                 }
                 Entity.IsModify = true;
-                Entity.IsClass = true;
+                Entity.NoDataBase = true;
                 Entity.ReadTableName = null;
                 Entity.SaveTableName = null;
                 return;
@@ -42,7 +41,7 @@ namespace Agebull.EntityModel.Config
             if (Entity.IsFreeze || Entity.IsReference)
                 return;
             RepairCaption();
-            if (Entity.IsClass)
+            if (Entity.NoDataBase)
             {
                 Entity.ReadTableName = null;
                 Entity.SaveTableName = null;
@@ -53,7 +52,7 @@ namespace Agebull.EntityModel.Config
                     Entity.ReadTableName = ToWords(Entity.Name).LinkToString("tb_", "_");
                 if (Entity.PrimaryColumn == null)
                 {
-                    Entity.Properties.Add(new PropertyConfig
+                    Entity.Add(new PropertyConfig
                     {
                         Name = Entity.Name + "Id",
                         Caption = Entity.Caption + "ID",
@@ -66,12 +65,12 @@ namespace Agebull.EntityModel.Config
                     });
                 }
             }
-            EntityConfig friend = GetEntity(p => p != Entity && p.Tag == Entity.Tag);
+            EntityConfig friend = GetEntity(p => p != Entity && p.Option.ReferenceTag == Entity.Option.ReferenceTag);
 
             PropertyBusinessModel model = new PropertyBusinessModel();
             foreach (var col in Entity.Properties)
             {
-                if (col.Discard || col.IsFreeze)
+                if (col.IsDiscard || col.IsFreeze)
                 {
                     continue;
                 }
@@ -109,21 +108,6 @@ namespace Agebull.EntityModel.Config
         #endregion
         #region 修复
         /// <summary>
-        ///     中译英
-        /// </summary>
-        public void ToEnglish()
-        {
-            if (Entity.IsFreeze)
-                return;
-            foreach (var col in Entity.Properties)
-            {
-                if (string.IsNullOrEmpty(col.Caption) || (!string.IsNullOrWhiteSpace(col.Name) && col.Name[0] < 256))
-                    continue;
-                col.Name = BaiduFanYi.FanYiWord(col.Caption);
-            }
-            Entity.IsModify = true;
-        }
-        /// <summary>
         ///     自动修复(从模型修复数据存储)
         /// </summary>
         public void RepairRegular(bool repair)
@@ -132,7 +116,7 @@ namespace Agebull.EntityModel.Config
                 return;
             foreach (var col in Entity.Properties)
             {
-                if (col.Discard)
+                if (col.IsDiscard)
                 {
                     continue;
                 }
@@ -284,13 +268,13 @@ namespace Agebull.EntityModel.Config
                 PropertyConfig column;
                 columns.Add(column = new PropertyConfig
                 {
-                    Index = idx++,
                     IsPrimaryKey = name.Equals("ID", StringComparison.OrdinalIgnoreCase),
                     ColumnName = name,
                     Name = name,
                     CsType = "string",
                     DbType = "nvarchar"
                 });
+                column.Option.Index = idx++;
                 if (words.Length > 1)
                 {
                     CheckType(column, words[1]);
@@ -319,7 +303,7 @@ namespace Agebull.EntityModel.Config
             Entity.DataVersion = source.DataVersion;
             Entity.DbIndex = source.DbIndex;
             Entity.IsInternal = source.IsInternal;
-            Entity.IsClass = source.IsClass;
+            Entity.NoDataBase = source.NoDataBase;
             Entity.ReadTableName = source.ReadTableName;
             Entity.CppName = source.CppName;
             Entity.Project = source.Project;
@@ -331,7 +315,7 @@ namespace Agebull.EntityModel.Config
             {
                 var nf = new PropertyConfig();
                 nf.CopyFrom(field);
-                Entity.Properties.Add(nf);
+                Entity.Add(nf);
             }
         }
 

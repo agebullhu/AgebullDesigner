@@ -6,18 +6,16 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    internal sealed class EntityPropertyBuilder : EntityBuilderBase
+    public sealed class EntityPropertyBuilder : EntityBuilderBase
     {
 
-        #region Ö÷Ìå´úÂë
+        #region ä¸»ä½“ä»£ç 
 
         protected override string ExtendUsing => $@"
 using System.IO;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
 //using {NameSpace}.DataAccess;
@@ -27,7 +25,6 @@ using Newtonsoft.Json;
         protected override string ClassHead => $@"/// <summary>
     /// {ToRemString(Entity.Description)}
     /// </summary>
-    [Table(""GL_OAuth_ClientManager"")]
     [JsonObject(MemberSerialization.OptIn)]
     public ";
         protected override string ClassExtend => ExtendInterface();
@@ -35,17 +32,17 @@ using Newtonsoft.Json;
         protected override string Folder => "Base";
 
         public override string BaseCode => $@"
-        #region ÊôĞÔ×ÖÒå
+        #region å±æ€§å­—ä¹‰
 {Properties()}
 {FullCode()}
         #endregion";
 
         public override string ExtendCode => $@"/// <summary>
-        /// ³õÊ¼»¯
+        /// åˆå§‹åŒ–
         /// </summary>
         partial void Initialize()
         {{
-/*{ DefaultValueCode()}*/
+            /*{ DefaultValueCode()}*/
         }}
 
 using System;
@@ -71,17 +68,17 @@ namespace {NameSpace}
 
 
         /// <summary>
-        ///     Éú³ÉÊµÌå´úÂë
+        ///     ç”Ÿæˆå®ä½“ä»£ç 
         /// </summary>
         private string FullCode()
         {
-            if (Entity.IsClass)
+            if (Entity.NoDataBase || Entity.PrimaryColumn?.CsType != "long")
                 return null;
             return $@"
-        #region IIdentityData½Ó¿Ú
+        #region IIdentityDataæ¥å£
 { ExtendProperty()}
         #endregion
-        #region ÊôĞÔÀ©Õ¹
+        #region å±æ€§æ‰©å±•
 {AccessProperties()}
         #endregion";
         }
@@ -89,7 +86,7 @@ namespace {NameSpace}
         #endregion
 
 
-        #region À©Õ¹
+        #region æ‰©å±•
 
         private string ExtendInterface()
         {
@@ -99,7 +96,7 @@ namespace {NameSpace}
                 list.AddRange(Entity.Interfaces.Split(NoneLanguageChar, StringSplitOptions.RemoveEmptyEntries));
             }
             //code.Append("IEntityPoolSetting");
-            if (!Entity.IsClass)
+            if (!Entity.NoDataBase && Entity.PrimaryColumn?.CsType == "long")
                 list.Add("IIdentityData");
             //if (!Entity.IsLog)
             //{
@@ -118,7 +115,7 @@ namespace {NameSpace}
             //{
             //    code.Append(" , IUserChildEntity");
             //}
-            return Entity.IsClass ? " : NotificationObject" : " : EditDataObject" + (list.Count == 0 ? null : list.DistinctBy().LinkToString(" , ", " , "));
+            return Entity.NoDataBase ? " : NotificationObject" : " : EditDataObject" + (list.Count == 0 ? null : list.DistinctBy().LinkToString(" , ", " , "));
         }
 
         private string ExtendProperty()
@@ -126,12 +123,12 @@ namespace {NameSpace}
             var code = new StringBuilder();
             if (Entity.PrimaryColumn != null)
             {
-                if (Entity.PrimaryColumn.Name != "Id")
+                if (Entity.PrimaryColumn.Name != "Id" && Entity.LastProperties.All(p => p.Name != "Id"))
                 {
                     code.AppendFormat(@"
 
         /// <summary>
-        /// ¶ÔÏó±êÊ¶
+        /// å¯¹è±¡æ ‡è¯†
         /// </summary>
         [IgnoreDataMember,Browsable(false)]
         public {0} Id
@@ -146,29 +143,45 @@ namespace {NameSpace}
             }}
         }}", Entity.PrimaryColumn.LastCsType, Entity.PrimaryColumn.Name);
                 }
-
-                code.AppendFormat(@"
+                if(Entity.PrimaryColumn.CsType == "int")
+                code.Append($@"
 
         /// <summary>
-        /// Id¼ü
+        /// Idé”®
         /// </summary>
-        int IIdentityData.Id
+        long IIdentityData.Id
         {{
             get
             {{
-                return (int)this.{1};
+                return (long)this.{Entity.PrimaryColumn.Name};
             }}
             set
             {{
-                this.{1} = {0}value;
+                this.{Entity.PrimaryColumn.Name} = value;
             }}
-        }}", Entity.PrimaryColumn.LastCsType == "int" ? string.Empty : "(int)", Entity.PrimaryColumn.Name);
+        }}");
+        //        else
+        //            code.AppendFormat(@"
+
+        ///// <summary>
+        ///// Idé”®
+        ///// </summary>
+        //int IIdentityData.Id
+        //{{
+        //    get
+        //    {{
+        //        throw new Exception(""ä¸æ”¯æŒ"");//BUG:IDä¸æ˜¯INTç±»å‹
+        //    }}
+        //    set
+        //    {{
+        //    }}
+        //}}");
                 if (Entity.PrimaryColumn.IsGlobalKey)
                 {
                     code.AppendFormat(@"
 
         /// <summary>
-        /// Key¼ü
+        /// Keyé”®
         /// </summary>
         Guid IKey.Key
         {{
@@ -189,7 +202,7 @@ namespace {NameSpace}
             code.Append(@"
 
         /// <summary>
-        /// ×éºÏºóµÄÎ¨Ò»Öµ
+        /// ç»„åˆåçš„å”¯ä¸€å€¼
         /// </summary>
         public string UniqueValue
         {
@@ -217,151 +230,92 @@ namespace {NameSpace}
         #endregion
 
 
-        #region ÊôĞÔ
+        #region å±æ€§
 
         private string PrimaryKeyPropertyCode()
         {
             var property = Entity.PrimaryColumn;
             if (property == null)
-                return null;//"\nÃ»ÓĞÉèÖÃÖ÷¼ü×Ö¶Î£¬Éú³ÉµÄ´úÂëÊÇ´íÎóµÄ";
-            return string.Format(@"
+                return null;//"\næ²¡æœ‰è®¾ç½®ä¸»é”®å­—æ®µï¼Œç”Ÿæˆçš„ä»£ç æ˜¯é”™è¯¯çš„";
+            return $@"
 
         /// <summary>
-        /// ĞŞ¸ÄÖ÷¼ü
+        /// ä¿®æ”¹ä¸»é”®
         /// </summary>
-        public void ChangePrimaryKey({3} {1})
+        public void ChangePrimaryKey({property.LastCsType} {property.Name.ToLWord()})
         {{
-            _{1} = {1};
+            _{property.Name.ToLWord()} = {property.Name.ToLWord()};
         }}
         
         /// <summary>
-        /// {0}µÄÊµÊ±¼ÇÂ¼Ë³Ğò
+        /// {ToRemString(property.Caption)}çš„å®æ—¶è®°å½•é¡ºåº
         /// </summary>
-        internal const int Real_{2} = 0;
+        public const int Real_{property.Name} = 0;
 
         /// <summary>
-        /// {0}
+        /// {ToRemString(property.Caption)}
         /// </summary>
         [DataMember,JsonIgnore]
-        internal {3} _{1};
+        public {property.LastCsType} _{property.Name.ToLWord()};
 
-        partial void On{2}Get();
+        partial void On{property.Name}Get();
 
-        partial void On{2}Set(ref {3} value);
+        partial void On{property.Name}Set(ref {property.LastCsType} value);
 
-        partial void On{2}Load(ref {3} value);
+        partial void On{property.Name}Load(ref {property.LastCsType} value);
 
-        partial void On{2}Seted();
+        partial void On{property.Name}Seted();
 
         /// <summary>
-        /// {0}
+        /// {ToRemString(property.Caption)}
         /// </summary>
         /// <remarks>
-        /// {5}
+        /// {ToRemString(property.Description)}
         /// </remarks>
-        {4}[Key]
-        public {3} {2}
+        {Attribute(property)}
+        public {property.LastCsType} {property.Name}
         {{
             get
             {{
-                On{2}Get();
-                return this._{1};
+                On{property.Name}Get();
+                return this._{property.Name.ToLWord()};
             }}
             set
             {{
-                if(this._{1} == value)
+                if(this._{property.Name.ToLWord()} == value)
                     return;
-                //if(this._{1} > 0)
-                //    throw new Exception(""Ö÷¼üÒ»µ©ÉèÖÃ¾Í²»¿ÉÒÔĞŞ¸Ä"");
-                On{2}Set(ref value);
-                this._{1} = value;
-                {6}this.OnPropertyChanged(Real_{2});
-                On{2}Seted();
+                //if(this._{property.Name.ToLWord()} > 0)
+                //    throw new Exception(""ä¸»é”®ä¸€æ—¦è®¾ç½®å°±ä¸å¯ä»¥ä¿®æ”¹"");
+                On{property.Name}Set(ref value);
+                this._{property.Name.ToLWord()} = value;
+                this.OnPropertyChanged(Real_{property.Name});
+                On{property.Name}Seted();
             }}
-        }}"
-                , ToRemString(property.Caption + ":" + property.Description)
-                , property.Name.ToLower()
-                , property.Name
-                , property.LastCsType
-                , Attribute(property)
-                , ToRemString(property.Description)
-                , null/*Entity.UpdateByModified ? "//" : property.IsIdentity ? "//" : ""*/);
+        }}";
         }
 
         private void PropertyCode(PropertyConfig property, int index, StringBuilder code)
         {
-            code.AppendFormat(@"
-        /// <summary>
-        /// {0}µÄÊµÊ±¼ÇÂ¼Ë³Ğò
-        /// </summary>
-        internal const int Real_{2} = {6};
-
-        /// <summary>
-        /// {0}
-        /// </summary>
-        [DataMember,JsonIgnore]
-        internal {3} _{1};
-
-        partial void On{2}Get();
-
-        partial void On{2}Set(ref {3} value);
-
-        partial void On{2}Seted();
-
-        /// <summary>
-        /// {0}
-        /// </summary>
-        /// <remarks>
-        /// {5}
-        /// </remarks>
-        {4}
-        {7} {3} {2}
-        {{
-            get
-            {{
-                On{2}Get();
-                return this._{1};
-            }}
-            set
-            {{
-                if(this._{1} == value)
-                    return;
-                On{2}Set(ref value);
-                this._{1} = value;
-                On{2}Seted();
-                {8}this.OnPropertyChanged(Real_{2});
-            }}
-        }}", ToRemString(property.Caption + ":" + property.Description), property.Name.ToLower(), property.Name, property.LastCsType, Attribute(property), ToRemString(property.Description), index, property.AccessType, null
-/*Entity.UpdateByModified ? "//" : ""*/);
-            EnumContentProperty(property, code);
-        }
-
-        /// <summary>
-        /// ¼ÆËãÁĞÊôĞÔ
-        /// </summary>
-        /// <param name="property"></param>
-        /// <param name="index"></param>
-        /// <param name="code"></param>
-        private void ComputePropertyCode(PropertyConfig property, int index, StringBuilder code)
-        {
-            EnumContentProperty(property, code);
             code.Append($@"
         /// <summary>
-        /// {ToRemString(property.Caption + ":" + property.Description)}µÄÊµÊ±¼ÇÂ¼Ë³Ğò
+        /// {ToRemString(property.Caption)}çš„å®æ—¶è®°å½•é¡ºåº
         /// </summary>
-        internal const int Real_{property.Name} = {index};
-");
-            if (string.IsNullOrWhiteSpace(property.ComputeGetCode) && string.IsNullOrWhiteSpace(property.ComputeSetCode))
-            {
-                code.Append($@"
-        /// <summary>
-        /// {ToRemString(property.Caption + ":" + property.Description)}
-        /// </summary>
-        [DataMember,JsonIgnore]
-        internal {property.LastCsType} _{property.Name.ToLower()};
+        public const int Real_{property.Name} = {index};
 
         /// <summary>
-        /// {ToRemString(property.Caption + ":" + property.Description)}
+        /// {ToRemString(property.Caption)}
+        /// </summary>
+        [DataMember,JsonIgnore]
+        public {property.LastCsType} _{property.Name.ToLWord()};
+
+        partial void On{property.Name}Get();
+
+        partial void On{property.Name}Set(ref {property.LastCsType} value);
+
+        partial void On{property.Name}Seted();
+
+        /// <summary>
+        /// {ToRemString(property.Caption)}
         /// </summary>
         /// <remarks>
         /// {ToRemString(property.Description)}
@@ -371,11 +325,63 @@ namespace {NameSpace}
         {{
             get
             {{
-                return this._{property.Name.ToLower()};
+                On{property.Name}Get();
+                return this._{property.Name.ToLWord()};
             }}
             set
             {{
-                this._{property.Name.ToLower()} = value;
+                if(this._{property.Name.ToLWord()} == value)
+                    return;
+                On{property.Name}Set(ref value);
+                this._{property.Name.ToLWord()} = value;
+                On{property.Name}Seted();
+                this.OnPropertyChanged(Real_{property.Name});
+            }}
+        }}"
+/*Entity.UpdateByModified ? "//" : ""*/);
+            EnumContentProperty(property, code);
+        }
+
+        /// <summary>
+        /// è®¡ç®—åˆ—å±æ€§
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="index"></param>
+        /// <param name="code"></param>
+        private void ComputePropertyCode(PropertyConfig property, int index, StringBuilder code)
+        {
+            EnumContentProperty(property, code);
+            code.Append($@"
+        /// <summary>
+        /// {ToRemString(property.Caption)}çš„å®æ—¶è®°å½•é¡ºåº
+        /// </summary>
+        public const int Real_{property.Name} = {index};
+");
+            if (string.IsNullOrWhiteSpace(property.ComputeGetCode) && string.IsNullOrWhiteSpace(property.ComputeSetCode))
+            {
+                code.Append($@"
+        /// <summary>
+        /// {ToRemString(property.Caption)}
+        /// </summary>
+        [DataMember,JsonIgnore]
+        public {property.LastCsType} _{property.Name.ToLWord()};
+
+        /// <summary>
+        /// {ToRemString(property.Caption)}
+        /// </summary>
+        /// <remarks>
+        /// {ToRemString(property.Description)}
+        /// </remarks>
+        {Attribute(property)}
+        {property.AccessType} {property.LastCsType} {property.Name}
+        {{
+            get
+            {{
+                return this._{property.Name.ToLWord()};
+            }}
+            set
+            {{
+                this._{property.Name.ToLWord()} = value;
             }}
         }}");
             }
@@ -383,7 +389,7 @@ namespace {NameSpace}
             {
                 code.Append($@"
         /// <summary>
-        /// {ToRemString(property.Caption + ":" + property.Description)}
+        /// {ToRemString(property.Caption)}
         /// </summary>
         /// <remarks>
         /// {ToRemString(property.Description)}
@@ -419,7 +425,7 @@ namespace {NameSpace}
             {
                 code.Append($@"
         /// <summary>
-        /// {ToRemString(property.Caption + ":" + property.Description)}
+        /// {ToRemString(property.Caption)}
         /// </summary>
         /// <remarks>
         /// {ToRemString(property.Description)}
@@ -439,7 +445,7 @@ namespace {NameSpace}
             }
         }
         /// <summary>
-        /// ±ğÃûÊôĞÔ
+        /// åˆ«åå±æ€§
         /// </summary>
         /// <param name="property"></param>
         /// <param name="code"></param>
@@ -451,7 +457,7 @@ namespace {NameSpace}
             {
                 code.Append($@"
         /// <summary>
-        /// {ToRemString(property.Caption + ":" + property.Description)}
+        /// {ToRemString(property.Caption)}
         /// </summary>
         /// <remarks>
         /// {ToRemString(property.Description)}
@@ -484,7 +490,7 @@ namespace {NameSpace}
                     PropertyCode(property, index++, code);
                 AliasPropertyCode(property, code);
             }
-            foreach (PropertyConfig property in Entity.Properties.Where(p => !p.Discard && p.DbInnerField))
+            foreach (PropertyConfig property in Entity.DbFields.Where(p => p.DbInnerField))
             {
                 DbInnerProperty(property, code);
             }
@@ -495,17 +501,17 @@ namespace {NameSpace}
             code.Append($@"
 
         /// <summary>
-        /// {ToRemString(property.Caption + ":" + property.Description)}
+        /// {ToRemString(property.Caption)}
         /// </summary>
         /// <remarks>
-        /// ½öÏŞÓÃÓÚ²éÑ¯µÄLambda±í´ïÊ½Ê¹ÓÃ
+        /// ä»…é™ç”¨äºæŸ¥è¯¢çš„Lambdaè¡¨è¾¾å¼ä½¿ç”¨
         /// </remarks>
         [IgnoreDataMember , Browsable(false),JsonIgnore]
         public {property.LastCsType} {property.Name}
         {{
             get
             {{
-                throw new Exception(""{ToRemString(property.Caption + ":" + property.Description)}ÊôĞÔ½öÏŞÓÃÓÚ²éÑ¯µÄLambda±í´ïÊ½Ê¹ÓÃ"");
+                throw new Exception(""{ToRemString(property.Caption)}å±æ€§ä»…é™ç”¨äºæŸ¥è¯¢çš„Lambdaè¡¨è¾¾å¼ä½¿ç”¨"");
             }}
         }}");
         }
@@ -513,7 +519,7 @@ namespace {NameSpace}
         private string AccessProperties()
         {
             var code = new StringBuilder();
-            foreach (PropertyConfig property in Entity.Properties.Where(p => !string.IsNullOrWhiteSpace(p.StorageProperty)))
+            foreach (PropertyConfig property in Entity.DbFields.Where(p => !string.IsNullOrWhiteSpace(p.StorageProperty)))
             {
                 code.Append($@"
 
@@ -524,13 +530,13 @@ namespace {NameSpace}
         partial void On{property.StorageProperty}Seted();
 
         /// <summary>
-        /// {ToRemString(property.Caption + ":" + property.Description)}µÄ´æ´¢Öµ¶ÁĞ´×Ö¶Î
+        /// {ToRemString(property.Caption)}çš„å­˜å‚¨å€¼è¯»å†™å­—æ®µ
         /// </summary>
         /// <remarks>
-        /// ½ö´æ´¢Ê¹ÓÃ
+        /// ä»…å­˜å‚¨ä½¿ç”¨
         /// </remarks>
         [DataMember , Browsable(false),JsonIgnore]
-        internal string {property.StorageProperty}
+        public string {property.StorageProperty}
         {{
             get
             {{

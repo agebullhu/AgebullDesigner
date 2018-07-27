@@ -9,7 +9,7 @@ namespace Agebull.EntityModel.Config
     /// 扩展配置节点
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public class ConfigItemList
+    public partial class ConfigItemList
     {
         /// <summary>
         /// 构造
@@ -19,10 +19,12 @@ namespace Agebull.EntityModel.Config
         {
             Items = items;
         }
+
         /// <summary>
         /// 节点（引用）
         /// </summary>
-        public List<ConfigItem> Items { get;}
+        public List<ConfigItem> Items { get; }
+
         /// <summary>
         /// 读写扩展配置
         /// </summary>
@@ -39,6 +41,7 @@ namespace Agebull.EntityModel.Config
                 if (string.IsNullOrWhiteSpace(key))
                     return;
                 var mv = Items.FirstOrDefault(p => p.Name == key);
+                value = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 if (mv == null)
                 {
                     Items.Add(new ConfigItem { Name = key, Value = value });

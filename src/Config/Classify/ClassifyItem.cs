@@ -18,13 +18,15 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public ClassifyItem()
         {
-
         }
         /// <summary>
-        ///     当前类型
+        /// 构造
         /// </summary>
-        public override string Type => typeof(ParentConfigBase).Name;
-
+        /// <param name="updateAction"></param>
+        public ClassifyItem(Action<string, TConfig> updateAction)
+        {
+            UpdateAction = updateAction;
+        }
         /// <summary>
         ///     属性修改处理
         /// </summary>
@@ -39,10 +41,13 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 子级
+        /// 遍历子级
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        public override IEnumerable<ConfigBase> MyChilds => _items;
+        public override void ForeachChild(Action<ConfigBase> action)
+        {
+            foreach (var item in _items)
+                action(item);
+        }
 
         /// <summary>
         /// 子级
@@ -56,7 +61,7 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore, Browsable(false)]
         public ConfigCollection<TConfig> Items
         {
-            get { return _items; }
+            get => _items;
             set
             {
                 if (_items == value)
@@ -66,14 +71,6 @@ namespace Agebull.EntityModel.Config
                 _items = value;
                 RaisePropertyChanged(() => Items);
             }
-        }
-        /// <summary>
-        /// 构造
-        /// </summary>
-        /// <param name="updateAction"></param>
-        public ClassifyItem(Action<string, TConfig> updateAction)
-        {
-            UpdateAction = updateAction;
         }
         /// <summary>
         /// 更新事件

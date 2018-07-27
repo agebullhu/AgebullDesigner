@@ -15,24 +15,22 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("Web-EasyUi", "Index.aspx", IndexPage);
-            MomentCoder.RegisteCoder("Web-EasyUi", "Form.htm", FormCode);
-            MomentCoder.RegisteCoder("Web-EasyUi", "Form服务端读取", InputConvert);
-            MomentCoder.RegisteCoder("Web-EasyUi", "Script.js", PageScript);
-            MomentCoder.RegisteCoder("Web-EasyUi", "Details.aspx", GridDetailsPage);
-            MomentCoder.RegisteCoder("Web-EasyUi", "下拉列表方法", ApiCode);
-            MomentCoder.RegisteCoder("Web-EasyUi", "下拉列表选择", ApiSwitch);
-            MomentCoder.RegisteCoder("Web-EasyUi", "Mvc菜单", MvcMenu);
-            MomentCoder.RegisteCoder("Web-EasyUi", "EasyUi表单", EasyUiForm);
-            MomentCoder.RegisteCoder("Web-EasyUi", "EasyUi表单保存", FormSaveCode);
-            MomentCoder.RegisteCoder("Web-EasyUi", "EasyUi表格", EasyUiGrid);
-            MomentCoder.RegisteCoder("Web-EasyUi", "EasyUi详情", EasyUiInfo);
-            MomentCoder.RegisteCoder("Web-EasyUi", "枚举(JS)", EnumJs);
-            MomentCoder.RegisteCoder("Web-EasyUi", "枚举(CS)名称", EnumCs);
-            MomentCoder.RegisteCoder("Web-EasyUi", "工作流注入式编辑代码", WorkflowInfo);
-            //MomentCoder.RegisteCoder("Web-EasyUi", "对象名称(JS)", DataInfoCs);
-            MomentCoder.RegisteCoder("Web-EasyUi", "对象名称(CS)", DataInfoCs);
-            //MomentCoder.RegisteCoder("Web-EasyUi", "数据校验(CS)", WorkflowInfo);
+            MomentCoder.RegisteCoder("Web-EasyUi", "Index.aspx", "xml", IndexPage);
+            MomentCoder.RegisteCoder("Web-EasyUi", "Form.htm", "xml", FormCode);
+            MomentCoder.RegisteCoder("Web-EasyUi", "Form服务端读取", "cs", InputConvert);
+            MomentCoder.RegisteCoder("Web-EasyUi", "Script.js", "js", PageScript);
+            MomentCoder.RegisteCoder("Web-EasyUi", "Details.aspx", "xml", GridDetailsPage);
+            MomentCoder.RegisteCoder("Web-EasyUi", "下拉列表方法", "xml", ApiCode);
+            MomentCoder.RegisteCoder("Web-EasyUi", "下拉列表选择", "xml", ApiSwitch);
+            MomentCoder.RegisteCoder("Web-EasyUi", "Mvc菜单", "xml", MvcMenu);
+            MomentCoder.RegisteCoder("Web-EasyUi", "EasyUi表单", "xml", EasyUiForm);
+            MomentCoder.RegisteCoder("Web-EasyUi", "EasyUi表单保存", "cs", FormSaveCode);
+            MomentCoder.RegisteCoder("Web-EasyUi", "EasyUi表格", "xml", EasyUiGrid);
+            MomentCoder.RegisteCoder("Web-EasyUi", "EasyUi详情", "xml", EasyUiInfo);
+            MomentCoder.RegisteCoder("Web-EasyUi", "工作流注入式编辑代码", "cs", WorkflowInfo);
+            //MomentCoder.RegisteCoder("Web-EasyUi", "对象名称(JS)","js", DataInfoCs);
+            MomentCoder.RegisteCoder("Web-EasyUi", "对象名称(CS)", "cs", DataInfoCs);
+            //MomentCoder.RegisteCoder("Web-EasyUi", "数据校验(CS)", "cs",WorkflowInfo);
         }
         #endregion
 
@@ -183,100 +181,6 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 
         #endregion
 
-        #region EnumJs
-
-        private static string EnumJs(ConfigBase config)
-        {
-            var code = new StringBuilder();
-            if (config is EnumConfig)
-            {
-                TypeDefaultScript(code, config as EnumConfig);
-            }
-            else
-            {
-                foreach (var item in SolutionConfig.Current.Enums)
-                {
-                    TypeDefaultScript(code, item);
-                }
-            }
-            return code.ToString();
-        }
-        /// <summary>
-        ///     生成枚举
-        /// </summary>
-        public static void TypeDefaultScript(StringBuilder code, EnumConfig enumc)
-        {
-            code.Append($@"
-/**
- * {enumc.Caption}
- */
-var {enumc.Name.ToLWord()} = [");
-            bool isFirst = true;
-            foreach (var item in enumc.Items)
-            {
-                if (isFirst)
-                    isFirst = false;
-                else
-                    code.Append(',');
-                code.Append($@"
-    {{ value: {item.Value}, text: '{item.Caption}' }}");
-            }
-            code.Append($@"
-];
-
-/**
- * {enumc.Caption}之表格格式化方法
- */
-function {enumc.Name.ToLWord()}Format(value) {{
-    return arrayFormat(value, {enumc.Name.ToLWord()});
-}}
-");
-        }
-
-
-        #endregion
-
-        #region EnumCs
-
-        private static string EnumCs(ConfigBase config)
-        {
-            var code = new StringBuilder();
-            List<EnumConfig> doed = new List<EnumConfig>();
-            ForeachByCurrent(enumc => EnumName(code, enumc, doed));
-            return code.ToString();
-        }
-        /// <summary>
-        ///     生成枚举
-        /// </summary>
-        public static void EnumName(StringBuilder code, EnumConfig enumc, List<EnumConfig> doed)
-        {
-            if (doed.Contains(enumc))
-                return;
-            doed.Add(enumc);
-            code.Append($@"
-        /// <summary>
-        ///     {enumc.Caption}名称转换
-        /// </summary>
-        public static string ToCaption(this {enumc.Name} value)
-        {{
-            switch(value)
-            {{");
-            foreach (var item in enumc.Items)
-            {
-                code.Append($@"
-                case {enumc.Name}.{item.Name}:
-                    return ""{item.Caption}"";");
-            }
-            code.Append($@"
-                default:
-                    return ""{enumc.Caption}(未知)"";
-            }}
-        }}
-");
-        }
-
-
-        #endregion
         #region 工作流支持
 
         private static string WorkflowInfo(ConfigBase config)

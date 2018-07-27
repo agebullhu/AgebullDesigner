@@ -31,7 +31,7 @@ namespace Agebull.EntityModel
         {
             //if (TraceMessage.DefaultTrace.MessageToTrace)
             {
-                TraceMessage.DefaultTrace.Track = message + "\r\n";
+                TraceMessage.DefaultTrace.Track = message;
             }
         }
     }

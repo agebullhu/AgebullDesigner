@@ -21,7 +21,7 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"名称")]
         public string Name
         {
-            get { return _name; }
+            get => _name;
             set
             {
                 var now = !string.IsNullOrWhiteSpace(value) ? value.Trim() : null;
@@ -30,7 +30,7 @@ namespace Agebull.EntityModel.Config
                     return;
                 }
                 BeforePropertyChanged(nameof(Name), _name, now);
-                _name = now;
+                _name = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 RaisePropertyChanged(nameof(Name));
             }
         }
@@ -47,16 +47,17 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"标题")]
         public string Caption
         {
-            get { return _caption ?? _name; }
+            get => WorkContext.InCoderGenerating ? (_caption ?? _name) : _caption;
             set
             {
-                var now = !string.IsNullOrWhiteSpace(value) ? value.Trim() : null;
-                if (_caption == now)
+                if (_caption == value)
                 {
                     return;
                 }
-                BeforePropertyChanged(nameof(Caption), _caption, now);
-                _caption = now;
+                if (value == _name)
+                    value = null;
+                BeforePropertyChanged(nameof(Caption), _caption, value);
+                _caption = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 RaisePropertyChanged(nameof(Caption));
             }
         }
@@ -73,7 +74,7 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"说明")]
         public string Description
         {
-            get { return _description ?? _caption ?? _name; }
+            get => WorkContext.InCoderGenerating ? (_description ?? Caption) : _description;
             set
             {
                 var now = !string.IsNullOrWhiteSpace(value) ? value.Trim() : null;
@@ -81,8 +82,30 @@ namespace Agebull.EntityModel.Config
                 {
                     return;
                 }
+                if (value == _caption)
+                    value = null;
                 BeforePropertyChanged(nameof(Description), _description, now);
-                _description = now;
+                _description = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                RaisePropertyChanged(nameof(Description));
+            }
+        }
+        private string _remark;
+        /// <summary>
+        /// 参见
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"参见")]
+        public string Remark
+        {
+            get => _remark;
+            set
+            {
+                var now = !string.IsNullOrWhiteSpace(value) ? value.Trim() : null;
+                if (_remark == now)
+                {
+                    return;
+                }
+                BeforePropertyChanged(nameof(Description), _description, now);
+                _remark = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 RaisePropertyChanged(nameof(Description));
             }
         }
@@ -92,7 +115,37 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public override string ToString()
         {
-            return $"{Name}({Caption})";
+            return Name == null
+                ? Caption
+                : Caption == null
+                    ? Name
+                    : $"{Name}({Caption})";
+        }
+
+        /// <summary>
+        /// 字段复制
+        /// </summary>
+        /// <param name="dest"></param>
+        /// <returns></returns>
+        public void Copy(SimpleConfig dest)
+        {
+            using (WorkModelScope.CreateScope(WorkModel.Loding))
+            {
+                CopyFrom(dest);
+            }
+        }
+
+        /// <summary>
+        /// 字段复制
+        /// </summary>
+        /// <param name="dest"></param>
+        /// <returns></returns>
+        protected virtual void CopyFrom(SimpleConfig dest)
+        {
+            Name = dest.Name;
+            Caption = dest.Caption;
+            Description = dest.Description;
+            Remark = dest.Remark;
         }
     }
 }

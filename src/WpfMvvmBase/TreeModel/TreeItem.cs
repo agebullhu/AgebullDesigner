@@ -118,17 +118,11 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 构建命令列表
         /// </summary>
-        protected override void CreateCommandList(List<CommandItem> commands)
+        protected override void CreateCommandList(List<CommandItemBase> commands)
         {
-            var cmd = LoadCommand;
-            if (cmd != DelegateCommand.EmptyCommand)
+            if (LoadCommand != null)
             {
-                commands.Add(new CommandItem
-                {
-                    Name = "载入子级",
-                    Image = Application.Current.Resources["async_Executing"] as BitmapImage,
-                    Command = cmd
-                });
+                commands.Add(LoadCommand);
             }
         }
         /// <summary>
@@ -183,33 +177,36 @@ namespace Agebull.EntityModel
         public ModelFunctionDictionary<TModel> ModelDelegateDictionary => _modelFunction;
 
         [IgnoreDataMember]
-        private ICommand _reloadCommand;
+        private CommandItemBase _reloadCommand;
         /// <summary>
         ///     载入子级的命令
         /// </summary>
         [IgnoreDataMember]
-        public ICommand LoadCommand => _reloadCommand ?? (_reloadCommand = CreateCommand());
+        public CommandItemBase LoadCommand => _reloadCommand ?? (_reloadCommand = CreateCommand());
 
-        private ICommand CreateCommand()
+        private CommandItemBase CreateCommand()
         {
             var createItems = _modelFunction.GetFunction<List<TreeItem>>();
-            var haseAction = _modelFunction.GetFunction<bool>() ?? (p => false);
             if (createItems != null)
             {
-                return new AsyncCommand<TModel, List<TreeItem>>(BeginLoad, createItems, SyncItems, haseAction)
+                return new AsyncCommandItem<TModel, List<TreeItem>>(BeginLoad, createItems, SyncItems)
                 {
-                    Parameter = Model
+                    Source = Model,
+                    Caption = "载入子级",
+                    Image = Application.Current.Resources["async_Executing"] as BitmapImage,
                 };
             }
             var loadChildren = _modelFunction.GetFunction<IList>();
             if (loadChildren != null)
             {
-                return new AsyncCommand<TModel, IList>(BeginLoad, loadChildren, SyncItems, haseAction)
+                return new AsyncCommandItem<TModel, IList>(BeginLoad, loadChildren, SyncItems)
                 {
-                    Parameter = Model
+                    Source = Model,
+                    Caption = "载入子级",
+                    Image = Application.Current.Resources["async_Executing"] as BitmapImage,
                 };
             }
-            return DelegateCommand.EmptyCommand;
+            return null;
         }
 
         private void SyncItems(CommandStatus status, Exception exception, IList values)
@@ -239,10 +236,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public bool HaseChilds
         {
-            get
-            {
-                return _haseChilds;
-            }
+            get => _haseChilds;
             set
             {
                 if (_haseChilds == value)
@@ -266,10 +260,7 @@ namespace Agebull.EntityModel
         [Browsable(false)]
         public Expression<Func<TModel, BitmapImage>> StatusExpression
         {
-            get
-            {
-                return _statusExpression;
-            }
+            get => _statusExpression;
             set
             {
                 _statusExpression = value;
@@ -288,10 +279,7 @@ namespace Agebull.EntityModel
         [Browsable(false)]
         public Expression<Func<TModel, Brush>> ColorExpression
         {
-            get
-            {
-                return _colorExpression;
-            }
+            get => _colorExpression;
             set
             {
                 _colorExpression = value;
@@ -312,10 +300,7 @@ namespace Agebull.EntityModel
         [Browsable(false)]
         public Func<TModel, string> HeaderExtendExpression
         {
-            get
-            {
-                return _headerExpression;
-            }
+            get => _headerExpression;
             set
             {
                 _headerExpression = value;
@@ -334,11 +319,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public void Load()
         {
-            var cmd = LoadCommand;
-            if (cmd != null && cmd != DelegateCommand.EmptyCommand)
-            {
-                cmd.Execute(Model);
-            }
+            LoadCommand?.Execute(Model);
         }
 
         /// <summary>

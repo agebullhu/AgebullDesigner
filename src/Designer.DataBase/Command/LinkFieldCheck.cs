@@ -20,14 +20,15 @@ namespace Agebull.Common.Config.Designer
         {
             Name = "Link Field Check";
             Caption = "关系连接检查";
-            NoButton = true;
+            Catalog = "工具";
+            ViewModel = "database,model";
         }
         /// <summary>
         /// 注册代码
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            CommandCoefficient.RegisterCommand<EntityConfig, LinkFieldCheck>();
+            CommandCoefficient.RegisterCommand<LinkFieldCheck>();
         }
 
 
@@ -44,29 +45,37 @@ namespace Agebull.Common.Config.Designer
             {
                 if (!string.IsNullOrWhiteSpace(field.LinkTable))
                 {
+                    if (field.LinkTable == entity.Name || field.LinkTable == entity.ReadTableName ||
+                        field.LinkTable == entity.SaveTableName)
+                    {
+                        field.LinkTable = null;
+                        field.IsLinkCaption = false;
+                        field.IsLinkKey = false;
+                        field.IsLinkField = false;
+                        continue;
+                    }
+
                     var table = GlobalConfig.GetEntity(
                         p => p.Name == field.LinkTable || p.SaveTable == field.LinkTable ||
                              p.ReadTableName == field.LinkTable);
-                    var pro = table?.Properties.FirstOrDefault(
-                        p => p.Name == field.LinkField || p.ColumnName == field.LinkField);
-                    if (pro != null)
+                    if (table != null && table != entity)
                     {
-                        field.IsLinkField = true;
-                        field.IsLinkKey = pro.IsPrimaryKey;
-                        field.IsLinkCaption = pro.IsCaption;
-                        if (!field.IsLinkKey)
-                            field.IsCompute = true;
-                        field.ReferenceKey = field.Key;
-                        continue;
+                        var pro = table.Properties.FirstOrDefault(p => p.Name == field.LinkField || p.ColumnName == field.LinkField);
+                        if (pro != null)
+                        {
+                            field.IsLinkField = true;
+                            field.IsLinkKey = pro.IsPrimaryKey;
+                            field.IsLinkCaption = pro.IsCaption;
+                            if (!field.IsLinkKey)
+                                field.IsCompute = true;
+                            field.Option.ReferenceKey = field.Key;
+                            continue;
+                        }
                     }
                 }
-                else
-                {
-                    field.LinkTable=field.LinkField = null;
-                    field.IsLinkKey = field.IsLinkCaption = false;
-                }
-                field.IsLinkField = false;
-                field.ReferenceKey = Guid.Empty;
+                field.LinkTable = field.LinkField = null;
+                field.IsLinkField = field.IsLinkKey = field.IsLinkCaption = false;
+                field.Option.ReferenceKey = Guid.Empty;
             }
             StateMessage = "检查完成:" + entity.Caption;
             return true;

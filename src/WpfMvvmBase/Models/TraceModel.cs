@@ -24,10 +24,7 @@ namespace Agebull.CodeRefactor.CodeRefactor
         /// </summary>
         public TraceMessage TraceMessage
         {
-            get
-            {
-                return _traceMessage ?? TraceMessage.DefaultTrace;
-            }
+            get => _traceMessage ?? TraceMessage.DefaultTrace;
             set
             {
                 if (_traceMessage == value)
@@ -46,10 +43,7 @@ namespace Agebull.CodeRefactor.CodeRefactor
         /// </summary>
         public bool MessageToTrace
         {
-            get
-            {
-                return TraceMessage.MessageToTrace;
-            }
+            get => TraceMessage.MessageToTrace;
             set
             {
                 if (Equals(TraceMessage.MessageToTrace, value))
@@ -63,21 +57,21 @@ namespace Agebull.CodeRefactor.CodeRefactor
 
         public CommandItem ClearTraceCommand => _clearTraceCommand ?? (_clearTraceCommand = new CommandItem
         {
-            Command = new DelegateCommand(ClearTrace),
-            Name = "清除跟踪信息",
+            Action = (ClearTrace),
+            Caption = "清除跟踪信息",
             Image = Application.Current.Resources["tree_Close"] as ImageSource
         });
 
 
-        private void ClearTrace()
+        private void ClearTrace(object arg)
         {
             TraceMessage.Clear();
         }
 
         public CommandItem CopyTraceCommand => _copyTraceCommand ?? (_copyTraceCommand = new CommandItem
         {
-            Command = new DelegateCommand(CopyTrace),
-            Name = "复制跟踪信息",
+            Action = (CopyTrace),
+            Caption = "复制跟踪信息",
             Image = Application.Current.Resources["tree_Close"] as ImageSource
         });
 
@@ -87,14 +81,14 @@ namespace Agebull.CodeRefactor.CodeRefactor
             {
                 return (new CommandItem
                 {
-                    Command = new DelegateCommand(() => TraceMessage = TraceMessage.DefaultTrace),
-                    Name = "切换到全局消息",
+                    Action = ((arg) => TraceMessage = TraceMessage.DefaultTrace),
+                    Caption = "切换到全局消息",
                     Image = Application.Current.Resources["tree_default"] as ImageSource
                 });
             }
         }
 
-        private void CopyTrace()
+        private void CopyTrace(object arg)
         {
             if (!string.IsNullOrWhiteSpace(TraceMessage.Track))
                 Clipboard.SetText(TraceMessage.Track);

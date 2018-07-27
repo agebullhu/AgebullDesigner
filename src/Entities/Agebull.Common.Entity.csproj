@@ -38,19 +38,11 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Gboxt.Common.Extend, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Project\FundsManagement\Lib\Gboxt.Common.Extend.dll</HintPath>
+    <Reference Include="Agebull.Common.Extend">
+      <HintPath>..\Lib\Agebull.Common.Extend.dll</HintPath>
     </Reference>
-    <Reference Include="Gboxt.Common.ScopeBase">
-      <HintPath>..\..\..\Project\FundsManagement\Lib\Gboxt.Common.ScopeBase.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Text">
-      <HintPath>..\..\..\Project\FundsManagement\Lib\Gboxt.Common.Text.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -60,12 +52,18 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Context\CodeGeneratorScope.cs" />
+    <Compile Include="Context\FileCodeScope.cs" />
+    <Compile Include="Context\WorkModel.cs" />
+    <Compile Include="Context\WorkModelScope.cs" />
+    <Compile Include="Context\XmlMember.cs" />
     <Compile Include="Entity\SimpleConfig.cs" />
     <Compile Include="Interface\ISynchronousHelper.cs" />
-    <Compile Include="Base\NotificationObject.cs" />
-    <Compile Include="Base\WorkContext.cs" />
+    <Compile Include="Context\NotificationObject.cs" />
+    <Compile Include="Context\WorkContext.cs" />
     <Compile Include="Dictionaries\AttributeDictionary.cs" />
     <Compile Include="Dictionaries\CommandStatus.cs" />
     <Compile Include="Dictionaries\DependencyFunctions.cs" />
@@ -80,7 +78,6 @@
     </Compile>
     <Compile Include="Dictionaries\ModelFunctionDictionary.cs" />
     <Compile Include="Entity\EntityObjectBase.cs" />
-    <Compile Include="Helper\LoadingModeScope.cs" />
     <Compile Include="Interface\EditArrestMode.cs" />
     <Compile Include="Interface\EntitySubsist.cs" />
     <Compile Include="Interface\IEditObject.cs" />

@@ -5,7 +5,7 @@ namespace Agebull.EntityModel.Config
         #region ¶¨Òå
 
         public PropertyConfig Property { get; set; }
-        bool IsClass => Property.Parent.IsClass;
+        bool IsClass => Property.Parent.NoDataBase;
         bool IsReference => Property.Parent.IsReference;
 
         #endregion

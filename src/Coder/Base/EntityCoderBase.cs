@@ -1,3 +1,5 @@
+using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
@@ -75,6 +77,65 @@ namespace Agebull.EntityModel.RobotCoder
             return attribute.ToString();
         }
 
+        public static string HelloCode(EntityConfig entity)
+        {
+            StringBuilder code = new StringBuilder();
+            code.Append($@"new {entity.Name}
+            {{");
+            foreach (var property in entity.LastProperties.Where(p => p.CanUserInput))
+            {
+                var value = property.HelloCode;
+                if (property.CsType == "string")
+                {
+                    value = value == null ? "null" : $"\"{value}\"";
+                }
+                else if (property.CsType == "DateTime")
+                {
+                    value = value == null ? DateTime.Today.ToString(CultureInfo.InvariantCulture) : $"DateTime.Parse(\"{value}\")";
+                }
+                else if (property.CustomType != null)
+                {
+                    value = value == null ? $"default({property.CustomType})" : $"{property.CustomType}.{value}";
+                }
+                else
+                {
+                    value = value ?? $"default({property.CsType})";
+                }
+                code.Append($@"
+                {property.Name} = {value},");
+            }
+            code.Append(@"
+            }");
+            return code.ToString();
+        }
+
+        public static string HelloCode(EntityConfig entity,string name)
+        {
+            StringBuilder code = new StringBuilder();
+            foreach (var property in entity.ClientProperty)
+            {
+                var value = property.HelloCode;
+                if (property.CsType == "string")
+                {
+                    value = value == null ? "null" : $"\"{value}\"";
+                }
+                else if (property.CsType == "DateTime")
+                {
+                    value = value == null ? DateTime.Today.ToString(CultureInfo.InvariantCulture) : $"DateTime.Parse(\"{value}\")";
+                }
+                else if (property.CustomType != null)
+                {
+                    value = value == null ? $"default({property.CustomType})" : $"{property.CustomType}.{value}";
+                }
+                else
+                {
+                    value = value ?? $"default({property.CsType})";
+                }
+                code.Append($@"
+            {name}.{property.Name} = {value};");
+            }
+            return code.ToString();
+        }
         #region √∂æŸ Ù–‘
 
         protected static void EnumContentProperty(PropertyConfig property, StringBuilder code)

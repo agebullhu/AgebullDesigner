@@ -1,3 +1,4 @@
+using System.IO;
 using System.Linq;
 using Agebull.EntityModel.Config;
 
@@ -16,12 +17,15 @@ namespace Agebull.EntityModel.RobotCoder
         public string GetBaseCode<TBuilder>()
             where TBuilder : EntityBuilderBase, new()
         {
-            var builder = new TBuilder
+            using (CodeGeneratorScope.CreateScope())
             {
-                Entity = Entity,
-                Project = Project
-            };
-            return builder.BaseCode;
+                var builder = new TBuilder
+                {
+                    Entity = Entity,
+                    Project = Project
+                };
+                return builder.BaseCode;
+            }
         }
         /// <summary>
         /// 取得其它生成器的能力
@@ -31,62 +35,30 @@ namespace Agebull.EntityModel.RobotCoder
         public string GetExtendCode<TBuilder>()
             where TBuilder : EntityBuilderBase, new()
         {
-            var builder = new TBuilder
+            using (CodeGeneratorScope.CreateScope())
             {
-                Entity = Entity,
-                Project = Project
-            };
-            return builder.ExtendCode;
+                var builder = new TBuilder
+                {
+                    Entity = Entity,
+                    Project = Project
+                };
+                return builder.ExtendCode;
+            }
         }
 
         /// <summary>
         /// 当前对象
         /// </summary>
-        public sealed override ConfigBase CurrentConfig => Entity;
+        public sealed override ConfigBase CurrentConfig => (ConfigBase)Entity ?? Project;
 
         /// <summary>
         /// 当前表对象
         /// </summary>
-        public EntityConfig Entity
-        {
-            get { return _entity; }
-            set
-            {
-                _entity = value;
-                if (value == null)
-                    return;
-                foreach (var property in value.Properties.Where(p => !p.Discard))
-                {
-                    if (property.IsReference)
-                    {
-                        var pp = GlobalConfig.GetConfig<PropertyConfig>(property.ReferenceKey);
-                        if (pp != null)
-                        {
-                            property.CopyConfig(pp);
-                        }
-                    }
-                }
-            }
-        }
-        
-        private EntityConfig _entity;
-        
+        public EntityConfig Entity { get; set; }
+
         /// <summary>
         /// 是否可写
         /// </summary>
-        protected override bool CanWrite => base.CanWrite && Entity != null && !Entity.IsFreeze && !Entity.Discard;
-
-        /// <summary>
-        /// 取得扩展配置的路径
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="key"></param>
-        /// <param name="def"></param>
-        /// <param name="ext"></param>
-        /// <returns></returns>
-        protected string ConfigPath(string path, string key, string def, string ext = "")
-        {
-            return SetPath(path, Entity.TryGetExtendConfig(key, def).Trim('\\'), ext);
-        }
+        protected override bool CanWrite => base.CanWrite && Entity != null && !Entity.IsFreeze && !Entity.IsDiscard;
     }
 }

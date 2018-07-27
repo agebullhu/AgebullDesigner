@@ -4,8 +4,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
         xmlns:solutionManager="clr-namespace:Agebull.EntityModel.Designer"
-        Title="添加新实体" Height="600" Width="945.923" WindowState="Maximized"
-        >
+        Title="{Binding Title}" Height="693.333" Width="1035.537" WindowState="Maximized">
     <Window.DataContext>
         <solutionManager:NewEntityViewModel />
     </Window.DataContext>
@@ -13,43 +12,105 @@
         <behaviors:DependencyBehavior BehaviorAction="{Binding ViewBehavior}" />
     </i:Interaction.Behaviors>
     <DockPanel>
-        <ToolBar DockPanel.Dock="Top" Height="28">
-            <TextBlock Text="实体名称" VerticalAlignment="Center" Margin="5,0,0,0" />
-            <TextBox Width="200" Text="{Binding Model.EntityName}" />
-            <ToolBarTray Width="2" />
-            <ItemsControl VerticalAlignment="Stretch"
-                          HorizontalAlignment="Stretch"
-                          ItemsSource="{Binding ExCommands,Mode=OneWay}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Button Style="{StaticResource CommandButton}" />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel VerticalAlignment="Stretch"
-                                    HorizontalAlignment="Stretch"
-                                    Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
-        </ToolBar>
-        <TextBlock DockPanel.Dock="Top" Background="Silver">
-                 <Run FontSize="14" Foreground="Blue">文本说明:</Run><LineBreak/>
-                 * 1 每行为一条数据<LineBreak/>
-                 * 2 每个单词用空格或逗号分开<LineBreak/>
-                 * 3 如<Run Foreground="Red">第一个字为*号</Run>则为表信息:<LineBreak/>
-                 * * 第一个单词 名称; 第二个单词 表名称;第三个单词 标题文本;其余为说明文本<LineBreak/>
-                 * 4 否则都为列信息:<LineBreak/>
-                 * * 第一个单词 名称; 第二个单词 数据类型;第三个单词 标题文本;其余为说明文本<LineBreak/>
-        </TextBlock>
-        <TextBox Text="{Binding Model.Fields,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Top"
-                 Height="200" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible"
-                 AcceptsReturn="True" AcceptsTab="True" AutoWordSelection="True"
-                 TextOptions.TextFormattingMode="Display" TextWrapping="Wrap" />
-        <DataGrid AutoGenerateColumns="True"
-                  CanUserAddRows="True"
-                  CanUserDeleteRows="True"
-                  ItemsSource="{Binding Model.Columns}" />
+        <GroupBox DockPanel.Dock="Top" Header="基本信息" >
+            <GroupBox.Resources>
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml" />
+            </GroupBox.Resources>
+            <WrapPanel DataContext="{Binding Model.Entity}">
+                <StackPanel>
+                    <Label Content="名称" />
+                    <TextBox Text="{Binding Name,Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="标题" />
+                    <TextBox Text="{Binding Caption,Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Style="{StaticResource FieldPanel}">
+                    <Label Content="分类" />
+                    <TextBox Text="{Binding Classify,Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Style="{StaticResource FieldPanel}">
+                    <Label Content="简称" />
+                    <TextBox Text="{Binding Abbreviation,Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="说明" />
+                    <TextBox Style="{StaticResource MaxTextBox}" Height="40"
+                             Text="{Binding Description,Mode=TwoWay}" />
+                </StackPanel>
+            </WrapPanel>
+        </GroupBox>
+        <GroupBox DockPanel.Dock="Top" Header="文本快速处理" Height="300" >
+        <DockPanel DockPanel.Dock="Bottom">
+            <ToolBar DockPanel.Dock="Top" Height="28">
+                <ItemsControl VerticalAlignment="Stretch"
+                              HorizontalAlignment="Stretch"
+                              ItemsSource="{Binding Model.ExCommands,Mode=OneWay}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Style="{StaticResource CommandButton}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel VerticalAlignment="Stretch"
+                                        HorizontalAlignment="Stretch"
+                                        Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </ToolBar>
+            <TextBlock DockPanel.Dock="Right" Background="Silver" Width="260" TextWrapping="WrapWithOverflow" LineHeight="24">
+                <Run FontSize="14" Foreground="Blue">系统接收格式:</Run><LineBreak/>
+                > 每行为一条数据,空行会自动跳过<LineBreak/>
+                > 每个单词用逗号分开<LineBreak/>
+                * 第一个单词 名称[必须] <LineBreak/>
+                * 第二个单词 数据类型[可选],默认为string<LineBreak/>
+                * 第三个单词 中文标题[可选]<LineBreak/>
+                * 第四个单词 说明文本[可选]<LineBreak/>
+            </TextBlock>
+            <TextBox Text="{Binding Model.Fields,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Top"
+                     HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible"
+                     AcceptsReturn="True" AcceptsTab="True" AutoWordSelection="True"
+                     TextOptions.TextFormattingMode="Display" TextWrapping="Wrap" />
+        </DockPanel>
+        </GroupBox>
+
+        <Border DockPanel.Dock="Bottom" Height="56">
+
+            <Grid DockPanel.Dock="Bottom" MinHeight="42" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="5" />
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="2" Style="{StaticResource MyButton}" DataContext="{Binding CancelCommand}"
+                        Width="100" DockPanel.Dock="Right" />
+                <Button Grid.Column="1" Style="{StaticResource MyButton}" DataContext="{Binding OkCommand}" 
+                        Width="100" DockPanel.Dock="Right" />
+            </Grid>
+        </Border>
+        <DataGrid AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  ItemsSource="{Binding Model.Columns}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Option.Index,Mode=TwoWay}" Header="序号" />
+                <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
+                <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />
+                <DataGridCheckBoxColumn Binding="{Binding IsPrimaryKey,Mode=TwoWay}" Header="主键" />
+                <DataGridCheckBoxColumn Binding="{Binding IsIdentity,Mode=TwoWay}" Header="自增" />
+                <DataGridCheckBoxColumn Binding="{Binding IsCaption,Mode=TwoWay}" Header="标题" />
+                <DataGridTextColumn Binding="{Binding ReferenceType,Mode=TwoWay}" Header="原始类型" />
+                <DataGridTextColumn Binding="{Binding CsType,Mode=TwoWay}" Header="C#类型" />
+                <DataGridTextColumn Binding="{Binding CustomType,Mode=TwoWay}" Header="自定义类型" />
+                <DataGridCheckBoxColumn Binding="{Binding Nullable,Mode=TwoWay}" Header="可空类型" />
+                <DataGridTextColumn Binding="{Binding Datalen,Mode=TwoWay}" Header="长度" />
+                <DataGridCheckBoxColumn Binding="{Binding IsArray,Mode=TwoWay}" Header="数组" /> 
+                <DataGridCheckBoxColumn Binding="{Binding IsDictionary,Mode=TwoWay}" Header="字典" />
+                <DataGridCheckBoxColumn Binding="{Binding Option.IsDelete,Mode=TwoWay}" Header="删除" />
+            </DataGrid.Columns>
+        </DataGrid>
     </DockPanel>
 </Window>

@@ -14,7 +14,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// Ãû³Æ
         /// </summary>
         protected override string FileSaveConfigName => "File_Aspnet_Item_aspx";
-        private bool isTemplate => Entity.Properties.Any(p => p.Name == "ProjectTemplateId");
+        private bool isTemplate => Entity.ClientProperty.Any(p => p.Name == "ProjectTemplateId");
         public override string Code()
         {
             Prepare();

@@ -18,85 +18,6 @@ namespace Agebull.EntityModel.Designer
         where TModel : ConfigBase
     {
         /// <summary>
-        /// 是否辅助节点
-        /// </summary>
-        public bool IsAssist { get; set; }
-        #region 构造
-
-        protected override void OnSourceModify()
-        {
-            if (IsAssist)
-                return;
-            if (!Equals(BackgroundColor, Source.IsModify ? Brushes.Red : Brushes.Transparent))
-                BackgroundColor = Source.IsModify ? Brushes.Red : Brushes.Transparent;
-            var par = Parent as TreeItem;
-            if (par?.Source != null && par.Source.IsModify != Source.IsModify)
-            {
-                par.Source.IsModify = Source.IsModify;
-            }
-            base.OnSourceModify();
-        }
-
-        private void InitDef()
-        {
-            Source.PropertyChanged += OnModelPropertyChanged;
-            if (typeof(TModel).IsSubclassOf(typeof(ParentConfigBase)))
-            {
-                HeaderField = "Name,Caption,Abbreviation";
-                HeaderExtendExpression = m => $"{m.Caption}({m.Name})[{(m as ParentConfigBase).Abbreviation}]";
-            }
-            else
-            {
-                HeaderField = "Name,Caption";
-                HeaderExtendExpression = m => $"{m.Caption}({m.Name})";
-            }
-            StatusField = "IsReference,IsDelete,IsFreeze,Discard";
-            StatusExpression = p => GetImage(p);
-
-        }
-
-        /// <summary>
-        /// 构建命令列表
-        /// </summary>
-        protected override void CreateCommandList(List<CommandItem> commands)
-        {
-            commands.Add(new CommandItem
-            {
-                NoButton = true,
-                Parameter = this,
-                Name = "刷新",
-                Command = new DelegateCommand(ReBuildChild),
-                Image = Application.Current.Resources["img_flush"] as ImageSource
-            });
-        }
-
-        private void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            ModelPropertyChanged?.Invoke(this, e);
-        }
-
-        public event EventHandler<PropertyChangedEventArgs> ModelPropertyChanged;
-        /// <summary>
-        /// 重新生成子级
-        /// </summary>
-        /// <returns></returns>
-        private void ReBuildChild()
-        {
-            var treeItem = Parent as TreeItem;
-            if (treeItem == null)
-                return;
-            TreeItem item = treeItem.CreateChild(Source);
-            Items.Clear();
-            Items.AddRange(item.Items);
-        }
-
-        private BitmapImage GetImage(TModel m)
-        {
-            var configBase = m as ParentConfigBase;
-            bool isRef = configBase != null && configBase.IsReference;
-            return isRef ? imgRef : m.IsDelete ? imgDel : m.Discard ? imgDiscard : m.IsFreeze ? imgLock : imgDefault;
-        }
-        /// <summary>
         ///     构造
         /// </summary>
         /// <param name="model"></param>
@@ -153,6 +74,97 @@ namespace Agebull.EntityModel.Designer
             InitDef();
         }
 
+        /// <summary>
+        /// 是否辅助节点
+        /// </summary>
+        public bool IsAssist { get; set; }
+
+        #region 构造
+
+        protected override void OnSourceModify()
+        {
+            if (IsAssist)
+                return;
+            if (!Equals(BackgroundColor, Source.IsModify ? Brushes.Red : Brushes.Transparent))
+                BackgroundColor = Source.IsModify ? Brushes.Red : Brushes.Transparent;
+            var par = Parent as TreeItem;
+            if (par?.Source != null && par.Source.IsModify != Source.IsModify)
+            {
+                par.Source.IsModify = Source.IsModify;
+            }
+            base.OnSourceModify();
+        }
+
+        private void InitDef()
+        {
+            if (Model is ConfigBase pp)
+            {
+                pp.Option.PropertyChanged += OnStatePropertyChanged;
+            }
+            HeaderField = "Name,Caption,Abbreviation";
+            HeaderExtendExpression = FormatTitle;
+            StatusField = "IsReference,IsDelete,IsFreeze,Discard";
+            StatusExpression = p => GetImage(p);
+            Source.PropertyChanged += OnModelPropertyChanged;
+        }
+
+
+        private string FormatTitle(TModel m)
+        {
+            var pi = m as ParentConfigBase;
+            return pi?.Abbreviation == null
+                ? $"{m.Caption}({m.Name})"
+                : $"{m.Caption}({m.Name})[{pi.Abbreviation}]";
+        }
+
+        private void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            ModelPropertyChanged?.Invoke(this, e);
+        }
+        protected override void CreateCommandList(List<CommandItemBase> commands)
+        {
+            var treeItem = Parent as TreeItem;
+            if (treeItem?.CreateChildFunc != null)
+                commands.Add(new CommandItem
+                {
+                    Source = this,
+                    Caption = "刷新",
+                    Catalog = "视图",
+                    Action = arg => ReBuildChild(),
+                    Image = Application.Current.Resources["img_flush"] as ImageSource
+                });
+            base.CreateCommandList(commands);
+        }
+        public event EventHandler<PropertyChangedEventArgs> ModelPropertyChanged;
+        /// <summary>
+        /// 重新生成子级
+        /// </summary>
+        /// <returns></returns>
+        private void ReBuildChild()
+        {
+            var treeItem = Parent as TreeItem;
+            if (treeItem?.CreateChildFunc == null)
+                return;
+            TreeItem item = treeItem.CreateChild(Source);
+            Items.Clear();
+            Items.AddRange(item.Items);
+        }
+
+        private BitmapImage GetImage(TModel m)
+        {
+            var par = m as ParentConfigBase;
+            return par == null
+                   ? imgDefault
+                   : par.IsReference 
+                        ? imgRef 
+                        : m.IsDelete 
+                            ? imgDel 
+                            : m.IsDiscard 
+                                ? imgDiscard 
+                                : m.IsFreeze 
+                                    ? imgLock
+                                    : imgDefault;
+        }
         #endregion
         #region 默认方法
 
@@ -169,6 +181,6 @@ namespace Agebull.EntityModel.Designer
         private static readonly BitmapImage imgDefault = Application.Current.Resources["img_no_modify"] as BitmapImage;
 
         #endregion
-        
+
     }
 }

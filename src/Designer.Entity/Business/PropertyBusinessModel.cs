@@ -114,8 +114,7 @@ namespace Agebull.EntityModel.Config
                 return;
             var strs = Property.Name.Split(new[] { ']', '[' }, StringSplitOptions.RemoveEmptyEntries);
             Property.Name = strs[0];
-            int len;
-            if (strs.Length > 0 && Int32.TryParse(strs[1], out len))
+            if (strs.Length > 0 && Int32.TryParse(strs[1], out int len))
             {
                 if (Property.CsType == "string")
                     Property.Datalen = len;
@@ -137,7 +136,7 @@ namespace Agebull.EntityModel.Config
             }
             if (Property.EnumConfig.Items.All(p => !string.Equals(p.Name, "None", StringComparison.OrdinalIgnoreCase)))
             {
-                Property.EnumConfig.Items.Add(new EnumItem
+                Property.EnumConfig.Add(new EnumItem
                 {
                     Name = "None",
                     Caption = "δ֪",

@@ -9,7 +9,6 @@
 #region 引用
 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -46,20 +45,19 @@ namespace Agebull.EntityModel.Designer
         protected override void DoInitialize()
         {
             base.DoInitialize();
-            LoadTemplates();
+            LoadTemplates(null);
         }
 
 
         private ConfigCollection<TemplateClassify> Templates { get; } = new ConfigCollection<TemplateClassify>();
 
-        private List<CommandItem> _codeCommands;
-        private TemplateConfig _currentTemplateConfig;
         private int _tabIndex;
         private string _classify;
+        private TemplateConfig _currentTemplateConfig;
 
         public TemplateConfig CurrentTemplateConfig
         {
-            get { return _currentTemplateConfig; }
+            get => _currentTemplateConfig;
             set
             {
                 if (_currentTemplateConfig == value)
@@ -71,6 +69,7 @@ namespace Agebull.EntityModel.Designer
                     Classify = _currentTemplateConfig?.Classify;
                     CheckTemplate(_currentTemplateConfig);
                 }
+                _currentTemplateConfig = value;
                 CurrentTemplate = value?.Template;
                 CurrentLua = value?.Code;
             }
@@ -82,7 +81,7 @@ namespace Agebull.EntityModel.Designer
         /// 
         public string Classify
         {
-            get { return _classify; }
+            get => _classify;
             set
             {
                 if (_classify == value)
@@ -96,7 +95,7 @@ namespace Agebull.EntityModel.Designer
 
         public string ExtendCode
         {
-            get { return _extendCode; }
+            get => _extendCode;
             set
             {
                 if (Equals(_extendCode, value))
@@ -116,50 +115,50 @@ namespace Agebull.EntityModel.Designer
         /// 生成命令对象
         /// </summary>
         /// <param name="commands"></param>
-        protected override void CreateCommands(List<CommandItem> commands)
+        protected override void CreateCommands(ObservableCollection<CommandItemBase> commands)
         {
-            commands.AddRange(new []
+            commands.AddRange(new CommandItemBase[]
             {
                 new CommandItem
                 {
-                    Command = new DelegateCommand(CreateNew),
-                    Name = "新增模板",
+                    Action = CreateNew,
+                    Caption = "新增模板",
                     Image = Application.Current.Resources["img_add"] as ImageSource
                 },
                 new CommandItem
                 {
-                    Command = new DelegateCommand(SaveTemplate),
-                    Name = "代码解析",
+                    Action = SaveTemplate,
+                    Caption = "代码解析",
                     Image = Application.Current.Resources["img_save"] as ImageSource
                 },
                 new CommandItem
                 {
-                    Command = new DelegateCommand(CheckTemplate),
-                    Name = "代码检查",
+                    Action = CheckTemplate,
+                    Caption = "代码检查",
                     Image = Application.Current.Resources["img_flush"] as ImageSource
                 },
                 new CommandItem
                 {
-                    Command = new DelegateCommand(DeleteTemplate),
-                    Name = "删除模板",
+                    Action = DeleteTemplate,
+                    Caption = "删除模板",
                     Image = Application.Current.Resources["img_del"] as ImageSource
                 },
-                new CommandItem
+                new AsyncCommandItem<TemplateConfig, string>(RunLuaPrepare, RunLua, RunLuaEnd)
                 {
-                    Command = new AsyncCommand<TemplateConfig, string>(RunLuaPrepare, RunLua, RunLuaEnd),
-                    Name = "生成代码",
+                    NoConfirm=true,
+                    Caption = "生成代码",
                     Image = Application.Current.Resources["img_code"] as ImageSource
                 },
                 new CommandItem
                 {
-                    Command = new DelegateCommand(()=>Clipboard.SetText(ExtendCode ?? "")),
-                    Name = "复制代码",
+                    Action =arg=>Clipboard.SetText(ExtendCode ?? ""),
+                    Caption = "复制代码",
                     Image = Application.Current.Resources["img_file"] as ImageSource
                 },
                 new CommandItem
                 {
-                    Command = new DelegateCommand(LoadTemplates),
-                    Name = "重新载入",
+                    Action = LoadTemplates,
+                    Caption = "重新载入",
                     Image = Application.Current.Resources["img_flush"] as ImageSource
                 }
             });
@@ -207,11 +206,11 @@ namespace Agebull.EntityModel.Designer
                 if (Elements.Count > 0)
                     Elements.Clear();
                 Elements.Add(spliter.Root);
-                Editor.ShowErrorWords(spliter.Words);
+                LangEditor.ShowErrorWords(spliter.Words);
             });
         }
 
-        private void DoLuaAnalyze(object arg)
+        public void DoLuaAnalyze(object arg)
         {
             string text = (string)arg;
             WordAnalyze analyze = new WordAnalyze();
@@ -235,7 +234,7 @@ namespace Agebull.EntityModel.Designer
                 if (Elements.Count > 0)
                     Elements.Clear();
                 Elements.Add(la.Root);
-                Editor.ShowErrorWords(la.Words);
+                LangEditor.ShowErrorWords(la.Words);
             });
             //
             //Trace.WriteLine(analyzer.PrintTree(analyzer.Root));
@@ -243,22 +242,20 @@ namespace Agebull.EntityModel.Designer
 
         private void OnLuaTreeSelectItemChanged(object sender, EventArgs e)
         {
-            var value = sender as TreeItem<AnalyzeUnitBase>;
-            if (value == null)
+            if (!(sender is TreeItem<AnalyzeUnitBase> value))
                 return;
             SelectObject = value.Model;
             if (value.Model.Start < 0 || value.Model.Lenght < 1)
                 return;
             if (TabIndex != 3)
                 TabIndex = 0;
-            Editor.SelectionBackColor = Color.White;
-            Editor.Select(value.Model.Start, value.Model.Lenght);
-            Editor.SelectionBackColor = Color.Silver;
+            LangEditor.SelectionBackColor = Color.White;
+            LangEditor.Select(value.Model.Start, value.Model.Lenght);
+            LangEditor.SelectionBackColor = Color.Silver;
         }
         private TreeItem CreateLuaTreeItem(object arg)
         {
-            var block = arg as AnalyzeBlock;
-            if (block != null)
+            if (arg is AnalyzeBlock block)
             {
                 return new TreeItem<AnalyzeUnitBase>(block)
                 {
@@ -269,8 +266,8 @@ namespace Agebull.EntityModel.Designer
                     SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
                 };
             }
-            WordUnit unit = arg as WordUnit;
-            if (unit != null)
+
+            if (arg is WordUnit unit)
             {
                 return new TreeItem<AnalyzeUnitBase>(unit)
                 {
@@ -292,17 +289,15 @@ namespace Agebull.EntityModel.Designer
 
         private void OnTemplateTreeSelectItemChanged(object sender, EventArgs e)
         {
-            var value = sender as TreeItem<TemplateConfig>;
-            if (value != null)
+            switch (sender)
             {
-                CurrentTemplateConfig = value.Model;
-                SelectObject = value.Model;
-            }
-            else
-            {
-                var item = sender as TreeItem;
-                if (item != null)
+                case TreeItem<TemplateConfig> value:
+                    CurrentTemplateConfig = value.Model;
+                    SelectObject = value.Model;
+                    break;
+                case TreeItem item:
                     Classify = item.Header;
+                    break;
             }
         }
 
@@ -340,10 +335,10 @@ namespace Agebull.EntityModel.Designer
 
         #region 载入模板文件
 
-        private void LoadTemplates()
+        private void LoadTemplates(object arg)
         {
             Templates.Clear();
-            var path = IOHelper.CheckPath(GlobalConfig.ProgramRoot, "Templates");
+            var path = GlobalConfig.CheckPath(GlobalConfig.ProgramRoot, "Templates");
             var folders = Directory.GetDirectories(path);
             foreach (var folder in folders)
             {
@@ -392,7 +387,7 @@ namespace Agebull.EntityModel.Designer
 
 
 
-        internal bool RunLuaPrepare(TemplateConfig config, Action<TemplateConfig> setType)
+        internal bool RunLuaPrepare(TemplateConfig config)
         {
             if (string.IsNullOrWhiteSpace(CurrentTemplateConfig.Template))
             {
@@ -406,7 +401,6 @@ namespace Agebull.EntityModel.Designer
                 MessageBox.Show($"模板运行需要当前对象为{CurrentTemplateConfig.ModelType}类型");
                 return false;
             }
-            setType(CurrentTemplateConfig);
             return true;
         }
 
@@ -430,7 +424,7 @@ namespace Agebull.EntityModel.Designer
 
         public int TabIndex
         {
-            get { return _tabIndex; }
+            get => _tabIndex;
             set
             {
                 if (_tabIndex == value)
@@ -444,7 +438,7 @@ namespace Agebull.EntityModel.Designer
 
         #region 编辑
 
-        private void CreateNew()
+        private void CreateNew(object arg)
         {
             CurrentTemplateConfig = new TemplateConfig
             {
@@ -454,7 +448,7 @@ namespace Agebull.EntityModel.Designer
             TabIndex = 0;
         }
 
-        private void SaveTemplate()
+        private void SaveTemplate(object arg)
         {
             if (string.IsNullOrWhiteSpace(CurrentTemplate))
             {
@@ -514,7 +508,7 @@ namespace Agebull.EntityModel.Designer
             {
                 ncla.Templates.Add(CurrentTemplateConfig);
             }
-            string path = IOHelper.CheckPath(GlobalConfig.ProgramRoot, "Templates", CurrentTemplateConfig.Classify);
+            string path = GlobalConfig.CheckPath(GlobalConfig.ProgramRoot, "Templates", CurrentTemplateConfig.Classify);
             path = Path.Combine(path, CurrentTemplateConfig.Caption + ".lt");
             if (!string.IsNullOrWhiteSpace(CurrentTemplateConfig.TemplatePath) &&
                 !string.Equals(CurrentTemplateConfig.TemplatePath, path, StringComparison.OrdinalIgnoreCase) &&
@@ -528,7 +522,7 @@ namespace Agebull.EntityModel.Designer
         }
 
 
-        private void CheckTemplate()
+        private void CheckTemplate(object arg)
         {
             if (CurrentTemplateConfig == null)
                 return;
@@ -545,7 +539,7 @@ namespace Agebull.EntityModel.Designer
             CreateLuaTree();
         }
 
-        private void DeleteTemplate()
+        private void DeleteTemplate(object arg)
         {
             if (CurrentTemplateConfig == null ||
                 MessageBox.Show("确认删除此模板吗?", "模板编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
@@ -582,18 +576,18 @@ namespace Agebull.EntityModel.Designer
 
         public string CurrentTemplate
         {
-            get { return Editor?.Text; }
+            get => LangEditor?.Text;
             set
             {
-                if (Editor != null)
+                if (LangEditor != null)
                 {
-                    Editor.Text = value;
-                    Editor.ShowWords(LuaWordSpliter.Do(value));
+                    LangEditor.Text = value;
+                    LangEditor.ShowWords(LuaWordSpliter.Do(value));
                 }
             }
         }
 
-        private LanguageEditor Editor { get; set; }
+        private LanguageEditor LangEditor { get; set; }
 
 
         public DependencyAction TemplateBehavior => new DependencyAction
@@ -601,15 +595,15 @@ namespace Agebull.EntityModel.Designer
             AttachAction = obj =>
             {
                 var host = (WindowsFormsHost)obj;
-                Editor = (LanguageEditor)host.Child;
-                Editor.AutoAnalyze = false;
+                LangEditor = (LanguageEditor)host.Child;
+                LangEditor.AutoAnalyze = false;
             }
         };
 
         public string CurrentLua
         {
 
-            get { return LuaEditor?.Text; }
+            get => LuaEditor?.Text;
             set
             {
                 if (LuaEditor != null)
@@ -632,7 +626,7 @@ namespace Agebull.EntityModel.Designer
 
         private object SelectObject
         {
-            set { PropertyGrid.SelectedObject = value; }
+            set => PropertyGrid.SelectedObject = value;
         }
         protected PropertyGrid PropertyGrid;
         public DependencyAction PropertyGridBehavior => new DependencyAction

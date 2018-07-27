@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
@@ -235,10 +236,10 @@ var {Entity.Name}Page = {{
 
         public override string Code()
         {
-            return $@"/*
-    {Entity.Caption}的前端操作类对象,实现基本的增删改查的界面操作
+            return string.Format(@"/*
+    {0}的前端操作类对象,实现基本的增删改查的界面操作
 */
-var {Entity.Name}Page = {{
+var {1}Page = {{
     /**
      * 表格对象
      */
@@ -246,7 +247,7 @@ var {Entity.Name}Page = {{
     /**
      * 标题
      */
-    title:'{Entity.Caption}',
+    title:'{2}',
     /**
      * 命令执行地址前缀
      */
@@ -292,7 +293,7 @@ var {Entity.Name}Page = {{
      */
     inputSucceed: true,
     /*
-        {Entity.Caption}的页面初始化
+        {3}的页面初始化
     */
     initialize: function() {{
         var me = this;
@@ -305,7 +306,7 @@ var {Entity.Name}Page = {{
         初始化工具栏
     */
     initToolBar: function() {{
-        var me = this;{CommandJsCode()}
+        var me = this;{4}
     }},
     /*
         初始化列表表格
@@ -314,8 +315,8 @@ var {Entity.Name}Page = {{
         var me = this;
         var grid = new GridPanel();
         me.grid=grid;
-        grid.ex = me;{Gridjs()}
-        grid.idField = '{Entity.PrimaryColumn.Name}';
+        grid.ex = me;{5}
+        grid.idField = '{6}';
         grid.cmdPath = me.cmdPath;
         grid.pageSize = 20;
         grid.elementId = this.gridId;
@@ -325,7 +326,7 @@ var {Entity.Name}Page = {{
         grid.edit = me.edit;
         grid.addNew = me.addNew;
         if(!me.isSmall){{
-            grid.getQueryParams = me.getQueryParams;{GridDetailsScript()}
+            grid.getQueryParams = me.getQueryParams;{7}
         }}
         if(me.autoLoad){{
             me.setUrlArgs(me.urlArg);
@@ -346,7 +347,7 @@ var {Entity.Name}Page = {{
     */
     initHistoryQuery: function() {{
         $('#qKeyWord').textbox('setValue', preQueryArgs.keyWord);
-        {InitQueryParams()}
+        {8}
     }},
     /*
         读取查询条件
@@ -354,11 +355,11 @@ var {Entity.Name}Page = {{
     getQueryParams: function () {{
         return {{
             keyWord:$('#qKeyWord').textbox('getValue')
-            {QueryParams()}
+            {9}
         }};
     }},
     /*
-        重新载入{Entity.Caption}的列表数据
+        重新载入{10}的列表数据
     */
     reload:function() {{
         $(this.gridId).datagrid('reload');
@@ -369,7 +370,7 @@ var {Entity.Name}Page = {{
     onFormUiLoaded: function (editor,callback) {{
         var me = editor.ex;
         me.setFormValidate();
-        //TO DO:控件初始化代码{InputInitCode()}
+        //TO DO:控件初始化代码{11}
         
         if (callback)
             callback();
@@ -401,12 +402,12 @@ var {Entity.Name}Page = {{
         设置校验规则
     */
     setFormValidate: function() {{
-{ValidateConfig()}
+{12}
     }},
 
     /**
-     * 生成{Entity.Caption}的编辑器
-     * @param {{{Entity.Name}Page}} me 当前页面对象
+     * 生成{13}的编辑器
+     * @param {{{14}Page}} me 当前页面对象
      * @returns {{EditorDialog}} 编辑器
      */
     createEditor: function (me) {{
@@ -433,7 +434,7 @@ var {Entity.Name}Page = {{
         return editor;
     }},
     /*
-        新增一条{Entity.Caption}的界面操作
+        新增一条{15}的界面操作
     */
     addNew: function () {{
         var me = this.ex;
@@ -448,7 +449,7 @@ var {Entity.Name}Page = {{
         editor.show();
     }},
     /*
-        修改或查看{Entity.Caption}的界面操作
+        修改或查看{16}的界面操作
     */
     edit: function (id) {{
         var me = this.ex;
@@ -458,18 +459,21 @@ var {Entity.Name}Page = {{
         editor.saveUrl = me.cmdPath + 'Action.aspx?action=edit&id=';
         editor.dataId = id;
         editor.show();
-    }},{CommandJsCode2()}
+    }},{17}
     /*
         列表表格的列信息
     */
-    columns:{GridFields()}
-}};";
+    columns:{18}
+}};", Entity.Caption, Entity.Name, Entity.Caption, Entity.Caption, CommandJsCode(), Gridjs(),
+                Entity.PrimaryColumn.Name, GridDetailsScript(), InitQueryParams(), QueryParams(), Entity.Caption,
+                InputInitCode(), ValidateConfig(), Entity.Caption, Entity.Name, Entity.Caption, Entity.Caption,
+                CommandJsCode2(), GridFields());
         }
 
         private string CommandJsCode()
         {
             var code = new StringBuilder();
-            foreach (var cmd in Entity.Commands.Where(p => !p.Discard))
+            foreach (var cmd in Entity.Commands.Where(p => !p.IsDiscard))
             {
                 if (!cmd.IsSingleObject)
                     code.Append($@"
@@ -486,7 +490,7 @@ var {Entity.Name}Page = {{
         private string CommandJsCode2()
         {
             var code = new StringBuilder();
-            foreach (var cmd in Entity.Commands.Where(p => !p.Discard))
+            foreach (var cmd in Entity.Commands.Where(p => !p.IsDiscard))
             {
                 if (!string.IsNullOrWhiteSpace(cmd.Url))
                 {
@@ -724,9 +728,7 @@ var {Entity.Name}Page = {{
     [
        [
             {{ styler: vlStyle, halign: 'center', align: 'center', field: 'IsSelected', checkbox: true}}
-            //, {{ styler: vlStyle, halign: 'center', align: 'center', sortable: true, field: '{
-                    Entity.PrimaryColumn.Name
-                }', title: 'ID'}}");
+            , {{ styler: vlStyle, halign: 'center', align: 'center', sortable: true, field: '{Entity.PrimaryColumn.Name}', title: 'ID'}}");
 
             if (Entity.Interfaces != null)
                 if (Entity.Interfaces.Contains("IAuditData"))
@@ -807,8 +809,7 @@ var {Entity.Name}Page = {{
             {
                 if (field.InputType == null)
                     field.InputType = "easyui-textbox";
-                bool required;
-                var validType = ValidType(field, out required);
+                var validType = ValidType(field, out bool required);
                 if (validType.Count == 0 && !required)
                     continue;
                 var type = field.InputType.Split('-').Last();
@@ -842,7 +843,7 @@ var {Entity.Name}Page = {{
                         break;
                     default:
                         validType.Add(field.InputType.Contains("combo")
-                            ? $"'selectNoZero[\"#{field.Name}\"]'"
+                            ? $@"'selectNoZero[\'#{field.Name}\']'"
                             : @"'noZero[0]'");
                         break;
                 }

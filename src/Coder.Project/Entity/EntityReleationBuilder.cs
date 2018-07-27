@@ -30,9 +30,9 @@ namespace Agebull.EntityModel.RobotCoder
         private string Releations()
         {
             var code = new StringBuilder();
-            foreach (TableReleation rl in Entity.Releations)
+            foreach (EntityReleationConfig rl in Entity.Releations)
             {
-                TableReleation releation = rl;
+                EntityReleationConfig releation = rl;
                 EntityConfig friend = Entities.FirstOrDefault(p => p.Name == releation.Friend);
                 if (friend == null)
                     continue;
@@ -49,7 +49,7 @@ namespace Agebull.EntityModel.RobotCoder
             }
             foreach (EntityConfig friend in Entities.Where(p => p != Entity))
             {
-                foreach (TableReleation releation in friend.Releations.Where(p => p.Friend == Entity.Name))
+                foreach (EntityReleationConfig releation in friend.Releations.Where(p => p.Friend == Entity.Name))
                 {
                     code.Append(Releationx1V1reversionCode(releation, friend));
                 }
@@ -62,7 +62,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         /// <param name="releation"></param>
         /// <returns></returns>
-        private string Releation1V1Code(TableReleation releation)
+        private string Releation1V1Code(EntityReleationConfig releation)
         {
             return string.Format(@"
 
@@ -105,7 +105,7 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
 
-        private string Releationx1V1reversionCode(TableReleation releation, EntityConfig friend)
+        private string Releationx1V1reversionCode(EntityReleationConfig releation, EntityConfig friend)
         {
             return string.Format(@"
 
@@ -147,7 +147,7 @@ namespace Agebull.EntityModel.RobotCoder
                 , Project.DataBaseObjectName);
         }
 
-        private string ReleationCode2(TableReleation releation)
+        private string ReleationCode2(EntityReleationConfig releation)
         {
             return string.Format(@"
 

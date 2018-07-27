@@ -64,7 +64,7 @@ namespace GBS.Fuctures.Manage.WCF
             var code = new StringBuilder();
             foreach (var project in SolutionConfig.Current.Projects)
             {
-                foreach (var entity in project.Entities.Where(p => !p.IsClass && !p.IsReference && !p.IsInternal))
+                foreach (var entity in project.Entities.Where(p => !p.NoDataBase && !p.IsReference && !p.IsInternal))
                 {
                     code.Append($@"
     [ServiceKnownType(typeof({project.NameSpace}.{entity.EntityName}))]");
@@ -77,7 +77,7 @@ namespace GBS.Fuctures.Manage.WCF
             var code = new StringBuilder();
             foreach (var project in SolutionConfig.Current.Projects)
             {
-                foreach (var entity in project.Entities.Where(p => !p.IsClass && !p.IsReference && !p.IsInternal))
+                foreach (var entity in project.Entities.Where(p => !p.NoDataBase && !p.IsReference && !p.IsInternal))
                 {
                     code.Append($@"
         /// <summary>
@@ -97,7 +97,7 @@ namespace GBS.Fuctures.Manage.WCF
             var code = new StringBuilder();
             foreach (var project in SolutionConfig.Current.Projects)
             {
-                foreach (var entity in project.Entities.Where(p => !p.IsClass && !p.IsReference && !p.IsInternal))
+                foreach (var entity in project.Entities.Where(p => !p.NoDataBase && !p.IsReference && !p.IsInternal))
                 {
                     if (entity.PrimaryColumn == null)
                         continue;
@@ -129,7 +129,7 @@ namespace GBS.Fuctures.Manage.WCF
         {
             foreach (var project in SolutionConfig.Current.Projects.ToArray())
             {
-                foreach (var entity in project.Entities.Where(p => !p.IsClass && !p.IsReference && !p.IsInternal))
+                foreach (var entity in project.Entities.Where(p => !p.NoDataBase && !p.IsReference && !p.IsInternal))
                 {
                     EntityModelCode(entity);
                 }
@@ -142,10 +142,10 @@ namespace GBS.Fuctures.Manage.WCF
             string point;
             string key;
             string get_key;
-            var ufield = entity.Properties.FirstOrDefault(p => p.IsUserId);
-            var field = entity.Properties.FirstOrDefault(p => p.Name == entity.RedisKey);
+            var ufield = entity.LastProperties.FirstOrDefault(p => p.IsUserId);
+            var field = entity.LastProperties.FirstOrDefault(p => p.Name == entity.RedisKey);
 
-            if (entity.IsClass)
+            if (entity.NoDataBase)
             {
                 point = ufield != null
                     ? $"e:{entity.Parent.Abbreviation}:{entity.Abbreviation}:{{Data.{ufield.Name}}}"
@@ -170,14 +170,14 @@ namespace GBS.Fuctures.Manage.WCF
                     : $"e:{entity.Parent.Abbreviation}:{entity.Abbreviation}:{{Data.{field.Name}}}";
 
                 key = ufield != null
-                    ? $"int uid ,{field.CppLastType} {field.Name.ToLower()}"
-                    : $"{field.CppLastType} {field.Name.ToLower()}";
+                    ? $"int uid ,{field.CppLastType} {field.Name.ToLWord()}"
+                    : $"{field.CppLastType} {field.Name.ToLWord()}";
 
                 get_key = ufield != null
-                    ? $"e:{entity.Parent.Abbreviation}:{entity.Abbreviation}:{{uid}}:{{{field.Name.ToLower()}}}"
-                    : $"e:{entity.Parent.Abbreviation}:{entity.Abbreviation}:{{{field.Name.ToLower()}}}";
+                    ? $"e:{entity.Parent.Abbreviation}:{entity.Abbreviation}:{{uid}}:{{{field.Name.ToLWord()}}}"
+                    : $"e:{entity.Parent.Abbreviation}:{entity.Abbreviation}:{{{field.Name.ToLWord()}}}";
             }
-            var code = $@"using Agebull.EntityModel.Redis;
+            var code = $@"
 namespace {entity.Parent.NameSpace}
 {{
     /// <summary>

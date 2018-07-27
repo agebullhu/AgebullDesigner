@@ -18,14 +18,15 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
-
-            commands.Add(new CommandItemBuilder
+            //if (SolutionConfig.Current.SolutionType != SolutionType.Cpp)
+            //    return;
+            commands.Add(new CommandItemBuilder<EnumConfig>
             {
-                Name = "查找原类型",
-                Signle = true,
-                NoButton = true,
-                SourceType = typeof(EnumConfig).FullName,
-                Command = new DelegateCommand<EnumConfig>(EnumBusinessModel.RepairEnum),
+                Caption = "枚举",
+                SignleSoruce = true,
+                TargetType = typeof(EnumConfig),
+                Action = EnumBusinessModel.RepairEnum,
+                Editor = "C++字段",
                 IconName = "cpp"
             });
         }

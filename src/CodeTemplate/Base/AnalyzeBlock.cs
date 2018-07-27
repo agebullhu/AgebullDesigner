@@ -22,7 +22,7 @@ namespace Agebull.EntityModel.RobotCoder.CodeTemplate
         /// </summary>
         public WordUnit Primary
         {
-            get { return _primary; }
+            get => _primary;
             set
             {
                 _primary = value;

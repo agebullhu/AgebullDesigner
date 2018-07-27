@@ -79,7 +79,7 @@ namespace Agebull.EntityModel.Designer
                 foreach (XElement xProperty in xMappingFragment.Elements(nsDef + "ScalarProperty"))
                 {
                     string name = GetAttribute(xProperty, "Name");
-                    entity.Properties.Add(new PropertyConfig
+                    entity.Add(new PropertyConfig
                     {
                         Name = name,
                         ColumnName = GetAttribute(xProperty, "ColumnName")
@@ -117,7 +117,7 @@ namespace Agebull.EntityModel.Designer
                     PropertyConfig column = entity.Properties.FirstOrDefault(p => p.ColumnName == name);
                     if (column == null)
                     {
-                        entity.Properties.Add(column = new PropertyConfig
+                        entity.Add(column = new PropertyConfig
                         {
                             ColumnName = name,
                             Name = name
@@ -182,7 +182,7 @@ namespace Agebull.EntityModel.Designer
                     PropertyConfig column = entity.Properties.FirstOrDefault(p => p.Name == name || p.ColumnName == name);
                     if (column == null)
                     {
-                        entity.Properties.Add(column = new PropertyConfig
+                        entity.Add(column = new PropertyConfig
                         {
                             ColumnName = name,
                             Name = name

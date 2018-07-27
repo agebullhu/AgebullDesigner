@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
+using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Config
 {
@@ -11,23 +10,22 @@ namespace Agebull.EntityModel.Config
 
         public static void RepairEnum(EnumConfig config)
         {
-            var type = GetTypedefByTag(config.Tag);
+            var type = CppProject.Instance.GetTypedef(config.Key);
             if (type != null)
-                RepairByTypedef(type);
+                RepairByTypedef(config.Parent, type);
         }
 
-        public static EnumConfig RepairByTypedef(TypedefItem type)
+        public static EnumConfig RepairByTypedef(ProjectConfig project, TypedefItem type)
         {
-            var tag = type.Tag + "," + type.Name;
-            var enumcfg = SolutionConfig.Current.Enums.FirstOrDefault(p => p.Tag == tag);
+            var enumcfg = SolutionConfig.Current.Enums.FirstOrDefault(p => p.Option.ReferenceKey == type.Key);
             if (enumcfg != null)
             {
                 if (type.Items.Count == 0)
                 {
-                    enumcfg.IsDelete = true;
+                    enumcfg.Option.IsDelete = true;
                     return null;
                 }
-                FindEnumOld(type, enumcfg, enumcfg.Tag);
+                FindEnumOld(type, enumcfg);
                 return enumcfg;
             }
             if (type.Items.Count == 0)
@@ -47,7 +45,7 @@ namespace Agebull.EntityModel.Config
             enumcfg = SolutionConfig.Current.Enums.FirstOrDefault(p => p.Name == name);
             if (enumcfg != null)
             {
-                FindEnumOld(type, enumcfg, enumcfg.Tag);
+                FindEnumOld(type, enumcfg);
                 return enumcfg;
             }
             enumcfg = new EnumConfig
@@ -55,59 +53,44 @@ namespace Agebull.EntityModel.Config
                 Name = name,
                 Caption = type.Caption.Replace("类型", "") + "类型",
                 Description = type.Description.Replace("类型", "") + "类型",
-                Tag = tag,
                 Items = new ObservableCollection<EnumItem>()
             };
             int id = 0;
             var name_head = words.LinkToString();
             foreach (var item in type.Items.Values)
             {
-                enumcfg.Items.Add(new EnumItem
+                var eitem = new EnumItem
                 {
                     Name = ToWords(item.Name.ToLower(), true).LinkToString().Replace(name_head, "").Replace("Type", ""),
                     Caption = item.Caption,
-                    Tag = tag + "," + item.Name,
                     Value = (++id).ToString()
-                });
+                };
+                enumcfg.Add(eitem);
+                eitem.Option.ReferenceKey = item.Key;
             }
-            SolutionConfig.Current.Enums.Add(enumcfg);
+            enumcfg.Option.ReferenceKey = type.Key;
+            project.Add(enumcfg);
             return enumcfg;
         }
 
-        private static void FindEnumOld(TypedefItem type, EnumConfig enumConfig, string tag)
+        private static void FindEnumOld(TypedefItem type, EnumConfig enumConfig)
         {
-            string typeName = type.Name;
-            if (typeName[0] == 'T' && typeName[1] >= 'A' && typeName[1] <= 'Z')
-                typeName = typeName.Substring(1);
-            var words = ToWords(typeName);
-            foreach (var item in type.Items.Keys)
+            foreach (var item in type.Items.Values)
             {
-                var words2 = item.Split('_');
-                StringBuilder sb = new StringBuilder();
-                int i;
-                for (i = 0; i < words.Count && i < words2.Length; i++)
-                {
-                    if (!string.Equals(words[i], words2[i], StringComparison.OrdinalIgnoreCase))
-                        break;
-                }
-                for (;i < words2.Length; i++)
-                {
-                    sb.Append(words2[i].ToLower().ToUWord());
-                }
-                string i_tag = tag + "," + item;
-                var name = sb.ToString();
-                var name2 = words2.LinkToString();
-                var oi = enumConfig.Items.FirstOrDefault(p => name.Equals(p.Name,StringComparison.OrdinalIgnoreCase)) ??
-                    enumConfig.Items.FirstOrDefault(p => name2.Equals(p.Name, StringComparison.OrdinalIgnoreCase));
+                var oi = enumConfig.Items.FirstOrDefault(p => p.Option.ReferenceKey == item.Key);
                 if (oi != null)
-                    oi.Tag = tag + "," + item;
-                else if (!enumConfig.Items.Any(p => i_tag.Equals(p.Tag)))
-                    Debug.WriteLine(item);
+                    continue;
+                enumConfig.Add(oi = new EnumItem
+                {
+                    Name = CoderBase.ToWordName(item.Name),
+                    Value = item.Value 
+                });
+                oi.Option.ReferenceKey = item.Key;
             }
-            enumConfig.Tag = tag;
+            enumConfig.Option.ReferenceKey = type.Key;
             if (enumConfig.Items.All(p => !string.Equals(p.Name, "None", StringComparison.OrdinalIgnoreCase)))
             {
-                enumConfig.Items.Add(new EnumItem
+                enumConfig.Add(new EnumItem
                 {
                     Name = "None",
                     Caption = "未知",
@@ -116,7 +99,8 @@ namespace Agebull.EntityModel.Config
             }
             var items = enumConfig.Items.OrderBy(p => p.Value).ToArray();
             enumConfig.Items.Clear();
-            enumConfig.Items.AddRange(items);
+            foreach (var item in items)
+                enumConfig.Add(item);
         }
     }
 }

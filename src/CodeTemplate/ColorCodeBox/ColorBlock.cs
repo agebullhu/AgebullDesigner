@@ -33,10 +33,7 @@ namespace Agebull.EntityModel.Designer
         private string _ShiftStr;
         public string ShiftStr
         {
-            get
-            {
-                return _ShiftStr;
-            }
+            get => _ShiftStr;
             set
             {
                 if (value.Length > 2)

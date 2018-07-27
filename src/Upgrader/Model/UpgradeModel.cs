@@ -52,6 +52,7 @@ namespace Agebull.EntityModel.Designer
         {
             CommandCoefficient.RegisterCommand<ClassUpgradeConfig>(new CommandItemBuilder
             {
+                Catalog = "字段",
                 Command = new DelegateCommand<ClassUpgradeConfig>(AddProperty),
                 Name = "增加字段",
                 IconName = "img_add"
@@ -170,7 +171,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public ConfigBase SelectConfig
         {
-            get { return GlobalConfig.CurrentConfig; }
+            get => GlobalConfig.CurrentConfig;
             set
             {
                 if (GlobalConfig.CurrentConfig == value)
@@ -207,7 +208,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public TreeItem SelectItem
         {
-            get { return TreeRoot.SelectItem; }
+            get => TreeRoot.SelectItem;
             set
             {
                 if (TreeRoot.SelectItem != value)

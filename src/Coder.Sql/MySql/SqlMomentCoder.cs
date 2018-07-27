@@ -6,7 +6,7 @@ using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Designer;
 using static System.String;
 
-namespace Agebull.EntityModel.RobotCoder.DataBase
+namespace Agebull.EntityModel.RobotCoder.DataBase.MySql
 {
     /// <summary>
     /// SQL代码片断
@@ -22,15 +22,15 @@ namespace Agebull.EntityModel.RobotCoder.DataBase
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("MySql", "生成表(SQL)", cfg => RunByEntity(cfg, CreateTable));
-            MomentCoder.RegisteCoder("MySql", "插入表字段(SQL)", cfg => RunByEntity(cfg, AddColumnCode));
-            MomentCoder.RegisteCoder("MySql", "修改表字段(SQL)", cfg => Run(cfg, ChangeColumnCode));
-            MomentCoder.RegisteCoder("MySql", "修改BOOL字段(SQL)", cfg => Run(cfg, ChangeBoolColumnCode));
-            MomentCoder.RegisteCoder("MySql", "生成视图(SQL)", cfg => Run(cfg, CreateView));
-            MomentCoder.RegisteCoder("MySql", "插入页面表(SQL)", PageInsertSql);
-            MomentCoder.RegisteCoder("MySql", "删除视图(SQL)", cfg => Run(cfg, DropView));
-            MomentCoder.RegisteCoder("MySql", "删除表(SQL)", cfg => RunByEntity(cfg, DropTable));
-            MomentCoder.RegisteCoder("MySql", "清除表(SQL)", cfg => RunByEntity(cfg, TruncateTable));
+            MomentCoder.RegisteCoder("MySql", "生成表(SQL)","sql",cfg => RunByEntity(cfg, CreateTable));
+            MomentCoder.RegisteCoder("MySql", "插入表字段(SQL)","sql", cfg => RunByEntity(cfg, AddColumnCode));
+            MomentCoder.RegisteCoder("MySql", "修改表字段(SQL)","sql", cfg => Run(cfg, ChangeColumnCode));
+            MomentCoder.RegisteCoder("MySql", "修改BOOL字段(SQL)","sql", cfg => Run(cfg, ChangeBoolColumnCode));
+            MomentCoder.RegisteCoder("MySql", "生成视图(SQL)","sql", cfg => Run(cfg, CreateView));
+            MomentCoder.RegisteCoder("MySql", "插入页面表(SQL)", "sql", PageInsertSql);
+            MomentCoder.RegisteCoder("MySql", "删除视图(SQL)","sql", cfg => Run(cfg, DropView));
+            MomentCoder.RegisteCoder("MySql", "删除表(SQL)","sql", cfg => RunByEntity(cfg, DropTable));
+            MomentCoder.RegisteCoder("MySql", "清除表(SQL)","sql", cfg => RunByEntity(cfg, TruncateTable));
         }
 
         #endregion
@@ -61,23 +61,43 @@ DROP VIEW `{entity.ReadTableName}`;
         public static string CreateView(EntityConfig entity)
         {
             if (entity.DbFields.All(p => IsNullOrEmpty(p.LinkTable)))
-                return null;
-            var names = entity.DbFields.Where(p => !IsNullOrEmpty(p.LinkTable)).Select(p => p.LinkTable).DistinctBy().ToArray();
-            var viewName = "view_" + entity.SaveTable.Replace("tb_", "");
+                return "--没有设置关联表，无法生成SQL";
+            if (entity.DbFields.All(p => IsNullOrEmpty(p.LinkTable)))
+                return "--没有设置关联表，无法生成SQL";
+            var tables = new Dictionary<string, EntityConfig>();
+            foreach (var field in entity.DbFields)
+            {
+                if (string.IsNullOrWhiteSpace(field.LinkTable))
+                    continue;
+                if (field.LinkTable == entity.Name || field.LinkTable == entity.ReadTableName ||
+                    field.LinkTable == entity.SaveTableName)
+                {
+                    continue;
+                }
+                if (tables.ContainsKey(field.LinkTable))
+                    continue;
+                string name = field.LinkTable;
+                var table = GlobalConfig.GetEntity(p => p.SaveTableName == name || p.ReadTableName == name || p.Name == name);
+                if (table == null || table == entity)
+                {
+                    continue;
+                }
+                tables.Add(name, table);
+            }
+            string viewName;
+            if (string.IsNullOrWhiteSpace(entity.ReadTableName) || entity.ReadTableName == entity.SaveTable)
+            {
+                viewName = "view_" + GlobalConfig.ToLinkWordName(entity.Name, "_", false);
+            }
+            else
+            {
+                viewName = entity.ReadTableName;
+            }
             var builder = new StringBuilder();
             builder.Append($@"
 /*******************************{entity.Caption}*******************************/
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS 
     SELECT ");
-            var tables = new Dictionary<string, EntityConfig>();
-            foreach (var name in names)
-            {
-                if (tables.ContainsKey(name))
-                    continue;
-                var table = GlobalConfig.GetEntity(p => p.SaveTable == name);
-                if (table != null)
-                    tables.Add(name, table);
-            }
             bool first = true;
             foreach (PropertyConfig field in entity.PublishProperty)
             {
@@ -89,15 +109,14 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
 
                 if (!field.IsLinkKey && !IsNullOrEmpty(field.LinkTable))
                 {
-                    EntityConfig friend;
-                    if (tables.TryGetValue(field.LinkTable, out friend))
+                    if (tables.TryGetValue(field.LinkTable, out EntityConfig friend))
                     {
                         var linkField =
-                            friend.Properties.FirstOrDefault(
+                            friend.DbFields.FirstOrDefault(
                                 p => p.ColumnName == field.LinkField || p.Name == field.LinkField);
                         if (linkField != null)
                         {
-                            builder.AppendFormat(@"`{0}`.`{1}` as `{2}`", friend.SaveTable.Replace("tb_", ""), linkField.ColumnName, field.ColumnName);
+                            builder.AppendFormat(@"`{0}`.`{1}` as `{2}`", friend.Name, linkField.ColumnName, field.ColumnName);
                             continue;
                         }
                     }
@@ -108,11 +127,16 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
     FROM `{entity.SaveTable}`");
             foreach (var table in tables.Values)
             {
-                var field = entity.Properties.FirstOrDefault(p => p.IsLinkKey && p.LinkTable == table.SaveTable);
-                if (field != null)
-                    builder.AppendFormat(@"
+                var field = entity.DbFields.FirstOrDefault(p => p.IsLinkKey && p.LinkTable == table.SaveTable);
+                if (field == null)
+                    continue;
+                var linkField = table.DbFields.FirstOrDefault(
+                    p => p.Name == field.LinkField || p.ColumnName == field.LinkField);
+                if (linkField == null)
+                    continue;
+                builder.AppendFormat(@"
     LEFT JOIN `{1}` `{4}` ON `{0}`.`{2}` = `{4}`.`{3}`"
-                        , entity.SaveTable, table.SaveTable, field.ColumnName, table.PrimaryColumn.ColumnName, table.SaveTable.Replace("tb_", ""));
+                    , entity.SaveTable, table.SaveTable, field.ColumnName, linkField.ColumnName, table.Name);
             }
             builder.Append(';');
             builder.AppendLine();
@@ -124,6 +148,8 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
         }
         private static string DropTable(EntityConfig entity)
         {
+            if (entity.NoDataBase)
+                return Empty;
             return $@"
 /*******************************{entity.Caption}*******************************/
 DROP TABLE `{entity.SaveTable}`;";
@@ -152,10 +178,14 @@ DROP TABLE `{entity.SaveTable}`;";
 
         private static string PageInsertSql(ConfigBase config)
         {
-            var projectConfig = config as ProjectConfig;
-            if (projectConfig != null)
+            if (config is ProjectConfig projectConfig)
                 return PageInsertSql(projectConfig);
-            return null;
+            if (!(config is SolutionConfig soluction))
+                return null;
+            StringBuilder code = new StringBuilder();
+            foreach (var project in SolutionConfig.Current.Projects)
+                code.AppendLine(PageInsertSql(project));
+            return code.ToString();
         }
 
 
@@ -165,13 +195,13 @@ DROP TABLE `{entity.SaveTable}`;";
             sb.Append(
                 $@"
 /*{project.Caption}*/
-INSERT INTO `tb_sys_page_item` (`ItemType`,`Name`,`Caption`,`Folder`,`Url`,`Memo`,`ParentId`)
-VALUES(0,'{project.Caption}','{project.Caption}','Root',NULL,'{project.Description}',0);
+INSERT INTO `tb_sys_page_item` (`ItemType`,`Name`,`Caption`,`Url`,`Memo`,`ParentId`)
+VALUES(0,'{project.Caption}','{project.Caption}',NULL,'{project.Description}',0);
 set @pid = @@IDENTITY;");
-            foreach (var entity in project.Entities.Where(p => !p.IsClass))
+            foreach (var entity in project.Entities.Where(p => !p.NoDataBase))
                 sb.Append($@"
-INSERT INTO `tb_sys_page_item` (`ItemType`,`Name`,`Caption`,`Folder`,`Url`,`Memo`,`ParentId`)
-VALUES(1,'{entity.Name}','{entity.Caption}','{entity.Parent.Caption}','/{entity.Parent.Name}/{entity.Name}/Index.aspx','{entity.Description}',@pid);");
+INSERT INTO `tb_sys_page_item` (`ItemType`,`Name`,`Caption`,`Url`,`Memo`,`ParentId`)
+VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Name}/Index.aspx','{entity.Description}',@pid);");
             return sb.ToString();
         }
         #endregion
@@ -190,17 +220,16 @@ VALUES(1,'{entity.Name}','{entity.Caption}','{entity.Parent.Caption}','/{entity.
 
         public static string CreateTableCode(EntityConfig entity, bool signle = false)
         {
-            if (entity.IsClass)
-                return null;
+            if (entity.NoDataBase)
+                return "--这个设置为普通类(IsClass=true)，无法生成SQL";//这个设置为普通类，无法生成SQL
             var code = new StringBuilder();
-            if (entity.PrimaryColumn != null)
-            {
-                code.AppendFormat(@"
+            code.AppendFormat(@"
 /*{1}*/
 CREATE TABLE `{0}`("
-                    , entity.SaveTable
-                    , entity.Caption);
-
+                , entity.SaveTable
+                , entity.Caption);
+            if (entity.PrimaryColumn != null)
+            {
                 code.Append($@"
     `{entity.PrimaryColumn.ColumnName}` {DataBaseHelper.ColumnType(entity.PrimaryColumn)} NOT NULL{
                         (entity.PrimaryColumn.IsIdentity ? " AUTO_INCREMENT" : null)
@@ -228,8 +257,8 @@ CREATE TABLE `{0}`("
 
         private static string AddColumnCode(EntityConfig entity)
         {
-            if (entity.IsClass)
-                return null;
+            if (entity.NoDataBase)
+                return "--这个设置为普通类(IsClass=true)，无法生成SQL";//这个设置为普通类，无法生成SQL
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
@@ -237,8 +266,6 @@ ALTER TABLE `{entity.SaveTable}`");
             bool isFirst = true;
             foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
             {
-                if (col.IsPrimaryKey)
-                    continue;
                 if (isFirst)
                     isFirst = false;
                 else
@@ -258,8 +285,8 @@ ALTER TABLE `{entity.SaveTable}`");
 
         private string ChangeBoolColumnCode(EntityConfig entity)
         {
-            if (entity == null || entity.IsClass)
-                return null;
+            if (entity == null || entity.NoDataBase)
+                return "--这个设置为普通类(IsClass=true)，无法生成SQL";//这个设置为普通类，无法生成SQL
             var code = new StringBuilder();
             foreach (var ent in SolutionConfig.Current.Entities)
                 ChangeBoolColumnCode(code, ent);
@@ -268,11 +295,10 @@ ALTER TABLE `{entity.SaveTable}`");
 
         private void ChangeBoolColumnCode(StringBuilder code, EntityConfig entity)
         {
-            if (entity == null || entity.IsClass)
+            if (entity == null || entity.NoDataBase)
                 return;
             var fields = entity.DbFields.Where(p => !p.IsCompute && p.CsType == "bool").ToArray();
-            if (fields.Length == 0)
-                return;
+
             code.Append($@"
 /*{entity.Caption}*/
 ALTER TABLE `{entity.SaveTable}`");
@@ -293,8 +319,8 @@ ALTER TABLE `{entity.SaveTable}`");
 
         private string ChangeColumnCode(EntityConfig entity)
         {
-            if (entity == null || entity.IsClass)
-                return null;
+            if (entity == null || entity.NoDataBase)
+                return "--这个设置为普通类(IsClass=true)，无法生成SQL";//这个设置为普通类，无法生成SQL
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
@@ -342,10 +368,9 @@ ALTER TABLE `{entity.SaveTable}`");
         {{
             using (new EditScope(entity.__EntityStatus, EditArrestMode.All, false))
             {{");
-            var idx = 0;
             foreach (var field in fields)
             {
-                FieldReadCode(field, code, idx++);
+                FieldReadCode(field, code);
             }
             code.Append(@"
             }
@@ -379,9 +404,9 @@ ALTER TABLE `{entity.SaveTable}`");
         /// </summary>
         /// <param name="field">字段</param>
         /// <param name="code">代码</param>
-        /// <param name="idx">序号</param>
-        public static void FieldReadCode(PropertyConfig field, StringBuilder code, int idx)
+        public static void FieldReadCode(PropertyConfig field, StringBuilder code)
         {
+            string idx = $"{field.Parent.EntityName}.Real_{field.Name}";
             if (!IsNullOrWhiteSpace(field.CustomType))
             {
                 code.Append($@"

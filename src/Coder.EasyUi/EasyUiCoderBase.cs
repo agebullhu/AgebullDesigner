@@ -13,8 +13,8 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("EasyUi", FileSaveConfigName, BaseCode);
-            MomentCoder.RegisteCoder("EasyUi", FileSaveConfigName, ExtendCode);
+            MomentCoder.RegisteCoder("EasyUi",FileSaveConfigName, "js", BaseCode);
+            MomentCoder.RegisteCoder("EasyUi", FileSaveConfigName, "js", ExtendCode);
         }
 
         public static string BaseCode(ConfigBase config)

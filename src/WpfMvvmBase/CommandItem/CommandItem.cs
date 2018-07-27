@@ -8,11 +8,13 @@
 
 #region 引用
 
+using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using Agebull.EntityModel;
 
 #endregion
 
@@ -21,39 +23,60 @@ namespace Agebull.Common.Mvvm
     /// <summary>
     ///     表示一个命令节点
     /// </summary>
-    public class CommandItem : CommandConfig
+    public abstract class CommandItemBase : CommandConfig
     {
-        #region 设置
-        
-        private ImageSource _image;
+
+        #region 状态
+
+        /// <summary>
+        ///     图标
+        /// </summary>
+        ImageSource _image;
 
         /// <summary>
         ///     图标
         /// </summary>
         public ImageSource Image
         {
-            get { return _image ?? Application.Current.Resources[IconName ?? "imgDefault"] as BitmapImage; }
-            set { _image = value; }
+            get => IsRoot
+                ? null
+                : _image ?? (_image = IconName == null ? null : Application.Current.Resources[IconName] as ImageSource);
+            set => _image = value;
         }
 
-        #endregion
-
-        #region 参数
+        /// <summary>
+        ///     是否根
+        /// </summary>
+        public bool IsRoot { get; set; }
 
         /// <summary>
-        ///     标签
+        ///     是否线
         /// </summary>
-        public object Tag { get; set; }
+        public bool IsLine { get; set; }
 
         /// <summary>
-        ///     对应的命令参数
+        /// 表示分隔线
         /// </summary>
-        public object Parameter { get; set; }
+        public static CommandItem Line { get; } = new CommandItem
+        {
+            IsLine = true
+        };
 
-        #endregion
 
-        #region 状态
+        private bool _isChecked;
 
+        /// <summary>
+        ///     是否选中
+        /// </summary>
+        public bool IsChecked
+        {
+            get => _isChecked;
+            set
+            {
+                _isChecked = value;
+                RaisePropertyChanged(nameof(IsChecked));
+            }
+        }
         private bool _isBusy;
 
         /// <summary>
@@ -61,7 +84,7 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         public bool IsBusy
         {
-            get { return _isBusy; }
+            get => _isBusy;
             set
             {
                 if (_isBusy == value)
@@ -74,11 +97,11 @@ namespace Agebull.Common.Mvvm
         private Visibility _visibility;
 
         /// <summary>
-        ///     图标
+        ///     可见
         /// </summary>
         public Visibility Visibility
         {
-            get { return _visibility; }
+            get => _visibility;
             set
             {
                 if (_visibility == value)
@@ -87,11 +110,42 @@ namespace Agebull.Common.Mvvm
                 RaisePropertyChanged(() => Visibility);
             }
         }
+        #endregion
 
-        private void OnCommandPropertyChanged(object sender, PropertyChangedEventArgs e)
+        #region 参数
+        /// <summary>
+        /// 参数
+        /// </summary>
+        public object Source { get; set; }
+
+        /// <summary>
+        /// 参数
+        /// </summary>
+        public object Parameter => Source;
+        #endregion
+
+        #region 命令
+
+        private ICommand _command;
+
+
+        /// <summary>
+        ///     对应的命令
+        /// </summary>
+        public ICommand Command
         {
-            var cmd = Command as IStatusCommand;
-            if (cmd == null)
+            get => _command;
+            protected set
+            {
+                _command = value;
+                if (value is INotifyPropertyChanged pp)
+                    pp.PropertyChanged += OnCommandPropertyChanged;
+            }
+        }
+
+        protected void OnCommandPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (!(sender is IStatusCommand cmd))
                 return;
             switch (e.PropertyName)
             {
@@ -103,28 +157,116 @@ namespace Agebull.Common.Mvvm
                     break;
             }
         }
+        /// <summary>
+        /// 执行
+        /// </summary>
+        public abstract void Execute(object arg);
+        /// <summary>
+        /// 准备动作
+        /// </summary>
+        public Func<CommandItemBase, bool> OnPrepare { get; set; }
 
         #endregion
 
+        #region 子级
+
+        /// <summary>
+        /// 所有按钮
+        /// </summary>
+        public ObservableCollection<CommandItemBase> Items { get; set; } = new ObservableCollection<CommandItemBase>();
+
+        #endregion
+
+    }
+
+
+    /// <summary>
+    ///     表示一个命令节点
+    /// </summary>
+    public class CommandItem : CommandItemBase
+    {
         #region 命令
 
-        private ICommand _command;
+        public CommandItem()
+        {
+            SignleSoruce = true;
+            Command = new DelegateCommand<object>(DoAction);
+        }
 
         /// <summary>
         ///     对应的命令
         /// </summary>
-        public ICommand Command
+        public Action<object> Action
         {
-            get { return _command; }
-            set
-            {
-                _command = value;
-                var pp = value as INotifyPropertyChanged;
-                if (pp != null)
-                    pp.PropertyChanged += OnCommandPropertyChanged;
-            }
+            get;
+            set;
         }
 
+
+        void DoAction(object arg)
+        {
+            if (!string.IsNullOrWhiteSpace(ConfirmMessage) && MessageBox.Show(ConfirmMessage, "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+            {
+                return;
+            }
+            if (OnPrepare == null || OnPrepare(this))
+                Action?.Invoke(arg);
+        }
+        /// <summary>
+        /// 执行
+        /// </summary>
+        public override void Execute(object arg)
+        {
+            Action?.Invoke(arg);
+        }
+        #endregion
+    }
+
+    /// <summary>
+    ///     表示一个命令节点
+    /// </summary>
+    public class CommandItem<TArgument> : CommandItemBase
+        where TArgument : class
+    {
+        #region 命令
+
+        public CommandItem()
+        {
+            SignleSoruce = true;
+            Command = new DelegateCommand(DoAction);
+        }
+
+        /// <summary>
+        ///     对应的命令
+        /// </summary>
+        public Action<TArgument> Action
+        {
+            get;
+            set;
+        }
+
+
+        /// <summary>
+        ///     对应的命令
+        /// </summary>
+        public TArgument Argument => Source as TArgument;
+
+        void DoAction()
+        {
+            if (!string.IsNullOrWhiteSpace(ConfirmMessage) && MessageBox.Show(ConfirmMessage, "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+            {
+                return;
+            }
+            if (OnPrepare == null || OnPrepare(this))
+                Action?.Invoke(Argument);
+        }
+        /// <summary>
+        /// 执行
+        /// </summary>
+        public override void Execute(object arg)
+        {
+            Action?.Invoke(arg as TArgument);
+        }
         #endregion
     }
 }

@@ -19,87 +19,83 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
-            commands.Add(new CommandItemBuilder
+            //if (SolutionConfig.Current.SolutionType != SolutionType.Cpp)
+            //    return;
+            commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Signle = true,
-                NoButton = true,
-                Command = new DelegateCommand(CheckDouble),
-                Name = "修复数据精度",
-                Catalog = "规则",
-                IconName = "tree_item"
+                SignleSoruce = true,
+                
+                Action = (CheckDouble),
+                Caption = "修复数据精度",
+                Editor = "C++字段",
+                IconName = "tree_item",
+                ConfirmMessage= "确认将Double转为精确值吗?\n要知道这存在一定破坏性!"
             });
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Signle = true,
-                NoButton = true,
-                Catalog = "规则",
-                Command = new DelegateCommand(RepairByArrayLen),
-                Name = "修复文本长度",
-                IconName = "tree_item"
+                SignleSoruce = true,
+                
+                Editor = "C++字段",
+                Action = (RepairByArrayLen),
+                Caption = "修复文本长度",
+                IconName = "tree_item",
+                ConfirmMessage = "确认修复文本长度吗?\n要知道这存在一定破坏性!"
             });
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Command = new DelegateCommand(RepairRegular),
-                Name = "C++引用修复",
-                Signle = true,
-                NoButton = true,
-                Catalog = "C++",
-                IconName = "tree_item"
+                Action = (RepairRegular),
+                Caption = "C++引用修复",
+                SignleSoruce = true,
+                
+                Editor = "C++字段",
+                IconName = "tree_item",
+                ConfirmMessage = "确认修复C++引用吗?"
+            });
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                Action = (ResetRegular),
+                Caption = "C++引用重置",
+                SignleSoruce = true,
+                
+                Editor = "C++字段",
+                IconName = "tree_item",
+                ConfirmMessage = "确认重置C++引用吗?\n要知道这存在一定破坏性!"
             });
         }
 
         #region 修复
-        public void RepairRegular()
+        public void RepairRegular(EntityConfig entity)
         {
-            var result = MessageBox.Show("选择【是】重置选项,【否】仅检查并修复不正确的设置项", "C++引用修复", MessageBoxButton.YesNoCancel);
-            if (result == MessageBoxResult.Cancel)
+            EntityBusinessModel business = new EntityBusinessModel
             {
-                return;
-            }
-            var tables = Context.GetSelectEntities();
-            foreach (var entity in tables)
-            {
-                EntityBusinessModel business = new EntityBusinessModel
-                {
-                    Entity = entity
-                };
-                business.RepairCpp(result == MessageBoxResult.Yes);
-            }
+                Entity = entity
+            };
+            business.RepairCpp(false);
         }
-        public void CheckDouble()
+        public void ResetRegular(EntityConfig entity)
         {
-            if (MessageBox.Show("确认将Double转为精确值吗?\n要知道这存在一定破坏性!", "对象编辑", MessageBoxButton.YesNo) !=
-                MessageBoxResult.Yes)
+            EntityBusinessModel business = new EntityBusinessModel
             {
-                return;
-            }
-            var tables = Context.GetSelectEntities();
-            foreach (var entity in tables)
+                Entity = entity
+            };
+            business.RepairCpp(true);
+        }
+        public void CheckDouble(EntityConfig entity)
+        {
+            EntityBusinessModel business = new EntityBusinessModel
             {
-                EntityBusinessModel business = new EntityBusinessModel
-                {
-                    Entity = entity
-                };
-                business.CheckDouble();
-            }
+                Entity = entity
+            };
+            business.CheckDouble();
         }
 
-        public void RepairByArrayLen()
+        public void RepairByArrayLen(EntityConfig entity)
         {
-            if (MessageBox.Show("确认修复文本长度吗?\n要知道这存在一定破坏性!", "对象编辑", MessageBoxButton.YesNo) !=
-                MessageBoxResult.Yes)
+            EntityBusinessModel business = new EntityBusinessModel
             {
-                return;
-            }
-            var tables = Context.GetSelectEntities();
-            foreach (var entity in tables)
-            {
-                EntityBusinessModel business = new EntityBusinessModel
-                {
-                    Entity = entity
-                };
-                business.RepairByArrayLen();
-            }
+                Entity = entity
+            };
+            business.RepairByArrayLen();
         }
 
         #endregion

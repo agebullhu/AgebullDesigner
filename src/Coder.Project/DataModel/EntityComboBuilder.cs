@@ -18,7 +18,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         string ComboCode()
         {
-            var title = Entity.Properties.FirstOrDefault(p => p.IsCaption);
+            var title = Entity.LastProperties.FirstOrDefault(p => p.IsCaption);
             if (title == null)
                 return "";
             string filter = "";
@@ -26,7 +26,6 @@ namespace Agebull.EntityModel.RobotCoder
                 filter = "p => p.DataState == DataStateType.Enable";
             return  $@"using System.Collections.Generic;
 using System.Linq;
-using Agebull.EntityModel.Redis;
 using Agebull.ProjectDeveloper.WebDomain.Models;
 using Gboxt.Common.DataModel;
 using Gboxt.Common.DataModel.MySql;

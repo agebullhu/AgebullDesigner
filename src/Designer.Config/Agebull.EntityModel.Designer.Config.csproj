@@ -38,29 +38,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Gboxt.Common.Exception">
-      <HintPath>..\..\..\..\..\Projects\Agebull\Library\Extend\Gboxt.Common.Exception.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Extend">
-      <HintPath>..\..\..\..\..\Projects\Agebull\Library\Extend\Gboxt.Common.Extend.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.IO">
-      <HintPath>..\..\..\..\..\Projects\Agebull\Library\Extend\Gboxt.Common.IO.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Logging">
-      <HintPath>..\..\..\..\..\Projects\Agebull\Library\Extend\Gboxt.Common.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Reflection">
-      <HintPath>..\..\..\..\..\Projects\Agebull\Library\Extend\Gboxt.Common.Reflection.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.ScopeBase">
-      <HintPath>..\..\..\..\..\Projects\Agebull\Library\Extend\Gboxt.Common.ScopeBase.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.SystemExtend">
-      <HintPath>..\..\..\..\..\Projects\Agebull\Library\Extend\Gboxt.Common.SystemExtend.dll</HintPath>
-    </Reference>
-    <Reference Include="Gboxt.Common.Text">
-      <HintPath>..\..\..\..\..\Projects\Agebull\Library\Extend\Gboxt.Common.Text.dll</HintPath>
+    <Reference Include="Agebull.Common.Extend">
+      <HintPath>..\Lib\Agebull.Common.Extend.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Drawing, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -88,6 +67,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command\ConfigModel.cs" />
     <Compile Include="Model\NewConfigModel.cs" />
     <Compile Include="Model\NewConfigViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -104,14 +84,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Register.cs" />
-    <Compile Include="Trigger\ConfigBaseTrigger.cs" />
-    <Compile Include="Trigger\ConfigTrigger.cs" />
-    <Compile Include="Trigger\EntityTrigger.cs" />
-    <Compile Include="Trigger\ParentConfigTrigger.cs" />
-    <Compile Include="Trigger\ParentTrigger.cs" />
-    <Compile Include="Trigger\ProjectTrigger.cs" />
-    <Compile Include="Trigger\PropertyTrigger.cs" />
-    <Compile Include="Trigger\SolutionTrigger.cs" />
     <Compile Include="View\NewConfigWindow.xaml.cs">
       <DependentUpon>NewConfigWindow.xaml</DependentUpon>
     </Compile>
@@ -160,12 +132,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Business\" />
-    <Folder Include="Command\" />
+    <Folder Include="DataTemplate\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="DataTemplate\ConfigDataTemplate.xaml">
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="View\NewConfigWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

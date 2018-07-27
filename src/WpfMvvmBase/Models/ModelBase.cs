@@ -14,6 +14,11 @@ namespace Agebull.EntityModel
     public abstract class ModelBase : MvvmBase
     {
         /// <summary>
+        /// VM
+        /// </summary>
+        public ViewModelBase ViewModel { get; set; }
+
+        /// <summary>
         /// 初始化
         /// </summary>
         public void Initialize()

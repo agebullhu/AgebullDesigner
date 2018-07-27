@@ -1,59 +1,98 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
+using System.Windows;
 using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
 
 namespace Agebull.EntityModel.Designer
 {
-    public sealed class EnumEditModel : TraceModelBase
+    public sealed class EnumEditModel : DesignModelBase
     {
-        protected override void DoInitialize()
-        {
-            base.DoInitialize();
-            StringBuilder sb = new StringBuilder();
-            if (Config.Items == null)
-                Config.Items = new ObservableCollection<EnumItem>();
-            foreach (var item in Items)
-            {
-                sb.AppendFormat("{0} {1} {2} {3}", item.Value, item.Name, item.Caption, item.Description);
-                sb.AppendLine();
-            }
-            Fields = sb.ToString();
-        }
 
         #region 设计对象
 
-        private EnumConfig _config;
+        protected override void DoInitialize()
+        {
+            Config = Context.SelectConfig as EnumConfig;
+            SyncSelect();
+            base.DoInitialize();
+            Context.PropertyChanged += Context_PropertyChanged;
+        }
+        private void Context_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != nameof(Context.SelectConfig))
+                return;
+            Config = Context.SelectConfig as EnumConfig;
+            SyncSelect();
+        }
+
+        void SyncSelect()
+        {
+            if (Config == null)
+            {
+                _fields = "";
+                Items = new ObservableCollection<EnumItem>();
+            }
+            else
+            {
+                StringBuilder sb = new StringBuilder();
+                if (Config.Items == null)
+                    Config.Items = new ObservableCollection<EnumItem>();
+                Items = Config.Items;
+                foreach (var item in Items.OrderBy(p => p.Number))
+                {
+                    if (item.Caption == item.Description)
+                        sb.AppendFormat("{0}\t{1}\t{2}", item.Value, item.Name, item.Caption);
+                    else
+                        sb.AppendFormat("{0}\t{1}\t{2}\t{3}", item.Value, item.Name, item.Caption, item.Description);
+                    sb.AppendLine();
+                }
+                _fields = sb.ToString();
+            }
+            RaisePropertyChanged(() => Config);
+            RaisePropertyChanged(() => Items);
+            RaisePropertyChanged(() => Fields);
+        }
+
         /// <summary>
         /// 生成的表格对象
         /// </summary>
         public EnumConfig Config
         {
-            get { return _config; }
+            get => _config;
             set
             {
                 _config = value;
-                RaisePropertyChanged(() => Config);
-                RaisePropertyChanged(() => Items);
+                RaisePropertyChanged(nameof(Config));
             }
         }
-
 
         /// <summary>
         /// 生成的表格对象
         /// </summary>
-        public ObservableCollection<EnumItem> Items => _config == null ? null : Config.Items;
+        public ObservableCollection<EnumItem> Items
+        {
+            get => _items;
+            private set
+            {
+                _items = value;
+                RaisePropertyChanged(nameof(Items));
+            }
+        }
 
 
         private string _fields;
+        private EnumConfig _config;
+        private ObservableCollection<EnumItem> _items;
+
         /// <summary>
         ///     当前文件名
         /// </summary>
         public string Fields
         {
-            get { return _fields; }
+            get => _fields;
             set
             {
                 if (_fields == value)
@@ -66,23 +105,133 @@ namespace Agebull.EntityModel.Designer
 
         #region 扩展代码
 
-        internal bool CheckFieldesPrepare(string arg, Action<string> setArg)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public void DoFormatCSharp(object arg)
         {
-            return !string.IsNullOrWhiteSpace(Fields);
+            if (Config == null || string.IsNullOrWhiteSpace(Fields))
+                return;
+
+            StringBuilder code = new StringBuilder();
+            var columns = new List<EnumItem>();
+            var lines = Fields.Split(new[] { '\r', '\n', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            string descript = null, caption = null;
+            int next = 0;
+            int barket = 0;
+            int value = 0;
+            foreach (var l in lines)
+            {
+                if (string.IsNullOrEmpty(l))
+                    continue;
+                var line = l.Trim().TrimEnd(',');
+                if (barket > 0)
+                    continue;
+                var baseLine = line.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+                var words = baseLine[0].Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                if (words[0][0] == '/')
+                {
+                    if (words[1] == "<summary>")
+                    {
+                        caption = null;
+                        next = 1;
+                        continue;
+                    }
+                    if (words[1] == "<remark>")
+                    {
+                        descript = null;
+                        next = 2;
+                        continue;
+                    }
+                    if (words[1][0] == '<')
+                    {
+                        next = 0;
+                        continue;
+                    }
+                    if (next <= 1)
+                        caption = words.Skip(1).LinkToString();
+                    if (next == 2)
+                        descript = words.Skip(1).LinkToString();
+                    continue;
+                }
+                if (!Char.IsLetter(line[0]))
+                    continue;
+                string svl = value.ToString();
+                if (baseLine.Length > 1)
+                {
+                    svl = baseLine[1];
+                    if (int.TryParse(baseLine[1], out var vl))
+                    {
+                        value = vl;
+                    }
+                }
+                var name = words[words.Length - 1];
+                code.Append($"{svl}\t{name}");
+                if (caption != null)
+                    code.Append($"\t{caption}");
+                if (descript != null)
+                    code.Append($"\t{descript}");
+                code.AppendLine();
+                columns.Add(new EnumItem
+                {
+                    Name = name,
+                    Value = svl,
+                    Description = descript,
+                    Caption = caption
+                });
+                caption = null;
+                descript = null;
+                next = 0;
+                ++value;
+            }
+
+            Fields = code.ToString();
+            OnPropertyChanged(nameof(Fields));
+
+            MessageBox.Show("处理成功");
+            Items.Clear();
+            foreach (var col in columns)
+            {
+                Items.Add(col);
+            }
+            RaisePropertyChanged(() => Items);
         }
 
-
-        public List<EnumItem> DoCheckFieldes(string arg)
+        public void DoCheckFieldes(object arg)
         {
+            if (Config == null || string.IsNullOrWhiteSpace(Fields))
+                return;
+
+            StringBuilder code = new StringBuilder();
             var columns = new List<EnumItem>();
             string[] lines = Fields.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (string line in lines)
+            bool error = false;
+            foreach (string l in lines)
             {
-                if (string.IsNullOrEmpty(line))
+                if (string.IsNullOrEmpty(l))
                     continue;
-                string[] words = line.Trim().Split(new[] { ' ', '\t', '-' }, StringSplitOptions.RemoveEmptyEntries);
+                var line = l.Trim().Split('>')[0];
+                code.Append(line);
+                string[] words = line.Split(new[] { ' ', '\t', '-' }, StringSplitOptions.RemoveEmptyEntries);
                 if (words.Length < 2)
+                {
+                    code.AppendLine(" ! 长度不足以解析");
+                    error = true;
                     continue;
+                }
+                if (!int.TryParse(words[0], out var _))
+                {
+                    code.AppendLine(" ! 第一个单词无法转为数字");
+                }
+                if (!char.IsLetter(words[1][0]))
+                {
+                    code.AppendLine(" ! 第二个单词首字母不是字母(请自行保证命名规范)");
+                    error = true;
+                }
+                code.AppendLine();
                 /*
                  文本说明:
                  * 1 每行为一条数据
@@ -97,13 +246,15 @@ namespace Agebull.EntityModel.Designer
                     Description = words.Length > 3 ? words[3] : null
                 });
             }
-            return columns;
-        }
 
-        internal void CheckFieldesEnd(CommandStatus status, Exception ex, List<EnumItem> columns)
-        {
-            if (status != CommandStatus.Succeed)
+            Fields = code.ToString();
+            OnPropertyChanged(nameof(Fields));
+            if (error)
+            {
+                MessageBox.Show("发生错误");
                 return;
+            }
+            MessageBox.Show("处理成功");
             Items.Clear();
             foreach (var col in columns)
             {
@@ -113,5 +264,6 @@ namespace Agebull.EntityModel.Designer
         }
 
         #endregion
+
     }
 }

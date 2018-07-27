@@ -24,7 +24,6 @@ namespace Agebull.EntityModel
     /// </summary>
     public sealed class TreeRoot : TreeItemBase
     {
-
         private TreeItem _selectItem;
 
         /// <summary>
@@ -34,7 +33,10 @@ namespace Agebull.EntityModel
         {
 
         }
-
+        /// <summary>
+        /// 全局配置
+        /// </summary>
+        public readonly Dictionary<string, object> GlobalConfig = new Dictionary<string, object>();
 
         /// <summary>
         /// 找对应节点
@@ -69,10 +71,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public TreeItem SelectItem
         {
-            get
-            {
-                return _selectItem;
-            }
+            get => _selectItem;
             set
             {
                 if (_selectItem == value)
@@ -113,7 +112,7 @@ namespace Agebull.EntityModel
 
         #region 扩展方法
 
-        private ObservableCollection<CommandItem> _commands;
+        private ObservableCollection<CommandItemBase> _commands;
 
         private ModelFunctionDictionary<TreeRoot> _modelFunction;
 
@@ -123,25 +122,16 @@ namespace Agebull.EntityModel
         [IgnoreDataMember]
         public ModelFunctionDictionary<TreeRoot> ModelFunction
         {
-            get
-            {
-                return _modelFunction ?? (_modelFunction = new ModelFunctionDictionary<TreeRoot>() );
-            }
-            set
-            {
-                _modelFunction = value;
-            }
+            get => _modelFunction ?? (_modelFunction = new ModelFunctionDictionary<TreeRoot>() );
+            set => _modelFunction = value;
         }
 
         /// <summary>
         ///     对应的命令集合
         /// </summary>
-        public ObservableCollection<CommandItem> Commands
+        public ObservableCollection<CommandItemBase> Commands
         {
-            get
-            {
-                return _commands ?? (_commands = new ObservableCollection<CommandItem>() );
-            }
+            get => _commands ?? (_commands = new ObservableCollection<CommandItemBase>() );
             set
             {
                 if (_commands == value)

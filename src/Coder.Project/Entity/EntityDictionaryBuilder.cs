@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
-using Agebull.EntityModel.RobotCoder.EasyUi;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -30,7 +29,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         /// <remarks></remarks>
         /// <returns></returns>
-        protected string GetSetValues()
+        private string GetSetValues()
         {
             var code = new StringBuilder();
             SetValues(code);
@@ -55,6 +54,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name=""value""></param>
         protected override void SetValueInner(string property, object value)
         {
+            if(property == null) return;
             switch(property.Trim().ToLower())
             {");
 
@@ -64,9 +64,9 @@ namespace Agebull.EntityModel.RobotCoder
                 var name = field.Name.ToLower();
                 if (!names.Contains(name))
                     names.Add(name);
-                foreach (var alias in names)
+                foreach (var alia in names)
                     code.Append($@"
-            case ""{alias}"":");
+            case ""{alia}"":");
 
                 if (!string.IsNullOrWhiteSpace(field.CustomType))
                 {
@@ -103,10 +103,11 @@ namespace Agebull.EntityModel.RobotCoder
                     continue;
                 }
 
-                if (field.CsType == "bool" || field.CsType == "Boolean")
+                switch (field.CsType)
                 {
-
-                    code.Append($@"
+                    case "bool":
+                    case "Boolean":
+                        code.Append($@"
                 if (value != null)
                 {{
                     int vl;
@@ -120,29 +121,27 @@ namespace Agebull.EntityModel.RobotCoder
                     }}
                 }}
                 return;");
-                    continue;
-                }
-                if (field.CsType == "int" || field.CsType == "long")
-                {
-                    code.Append($@"
+                        continue;
+                    case "int":
+                    case "long":
+                        code.Append($@"
                 this.{field.Name} = ({field.CsType})Convert.ToDecimal(value);
                 return;");
-                }
-                else
-                {
-                    code.Append($@"
+                        break;
+                    default:
+                        code.Append($@"
                 this.{field.Name} = {ConvertCode(field, "value")};
                 return;");
+                        break;
                 }
             }
             code.AppendLine(@"
             }");
 
-            if (!string.IsNullOrWhiteSpace(Entity.ModelBase))
-                code.AppendLine(@"
-            base.SetValueInner(property,value);");
-            else
-                code.AppendLine(@"
+            code.AppendLine(!string.IsNullOrWhiteSpace(Entity.ModelBase)
+                ? @"
+            base.SetValueInner(property,value);"
+                : @"
             //System.Diagnostics.Trace.WriteLine(property + @""=>"" + value);");
             code.AppendLine(@"
         }");
@@ -208,21 +207,19 @@ namespace Agebull.EntityModel.RobotCoder
                 foreach (var alias in names)
                     code.Append($@"
             case ""{alias}"":");
-                if (field.EnumConfig == null)
-                    code.AppendFormat(@"
-                return this.{0};", field.Name);
-                else
-                    code.AppendFormat(@"
-                return this.{0}.ToCaption();", field.Name);
+                code.Append(field.EnumConfig == null
+                    ? $@"
+                return this.{field.Name};"
+                    : $@"
+                return this.{field.Name}.ToCaption();");
             }
             code.AppendLine(@"
             }");
-            if (!string.IsNullOrWhiteSpace(Entity.ModelBase))
-                code.AppendLine(@"
+            code.AppendLine(!string.IsNullOrWhiteSpace(Entity.ModelBase)
+                ? @"
             return base.GetValueInner(property);
-        }");
-            else
-                code.AppendLine(@"
+        }"
+                : @"
             return null;
         }");
             if (IsClient)
@@ -246,11 +243,10 @@ namespace Agebull.EntityModel.RobotCoder
             }
             code.AppendLine(@"
             }*/");
-            if (!string.IsNullOrWhiteSpace(Entity.ModelBase))
-                code.Append(@"
-            return base.GetValueInner(index);");
-            else
-                code.Append(@"
+            code.Append(!string.IsNullOrWhiteSpace(Entity.ModelBase)
+                ? @"
+            return base.GetValueInner(index);"
+                : @"
             return null;");
             code.AppendLine(@"
         }");
@@ -259,7 +255,42 @@ namespace Agebull.EntityModel.RobotCoder
 
         private string ConvertCode(PropertyConfig column, string arg)
         {
-            return EasyUiHelperCoder.InputConvert3(column, arg);
+            switch (column.CsType)
+            {
+                case "string":
+                case "String":
+                    return ($"{arg} == null ? null : {arg}.ToString()");
+                case "long":
+                case "Int64":
+                    if (column.Nullable)
+                        return ($"{arg} == null ? null : (long?)Convert.ToInt64({arg})");
+                    return $"Convert.ToInt64({arg})";
+                case "int":
+                case "Int32":
+                    if (column.Nullable)
+                        return $"{arg} == null ? null : (int?)Convert.ToInt32({arg})";
+                    return $"Convert.ToInt32({arg})";
+                case "decimal":
+                case "Decimal":
+                    if (column.Nullable)
+                        return $"{arg} == null ? null : (decimal?)Convert.ToDecimal({arg})";
+                    return $"Convert.ToDecimal({arg})";
+                case "float":
+                case "Float":
+                    if (column.Nullable)
+                        return $"{arg} == null ? null : (float?)Convert.ToSingle({arg})";
+                    return $"Convert.ToSingle({arg})";
+                case "bool":
+                case "Boolean":
+                    if (column.Nullable)
+                        return $"{arg} == null ? null : (bool?)Convert.ToBoolean({arg})";
+                    return $"Convert.ToBoolean({arg})";
+                case "DateTime":
+                    if (column.Nullable)
+                        return $"{arg} == null ? null : (DateTime?)Convert.ToDateTime({arg})";
+                    return $"Convert.ToDateTime({arg})";
+            }
+            return $"({column.LastCsType}){arg}";
         }
         #endregion
     }

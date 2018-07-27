@@ -11,127 +11,118 @@ namespace Agebull.EntityModel.RobotCoder
     public sealed class SqlServerAccessBuilder : CoderWithEntity
     {
         /// <summary>
-        /// Ãû³Æ
+        /// åç§°
         /// </summary>
         protected override string FileSaveConfigName => "File_Model_SqlServerAccess";
 
         private string SqlCode()
         {
-            return string.Format(@"
-        #region »ù±¾SQLÓï¾ä
+            return $@"
+        #region åŸºæœ¬SQLè¯­å¥
 
         /// <summary>
-        /// ±íµÄÎ¨Ò»±êÊ¶
+        /// è¡¨çš„å”¯ä¸€æ ‡è¯†
         /// </summary>
         public override int TableId
         {{
-            get {{ return {6}.Table_{8}; }}
+            get {{ return {Project.DataBaseObjectName}.Table_{Entity.Name}; }}
         }}
 
         /// <summary>
-        /// ¶ÁÈ¡±íÃû
+        /// è¯»å–è¡¨å
         /// </summary>
         protected sealed override string ReadTableName
         {{
             get
             {{
-                return @""{0}"";
+                return @""{Entity.ReadTableName}"";
             }}
         }}
 
         /// <summary>
-        /// Ğ´Èë±íÃû
+        /// å†™å…¥è¡¨å
         /// </summary>
         protected sealed override string WriteTableName
         {{
             get
             {{
-                return @""{1}"";
+                return @""{Entity.SaveTable}"";
             }}
         }}
 
         /// <summary>
-        /// Ö÷¼ü
+        /// ä¸»é”®
         /// </summary>
         protected sealed override string PrimaryKey
         {{
             get
             {{
-                return @""{2}"";
+                return @""{Entity.PrimaryColumn.PropertyName}"";
             }}
         }}
 
         /// <summary>
-        /// È«±í¶ÁÈ¡µÄSQLÓï¾ä
+        /// å…¨è¡¨è¯»å–çš„SQLè¯­å¥
         /// </summary>
         protected sealed override string FullLoadFields
         {{
             get
             {{
-                return @""{3}"";
+                return @""{FullLoadSql()}"";
             }}
         }}
 
         
 
         /// <summary>
-        /// ²åÈëµÄSQLÓï¾ä
+        /// æ’å…¥çš„SQLè¯­å¥
         /// </summary>
         protected sealed override string InsertSqlCode
         {{
             get
             {{
-                return @""{4}"";
+                return @""{InsertSql()}"";
             }}
         }}
 
         /// <summary>
-        /// È«²¿¸üĞÂµÄSQLÓï¾ä
+        /// å…¨éƒ¨æ›´æ–°çš„SQLè¯­å¥
         /// </summary>
         protected sealed override string UpdateSqlCode
         {{
             get
             {{
-                return @""{5}"";
+                return @""{UpdateSql()}"";
             }}
         }}
 
         /// <summary>
-        /// È¡µÃ½ö¸üĞÂµÄSQLÓï¾ä
+        /// å–å¾—ä»…æ›´æ–°çš„SQLè¯­å¥
         /// </summary>
-        internal string GetModifiedSqlCode({8} data)
+        public string GetModifiedSqlCode({Entity.EntityName} data)
         {{
             if (data.__EntityStatusNull || !data.__EntityStatus.IsModified)
                 return "";"";
-            StringBuilder sql = new StringBuilder();{7}
+            StringBuilder sql = new StringBuilder();{UpdateSqlByModify()}
             return sql.ToString();
         }}
 
         #endregion
-"
-                , Entity.ReadTableName
-                , Entity.SaveTable
-                , Entity.PrimaryColumn.PropertyName
-                , FullLoadSql()
-                , InsertSql()
-                , UpdateSql()
-                , Project.DataBaseObjectName
-                , UpdateSqlByModify()
-                , Entity.EntityName);
+";
         }
 
         private string FieldCode()
         {
-            return string.Format(@"
-        #region ×Ö¶Î
+            return $@"
+        #region å­—æ®µ
 
         /// <summary>
-        ///  ËùÓĞ×Ö¶Î
+        ///  æ‰€æœ‰å­—æ®µ
         /// </summary>
-        static string[] _fields = new string[]{{ {0} }};
+        static string[] _fields = new string[]{{ {Fields()} }};
 
         /// <summary>
-        ///  ËùÓĞ×Ö¶Î
+        ///  æ‰€æœ‰å­—æ®µ
         /// </summary>
         public sealed override string[] Fields
         {{
@@ -142,47 +133,37 @@ namespace Agebull.EntityModel.RobotCoder
         }}
 
         /// <summary>
-        ///  ×Ö¶Î×Öµä
+        ///  å­—æ®µå­—å…¸
         /// </summary>
         public static Dictionary<string, string> fieldMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-        {{{1}
+        {{{FieldMap()}
         }};
 
         /// <summary>
-        ///  ×Ö¶Î×Öµä
+        ///  å­—æ®µå­—å…¸
         /// </summary>
         public sealed override Dictionary<string, string> FieldMap
         {{
             get {{ return fieldMap ; }}
         }}
-        #endregion"
-                , Fields()
-                , FieldMap());
+        #endregion";
         }
 
         private string CreateCode()
         {
-            var innerCode = string.Format(@"{0}{1}
+            var innerCode = $@"{SqlCode()}{FieldCode()}
 
-        #region ·½·¨ÊµÏÖ
-{2}
-{3}
-{4}
-{5}
-{6}
-{7}
+        #region æ–¹æ³•å®ç°
+{LoadEntityCode()}
+{GetDbTypeCode()}
+{CreateFullSqlParameter()}
+{UpdateCode()}
+{InsertCode()}
+{CreateScope()}
         #endregion
-"
-                , SqlCode()
-                , FieldCode()
-                , LoadEntityCode()
-                , GetDbTypeCode()
-                , CreateFullSqlParameter()
-                , UpdateCode()
-                , InsertCode()
-                , CreateScope());
+";
 
-            return string.Format(@"
+            return $@"
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -196,46 +177,36 @@ using Gboxt.Common.DataModel;
 using Gboxt.Common.DataModel.SqlServer;
 
 
-namespace {0}.DataAccess
+namespace {NameSpace}.DataAccess
 {{
     /// <summary>
-    /// {1}
+    /// {Entity.Description}
     /// </summary>
-    {2} partial class {3}DataAccess
-    {{{4}{5}
+    {(Entity.IsInternal ? "internal" : "public")} partial class {Entity.Name}DataAccess
+    {{{null}{innerCode}
     }}
 
-    sealed partial class {6}
+    sealed partial class {Project.DataBaseObjectName}
     {{
-{7}
-{8}
-{9}
+{TableSql()}
+{TableObject()}
+{TablesEnum()}
     }}
 }}
-"
-                , NameSpace
-                , Entity.Description
-                , Entity.IsInternal ? "internal" : "public"
-                , Entity.EntityName
-                , null //ec.MakeSource()
-                , innerCode
-                , Project.DataBaseObjectName
-                , TableSql()
-                , TableObject()
-                , TablesEnum());
+";
         }
 
         /// <summary>
-        ///     Éú³É»ù´¡´úÂë
+        ///     ç”ŸæˆåŸºç¡€ä»£ç 
         /// </summary>
         protected override void CreateBaCode(string path)
         {
-            var file = Path.Combine(path, Entity.EntityName + "DataAccess.Designer.cs");
-            if (Entity.IsClass)
+            var file = Path.Combine(path, Entity.Name + "DataAccess.Designer.cs");
+            if (Entity.NoDataBase)
             {
                 if (File.Exists(file))
                 {
-                    File.Delete(file);
+                    Directory.Move(file, file + ".bak");
                 }
                 return;
             }
@@ -244,20 +215,20 @@ namespace {0}.DataAccess
         
 
         /// <summary>
-        ///     Éú³ÉÀ©Õ¹´úÂë
+        ///     ç”Ÿæˆæ‰©å±•ä»£ç 
         /// </summary>
         protected override void CreateExCode(string path)
         {
-            var file = Path.Combine(path, Entity.EntityName + "DataAccess.cs");
-            if (Entity.IsClass)
+            var file = Path.Combine(path, Entity.Name + "DataAccess.cs");
+            if (Entity.NoDataBase)
             {
                 if (File.Exists(file))
                 {
-                    File.Delete(file);
+                    Directory.Move(file, file + ".bak");
                 }
                 return;
             }
-            var code = string.Format(@"
+            var code = ($@"
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -269,20 +240,17 @@ using System.Text;
 
 using Gboxt.Common.DataModel.SqlServer;
 
-namespace {0}.DataAccess
+namespace {NameSpace}.DataAccess
 {{
     /// <summary>
-    /// {1}
+    /// {Entity.Description}
     /// </summary>
-    sealed partial class {2}DataAccess : SqlServerTable<{2}>
+    sealed partial class {Entity.Name}DataAccess : SqlServerTable<{Entity.EntityName}>
     {{
 
     }}
 }}
-"
-                , NameSpace
-                , Entity.Description
-                , Entity.EntityName);
+");
             SaveCode(file, code);
         }
 
@@ -301,43 +269,38 @@ namespace {0}.DataAccess
         }
         private string TableObject()
         {
-            var name = Entity.EntityName.ToPluralism();
-            return string.Format(@"
+            var name = Entity.Name.ToPluralism();
+            return ($@"
 
         /// <summary>
-        /// {0}Êı¾İ·ÃÎÊ¶ÔÏó
+        /// {Entity.Description}æ•°æ®è®¿é—®å¯¹è±¡
         /// </summary>
-        private {2}DataAccess _{1};
+        private {Entity.Name}DataAccess _{name.ToLWord()};
 
         /// <summary>
-        /// {0}Êı¾İ·ÃÎÊ¶ÔÏó
+        /// {Entity.Description}æ•°æ®è®¿é—®å¯¹è±¡
         /// </summary>
-        {4} {2}DataAccess {3}
+        {(Entity.IsInternal ? "internal" : "public")} {Entity.Name}DataAccess {name}
         {{
             get
             {{
-                return this._{1} ?? ( this._{1} = new {2}DataAccess{{ DataBase = this}});
+                return this._{name.ToLWord()} ?? ( this._{name.ToLWord()} = new {Entity.Name}DataAccess{{ DataBase = this}});
             }}
-        }}"
-                , Entity.Description
-                , name.ToLWord()
-                , Entity.EntityName
-                , name
-                , Entity.IsInternal ? "internal" : "public");
+        }}");
         }
 
         private string TableSql()
         {
-            return string.Format(@"
+            return ($@"
 
         /// <summary>
-        /// {0}µÄ½á¹¹Óï¾ä
+        /// {Entity.Description}çš„ç»“æ„è¯­å¥
         /// </summary>
-        private TableSql _{1}Sql = new TableSql
+        private TableSql _{Entity.ReadTableName}Sql = new TableSql
         {{
-            TableName = ""{1}"",
-            PimaryKey = ""{2}""
-        }};", Entity.Description, Entity.ReadTableName, Entity.PrimaryColumn.PropertyName);
+            TableName = ""{Entity.ReadTableName}"",
+            PimaryKey = ""{Entity.PrimaryColumn.PropertyName}""
+        }};");
         }
 
         private string Fields()
@@ -392,8 +355,8 @@ namespace {0}.DataAccess
                 {
                     sql.Append(",");
                 }
-                sql.AppendFormat(@"
-            {{ ""{0}"" , ""{1}"" }}", field.PropertyName, field.ColumnName);
+                sql.Append($@"
+            {{ ""{field.PropertyName}"" , ""{field.ColumnName}"" }}");
                 names.Add(field.PropertyName);
 
                 var alias = field.GetAliasPropertys();
@@ -404,14 +367,14 @@ namespace {0}.DataAccess
                         continue;
                     }
                     names.Add(a);
-                    sql.AppendFormat(@",
-            {{ ""{0}"" , ""{1}"" }}", a, field.ColumnName);
+                    sql.Append($@",
+            {{ ""{a}"" , ""{field.ColumnName}"" }}");
                 }
             }
             if (!table.DbFields.Any(p => p.PropertyName.Equals("Id", StringComparison.OrdinalIgnoreCase)))
             {
-                sql.AppendFormat(@",
-            {{ ""Id"" , ""{0}"" }}", table.PrimaryColumn.ColumnName);
+                sql.Append($@",
+            {{ ""Id"" , ""{table.PrimaryColumn.ColumnName}"" }}");
             }
         }
 
@@ -437,13 +400,13 @@ namespace {0}.DataAccess
         }
 
         /// <summary>
-        /// ×Ö¶ÎÎ¨Ò»Ìõ¼ş(Ö÷¼ü»ò×éºÏ¼ü)
+        /// å­—æ®µå”¯ä¸€æ¡ä»¶(ä¸»é”®æˆ–ç»„åˆé”®)
         /// </summary>
         /// <returns></returns>
         private string UniqueCondition()
         {
             if (!Entity.DbFields.Any(p => p.UniqueIndex > 0))
-                return string.Format(@"[{0}] = @{1}", Entity.PrimaryColumn.ColumnName, Entity.PrimaryColumn.PropertyName);
+                return $@"[{Entity.PrimaryColumn.ColumnName}] = @{Entity.PrimaryColumn.PropertyName}";
 
             var code = new StringBuilder();
             var uniqueFields = Entity.DbFields.Where(p => p.UniqueIndex > 0).OrderBy(p => p.UniqueIndex).ToArray();
@@ -469,24 +432,20 @@ namespace {0}.DataAccess
                 return OnlyInsertSql();
             }
             var code = new StringBuilder();
-            code.AppendFormat(@"
+            code.Append($@"
 DECLARE @__myId INT;
-SELECT @__myId = [{0}] FROM [{1}] WHERE {2}", Entity.PrimaryColumn.ColumnName, Entity.SaveTable, UniqueCondition());
+SELECT @__myId = [{Entity.PrimaryColumn.ColumnName}] FROM [{Entity.SaveTable}] WHERE {UniqueCondition()}");
 
-            code.AppendFormat(@"
+            code.Append($@"
 IF @__myId IS NULL
-BEGIN{0}
-    SET @__myId = {3};
+BEGIN{OnlyInsertSql(true)}
+    SET @__myId = {(Entity.PrimaryColumn.IsIdentity ? "SCOPE_IDENTITY()" : Entity.PrimaryColumn.ColumnName)};
 END
 ELSE
 BEGIN
-    SET @{2}=@__myId;{1}
+    SET @{Entity.PrimaryColumn.PropertyName}=@__myId;{UpdateSql(true)}
 END
-SELECT @__myId;"
-                , OnlyInsertSql(true)
-                , UpdateSql(true)
-                , Entity.PrimaryColumn.PropertyName
-                , Entity.PrimaryColumn.IsIdentity ? "SCOPE_IDENTITY()" : Entity.PrimaryColumn.ColumnName);
+SELECT @__myId;");
             return code.ToString();
         }
 
@@ -494,9 +453,9 @@ SELECT @__myId;"
         {
             var sql = new StringBuilder();
             var columns = Entity.DbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
-            sql.AppendFormat(@"
-INSERT INTO [{0}]
-(", Entity.SaveTable);
+            sql.Append($@"
+INSERT INTO [{Entity.SaveTable}]
+(");
             var isFirst = true;
             foreach (var field in columns)
             {
@@ -508,8 +467,8 @@ INSERT INTO [{0}]
                 {
                     sql.Append(",");
                 }
-                sql.AppendFormat(@"
-    [{0}]", field.ColumnName);
+                sql.Append($@"
+    [{field.ColumnName}]");
             }
             sql.Append(@"
 )
@@ -526,8 +485,8 @@ VALUES
                 {
                     sql.Append(",");
                 }
-                sql.AppendFormat(@"
-    @{0}", field.PropertyName);
+                sql.Append($@"
+    @{field.PropertyName}");
             }
             sql.Append(@"
 );");
@@ -573,7 +532,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
             return sql.ToString();
         }
 
-        private string UpdateSqlByModify(bool isInner = false)
+        private string UpdateSqlByModify()
         {
             var code = new StringBuilder();
             IEnumerable<PropertyConfig> columns = Entity.DbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
@@ -605,40 +564,40 @@ UPDATE [{0}] SET", Entity.SaveTable);
 
         private string CreateScope()
         {
-            return string.Format(@"
+            return ($@"
 
         /// <summary>
-        /// ¹¹ÔìÒ»¸öÈ±Ê¡¿ÉÓÃµÄÊı¾İ¿â¶ÔÏó
+        /// æ„é€ ä¸€ä¸ªç¼ºçœå¯ç”¨çš„æ•°æ®åº“å¯¹è±¡
         /// </summary>
         /// <returns></returns>
         protected override SqlServerDataBase CreateDefaultDataBase()
         {{
-            return {1}.Default ?? new {1}();
+            return {Project.DataBaseObjectName}.Default ?? new {Project.DataBaseObjectName}();
         }}
         
         /// <summary>
-        /// Éú³ÉÊı¾İ¿â·ÃÎÊ·¶Î§
+        /// ç”Ÿæˆæ•°æ®åº“è®¿é—®èŒƒå›´
         /// </summary>
-        internal static SqlServerDataTableScope<{0}> CreateScope()
+        public static SqlServerDataTableScope<{Entity.EntityName}> CreateScope()
         {{
-            var db = {1}.Default ?? new {1}();
-            return SqlServerDataTableScope<{0}>.CreateScope(db, db.{2});
-        }}", Entity.EntityName, Project.DataBaseObjectName, Entity.EntityName.ToPluralism());
+            var db = {Project.DataBaseObjectName}.Default ?? new {Project.DataBaseObjectName}();
+            return SqlServerDataTableScope<{Entity.EntityName}>.CreateScope(db, db.{Entity.Name.ToPluralism()});
+        }}");
         }
 
         private string CreateFullSqlParameter()
         {
             var code = new StringBuilder();
-            code.AppendFormat(@"
+            code.Append($@"
 
         /// <summary>
-        /// ÉèÖÃ²åÈëÊı¾İµÄÃüÁî
+        /// è®¾ç½®æ’å…¥æ•°æ®çš„å‘½ä»¤
         /// </summary>
-        /// <param name=""entity"">ÊµÌå¶ÔÏó</param>
-        /// <param name=""cmd"">ÃüÁî</param>
-        /// <returns>·µ»ØÕæËµÃ÷ÒªÈ¡Ö÷¼ü</returns>
-        private void CreateFullSqlParameter({0} entity, SqlCommand cmd)
-        {{", Entity.EntityName);
+        /// <param name=""entity"">å®ä½“å¯¹è±¡</param>
+        /// <param name=""cmd"">å‘½ä»¤</param>
+        /// <returns>è¿”å›çœŸè¯´æ˜è¦å–ä¸»é”®</returns>
+        private void CreateFullSqlParameter({Entity.EntityName} entity, SqlCommand cmd)
+        {{");
 
             var isFirstNull = true;
             foreach (var field in Entity.DbFields.OrderBy(p => p.Index))
@@ -686,9 +645,8 @@ UPDATE [{0}] SET", Entity.SaveTable);
                         break;
                     case "DateTime":
                         field.DbNullable = true;
-                        if (field.Nullable)
-                        {
-                            code.AppendFormat(@"
+                        code.AppendFormat(field.Nullable
+                                ? @"
             {1}isNull = entity.{0} == null || entity.{0}.Value.Year < 1900;
             {1}parameter = new SqlParameter(""{0}"",SqlDbType.DateTime);
             if(isNull)
@@ -696,12 +654,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
             else
                 parameter.Value = entity.{0};
             cmd.Parameters.Add(parameter);"
-                                , field.PropertyName
-                                , isFirstNull ? "var " : "");
-                        }
-                        else
-                        {
-                            code.AppendFormat(@"
+                                : @"
             {1}isNull = entity.{0}.Year < 1900;
             {1}parameter = new SqlParameter(""{0}"",SqlDbType.DateTime);
             if(isNull)
@@ -709,9 +662,8 @@ UPDATE [{0}] SET", Entity.SaveTable);
             else
                 parameter.Value = entity.{0};
             cmd.Parameters.Add(parameter);"
-                                , field.PropertyName
-                                , isFirstNull ? "var " : "");
-                        }
+                            , field.PropertyName
+                            , isFirstNull ? "var " : "");
                         break;
                     default:
                         if (!field.Nullable)
@@ -751,11 +703,11 @@ UPDATE [{0}] SET", Entity.SaveTable);
             return$@"
 
         /// <summary>
-        /// ÉèÖÃ²åÈëÊı¾İµÄÃüÁî
+        /// è®¾ç½®æ’å…¥æ•°æ®çš„å‘½ä»¤
         /// </summary>
-        /// <param name=""entity"">ÊµÌå¶ÔÏó</param>
-        /// <param name=""cmd"">ÃüÁî</param>
-        /// <returns>·µ»ØÕæËµÃ÷ÒªÈ¡Ö÷¼ü</returns>
+        /// <param name=""entity"">å®ä½“å¯¹è±¡</param>
+        /// <param name=""cmd"">å‘½ä»¤</param>
+        /// <returns>è¿”å›çœŸè¯´æ˜è¦å–ä¸»é”®</returns>
         protected sealed override bool SetInsertCommand({Entity.EntityName} entity, SqlCommand cmd)
         {{
             cmd.CommandText = InsertSqlCode;
@@ -769,10 +721,10 @@ UPDATE [{0}] SET", Entity.SaveTable);
             return$@"
 
         /// <summary>
-        /// ÉèÖÃ¸üĞÂÊı¾İµÄÃüÁî
+        /// è®¾ç½®æ›´æ–°æ•°æ®çš„å‘½ä»¤
         /// </summary>
-        /// <param name=""entity"">ÊµÌå¶ÔÏó</param>
-        /// <param name=""cmd"">ÃüÁî</param>
+        /// <param name=""entity"">å®ä½“å¯¹è±¡</param>
+        /// <param name=""cmd"">å‘½ä»¤</param>
         protected sealed override void SetUpdateCommand({Entity.EntityName} entity, SqlCommand cmd)
         {{
             cmd.CommandText = {(Entity.UpdateByModified ? "GetModifiedSqlCode(entity)" : "UpdateSqlCode")};
@@ -794,10 +746,10 @@ UPDATE [{0}] SET", Entity.SaveTable);
 
             return$@"
         /// <summary>
-        /// µÃµ½×Ö¶ÎµÄDbTypeÀàĞÍ
+        /// å¾—åˆ°å­—æ®µçš„DbTypeç±»å‹
         /// </summary>
-        /// <param name=""field"">×Ö¶ÎÃû³Æ</param>
-        /// <returns>²ÎÊı</returns>
+        /// <param name=""field"">å­—æ®µåç§°</param>
+        /// <returns>å‚æ•°</returns>
         protected sealed override SqlDbType GetDbType(string field)
         {{
             switch (field)
@@ -813,10 +765,10 @@ UPDATE [{0}] SET", Entity.SaveTable);
             code.AppendFormat(@"
 
         /// <summary>
-        /// ÔØÈëÊı¾İ
+        /// è½½å…¥æ•°æ®
         /// </summary>
-        /// <param name=""reader"">Êı¾İ¶ÁÈ¡Æ÷</param>
-        /// <param name=""entity"">¶ÁÈ¡Êı¾İµÄÊµÌå</param>
+        /// <param name=""reader"">æ•°æ®è¯»å–å™¨</param>
+        /// <param name=""entity"">è¯»å–æ•°æ®çš„å®ä½“</param>
         protected sealed override void LoadEntity(SqlDataReader reader,{0} entity)
         {{
             using (new EditScope(entity.__EntityStatus, EditArrestMode.All, false))
@@ -825,12 +777,13 @@ UPDATE [{0}] SET", Entity.SaveTable);
             var idx = 0;
             foreach (var field in Entity.DbFields)
             {
+                string fieldName = field.PropertyName.ToLWord();
                 if (!string.IsNullOrWhiteSpace(field.CustomType))
                 {
                     code.AppendFormat(@"
                 if (!reader.IsDBNull({2}))
                     entity._{0} = ({1})reader.GetInt32({2});"
-                        , field.PropertyName.ToLower()
+                        , fieldName
                         , field.CustomType
                         , idx++);
                     continue;
@@ -841,47 +794,31 @@ UPDATE [{0}] SET", Entity.SaveTable);
                         code.AppendFormat(@"
                 if (!reader.IsDBNull({1}))
                     entity._{0} = reader.GetSqlBinary({1}).Value;"
-                            , field.PropertyName.ToLower()
+                            , fieldName
                             , idx++);
                         continue;
                     case "string":
-                        if (field.DbType.ToLower() == "nvarchar")
-                        {
-                            code.AppendFormat(@"
+                        code.AppendFormat(field.DbType?.ToLower() == "nvarchar"
+                                ? @"
                 if (!reader.IsDBNull({2}))
                     entity._{0} = {1}({2});"
-                                , field.PropertyName.ToLower()
-                                , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
-                                , idx++);
-                        }
-                        else
-                        {
-                            code.AppendFormat(@"
+                                : @"
                 if (!reader.IsDBNull({2}))
                     entity._{0} = {1}({2}).ToString();"
-                                , field.PropertyName.ToLower()
-                                , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
-                                , idx++);
-                        }
+                            , fieldName
+                            , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
+                            , idx++);
                         continue;
                     case "decimal":
-                        if (field.DbNullable)
-                        {
-                            code.AppendFormat(@"
+                        code.AppendFormat(field.DbNullable
+                                ? @"
                 if (!reader.IsDBNull({2}))
                     entity._{0} = (decimal){1}({2});"
-                                , field.PropertyName.ToLower()
-                                , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
-                                , idx++);
-                        }
-                        else
-                        {
-                            code.AppendFormat(@"
+                                : @"
                 entity._{0} = (decimal){1}({2});"
-                                , field.PropertyName.ToLower()
-                                , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
-                                , idx++);
-                        }
+                            , fieldName
+                            , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
+                            , idx++);
                         continue;
                 }
                 if (field.DbNullable)
@@ -891,7 +828,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
                         code.AppendFormat(@"
                 if (!reader.IsDBNull({2}))
                     entity._{0} = {1}({2});"
-                            , field.PropertyName.ToLower()
+                            , fieldName
                             , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
                             , idx++);
                     }
@@ -900,7 +837,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
                         code.AppendFormat(@"
                 if (!reader.IsDBNull({2}))
                     entity._{0} = {1}({2}) == 1;"
-                            , field.PropertyName.ToLower()
+                            , fieldName
                             , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
                             , idx++);
                     }
@@ -909,7 +846,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
                         code.AppendFormat(@"
                 if (!reader.IsDBNull({2}))
                     entity._{0} = new decimal({1}({2}));"
-                            , field.PropertyName.ToLower()
+                            , fieldName
                             , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
                             , idx++);
                     }
@@ -918,7 +855,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
                         code.AppendFormat(@"
                 if (!reader.IsDBNull({3}))
                     entity._{0} = ({1}){2}({3});"
-                            , field.PropertyName.ToLower()
+                            , fieldName
                             , field.CsType
                             , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
                             , idx++);
@@ -930,35 +867,25 @@ UPDATE [{0}] SET", Entity.SaveTable);
                     {
                         code.AppendFormat(@"
                 entity._{0} = ({3}){1}({2});"
-                            , field.PropertyName.ToLower()
+                            , fieldName
                             , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
                             , idx++
                             , field.CustomType ?? field.CsType);
                     }
                     else if (field.CsType.ToLower() == "bool" && field.DbType.ToLower() == "int")
                     {
-                        code.AppendFormat(@"
-                entity._{0} = {1}({2}) == 1;"
-                            , field.PropertyName.ToLower()
-                            , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
-                            , idx++);
+                        code.Append($@"
+                entity._{fieldName} = {CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)}({idx++}) == 1;");
                     }
                     else if (field.CsType.ToLower() == "decimal")
                     {
-                        code.AppendFormat(@"
-                entity._{0} = new decimal({1}({2}));"
-                            , field.PropertyName.ToLower()
-                            , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
-                            , idx++);
+                        code.Append($@"
+                entity._{fieldName} = new decimal({CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)}({idx++}));");
                     }
                     else
                     {
-                        code.AppendFormat(@"
-                entity._{0} = ({1}){2}({3});"
-                            , field.PropertyName.ToLower()
-                            , field.CustomType ?? field.CsType
-                            , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
-                            , idx++);
+                        code.Append($@"
+                entity._{fieldName} = ({field.CustomType ?? field.CsType}){CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)}({idx++});");
                     }
                 }
             }
@@ -969,7 +896,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
         }
 
         /// <summary>
-        ///     ´ÓC#µÄÀàĞÍ×ªÎªDBType
+        ///     ä»C#çš„ç±»å‹è½¬ä¸ºDBType
         /// </summary>
         /// <param name="csharpType"> </param>
         public static SqlDbType ToSqlDbType(string csharpType)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -42,10 +43,20 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         public void CreateExtendCode(string path)
         {
-            CurrentIsExtend = true;
-            CurrentPath = path;
-            if (CanWrite)
-                CreateExCode(path);
+            using (CodeGeneratorScope.CreateScope())
+            {
+                try
+                {
+                    CurrentIsExtend = true;
+                    CurrentPath = path;
+                    if (CanWrite)
+                        CreateExCode(path);
+                }
+                catch (Exception e)
+                {
+                    Trace.Write(e, this.GetTypeName());
+                }
+            }
         }
 
         /// <summary>
@@ -53,10 +64,20 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         public void CreateBaseCode(string path)
         {
-            CurrentIsExtend = false;
-            CurrentPath = path;
-            if (CanWrite)
-                CreateBaCode(path);
+            using (CodeGeneratorScope.CreateScope())
+            {
+                try
+                {
+                    CurrentIsExtend = false;
+                    CurrentPath = path;
+                    if (CanWrite)
+                        CreateBaCode(path);
+                }
+                catch (Exception e)
+                {
+                    Trace.Write(e, this.GetTypeName());
+                }
+            }
         }
         /// <summary>
         ///     生成扩展代码
@@ -76,12 +97,39 @@ namespace Agebull.EntityModel.RobotCoder
 
         #region 保存代码
 
-        protected string SetPath(string path, string name, string ext = "")
+        /// <summary>
+        /// 取得扩展配置的路径
+        /// </summary>
+        /// <param name="config">对应配置</param>
+        /// <param name="key">保存键名称</param>
+        /// <param name="path">根路径</param>
+        /// <param name="defDir">默认目录</param>
+        /// <param name="defName">默认名称（扩展名随意）</param>
+        /// <returns></returns>
+        protected static string ConfigPath(ConfigBase config, string key, string path, string defDir, string defName)
         {
-            name += ext;
-            IOHelper.CheckPaths(path, Path.GetDirectoryName(name));
-            return Path.Combine(path, name);
+            key = key.ToLower();
+            var old = config.TryGetExtendConfig(key, null);
+            string full;
+            if (old == null)
+            {
+                var p2 = Path.Combine(defDir, defName);
+                config.ExtendConfig.Add(new ConfigItem { Name = key, Value = p2 });
+
+                full = Path.Combine(path, defDir, defName);
+            }
+            else
+            {
+                full = Path.Combine(path, old);
+            }
+
+            GlobalConfig.CheckPaths(Path.GetDirectoryName(full));
+            return full;
         }
+        #endregion
+
+        #region 保存代码
+
 
         /// <summary>
         /// 保存代码
@@ -106,8 +154,11 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 代码写入文件
         /// </summary>
-        public static void WriteFile(string file, string code, bool overWirte = true)
+        public void WriteFile(string file, string code, bool overWirte = true)
         {
+            WorkContext.FileCodes?.AddOrSwitch(file, code);
+            if (!WorkContext.WriteToFile)
+                return;
             if (File.Exists(file))
             {
                 FileInfo f = new FileInfo(file);
@@ -119,7 +170,7 @@ namespace Agebull.EntityModel.RobotCoder
                 using (var reader = File.OpenText(file))
                 {
                     var mark = reader.ReadLine();
-                    if (string.IsNullOrWhiteSpace(mark) || !mark.Contains("此标记表明此文件可被设计器更新"))
+                    if (String.IsNullOrWhiteSpace(mark) || !mark.Contains("此标记表明此文件可被设计器更新"))
                         return;
                     reader.Close();
                 }
@@ -132,20 +183,20 @@ namespace Agebull.EntityModel.RobotCoder
                 switch (ex)
                 {
                     case "htm":
-                    {
-                        sb.Append($"<!--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:{DateTime.Now}-->\r\n");
-                        break;
-                    }
+                        {
+                            sb.Append($"<!--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:{DateTime.Now}-->\r\n");
+                            break;
+                        }
                     case "aspx":
-                    {
-                        sb.Append($"<%--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:{DateTime.Now}--%>\r\n");
-                        break;
-                    }
+                        {
+                            sb.Append($"<%--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:{DateTime.Now}--%>\r\n");
+                            break;
+                        }
                     default:
-                    {
-                        sb.Append($"/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:{DateTime.Now}*/\r\n");
-                        break;
-                    }
+                        {
+                            sb.Append($"/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:{DateTime.Now}*/\r\n");
+                            break;
+                        }
                 }
             }
             code = code.Trim();
@@ -154,17 +205,20 @@ namespace Agebull.EntityModel.RobotCoder
                 string old = File.ReadAllText(file, Encoding.UTF8);
                 if (old.Contains('\n'))
                 {
-                    old = old.Split(new[] {'\n'}, 2)[1].Trim();
+                    old = old.Split(new[] { '\n' }, 2)[1].Trim();
                 }
-                if (string.Equals(code, old))
+                if (String.Equals(code, old))
                     return;
             }
             else
             {
                 var dir = Path.GetDirectoryName(file);
                 var root = Path.GetPathRoot(dir);
-                var folders = dir.Substring(root.Length, dir.Length - root.Length).Split( '\\');
-                IOHelper.CheckPath(root, folders);
+                if (dir != null)
+                {
+                    var folders = dir.Substring(root.Length, dir.Length - root.Length).Split('\\');
+                    GlobalConfig.CheckPath(root, folders);
+                }
             }
             sb.Append(code);
             code = sb.ToString();
@@ -174,6 +228,7 @@ namespace Agebull.EntityModel.RobotCoder
             //    //helper.CheckOut();
             //    //helper.CheckIn(file);
             //}
+            Trace.WriteLine(file);
         }
         #endregion
     }

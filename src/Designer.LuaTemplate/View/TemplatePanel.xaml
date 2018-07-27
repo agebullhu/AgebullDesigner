@@ -7,9 +7,13 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
              xmlns:designer="clr-namespace:Agebull.EntityModel.Designer;assembly=Agebull.EntityModel.CodeTemplate"
+             xmlns:designer1="clr-namespace:Agebull.EntityModel.Designer"
              mc:Ignorable="d"
              d:DesignHeight="600"
              d:DesignWidth="1000">
+    <UserControl.DataContext>
+        <designer1:TemplateCodeViewModel/>
+    </UserControl.DataContext>
     <Grid Background="{x:Static SystemColors.ControlBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />

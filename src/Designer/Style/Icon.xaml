@@ -26,7 +26,9 @@
     <BitmapImage x:Key="img_cus" UriSource="Images/cus.png" />
     <BitmapImage x:Key="img_error" UriSource="Images/cancel.png" />
     <BitmapImage x:Key="img_lua" UriSource="Images/lua.jpg" />
-
+    <BitmapImage x:Key="imImgFindg_lua" UriSource="Images/Find.png" />
+    <BitmapImage x:Key="imgBaidu" UriSource="Images/Baidu.png" />
+    
     <BitmapImage x:Key="tree_Folder" UriSource="Images/tree_Folder.png" />
     <BitmapImage x:Key="tree_item" UriSource="Images/tree_item.png" />
     <BitmapImage x:Key="tree_Assembly" UriSource="Images/tree_Assembly.png" />
@@ -43,7 +45,7 @@
     <BitmapImage x:Key="tree_Child0" UriSource="Images/tree_Child1.png" />
     <BitmapImage x:Key="tree_Child1" UriSource="Images/tree_Child1.png" />
     <BitmapImage x:Key="tree_Child2" UriSource="Images/tree_Child2.png" />
-    <BitmapImage x:Key="tree_Child3" UriSource="Images/tree_Child3.png" />
+    <BitmapImage x:Key="tree_Child3" UriSource="Images/tree_Child4.png" />
     <BitmapImage x:Key="tree_Child4" UriSource="Images/tree_Child4.png" />
     <BitmapImage x:Key="tree_Child5" UriSource="Images/tree_Child5.png" />
 

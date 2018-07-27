@@ -124,7 +124,8 @@ namespace {NameSpace}.{Entity.Name}Page
         /// </summary>
         public Action()
         {{
-            AllAccess = true;
+            AllAction = true;
+            IsPublicPage = true;
         }}
         /// <summary>
         ///     取得列表数据

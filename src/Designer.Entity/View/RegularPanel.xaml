@@ -5,12 +5,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
+             xmlns:designer="clr-namespace:Agebull.EntityModel.Designer"
              mc:Ignorable="d"
              d:DesignHeight="1000" d:DesignWidth="1000">
+    <UserControl.DataContext>
+        <designer:RegularViewModel/>
+    </UserControl.DataContext>
     <DockPanel>
         <GroupBox DockPanel.Dock="Bottom"  Header="数据规则" Margin="5"  DataContext="{Binding Model.Context.SelectProperty}">
             <GroupBox.Resources>
-                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/DataTemplate/Form.xaml"/>
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
             </GroupBox.Resources>
             <StackPanel Style="{StaticResource LayoutPanel}">
                 <StackPanel Style="{StaticResource FieldPanel}">
@@ -21,7 +25,7 @@
                     </TextBlock>
                 </StackPanel>
                 <StackPanel Style="{StaticResource FieldPanel}">
-                    <Label Content = "最大值&lt;=" /> 
+                    <Label Content = "最大值&lt;=" />
                     <TextBox Text="{Binding Max,Mode=TwoWay}" />
                     <TextBlock Style="{StaticResource HelpText}">
                         当为数字时，为最大的数字；当为时间时，为最大的时间。默认不校验。
@@ -49,17 +53,17 @@
                     </TextBlock>
                 </StackPanel>
                 <StackPanel Style="{StaticResource FieldPanel}">
-                    <Label Content = "最小可空" />
+                    <Label Content = "可为空值" />
                     <ComboBox Style="{StaticResource BoolCombo}"  SelectedValue="{Binding CanEmpty,Mode=TwoWay}" />
                     <TextBlock Style="{StaticResource HelpText}">
-                        当为否时,每次保存(新增或修改)都必须不为空,为真则以正式必填为准.
+                        当为否时,每次保存(新增或修改)都必须不为空,为真则以【正式必填】为准.
                     </TextBlock>
                 </StackPanel>
                 <StackPanel Style="{StaticResource FieldPanel}">
                     <Label Content = "正式必填" />
                     <ComboBox Style="{StaticResource BoolCombo}"  SelectedValue="{Binding IsRequired,Mode=TwoWay}" />
                     <TextBlock Style="{StaticResource HelpText}">
-                        当为真时：非审核对象每次录入都会校验；审核对象在提交时校验，即正式数据必填，草稿状态随意。
+                        当为真时：非审核对象每次录入都会校验；审核对象在提交时校验，即正式数据必填，草稿状态按【可为空值】设置来。
                     </TextBlock>
                 </StackPanel>
                 <StackPanel Style="{StaticResource FieldPanel}">
@@ -81,17 +85,15 @@
         <DataGrid AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
-                  DataContext="{Binding Model.Context}"
-                  ItemsSource="{Binding SelectItemChildrens}">
+                  DataContext="{Binding Context}"
+                  ItemsSource="{Binding SelectEntity.Properties}">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Index,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                <DataGridTextColumn Binding="{Binding Index,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
                                     Header="序号" />
                 <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                     Header="标题" />
                 <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                     Header="属性" />
-                <DataGridTextColumn Binding="{Binding Group,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                    Header="分组" />
                 <DataGridCheckBoxColumn
                     Binding="{Binding KeepUpdate,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="首次写入" />
                 <DataGridCheckBoxColumn
@@ -106,16 +108,16 @@
                 <DataGridCheckBoxColumn
                     Binding="{Binding Nullable,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="空类型" />
                 <DataGridCheckBoxColumn
-                    Binding="{Binding CanEmpty,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="最小可空" />
+                    Binding="{Binding CanEmpty,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="可为空值" />
                 <DataGridCheckBoxColumn
                     Binding="{Binding IsRequired,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="正式必填" />
                 <DataGridCheckBoxColumn
                     Binding="{Binding IsUserReadOnly,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                     Header="用户只读" />
-                <!--<DataGridTextColumn Binding="{Binding Max,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                        Header="最大数字或时间" />
-                    <DataGridTextColumn Binding="{Binding Min,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                        Header="最小数字或时间" />-->
+                <DataGridTextColumn Binding="{Binding ExtendConfigList[EmptyMessage],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                        Header="不为空的消息文本"  MinWidth="100"/>
+                <DataGridTextColumn Binding="{Binding ExtendConfigList[ErrorMessage],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                        Header="不合格的消息文本" MinWidth="100"/>
             </DataGrid.Columns>
             <i:Interaction.Behaviors>
                 <behaviors:DataGridGenertColumnsBehavior />

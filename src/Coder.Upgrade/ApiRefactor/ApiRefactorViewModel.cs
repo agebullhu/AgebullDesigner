@@ -21,32 +21,28 @@ namespace Agebull.EntityModel.Designer
 {
     public sealed class ApiRefactorViewModel : ViewModelBase<ApiRefactorModel>
     {
-        public static void ApiRefactor(SolutionConfig project)
+        public static void ApiRefactor(ProjectConfig project)
         {
             var win = new ApiRefactorWindow();
             var vm = (ApiRefactorViewModel)win.DataContext;
-            vm.Model.Solution = project;
+            vm.Model.Project = project;
             win.Show();
         }
 
-        private List<CommandItem> _exCommands;
+        private List<CommandItemBase> _exCommands;
 
-        public IEnumerable<CommandItem> ExCommands => _exCommands ?? (_exCommands = new List<CommandItem>
+        public IEnumerable<CommandItemBase> ExCommands => _exCommands ?? (_exCommands = new List<CommandItemBase>
         {
-            new CommandItem
+            new AsyncCommandItem<string, List<ApiItem>>(Model.CheckApiPrepare, Model.DoCheckApi, Model.CheckApiEnd)
             {
-                Command = new AsyncCommand<string, List<ApiItem>>
-                    (Model.CheckApiPrepare, Model.DoCheckApi, Model.CheckApiEnd)
-                {
-                    Detect = Model
-                },
-                Name = "分析接口",
+                IsButton=true,
+                Caption = "分析接口",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             },
             new CommandItem
             {
-                Command = new DelegateCommand(Model.End),
-                Name = "接收到系统中",
+                Action =Model.End,
+                Caption = "接收到系统中",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             }
         });

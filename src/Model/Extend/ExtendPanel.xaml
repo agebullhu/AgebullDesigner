@@ -8,35 +8,26 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <DockPanel>
-        <Border Style="{StaticResource ToolBar}" Height="36" DockPanel.Dock="Top">
-            <DockPanel DataContext="{Binding Model}">
-                <Menu DockPanel.Dock="Right">
-                    <MenuItem Header="其它" 
-                              Icon="{DynamicResource imgDefault}"
-                              ItemsSource="{Binding Menus}">
-                    </MenuItem>
-                </Menu>
-                <ItemsControl VerticalAlignment="Stretch"
-                              HorizontalAlignment="Stretch"
-                              ItemsSource="{Binding Buttons}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Button Style="{StaticResource CommandButton}" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel VerticalAlignment="Stretch"
-                                       HorizontalAlignment="Stretch" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
-            </DockPanel>
-        </Border>
-        <Border>
-            <i:Interaction.Behaviors>
-                <behaviors:DependencyBehavior BehaviorAction="{Binding ContentBehavior}" />
-            </i:Interaction.Behaviors>
-        </Border>
+        <DockPanel DockPanel.Dock="Top">
+            <Menu DockPanel.Dock="Right">
+                <MenuItem DataContext="{Binding Menus}" />
+            </Menu>
+            <ItemsControl VerticalAlignment="Stretch"
+                          HorizontalAlignment="Stretch"
+                          ItemsSource="{Binding Buttons}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Style="{StaticResource CommandButton}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel VerticalAlignment="Stretch"
+                                   HorizontalAlignment="Stretch" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </DockPanel>
+        <Border x:Name="child"/>
     </DockPanel>
 </UserControl>

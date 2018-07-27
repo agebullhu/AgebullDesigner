@@ -33,14 +33,8 @@ namespace Agebull.EntityModel
         /// </summary>
         public Dictionary<string, object> Dictionary
         {
-            get
-            {
-                return _dictionary ?? (_dictionary = new Dictionary<string, object>() );
-            }
-            set
-            {
-                _dictionary = value;
-            }
+            get => _dictionary ?? (_dictionary = new Dictionary<string, object>() );
+            set => _dictionary = value;
         }
 
         /// <summary>
@@ -56,8 +50,7 @@ namespace Agebull.EntityModel
                 {
                     return null;
                 }
-                object value;
-                return Dictionary.TryGetValue(name, out value) ? value : null;
+                return Dictionary.TryGetValue(name, out object value) ? value : null;
             }
             set
             {
@@ -90,8 +83,7 @@ namespace Agebull.EntityModel
             {
                 return default( T );
             }
-            object value;
-            return Dictionary.TryGetValue(name, out value) ? (T) value : default( T );
+            return Dictionary.TryGetValue(name, out object value) ? (T)value : default(T);
         }
 
         /// <summary>
@@ -102,10 +94,9 @@ namespace Agebull.EntityModel
         /// <returns>如果设置成功返回True</returns>
         public bool Set<T>(string name, T value)
         {
-            object value1;
-            if (Dictionary.TryGetValue(name, out value1))
+            if (Dictionary.TryGetValue(name, out object value1))
             {
-                if (Equals(value, default( T )))
+                if (Equals(value, default(T)))
                 {
                     Dictionary.Remove(name);
                     return true;

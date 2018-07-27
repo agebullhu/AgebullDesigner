@@ -1,10 +1,7 @@
-﻿using System.Collections.ObjectModel;
-using System.IO;
+﻿using System.IO;
 using System.Text;
-using System.Windows;
 using System.Windows.Forms;
 using Agebull.EntityModel.Config;
-using MessageBox = System.Windows.MessageBox;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace Agebull.EntityModel.Designer
@@ -19,7 +16,6 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         protected override void DoInitialize()
         {
-            LoadLastSolution();
             if (!File.Exists(Context.FileName))
             {
                 Load();
@@ -29,32 +25,8 @@ namespace Agebull.EntityModel.Designer
                 ReLoad();
             }
         }
-        /// <summary>
-        /// 强制保存
-        /// </summary>
-        public void SaveEntity()
-        {
-            if (MessageBox.Show("确认强制保存吗?\n要知道这存在一定破坏性!", "对象编辑", MessageBoxButton.YesNo) !=
-                MessageBoxResult.Yes)
-            {
-                return;
-            }
-            ConfigWriter writer = new ConfigWriter
-            {
-                Solution = Context.Solution,
-                Directory = Path.GetDirectoryName(Context.Solution.FileName)
-            };
-            if (Context.SelectProject != null)
-            {
-                writer.SaveProject(Context.SelectProject, false);
-                return;
-            }
-            var tables = Context.GetSelectEntities();
-            foreach (var entity in tables)
-            {
-                writer.SaveEntity(entity, false);
-            }
-        }
+
+        private const string fileType = "数据结构文件(*.json)|*.json";
         #region 文件读写
         /// <summary>
         /// 保存
@@ -66,13 +38,12 @@ namespace Agebull.EntityModel.Designer
             {
                 var sfd = new SaveFileDialog
                 {
-                    Filter = @"简单数据结构文件|*.xml"
+                    Filter = fileType
                 };
                 if (sfd.ShowDialog() == DialogResult.Cancel)
                 {
                     return;
                 }
-                Context.FileName = sfd.FileName;
             }
             SaveSolution();
         }
@@ -87,7 +58,6 @@ namespace Agebull.EntityModel.Designer
                 Solution = Context.Solution
             };
             model.ResetStatus();
-            SaveLastSolution();
             Context.StateMessage = "保存成功";
         }
         /// <summary>
@@ -97,7 +67,7 @@ namespace Agebull.EntityModel.Designer
         {
             var sfd = new OpenFileDialog
             {
-                Filter = "简单数据结构文件|*.xml",
+                Filter = fileType,
                 FileName = Context.FileName
             };
 
@@ -106,14 +76,16 @@ namespace Agebull.EntityModel.Designer
                 return;
             }
             Load(sfd.FileName);
+            DataModelDesignModel.Screen.LastFile = sfd.FileName;
+            DataModelDesignModel.SaveUserScreen();
+
         }
         /// <summary>
         /// 载入解决方案
         /// </summary>
         public void LoadGlobal()
         {
-            Context.FileName = Path.Combine(GlobalConfig.ProgramRoot, "Global", "global.json");
-            ReLoad();
+            Load(Path.Combine(GlobalConfig.ProgramRoot, "Global", "global.json"));
         }
         /// <summary>
         /// 重新载入
@@ -129,18 +101,9 @@ namespace Agebull.EntityModel.Designer
         public void Load(string sluFile)
         {
             Context.StateMessage = "正在载入...";
-            LoadFile(sluFile);
-            using (LoadingModeScope.CreateScope())
-                Model.Tree.CreateTree();
-            Context.NowJob = DesignContext.JobPropertyGrid;
-            Context.StateMessage = "载入成功";
-        }
-
-        private void LoadFile(string sluFile)
-        {
             Context.Solution = ConfigLoader.Load(sluFile);
-            Context.FileName = sluFile;
-            SaveLastSolution();
+            Context.StateMessage = "载入成功";
+            Model.OnSolutionChanged();
         }
 
         /// <summary>
@@ -148,48 +111,26 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void CreateNew()
         {
-            Context.Solution = new SolutionConfig
-            {
-                Entities = new ObservableCollection<EntityConfig>()
-            };
             var sfd = new SaveFileDialog
             {
-                Filter = @"简单数据结构文件|*.xml"
+                Filter = fileType
             };
             if (sfd.ShowDialog() == DialogResult.Cancel)
             {
                 return;
             }
-            SolutionConfig.SetCurrentSolution(Context.Solution);
-            Context.FileName = sfd.FileName;
+            Context.Solution = new SolutionConfig
+            {
+                Name = Path.GetFileNameWithoutExtension(sfd.FileName),
+                Caption = Path.GetFileNameWithoutExtension(sfd.FileName),
+                SaveFileName=sfd.FileName 
+            };
+            DataModelDesignModel.Screen.LastFile = sfd.FileName;
             SaveSolution();
             Load(sfd.FileName);
+            DataModelDesignModel.SaveUserScreen();
         }
 
-        #endregion
-        #region 用户操作记录
-
-        private void SaveLastSolution()
-        {
-            Context.FileName = Context.FileName;
-            // ReSharper disable once AssignNullToNotNullAttribute
-            var file = Path.Combine(GlobalConfig.ProgramRoot, "Config", "history.bin");
-            File.WriteAllText(file, Context.FileName, Encoding.UTF8);
-        }
-
-        private void LoadLastSolution()
-        {
-            // ReSharper disable once AssignNullToNotNullAttribute
-            var path = Path.Combine(GlobalConfig.ProgramRoot, "Config", "history.bin");
-            if (!File.Exists(path))
-                return;
-            var text = File.ReadAllText(path);
-            if (string.IsNullOrEmpty(text))
-                return;
-            var lines = text.Split('\n');
-            if (lines.Length > 0)
-                Context.FileName = lines[0].Trim();
-        }
         #endregion
     }
 }

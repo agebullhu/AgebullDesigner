@@ -1,16 +1,14 @@
-﻿using System.Windows.Controls;
-
-namespace Agebull.EntityModel.Designer.Card
+﻿namespace Agebull.EntityModel.Designer.Card
 {
     /// <summary>
     /// ConfigForm.xaml 的交互逻辑
     /// </summary>
-    public partial class ConfigForm : UserControl
+    public partial class ConfigForm
     {
         public ConfigForm()
         {
             InitializeComponent();
-            foreach (var res in DataTemplateResource.Resources)
+            foreach (var res in EditorExtend.Resources)
                 this.Resources.MergedDictionaries.Add(res);
         }
     }
