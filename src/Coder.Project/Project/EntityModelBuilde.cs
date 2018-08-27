@@ -53,7 +53,7 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
                 return;
             var entityPath = project.GetModelPath("Entity");
             Message = entityPath;
-            CreateCode<EntityBuilder>(project, schema, project.GetModelPath("Entity", "Model"));
+            CreateCode<EntityBuilder>(project, schema, entityPath);
 
             CreateCode<EntityValidateBuilder>(project, schema, entityPath);
 

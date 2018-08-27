@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using Agebull.Common;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.SqlServer;
 using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer
@@ -119,29 +120,6 @@ ORDER BY [Tables].object_id, [Columns].column_id";
             {
                 cmd.Parameters.Add(parameter = new SqlParameter("@entity", SqlDbType.NVarChar, 256));
                 var ch = table.Split('_');
-                string pro;
-                ProjectConfig project;
-                if (ch.Length > 1)
-                {
-                    pro = ch[1];
-                    project = SolutionConfig.Current.Projects.FirstOrDefault(p => string.Equals(p.Name, pro,
-                        StringComparison.OrdinalIgnoreCase));
-                    if (project == null)
-                    {
-                        SolutionConfig.Current.Add(project = new ProjectConfig
-                        {
-                            Name = pro,
-                            DbHost = Project.DbHost,
-                            DbPassWord = Project.DbPassWord,
-                            DbUser = Project.DbUser,
-                            DbSoruce = Project.DbSoruce,
-                        });
-                    }
-                }
-                else
-                {
-                    project = Project;
-                }
                 var name = ch.Length > 2 ? ch[2] : table;
                 var entity = new EntityConfig
                 {
@@ -150,16 +128,16 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                     Description = description,
                     ReadTableName = table,
                     SaveTableName = table,
-                    Parent = project
+                    Parent = Project
                 };
                 CheckColumns(cmd, entity);
-                project.Add(entity);
+                Project.Add(entity);
             }
         }
         private void CheckColumns(SqlCommand cmd, EntityConfig schema)
         {
             parameter.Value = schema.ReadTableName;
-            foreach (PropertyConfig col in schema.PublishProperty)
+            foreach (PropertyConfig col in schema.Properties)
                 col.DbIndex = 0;
             using (SqlDataReader reader = cmd.ExecuteReader())
             {
@@ -450,7 +428,7 @@ PK_{0} PRIMARY KEY CLUSTERED
                         //        TraceMessage.DefaultTrace.Track = "字段已改成不为空";
                         //    col.Nullable = false;
                         //}
-                        col.DbType = DataBaseHelper.ToDataBaseType(col);
+                        col.DbType = SqlServerHelper.ToDataBaseType(col);
                     }
                 }
                 connection.Close();

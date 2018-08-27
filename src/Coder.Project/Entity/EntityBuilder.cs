@@ -36,7 +36,9 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Runtime.Serialization;
 using Agebull.Common;
+using Agebull.Common.DataModel;
 using Gboxt.Common.DataModel;
+using Gboxt.Common.DataModel.Extends;
 
 using Newtonsoft.Json;
 
@@ -112,7 +114,7 @@ namespace {NameSpace}
         /// </summary>
         private string FullCode()
         {
-            if (Entity.NoDataBase)
+           if (Entity.NoDataBase)
                 return null;
             return $@"
 {GetBaseCode<EntityDictionaryBuilder>()}

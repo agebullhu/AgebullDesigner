@@ -58,7 +58,11 @@
                     continue;
                 }
                 Message.Message3 = $"=>{col.Caption}:{col.Name}";
-                PropertyValidater model = new PropertyValidater {Property = col};
+                var model = new PropertyValidater
+                {
+                    Property = col,
+                    DataBaseType = Entity.Parent.DbType
+                };
                 if (!model.Validate(Message))
                 {
                     result = false;

@@ -405,6 +405,7 @@ namespace Agebull.EntityModel.Config
                     return;
                 BeforePropertyChanged(nameof(EnumConfig), _enumConfig, value);
                 _enumConfig = value;
+                CustomType = value?.Name;
                 OnPropertyChanged(nameof(EnumConfig));
             }
         }
@@ -2492,7 +2493,7 @@ namespace Agebull.EntityModel.Config
             get => _linkTable;
             set
             {
-                if (_linkTable == value)
+                if (_linkTable == value || Parent == null)
                     return;
                 if (value == Parent.SaveTable)
                 {

@@ -622,7 +622,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"),DisplayName(@"存储表名(设计录入)"),Description(ReadTableName_Description)]
         public string ReadTableName
         {
-            get => WorkContext.InCoderGenerating ? (_readTableName ?? SaveTableName) : _readTableName;
+            get => WorkContext.InCoderGenerating ? (_readTableName ?? SaveTableName ?? Name) : _readTableName;
             set
             {
                 if (_readTableName == value)

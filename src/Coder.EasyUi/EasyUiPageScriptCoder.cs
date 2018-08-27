@@ -76,10 +76,11 @@ var {Entity.Name}Form = {{
 
         public string PageJsCode()
         {
-            return $@"/*
-    {Entity.Caption}的前端操作类对象,实现基本的增删改查的界面操作
+            return $@"
+/**
+*  {Entity.Caption}的前端操作类对象,实现基本的增删改查的界面操作
 */
-var {Entity.Name}Page = {{
+var page = {{
     /**
      * 表格对象
      */
@@ -89,13 +90,21 @@ var {Entity.Name}Page = {{
      */
     title:'{Entity.Caption}',
     /**
+     * 名称
+     */
+    name: '{Entity.EntityName}',
+    /**
+     * API前缀
+     */
+    apiPrefix: '{Entity.Parent.Abbreviation}/{Entity.Abbreviation}/v1/',
+    /**
      * 命令执行地址前缀
      */
     cmdPath: '',
     /**
      * 列表的URL
      */
-    listUrl: 'Action.aspx?action=list',
+    listUrl: '{Entity.Parent.Abbreviation}/{Entity.Abbreviation}/v1/edit/list',
     /**
      * 列表的URL的扩展参数
      */
@@ -234,28 +243,48 @@ var {Entity.Name}Page = {{
 
         #region script.js
 
+        private const string listCheckSize = @"
+                $('#grid').datagrid('resize', window.o99);";
+        private const string treeCheckSize = @"
+                $('#layout').layout('resize', window.o99);
+                $('#grid').datagrid('resize', window.o99);";
+
+        private string TreeInit => $@"
+            var tree = Object.create(TreeExtend);
+            tree.onTreeSelected = function (id, type, node) {{
+                page.setUrlArgs('pid=' + node.tag + '&type=' + type);
+            }};
+            tree.initialize(page.apiPrefix + 'edit/tree');
+            page.tree = tree;
+            page.autoLoad = false;";
+
         public override string Code()
         {
-            return string.Format(@"/*
-    {0}的前端操作类对象,实现基本的增删改查的界面操作
+            return $@"
+/*
+*   {Entity.Caption}的前端操作类对象,实现基本的增删改查的界面操作
 */
-var {1}Page = {{
+var page = {{
     /**
-     * 表格对象
+    表格对象
      */
     grid: null,
     /**
      * 标题
      */
-    title:'{2}',
+    title:'{Entity.Caption}',
     /**
-     * 命令执行地址前缀
+     * 名称
      */
-    cmdPath: '',
+    name: '{Entity.EntityName}',
+    /**
+     * API前缀
+     */
+    apiPrefix: '{Entity.Parent.Abbreviation}/{Entity.Abbreviation}/v1/',
     /**
      * 列表的URL
      */
-    listUrl: 'Action.aspx?action=list',
+    listUrl: 'edit/list',
     /**
      * 列表的URL的扩展参数
      */
@@ -275,7 +304,7 @@ var {1}Page = {{
     /**
      * 是否最小系统
      */
-    isSmall: true,
+    isSmall: false,
     /**
      * 默认支持命令按钮的名称后缀
      */
@@ -292,8 +321,8 @@ var {1}Page = {{
      * 当前录入是否校验正确
      */
     inputSucceed: true,
-    /*
-        {3}的页面初始化
+    /**
+     * {Entity.Caption}的页面初始化
     */
     initialize: function() {{
         var me = this;
@@ -302,22 +331,22 @@ var {1}Page = {{
         me.initGrid();
         me.initToolBar();
     }},
-    /*
-        初始化工具栏
+    /**
+     * 初始化工具栏
     */
     initToolBar: function() {{
-        var me = this;{4}
+        var me = this;{CommandJsCode()}
     }},
-    /*
-        初始化列表表格
+    /**
+     * 初始化列表表格
     */
     initGrid: function() {{
         var me = this;
         var grid = new GridPanel();
         me.grid=grid;
-        grid.ex = me;{5}
-        grid.idField = '{6}';
-        grid.cmdPath = me.cmdPath;
+        grid.tag = me;
+        grid.idField = '{Entity.PrimaryColumn.Name}';
+        grid.cmdPath = page.apiPrefix;{Gridjs()}
         grid.pageSize = 20;
         grid.elementId = this.gridId;
         grid.toolbar = this.toolbarId;
@@ -326,88 +355,93 @@ var {1}Page = {{
         grid.edit = me.edit;
         grid.addNew = me.addNew;
         if(!me.isSmall){{
-            grid.getQueryParams = me.getQueryParams;{7}
+            grid.getQueryParams = me.getQueryParams;{GridDetailsScript()}
         }}
         if(me.autoLoad){{
             me.setUrlArgs(me.urlArg);
         }}
         grid.initialize();
     }},
-    /*
-        改变列表参数
+    /**
+    * 改变列表参数
     */
     setUrlArgs: function (args) {{
         var me = this;
-        me.urlArg = args && args != '' ? args : '_-_=1';
-        me.formArg = args && args != '' ? args : '_-_=1';
-        me.grid.changedUrl(me.cmdPath + me.listUrl + '&' + args);
+        if (args && args != '') {{
+            me.urlArg = args;
+            me.formArg = args;
+            me.grid.changedUrl(me.apiPrefix + me.listUrl + '?' + args);
+        }} else {{
+            me.formArg = me.urlArg = '_-_=1';
+            me.grid.changedUrl(me.apiPrefix + me.listUrl);
+        }}
     }},
-    /*
-        历史查询条件还原
+    /**
+    *    历史查询条件还原
     */
     initHistoryQuery: function() {{
         $('#qKeyWord').textbox('setValue', preQueryArgs.keyWord);
-        {8}
+        {InitQueryParams()}
     }},
-    /*
-        读取查询条件
+    /**
+    * 读取查询条件
     */
     getQueryParams: function () {{
         return {{
             keyWord:$('#qKeyWord').textbox('getValue')
-            {9}
+            {QueryParams()}
         }};
     }},
-    /*
-        重新载入{10}的列表数据
+    /**
+    *  重新载入{Entity.Caption}的列表数据
     */
     reload:function() {{
         $(this.gridId).datagrid('reload');
     }},
-    /*
-        录入界面载入时执行控件初始化
+    /**
+    *    录入界面载入时执行控件初始化
     */
     onFormUiLoaded: function (editor,callback) {{
         var me = editor.ex;
         me.setFormValidate();
-        //TO DO:控件初始化代码{11}
+        //TO DO:控件初始化代码{InputInitCode()}
         
         if (callback)
             callback();
     }},
-    /*
-        录入界面数据载入后给Form赋值前,对数据进行预处理
+    /**
+    *     录入界面数据载入后给Form赋值前,对数据进行预处理
     */
     onFormDataLoaded: function (data, editor) {{
         //var me = editor.ex;
         //TO DO:数据预处理
     }},
-    /*
-        录入界面数据载入后且已给Form赋值,对进行界面逻辑处理
+    /**
+    *    录入界面数据载入后且已给Form赋值,对进行界面逻辑处理
     */
     afterFormDataLoaded: function (data, editor) {{
         var me = editor.ex;
         me.inputSucceed = true;
         //TO DO:界面逻辑处理
     }},
-    /*
-        录入界面数据校验
+    /**
+    *    录入界面数据校验
     */
     doFormValidate: function() {{
         var me = this;
         //TO DO:数据校验
         return me.NoError;
     }},
-    /*
-        设置校验规则
+    /**
+    *     设置校验规则
     */
     setFormValidate: function() {{
-{12}
+{ValidateConfig()}
     }},
 
     /**
-     * 生成{13}的编辑器
-     * @param {{{14}Page}} me 当前页面对象
+     * 生成{Entity.Caption}的编辑器
+     * @param {{{Entity.Name}Page}} me 当前页面对象
      * @returns {{EditorDialog}} 编辑器
      */
     createEditor: function (me) {{
@@ -416,7 +450,7 @@ var {1}Page = {{
         editor.title = me.title;
         if(me.grid.auditData) {{
             editor.showValidate = true;
-            editor.validatePath = me.cmdPath + 'Action.aspx';
+            editor.validatePath = me.apiPrefix + 'audit/validate';
             editor.setFormValidate= me.setFormValidate;
         }}
         editor.onUiLoaded = function (ed, callback) {{
@@ -434,40 +468,61 @@ var {1}Page = {{
         return editor;
     }},
     /*
-        新增一条{15}的界面操作
+        新增一条{Entity.Caption}的界面操作
     */
     addNew: function () {{
         var me = this.ex;
         var editor = me.createEditor(me);
         editor.uiUrl = me.formUrl + '?' + me.formArg + '&id=0';
         if(me.urlArg)
-            editor.dataUrl = me.cmdPath + 'Action.aspx?action=details&' + me.urlArg + '&id=';
+            editor.dataUrl = me.apiPrefix + 'edit/details?' + me.urlArg + '&id=';
         else
-            editor.dataUrl = me.cmdPath + 'Action.aspx?action=details&id=';
-        editor.saveUrl = me.cmdPath + 'Action.aspx?action=add&id=';
+            editor.dataUrl = me.apiPrefix + 'edit/details?id=';
+        editor.saveUrl = me.apiPrefix + 'edit/addnew?id=';
         editor.dataId = 0;
         editor.show();
     }},
     /*
-        修改或查看{16}的界面操作
+        修改或查看{Entity.Caption}的界面操作
     */
     edit: function (id) {{
         var me = this.ex;
         var editor = me.createEditor(me);
         editor.uiUrl = me.formUrl + '?' + me.formArg + '&id=' + id;
-        editor.dataUrl = me.cmdPath + 'Action.aspx?action=details&id=';
-        editor.saveUrl = me.cmdPath + 'Action.aspx?action=edit&id=';
+        editor.dataUrl = me.apiPrefix + 'edit/details?id=';
+        editor.saveUrl = me.apiPrefix + 'edit/update?id=';
         editor.dataId = id;
         editor.show();
-    }},{17}
+    }},{CommandJsCode2()}
     /*
         列表表格的列信息
     */
-    columns:{18}
-}};", Entity.Caption, Entity.Name, Entity.Caption, Entity.Caption, CommandJsCode(), Gridjs(),
-                Entity.PrimaryColumn.Name, GridDetailsScript(), InitQueryParams(), QueryParams(), Entity.Caption,
-                InputInitCode(), ValidateConfig(), Entity.Caption, Entity.Name, Entity.Caption, Entity.Caption,
-                CommandJsCode2(), GridFields());
+    columns:{GridFields()}
+}};
+
+/**
+ * 依赖功能扩展
+ */
+mainPageOptions.extend({{
+    doPageInitialize: function (callback) {{
+        ajaxLoadValue('载入', 'sys/page/v1/global/info', {{ value: page.name }}, function (data) {{
+            mainPageOptions.currentPageId = data.pageId;
+            mainPageOptions.userButtons = data.buttons;
+            mainPageOptions.allButton = data.allButton;
+            mainPageOptions.setPreQueryArgs(data.preQueryArgs);
+{(Entity.TreeUi ? TreeInit : "")}
+
+            page.formUrl = '/{Entity["File_Web_Form"]?.Replace('\\', '/')}';
+            page.initialize();
+            callback();
+        }});
+    }},
+    onCheckSize: function (wid, hei) {{
+{(Entity.TreeUi ? treeCheckSize : listCheckSize)}
+    }}
+}});
+
+";
         }
 
         private string CommandJsCode()
@@ -494,8 +549,9 @@ var {1}Page = {{
             {
                 if (!string.IsNullOrWhiteSpace(cmd.Url))
                 {
-                    code.Append($@"/*
-        {cmd.Caption}:{cmd.Description}
+                    code.Append($@"
+    /**
+    * {cmd.Caption}:{cmd.Description}
     */
     do{cmd.Name} : function () {{
         var me = this;
@@ -505,8 +561,8 @@ var {1}Page = {{
                     continue;
                 }
                 code.Append($@"
-    /*
-        {cmd.Caption}:{cmd.Description}
+    /**
+    *  {cmd.Caption}:{cmd.Description}
     */
     do{cmd.Name} : function () {{
         var me = this;");
@@ -542,17 +598,17 @@ var {1}Page = {{
         /*$.messager.confirm('{cmd.Caption}', '确定执行<B>{cmd.Caption}</B>操作吗?', function (s) {{
             if (s) {{
                 $.messager.alert('{cmd.Caption}', 'succeed');
-                ajaxOperator('{cmd.Caption}', 'Action.aspx', {{action:'{cmd.Name.ToLWord()}'}}', function (res) {{
-                    if (res.succeed)
-                        me.grid.execGridMethod('reload');
-                    else
-                        $.messager.alert('{cmd.Caption}', res.message);
+                ajaxOperator('{cmd.Caption}', me.apiPrefix + '{cmd.Name.ToLWord()}',{{}}, function (res) {{
+                    if (res.success)
+                        me.grid.reload();
+                    else if(res.status)
+                        $.messager.alert('{cmd.Caption}', res.status.msg);
                 }});
             }}
         }});*/");
                     else
                         code.Append($@"
-        me.grid.doRemote('{cmd.Caption}', 'Action.aspx', '{cmd.Name.ToLWord()}');");
+        me.grid.doRemote('{cmd.Caption}', me.apiPrefix + '{cmd.Name.ToLWord()}');");
                 }
                 code.Append(@"               
     },");

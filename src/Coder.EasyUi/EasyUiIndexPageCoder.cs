@@ -14,48 +14,14 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         protected override string FileSaveConfigName => "File_Aspnet_Page_aspx";
 
-        private const string listCheckSize = @"
-                $('#grid').datagrid('resize', window.o99);";
-        private const string treeCheckSize = @"
-                $('#layout').layout('resize', window.o99);
-                $('#grid').datagrid('resize', window.o99);";
-
-        private string treeInit => $@"
-            var tree = Object.create(TreeExtend);
-            tree.onTreeSelected = function (id, type, node) {{
-                page.setUrlArgs('pid=' + node.tag + '&type=' + type);
-            }};
-            tree.initialize('/{Entity["File_Web_Action"]?.Replace('\\', '/')}?action=tree');
-            page = Object.create({Entity.Name}Page);
-            page.tree = tree;
-            page.formUrl = '/{Entity["File_Web_Form"]?.Replace('\\','/')}';
-            //page.cmdPath = '/{Path.GetDirectoryName(Entity["File_Web_Action"])?.Replace('\\', '/')}/'; 
-            page.autoLoad = false;
-            page.initialize();";
-        private string gridInit => $@"
-            page = Object.create({Entity.Name}Page);
-            page.formUrl = '/{Entity["File_Web_Form"]?.Replace('\\', '/')}';
-            //page.cmdPath = '/{Path.GetDirectoryName(Entity["File_Web_Action"])?.Replace('\\', '/')}/'; 
-            page.initialize();";
         public override string Code()
         {
-            return $@"<%@ Page Title='' Language='C#' MasterPageFile='~/JquerySite.Master' AutoEventWireup='true' Inherits='Gboxt.Common.WebUI.UiPage'%>
+            return $@"<%@ Page Title='' Language='C#' MasterPageFile='~/JquerySite.Master' AutoEventWireup='true' Inherits='System.Web.UI.Page'%>
 <asp:Content ID='cPagePathRegion' ContentPlaceHolderID='PagePathRegion' runat='server'>
 {Entity.Parent.Caption} > {Entity.Caption}
 </asp:Content>
 <asp:Content ID='cScriptRegion' ContentPlaceHolderID='ScriptRegion' runat='server'>
-    <script type='text/javascript' src='/{Entity["File_Web_Script"]?.Replace('\\', '/')}/script.js'></script>   
-    <script type='text/javascript'>
-        var page;
-        doPageInitialize = function() {{
-            allButton = <%= this.AllAction.ToString().ToLower() %>;
-            currentPageId = <%= this.PageItem.ID %>;
-            userButtons = [<%= this.UiButtons %>];
-            setPreQueryArgs(<%= PreQueryArgs %>);{(Entity.TreeUi ? treeInit : gridInit)}            
-            onCheckSize = function (wid, hei) {{{(Entity.TreeUi ? treeCheckSize : listCheckSize)}                
-            }}
-        }};
-    </script>
+    <script type='text/javascript' src='/{Entity["File_Web_Script"]?.Replace('\\', '/')}/script.js'></script>
 </asp:Content>
 <asp:Content ID='cBodyRegion' ContentPlaceHolderID='BodyRegion' runat='server'>{(Entity.TreeUi ? Tree : Grid)}
 </asp:Content>";

@@ -18,9 +18,11 @@ namespace Agebull.EntityModel.Config
                 return;
 
             Option.Copy(cfg.Option);//配置
-            ExtendConfig = cfg.ExtendConfig;//扩展配置
-            _extendDictionary = cfg._extendDictionary.ToDictionary(p => p.Key, p => p.Value);//扩展配置
-            _extendDictionary2 = new ConfigItemDictionary(cfg._extendDictionary2.Items.ToDictionary(p => p.Key, p => p.Value));//extendDictionary2
+            ExtendConfig = cfg.ExtendConfig;//
+            if (cfg._extendDictionary != null)
+                _extendDictionary = cfg._extendDictionary.ToDictionary(p => p.Key, p => p.Value);//扩展配置
+            if (cfg._extendDictionary2 != null)
+                _extendDictionary2 = new ConfigItemDictionary(cfg._extendDictionary2.Items.ToDictionary(p => p.Key, p => p.Value));//extendDictionary2
         }
     }
 

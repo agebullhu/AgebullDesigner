@@ -33,9 +33,8 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
         {
             if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
-            GlobalConfig.CheckPath(path, "Page");
-            ActionCsCode(path);
-            ExportCsCode(path);
+            ApiCsCode(path);
+            //ExportCsCode(path);
         }
 
         private void WebCode(string path)
@@ -49,14 +48,14 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
                 };
                 WriteFile(file, coder.Code());
             }
-            file = ConfigPath(Entity, "File_Web_Action", path, $"{Entity.Parent.Name}\\{Entity.Name}", "Action.aspx");
-            {
-                WriteFile(file, ActionAspxCode());
-            }
-            file = ConfigPath(Entity, "File_Web_Export", path, $"{Entity.Parent.Name}\\{Entity.Name}", "Export.aspx");
-            {
-                WriteFile(file, ExportAspxCode());
-            }
+            //file = ConfigPath(Entity, "File_Web_Action", path, $"{Entity.Parent.Name}\\{Entity.Name}", "Action.aspx");
+            //{
+            //    WriteFile(file, ActionAspxCode());
+            //}
+            //file = ConfigPath(Entity, "File_Web_Export", path, $"{Entity.Parent.Name}\\{Entity.Name}", "Export.aspx");
+            //{
+            //    WriteFile(file, ExportAspxCode());
+            //}
             file = ConfigPath(Entity, "File_Web_Form", path, $"{Entity.Parent.Name}\\{Entity.Name}", "Form.htm");
             {
                 var coder = new EasyUiFormCoder
@@ -66,15 +65,15 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
                 };
                 WriteFile(file, coder.Code());
             }
-            file = ConfigPath(Entity, "File_Web_Item", path, $"{Entity.Parent.Name}\\{Entity.Name}", "Item.aspx");
-            {
-                var coder = new EasyUiItemCoder
-                {
-                    Entity = Entity,
-                    Project = Project
-                };
-                WriteFile(file, coder.Code());
-            }
+            //file = ConfigPath(Entity, "File_Web_Item", path, $"{Entity.Parent.Name}\\{Entity.Name}", "Item.aspx");
+            //{
+            //    var coder = new EasyUiItemCoder
+            //    {
+            //        Entity = Entity,
+            //        Project = Project
+            //    };
+            //    WriteFile(file, coder.Code());
+            //}
 
             if (Entity.ListDetails)
             {
@@ -96,10 +95,10 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
                 };
                 file = ConfigPath(Entity, "File_Web_Script_js", path, $"{Entity.Parent.Name}\\{Entity.Name}", "script.js");
                 WriteFile(file, coder.Code());
-                file = ConfigPath(Entity, "File_Web_Form_js", path, $"{Entity.Parent.Name}\\{Entity.Name}", "form.js");
-                WriteFile(file, coder.FormJsCode());
-                file = ConfigPath(Entity, "File_Web_Page_js", path, $"{Entity.Parent.Name}\\{Entity.Name}", "page.js");
-                WriteFile(file, coder.PageJsCode());
+                //file = ConfigPath(Entity, "File_Web_Form_js", path, $"{Entity.Parent.Name}\\{Entity.Name}", "form.js");
+                //WriteFile(file, coder.FormJsCode());
+                //file = ConfigPath(Entity, "File_Web_Page_js", path, $"{Entity.Parent.Name}\\{Entity.Name}", "page.js");
+                //WriteFile(file, coder.PageJsCode());
             }
         }
 
@@ -107,9 +106,9 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
 
         #region Action
 
-        private void ActionCsCode(string path)
+        private void ApiCsCode(string path)
         {
-            var file = ConfigPath(Entity, "File_Web_Action_cs", path, $"{Entity.Parent.Name}\\{Entity.Name}", "PageAction");
+            var file = ConfigPath(Entity, "File_Web_Api_cs", path, Entity.Name, $"{Entity.Name}ApiControler");
             var coder = new ApiActionCoder
             {
                 Entity = Entity,
@@ -120,15 +119,10 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
             WriteFile(file + ".Designer.cs", coder.BaseCode());
         }
 
-        private string ActionAspxCode()
-        {
-            return $@"<%@ Page Language='C#' AutoEventWireup='true'  Inherits='{NameSpace}.{Entity.Name}Page.Action' %>";
-        }
-
         #endregion
 
         #region Export
-
+        /*
         private void ExportCsCode(string path)
         {
             var file = ConfigPath(Entity, "File_Web_Export_cs", path, $"Page\\{Entity.Parent.Name}\\{Entity.Name}", "Export.cs");
@@ -144,7 +138,7 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
         {
             return $@"<%@ Page Language='C#' AutoEventWireup='true'  Inherits='{NameSpace}.{Entity.Name}Page.ExportAction' %>";
         }
-
+        */
         #endregion
     }
 }

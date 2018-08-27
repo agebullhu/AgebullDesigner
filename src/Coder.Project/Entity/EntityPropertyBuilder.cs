@@ -453,8 +453,14 @@ namespace {NameSpace}
         {
             if (property == null)
                 return;
+            var hase = new Dictionary<string, string> {
+                {property.Name,property.Name }
+            };
             foreach (var alias in property.GetAliasPropertys())
             {
+                if (hase.ContainsKey(alias))
+                    continue;
+                hase.Add(alias, alias);
                 code.Append($@"
         /// <summary>
         /// {ToRemString(property.Caption)}
@@ -482,7 +488,7 @@ namespace {NameSpace}
             code.Append(PrimaryKeyPropertyCode());
             AliasPropertyCode(Entity.PrimaryColumn, code);
             int index = 1;
-            foreach (PropertyConfig property in Columns.Where(p => !p.IsPrimaryKey))
+            foreach (PropertyConfig property in Columns.Where(p =>!p.DbInnerField && !p.IsPrimaryKey))
             {
                 if (property.IsCompute)
                     ComputePropertyCode(property, index++, code);

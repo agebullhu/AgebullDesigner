@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="Business\EntityBusinessModel.cs" />
     <Compile Include="Business\PropertyBusinessModel.cs" />
+    <Compile Include="Command\EntityInterfaceSeter.cs" />
     <Compile Include="Command\InterfaceCommand.cs" />
     <Compile Include="Command\EntityPrimaryKeyHelper.cs" />
     <Compile Include="Command\InterfaceHelper.cs" />

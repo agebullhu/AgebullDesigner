@@ -75,11 +75,6 @@ namespace Agebull.EntityModel.RobotCoder
                 case DataBaseType.Sqlite:
                     property.DbType = dataType.Sqlite;
                     break;
-                case DataBaseType.Redis:
-                    break;
-                default:
-                    property.DbType = null;
-                    break;
             }
         }
     }

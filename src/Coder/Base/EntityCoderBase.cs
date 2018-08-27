@@ -168,16 +168,17 @@ namespace Agebull.EntityModel.RobotCoder
                 }
             }
         }");
+            var type = property.CsType == "enum" ? "int" : property.CsType;
             code.Append($@"
         /// <summary>
         /// {property.Caption}µÄÊý×ÖÊôÐÔ
         /// </summary>
         [IgnoreDataMember,JsonIgnore]
-        {property.AccessType} {property.CsType} {property.PropertyName}_Number
+        {property.AccessType} {type} {property.PropertyName}_Number
         {{
             get
             {{
-                return ({property.CsType})this.{property.PropertyName};
+                return ({type})this.{property.PropertyName};
             }}
             set
             {{

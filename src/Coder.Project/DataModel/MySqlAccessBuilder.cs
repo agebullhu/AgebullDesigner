@@ -155,7 +155,7 @@ namespace Agebull.EntityModel.RobotCoder
 
             foreach (var field in fields)
             {
-                SqlMomentCoder.FieldReadCode(field, code);
+                SqlMomentCoder.FieldReadCode(Entity, field, code);
             }
             code.Append(@"
             }
@@ -225,10 +225,16 @@ using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Text;
-using Gboxt.Common.DataModel;
 
 using MySql.Data.MySqlClient;
+
+using Agebull.Common;
+using Agebull.Common.DataModel;
+using Gboxt.Common;
+using Gboxt.Common.DataModel;
+using Gboxt.Common.DataModel.Extends;
 using Gboxt.Common.DataModel.MySql;
+
 
 
 namespace {NameSpace}.DataAccess
@@ -309,6 +315,8 @@ namespace {NameSpace}.DataAccess
             {
                 if (Entity.Interfaces.Contains("IRowScopeData"))
                     baseClass = "RowScopeDataAccess";
+                else if (Entity.Interfaces.Contains("IHistoryData"))
+                    baseClass = "HitoryTable";
                 else if (Entity.Interfaces.Contains("IStateData"))
                     baseClass = "DataStateTable";
             }
@@ -331,7 +339,7 @@ namespace {NameSpace}.DataAccess
 }}";
             SaveCode(file, code);
         }
-        
+
 
         private string TableObject()
         {
@@ -655,7 +663,7 @@ UPDATE `{Entity.SaveTable}` SET");
                 if (!string.IsNullOrWhiteSpace(field.CustomType))
                 {
                     code.Append($@"
-            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field)}){{ Value = (int)entity.{field.Name}}});");
+            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)}){{ Value = (int)entity.{field.Name}}});");
                     continue;
                 }
                 switch (field.CsType)
@@ -664,7 +672,7 @@ UPDATE `{Entity.SaveTable}` SET");
                     case "string":
                         code.Append($@"
             {(isFirstNull ? "var " : "")}isNull = string.IsNullOrWhiteSpace({CustomName(field, "entity.")});
-            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field)} , isNull ? 10 : ({CustomName(field, "entity.")}).Length);
+            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)} , isNull ? 10 : ({CustomName(field, "entity.")}).Length);
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
@@ -675,7 +683,7 @@ UPDATE `{Entity.SaveTable}` SET");
                     case "Byte[]":
                         code.Append($@"
             {(isFirstNull ? "var " : "")}isNull = {CustomName(field, "entity.")} == null || {CustomName(field, "entity.")}.Length == 0;
-            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field)} , isNull ? 10 : {CustomName(field, "entity.")}.Length);
+            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)} , isNull ? 10 : {CustomName(field, "entity.")}.Length);
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
@@ -688,7 +696,7 @@ UPDATE `{Entity.SaveTable}` SET");
                         {
                             code.Append($@"
             {(isFirstNull ? "var " : "")}isNull = entity.{field.Name} == null || entity.{field.Name}.Value.Year < 1900;
-            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field)});
+            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)});
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
@@ -699,7 +707,7 @@ UPDATE `{Entity.SaveTable}` SET");
                         {
                             code.Append($@"
             {(isFirstNull ? "var " : "")}isNull = entity.{field.Name}.Year < 1900;
-            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field)});
+            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)});
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
@@ -716,7 +724,7 @@ UPDATE `{Entity.SaveTable}` SET");
                         }
                         code.Append($@"
             {(isFirstNull ? "var " : "")}isNull = entity.{field.Name} == null;
-            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field)});
+            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)});
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
@@ -727,12 +735,12 @@ UPDATE `{Entity.SaveTable}` SET");
                         if (!field.Nullable)
                         {
                             code.Append($@"
-            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field)}){{ Value = entity.{field.Name}}});");
+            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)}){{ Value = entity.{field.Name}}});");
                             continue;
                         }
                         code.Append($@"
             {(isFirstNull ? "var " : "")}isNull = entity.{field.Name} == null;
-            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field)});
+            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)});
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
@@ -752,7 +760,7 @@ UPDATE `{Entity.SaveTable}` SET");
 
         private string InsertCode()
         {
-            return$@"
+            return $@"
 
         /// <summary>
         /// 设置插入数据的命令
@@ -794,7 +802,7 @@ UPDATE `{Entity.SaveTable}` SET");
                 case ""{0}"":
                     return MySqlDbType.{1};"
                     , field.Name
-                    , MySqlDataBaseHelper.ToSqlDbType(field));
+                    , MySqlHelper.ToSqlDbType(field));
             }
 
             return
@@ -829,7 +837,7 @@ UPDATE `{Entity.SaveTable}` SET");
             {{");
             foreach (var field in PublishDbFields)
             {
-                SqlMomentCoder.FieldReadCode(field, code);
+                SqlMomentCoder.FieldReadCode(Entity, field, code);
             }
             code.Append(@"
             }

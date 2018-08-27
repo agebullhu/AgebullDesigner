@@ -77,7 +77,7 @@ namespace Agebull.EntityModel.Designer
             {
                 Entity = entity
             };
-            business.CheckDbConfig(false);
+            business.CheckDbConfig(true);
         }
         #endregion
 

@@ -38,7 +38,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             foreach (var field in Entity.ClientProperty.Where(p => p.NoneDetails && (p.IsPrimaryKey || p["user_form_hide"] == "True" || !p.IsCompute && !p.IsSystemField)))
             {
                 code.Append($@"
-    <input name='{field.Name}' type='hidden' />");
+    <input name='{field.JsonName}' type='hidden' />");
             }
             return code.ToString();
         }
@@ -83,8 +83,8 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             }
 
             code.Append($@"
-            <div class='inputField{cssEnd}' id='fr_{field.Name}'>
-                <div class='inputRegion' id='ir_{field.Name}'>
+            <div class='inputField{cssEnd}' id='fr_{field.JsonName}'>
+                <div class='inputRegion' id='ir_{field.JsonName}'>
                     <div class='inputLabel'>{caption}:</div>");
 
             PropertyEasyUiModel.CheckField(field);
@@ -94,7 +94,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                 var css = field.FormCloumnSapn <= 1 ? "inputValue_Rich_S" : "inputValue_Rich";
                 code.Append($@"<br/>
                     <div class='inputValue_Rich_b'>
-                        <div id='{field.Name}' name='{field.Name}' class='myueditor {css}'></div>
+                        <div id='{field.JsonName}' name='{field.JsonName}' class='myueditor {css}'></div>
                     </div>");
             }
             else
@@ -145,7 +145,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                         var title = field.Parent.ClientProperty.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
                         if (title != null)
                         {
-                            attributes += $" readfield='{title.Name}'";
+                            attributes += $" readfield='{title.JsonName}'";
                         }
                     }
                 }
@@ -153,13 +153,13 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 
                 var options = FieldOptions(field, description);
                 code.Append($@"{br}
-                    <input id='{field.Name}' name='{field.Name}' class='{css} {field.InputType}'{attributes}
+                    <input id='{field.JsonName}' name='{field.JsonName}' class='{css} {field.InputType}'{attributes}
                            data-options=""{options}""/>");
                 if (!string.IsNullOrWhiteSpace(field.Suffix))
                     code.Append(field.Suffix);
                 if (field.IsMoney)
                 {
-                    code.Append($@"<label id = 'cm_{field.Name}' style = 'color: red;' ></label>");
+                    code.Append($@"<label id = 'cm_{field.JsonName}' style = 'color: red;' ></label>");
                 }
             }
             code.Append(@"
@@ -168,7 +168,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             //code.Append(
             //    $@"
             //    </div>
-            //    <div class='inputHelp' id='hr_{field.Name}'>{
+            //    <div class='inputHelp' id='hr_{field.JsonName}'>{
             //        description}</div>
             //</div>");
         }

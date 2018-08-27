@@ -25,8 +25,8 @@ namespace Agebull.EntityModel.Config
         {
             if (name == null)
                 return null;
-            if (name.Length > 4 && name.LastIndexOf("Data", StringComparison.Ordinal) == name.Length - 4)
-                name = name.Substring(0, name.Length - 4);
+            //if (name.Length > 4 && name.LastIndexOf("Data", StringComparison.Ordinal) == name.Length - 4)
+            //    name = name.Substring(0, name.Length - 4);
             return GetEntity(p => p.Name == name);
         }
 

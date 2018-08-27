@@ -11,32 +11,31 @@ namespace Agebull.EntityModel.RobotCoder
     /// </summary>
     public class InterfaceHelper
     {
-
-        public static void JoinInterface(EntityConfig entity)
+        public static void CheckInterface(EntityConfig entity)
         {
-            if (entity.Interfaces == null)
+            if (string.IsNullOrWhiteSpace(entity.Interfaces))
                 return;
-            foreach (var inf in entity.Interfaces.Split(NameHelper.SplitChar, StringSplitOptions.RemoveEmptyEntries))
+            var interfaces = entity.Interfaces.Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var inf in interfaces)
             {
-                JoinInterface(entity,inf);
-            }
-        }
-        public static void JoinInterface(EntityConfig entity, string inf)
-        {
-            var friend = GlobalConfig.GetEntity(inf);
-            if (friend == null)
-                return;
-            foreach (var field in friend.Properties)
-            {
-                if (entity.LastProperties.Any(p => p.ReferenceKey == field.Key))
-                    continue;
-                var cpy = new PropertyConfig();
-                cpy.Copy(field);
-                cpy.Option.IsReference = true;
-                cpy.ReferenceKey = field.Key;
-                cpy.IsInterfaceField = true;
-                cpy.Group = inf;
-                entity.LastProperties.Add(cpy);
+                var ie = GlobalConfig.GetEntity(inf);
+                if (ie != null)
+                {
+                    foreach (var field in ie.Properties)
+                    {
+                        var old = entity.Properties.FirstOrDefault(p => p.ReferenceKey == field.Key || p.Name == field.Name);
+                        if (old == null)
+                            entity.Add(old = new PropertyConfig
+                            {
+                                Name = field.Name,
+                                Caption = field.Caption
+                            });
+                        old.CopyFrom(field);
+                        old.ReferenceKey = field.Key;
+                        old.Option.IsReference = true;
+                        old.Option.ReferenceConfig = field;
+                    }
+                }
             }
         }
     }

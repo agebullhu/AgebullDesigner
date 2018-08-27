@@ -146,7 +146,7 @@ namespace Agebull.EntityModel.Config
         /// “˝”√±Í«©
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        public ConfigBase LastConfig => IsReference ? ReferenceConfig : Config;
+        public ConfigBase LastConfig => ReferenceConfig ?? Config;
 
 
         /// <summary>

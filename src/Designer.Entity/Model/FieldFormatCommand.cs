@@ -24,7 +24,11 @@ namespace Agebull.EntityModel.Designer
         /// <remarks></remarks>
         public string DoFormatCSharp(string arg)
         {
-            var lines = Fields.Split(new[] { '\r', '\n', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            if (string.IsNullOrWhiteSpace(Fields))
+                return null;
+            
+            var lines = Fields.Replace("{", "\n{").Replace("}", "\n}")
+                .Split(new[] { '\r', '\n', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             string descript = null, caption = null;
             int next = 0;
             int barket = 0;

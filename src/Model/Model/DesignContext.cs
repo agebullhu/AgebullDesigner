@@ -239,14 +239,14 @@ namespace Agebull.EntityModel.Designer
             var tables = new List<EntityConfig>();
             switch (SelectConfig)
             {
-                case PropertyConfig col:
-                    tables.Add(col.Parent);
+                case PropertyConfig property:
+                    tables.Add(property.Parent);
                     break;
-                case EntityConfig tableSchema:
-                    tables.Add(tableSchema);
+                case EntityConfig entity:
+                    tables.Add(entity);
                     break;
-                case ProjectConfig otype:
-                    tables.AddRange(otype.Entities);
+                case ProjectConfig project:
+                    tables.AddRange(project.Entities);
                     break;
                 default:
                     foreach (var project in Solution.Projects)

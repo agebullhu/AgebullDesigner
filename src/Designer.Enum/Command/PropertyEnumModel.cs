@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using Agebull.Common.Mvvm;
@@ -100,7 +101,7 @@ namespace Agebull.EntityModel.Designer
 
         public void ReadEnum(PropertyConfig column)
         {
-            if (column.CsType == "bool" || column.EnumConfig != null)
+            if (column.CsType == "bool")
                 return;
             ReadPropertyEnum(column);
             if (column.EnumConfig != null)
@@ -120,19 +121,31 @@ namespace Agebull.EntityModel.Designer
 
         public static void ReadPropertyEnum(PropertyConfig column)
         {
-            var line = column.Description?.Trim(CoderBase.NoneLanguageChar) ?? "";
+            string desc = column.Description ?? column.Caption ?? column.Name;
+            var line = desc.Trim(NameHelper.NoneLanguageChar) ?? "";
 
             StringBuilder sb = new StringBuilder();
             StringBuilder caption = new StringBuilder();
             bool preIsNumber = false;
             bool startEnum = false;
-            EnumConfig ec = new EnumConfig
+            var name = column.CustomType ?? (column.Parent.Name.ToUWord() + column.Name.ToUWord());
+            EnumConfig ec = GlobalConfig.GetEnum(name);
+            bool isNew = ec == null;
+            if (isNew)
             {
-                Name = column.Parent.Name.ToUWord() + column.Name.ToUWord(),
-                Description = column.Description,
-                Caption = column.Caption,
-                Items = new ConfigCollection<EnumItem>()
-            };
+                ec = new EnumConfig
+                {
+                    Name = name,
+                    Description = desc,
+                    Caption = column.Caption,
+                    Items = new ConfigCollection<EnumItem>()
+                };
+            }
+            else
+            {
+                ec.Items.Clear();
+            }
+
             EnumItem ei = new EnumItem();
             foreach (var c in line)
             {
@@ -154,19 +167,16 @@ namespace Agebull.EntityModel.Designer
                     }
                     preIsNumber = true;
                 }
-                else
+                else if (preIsNumber && c != '.')
                 {
-                    if (preIsNumber)
+                    if (sb.Length > 0)
                     {
-                        if (sb.Length > 0)
+                        ei = new EnumItem
                         {
-                            ei = new EnumItem
-                            {
-                                Value = sb.ToString()
-                            };
-                            ec.Add(ei);
-                            sb = new StringBuilder();
-                        }
+                            Value = sb.ToString()
+                        };
+                        ec.Add(ei);
+                        sb = new StringBuilder();
                     }
                     preIsNumber = false;
                 }
@@ -174,7 +184,11 @@ namespace Agebull.EntityModel.Designer
             }
 
             if (!startEnum)
+            {
+                column.EnumConfig = null;
+                column.CustomType = null;
                 return;
+            }
             if (sb.Length > 0)
             {
                 if (preIsNumber)
@@ -189,33 +203,40 @@ namespace Agebull.EntityModel.Designer
                     ei.Caption = sb.ToString();
                 }
             }
-
+            if (ec.Items.Count <= 1)
+            {
+                column.EnumConfig = null;
+                column.CustomType = null;
+                return;
+            }
+            var items = ec.Items.ToArray();
+            ec.Items.Clear();
+            foreach (var item in items)
+            {
+                if (string.IsNullOrEmpty(item.Caption))
+                {
+                    continue;
+                }
+                var arr = item.Caption.Trim(NameHelper.NoneNameChar).Split(NameHelper.NoneNameChar, StringSplitOptions.RemoveEmptyEntries);
+                if (arr.Length == 0)
+                {
+                    continue;
+                }
+                item.Caption = arr[0].MulitReplace2("", "表示", "代表", "是", "为").Trim(NameHelper.NoneLanguageChar);
+                if (string.IsNullOrWhiteSpace(item.Name))
+                    item.Name = item.Caption;
+                ec.Items.Add(item);
+            }
             if (ec.Items.Count > 0)
             {
                 ec.Option.ReferenceKey = column.Option.Key;
                 column.EnumConfig = ec;
                 column.CustomType = ec.Name;
                 column.Description = line;
-                foreach (var item in ec.Items)
-                {
-                    if (string.IsNullOrEmpty(item.Caption))
-                    {
-                        column.EnumConfig = null;
-                        column.CustomType = null;
-                        return;
-                    }
-                    var arr = item.Caption.Trim(CoderBase.NoneNameChar).Split(CoderBase.NoneNameChar, StringSplitOptions.RemoveEmptyEntries);
-                    if (arr.Length == 0)
-                    {
-                        column.EnumConfig = null;
-                        column.CustomType = null;
-                        return;
-                    }
-                    item.Caption = arr[0].MulitReplace2("", "表示", "代表", "是", "为");
-                    item.Name = item.Name;
-                }
                 if (caption.Length > 0)
-                    column.Caption = caption.ToString();
+                    ec.Caption = column.Caption = caption.ToString().Trim(NameHelper.NoneLanguageChar);
+                if(isNew)
+                column.Parent.Parent.Add(ec);
             }
             else
             {

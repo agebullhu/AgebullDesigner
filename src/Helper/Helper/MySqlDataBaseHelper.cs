@@ -7,7 +7,7 @@ namespace Agebull.EntityModel.Config.Mysql
     /// <summary>
     ///     实体实现接口的命令
     /// </summary>
-    public class MySqlDataBaseHelper
+    public class MySqlHelper
     {
 
         /// <summary>

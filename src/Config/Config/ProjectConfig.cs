@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -301,6 +302,10 @@ namespace Agebull.EntityModel.Config
         public void ResetPath()
         {
             string root = GlobalConfig.CheckPath(Solution.RootPath, Solution.SrcFolder);
+
+            if(!string.IsNullOrWhiteSpace(_branchFolder))
+                root = GlobalConfig.CheckPath(root, _branchFolder);
+
             if (string.IsNullOrWhiteSpace(_modelFolder))
                 GlobalConfig.CheckPath(root, "Model");
             else
@@ -328,9 +333,7 @@ namespace Agebull.EntityModel.Config
         public string GetModelPath(string type)
         {
             ResetPath();
-            return string.IsNullOrWhiteSpace(_branchFolder)
-                ? GlobalConfig.CheckPath(ModelPath, type)
-                : GlobalConfig.CheckPath(ModelPath, type, _branchFolder);
+            return GlobalConfig.CheckPath(ModelPath, type);
         }
 
         /// <summary>
@@ -339,9 +342,7 @@ namespace Agebull.EntityModel.Config
         public string GetModelPath(string type, string sub)
         {
             ResetPath();
-            return string.IsNullOrWhiteSpace(_branchFolder)
-                ? GlobalConfig.CheckPath(ModelPath, type, sub)
-                : GlobalConfig.CheckPath(ModelPath, type, sub, _branchFolder);
+            return GlobalConfig.CheckPath(ModelPath, type, sub);
         }
         /// <summary>
         /// 重置模型路径
@@ -349,9 +350,7 @@ namespace Agebull.EntityModel.Config
         public string GetApiPath(string type)
         {
             ResetPath();
-            return string.IsNullOrWhiteSpace(_branchFolder)
-                ? GlobalConfig.CheckPath(ApiPath, type)
-                : GlobalConfig.CheckPath(ApiPath, type, _branchFolder);
+            return GlobalConfig.CheckPath(ApiPath, type);
         }
 
         /// <summary>
@@ -360,9 +359,7 @@ namespace Agebull.EntityModel.Config
         public string GetApiPath(string type, string sub)
         {
             ResetPath();
-            return string.IsNullOrWhiteSpace(_branchFolder)
-                ? GlobalConfig.CheckPath(ApiPath, type, sub)
-                : GlobalConfig.CheckPath(ApiPath, type, sub, _branchFolder);
+            return GlobalConfig.CheckPath(ApiPath, type, sub);
         }
 
         /// <summary>
@@ -400,12 +397,12 @@ namespace Agebull.EntityModel.Config
             code.Append('\\');
             code.Append(Solution.SrcFolder ?? "src");
             code.Append('\\');
-            code.Append(end);
             if (!string.IsNullOrEmpty(BranchFolder))
             {
                 code.Append(BranchFolder);
                 code.Append('\\');
             }
+            code.Append(end);
 
             return code.ToString();
         }
@@ -782,10 +779,17 @@ namespace Agebull.EntityModel.Config
         /// <param name="entity"></param>
         public void Add(EntityConfig entity)
         {
-            SolutionConfig.Current.Add(entity);
-            entity.Parent = this;
-            if (!Entities.Contains(entity))
-                Entities.Add(entity);
+            try
+            {
+                SolutionConfig.Current.Add(entity);
+                entity.Parent = this;
+                if (!Entities.Contains(entity))
+                    Entities.Add(entity);
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e);
+            }
         }
 
         /// <summary>
@@ -794,10 +798,17 @@ namespace Agebull.EntityModel.Config
         /// <param name="enumConfig"></param>
         public void Add(EnumConfig enumConfig)
         {
-            SolutionConfig.Current.Add(enumConfig);
-            enumConfig.Parent = this;
-            if (!Enums.Contains(enumConfig))
-                Enums.Add(enumConfig);
+            try
+            {
+                SolutionConfig.Current.Add(enumConfig);
+                enumConfig.Parent = this;
+                if (!Enums.Contains(enumConfig))
+                    Enums.Add(enumConfig);
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e);
+            }
         }
 
         /// <summary>
@@ -818,9 +829,16 @@ namespace Agebull.EntityModel.Config
         /// <param name="entity"></param>
         public void Remove(EntityConfig entity)
         {
-            SolutionConfig.Current.Remove(entity);
-            entity.Parent = this;
-            Entities.Remove(entity);
+            try
+            {
+                SolutionConfig.Current.Remove(entity);
+                entity.Parent = this;
+                Entities.Remove(entity);
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e);
+            }
         }
 
         /// <summary>
@@ -829,9 +847,16 @@ namespace Agebull.EntityModel.Config
         /// <param name="enumConfig"></param>
         public void Remove(EnumConfig enumConfig)
         {
-            SolutionConfig.Current.Remove(enumConfig);
-            enumConfig.Parent = this;
-            Enums.Remove(enumConfig);
+            try
+            {
+                SolutionConfig.Current.Remove(enumConfig);
+                enumConfig.Parent = this;
+                Enums.Remove(enumConfig);
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e);
+            }
         }
 
         /// <summary>
@@ -840,9 +865,16 @@ namespace Agebull.EntityModel.Config
         /// <param name="api"></param>
         public void Remove(ApiItem api)
         {
-            SolutionConfig.Current.Remove(api);
-            api.Parent = this;
-            ApiItems.Remove(api);
+            try
+            {
+                SolutionConfig.Current.Remove(api);
+                api.Parent = this;
+                ApiItems.Remove(api);
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e);
+            }
         }
         #endregion
 

@@ -39,7 +39,8 @@ using Gboxt.Common.DataModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : 
 
 
 using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.BusinessLogic;
+using Agebull.Common.DataModel;
+using Agebull.Common.DataModel.BusinessLogic;
 using {NameSpace}.DataAccess;
 
 namespace {NameSpace}.BusinessLogic
@@ -47,7 +48,7 @@ namespace {NameSpace}.BusinessLogic
     /// <summary>
     /// {Entity.Description}
     /// </summary>
-    public sealed partial class {Entity.Name}BusinessLogic : {baseClass}<{Entity.EntityName},{Entity.Name}DataAccess>
+    public sealed partial class {Entity.Name}BusinessLogic : {baseClass}<{Entity.EntityName},{Entity.Name}DataAccess,{Entity.Parent.DataBaseObjectName}>
     {{{CommandExCode()}
         /*// <summary>
         ///     保存前的操作
@@ -188,7 +189,7 @@ using Gboxt.Common.DataModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : 
 using System.Linq;
 using System.Text;
 using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.BusinessLogic;
+using Agebull.Common.DataModel.BusinessLogic;
 using {NameSpace}.DataAccess;
 
 {usingCode}

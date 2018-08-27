@@ -1,5 +1,6 @@
 
 using System;
+using System.Linq;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.RobotCoder;
 
@@ -33,19 +34,17 @@ namespace Agebull.EntityModel.Designer
         public void CreateLast(EntityConfig entity)
         {
             entity.LastProperties = new System.Collections.Generic.List<PropertyConfig>();
-            InterfaceHelper.JoinInterface(entity);
-            DataTypeHelper.ToStandard(entity);
-            foreach (var pro in entity.Properties)
+            InterfaceHelper.CheckInterface(entity);
+            //DataTypeHelper.ToStandard(entity);
+            int idx = 0;
+            foreach (var pro in entity.Properties.OrderBy(p => p.Index))
             {
                 if (pro.IsDelete || pro.IsDiscard)
                     continue;
-                entity.LastProperties.Add(pro.Option.LastConfig as PropertyConfig);
+                var last = pro.Option.LastConfig as PropertyConfig;
+                last.Option.Index = ++idx;
+                entity.LastProperties.Add(last);
             }
-        }
-
-        void CheckInterfaces()
-        {
-
         }
     }
 }

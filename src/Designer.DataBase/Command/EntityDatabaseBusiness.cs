@@ -6,7 +6,7 @@ namespace Agebull.EntityModel.Config
     /// <summary>
     /// 实体排序器
     /// </summary>
-    public class EntityDatabaseBusiness: ConfigModelBase
+    public class EntityDatabaseBusiness : ConfigModelBase
     {
         /// <summary>
         /// 表结构对象
@@ -19,7 +19,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public void CheckDbConfig(bool repair)
         {
-            if (Entity.IsFreeze)
+            if (Entity.IsFreeze || Entity.NoDataBase)
                 return;
             if (Entity.IsReference)
             {
@@ -34,43 +34,45 @@ namespace Agebull.EntityModel.Config
                 Entity.SaveTableName = null;
                 return;
             }
-            if (Entity.NoDataBase)
-            {
-                Entity.ReadTableName = null;
-                Entity.SaveTableName = null;
-            }
-            else
+            if (!Entity.IsInterface)
             {
                 if (Entity.PrimaryColumn == null)
                 {
-                    Entity.Add(new PropertyConfig
-                    {
-                        Name = "Id",
-                        Caption = Entity.Caption + "ID",
-                        Description = Entity.Caption + "ID",
-                        IsPrimaryKey = true,
-                        IsIdentity = true,
-                        CsType = "int",
-                        CppType = "int",
-                        Parent = Entity
-                    });
+                    var idf = Entity.Properties.FirstOrDefault(p => string.Equals(p.Name, "Id", System.StringComparison.OrdinalIgnoreCase));
+                    if (idf != null)
+                        idf.IsPrimaryKey = true;
+                    else
+                        Entity.Add(new PropertyConfig
+                        {
+                            Name = "Id",
+                            Caption = Entity.Caption + "ID",
+                            Description = Entity.Caption + "ID",
+                            IsPrimaryKey = true,
+                            IsIdentity = true,
+                            CsType = "int",
+                            CppType = "int",
+                            Parent = Entity
+                        });
                 }
                 if (string.IsNullOrWhiteSpace(Entity.ReadTableName))
                 {
                     string head = "tb_";
-                    /*if (Entity.Classify != null)
+                    if (Entity.Classify != null)
                     {
                         var cls = Entity.Parent.Classifies.FirstOrDefault(p => p.Name == Entity.Classify);
                         if (cls != null)
                             head = cls.Abbreviation?.ToLower() + "_";
-                    }*/
-                    //if (!string.IsNullOrWhiteSpace(Entity.Parent.Abbreviation))
-                    //    head += Entity.Parent.Abbreviation.ToLower() + "_";
-                    Entity.ReadTableName = head + Entity.Name;//SplitWords(Entity.Name).Select(p => p.ToLower()).LinkToString(head, "_");
+                    }
+                    if (!string.IsNullOrWhiteSpace(Entity.Parent.Abbreviation))
+                        head += Entity.Parent.Abbreviation.ToLower() + "_";
+                    Entity.ReadTableName = SplitWords(Entity.Name).Select(p => p.ToLower()).LinkToString(head, "_");
                 }
                 Entity.SaveTableName = Entity.ReadTableName;
             }
-            PropertyDatabaseBusiness model = new PropertyDatabaseBusiness();
+            var model = new PropertyDatabaseBusiness
+            {
+                DataBaseType = Entity.Parent.DbType
+            };
             foreach (var col in Entity.Properties)
             {
                 if (col.IsDiscard)
@@ -85,8 +87,7 @@ namespace Agebull.EntityModel.Config
                 model.CheckByDb(repair);
                 col.IsModify = true;
             }
-            //if (!Entity.IsReference)
-            //    CheckRelation();
+            CheckRelation();
             Entity.IsModify = true;
         }
 
@@ -141,90 +142,5 @@ namespace Agebull.EntityModel.Config
                 field.IsLinkCaption = false;
             }
         }
-    }
-
-    internal class PropertyDatabaseBusiness
-    {
-        public PropertyConfig Property { get; set; }
-
-        internal void CheckByDb(bool repair = false)
-        {
-            if (Property.Parent.NoDataBase)
-            {
-                Property.ColumnName = null;
-                Property.DbType = null;
-            }
-            else
-            {
-                if (repair || string.IsNullOrWhiteSpace(Property.ColumnName))
-                    Property.ColumnName = GlobalConfig.ToName(GlobalConfig.SplitWords(Property.Name).Select(p => p.ToLower()).ToList());
-                if (repair || string.IsNullOrWhiteSpace(Property.DbType))
-                    Property.DbType = DataBaseHelper.ToDataBaseType(Property);
-                if (Property.DbType != null)
-                {
-                    switch (Property.DbType = Property.DbType.ToUpper())
-                    {
-                        case "EMPTY":
-                            Property.NoStorage = true;
-                            break;
-                        case "BINARY":
-                        case "VARBINARY":
-                            if (Property.IsBlob)
-                            {
-                                Property.Datalen = 0;
-                                Property.DbType = "LONGBLOB";
-                            }
-                            else if (Property.Datalen >= 500)
-                            {
-                                Property.Datalen = 0;
-                                Property.DbType = "BLOB";
-                            }
-                            else if (Property.Datalen <= 0)
-                            {
-                                Property.Datalen = 200;
-                            }
-                            break;
-                        case "CHAR":
-                        case "VARCHAR":
-                        case "NVARCHAR":
-                            if (Property.IsBlob)
-                            {
-                                Property.Datalen = 0;
-                                Property.DbType = "LONGTEXT";
-                            }
-                            else if (Property.IsMemo)
-                            {
-                                Property.Datalen = 0;
-                                Property.DbType = "TEXT";
-                            }
-                            else if (Property.Datalen >= 500)
-                            {
-                                Property.Datalen = 0;
-                                Property.DbType = "TEXT";
-                            }
-                            else if (Property.Datalen <= 0)
-                            {
-                                Property.Datalen = 200;
-                            }
-                            break;
-                    }
-                }
-                if (Property.IsPrimaryKey || Property.IsCaption)
-                {
-                    Property.Nullable = false;
-                    Property.DbNullable = false;
-                }
-                if (Property.IsPrimaryKey || Property.IsCaption)
-                {
-                    Property.CanEmpty = false;
-                }
-
-                //else if (repair)
-                //{
-                //    Property.DbNullable = true;
-                //}
-            }
-        }
-
     }
 }

@@ -157,13 +157,14 @@ namespace Agebull.EntityModel.Designer
         {
             var dialog = new SaveFileDialog
             {
-                Filter = @"Excel文件|*.xls"
+                Filter = @"Excel文件|*.xls",
+                FileName = $"{(Context.SelectProject != null ? Context.SelectProject.Name : Context.Solution.Name)}"
             };
             if (dialog.ShowDialog() != true)
             {
                 return;
             }
-            DesignToExcel.Import(dialog.FileName, Context.Entities);
+            DesignToExcel.Import(dialog.FileName, Context.GetSelectEntities());
         }
         #endregion
 

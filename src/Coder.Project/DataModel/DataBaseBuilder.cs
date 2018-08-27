@@ -137,17 +137,14 @@ namespace {Project.NameSpace}.DataAccess
         {{
             Default = new {Project.DataBaseObjectName}();
         }}
-        static {Project.DataBaseObjectName} _default;
+
         /// <summary>
         /// 缺省强类型数据库
         /// </summary>
         public static {Project.DataBaseObjectName} Default
         {{
-            get{{ return _default;}}
-            set
-            {{ 
-                 DefaultDataBase =  _default = value;
-            }}
+            get;
+            set;
         }}
 
         /// <summary>
@@ -156,7 +153,7 @@ namespace {Project.NameSpace}.DataAccess
         /// <returns></returns>
         protected override string LoadConnectionStringSetting()
         {{
-            return ConfigurationManager.ConnectionStrings[""{Project.NameSpace}""].ConnectionString;
+            return ConfigurationManager.AppSettings[""MySql""];
         }}
     }}
 }}";

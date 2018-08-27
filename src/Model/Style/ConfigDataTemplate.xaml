@@ -399,7 +399,7 @@
                     </StackPanel>
                     <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="存储类型" />
-                        <ComboBox ItemsSource="{x:Static mysql1:MySqlDataBaseHelper.DataTypeList}"
+                        <ComboBox ItemsSource="{x:Static mysql1:MySqlHelper.DataTypeList}"
                                   SelectedValue="{Binding DbType,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource FieldPanel}">

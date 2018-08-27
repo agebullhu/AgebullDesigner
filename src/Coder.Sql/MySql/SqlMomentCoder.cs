@@ -3,6 +3,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.Mysql;
 using Agebull.EntityModel.Designer;
 using static System.String;
 
@@ -231,7 +232,7 @@ CREATE TABLE `{0}`("
             if (entity.PrimaryColumn != null)
             {
                 code.Append($@"
-    `{entity.PrimaryColumn.ColumnName}` {DataBaseHelper.ColumnType(entity.PrimaryColumn)} NOT NULL{
+    `{entity.PrimaryColumn.ColumnName}` {MySqlHelper.ColumnType(entity.PrimaryColumn)} NOT NULL{
                         (entity.PrimaryColumn.IsIdentity ? " AUTO_INCREMENT" : null)
                     } COMMENT '{entity.PrimaryColumn.Caption}'");
             }
@@ -343,7 +344,7 @@ ALTER TABLE `{entity.SaveTable}`");
 
         private static string FieldDefault(PropertyConfig col)
         {
-            return $"`{col.ColumnName}` {DataBaseHelper.ColumnType(col)}{NullKeyWord(col)} {ColumnDefault(col)} COMMENT '{col.Caption}'";
+            return $"`{col.ColumnName}` {MySqlHelper.ColumnType(col)}{NullKeyWord(col)} {ColumnDefault(col)} COMMENT '{col.Caption}'";
         }
 
         private static string NullKeyWord(PropertyConfig col)
@@ -370,7 +371,7 @@ ALTER TABLE `{entity.SaveTable}`");
             {{");
             foreach (var field in fields)
             {
-                FieldReadCode(field, code);
+                FieldReadCode(entity, field, code);
             }
             code.Append(@"
             }
@@ -406,12 +407,22 @@ ALTER TABLE `{entity.SaveTable}`");
         /// <param name="code">代码</param>
         public static void FieldReadCode(PropertyConfig field, StringBuilder code)
         {
-            string idx = $"{field.Parent.EntityName}.Real_{field.Name}";
+            FieldReadCode(field.Parent, field, code);
+        }
+
+        /// <summary>
+        /// 字段数据库读取代码
+        /// </summary>
+        /// <param name="field">字段</param>
+        /// <param name="code">代码</param>
+        public static void FieldReadCode(EntityConfig entity, PropertyConfig field, StringBuilder code)
+        {
+            string idx = $"{entity.EntityName}.Real_{field.Name}";
             if (!IsNullOrWhiteSpace(field.CustomType))
             {
                 code.Append($@"
                 if (!reader.IsDBNull({idx}))
-                    entity._{field.Name.ToLower()} = ({field.CustomType})reader.GetInt32({idx});");
+                    entity._{field.Name.ToLWord()} = ({field.CustomType})reader.GetInt32({idx});");
                 return;
             }
             var type = field.CsType.ToLower();
@@ -420,7 +431,7 @@ ALTER TABLE `{entity.SaveTable}`");
             {
                 code.Append($@"
                 if (!reader.IsDBNull({idx}))
-                    entity._{field.Name.ToLower()} = reader.GetSqlBinary({idx}).Value;");
+                    entity._{field.Name.ToLWord()} = reader.GetSqlBinary({idx}).Value;");
                 return;
             }
             if (type == "string")
@@ -431,12 +442,12 @@ ALTER TABLE `{entity.SaveTable}`");
                     case "varstring":
                         code.Append($@"
                 if (!reader.IsDBNull({idx}))
-                    entity._{field.Name.ToLower()} = {ReaderName(field.DbType)}({idx});");
+                    entity._{field.Name.ToLWord()} = {ReaderName(field.DbType)}({idx});");
                         break;
                     default:
                         code.Append($@"
                 if (!reader.IsDBNull({idx}))
-                    entity._{field.Name.ToLower()} = {ReaderName(field.DbType)}({idx}).ToString();");
+                    entity._{field.Name.ToLWord()} = {ReaderName(field.DbType)}({idx}).ToString();");
                         break;
                 }
                 return;
@@ -452,17 +463,17 @@ ALTER TABLE `{entity.SaveTable}`");
             switch (type)
             {
                 case "decimal":
-                    code.Append($"entity._{field.Name.ToLower()} ={ReaderName(field.DbType)}({idx});");
+                    code.Append($"entity._{field.Name.ToLWord()} ={ReaderName(field.DbType)}({idx});");
                     return;
                 case "datetime":
-                    code.Append($"try{{entity._{field.Name.ToLower()} = reader.GetMySqlDateTime({idx}).Value;}}catch{{}}");
+                    code.Append($"try{{entity._{field.Name.ToLWord()} = reader.GetMySqlDateTime({idx}).Value;}}catch{{}}");
                     return;
                 //case "bool":
-                //    code.Append($"entity._{field.Name.ToLower()} = reader.GetInt16({idx}) == 1;");
+                //    code.Append($"entity._{field.Name.ToLWord()} = reader.GetInt16({idx}) == 1;");
                 //    break;
                 default:
                     code.Append(
-                        $"entity._{field.Name.ToLower()} = ({field.CustomType ?? field.CsType}){ReaderName(field.DbType)}({idx});");
+                        $"entity._{field.Name.ToLWord()} = ({field.CustomType ?? field.CsType}){ReaderName(field.DbType)}({idx});");
                     break;
             }
 

@@ -12,7 +12,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// <summary>
         /// 名称
         /// </summary>
-        protected override string FileSaveConfigName => "File_Aspnet_Action";
+        protected override string FileSaveConfigName => "File_Aspnet_Api";
 
 
         public override string BaseCode()
@@ -27,26 +27,33 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 using System;
 
 using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.BusinessLogic;
 using Gboxt.Common.DataModel.MySql;
-using Gboxt.Common.WebUI;
+using Agebull.Common.DataModel.BusinessLogic;
+using Agebull.Common.WebApi;
+using Agebull.Common.WebApi.EasyUi;
 
 using {NameSpace};
 using {NameSpace}.BusinessLogic;
 using {NameSpace}.DataAccess;
 
-namespace {NameSpace}.{Entity.Name}Page
+namespace {NameSpace}.WebApi.Entity
 {{
-    partial class Action
+    partial class {Entity.Name}ApiController
     {{
+        #region 设计器命令
+{CommandCsCode()}
+
+        #endregion
+
+        #region 基本扩展
         /// <summary>
         ///     取得列表数据
         /// </summary>
-        protected void DefaultGetListData()
+        protected ApiPageData<{Entity.EntityName}> DefaultGetListData()
         {{
             var filter = new LambdaItem<{Entity.EntityName}>();
             SetKeywordFilter(filter);
-            base.GetListData(filter);
+            return base.GetListData(filter);
         }}
 
         /// <summary>
@@ -70,8 +77,7 @@ namespace {NameSpace}.{Entity.Name}Page
         protected void DefaultReadFormData({Entity.EntityName} data, FormConvert convert)
         {{{coder.InputConvert()}
         }}
-        #region 设计器命令
-{CommandCsCode()}
+
         #endregion
     }}
 }}";
@@ -94,54 +100,43 @@ namespace {NameSpace}.{Entity.Name}Page
 
         public override string Code()
         {
-            var baseClass = "ApiPageBaseEx";
+            var baseClass = "ApiController";
             if (Entity.Interfaces != null)
             {
                 if (Entity.Interfaces.Contains("IStateData"))
-                    baseClass = "ApiPageBaseForDataState";
+                    baseClass = "ApiControllerForDataState";
                 if (Entity.Interfaces.Contains("IAuditData"))
-                    baseClass = "ApiPageBaseForAudit";
+                    baseClass = "ApiControllerForAudit";
             }
             return
                 $@"
 using System;
+using System.Web.Http;
 
 using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.BusinessLogic;
 using Gboxt.Common.DataModel.MySql;
-using Gboxt.Common.WebUI;
+using Agebull.Common.DataModel;
+using Agebull.Common.DataModel.BusinessLogic;
+using Agebull.Common.WebApi;
+using Agebull.Common.WebApi.EasyUi;
 
 using {NameSpace};
 using {NameSpace}.BusinessLogic;
 using {NameSpace}.DataAccess;
 
-namespace {NameSpace}.{Entity.Name}Page
+namespace {NameSpace}.WebApi.Entity
 {{
-    public partial class Action : {baseClass}<{Entity.EntityName}, {Entity.Name}DataAccess, {Entity.Name}BusinessLogic>
+    [RoutePrefix(""{Entity.Parent.Abbreviation}/{Entity.Abbreviation}/v1"")]
+    public partial class {Entity.Name}ApiController : {baseClass}<{Entity.EntityName}, {Entity.Name}DataAccess, {Entity.Parent.DataBaseObjectName}, {Entity.Name}BusinessLogic>
     {{
-        /// <summary>
-        /// 构造
-        /// </summary>
-        public Action()
-        {{
-            AllAction = true;
-            IsPublicPage = true;
-        }}
+        #region 基本扩展
+
         /// <summary>
         ///     取得列表数据
         /// </summary>
-        protected override void GetListData()
+        protected override ApiPageData<{Entity.EntityName}> GetListData()
         {{
-            DefaultGetListData();
-        }}
-
-        /// <summary>
-        ///     执行操作
-        /// </summary>
-        /// <param name=""action"">传入的动作参数,已转为小写</param>
-        protected override void DoActinEx(string action)
-        {{
-            DefaultActin(action);
+            return DefaultGetListData();
         }}
 
         /// <summary>
@@ -153,6 +148,8 @@ namespace {NameSpace}.{Entity.Name}Page
         {{
             DefaultReadFormData(data,convert);
         }}
+
+        #endregion
     }}
 }}";
         }
@@ -161,34 +158,6 @@ namespace {NameSpace}.{Entity.Name}Page
         private string CommandCsCode()
         {
             var code = new StringBuilder();
-            code.Append(@"
-
-        /// <summary>
-        ///     执行操作
-        /// </summary>
-        /// <param name=""action"">传入的动作参数,已转为小写</param>
-        void DefaultActin(string action)
-        { 
-            switch (action)
-            {");
-            if (Entity.TreeUi)
-            {
-                code.Append(@"
-                case ""tree"":
-                    OnLoadTree();
-                    break;");
-            }
-            foreach (var cmd in Entity.Commands.Where(p => !p.IsLocalAction))
-                code.Append($@"
-                case ""{cmd.Name.ToLower()}"":
-                    On{cmd.Name}();
-                    break;");
-            code.Append(@"
-                default:
-                    base.DoActinEx(action);
-                    break;
-            }
-        }");
             if (Entity.TreeUi)
             {
                 code.Append(@"
@@ -196,7 +165,8 @@ namespace {NameSpace}.{Entity.Name}Page
         /// <summary>
         ///     载入树节点
         /// </summary>
-        private void OnLoadTree()
+        [HttpPost,Route(""edit/tree"")]
+        public ApiResponseMessage OnLoadTree()
         {
             var nodes = Business.LoadTree(this.GetIntArg(""id""));
             this.SetCustomJsonResult(nodes);
@@ -211,18 +181,20 @@ namespace {NameSpace}.{Entity.Name}Page
         /// <remark>
         ///     {ToRemString(cmd.Description)}
         /// </remark>
-        private void On{cmd.Name}()
-        {{");
+        [HttpPost,Route(""edit/{cmd.Name.ToLWord()}"")]
+        public ApiResponseMessage On{cmd.Name}()
+        {{
+            InitForm();");
                 if (cmd.IsSingleObject)
                     code.Append($@"
-            if (!this.Business.{cmd.Name}(this.GetIntArg(""id"")))");
+            return !this.Business.{cmd.Name}(this.GetIntArg(""id""))");
                 else
                     code.Append($@"
-            if (!this.Business.Do{cmd.Name}(this.GetIntArrayArg(""selects"")))");
+            return !this.Business.Do{cmd.Name}(this.GetIntArrayArg(""selects""))");
                 code.Append(@"
-            {
-                 this.SetFailed(BusinessContext.Current.LastMessage);
-            }
+            return IsFailed
+                ? Request.ToResponse(ApiResult.Error(State, Message))
+                : Request.ToResponse(ApiResult.Succees());
         }");
             }
 
