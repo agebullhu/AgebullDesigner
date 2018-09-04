@@ -100,7 +100,7 @@ namespace Agebull.EntityModel.Config
                 if (fp == null)
                 {
                     fp = new PropertyConfig();
-                    fp.CopyFrom(property);
+                    fp.CopyFromProperty(property,false,true,false);
                     fp.Parent = entity;
                     entity.Add(fp);
                 }
@@ -220,7 +220,7 @@ namespace Agebull.EntityModel.Config
                 if (fp == null)
                 {
                     fp = new PropertyConfig();
-                    fp.CopyFrom(property);
+                    fp.CopyFromProperty(property,false,true,true);
                     fp.Parent = entity;
                     entity.Add(fp);
                 }

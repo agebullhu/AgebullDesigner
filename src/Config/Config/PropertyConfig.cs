@@ -151,7 +151,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计(C#)"), DisplayName(@"语言类型(C#)"), Description("C#语言类型")]
         public string CsType
         {
-            get => WorkContext.InCoderGenerating ? (_csType ?? LastCsType ?? "string") : _csType;
+            get => WorkContext.InCoderGenerating ? _csType ?? LastCsType ?? "string" : _csType;
             set
             {
                 if (_csType == value)
@@ -305,6 +305,10 @@ namespace Agebull.EntityModel.Config
         {
             get
             {
+                if (Option.ReferenceConfig != null && Option.ReferenceConfig != this)
+                {
+                    return ((PropertyConfig)Option.ReferenceConfig).LastCsType;
+                }
                 if (!string.IsNullOrWhiteSpace(_referenceType))
                     return _referenceType;
                 if (!string.IsNullOrWhiteSpace(CustomType))
@@ -312,8 +316,8 @@ namespace Agebull.EntityModel.Config
                 if (CsType == null)
                     return null;
                 CustomType = null;
-                if (IsRelationField)
-                    return CsType;
+                //if (IsRelationField)
+                //    return CsType;
                 if (CsType.Contains("[") || CsType.ToLower() == "string")
                     return CsType;
                 if (Nullable)
@@ -673,7 +677,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计(C++)"), DisplayName(@"字段名称(C++)"), Description("C++字段名称")]
         public string CppName
         {
-            get => WorkContext.InCoderGenerating ? (_cppName ?? Name) : _cppName;
+            get => WorkContext.InCoderGenerating ? _cppName ?? Name : _cppName;
             set
             {
                 if (_cppName == value)
@@ -939,7 +943,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计"), DisplayName(@"字段名称(json)"), Description("json字段名称")]
         public string JsonName
         {
-            get => WorkContext.InCoderGenerating ? (_jsonName ?? Name) : _jsonName;
+            get => WorkContext.InCoderGenerating ? _jsonName ?? Name : _jsonName;
             set
             {
                 if (_jsonName == value)
@@ -1176,27 +1180,27 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 数据库索引
         /// </summary>
-        [DataMember, JsonProperty("CreateIndex", NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _createIndex;
+        [DataMember, JsonProperty("createDbIndex", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _createDbIndex;
 
         /// <summary>
-        /// 数据库索引
+        /// 构建数据库索引
         /// </summary>
         /// <remark>
         /// 构建数据库索引的优化选项
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"数据库索引"), Description("构建数据库索引的优化选项")]
-        public bool CreateIndex
+        [Category(@"数据库"), DisplayName(@"构建数据库索引"), Description("构建数据库索引的优化选项")]
+        public bool CreateDbIndex
         {
-            get => _createIndex;
+            get => _createDbIndex;
             set
             {
-                if (_createIndex == value)
+                if (_createDbIndex == value)
                     return;
-                BeforePropertyChanged(nameof(CreateIndex), _createIndex, value);
-                _createIndex = value;
-                OnPropertyChanged(nameof(CreateIndex));
+                BeforePropertyChanged(nameof(CreateDbIndex), _createDbIndex, value);
+                _createDbIndex = value;
+                OnPropertyChanged(nameof(CreateDbIndex));
             }
         }
 
@@ -1230,7 +1234,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"数据库字段名称"), Description("字段名称")]
         public string ColumnName
         {
-            get => WorkContext.InCoderGenerating ? (_columnName ?? Name) : _columnName;
+            get => WorkContext.InCoderGenerating ? _columnName ?? Name : _columnName;
             set
             {
                 if (_columnName == value)
@@ -2338,7 +2342,7 @@ namespace Agebull.EntityModel.Config
         }
         #endregion
         #region 数据关联
-
+        /*
         /// <summary>
         /// 是否关系字段
         /// </summary>
@@ -2446,7 +2450,7 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(IsExtendArray));
             }
         }
-
+        */
         /// <summary>
         /// 连接字段
         /// </summary>
@@ -2495,7 +2499,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_linkTable == value || Parent == null)
                     return;
-                if (value == Parent.SaveTable)
+                if (value == Parent.SaveTable || value == Parent.ReadTableName)
                 {
                     value = null;
                     IsLinkKey = false;

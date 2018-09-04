@@ -25,41 +25,51 @@ namespace Agebull.EntityModel.Config
                 case "string":
                 case "nvarchar":
                     column.CsType = "string";
+                    column.DataType = "String";
+                    column.Datalen = 200;
                     break;
                 case "ls":
                     column.CsType = "string";
+                    column.DataType = "String";
                     column.IsBlob = true;
                     break;
                 case "b":
                 case "bit":
                 case "bool":
                     column.CsType = "bool";
+                    column.DataType = "Boolean";
                     break;
                 case "i":
                 case "int":
                     column.CsType = "int";
+                    column.DataType = "Int32";
                     break;
                 case "l":
                 case "long":
                 case "bigint":
                     column.CsType = "long";
+                    column.DataType = "Int64";
                     break;
                 case "d":
                 case "decimal":
                 case "money":
                 case "numeric":
                     column.CsType = "decimal";
+                    column.DataType = "Decimal";
                     break;
                 case "f":
                 case "float":
                     column.CsType = "double";
+                    column.DataType = "Double";
                     break;
                 case "p":
                     column.IsPrimaryKey = true;
-                    column.CsType = "int";
+                    column.CsType = "long";
+                    column.DataType = "Int64";
                     break;
                 case "datetime":
                     column.CsType = "DateTime";
+                    column.DataType = "DateTime";
                     break;
                 case "list":
                 case "ilist":
@@ -81,20 +91,29 @@ namespace Agebull.EntityModel.Config
                     column.IsDictionary = true;
                     break;
                 default:
-                    column.CsType = "object";
+                    column.CsType = "string";
+                    column.DataType = "String";
                     column.CustomType = type;
                     column.ReferenceType = type;
+                    column.Datalen = 200;
                     break;
             }
             if (strs.Length == 1)
                 return;
-            if (strs[strs.Length - 1].Length > 1 && strs[strs.Length - 1][0] == '#' && int.TryParse(strs[strs.Length - 1].Substring(1), out var len))
-                column.Datalen = len;
-            if (strs[1].LastOrDefault() == ']')
+
+            if (strs[1][strs[1].Length-1] == ']')
             {
-                if (int.TryParse(strs[1].Substring(0, strs.Length - 1), out len))
+                if (int.TryParse(strs[1].TrimEnd(']'), out var len))
                     column.ArrayLen = len.ToString();
                 column.IsArray = true;
+            }
+            else
+            {
+                var lens = strs[1].Split(new[] { ' ', ',', '，', '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
+                if (int.TryParse(lens[0], out var len))
+                    column.Datalen = len;
+                if (lens.Length > 1 && int.TryParse(lens[1], out len))
+                    column.Scale = len;
             }
         }
 

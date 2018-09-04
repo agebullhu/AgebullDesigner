@@ -8,8 +8,6 @@
 *****************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 
@@ -78,7 +76,7 @@ namespace Agebull.EntityModel.Config
         /// 枚举节点
         /// </summary>
         [DataMember,JsonProperty("_items", NullValueHandling = NullValueHandling.Ignore)]
-        internal ObservableCollection<EnumItem> _items;
+        internal NotificationList<EnumItem> _items;
 
         /// <summary>
         /// 枚举节点
@@ -88,13 +86,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember,JsonIgnore]
         [Category(@"设计器支持"),DisplayName(@"枚举节点"),Description("枚举节点")]
-        public ObservableCollection<EnumItem> Items
+        public NotificationList<EnumItem> Items
         {
             get
             {
                 if (_items != null)
                     return _items;
-                _items = new ObservableCollection<EnumItem>();
+                _items = new NotificationList<EnumItem>();
                 RaisePropertyChanged(nameof(Items));
                 return _items;
             }

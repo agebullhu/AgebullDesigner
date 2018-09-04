@@ -9,7 +9,7 @@
         <DockPanel>
             <Border DockPanel.Dock="Top" Style="{StaticResource ToolBar}">
                 <StackPanel Orientation="Horizontal">
-                    <CheckBox Content="记录跟踪消息" IsChecked="{Binding MessageToTrace}" />
+                    <CheckBox Content="记录跟踪消息" IsChecked="{Binding MessageToTrace}" VerticalContentAlignment="Center" />
                     <ContentControl DataContext="{Binding ClearTraceCommand}">
                         <Button Style="{StaticResource  CommandButton}" />
                     </ContentControl>

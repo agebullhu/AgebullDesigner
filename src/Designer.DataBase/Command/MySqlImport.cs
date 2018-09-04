@@ -43,7 +43,9 @@ namespace Agebull.EntityModel.Designer
                 Server = project.DbHost,
                 UserID = project.DbUser,
                 Password = project.DbPassWord,
-                Database = project.DbSoruce
+                Database = project.DbSoruce,
+                SslMode= MySqlSslMode.None,
+                Port = 3308
             };
             _connectionString = csb.ConnectionString;
             DoImport();
@@ -224,7 +226,8 @@ from information_schema.columns where table_schema='{
                     {
                         column.Description = column.Caption;
                     }
-                    column.Caption = column.Caption.Split(CoderBase.NoneLanguageChar, 2)[0];
+                    if (!string.IsNullOrWhiteSpace(column.Caption))
+                        column.Caption = column.Caption.Split(CoderBase.NoneLanguageChar, 2)[0];
                 }
             }
         }

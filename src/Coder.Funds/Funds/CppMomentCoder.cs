@@ -31,7 +31,7 @@ namespace Agebull.EntityModel.RobotCoder.Funds
             MomentCoder.RegisteCoder("C++", "C++到C#实现","cpp", cfg => Run(cfg, CppFieldToCsEntity));
             MomentCoder.RegisteCoder("C++", "C++序列化","cpp", cfg => Run(cfg, CppFieldSaveDef));
             MomentCoder.RegisteCoder("C++", "C++反序列化","cpp", cfg => Run(cfg, CppFieldSave));
-            MomentCoder.RegisteCoder("C++", "数据类型(C++)", "cpp", (DataType));
+            MomentCoder.RegisteCoder("C++", "数据类型(C++)", "cpp", DataType);
 
 
             MomentCoder.RegisteCoder("C++", "C++日志声明", "cpp", ToCppLogDef);
@@ -39,9 +39,9 @@ namespace Agebull.EntityModel.RobotCoder.Funds
             MomentCoder.RegisteCoder("C++", "C++枚举日志", "cpp", EnumLog);
 
 
-            MomentCoder.RegisteCoder("C++", "文件包含(C++)", "cpp", (IncludeFunc));
-            MomentCoder.RegisteCoder("C++", "工程文件包含(C++)", "cpp", (ProjectFile));
-            MomentCoder.RegisteCoder("C++", "工程文件分组(C++)", "cpp", (ProjectFilter));
+            MomentCoder.RegisteCoder("C++", "文件包含(C++)", "cpp", IncludeFunc);
+            MomentCoder.RegisteCoder("C++", "工程文件包含(C++)", "cpp", ProjectFile);
+            MomentCoder.RegisteCoder("C++", "工程文件分组(C++)", "cpp", ProjectFilter);
 
         }
         #endregion

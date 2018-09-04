@@ -13,6 +13,11 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static void CheckField(PropertyConfig field, bool repair = false)
         {
+            if (field.IsPrimaryKey && field.IsIdentity)
+            {
+                field.NoneDetails = true;
+                field.ExtendConfigListBool["easyui", "userFormHide"] = true;
+            }
             if (field.DenyClient)
             {
                 field.IsUserReadOnly = true;
@@ -87,7 +92,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         private static void RepairInputConfig(PropertyConfig field)
         {
-            if (field.DenyClient || field.IsSystemField || field.IsCompute || (field.IsIdentity && field.IsIdentity))
+            if (field.DenyClient || field.IsSystemField || field.IsCompute || field.IsIdentity && field.IsIdentity)
             {
                 field.NoneDetails = true;
                 field.IsUserReadOnly = true;

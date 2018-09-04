@@ -18,11 +18,8 @@ namespace Agebull.EntityModel.Config
                 return;
 
             Option.Copy(cfg.Option);//配置
-            ExtendConfig = cfg.ExtendConfig;//
-            if (cfg._extendDictionary != null)
-                _extendDictionary = cfg._extendDictionary.ToDictionary(p => p.Key, p => p.Value);//扩展配置
-            if (cfg._extendDictionary2 != null)
-                _extendDictionary2 = new ConfigItemDictionary(cfg._extendDictionary2.Items.ToDictionary(p => p.Key, p => p.Value));//extendDictionary2
+            if (cfg._extend != null)
+                _extend = cfg._extend.ToDictionary(p => p.Key, p => p.Value);//扩展配置
         }
     }
 
@@ -125,7 +122,7 @@ namespace Agebull.EntityModel.Config
             foreach (var field in source.Properties)
             {
                 var nf = new PropertyConfig();
-                nf.CopyFrom(field);
+                nf.CopyFromProperty(field,false,true, true);
                 if (field.IsPrimaryKey)
                     nf.IsPrimaryKey = true;
                 Add(nf);
@@ -314,7 +311,7 @@ namespace Agebull.EntityModel.Config
             ApiFolder = cfg.ApiFolder;//接口代码主文件夹
             ModelFolder = cfg.ModelFolder;//模型代码主文件夹
             BranchFolder = cfg.BranchFolder;//子级文件夹
-            PagePath = cfg.PagePath;//WEB页面(C#)
+            PageFolder = cfg.PageFolder;//WEB页面(C#)
             MobileCsPath = cfg.MobileCsPath;//移动端(C#)
             CppCodePath = cfg.CppCodePath;//服务端(C++)
             BusinessPath = cfg.BusinessPath;//业务逻辑(C#)
@@ -336,11 +333,17 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 复制值
         /// </summary>
-        /// <param name="cfg"></param>
-        public void CopyFrom(PropertyConfig cfg)
+        /// <param name="cfg">配置对象</param>
+        /// <param name="full">全量</param>
+        /// <param name="option">系统配置</param>
+        /// <param name="primary">主键相关</param>
+        public void CopyFromProperty(PropertyConfig cfg, bool primary, bool full,bool option)
         {
-            Group = cfg.Group;//分组
-            DenyScope = cfg.DenyScope;//阻止编辑
+            Name = cfg.Name;
+            Caption = cfg.Caption;
+            Description = cfg.Description;
+            Remark = cfg.Remark;
+
             DataType = cfg.DataType;//数据类型
             CsType = cfg.CsType;//语言类型(C#)
             IsEnum = cfg.IsEnum;//是否枚举类型)
@@ -354,7 +357,6 @@ namespace Agebull.EntityModel.Config
             InnerField = cfg.InnerField;//内部字段
             IsSystemField = cfg.IsSystemField;//系统字段
             IsInterfaceField = cfg.IsInterfaceField;//接口字段
-            Alias = cfg.Alias;//别名
             Initialization = cfg.Initialization;//初始值
             IsMiddleField = cfg.IsMiddleField;//设计时字段
             CppType = cfg.CppType;//语言类型(C++)
@@ -367,16 +369,10 @@ namespace Agebull.EntityModel.Config
             ComputeGetCode = cfg.ComputeGetCode;//自定义代码(get)
             ComputeSetCode = cfg.ComputeSetCode;//自定义代码(set)
             IsCustomCompute = cfg.IsCustomCompute;//自定义读写代码
-            JsonName = cfg.JsonName;//字段名称(json)
+            
             HelloCode = cfg.HelloCode;//示例内容
-            IsCaption = cfg.IsCaption;//标题字段
-            IsPrimaryKey = cfg.IsPrimaryKey;//主键字段
-            IsExtendKey = cfg.IsExtendKey;//唯一值字段
-            IsIdentity = cfg.IsIdentity;//自增字段
-            IsGlobalKey = cfg.IsGlobalKey;//全局标识
-            UniqueIndex = cfg.UniqueIndex;//唯一属性组合顺序
-            UniqueString = cfg.UniqueString;//唯一文本
-            CreateIndex = cfg.CreateIndex;//数据库索引
+            
+            
             KeepUpdate = cfg.KeepUpdate;//不更新
             ColumnName = cfg.ColumnName;//数据库字段名称
             DbNullable = cfg.DbNullable;//能否存储空值
@@ -394,40 +390,20 @@ namespace Agebull.EntityModel.Config
             KeepStorageScreen = cfg.KeepStorageScreen;//*跳过保存的场景
             CustomWrite = cfg.CustomWrite;//自定义保存
             StorageProperty = cfg.StorageProperty;//存储值读写字段
-            DenyClient = cfg.DenyClient;//客户端不可见
-            IsUserReadOnly = cfg.IsUserReadOnly;//不可编辑
-            MulitLine = cfg.MulitLine;//多行文本
-            NoneJson = cfg.NoneJson;//不参与Json序列化
-            Prefix = cfg.Prefix;//前缀
-            Suffix = cfg.Suffix;//后缀
-            EmptyValue = cfg.EmptyValue;//等同于空值的文本
-            InputType = cfg.InputType;//输入类型
-            FormCloumnSapn = cfg.FormCloumnSapn;//Form中占几列宽度
-            FormOption = cfg.FormOption;//Form中的EasyUi设置
-            ComboBoxUrl = cfg.ComboBoxUrl;//下拉列表的地址
-            IsMoney = cfg.IsMoney;//货币类型
-            GridAlign = cfg.GridAlign;//表格对齐
-            GridWidth = cfg.GridWidth;//占表格宽度比例
-            DataFormater = cfg.DataFormater;//数据格式器
-            GridDetails = cfg.GridDetails;//显示在列表详细页中
-            NoneGrid = cfg.NoneGrid;//列表不显示
-            NoneDetails = cfg.NoneDetails;//详细不显示
-            GridDetailsCode = cfg.GridDetailsCode;//列表详细页代码
-            ValidateCode = cfg.ValidateCode;//校验代码
-            IsRequired = cfg.IsRequired;//必填字段
+            CreateDbIndex = cfg.CreateDbIndex;//数据库索引
+
+            IsLinkField = cfg.IsLinkField;//连接字段
+            LinkTable = cfg.LinkTable;//关联表名
+            LinkField = cfg.LinkField;//关联字段名称
+            IsLinkKey = cfg.IsLinkKey;//关联表主键
+            IsLinkCaption = cfg.IsLinkCaption;//关联表标题
+
+            IsUserId = cfg.IsUserId;//对应客户ID
+
             CanEmpty = cfg.CanEmpty;//能否为空
             Max = cfg.Max;//最大值
             Min = cfg.Min;//最大值
-            IsRelationField = cfg.IsRelationField;//是否关系字段
-            IsRelationValue = cfg.IsRelationValue;//是否关系值
-            IsRelationArray = cfg.IsRelationArray;//是否关系数组
-            IsExtendArray = cfg.IsExtendArray;//是否扩展数组
-            IsLinkField = cfg.IsLinkField;//连接字段
-            LinkTable = cfg.LinkTable;//关联表名
-            IsLinkKey = cfg.IsLinkKey;//关联表主键
-            IsLinkCaption = cfg.IsLinkCaption;//关联表标题
-            IsUserId = cfg.IsUserId;//对应客户ID
-            LinkField = cfg.LinkField;//关联字段名称
+            
             ExtendRole = cfg.ExtendRole;//扩展组合规划
             ValueSeparate = cfg.ValueSeparate;//值分隔符
             ArraySeparate = cfg.ArraySeparate;//数组分隔符
@@ -437,6 +413,60 @@ namespace Agebull.EntityModel.Config
             ExtendPropertyName = cfg.ExtendPropertyName;//扩展对象属性名称
             ExtendClassName = cfg.ExtendClassName;//扩展对象对象名称
             ExtendClassIsPredestinate = cfg.ExtendClassIsPredestinate;//扩展对象对象已定义
+
+            JsonName = cfg.JsonName;//字段名称(json)
+
+            if (option)
+                Option.Copy(cfg.Option);//配置
+
+            if (full)
+            {
+                Group = cfg.Group;//分组
+                Alias = cfg.Alias;//别名
+
+                NoneJson = cfg.NoneJson;//不参与Json序列化
+                IsUserReadOnly = cfg.IsUserReadOnly;//不可编辑
+                DenyScope = cfg.DenyScope;//阻止编辑
+
+                ValidateCode = cfg.ValidateCode;//校验代码
+                IsRequired = cfg.IsRequired;//必填字段
+
+                MulitLine = cfg.MulitLine;//多行文本
+                Prefix = cfg.Prefix;//前缀
+                Suffix = cfg.Suffix;//后缀
+                EmptyValue = cfg.EmptyValue;//等同于空值的文本
+                InputType = cfg.InputType;//输入类型
+                FormCloumnSapn = cfg.FormCloumnSapn;//Form中占几列宽度
+                FormOption = cfg.FormOption;//Form中的EasyUi设置
+                ComboBoxUrl = cfg.ComboBoxUrl;//下拉列表的地址
+                IsMoney = cfg.IsMoney;//货币类型
+                GridAlign = cfg.GridAlign;//表格对齐
+                GridWidth = cfg.GridWidth;//占表格宽度比例
+                DataFormater = cfg.DataFormater;//数据格式器
+                GridDetails = cfg.GridDetails;//显示在列表详细页中
+                NoneGrid = cfg.NoneGrid;//列表不显示
+                NoneDetails = cfg.NoneDetails;//详细不显示
+                GridDetailsCode = cfg.GridDetailsCode;//列表详细页代码
+                
+
+
+
+
+                if (cfg._extend != null)
+                    _extend = cfg._extend.ToDictionary(p => p.Key, p => p.Value);//扩展配置
+            }
+
+            if (primary)
+            {
+
+                IsCaption = cfg.IsCaption;//标题字段
+                IsPrimaryKey = cfg.IsPrimaryKey;//主键字段
+                IsExtendKey = cfg.IsExtendKey;//唯一值字段
+                IsIdentity = cfg.IsIdentity;//自增字段
+                IsGlobalKey = cfg.IsGlobalKey;//全局标识
+                UniqueIndex = cfg.UniqueIndex;//唯一属性组合顺序
+                UniqueString = cfg.UniqueString;//唯一文本
+            }
         }
 
         /// <summary>
@@ -450,7 +480,7 @@ namespace Agebull.EntityModel.Config
             var cfg = dest as PropertyConfig;
             if (cfg == null)
                 return;
-            CopyFrom(cfg);
+            CopyFromProperty(cfg,true,true,true);
         }
 
     }

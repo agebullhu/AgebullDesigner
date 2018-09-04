@@ -47,7 +47,7 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"标题")]
         public string Caption
         {
-            get => WorkContext.InCoderGenerating ? (_caption ?? _name) : _caption;
+            get => WorkContext.InCoderGenerating ? _caption ?? _name : _caption;
             set
             {
                 if (_caption == value)
@@ -74,7 +74,7 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"说明")]
         public string Description
         {
-            get => WorkContext.InCoderGenerating ? (_description ?? Caption) : _description;
+            get => WorkContext.InCoderGenerating ? _description ?? Caption : _description;
             set
             {
                 var now = !string.IsNullOrWhiteSpace(value) ? value.Trim() : null;

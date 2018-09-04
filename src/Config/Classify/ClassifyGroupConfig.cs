@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
@@ -23,7 +22,7 @@ namespace Agebull.EntityModel.Config
         /// 关联的集合
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        private readonly ObservableCollection<TConfig> _collection;
+        private readonly NotificationList<TConfig> _collection;
         /// <summary>
         /// 更新分类的方法
         /// </summary>
@@ -49,7 +48,7 @@ namespace Agebull.EntityModel.Config
         /// <param name="group"></param>
         /// <param name="updateAction"></param>
         /// <param name="classify"></param>
-        public ClassifyGroupConfig(ObservableCollection<TConfig> collection, Expression<Func<TConfig, string>> group, 
+        public ClassifyGroupConfig(NotificationList<TConfig> collection, Expression<Func<TConfig, string>> group, 
             Action<string, TConfig> updateAction, ConfigCollection<ClassifyItem<TConfig>> classify=null)
         {
             _collection = collection;

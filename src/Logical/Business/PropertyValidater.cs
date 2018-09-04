@@ -27,7 +27,7 @@ namespace Agebull.EntityModel.Config
                 result = false;
                 Message.Track = "====>属性名称不能为空";
             }
-            else if (Property.Name == "NewField" || (Property.Name[0] >= '0' && Property.Name[0] <= '9'))
+            else if (Property.Name == "NewField" || Property.Name[0] >= '0' && Property.Name[0] <= '9')
             {
                 result = false;
                 Message.Track = "====>属性名称不正确:" + Property.Name;
@@ -62,7 +62,7 @@ namespace Agebull.EntityModel.Config
                 Message.Track = "====>字段存储名称不能为空";
             }
             else if (Property.ColumnName == "NewField" ||
-                     (Property.ColumnName[0] >= '0' && Property.ColumnName[0] <= '9'))
+                     Property.ColumnName[0] >= '0' && Property.ColumnName[0] <= '9')
             {
                 result = false;
                 Message.Track = "====>字段存储名称不正确:" + Property.ColumnName;

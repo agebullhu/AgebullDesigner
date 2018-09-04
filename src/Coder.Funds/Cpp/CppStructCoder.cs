@@ -745,8 +745,8 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
     for(int idx = 0;idx < {srcField.ArrayLen};idx++)//{srcField.Caption}
         {dest_field_name}[idx] = string2time({src_field_name}[idx]);";
             }
-            return ($@"
-    {dest_field_name} = string2time({src_field_name});//{srcField.Caption}");
+            return $@"
+    {dest_field_name} = string2time({src_field_name});//{srcField.Caption}";
         }
         public static string FriendFieldCopy_Tm_ToEs(PropertyConfig srcField, string src_field_name, string dest_field_name)
         {
@@ -756,8 +756,8 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
     for(int idx = 0;idx < {srcField.ArrayLen};idx++)//{srcField.Caption}
         time2string({dest_field_name}[idx] ,{src_field_name}[idx]);";
             }
-            return ($@"
-    time2string({src_field_name},{dest_field_name});//{srcField.Caption}");
+            return $@"
+    time2string({src_field_name},{dest_field_name});//{srcField.Caption}";
         }
         public static string FriendFieldCopy_IntDecimal_FromEs(PropertyConfig srcField, string src_field_name, string dest_field_name)
         {
@@ -767,8 +767,8 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
     for(int idx = 0;idx < {srcField.ArrayLen};idx++)//{srcField.Caption}
         {dest_field_name}[idx] = DoubleToInt64({src_field_name}[idx]);";
             }
-            return ($@"
-    {dest_field_name} = DoubleToInt64({src_field_name});//{srcField.Caption}");
+            return $@"
+    {dest_field_name} = DoubleToInt64({src_field_name});//{srcField.Caption}";
         }
         public static string FriendFieldCopy_IntDecimal_ToEs(PropertyConfig srcField, string src_field_name, string dest_field_name)
         {
@@ -778,8 +778,8 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
     for(int idx = 0;idx < {srcField.ArrayLen};idx++)//{srcField.Caption}
         {dest_field_name}[idx] = Int64ToDouble({src_field_name}[idx]);";
             }
-            return ($@"
-    {dest_field_name} = Int64ToDouble({src_field_name});//{srcField.Caption}");
+            return $@"
+    {dest_field_name} = Int64ToDouble({src_field_name});//{srcField.Caption}";
         }
 
         public static string FriendFieldCopy(PropertyConfig srcField, PropertyConfig destField, string src_field_name,
@@ -803,42 +803,42 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
                 if (srcField.Datalen > 1)
                     return $@"
 	strcpy_s({dest_field_name},{src_field_name});//{srcField.Caption}";
-                return ($@"
-    {dest_field_name} = {src_field_name};//{srcField.Caption}");
+                return $@"
+    {dest_field_name} = {src_field_name};//{srcField.Caption}";
             }
             if (!CppTypeHelper.IsCppBaseType(srcField.CppLastType))
             {
                 if (!string.IsNullOrEmpty(srcField.ArrayLen))
                 {
                     return
-                        ($@"
+                        $@"
     if({src_field_name} != nullptr)//{srcField.Caption
                             }
     {{
         for(int idx = 0;idx < {srcField.ArrayLen};idx++)
             memcpy({
-                            dest_field_name}[idx],{src_field_name}[idx], sizeof({srcField.CppLastType}));
-    }}");
+                                dest_field_name}[idx],{src_field_name}[idx], sizeof({srcField.CppLastType}));
+    }}";
                 }
                 return
-                    ($@"
+                    $@"
 	memcpy({dest_field_name},{src_field_name}, sizeof({srcField.CppLastType}));//{
-                        srcField.Caption}");
+                        srcField.Caption}";
             }
             if (!string.IsNullOrEmpty(srcField.ArrayLen))
             {
                 return
-                    ($@"
+                    $@"
     if({src_field_name} != nullptr)//{srcField.Caption
                         }
     {{
         for(int idx = 0;idx < {srcField.ArrayLen};idx++)
             {
-                        dest_field_name}[idx] = {src_field_name}[idx];
-    }}");
+                            dest_field_name}[idx] = {src_field_name}[idx];
+    }}";
             }
-            return ($@"
-    {dest_field_name} = {src_field_name};//{srcField.Caption}");
+            return $@"
+    {dest_field_name} = {src_field_name};//{srcField.Caption}";
         }
 
         public static void FriendFieldCopyString(StringBuilder code, PropertyConfig field,

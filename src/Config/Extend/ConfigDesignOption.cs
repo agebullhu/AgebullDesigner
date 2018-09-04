@@ -11,7 +11,7 @@ namespace Agebull.EntityModel.Config
     ///     配置的设计节点
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public partial class ConfigDesignOption : NotificationObject
+    public class ConfigDesignOption : NotificationObject
     {
         #region 设计
 
@@ -172,6 +172,7 @@ namespace Agebull.EntityModel.Config
                     return;
                 BeforePropertyChanged(nameof(ReferenceKey), _referenceKey, value);
                 _referenceKey = value;
+                IsReference = value != Guid.Empty;
                 OnPropertyChanged(nameof(ReferenceKey));
             }
         }
@@ -201,6 +202,8 @@ namespace Agebull.EntityModel.Config
             {
                 if (_referenceConfig == value)
                     return;
+                if (value == Config || value.Key == Key)
+                    value = null;
                 BeforePropertyChanged(nameof(ReferenceConfig), _referenceConfig, value);
                 _referenceConfig = value;
                 ReferenceKey = value?.Option.Key ?? Guid.Empty;
@@ -233,6 +236,7 @@ namespace Agebull.EntityModel.Config
             }
         }
         #endregion
+
         #region 状态
 
         /// <summary>
@@ -336,6 +340,7 @@ namespace Agebull.EntityModel.Config
             OnPropertyChanged(nameof(IsReadonly));
             OnPropertyChanged(nameof(IsReference));
             OnPropertyChanged(nameof(IsPredefined));
+            OnPropertyChanged(nameof(IsNormal));
         }
         /// <summary>
         /// 是否正常
@@ -363,6 +368,7 @@ namespace Agebull.EntityModel.Config
                 else
                     _state &= ~ConfigStateType.Discard;
                 OnPropertyChanged(nameof(IsDiscard));
+                OnPropertyChanged(nameof(IsNormal));
             }
         }
 
@@ -407,6 +413,7 @@ namespace Agebull.EntityModel.Config
                 else
                     _state &= ~ConfigStateType.Delete;
                 OnPropertyChanged(nameof(IsDelete));
+                OnPropertyChanged(nameof(IsNormal));
             }
         }
         #endregion 
@@ -449,8 +456,6 @@ namespace Agebull.EntityModel.Config
         [Description("曾用名")]
         public string NameHistory => OldNames.LinkToString(",");
 
-        #endregion
-
         /// <summary>
         /// 字段复制
         /// </summary>
@@ -463,6 +468,99 @@ namespace Agebull.EntityModel.Config
             ReferenceConfig = cfg.ReferenceConfig;//引用对象
             ReferenceTag = cfg.ReferenceTag;//引用标签
             _state = cfg._state;//状态
+            if (cfg._extendConfig == null)
+                return;
+            foreach (var ex in cfg._extendConfig)
+            {
+                var old = ExtendConfig.FirstOrDefault(p => p.Name == ex.Name);
+                if (old == null)
+                    ExtendConfig.Add(ex);
+            }
         }
+        #endregion
+
+
+        #region 扩展配置
+
+        /// <summary>
+        /// 扩展配置
+        /// </summary>
+        [DataMember, JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        private NotificationList<ConfigItem> _extendConfig;
+
+
+        /// <summary>
+        /// 扩展配置
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category("设计器支持")]
+        [DisplayName("扩展配置")]
+        private NotificationList<ConfigItem> ExtendConfig
+        {
+            get
+            {
+                if (_extendConfig != null)
+                    return _extendConfig;
+                _extendConfig = new NotificationList<ConfigItem>();
+                BeforePropertyChanged(nameof(ExtendConfig), null, _extendConfig);
+                return _extendConfig;
+            }
+        }
+
+        [IgnoreDataMember, JsonIgnore]
+        private ConfigItemList _extendConfigList;
+        /// <summary>
+        /// 扩展配置
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore, Browsable(false)]
+        public ConfigItemList ExtendConfigList => _extendConfigList ?? (_extendConfigList = new ConfigItemList(ExtendConfig));
+
+        /// <summary>
+        /// 读写扩展配置
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public string this[string key]
+        {
+            get => TryGetExtendConfig(key, null);
+            set
+            {
+                if (key == null)
+                    return;
+                var mv = ExtendConfig.FirstOrDefault(p => string.Equals(p.Name, key, StringComparison.OrdinalIgnoreCase));
+                if (mv == null)
+                {
+                    ExtendConfig.Add(new ConfigItem { Name = key, Value = value });
+                }
+                else if (string.IsNullOrWhiteSpace(value))
+                {
+                    ExtendConfig.Remove(mv);
+                }
+                else
+                {
+                    mv.Value = value.Trim();
+                }
+                RaisePropertyChanged(key);
+            }
+        }
+        /// <summary>
+        /// 试图取得扩展配置,如果不存在或为空则加入默认值后返回
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <param name="def">默认值</param>
+        /// <returns>扩展配置</returns>
+
+        public string TryGetExtendConfig(string key, string def)
+        {
+            if (key == null)
+                return def;
+            var mv = ExtendConfig.FirstOrDefault(p => string.Equals(p.Name, key, StringComparison.OrdinalIgnoreCase));
+            if (mv != null)
+                return mv.Value ?? (mv.Value = def);
+            ExtendConfig.Add(new ConfigItem { Name = key, Value = def });
+            return def;
+        }
+
+        #endregion
     }
 }

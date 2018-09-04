@@ -7,9 +7,7 @@
 修改:2017-07-12
 *****************************************************/
 
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -521,7 +519,7 @@ namespace Agebull.EntityModel.Config
         /// 字段
         /// </summary>
         [DataMember, JsonProperty("_tableReleations", NullValueHandling = NullValueHandling.Ignore)]
-        internal ObservableCollection<EntityReleationConfig> _releations;
+        internal NotificationList<EntityReleationConfig> _releations;
 
         /// <summary>
         /// 字段
@@ -531,13 +529,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"字段"), Description("字段")]
-        public ObservableCollection<EntityReleationConfig> Releations
+        public NotificationList<EntityReleationConfig> Releations
         {
             get
             {
                 if (_releations != null)
                     return _releations;
-                _releations = new ObservableCollection<EntityReleationConfig>();
+                _releations = new NotificationList<EntityReleationConfig>();
                 OnPropertyChanged(nameof(Releations));
                 return _releations;
             }
@@ -554,7 +552,7 @@ namespace Agebull.EntityModel.Config
         /// 命令集合
         /// </summary>
         [DataMember,JsonProperty("_commands", NullValueHandling = NullValueHandling.Ignore)]
-        internal ObservableCollection<UserCommandConfig> _commands;
+        internal NotificationList<UserCommandConfig> _commands;
 
         /// <summary>
         /// 命令集合
@@ -564,13 +562,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember,JsonIgnore]
         [Category(@"业务模型"),DisplayName(@"命令集合"),Description("命令集合,数据模型中可调用的命令")]
-        public ObservableCollection<UserCommandConfig> Commands
+        public NotificationList<UserCommandConfig> Commands
         {
             get
             {
                 if (_commands != null)
                     return _commands;
-                _commands = new ObservableCollection<UserCommandConfig>();
+                _commands = new NotificationList<UserCommandConfig>();
                 RaisePropertyChanged(nameof(Commands));
                 return _commands;
             }
@@ -622,7 +620,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"),DisplayName(@"存储表名(设计录入)"),Description(ReadTableName_Description)]
         public string ReadTableName
         {
-            get => WorkContext.InCoderGenerating ? (_readTableName ?? SaveTableName ?? Name) : _readTableName;
+            get => WorkContext.InCoderGenerating ? _readTableName ?? SaveTableName ?? Name : _readTableName;
             set
             {
                 if (_readTableName == value)
@@ -651,7 +649,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"),DisplayName(@"存储表名"),Description("存储表名")]
         public string SaveTableName
         {
-            get => WorkContext.InCoderGenerating ? (_saveTableName ?? Name) : _saveTableName;
+            get => WorkContext.InCoderGenerating ? _saveTableName ?? Name : _saveTableName;
             set
             {
                 if(_saveTableName == value)
@@ -907,7 +905,30 @@ namespace Agebull.EntityModel.Config
                 _panelType = value;
                 OnPropertyChanged(nameof(PanelType));
             }
-        } 
+        }
+        /// <summary>
+        /// 界面只读
+        /// </summary>
+        [DataMember, JsonProperty("isUiReadOnly", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isUiReadOnly;
+
+        /// <summary>
+        /// 界面只读
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据模型"), DisplayName(@"界面只读"), Description("界面只读")]
+        public bool IsUiReadOnly
+        {
+            get => _isUiReadOnly;
+            set
+            {
+                if (_isUiReadOnly == value)
+                    return;
+                BeforePropertyChanged(nameof(IsUiReadOnly), _isUiReadOnly, value);
+                _isUiReadOnly = value;
+                OnPropertyChanged(nameof(IsUiReadOnly));
+            }
+        }
         #endregion 
         #region C++
 
@@ -927,7 +948,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"C++"),DisplayName(@"C++名称"),Description("C++字段名称")]
         public string CppName
         {
-            get => WorkContext.InCoderGenerating ? (_cppName ?? Name) : _cppName;
+            get => WorkContext.InCoderGenerating ? _cppName ?? Name : _cppName;
             set
             {
                 if (_cppName == value)

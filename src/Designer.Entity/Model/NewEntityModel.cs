@@ -59,7 +59,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     字段
         /// </summary>
-        public ObservableCollection<PropertyConfig> Columns { get; } = new ConfigCollection<PropertyConfig>();
+        public NotificationList<PropertyConfig> Columns { get; } = new ConfigCollection<PropertyConfig>();
 
         #endregion
 

@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="Model\EasyUiModel.cs" />
     <Compile Include="Model\EasyUiViewModel.cs" />
+    <Compile Include="Model\PropertyEasyUiModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -116,10 +117,6 @@
     <ProjectReference Include="..\Config\Agebull.EntityModel.Config.csproj">
       <Project>{0af9f7a3-6aab-46a5-b3e8-45940ae26e5b}</Project>
       <Name>Agebull.EntityModel.Config</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Coder.EasyUi\Agebull.EntityModel.RobotCoder.EasyUi.csproj">
-      <Project>{56519a2c-1f37-447e-abcb-f1fd00847230}</Project>
-      <Name>Agebull.EntityModel.RobotCoder.EasyUi</Name>
     </ProjectReference>
     <ProjectReference Include="..\Entities\Agebull.Common.Entity.csproj">
       <Project>{0d626dda-02c0-4bd8-b2fd-efee0971510f}</Project>

@@ -166,16 +166,23 @@ namespace Agebull.EntityModel.RobotCoder
             return $@"
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
-using System.Data.Sql;
-using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
+using Agebull.Common;
+using Agebull.Common.DataModel;
 using Gboxt.Common.DataModel;
-
 using Gboxt.Common.DataModel.SqlServer;
 
+{Project.UsingNameSpaces}
 
 namespace {NameSpace}.DataAccess
 {{
@@ -228,7 +235,7 @@ namespace {NameSpace}.DataAccess
                 }
                 return;
             }
-            var code = ($@"
+            var code = $@"
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -250,7 +257,7 @@ namespace {NameSpace}.DataAccess
 
     }}
 }}
-");
+";
             SaveCode(file, code);
         }
 
@@ -270,7 +277,7 @@ namespace {NameSpace}.DataAccess
         private string TableObject()
         {
             var name = Entity.Name.ToPluralism();
-            return ($@"
+            return $@"
 
         /// <summary>
         /// {Entity.Description}数据访问对象
@@ -286,12 +293,12 @@ namespace {NameSpace}.DataAccess
             {{
                 return this._{name.ToLWord()} ?? ( this._{name.ToLWord()} = new {Entity.Name}DataAccess{{ DataBase = this}});
             }}
-        }}");
+        }}";
         }
 
         private string TableSql()
         {
-            return ($@"
+            return $@"
 
         /// <summary>
         /// {Entity.Description}的结构语句
@@ -300,7 +307,7 @@ namespace {NameSpace}.DataAccess
         {{
             TableName = ""{Entity.ReadTableName}"",
             PimaryKey = ""{Entity.PrimaryColumn.PropertyName}""
-        }};");
+        }};";
         }
 
         private string Fields()
@@ -564,7 +571,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
 
         private string CreateScope()
         {
-            return ($@"
+            return $@"
 
         /// <summary>
         /// 构造一个缺省可用的数据库对象
@@ -582,7 +589,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
         {{
             var db = {Project.DataBaseObjectName}.Default ?? new {Project.DataBaseObjectName}();
             return SqlServerDataTableScope<{Entity.EntityName}>.CreateScope(db, db.{Entity.Name.ToPluralism()});
-        }}");
+        }}";
         }
 
         private string CreateFullSqlParameter()
@@ -712,7 +719,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
         {{
             cmd.CommandText = InsertSqlCode;
             CreateFullSqlParameter(entity, cmd);
-            return {(Entity.PrimaryColumn.IsIdentity).ToString().ToLower()};
+            return {Entity.PrimaryColumn.IsIdentity.ToString().ToLower()};
         }}";
         }
 
@@ -810,18 +817,18 @@ UPDATE [{0}] SET", Entity.SaveTable);
                             , idx++);
                         continue;
                     case "decimal":
-                        code.AppendFormat(field.DbNullable
-                                ? @"
+                        code.AppendFormat(/*field.DbNullable? */
+                                @"
                 if (!reader.IsDBNull({2}))
                     entity._{0} = (decimal){1}({2});"
-                                : @"
-                entity._{0} = (decimal){1}({2});"
+                                /*: @"
+                entity._{0} = (decimal){1}({2});"*/
                             , fieldName
                             , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
                             , idx++);
                         continue;
                 }
-                if (field.DbNullable)
+                //if (field.DbNullable)
                 {
                     if (string.Equals(field.CsType, field.DbType, StringComparison.OrdinalIgnoreCase))
                     {
@@ -861,7 +868,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
                             , idx++);
                     }
                 }
-                else
+                /*else
                 {
                     if (field.CsType.ToLower() == field.DbType.ToLower())
                     {
@@ -887,7 +894,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
                         code.Append($@"
                 entity._{fieldName} = ({field.CustomType ?? field.CsType}){CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)}({idx++});");
                     }
-                }
+                }*/
             }
             code.Append(@"
             }

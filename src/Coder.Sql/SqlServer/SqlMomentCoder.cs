@@ -149,8 +149,10 @@ CREATE VIEW [{viewName}] AS
         }
         private static string DropTable(EntityConfig entity)
         {
+            if (entity == null)
+                return "";
             if (entity.NoDataBase)
-                return "--这个设置为普通类(IsClass=true)，无法生成SQL";//这个设置为普通类，无法生成SQL
+                return $"{entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
             return $@"
 /*******************************{entity.Caption}*******************************/
 DROP TABLE [{entity.SaveTable}];";
@@ -264,8 +266,10 @@ EXECUTE sp_addextendedproperty N'MS_Description', @v, N'SCHEMA', N'dbo', N'TABLE
 
         private static string AddColumnCode(EntityConfig entity)
         {
+            if (entity == null)
+                return "";
             if (entity.NoDataBase)
-                return "--这个设置为普通类(IsClass=true)，无法生成SQL";//这个设置为普通类，无法生成SQL
+                return $"{entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
@@ -288,8 +292,10 @@ ALTER TABLE [{entity.SaveTable}]");
 
         private string ChangeColumnCode(EntityConfig entity)
         {
-            if (entity == null || entity.NoDataBase)
-                return "--这个设置为普通类(IsClass=true)，无法生成SQL";//这个设置为普通类，无法生成SQL
+            if (entity == null)
+                return "";
+            if (entity.NoDataBase)
+                return $"{entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
@@ -311,11 +317,11 @@ ALTER TABLE [{entity.SaveTable}]");
 
         private static string FieldDefault(PropertyConfig col)
         {
-            var def = (col.Initialization == null)
+            var def = col.Initialization == null
                 ? null
                 : col.CsType == "string" ? $"DEFAULT '{col.Initialization}'" : $"DEFAULT {col.Initialization}";
             var nulldef = col.CsType == "string" || col.DbNullable ? " NULL" : " NOT NULL";
-            var identity = (col.IsIdentity ? " IDENTITY(1,1)" : null);
+            var identity = col.IsIdentity ? " IDENTITY(1,1)" : null;
             return $"[{col.ColumnName}] {SqlServerHelper.ColumnType(col)}{identity}{nulldef} {def} -- '{col.Caption}'";
         }
 
@@ -411,13 +417,13 @@ ALTER TABLE [{entity.SaveTable}]");
                 }
                 return;
             }
-            if (field.DbNullable)
+            //if (field.DbNullable)
                 code.Append($@"
                 if (!reader.IsDBNull({idx}))
                     ");
-            else
-                code.Append(@"
-                ");
+            //else
+            //    code.Append(@"
+            //    ");
 
             switch (type)
             {

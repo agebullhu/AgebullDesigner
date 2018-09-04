@@ -90,8 +90,8 @@ namespace Agebull.EntityModel.RobotCoder
                     , CsharpHelper.PropertyValueType(property)
                     , property.ColumnName
                     , property.Caption
-                    , property["CanImport"] == "1" ? "true" : "false"
-                    , property["CanExport"] == "1" ? "true" : "false");
+                    , property.ExtendConfigListBool["easyui","CanImport"] ? "true" : "false"
+                    , property.ExtendConfigListBool["easyui", "CanExport"] ? "true" : "false");
             }
             code2.Clear();
             foreach (PropertyConfig property in table.PublishProperty)

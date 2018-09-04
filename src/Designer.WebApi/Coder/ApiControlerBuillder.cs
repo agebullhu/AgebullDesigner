@@ -6,7 +6,7 @@ namespace Agebull.EntityModel.Designer.WebApi
 {
 
 
-    public sealed class ApiControlerBuilder : EntityCoderBase
+    public sealed class ApiControlerBuillder : EntityCoderBase
     {
         /// <summary>
         /// ÊÇ·ñ¿ÉÐ´
@@ -154,8 +154,8 @@ namespace {NameSpace}.WebApi
                     code.Append($@"
         /// <returns>{item.Result.Caption}</returns>");
                 }
-                var res = item.Result == null ? null : ("<ApiResult<" + item.ResultArg + ">>");
-                var arg = item.Argument == null ? null : ($"[FromBody]{item.CallArg} arg");
+                var res = item.Result == null ? null : "<ApiResult<" + item.ResultArg + ">>";
+                var arg = item.Argument == null ? null : $"[FromBody]{item.CallArg} arg";
 
                 code.Append($@"
         [HttpPost, Route(""{item.RoutePath}"")]
@@ -227,7 +227,7 @@ namespace {NameSpace}.WebApi
                 }
                 var res = item.Result == null ? null : "<ApiResult<" + item.ResultArg + ">>";
                 var res2 = item.Result == null ? "ApiResult" : "ApiResult<" + item.ResultArg + ">";
-                var arg = item.Argument == null ? null : ($"[FromBody]{item.CallArg} arg");
+                var arg = item.Argument == null ? null : $"[FromBody]{item.CallArg} arg";
 
                 code.Append($@"
         [HttpPost, Route(""{item.RoutePath}"")]

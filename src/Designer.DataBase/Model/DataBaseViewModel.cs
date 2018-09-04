@@ -3,6 +3,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using Agebull.Common.Mvvm;
+using Agebull.EntityModel;
 using Agebull.EntityModel.Designer;
 using Agebull.EntityModel.RobotCoder;
 
@@ -20,32 +21,31 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
     {
         #region 操作命令
 
-        public override ObservableCollection<CommandItemBase> CreateCommands()
+        public override NotificationList<CommandItemBase> CreateCommands()
         {
-            return new ObservableCollection<CommandItemBase>
+            var items = CreateCommands(false, true, true);
+            items.Add(new CommandItem
             {
-                new CommandItem
-                {
-                    Action = (Format1 ),
-                    IsButton=true,
-                    Caption = "大驼峰名称",
-                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-                },
-                new CommandItem
-                {
-                    Action = (Format2 ),
-                    IsButton=true,
-                    Caption = "小驼峰名称",
-                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-                },
-                new CommandItem
-                {
-                    Action = (Format3 ),
-                    IsButton=true,
-                    Caption = "小写下划线名称(C风格)",
-                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-                }
-            };
+                Action = Format1,
+                IsButton=true,
+                Caption = "大驼峰名称",
+                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+            });
+            items.Add(new CommandItem
+            {
+                Action = Format2,
+                IsButton=true,
+                Caption = "小驼峰名称",
+                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+            });
+            items.Add(new CommandItem
+            {
+                Action = Format3,
+                IsButton=true,
+                Caption = "小写下划线名称(C风格)",
+                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+            });
+            return items;
         }
         #endregion
 

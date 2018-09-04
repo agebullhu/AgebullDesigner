@@ -142,17 +142,17 @@ namespace Agebull.EntityModel.Config
                 entity.Add(field);
                 if (field["user_help"] == null)
                     field["user_help"] = field.Description ?? field.Caption;
-                if (field.Tag == null)
-                    field.Tag = entity.Tag + "," + field.Name;
-                if (field.LinkTable != null && field.LinkField == null)
-                    field.LinkField = field.Name;
+                //if (field.Tag == null)
+                //    field.Tag = entity.Tag + "," + field.Name;
+                //if (field.LinkTable != null && field.LinkField == null)
+                //    field.LinkField = field.Name;
 
                 if (string.IsNullOrEmpty(field.CustomType))
                     continue;
                 field.EnumConfig = Solution.Enums.FirstOrDefault(p => p.Name == field.CustomType);
                 if (field.EnumConfig != null)
                 {
-                    field.EnumConfig.Option.ReferenceKey = field.Key;
+                    field.EnumConfig.Option.ReferenceConfig = field;
                 }
             }
             foreach (var cmd in entity.Commands)
@@ -163,7 +163,7 @@ namespace Agebull.EntityModel.Config
         private void RepairIdentity(EntityConfig entity, ProjectConfig project, ref int typeid)
         {
             if (entity.Option.Index == 0)
-                entity.Option.Index = (project.Option.Index << 16) | (++typeid);
+                entity.Option.Index = (project.Option.Index << 16) | ++typeid;
             if (entity.Option.Identity <= 0)
             {
                 entity.Option.Identity = entity.Option.Index;
@@ -304,7 +304,7 @@ namespace Agebull.EntityModel.Config
             Solution.EnumList.CollectionChanged += (s, e) => CollectionChanged(Projects, e);
             Solution.ApiList.CollectionChanged += (s, e) => CollectionChanged(Projects, e);
         }
-        private static void CollectionChanged<TConfig>(ObservableCollection<TConfig> collection, NotifyCollectionChangedEventArgs e)
+        private static void CollectionChanged<TConfig>(NotificationList<TConfig> collection, NotifyCollectionChangedEventArgs e)
             where TConfig : ConfigBase
         {
             if (e.Action == NotifyCollectionChangedAction.Reset)
@@ -333,15 +333,12 @@ namespace Agebull.EntityModel.Config
                 return;
             foreach (var project in Solution.Projects)
             {
-                if (project.PagePath != null)
-                    project.PagePath = project.PagePath.Replace(old, path);
                 if (project.BusinessPath != null)
                     project.BusinessPath = project.BusinessPath.Replace(old, path);
                 if (project.MobileCsPath != null)
                     project.MobileCsPath = project.MobileCsPath.Replace(old, path);
                 else
                     project.MobileCsPath = path.Trim('\\') + @"\TradeApp\TradeApp\Model\" + project.Name;
-
                 if (project.CppCodePath != null)
                     project.CppCodePath = project.CppCodePath.Replace(old, path);
             }

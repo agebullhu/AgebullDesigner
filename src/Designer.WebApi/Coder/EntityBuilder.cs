@@ -33,22 +33,27 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// </summary>
         protected override void CreateBaCode(string path)
         {
-            string code = $@"using System;
-using System.IO;
+            string code = $@"
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Runtime.Serialization;
-using System.Web;
-using Agebull.Common;
-using Gboxt.Common.DataModel;
-using Yizuan.Service.Api;
-
+using System.IO;
 using Newtonsoft.Json;
+
+using Agebull.Common;
+using Agebull.Common.DataModel;
+using Gboxt.Common.DataModel;
+using Agebull.Common.WebApi;
+
+{Project.UsingNameSpaces}
 
 namespace {NameSpace}.WebApi
 {{
@@ -75,12 +80,24 @@ namespace {NameSpace}.WebApi
             string code = $@"
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
+using System.Data;
+using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Runtime.Serialization;
-using System.Web;
+using System.IO;
+using Newtonsoft.Json;
+
+using Agebull.Common;
+using Agebull.Common.DataModel;
 using Gboxt.Common.DataModel;
+using Agebull.Common.WebApi;
+
+{Project.UsingNameSpaces}
 
 namespace {NameSpace}.WebApi
 {{

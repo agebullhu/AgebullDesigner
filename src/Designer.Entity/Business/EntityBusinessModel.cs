@@ -49,7 +49,7 @@ namespace Agebull.EntityModel.Config
             else
             {
                 if (string.IsNullOrWhiteSpace(Entity.ReadTableName))
-                    Entity.ReadTableName = ToWords(Entity.Name).LinkToString("tb_", "_");
+                    DataBaseHelper.ToTableName(Entity);
                 if (Entity.PrimaryColumn == null)
                 {
                     Entity.Add(new PropertyConfig
@@ -286,39 +286,6 @@ namespace Agebull.EntityModel.Config
             }
             return columns;
         }
-        #endregion
-
-        #region 命令
-
-        /// <summary>
-        ///     复制值
-        /// </summary>
-        /// <param name="source">复制的源字段</param>
-        /// <param name="noChilds">是否复制子级(默认为是)</param>
-        public void CopyValue(EntityConfig source, bool noChilds = false)
-        {
-            Entity.Caption = source.Caption + "(复制)";
-            Entity.Description = source.Description;
-            Entity.Name = source.Name + "_copy";
-            Entity.DataVersion = source.DataVersion;
-            Entity.DbIndex = source.DbIndex;
-            Entity.IsInternal = source.IsInternal;
-            Entity.NoDataBase = source.NoDataBase;
-            Entity.ReadTableName = source.ReadTableName;
-            Entity.CppName = source.CppName;
-            Entity.Project = source.Project;
-            if (noChilds)
-            {
-                return;
-            }
-            foreach (var field in source.Properties)
-            {
-                var nf = new PropertyConfig();
-                nf.CopyFrom(field);
-                Entity.Add(nf);
-            }
-        }
-
         #endregion
 
     }

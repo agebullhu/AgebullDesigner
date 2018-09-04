@@ -58,7 +58,7 @@ namespace Agebull.EntityModel.RobotCoder
             {
                 if (!property.NoneJson)
                 {
-                    attribute.Append($@" , JsonProperty(""{property.Name}"", NullValueHandling = NullValueHandling.Ignore)");
+                    attribute.Append($@" , JsonProperty(""{property.JsonName}"", NullValueHandling = NullValueHandling.Ignore)");
                     if (property.CsType == "DateTime")
                         attribute.Append(" , JsonConverter(typeof(MyDateTimeConverter))");
                 }

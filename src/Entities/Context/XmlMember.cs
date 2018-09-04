@@ -59,7 +59,7 @@ namespace Agebull.EntityModel.Designer.AssemblyAnalyzer
             {
                 return ;
             }
-            var members = (from p in xElement.Elements("member")
+            var members = from p in xElement.Elements("member")
                 let name = p.Attribute("name")
                 where !string.IsNullOrEmpty(name?.Value) && name.Value[0] != 'M'
                 let summary = p.Element("summary")
@@ -71,7 +71,7 @@ namespace Agebull.EntityModel.Designer.AssemblyAnalyzer
                     Name = np[1],
                     Remark = remarks?.Value,
                     Summary = summary?.Value.Trim()
-                });
+                };
             HelpXml.AddRange(members);
         }
 

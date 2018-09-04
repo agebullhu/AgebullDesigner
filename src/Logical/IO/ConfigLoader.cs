@@ -23,15 +23,22 @@ namespace Agebull.EntityModel.Designer
         /// <param name="sluFile"></param>
         public static SolutionConfig Load(string sluFile)
         {
+            GlobalConfig.ConfigDictionary.Clear();
             ConfigLoader loader = new ConfigLoader();
             loader.LoadSolution(GlobalConfig.CheckPath(GlobalConfig.ProgramRoot, "Global"), "global.json", true);
             GlobalConfig.GlobalSolution = loader._solution;
-            if (string.IsNullOrEmpty(sluFile) ||
-                string.Equals(sluFile, GlobalConfig.GlobalSolution.SaveFileName, StringComparison.OrdinalIgnoreCase))
-                return GlobalConfig.GlobalSolution;
-            loader = new ConfigLoader();
-            loader.LoadSolution(Path.GetDirectoryName(sluFile), Path.GetFileName(sluFile), false);
-            return loader._solution;
+
+            GlobalConfig.GlobalSolution.Foreach<ConfigBase>(p => p.Option.IsNormal,p => GlobalConfig.AddConfig(p.Option));
+            var re = GlobalConfig.GlobalSolution;
+            if (!string.IsNullOrEmpty(sluFile) && !string.Equals(sluFile, GlobalConfig.GlobalSolution.SaveFileName,StringComparison.OrdinalIgnoreCase))
+            {
+                loader = new ConfigLoader();
+                loader.LoadSolution(Path.GetDirectoryName(sluFile), Path.GetFileName(sluFile), false);
+
+                loader._solution.Foreach<ConfigBase>(p => p.Option.IsNormal, p => GlobalConfig.AddConfig(p.Option));
+                re = loader._solution;
+            }
+            return re;
         }
 
         private void LoadSolution(string directory, string file, bool isGlobal)
@@ -53,7 +60,7 @@ namespace Agebull.EntityModel.Designer
                     Trace.WriteLine(exception);
                     _solution = new SolutionConfig();
                 }
-                SolutionConfig.SetCurrentSolution(_solution  );
+                SolutionConfig.SetCurrentSolution(_solution);
                 _solution.IsGlobal = isGlobal;
                 _solution.SaveFileName = sluFile;
                 try
@@ -71,7 +78,7 @@ namespace Agebull.EntityModel.Designer
         private void LoadProjects(string directory)
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            if (Directory.Exists(Path.Combine(directory,"Projects")))
+            if (Directory.Exists(Path.Combine(directory, "Projects")))
             {
                 LoadOldProjects(directory);
             }
@@ -131,19 +138,13 @@ namespace Agebull.EntityModel.Designer
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             string path = Path.Combine(directory, "Entity");
-            List<string> files;
-            if (!Directory.Exists(path))
-            {
-                files = IOHelper.GetAllFiles(directory, "ent");
-            }
-            else
-            {
-                files = IOHelper.GetAllFiles(path, "*.*");
-            }
+            var files = !Directory.Exists(path)
+                ? IOHelper.GetAllFiles(directory, "ent")
+                : IOHelper.GetAllFiles(path, "*.*");
             foreach (var entFile in files)
             {
                 var entity = DeSerializer<EntityConfig>(entFile);
-                if (entity.IsDelete)
+                if (entity == null || entity.IsDelete)
                     continue;
                 foreach (var field in entity.Properties)
                 {
@@ -167,7 +168,7 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        private void LoadApi(ProjectConfig project,string directory)
+        private void LoadApi(ProjectConfig project, string directory)
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             string path = Path.Combine(directory, "Api");

@@ -173,7 +173,7 @@ namespace Agebull.Common.Mvvm
         /// <summary>
         /// ËùÓÐ°´Å¥
         /// </summary>
-        public ObservableCollection<CommandItemBase> Items { get; set; } = new ObservableCollection<CommandItemBase>();
+        public NotificationList<CommandItemBase> Items { get; set; } = new NotificationList<CommandItemBase>();
 
         #endregion
 

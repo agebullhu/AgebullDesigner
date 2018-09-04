@@ -7,31 +7,71 @@ namespace Agebull.EntityModel.Config
     /// 扩展配置节点
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public partial class ConfigItem
+    public class ConfigItem : NotificationObject
     {
+        [DataMember, JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
+        private string _name;
+
+        [DataMember, JsonProperty("value", NullValueHandling = NullValueHandling.Ignore)]
+        private string _value;
+
+        [DataMember, JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
+        private string _type = "string";
+
         /// <summary>
         /// 名称
         /// </summary>
-        [DataMember, JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
-        public string Name { get; set; }
+        [IgnoreDataMember, JsonIgnore]
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                if (_name == value)
+                    return;
+                _name = value;
+                RaisePropertyChanged(nameof(Name));
+            }
+        }
+
+        /// <summary>
+        /// 数据类型
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        public string Type
+        {
+            get => _type;
+            set
+            {
+                if (_type == value)
+                    return;
+                _type = value;
+                RaisePropertyChanged(nameof(Type));
+            }
+        }
 
         /// <summary>
         /// 值
         /// </summary>
-        [DataMember, JsonProperty("value", NullValueHandling = NullValueHandling.Ignore)]
-        public string Value { get; set; }
+        [IgnoreDataMember, JsonIgnore]
+        public string Value
+        {
+            get => _value;
+            set
+            {
+                if (_value == value)
+                    return;
+                _value = value;
+                RaisePropertyChanged(nameof(Value));
+            }
+        }
 
         /// <summary>返回表示当前对象的字符串。</summary>
         /// <returns>表示当前对象的字符串。</returns>
         /// <filterpriority>2</filterpriority>
         public override string ToString()
         {
-            return $"{Name}:{Value}";
+            return $"{Name}:{Value}({Type})";
         }
-
-        /// <summary>
-        /// 数据类型
-        /// </summary>
-        public string Type { get; set; }
     }
 }

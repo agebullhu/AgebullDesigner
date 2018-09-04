@@ -26,7 +26,7 @@ namespace Agebull.EntityModel
 
         private readonly Dictionary<int, int> _threadIndex = new Dictionary<int, int>();
 
-        private readonly ObservableCollection<string> _trace = new ObservableCollection<string>();
+        private readonly NotificationList<string> _trace = new NotificationList<string>();
 
         private bool _doTrace = true;
 
@@ -207,7 +207,6 @@ namespace Agebull.EntityModel
         }
         private void WriteTrace(string message, bool time = false)
         {
-#if CLIENT
             BeginInvokeInUiThread(p =>
             {
                 if (_threadIndex.ContainsKey(Thread.CurrentThread.ManagedThreadId))
@@ -232,28 +231,6 @@ namespace Agebull.EntityModel
                 RaisePropertyChanged(() => Track);
                 LastMessageIndex = _trace.Count - 1;
             }, message);
-#else
-            if (threadIndex.ContainsKey(Thread.CurrentThread.ManagedThreadId))
-            {
-                var idx = threadIndex[Thread.CurrentThread.ManagedThreadId] + 1;
-                if (idx >= this._trace.Count)
-                {
-                    this._trace.Add(time ? string.Format("{0}:{1}", DateTime.Now, p) : p);
-                    threadIndex[Thread.CurrentThread.ManagedThreadId] = this._trace.Count;
-                }
-                else
-                {
-                    this._trace.Insert(idx, time ? string.Format("{0}:{1}", DateTime.Now, p) : p);
-                    threadIndex[Thread.CurrentThread.ManagedThreadId] = idx;
-                }
-            }
-            else
-            {
-                this._trace.Add(time ? string.Format("{0}:{1}", DateTime.Now, p) : p);
-                threadIndex.Add(Thread.CurrentThread.ManagedThreadId, this._trace.Count - 1);
-            }
-            this.RaisePropertyChanged(() => this.Track); ;
-#endif
         }
 
         private int _lastMessageIndex;

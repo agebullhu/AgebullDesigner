@@ -33,13 +33,28 @@ namespace Agebull.EntityModel.Designer.WebApi
         {
             if (Entity.ExtendConfigListBool["NoApi"])
                 return;
-            string code = $@"using System;
-using System.IO;
+            string code = $@"
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Configuration;
+using System.Data;
+using System.Diagnostics;
 using System.Linq;
-using Agebull.Common.Logging;
+using System.Linq.Expressions;
+using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
+
+using Agebull.Common;
+using Agebull.Common.DataModel;
 using Gboxt.Common.DataModel;
-using Yizuan.Service.Api;
+using Agebull.Common.WebApi;
+
+{Project.UsingNameSpaces}
+
 using {NameSpace}.BusinessLogic;
 
 namespace {NameSpace}.WebApi.EntityApi
@@ -296,8 +311,8 @@ namespace {NameSpace}.WebApi
                     code.Append($@"
         /// <returns>{item.Result.Caption}</returns>");
                 }
-                var res = item.Result == null ? null : ("<" + item.Result.Name + ">");
-                var arg = item.Argument == null ? null : ($"{item.Argument.Name} arg");
+                var res = item.Result == null ? null : "<" + item.Result.Name + ">";
+                var arg = item.Argument == null ? null : $"{item.Argument.Name} arg";
 
                 code.Append($@"
         public ApiResult{res} {item.Name}({arg})
@@ -377,8 +392,8 @@ namespace {NameSpace}.WebApi
                     code.Append($@"
         /// <returns>{item.Result.Caption}</returns>");
                 }
-                var res = item.Result == null ? null : ("<" + item.Result.Name + ">");
-                var arg = item.Argument == null ? null : ($"{item.Argument.Name} arg");
+                var res = item.Result == null ? null : "<" + item.Result.Name + ">";
+                var arg = item.Argument == null ? null : $"{item.Argument.Name} arg";
 
                 code.Append($@"
         partial void {item.Name}(");

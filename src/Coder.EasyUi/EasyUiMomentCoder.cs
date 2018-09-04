@@ -15,18 +15,13 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("Web-EasyUi", "Index.aspx", "xml", IndexPage);
-            MomentCoder.RegisteCoder("Web-EasyUi", "Form.htm", "xml", FormCode);
             MomentCoder.RegisteCoder("Web-EasyUi", "Form服务端读取", "cs", InputConvert);
-            MomentCoder.RegisteCoder("Web-EasyUi", "Script.js", "js", PageScript);
-            MomentCoder.RegisteCoder("Web-EasyUi", "Details.aspx", "xml", GridDetailsPage);
             MomentCoder.RegisteCoder("Web-EasyUi", "下拉列表方法", "xml", ApiCode);
             MomentCoder.RegisteCoder("Web-EasyUi", "下拉列表选择", "xml", ApiSwitch);
-            MomentCoder.RegisteCoder("Web-EasyUi", "Mvc菜单", "xml", MvcMenu);
-            MomentCoder.RegisteCoder("Web-EasyUi", "EasyUi表单", "xml", EasyUiForm);
-            MomentCoder.RegisteCoder("Web-EasyUi", "EasyUi表单保存", "cs", FormSaveCode);
-            MomentCoder.RegisteCoder("Web-EasyUi", "EasyUi表格", "xml", EasyUiGrid);
-            MomentCoder.RegisteCoder("Web-EasyUi", "EasyUi详情", "xml", EasyUiInfo);
+
+
+
+
             MomentCoder.RegisteCoder("Web-EasyUi", "工作流注入式编辑代码", "cs", WorkflowInfo);
             //MomentCoder.RegisteCoder("Web-EasyUi", "对象名称(JS)","js", DataInfoCs);
             MomentCoder.RegisteCoder("Web-EasyUi", "对象名称(CS)", "cs", DataInfoCs);
@@ -46,12 +41,8 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             var entity = config as EntityConfig;
             if (entity == null)
                 return "请选择一个实体模型";
-            var coder = new EasyUiIndexPageCoder
-            {
-                Entity = entity,
-                Project = entity.Parent
-            };
-            return coder.Code();
+            var coder = new EasyUiIndexPageCoder();
+            return coder.BaseCode(entity);
         }
 
         /// <summary>
@@ -82,12 +73,8 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             var entity = config as EntityConfig;
             if (entity == null)
                 return "请选择一个实体模型";
-            var coder = new EasyUiListDetailsPageCoder
-            {
-                Entity = entity,
-                Project = entity.Parent
-            };
-            return coder.Code();
+            var coder = new EasyUiListDetailsPageCoder();
+            return coder.BaseCode(entity);
 
         }
 
@@ -95,17 +82,39 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// 
         /// </summary>
         /// <returns></returns>
-        public static string PageScript(ConfigBase config)
+        public static string EasyUiScriptJs(ConfigBase config)
         {
             var entity = config as EntityConfig;
             if (entity == null)
                 return "请选择一个实体模型";
-            var coder = new EasyUiPageScriptCoder
-            {
-                Entity = entity,
-                Project = entity.Parent
-            };
-            return coder.Code();
+            var coder = new EasyUiScriptCoder();
+            return coder.BaseCode(entity);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static string PageJs(ConfigBase config)
+        {
+            var entity = config as EntityConfig;
+            if (entity == null)
+                return "请选择一个实体模型";
+            var coder = new EasyUiPageScriptCoder();
+            return coder.BaseCode(entity);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static string FormJs(ConfigBase config)
+        {
+            var entity = config as EntityConfig;
+            if (entity == null)
+                return "请选择一个实体模型";
+            var coder = new EasyUiPageScriptCoder();
+            return coder.ExtendCode(entity);
         }
 
         /// <summary>
@@ -117,12 +126,8 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             var entity = config as EntityConfig;
             if (entity == null)
                 return "请选择一个实体模型";
-            var coder = new EasyUiFormCoder
-            {
-                Entity = entity,
-                Project = entity.Parent
-            };
-            return coder.Code();
+            var coder = new EasyUiFormCoder();
+            return coder.BaseCode(entity);
         }
         #endregion
 
@@ -250,7 +255,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 
         #endregion
         #region MVC支持
-
+        /*
         private static string MvcMenu(ConfigBase config)
         {
             var entity = config as EntityConfig;
@@ -278,7 +283,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             foreach (PropertyConfig field in entity.PublishProperty)
             {
                 string ext = null;
-                if (!field.CanEmpty)
+                if (field.IsRequired || !field.CanEmpty)
                     ext = " data-options='required:true'";
                 string type = " easyui-text";
                 jsonBuilder.AppendFormat(@"
@@ -322,7 +327,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             }
             return jsonBuilder.ToString();
         }
-
+        */
         #endregion
     }
 }

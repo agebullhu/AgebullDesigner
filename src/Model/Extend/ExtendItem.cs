@@ -13,14 +13,14 @@ namespace Agebull.EntityModel.Designer
 
         public string Value
         {
-            get => Config[Name];
+            get => Config.Option[Name];
             set
             {
-                if (value == Config[Name])
+                if (value == Config.Option[Name])
                 {
                     return;
                 }
-                Config[Name] = value;
+                Config.Option[Name] = value;
                 RaisePropertyChanged(nameof(value));
             }
         }

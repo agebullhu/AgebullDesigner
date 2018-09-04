@@ -8,10 +8,10 @@ using Agebull.EntityModel.Designer;
 namespace Agebull.Common.Config.Designer
 {
     /// <summary>
-    /// 接口实现检查
+    /// 规范实体主键
     /// </summary>
-    [Export(typeof(IAutoRegister))]
-    [ExportMetadata("Symbol", '%')]
+    //[Export(typeof(IAutoRegister))]
+    //[ExportMetadata("Symbol", '%')]
     internal sealed class EntityPrimaryKeyHelper : EntityCommandBase, IAutoRegister
     {
         

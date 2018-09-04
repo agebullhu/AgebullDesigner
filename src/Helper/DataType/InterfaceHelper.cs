@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
@@ -19,22 +17,16 @@ namespace Agebull.EntityModel.RobotCoder
             foreach (var inf in interfaces)
             {
                 var ie = GlobalConfig.GetEntity(inf);
-                if (ie != null)
+                if (ie == null) continue;
+                foreach (var iField in ie.Properties)
                 {
-                    foreach (var field in ie.Properties)
+                    var field = entity.Properties.FirstOrDefault(p => p.ReferenceKey == iField.Key || p.Name == iField.Name);
+                    if (field == null)
                     {
-                        var old = entity.Properties.FirstOrDefault(p => p.ReferenceKey == field.Key || p.Name == field.Name);
-                        if (old == null)
-                            entity.Add(old = new PropertyConfig
-                            {
-                                Name = field.Name,
-                                Caption = field.Caption
-                            });
-                        old.CopyFrom(field);
-                        old.ReferenceKey = field.Key;
-                        old.Option.IsReference = true;
-                        old.Option.ReferenceConfig = field;
+                        entity.Add(field = new PropertyConfig());
                     }
+                    field.CopyFromProperty(iField,false, false, false);
+                    field.Option.ReferenceConfig = iField;
                 }
             }
         }

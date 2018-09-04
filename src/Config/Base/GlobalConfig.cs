@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -603,27 +602,27 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     解决方案集合
         /// </summary>
-        public static ObservableCollection<SolutionConfig> Solutions => Global.Solutions;
+        public static NotificationList<SolutionConfig> Solutions => Global.Solutions;
 
         /// <summary>
         ///     枚举集合
         /// </summary>
-        public static ObservableCollection<EnumConfig> Enums => Global.Enums;
+        public static NotificationList<EnumConfig> Enums => Global.Enums;
 
         /// <summary>
         ///     实体集合
         /// </summary>
-        public static ObservableCollection<EntityConfig> Entities => Global.Entities;
+        public static NotificationList<EntityConfig> Entities => Global.Entities;
 
         /// <summary>
         ///     项目集合
         /// </summary>
-        public static ObservableCollection<ProjectConfig> Projects => Global.Projects;
+        public static NotificationList<ProjectConfig> Projects => Global.Projects;
 
         /// <summary>
         ///     API集合
         /// </summary>
-        public static ObservableCollection<ApiItem> ApiItems => Global.ApiItems;
+        public static NotificationList<ApiItem> ApiItems => Global.ApiItems;
 
         /// <summary>
         /// 如果不存在就加入
@@ -631,7 +630,7 @@ namespace Agebull.EntityModel.Config
         /// <param name="collection"></param>
         /// <param name="values"></param>
         /// <typeparam name="TConfig"></typeparam>
-        public static void TryAdd<TConfig>(ObservableCollection<TConfig> collection, IEnumerable<TConfig> values)
+        public static void TryAdd<TConfig>(NotificationList<TConfig> collection, IEnumerable<TConfig> values)
             where TConfig : ConfigBase
         {
             foreach (var vl in values)

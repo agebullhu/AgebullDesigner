@@ -37,6 +37,7 @@ namespace Agebull.EntityModel.Designer
                 Action= RepairByDb,
                 Catalog = "数据库",
                 Caption = "重构数据库设计",
+                Editor = "DataBase",
                 IconName = "tree_item",
                 ConfirmMessage = "是否执行【重构数据库设计】操作"
             });
@@ -45,6 +46,7 @@ namespace Agebull.EntityModel.Designer
                 Action = CheckByDb,
                 Catalog = "数据库",
                 Caption = "修复数据库设计",
+                Editor = "DataBase",
                 IconName = "tree_item",
                 ConfirmMessage = "是否执行【修复数据库设计】操作"
             });
@@ -62,23 +64,31 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void CheckByDb(EntityConfig entity)
         {
-            EntityDatabaseBusiness business = new EntityDatabaseBusiness
+            using (CodeGeneratorScope.CreateScope(entity))
             {
-                Entity = entity
-            };
-            business.CheckDbConfig(false);
+                EntityDatabaseBusiness business = new EntityDatabaseBusiness
+                {
+                    Entity = entity
+                };
+                business.CheckDbConfig(false);
+            }
         }
+
         /// <summary>
         /// 数据库设计检查
         /// </summary>
         public void RepairByDb(EntityConfig entity)
         {
-            EntityDatabaseBusiness business = new EntityDatabaseBusiness
+            using (CodeGeneratorScope.CreateScope(entity))
             {
-                Entity = entity
-            };
-            business.CheckDbConfig(true);
+                EntityDatabaseBusiness business = new EntityDatabaseBusiness
+                {
+                    Entity = entity
+                };
+                business.CheckDbConfig(true);
+            }
         }
+
         #endregion
 
         #region 校验数据库字段

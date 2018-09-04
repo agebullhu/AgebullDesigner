@@ -10,12 +10,14 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
     [ExportMetadata("Symbol", '%')]
     public class EasyUiItemCoder : EasyUiCoderBase
     {
+        protected override string LangName => "aspx";
+
         /// <summary>
         /// Ãû³Æ
         /// </summary>
-        protected override string FileSaveConfigName => "File_Aspnet_Item_aspx";
+        protected override string FileName => "Item.aspx";
         private bool isTemplate => Entity.ClientProperty.Any(p => p.Name == "ProjectTemplateId");
-        public override string Code()
+        protected override string BaseCode()
         {
             Prepare();
             return $@"<%@ Page Language='C#' AutoEventWireup='true' Inherits='Gboxt.Common.WebUI.{(isTemplate ? "TemplatePage" : "PublishPage")}' %>

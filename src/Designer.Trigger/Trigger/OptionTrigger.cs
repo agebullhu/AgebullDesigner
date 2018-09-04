@@ -53,7 +53,8 @@ namespace Agebull.EntityModel.Designer
                 case nameof(ConfigDesignOption.Key):
                     GlobalConfig.AddConfig(Option);
                     break;
-                case nameof(ConfigDesignOption.IsLock ):
+                case nameof(ConfigDesignOption.IsDiscard):
+                case nameof(ConfigDesignOption.IsDelete):
                     GlobalConfig.RemoveConfig(Option);
                     break;
             }

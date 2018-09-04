@@ -10,7 +10,7 @@ using Agebull.Common.Mvvm;
 namespace Agebull.Common.Config.Designer
 {
     /// <summary>
-    /// 关系连接检查
+    /// 命令注册器
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
@@ -21,10 +21,10 @@ namespace Agebull.Common.Config.Designer
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            CommandCoefficient.RegisterCommand(new CommandItemBuilder<object, int>(BeginImportSqlServer, DoImportSqlServer, EndImportSqlServer)
+            CommandCoefficient.RegisterCommand(new CommandItemBuilder<ProjectConfig, int>(BeginImportSqlServer, DoImportSqlServer, EndImportSqlServer)
             {
                 Caption = "导入SqlServer数据库",
-                Catalog = "文件",
+                Catalog = "数据库",
                 IconName = "tree_Assembly"
             });
         }
@@ -33,7 +33,7 @@ namespace Agebull.Common.Config.Designer
         /// 导入数据库
         /// </summary>
         /// <returns></returns>
-        public bool BeginImportSqlServer(object _)
+        public bool BeginImportSqlServer(ProjectConfig _)
         {
             if (DataModelDesignModel.Current.Context.SelectProject == null)
             {
@@ -52,7 +52,7 @@ namespace Agebull.Common.Config.Designer
         /// 导入数据库
         /// </summary>
         /// <returns></returns>
-        public int DoImportSqlServer(object _)
+        public int DoImportSqlServer(ProjectConfig _)
         {
             var checker = new SqlSchemaChecker
             {

@@ -1,5 +1,5 @@
 using System.ComponentModel.Composition;
-using System.IO;
+using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Designer;
 
@@ -9,19 +9,25 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
     [ExportMetadata("Symbol", '%')]
     public class EasyUiIndexPageCoder : EasyUiCoderBase
     {
+        protected override string LangName => "aspx";
+
         /// <summary>
         /// Ãû³Æ
         /// </summary>
-        protected override string FileSaveConfigName => "File_Aspnet_Page_aspx";
+        protected override string FileName => "Index.aspx";
 
-        public override string Code()
+        protected override string BaseCode()
         {
+            var cls = Entity.Parent.Classifies.FirstOrDefault(p => p.Name == Entity.Classify);
+            var folder = cls == null
+                ? $"{Entity.Parent.Caption} > {Entity.Caption}"
+                : $"{Entity.Parent.Caption} > {cls.Caption } > {Entity.Caption}";
             return $@"<%@ Page Title='' Language='C#' MasterPageFile='~/JquerySite.Master' AutoEventWireup='true' Inherits='System.Web.UI.Page'%>
 <asp:Content ID='cPagePathRegion' ContentPlaceHolderID='PagePathRegion' runat='server'>
-{Entity.Parent.Caption} > {Entity.Caption}
+{folder}
 </asp:Content>
 <asp:Content ID='cScriptRegion' ContentPlaceHolderID='ScriptRegion' runat='server'>
-    <script type='text/javascript' src='/{Entity["File_Web_Script"]?.Replace('\\', '/')}/script.js'></script>
+    <script type='text/javascript' src='/{Project.PageFolder ?? Project.Name}/{Entity.Option["File_Web_Script_js"]?.Replace('\\', '/')}'></script>
 </asp:Content>
 <asp:Content ID='cBodyRegion' ContentPlaceHolderID='BodyRegion' runat='server'>{(Entity.TreeUi ? Tree : Grid)}
 </asp:Content>";
@@ -53,23 +59,24 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 
         private string ExtQueryHtmlCode()
         {
+            if (Entity.Interfaces == null) return null;
             var code = new StringBuilder();
-            string type = null;
-            if (Entity.Interfaces != null)
-            {
-                if (Entity.Interfaces.Contains("IAudit"))
-                    type = "auditType";
-                else if (Entity.Interfaces.Contains("IStateData"))
-                    type = "dataStateType";
-            }
-            if (type == null)
-                return null;
-            code.Append($@"
-            <label class='queryLabel'>×´Ì¬:</label>
+            if (Entity.Interfaces.Contains("IStateData"))
+                code.Append(@"
+            <label class='queryLabel'>Êý¾Ý×´Ì¬:</label>
             <label class='queryLabel'>
                 <input id='qAudit' class='inputValue_SSS inputS easyui-combobox' 
-                       data-options=""valueField:'value',textField:'text',data:{type}"" />
+                       data-options=""valueField:'value',textField:'text',data:dataStateType"" />
             </label>");
+            if (Entity.Interfaces.Contains("IAudit"))
+            {
+                code.Append(@"
+            <label class='queryLabel'>ÉóºË×´Ì¬:</label>
+            <label class='queryLabel'>
+                <input id='qAudit' class='inputValue_SSS inputS easyui-combobox' 
+                       data-options=""valueField:'value',textField:'text',data:auditType"" />
+            </label>");
+            }
             return code.ToString();
         }
 
@@ -99,7 +106,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         <a id='btnDisable' href='javascript:void(0)'>½ûÓÃ</a>
         <div style='display: inline;'><div class='toolbarSpace'></div></div>
         <a id='btnDiscard' href='javascript:void(0)'>·ÏÆú</a>
-        <a id='btnReset' href='javascript:void(0)'>»¹Ô­</a>");
+        <a id='btnReset' href='javascript:void(0)'>ÖØÖÃ</a>");
             }
             if (Entity.Commands.Count > 0)
                 code.Append(@"

@@ -253,7 +253,7 @@ const boost::format sql_insert_fmt(
 * @return {{string}} SQLÓï¾ä
 */
 string {Entity.Name}SqlAccess::InsertSql({Entity.Name} data)
-{{{(SqlCode("sql_insert_fmt"))}
+{{{SqlCode("sql_insert_fmt")}
 }}
 
 /**
@@ -268,7 +268,7 @@ const boost::format sql_update_fmt(
 * @return {{string}} SQLÓï¾ä
 */
 string {Entity.Name}SqlAccess::UpdateSql({Entity.Name} data)
-{{{(SqlCode("sql_update_fmt"))}
+{{{SqlCode("sql_update_fmt")}
 }}
 
 

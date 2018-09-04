@@ -25,7 +25,7 @@ namespace Agebull.EntityModel.Designer
             {
                 SignleSoruce = true,
                 
-                Action = (CheckDouble),
+                Action = CheckDouble,
                 Caption = "修复数据精度",
                 Editor = "C++字段",
                 IconName = "tree_item",
@@ -36,14 +36,14 @@ namespace Agebull.EntityModel.Designer
                 SignleSoruce = true,
                 
                 Editor = "C++字段",
-                Action = (RepairByArrayLen),
+                Action = RepairByArrayLen,
                 Caption = "修复文本长度",
                 IconName = "tree_item",
                 ConfirmMessage = "确认修复文本长度吗?\n要知道这存在一定破坏性!"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Action = (RepairRegular),
+                Action = RepairRegular,
                 Caption = "C++引用修复",
                 SignleSoruce = true,
                 
@@ -53,7 +53,7 @@ namespace Agebull.EntityModel.Designer
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Action = (ResetRegular),
+                Action = ResetRegular,
                 Caption = "C++引用重置",
                 SignleSoruce = true,
                 

@@ -12,21 +12,21 @@ namespace Agebull.EntityModel.RobotCoder
     [ExportMetadata("Symbol", '%')]
     internal class EnumMomentCoder : MomentCoderBase, IAutoRegister
     {
-        #region ×¢²á
+        #region ×¢ï¿½ï¿½
 
         /// <summary>
-        /// ×¢²á´úÂë
+        /// ×¢ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("Ã¶¾Ù", "Ã¶¾Ù(C++)","cpp", (EnumCpp));
-            MomentCoder.RegisteCoder("Ã¶¾Ù", "Ã¶¾Ù(JS)", "js", EnumJs);
-            MomentCoder.RegisteCoder("Ã¶¾Ù", "Ã¶¾Ù(C#)", "cs", (EnumFunc));
-            MomentCoder.RegisteCoder("Ã¶¾Ù", "Ã¶¾ÙÃû³ÆÀ©Õ¹·½·¨(Enum.Caption())", "cs", EnumCs);
+            MomentCoder.RegisteCoder("Ã¶ï¿½ï¿½", "Ã¶ï¿½ï¿½(C++)","cpp", EnumCpp);
+            MomentCoder.RegisteCoder("Ã¶ï¿½ï¿½", "Ã¶ï¿½ï¿½(JS)", "js", EnumJs);
+            MomentCoder.RegisteCoder("Ã¶ï¿½ï¿½", "Ã¶ï¿½ï¿½(C#)", "cs", EnumFunc);
+            MomentCoder.RegisteCoder("Ã¶ï¿½ï¿½", "Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¹ï¿½ï¿½ï¿½ï¿½(Enum.Caption())", "cs", EnumCs);
         }
         #endregion
 
-        #region Ã¶¾Ù(C++)
+        #region Ã¶ï¿½ï¿½(C++)
 
         public static string EnumCpp(ConfigBase config)
         {
@@ -48,7 +48,7 @@ namespace Agebull.EntityModel.RobotCoder
             code.Append($@"
 
 /**
-* @brief {ToRemString(config.Caption)}Ã¶¾Ù
+* @brief {ToRemString(config.Caption)}Ã¶ï¿½ï¿½
 */
     enum class {config.Name}Classify
 {{");
@@ -69,7 +69,7 @@ namespace Agebull.EntityModel.RobotCoder
         }
         #endregion
 
-        #region Ã¶¾Ù(C#)
+        #region Ã¶ï¿½ï¿½(C#)
 
         public static string EnumFunc(ConfigBase config)
         {
@@ -153,7 +153,7 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
         /// <summary>
-        ///     Éú³ÉÃ¶¾Ù
+        ///     ï¿½ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½
         /// </summary>
         public static void TypeDefaultScript(StringBuilder code, EnumConfig enumc)
         {
@@ -176,7 +176,7 @@ var {enumc.Name.ToLWord()} = [");
 ];
 
 /**
- * {enumc.Caption}Ö®±í¸ñ¸ñÊ½»¯·½·¨
+ * {enumc.Caption}Ö®ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  */
 function {enumc.Name.ToLWord()}Format(value) {{
     return arrayFormat(value, {enumc.Name.ToLWord()});
@@ -197,7 +197,7 @@ function {enumc.Name.ToLWord()}Format(value) {{
         }
 
         /// <summary>
-        ///     Éú³ÉÃ¶¾Ù
+        ///     ï¿½ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½
         /// </summary>
         public static void EnumName(StringBuilder code, EnumConfig enumc, List<EnumConfig> doed)
         {
@@ -206,7 +206,7 @@ function {enumc.Name.ToLWord()}Format(value) {{
             doed.Add(enumc);
             code.Append($@"
         /// <summary>
-        ///     {enumc.Caption}Ãû³Æ×ª»»
+        ///     {enumc.Caption}ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½
         /// </summary>
         public static string ToCaption(this {enumc.Name} value)
         {{

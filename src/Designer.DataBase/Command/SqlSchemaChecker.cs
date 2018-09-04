@@ -44,7 +44,10 @@ namespace Agebull.EntityModel.Designer
                     {
                         while (reader.Read())
                         {
-                            tables.Add(reader.GetString(0), reader.GetString(1));
+                            var idx = reader.GetInt32(2);
+                            string name = reader.GetString(0);
+                            if (!tables.ContainsKey(name))
+                                tables.Add(name, idx == 0 ? reader.GetString(1) : name);
                         }
                     }
                 }
@@ -56,10 +59,11 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        private const string table_sql = @"SELECT [Tables].name as [Name],[Properties].value AS [Description] 
+        private const string table_sql = @"SELECT [Tables].name as [Name],[Properties].value AS [Description],[Properties].minor_id
 FROM sys.tables [Tables]
 LEFT OUTER JOIN sys.extended_properties AS [Properties] ON [Properties].major_id = [Tables].object_id AND [Properties].name = 'MS_Description'
-WHERE  [Tables].[type]='U' AND [Properties].minor_id=0;";
+WHERE  [Tables].[type]='U'
+ORDER BY [Properties].minor_id;";
 
         private const string sql = @"
 SELECT  [ColumnName] = [Columns].name ,
@@ -116,6 +120,7 @@ ORDER BY [Tables].object_id, [Columns].column_id";
 
         public void CheckColumns(SqlConnection connection, string table, string description)
         {
+            TraceMessage.DefaultTrace.Track = table;
             using (var cmd = new SqlCommand(sql, connection))
             {
                 cmd.Parameters.Add(parameter = new SqlParameter("@entity", SqlDbType.NVarChar, 256));

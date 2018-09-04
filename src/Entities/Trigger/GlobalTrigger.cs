@@ -205,8 +205,10 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 开始代码生成
         /// </summary>
-        public static void OnCodeGeneratorBegin()
+        public static void OnCodeGeneratorBegin(NotificationObject config)
         {
+            if (config == null)
+                return;
             var scope = EventScope.CreateScope(My, "Global", "OnCodeGeneratorBegin");
             if (scope == null)
                 return;
@@ -214,7 +216,7 @@ namespace Agebull.EntityModel
             {
                 foreach (var trigger in Triggers)
                 {
-                    trigger.OnCodeGeneratorBegin();
+                    trigger.OnCodeGeneratorBegin(config);
                 }
             }
         }

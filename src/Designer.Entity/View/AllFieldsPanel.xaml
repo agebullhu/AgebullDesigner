@@ -35,7 +35,7 @@
             <DataGridTextColumn Header="分组"
                                 Binding="{Binding Group, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridCheckBoxColumn Header="0构建索引"
-                                    Binding="{Binding CreateIndex, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
+                                    Binding="{Binding CreateDbIndex, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridCheckBoxColumn Header="1是否主键"
                                     Binding="{Binding IsPrimaryKey, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridCheckBoxColumn Header="1是否扩展主键"
@@ -186,7 +186,7 @@
                                     Binding="{Binding IsKeyValueArray, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridCheckBoxColumn Header="5是否为关系表"
                                     Binding="{Binding IsRelation, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
-            <DataGridTextColumn Header="7扩展对象属性名称"
+            <!--<DataGridTextColumn Header="7扩展对象属性名称"
                                 Binding="{Binding ExtendPropertyName, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridTextColumn Header="8扩展对象对象名称"
                                 Binding="{Binding ExtendClassName, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
@@ -201,7 +201,7 @@
             <DataGridCheckBoxColumn Header="IsExtendArray"
                                     Binding="{Binding IsExtendArray, Mode=OneWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridCheckBoxColumn Header="IsExtendValue"
-                                    Binding="{Binding IsExtendValue, Mode=OneWay , UpdateSourceTrigger=PropertyChanged}" />
+                                    Binding="{Binding IsExtendValue, Mode=OneWay , UpdateSourceTrigger=PropertyChanged}" />-->
             <DataGridCheckBoxColumn Header="参照对象"
                                     Binding="{Binding IsReference, Mode=OneWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridTextColumn Header="标识" Binding="{Binding Key, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" />

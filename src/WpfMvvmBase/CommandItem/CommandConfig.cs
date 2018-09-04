@@ -101,7 +101,7 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         public Type TargetType
         {
-            get => SignleSoruce ? _targetType : (SuppertType ?? _targetType);
+            get => SignleSoruce ? _targetType : SuppertType ?? _targetType;
             set => _targetType = value;
         }
 

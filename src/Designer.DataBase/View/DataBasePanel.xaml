@@ -85,7 +85,7 @@
                 <WrapPanel>
                     <StackPanel>
                         <Label Content="构建索引" />
-                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding CreateIndex,Mode=TwoWay}" />
+                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding CreateDbIndex,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="不存储" />

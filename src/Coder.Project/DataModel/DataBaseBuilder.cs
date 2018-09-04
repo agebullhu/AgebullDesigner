@@ -19,14 +19,25 @@ namespace Agebull.EntityModel.RobotCoder
             string code = $@"
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
-using System.Linq;
-using System.Text;
 using System.Diagnostics;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
 
+using Agebull.Common;
+using Agebull.Common.DataModel;
+using Agebull.Common.WebApi;
 using Gboxt.Common.DataModel;
 using Gboxt.Common.DataModel.MySql;
+
+{Project.UsingNameSpaces}
 
 namespace {Project.NameSpace}.DataAccess
 {{
@@ -104,14 +115,24 @@ namespace DALFactory
             string code = $@"
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data;
-using System.IO;
+using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
 
+using Agebull.Common;
+using Agebull.Common.DataModel;
+using Agebull.Common.WebApi;
 using Gboxt.Common.DataModel;
+{Project.UsingNameSpaces}
+
 using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
 using Gboxt.Common.DataModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
 

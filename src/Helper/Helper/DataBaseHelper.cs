@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Agebull.EntityModel.Config.SqlServer;
 
 namespace Agebull.EntityModel.Config
@@ -9,57 +11,86 @@ namespace Agebull.EntityModel.Config
     /// </summary>
     public class DataBaseHelper
     {
-
         /// <summary>
-        /// 主页面类型类型的列表
+        /// 到标准数据表名称
         /// </summary>
-        public static List<ComboItem<string>> DataTypeList => SqlServerHelper.DataTypeList;
-
-
-        /// <summary>
-        ///     从C#的类型转为DBType
-        /// </summary>
-        /// <param name="csharpType"> </param>
-        public static DbType ToDbType(string csharpType)
+        /// <param name="Entity"></param>
+        /// <returns></returns>
+        public static string ToTableName(EntityConfig Entity)
         {
-            return SqlServerHelper.ToDbType(csharpType);
+            string head = "tb_";
+            if (Entity.Classify != null)
+            {
+                var cls = Entity.Parent.Classifies.FirstOrDefault(p => p.Name == Entity.Classify);
+                if (cls != null && !string.IsNullOrEmpty(cls.Abbreviation))
+                    head = cls.Abbreviation?.ToLower() + "_";
+            }
+            if (!string.IsNullOrWhiteSpace(Entity.Parent.Abbreviation))
+                head += Entity.Parent.Abbreviation.ToLower() + "_";
+            return GlobalConfig.SplitWords(Entity.Name).Select(p => p.ToLower()).LinkToString(head, "_");
+        }
+        /// <summary>
+        /// 到标准数据表名称
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static string ToColumnName(string name)
+        {
+            return GlobalConfig.ToName(GlobalConfig.SplitWords(name).Select(p => p.ToLower()).ToList());
         }
 
         /// <summary>
-        ///     从C#的类型转为SQLite的类型
+        /// 执行器
         /// </summary>
-        /// <param name="property">字段</param>
-        public static string ToDataBaseType(PropertyConfig property)
+        public static bool CheckFieldLink(EntityConfig entity)
         {
-            return SqlServerHelper.ToDataBaseType(property);
-        }
-
-        /// <summary>
-        ///     从C#的类型转为SQLite的类型
-        /// </summary>
-        /// <param name="csharpType"> C#的类型</param>
-        public static string ToDataBaseType(string csharpType)
-        {
-            return SqlServerHelper.ToDataBaseType(csharpType);
-        }
-
-        /// <summary>
-        ///     是否合理的数据库类型
-        /// </summary>
-        /// <param name="type"> 类型</param>
-        public static bool IsDataBaseType(string type)
-        {
-            return SqlServerHelper.IsDataBaseType(type);
-        }
-
-
-        /// <summary>
-        ///     从C#的类型转为My sql的类型
-        /// </summary>
-        /// <param name="column"> C#的类型</param>
-        public static string ColumnType(PropertyConfig column)
-        {
-            return SqlServerHelper.ColumnType(column);
+            bool hase = false;
+            foreach (var field in entity.Properties)
+            {
+                if (entity.NoDataBase || field.IsPrimaryKey || field.Name == "Memo" || field.Name == "ParentId" || field.LinkTable == "UiElement" || field.LinkTable == "tb_UiElement" || field.LinkTable == entity.Name || field.LinkTable == entity.ReadTableName || field.LinkTable == entity.SaveTableName)
+                {
+                    field.LinkTable = field.LinkField = null;
+                    field.IsLinkField = field.IsLinkKey = field.IsLinkCaption = false;
+                    continue;
+                }
+                if (!string.IsNullOrWhiteSpace(field.LinkTable))
+                {
+                    PropertyConfig pro = null;
+                    if (field.Option.ReferenceKey != Guid.Empty)
+                    {
+                        pro = GlobalConfig.GetConfig<PropertyConfig>(field.Option.ReferenceKey);
+                    }
+                    if(pro == null || pro == field || pro.Parent == entity)
+                    {
+                        var table = GlobalConfig.GetEntity(
+                            p => string.Equals(p.Name, field.LinkTable, StringComparison.OrdinalIgnoreCase) ||
+                                 string.Equals(p.SaveTable, field.LinkTable, StringComparison.OrdinalIgnoreCase) ||
+                                 string.Equals(p.ReadTableName, field.LinkTable, StringComparison.OrdinalIgnoreCase));
+                        if (table != null && table != entity)
+                        {
+                            pro = table.Properties.FirstOrDefault(p =>
+                                string.Equals(p.Name, field.LinkField, StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals(p.ColumnName, field.LinkField, StringComparison.OrdinalIgnoreCase));
+                        }
+                    }
+                    if (pro?.Parent != null && pro != field && pro.Parent != entity && !pro.Parent.IsInterface)
+                    {
+                        field.IsLinkField = true;
+                        field.IsLinkKey = pro.IsPrimaryKey;
+                        field.IsLinkCaption = pro.IsCaption;
+                        if (field.IsLinkKey)
+                            field.IsCompute = false;
+                        field.Option.ReferenceConfig = pro;
+                        field.LinkTable = pro.Parent.Name;
+                        field.LinkField = pro.Name;
+                        hase = true;
+                        continue;
+                    }
+                }
+                field.LinkTable = field.LinkField = null;
+                field.IsLinkField = field.IsLinkKey = field.IsLinkCaption = false;
+            }
+            return hase;
         }
     }
 }

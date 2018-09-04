@@ -23,9 +23,9 @@ namespace Agebull.EntityModel.Designer
     public sealed class ApiListViewModel : ExtendViewModelBase<ApiListModel>
     {
 
-        protected override ObservableCollection<CommandItemBase> CreateCommands()
+        protected override NotificationList<CommandItemBase> CreateCommands()
         {
-            var commands = new ObservableCollection<CommandItemBase>();
+            var commands = new NotificationList<CommandItemBase>();
 
             var extends = CommandCoefficient.CoefficientEditor(typeof(ApiItem));
             foreach (var cms in extends)

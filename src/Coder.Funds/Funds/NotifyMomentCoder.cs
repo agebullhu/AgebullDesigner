@@ -19,11 +19,11 @@ namespace Agebull.EntityModel.RobotCoder.Funds
         void IAutoRegister.AutoRegist()
         {
 
-            MomentCoder.RegisteCoder("期货相关", "消息通知实现代码(C++)-Proxy", "cpp", (NotifyCodeByProxy));
-            MomentCoder.RegisteCoder("期货相关", "数据发布代码(C++)-Proxy", "cpp", (EsPublishCode));
-            MomentCoder.RegisteCoder("期货相关", "消息通知逻辑模板(C++)-Server", "cpp", (BusinessCodeByServer));
-            MomentCoder.RegisteCoder("期货相关", "消息通知调用定义代码(C++)-Server", "cpp", (CmdCallCodeByServerDef));
-            MomentCoder.RegisteCoder("期货相关", "消息通知调用实现代码(C++)-Server", "cpp", (CmdCallCodeByServer));
+            MomentCoder.RegisteCoder("期货相关", "消息通知实现代码(C++)-Proxy", "cpp", NotifyCodeByProxy);
+            MomentCoder.RegisteCoder("期货相关", "数据发布代码(C++)-Proxy", "cpp", EsPublishCode);
+            MomentCoder.RegisteCoder("期货相关", "消息通知逻辑模板(C++)-Server", "cpp", BusinessCodeByServer);
+            MomentCoder.RegisteCoder("期货相关", "消息通知调用定义代码(C++)-Server", "cpp", CmdCallCodeByServerDef);
+            MomentCoder.RegisteCoder("期货相关", "消息通知调用实现代码(C++)-Server", "cpp", CmdCallCodeByServer);
         }
         #endregion
 

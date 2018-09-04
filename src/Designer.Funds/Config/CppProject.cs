@@ -63,7 +63,7 @@ namespace Agebull.EntityModel.Config
         /// 类型(C++)集合
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        internal ObservableCollection<TypedefItem> _typedefItems;
+        internal NotificationList<TypedefItem> _typedefItems;
 
         /// <summary>
         /// 类型(C++)集合
@@ -73,13 +73,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"对象集合"), DisplayName(@"类型(C++)集合"), Description("所有C++类型定义")]
-        public ObservableCollection<TypedefItem> TypedefItems
+        public NotificationList<TypedefItem> TypedefItems
         {
             get
             {
                 if (_typedefItems != null)
                     return _typedefItems;
-                _typedefItems = new ObservableCollection<TypedefItem>();
+                _typedefItems = new NotificationList<TypedefItem>();
                 OnPropertyChanged(nameof(TypedefItems));
                 return _typedefItems;
             }
@@ -97,7 +97,7 @@ namespace Agebull.EntityModel.Config
         /// 通知集合
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        internal ObservableCollection<NotifyItem> _notifyItems;
+        internal NotificationList<NotifyItem> _notifyItems;
 
         /// <summary>
         /// 通知集合
@@ -107,13 +107,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"对象集合"), DisplayName(@"通知集合"), Description("对应的通知集合")]
-        public ObservableCollection<NotifyItem> NotifyItems
+        public NotificationList<NotifyItem> NotifyItems
         {
             get
             {
                 if (_notifyItems != null)
                     return _notifyItems;
-                _notifyItems = new ObservableCollection<NotifyItem>();
+                _notifyItems = new NotificationList<NotifyItem>();
                 OnPropertyChanged(nameof(NotifyItems));
                 return _notifyItems;
             }

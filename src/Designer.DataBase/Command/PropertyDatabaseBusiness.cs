@@ -19,11 +19,14 @@ namespace Agebull.EntityModel.Config
             else
             {
                 if (repair || string.IsNullOrWhiteSpace(Property.ColumnName))
-                    Property.ColumnName = GlobalConfig.ToName(GlobalConfig.SplitWords(Property.Name).Select(p => p.ToLower()).ToList());
+                    Property.ColumnName = DataBaseHelper.ToColumnName(Property.Name);
                 if (repair || string.IsNullOrWhiteSpace(Property.DbType))
+                {
+                    RobotCoder.DataTypeHelper.ToStandard(Property);
                     Property.DbType = DataBaseType == DataBaseType.SqlServer
                         ? SqlServerHelper.ToDataBaseType(Property)
                         : MySqlHelper.ToDataBaseType(Property);
+                }
                 if (Property.DbType != null)
                 {
                     switch (Property.DbType = Property.DbType.ToUpper())

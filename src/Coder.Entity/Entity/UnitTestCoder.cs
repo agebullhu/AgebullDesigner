@@ -147,7 +147,7 @@ namespace Agebull.EntityModel.RobotCoder
             switch (type)
             {
                 case "bool":
-                    return (DateTime.Now.Ticks % 2) == 1 ? "true" : "false";
+                    return DateTime.Now.Ticks % 2 == 1 ? "true" : "false";
                 case "DateTime":
                     return "DateTime.Now";
                 case "double":

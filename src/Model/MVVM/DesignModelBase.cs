@@ -16,16 +16,16 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public string EditorName { get; set; }
 
-        ObservableCollection<CommandItemBase> _commands;
-        public ObservableCollection<CommandItemBase> Commands => _commands ??  (_commands=CreateCommands());
+        NotificationList<CommandItemBase> _commands;
+        public NotificationList<CommandItemBase> Commands => _commands ??  (_commands=CreateCommands());
 
         /// <summary>
         /// 生成命令对象
         /// </summary>
         /// <returns></returns>
-        public virtual ObservableCollection<CommandItemBase> CreateCommands()
+        public virtual NotificationList<CommandItemBase> CreateCommands()
         {
-            var commands = new ObservableCollection<CommandItemBase>();
+            var commands = new NotificationList<CommandItemBase>();
             CreateCommands(commands);
 
             var extends = CommandCoefficient.CoefficientEditor(typeof(EntityConfig), EditorName);
@@ -39,7 +39,7 @@ namespace Agebull.EntityModel.Designer
         /// 生成命令对象
         /// </summary>
         /// <param name="commands"></param>
-        protected virtual void CreateCommands(ObservableCollection<CommandItemBase> commands)
+        protected virtual void CreateCommands(NotificationList<CommandItemBase> commands)
         {
         }
 

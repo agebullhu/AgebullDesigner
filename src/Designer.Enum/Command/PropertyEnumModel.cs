@@ -24,7 +24,7 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder<PropertyConfig>
             {
                 Catalog = "字段",
-                Action = (ReadEnum),
+                Action = ReadEnum,
                 TargetType = type,
                 Caption = "识别枚举",
                 Description = "形如【类型，1操作，2返回，3未知】样式的说明文字",
@@ -35,7 +35,7 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder<PropertyConfig>
             {
                 Catalog = "字段",
-                Action = (CheckEnum),
+                Action = CheckEnum,
                 TargetType = type,
                 Caption = "刷新对象引用",
                 IconName = "tree_item"
@@ -43,7 +43,7 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder
             {
                 Catalog = "字段",
-                Action = (BindEnum),
+                Action = BindEnum,
                 TargetType = type,
                 Caption = "绑定或新增枚举",
                 SignleSoruce = true,
@@ -52,7 +52,7 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder
             {
                 Catalog = "字段",
-                Action = (DeleteEnum),
+                Action = DeleteEnum,
                 TargetType = type,
                 Caption = "清除枚举绑定",
                 SignleSoruce = true,
@@ -74,7 +74,7 @@ namespace Agebull.EntityModel.Designer
                 return;
             property.Parent.Parent.Add(property.EnumConfig = new EnumConfig
             {
-                Name = property.CustomType ?? (property.Name.Contains("Type") ? property.Name : (property.Name + "Type")),
+                Name = property.CustomType ?? (property.Name.Contains("Type") ? property.Name : property.Name + "Type"),
                 Caption = property.Caption + "枚举类型"
             });
         }
@@ -103,24 +103,9 @@ namespace Agebull.EntityModel.Designer
         {
             if (column.CsType == "bool")
                 return;
-            ReadPropertyEnum(column);
-            if (column.EnumConfig != null)
-            {
-                column.EnumConfig.Name = column.Name + "Type";
-                column.EnumConfig.Caption = column.Caption + "自定义类型";
-                column.CustomType = column.EnumConfig.Name;
-                Context.StateMessage = $@"解析得到枚举类型:{column.EnumConfig.Name},参考内容{column.EnumConfig.Description}";
-                column.EnumConfig.Parent.Add(column.EnumConfig);
-            }
-            else
-            {
-                column.CustomType = null;
-            }
-        }
 
-
-        public static void ReadPropertyEnum(PropertyConfig column)
-        {
+            EnumConfig ec= column.EnumConfig;
+            
             string desc = column.Description ?? column.Caption ?? column.Name;
             var line = desc.Trim(NameHelper.NoneLanguageChar) ?? "";
 
@@ -128,9 +113,17 @@ namespace Agebull.EntityModel.Designer
             StringBuilder caption = new StringBuilder();
             bool preIsNumber = false;
             bool startEnum = false;
-            var name = column.CustomType ?? (column.Parent.Name.ToUWord() + column.Name.ToUWord());
-            EnumConfig ec = GlobalConfig.GetEnum(name);
-            bool isNew = ec == null;
+            bool isNew = false;
+            var name = column.Name;
+            if (name.Length <= 4 || !string.Equals(name.Substring(name.Length - 4, 4), "Type", StringComparison.OrdinalIgnoreCase))
+            {
+                name = name.ToUWord() + "Type";
+            }
+            if (ec == null)
+            {
+                ec = GlobalConfig.GetEnum(name);
+                isNew = ec == null;
+            }
             if (isNew)
             {
                 ec = new EnumConfig
@@ -227,16 +220,18 @@ namespace Agebull.EntityModel.Designer
                     item.Name = item.Caption;
                 ec.Items.Add(item);
             }
-            if (ec.Items.Count > 0)
+            if (ec.Items.Count > 1)
             {
+                if (isNew)
+                    column.Parent.Parent.Add(ec);
+
                 ec.Option.ReferenceKey = column.Option.Key;
                 column.EnumConfig = ec;
                 column.CustomType = ec.Name;
                 column.Description = line;
                 if (caption.Length > 0)
                     ec.Caption = column.Caption = caption.ToString().Trim(NameHelper.NoneLanguageChar);
-                if(isNew)
-                column.Parent.Parent.Add(ec);
+                Context.StateMessage = $@"解析得到枚举类型:{column.EnumConfig.Name},参考内容{column.EnumConfig.Description}";
             }
             else
             {

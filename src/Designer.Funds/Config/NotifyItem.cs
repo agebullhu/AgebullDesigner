@@ -319,7 +319,7 @@ namespace Agebull.EntityModel.Config
 
             code.AppendLine($@"['FriendKey'] ='{FriendKey}',");
 
-            code.AppendLine($@"['LocalCommand'] ={(LocalCommand.ToString().ToLower())},");
+            code.AppendLine($@"['LocalCommand'] ={LocalCommand.ToString().ToLower()},");
 
             if (!String.IsNullOrWhiteSpace(CommandId))
                 code.AppendLine($@"['CommandId'] = '{CommandId.ToLuaString()}',");
@@ -336,9 +336,9 @@ namespace Agebull.EntityModel.Config
             else
                 code.AppendLine($@"['ClientEntity'] = nil,");
 
-            code.AppendLine($@"['IsCommandResult'] ={(IsCommandResult.ToString().ToLower())},");
+            code.AppendLine($@"['IsCommandResult'] ={IsCommandResult.ToString().ToLower()},");
 
-            code.AppendLine($@"['IsMulit'] ={(IsMulit.ToString().ToLower())},");
+            code.AppendLine($@"['IsMulit'] ={IsMulit.ToString().ToLower()},");
 
             if (!String.IsNullOrWhiteSpace(Org))
                 code.AppendLine($@"['Org'] = '{Org.ToLuaString()}',");

@@ -8,7 +8,7 @@ using Agebull.Common.Mvvm;
 namespace Agebull.EntityModel.Designer
 {
     /// <summary>
-    /// 关系连接检查
+    /// 命令注册器
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
@@ -44,7 +44,7 @@ namespace Agebull.EntityModel.Designer
                 SignleSoruce = true,
                 IsButton = true,
                 Caption = "增加表",
-                Action = (AddEntity),
+                Action = AddEntity,
                 IconName = "tree_Open"
             });
             commands.Add(new CommandItemBuilder
@@ -53,7 +53,7 @@ namespace Agebull.EntityModel.Designer
                 SignleSoruce = true,
                 IsButton = true,
                 Caption = "粘贴表",
-                Action = (PasteTable),
+                Action = PasteTable,
                 IconName = "tree_item"
             });
 
@@ -63,7 +63,7 @@ namespace Agebull.EntityModel.Designer
                 IsButton = true,
                 Catalog = "编辑",
                 Caption = "复制到其它项目",
-                Action = (CopyToProject),
+                Action = CopyToProject,
                 IconName = "tree_item"
             });
         }
@@ -112,6 +112,7 @@ namespace Agebull.EntityModel.Designer
             if (CommandIoc.EditEntityCommand(entity))
             {
                 project.Add(entity);
+
                 Model.Tree.SetSelectEntity(entity);
                 return;
             }
@@ -132,7 +133,9 @@ namespace Agebull.EntityModel.Designer
                 //if (string.IsNullOrWhiteSpace(project.NameSpace))
                 project.NameSpace = Context.SelectProject.NameSpace;
                 //if (string.IsNullOrWhiteSpace(project.PagePath))
-                project.PagePath = Context.SelectProject.PagePath;
+                project.ModelFolder = Context.SelectProject.ModelFolder;
+                project.ApiFolder = Context.SelectProject.ApiFolder;
+                project.PageFolder = Context.SelectProject.PageFolder;
                 //if (string.IsNullOrWhiteSpace(project.BusinessPath))
                 project.BusinessPath = Context.SelectProject.BusinessPath;
                 //if (string.IsNullOrWhiteSpace(project.ModelPath))

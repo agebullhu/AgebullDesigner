@@ -54,20 +54,11 @@ namespace Agebull.EntityModel.Config
                             Parent = Entity
                         });
                 }
-                if (string.IsNullOrWhiteSpace(Entity.ReadTableName))
+                if (repair || string.IsNullOrWhiteSpace(Entity.ReadTableName))
                 {
-                    string head = "tb_";
-                    if (Entity.Classify != null)
-                    {
-                        var cls = Entity.Parent.Classifies.FirstOrDefault(p => p.Name == Entity.Classify);
-                        if (cls != null)
-                            head = cls.Abbreviation?.ToLower() + "_";
-                    }
-                    if (!string.IsNullOrWhiteSpace(Entity.Parent.Abbreviation))
-                        head += Entity.Parent.Abbreviation.ToLower() + "_";
-                    Entity.ReadTableName = SplitWords(Entity.Name).Select(p => p.ToLower()).LinkToString(head, "_");
+                    Entity.SaveTableName = DataBaseHelper.ToTableName(Entity);
                 }
-                Entity.SaveTableName = Entity.ReadTableName;
+                Entity.ReadTableName = Entity.SaveTableName;
             }
             var model = new PropertyDatabaseBusiness
             {
@@ -97,49 +88,13 @@ namespace Agebull.EntityModel.Config
             {
                 return;
             }
-            if (string.IsNullOrEmpty(Entity.SaveTableName) || string.Equals(Entity.SaveTableName, Entity.ReadTableName))
+            if (!DataBaseHelper.CheckFieldLink(Entity))
+            {
+                Entity.ReadTableName = Entity.SaveTable;
+            }
+            else if (string.IsNullOrEmpty(Entity.SaveTableName) || string.Equals(Entity.SaveTableName, Entity.ReadTableName))
             {
                 Entity.ReadTableName = "view_" + Entity.SaveTable.Replace("tb_", "");
-            }
-            var tables = new Dictionary<string, EntityConfig>();
-
-            var names = Entity.Properties.Where(p => !string.IsNullOrEmpty(p.LinkTable))
-                    .Select(p => p.LinkTable)
-                    .DistinctBy()
-                    .ToArray();
-            foreach (var name in names)
-            {
-                if (tables.ContainsKey(name))
-                    continue;
-                var table = GetEntity(p => p.SaveTable == name || p.Name == name);
-                if (table != null)
-                    tables.Add(name, table);
-            }
-            foreach (var field in Entity.PublishProperty)
-            {
-                if (!string.IsNullOrEmpty(field.LinkTable))
-                {
-                    if (tables.TryGetValue(field.LinkTable, out EntityConfig friend))
-                    {
-                        field.LinkTable = friend.SaveTable;
-                        var linkField =
-                            friend.Properties.FirstOrDefault(
-                                p => p.ColumnName == field.LinkField || p.Name == field.LinkField);
-                        if (linkField != null)
-                        {
-                            field.LinkField = linkField.ColumnName;
-                            field.IsLinkKey = linkField.IsPrimaryKey;
-                            field.IsLinkField = true;
-                            field.IsLinkCaption = linkField.IsCaption;
-                            if (!field.IsLinkKey)
-                                field.IsCompute = true;
-                            continue;
-                        }
-                    }
-                }
-                field.IsLinkField = false;
-                field.IsLinkKey = false;
-                field.IsLinkCaption = false;
             }
         }
     }

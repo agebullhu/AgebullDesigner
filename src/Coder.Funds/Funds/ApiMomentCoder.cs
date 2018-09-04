@@ -17,34 +17,34 @@ namespace Agebull.EntityModel.RobotCoder.Funds
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("期货相关", "API日志代码(C++)", "cpp", (ApiLog));
-            MomentCoder.RegisteCoder("期货相关", "API选择执行代码(C++)", "cpp", (ApiSwitch));
+            MomentCoder.RegisteCoder("期货相关", "API日志代码(C++)", "cpp", ApiLog);
+            MomentCoder.RegisteCoder("期货相关", "API选择执行代码(C++)", "cpp", ApiSwitch);
             
-            MomentCoder.RegisteCoder("期货相关", "API命令定义代码(C++)", "cpp", (ApiCommandIdCode));
+            MomentCoder.RegisteCoder("期货相关", "API命令定义代码(C++)", "cpp", ApiCommandIdCode);
             
-            MomentCoder.RegisteCoder("期货相关", "API调用定义代码(C++)-Proxy", "cpp", (ApiCallCodeByProxyDef));
-            MomentCoder.RegisteCoder("期货相关", "API调用实现代码(C++)-Proxy", "cpp", (ApiCallCodeByProxy));
+            MomentCoder.RegisteCoder("期货相关", "API调用定义代码(C++)-Proxy", "cpp", ApiCallCodeByProxyDef);
+            MomentCoder.RegisteCoder("期货相关", "API调用实现代码(C++)-Proxy", "cpp", ApiCallCodeByProxy);
             
-            MomentCoder.RegisteCoder("期货相关", "API调用定义代码(C++)-Server", "cpp", (CmdCallCodeByServerDef));
-            MomentCoder.RegisteCoder("期货相关", "API调用实现代码(C++)-Server", "cpp", (CmdCallCodeByServer));
-            MomentCoder.RegisteCoder("期货相关", "API调用逻辑模板(C++)-Server", "cpp", (BusinessCodeByServer));
+            MomentCoder.RegisteCoder("期货相关", "API调用定义代码(C++)-Server", "cpp", CmdCallCodeByServerDef);
+            MomentCoder.RegisteCoder("期货相关", "API调用实现代码(C++)-Server", "cpp", CmdCallCodeByServer);
+            MomentCoder.RegisteCoder("期货相关", "API调用逻辑模板(C++)-Server", "cpp", BusinessCodeByServer);
             
-            MomentCoder.RegisteCoder("期货相关", "API调用定义代码(C++)-Client", "cpp", (CmdCallCodeByClientDef));
-            MomentCoder.RegisteCoder("期货相关", "API调用实现代码(C++)-Client", "cpp", (CmdCallCodeByClient));
+            MomentCoder.RegisteCoder("期货相关", "API调用定义代码(C++)-Client", "cpp", CmdCallCodeByClientDef);
+            MomentCoder.RegisteCoder("期货相关", "API调用实现代码(C++)-Client", "cpp", CmdCallCodeByClient);
             
-            MomentCoder.RegisteCoder("期货相关", "API调用定义代码(C++)-Clr", "cpp", (CmdCallCodeByClrDef));
-            MomentCoder.RegisteCoder("期货相关", "API调用实现代码(C++)-Clr", "cpp", (CmdCallCodeByClr));
+            MomentCoder.RegisteCoder("期货相关", "API调用定义代码(C++)-Clr", "cpp", CmdCallCodeByClrDef);
+            MomentCoder.RegisteCoder("期货相关", "API调用实现代码(C++)-Clr", "cpp", CmdCallCodeByClr);
             
-            MomentCoder.RegisteCoder("期货相关", "API调用代码(C#)", "cs", (CmdCallCodeByCs));
-            MomentCoder.RegisteCoder("期货相关", "常量名称字典(C#)", "cs", (TypedefDictionary));
-            MomentCoder.RegisteCoder("期货相关", "数据类型处理代码(C#)_服务端", "cs", (DataSwitch));
-            MomentCoder.RegisteCoder("期货相关", "方法实现(C++)_服务端", "cpp", (ConstFunc));
-            MomentCoder.RegisteCoder("期货相关", "方法声明(C++)_服务端", "cpp", (ConstFuncDef));
-            MomentCoder.RegisteCoder("期货相关", "方法实现(C++)_客户端", "cpp", (ConstFunc_C));
-            MomentCoder.RegisteCoder("期货相关", "方法声明(C++)_客户端", "cpp", (ConstFuncDef_C));
-            MomentCoder.RegisteCoder("期货相关", "常量选择代码(C++)", "cpp", (ConstSwitch));
-            MomentCoder.RegisteCoder("期货相关", "事件处理方法(C#)", "cs", (ConstFunc_Cs));
-            MomentCoder.RegisteCoder("期货相关", "常量到文本(C++)", "cpp", (ConstToStringSwitch));
+            MomentCoder.RegisteCoder("期货相关", "API调用代码(C#)", "cs", CmdCallCodeByCs);
+            MomentCoder.RegisteCoder("期货相关", "常量名称字典(C#)", "cs", TypedefDictionary);
+            MomentCoder.RegisteCoder("期货相关", "数据类型处理代码(C#)_服务端", "cs", DataSwitch);
+            MomentCoder.RegisteCoder("期货相关", "方法实现(C++)_服务端", "cpp", ConstFunc);
+            MomentCoder.RegisteCoder("期货相关", "方法声明(C++)_服务端", "cpp", ConstFuncDef);
+            MomentCoder.RegisteCoder("期货相关", "方法实现(C++)_客户端", "cpp", ConstFunc_C);
+            MomentCoder.RegisteCoder("期货相关", "方法声明(C++)_客户端", "cpp", ConstFuncDef_C);
+            MomentCoder.RegisteCoder("期货相关", "常量选择代码(C++)", "cpp", ConstSwitch);
+            MomentCoder.RegisteCoder("期货相关", "事件处理方法(C#)", "cs", ConstFunc_Cs);
+            MomentCoder.RegisteCoder("期货相关", "常量到文本(C++)", "cpp", ConstToStringSwitch);
         }
         #endregion
 

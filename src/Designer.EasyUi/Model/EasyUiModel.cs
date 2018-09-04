@@ -23,34 +23,41 @@ using MessageBox = System.Windows.MessageBox;
 
 namespace Agebull.EntityModel.Designer
 {
-    internal class EasyUiModel : DesignModelBase
+    public class EasyUiModel : DesignModelBase
     {
-        protected override void CreateCommands(ObservableCollection<CommandItemBase> commandItems)
+        protected override void CreateCommands(NotificationList<CommandItemBase> commandItems)
         {
             commandItems.AddRange(new[]
             {
                 new CommandItem
                 {
                     Action = CheckUiType,
+                    IsButton=true,
+                    Editor = "EasyUi",
                     Caption = "控件类型修复",
                     Image = Application.Current.Resources["tree_item"] as ImageSource
                 },
                 new CommandItem
                 {
-                    Action = (CheckExport),
+                    Action = CheckExport,
                     Caption = "导出导出初始化",
+                    IsButton=true,
+                    Editor = "EasyUi",
                     Image = Application.Current.Resources["tree_item"] as ImageSource
                 },
                 new CommandItem
                 {
-                    Action = (CheckSimple),
+                    Action = CheckSimple,
                     Caption = "列表字段初始化",
+                    IsButton=true,
+                    Editor = "EasyUi",
                     Image = Application.Current.Resources["tree_item"] as ImageSource
                 },
                 new CommandItem
                 {
-                    Action = (CreateUiCode),
+                    Action = CreateUiCode,
                     Caption = "生成UI代码（WEB）",
+                    Editor = "EasyUi",
                     Image = Application.Current.Resources["tree_item"] as ImageSource
                 }
             });
@@ -72,8 +79,6 @@ namespace Agebull.EntityModel.Designer
             Context.StateMessage = "UI代码已生成";
         }
 
-
-        #endregion
         private void CheckUiType(object arg)
         {
             if (Context.SelectEntity == null)
@@ -82,10 +87,16 @@ namespace Agebull.EntityModel.Designer
                 MessageBoxButton.YesNoCancel);
             if (result == MessageBoxResult.Cancel)
                 return;
-            foreach (var field in Context.SelectEntity.Properties)
+            CheckExport(Context.SelectEntity, result == MessageBoxResult.Yes);
+        }
+
+        public static void CheckExport(EntityConfig entity, bool repair)
+        {
+            foreach (var field in entity.Properties)
             {
-                PropertyEasyUiModel.CheckField(field, result == MessageBoxResult.Yes);
+                PropertyEasyUiModel.CheckField(field, repair);
             }
+            entity.ExtendConfigListBool["EasyUiIsInit"] = true;
         }
 
         private void CheckExport(object arg)
@@ -98,10 +109,10 @@ namespace Agebull.EntityModel.Designer
                             !field.IsDiscard && !field.IsLinkKey && !field.DbInnerField &&
                             !field.InnerField && !field.IsSystemField && !field.DenyClient,
                     field =>
-            {
-                field.ExtendConfigListBool["CanExport"] = true;
-                field.ExtendConfigListBool["CanImport"] = true;
-            });
+                    {
+                        field.ExtendConfigListBool["easyui", "CanExport"] = true;
+                        field.ExtendConfigListBool["easyui", "CanImport"] = true;
+                    });
         }
 
         private static readonly List<string> InnerFields = new List<string>
@@ -131,8 +142,10 @@ namespace Agebull.EntityModel.Designer
 
             Foreach(field => field.IsPrimaryKey || !field.NoneGrid ||
                              field.Name == "DataState" || field.Name == "AuditState" || field.Name == "IsFreeze",
-                field => field.ExtendConfigListBool["db_simple"] = true);
+                field => field.ExtendConfigListBool["easyui", "simple"] = true);
         }
+
+        #endregion
 
         /*AuditDate AuditorId AuditState LastModifyDate LastReviserID AddDate AuthorID EntityType LinkId ParentId*/
     }

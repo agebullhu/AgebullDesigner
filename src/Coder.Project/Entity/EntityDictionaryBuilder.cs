@@ -259,11 +259,11 @@ namespace Agebull.EntityModel.RobotCoder
             {
                 case "string":
                 case "String":
-                    return ($"{arg} == null ? null : {arg}.ToString()");
+                    return $"{arg} == null ? null : {arg}.ToString()";
                 case "long":
                 case "Int64":
                     if (column.Nullable)
-                        return ($"{arg} == null ? null : (long?)Convert.ToInt64({arg})");
+                        return $"{arg} == null ? null : (long?)Convert.ToInt64({arg})";
                     return $"Convert.ToInt64({arg})";
                 case "int":
                 case "Int32":

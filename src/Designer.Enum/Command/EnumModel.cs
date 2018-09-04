@@ -20,7 +20,7 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder<EnumConfig>
             {
                 Catalog = "编辑",
-                Action = (SortEnum),
+                Action = SortEnum,
                 Caption = "排序",
                 IconName = "tree_sum"
             });

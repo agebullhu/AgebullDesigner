@@ -57,6 +57,7 @@
     <Reference Include="System" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Mobile" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Expression.Blend.Sdk.1.0.2\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -95,6 +96,7 @@
     <Compile Include="Models\ComboItem.cs" />
     <Compile Include="Models\DispatcherSynchronousContext.cs" />
     <Compile Include="Models\MvvmBase.cs" />
+    <Compile Include="Models\NotificationList.cs" />
     <Compile Include="Models\StepTackProxy.cs" />
     <Compile Include="Models\TraceModel.cs" />
     <Compile Include="Models\TraceModelBase.cs" />
@@ -112,6 +114,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Trace\MessageTraceListener.cs" />
+    <Compile Include="Trace\TraceMessage.cs" />
     <Compile Include="TreeModel\TreeItemBase.cs" />
     <Compile Include="TreeModel\TreeItem.cs" />
     <Compile Include="Models\ViewModelBase.cs" />

@@ -4,8 +4,6 @@ namespace Agebull.EntityModel.RobotCoder
     {
         public override string BaseCode=> ValidateCode();
 
-        protected override string Folder => "Validate";
-
         public string ValidateCode()
         {
             EntityValidateCoder coder = new EntityValidateCoder {Entity = Entity};

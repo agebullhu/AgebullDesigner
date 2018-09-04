@@ -560,19 +560,19 @@ bool api_ut_{api.Name}(EsTradeCommand& command)
             switch (type.MulitReplace2("", " ", "\t").ToLower())
             {
                 case "bool":
-                    return (DateTime.Now.Ticks % 2) == 1 ? "true" : "false";
+                    return DateTime.Now.Ticks % 2 == 1 ? "true" : "false";
                 case "double":
                 case "float":
                     return (random.NextDouble() * 10000.0).ToString("F");
                 case "char":
                 case "unsignedchar":
-                    return $"'{((char)('A' + random.Next(25)))}'";
+                    return $"'{(char)('A' + random.Next(25))}'";
 
                 case "wchar":
                 case "wchar_t":
                 case "char16_t":
                 case "char32_t":
-                    return $"L'{('A' + random.Next(25))}'";
+                    return $"L'{'A' + random.Next(25)}'";
                 case "short":
                     return random.Next(short.MaxValue).ToString();
                 case "unsignedshort":

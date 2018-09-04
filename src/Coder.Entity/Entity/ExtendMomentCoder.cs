@@ -104,7 +104,7 @@ namespace Agebull.EntityModel.RobotCoder
                 Name = ""{property.Name}"",
                 Alias = ""{property.Alias}"",
                 Discard = {property.IsDiscard.ToString().ToLower()},
-                CreateIndex = {property.CreateIndex.ToString().ToLower()},
+                CreateIndex = {property.CreateDbIndex.ToString().ToLower()},
                 IsPrimaryKey = {property.IsPrimaryKey.ToString().ToLower()},
                 IsExtendKey = {property.IsExtendKey.ToString().ToLower()},
                 IsIdentity =  {property.IsIdentity.ToString().ToLower()},

@@ -19,27 +19,27 @@ namespace Agebull.EntityModel.Designer
     {
         #region 操作命令
 
-        public override ObservableCollection<CommandItemBase> CreateCommands()
+        public override NotificationList<CommandItemBase> CreateCommands()
         {
-            return new ObservableCollection<CommandItemBase>
+            return new NotificationList<CommandItemBase>
             {
                 new CommandItem
                 {
-                    Action = (Format1 ),
+                    Action = Format1,
                     IsButton=true,
                     Caption = "前后端名称一致(大驼峰名称)",
                     Image = Application.Current.Resources["tree_Assembly"] as ImageSource
                 },
                 new CommandItem
                 {
-                    Action = (Format2 ),
+                    Action = Format2,
                     IsButton=true,
                     Caption = "小驼峰名称",
                     Image = Application.Current.Resources["tree_Assembly"] as ImageSource
                 },
                 new CommandItem
                 {
-                    Action = (Format3 ),
+                    Action = Format3,
                     IsButton=true,
                     Caption = "小写下划线名称(C风格)",
                     Image = Application.Current.Resources["tree_Assembly"] as ImageSource

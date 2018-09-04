@@ -23,15 +23,15 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.MySql
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("MySql", "生成表(SQL)","sql",cfg => RunByEntity(cfg, CreateTable));
-            MomentCoder.RegisteCoder("MySql", "插入表字段(SQL)","sql", cfg => RunByEntity(cfg, AddColumnCode));
-            MomentCoder.RegisteCoder("MySql", "修改表字段(SQL)","sql", cfg => Run(cfg, ChangeColumnCode));
-            MomentCoder.RegisteCoder("MySql", "修改BOOL字段(SQL)","sql", cfg => Run(cfg, ChangeBoolColumnCode));
-            MomentCoder.RegisteCoder("MySql", "生成视图(SQL)","sql", cfg => Run(cfg, CreateView));
+            MomentCoder.RegisteCoder("MySql", "生成表(SQL)", "sql", cfg => RunByEntity(cfg, CreateTable));
+            MomentCoder.RegisteCoder("MySql", "插入表字段(SQL)", "sql", cfg => RunByEntity(cfg, AddColumnCode));
+            MomentCoder.RegisteCoder("MySql", "修改表字段(SQL)", "sql", cfg => Run(cfg, ChangeColumnCode));
+            MomentCoder.RegisteCoder("MySql", "修改BOOL字段(SQL)", "sql", cfg => Run(cfg, ChangeBoolColumnCode));
+            MomentCoder.RegisteCoder("MySql", "生成视图(SQL)", "sql", cfg => Run(cfg, CreateView));
             MomentCoder.RegisteCoder("MySql", "插入页面表(SQL)", "sql", PageInsertSql);
-            MomentCoder.RegisteCoder("MySql", "删除视图(SQL)","sql", cfg => Run(cfg, DropView));
-            MomentCoder.RegisteCoder("MySql", "删除表(SQL)","sql", cfg => RunByEntity(cfg, DropTable));
-            MomentCoder.RegisteCoder("MySql", "清除表(SQL)","sql", cfg => RunByEntity(cfg, TruncateTable));
+            MomentCoder.RegisteCoder("MySql", "删除视图(SQL)", "sql", cfg => Run(cfg, DropView));
+            MomentCoder.RegisteCoder("MySql", "删除表(SQL)", "sql", cfg => RunByEntity(cfg, DropTable));
+            MomentCoder.RegisteCoder("MySql", "清除表(SQL)", "sql", cfg => RunByEntity(cfg, TruncateTable));
         }
 
         #endregion
@@ -61,32 +61,14 @@ DROP VIEW `{entity.ReadTableName}`;
         }
         public static string CreateView(EntityConfig entity)
         {
-            if (entity.DbFields.All(p => IsNullOrEmpty(p.LinkTable)))
-                return "--没有设置关联表，无法生成SQL";
-            if (entity.DbFields.All(p => IsNullOrEmpty(p.LinkTable)))
-                return "--没有设置关联表，无法生成SQL";
-            var tables = new Dictionary<string, EntityConfig>();
-            foreach (var field in entity.DbFields)
+            var hase = DataBaseHelper.CheckFieldLink(entity);
+            if (!hase && !entity.DbFields.Any(p => p.IsLinkField && !p.IsLinkKey))
             {
-                if (string.IsNullOrWhiteSpace(field.LinkTable))
-                    continue;
-                if (field.LinkTable == entity.Name || field.LinkTable == entity.ReadTableName ||
-                    field.LinkTable == entity.SaveTableName)
-                {
-                    continue;
-                }
-                if (tables.ContainsKey(field.LinkTable))
-                    continue;
-                string name = field.LinkTable;
-                var table = GlobalConfig.GetEntity(p => p.SaveTableName == name || p.ReadTableName == name || p.Name == name);
-                if (table == null || table == entity)
-                {
-                    continue;
-                }
-                tables.Add(name, table);
+                return "--没有设置关联表，无法生成SQL";
             }
+            var tables = entity.Properties.Where(p => p.IsLinkField).Select(p => p.LinkTable).Distinct().Select(GlobalConfig.GetEntity).ToDictionary(p => p.Name);
             string viewName;
-            if (string.IsNullOrWhiteSpace(entity.ReadTableName) || entity.ReadTableName == entity.SaveTable)
+            if (IsNullOrWhiteSpace(entity.ReadTableName) || entity.ReadTableName == entity.SaveTable)
             {
                 viewName = "view_" + GlobalConfig.ToLinkWordName(entity.Name, "_", false);
             }
@@ -108,12 +90,12 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
                     builder.Append(@",
         ");
 
-                if (!field.IsLinkKey && !IsNullOrEmpty(field.LinkTable))
+                if (field.IsLinkField && !field.IsLinkKey && !IsNullOrEmpty(field.LinkTable))
                 {
                     if (tables.TryGetValue(field.LinkTable, out EntityConfig friend))
                     {
                         var linkField =
-                            friend.DbFields.FirstOrDefault(
+                            friend.Properties.FirstOrDefault(
                                 p => p.ColumnName == field.LinkField || p.Name == field.LinkField);
                         if (linkField != null)
                         {
@@ -221,8 +203,10 @@ VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Name}
 
         public static string CreateTableCode(EntityConfig entity, bool signle = false)
         {
+            if (entity == null)
+                return "";
             if (entity.NoDataBase)
-                return "--这个设置为普通类(IsClass=true)，无法生成SQL";//这个设置为普通类，无法生成SQL
+                return $"{entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
             var code = new StringBuilder();
             code.AppendFormat(@"
 /*{1}*/
@@ -258,8 +242,10 @@ CREATE TABLE `{0}`("
 
         private static string AddColumnCode(EntityConfig entity)
         {
+            if (entity == null)
+                return "";
             if (entity.NoDataBase)
-                return "--这个设置为普通类(IsClass=true)，无法生成SQL";//这个设置为普通类，无法生成SQL
+                return $"{entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
@@ -286,8 +272,10 @@ ALTER TABLE `{entity.SaveTable}`");
 
         private string ChangeBoolColumnCode(EntityConfig entity)
         {
-            if (entity == null || entity.NoDataBase)
-                return "--这个设置为普通类(IsClass=true)，无法生成SQL";//这个设置为普通类，无法生成SQL
+            if (entity == null)
+                return "";
+            if (entity.NoDataBase)
+                return $"{entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
             var code = new StringBuilder();
             foreach (var ent in SolutionConfig.Current.Entities)
                 ChangeBoolColumnCode(code, ent);
@@ -320,8 +308,10 @@ ALTER TABLE `{entity.SaveTable}`");
 
         private string ChangeColumnCode(EntityConfig entity)
         {
-            if (entity == null || entity.NoDataBase)
-                return "--这个设置为普通类(IsClass=true)，无法生成SQL";//这个设置为普通类，无法生成SQL
+            if (entity == null)
+                return "";
+            if (entity.NoDataBase)
+                return $"{entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
@@ -452,13 +442,13 @@ ALTER TABLE `{entity.SaveTable}`");
                 }
                 return;
             }
-            if (field.DbNullable)
-                code.Append($@"
+            //if (field.DbNullable)
+            code.Append($@"
                 if (!reader.IsDBNull({idx}))
                     ");
-            else
-                code.Append(@"
-                ");
+            //else
+            //    code.Append(@"
+            //    ");
 
             switch (type)
             {

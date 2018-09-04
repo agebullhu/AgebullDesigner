@@ -29,17 +29,27 @@ namespace Agebull.EntityModel.RobotCoder
             var code = $@"
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
+
+using Agebull.Common;
+using Agebull.Common.DataModel;
+using Gboxt.Common.DataModel;
+using Agebull.Common.WebApi;
+
+{Project.UsingNameSpaces}
 
 using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
 using Gboxt.Common.DataModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
-
-
-using Gboxt.Common.DataModel;
-using Agebull.Common.DataModel;
 using Agebull.Common.DataModel.BusinessLogic;
 using {NameSpace}.DataAccess;
 
@@ -95,7 +105,7 @@ namespace {NameSpace}.BusinessLogic
     }}
 }}
 ";
-            var file = ConfigPath(Entity, FileSaveConfigName, path, "Business", Entity.Name + "BusinessLogic") ;
+            var file = ConfigPath(Entity, FileSaveConfigName, path, null, Entity.Name + "BusinessLogic") ;
             SaveCode(file + ".cs", code);
         }
         private string CommandExCode()
@@ -182,16 +192,30 @@ using Agebull.Common.Mvvm.ServiceAccess;
             var code = $@"
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
-using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
-using Gboxt.Common.DataModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
+using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
+
+using Agebull.Common;
+using Agebull.Common.DataModel;
 using Gboxt.Common.DataModel;
+using Agebull.Common.WebApi;
+
+{Project.UsingNameSpaces}
+
 using Agebull.Common.DataModel.BusinessLogic;
 using {NameSpace}.DataAccess;
 
+using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
+using Gboxt.Common.DataModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
 {usingCode}
 
 namespace {NameSpace}.BusinessLogic
@@ -211,7 +235,7 @@ namespace {NameSpace}.BusinessLogic
 {CommandCode()}
     }}
 }}";
-            var file = ConfigPath(Entity, FileSaveConfigName, path, "Business", Entity.Name + "BusinessLogic");
+            var file = ConfigPath(Entity, FileSaveConfigName, path, null, Entity.Name + "BusinessLogic");
             SaveCode(file + ".Designer.cs", code);
         }
 

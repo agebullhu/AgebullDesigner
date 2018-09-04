@@ -9,9 +9,11 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// <summary>
         /// Ãû³Æ
         /// </summary>
-        protected override string FileSaveConfigName => "File_Aspnet_List_Details_aspx";
+        protected override string FileName => "Details.aspx";
 
-        public override string Code()
+        protected override string LangName => "aspx";
+
+        protected override string BaseCode()
         {
             StringBuilder code = new StringBuilder();
             code.Append($@"

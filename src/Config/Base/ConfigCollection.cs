@@ -1,5 +1,4 @@
 using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq.Expressions;
@@ -9,7 +8,7 @@ namespace Agebull.EntityModel
     /// <summary>
     ///     表示一个自动存储的列表对象
     /// </summary>
-    public class ConfigCollection<TConfig> : ObservableCollection<TConfig> 
+    public class ConfigCollection<TConfig> : NotificationList<TConfig> 
         where TConfig : NotificationObject, new()
     {
         #region 属性修改

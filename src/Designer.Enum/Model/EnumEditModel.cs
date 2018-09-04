@@ -33,13 +33,13 @@ namespace Agebull.EntityModel.Designer
             if (Config == null)
             {
                 _fields = "";
-                Items = new ObservableCollection<EnumItem>();
+                Items = new NotificationList<EnumItem>();
             }
             else
             {
                 StringBuilder sb = new StringBuilder();
                 if (Config.Items == null)
-                    Config.Items = new ObservableCollection<EnumItem>();
+                    Config.Items = new NotificationList<EnumItem>();
                 Items = Config.Items;
                 foreach (var item in Items.OrderBy(p => p.Number))
                 {
@@ -72,7 +72,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 生成的表格对象
         /// </summary>
-        public ObservableCollection<EnumItem> Items
+        public NotificationList<EnumItem> Items
         {
             get => _items;
             private set
@@ -85,7 +85,7 @@ namespace Agebull.EntityModel.Designer
 
         private string _fields;
         private EnumConfig _config;
-        private ObservableCollection<EnumItem> _items;
+        private NotificationList<EnumItem> _items;
 
         /// <summary>
         ///     当前文件名

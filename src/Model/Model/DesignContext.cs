@@ -337,7 +337,7 @@ namespace Agebull.EntityModel.Designer
         internal void OnTreeSelectItemChanged(TreeItem item)
         {
             ConfigBase cfg = item?.Source as ConfigBase;
-            CurrentTrace.TraceMessage = item?.Extend.DependencyObjects.AutoDependency<TraceMessage>();
+            
             SetSelect(cfg);
             if (Editor.PropertyGrid != null)
                 Editor.PropertyGrid.SelectedObject = SelectConfig;

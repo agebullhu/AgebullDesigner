@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
@@ -37,12 +36,7 @@ namespace Agebull.EntityModel.Config
             set
             {
                 _option = value;
-                if (_option == null)
-                    _option = new ConfigDesignOption
-                    {
-                        Config = this
-                    };
-                else
+                if (_option != null)
                     _option.Config = this;
                 OnPropertyChanged(nameof(Option));
             }
@@ -54,13 +48,14 @@ namespace Agebull.EntityModel.Config
         public SolutionConfig Solution => Option.Solution;
 
         #endregion
-
+        
         #region 扩展配置
 
         /// <summary>
         /// 扩展配置
         /// </summary>
-        [DataMember, JsonProperty(NullValueHandling = NullValueHandling.Ignore)] private List<ConfigItem> _extendConfig;
+        [DataMember, JsonProperty("extend",NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, Dictionary<string, string>> _extend;
 
 
         /// <summary>
@@ -69,138 +64,27 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore]
         [Category("设计器支持")]
         [DisplayName("扩展配置")]
-        public List<ConfigItem> ExtendConfig
+        public Dictionary<string, Dictionary<string, string>> Extend
         {
             get
             {
-                if (_extendConfig != null)
-                    return _extendConfig;
-                _extendConfig = new List<ConfigItem>();
-                BeforePropertyChanged(nameof(ExtendConfig), null, _extendConfig);
-                return _extendConfig;
-            }
-            set
-            {
-                if (_extendConfig == value)
-                    return;
-                BeforePropertyChanged(nameof(ExtendConfig), _extendConfig, value);
-                _extendConfig = value;
-                OnPropertyChanged(nameof(ExtendConfig));
+                if (_extend != null)
+                    return _extend;
+                _extend = new Dictionary<string, Dictionary<string, string>>();
+                BeforePropertyChanged(nameof(Extend), null, _extend);
+                return _extend;
             }
         }
 
         [IgnoreDataMember, JsonIgnore]
-        private ConfigItemList _extendConfigList;
-        /// <summary>
-        /// 扩展配置
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore, Browsable(false)]
-        public ConfigItemList ExtendConfigList => _extendConfigList ?? (_extendConfigList = new ConfigItemList(ExtendConfig));
-
-        [IgnoreDataMember, JsonIgnore]
-        private ConfigItemListBool _extendConfigListBool;
+        private ConfigItemDictionary _extendDictionary;
 
         /// <summary>
         /// 扩展配置
         /// </summary>
         [IgnoreDataMember, JsonIgnore, Browsable(false)]
-        public ConfigItemListBool ExtendConfigListBool => _extendConfigListBool ?? (_extendConfigListBool = new ConfigItemListBool(ExtendConfig));
-
-        /// <summary>
-        /// 读写扩展配置
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public string this[string key]
-        {
-            get
-            {
-                return key == null ? null : ExtendConfig.FirstOrDefault(p => p.Name == key)?.Value;
-            }
-            set
-            {
-                if (key == null)
-                    return;
-                var mv = ExtendConfig.FirstOrDefault(p => p.Name == key);
-                if (mv == null)
-                {
-                    ExtendConfig.Add(new ConfigItem { Name = key, Value = value });
-                }
-                else if (string.IsNullOrWhiteSpace(value))
-                {
-                    ExtendConfig.Remove(mv);
-                }
-                else
-                {
-                    mv.Value = value.Trim();
-                }
-                RaisePropertyChanged(key);
-            }
-        }
-        /// <summary>
-        /// 试图取得扩展配置,如果不存在或为空则加入默认值后返回
-        /// </summary>
-        /// <param name="key">键</param>
-        /// <param name="def">默认值</param>
-        /// <returns>扩展配置</returns>
-
-        public string TryGetExtendConfig(string key, string def)
-        {
-            if (key == null)
-                return def;
-            var mv = ExtendConfig.FirstOrDefault(p => p.Name == key);
-            if (mv != null)
-                return mv.Value ?? (mv.Value = def);
-            ExtendConfig.Add(new ConfigItem { Name = key, Value = def });
-            return def;
-        }
-
-        #endregion
-
-        #region 扩展配置
-
-        /// <summary>
-        /// 扩展配置
-        /// </summary>
-        [DataMember, JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, Dictionary<string, string>> _extendDictionary;
-
-
-        /// <summary>
-        /// 扩展配置
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [Category("设计器支持")]
-        [DisplayName("扩展配置")]
-        public Dictionary<string, Dictionary<string, string>> ExtendDictionary
-        {
-            get
-            {
-                if (_extendDictionary != null)
-                    return _extendDictionary;
-                _extendDictionary = new Dictionary<string, Dictionary<string, string>>();
-                BeforePropertyChanged(nameof(ExtendDictionary), null, _extendDictionary);
-                return _extendDictionary;
-            }
-            set
-            {
-                if (_extendDictionary == value)
-                    return;
-                BeforePropertyChanged(nameof(ExtendDictionary), _extendDictionary, value);
-                _extendDictionary = value;
-                OnPropertyChanged(nameof(ExtendDictionary));
-            }
-        }
-
-        [IgnoreDataMember, JsonIgnore]
-        private ConfigItemDictionary _extendDictionary2;
-        /// <summary>
-        /// 扩展配置
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore, Browsable(false)]
-        public ConfigItemDictionary Extend => _extendDictionary2 ?? (_extendDictionary2 = new ConfigItemDictionary(ExtendDictionary));
-
-
+        public ConfigItemDictionary ExtendDictionary => _extendDictionary ?? (_extendDictionary = new ConfigItemDictionary(Extend));
+        
         /// <summary>
         /// 读写扩展配置
         /// </summary>
@@ -209,13 +93,36 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public string this[string classify, string name]
         {
-            get => Extend[classify, name];
+            get => ExtendDictionary[classify, name];
             set
             {
-                Extend[classify, name] = value;
-                RaisePropertyChanged($"{classify}.{name}");
+                ExtendDictionary[classify, name] = value;
+                RaisePropertyChanged($"{classify}_{name}");
             }
         }
+        /// <summary>
+        /// 读写扩展配置
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public string this[string name]
+        {
+            get => ExtendDictionary[name];
+            set
+            {
+                ExtendDictionary[name] = value;
+                RaisePropertyChanged(name);
+            }
+        }
+
+        [IgnoreDataMember, JsonIgnore]
+        private ConfigItemListBool _extendBool;
+
+        /// <summary>
+        /// 扩展配置
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore, Browsable(false)]
+        public ConfigItemListBool ExtendConfigListBool => _extendBool ?? (_extendBool = new ConfigItemListBool(ExtendDictionary));
 
         #endregion
 
@@ -251,6 +158,7 @@ namespace Agebull.EntityModel.Config
         [Category("设计标识"), DisplayName("编号"), Description("编号")]
         public int Index => Option.Index;
         #endregion
+
         #region 系统
 
         /// <summary>
@@ -320,8 +228,8 @@ namespace Agebull.EntityModel.Config
         [Category("*设计"), DisplayName("标签（对应关系等）"), Description("值")]
         public string Tag
         {
-            get => ExtendConfigList["Tag"];
-            set => ExtendConfigList["Tag"] = value;
+            get => this["Tag"];
+            set => this["Tag"] = value;
         }
 
         #endregion

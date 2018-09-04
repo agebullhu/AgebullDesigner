@@ -42,7 +42,7 @@ namespace Agebull.EntityModel.Designer
         /// 生成命令对象
         /// </summary>
         /// <param name="commands"></param>
-        protected override void CreateCommands(ObservableCollection<CommandItemBase> commands)
+        protected override void CreateCommands(NotificationList<CommandItemBase> commands)
         {
             commands.Add(new CommandItem
             {

@@ -53,7 +53,7 @@ namespace Agebull.EntityModel.Config
                 Name = name,
                 Caption = type.Caption.Replace("类型", "") + "类型",
                 Description = type.Description.Replace("类型", "") + "类型",
-                Items = new ObservableCollection<EnumItem>()
+                Items = new NotificationList<EnumItem>()
             };
             int id = 0;
             var name_head = words.LinkToString();

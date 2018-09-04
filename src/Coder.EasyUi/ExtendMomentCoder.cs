@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Designer;
+using Agebull.EntityModel.RobotCoder.EasyUi;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -18,20 +19,24 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("EasyUi","EasyUi表单", "xml", cfg => DoCode(cfg, EasyUiForm));
-            //MomentCoder.RegisteCoder("EasyUi","EasyUi表单保存",EasyUiHelperCoder.InputConvert4(Entity));
-            MomentCoder.RegisteCoder("EasyUi","EasyUi表格", "xml", cfg => DoCode(cfg, EasyUiGrid));
-            MomentCoder.RegisteCoder("EasyUi", "EasyUi详情", "xml", cfg => DoCode(cfg, EasyUiInfo));
-            MomentCoder.RegisteCoder("EasyUi", "MvcMenu", "xml", cfg => DoCode(cfg, MvcMenu));
+            MomentCoder.RegisteCoder("Web-EasyUi","表单", "html", cfg => DoCode(cfg, EasyUiForm));
+            MomentCoder.RegisteCoder("Web-EasyUi", "表单保存", "cs", cfg => DoCode(cfg, InputConvert4));
+            MomentCoder.RegisteCoder("Web-EasyUi","表格", "js", cfg => DoCode(cfg, EasyUiGrid));
+            MomentCoder.RegisteCoder("Web-EasyUi", "详情", "html", cfg => DoCode(cfg, EasyUiInfo));
+            MomentCoder.RegisteCoder("Web-EasyUi", "MvcMenu", "htm", cfg => DoCode(cfg, MvcMenu));
         }
-        #endregion
-
         string DoCode(ConfigBase config, Func<string> coder)
         {
             Entity = config as EntityConfig;
             if (Entity == null)
                 return null;
             return coder();
+        }
+        #endregion
+
+        public string InputConvert4()
+        {
+            return EasyUiHelperCoder.InputConvert4(Entity);
         }
 
         public string EasyUiInfo()

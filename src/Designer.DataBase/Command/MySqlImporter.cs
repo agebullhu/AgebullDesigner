@@ -10,7 +10,7 @@ using Agebull.Common.Mvvm;
 namespace Agebull.Common.Config.Designer
 {
     /// <summary>
-    /// 关系连接检查
+    /// 命令注册器
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
@@ -21,15 +21,15 @@ namespace Agebull.Common.Config.Designer
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            CommandCoefficient.RegisterCommand(new CommandItemBuilder<string, string>(ImportStructParpare, ImportStruct, ImportStructEnd)
+            CommandCoefficient.RegisterCommand(new CommandItemBuilder<ProjectConfig, string>(ImportStructParpare, ImportStruct, ImportStructEnd)
             {
                 Caption = "导入MySql数据库",
-                Catalog = "文件",
+                Catalog = "数据库",
                 IconName = "tree_Assembly"
             });
         }
 
-        public bool ImportStructParpare(string arg)
+        public bool ImportStructParpare(ProjectConfig arg)
         {
             if (DataModelDesignModel.Current.Context.SelectProject == null)
             {
@@ -48,7 +48,7 @@ namespace Agebull.Common.Config.Designer
         ///     导入MySql数据库
         /// </summary>
         /// <returns></returns>
-        internal string ImportStruct(string arg)
+        internal string ImportStruct(ProjectConfig arg)
         {
             var ctx = DataModelDesignModel.Current.Context;
             new MySqlImport().Import(ctx.CurrentTrace.TraceMessage, ctx.SelectProject, DataModelDesignModel.Current.Dispatcher);

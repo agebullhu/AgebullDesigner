@@ -1,5 +1,4 @@
 using System.ComponentModel.Composition;
-using System.IO;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Designer;
 using Agebull.EntityModel.RobotCoder.AspNet;
@@ -43,13 +42,19 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// <param name="schema"></param>
         public override void CreateEntityCode(ProjectConfig project, EntityConfig schema)
         {
+            if (schema.IsInternal)
+            {
+                TraceMessage.Track = $"{schema.Caption}:内部类,跳过界面生成";
+                return;
+            }
+            EasyUiModel.CheckExport(schema, false);
             var pg = new PageGenerator
             {
                 Entity = schema,
                 Project = schema.Parent,
             };
-            pg.CreateBaseCode(project.FormatPath("Web"));
-            pg.CreateExtendCode(project.FormatPath("Api"));
+            pg.CreateBaseCode(project.PagePath);
+            pg.CreateExtendCode(project.ApiPath);
         }
     }
 }

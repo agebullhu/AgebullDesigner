@@ -91,9 +91,9 @@ namespace Agebull.EntityModel.Config
             {
                 Name = "Enum",
                 Caption = "Ã¶¾Ù",
-                CSharp = "enum",
-                Java = "enum",
-                Cpp = "enum",
+                CSharp = "int",
+                Java = "int",
+                Cpp = "int",
                 MySql = "int",
                 SqlServer = "int",
                 Oracle = "NUMBER(10)",

@@ -7,11 +7,8 @@
 修改:2017-07-12
 *****************************************************/
 
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.Serialization;
 
 using Newtonsoft.Json;
@@ -59,7 +56,7 @@ namespace Agebull.EntityModel.Config
         /// 枚举集合
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        internal ObservableCollection<EnumConfig> _enums;
+        internal NotificationList<EnumConfig> _enums;
 
         /// <summary>
         /// 枚举集合
@@ -79,13 +76,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"对象集合"), DisplayName(@"枚举集合"), Description("枚举集合")]
-        public ObservableCollection<EnumConfig> EnumList
+        public NotificationList<EnumConfig> EnumList
         {
             get
             {
                 if (_enums != null)
                     return _enums;
-                _enums = new ObservableCollection<EnumConfig>();
+                _enums = new NotificationList<EnumConfig>();
                 RaisePropertyChanged(nameof(Enums));
                 return _enums;
             }
@@ -102,7 +99,7 @@ namespace Agebull.EntityModel.Config
         /// 实体集合
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        internal ObservableCollection<EntityConfig> _entities;
+        internal NotificationList<EntityConfig> _entities;
 
         /// <summary>
         /// 实体集合
@@ -122,13 +119,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"对象集合"), DisplayName(@"实体集合"), Description("所有表设置")]
-        public ObservableCollection<EntityConfig> EntityList
+        public NotificationList<EntityConfig> EntityList
         {
             get
             {
                 if (_entities != null)
                     return _entities;
-                _entities = new ObservableCollection<EntityConfig>();
+                _entities = new NotificationList<EntityConfig>();
                 RaisePropertyChanged(nameof(Entities));
                 return _entities;
             }
@@ -145,7 +142,7 @@ namespace Agebull.EntityModel.Config
         /// 项目集合
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        internal ObservableCollection<ProjectConfig> _projects;
+        internal NotificationList<ProjectConfig> _projects;
 
         /// <summary>
         /// 项目集合
@@ -164,13 +161,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"对象集合"), DisplayName(@"项目集合"), Description("项目")]
-        public ObservableCollection<ProjectConfig> ProjectList
+        public NotificationList<ProjectConfig> ProjectList
         {
             get
             {
                 if (_projects != null)
                     return _projects;
-                _projects = new ObservableCollection<ProjectConfig>();
+                _projects = new NotificationList<ProjectConfig>();
                 RaisePropertyChanged(nameof(Projects));
                 return _projects;
             }
@@ -188,7 +185,7 @@ namespace Agebull.EntityModel.Config
         /// API集合
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        internal ObservableCollection<ApiItem> _apiItems;
+        internal NotificationList<ApiItem> _apiItems;
 
         /// <summary>
         /// API集合
@@ -208,13 +205,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"对象集合"), DisplayName(@"API集合"), Description("对应的API集合")]
-        public ObservableCollection<ApiItem> ApiList
+        public NotificationList<ApiItem> ApiList
         {
             get
             {
                 if (_apiItems != null)
                     return _apiItems;
-                _apiItems = new ObservableCollection<ApiItem>();
+                _apiItems = new NotificationList<ApiItem>();
                 RaisePropertyChanged(nameof(ApiItems));
                 return _apiItems;
             }
@@ -246,7 +243,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"解决方案"), DisplayName(@"文档文件夹名称"), Description("文档文件夹名称")]
         public string DocFolder
         {
-            get => WorkContext.InCoderGenerating ? (_docFolder ?? "doc") : _docFolder;
+            get => WorkContext.InCoderGenerating ? _docFolder ?? "doc" : _docFolder;
             set
             {
                 if (_docFolder == value)
@@ -273,7 +270,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"解决方案"), DisplayName(@"代码文件夹名称"), Description("代码文件夹名称")]
         public string SrcFolder
         {
-            get => WorkContext.InCoderGenerating ? (_srcFolder ?? "src") : _srcFolder;
+            get => WorkContext.InCoderGenerating ? _srcFolder ?? "src" : _srcFolder;
             set
             {
                 if (_srcFolder == value)
@@ -281,6 +278,33 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(SrcFolder), _srcFolder, value);
                 _srcFolder = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(SrcFolder));
+            }
+        }
+
+        /// <summary>
+        /// 代码文件夹名称
+        /// </summary>
+        [DataMember, JsonProperty("pageFolder", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _pageFolder;
+
+        /// <summary>
+        /// 页面文件夹名称
+        /// </summary>
+        /// <remark>
+        /// 代码文件夹名称
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"解决方案"), DisplayName(@"代码文件夹名称"), Description("代码文件夹名称")]
+        public string PageFolder
+        {
+            get => WorkContext.InCoderGenerating ? _pageFolder ?? "page" : _pageFolder;
+            set
+            {
+                if (_pageFolder == value)
+                    return;
+                BeforePropertyChanged(nameof(PageFolder), _pageFolder, value);
+                _pageFolder = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                OnPropertyChanged(nameof(PageFolder));
             }
         }
 
@@ -344,7 +368,7 @@ namespace Agebull.EntityModel.Config
         /// 数据类型映射
         /// </summary>
         [DataMember, JsonProperty("dataTypeMap", NullValueHandling = NullValueHandling.Ignore)]
-        ObservableCollection<DataTypeMapConfig> _dataTypeMap;
+        NotificationList<DataTypeMapConfig> _dataTypeMap;
 
         /// <summary>
         /// 数据类型映射
@@ -354,13 +378,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"对象集合"), DisplayName(@"数据类型映射"), Description("数据类型映射")]
-        public ObservableCollection<DataTypeMapConfig> DataTypeMap
+        public NotificationList<DataTypeMapConfig> DataTypeMap
         {
             get
             {
                 if (_dataTypeMap != null)
                     return _dataTypeMap;
-                _dataTypeMap = new ObservableCollection<DataTypeMapConfig>();
+                _dataTypeMap = new NotificationList<DataTypeMapConfig>();
                 _dataTypeMap.AddRange(DataTypeMapConfig.DataTypeMap);
                 OnPropertyChanged(nameof(DataTypeMap));
                 return _dataTypeMap;

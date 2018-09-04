@@ -17,7 +17,7 @@ namespace Agebull.EntityModel.RobotCoder
         public static string DoCoder<T>(Func<T, string> func, T t)
             //where T : ConfigBase, new()
         {
-            using (CodeGeneratorScope.CreateScope())
+            using (CodeGeneratorScope.CreateScope(t as ConfigBase))
             {
                 return func(t);
                 //var arg = new T();
@@ -101,7 +101,7 @@ namespace Agebull.EntityModel.RobotCoder
         {
             StringBuilder code = new StringBuilder();
 
-            using (CodeGeneratorScope.CreateScope())
+            using (CodeGeneratorScope.CreateScope(config))
             {
                 config.Foreach<TConfig>(arg =>
                 {

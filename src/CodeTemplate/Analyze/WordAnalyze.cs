@@ -104,9 +104,9 @@ namespace Agebull.EntityModel.RobotCoder.CodeTemplate
 
                 if (ch >= 128
                     || ch == '_'
-                    || (ch >= '0' && ch <= '9') //数字
-                    || (ch >= 'A' && ch <= 'Z') //字母
-                    || (ch >= 'a' && ch <= 'z'))
+                    || ch >= '0' && ch <= '9' //数字
+                    || ch >= 'A' && ch <= 'Z' //字母
+                    || ch >= 'a' && ch <= 'z')
                 {
                     if (word != null && word.IsPunctuate)
                     {

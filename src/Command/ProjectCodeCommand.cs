@@ -32,18 +32,17 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public bool CanDo(RuntimeArgument argument)
         {
-            if (string.IsNullOrWhiteSpace(SolutionConfig.Current.RootPath) || !Directory.Exists(SolutionConfig.Current.RootPath))
+            if (string.IsNullOrWhiteSpace(SolutionConfig.Current.RootPath) ||
+                !Directory.Exists(SolutionConfig.Current.RootPath))
             {
                 noWriteFile = true;
                 StateMessage = "解决方案根路径设置不正确,已禁用文件生成！";
             }
             foreach (var project in argument.Projects)
             {
-                if (string.IsNullOrWhiteSpace(project.ModelPath))
-                {
-                    noWriteFile = true;
-                    StateMessage = $"项目【{project}】的路径设置不正确,已禁用文件生成！";
-                }
+                if (!string.IsNullOrWhiteSpace(project.ModelPath))
+                    continue;
+                StateMessage = $"项目【{project}】的路径设置不正确,已禁用文件生成！";
             }
             return true;
         }
@@ -69,6 +68,21 @@ namespace Agebull.EntityModel.Designer
             return _builder.Validate(entity);
         }
 
+        /// <summary>
+        /// 执行器
+        /// </summary>
+        public bool ExecuteEntity(EntityConfig entity)
+        {
+            return Execute(entity);
+        }
+
+        /// <summary>
+        /// 执行器
+        /// </summary>
+        public bool ExecuteProject(ProjectConfig project)
+        {
+            return Execute(project);
+        }
 
         /// <summary>
         /// 执行器
@@ -76,7 +90,7 @@ namespace Agebull.EntityModel.Designer
         public bool Execute(EntityConfig entity)
         {
             StateMessage = "正在生成" + entity.Caption + "...";
-            using (CodeGeneratorScope.CreateScope())
+            using (CodeGeneratorScope.CreateScope(entity))
             {
                 _builder.CreateEntityCode(entity.Parent, entity);
             }
@@ -90,7 +104,7 @@ namespace Agebull.EntityModel.Designer
         public bool Execute(ProjectConfig project)
         {
             StateMessage = "正在生成" + project.Caption + "...";
-            using (CodeGeneratorScope.CreateScope())
+            using (CodeGeneratorScope.CreateScope(null))
             {
                 _builder.CreateProjectCode(project);
             }
@@ -205,7 +219,7 @@ namespace Agebull.EntityModel.Designer
 
         private bool Doing(object args)
         {
-            using (CodeGeneratorScope.CreateScope())
+            using (CodeGeneratorScope.CreateScope(null))
             {
                 var argument = (RuntimeArgument)args;
                 if (!BeginDo(argument))

@@ -79,7 +79,7 @@ namespace Agebull.EntityModel.RobotCoder
                 for (var index = 1; index < words.Count; index++)
                 {
                     var word = words[index];
-                    if ((word[0] < 255 && !preEn) || preEn)
+                    if (word[0] < 255 && !preEn || preEn)
                         sb.Append(link);
                     sb.Append(uWord ? word.ToUWord() : word.ToLower());
                     preEn = word[0] < 255;
@@ -108,7 +108,7 @@ namespace Agebull.EntityModel.RobotCoder
             for (var index = 1; index < words.Count; index++)
             {
                 var word = words[index];
-                if ((word[0] < 255 && !preEn) || preEn)
+                if (word[0] < 255 && !preEn || preEn)
                     sb.Append(link);
                 sb.Append(uWord ? word.ToUWord() : word.ToLower());
                 preEn = word[0] < 255;
@@ -135,24 +135,24 @@ namespace Agebull.EntityModel.RobotCoder
                     words.Add(word);
                     continue;
                 }
-                if (word.All(c => (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')))
+                if (word.All(c => c >= 'A' && c <= 'Z' || c >= '0' && c <= '9'))
                 {
                     words.Add(word);
                     continue;
                 }
-                if (word.All(c => (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')))
+                if (word.All(c => c >= 'a' && c <= 'z' || c >= '0' && c <= '9'))
                 {
                     words.Add(word);
                     continue;
                 }
                 foreach (var c in word)
                 {
-                    if ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'))
+                    if (c >= 'a' && c <= 'z' || c >= '0' && c <= '9')
                     {
                         sb.Append(c);
                         continue;
                     }
-                    if ((c >= 'A' && c <= 'Z') || (c > 255))
+                    if (c >= 'A' && c <= 'Z' || c > 255)
                     {
                         if (sb.Length > 0)
                         {

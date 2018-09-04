@@ -9,13 +9,20 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
     [ExportMetadata("Symbol", '%')]
     public class ApiActionCoder : EasyUiCoderBase
     {
+        protected override string LangName => "cs";
+
         /// <summary>
         /// 名称
         /// </summary>
-        protected override string FileSaveConfigName => "File_Aspnet_Api";
+        protected override string FileName => "ApiController.Designer.cs";
+
+        /// <summary>
+        /// 名称
+        /// </summary>
+        protected override string ExFileName => "ApiController.cs";
 
 
-        public override string BaseCode()
+        protected override string BaseCode()
         {
             var coder = new EasyUiHelperCoder
             {
@@ -25,12 +32,29 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             return
                 $@"
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Configuration;
+using System.Data;
+using System.Diagnostics;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
+using System.Web.Http;
+using Newtonsoft.Json;
 
-using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.MySql;
+using Agebull.Common;
+using Agebull.Common.DataModel;
 using Agebull.Common.DataModel.BusinessLogic;
 using Agebull.Common.WebApi;
 using Agebull.Common.WebApi.EasyUi;
+using Gboxt.Common.DataModel;
+using Gboxt.Common.DataModel.MySql;
+
+{Project.UsingNameSpaces}
 
 using {NameSpace};
 using {NameSpace}.BusinessLogic;
@@ -61,12 +85,7 @@ namespace {NameSpace}.WebApi.Entity
         /// </summary>
         /// <param name=""filter"">筛选器</param>
         public void SetKeywordFilter(LambdaItem<{Entity.EntityName}> filter)
-        {{
-            var keyWord = GetArg(""keyWord"");
-            if (!string.IsNullOrEmpty(keyWord))
-            {{
-                filter.AddAnd(p => {QueryCode()});
-            }}
+        {{{QueryCode()}
         }}
 
         /// <summary>
@@ -85,9 +104,16 @@ namespace {NameSpace}.WebApi.Entity
 
         internal string QueryCode()
         {
-            var code = new StringBuilder();
+            var fields = Entity.UserProperty.Where(p => p.CsType == "string" && !p.IsBlob).ToArray();
+            if (fields.Length == 0)
+                return "";
+            var code = new StringBuilder(@"
+            var keyWord = GetArg(""keyWord"");
+            if (!string.IsNullOrEmpty(keyWord))
+            {{
+                filter.AddAnd(p => ");
             bool first = true;
-            foreach (var field in Entity.UserProperty.Where(p => p.CsType == "string" && !p.IsBlob))
+            foreach (var field in fields)
             {
                 if (first)
                     first = false;
@@ -95,10 +121,12 @@ namespace {NameSpace}.WebApi.Entity
                     code.Append(" || ");
                 code.Append($@"p.{field.Name}.Contains(keyWord)");
             }
+            code.Append(@");
+            }}");
             return code.ToString();
         }
 
-        public override string Code()
+        protected override string ExtendCode()
         {
             var baseClass = "ApiController";
             if (Entity.Interfaces != null)
@@ -111,14 +139,29 @@ namespace {NameSpace}.WebApi.Entity
             return
                 $@"
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Configuration;
+using System.Data;
+using System.Diagnostics;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
 using System.Web.Http;
+using Newtonsoft.Json;
 
-using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.MySql;
+using Agebull.Common;
 using Agebull.Common.DataModel;
 using Agebull.Common.DataModel.BusinessLogic;
 using Agebull.Common.WebApi;
 using Agebull.Common.WebApi.EasyUi;
+using Gboxt.Common.DataModel;
+using Gboxt.Common.DataModel.MySql;
+
+{Project.UsingNameSpaces}
 
 using {NameSpace};
 using {NameSpace}.BusinessLogic;
@@ -126,7 +169,7 @@ using {NameSpace}.DataAccess;
 
 namespace {NameSpace}.WebApi.Entity
 {{
-    [RoutePrefix(""{Entity.Parent.Abbreviation}/{Entity.Abbreviation}/v1"")]
+    [RoutePrefix(""{Project.Abbreviation?? Project.Name}/{Entity.Abbreviation ?? Entity.Name}/v1"")]
     public partial class {Entity.Name}ApiController : {baseClass}<{Entity.EntityName}, {Entity.Name}DataAccess, {Entity.Parent.DataBaseObjectName}, {Entity.Name}BusinessLogic>
     {{
         #region 基本扩展

@@ -70,7 +70,7 @@ namespace Agebull.EntityModel.Designer
 
                 ImportTable(workbook, entity);
             }
-            if (start > 0 && start < (line - 1))
+            if (start > 0 && start < line - 1)
             {
                 SetCellRangeAddress(sheet, typeCell, start, line - 1, 0, 0);
             }
@@ -159,7 +159,7 @@ namespace Agebull.EntityModel.Designer
                 row.CreateCell(i++).SetCell(field.Nullable ? field.Initialization : "0", valueCell);
                 row.CreateCell(i++).SetCell(field.Caption + "：" + field.Description, valueCell);
                 row.CreateCell(i++).SetCell("未指定", valueCell);
-                row.CreateCell(i++).SetCell(field.CreateIndex ? "是" : "否", valueCell);
+                row.CreateCell(i++).SetCell(field.CreateDbIndex ? "是" : "否", valueCell);
                 row.CreateCell(i).SetCell("", valueCell);
             }
         }

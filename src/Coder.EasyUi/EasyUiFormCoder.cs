@@ -13,9 +13,11 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// <summary>
         /// Ãû³Æ
         /// </summary>
-        protected override string FileSaveConfigName => "File_Aspnet_Form";
+        protected override string FileName => "Form.htm";
 
-        public override string Code()
+        protected override string LangName => "html";
+
+        protected override string BaseCode()
         {
             if (Entity.FormCloumn <= 0)
                 Entity.FormCloumn = 1;
@@ -35,7 +37,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         private string FormHide()
         {
             StringBuilder code = new StringBuilder();
-            foreach (var field in Entity.ClientProperty.Where(p => p.NoneDetails && (p.IsPrimaryKey || p["user_form_hide"] == "True" || !p.IsCompute && !p.IsSystemField)))
+            foreach (var field in Entity.ClientProperty.Where(p => p.NoneDetails && (p.IsPrimaryKey || p.ExtendConfigListBool["easyui","userFormHide"] || !p.IsCompute && !p.IsSystemField)))
             {
                 code.Append($@"
     <input name='{field.JsonName}' type='hidden' />");
@@ -181,13 +183,9 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             {
                 options.Append(",multiline:true");
             }
-            if (field.IsUserReadOnly)
+            if (field.IsUserReadOnly || field.Parent.IsUiReadOnly)
             {
                 options.Append(",readonly:true");
-            }
-            if (!field.CanEmpty)
-            {
-                options.Append(",required:true");
             }
             if (!string.IsNullOrWhiteSpace(field.FormOption))
             {
@@ -197,10 +195,17 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             {
                 options.Append($",url:'{field.ComboBoxUrl}'");
             }
-            var validType = EasyUiPageScriptCoder.ValidType(field, out bool required);
+
+            if (field.IsUserReadOnly || field.Parent.IsUiReadOnly)
+                return options.ToString();
+            var validType = EasyUiPageScriptCoderBase.ValidType(field, out bool required);
             if (validType.Count > 0)
             {
                 options.Append($",validType:[{validType.LinkToString(",")}]");
+            }
+            if (required || field.IsRequired || !field.CanEmpty)
+            {
+                options.Append(",required:true");
             }
             return options.ToString();
         }

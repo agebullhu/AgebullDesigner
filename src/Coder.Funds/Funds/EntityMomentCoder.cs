@@ -67,7 +67,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// {1}
         /// </summary>
-       public ObservableCollection<{0}> List_{0} {{ get; set; }} = new ObjectCollection<{0}>();"
+       public NotificationList<{0}> List_{0} {{ get; set; }} = new ObjectCollection<{0}>();"
             , entityConfig.Name
             , entityConfig.Caption);
             return code.ToString();

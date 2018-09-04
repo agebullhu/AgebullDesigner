@@ -12,11 +12,25 @@ namespace Agebull.EntityModel.RobotCoder
         #region 主体代码
 
         protected override string ExtendUsing => $@"
-using System.IO;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
+using System.Data;
+using System.Diagnostics;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
 using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
+
+using Agebull.Common;
+using Agebull.Common.DataModel;
+using Gboxt.Common.DataModel;
+using Agebull.Common.WebApi;
+{Project.UsingNameSpaces}
 
 //using {NameSpace}.DataAccess;
 //using Gboxt.Common.DataModel.SqlServer;
@@ -43,28 +57,7 @@ using Newtonsoft.Json;
         partial void Initialize()
         {{
             /*{ DefaultValueCode()}*/
-        }}
-
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Runtime.Serialization;
-using Gboxt.Common.DataModel;
-
-namespace {NameSpace}
-{{
-    /// <summary>
-    /// {Entity.Description}
-    /// </summary>
-    [DataContract]
-    sealed partial class {Entity.EntityName} : 
-    {{
-        
-        
-    }}
-}}";
+        }}";
 
 
         /// <summary>
@@ -468,7 +461,7 @@ namespace {NameSpace}
         /// <remarks>
         /// {ToRemString(property.Description)}
         /// </remarks>
-        {Attribute(property).Replace($"\"{property.Name}\"", $"\"{alias}\"")}
+        {Attribute(property).Replace($"\"{property.JsonName}\"", $"\"{alias}\"")}
         public {property.LastCsType} {alias}
         {{
             get

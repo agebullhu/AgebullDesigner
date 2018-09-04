@@ -126,7 +126,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         private string SimpleCode()
         {
-            var fields = Entity.DbFields.Where(p => p.ExtendConfigListBool["db_simple"]).ToArray();
+            var fields = Entity.DbFields.Where(p => p.ExtendConfigListBool["easyui","simple"]).ToArray();
             var code = new StringBuilder();
             code.Append($@"
         #region 简单读取
@@ -221,21 +221,28 @@ namespace Agebull.EntityModel.RobotCoder
             return $@"
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
-
+using System.Runtime.Serialization;
+using System.IO;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 
 using Agebull.Common;
 using Agebull.Common.DataModel;
+using Agebull.Common.WebApi;
 using Gboxt.Common;
 using Gboxt.Common.DataModel;
+{Project.UsingNameSpaces}
+
 using Gboxt.Common.DataModel.Extends;
 using Gboxt.Common.DataModel.MySql;
-
-
 
 namespace {NameSpace}.DataAccess
 {{
@@ -322,13 +329,29 @@ namespace {NameSpace}.DataAccess
             }
             var code = $@"
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
+
+using Agebull.Common;
+using Agebull.Common.DataModel;
+using Agebull.Common.WebApi;
+using Gboxt.Common.DataModel;
+using Gboxt.Common.DataModel.MySql;
+
+{Project.UsingNameSpaces}
 
 namespace {NameSpace}.DataAccess
 {{
-    using Gboxt.Common.DataModel;
-    using Gboxt.Common.DataModel.MySql;
     /// <summary>
     /// {Entity.Description}
     /// </summary>
@@ -344,7 +367,7 @@ namespace {NameSpace}.DataAccess
         private string TableObject()
         {
             var name = Entity.Name.ToPluralism();
-            return ($@"
+            return $@"
 
         /// <summary>
         /// {Entity.Description}数据访问对象
@@ -360,12 +383,12 @@ namespace {NameSpace}.DataAccess
             {{
                 return this._{name.ToLWord()} ?? ( this._{name.ToLWord()} = new {Entity.Name}DataAccess{{ DataBase = this}});
             }}
-        }}");
+        }}";
         }
 
         private string TableSql()
         {
-            return ($@"
+            return $@"
 
         /// <summary>
         /// {Entity.Description}的结构语句
@@ -374,7 +397,7 @@ namespace {NameSpace}.DataAccess
         {{
             TableName = ""{Entity.ReadTableName}"",
             PimaryKey = ""{Entity.PrimaryColumn.Name}""
-        }};");
+        }};";
         }
 
         private string Fields()

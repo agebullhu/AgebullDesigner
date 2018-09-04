@@ -11,20 +11,21 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     public class CodeGeneratorTrigger : EventTrigger
     {
-
+        private ConfigBase config;
         /// <summary>
         /// 开始代码生成
         /// </summary>
-        public override void OnCodeGeneratorBegin()
+        public override void OnCodeGeneratorBegin(NotificationObject obj)
         {
-            SolutionConfig.Current.Foreach<EntityConfig>(CreateLast);
+            config = (ConfigBase)obj;
+            config.Foreach<EntityConfig>(CreateLast);
         }
         /// <summary>
         /// 完成代码生成
         /// </summary>
         public override void OnCodeGeneratorEnd()
         {
-            SolutionConfig.Current.Foreach<EntityConfig>(entity => entity.LastProperties = null);
+            config.Foreach<EntityConfig>(entity => entity.LastProperties = null);
         }
 
 
@@ -41,9 +42,18 @@ namespace Agebull.EntityModel.Designer
             {
                 if (pro.IsDelete || pro.IsDiscard)
                     continue;
-                var last = pro.Option.LastConfig as PropertyConfig;
-                last.Option.Index = ++idx;
-                entity.LastProperties.Add(last);
+                pro.Option.Index = ++idx;
+                if (pro.IsLinkField)
+                {
+                    if (pro.Option.LastConfig is PropertyConfig last && last != pro)
+                    {
+                        pro.DataType = last.DataType;
+                        pro.CsType = last.CsType;
+                        pro.CustomType = last.CustomType;
+                        pro.DbType = last.DbType;
+                    }
+                }
+                entity.LastProperties.Add(pro);
             }
         }
     }
