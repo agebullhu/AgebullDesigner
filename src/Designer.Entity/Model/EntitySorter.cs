@@ -47,6 +47,17 @@ namespace Agebull.EntityModel.Config
                 Entity.Add(column);
             }
         }
+        
+        /// <summary>
+        ///     标识与序号相同
+        /// </summary>
+        public void IdentityByIndex()
+        {
+            foreach (var field in Entity.Properties)
+            {
+                field.Option.Identity  = field.Option.Index;
+            }
+        }
         /// <summary>
         ///     列排序
         /// </summary>

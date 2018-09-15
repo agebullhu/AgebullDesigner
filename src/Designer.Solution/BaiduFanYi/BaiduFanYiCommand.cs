@@ -24,7 +24,7 @@ namespace Agebull.EntityModel.Designer
                 Action = Name2CaptionChiness,
                 Caption = "翻译成中文(名称到标题)",
                 Catalog = "翻译",
-                
+
                 IconName = "imgBaidu"
             });
             CommandCoefficient.RegisterCommand(new CommandItemBuilder<ConfigBase>
@@ -33,7 +33,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "翻译成中文(标题与说明)",
                 Catalog = "翻译",
                 Description = "通过百度翻译接口,将字段的标题与说明从英文翻译成中文(需要网络连接)",
-                
+
                 IconName = "imgBaidu"
             });
             CommandCoefficient.RegisterCommand(new CommandItemBuilder<ConfigBase>
@@ -42,7 +42,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "翻译标题(中译英)",
                 Action = CaptionToEnglish,
                 Description = "通过百度翻译接口,将标题从中文翻译成英文(需要网络连接)",
-                
+
                 IconName = "imgBaidu"
             });
             CommandCoefficient.RegisterCommand(new CommandItemBuilder<ConfigBase>
@@ -50,7 +50,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "翻译",
                 Caption = "翻译名称(中译英)",
                 Action = NameToEnglish,
-                
+
                 Description = "通过百度翻译接口,将名称从中文翻译成英文(需要网络连接)",
                 IconName = "imgBaidu"
             });
@@ -62,14 +62,17 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void NameToEnglish(ConfigBase item)
         {
-            item.Name = BaiduFanYi.ToWord(item.Name);
+            var name = item.Name;
+            item.Name = BaiduFanYi.ToEnglishWord(item.Name);
+            if (string.IsNullOrEmpty(item.Caption))
+                item.Caption = name;
         }
         /// <summary>
         ///     自动修复
         /// </summary>
         public void CaptionToEnglish(ConfigBase item)
         {
-            item.Caption = BaiduFanYi.ToWord(item.Caption);
+            item.Caption = BaiduFanYi.ToEnglishWord(item.Caption);
         }
 
         #endregion

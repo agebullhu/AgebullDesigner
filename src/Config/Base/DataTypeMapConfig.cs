@@ -112,6 +112,19 @@ namespace Agebull.EntityModel.Config
                 Oracle = "NUMBER(3)",
                 JavaScript = "byte"
             },
+            /* Byte[]*/
+            new DataTypeMapConfig
+            {
+                Name = "ByteArray",
+                Caption = "有符号字节数组",
+                CSharp = "byte[]",
+                Java = "byte[]",
+                Cpp = "unsigned char",
+                MySql = "LONGBLOG",
+                SqlServer = "VarBinary",
+                Oracle = "NUMBER(3)",
+                JavaScript = "byte"
+            },
             /* SByte*/
             new DataTypeMapConfig
             {

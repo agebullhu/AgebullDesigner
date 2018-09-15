@@ -63,17 +63,11 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
                 entityPath = IOHelper.CheckPath(entityPath,cls);
             }
             CreateCode<EntityBuilder>(project, schema, IOHelper.CheckPath(entityPath, "Model"));
-            CreateCode<EntityValidateBuilder>(project, schema, IOHelper.CheckPath(entityPath, "Validate"));
+            if (Solution.HaseValidateCode)
+                CreateCode<EntityValidateBuilder>(project, schema, IOHelper.CheckPath(entityPath, "Validate"));
 
             var accessPath = IOHelper.CheckPath(root, "DataAccess");
-            if (cls != null)
-            {
-                accessPath = IOHelper.CheckPath(accessPath,cls);
-            }
-            else
-            {
-                accessPath = IOHelper.CheckPath(accessPath, "DataAccess");
-            }
+            accessPath = IOHelper.CheckPath(accessPath, cls ?? "DataAccess");
             Message = accessPath;
 
             if (project.DbType == DataBaseType.MySql)

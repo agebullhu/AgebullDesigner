@@ -389,39 +389,6 @@
     <Resource Include="Style\Images\bull2.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="docs\MySqlTransaction.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="docs\MySqlParameterCollection.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="docs\MySqlParameter.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="docs\MySqlHelper.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="docs\MySqlException.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="docs\MySqlDataReader.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="docs\MySqlDataAdapter.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="docs\MySqlConnectionStringBuilder.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="docs\MySqlConnection.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="docs\MySqlCommandBuilder.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="docs\MySqlCommand.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Style\Images\find.png" />
   </ItemGroup>
   <ItemGroup>

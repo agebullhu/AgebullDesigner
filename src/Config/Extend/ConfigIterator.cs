@@ -64,6 +64,20 @@ namespace Agebull.EntityModel.Config
                         Foreach(action, entity);
                     }
                     return;
+                case EnumConfig enumConfig:
+                    if (typeof(T) == typeof(EnumConfig))
+                    {
+                        DoAction(action, enumConfig);
+                    }
+                    else if (typeof(T) == typeof(ProjectConfig))
+                    {
+                        DoAction(action, enumConfig.Parent);
+                    }
+                    else
+                    {
+                        Foreach(action, enumConfig);
+                    }
+                    return;
                 case ProjectConfig project:
                     if (typeof(T) == typeof(ProjectConfig))
                     {

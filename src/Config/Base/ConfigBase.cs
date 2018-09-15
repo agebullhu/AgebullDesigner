@@ -48,13 +48,13 @@ namespace Agebull.EntityModel.Config
         public SolutionConfig Solution => Option.Solution;
 
         #endregion
-        
+
         #region 扩展配置
 
         /// <summary>
         /// 扩展配置
         /// </summary>
-        [DataMember, JsonProperty("extend",NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("extend", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, Dictionary<string, string>> _extend;
 
 
@@ -84,7 +84,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         [IgnoreDataMember, JsonIgnore, Browsable(false)]
         public ConfigItemDictionary ExtendDictionary => _extendDictionary ?? (_extendDictionary = new ConfigItemDictionary(Extend));
-        
+
         /// <summary>
         /// 读写扩展配置
         /// </summary>
@@ -146,7 +146,11 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category("设计标识"), DisplayName("唯一标识"), Description("唯一标识")]
-        public int Identity => Option.Identity;
+        public int Identity
+        {
+            get => Option.Identity;
+            set => Option.Identity = value;
+        }
 
         /// <summary>
         /// 编号
@@ -156,7 +160,11 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category("设计标识"), DisplayName("编号"), Description("编号")]
-        public int Index => Option.Index;
+        public int Index
+        {
+            get => Option.Index;
+            set => Option.Index = value;
+        }
         #endregion
 
         #region 系统

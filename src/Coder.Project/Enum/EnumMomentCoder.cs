@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -12,21 +11,21 @@ namespace Agebull.EntityModel.RobotCoder
     [ExportMetadata("Symbol", '%')]
     internal class EnumMomentCoder : MomentCoderBase, IAutoRegister
     {
-        #region ע��
+        #region 注册
 
         /// <summary>
-        /// ע�����
+        /// 注册代码
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("ö��", "ö��(C++)","cpp", EnumCpp);
-            MomentCoder.RegisteCoder("ö��", "ö��(JS)", "js", EnumJs);
-            MomentCoder.RegisteCoder("ö��", "ö��(C#)", "cs", EnumFunc);
-            MomentCoder.RegisteCoder("ö��", "ö��������չ����(Enum.Caption())", "cs", EnumCs);
+            MomentCoder.RegisteCoder("枚举", "枚举(C++)", "cpp", (EnumCpp));
+            MomentCoder.RegisteCoder("枚举", "枚举(JS)", "js", EnumJs);
+            MomentCoder.RegisteCoder("枚举", "枚举(C#)", "cs", (EnumFunc));
+            MomentCoder.RegisteCoder("枚举", "枚举名称扩展方法(Enum.Caption())", "cs", EnumCs);
         }
         #endregion
 
-        #region ö��(C++)
+        #region 枚举(C++)
 
         public static string EnumCpp(ConfigBase config)
         {
@@ -48,7 +47,7 @@ namespace Agebull.EntityModel.RobotCoder
             code.Append($@"
 
 /**
-* @brief {ToRemString(config.Caption)}ö��
+* @brief {ToRemString(config.Caption)}枚举
 */
     enum class {config.Name}Classify
 {{");
@@ -57,11 +56,10 @@ namespace Agebull.EntityModel.RobotCoder
                 code.Append($@"
 
     //{item.Caption}");
-                if (Int32.TryParse(item.Value, out int vl))
-                    code.Append($@"
-    {item.Name} = 0x{vl:X},");
-                else
-                    code.Append($@"
+                code.Append(int.TryParse(item.Value, out int vl)
+                    ? $@"
+    {item.Name} = 0x{vl:X},"
+                    : $@"
     {item.Name} = item.Value,");
             }
             code.Append(@"
@@ -69,7 +67,7 @@ namespace Agebull.EntityModel.RobotCoder
         }
         #endregion
 
-        #region ö��(C#)
+        #region 枚举(C#)
 
         public static string EnumFunc(ConfigBase config)
         {
@@ -86,7 +84,7 @@ namespace Agebull.EntityModel.RobotCoder
                         foreach (var ef in entity.LastProperties.Where(p => p.EnumConfig != null))
                             if (!enums.Contains(ef.EnumConfig))
                                 enums.Add(ef.EnumConfig);
-                        ;
+                        
                     }
                     enums.ForEach(p => EnumCode(code, p));
                     break;
@@ -120,11 +118,10 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// {ToRemString(item.Caption)}
         /// </summary>");
-                if (Int32.TryParse(item.Value, out int vl))
-                    code.Append($@"
-        {item.Name} = 0x{vl:X},");
-                else
-                    code.Append($@"
+                code.Append(int.TryParse(item.Value, out int vl)
+                    ? $@"
+        {item.Name} = 0x{vl:X},"
+                    : $@"
         {item.Name} = item.Value,");
             }
             code.Append(@"
@@ -138,9 +135,9 @@ namespace Agebull.EntityModel.RobotCoder
         private static string EnumJs(ConfigBase config)
         {
             var code = new StringBuilder();
-            if (config is EnumConfig)
+            if (config is EnumConfig enumConfig)
             {
-                TypeDefaultScript(code, config as EnumConfig);
+                TypeDefaultScript(code, enumConfig);
             }
             else
             {
@@ -153,7 +150,7 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
         /// <summary>
-        ///     ����ö��
+        ///     生成枚举
         /// </summary>
         public static void TypeDefaultScript(StringBuilder code, EnumConfig enumc)
         {
@@ -176,7 +173,7 @@ var {enumc.Name.ToLWord()} = [");
 ];
 
 /**
- * {enumc.Caption}֮����ʽ������
+ * {enumc.Caption}之表格格式化方法
  */
 function {enumc.Name.ToLWord()}Format(value) {{
     return arrayFormat(value, {enumc.Name.ToLWord()});
@@ -197,7 +194,7 @@ function {enumc.Name.ToLWord()}Format(value) {{
         }
 
         /// <summary>
-        ///     ����ö��
+        ///     生成枚举
         /// </summary>
         public static void EnumName(StringBuilder code, EnumConfig enumc, List<EnumConfig> doed)
         {
@@ -206,7 +203,7 @@ function {enumc.Name.ToLWord()}Format(value) {{
             doed.Add(enumc);
             code.Append($@"
         /// <summary>
-        ///     {enumc.Caption}����ת��
+        ///     {enumc.Caption}名称转换
         /// </summary>
         public static string ToCaption(this {enumc.Name} value)
         {{
@@ -220,7 +217,7 @@ function {enumc.Name.ToLWord()}Format(value) {{
             }
             code.Append($@"
                 default:
-                    return ""{enumc.Caption}(δ֪)"";
+                    return ""{enumc.Caption}(错误)"";
             }}
         }}
 ");

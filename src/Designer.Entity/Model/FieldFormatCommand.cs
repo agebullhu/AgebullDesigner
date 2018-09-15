@@ -290,7 +290,7 @@ namespace Agebull.EntityModel.Designer
         {
             var columns = new List<PropertyConfig>();
             var lines = Fields.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            var idx = Entity == null ?1: Entity.MaxIdentity;
+            var idx = Entity?.MaxIdentity ?? 1;
             foreach (var line in lines)
             {
                 if (string.IsNullOrEmpty(line))

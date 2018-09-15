@@ -27,7 +27,7 @@ namespace Agebull.EntityModel.Config
         /// 上帝模式
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        internal bool _godMode;
+        internal bool _godMode = true;
 
         /// <summary>
         /// 上帝模式
@@ -47,6 +47,32 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(GodMode), _godMode, value);
                 _godMode = value;
                 OnPropertyChanged(nameof(GodMode));
+            }
+        }
+        /// <summary>
+        /// 生成校验代码
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        internal bool _haseValidateCode = false;
+
+        /// <summary>
+        /// 生成校验代码
+        /// </summary>
+        /// <remark>
+        /// 可以任意修改任意配置的生成校验代码
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"设计器支持"), DisplayName(@"生成校验代码")]
+        public bool HaseValidateCode
+        {
+            get => _haseValidateCode;
+            set
+            {
+                if (_haseValidateCode == value)
+                    return;
+                BeforePropertyChanged(nameof(HaseValidateCode), _haseValidateCode, value);
+                _haseValidateCode = value;
+                OnPropertyChanged(nameof(HaseValidateCode));
             }
         }
         #endregion
@@ -399,10 +425,10 @@ namespace Agebull.EntityModel.Config
             }
         }
 
-            /// <summary>
-            /// 解决方案类型
-            /// </summary>
-            [DataMember, JsonProperty("SolutionType", NullValueHandling = NullValueHandling.Ignore)]
+        /// <summary>
+        /// 解决方案类型
+        /// </summary>
+        [DataMember, JsonProperty("SolutionType", NullValueHandling = NullValueHandling.Ignore)]
         internal SolutionType _solutionType;
 
         /// <summary>
@@ -481,7 +507,7 @@ namespace Agebull.EntityModel.Config
         }
         [IgnoreDataMember, JsonIgnore]
         private string _workView;
-        
+
         /// <summary>
         /// 工作视角
         /// </summary>

@@ -66,6 +66,11 @@
                             <Label Content="标题" />
                             <TextBox Text="{Binding Caption,Mode=TwoWay}" Tag="{Binding Name}" />
                         </StackPanel>
+                        <StackPanel>
+                            <Label Content="标识" />
+                            <TextBox IsReadOnly="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}"
+                                     Text="{Binding Identity,Mode=TwoWay}"/>
+                        </StackPanel>
                     </StackPanel>
                     <StackPanel>
                         <Label Content="说明" />

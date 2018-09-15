@@ -172,7 +172,7 @@ namespace {NameSpace}.WebApi
         public string ToFormString()
         {
             return $@""");
-            
+
 
             bool isFirst = true;
             foreach (PropertyConfig property in Columns.Where(p => p.CanUserInput))
@@ -207,7 +207,9 @@ namespace {NameSpace}.WebApi
 
         public string ValidateCode()
         {
-            EntityValidateCoder coder = new EntityValidateCoder { Entity = Entity };
+            if (!SolutionConfig.Current.HaseValidateCode)
+                return "";
+            var coder = new EntityValidateCoder { Entity = Entity };
             return $@"
         #region 数据校验
         /// <summary>数据校验</summary>

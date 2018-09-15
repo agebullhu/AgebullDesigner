@@ -306,6 +306,10 @@
             <GroupBox Header="*设计" Margin="5" Style="{StaticResource AdvGroupBox}">
                 <WrapPanel>
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
+                        <Label Content="别名" />
+                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding Alias,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="分组" />
                         <TextBox Text="{Binding Group,Mode=TwoWay}" />
                     </StackPanel>

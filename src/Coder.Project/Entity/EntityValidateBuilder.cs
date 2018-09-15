@@ -6,7 +6,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         public string ValidateCode()
         {
-            EntityValidateCoder coder = new EntityValidateCoder {Entity = Entity};
+            var coder = new EntityValidateCoder {Entity = Entity};
             return $@"
 
         /// <summary>

@@ -403,6 +403,7 @@ ALTER TABLE `{entity.SaveTable}`");
         /// <summary>
         /// 字段数据库读取代码
         /// </summary>
+        /// <param name="entity"></param>
         /// <param name="field">字段</param>
         /// <param name="code">代码</param>
         public static void FieldReadCode(EntityConfig entity, PropertyConfig field, StringBuilder code)
@@ -417,31 +418,31 @@ ALTER TABLE `{entity.SaveTable}`");
             }
             var type = field.CsType.ToLower();
             var dbType = field.DbType.ToLower();
-            if (type == "byte[]")
+            switch (type)
             {
-                code.Append($@"
+                case "byte[]":
+                    code.Append($@"
                 if (!reader.IsDBNull({idx}))
-                    entity._{field.Name.ToLWord()} = reader.GetSqlBinary({idx}).Value;");
-                return;
-            }
-            if (type == "string")
-            {
-                switch (dbType)
-                {
-                    case "varchar":
-                    case "varstring":
-                        code.Append($@"
+                    entity._{field.Name.ToLWord()} = (byte[])reader[{idx}];");
+                    return;
+                case "string":
+                    switch (dbType)
+                    {
+                        case "varchar":
+                        case "varstring":
+                            code.Append($@"
                 if (!reader.IsDBNull({idx}))
                     entity._{field.Name.ToLWord()} = {ReaderName(field.DbType)}({idx});");
-                        break;
-                    default:
-                        code.Append($@"
+                            break;
+                        default:
+                            code.Append($@"
                 if (!reader.IsDBNull({idx}))
                     entity._{field.Name.ToLWord()} = {ReaderName(field.DbType)}({idx}).ToString();");
-                        break;
-                }
-                return;
+                            break;
+                    }
+                    return;
             }
+
             //if (field.DbNullable)
             code.Append($@"
                 if (!reader.IsDBNull({idx}))
