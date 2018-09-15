@@ -90,7 +90,8 @@ namespace Agebull.EntityModel.RobotCoder
                 arg.DataType = dataType.Name;
                 arg.CsType = dataType.CSharp;
                 arg.CppType = dataType.Cpp;
-                arg.Datalen = dataType.Datalen;
+                if(arg.Datalen <= 0)
+                    arg.Datalen = dataType.Datalen;
                 arg.Scale = dataType.Scale;
                 if (arg.Parent == null)
                     arg.DbType = dataType.MySql;

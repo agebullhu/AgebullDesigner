@@ -221,8 +221,10 @@ namespace Agebull.EntityModel.Designer
                 {
                     case "int":
                     case "bool":
+                    case "smallint":
                         code.Append(",i");
                         break;
+                    case "date":
                     case "datetime":
                         code.Append(",DateTime");
                         break;
@@ -230,6 +232,7 @@ namespace Agebull.EntityModel.Designer
                         code.Append(",bool");
                         break;
                     case "bigint":
+                    case "largeint":
                         code.Append(",long");
                         break;
                     case "decimal":
