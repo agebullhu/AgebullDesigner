@@ -26,6 +26,8 @@ namespace Agebull.EntityModel.Designer
 
                 TargetConfig.ProjectList.CollectionChanged += ConfigCollectionChanged;
 
+                foreach (var project in TargetConfig.Projects)
+                    GlobalTrigger.OnLoad(project);
             }
         }
 

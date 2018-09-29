@@ -94,9 +94,7 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
                 {
                     if (tables.TryGetValue(field.LinkTable, out EntityConfig friend))
                     {
-                        var linkField =
-                            friend.Properties.FirstOrDefault(
-                                p => p.ColumnName == field.LinkField || p.Name == field.LinkField);
+                        var linkField =friend.Properties.FirstOrDefault(p => p.ColumnName == field.LinkField || p.Name == field.LinkField);
                         if (linkField != null)
                         {
                             builder.AppendFormat(@"`{0}`.`{1}` as `{2}`", friend.Name, linkField.ColumnName, field.ColumnName);
@@ -110,11 +108,10 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
     FROM `{entity.SaveTable}`");
             foreach (var table in tables.Values)
             {
-                var field = entity.DbFields.FirstOrDefault(p => p.IsLinkKey && p.LinkTable == table.SaveTable);
+                var field = entity.DbFields.FirstOrDefault(p => p.IsLinkKey && (p.LinkTable == table.SaveTable|| p.LinkTable == table.Name));
                 if (field == null)
                     continue;
-                var linkField = table.DbFields.FirstOrDefault(
-                    p => p.Name == field.LinkField || p.ColumnName == field.LinkField);
+                var linkField = table.Properties.FirstOrDefault(p => p.Name == field.LinkField || p.ColumnName == field.LinkField);
                 if (linkField == null)
                     continue;
                 builder.AppendFormat(@"

@@ -50,7 +50,6 @@ using Agebull.Common;
 using Agebull.Common.DataModel;
 using Agebull.Common.DataModel.BusinessLogic;
 using Agebull.Common.WebApi;
-using Agebull.Common.WebApi.EasyUi;
 using Gboxt.Common.DataModel;
 using Gboxt.Common.DataModel.MySql;
 
@@ -157,7 +156,6 @@ using Agebull.Common;
 using Agebull.Common.DataModel;
 using Agebull.Common.DataModel.BusinessLogic;
 using Agebull.Common.WebApi;
-using Agebull.Common.WebApi.EasyUi;
 using Gboxt.Common.DataModel;
 using Gboxt.Common.DataModel.MySql;
 

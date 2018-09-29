@@ -9,6 +9,14 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     public class PropertyTrigger : ConfigTriggerBase<PropertyConfig>
     {
+        protected override void OnLoad()
+        {
+            if (!string.IsNullOrEmpty(TargetConfig?.LinkField))
+            {
+                TargetConfig.Option.IsLink = true;
+            }
+        }
+
         /// <summary>
         /// 属性事件处理
         /// </summary>
@@ -27,6 +35,12 @@ namespace Agebull.EntityModel.Designer
                     if (!TargetConfig.CanEmpty)
                         TargetConfig.IsRequired = true;
                     break;
+                case nameof(TargetConfig.LinkField):
+                    if (!string.IsNullOrEmpty(TargetConfig.LinkField))
+                    {
+                        TargetConfig.Option.IsLink = true;
+                    }
+                    break;
                 case nameof(TargetConfig.Nullable):
                     TargetConfig.RaisePropertyChanged(nameof(TargetConfig.DbNullable));
                     break;
@@ -36,12 +50,15 @@ namespace Agebull.EntityModel.Designer
         private void SyncLinkField(Action<PropertyConfig> action)
         {
             string saveTable = TargetConfig.Parent.SaveTable;
+            string name = TargetConfig.Parent.Name;
             foreach (var entity in SolutionConfig.Current.Entities.Where(p => p != TargetConfig.Parent))
             {
                 foreach (var field in entity.Properties)
                 {
-                    if (field.LinkTable == saveTable && (field.IsLinkField || field.IsLinkKey || field.IsLinkCaption)
-                        && (field.LinkField == TargetConfig.ColumnName || field.LinkField == TargetConfig.Name))
+                    if ((field.LinkTable == saveTable || field.LinkTable == name) &&
+                        (field.IsLinkField || field.IsLinkKey || field.IsLinkCaption) &&
+                        (field.LinkField == TargetConfig.ColumnName || field.LinkField == TargetConfig.Name))
+
                         action(field);
 
                 }

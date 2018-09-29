@@ -24,7 +24,7 @@ namespace Agebull.Common.Config.Designer.EasyUi
             GlobalTrigger.RegistTrigger<ProjectTrigger>();
             GlobalTrigger.RegistTrigger<ProjectChildTrigger>();
             GlobalTrigger.RegistTrigger<SolutionTrigger>();
+            GlobalTrigger.RegistTrigger<EnumTrigger>();
         }
-
     }
 }

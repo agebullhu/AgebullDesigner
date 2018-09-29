@@ -143,13 +143,6 @@ namespace Agebull.EntityModel.Config
 
 
         /// <summary>
-        /// 引用标签
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        public ConfigBase LastConfig => ReferenceConfig ?? Config;
-
-
-        /// <summary>
         /// 引用对象键
         /// </summary>
         [DataMember, JsonProperty("referenceKey", NullValueHandling = NullValueHandling.Ignore)]
@@ -165,11 +158,13 @@ namespace Agebull.EntityModel.Config
         [Category("引用"), DisplayName("引用对象键"), Description("引用对象键，指内部对象的引用")]
         public Guid ReferenceKey
         {
-            get => _referenceKey;
+            get => _referenceKey == _key ? Guid.Empty : _referenceKey;
             set
             {
                 if (_referenceKey == value)
                     return;
+                if (_referenceKey == _key)
+                    _referenceKey = Guid.Empty;
                 BeforePropertyChanged(nameof(ReferenceKey), _referenceKey, value);
                 _referenceKey = value;
                 IsReference = value != Guid.Empty;
@@ -177,6 +172,24 @@ namespace Agebull.EntityModel.Config
             }
         }
 
+        /// <summary>
+        /// 引用对象
+        /// </summary>
+        /// <remark>
+        /// 引用对象
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        public ConfigBase Reference => IsReference ? ReferenceConfig : null;
+
+
+        /// <summary>
+        /// 引用对象
+        /// </summary>
+        /// <remark>
+        /// 引用对象
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        public ConfigBase Link => IsLink ? ReferenceConfig : null;
 
         /// <summary>
         /// 引用对象
@@ -194,10 +207,18 @@ namespace Agebull.EntityModel.Config
         [Category("引用"), DisplayName("引用对象"), Description("引用对象，指内部对象的引用")]
         public ConfigBase ReferenceConfig
         {
-            get => _referenceConfig ?? (_referenceConfig =
-                       _referenceKey == Guid.Empty
-                           ? null
-                           : GlobalConfig.GetConfig(_referenceKey));
+            get
+            {
+                if (_referenceKey == Guid.Empty || _referenceKey == _key)
+                    return null;
+                if (Config == _referenceConfig)
+                {
+                    ReferenceKey = Guid.Empty;
+                    _referenceConfig = null;
+                    return null;
+                }
+                return _referenceConfig ?? (_referenceConfig = GlobalConfig.GetConfig(_referenceKey));
+            }
             set
             {
                 if (_referenceConfig == value)
@@ -207,6 +228,15 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(ReferenceConfig), _referenceConfig, value);
                 _referenceConfig = value;
                 ReferenceKey = value?.Option.Key ?? Guid.Empty;
+                if (value == null)
+                {
+                    IsLink = false;
+                    IsReference = false;
+                }
+                else if (!IsReference)
+                {
+                    IsLink = true;
+                }
                 OnPropertyChanged(nameof(ReferenceConfig));
             }
         }
@@ -264,13 +294,38 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 是否参照对象
+        /// 是否关联对象
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category("设计器支持"), DisplayName("是否关联对象"), Description("是否关联对象")]
+        public bool IsLink
+        {
+            get => _state.HasFlag(ConfigStateType.Link);
+            set
+            {
+                BeforePropertyChanged(nameof(IsLink), IsLink, value);
+                if (value)
+                {
+                    _state &= ~ConfigStateType.Reference;
+                    _state |= ConfigStateType.Link;
+                }
+                else
+                {
+                    _state &= ~ConfigStateType.Link;
+                }
+                OnPropertyChanged(nameof(IsReference));
+                OnPropertyChanged(nameof(IsLink));
+            }
+        }
+
+        /// <summary>
+        /// 是否引用对象
         /// </summary>
         /// <remark>
-        /// 是否参照对象，是则永远只读
+        /// 是否引用对象，是则永远只读
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category("设计器支持"), DisplayName("是否参照对象"), Description("是否参照对象，是则永远只读")]
+        [Category("设计器支持"), DisplayName("是否引用对象"), Description("是否引用对象")]
         public bool IsReference
         {
             get => _state.HasFlag(ConfigStateType.Reference);
@@ -278,10 +333,16 @@ namespace Agebull.EntityModel.Config
             {
                 BeforePropertyChanged(nameof(IsReference), IsReference, value);
                 if (value)
+                {
+                    _state &= ~ConfigStateType.Link;
                     _state |= ConfigStateType.Reference;
+                }
                 else
+                {
                     _state &= ~ConfigStateType.Reference;
+                }
                 OnPropertyChanged(nameof(IsReference));
+                OnPropertyChanged(nameof(IsLink));
             }
         }
 
@@ -464,10 +525,10 @@ namespace Agebull.EntityModel.Config
         public void Copy(ConfigDesignOption cfg)
         {
             Index = cfg.Index;//序号
+            _state = cfg._state;//状态
             ReferenceKey = cfg.ReferenceKey;//引用对象键
             ReferenceConfig = cfg.ReferenceConfig;//引用对象
             ReferenceTag = cfg.ReferenceTag;//引用标签
-            _state = cfg._state;//状态
             if (cfg._extendConfig == null)
                 return;
             foreach (var ex in cfg._extendConfig)

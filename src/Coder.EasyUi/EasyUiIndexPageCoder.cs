@@ -42,7 +42,20 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         </div>
     </div>";
 
-        private string Grid => $@"
+        private string Grid => Entity.IsUiReadOnly
+            ? $@"
+    <div id='pageToolbarEx'>
+        <div id='regCommand' style='display: block;'>
+            <a id='btnEdit' href='javascript:void(0)'>查看</a>
+        </div>
+        <div id='regQuery' class='toolbar_line'>
+            <label class='queryLabel'>关键字</label>
+            <input id = 'qKeyWord' class='inputValue inputS easyui-textbox' />{ExtQueryHtmlCode()}
+            <a id = 'btnQuery' href='javascript:void(0)'>查询</a>
+        </div>
+    </div>
+    <div id='grid'></div>"
+            : $@"
     <div id='pageToolbarEx'>
         <div id='regCommand' style='display: block;'>
             <a id='btnAdd' href='javascript:void(0)'>新增</a>

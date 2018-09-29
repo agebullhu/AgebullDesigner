@@ -32,14 +32,21 @@ namespace Agebull.EntityModel.Config
         /// </remarks>
         Reference = 0x10,
         /// <summary>
-        /// 引用
+        /// 预定义对象
         /// </summary>
         /// <remarks>
         /// 预定义对象,不可更改
         /// </remarks>
         Predefined = 0x20,
         /// <summary>
-        /// 引用
+        /// 连接对象
+        /// </summary>
+        /// <remarks>
+        /// 连接对象
+        /// </remarks>
+        Link = 0x40,
+        /// <summary>
+        /// 锁定
         /// </summary>
         /// <remarks>
         /// 锁定

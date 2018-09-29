@@ -61,7 +61,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         {
             required = false;
             var validType = new List<string>();
-            if (field.IsUserReadOnly)
+            if (!field.CanUserInput)
                 return validType;
             if (!field.InputType.Contains("easyui"))
                 return validType;
@@ -273,37 +273,41 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         protected static void GridField(StringBuilder code, PropertyConfig field)
         {
             var align = string.IsNullOrWhiteSpace(field.GridAlign) ? "left" : field.GridAlign;
-            var extend = string.Empty;
+            var extend = new StringBuilder();
             if (!string.IsNullOrWhiteSpace(field.DataFormater))
             {
-                extend = $@", formatter: {field.DataFormater}";
+                extend .Append($@", formatter: {field.DataFormater}");
             }
             else if (field.CsType == "bool")
             {
-                extend = ", formatter: yesnoFormat";
+                extend.Append(", formatter: yesnoFormat");
             }
             else if (field.CsType == "DateTime")
             {
-                extend = ", formatter: dateFormat";
+                extend.Append(", formatter: dateFormat");
             }
             else if (!string.IsNullOrWhiteSpace(field.CustomType))
             {
-                extend = $", formatter: {field.CustomType.ToLWord()}Format";
+                extend.Append($", formatter: {field.CustomType.ToLWord()}Format");
             }
             else if (field.IsMoney) //unixDateFormat
             {
-                extend = @", formatter: moneyFormat";
+                extend.Append(@", formatter: moneyFormat");
                 align = "right";
             }
             else if (!string.IsNullOrWhiteSpace(field.Prefix) || !string.IsNullOrWhiteSpace(field.Suffix))
             {
-                extend = $@", formatter: function(value, row) {{
+                extend.Append($@", formatter: function(value, row) {{
                     return '{field.Prefix}' + value + '{field.Suffix}';
-                }}";
+                }}");
             }
-            PropertyEasyUiModel.CheckField(field);
+
+            if (field.GridWidth > 0)
+            {
+                extend.Append($@" , width:{field.GridWidth}");
+            }
             code.Append($@"
-            , {{ styler: vlStyle,width:{field.GridWidth}, halign: 'center', align: '{align}', sortable: true, field: '{field.JsonName}', title: '{field.Caption}'{extend}}}");
+            , {{ styler: vlStyle,halign: 'center', align: '{align}', sortable: true, field: '{field.JsonName}', title: '{field.Caption}'{extend}}}");
         }
 
         protected string CommandJsCode()
@@ -544,11 +548,11 @@ var page = {{
      */
     toolbarId: '#pageToolbarEx',
     /**
-     * 当前录入是否校验正确
-     */
+    * 当前录入是否校验正确
+    */
     inputSucceed: true,
     /**
-     * {Entity.Caption}的页面初始化
+    * {Entity.Caption}的页面初始化
     */
     initialize: function() {{
         var me = this;
@@ -558,13 +562,13 @@ var page = {{
         me.initToolBar();
     }},
     /**
-     * 初始化工具栏
+    * 初始化工具栏
     */
     initToolBar: function() {{
         var me = this;{CommandJsCode()}
     }},
     /**
-     * 初始化列表表格
+    * 初始化列表表格
     */
     initGrid: function() {{
         var me = this;
@@ -590,6 +594,7 @@ var page = {{
     }},
     /**
     * 改变列表参数
+     * @param {{string}} args 参数
     */
     setUrlArgs: function (args) {{
         var me = this;
@@ -603,7 +608,7 @@ var page = {{
         }}
     }},
     /**
-    *    历史查询条件还原
+    * 历史查询条件还原
     */
     initHistoryQuery: function() {{
         $('#qKeyWord').textbox('setValue', preQueryArgs.keyWord);
@@ -611,6 +616,7 @@ var page = {{
     }},
     /**
     * 读取查询条件
+    * @returns {{object}} 查询条件
     */
     getQueryParams: function () {{
         return {{
@@ -619,13 +625,15 @@ var page = {{
         }};
     }},
     /**
-    *  重新载入{Entity.Caption}的列表数据
+    * 重新载入{Entity.Caption}的列表数据
     */
     reload:function() {{
         $(this.gridId).datagrid('reload');
     }},
     /**
-    *    录入界面载入时执行控件初始化
+    * 录入界面载入时执行控件初始化
+    * @param {{object}} editor 编辑器
+    * @param {{Function}} callback 回调
     */
     onFormUiLoaded: function (editor,callback) {{
         var me = editor.ex;
@@ -636,14 +644,18 @@ var page = {{
             callback();
     }},
     /**
-    *     录入界面数据载入后给Form赋值前,对数据进行预处理
+    * 录入界面数据载入后给Form赋值前,对数据进行预处理
+    * @param {{object}} data 数据
+    * @param {{object}} editor 编辑器
     */
     onFormDataLoaded: function (data, editor) {{
         //var me = editor.ex;
         //TO DO:数据预处理
     }},
     /**
-    *    录入界面数据载入后且已给Form赋值,对进行界面逻辑处理
+    * 录入界面数据载入后且已给Form赋值,对进行界面逻辑处理
+    * @param {{object}} data 数据
+    * @param {{object}} editor 编辑器
     */
     afterFormDataLoaded: function (data, editor) {{
         var me = editor.ex;
@@ -651,7 +663,8 @@ var page = {{
         //TO DO:界面逻辑处理
     }},
     /**
-    *    录入界面数据校验
+    * 录入界面数据校验
+    * @returns {{boolean}} 数据是否合格
     */
     doFormValidate: function() {{
         var me = this;
@@ -659,7 +672,7 @@ var page = {{
         return me.NoError;
     }},
     /**
-    *     设置校验规则
+    * 设置校验规则
     */
     setFormValidate: function() {{
 {ValidateConfig()}
@@ -671,7 +684,7 @@ var page = {{
      * @returns {{EditorDialog}} 编辑器
      */
     createEditor: function (me) {{
-        var editor = new EditorDialog();
+        var editor = me.grid.createEditor();
         editor.ex = me;
         editor.title = me.title;
         if(me.grid.auditData) {{
@@ -693,8 +706,8 @@ var page = {{
         }};
         return editor;
     }},
-    /*
-        新增一条{Entity.Caption}的界面操作
+    /**
+    * 新增一条{Entity.Caption}的界面操作
     */
     addNew: function () {{
         var me = this.tag;
@@ -708,8 +721,8 @@ var page = {{
         editor.dataId = 0;
         editor.show();
     }},
-    /*
-        修改或查看{Entity.Caption}的界面操作
+    /**
+    * 修改或查看{Entity.Caption}的界面操作
     */
     edit: function (id) {{
         var me = this.tag;
@@ -721,8 +734,8 @@ var page = {{
         editor.dataId = id;
         editor.show();
     }},{CommandJsCode2()}
-    /*
-        列表表格的列信息
+    /**
+    * 列表表格的列信息
     */
     columns:{GridFields()}
 }};
@@ -732,14 +745,7 @@ var page = {{
  */
 mainPageOptions.extend({{
     doPageInitialize: function (callback) {{
-        ajaxLoadValue('载入', 'app/page/v1/global/info', {{ value: page.name }}, function (data) {{
-            mainPageOptions.currentPageId = data.pageId;
-            mainPageOptions.userButtons = data.buttons;
-            mainPageOptions.allButton = data.allButton;
-            mainPageOptions.setPreQueryArgs(data.preQueryArgs);
-{(Entity.TreeUi ? TreeInit : "")}
-
-            page.formUrl = '/{Project.PageFolder ?? Project.Name}/{Entity.Option["File_Web_Form"]?.Replace('\\', '/')}';
+        mainPageOptions.loadPageInfo(page.name, function () {{
             page.initialize();
             callback();
         }});

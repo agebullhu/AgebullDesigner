@@ -16,11 +16,11 @@ namespace Agebull.EntityModel.Designer
     {
         public void DeleteEnum(ConfigTreeItem<PropertyConfig> p)
         {
+            if (p.Model.EnumConfig != null)
+            {
+                p.Model.EnumConfig.Option.IsDelete = true;
+            }
             p.Model.CustomType = null;
-            if (p.Model.EnumConfig == null)
-                return;
-            p.Model.EnumConfig.Option.IsDelete = true;
-            p.Model.EnumConfig = null;
             p.ReShow();
         }
         /// <summary>

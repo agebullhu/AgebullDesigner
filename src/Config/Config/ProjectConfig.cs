@@ -848,6 +848,7 @@ namespace Agebull.EntityModel.Config
             try
             {
                 SolutionConfig.Current.Add(enumConfig);
+                enumConfig.Parent?.Remove(enumConfig);
                 enumConfig.Parent = this;
                 if (!Enums.Contains(enumConfig))
                     Enums.Add(enumConfig);

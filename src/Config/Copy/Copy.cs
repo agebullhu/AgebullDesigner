@@ -141,7 +141,7 @@ namespace Agebull.EntityModel.Config
             foreach (var item in cfg.Properties.Where(p => !p.IsDelete && !p.IsDiscard))//字段列表
             {
                 var child = new PropertyConfig();
-                child.Copy(WorkContext.InCoderGenerating ? item.Option.LastConfig : item);
+                child.Copy(item);
                 Add(child);
             }
             DenyScope = cfg.DenyScope;//阻止编辑
@@ -350,10 +350,10 @@ namespace Agebull.EntityModel.Config
             IsArray = cfg.IsArray;//是否数组
             IsDictionary = cfg.IsDictionary;//是否字典
             CustomType = cfg.CustomType;//非基本类型名称(C#)
+            EnumConfig = cfg.EnumConfig;//对应枚举
             ReferenceType = cfg.ReferenceType;//参考类型(C#)
             Nullable = cfg.Nullable;//可空类型(C#)
             IsExtendValue = cfg.IsExtendValue;//是否扩展值
-            EnumConfig = cfg.EnumConfig;//对应枚举
             InnerField = cfg.InnerField;//内部字段
             IsSystemField = cfg.IsSystemField;//系统字段
             IsInterfaceField = cfg.IsInterfaceField;//接口字段
@@ -431,6 +431,7 @@ namespace Agebull.EntityModel.Config
                 ValidateCode = cfg.ValidateCode;//校验代码
                 IsRequired = cfg.IsRequired;//必填字段
 
+                UiRequired = cfg.UiRequired;//必填字段
                 MulitLine = cfg.MulitLine;//多行文本
                 Prefix = cfg.Prefix;//前缀
                 Suffix = cfg.Suffix;//后缀

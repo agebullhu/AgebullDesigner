@@ -63,29 +63,22 @@ namespace Agebull.EntityModel.Designer
         public void BindEnum(object arg)
         {
             PropertyConfig property = Context.SelectProperty;
-            property.EnumConfig = null;
-            if (property.CustomType != null)
-            {
-                property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
-            }
+            property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
             if (property.EnumConfig != null)
                 return;
             if (MessageBox.Show("是否新增一个枚举?", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                 return;
-            property.Parent.Parent.Add(property.EnumConfig = new EnumConfig
+            property.EnumConfig = new EnumConfig
             {
                 Name = property.CustomType ?? (property.Name.Contains("Type") ? property.Name : property.Name + "Type"),
                 Caption = property.Caption + "枚举类型"
-            });
+            };
+            property.Parent.Parent.Add(property.EnumConfig);
         }
 
         public void CheckEnum(PropertyConfig property)
         {
-            property.EnumConfig = null;
-            if (property.CustomType != null)
-            {
-                property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
-            }
+            property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
         }
         /// <summary>
         /// 删除枚举
@@ -94,7 +87,6 @@ namespace Agebull.EntityModel.Designer
         {
             PropertyConfig property = Context.SelectProperty;
             property.CustomType = null;
-            property.EnumConfig = null;
         }
 
         #region 识别枚举
@@ -178,7 +170,6 @@ namespace Agebull.EntityModel.Designer
 
             if (!startEnum)
             {
-                column.EnumConfig = null;
                 column.CustomType = null;
                 return;
             }
@@ -198,7 +189,6 @@ namespace Agebull.EntityModel.Designer
             }
             if (ec.Items.Count <= 1)
             {
-                column.EnumConfig = null;
                 column.CustomType = null;
                 return;
             }
@@ -227,7 +217,6 @@ namespace Agebull.EntityModel.Designer
 
                 ec.Option.ReferenceKey = column.Option.Key;
                 column.EnumConfig = ec;
-                column.CustomType = ec.Name;
                 column.Description = line;
                 if (caption.Length > 0)
                     ec.Caption = column.Caption = caption.ToString().Trim(NameHelper.NoneLanguageChar);
@@ -235,7 +224,6 @@ namespace Agebull.EntityModel.Designer
             }
             else
             {
-                column.EnumConfig = null;
                 column.CustomType = null;
             }
         }

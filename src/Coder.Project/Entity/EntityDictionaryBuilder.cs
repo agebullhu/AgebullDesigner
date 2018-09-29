@@ -158,7 +158,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name=""value""></param>
         protected override void SetValueInner(int index, object value)
         {
-            /*switch(index)
+            switch(index)
             {");
 
             foreach (PropertyConfig field in ReadWriteColumns)
@@ -181,7 +181,7 @@ namespace Agebull.EntityModel.RobotCoder
             if (!string.IsNullOrWhiteSpace(Entity.ModelBase))
                 code.Append(@"
             base.SetValueInner(index,value);");
-            code.AppendLine(@"*/
+            code.AppendLine(@"
         }");
         }
 
@@ -232,7 +232,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name=""index""></param>
         protected override object GetValueInner(int index)
         {
-            /*switch(index)
+            switch(index)
             {");
 
             foreach (PropertyConfig property in Entity.PublishProperty)
@@ -242,7 +242,7 @@ namespace Agebull.EntityModel.RobotCoder
                     return this.{0};", property.Name);
             }
             code.AppendLine(@"
-            }*/");
+            }");
             code.Append(!string.IsNullOrWhiteSpace(Entity.ModelBase)
                 ? @"
             return base.GetValueInner(index);"

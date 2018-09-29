@@ -28,14 +28,14 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         public override NotificationList<CommandItemBase> CreateCommands()
         {
-            return CreateCommands(true,true,true);
+            return CreateCommands(true, true, true);
         }
 
         /// <summary>
         /// 生成命令对象
         /// </summary>
         /// <returns></returns>
-        protected NotificationList<CommandItemBase> CreateCommands(bool edit,bool create,bool ext)
+        protected NotificationList<CommandItemBase> CreateCommands(bool edit, bool create, bool ext)
         {
             NotificationList<CommandItemBase> commands = new NotificationList<CommandItemBase>();
             if (edit)
@@ -76,8 +76,8 @@ namespace Agebull.EntityModel.Designer
                     Image = Application.Current.Resources["tree_Open"] as ImageSource
                 });
             }
-            if(create)
-            CreateCommands(commands);
+            if (create)
+                CreateCommands(commands);
             if (ext)
             {
                 var extends = CommandCoefficient.CoefficientEditor(typeof(EntityConfig), EditorName);
@@ -142,7 +142,7 @@ namespace Agebull.EntityModel.Designer
 
         public void DeleteColumns(object arg)
         {
-            if (Context.SelectEntity == null || Context.SelectColumns ==null||
+            if (Context.SelectEntity == null || Context.SelectColumns == null ||
                 MessageBox.Show("确认删除所选字段吗?", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
             {
                 return;
@@ -164,21 +164,25 @@ namespace Agebull.EntityModel.Designer
                 PropertyConfig newColumn = null;
                 if (refe)
                 {
-                    string name = copyColumn.Parent.SaveTableName ?? copyColumn.Parent.ReadTableName;
-                    if (copyColumn.IsPrimaryKey && copyColumn.Name.ToLower() == "id")
+                    newColumn = Entity.Properties.FirstOrDefault(p => p.ReferenceKey == copyColumn.Key);
+                    if (newColumn == null)
                     {
-                        newColumn = Entity.Properties.FirstOrDefault(p => p.LinkTable == name && p.IsExtendKey);
-                    }
-                    else if (copyColumn.IsCaption)
-                    {
-                        newColumn = Entity.Properties.FirstOrDefault(p => p.LinkTable == name && p.IsLinkCaption);
-                    }
-                    else
-                    {
-                        newColumn = Entity.Properties.FirstOrDefault(
-                            p => p.LinkTable == name 
-                                 && (string.Equals(p.LinkField, copyColumn.Name, StringComparison.OrdinalIgnoreCase)
-                                     || string.Equals(p.LinkField, copyColumn.ColumnName, StringComparison.OrdinalIgnoreCase)));
+                        string name = copyColumn.Parent.Name;
+                        if (copyColumn.IsPrimaryKey)
+                        {
+                            newColumn = Entity.Properties.FirstOrDefault(p => p.LinkTable == name && p.IsLinkKey);
+                        }
+                        else if (copyColumn.IsCaption)
+                        {
+                            newColumn = Entity.Properties.FirstOrDefault(p => p.LinkTable == name && p.IsLinkCaption);
+                        }
+                        else
+                        {
+                            newColumn = Entity.Properties.FirstOrDefault(
+                                p => string.Equals(p.LinkTable, name, StringComparison.OrdinalIgnoreCase) && (
+                                         string.Equals(p.LinkField, copyColumn.Name, StringComparison.OrdinalIgnoreCase) ||
+                                         string.Equals(p.LinkField, copyColumn.ColumnName, StringComparison.OrdinalIgnoreCase)));
+                        }
                     }
                 }
                 if (newColumn == null)
@@ -195,7 +199,7 @@ namespace Agebull.EntityModel.Designer
                     newColumn.CopyFromProperty(copyColumn, false, true, true);
                     if (refe && !copyColumn.IsLinkField)
                     {
-                        if (copyColumn.IsPrimaryKey && copyColumn.Name.ToLower() == "id")
+                        if (copyColumn.IsPrimaryKey)
                         {
                             newColumn.Name = copyColumn.Parent.Name + "Id";
                             newColumn.Caption = copyColumn.Parent.Caption + "外键";
@@ -205,12 +209,9 @@ namespace Agebull.EntityModel.Designer
                             newColumn.Name = copyColumn.Parent.Name;
                             newColumn.Caption = copyColumn.Parent.Caption;
                         }
+                        newColumn.Option.IsLink = true;
                         newColumn.Option.ReferenceConfig = copyColumn;
                         newColumn.ColumnName = DataBaseHelper.ToColumnName(newColumn.Name);
-                    }
-                    else
-                    {
-                        newColumn.CopyFromProperty(copyColumn,false, true, true);
                     }
                     Entity.Add(newColumn);
                 }
@@ -218,6 +219,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     if (copyColumn.IsLinkField)
                     {
+                        newColumn.Option.IsLink = true;
                         newColumn.Option.ReferenceConfig = copyColumn.Option.ReferenceConfig;
                     }
                     else
@@ -234,11 +236,10 @@ namespace Agebull.EntityModel.Designer
                             newColumn.IsLinkCaption = true;
                             newColumn.IsCompute = true;
                         }
-
+                        newColumn.Option.IsLink = true;
                         newColumn.Option.ReferenceConfig = copyColumn;
                     }
                 }
-
                 newColumn.Parent = Entity;
                 newColumn.IsPrimaryKey = false;
                 newColumn.IsCaption = false;

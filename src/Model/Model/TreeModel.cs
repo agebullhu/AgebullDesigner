@@ -214,18 +214,12 @@ namespace Agebull.EntityModel.Designer
                 case nameof(PropertyConfig.ReferenceType):
                     item.Items.Clear();
                     if (property.CustomType == null)
-                        return;
+                        break;
                     property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
-                    if (property.EnumConfig != null)
-                    {
-                        if (name == null)
-                            item.Items.Add(CreateEnumTreeItem(property.EnumConfig));
-                        return;
-                    }
-                    //var config = GlobalConfig.GetEntity(property.CustomType);
-                    //if (config != null && !LoopCheck(item, config))
-                    //    item.Items.Add(CreateEntityTreeItem(config));
-                    break;
+                    if (property.EnumConfig == null)
+                        break;
+                    item.Items.Add(CreateEnumTreeItem(property.EnumConfig));
+                    return;
                 case nameof(PropertyConfig.EnumConfig):
                     item.Items.Clear();
                     if (property.EnumConfig == null)

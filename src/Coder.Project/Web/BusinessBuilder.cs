@@ -21,13 +21,10 @@ namespace Agebull.EntityModel.RobotCoder
             {
                 if (Entity.Interfaces.Contains("IStateData"))
                     baseClass = "BusinessLogicByStateData";
-                if (Entity.Interfaces.Contains("IHistoryData"))
-                    baseClass = "BusinessLogicByHistory";
                 if (Entity.Interfaces.Contains("IAuditData"))
                     baseClass = "BusinessLogicByAudit";
             }
-            var code = $@"
-using System;
+            var code = $@"using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -59,7 +56,9 @@ namespace {NameSpace}.BusinessLogic
     /// {Entity.Description}
     /// </summary>
     public sealed partial class {Entity.Name}BusinessLogic : {baseClass}<{Entity.EntityName},{Entity.Name}DataAccess,{Entity.Parent.DataBaseObjectName}>
-    {{{CommandExCode()}
+    {{
+{CommandExCode()}
+
         /*// <summary>
         ///     保存前的操作
         /// </summary>
@@ -87,7 +86,7 @@ namespace {NameSpace}.BusinessLogic
         /// <param name=""data"">数据</param>
         /// <param name=""isAdd"">是否为新增</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        protected override bool LastSavedByUser(MeetingData data, bool isAdd)
+        protected override bool LastSavedByUser({Entity.EntityName} data, bool isAdd)
         {{
             return base.LastSavedByUser(data, isAdd);
         }}
@@ -98,7 +97,7 @@ namespace {NameSpace}.BusinessLogic
         /// <param name=""data"">数据</param>
         /// <param name=""isAdd"">是否为新增</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        protected override bool PrepareSaveByUser(MeetingData data, bool isAdd)
+        protected override bool PrepareSaveByUser({Entity.EntityName} data, bool isAdd)
         {{
             return base.PrepareSaveByUser(data, isAdd);
         }}*/

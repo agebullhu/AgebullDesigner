@@ -54,7 +54,7 @@ namespace Agebull.EntityModel.Config
                             Parent = Entity
                         });
                 }
-                if (repair || string.IsNullOrWhiteSpace(Entity.ReadTableName))
+                if (repair || string.IsNullOrWhiteSpace(Entity.SaveTableName))
                 {
                     Entity.SaveTableName = DataBaseHelper.ToTableName(Entity);
                 }

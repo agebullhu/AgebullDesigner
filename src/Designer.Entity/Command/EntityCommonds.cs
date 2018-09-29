@@ -49,6 +49,15 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
                 IsButton = true,
+                Action = SortFields,
+                Catalog = "工具",
+                ConfirmMessage = "按序号大小排序并从0更新序号吗?",
+                Caption = "排序(自然顺序)",
+                IconName = "tree_item"
+            });
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                IsButton = true,
                 Action = SortFieldByIndex,
                 Catalog = "工具",
                 ConfirmMessage = "按序号大小排序并从0更新序号吗?",
@@ -178,6 +187,13 @@ namespace Agebull.EntityModel.Designer
         {
             var business = new EntitySorter {Entity = entity};
             business.SortFieldByIndex(true);
+        }
+        public void SortFields(EntityConfig entity)
+        {
+            int idx = 0;
+            foreach (var field in entity.Properties.OrderBy(p=>p.Identity))
+                field.Index = idx++;
+
         }
         public void IdentityByIndex(EntityConfig entity)
         {

@@ -81,7 +81,7 @@ namespace Agebull.EntityModel.RobotCoder
             foreach (PropertyConfig field in Entity.PublishProperty)
             {
                 string ext = null;
-                if (field.IsRequired)
+                if (field.CanUserInput && field.IsRequired)
                     ext = " data-options='required:true'";
                 string type = " easyui-text";
                 jsonBuilder.AppendFormat(@"

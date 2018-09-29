@@ -1,8 +1,15 @@
+using System;
 using System.Linq;
 using System.Text;
 
 namespace Agebull.EntityModel.Config
 {
+    public enum SizeOption
+    {
+        None,
+        Auto,
+        ByLen
+    }
     public class PropertyEasyUiModel : ConfigModelBase
     {
         /// <summary>
@@ -11,7 +18,7 @@ namespace Agebull.EntityModel.Config
         /// <param name="field"></param>
         /// <param name="repair">是否修复</param>
         /// <returns></returns>
-        public static void CheckField(PropertyConfig field, bool repair = false)
+        public void CheckField(PropertyConfig field, bool repair = false)
         {
             if (field.IsPrimaryKey && field.IsIdentity)
             {
@@ -20,44 +27,40 @@ namespace Agebull.EntityModel.Config
             }
             if (field.DenyClient)
             {
-                field.IsUserReadOnly = true;
-                field.FormCloumnSapn = 0;
-                field.InputType = null;
-                field.NoneDetails = true;
-                field.NoneGrid = true;
-                field.GridWidth = 0;
                 return;
             }
             if (field.InputType == "editor")
             {
                 field.MulitLine = true;
             }
-            else if (field.IsMemo || field.InputType == "mulit")
+            else if (field.IsMemo || field.IsBlob || field.InputType == "mulit")
             {
                 field.InputType = "easyui-textbox";
                 field.MulitLine = true;
             }
             if (repair)
             {
+                if (field.Parent.Interfaces?.Contains("IAuditData") ?? false)
+                {
+                    field.UiRequired = !field.CanEmpty;
+                }
+                else
+                {
+
+                    field.UiRequired = !field.IsUserReadOnly && (field.IsRequired || !field.CanEmpty);
+                }
                 RepairInputConfig(field);
                 RepairListConfig(field);
             }
             else
             {
                 CheckInputConfig(field);
-                CheckListConfig(field);
             }
+
             if (field.NoneGrid)
             {
                 field.GridWidth = 0;
-            }
-            else if (field.GridWidth <= 0)
-            {
-                field.GridWidth = 1;
-            }
-            else if (field.GridWidth > 3)
-            {
-                field.GridWidth = 3;
+                field.DataFormater = null;
             }
             if (field.NoneDetails)
             {
@@ -66,12 +69,46 @@ namespace Agebull.EntityModel.Config
                 field.FormOption = null;
                 field.ComboBoxUrl = null;
             }
-            if (!field.CanEmpty)
-            {
-                field.IsRequired = true;
-            }
         }
 
+        public void CheckSize(PropertyConfig field, SizeOption option)
+        {
+            switch (option)
+            {
+                case SizeOption.None:
+                    field.GridWidth = 0;
+                    field.FormCloumnSapn = 0;
+                    return;
+                case SizeOption.Auto:
+                    field.GridWidth = -1;
+                    return;
+            }
+
+            if (field.MulitLine)
+            {
+                field.GridWidth = 3;
+            }
+            else if (field.CsType == "string")
+            {
+                field.GridWidth = field.Datalen / 50;
+                if (field.GridWidth > 5)
+                    field.GridWidth = 5;
+                else if (field.GridWidth == 0)
+                    field.GridWidth = 1;
+            }
+            else
+            {
+                field.GridWidth = 1;
+            }
+            if (field.GridWidth <= 0)
+            {
+                field.GridWidth = 1;
+            }
+            else if (field.GridWidth > 3)
+            {
+                field.GridWidth = 3;
+            }
+        }
         /// <summary>
         ///     取字段录入类型（EasyUi）
         /// </summary>
@@ -176,73 +213,38 @@ namespace Agebull.EntityModel.Config
             }
         }
 
-        public static void CheckListConfig(PropertyConfig field)
+        private static void RepairListConfig(PropertyConfig field)
         {
-            if (field.DenyClient)
+            if (field.IsSystemField || field.IsIdentity)
             {
                 field.NoneGrid = true;
                 field.GridWidth = -1;
                 return;
             }
-            if (field.GridWidth > 0)
-                return;
-            ResetSetGridWidth(field);
-        }
-        public static void RepairListConfig(PropertyConfig field)
-        {
-            if (field.DenyClient || field.IsSystemField || field.IsIdentity)
+            if (field.IsBlob)
             {
                 field.NoneGrid = true;
                 field.GridWidth = -1;
+            }
+
+            if (!field.IsLinkKey)
+            {
+                field.NoneGrid = false;
                 return;
             }
-            if (field.IsBlob || field.IsSystemField)
+
+            var title = field.Parent.Properties.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
+            if (title != null)
             {
                 field.NoneGrid = true;
-                field.GridWidth = -1;
+                title.NoneGrid = false;
+                field.NoneDetails = false;
+                title.NoneDetails = true;
                 return;
             }
-            if (field.IsLinkKey)
-            {
-                var entity = Find(p => p.SaveTable == field.LinkTable);
-                if (entity != null)
-                {
-                    var title = field.Parent.ClientProperty.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
-                    if (title != null)
-                    {
-                        field.NoneGrid = true;
-                        field.GridWidth = -1;
-                        ResetSetGridWidth(title);
-                        title.NoneGrid = false;
-                        return;
-                    }
-                }
-                field.NoneGrid = true;
-                field.GridWidth = -1;
-                return;
-            }
-            field.NoneGrid = false;
-            ResetSetGridWidth(field);
+
+            field.NoneGrid = true;
         }
 
-        private static void ResetSetGridWidth(PropertyConfig field)
-        {
-            if (field.MulitLine)
-            {
-                field.GridWidth = 3;
-            }
-            else if (field.CsType == "string")
-            {
-                field.GridWidth = field.Datalen / 50;
-                if (field.GridWidth > 5)
-                    field.GridWidth = 5;
-                else if (field.GridWidth == 0)
-                    field.GridWidth = 1;
-            }
-            else
-            {
-                field.GridWidth = 1;
-            }
-        }
     }
 }

@@ -89,8 +89,6 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                 <div class='inputRegion' id='ir_{field.JsonName}'>
                     <div class='inputLabel'>{caption}:</div>");
 
-            PropertyEasyUiModel.CheckField(field);
-
             if (field.InputType == "editor")
             {
                 var css = field.FormCloumnSapn <= 1 ? "inputValue_Rich_S" : "inputValue_Rich";
@@ -183,7 +181,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             {
                 options.Append(",multiline:true");
             }
-            if (field.IsUserReadOnly || field.Parent.IsUiReadOnly)
+            if (!field.CanUserInput)
             {
                 options.Append(",readonly:true");
             }
@@ -196,7 +194,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                 options.Append($",url:'{field.ComboBoxUrl}'");
             }
 
-            if (field.IsUserReadOnly || field.Parent.IsUiReadOnly)
+            if (!field.CanUserInput)
                 return options.ToString();
             var validType = EasyUiPageScriptCoderBase.ValidType(field, out bool required);
             if (validType.Count > 0)

@@ -42,12 +42,11 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// <param name="schema"></param>
         public override void CreateEntityCode(ProjectConfig project, EntityConfig schema)
         {
-            if (schema.IsInternal)
+            if (!schema.HaseEasyUi)
             {
-                TraceMessage.Track = $"{schema.Caption}:内部类,跳过界面生成";
+                TraceMessage.Track = $"{schema.Caption}:未进行页面配置,无法生成页面代码";
                 return;
             }
-            EasyUiModel.CheckExport(schema, false);
             var pg = new PageGenerator
             {
                 Entity = schema,

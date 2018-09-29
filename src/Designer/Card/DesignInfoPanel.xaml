@@ -44,16 +44,16 @@
                         <TextBox IsReadOnly ="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}" Text="{Binding Index,Mode=TwoWay,StringFormat=X}" />
                     </StackPanel>
                     <StackPanel>
-                        <Label Content= "参照对象" />
-                        <ComboBox ItemsSource="{x:Static reflection:EnumHelper.BoolList}" SelectedValue="{Binding IsReference,Mode=TwoWay}" />
-                    </StackPanel>
-                    <StackPanel>
                         <Label Content = "引用标识" />
                         <TextBox Style="{StaticResource MidTextBox}" IsReadOnly ="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}" Text="{Binding ReferenceKey,Mode=TwoWay}" />
                     </StackPanel>
-                    <StackPanel Visibility="{Binding IsReference,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
-                        <Label Content = "关联标签" />
-                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding ReferenceTag,Mode=TwoWay}" />
+                    <StackPanel>
+                        <Label Content= "引用对象" />
+                        <ComboBox ItemsSource="{x:Static reflection:EnumHelper.BoolList}" SelectedValue="{Binding IsReference,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content= "关联对象" />
+                        <ComboBox ItemsSource="{x:Static reflection:EnumHelper.BoolList}" SelectedValue="{Binding IsLink,Mode=TwoWay}" />
                     </StackPanel>
                 </WrapPanel>
             </GroupBox>

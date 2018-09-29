@@ -126,7 +126,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         private string SimpleCode()
         {
-            var fields = Entity.DbFields.Where(p => p.ExtendConfigListBool["easyui","simple"]).ToArray();
+            var fields = Entity.DbFields.Where(p => p.ExtendConfigListBool["easyui", "simple"]).ToArray();
             var code = new StringBuilder();
             code.Append($@"
         #region 简单读取
@@ -344,6 +344,7 @@ using Newtonsoft.Json;
 
 using Agebull.Common;
 using Agebull.Common.DataModel;
+using Agebull.Common.Rpc;
 using Agebull.Common.WebApi;
 using Gboxt.Common.DataModel;
 using Gboxt.Common.DataModel.MySql;
@@ -357,12 +358,36 @@ namespace {NameSpace}.DataAccess
     /// </summary>
     sealed partial class {Entity.Name}DataAccess : {baseClass}<{Entity.EntityName},{Project.DataBaseObjectName}>
     {{
-
+        {ExtendCode}
     }}
 }}";
             SaveCode(file, code);
         }
 
+        private string ExtendCode
+        {
+            get
+            {
+                var code = new StringBuilder();
+                if (Entity.Interfaces != null && Entity.Interfaces.Contains("IOrganizationData"))
+                {
+                    var field = Entity.Properties.FirstOrDefault(p => p.Name == "OrganizationId");
+                    if (field != null)
+                    {
+                        code.Append($@"
+        /// <summary>初始化基本条件</summary>
+        /// <returns></returns>
+        protected override void InitBaseCondition()
+        {{
+            if (GlobalContext.Current.IsSystemMode || GlobalContext.Current.User.OrganizationId == 0)
+                return;
+            BaseCondition = $""`{field.ColumnName}` = {{GlobalContext.Current.User.OrganizationId}}"";
+        }}");
+                    }
+                }
+                return code.ToString();
+            }
+        }
 
         private string TableObject()
         {
@@ -484,23 +509,37 @@ namespace {NameSpace}.DataAccess
         /// <returns></returns>
         private string UniqueCondition()
         {
-            if (!PublishDbFields.Any(p => p.UniqueIndex > 0))
-                return $@"`{Entity.PrimaryColumn.ColumnName}` = ?{Entity.PrimaryColumn.Name}";
-
             var code = new StringBuilder();
-            var uniqueFields = PublishDbFields.Where(p => p.UniqueIndex > 0).OrderBy(p => p.UniqueIndex).ToArray();
-            var isFirst = true;
-            foreach (var col in uniqueFields)
+            if (!PublishDbFields.Any(p => p.UniqueIndex > 0))
             {
-                if (isFirst)
+                code.Append($@"`{Entity.PrimaryColumn.ColumnName}` = ?{Entity.PrimaryColumn.Name}");
+            }
+            else
+            {
+                var uniqueFields = PublishDbFields.Where(p => p.UniqueIndex > 0).OrderBy(p => p.UniqueIndex).ToArray();
+                var isFirst = true;
+                foreach (var col in uniqueFields)
                 {
-                    isFirst = false;
+                    if (isFirst)
+                    {
+                        isFirst = false;
+                    }
+                    else
+                    {
+                        code.Append(" AND ");
+                    }
+
+                    code.Append($"`{col.ColumnName}`=?{col.Name}");
                 }
-                else
-                {
-                    code.Append(" AND ");
-                }
-                code.Append($"`{col.ColumnName}`=?{col.Name}");
+            }
+            if (Entity.Interfaces?.Contains("IStateData") == true)
+            {
+                var f = Entity.Properties.FirstOrDefault(p => p.Name == "IsFreeze");
+                if (f != null)
+                    code.Append($@" AND `{f.ColumnName}` = 0");
+                var s = Entity.Properties.FirstOrDefault(p => p.Name == "DataState");
+                if (s != null)
+                    code.Append($@" AND `{s.ColumnName}` < 255");
             }
             return code.ToString();
         }

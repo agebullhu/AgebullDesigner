@@ -29,9 +29,7 @@ namespace Agebull.EntityModel.RobotCoder
             var code = new StringBuilder();
             foreach (var field in entityConfig.PublishProperty.Where(p => !p.DenyClient))
             {
-                var ty = field.CppTypeObject as TypedefItem;
-
-                if (ty != null && ty.Items.Count > 0)
+                if (field.CppTypeObject is TypedefItem ty && ty.Items.Count > 0)
                     code.AppendFormat(@"        
                 <DataGridTextColumn Binding = ""{{Binding {0}2}}"" Header = ""{1}"" />", field.Name, field.Caption);
                 else

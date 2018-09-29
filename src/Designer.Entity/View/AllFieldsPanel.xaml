@@ -94,8 +94,6 @@
                                 Binding="{Binding CustomType, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridTextColumn Header="3 代码生成类型"
                                 Binding="{Binding LastCsType, Mode=OneWay , UpdateSourceTrigger=PropertyChanged}" />
-            <DataGridTextColumn Header="枚举"
-                                Binding="{Binding EnumConfig, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
             <DataGridCheckBoxColumn Header="4 是否计算列"
                                     Binding="{Binding IsCompute, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridTextColumn Header="4.1计算列读代码"

@@ -128,10 +128,10 @@ CREATE VIEW [{viewName}] AS
     FROM [{entity.SaveTable}]");
             foreach (var table in tables.Values)
             {
-                var field = entity.DbFields.FirstOrDefault(p => p.IsLinkKey && p.LinkTable == table.SaveTable);
+                var field = entity.DbFields.FirstOrDefault(p => p.IsLinkKey && (p.LinkTable == table.Name|| p.LinkTable == table.SaveTable));
                 if (field == null)
                     continue;
-                var linkField = table.DbFields.FirstOrDefault(
+                var linkField = table.Properties.FirstOrDefault(
                     p => p.Name == field.LinkField || p.ColumnName == field.LinkField);
                 if (linkField == null)
                     continue;

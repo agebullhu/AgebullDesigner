@@ -22,11 +22,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static EntityConfig GetEntity(string name)
         {
-            if (name == null)
-                return null;
-            //if (name.Length > 4 && name.LastIndexOf("Data", StringComparison.Ordinal) == name.Length - 4)
-            //    name = name.Substring(0, name.Length - 4);
-            return GetEntity(p => p.Name == name);
+            return name == null ? null : GetEntity(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -36,7 +32,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static EnumConfig GetEnum(string name)
         {
-            return Enums.FirstOrDefault(p => p.Name == name);
+            return name == null ? null : Enums.FirstOrDefault(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -46,7 +42,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static ProjectConfig GetProject(string name)
         {
-            return Projects.FirstOrDefault(p => p.Name == name);
+            return name == null ? null : Projects.FirstOrDefault(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -79,17 +75,6 @@ namespace Agebull.EntityModel.Config
         {
             return Projects.FirstOrDefault(func);
         }
-
-        /// <summary>
-        ///     查找API对象
-        /// </summary>
-        /// <param name="func"></param>
-        /// <returns></returns>
-        public static ApiItem Find(Func<ApiItem, bool> func)
-        {
-            return ApiItems.FirstOrDefault(func);
-        }
-
 
         /// <summary>
         ///     查找实体对象

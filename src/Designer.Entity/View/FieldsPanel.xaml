@@ -38,7 +38,7 @@
             <DataGridCheckBoxColumn Binding="{Binding CanGet,Mode=TwoWay}" Header="可读" />
             <DataGridCheckBoxColumn Binding="{Binding CanSet,Mode=TwoWay}" Header="可写" />
             <DataGridCheckBoxColumn Binding="{Binding IsArray,Mode=TwoWay}" Header="数组" />
-            <DataGridCheckBoxColumn Binding="{Binding IsEnum,Mode=TwoWay}" Header="枚举" />
+            <DataGridCheckBoxColumn Binding="{Binding IsEnum,Mode=OneWay}" Header="枚举" />
             <DataGridCheckBoxColumn Binding="{Binding IsDictionary,Mode=TwoWay}" Header="字典" />
             <DataGridTextColumn Binding="{Binding HelloCode,Mode=TwoWay}" Header="示例内容" MinWidth="260"/>
         </DataGrid.Columns>

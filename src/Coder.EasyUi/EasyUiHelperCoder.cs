@@ -10,7 +10,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         public string InputConvert()
         {
             var code = new StringBuilder();
-            foreach (var group in Entity.ClientProperty.Where(p => p.ExtendConfigListBool["easyui", "userFormHide"] || p.CanUserInput && !p.IsUserReadOnly).GroupBy(p => p.Group))
+            foreach (var group in Entity.ClientProperty.Where(p => p.ExtendConfigListBool["easyui", "userFormHide"] || p.CanUserInput).GroupBy(p => p.Group))
             {
                 code.Append($@"
             //{group.Key ?? "数据֪"}");

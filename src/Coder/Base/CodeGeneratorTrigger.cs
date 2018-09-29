@@ -43,16 +43,6 @@ namespace Agebull.EntityModel.Designer
                 if (pro.IsDelete || pro.IsDiscard)
                     continue;
                 pro.Option.Index = ++idx;
-                if (pro.IsLinkField)
-                {
-                    if (pro.Option.LastConfig is PropertyConfig last && last != pro)
-                    {
-                        pro.DataType = last.DataType;
-                        pro.CsType = last.CsType;
-                        pro.CustomType = last.CustomType;
-                        pro.DbType = last.DbType;
-                    }
-                }
                 entity.LastProperties.Add(pro);
             }
         }

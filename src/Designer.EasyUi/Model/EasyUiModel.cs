@@ -39,6 +39,22 @@ namespace Agebull.EntityModel.Designer
                 },
                 new CommandItem
                 {
+                    Action = CheckSizeByLen,
+                    IsButton=true,
+                    Editor = "EasyUi",
+                    Caption = "按文字计算宽度",
+                    Image = Application.Current.Resources["tree_item"] as ImageSource
+                },
+                new CommandItem
+                {
+                    Action = CheckSizeAuto,
+                    IsButton=true,
+                    Editor = "EasyUi",
+                    Caption = "自适应宽度",
+                    Image = Application.Current.Resources["tree_item"] as ImageSource
+                },
+                new CommandItem
+                {
                     Action = CheckExport,
                     Caption = "导出导出初始化",
                     IsButton=true,
@@ -83,27 +99,47 @@ namespace Agebull.EntityModel.Designer
         {
             if (Context.SelectEntity == null)
                 return;
-            var result = MessageBox.Show(Application.Current.MainWindow, "点是执行重置,点否执行修复", "控件类型修复",
-                MessageBoxButton.YesNoCancel);
-            if (result == MessageBoxResult.Cancel)
-                return;
-            CheckExport(Context.SelectEntity, result == MessageBoxResult.Yes);
-        }
-
-        public static void CheckExport(EntityConfig entity, bool repair)
-        {
-            foreach (var field in entity.Properties)
+            bool repair = true;
+            if (Context.SelectEntity.HaseEasyUi)
             {
-                PropertyEasyUiModel.CheckField(field, repair);
+                var result = MessageBox.Show("点是执行重置,点否执行修复", "控件类型修复", MessageBoxButton.YesNoCancel);
+                if (result == MessageBoxResult.Cancel)
+                    return;
+                repair = result == MessageBoxResult.Yes;
             }
-            entity.ExtendConfigListBool["EasyUiIsInit"] = true;
+            Context.SelectEntity.HaseEasyUi = true;
+            var bl = new PropertyEasyUiModel();
+            foreach (var field in Context.SelectEntity.Properties)
+            {
+                bl.CheckField(field, repair);
+            }
+        }
+        private void CheckSizeByLen(object arg)
+        {
+            if (Context.SelectEntity == null)
+                return;
+            Context.SelectEntity.HaseEasyUi = true;
+            var bl = new PropertyEasyUiModel();
+            foreach (var field in Context.SelectEntity.Properties)
+            {
+                bl.CheckSize(field, SizeOption.ByLen);
+            }
         }
 
+        private void CheckSizeAuto(object arg)
+        {
+            if (Context.SelectEntity == null)
+                return;
+            Context.SelectEntity.HaseEasyUi = true;
+            var bl = new PropertyEasyUiModel();
+            foreach (var field in Context.SelectEntity.Properties)
+            {
+                bl.CheckSize(field, SizeOption.Auto);
+            }
+        }
         private void CheckExport(object arg)
         {
-            var result = MessageBox.Show(Application.Current.MainWindow, "是否继续?", "导出导出初始化",
-                MessageBoxButton.YesNo);
-            if (result == MessageBoxResult.No)
+            if (MessageBox.Show("是否继续?", "导出导出初始化", MessageBoxButton.YesNo) == MessageBoxResult.No)
                 return;
             Foreach(field => field.IsPrimaryKey ||
                             !field.IsDiscard && !field.IsLinkKey && !field.DbInnerField &&
@@ -114,35 +150,29 @@ namespace Agebull.EntityModel.Designer
                         field.ExtendConfigListBool["easyui", "CanImport"] = true;
                     });
         }
-
-        private static readonly List<string> InnerFields = new List<string>
-        {
-            "AuditDate", "AuditorId", "AuditState", "LastModifyDate", "LastReviserID", "AddDate", "AuthorID"
-        };
+        
 
         private void CheckSimple(object arg)
         {
-            var result = MessageBox.Show(Application.Current.MainWindow, "是否继续?", "列表字段初始化",
-                MessageBoxButton.YesNo);
-            if (result == MessageBoxResult.No)
+            if (MessageBox.Show("是否继续?", "列表字段初始化", MessageBoxButton.YesNo) == MessageBoxResult.No)
                 return;
-            Foreach(field => InnerFields.Contains(field.Name),
-                field =>
-                {
-                    field.NoneGrid = true;
-                    field.NoneDetails = true;
-                });
+            Foreach(field => field.IsSystemField , field =>
+                 {
+                     field.NoneGrid = true;
+                     field.NoneDetails = true;
+                 });
 
-            Foreach(field => !field.IsPrimaryKey && (field.IsDiscard || field.IsLinkKey || field.DbInnerField ||
-                             field.InnerField || field.DenyClient),
+            Foreach(field => !field.IsPrimaryKey &&
+                             (field.IsDiscard || field.IsLinkKey || field.DbInnerField || field.InnerField || field.DenyClient),
                     field => field.NoneGrid = true);
 
-            Foreach(field => !field.IsPrimaryKey && (field.IsDiscard || field.DbInnerField || field.InnerField || field.DenyClient),
+            Foreach(field => !field.IsPrimaryKey &&
+                             (field.IsDiscard || field.DbInnerField || field.InnerField || field.DenyClient),
                     field => field.NoneDetails = true);
 
             Foreach(field => field.IsPrimaryKey || !field.NoneGrid ||
                              field.Name == "DataState" || field.Name == "AuditState" || field.Name == "IsFreeze",
-                field => field.ExtendConfigListBool["easyui", "simple"] = true);
+                    field => field.ExtendConfigListBool["easyui", "simple"] = true);
         }
 
         #endregion

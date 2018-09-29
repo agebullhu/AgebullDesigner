@@ -714,10 +714,56 @@ namespace Agebull.EntityModel.Config
                 _updateByModified = value;
                 OnPropertyChanged(nameof(UpdateByModified));
             }
-        } 
-        #endregion 
+        }
+        #endregion
         #region 用户界面
 
+        /// <summary>
+        /// 是否有界面
+        /// </summary>
+        [DataMember, JsonProperty("haseEasyUi", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _haseEasyUi;
+
+        /// <summary>
+        /// 界面只读
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"用户界面"), DisplayName(@"是否有界面"), Description("是否有界面")]
+        public bool HaseEasyUi
+        {
+            get => _haseEasyUi;
+            set
+            {
+                if (_haseEasyUi == value)
+                    return;
+                BeforePropertyChanged(nameof(HaseEasyUi), _haseEasyUi, value);
+                _haseEasyUi = value;
+                OnPropertyChanged(nameof(HaseEasyUi));
+            }
+        }
+        /// <summary>
+        /// 界面只读
+        /// </summary>
+        [DataMember, JsonProperty("isUiReadOnly", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isUiReadOnly;
+
+        /// <summary>
+        /// 界面只读
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"用户界面"), DisplayName(@"界面只读"), Description("界面只读")]
+        public bool IsUiReadOnly
+        {
+            get => _isUiReadOnly;
+            set
+            {
+                if (_isUiReadOnly == value)
+                    return;
+                BeforePropertyChanged(nameof(IsUiReadOnly), _isUiReadOnly, value);
+                _isUiReadOnly = value;
+                OnPropertyChanged(nameof(IsUiReadOnly));
+            }
+        }
         /// <summary>
         /// 页面文件夹名称
         /// </summary>
@@ -904,29 +950,6 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(PanelType), _panelType,value);
                 _panelType = value;
                 OnPropertyChanged(nameof(PanelType));
-            }
-        }
-        /// <summary>
-        /// 界面只读
-        /// </summary>
-        [DataMember, JsonProperty("isUiReadOnly", NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isUiReadOnly;
-
-        /// <summary>
-        /// 界面只读
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据模型"), DisplayName(@"界面只读"), Description("界面只读")]
-        public bool IsUiReadOnly
-        {
-            get => _isUiReadOnly;
-            set
-            {
-                if (_isUiReadOnly == value)
-                    return;
-                BeforePropertyChanged(nameof(IsUiReadOnly), _isUiReadOnly, value);
-                _isUiReadOnly = value;
-                OnPropertyChanged(nameof(IsUiReadOnly));
             }
         }
         #endregion 

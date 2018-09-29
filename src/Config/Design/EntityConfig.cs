@@ -16,11 +16,15 @@ namespace Agebull.EntityModel.Config
         /// <param name="propertyConfig"></param>
         public void Add(PropertyConfig propertyConfig)
         {
-            if (!Properties.Contains(propertyConfig))
+            propertyConfig.Parent = this;
+            if (Properties.Contains(propertyConfig))
+                return;
+            if (!WorkContext.InLoding && !WorkContext.InSaving && !WorkContext.InRepair)
             {
-                propertyConfig.Parent = this;
-                Properties.Add(propertyConfig);
+                propertyConfig.Identity = ++MaxIdentity;
+                propertyConfig.Index = Properties.Count == 0 ? 1 : Properties.Max(p => p.Index) + 1;
             }
+            Properties.Add(propertyConfig);
         }
         /// <summary>
         /// 加入子级

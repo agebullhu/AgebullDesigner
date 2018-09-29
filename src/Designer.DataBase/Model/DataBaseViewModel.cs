@@ -34,21 +34,21 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
             items.Add(new CommandItem
             {
                 Action = UpperHump,
-                IsButton=true,
+                IsButton = true,
                 Caption = "大驼峰名称",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             });
             items.Add(new CommandItem
             {
                 Action = LowerHump,
-                IsButton=true,
+                IsButton = true,
                 Caption = "小驼峰名称",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             });
             items.Add(new CommandItem
             {
                 Action = Underlined,
-                IsButton=true,
+                IsButton = true,
                 Caption = "小写下划线名称(C风格)",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             });
@@ -67,7 +67,8 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
             {
                 property.ColumnName = property.Name;
             }
-            Context.SelectEntity.SaveTableName = "tb_" + Context.SelectEntity.Name;
+            if (string.IsNullOrEmpty(Context.SelectEntity.SaveTableName))
+                Context.SelectEntity.SaveTableName = "tb_" + Context.SelectEntity.Name;
         }
         /// <summary>
         /// 小驼峰名称
@@ -79,7 +80,8 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
             {
                 property.ColumnName = property.Name.ToLWord();
             }
-            Context.SelectEntity.SaveTableName = "tb_" + Context.SelectEntity.Name.ToLWord();
+            if (string.IsNullOrEmpty(Context.SelectEntity.SaveTableName))
+                Context.SelectEntity.SaveTableName = "tb_" + Context.SelectEntity.Name.ToLWord();
         }
         /// <summary>
         /// 小写下划线名称
@@ -91,7 +93,8 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
             {
                 property.ColumnName = NameHelper.ToLinkWordName(property.Name, "_", false);
             }
-            Context.SelectEntity.SaveTableName = "tb_" + NameHelper.ToLinkWordName(Context.SelectEntity.Name, "_", false);
+            if (string.IsNullOrEmpty(Context.SelectEntity.SaveTableName))
+                Context.SelectEntity.SaveTableName = "tb_" + NameHelper.ToLinkWordName(Context.SelectEntity.Name, "_", false);
         }
         #endregion
     }

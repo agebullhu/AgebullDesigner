@@ -34,6 +34,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public void RepairByLoaded()
         {
+            
             int projectid = Solution.ProjectList.Count == 0 ? 0 : Solution.Projects.Max(p => p.Index);
             foreach (var project in Solution.Projects)
             {
@@ -147,13 +148,8 @@ namespace Agebull.EntityModel.Config
                 //if (field.LinkTable != null && field.LinkField == null)
                 //    field.LinkField = field.Name;
 
-                if (string.IsNullOrEmpty(field.CustomType))
-                    continue;
                 field.EnumConfig = Solution.Enums.FirstOrDefault(p => p.Name == field.CustomType);
-                if (field.EnumConfig != null)
-                {
-                    field.EnumConfig.Option.ReferenceConfig = field;
-                }
+
             }
             foreach (var cmd in entity.Commands)
             {

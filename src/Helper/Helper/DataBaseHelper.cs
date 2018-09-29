@@ -40,57 +40,70 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 执行器
+        /// 检查字段关联
         /// </summary>
         public static bool CheckFieldLink(EntityConfig entity)
         {
             bool hase = false;
             foreach (var field in entity.Properties)
             {
-                if (entity.NoDataBase || field.IsPrimaryKey || field.Name == "Memo" || field.Name == "ParentId" || field.LinkTable == "UiElement" || field.LinkTable == "tb_UiElement" || field.LinkTable == entity.Name || field.LinkTable == entity.ReadTableName || field.LinkTable == entity.SaveTableName)
+                if (entity.NoDataBase || string.IsNullOrWhiteSpace(field.LinkTable) ||
+                    field.LinkTable == entity.Name || field.LinkTable == entity.ReadTableName ||
+                    field.LinkTable == entity.SaveTableName)
                 {
-                    field.LinkTable = field.LinkField = null;
-                    field.IsLinkField = field.IsLinkKey = field.IsLinkCaption = false;
+                    SetNoLink(field);
                     continue;
                 }
-                if (!string.IsNullOrWhiteSpace(field.LinkTable))
+
+                PropertyConfig pro = null;
+                if (field.Option.ReferenceKey != Guid.Empty)
                 {
-                    PropertyConfig pro = null;
-                    if (field.Option.ReferenceKey != Guid.Empty)
+                    pro = GlobalConfig.GetConfig<PropertyConfig>(field.Option.ReferenceKey);
+                }
+
+                if (pro == null || pro == field || pro.Parent == entity)
+                {
+                    var table = GlobalConfig.GetEntity(
+                        p => string.Equals(p.Name, field.LinkTable, StringComparison.OrdinalIgnoreCase) ||
+                             string.Equals(p.SaveTable, field.LinkTable, StringComparison.OrdinalIgnoreCase) ||
+                             string.Equals(p.ReadTableName, field.LinkTable, StringComparison.OrdinalIgnoreCase));
+                    if (table != null && table != entity)
                     {
-                        pro = GlobalConfig.GetConfig<PropertyConfig>(field.Option.ReferenceKey);
-                    }
-                    if(pro == null || pro == field || pro.Parent == entity)
-                    {
-                        var table = GlobalConfig.GetEntity(
-                            p => string.Equals(p.Name, field.LinkTable, StringComparison.OrdinalIgnoreCase) ||
-                                 string.Equals(p.SaveTable, field.LinkTable, StringComparison.OrdinalIgnoreCase) ||
-                                 string.Equals(p.ReadTableName, field.LinkTable, StringComparison.OrdinalIgnoreCase));
-                        if (table != null && table != entity)
-                        {
-                            pro = table.Properties.FirstOrDefault(p =>
-                                string.Equals(p.Name, field.LinkField, StringComparison.OrdinalIgnoreCase) ||
-                                string.Equals(p.ColumnName, field.LinkField, StringComparison.OrdinalIgnoreCase));
-                        }
-                    }
-                    if (pro?.Parent != null && pro != field && pro.Parent != entity && !pro.Parent.IsInterface)
-                    {
-                        field.IsLinkField = true;
-                        field.IsLinkKey = pro.IsPrimaryKey;
-                        field.IsLinkCaption = pro.IsCaption;
-                        if (field.IsLinkKey)
-                            field.IsCompute = false;
-                        field.Option.ReferenceConfig = pro;
-                        field.LinkTable = pro.Parent.Name;
-                        field.LinkField = pro.Name;
-                        hase = true;
-                        continue;
+                        pro = table.Properties.FirstOrDefault(p =>
+                            string.Equals(p.Name, field.LinkField, StringComparison.OrdinalIgnoreCase) ||
+                            string.Equals(p.ColumnName, field.LinkField, StringComparison.OrdinalIgnoreCase));
                     }
                 }
-                field.LinkTable = field.LinkField = null;
-                field.IsLinkField = field.IsLinkKey = field.IsLinkCaption = false;
+
+                if (pro?.Parent == null || pro == field || pro.Parent == entity || pro.Parent.IsInterface)
+                {
+                    SetNoLink(field);
+                    continue;
+                }
+                field.Option.IsLink = true;
+                field.Option.ReferenceConfig = pro;
+
+                field.IsLinkField = true;
+                field.IsLinkKey = pro.IsPrimaryKey;
+                if (field.IsLinkKey)
+                    field.IsCompute = false;
+                field.IsLinkCaption = pro.IsCaption;
+                field.LinkTable = pro.Parent.Name;
+                field.LinkField = pro.Name;
+                hase = true;
             }
             return hase;
+        }
+
+        private static void SetNoLink(PropertyConfig field)
+        {
+            field.LinkTable = field.LinkField = null;
+            if (!field.Option.IsReference)
+            {
+                field.Option.ReferenceKey = Guid.Empty;
+            }
+            field.Option.IsLink = false;
+            field.IsLinkField = field.IsLinkKey = field.IsLinkCaption = false;
         }
     }
 }

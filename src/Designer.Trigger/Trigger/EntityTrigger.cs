@@ -3,14 +3,26 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer
 {
+
     /// <summary>
     /// 实体配置触发器
     /// </summary>
     public class EntityTrigger : ParentConfigTrigger<EntityConfig>
     {
+        protected override void OnLoad()
+        {
+            using (WorkModelScope.CreateScope(WorkModel.Repair))
+            {
+                foreach (var cfg in TargetConfig.Properties)
+                {
+                    GlobalTrigger.OnLoad(cfg);
+                }
+            }
+        }
         /// <summary>
         /// 属性事件处理
         /// </summary>
@@ -21,6 +33,9 @@ namespace Agebull.EntityModel.Designer
             {
                 case nameof(TargetConfig.Name):
                     TargetConfig.RaisePropertyChanged(nameof(TargetConfig.DisplayName));
+                    break;
+                case nameof(TargetConfig.Interfaces):
+                    InterfaceHelper.CheckInterface(TargetConfig);
                     break;
                 case nameof(TargetConfig.SaveTableName):
                     TargetConfig.RaisePropertyChanged(nameof(TargetConfig.ReadTableName));

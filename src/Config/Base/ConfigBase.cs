@@ -49,6 +49,49 @@ namespace Agebull.EntityModel.Config
 
         #endregion
 
+        #region 继承
+
+        /// <summary>
+        ///     名称
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"名称")]
+        public sealed override string Name
+        {
+            get => Option.Reference != null ? Option.Reference.Name : base.Name;
+            set => base.Name = value;
+        }
+
+        /// <summary>
+        ///     标题
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"标题")]
+        public sealed override string Caption
+        {
+            get => Option.Reference != null ? Option.Reference.Caption : base.Caption;
+            set => base.Caption = value;
+        }
+
+        /// <summary>
+        ///     说明
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"说明")]
+        public sealed override string Description
+        {
+            get => Option.Reference != null ? Option.Reference.Description : base.Description;
+            set => base.Description = value;
+        }
+
+        /// <summary>
+        /// 参见
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"参见")]
+        public sealed override string Remark
+        {
+            get => Option.Reference != null ? Option.Reference.Remark : base.Remark;
+            set => base.Remark = value;
+        }
+        #endregion
+
         #region 扩展配置
 
         /// <summary>
