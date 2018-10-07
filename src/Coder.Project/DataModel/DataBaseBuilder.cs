@@ -54,8 +54,8 @@ namespace {Project.NameSpace}.DataAccess
             /*tableSql = new Dictionary<string, TableSql>(StringComparer.OrdinalIgnoreCase)
             {{{Project.DataBaseObjectName}
             }};*/
-            DataUpdateHandler.RegisterUpdateHandler(new VersionDataTrigger());
-            DataUpdateHandler.RegisterUpdateHandler(new OrganizationDataTrigger());
+            DataUpdateHandler.RegisterUpdateHandler(new MySqlDataTrigger());
+            DataUpdateHandler.RegisterUpdateHandler(new RedisDataTrigger());
         }}
 
         /// <summary>
