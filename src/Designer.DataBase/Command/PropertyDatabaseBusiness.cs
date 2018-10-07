@@ -11,15 +11,20 @@ namespace Agebull.EntityModel.Config
 
         internal void CheckByDb(bool repair = false)
         {
+            if (repair)
+                RobotCoder.DataTypeHelper.ToStandard(Property);
             if (Property.Parent.NoDataBase)
             {
-                Property.ColumnName = null;
+                Property.DbFieldName = null;
                 Property.DbType = null;
             }
             else
             {
-                if (repair || string.IsNullOrWhiteSpace(Property.ColumnName))
-                    Property.ColumnName = DataBaseHelper.ToColumnName(Property.Name);
+                if (Property.Initialization == "getdate")
+                    Property.Initialization = "now()";
+
+                if (repair || string.IsNullOrWhiteSpace(Property.DbFieldName))
+                    Property.DbFieldName = DataBaseHelper.ToDbFieldName(Property.Name);
                 if (repair || string.IsNullOrWhiteSpace(Property.DbType))
                 {
                     RobotCoder.DataTypeHelper.ToStandard(Property);
@@ -29,6 +34,7 @@ namespace Agebull.EntityModel.Config
                 }
                 if (Property.DbType != null)
                 {
+                    Property.Datalen = 0;
                     switch (Property.DbType = Property.DbType.ToUpper())
                     {
                         case "EMPTY":
@@ -38,7 +44,6 @@ namespace Agebull.EntityModel.Config
                         case "VARBINARY":
                             if (Property.IsBlob)
                             {
-                                Property.Datalen = 0;
                                 Property.DbType = "LONGBLOB";
                             }
                             else if (Property.Datalen >= 500)
@@ -56,7 +61,7 @@ namespace Agebull.EntityModel.Config
                         case "NVARCHAR":
                             if (Property.IsBlob)
                             {
-                                Property.Datalen = 0;
+                                
                                 Property.DbType = "LONGTEXT";
                             }
                             else if (Property.IsMemo)
@@ -80,16 +85,8 @@ namespace Agebull.EntityModel.Config
                 {
                     Property.Nullable = false;
                     Property.DbNullable = false;
-                }
-                if (Property.IsPrimaryKey || Property.IsCaption)
-                {
                     Property.CanEmpty = false;
                 }
-
-                //else if (repair)
-                //{
-                //    Property.DbNullable = true;
-                //}
             }
         }
 

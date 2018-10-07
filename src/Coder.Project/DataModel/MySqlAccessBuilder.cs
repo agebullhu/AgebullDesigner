@@ -11,16 +11,15 @@ namespace Agebull.EntityModel.RobotCoder
 {
     public sealed class MySqlAccessBuilder : CoderWithEntity
     {
-
+        private PropertyConfig[] dbFields;
         /// <summary>
         ///     公开的数据库字段
         /// </summary>
-        private IEnumerable<PropertyConfig> PublishDbFields
+        private PropertyConfig[] PublishDbFields
         {
             get
             {
-                return Entity.DbFields.Where(p => !p.DbInnerField &&
-                                                  !string.Equals(p.DbType, "EMPTY", StringComparison.OrdinalIgnoreCase));
+                return dbFields ?? (dbFields = Entity.DbFields.Where(p => !p.DbInnerField && !string.Equals(p.DbType, "EMPTY", StringComparison.OrdinalIgnoreCase)).ToArray());
             }
         }
         /// <summary>
@@ -36,10 +35,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 表的唯一标识
         /// </summary>
-        public override int TableId
-        {{
-            get {{ return {Project.DataBaseObjectName}.Table_{Entity.Name}; }}
-        }}
+        public override int TableId => {Entity.EntityName}._DataStruct_.EntityIdentity;
 
         /// <summary>
         /// 读取表名
@@ -66,13 +62,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 主键
         /// </summary>
-        protected sealed override string PrimaryKey
-        {{
-            get
-            {{
-                return @""{Entity.PrimaryColumn.Name}"";
-            }}
-        }}
+        protected sealed override string PrimaryKey => {Entity.EntityName}._DataStruct_.EntityPrimaryKey;
 
         /// <summary>
         /// 全表读取的SQL语句
@@ -152,10 +142,10 @@ namespace Agebull.EntityModel.RobotCoder
         {{
             using (new EditScope(entity.__EntityStatus, EditArrestMode.All, false))
             {{");
-
+            int idx = 0;
             foreach (var field in fields)
             {
-                SqlMomentCoder.FieldReadCode(Entity, field, code);
+                SqlMomentCoder.FieldReadCode(Entity, field, code, idx++);
             }
             code.Append(@"
             }
@@ -256,16 +246,16 @@ namespace {NameSpace}.DataAccess
         /// </summary>
         public {Entity.Name}DataAccess()
         {{
-            Name = @""{Entity.Name}"";
-            Caption = @""{Entity.Caption}"";
-            Description = @""{Entity.Description.Replace("\"", "\"\"")}"";
+            Name = {Entity.EntityName}._DataStruct_.EntityName;
+            Caption = {Entity.EntityName}._DataStruct_.EntityCaption;
+            Description = {Entity.EntityName}._DataStruct_.EntityDescription;
         }}
-{innerCode}
+        {innerCode}
+        {ExtendCode}
     }}
-
+    
     partial class {Project.DataBaseObjectName}
     {{
-{TablesEnum()}
 {TableSql()}
 {TableObject()}
     }}
@@ -273,19 +263,6 @@ namespace {NameSpace}.DataAccess
 ";
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        private string TablesEnum()
-        {
-            return $@"
-
-        /// <summary>
-        /// {Entity.Caption}({Entity.ReadTableName}):{Entity.Description}
-        /// </summary>
-        public const int Table_{Entity.Name} = 0x{Entity.Index:x};";
-        }
         /// <summary>
         ///     生成基础代码
         /// </summary>
@@ -322,9 +299,10 @@ namespace {NameSpace}.DataAccess
             {
                 if (Entity.Interfaces.Contains("IRowScopeData"))
                     baseClass = "RowScopeDataAccess";
-                else if (Entity.Interfaces.Contains("IHistoryData"))
-                    baseClass = "HitoryTable";
-                else if (Entity.Interfaces.Contains("IStateData"))
+                //else if (Entity.Interfaces.Contains("IHistoryData"))
+                //    baseClass = "HitoryTable";
+                else
+                if (Entity.Interfaces.Contains("IStateData"))
                     baseClass = "DataStateTable";
             }
             var code = $@"
@@ -358,7 +336,7 @@ namespace {NameSpace}.DataAccess
     /// </summary>
     sealed partial class {Entity.Name}DataAccess : {baseClass}<{Entity.EntityName},{Project.DataBaseObjectName}>
     {{
-        {ExtendCode}
+
     }}
 }}";
             SaveCode(file, code);
@@ -369,22 +347,6 @@ namespace {NameSpace}.DataAccess
             get
             {
                 var code = new StringBuilder();
-                if (Entity.Interfaces != null && Entity.Interfaces.Contains("IOrganizationData"))
-                {
-                    var field = Entity.Properties.FirstOrDefault(p => p.Name == "OrganizationId");
-                    if (field != null)
-                    {
-                        code.Append($@"
-        /// <summary>初始化基本条件</summary>
-        /// <returns></returns>
-        protected override void InitBaseCondition()
-        {{
-            if (GlobalContext.Current.IsSystemMode || GlobalContext.Current.User.OrganizationId == 0)
-                return;
-            BaseCondition = $""`{field.ColumnName}` = {{GlobalContext.Current.User.OrganizationId}}"";
-        }}");
-                    }
-                }
                 return code.ToString();
             }
         }
@@ -481,23 +443,23 @@ namespace {NameSpace}.DataAccess
             {
                 if (!names.ContainsKey(field.Name))
                 {
-                    names.Add(field.Name, field.ColumnName);
+                    names.Add(field.Name, field.DbFieldName);
                 }
-                if (!names.ContainsKey(field.ColumnName))
+                if (!names.ContainsKey(field.DbFieldName))
                 {
-                    names.Add(field.ColumnName, field.ColumnName);
+                    names.Add(field.DbFieldName, field.DbFieldName);
                 }
                 foreach (var alia in field.GetAliasPropertys())
                 {
                     if (!names.ContainsKey(alia))
                     {
-                        names.Add(alia, field.ColumnName);
+                        names.Add(alia, field.DbFieldName);
                     }
                 }
             }
             if (!names.ContainsKey("Id"))
             {
-                names.Add("Id", entity.PrimaryColumn.ColumnName);
+                names.Add("Id", entity.PrimaryColumn.DbFieldName);
             }
         }
 
@@ -512,7 +474,7 @@ namespace {NameSpace}.DataAccess
             var code = new StringBuilder();
             if (!PublishDbFields.Any(p => p.UniqueIndex > 0))
             {
-                code.Append($@"`{Entity.PrimaryColumn.ColumnName}` = ?{Entity.PrimaryColumn.Name}");
+                code.Append($@"`{Entity.PrimaryColumn.DbFieldName}` = ?{Entity.PrimaryColumn.Name}");
             }
             else
             {
@@ -529,17 +491,17 @@ namespace {NameSpace}.DataAccess
                         code.Append(" AND ");
                     }
 
-                    code.Append($"`{col.ColumnName}`=?{col.Name}");
+                    code.Append($"`{col.DbFieldName}`=?{col.Name}");
                 }
             }
             if (Entity.Interfaces?.Contains("IStateData") == true)
             {
                 var f = Entity.Properties.FirstOrDefault(p => p.Name == "IsFreeze");
                 if (f != null)
-                    code.Append($@" AND `{f.ColumnName}` = 0");
+                    code.Append($@" AND `{f.DbFieldName}` = 0");
                 var s = Entity.Properties.FirstOrDefault(p => p.Name == "DataState");
                 if (s != null)
-                    code.Append($@" AND `{s.ColumnName}` < 255");
+                    code.Append($@" AND `{s.DbFieldName}` < 255");
             }
             return code.ToString();
         }
@@ -552,12 +514,12 @@ namespace {NameSpace}.DataAccess
             var code = new StringBuilder();
             code.Append($@"
 DECLARE ?__myId INT(4);
-SELECT ?__myId = `{Entity.PrimaryColumn.ColumnName}` FROM `{Entity.SaveTable}` WHERE {UniqueCondition()}");
+SELECT ?__myId = `{Entity.PrimaryColumn.DbFieldName}` FROM `{Entity.SaveTable}` WHERE {UniqueCondition()}");
 
             code.Append($@"
 IF ?__myId IS NULL
 BEGIN{OnlyInsertSql(true)}
-    SET ?__myId = {(Entity.PrimaryColumn.IsIdentity ? "@@IDENTITY" : Entity.PrimaryColumn.ColumnName)};
+    SET ?__myId = {(Entity.PrimaryColumn.IsIdentity ? "@@IDENTITY" : Entity.PrimaryColumn.DbFieldName)};
 END
 ELSE
 BEGIN
@@ -586,7 +548,7 @@ INSERT INTO `{0}`
                     sql.Append(",");
                 }
                 sql.AppendFormat(@"
-    `{0}`", field.ColumnName);
+    `{0}`", field.DbFieldName);
             }
             sql.Append(@"
 )
@@ -639,7 +601,7 @@ UPDATE `{Entity.SaveTable}` SET");
                     sql.Append(",");
                 }
                 sql.Append($@"
-       `{field.ColumnName}` = ?{field.Name}");
+       `{field.DbFieldName}` = ?{field.Name}");
             }
             sql.Append($@"
  WHERE {UniqueCondition()};");
@@ -662,8 +624,8 @@ UPDATE `{Entity.SaveTable}` SET");
             {
                 code.Append($@"
             //{field.Caption}
-            if (data.__EntityStatus.ModifiedProperties[{Entity.EntityName}.Real_{field.Name}] > 0)
-                sql.AppendLine(""       `{field.ColumnName}` = ?{field.Name}"");");
+            if (data.__EntityStatus.ModifiedProperties[{Entity.EntityName}._DataStruct_.Real_{field.Name}] > 0)
+                sql.AppendLine(""       `{field.DbFieldName}` = ?{field.Name}"");");
             }
             code.AppendFormat(@"
             sql.Append("" WHERE {0};"");", UniqueCondition());
@@ -897,9 +859,10 @@ UPDATE `{Entity.SaveTable}` SET");
         {{
             using (new EditScope(entity.__EntityStatus, EditArrestMode.All, false))
             {{");
+            int idx = 0;
             foreach (var field in PublishDbFields)
             {
-                SqlMomentCoder.FieldReadCode(Entity, field, code);
+                SqlMomentCoder.FieldReadCode(Entity, field, code, idx++);
             }
             code.Append(@"
             }

@@ -50,7 +50,7 @@
                 <DataGridTextColumn Binding="{Binding Index,Mode=OneWay}" Header="序号" />
                 <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
                 <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="属性" />
-                <DataGridTextColumn Binding="{Binding ColumnName,Mode=TwoWay}" Header="字段" />
+                <DataGridTextColumn Binding="{Binding DbFieldName,Mode=TwoWay}" Header="字段" />
                 <DataGridCheckBoxColumn Binding="{Binding IsPrimaryKey,Mode=TwoWay}" Header="主键" />
                 <DataGridCheckBoxColumn Binding="{Binding IsCaption,Mode=TwoWay}" Header="标题" />
                 <DataGridCheckBoxColumn Binding="{Binding IsCompute,Mode=TwoWay}" Header="计算列" />

@@ -167,7 +167,7 @@ namespace Agebull.EntityModel.RobotCoder
                 using (var reader = File.OpenText(file))
                 {
                     var mark = reader.ReadLine();
-                    if (String.IsNullOrWhiteSpace(mark) || !mark.Contains("此标记表明此文件可被设计器更新"))
+                    if (string.IsNullOrWhiteSpace(mark) || !mark.Contains("此标记表明此文件可被设计器更新"))
                     {
                         Trace.WriteLine(file, "无写入标识");
                         return;
@@ -212,7 +212,7 @@ namespace Agebull.EntityModel.RobotCoder
                     old = old.Split(new[] { '\n' }, 2)[1].Trim();
                 }
 
-                if (String.Equals(code, old))
+                if (string.Equals(code, old))
                 {
                     Trace.WriteLine(file, "内容相同");
                     return;

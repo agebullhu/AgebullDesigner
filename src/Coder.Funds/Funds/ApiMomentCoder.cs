@@ -17,46 +17,46 @@ namespace Agebull.EntityModel.RobotCoder.Funds
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("期货相关", "API日志代码(C++)", "cpp", ApiLog);
-            MomentCoder.RegisteCoder("期货相关", "API选择执行代码(C++)", "cpp", ApiSwitch);
+            MomentCoder.RegisteCoder<ProjectConfig>("期货相关", "API日志代码(C++)", "cpp", ApiLog);
+            MomentCoder.RegisteCoder<ProjectConfig>("期货相关", "API选择执行代码(C++)", "cpp", ApiSwitch);
             
-            MomentCoder.RegisteCoder("期货相关", "API命令定义代码(C++)", "cpp", ApiCommandIdCode);
+            MomentCoder.RegisteCoder<ProjectConfig>("期货相关", "API命令定义代码(C++)", "cpp", ApiCommandIdCode);
             
-            MomentCoder.RegisteCoder("期货相关", "API调用定义代码(C++)-Proxy", "cpp", ApiCallCodeByProxyDef);
-            MomentCoder.RegisteCoder("期货相关", "API调用实现代码(C++)-Proxy", "cpp", ApiCallCodeByProxy);
+            MomentCoder.RegisteCoder<ProjectConfig>("期货相关", "API调用定义代码(C++)-Proxy", "cpp", ApiCallCodeByProxyDef);
+            MomentCoder.RegisteCoder<ProjectConfig>("期货相关", "API调用实现代码(C++)-Proxy", "cpp", ApiCallCodeByProxy);
             
-            MomentCoder.RegisteCoder("期货相关", "API调用定义代码(C++)-Server", "cpp", CmdCallCodeByServerDef);
-            MomentCoder.RegisteCoder("期货相关", "API调用实现代码(C++)-Server", "cpp", CmdCallCodeByServer);
-            MomentCoder.RegisteCoder("期货相关", "API调用逻辑模板(C++)-Server", "cpp", BusinessCodeByServer);
+            MomentCoder.RegisteCoder<ProjectConfig>("期货相关", "API调用定义代码(C++)-Server", "cpp", CmdCallCodeByServerDef);
+            MomentCoder.RegisteCoder<ProjectConfig>("期货相关", "API调用实现代码(C++)-Server", "cpp", CmdCallCodeByServer);
+            MomentCoder.RegisteCoder<ProjectConfig>("期货相关", "API调用逻辑模板(C++)-Server", "cpp", BusinessCodeByServer);
             
-            MomentCoder.RegisteCoder("期货相关", "API调用定义代码(C++)-Client", "cpp", CmdCallCodeByClientDef);
-            MomentCoder.RegisteCoder("期货相关", "API调用实现代码(C++)-Client", "cpp", CmdCallCodeByClient);
+            MomentCoder.RegisteCoder<ProjectConfig>("期货相关", "API调用定义代码(C++)-Client", "cpp", CmdCallCodeByClientDef);
+            MomentCoder.RegisteCoder<ProjectConfig>("期货相关", "API调用实现代码(C++)-Client", "cpp", CmdCallCodeByClient);
             
-            MomentCoder.RegisteCoder("期货相关", "API调用定义代码(C++)-Clr", "cpp", CmdCallCodeByClrDef);
-            MomentCoder.RegisteCoder("期货相关", "API调用实现代码(C++)-Clr", "cpp", CmdCallCodeByClr);
+            MomentCoder.RegisteCoder<ProjectConfig>("期货相关", "API调用定义代码(C++)-Clr", "cpp", CmdCallCodeByClrDef);
+            MomentCoder.RegisteCoder<ProjectConfig>("期货相关", "API调用实现代码(C++)-Clr", "cpp", CmdCallCodeByClr);
             
-            MomentCoder.RegisteCoder("期货相关", "API调用代码(C#)", "cs", CmdCallCodeByCs);
-            MomentCoder.RegisteCoder("期货相关", "常量名称字典(C#)", "cs", TypedefDictionary);
-            MomentCoder.RegisteCoder("期货相关", "数据类型处理代码(C#)_服务端", "cs", DataSwitch);
-            MomentCoder.RegisteCoder("期货相关", "方法实现(C++)_服务端", "cpp", ConstFunc);
-            MomentCoder.RegisteCoder("期货相关", "方法声明(C++)_服务端", "cpp", ConstFuncDef);
-            MomentCoder.RegisteCoder("期货相关", "方法实现(C++)_客户端", "cpp", ConstFunc_C);
-            MomentCoder.RegisteCoder("期货相关", "方法声明(C++)_客户端", "cpp", ConstFuncDef_C);
-            MomentCoder.RegisteCoder("期货相关", "常量选择代码(C++)", "cpp", ConstSwitch);
-            MomentCoder.RegisteCoder("期货相关", "事件处理方法(C#)", "cs", ConstFunc_Cs);
-            MomentCoder.RegisteCoder("期货相关", "常量到文本(C++)", "cpp", ConstToStringSwitch);
+            MomentCoder.RegisteCoder<ProjectConfig>("期货相关", "API调用代码(C#)", "cs", CmdCallCodeByCs);
+            MomentCoder.RegisteCoder<ProjectConfig>("期货相关", "常量名称字典(C#)", "cs", TypedefDictionary);
+            MomentCoder.RegisteCoder<ProjectConfig>("期货相关", "数据类型处理代码(C#)_服务端", "cs", DataSwitch);
+            MomentCoder.RegisteCoder<ProjectConfig>("期货相关", "方法实现(C++)_服务端", "cpp", ConstFunc);
+            MomentCoder.RegisteCoder<ProjectConfig>("期货相关", "方法声明(C++)_服务端", "cpp", ConstFuncDef);
+            MomentCoder.RegisteCoder<ProjectConfig>("期货相关", "方法实现(C++)_客户端", "cpp", ConstFunc_C);
+            MomentCoder.RegisteCoder<ProjectConfig>("期货相关", "方法声明(C++)_客户端", "cpp", ConstFuncDef_C);
+            MomentCoder.RegisteCoder<TypedefItem>("期货相关", "常量选择代码(C++)", "cpp", ConstSwitch);
+            MomentCoder.RegisteCoder<ProjectConfig>("期货相关", "事件处理方法(C#)", "cs", ConstFunc_Cs);
+            MomentCoder.RegisteCoder<TypedefItem>("期货相关", "常量到文本(C++)", "cpp", ConstToStringSwitch);
         }
         #endregion
 
         #region 定义
 
-        public static string ApiLog(ConfigBase config)
+        public static string ApiLog(ProjectConfig config)
         {
             StringBuilder code = new StringBuilder();
             code.Append(@"
 		switch (cmd_call->cmd_id)
 		{");
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
+            foreach (var item in config.ApiItems.Where(p => !p.IsDiscard))
             {
                 code.Append($@"
             case NET_COMMAND_ES_{item.Name.ToUpper()}://{item.Caption}
@@ -69,7 +69,7 @@ namespace Agebull.EntityModel.RobotCoder.Funds
 
         }
 
-        public static string ApiSwitch(ConfigBase config)
+        public static string ApiSwitch(ProjectConfig config)
         {
             StringBuilder code = new StringBuilder();
             code.Append(@"
@@ -91,7 +91,7 @@ void server_message_pump()
 		}
 		switch (cmd_call->cmd_id)
 		{");
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
+            foreach (var item in config.ApiItems.Where(p => !p.IsDiscard))
             {
                 code.Append($@"
                 case NET_COMMAND_ES_{item.Name.ToUpper()}://{item.Caption}
@@ -105,11 +105,11 @@ void server_message_pump()
             return code.ToString();
 
         }
-        public static string ApiCommandIdCode(ConfigBase config)
+        public static string ApiCommandIdCode(ProjectConfig config)
         {
             var code = new StringBuilder();
 
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
+            foreach (var item in config.ApiItems.Where(p => !p.IsDiscard))
             {
                 code.Append($@"
 //{item.Caption}
@@ -121,18 +121,18 @@ const NET_COMMAND NET_COMMAND_ES_{item.Name.ToUpper()} = 0x{item.Index.ToString(
         #endregion
         #region 客户端调用
 
-        public static string CmdCallCodeByClientDef(ConfigBase config)
+        public static string CmdCallCodeByClientDef(ProjectConfig config)
         {
             var code = new StringBuilder();
 
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
+            foreach (var item in config.ApiItems.Where(p => !p.IsDiscard))
             {
                 var entity = GlobalConfig.GetEntity(item.ResultArg);
                 if (entity != null)
                     code.Append($@"
 #include ""{entity.Parent.Name}/{entity.Name}.h""");
             }
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
+            foreach (var item in config.ApiItems.Where(p => !p.IsDiscard))
             {
                 if (string.IsNullOrWhiteSpace(item.ResultArg))
                 {
@@ -160,12 +160,12 @@ COMMAND_STATE {item.Name}({item.ResultArg}& arg);
             }
             return code.ToString();
         }
-        public static string CmdCallCodeByClient(ConfigBase config)
+        public static string CmdCallCodeByClient(ProjectConfig config)
         {
             var code = new StringBuilder();
 
 
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
+            foreach (var item in config.ApiItems.Where(p => !p.IsDiscard))
             {
                 var type = item.ResultArg;
                 if (item.ResultArg == "char")
@@ -185,7 +185,7 @@ COMMAND_STATE {item.Name}({type})
 {{
     COMMAND_STATE state = NET_COMMAND_STATE_SUCCEED;
 	try
-	{{{ClientApiCall(item)}
+	{{{ClientApiCall(config, item)}
 		set_command_head(cmd_call, NET_COMMAND_ES_{item.Name.ToUpper()});
 		request_net_cmmmand(cmd_call, nullptr);
 	}}
@@ -199,7 +199,7 @@ COMMAND_STATE {item.Name}({type})
             return code.ToString();
         }
 
-        private static string ClientApiCall(ApiItem item)
+        private static string ClientApiCall(ProjectConfig config,ApiItem item)
         {
             if (string.IsNullOrWhiteSpace(item.ResultArg))
             {
@@ -207,7 +207,7 @@ COMMAND_STATE {item.Name}({type})
 		PNetCommand cmd_call = new NetCommand();
 		cmd_call->data_len = 0;";
             }
-            if (SolutionConfig.Current.Entities.Any(p => p.Name == item.ResultArg))
+            if (config.Entities.Any(p => p.Name == item.ResultArg))
                 return @"
         auto cmd_call = SerializeToCommand(&arg);";
             switch (item.ResultArg)
@@ -244,11 +244,11 @@ COMMAND_STATE {item.Name}({type})
         #endregion
         #region 服务端调用
 
-        public static string CmdCallCodeByServerDef(ConfigBase config)
+        public static string CmdCallCodeByServerDef(ProjectConfig config)
         {
             var code = new StringBuilder();
 
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
+            foreach (var item in config.ApiItems.Where(p => !p.IsDiscard))
             {
                 code.Append($@"
 /** 
@@ -261,15 +261,15 @@ void Do{item.Name}(const PNetCommand cmd);");
             }
             return code.ToString();
         }
-        public static string CmdCallCodeByServer(ConfigBase config)
+        public static string CmdCallCodeByServer(ProjectConfig config)
         {
             var code = new StringBuilder();
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
+            foreach (var item in config.ApiItems.Where(p => !p.IsDiscard))
             {
                 code.Append($@"
 #include ""GbsTrade/{item.Name}Business.h""");
             }
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
+            foreach (var item in config.ApiItems.Where(p => !p.IsDiscard))
             {
                 code.Append(CmdCallCodeByServer(item, "Do"));
 
@@ -330,11 +330,11 @@ void GbsTradeCommand::{head}{item.Name}(const PNetCommand cmd_arg)
         #endregion
         #region 原始调用端
 
-        public static string ApiCallCodeByProxyDef(ConfigBase config)
+        public static string ApiCallCodeByProxyDef(ProjectConfig config)
         {
             var code = new StringBuilder();
 
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
+            foreach (var item in config.ApiItems.Where(p => !p.IsDiscard))
             {
                 code.Append($@"
 /** 
@@ -347,11 +347,11 @@ void Do{item.Name}(const PNetCommand cmd_arg);");
             return code.ToString();
         }
 
-        public static string ApiCallCodeByProxy(ConfigBase config)
+        public static string ApiCallCodeByProxy(ProjectConfig config)
         {
             var code = new StringBuilder();
 
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
+            foreach (var item in config.ApiItems.Where(p => !p.IsDiscard))
             {
                 CallEsApi(code, item);
             }
@@ -436,7 +436,7 @@ void EsTradeCommand::Do{item.Name}(const PNetCommand cmd_arg)
         #endregion
         #region CLR端调用
 
-        public static string CmdCallCodeByClrDef(ConfigBase config)
+        public static string CmdCallCodeByClrDef(ProjectConfig config)
         {
             var project = config as ProjectConfig;
             if (project == null)
@@ -444,14 +444,14 @@ void EsTradeCommand::Do{item.Name}(const PNetCommand cmd_arg)
             var code = new StringBuilder();
 
 
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
+            foreach (var item in config.ApiItems.Where(p => !p.IsDiscard))
             {
                 var entity = GlobalConfig.GetEntity(item.ResultArg);
                 if (entity != null)
                     code.Append($@"
 #include ""{entity.Parent.Name}/{entity.Name}.h""");
             }
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
+            foreach (var item in config.ApiItems.Where(p => !p.IsDiscard))
             {/*static void Login(LoginArgData^ cs_field);*/
                 if (string.IsNullOrWhiteSpace(item.ResultArg))
                 {
@@ -486,11 +486,11 @@ static void {item.Name}({type} arg);
             }
             return code.ToString();
         }
-        public static string CmdCallCodeByCs(ConfigBase config)
+        public static string CmdCallCodeByCs(ProjectConfig config)
         {
             var code = new StringBuilder();
 
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
+            foreach (var item in config.ApiItems.Where(p => !p.IsDiscard))
             {
                 string type = item.ResultArg;
                 string init = null;
@@ -547,14 +547,11 @@ public void {item.Name}()
         /// </summary>
         /// <param name="config"></param>
         /// <returns></returns>
-        public static string CmdCallCodeByClr(ConfigBase config)
+        public static string CmdCallCodeByClr(ProjectConfig config)
         {
-            var project = config as ProjectConfig;
-            if (project == null)
-                return null;
             var code = new StringBuilder();
 
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
+            foreach (var item in config.ApiItems.Where(p => !p.IsDiscard))
             {
                 string type = item.ResultArg;
                 var entity = GlobalConfig.GetEntity(item.ResultArg);
@@ -570,20 +567,20 @@ public void {item.Name}()
 * @return 无
 */
 void CommandProxy::{item.Name}({type})
-{{{ClrApiCall(item)}
+{{{ClrApiCall(config, item)}
 }}");
             }
             return code.ToString();
         }
 
-        private static string ClrApiCall(ApiItem item)
+        private static string ClrApiCall(ProjectConfig config,ApiItem item)
         {
             if (string.IsNullOrWhiteSpace(item.ResultArg))
             {
                 return $@"
 		GBS::Futures::TradeCommand::Client::{item.Name}();";
             }
-            if (SolutionConfig.Current.Entities.Any(p => p.Name == item.ResultArg))
+            if (config.Entities.Any(p => p.Name == item.ResultArg))
                 return $@"
         {item.ResultArg} field;
 		CopyFromClr(arg, field);
@@ -611,10 +608,10 @@ void CommandProxy::{item.Name}({type})
         #endregion
         #region 服务端业务逻辑模板
 
-        public static string BusinessCodeByServer(ConfigBase config)
+        public static string BusinessCodeByServer(ProjectConfig config)
         {
             var code = new StringBuilder();
-            foreach (var item in SolutionConfig.Current.ApiItems.Where(p => !p.IsDiscard))
+            foreach (var item in config.ApiItems.Where(p => !p.IsDiscard))
             {
                 ApiBusinessHCode(item, code);
                 ApiBusinessCppCode(item, code);
@@ -837,24 +834,19 @@ namespace GBS
 
         #region 常量选择代码
 
-        public static string DataSwitch(ConfigBase config)
+        public static string DataSwitch(ProjectConfig project)
         {
             var code = new StringBuilder();
-            foreach (var project in SolutionConfig.Current.Projects)
+            foreach (var enttiy in project.Entities.Where(p => !p.NoDataBase))
             {
-                foreach (var enttiy in project.Entities.Where(p => !p.NoDataBase))
-                {
-                    code.Append($@"
+                code.Append($@"
                 case 0x{enttiy.Index:X}://{enttiy.Caption}
                     On{enttiy.Name}Sended(({enttiy.EntityName})data);
                     break;");
-                }
             }
-            foreach (var project in SolutionConfig.Current.Projects)
+            foreach (var enttiy in project.Entities.Where(p => !p.NoDataBase))
             {
-                foreach (var enttiy in project.Entities.Where(p => !p.NoDataBase))
-                {
-                    code.Append($@"
+                code.Append($@"
                 void On{enttiy.Name}Sended({enttiy.EntityName} data)
                 {{
                     var access = new {enttiy.Name}DataAccess();
@@ -863,60 +855,50 @@ namespace GBS
                         access.Insert(data);
                     }}
                 }}");
-                }
             }
             return code.ToString();
         }
-        public static string ConstToStringSwitch(ConfigBase config)
+        public static string ConstToStringSwitch(TypedefItem item)
         {
             var code = new StringBuilder();
 
-            var item = config as TypedefItem;
-            if (item != null)
+            foreach (var c in item.Items.Values)
             {
-                foreach (var c in item.Items.Values)
-                {
-                    code.Append($@"
+                code.Append($@"
                 case {c.Value}:
                     return ""{c.Caption}"";");
-                }
             }
             return code.ToString();
         }
 
-        public static string ConstSwitch(ConfigBase config)
+        public static string ConstSwitch(TypedefItem item)
         {
             var code = new StringBuilder();
-
-            var item = config as TypedefItem;
-            if (item != null)
+            foreach (var c in item.Items.Values)
             {
-                foreach (var c in item.Items.Values)
-                {
-                    code.AppendFormat(@"
+                code.AppendFormat(@"
                 case {1}://{0}
                     ", c.Caption, c.Name);
 
-                    var names = c.Name.Trim().Split('_');
-                    if (names.Length > 3)
+                var names = c.Name.Trim().Split('_');
+                if (names.Length > 3)
+                {
+                    code.Append(@"//");
+                    for (int idx = 2; idx < names.Length; idx++)
                     {
-                        code.Append(@"//");
-                        for (int idx = 2; idx < names.Length; idx++)
-                        {
-                            code.Append(names[idx].ToLower().ToUWord());
-                        }
-                        code.Append(@"();
-                    ");
+                        code.Append(names[idx].ToLower().ToUWord());
                     }
-                    else
-                    {
-                        code.AppendFormat(@"
+                    code.Append(@"();
+                    ");
+                }
+                else
+                {
+                    code.AppendFormat(@"
                     value.{0} = data.MoneyValue;
                     ", c.Name.Trim().Replace("MONEY_CHG_", "").ToLower().ToUWord());
-                    }
-
-                    code.Append(@"break;");
                 }
+
+                code.Append(@"break;");
             }
             return code.ToString();
         }

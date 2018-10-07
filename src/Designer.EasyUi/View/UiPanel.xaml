@@ -191,6 +191,12 @@
                     Binding="{Binding NoneDetails,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BoolReversalConverter}}"
                     Header="详细" />
                 <DataGridCheckBoxColumn
+                    Binding="{Binding IsImage,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                    Header="图片" />
+                <DataGridCheckBoxColumn
+                    Binding="{Binding IsMoney,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                    Header="货币" />
+                <DataGridCheckBoxColumn
                     Binding="{Binding MulitLine,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="多行" />
                 <DataGridTextColumn Binding="{Binding InputType,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                     Header="控件类型" />

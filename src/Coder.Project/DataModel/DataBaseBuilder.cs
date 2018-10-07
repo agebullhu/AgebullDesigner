@@ -49,11 +49,20 @@ namespace {Project.NameSpace}.DataAccess
         /// <summary>
         /// 构造
         /// </summary>
-        public {Project.DataBaseObjectName}()
+        static {Project.DataBaseObjectName}()
         {{
             /*tableSql = new Dictionary<string, TableSql>(StringComparer.OrdinalIgnoreCase)
             {{{Project.DataBaseObjectName}
             }};*/
+            DataUpdateHandler.RegisterUpdateHandler(new VersionDataTrigger());
+            DataUpdateHandler.RegisterUpdateHandler(new OrganizationDataTrigger());
+        }}
+
+        /// <summary>
+        /// 构造
+        /// </summary>
+        public {Project.DataBaseObjectName}()
+        {{
             Name = @""{Project.Name}"";
             Caption = @""{Project.Caption}"";
             Description = @""{Project.Description.Replace("\"","\"\"")}"";

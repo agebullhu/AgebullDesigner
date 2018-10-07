@@ -26,7 +26,7 @@ namespace Agebull.EntityModel.Config
                 {
                     try
                     {
-                        Property.Datalen = Int32.Parse(type.ArrayLen);
+                        Property.Datalen = int.Parse(type.ArrayLen);
                     }
                     catch (Exception)
                     {
@@ -175,7 +175,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (type.KeyWork == "char" && !string.IsNullOrWhiteSpace(type.ArrayLen))
                 {
-                    if (Int32.TryParse(type.ArrayLen, out int len))
+                    if (int.TryParse(type.ArrayLen, out int len))
                     {
                         link.Datalen = len;
                         Property.Datalen = len;

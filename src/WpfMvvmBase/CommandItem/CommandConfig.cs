@@ -115,5 +115,15 @@ namespace Agebull.Common.Mvvm
         /// 确认消息
         /// </summary>
         public string ConfirmMessage { get; set; }
+
+        /// <summary>
+        /// 无需确认
+        /// </summary>
+        public bool NoConfirm { get; set; }
+
+        /// <summary>
+        /// 无需确认
+        /// </summary>
+        public bool DoConfirm => !string.IsNullOrEmpty(ConfirmMessage);
     }
 }

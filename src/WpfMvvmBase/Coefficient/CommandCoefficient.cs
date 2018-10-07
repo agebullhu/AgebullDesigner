@@ -90,13 +90,12 @@ namespace Agebull.Common.Mvvm
                 if (item.Key != type && !type.IsSubclassOf(item.Key))
                     continue;
 
-                foreach (var action in item.Value.Where(p => p.Editor == null))
+                foreach (var action in item.Value.Where(p => p.Editor == null || !p.SignleSoruce))
                 {
-                    if (!dictionary.ContainsKey(action))
-                    {
-                        result.Add(action.ToCommand(arg, null));
-                        dictionary.Add(action, true);
-                    }
+                    if (dictionary.ContainsKey(action))
+                        continue;
+                    result.Add(action.ToCommand(arg, null));
+                    dictionary.Add(action, true);
                 }
             }
 

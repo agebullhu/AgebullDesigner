@@ -36,7 +36,7 @@ namespace Agebull.EntityModel.Designer
                 loader.LoadSolution(Path.GetDirectoryName(sluFile), Path.GetFileName(sluFile), false);
 
                 loader._solution.Foreach<ConfigBase>(p => p.Option.IsNormal, p => GlobalConfig.AddConfig(p.Option));
-                re = loader._solution;
+                re = GlobalConfig.LocalSolution = loader._solution;
             }
             return re;
         }

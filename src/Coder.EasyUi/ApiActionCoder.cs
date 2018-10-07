@@ -24,11 +24,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 
         protected override string BaseCode()
         {
-            var coder = new EasyUiHelperCoder
-            {
-                Entity = Entity,
-                Project = Project
-            };
+            var coder = new EasyUiHelperCoder();
             return
                 $@"
 using System;
@@ -52,6 +48,8 @@ using Agebull.Common.DataModel.BusinessLogic;
 using Agebull.Common.WebApi;
 using Gboxt.Common.DataModel;
 using Gboxt.Common.DataModel.MySql;
+using Agebull.Common.Rpc;
+using Agebull.Common.DataModel.WebUI;
 
 {Project.UsingNameSpaces}
 
@@ -93,7 +91,7 @@ namespace {NameSpace}.WebApi.Entity
         /// <param name=""data"">数据</param>
         /// <param name=""convert"">转化器</param>
         protected void DefaultReadFormData({Entity.EntityName} data, FormConvert convert)
-        {{{coder.InputConvert()}
+        {{{coder.InputConvert(Entity)}
         }}
 
         #endregion
@@ -103,25 +101,26 @@ namespace {NameSpace}.WebApi.Entity
 
         internal string QueryCode()
         {
-            var fields = Entity.UserProperty.Where(p => p.CsType == "string" && !p.IsBlob).ToArray();
+            var fields = Entity.UserProperty.Where(p => !p.DbInnerField && !p.IsSystemField && p.CsType == "string" && !p.IsBlob).ToArray();
             if (fields.Length == 0)
                 return "";
             var code = new StringBuilder(@"
             var keyWord = GetArg(""keyWord"");
             if (!string.IsNullOrEmpty(keyWord))
-            {{
-                filter.AddAnd(p => ");
+            {
+                filter.AddAnd(p =>");
             bool first = true;
             foreach (var field in fields)
             {
                 if (first)
                     first = false;
                 else
-                    code.Append(" || ");
+                    code.Append(@" || 
+                                   ");
                 code.Append($@"p.{field.Name}.Contains(keyWord)");
             }
             code.Append(@");
-            }}");
+            }");
             return code.ToString();
         }
 
@@ -158,6 +157,8 @@ using Agebull.Common.DataModel.BusinessLogic;
 using Agebull.Common.WebApi;
 using Gboxt.Common.DataModel;
 using Gboxt.Common.DataModel.MySql;
+using Agebull.Common.DataModel.WebUI;
+using Agebull.Common.Rpc;
 
 {Project.UsingNameSpaces}
 
@@ -212,6 +213,24 @@ namespace {NameSpace}.WebApi.Entity
             var nodes = Business.LoadTree(this.GetIntArg(""id""));
             this.SetCustomJsonResult(nodes);
         }");
+            }
+
+            var caption = Entity.Properties.FirstOrDefault(p => p.IsCaption);
+            if (caption!=null)
+            {
+                code.Append($@"
+        /// <summary>下拉列表</summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route(""edit/combo"")]
+        public ApiResponseMessage ComboData()
+        {{
+            GlobalContext.Current.IsManageMode = false;
+            var datas = Business.All();
+            var combos = datas.Select(p => new EasyComboValues(p.{Entity.PrimaryColumn.Name}, p.{caption.Name})).ToList();
+            combos.Insert(0,new EasyComboValues(0, ""-""));
+            return Request.ToResponse(combos);
+        }}");
             }
             foreach (var cmd in Entity.Commands.Where(p => !p.IsLocalAction))
             {

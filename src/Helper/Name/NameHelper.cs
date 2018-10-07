@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
 using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
@@ -219,8 +220,7 @@ namespace Agebull.EntityModel.RobotCoder
         {
             if (string.IsNullOrWhiteSpace(str))
                 return null;
-            var rp = str.Replace("&", "»ò").Replace("\r", "").Replace("<", "¡´").Replace(">", "¡µ");
-            var sp = rp.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            var sp = str.Split(new[] { '\n', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             StringBuilder sb = new StringBuilder();
             bool isFirst = true;
             foreach (var line in sp)
@@ -237,7 +237,7 @@ namespace Agebull.EntityModel.RobotCoder
                     sb.Append(' ', space);
                     sb.Append("/// ");
                 }
-                sb.Append(line.Trim());
+                sb.Append(HttpUtility.HtmlEncode(line.Trim()));
             }
             return sb.ToString();
         }

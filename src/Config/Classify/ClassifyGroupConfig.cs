@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -15,22 +15,21 @@ namespace Agebull.EntityModel.Config
     /// 分类配置
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public partial class ClassifyGroupConfig<TConfig> : ConfigBase
-        where TConfig : ClassifyConfig, new()
+    public class ClassifyGroupConfig : ConfigBase
     {
         /// <summary>
         /// 关联的集合
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        private readonly NotificationList<TConfig> _collection;
+        private readonly NotificationList<EntityConfig> _collection;
         /// <summary>
         /// 更新分类的方法
         /// </summary>
-        private readonly Action<string, TConfig> _updateAction;
+        private readonly Action<string, EntityConfig> _updateAction;
         /// <summary>
         /// 分组的LAMBDA表达式
         /// </summary>
-        private readonly Func<TConfig, string> _groupFunc;
+        private readonly Func<EntityConfig, string> _groupFunc;
         /// <summary>
         /// 分类的属性名称
         /// </summary>
@@ -39,7 +38,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 节点
         /// </summary>
-        public ConfigCollection<ClassifyItem<TConfig>> Classifies { get; set; } 
+        public ConfigCollection<EntityClassify> Classifies { get; set; } 
 
         /// <summary>
         /// 构造
@@ -48,15 +47,15 @@ namespace Agebull.EntityModel.Config
         /// <param name="group"></param>
         /// <param name="updateAction"></param>
         /// <param name="classify"></param>
-        public ClassifyGroupConfig(NotificationList<TConfig> collection, Expression<Func<TConfig, string>> group, 
-            Action<string, TConfig> updateAction, ConfigCollection<ClassifyItem<TConfig>> classify=null)
+        public ClassifyGroupConfig(NotificationList<EntityConfig> collection, Expression<Func<EntityConfig, string>> group, 
+            Action<string, EntityConfig> updateAction, ConfigCollection<EntityClassify> classify=null)
         {
             _collection = collection;
             _collection.CollectionChanged += CollectionChanged;
             _groupFunc = group.Compile();
             _propertyName = ((MemberExpression)group.Body).Member.Name;
             _updateAction = updateAction;
-            Classifies = classify ?? new ConfigCollection<ClassifyItem<TConfig>>();
+            Classifies = classify ?? new ConfigCollection<EntityClassify>();
             ReGroup();
         }
         /// <summary>
@@ -76,7 +75,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         private void ReGroup()
         {
-            var items = new Dictionary<string, ClassifyItem<TConfig>>();
+            var items = new Dictionary<string, EntityClassify>();
             var array = Classifies.ToArray();
             foreach (var item in array)
             {
@@ -92,11 +91,11 @@ namespace Agebull.EntityModel.Config
                 string nmae = g.Key ?? "未分类";
                 if (!items.ContainsKey(nmae))
                 {
-                    var group = new ClassifyItem<TConfig>(_updateAction)
+                    var group = new EntityClassify(_updateAction)
                     {
                         Name = nmae,
                         Caption = nmae,
-                        Items = new ConfigCollection<TConfig>()
+                        Items = new ConfigCollection<EntityConfig>()
                     };
                     foreach (var item in g)
                     {
@@ -148,4 +147,4 @@ namespace Agebull.EntityModel.Config
         }
 
     }
-}
+}*/

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -43,7 +41,7 @@ namespace Agebull.EntityModel.Designer
 
         private void UpdateItems()
         {
-            ExtendItems = Context.SelectConfig.Option.ExtendConfigList.Items;
+            ExtendItems = Context.SelectConfig?.Option.ExtendConfigList.Items;
             RaisePropertyChanged(nameof(ExtendItems));
         }
 

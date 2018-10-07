@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2017/7/12 22:06:39*/
+﻿/*design by:agebull designer date:2017/7/12 22:06:39*/
 /*****************************************************
 ©2008-2017 Copy right by agebull.hu(胡天水)
 作者:agebull.hu(胡天水)
@@ -44,7 +44,7 @@ namespace Agebull.EntityModel.Config
         /// 实体分组
         /// </summary>
         [DataMember, JsonProperty("Classifies", NullValueHandling = NullValueHandling.Ignore)]
-        internal ConfigCollection<ClassifyItem<EntityConfig>> _classifies;
+        internal ConfigCollection<EntityClassify> _classifies;
 
         /// <summary>
         /// 实体分组
@@ -54,13 +54,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"子级"), DisplayName(@"实体分组"), Description("实体分组")]
-        public ConfigCollection<ClassifyItem<EntityConfig>> Classifies
+        public ConfigCollection<EntityClassify> Classifies
         {
             get
             {
                 if (_classifies != null)
                     return _classifies;
-                _classifies = new ConfigCollection<ClassifyItem<EntityConfig>>();
+                _classifies = new ConfigCollection<EntityClassify>();
                 RaisePropertyChanged(nameof(Classifies));
                 return _classifies;
             }
@@ -446,7 +446,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"解决方案"), DisplayName(@"WEB页面(C#)"), Description("页面代码路径")]
-        public string PagePath => FormatPath($"{Solution.PageFolder}\\{ _pageFolder ?? Name}", true);
+        public string PagePath => $"{Solution.PagePath}\\{ _pageFolder ?? Name}";
 
         /// <summary>
         /// 移动端(C#)

@@ -24,23 +24,19 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.Sqlerver
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("Sqlerver", "生成表(SQL)","sql", cfg => RunByEntity(cfg, CreateTable));
-            MomentCoder.RegisteCoder("Sqlerver", "插入表字段(SQL)","sql", cfg => RunByEntity(cfg, AddColumnCode));
-            MomentCoder.RegisteCoder("Sqlerver", "修改表字段(SQL)","sql", cfg => Run(cfg, ChangeColumnCode));
-            MomentCoder.RegisteCoder("Sqlerver", "生成视图(SQL)","sql", cfg => Run(cfg, CreateView));
-            MomentCoder.RegisteCoder("Sqlerver", "插入页面表(SQL)", "sql", PageInsertSql);
-            MomentCoder.RegisteCoder("Sqlerver", "删除视图(SQL)","sql", cfg => Run(cfg, DropView));
-            MomentCoder.RegisteCoder("Sqlerver", "删除表(SQL)","sql", cfg => RunByEntity(cfg, DropTable));
-            MomentCoder.RegisteCoder("Sqlerver", "清除表(SQL)","sql", cfg => RunByEntity(cfg, TruncateTable));
+            MomentCoder.RegisteCoder("Sqlerver", "生成表(SQL)", "sql", p => !p.NoDataBase, CreateTable);
+            MomentCoder.RegisteCoder("Sqlerver", "插入表字段(SQL)", "sql", p => !p.NoDataBase, AddColumnCode);
+            MomentCoder.RegisteCoder("Sqlerver", "修改表字段(SQL)", "sql", p => !p.NoDataBase, ChangeColumnCode);
+            MomentCoder.RegisteCoder("Sqlerver", "生成视图(SQL)", "sql", p => !p.NoDataBase, CreateView);
+            MomentCoder.RegisteCoder<ProjectConfig>("Sqlerver", "插入页面表(SQL)", "sql", PageInsertSql);
+            MomentCoder.RegisteCoder("Sqlerver", "删除视图(SQL)", "sql", p => !p.NoDataBase, DropView);
+            MomentCoder.RegisteCoder("Sqlerver", "删除表(SQL)", "sql", p => !p.NoDataBase, DropTable);
+            MomentCoder.RegisteCoder("Sqlerver", "清除表(SQL)", "sql", p => !p.NoDataBase, TruncateTable);
         }
 
         #endregion
 
         #region 数据库
-        private string TruncateTable()
-        {
-            return TruncateTable(Entity);
-        }
 
         public static string TruncateTable(EntityConfig entity)
         {
@@ -68,7 +64,7 @@ DROP VIEW [{entity.ReadTableName}];
             var tables = new Dictionary<string, EntityConfig>();
             foreach (var field in entity.DbFields)
             {
-                if (string.IsNullOrWhiteSpace(field.LinkTable))
+                if (IsNullOrWhiteSpace(field.LinkTable))
                     continue;
                 if (field.LinkTable == entity.Name || field.LinkTable == entity.ReadTableName ||
                     field.LinkTable == entity.SaveTableName)
@@ -79,16 +75,16 @@ DROP VIEW [{entity.ReadTableName}];
                     continue;
                 string name = field.LinkTable;
                 var table = GlobalConfig.GetEntity(p => p.SaveTableName == name || p.ReadTableName == name || p.Name == name);
-                if (table==null || table == entity)
+                if (table == null || table == entity)
                 {
                     continue;
                 }
                 tables.Add(name, table);
             }
             string viewName;
-            if (string.IsNullOrWhiteSpace(entity.ReadTableName) || entity.ReadTableName == entity.SaveTable)
+            if (IsNullOrWhiteSpace(entity.ReadTableName) || entity.ReadTableName == entity.SaveTable)
             {
-                viewName = "view_" + GlobalConfig.ToLinkWordName(entity.Name, "_", false);
+                viewName = DataBaseHelper.ToViewName(entity);
             }
             else
             {
@@ -114,39 +110,36 @@ CREATE VIEW [{viewName}] AS
                     {
                         var linkField =
                             friend.DbFields.FirstOrDefault(
-                                p => p.ColumnName == field.LinkField || p.Name == field.LinkField);
+                                p => p.DbFieldName == field.LinkField || p.Name == field.LinkField);
                         if (linkField != null)
                         {
-                            builder.AppendFormat(@"[{0}].[{1}] as [{2}]", friend.Name, linkField.ColumnName, field.ColumnName);
+                            builder.AppendFormat(@"[{0}].[{1}] as [{2}]", friend.Name, linkField.DbFieldName, field.DbFieldName);
                             continue;
                         }
                     }
                 }
-                builder.AppendFormat(@"[{0}].[{1}] as [{1}]", entity.SaveTable, field.ColumnName);
+                builder.AppendFormat(@"[{0}].[{1}] as [{1}]", entity.SaveTable, field.DbFieldName);
             }
             builder.Append($@"
     FROM [{entity.SaveTable}]");
             foreach (var table in tables.Values)
             {
-                var field = entity.DbFields.FirstOrDefault(p => p.IsLinkKey && (p.LinkTable == table.Name|| p.LinkTable == table.SaveTable));
+                var field = entity.DbFields.FirstOrDefault(p => p.IsLinkKey && (p.LinkTable == table.Name || p.LinkTable == table.SaveTable));
                 if (field == null)
                     continue;
                 var linkField = table.Properties.FirstOrDefault(
-                    p => p.Name == field.LinkField || p.ColumnName == field.LinkField);
+                    p => p.Name == field.LinkField || p.DbFieldName == field.LinkField);
                 if (linkField == null)
                     continue;
                 builder.AppendFormat(@"
     LEFT JOIN [{1}] [{4}] ON [{0}].[{2}] = [{4}].[{3}]"
-                        , entity.SaveTable, table.SaveTable, field.ColumnName, linkField.ColumnName, table.Name);
+                        , entity.SaveTable, table.SaveTable, field.DbFieldName, linkField.DbFieldName, table.Name);
             }
             builder.Append(';');
             builder.AppendLine();
             return builder.ToString();
         }
-        private string DropTable()
-        {
-            return DropTable(Entity);
-        }
+
         private static string DropTable(EntityConfig entity)
         {
             if (entity == null)
@@ -163,9 +156,9 @@ DROP TABLE [{entity.SaveTable}];";
             //--SELECT {1} FROM coc.dbo.{0};
             //--GO", Entity.TableName, Entity.PublishProperty.Select(p => p.ColumnName).LinkToString(','));
         }
-        private string CreateTable()
+        private string CreateTable(EntityConfig entity)
         {
-            return CreateTableCode(Entity);
+            return CreateTableCode(entity);
             //var builder = new StringBuilder();
             //builder.AppendLine(DropTable());
             //builder.AppendLine(SqlSchemaChecker.CreateTableCode(Entity));
@@ -173,24 +166,6 @@ DROP TABLE [{entity.SaveTable}];";
             //builder.AppendLine(CreateView(Entity));
 
             //return builder.ToString();
-        }
-        private string AddColumnCode()
-        {
-            return AddColumnCode(Entity);
-        }
-
-        private static string PageInsertSql(ConfigBase config)
-        {
-            var projectConfig = config as ProjectConfig;
-            if (projectConfig != null)
-                return PageInsertSql(projectConfig);
-            var soluction = config as SolutionConfig;
-            if (soluction == null)
-                return null;
-            StringBuilder code = new StringBuilder();
-            foreach (var project in SolutionConfig.Current.Projects)
-                code.AppendLine(PageInsertSql(project));
-            return code.ToString();
         }
 
 
@@ -259,7 +234,7 @@ EXECUTE sp_addextendedproperty N'MS_Description', @v, N'SCHEMA', N'dbo', N'TABLE
                 code.Append($@"
 SET @v = N'{col.Caption?.Replace('\'', '‘')}:{col.Description?.Replace('\'', '‘')}'
 EXECUTE sp_addextendedproperty N'MS_Description', @v, N'SCHEMA', N'dbo', N'TABLE', N'Table_1', N'COLUMN', N'{
-                        col.ColumnName
+                        col.DbFieldName
                     }';");
             }
         }
@@ -308,7 +283,7 @@ ALTER TABLE [{entity.SaveTable}]");
                 else
                     code.Append(',');
                 code.Append($@"
-    ALTER COLUMN [{col.ColumnName}] {FieldDefault(col)}");
+    ALTER COLUMN [{col.DbFieldName}] {FieldDefault(col)}");
             }
             code.Append(@";");
             MemCode(entity, code);
@@ -322,7 +297,7 @@ ALTER TABLE [{entity.SaveTable}]");
                 : col.CsType == "string" ? $"DEFAULT '{col.Initialization}'" : $"DEFAULT {col.Initialization}";
             var nulldef = col.CsType == "string" || col.DbNullable ? " NULL" : " NOT NULL";
             var identity = col.IsIdentity ? " IDENTITY(1,1)" : null;
-            return $"[{col.ColumnName}] {SqlServerHelper.ColumnType(col)}{identity}{nulldef} {def} -- '{col.Caption}'";
+            return $"[{col.DbFieldName}] {SqlServerHelper.ColumnType(col)}{identity}{nulldef} {def} -- '{col.Caption}'";
         }
 
         #endregion
@@ -370,7 +345,7 @@ ALTER TABLE [{entity.SaveTable}]");
                     sql.Append(",");
                 }
                 sql.AppendFormat(@"
-    [{0}] AS [{1}]", field.ColumnName, field.Name);
+    [{0}] AS [{1}]", field.DbFieldName, field.Name);
             }
             return sql.ToString();
         }
@@ -418,7 +393,7 @@ ALTER TABLE [{entity.SaveTable}]");
                 return;
             }
             //if (field.DbNullable)
-                code.Append($@"
+            code.Append($@"
                 if (!reader.IsDBNull({idx}))
                     ");
             //else

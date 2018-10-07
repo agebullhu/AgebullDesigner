@@ -86,6 +86,14 @@ namespace Agebull.EntityModel.Designer
                     Image = Application.Current.Resources["tree_Assembly"] as ImageSource
                 },
             new AsyncCommandItem<string, string>
+                (FormatPrepare, Format.DoFormatDocument, FormatEnd)
+                {
+                    IsButton=true,
+
+                    Caption = "规整文本(API文档)",
+                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                },
+            new AsyncCommandItem<string, string>
                 (FormatPrepare, Format.DoFormat2,FormatEnd)
                 {
                     IsButton=true,

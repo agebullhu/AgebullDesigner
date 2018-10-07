@@ -21,20 +21,16 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
 
-        public string GetBaseCode(ConfigBase config)
+        public string GetBaseCode(EntityConfig config)
         {
-            Entity = config as EntityConfig;
-            if (Entity == null)
-                return null;
+            Entity = config;
             Project = Entity.Parent;
             return CreateBaCode();
         }
 
-        public string GetExtendCode(ConfigBase config)
+        public string GetExtendCode(EntityConfig config)
         {
-            Entity = config as EntityConfig;
-            if (Entity == null)
-                return null;
+            Entity = config;
             Project = Entity.Parent;
             return CreateExCode();
         }
@@ -179,6 +175,5 @@ namespace {NameSpace}
     }}
 }}";
         }
-
     }
 }

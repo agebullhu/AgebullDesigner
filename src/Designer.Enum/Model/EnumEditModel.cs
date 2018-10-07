@@ -157,7 +157,7 @@ namespace Agebull.EntityModel.Designer
                         descript = words.Skip(1).LinkToString();
                     continue;
                 }
-                if (!Char.IsLetter(line[0]))
+                if (!char.IsLetter(line[0]))
                     continue;
                 string svl = value.ToString();
                 if (baseLine.Length > 1)

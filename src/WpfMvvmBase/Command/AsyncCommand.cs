@@ -46,6 +46,7 @@ namespace Agebull.Common.Mvvm
                     return;
                 }
                 _parameter = value;
+                Detect = value as INotifyPropertyChanged;
                 CanExecute(value);
             }
         }
@@ -393,7 +394,8 @@ namespace Agebull.Common.Mvvm
                     return;
                 }
                 _status = value;
-                RaisePropertyChanged("IsBusy");
+                RaisePropertyChanged(nameof(Status));
+                RaisePropertyChanged(nameof(IsBusy));
             }
         }
 

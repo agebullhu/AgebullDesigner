@@ -40,11 +40,17 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 解决方案
         /// </summary>
+        SolutionConfig IDesignGlobal.LocalSolution { get; set; }
+
+        /// <summary>
+        /// 解决方案
+        /// </summary>
         SolutionConfig IDesignGlobal.CurrentSolution
         {
             get => Context.Solution;
             set => Context.Solution = value;
         }
+
 
         /// <summary>
         /// 当前选择

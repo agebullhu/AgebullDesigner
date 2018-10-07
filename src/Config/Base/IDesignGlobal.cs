@@ -25,6 +25,11 @@
         SolutionConfig GlobalSolution { get; set; }
 
         /// <summary>
+        /// 全局公用解决方案
+        /// </summary>
+        SolutionConfig LocalSolution { get; set; }
+
+        /// <summary>
         /// 当前解决方案
         /// </summary>
         SolutionConfig CurrentSolution { get; set; }

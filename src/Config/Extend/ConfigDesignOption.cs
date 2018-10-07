@@ -521,27 +521,93 @@ namespace Agebull.EntityModel.Config
         /// 字段复制
         /// </summary>
         /// <param name="cfg"></param>
+        /// <param name="full"></param>
         /// <returns></returns>
-        public void Copy(ConfigDesignOption cfg)
+        public void Copy(ConfigDesignOption cfg, bool full)
         {
-            Index = cfg.Index;//序号
-            _state = cfg._state;//状态
-            ReferenceKey = cfg.ReferenceKey;//引用对象键
-            ReferenceConfig = cfg.ReferenceConfig;//引用对象
-            ReferenceTag = cfg.ReferenceTag;//引用标签
-            if (cfg._extendConfig == null)
-                return;
-            foreach (var ex in cfg._extendConfig)
+            if (full)
             {
-                var old = ExtendConfig.FirstOrDefault(p => p.Name == ex.Name);
-                if (old == null)
-                    ExtendConfig.Add(ex);
+                Index = cfg.Index; //序号
+                ReferenceTag = cfg.ReferenceTag; //引用标签
+            }
+
+            _state = cfg._state; //状态
+            ReferenceKey = cfg.ReferenceKey; //引用对象键
+            ReferenceConfig = cfg.ReferenceConfig; //引用对象
+            if (cfg._extendConfig != null)
+            {
+                ExtendConfig.Clear();
+                ExtendConfig.AddRange(cfg._extendConfig);
+            }
+
+            if (cfg._extend == null)
+                return;
+            foreach (var items in cfg._extend)
+            {
+                if (!Extend.TryGetValue(items.Key, out var fItems))
+                {
+                    Extend.Add(items.Key, items.Value.ToDictionary(p => p.Key, p => p.Value));
+                }
+                else
+                {
+                    foreach (var item in fItems)
+                    {
+                        if (!items.Value.ContainsKey(item.Key))
+                            items.Value.Add(item.Key, item.Value);
+                        else
+                            items.Value[item.Key] = item.Value;
+                    }
+                }
             }
         }
+
         #endregion
 
 
         #region 扩展配置
+
+        /// <summary>
+        /// 扩展配置
+        /// </summary>
+        [DataMember, JsonProperty("extend", NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, Dictionary<string, string>> _extend;
+
+
+        /// <summary>
+        /// 扩展配置
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category("设计器支持")]
+        [DisplayName("扩展配置")]
+        public Dictionary<string, Dictionary<string, string>> Extend
+        {
+            get
+            {
+                if (_extend != null)
+                    return _extend;
+                _extend = new Dictionary<string, Dictionary<string, string>>();
+                BeforePropertyChanged(nameof(Extend), null, _extend);
+                return _extend;
+            }
+        }
+
+        [IgnoreDataMember, JsonIgnore]
+        private ConfigItemDictionary _extendDictionary;
+
+        /// <summary>
+        /// 扩展配置
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore, Browsable(false)]
+        public ConfigItemDictionary ExtendDictionary => _extendDictionary ?? (_extendDictionary = new ConfigItemDictionary(Extend));
+
+        [IgnoreDataMember, JsonIgnore]
+        private ConfigItemListBool _extendBool;
+
+        /// <summary>
+        /// 扩展配置
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore, Browsable(false)]
+        public ConfigItemListBool ExtendConfigListBool => _extendBool ?? (_extendBool = new ConfigItemListBool(ExtendDictionary));
 
         /// <summary>
         /// 扩展配置
@@ -604,6 +670,22 @@ namespace Agebull.EntityModel.Config
                 RaisePropertyChanged(key);
             }
         }
+        /// <summary>
+        /// 读写扩展配置
+        /// </summary>
+        /// <param name="classify">分类</param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public string this[string classify, string name]
+        {
+            get => ExtendDictionary[classify, name];
+            set
+            {
+                ExtendDictionary[classify, name] = value;
+                RaisePropertyChanged($"{classify}_{name}");
+            }
+        }
+
         /// <summary>
         /// 试图取得扩展配置,如果不存在或为空则加入默认值后返回
         /// </summary>

@@ -17,15 +17,14 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("WPF","表格列", "xml", cfg => Run(cfg, Views));
+            MomentCoder.RegisteCoder("WPF","表格列", "xml", Views);
         }
         #endregion
 
         #region 测试视图
 
-        public static string Views(ConfigBase config)
+        public static string Views(EntityConfig entityConfig)
         {
-            EntityConfig entityConfig = (EntityConfig)config;
             var code = new StringBuilder();
             foreach (var field in entityConfig.PublishProperty.Where(p => !p.DenyClient))
             {

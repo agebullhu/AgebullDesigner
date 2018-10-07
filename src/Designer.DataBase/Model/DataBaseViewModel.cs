@@ -65,7 +65,7 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
         {
             foreach (var property in Context.SelectEntity.Properties)
             {
-                property.ColumnName = property.Name;
+                property.DbFieldName = property.Name;
             }
             if (string.IsNullOrEmpty(Context.SelectEntity.SaveTableName))
                 Context.SelectEntity.SaveTableName = "tb_" + Context.SelectEntity.Name;
@@ -78,7 +78,7 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
         {
             foreach (var property in Context.SelectEntity.Properties)
             {
-                property.ColumnName = property.Name.ToLWord();
+                property.DbFieldName = property.Name.ToLWord();
             }
             if (string.IsNullOrEmpty(Context.SelectEntity.SaveTableName))
                 Context.SelectEntity.SaveTableName = "tb_" + Context.SelectEntity.Name.ToLWord();
@@ -91,7 +91,7 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
         {
             foreach (var property in Context.SelectEntity.Properties)
             {
-                property.ColumnName = NameHelper.ToLinkWordName(property.Name, "_", false);
+                property.DbFieldName = NameHelper.ToLinkWordName(property.Name, "_", false);
             }
             if (string.IsNullOrEmpty(Context.SelectEntity.SaveTableName))
                 Context.SelectEntity.SaveTableName = "tb_" + NameHelper.ToLinkWordName(Context.SelectEntity.Name, "_", false);

@@ -151,7 +151,7 @@ namespace Agebull.EntityModel.Designer
                 row = sheet.CreateRow(line + 4);
                 row.HeightInPoints = 20;//行高
                 i = 0;
-                row.CreateCell(i++).SetCell(field.ColumnName, valueCell);
+                row.CreateCell(i++).SetCell(field.DbFieldName, valueCell);
                 row.CreateCell(i++).SetCell(field.DbType?.ToUpper(), valueCell);
                 row.CreateCell(i++).SetCell(field.CsType == "decimal" ? "(18,4)" : (field.Datalen > 0 ? field.Datalen.ToString() : "-"), valueCell);
                 row.CreateCell(i++).SetCell(field.DbNullable ? "是" : "否", valueCell);
@@ -159,7 +159,7 @@ namespace Agebull.EntityModel.Designer
                 row.CreateCell(i++).SetCell(field.Nullable ? field.Initialization : "0", valueCell);
                 row.CreateCell(i++).SetCell(field.Caption + "：" + field.Description, valueCell);
                 row.CreateCell(i++).SetCell("未指定", valueCell);
-                row.CreateCell(i++).SetCell(field.CreateDbIndex ? "是" : "否", valueCell);
+                row.CreateCell(i++).SetCell(field.IsDbIndex ? "是" : "否", valueCell);
                 row.CreateCell(i).SetCell("", valueCell);
             }
         }

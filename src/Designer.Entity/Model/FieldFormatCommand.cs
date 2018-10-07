@@ -91,7 +91,7 @@ namespace Agebull.EntityModel.Designer
                         descript = words.Skip(1).LinkToString();
                     continue;
                 }
-                if (!Char.IsLetter(line[0]))
+                if (!char.IsLetter(line[0]))
                     continue;
                 var name = words[words.Length - 1];
                 var type = words[words.Length - 2];
@@ -104,6 +104,39 @@ namespace Agebull.EntityModel.Designer
                 caption = null;
                 descript = null;
                 next = 0;
+            }
+
+            return code.ToString();
+        }
+
+        #endregion
+
+        #region 规整文本(名称 是否必填 类型 标题)
+
+        public string DoFormatDocument(string arg)
+        {
+            var lines = Fields.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            var code = new StringBuilder();
+            foreach (var line in lines)
+            {
+                if (string.IsNullOrEmpty(line))
+                    continue;
+                var words = line.Trim().Split(new[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                if (words.Length < 3)
+                {
+                    code.Append(line);
+                    continue;
+                }
+                code.AppendLine();
+                var list = words.Select(p => p.Trim()).Where(p => !string.IsNullOrEmpty(p)).ToList();
+                if (words[1][0] > 128)
+                {
+                    list.RemoveAt(1);
+                    if (words[1][0] == '必')
+                        list[1] += '!';
+                }
+                code.Append(list.LinkToString(","));
             }
 
             return code.ToString();
@@ -299,6 +332,8 @@ namespace Agebull.EntityModel.Designer
 
                 var name = GlobalConfig.ToLinkWordName(words[0], "", true);
 
+                var dbName = GlobalConfig.ToLinkWordName(words[0], "_",false);
+
                 /*
                 文本说明:
                 * 1 每行为一条数据
@@ -307,10 +342,11 @@ namespace Agebull.EntityModel.Designer
                 */
                 PropertyConfig column = new PropertyConfig
                 {
-                    IsPrimaryKey = name.Equals("ID", StringComparison.OrdinalIgnoreCase),
-                    ColumnName = name,
                     Name = name,
-                   
+                    IsPrimaryKey = name.Equals("ID", StringComparison.OrdinalIgnoreCase),
+                    DbFieldName = dbName,
+                    JsonName = words[0],
+                    ApiArgumentName = words[0],
                     Datalen = 200,
                     DataType = "String",
                     CsType = "string",
@@ -319,9 +355,7 @@ namespace Agebull.EntityModel.Designer
                     {
                         Identity = idx++,
                         Index = idx++
-                    },
-                    IsIdentity = words.Any(p => p == "@"),
-                    DbNullable = words.All(p => p != "#")
+                    }
                 };
                 if (words.Length > 1)
                     CsharpHelper.CheckType(column, words[1]);

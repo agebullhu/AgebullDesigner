@@ -326,7 +326,7 @@ namespace Agebull.EntityModel.Designer
                 }
                 words = words[0].Split(new[] { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 int nameIdx = words.Length - 1;
-                column.Name = column.ColumnName = words[nameIdx].Trim(CoderBase.NoneLanguageChar);
+                column.Name = column.DbFieldName = words[nameIdx].Trim(CoderBase.NoneLanguageChar);
                 column.CppType = "";
                 for (int index = 0; index < nameIdx; index++)
                 {

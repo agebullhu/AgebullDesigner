@@ -18,39 +18,31 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("其它","新增 CS代码","cs", cfg => DoCode(cfg, NewCsCode));
-            MomentCoder.RegisteCoder("其它","修改 CS代码","cs", cfg => DoCode(cfg, EditCsCode));
-            MomentCoder.RegisteCoder("其它","数据库测试","cs", cfg => DoCode(cfg, DbTestCode));
-            MomentCoder.RegisteCoder("其它","用户子级操作","cs", cfg => DoCode(cfg, UserChildProcessMothes));
-            MomentCoder.RegisteCoder("其它","用户子级删除","cs", cfg => DoCode(cfg, UserChildDefaution));
-            MomentCoder.RegisteCoder("其它","用户子级对象","cs", cfg => DoCode(cfg, UserChildDefaution));
-            MomentCoder.RegisteCoder("其它","用户子级保存","cs", cfg => DoCode(cfg, UserChildSave));
-            MomentCoder.RegisteCoder("其它","用户子级模板","cs", cfg => DoCode(cfg, UserSwitchUid));
-            MomentCoder.RegisteCoder("其它","保存Redis到数据库","cs", cfg => DoCode(cfg, SaveToDb));
-            MomentCoder.RegisteCoder("其它", "字段静态化","cs", cfg => DoCode(cfg, ToCSharpCode));
+            MomentCoder.RegisteCoder("其它","新增 CS代码","cs",  NewCsCode);
+            MomentCoder.RegisteCoder("其它","修改 CS代码","cs",  EditCsCode);
+            MomentCoder.RegisteCoder("其它","数据库测试","cs",  DbTestCode);
+            MomentCoder.RegisteCoder("其它","用户子级操作","cs",  UserChildProcessMothes);
+            MomentCoder.RegisteCoder("其它","用户子级删除","cs",  UserChildDefaution);
+            MomentCoder.RegisteCoder("其它","用户子级对象","cs",  UserChildDefaution);
+            MomentCoder.RegisteCoder("其它","用户子级保存","cs",  UserChildSave);
+            MomentCoder.RegisteCoder("其它","用户子级模板","cs",  UserSwitchUid);
+            MomentCoder.RegisteCoder("其它","保存Redis到数据库","cs",  SaveToDb);
+            MomentCoder.RegisteCoder("其它", "字段静态化","cs",  ToCSharpCode);
         }
         #endregion
-
-        string DoCode(ConfigBase config, Func<string> coder)
-        {
-            Entity = config as EntityConfig;
-            if (Entity == null)
-                return null;
-            return coder();
-        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public string ApiSwitch()
+        public string ApiSwitch(EntityConfig entity)
         {
-            var isApi = Entity.LastProperties.FirstOrDefault(p => p.IsCaption);
+            var isApi = entity.LastProperties.FirstOrDefault(p => p.IsCaption);
             if (isApi != null)
             {
                 return $@"
-                case ""{Entity.ReadTableName.ToLower()}"":
-                    Get{Entity.Name}();
+                case ""{entity.ReadTableName.ToLower()}"":
+                    Get{entity.Name}();
                     break;";
             }
             return null;
@@ -59,20 +51,20 @@ namespace Agebull.EntityModel.RobotCoder
         /// 
         /// </summary>
         /// <returns></returns>
-        public string ApiCode()
+        public string ApiCode(EntityConfig entity)
         {
-            var isApi = Entity.LastProperties.FirstOrDefault(p => p.IsCaption);
+            var isApi = entity.LastProperties.FirstOrDefault(p => p.IsCaption);
             if (isApi != null)
             {
                 return $@"
 
         /// <summary>
-        /// 取{Entity.Caption}的下拉列表数据
+        /// 取{entity.Caption}的下拉列表数据
         /// </summary>
-        private void Get{Entity.Name}()
+        private void Get{entity.Name}()
         {{
-            var access = new {Entity.Name}DataAccess();
-            var result = access.All().Select(p => new EasyComboValues(p.{Entity.PrimaryColumn.Name}, p.{isApi.Name})).ToList();
+            var access = new {entity.Name}DataAccess();
+            var result = access.All().Select(p => new EasyComboValues(p.{entity.PrimaryColumn.Name}, p.{isApi.Name})).ToList();
             result.Insert(0, new EasyComboValues
             {{
                 Key = 0,
@@ -84,10 +76,10 @@ namespace Agebull.EntityModel.RobotCoder
             return null;
         }
 
-        public string ToCSharpCode()
+        public string ToCSharpCode(EntityConfig entity)
         {
             var code = new StringBuilder();
-            foreach (var field in Entity.LastProperties)
+            foreach (var field in entity.LastProperties)
             {
                 code.AppendLine(ToCSharpCode(field));
             }
@@ -104,7 +96,7 @@ namespace Agebull.EntityModel.RobotCoder
                 Name = ""{property.Name}"",
                 Alias = ""{property.Alias}"",
                 Discard = {property.IsDiscard.ToString().ToLower()},
-                CreateIndex = {property.CreateDbIndex.ToString().ToLower()},
+                CreateIndex = {property.IsDbIndex.ToString().ToLower()},
                 IsPrimaryKey = {property.IsPrimaryKey.ToString().ToLower()},
                 IsExtendKey = {property.IsExtendKey.ToString().ToLower()},
                 IsIdentity =  {property.IsIdentity.ToString().ToLower()},
@@ -118,20 +110,11 @@ namespace Agebull.EntityModel.RobotCoder
                 InnerField = {property.InnerField.ToString().ToLower()},
                 Initialization = ""{property.Initialization}"",
                 EmptyValue = ""{property.EmptyValue}"",
-                ExtendRole = ""{property.ExtendRole}"",
-                ValueSeparate = ""{property.ValueSeparate}"",
-                ArraySeparate = ""{property.ArraySeparate}"",
-                ExtendArray = {property.ExtendArray.ToString().ToLower()},
-                IsKeyValueArray = {property.IsKeyValueArray.ToString().ToLower()},
-                IsRelation = {property.IsRelation.ToString().ToLower()},
-                ExtendPropertyName = ""{property.ExtendPropertyName}"",
-                ExtendClassName = ""{property.ExtendClassName}"",
-                ExtendClassIsPredestinate = {property.ExtendClassIsPredestinate.ToString().ToLower()},
                 Nullable = {property.Nullable.ToString().ToLower()},
                 Max = {property.Max},
                 Min = {property.Min},
                 UniqueString = {property.UniqueString.ToString().ToLower()},
-                ColumnName = ""{property.ColumnName}"",
+                DbFieldName = ""{property.DbFieldName}"",
                 DbType = ""{property.DbType}"",
                 DbIndex = {property.DbIndex},
                 Unicode = {property.Unicode.ToString().ToLower()},
@@ -147,16 +130,28 @@ namespace Agebull.EntityModel.RobotCoder
                 Group = ""{property.Group}"",
                 IsMemo = {property.IsMemo.ToString().ToLower()},
             }};";
+            /*
+             *  ExtendRole = ""{property.ExtendRole}"",
+                ValueSeparate = ""{property.ValueSeparate}"",
+                ArraySeparate = ""{property.ArraySeparate}"",
+                ExtendArray = {property.ExtendArray.ToString().ToLower()},
+                IsKeyValueArray = {property.IsKeyValueArray.ToString().ToLower()},
+                IsRelation = {property.IsRelation.ToString().ToLower()},
+                ExtendPropertyName = ""{property.ExtendPropertyName}"",
+                ExtendClassName = ""{property.ExtendClassName}"",
+                ExtendClassIsPredestinate = {property.ExtendClassIsPredestinate.ToString().ToLower()},
+
+             */
         }
 
-        public string NewCsCode()
+        public string NewCsCode(EntityConfig entity)
         {
             var builder = new StringBuilder();
             builder.Append($@"
-            var data = new {Entity.EntityName}
+            var data = new {entity.EntityName}
             {{");
             bool first = true;
-            foreach (PropertyConfig field in Entity.PublishProperty)
+            foreach (PropertyConfig field in entity.PublishProperty)
             {
                 if (first)
                     first = false;
@@ -179,10 +174,10 @@ namespace Agebull.EntityModel.RobotCoder
             };");
             return builder.ToString();
         }
-        public string EditCsCode()
+        public string EditCsCode(EntityConfig entity)
         {
             var builder = new StringBuilder();
-            foreach (PropertyConfig field in Entity.PublishProperty)
+            foreach (PropertyConfig field in entity.PublishProperty)
             {
                 builder.AppendFormat(@"
             data.{0} = default({1})", field.Name, field.LastCsType);
@@ -190,10 +185,10 @@ namespace Agebull.EntityModel.RobotCoder
             return builder.ToString();
         }
 
-        public string EasyUiInfo()
+        public string EasyUiInfo(EntityConfig entity)
         {
             var jsonBuilder = new StringBuilder();
-            foreach (PropertyConfig field in Entity.PublishProperty)
+            foreach (PropertyConfig field in entity.PublishProperty)
             {
                 string ext = null;
                 if (field.CsType.ToLower() == "bool")
@@ -212,30 +207,30 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
 
-        public string MvcMenu()
+        public string MvcMenu(EntityConfig entity)
         {
             return
                 $@"
-           <div iconcls='icon-page' onclick=""javascript:location.href = '@Url.Action(""Index"", ""{Entity.Name}"")'"">
-           {Entity.Caption ?? Entity.Description ?? Entity.Name
+           <div iconcls='icon-page' onclick=""javascript:location.href = '@Url.Action(""Index"", ""{entity.Name}"")'"">
+           {entity.Caption ?? entity.Description ?? entity.Name
                     }
            </div>";
         }
 
 
-        private string SaveToDb()
+        private string SaveToDb(EntityConfig entity)
         {
             return string.Format(@"
             if(user._{0} != null)
-                {0}.LoadValue();", Entity.ReadTableName);
+                {0}.LoadValue();", entity.ReadTableName);
         }
 
 
-        private string UserSwitchUid()
+        private string UserSwitchUid(EntityConfig entity)
         {
             return
                 $@"
-            foreach(var item in this.{Entity.Name})
+            foreach(var item in this.{entity.Name})
             {{
                 item.UId = Uid;
                 item.Id = 0;
@@ -243,67 +238,67 @@ namespace Agebull.EntityModel.RobotCoder
             }}";
         }
 
-        private string DbTestCode()
+        private string DbTestCode(EntityConfig entity)
         {
-            return string.Format($@"
-            Console.WriteLine(""{Entity.Name}"");
-            LocalDataBase.{Entity.Name.ToPluralism()}.All();");
+            return ($@"
+            Console.WriteLine(""{entity.Name}"");
+            LocalDataBase.{entity.Name.ToPluralism()}.All();");
         }
 
-        private string UserChildSave()
+        private string UserChildSave(EntityConfig entity)
         {
-            PropertyConfig uf = Entity.PublishProperty.FirstOrDefault(p => p.IsUserId);
+            PropertyConfig uf = entity.PublishProperty.FirstOrDefault(p => p.IsUserId);
             if (uf == null)
                 return null;
-            return string.Format($@"
-            if(_{Entity.Name} != null)
-                _{Entity.Name}.SaveValue();");
+            return ($@"
+            if(_{entity.Name} != null)
+                _{entity.Name}.SaveValue();");
             //            return string.Format(@"
             //            _{0} = new RelationList<{0}>(UserDataBase.Default.{1}.Select(p => p.{2} == Uid), Uid);"
-            //                , this.Entity.EntityName
-            //                , this.Entity.EntityName.ToPluralism()
+            //                , this.entity.EntityName
+            //                , this.entity.EntityName.ToPluralism()
             //                , uf.Name);
         }
 
-        private string UserChildDefaution()
+        private string UserChildDefaution(EntityConfig entity)
         {
             return $@"
-                    UserChildList<{Entity.Name}> _{Entity.Name};
-                    public UserChildList<{Entity.Name}> {Entity.Name}
+                    UserChildList<{entity.Name}> _{entity.Name};
+                    public UserChildList<{entity.Name}> {entity.Name}
                     {{
                         get
                         {{
-                            return _{Entity.Name} ?? ( this._{Entity.Name} = UserChildList<{Entity.Name}>.Load(_uid) );
+                            return _{entity.Name} ?? ( this._{entity.Name} = UserChildList<{entity.Name}>.Load(_uid) );
                         }}
                     }}";
         }
 
-        private string UserChildProcessMothes()
+        private string UserChildProcessMothes(EntityConfig entity)
         {
-            return string.Format($@"
+            return ($@"
 
-        #region {Entity.Name}
+        #region {entity.Name}
 
-        public bool Update_{Entity.Name}(Model.{Entity.Name} t)
+        public bool Update_{entity.Name}(Model.{entity.Name} t)
         {{
             return true;
         }}
-        public bool Update_{Entity.Name}(List<Model.{Entity.Name}> t)
+        public bool Update_{entity.Name}(List<Model.{entity.Name}> t)
         {{
             return true;
         }}
-        public int Add_{Entity.Name}(Model.{Entity.Name} t)
+        public int Add_{entity.Name}(Model.{entity.Name} t)
         {{
-            {Entity.Name}.AddNew(t);
+            {entity.Name}.AddNew(t);
             return t.Id;
         }}
-        public bool Delete_{Entity.Name}(Model.{Entity.Name} t)
+        public bool Delete_{entity.Name}(Model.{entity.Name} t)
         {{
-            return Delete_{Entity.Name}(t.ID);
+            return Delete_{entity.Name}(t.ID);
         }}
-        public bool Delete_{Entity.Name}(int ID)
+        public bool Delete_{entity.Name}(int ID)
         {{
-            return EntityPool<{Entity.Name}>.Current.DeleteById(ID);
+            return EntityPool<{entity.Name}>.Current.DeleteById(ID);
         }}
 
         #endregion");

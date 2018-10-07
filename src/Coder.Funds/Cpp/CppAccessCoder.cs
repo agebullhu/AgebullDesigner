@@ -27,7 +27,7 @@ namespace Agebull.EntityModel.RobotCoder
                     sql.Append(",");
                 }
                 sql.AppendFormat(@"
-    `{0}` AS `{1}`", field.ColumnName, field.PropertyName);
+    `{0}` AS `{1}`", field.DbFieldName, field.PropertyName);
             }
             sql.Append($@"
     FROM `{Entity.ReadTableName}`
@@ -54,7 +54,7 @@ namespace Agebull.EntityModel.RobotCoder
         private string UniqueCondition()
         {
             if (!Entity.CppProperty.Any(p => p.UniqueIndex > 0))
-                return $@"`{Entity.PrimaryColumn.ColumnName}` = %{Entity.PrimaryColumn.Index}%";
+                return $@"`{Entity.PrimaryColumn.DbFieldName}` = %{Entity.PrimaryColumn.Index}%";
 
             var code = new StringBuilder();
             var uniqueFields = Entity.CppProperty.Where(p => p.UniqueIndex > 0).OrderBy(p => p.UniqueIndex).ToArray();
@@ -69,7 +69,7 @@ namespace Agebull.EntityModel.RobotCoder
                 {
                     code.Append(" AND ");
                 }
-                code.AppendFormat("`{0}`=%{1}%", col.ColumnName, col.Index);
+                code.AppendFormat("`{0}`=%{1}%", col.DbFieldName, col.Index);
             }
             return code.ToString();
         }
@@ -78,7 +78,7 @@ namespace Agebull.EntityModel.RobotCoder
         {
             var sql = new StringBuilder();
             sql.AppendFormat(@"DECLARE ?__myId INT(4);
-SELECT ?__myId = `{0}` FROM `{1}` WHERE {2}", Entity.PrimaryColumn.ColumnName, Entity.SaveTable, UniqueCondition());
+SELECT ?__myId = `{0}` FROM `{1}` WHERE {2}", Entity.PrimaryColumn.DbFieldName, Entity.SaveTable, UniqueCondition());
             sql.AppendFormat(@"
 IF ?__myId IS NULL
 BEGIN
@@ -117,7 +117,7 @@ SELECT ?__myId;"
                     sql.Append(",");
                 }
                 sql.AppendFormat(@"
-    `{0}`", field.ColumnName);
+    `{0}`", field.DbFieldName);
             }
             sql.Append(@"
 )
@@ -177,7 +177,7 @@ SELECT @@IDENTITY;");
                     sql.Append(",");
                 }
                 sql.AppendFormat(@"
-       `{0}` = '%{1}%'", field.ColumnName, field.Index);
+       `{0}` = '%{1}%'", field.DbFieldName, field.Index);
             }
             sql.AppendFormat(@"
  WHERE {0};", UniqueCondition());

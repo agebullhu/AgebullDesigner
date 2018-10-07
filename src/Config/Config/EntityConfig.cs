@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2017/7/12 23:16:38*/
+﻿/*design by:agebull designer date:2017/7/12 23:16:38*/
 /*****************************************************
 ©2008-2017 Copy right by agebull.hu(胡天水)
 作者:agebull.hu(胡天水)
@@ -187,10 +187,10 @@ namespace Agebull.EntityModel.Config
             get => WorkContext.InCoderGenerating ? (string.IsNullOrWhiteSpace(_entityName) ?  $"{Name}Data" : _entityName) : _entityName;
             set
             {
-                if(_entityName == value)
-                    return;
                 if (value == Name)
                     value = null;
+                if (_entityName == value)
+                    return;
                 BeforePropertyChanged(nameof(EntityName), _entityName,value);
                 _entityName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(EntityName));
@@ -623,10 +623,10 @@ namespace Agebull.EntityModel.Config
             get => WorkContext.InCoderGenerating ? _readTableName ?? SaveTableName ?? Name : _readTableName;
             set
             {
-                if (_readTableName == value)
-                    return;
                 if (SaveTableName == value)
                     value = null;
+                if (_readTableName == value)
+                    return;
                 BeforePropertyChanged(nameof(ReadTableName), _readTableName,value);
                 _readTableName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(ReadTableName));
@@ -652,10 +652,10 @@ namespace Agebull.EntityModel.Config
             get => WorkContext.InCoderGenerating ? _saveTableName ?? Name : _saveTableName;
             set
             {
-                if(_saveTableName == value)
-                    return;
                 if (Name == value)
                     value = null;
+                if (_saveTableName == value)
+                    return;
                 BeforePropertyChanged(nameof(SaveTableName), _saveTableName,value);
                 _saveTableName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(SaveTableName));
@@ -974,10 +974,10 @@ namespace Agebull.EntityModel.Config
             get => WorkContext.InCoderGenerating ? _cppName ?? Name : _cppName;
             set
             {
-                if (_cppName == value)
-                    return;
                 if (Name == value)
                     value = null;
+                if (_cppName == value)
+                    return;
                 BeforePropertyChanged(nameof(CppName), _cppName,value);
                 _cppName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(CppName));

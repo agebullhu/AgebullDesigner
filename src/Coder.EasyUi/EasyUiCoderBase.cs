@@ -53,14 +53,12 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                 MomentCoder.RegisteCoder("Web-EasyUi", ExFileName, LangName, ExtendCode);
         }
 
-        public string BaseCode(ConfigBase config)
+        public string BaseCode(EntityConfig entity)
         {
-            Entity = config as EntityConfig;
-            if (Entity == null)
-                return null;
+            Entity = entity;
             return BaseCode();
         }
-        public string ExtendCode(ConfigBase config)
+        public string ExtendCode(EntityConfig config)
         {
             Entity = config as EntityConfig;
             if (Entity == null)

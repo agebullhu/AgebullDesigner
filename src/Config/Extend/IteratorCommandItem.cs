@@ -38,13 +38,15 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         private void RunExecute(object arg)
         {
-            if (!string.IsNullOrWhiteSpace(ConfirmMessage) && MessageBox.Show(ConfirmMessage, "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+            if (DoConfirm && MessageBox.Show(ConfirmMessage ?? $"是否确认执行【{Caption ?? Name}】操作", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
             {
                 return ;
             }
             if (OnPrepare != null && !OnPrepare(this))
+            {
                 return;
-            DoExecute(arg);
+            }
+            DoExecute(arg ?? GlobalConfig.CurrentConfig);
         }
         /// <summary>
         /// 执行
@@ -65,13 +67,19 @@ namespace Agebull.EntityModel.Designer
                 if (SignleSoruce)
                 {
                     if (!(para is TTargetType config))
+                    {
+                        MessageBox.Show($"参数为空或不是目标类型{typeof(TTargetType)}");
                         return false;
+                    }
                     Action(config);
                 }
                 else
                 {
                     if (!(para is ConfigBase config))
+                    {
+                        MessageBox.Show($"参数为空或不是目标类型{typeof(ConfigBase)}");
                         return false;
+                    }
                     config.Foreach(Action);
                 }
                 return true;

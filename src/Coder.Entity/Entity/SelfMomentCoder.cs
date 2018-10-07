@@ -23,7 +23,7 @@ namespace Agebull.EntityModel.RobotCoder.Upgrade
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("自升级代码", "字段复制", "cs", arg => CreateCode<EntityConfig>(arg, GetCopy));
+            MomentCoder.RegisteCoder("自升级代码", "字段复制", "cs", GetCopy);
         }
 
 

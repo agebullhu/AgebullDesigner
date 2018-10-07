@@ -163,6 +163,7 @@ namespace Agebull.EntityModel.Designer
                         IsButton=true,
                         Action =arg=> Model.ConfigIo.Load(),
                         Caption = "打开",
+                        NoConfirm=true,
                         Image = Application.Current.Resources["img_open"] as ImageSource
                     },
                     new CommandItem
@@ -176,12 +177,21 @@ namespace Agebull.EntityModel.Designer
                     {
                         Action = arg=>Model.ConfigIo.LoadGlobal(),
                         Caption = "全局",
+                        NoConfirm=true,
+                        Image = Application.Current.Resources["img_open"] as ImageSource
+                    },
+                    new CommandItem
+                    {
+                        Action = arg=>Model.ConfigIo.LoadLocal(),
+                        Caption = "本地",
+                        NoConfirm=true,
                         Image = Application.Current.Resources["img_open"] as ImageSource
                     },
                     CommandItemBase.Line,
                     new CommandItem
                     {
                         IsButton=true,
+                        NoConfirm=true,
                         Action = arg=>Model.ConfigIo.Save(),
                         Caption = "保存",
                         Image = Application.Current.Resources["imgSave"] as ImageSource

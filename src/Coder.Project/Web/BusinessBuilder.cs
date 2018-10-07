@@ -181,8 +181,6 @@ using Fuctures.Manage.BusinessLogical.WCF;
 using Agebull.Common.Mvvm.ServiceAccess;
 ";
 
-        private string EntityType => $"{Entity.Parent.DataBaseObjectName}.Table_{Entity.Name}";
-
         /// <summary>
         ///     生成扩展代码
         /// </summary>
@@ -228,7 +226,7 @@ namespace {NameSpace}.BusinessLogic
         /// <summary>
         ///     实体类型
         /// </summary>
-        public override int EntityType => {EntityType};
+        public override int EntityType => { Entity.EntityName}._DataStruct_.EntityIdentity;
 
 {SyncCode()}
 {CommandCode()}

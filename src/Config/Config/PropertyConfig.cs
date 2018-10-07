@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2017/7/12 22:06:40*/
+﻿/*design by:agebull designer date:2017/7/12 22:06:40*/
 /*****************************************************
 ©2008-2017 Copy right by agebull.hu(胡天水)
 作者:agebull.hu(胡天水)
@@ -10,7 +10,7 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-
+using System.Text;
 using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
@@ -274,6 +274,7 @@ namespace Agebull.EntityModel.Config
                 {
                     _customType = null;
                     EnumConfig = null;
+                    IsEnum = false;
                 }
                 else
                 {
@@ -563,9 +564,9 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"代码访问范围"), Description(AccessType_Description)]
-        public string AccessType => InnerField || DenyScope.HasFlag(AccessScopeType.Server) ||
-                                    !IsRelation && !string.IsNullOrWhiteSpace(ExtendRole) &&
-                                    ExtendRole.Contains(",")
+        public string AccessType => InnerField || DenyScope.HasFlag(AccessScopeType.Server) 
+                                    //||!IsRelation && !string.IsNullOrWhiteSpace(ExtendRole) &&
+                                    //ExtendRole.Contains(",")
             ? "internal"
             : "public ";
 
@@ -987,6 +988,94 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(IsCustomCompute));
             }
         }
+
+        #endregion
+        #region API支持
+
+        /// <summary>
+        /// 不参与ApiArgument序列化
+        /// </summary>
+        [DataMember, JsonProperty("noneApiArgument", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _noneApiArgument;
+
+        /// <summary>
+        /// 不参与ApiArgument序列化
+        /// </summary>
+        /// <remark>
+        /// 客户端不显示
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"API支持"), DisplayName(@"不参与ApiArgument序列化")]
+        public bool NoneApiArgument
+        {
+            get => (Reference?.NoneApiArgument ?? false) || _noneApiArgument;
+            set
+            {
+                if (_noneApiArgument == value)
+                    return;
+                BeforePropertyChanged(nameof(NoneApiArgument), _noneApiArgument, value);
+                _noneApiArgument = value;
+                OnPropertyChanged(nameof(NoneApiArgument));
+            }
+        }
+        /// <summary>
+        /// 字段名称(ApiArgument)
+        /// </summary>
+        [DataMember, JsonProperty("apiArgumentName", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _apiArgumentName;
+
+        /// <summary>
+        /// 字段名称(ApiArgument)
+        /// </summary>
+        /// <remark>
+        /// ApiArgument字段名称
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"API支持"), DisplayName(@"字段名称(ApiArgument)")]
+        public string ApiArgumentName
+        {
+            get => WorkContext.InCoderGenerating ? _apiArgumentName ?? JsonName : _apiArgumentName;
+            set
+            {
+                if (_apiArgumentName == value)
+                    return;
+                BeforePropertyChanged(nameof(ApiArgumentName), _apiArgumentName, value);
+                _apiArgumentName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                OnPropertyChanged(nameof(ApiArgumentName));
+            }
+        }
+        /// <summary>
+        /// 不参与Json序列化
+        /// </summary>
+        [DataMember, JsonProperty("NoneJson", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _noneJson;
+
+        /// <summary>
+        /// 不参与Json序列化
+        /// </summary>
+        /// <remark>
+        /// 客户端不显示
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"API支持"), DisplayName(@"不参与Json序列化")]
+        public bool NoneJson
+        {
+            get => _noneJson;
+            set
+            {
+                if (_noneJson == value)
+                    return;
+                BeforePropertyChanged(nameof(NoneJson), _noneJson, value);
+                _noneJson = value;
+                OnPropertyChanged(nameof(NoneJson));
+            }
+        }
+        /// <summary>
+        /// 字段名称(json)
+        /// </summary>
+        [DataMember, JsonProperty("jsonName", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _jsonName;
+
         /// <summary>
         /// 字段名称(json)
         /// </summary>
@@ -994,7 +1083,7 @@ namespace Agebull.EntityModel.Config
         /// json字段名称
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(@"模型设计"), DisplayName(@"字段名称(json)"), Description("json字段名称")]
+        [Category(@"API支持"), DisplayName(@"字段名称(json)")]
         public string JsonName
         {
             get => WorkContext.InCoderGenerating ? _jsonName ?? Name : _jsonName;
@@ -1002,8 +1091,6 @@ namespace Agebull.EntityModel.Config
             {
                 if (_jsonName == value)
                     return;
-                if (Name == value)
-                    value = null;
                 BeforePropertyChanged(nameof(JsonName), _jsonName, value);
                 _jsonName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(JsonName));
@@ -1019,7 +1106,7 @@ namespace Agebull.EntityModel.Config
         /// 示例内容
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(@"模型设计"), DisplayName(@"示例内容"), Description(CanEmpty_Description)]
+        [Category(@"API支持"), DisplayName(@"示例内容")]
         public string HelloCode
         {
             get => _helloCode;
@@ -1230,13 +1317,6 @@ namespace Agebull.EntityModel.Config
         }
         #endregion
         #region 数据库
-
-        /// <summary>
-        /// 数据库索引
-        /// </summary>
-        [DataMember, JsonProperty("createDbIndex", NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _createDbIndex;
-
         /// <summary>
         /// 构建数据库索引
         /// </summary>
@@ -1245,16 +1325,32 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"构建数据库索引"), Description("构建数据库索引的优化选项")]
-        public bool CreateDbIndex
+        public bool CreateDbIndex => IsPrimaryKey || IsIdentity || IsLinkKey || IsCaption || _isDbIndex;
+
+        /// <summary>
+        /// 数据库索引
+        /// </summary>
+        [DataMember, JsonProperty("isDbIndex", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isDbIndex;
+
+        /// <summary>
+        /// 是否数据库索引
+        /// </summary>
+        /// <remark>
+        /// 构建数据库索引的优化选项
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据库"), DisplayName(@"是否数据库索引"), Description("构建数据库索引的优化选项")]
+        public bool IsDbIndex
         {
-            get => _createDbIndex;
+            get => _isDbIndex;
             set
             {
-                if (_createDbIndex == value)
+                if (_isDbIndex == value)
                     return;
-                BeforePropertyChanged(nameof(CreateDbIndex), _createDbIndex, value);
-                _createDbIndex = value;
-                OnPropertyChanged(nameof(CreateDbIndex));
+                BeforePropertyChanged(nameof(IsDbIndex), _isDbIndex, value);
+                _isDbIndex = value;
+                OnPropertyChanged(nameof(IsDbIndex));
             }
         }
 
@@ -1276,7 +1372,7 @@ namespace Agebull.EntityModel.Config
         /// 数据库字段名称
         /// </summary>
         [DataMember, JsonProperty("_columnName", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _columnName;
+        internal string _dbFieldName;
 
         /// <summary>
         /// 数据库字段名称
@@ -1286,19 +1382,19 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"数据库字段名称"), Description("字段名称")]
-        public string ColumnName
+        public string DbFieldName
         {
-            get => Reference != null ? Reference.ColumnName :
-            (WorkContext.InCoderGenerating ? _columnName ?? Name : _columnName);
+            get => Reference != null ? Reference.DbFieldName :
+            (WorkContext.InCoderGenerating ? _dbFieldName ?? Name : _dbFieldName);
             set
             {
-                if (_columnName == value)
+                if (_dbFieldName == value)
                     return;
                 if (Name == value)
                     value = null;
-                BeforePropertyChanged(nameof(ColumnName), _columnName, value);
-                _columnName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(ColumnName));
+                BeforePropertyChanged(nameof(DbFieldName), _dbFieldName, value);
+                _dbFieldName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                OnPropertyChanged(nameof(DbFieldName));
             }
         }
 
@@ -1385,6 +1481,7 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(Datalen), _datalen, value);
                 _datalen = value;
                 OnPropertyChanged(nameof(Datalen));
+                OnPropertyChanged(nameof(AutoDataRuleDesc));
             }
         }
 
@@ -1439,6 +1536,7 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(Scale), _scale, value);
                 _scale = value;
                 OnPropertyChanged(nameof(Scale));
+                OnPropertyChanged(nameof(AutoDataRuleDesc));
             }
         }
 
@@ -1566,7 +1664,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"大数据"), Description("是否大数据")]
         public bool IsBlob
         {
-            get => Reference?.IsBlob ?? _isBlob;
+            get => Reference?.IsBlob ?? _isBlob || DataType == "ByteArray";
             set
             {
                 if (_isBlob == value)
@@ -1819,39 +1917,6 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 字段名称(json)
-        /// </summary>
-        [DataMember, JsonProperty("jsonName", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _jsonName;
-
-        /// <summary>
-        /// 不参与Json序列化
-        /// </summary>
-        [DataMember, JsonProperty("NoneJson", NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _noneJson;
-
-        /// <summary>
-        /// 不参与Json序列化
-        /// </summary>
-        /// <remark>
-        /// 客户端不显示
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"用户界面"), DisplayName(@"不参与Json序列化"), Description("客户端不显示")]
-        public bool NoneJson
-        {
-            get => Reference?.NoneJson ?? _noneJson;
-            set
-            {
-                if (_noneJson == value)
-                    return;
-                BeforePropertyChanged(nameof(NoneJson), _noneJson, value);
-                _noneJson = value;
-                OnPropertyChanged(nameof(NoneJson));
-            }
-        }
-
-        /// <summary>
         /// 前缀
         /// </summary>
         [DataMember, JsonProperty("_prefix", NullValueHandling = NullValueHandling.Ignore)]
@@ -2063,6 +2128,32 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(ComboBoxUrl), _comboBoxUrl, value);
                 _comboBoxUrl = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(ComboBoxUrl));
+            }
+        }
+        /// <summary>
+        /// 是否图片
+        /// </summary>
+        [DataMember, JsonProperty("isImage", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isImage;
+
+        /// <summary>
+        /// 是否图片
+        /// </summary>
+        /// <remark>
+        /// 是否图片
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"用户界面"), DisplayName(@"是否图片"), Description("是否图片")]
+        public bool IsImage
+        {
+            get => _isImage;
+            set
+            {
+                if (_isImage == value)
+                    return;
+                BeforePropertyChanged(nameof(IsImage), _isImage, value);
+                _isImage = value;
+                OnPropertyChanged(nameof(IsImage));
             }
         }
 
@@ -2285,6 +2376,107 @@ namespace Agebull.EntityModel.Config
         #region 数据规则
 
         /// <summary>
+        /// 值说明
+        /// </summary>
+        [DataMember, JsonProperty("dataRuleDesc", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _dataRuleDesc;
+
+        /// <summary>
+        /// 值说明
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据规则"), DisplayName(@"数据说明"), Description("对于值数据规则的描述")]
+        public string DataRuleDesc
+        {
+            get => WorkContext.InCoderGenerating ? (_dataRuleDesc ?? AutoDataRuleDesc) : _dataRuleDesc;
+            set
+            {
+                if (_dataRuleDesc == value)
+                    return;
+                BeforePropertyChanged(nameof(DataRuleDesc), _dataRuleDesc, value);
+                _dataRuleDesc = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                OnPropertyChanged(nameof(DataRuleDesc));
+            }
+        }/// <summary>
+         /// 值说明
+         /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        public string AutoDataRuleDesc
+        {
+            get
+            {
+                StringBuilder decs = new StringBuilder();
+                bool checkNull;
+                switch (CsType?.ToLower() ?? "string")
+                {
+                    case "string":
+                    case "object":
+                        checkNull = true;
+                        break;
+                    default:
+                        checkNull = Nullable || IsArray || IsDictionary;
+                        break;
+                }
+                if (checkNull)
+                {
+                    if (!CanEmpty)
+                    {
+                        decs.Append("不能为空.");
+                    }
+                    else if (IsRequired)
+                    {
+                        decs.Append("提交时不能为空.");
+                    }
+                }
+
+                if (CsType == "string")
+                {
+                    string max = Max;
+                    if (!IsBlob && !IsMemo && Datalen > 0)
+                    {
+                        decs.Append($"可存储{Datalen}个字符.");
+                        if ((int.TryParse(max, out var len) && len > Datalen))
+                        {
+                            max = Max = null;
+                        }
+                        if (string.IsNullOrEmpty(max))
+                            max = Datalen.ToString();
+                    }
+
+                    if (!string.IsNullOrEmpty(Min) && !string.IsNullOrEmpty(max))
+                    {
+                        decs.Append($"合理长度在{Min}-{max}之间.");
+                    }
+                    else if (!string.IsNullOrEmpty(Min))
+                    {
+                        decs.Append($"合理长度应不小于{Min}.");
+                    }
+                    else if (!string.IsNullOrEmpty(max))
+                    {
+                        decs.Append($"合理长度应不大于{max}.");
+                    }
+                }
+                else
+                {
+                    string max = Max;
+                    if (!string.IsNullOrEmpty(Min) && !string.IsNullOrEmpty(max))
+                    {
+                        decs.Append($"合理值(大等于){Min}且(小于){max}.");
+                    }
+                    else if (!string.IsNullOrEmpty(Min))
+                    {
+                        decs.Append($"合理值不应小于{Min}.");
+                    }
+                    else if (!string.IsNullOrEmpty(max))
+                    {
+                        decs.Append($"合理值不应大于{max}.");
+                    }
+                }
+                return decs.ToString();
+            }
+        }
+
+        /// <summary>
         /// 校验代码
         /// </summary>
         [DataMember, JsonProperty("_validateCode", NullValueHandling = NullValueHandling.Ignore)]
@@ -2339,6 +2531,7 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(CanEmpty), _canEmpty, value);
                 _canEmpty = value;
                 OnPropertyChanged(nameof(CanEmpty));
+                OnPropertyChanged(nameof(AutoDataRuleDesc));
             }
         }
 
@@ -2366,6 +2559,7 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(IsRequired), _isRequired, value);
                 _isRequired = value;
                 OnPropertyChanged(nameof(IsRequired));
+                OnPropertyChanged(nameof(AutoDataRuleDesc));
             }
         }
         /// <summary>
@@ -2392,6 +2586,7 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(Max), _max, value);
                 _max = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Max));
+                OnPropertyChanged(nameof(AutoDataRuleDesc));
             }
         }
 
@@ -2419,6 +2614,7 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(Min), _min, value);
                 _min = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Min));
+                OnPropertyChanged(nameof(AutoDataRuleDesc));
             }
         }
         #endregion

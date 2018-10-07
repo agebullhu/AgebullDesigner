@@ -29,7 +29,7 @@ namespace Agebull.EntityModel.Config
             {
                 foreach (var col in Entity.Properties)
                 {
-                    col.ColumnName = null;
+                    col.DbFieldName = null;
                     col.DbType = null;
                 }
                 Entity.IsModify = true;
@@ -269,7 +269,7 @@ namespace Agebull.EntityModel.Config
                 columns.Add(column = new PropertyConfig
                 {
                     IsPrimaryKey = name.Equals("ID", StringComparison.OrdinalIgnoreCase),
-                    ColumnName = name,
+                    DbFieldName = name,
                     Name = name,
                     CsType = "string",
                     DbType = "nvarchar"

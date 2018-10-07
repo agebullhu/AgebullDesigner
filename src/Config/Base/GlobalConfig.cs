@@ -263,12 +263,11 @@ namespace Agebull.EntityModel.Config
             {
                 var words = ToWords(str);
                 var sb = new StringBuilder();
-                var preEn = words[0][0] < 255;
-                sb.Append(words[0]);
-                for (var index = 1; index < words.Count; index++)
+                bool? preEn = null;
+                foreach (var w in words.Where(p => !string.IsNullOrWhiteSpace(p)))
                 {
-                    var word = words[index];
-                    if (word[0] < 255 && !preEn || preEn)
+                    var word = w.Trim();
+                    if (preEn != null && (word[0] < 255 || preEn.Value))
                         sb.Append(link);
                     sb.Append(uWord ? word.ToUWord() : word.ToLower());
                     preEn = word[0] < 255;
@@ -291,7 +290,7 @@ namespace Agebull.EntityModel.Config
         public static string ToName(List<string> words, char link = '_', bool uWord = false)
         {
             if (words.Count == 0)
-                return String.Empty;
+                return string.Empty;
             var sb = new StringBuilder();
             var preEn = words[0][0] < 255;
             sb.Append(words[0]);
@@ -314,7 +313,7 @@ namespace Agebull.EntityModel.Config
         public static List<string> SplitWords(string str)
         {
             var words = new List<string>();
-            if (String.IsNullOrWhiteSpace(str))
+            if (string.IsNullOrWhiteSpace(str))
                 return words;
             str = str.Replace("ID", "Id").Replace("URL", "Url");
             var baseWords = str.Split(NoneLanguageChar, StringSplitOptions.RemoveEmptyEntries);
@@ -418,7 +417,7 @@ namespace Agebull.EntityModel.Config
         /// <returns>正确表示为C#注释的文本</returns>
         protected static string ToRemString(string str, int space = 8)
         {
-            if (String.IsNullOrWhiteSpace(str))
+            if (string.IsNullOrWhiteSpace(str))
                 return null;
             var rp = str.Replace("&", "或").Replace("\r", "").Replace("<", "〈").Replace(">", "〉");
             var sp = rp.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
@@ -426,7 +425,7 @@ namespace Agebull.EntityModel.Config
             var isFirst = true;
             foreach (var line in sp)
             {
-                if (String.IsNullOrWhiteSpace(line))
+                if (string.IsNullOrWhiteSpace(line))
                     continue;
                 if (isFirst)
                 {
@@ -570,6 +569,15 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 解决方案
         /// </summary>
+        public static SolutionConfig LocalSolution
+        {
+            get => Global.LocalSolution;
+            set => Global.LocalSolution = value;
+        }
+
+        /// <summary>
+        /// 解决方案
+        /// </summary>
         public static SolutionConfig CurrentSolution
         {
             get => Global.CurrentSolution;
@@ -674,6 +682,8 @@ namespace Agebull.EntityModel.Config
         /// <param name="project"></param>
         public static void Add(ProjectConfig project)
         {
+            if (project == null)
+                return;
             if (!Projects.Contains(project))
                 Projects.Add(project);
         }
@@ -684,6 +694,8 @@ namespace Agebull.EntityModel.Config
         /// <param name="entity"></param>
         internal static void Add(EntityConfig entity)
         {
+            if (entity == null)
+                return;
             if (!Entities.Contains(entity))
                 Entities.Add(entity);
         }
@@ -694,6 +706,8 @@ namespace Agebull.EntityModel.Config
         /// <param name="enumConfig"></param>
         internal static void Add(EnumConfig enumConfig)
         {
+            if (enumConfig == null)
+                return;
             if (!Enums.Contains(enumConfig))
                 Enums.Add(enumConfig);
         }
@@ -704,6 +718,8 @@ namespace Agebull.EntityModel.Config
         /// <param name="api"></param>
         internal static void Add(ApiItem api)
         {
+            if (api == null)
+                return;
             if (!ApiItems.Contains(api))
                 ApiItems.Add(api);
         }

@@ -71,6 +71,12 @@ namespace Agebull.EntityModel.Designer
                 //case nameof(TargetConfig.SaveTableName):
                 //    SyncLinkTable(oldValue, newValue);
                 //    break;
+                case nameof(TargetConfig.Classify):
+                    var old = TargetConfig.Parent.Classifies.FirstOrDefault(p => p.Name == (string)oldValue);
+                    old?.Items.Remove(TargetConfig);
+                    old = TargetConfig.Parent.Classifies.FirstOrDefault(p=>p.Name == (string)newValue);
+                    old?.Items.Add(TargetConfig);
+                    break;
                 case nameof(TargetConfig.Properties):
                     var ops = (NotificationList<PropertyConfig>)oldValue;
                     if (ops != null)

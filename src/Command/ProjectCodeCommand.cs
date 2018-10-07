@@ -32,10 +32,10 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public bool CanDo(RuntimeArgument argument)
         {
-            if (string.IsNullOrWhiteSpace(SolutionConfig.Current.RootPath) ||
-                !Directory.Exists(SolutionConfig.Current.RootPath))
+            noWriteFile = string.IsNullOrWhiteSpace(SolutionConfig.Current.RootPath) ||
+                          !Directory.Exists(SolutionConfig.Current.RootPath);
+            if (noWriteFile)
             {
-                noWriteFile = true;
                 StateMessage = "解决方案根路径设置不正确,已禁用文件生成！";
             }
             foreach (var project in argument.Projects)

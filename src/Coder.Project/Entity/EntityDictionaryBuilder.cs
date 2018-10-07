@@ -166,13 +166,13 @@ namespace Agebull.EntityModel.RobotCoder
                 if (!string.IsNullOrWhiteSpace(field.CustomType))
                 {
                     code.AppendFormat(@"
-            case Index_{0}:
+            case _DataStruct_.{0}:
                 this.{0} = ({1})value;
                 return;", field.Name, field.CustomType);
                     continue;
                 }
                 code.AppendFormat(@"
-            case Index_{0}:
+            case _DataStruct_.{0}:
                 this.{0} = {1};
                 return;", field.Name, ConvertCode(field, "value"));
             }
@@ -238,7 +238,7 @@ namespace Agebull.EntityModel.RobotCoder
             foreach (PropertyConfig property in Entity.PublishProperty)
             {
                 code.AppendFormat(@"
-                case Index_{0}:
+                case _DataStruct_.{0}:
                     return this.{0};", property.Name);
             }
             code.AppendLine(@"

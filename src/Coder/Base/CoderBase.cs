@@ -33,11 +33,11 @@ namespace Agebull.EntityModel.RobotCoder
         {
             if (names.Length == 0)
             {
-                return String.IsNullOrWhiteSpace(project.BranchFolder) 
+                return string.IsNullOrWhiteSpace(project.BranchFolder) 
                     ? root
                     : GlobalConfig.CheckPath(root, project.BranchFolder);
             }
-            if (String.IsNullOrWhiteSpace(project.BranchFolder))
+            if (string.IsNullOrWhiteSpace(project.BranchFolder))
                 return GlobalConfig.CheckPath(root, names);
             var list = new List<string>();
             list.AddRange(names);

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
@@ -7,18 +8,22 @@ namespace Agebull.EntityModel.RobotCoder
 {
     public class EntityValidateCoder
     {
+
+        /// <summary>
+        /// 当前表对象
+        /// </summary>
         public EntityConfig Entity { get; set; }
 
-        public string Code()
+        public string Code(IEnumerable<PropertyConfig> fields)
         {
             var code = new StringBuilder();
-            var fields = Entity.PublishProperty.Where(p => p.CanUserInput).ToArray();
-            foreach (PropertyConfig field in fields.Where(p => !string.IsNullOrWhiteSpace(p.EmptyValue)))
+            var configs = fields as PropertyConfig[] ?? fields.ToArray();
+            foreach (PropertyConfig field in configs.Where(p => !string.IsNullOrWhiteSpace(p.EmptyValue)))
             {
                 ConvertEmptyValue(code, field);
             }
 
-            foreach (PropertyConfig field in fields.Where(p => string.IsNullOrWhiteSpace(p.ExtendRole)))
+            foreach (PropertyConfig field in configs)
             {
                 switch (field.CsType)
                 {
@@ -50,28 +55,25 @@ namespace Agebull.EntityModel.RobotCoder
         {
             if (!field.CanEmpty)
             {
-                if (field.Nullable)
-                {
-                    code.Append($@"
+                code.Append(field.Nullable
+                    ? $@"
             if({field.Name} == null)
-                 {EmptyCode(field)}");
-                }
-                else
-                {
-                    code.Append($@"
+                 {EmptyCode(field)}"
+                    : $@"
             if({field.Name} == DateTime.MinValue)
                  {EmptyCode(field)}");
-                }
             }
             if (field.Max == null && field.Min == null)
                 return;
-            if (field.CanEmpty)
-                code.Append($@"
-            if({field.Name} != null)
-            {{");
-            else
-                code.Append(@"
+            code.Append(!field.CanEmpty
+                ? @"
             else 
+            {"
+                : field.Nullable
+                    ?$@"
+            if({field.Name} != null)
+            {{"
+                    :@"
             {");
 
             var msg = field["ErrorMessage"];
@@ -79,37 +81,30 @@ namespace Agebull.EntityModel.RobotCoder
             {
                 code.Append($@"
                 if({field.Name} > new DateTime({field.Max}) ||{field.Name} < new DateTime({field.Min}))");
-                if (string.IsNullOrWhiteSpace(msg))
-                    code.Append($@"
-                    result.Add(""{field.Caption}"",nameof({field.Name}),$""不能大于{field.Max}或小于{field.Min}"");");
-                else
-                    code.Append($@"
+                code.Append(string.IsNullOrWhiteSpace(msg)
+                    ? $@"
+                    result.Add(""{field.Caption}"",nameof({field.Name}),$""不能大于{field.Max}或小于{field.Min}"");"
+                    : $@"
                     result.Add(""{field.Caption}"",nameof({field.Name}),$""{msg}"");");
             }
             else if (field.Max != null)
             {
-                if (!field.CanEmpty)
-                    code.Append(@" else ");
                 code.Append($@"
                 if({field.Name} > new DateTime({field.Max}))");
-                if (string.IsNullOrWhiteSpace(msg))
-                    code.Append($@"
-                    result.Add(""{field.Caption}"",nameof({field.Name}),$""不能大于{field.Max}"");");
-                else
-                    code.Append($@"
+                code.Append(string.IsNullOrWhiteSpace(msg)
+                    ? $@"
+                    result.Add(""{field.Caption}"",nameof({field.Name}),$""不能大于{field.Max}"");"
+                    : $@"
                     result.Add(""{field.Caption}"",nameof({field.Name}),$""{msg}"");");
             }
             else if (field.Min != null)
             {
-                if (!field.CanEmpty)
-                    code.Append(@" else ");
                 code.Append($@"
                 if({field.Name} < new DateTime({field.Min}))");
-                if (string.IsNullOrWhiteSpace(msg))
-                    code.Append($@"
-                    result.Add(""{field.Caption}"",nameof({field.Name}),$""不能小于{field.Min}"");");
-                else
-                    code.Append($@"
+                code.Append(string.IsNullOrWhiteSpace(msg)
+                    ? $@"
+                    result.Add(""{field.Caption}"",nameof({field.Name}),$""不能小于{field.Min}"");"
+                    : $@"
                     result.Add(""{field.Caption}"",nameof({field.Name}),$""{msg}"");");
             }
             code.Append(@"
@@ -270,6 +265,5 @@ namespace Agebull.EntityModel.RobotCoder
                 {field.Name} = default({field.CsType});");
             }
         }
-
     }
 }

@@ -14,7 +14,7 @@ using System.Windows;
 
 namespace Agebull.EntityModel.Designer
 {
-    internal class EasyUiViewModel : ExtendViewModelBase<EasyUiModel>
+    internal class EasyUiViewModel : ExtendViewModelBase<EntityDesignModel>
     {
         public EasyUiViewModel()
         {

@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2017/7/12 22:06:40*/
+﻿/*design by:agebull designer date:2017/7/12 22:06:40*/
 /*****************************************************
 ©2008-2017 Copy right by agebull.hu(胡天水)
 作者:agebull.hu(胡天水)
@@ -9,6 +9,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.Serialization;
 
 using Newtonsoft.Json;
@@ -254,6 +255,63 @@ namespace Agebull.EntityModel.Config
         #region 代码生成
 
         /// <summary>
+        /// 解决方案根路径
+        /// </summary>
+        [DataMember, JsonProperty("_rootPath", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _rootPath;
+
+        /// <summary>
+        /// 解决方案根路径
+        /// </summary>
+        /// <remark>
+        /// 解决方案根路径
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"代码生成"), DisplayName(@"解决方案根路径"), Description("解决方案根路径")]
+        public string RootPath
+        {
+            get => _rootPath;
+            set
+            {
+                if (_rootPath == value)
+                    return;
+                BeforePropertyChanged(nameof(RootPath), _rootPath, value);
+                _rootPath = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                OnPropertyChanged(nameof(RootPath));
+                OnPropertyChanged(nameof(AutoPagePath));
+            }
+        }
+
+        /// <summary>
+        /// 代码文件夹名称
+        /// </summary>
+        [DataMember, JsonProperty("pagePath", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _pagePath;
+
+        /// <summary>
+        /// 管理页面根路径
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"解决方案"), DisplayName(@"管理页面根路径"), Description("管理页面根路径")]
+        public string PagePath
+        {
+            get => WorkContext.InCoderGenerating ? _pagePath ?? Path.Combine(RootPath, "page") : _pagePath;
+            set
+            {
+                if (_pagePath == value)
+                    return;
+                BeforePropertyChanged(nameof(PagePath), _pagePath, value);
+                _pagePath = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                OnPropertyChanged(nameof(PagePath));
+            }
+        }
+        /// <summary>
+        /// 管理页面根路径
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        public string AutoPagePath => Path.Combine(RootPath, "page");
+
+        /// <summary>
         /// 文档文件夹名称
         /// </summary>
         [DataMember, JsonProperty("_docFolder", NullValueHandling = NullValueHandling.Ignore)]
@@ -304,60 +362,6 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(SrcFolder), _srcFolder, value);
                 _srcFolder = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(SrcFolder));
-            }
-        }
-
-        /// <summary>
-        /// 代码文件夹名称
-        /// </summary>
-        [DataMember, JsonProperty("pageFolder", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _pageFolder;
-
-        /// <summary>
-        /// 页面文件夹名称
-        /// </summary>
-        /// <remark>
-        /// 代码文件夹名称
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"解决方案"), DisplayName(@"代码文件夹名称"), Description("代码文件夹名称")]
-        public string PageFolder
-        {
-            get => WorkContext.InCoderGenerating ? _pageFolder ?? "page" : _pageFolder;
-            set
-            {
-                if (_pageFolder == value)
-                    return;
-                BeforePropertyChanged(nameof(PageFolder), _pageFolder, value);
-                _pageFolder = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(PageFolder));
-            }
-        }
-
-        /// <summary>
-        /// 解决方案根路径
-        /// </summary>
-        [DataMember, JsonProperty("_rootPath", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _rootPath;
-
-        /// <summary>
-        /// 解决方案根路径
-        /// </summary>
-        /// <remark>
-        /// 解决方案根路径
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"代码生成"), DisplayName(@"解决方案根路径"), Description("解决方案根路径")]
-        public string RootPath
-        {
-            get => _rootPath;
-            set
-            {
-                if (_rootPath == value)
-                    return;
-                BeforePropertyChanged(nameof(RootPath), _rootPath, value);
-                _rootPath = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(RootPath));
             }
         }
 

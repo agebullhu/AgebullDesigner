@@ -16,10 +16,7 @@ namespace Agebull.EntityModel.Config
             var cfg = dest as ConfigBase;
             if (cfg == null)
                 return;
-
-            Option.Copy(cfg.Option);//配置
-            if (cfg._extend != null)
-                _extend = cfg._extend.ToDictionary(p => p.Key, p => p.Value);//扩展配置
+            Option.Copy(cfg.Option,false);//配置
         }
     }
 
@@ -374,7 +371,7 @@ namespace Agebull.EntityModel.Config
             
             
             KeepUpdate = cfg.KeepUpdate;//不更新
-            ColumnName = cfg.ColumnName;//数据库字段名称
+            DbFieldName = cfg.DbFieldName;//数据库字段名称
             DbNullable = cfg.DbNullable;//能否存储空值
             DbType = cfg.DbType;//存储类型
             Datalen = cfg.Datalen;//数据长度
@@ -390,7 +387,7 @@ namespace Agebull.EntityModel.Config
             KeepStorageScreen = cfg.KeepStorageScreen;//*跳过保存的场景
             CustomWrite = cfg.CustomWrite;//自定义保存
             StorageProperty = cfg.StorageProperty;//存储值读写字段
-            CreateDbIndex = cfg.CreateDbIndex;//数据库索引
+            IsDbIndex = cfg.IsDbIndex;//数据库索引
 
             IsLinkField = cfg.IsLinkField;//连接字段
             LinkTable = cfg.LinkTable;//关联表名
@@ -404,20 +401,24 @@ namespace Agebull.EntityModel.Config
             Max = cfg.Max;//最大值
             Min = cfg.Min;//最大值
             
-            ExtendRole = cfg.ExtendRole;//扩展组合规划
-            ValueSeparate = cfg.ValueSeparate;//值分隔符
-            ArraySeparate = cfg.ArraySeparate;//数组分隔符
-            ExtendArray = cfg.ExtendArray;//是否扩展数组
-            IsKeyValueArray = cfg.IsKeyValueArray;//是否值对分隔方式
-            IsRelation = cfg.IsRelation;//是否为关系表
-            ExtendPropertyName = cfg.ExtendPropertyName;//扩展对象属性名称
-            ExtendClassName = cfg.ExtendClassName;//扩展对象对象名称
-            ExtendClassIsPredestinate = cfg.ExtendClassIsPredestinate;//扩展对象对象已定义
+            //ExtendRole = cfg.ExtendRole;//扩展组合规划
+            //ValueSeparate = cfg.ValueSeparate;//值分隔符
+            //ArraySeparate = cfg.ArraySeparate;//数组分隔符
+            //ExtendArray = cfg.ExtendArray;//是否扩展数组
+            //IsKeyValueArray = cfg.IsKeyValueArray;//是否值对分隔方式
+            //IsRelation = cfg.IsRelation;//是否为关系表
+            //ExtendPropertyName = cfg.ExtendPropertyName;//扩展对象属性名称
+            //ExtendClassName = cfg.ExtendClassName;//扩展对象对象名称
+            //ExtendClassIsPredestinate = cfg.ExtendClassIsPredestinate;//扩展对象对象已定义
 
             JsonName = cfg.JsonName;//字段名称(json)
+            NoneJson = cfg.NoneJson;//字段名称(json)
+
+            ApiArgumentName = cfg.ApiArgumentName;//字段名称(json)
+            NoneApiArgument = cfg.NoneApiArgument;//字段名称(json)
 
             if (option)
-                Option.Copy(cfg.Option);//配置
+                Option.Copy(cfg.Option,full);//配置
 
             if (full)
             {
@@ -449,14 +450,7 @@ namespace Agebull.EntityModel.Config
                 NoneDetails = cfg.NoneDetails;//详细不显示
                 GridDetailsCode = cfg.GridDetailsCode;//列表详细页代码
                 
-
-
-
-
-                if (cfg._extend != null)
-                    _extend = cfg._extend.ToDictionary(p => p.Key, p => p.Value);//扩展配置
             }
-
             if (primary)
             {
 

@@ -14,27 +14,35 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 到标准数据表名称
         /// </summary>
-        /// <param name="Entity"></param>
+        /// <param name="entity"></param>
         /// <returns></returns>
-        public static string ToTableName(EntityConfig Entity)
+        public static string ToTableName(EntityConfig entity)
         {
             string head = "tb_";
-            if (Entity.Classify != null)
+            if (!string.IsNullOrWhiteSpace(entity.Parent.Abbreviation))
+                head += entity.Parent.Abbreviation.ToLower() + "_";
+            if (entity.Classify != null)
             {
-                var cls = Entity.Parent.Classifies.FirstOrDefault(p => p.Name == Entity.Classify);
+                var cls = entity.Parent.Classifies.FirstOrDefault(p => p.Name == entity.Classify);
                 if (cls != null && !string.IsNullOrEmpty(cls.Abbreviation))
-                    head = cls.Abbreviation?.ToLower() + "_";
+                    head += cls.Abbreviation?.ToLower() + "_";
             }
-            if (!string.IsNullOrWhiteSpace(Entity.Parent.Abbreviation))
-                head += Entity.Parent.Abbreviation.ToLower() + "_";
-            return GlobalConfig.SplitWords(Entity.Name).Select(p => p.ToLower()).LinkToString(head, "_");
+            return GlobalConfig.SplitWords(entity.Name).Select(p => p.ToLower()).LinkToString(head, "_");
         }
+
+        /// <summary>
+        /// 到标准数据表名称
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public static string ToViewName(EntityConfig entity) => "view_" + entity.SaveTable.Replace("tb_", "view_");
+
         /// <summary>
         /// 到标准数据表名称
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static string ToColumnName(string name)
+        public static string ToDbFieldName(string name)
         {
             return GlobalConfig.ToName(GlobalConfig.SplitWords(name).Select(p => p.ToLower()).ToList());
         }
@@ -71,7 +79,7 @@ namespace Agebull.EntityModel.Config
                     {
                         pro = table.Properties.FirstOrDefault(p =>
                             string.Equals(p.Name, field.LinkField, StringComparison.OrdinalIgnoreCase) ||
-                            string.Equals(p.ColumnName, field.LinkField, StringComparison.OrdinalIgnoreCase));
+                            string.Equals(p.DbFieldName, field.LinkField, StringComparison.OrdinalIgnoreCase));
                     }
                 }
 

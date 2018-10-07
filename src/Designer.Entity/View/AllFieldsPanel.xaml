@@ -35,7 +35,7 @@
             <DataGridTextColumn Header="分组"
                                 Binding="{Binding Group, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridCheckBoxColumn Header="0构建索引"
-                                    Binding="{Binding CreateDbIndex, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
+                                    Binding="{Binding IsDbIndex, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridCheckBoxColumn Header="1是否主键"
                                     Binding="{Binding IsPrimaryKey, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridCheckBoxColumn Header="1是否扩展主键"
@@ -121,7 +121,7 @@
             <DataGridCheckBoxColumn Header="5是否唯一文本"
                                     Binding="{Binding UniqueString, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridTextColumn Header="2字段名称"
-                                Binding="{Binding ColumnName, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
+                                Binding="{Binding DbFieldName, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridCheckBoxColumn Header="4能否存储空值"
                                     Binding="{Binding DbNullable, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridTextColumn Header="3存储类型"
@@ -172,7 +172,7 @@
                                 Binding="{Binding AccessType, Mode=OneWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridCheckBoxColumn Header="ReadOnly"
                                     Binding="{Binding ReadOnly, Mode=OneWay , UpdateSourceTrigger=PropertyChanged}" />
-            <DataGridTextColumn Header="1扩展组合规划"
+            <!--<DataGridTextColumn Header="1扩展组合规划"
                                 Binding="{Binding ExtendRole, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridTextColumn Header="2值分隔符"
                                 Binding="{Binding ValueSeparate, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
@@ -184,7 +184,7 @@
                                     Binding="{Binding IsKeyValueArray, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridCheckBoxColumn Header="5是否为关系表"
                                     Binding="{Binding IsRelation, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
-            <!--<DataGridTextColumn Header="7扩展对象属性名称"
+            <DataGridTextColumn Header="7扩展对象属性名称"
                                 Binding="{Binding ExtendPropertyName, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridTextColumn Header="8扩展对象对象名称"
                                 Binding="{Binding ExtendClassName, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />

@@ -161,7 +161,7 @@ namespace Agebull.EntityModel.Config
         #endregion
 
         #region 扩展配置(过时)
-
+            /*
         /// <summary>
         /// 扩展组合规划的说明文字
         /// </summary>
@@ -439,7 +439,7 @@ namespace Agebull.EntityModel.Config
                 _extendClassIsPredestinate = value;
                 OnPropertyChanged(nameof(ExtendClassIsPredestinate));
             }
-        }
+        }*/
         #endregion
     }
 }

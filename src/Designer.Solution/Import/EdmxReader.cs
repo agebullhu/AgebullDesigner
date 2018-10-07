@@ -82,7 +82,7 @@ namespace Agebull.EntityModel.Designer
                     entity.Add(new PropertyConfig
                     {
                         Name = name,
-                        ColumnName = GetAttribute(xProperty, "ColumnName")
+                        DbFieldName = GetAttribute(xProperty, "ColumnName")
                     });
                 }
             }
@@ -114,12 +114,12 @@ namespace Agebull.EntityModel.Designer
                 foreach (XElement xProperty in xMap.Elements(ns + "Property"))
                 {
                     name = GetAttribute(xProperty, "Name");
-                    PropertyConfig column = entity.Properties.FirstOrDefault(p => p.ColumnName == name);
+                    PropertyConfig column = entity.Properties.FirstOrDefault(p => p.DbFieldName == name);
                     if (column == null)
                     {
                         entity.Add(column = new PropertyConfig
                         {
-                            ColumnName = name,
+                            DbFieldName = name,
                             Name = name
                         });
                     }
@@ -139,7 +139,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     XElement xPropertyRef = xProperty.Element(ns + "PropertyRef");
                     name = GetAttribute(xPropertyRef, "Name");
-                    PropertyConfig column = entity.Properties.FirstOrDefault(p => p.ColumnName == name);
+                    PropertyConfig column = entity.Properties.FirstOrDefault(p => p.DbFieldName == name);
                     if (column != null)
                     {
                         column.IsPrimaryKey = true;
@@ -179,12 +179,12 @@ namespace Agebull.EntityModel.Designer
                 foreach (XElement xProperty in xMap.Elements(nsDef + "Property"))
                 {
                     name = GetAttribute(xProperty, "Name");
-                    PropertyConfig column = entity.Properties.FirstOrDefault(p => p.Name == name || p.ColumnName == name);
+                    PropertyConfig column = entity.Properties.FirstOrDefault(p => p.Name == name || p.DbFieldName == name);
                     if (column == null)
                     {
                         entity.Add(column = new PropertyConfig
                         {
-                            ColumnName = name,
+                            DbFieldName = name,
                             Name = name
                         });
                     }

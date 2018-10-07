@@ -154,7 +154,7 @@ from information_schema.columns where table_schema='{
                     if (field == null)
                         continue;
                     var dbType = reader.GetString(2);
-                    var column = entity.Properties.FirstOrDefault(p => string.Equals(p.ColumnName, field, StringComparison.OrdinalIgnoreCase));
+                    var column = entity.Properties.FirstOrDefault(p => string.Equals(p.DbFieldName, field, StringComparison.OrdinalIgnoreCase));
                     bool isNew = isNewEntity;
                     if (column == null)
                     {
@@ -162,7 +162,7 @@ from information_schema.columns where table_schema='{
                         isNew = true;
                         column = new PropertyConfig
                         {
-                            ColumnName = field,
+                            DbFieldName = field,
                             DbType = dbType,
                             CsType = ToCstringType(dbType),
                             Parent=entity 
@@ -203,20 +203,20 @@ from information_schema.columns where table_schema='{
                     {
                         case "varchar":
                         case "longtext":
-                            column.Name = FirstBy(column.ColumnName, "m_str", "M_str", "m_", "M_");
+                            column.Name = FirstBy(column.DbFieldName, "m_str", "M_str", "m_", "M_");
                             break;
                         case "int":
                         case "tinyint":
-                            column.Name = FirstBy(column.ColumnName, "m_b", "m_n", "m_", "M_");
+                            column.Name = FirstBy(column.DbFieldName, "m_b", "m_n", "m_", "M_");
                             break;
                         case "double":
-                            column.Name = FirstBy(column.ColumnName, "m_d", "m_", "M_");
+                            column.Name = FirstBy(column.DbFieldName, "m_d", "m_", "M_");
                             break;
                         default:
-                            column.Name = FirstBy(column.ColumnName, "m_", "M_");
+                            column.Name = FirstBy(column.DbFieldName, "m_", "M_");
                             break;
                     }
-                    column.Name = CoderBase.ToWordName(column.Name ?? column.ColumnName);
+                    column.Name = CoderBase.ToWordName(column.Name ?? column.DbFieldName);
                     _trace.Track = $@"属性名称:{column.Name}";
                     if (string.IsNullOrWhiteSpace(column.Caption))
                     {

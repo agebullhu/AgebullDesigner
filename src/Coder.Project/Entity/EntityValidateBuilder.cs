@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace Agebull.EntityModel.RobotCoder
 {
     public sealed class EntityValidateBuilder : EntityBuilderBase
@@ -7,6 +9,7 @@ namespace Agebull.EntityModel.RobotCoder
         public string ValidateCode()
         {
             var coder = new EntityValidateCoder {Entity = Entity};
+            var code = coder.Code(Columns.Where(p => !p.DbInnerField));
             return $@"
 
         /// <summary>
@@ -22,7 +25,7 @@ namespace Agebull.EntityModel.RobotCoder
         public override void Validate(ValidateResult result)
         {{
             {(Entity.NoDataBase || Entity.PrimaryColumn== null ? "" : "result.Id = " + Entity.PrimaryColumn.Name + ".ToString()") }; 
-            base.Validate(result);{coder.Code()}
+            base.Validate(result);{code}
             ValidateEx(result);
         }}";
         }

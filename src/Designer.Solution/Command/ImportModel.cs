@@ -469,7 +469,7 @@ namespace Agebull.EntityModel.Designer
                     {
                         Name = field,
                         Description = desc,
-                        ColumnName = field,
+                        DbFieldName = field,
                         CsType = "string",
                         DbType = "nvarchar",
                         DbNullable = true,

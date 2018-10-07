@@ -21,8 +21,10 @@ namespace Agebull.EntityModel.Config
                 return;
             if (!WorkContext.InLoding && !WorkContext.InSaving && !WorkContext.InRepair)
             {
-                propertyConfig.Identity = ++MaxIdentity;
-                propertyConfig.Index = Properties.Count == 0 ? 1 : Properties.Max(p => p.Index) + 1;
+                if (propertyConfig.Identity == 0)
+                    propertyConfig.Identity = ++MaxIdentity;
+                if (propertyConfig.Index == 0)
+                    propertyConfig.Index = Properties.Count == 0 ? 1 : Properties.Max(p => p.Index) + 1;
             }
             Properties.Add(propertyConfig);
         }

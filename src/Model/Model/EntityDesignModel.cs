@@ -43,6 +43,7 @@ namespace Agebull.EntityModel.Designer
                 commands.Add(new CommandItem
                 {
                     IsButton = true,
+                    NoConfirm = true,
                     Action = CopyColumns,
                     Caption = "复制列",
                     Image = Application.Current.Resources["tree_item"] as ImageSource
@@ -51,6 +52,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     IsButton = true,
                     Action = PasteColumns,
+                    NoConfirm = true,
                     Caption = "粘贴列",
                     Image = Application.Current.Resources["tree_item"] as ImageSource
                 });
@@ -72,6 +74,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     IsButton = true,
                     Action = AddProperty,
+                    NoConfirm = true,
                     Caption = "新增字段",
                     Image = Application.Current.Resources["tree_Open"] as ImageSource
                 });
@@ -181,22 +184,16 @@ namespace Agebull.EntityModel.Designer
                             newColumn = Entity.Properties.FirstOrDefault(
                                 p => string.Equals(p.LinkTable, name, StringComparison.OrdinalIgnoreCase) && (
                                          string.Equals(p.LinkField, copyColumn.Name, StringComparison.OrdinalIgnoreCase) ||
-                                         string.Equals(p.LinkField, copyColumn.ColumnName, StringComparison.OrdinalIgnoreCase)));
+                                         string.Equals(p.LinkField, copyColumn.DbFieldName, StringComparison.OrdinalIgnoreCase)));
                         }
                     }
                 }
                 if (newColumn == null)
                 {
-                    newColumn = Entity.Properties.FirstOrDefault(p =>
-                        string.Equals(p.Name, copyColumn.Name, StringComparison.OrdinalIgnoreCase)
-                        || string.Equals(p.Alias, copyColumn.Name, StringComparison.OrdinalIgnoreCase)
-                        || string.Equals(p.Name, copyColumn.Alias, StringComparison.OrdinalIgnoreCase));
-                }
-
-                if (newColumn == null)
-                {
                     newColumn = new PropertyConfig();
                     newColumn.CopyFromProperty(copyColumn, false, true, true);
+                    newColumn.Option.Index = newColumn.Option.Identity = 0;
+                    
                     if (refe && !copyColumn.IsLinkField)
                     {
                         if (copyColumn.IsPrimaryKey)
@@ -211,7 +208,7 @@ namespace Agebull.EntityModel.Designer
                         }
                         newColumn.Option.IsLink = true;
                         newColumn.Option.ReferenceConfig = copyColumn;
-                        newColumn.ColumnName = DataBaseHelper.ToColumnName(newColumn.Name);
+                        newColumn.DbFieldName = DataBaseHelper.ToDbFieldName(newColumn.Name);
                     }
                     Entity.Add(newColumn);
                 }
@@ -225,6 +222,7 @@ namespace Agebull.EntityModel.Designer
                     else
                     {
                         newColumn.IsLinkField = true;
+                        newColumn.Option.ReferenceConfig = copyColumn;
                         newColumn.LinkTable = source.Name;
                         newColumn.LinkField = copyColumn.Name;
                         if (copyColumn.IsLinkKey || copyColumn.IsPrimaryKey)
@@ -236,13 +234,13 @@ namespace Agebull.EntityModel.Designer
                             newColumn.IsLinkCaption = true;
                             newColumn.IsCompute = true;
                         }
-                        newColumn.Option.IsLink = true;
-                        newColumn.Option.ReferenceConfig = copyColumn;
                     }
                 }
                 newColumn.Parent = Entity;
                 newColumn.IsPrimaryKey = false;
                 newColumn.IsCaption = false;
+                if (newColumn.IsLinkKey)
+                    newColumn.NoneApiArgument = true;
             }
             Entity.IsModify = true;
         }

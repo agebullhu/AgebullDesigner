@@ -149,13 +149,13 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                 while (reader.Read())
                 {
                     string field = reader.GetString(0);
-                    PropertyConfig col = schema.Properties.FirstOrDefault(p => string.Equals(p.ColumnName, field, StringComparison.OrdinalIgnoreCase));
+                    PropertyConfig col = schema.Properties.FirstOrDefault(p => string.Equals(p.DbFieldName, field, StringComparison.OrdinalIgnoreCase));
                     if (col == null)
                     {
                         schema.Add(col = new PropertyConfig
                         {
                             Name = field,
-                            ColumnName = field,
+                            DbFieldName = field,
                             DbType = reader.GetString(1),
                             Parent = Entity
                         });
@@ -241,7 +241,7 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                 {
                     hase = true;
                     string field = reader.GetString(0);
-                    PropertyConfig col = schema.PublishProperty.FirstOrDefault(p => string.Equals(p.ColumnName, field, StringComparison.OrdinalIgnoreCase));
+                    PropertyConfig col = schema.PublishProperty.FirstOrDefault(p => string.Equals(p.DbFieldName, field, StringComparison.OrdinalIgnoreCase));
                     if (col == null)
                     {
                         result = false;
@@ -294,20 +294,20 @@ ORDER BY [Tables].object_id, [Columns].column_id";
         public static string MoveData(EntityConfig entity)
         {
             var code = new StringBuilder();
-            code.AppendFormat(@"INSERT INTO [dbo].[{0}]({1}", entity.ReadTableName, entity.PrimaryColumn.ColumnName);
+            code.AppendFormat(@"INSERT INTO [dbo].[{0}]({1}", entity.ReadTableName, entity.PrimaryColumn.DbFieldName);
             foreach (PropertyConfig col in entity.PublishProperty) //.Where(p => p.DbIndex > 0)
             {
                 if (col.IsPrimaryKey)
                     continue;
-                code.AppendFormat(@",[{0}]", col.ColumnName);
+                code.AppendFormat(@",[{0}]", col.DbFieldName);
             }
             code.AppendFormat(@")
-SELECT {0}", entity.PrimaryColumn.ColumnName);
+SELECT {0}", entity.PrimaryColumn.DbFieldName);
             foreach (PropertyConfig col in entity.PublishProperty) //.Where(p => p.DbIndex > 0)
             {
                 if (col.IsPrimaryKey)
                     continue;
-                code.AppendFormat(@",[{0}]", col.ColumnName);
+                code.AppendFormat(@",[{0}]", col.DbFieldName);
             }
             code.AppendFormat(@" FROM {0}_OLD;", entity.ReadTableName);
             return code.ToString();
@@ -319,7 +319,7 @@ SELECT {0}", entity.PrimaryColumn.ColumnName);
 PK_{0} PRIMARY KEY CLUSTERED 
 (
 	[{1}]
-) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY];", entity.ReadTableName, entity.PrimaryColumn.ColumnName);
+) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY];", entity.ReadTableName, entity.PrimaryColumn.DbFieldName);
         }
 
         public IEnumerable<string> AlertTable(SqlCommand cmd, EntityConfig entity)
@@ -374,7 +374,7 @@ PK_{0} PRIMARY KEY CLUSTERED
                     TraceMessage.DefaultTrace.Message2 = schema.ReadTableName;
                     foreach (PropertyConfig col in schema.PublishProperty)
                     {
-                        TraceMessage.DefaultTrace.Message3 = col.ColumnName;
+                        TraceMessage.DefaultTrace.Message3 = col.DbFieldName;
                         if (col.DbIndex <= 0)
                         {
                             TraceMessage.DefaultTrace.Track = "字段不存在";
@@ -394,7 +394,7 @@ PK_{0} PRIMARY KEY CLUSTERED
                                 checkInt = false;
                                 break;
                         }
-                        string sql1 = $"SELECT [{col.ColumnName}] FROM [{schema.ReadTableName}]";
+                        string sql1 = $"SELECT [{col.DbFieldName}] FROM [{schema.ReadTableName}]";
                         using (var cmd = new SqlCommand(sql1, connection))
                         {
                             using (SqlDataReader reader = cmd.ExecuteReader())

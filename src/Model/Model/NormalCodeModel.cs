@@ -152,7 +152,7 @@ namespace Agebull.EntityModel.Designer
         {
             base.DoInitialize();
 
-            foreach (var clasf in MomentCoder.coders)
+            foreach (var clasf in MomentCoder.Coders)
             {
                 if (clasf.Value == null || clasf.Value.Count == 0)
                     continue;

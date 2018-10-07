@@ -20,17 +20,9 @@ namespace Agebull.EntityModel.Designer
             config = (ConfigBase)obj;
             config.Foreach<EntityConfig>(CreateLast);
         }
-        /// <summary>
-        /// 完成代码生成
-        /// </summary>
-        public override void OnCodeGeneratorEnd()
-        {
-            config.Foreach<EntityConfig>(entity => entity.LastProperties = null);
-        }
-
 
         /// <summary>
-        /// 完成代码生成
+        /// 开始代码生成
         /// </summary>
         public void CreateLast(EntityConfig entity)
         {
@@ -45,6 +37,14 @@ namespace Agebull.EntityModel.Designer
                 pro.Option.Index = ++idx;
                 entity.LastProperties.Add(pro);
             }
+        }
+
+        /// <summary>
+        /// 完成代码生成
+        /// </summary>
+        public override void OnCodeGeneratorEnd()
+        {
+            config.Foreach<EntityConfig>(entity => entity.LastProperties = null);
         }
     }
 }

@@ -5,8 +5,8 @@ using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer.WebApi
 {
-    [Export(typeof(IAutoRegister))]
-    [ExportMetadata("Symbol", '%')]
+    //[Export(typeof(IAutoRegister))]
+    //[ExportMetadata("Symbol", '%')]
     internal sealed class ApiBuilder : ProjectBuilder, IAutoRegister
     {
 

@@ -151,6 +151,7 @@ namespace Agebull.EntityModel.Designer
                 },
                 new CommandItem
                 {
+                    NoConfirm=true,
                     Action =arg=>Clipboard.SetText(ExtendCode ?? ""),
                     Caption = "复制代码",
                     Image = Application.Current.Resources["img_file"] as ImageSource

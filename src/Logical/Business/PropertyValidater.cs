@@ -56,16 +56,16 @@ namespace Agebull.EntityModel.Config
             }
             if (Property.NoStorage)
                 return result;
-            if (string.IsNullOrWhiteSpace(Property.ColumnName))
+            if (string.IsNullOrWhiteSpace(Property.DbFieldName))
             {
                 result = false;
                 Message.Track = "====>字段存储名称不能为空";
             }
-            else if (Property.ColumnName == "NewField" ||
-                     Property.ColumnName[0] >= '0' && Property.ColumnName[0] <= '9')
+            else if (Property.DbFieldName == "NewField" ||
+                     Property.DbFieldName[0] >= '0' && Property.DbFieldName[0] <= '9')
             {
                 result = false;
-                Message.Track = "====>字段存储名称不正确:" + Property.ColumnName;
+                Message.Track = "====>字段存储名称不正确:" + Property.DbFieldName;
             }
             //if (CreateIndex && IsPrimaryKey)
             //{

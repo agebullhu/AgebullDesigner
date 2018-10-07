@@ -88,6 +88,16 @@ namespace Agebull.EntityModel.Config
                         Foreach(action, project);
                     }
                     return;
+                case EntityClassify classify:
+                    if (typeof(T) == typeof(EntityClassify))
+                    {
+                        DoAction(action, classify);
+                    }
+                    else
+                    {
+                        Foreach(action, classify);
+                    }
+                    return;
                 case SolutionConfig solution:
                     Foreach(action, solution);
                     return;
@@ -203,6 +213,18 @@ namespace Agebull.EntityModel.Config
             level = lv;
         }
 
+        private static void Foreach<T>(Action<T> action, EntityClassify classify)
+            where T : ConfigBase
+        {
+            int lv = level;
+            DoAction(action, classify);
+            foreach (var entity in classify.Items)
+            {
+                level = lv + 1;
+                Foreach(action, entity);
+            }
+            level = lv;
+        }
         private static void Foreach<T>(Action<T> action, ProjectConfig project)
             where T : ConfigBase
         {

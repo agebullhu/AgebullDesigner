@@ -58,7 +58,6 @@ namespace Agebull.EntityModel
         }
 
         #endregion
-
         #region ×´Ì¬ÐÞ¸ÄÊÂ¼þ
 
         /// <summary>

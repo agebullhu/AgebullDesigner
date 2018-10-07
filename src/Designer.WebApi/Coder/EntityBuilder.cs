@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.IO;
 using System.Text;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.RobotCoder;
@@ -64,11 +61,11 @@ namespace {NameSpace}.WebApi
     public partial class {Entity.Name} : IApiResultData , IApiArgument
     {{
         {Properties()}
-        {ToForm()}
+        {ToData()}
         {ValidateCode()}
     }}
 }}";
-            var file = ConfigPath(Project, FileSaveConfigName, path, "Model", Entity.Name);
+            var file = ConfigPath(Project, FileSaveConfigName, path, Entity.Classify, Entity.Name);
             WriteFile(file + ".Designer.cs", code);
         }
 
@@ -110,7 +107,7 @@ namespace {NameSpace}.WebApi
         partial void ValidateEx(ValidateResult result);*/
     }}
 }}";
-            var file = ConfigPath(Project, FileSaveConfigName, path, "Model", Entity.Name);
+            var file = ConfigPath(Project, FileSaveConfigName, path, Entity.Classify, Entity.Name);
             WriteFile(file + ".cs", code);
         }
 
@@ -125,27 +122,13 @@ namespace {NameSpace}.WebApi
             var code = new StringBuilder();
             code.Append(@"
         #region 属性");
-            foreach (PropertyConfig property in Columns.Where(p => p.CanUserInput))
+            foreach (PropertyConfig property in Columns.Where(p => !p.NoneApiArgument))
             {
-                var attribute = new StringBuilder();
-                attribute.Append("[DataMember");
-                //if (!IsClient)
-                {
-                    attribute.Append(!property.NoneJson
-                        ? $@" , JsonProperty(""{property.Name}"", NullValueHandling = NullValueHandling.Ignore)"
-                        : " , JsonIgnore");
-                }
-                attribute.Append("]");
+                string type = property.DataType == "ByteArray" ? "string" : property.LastCsType;
                 code.Append($@"
 
-        /// <summary>
-        /// {ToRemString(property.Caption ?? property.Description)}
-        /// </summary>
-        /// <remarks>
-        /// {ToRemString(property.Description)}
-        /// </remarks>
-        {attribute}
-        public {property.LastCsType ?? "int"} {property.Name}
+        {PropertyHeader(property,property.ApiArgumentName,true)}
+        public {type} {property.Name}
         {{
             get;
             set;
@@ -159,42 +142,80 @@ namespace {NameSpace}.WebApi
 
         #endregion
 
-        #region 转Form
+        #region 转转
 
 
-        private string ToForm()
+        private string ToData()
         {
+            if (Entity.NoDataBase)
+                return "";
             var code = new StringBuilder();
-            code.Append(@"
-        #region 转为符合HTTP协议的FORM的文本
-        /// <summary>转为符合HTTP协议的FORM的文本</summary>
-        /// <returns>符合HTTP协议的FORM的文本</returns>
-        public string ToFormString()
-        {
-            return $@""");
+            int len = Columns.Max(p => p.Name.Length) + 2;
+            code.Append($@"
+        #region 与内部数据库对象互相转换
 
-
+        /// <summary>转为内部数据库对象</summary>
+        /// <returns>内部数据库对象</returns>
+        public {Entity.EntityName} ToData => new {Entity.EntityName}
+        {{");
             bool isFirst = true;
-            foreach (PropertyConfig property in Columns.Where(p => p.CanUserInput))
+            foreach (PropertyConfig property in Columns.Where(p => !p.NoneApiArgument))
             {
                 if (isFirst)
                     isFirst = false;
                 else
-                    code.Append("&");
-                code.Append(property.CsType == "string"
-                    ? $"{property.Name}={{HttpUtility.UrlEncode({property.Name}, Encoding.UTF8)}}"
-                    : $"{property.Name}={{{property.Name}}}");
+                    code.Append(",");
+                code.Append($@"
+            {property.Name}");
+                code.Append(' ', len - property.Name.Length);
+                code.Append("= ");
+                code.Append(property.DataType == "ByteArray"
+                    ? $@"{property.Name}==null || {property.Name}.Length == 0 ? null : Convert.FromBase64String({property.Name})"
+                    : property.Name);
             }
-            code.Append(@""";
-        }
+            code.Append($@"
+        }};
 
-        /// <summary>到文本</summary>
-        /// <returns>文本</returns>
-        /// <filterpriority>2</filterpriority>
-        public override string ToString()
-        {
-            return ToFormString();
-        }
+        /// <summary>转为参数对象</summary>
+        /// <returns>参数对象</returns>
+        public void FromData ({Entity.EntityName} data) 
+        {{");
+            foreach (PropertyConfig property in Columns.Where(p => !p.NoneApiArgument))
+            {
+                code.Append($@"
+            {property.Name}");
+                code.Append(' ', len - property.Name.Length);
+                code.Append("= ");
+                code.Append(property.DataType == "ByteArray"
+                    ? $@"data.{property.Name}==null || data.{property.Name}.Length == 0 ? null : Convert.ToBase64String(data.{property.Name})"
+                    : property.Name);
+                code.Append(';');
+            }
+            code.Append($@"
+        }}
+
+        /// <summary>转为参数对象</summary>
+        /// <returns>参数对象</returns>
+        public static {Entity.Name} ToArgument ({Entity.EntityName} data) => new {Entity.Name}
+        {{");
+            isFirst = true;
+            foreach (PropertyConfig property in Columns.Where(p => !p.NoneApiArgument))
+            {
+                if (isFirst)
+                    isFirst = false;
+                else
+                    code.Append(",");
+
+                code.Append($@"
+            {property.Name}");
+                code.Append(' ', len - property.Name.Length);
+                code.Append("= ");
+                code.Append(property.DataType == "ByteArray"
+                    ? $@"data.{property.Name}==null || data.{property.Name}.Length == 0 ? null : Convert.ToBase64String(data.{property.Name})"
+                    : $@"data.{property.Name}");
+            }
+            code.Append(@"
+        };
 
         #endregion");
 
@@ -207,9 +228,8 @@ namespace {NameSpace}.WebApi
 
         public string ValidateCode()
         {
-            if (!SolutionConfig.Current.HaseValidateCode)
-                return "";
             var coder = new EntityValidateCoder { Entity = Entity };
+            var code = coder.Code(Columns.Where(p => !p.NoneApiArgument));
             return $@"
         #region 数据校验
         /// <summary>数据校验</summary>
@@ -234,7 +254,7 @@ namespace {NameSpace}.WebApi
         /// <returns>数据校验对象</returns>
         public ValidateResult Validate()
         {{
-            var result = new ValidateResult();{coder.Code()}
+            var result = new ValidateResult();{code}
             ValidateEx(result);
             return result;
         }}

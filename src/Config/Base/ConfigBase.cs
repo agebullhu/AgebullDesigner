@@ -95,40 +95,6 @@ namespace Agebull.EntityModel.Config
         #region ¿©’π≈‰÷√
 
         /// <summary>
-        /// ¿©’π≈‰÷√
-        /// </summary>
-        [DataMember, JsonProperty("extend", NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, Dictionary<string, string>> _extend;
-
-
-        /// <summary>
-        /// ¿©’π≈‰÷√
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [Category("…Ëº∆∆˜÷ß≥÷")]
-        [DisplayName("¿©’π≈‰÷√")]
-        public Dictionary<string, Dictionary<string, string>> Extend
-        {
-            get
-            {
-                if (_extend != null)
-                    return _extend;
-                _extend = new Dictionary<string, Dictionary<string, string>>();
-                BeforePropertyChanged(nameof(Extend), null, _extend);
-                return _extend;
-            }
-        }
-
-        [IgnoreDataMember, JsonIgnore]
-        private ConfigItemDictionary _extendDictionary;
-
-        /// <summary>
-        /// ¿©’π≈‰÷√
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore, Browsable(false)]
-        public ConfigItemDictionary ExtendDictionary => _extendDictionary ?? (_extendDictionary = new ConfigItemDictionary(Extend));
-
-        /// <summary>
         /// ∂¡–¥¿©’π≈‰÷√
         /// </summary>
         /// <param name="classify">∑÷¿‡</param>
@@ -136,10 +102,10 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public string this[string classify, string name]
         {
-            get => ExtendDictionary[classify, name];
+            get => Option[classify, name];
             set
             {
-                ExtendDictionary[classify, name] = value;
+                Option[classify, name] = value;
                 RaisePropertyChanged($"{classify}_{name}");
             }
         }
@@ -150,22 +116,25 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public string this[string name]
         {
-            get => ExtendDictionary[name];
+            get => Option[name];
             set
             {
-                ExtendDictionary[name] = value;
+                Option[name] = value;
                 RaisePropertyChanged(name);
             }
         }
-
-        [IgnoreDataMember, JsonIgnore]
-        private ConfigItemListBool _extendBool;
 
         /// <summary>
         /// ¿©’π≈‰÷√
         /// </summary>
         [IgnoreDataMember, JsonIgnore, Browsable(false)]
-        public ConfigItemListBool ExtendConfigListBool => _extendBool ?? (_extendBool = new ConfigItemListBool(ExtendDictionary));
+        public ConfigItemListBool ExtendConfigListBool => Option.ExtendConfigListBool;
+
+        /// <summary>
+        /// ¿©’π≈‰÷√
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore, Browsable(false)]
+        public ConfigItemList ExtendConfigList => Option.ExtendConfigList;
 
         #endregion
 

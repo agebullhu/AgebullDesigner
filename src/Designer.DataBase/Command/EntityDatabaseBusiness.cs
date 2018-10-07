@@ -19,13 +19,13 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public void CheckDbConfig(bool repair)
         {
-            if (Entity.IsFreeze || Entity.NoDataBase)
+            if (Entity.IsFreeze)
                 return;
-            if (Entity.IsReference)
+            if (Entity.NoDataBase)
             {
                 foreach (var col in Entity.Properties)
                 {
-                    col.ColumnName = null;
+                    col.DbFieldName = null;
                     col.DbType = null;
                 }
                 Entity.IsModify = true;
@@ -45,20 +45,19 @@ namespace Agebull.EntityModel.Config
                         Entity.Add(new PropertyConfig
                         {
                             Name = "Id",
-                            Caption = Entity.Caption + "ID",
-                            Description = Entity.Caption + "ID",
-                            IsPrimaryKey = true,
+                            Caption = Entity.Caption + "标识",
+                            Description = Entity.Caption + "标识",
                             IsIdentity = true,
-                            CsType = "int",
-                            CppType = "int",
-                            Parent = Entity
+                            IsPrimaryKey = true,
+                            DataType = SolutionConfig.Current.IdDataType
                         });
                 }
                 if (repair || string.IsNullOrWhiteSpace(Entity.SaveTableName))
                 {
                     Entity.SaveTableName = DataBaseHelper.ToTableName(Entity);
                 }
-                Entity.ReadTableName = Entity.SaveTableName;
+                if (repair)
+                    Entity.ReadTableName = Entity.SaveTableName;
             }
             var model = new PropertyDatabaseBusiness
             {
@@ -66,14 +65,11 @@ namespace Agebull.EntityModel.Config
             };
             foreach (var col in Entity.Properties)
             {
+                col.Parent = Entity;
                 if (col.IsDiscard)
                 {
                     continue;
                 }
-                col.Parent = Entity;
-                col.IsIdentity = col.IsPrimaryKey;
-                if (col.Initialization == "getdate")
-                    col.Initialization = "now()";
                 model.Property = col;
                 model.CheckByDb(repair);
                 col.IsModify = true;
@@ -94,7 +90,7 @@ namespace Agebull.EntityModel.Config
             }
             else if (string.IsNullOrEmpty(Entity.SaveTableName) || string.Equals(Entity.SaveTableName, Entity.ReadTableName))
             {
-                Entity.ReadTableName = "view_" + Entity.SaveTable.Replace("tb_", "");
+                Entity.ReadTableName = DataBaseHelper.ToViewName(Entity);
             }
         }
     }

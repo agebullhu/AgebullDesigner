@@ -28,19 +28,19 @@ namespace Agebull.EntityModel.RobotCoder
             if (property.IsPrimaryKey || property.IsLinkField)
                 dataTypeName = SolutionConfig.Current.IdDataType;
 
-            if (String.IsNullOrWhiteSpace(dataTypeName))
+            if (string.IsNullOrWhiteSpace(dataTypeName))
             {
                 dataType = SolutionConfig.Current.DataTypeMap.FirstOrDefault(p =>
-                               String.Equals(p.CSharp, property.CsType, StringComparison.OrdinalIgnoreCase)) ??
+                               string.Equals(p.CSharp, property.CsType, StringComparison.OrdinalIgnoreCase)) ??
                            SolutionConfig.Current.DataTypeMap.First(p =>
-                               String.Equals(p.Name, "string", StringComparison.OrdinalIgnoreCase));
+                               string.Equals(p.Name, "string", StringComparison.OrdinalIgnoreCase));
             }
             else
             {
                 dataType = SolutionConfig.Current.DataTypeMap.FirstOrDefault(p =>
-                               String.Equals(p.Name, dataTypeName, StringComparison.OrdinalIgnoreCase)) ??
+                               string.Equals(p.Name, dataTypeName, StringComparison.OrdinalIgnoreCase)) ??
                            SolutionConfig.Current.DataTypeMap.First(p =>
-                               String.Equals(p.Name, "string", StringComparison.OrdinalIgnoreCase));
+                               string.Equals(p.Name, "string", StringComparison.OrdinalIgnoreCase));
             }
 
             property.DataType = dataType.Name;
@@ -123,7 +123,7 @@ namespace Agebull.EntityModel.RobotCoder
         {
             string name = arg.IsEnum ? "Enum" : arg.DataType;
             var dataType = GlobalConfig.CurrentSolution.DataTypeMap.FirstOrDefault(p =>
-                String.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
+                string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
             if (dataType == null)
             {
                 GlobalConfig.CurrentSolution.DataTypeMap.Add(new DataTypeMapConfig

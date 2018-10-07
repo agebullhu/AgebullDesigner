@@ -64,14 +64,11 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void CheckByDb(EntityConfig entity)
         {
-            using (CodeGeneratorScope.CreateScope(entity))
+            var business = new EntityDatabaseBusiness
             {
-                EntityDatabaseBusiness business = new EntityDatabaseBusiness
-                {
-                    Entity = entity
-                };
-                business.CheckDbConfig(false);
-            }
+                Entity = entity
+            };
+            business.CheckDbConfig(false);
         }
 
         /// <summary>

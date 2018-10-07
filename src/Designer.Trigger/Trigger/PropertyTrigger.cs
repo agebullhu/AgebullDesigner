@@ -28,8 +28,8 @@ namespace Agebull.EntityModel.Designer
             switch (property)
             {
                 case nameof(TargetConfig.Name):
-                case nameof(TargetConfig.ColumnName):
-                    SyncLinkField(field => field.LinkField = TargetConfig.ColumnName);
+                case nameof(TargetConfig.DbFieldName):
+                    SyncLinkField(field => field.LinkField = TargetConfig.DbFieldName);
                     break;
                 case nameof(TargetConfig.CanEmpty):
                     if (!TargetConfig.CanEmpty)
@@ -39,6 +39,10 @@ namespace Agebull.EntityModel.Designer
                     if (!string.IsNullOrEmpty(TargetConfig.LinkField))
                     {
                         TargetConfig.Option.IsLink = true;
+                    }
+                    else if(!TargetConfig.Option.IsReference)
+                    {
+                        TargetConfig.Option.ReferenceConfig = null;
                     }
                     break;
                 case nameof(TargetConfig.Nullable):
@@ -57,7 +61,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     if ((field.LinkTable == saveTable || field.LinkTable == name) &&
                         (field.IsLinkField || field.IsLinkKey || field.IsLinkCaption) &&
-                        (field.LinkField == TargetConfig.ColumnName || field.LinkField == TargetConfig.Name))
+                        (field.LinkField == TargetConfig.DbFieldName || field.LinkField == TargetConfig.Name))
 
                         action(field);
 

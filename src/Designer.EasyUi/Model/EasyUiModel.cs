@@ -10,6 +10,7 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -23,156 +24,173 @@ using MessageBox = System.Windows.MessageBox;
 
 namespace Agebull.EntityModel.Designer
 {
-    public class EasyUiModel : DesignModelBase
+    [Export(typeof(IAutoRegister))]
+    [ExportMetadata("Symbol", '%')]
+    public class EasyUiModel : DesignCommondBase<EntityConfig>
     {
-        protected override void CreateCommands(NotificationList<CommandItemBase> commandItems)
+        /// <summary>
+        /// 生成命令对象
+        /// </summary>
+        /// <param name="commands"></param>
+        protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
-            commandItems.AddRange(new[]
+            commands.AddRange(new[]
             {
-                new CommandItem
+                new CommandItemBuilder<EntityConfig>
                 {
                     Action = CheckUiType,
-                    IsButton=true,
+                    //IsButton=true,
+                    Catalog="用户界面",
                     Editor = "EasyUi",
-                    Caption = "控件类型修复",
-                    Image = Application.Current.Resources["tree_item"] as ImageSource
+                    Caption = "控件类型修复"
                 },
-                new CommandItem
+                new CommandItemBuilder<EntityConfig>
                 {
                     Action = CheckSizeByLen,
-                    IsButton=true,
+                    //IsButton=true,
+                    Catalog="用户界面",
                     Editor = "EasyUi",
                     Caption = "按文字计算宽度",
-                    Image = Application.Current.Resources["tree_item"] as ImageSource
+                    ConfirmMessage="是否继续?"
                 },
-                new CommandItem
+                new CommandItemBuilder<EntityConfig>
                 {
                     Action = CheckSizeAuto,
-                    IsButton=true,
+                    //IsButton=true,
+                    Catalog="用户界面",
                     Editor = "EasyUi",
                     Caption = "自适应宽度",
-                    Image = Application.Current.Resources["tree_item"] as ImageSource
+                    ConfirmMessage="是否继续?"
                 },
-                new CommandItem
+                new CommandItemBuilder<EntityConfig>
                 {
                     Action = CheckExport,
                     Caption = "导出导出初始化",
-                    IsButton=true,
+                    //IsButton=true,
+                    Catalog="用户界面",
                     Editor = "EasyUi",
-                    Image = Application.Current.Resources["tree_item"] as ImageSource
+                    ConfirmMessage="是否继续?"
                 },
-                new CommandItem
+                new CommandItemBuilder<EntityConfig>
                 {
                     Action = CheckSimple,
-                    Caption = "列表字段初始化",
-                    IsButton=true,
+                    Caption = "界面字段初始化",
+                    //IsButton=true,
+                    Catalog="用户界面",
                     Editor = "EasyUi",
-                    Image = Application.Current.Resources["tree_item"] as ImageSource
-                },
-                new CommandItem
-                {
-                    Action = CreateUiCode,
-                    Caption = "生成UI代码（WEB）",
-                    Editor = "EasyUi",
-                    Image = Application.Current.Resources["tree_item"] as ImageSource
+                    ConfirmMessage="是否继续?"
                 }
             });
         }
 
         #region 代码
 
-        internal void CreateUiCode(object arg)
+        private void CheckUiType(EntityConfig entity)
         {
-            if (Context.SelectEntity == null)
-            {
-                return;
-            }
-            Context.StateMessage = "UI代码生成中...";
-
-            var builder = ProjectBuilder.CreateBuilder("EasyUi");
-            builder.CreateEntityCode(Context.SelectEntity.Parent, Context.SelectEntity);
-
-            Context.StateMessage = "UI代码已生成";
-        }
-
-        private void CheckUiType(object arg)
-        {
-            if (Context.SelectEntity == null)
+            if (entity == null)
                 return;
             bool repair = true;
-            if (Context.SelectEntity.HaseEasyUi)
+            if (entity.HaseEasyUi)
             {
                 var result = MessageBox.Show("点是执行重置,点否执行修复", "控件类型修复", MessageBoxButton.YesNoCancel);
                 if (result == MessageBoxResult.Cancel)
                     return;
                 repair = result == MessageBoxResult.Yes;
             }
-            Context.SelectEntity.HaseEasyUi = true;
+            entity.HaseEasyUi = true;
             var bl = new PropertyEasyUiModel();
-            foreach (var field in Context.SelectEntity.Properties)
+            foreach (var field in entity.Properties)
             {
                 bl.CheckField(field, repair);
             }
         }
-        private void CheckSizeByLen(object arg)
+        private void CheckSizeByLen(EntityConfig entity)
         {
-            if (Context.SelectEntity == null)
+            if (entity == null)
                 return;
-            Context.SelectEntity.HaseEasyUi = true;
+            entity.HaseEasyUi = true;
             var bl = new PropertyEasyUiModel();
-            foreach (var field in Context.SelectEntity.Properties)
+            foreach (var field in entity.Properties)
             {
                 bl.CheckSize(field, SizeOption.ByLen);
             }
         }
 
-        private void CheckSizeAuto(object arg)
+        private void CheckSizeAuto(EntityConfig entity)
         {
-            if (Context.SelectEntity == null)
-                return;
-            Context.SelectEntity.HaseEasyUi = true;
+            entity.HaseEasyUi = true;
             var bl = new PropertyEasyUiModel();
-            foreach (var field in Context.SelectEntity.Properties)
+            foreach (var field in entity.Properties)
             {
                 bl.CheckSize(field, SizeOption.Auto);
             }
         }
-        private void CheckExport(object arg)
+
+        private void CheckExport(EntityConfig entity)
         {
-            if (MessageBox.Show("是否继续?", "导出导出初始化", MessageBoxButton.YesNo) == MessageBoxResult.No)
-                return;
-            Foreach(field => field.IsPrimaryKey ||
-                            !field.IsDiscard && !field.IsLinkKey && !field.DbInnerField &&
-                            !field.InnerField && !field.IsSystemField && !field.DenyClient,
-                    field =>
-                    {
-                        field.ExtendConfigListBool["easyui", "CanExport"] = true;
-                        field.ExtendConfigListBool["easyui", "CanImport"] = true;
-                    });
+            foreach (var field in entity.Properties)
+            {
+                if (field.IsPrimaryKey ||
+                    !field.IsDiscard && !field.IsLinkKey && !field.DbInnerField &&
+                    !field.InnerField && !field.IsSystemField && !field.DenyClient)
+                {
+                    field.ExtendConfigListBool["easyui", "CanExport"] = true;
+                    field.ExtendConfigListBool["easyui", "CanImport"] = true;
+                }
+            }
         }
-        
 
-        private void CheckSimple(object arg)
+        private void CheckSimple(EntityConfig entity)
         {
-            if (MessageBox.Show("是否继续?", "列表字段初始化", MessageBoxButton.YesNo) == MessageBoxResult.No)
-                return;
-            Foreach(field => field.IsSystemField , field =>
-                 {
-                     field.NoneGrid = true;
-                     field.NoneDetails = true;
-                 });
+            foreach (var field in entity.Properties)
+            {
+                if (field.IsSystemField || field.IsDiscard || field.DbInnerField || field.InnerField || field.DenyClient)
+                {
+                    field.IsRequired = false;
+                    field.NoneGrid = true;
+                    field.NoneDetails = true;
+                    continue;
+                }
+                field.CanEmpty = !field.IsCaption;
+                field.IsRequired = field.IsCaption;
 
-            Foreach(field => !field.IsPrimaryKey &&
-                             (field.IsDiscard || field.IsLinkKey || field.DbInnerField || field.InnerField || field.DenyClient),
-                    field => field.NoneGrid = true);
+                if (field.IsLinkKey)
+                {
+                    field.NoneGrid = true;
+                    field.NoneDetails = false;
+                    field.InputType = "easyui-combobox";
+                    field.ComboBoxUrl = null;
+                    field.FormOption = "valueField:'id', textField:'text'";
+                }
 
-            Foreach(field => !field.IsPrimaryKey &&
-                             (field.IsDiscard || field.DbInnerField || field.InnerField || field.DenyClient),
-                    field => field.NoneDetails = true);
+                if (field.IsLinkCaption)
+                {
+                    field.NoneGrid = false;
+                    field.NoneDetails = true;
+                    field.CanEmpty = true;
+                    field.IsRequired = false;
+                }
 
-            Foreach(field => field.IsPrimaryKey || !field.NoneGrid ||
-                             field.Name == "DataState" || field.Name == "AuditState" || field.Name == "IsFreeze",
-                    field => field.ExtendConfigListBool["easyui", "simple"] = true);
+                if (field.IsBlob || field.DataType == "ByteArray")
+                {
+                    field.CanEmpty = true;
+                    field.IsRequired = false;
+                    field.NoneJson = !field.IsImage;
+                    field.NoneGrid = true;
+                    field.NoneDetails = !field.IsImage;
+                    if (entity.PrimaryColumn != null)
+                        field.Index = entity.PrimaryColumn.Index;
+                }
+            }
+
+            foreach (var field in entity.Properties)
+            {
+                if (field.IsPrimaryKey || !field.NoneGrid ||
+                    field.Name == "DataState" || field.Name == "AuditState" || field.Name == "IsFreeze")
+                    field.ExtendConfigListBool["easyui", "simple"] = true;
+            }
+            if (entity.Properties.Count(p => !p.NoneDetails) > 12)
+                entity.FormCloumn = 2;
         }
 
         #endregion

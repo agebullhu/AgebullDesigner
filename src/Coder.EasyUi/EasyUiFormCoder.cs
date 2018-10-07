@@ -21,7 +21,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         {
             if (Entity.FormCloumn <= 0)
                 Entity.FormCloumn = 1;
-            var ext = Entity.MaxForm ? " isPanel='true'" : $" style='width:{Entity.FormCloumn * 485}px;'";
+            var ext = Entity.MaxForm ? " isPanel='true'" : $" style='width:{Entity.FormCloumn * 485 + 15}px;'";
             string name = Entity.Name.ToLWord();
             var fields = Entity.ClientProperty.Where(p => !p.NoneDetails).ToArray();
             return $@"
@@ -37,10 +37,10 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         private string FormHide()
         {
             StringBuilder code = new StringBuilder();
-            foreach (var field in Entity.ClientProperty.Where(p => p.NoneDetails && (p.IsPrimaryKey || p.ExtendConfigListBool["easyui","userFormHide"] || !p.IsCompute && !p.IsSystemField)))
+            foreach (var field in Entity.ClientProperty.Where(p => p.IsImage || p.NoneDetails && (p.IsPrimaryKey || p.ExtendConfigListBool["easyui", "userFormHide"] || !p.IsCompute && !p.IsSystemField)))
             {
                 code.Append($@"
-    <input name='{field.JsonName}' type='hidden' />");
+    <input name='{field.JsonName}' id='{field.JsonName}' type='hidden' />");
             }
             return code.ToString();
         }
@@ -84,6 +84,29 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                 code.Append(@"<br/>");
             }
 
+            if (field.IsImage)
+            {
+                code.Append($@"
+            <div style='float: left;width: 495px;'>
+                <div class='inputField{cssEnd}' id='fr_{field.JsonName}'>
+                    <div class='inputRegion' id='ir_{field.JsonName}'>
+                        <div class='inputLabel'>{caption}:</div>
+                        <div class=""inputValue input_image"">
+                            <img id=""img{field.Name}"" alt=""ÕÕÆ¬"" />
+                            <div style=""float: right"" >
+                                <a id=""btn{field.Name}Delete"" href=""javascript:void(0)"" class=""easyui-linkbutton""
+                                   data-options=""iconCls:'icon-delete',plain:true""
+                                   onclick=""clearImage('{field.JsonName}','img{field.Name}'); return false;""></a>
+                                <a id=""btn{field.Name}Select"" href=""javascript:void(0)"" class=""easyui-linkbutton""
+                                   data-options=""iconCls:'icon-edit',plain:true""
+                                   onclick=""selectImage('{field.JsonName}','img{field.Name}'); return false;""></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>");
+                return;
+            }
             code.Append($@"
             <div class='inputField{cssEnd}' id='fr_{field.JsonName}'>
                 <div class='inputRegion' id='ir_{field.JsonName}'>

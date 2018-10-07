@@ -43,16 +43,12 @@ namespace Agebull.Common.Mvvm
             TargetType = typeof(TParameter);
             Command = new AsyncCommand<TParameter, TResult>(DoPrepare, Exceute, DoEnd);
         }
-        /// <summary>
-        /// 无需用户确认
-        /// </summary>
-        public bool NoConfirm { get; set; }
 
         #region 命令
 
         private bool DoPrepare(TParameter parameter, Action<TParameter> action)
         {
-            if (!NoConfirm &&
+            if (DoConfirm && 
                 MessageBox.Show(ConfirmMessage ?? $"确认执行【{Caption}】操作吗?", "对象编辑", MessageBoxButton.YesNo) !=
                 MessageBoxResult.Yes)
             {

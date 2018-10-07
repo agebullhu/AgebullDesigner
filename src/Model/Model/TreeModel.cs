@@ -78,16 +78,13 @@ namespace Agebull.EntityModel.Designer
                 IsExpanded = true,
                 SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
             };
-            var group = new ClassifyGroupConfig<EntityConfig>(project.Entities, p => p.Classify,
-                (name, cfg) => cfg.Classify = name, project.Classifies);
-
             var eitem = new ConfigTreeItem<ProjectConfig>(project)
             {
                 IsAssist = true,
                 Header = "ΚµΜε",
                 HeaderField = null,
                 CreateChildFunc = CreateEntityClassifiesTreeItem,
-                SoruceItemsExpression = () => group.Classifies,
+                SoruceItemsExpression = () => project.Classifies,
                 SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
             };
             node.Items.Add(eitem);
@@ -114,8 +111,8 @@ namespace Agebull.EntityModel.Designer
 
         private TreeItem CreateEntityClassifiesTreeItem(object charg)
         {
-            var child = (ClassifyItem<EntityConfig>)charg;
-            return new ConfigTreeItem<ClassifyItem<EntityConfig>>(child)
+            var child = (EntityClassify)charg;
+            return new ConfigTreeItem<EntityClassify>(child)
             {
                 IsAssist = true,
                 IsExpanded = true,

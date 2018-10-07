@@ -36,6 +36,7 @@ namespace Agebull.EntityModel.Designer
             {
                 Catalog = "字段",
                 Action = CheckEnum,
+                NoConfirm=true,
                 TargetType = type,
                 Caption = "刷新对象引用",
                 IconName = "tree_item"
@@ -43,6 +44,7 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder
             {
                 Catalog = "字段",
+                NoConfirm = true,
                 Action = BindEnum,
                 TargetType = type,
                 Caption = "绑定或新增枚举",
@@ -68,12 +70,13 @@ namespace Agebull.EntityModel.Designer
                 return;
             if (MessageBox.Show("是否新增一个枚举?", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                 return;
-            property.EnumConfig = new EnumConfig
+            var enumConfig = new EnumConfig
             {
                 Name = property.CustomType ?? (property.Name.Contains("Type") ? property.Name : property.Name + "Type"),
-                Caption = property.Caption + "枚举类型"
+                Caption = property.Caption + "类型"
             };
-            property.Parent.Parent.Add(property.EnumConfig);
+            property.Parent.Parent.Add(enumConfig);
+            property.EnumConfig = enumConfig;
         }
 
         public void CheckEnum(PropertyConfig property)

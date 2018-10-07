@@ -18,32 +18,18 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("枚举", "枚举(C++)", "cpp", (EnumCpp));
-            MomentCoder.RegisteCoder("枚举", "枚举(JS)", "js", EnumJs);
-            MomentCoder.RegisteCoder("枚举", "枚举(C#)", "cs", (EnumFunc));
-            MomentCoder.RegisteCoder("枚举", "枚举名称扩展方法(Enum.Caption())", "cs", EnumCs);
+            MomentCoder.RegisteCoder<EnumConfig>("枚举", "枚举(C++)", "cpp", (EnumCpp));
+            MomentCoder.RegisteCoder<EnumConfig>("枚举", "枚举(JS)", "js", EnumJs);
+            MomentCoder.RegisteCoder<EnumConfig>("枚举", "枚举(C#)", "cs", (EnumFunc));
+            MomentCoder.RegisteCoder<EnumConfig>("枚举", "枚举名称扩展方法(Enum.Caption())", "cs", EnumCs);
         }
         #endregion
 
         #region 枚举(C++)
 
-        public static string EnumCpp(ConfigBase config)
+        public static string EnumCpp(EnumConfig config)
         {
             var code = new StringBuilder();
-            if (config is EnumConfig enumConfig)
-            {
-                EnumCpp(code, enumConfig);
-            }
-            else
-            {
-                foreach (var em in SolutionConfig.Current.Enums)
-                    EnumCpp(code, em);
-            }
-            return code.ToString();
-        }
-
-        private static void EnumCpp(StringBuilder code, EnumConfig config)
-        {
             code.Append($@"
 
 /**
@@ -64,6 +50,7 @@ namespace Agebull.EntityModel.RobotCoder
             }
             code.Append(@"
 };");
+            return code.ToString();
         }
         #endregion
 
@@ -84,7 +71,7 @@ namespace Agebull.EntityModel.RobotCoder
                         foreach (var ef in entity.LastProperties.Where(p => p.EnumConfig != null))
                             if (!enums.Contains(ef.EnumConfig))
                                 enums.Add(ef.EnumConfig);
-                        
+
                     }
                     enums.ForEach(p => EnumCode(code, p));
                     break;
@@ -132,28 +119,10 @@ namespace Agebull.EntityModel.RobotCoder
 
         #region EnumJs
 
-        private static string EnumJs(ConfigBase config)
+        private static string EnumJs(EnumConfig enumc)
         {
             var code = new StringBuilder();
-            if (config is EnumConfig enumConfig)
-            {
-                TypeDefaultScript(code, enumConfig);
-            }
-            else
-            {
-                foreach (var item in SolutionConfig.Current.Enums)
-                {
-                    TypeDefaultScript(code, item);
-                }
-            }
-            return code.ToString();
-        }
 
-        /// <summary>
-        ///     生成枚举
-        /// </summary>
-        public static void TypeDefaultScript(StringBuilder code, EnumConfig enumc)
-        {
             code.Append($@"
 /**
  * {enumc.Caption}
@@ -179,28 +148,16 @@ function {enumc.Name.ToLWord()}Format(value) {{
     return arrayFormat(value, {enumc.Name.ToLWord()});
 }}
 ");
+            return code.ToString();
         }
 
         #endregion
 
         #region EnumCs
 
-        private static string EnumCs(ConfigBase config)
+        private static string EnumCs(EnumConfig enumc)
         {
             var code = new StringBuilder();
-            List<EnumConfig> doed = new List<EnumConfig>();
-            ForeachByCurrent(enumc => EnumName(code, enumc, doed));
-            return code.ToString();
-        }
-
-        /// <summary>
-        ///     生成枚举
-        /// </summary>
-        public static void EnumName(StringBuilder code, EnumConfig enumc, List<EnumConfig> doed)
-        {
-            if (doed.Contains(enumc))
-                return;
-            doed.Add(enumc);
             code.Append($@"
         /// <summary>
         ///     {enumc.Caption}名称转换
@@ -221,8 +178,8 @@ function {enumc.Name.ToLWord()}Format(value) {{
             }}
         }}
 ");
+            return code.ToString();
         }
-
         #endregion
     }
 }

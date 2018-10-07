@@ -7,23 +7,50 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 
     public class EasyUiHelperCoder : MomentCoderBase
     {
-        public string InputConvert()
+        public string InputConvert(EntityConfig entity)
         {
             var code = new StringBuilder();
-            foreach (var group in Entity.ClientProperty.Where(p => p.ExtendConfigListBool["easyui", "userFormHide"] || p.CanUserInput).GroupBy(p => p.Group))
+            foreach (var group in entity.ClientProperty.Where(p => p.ExtendConfigListBool["easyui", "userFormHide"] || p.CanUserInput).GroupBy(p => p.Group))
             {
                 code.Append($@"
-            //{group.Key ?? "数据֪"}");
+            //{group.Key ?? "-"}");
                 foreach (var field in group.OrderBy(p => p.Index))
                 {
-                    code.Append($@"
+                    string type = field.CsType.ToLower();
+                    if (field.DataType == "ByteArray")
+                    {
+                        if (field.IsImage)
+                        {
+                            code.Append($@"
+            {{
+                var file = convert.ToString(""{field.JsonName}"");
+                
+                if (string.IsNullOrEmpty(file))
+                    data.{field.Name}_Base64 = null;
+                else if(file != ""*"" && file.Length< 100 && file[0] == '/')
+                {{
+                    var call = new WebApiCaller(ConfigurationManager.AppSettings[""ManageAddress""]);
+                    var result = call.Get<string>(""/ueditor/ueditor.aspx"", $""action=base64&url={{file}}"");
+                    data.{field.Name}_Base64 = result.Success ? result.ResultData : null;
+                }}
+            }}");
+                            continue;
+                        }
+                        type = "string";
+                        code.Append($@"
+            data.{field.Name}_Base64 = ");
+                    }
+                    else
+                    {
+                        code.Append($@"
             data.{field.Name} = ");
-                    if (!string.IsNullOrWhiteSpace(field.CustomType))
+                    }
+                    if (field.IsEnum && !string.IsNullOrWhiteSpace(field.CustomType))
                     {
                         code.Append($@"({field.CustomType})convert.ToInteger(""{field.JsonName}"");");
                         continue;
                     }
-                    switch (field.CsType.ToLower())
+                    switch (type)
                     {
                         case "short":
                         case "int16":
@@ -86,13 +113,6 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                                 ? $@"convert.ToNullGuid(""{field.JsonName}"");"
                                 : $@"convert.ToGuid(""{field.JsonName}"");");
                             break;
-                        //case "byte":
-                        //case "char":
-                        //case "nchar":
-                        //case "varchar":
-                        //case "nvarchar":
-                        //case "string":
-                        //case "text":
                         default:
                             code.Append($@"convert.ToString(""{field.JsonName}"");");
                             break;

@@ -363,7 +363,7 @@ namespace {NameSpace}.DataAccess
                     sql.Append(",");
                 }
                 sql.Append($@"
-            {{ ""{field.PropertyName}"" , ""{field.ColumnName}"" }}");
+            {{ ""{field.PropertyName}"" , ""{field.DbFieldName}"" }}");
                 names.Add(field.PropertyName);
 
                 var alias = field.GetAliasPropertys();
@@ -375,13 +375,13 @@ namespace {NameSpace}.DataAccess
                     }
                     names.Add(a);
                     sql.Append($@",
-            {{ ""{a}"" , ""{field.ColumnName}"" }}");
+            {{ ""{a}"" , ""{field.DbFieldName}"" }}");
                 }
             }
             if (!table.DbFields.Any(p => p.PropertyName.Equals("Id", StringComparison.OrdinalIgnoreCase)))
             {
                 sql.Append($@",
-            {{ ""Id"" , ""{table.PrimaryColumn.ColumnName}"" }}");
+            {{ ""Id"" , ""{table.PrimaryColumn.DbFieldName}"" }}");
             }
         }
 
@@ -401,7 +401,7 @@ namespace {NameSpace}.DataAccess
                     sql.Append(",");
                 }
                 sql.AppendFormat(@"
-    [{0}] AS [{1}]", field.ColumnName, field.PropertyName);
+    [{0}] AS [{1}]", field.DbFieldName, field.PropertyName);
             }
             return sql.ToString();
         }
@@ -413,7 +413,7 @@ namespace {NameSpace}.DataAccess
         private string UniqueCondition()
         {
             if (!Entity.DbFields.Any(p => p.UniqueIndex > 0))
-                return $@"[{Entity.PrimaryColumn.ColumnName}] = @{Entity.PrimaryColumn.PropertyName}";
+                return $@"[{Entity.PrimaryColumn.DbFieldName}] = @{Entity.PrimaryColumn.PropertyName}";
 
             var code = new StringBuilder();
             var uniqueFields = Entity.DbFields.Where(p => p.UniqueIndex > 0).OrderBy(p => p.UniqueIndex).ToArray();
@@ -428,7 +428,7 @@ namespace {NameSpace}.DataAccess
                 {
                     code.Append(" AND ");
                 }
-                code.AppendFormat("{0}=@{1}", col.ColumnName, col.PropertyName);
+                code.AppendFormat("{0}=@{1}", col.DbFieldName, col.PropertyName);
             }
             return code.ToString();
         }
@@ -441,12 +441,12 @@ namespace {NameSpace}.DataAccess
             var code = new StringBuilder();
             code.Append($@"
 DECLARE @__myId INT;
-SELECT @__myId = [{Entity.PrimaryColumn.ColumnName}] FROM [{Entity.SaveTable}] WHERE {UniqueCondition()}");
+SELECT @__myId = [{Entity.PrimaryColumn.DbFieldName}] FROM [{Entity.SaveTable}] WHERE {UniqueCondition()}");
 
             code.Append($@"
 IF @__myId IS NULL
 BEGIN{OnlyInsertSql(true)}
-    SET @__myId = {(Entity.PrimaryColumn.IsIdentity ? "SCOPE_IDENTITY()" : Entity.PrimaryColumn.ColumnName)};
+    SET @__myId = {(Entity.PrimaryColumn.IsIdentity ? "SCOPE_IDENTITY()" : Entity.PrimaryColumn.DbFieldName)};
 END
 ELSE
 BEGIN
@@ -475,7 +475,7 @@ INSERT INTO [{Entity.SaveTable}]
                     sql.Append(",");
                 }
                 sql.Append($@"
-    [{field.ColumnName}]");
+    [{field.DbFieldName}]");
             }
             sql.Append(@"
 )
@@ -528,7 +528,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
                     sql.Append(",");
                 }
                 sql.AppendFormat(@"
-       [{0}] = @{1}", field.ColumnName, field.PropertyName);
+       [{0}] = @{1}", field.DbFieldName, field.PropertyName);
             }
             sql.AppendFormat(@"
  WHERE {0};", UniqueCondition());
@@ -552,7 +552,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
                 code.AppendFormat(@"
             //{0}
             if (data.__EntityStatus.ModifiedProperties[{1}.Real_{2}] > 0)
-                sql.AppendLine(""       [{3}] = @{2}"");", field.Caption, Entity.EntityName, field.PropertyName, field.ColumnName);
+                sql.AppendLine(""       [{3}] = @{2}"");", field.Caption, Entity.EntityName, field.PropertyName, field.DbFieldName);
             }
             code.AppendFormat(@"
             sql.Append("" WHERE {0};"");", UniqueCondition());
