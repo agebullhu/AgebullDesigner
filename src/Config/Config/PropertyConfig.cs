@@ -564,9 +564,9 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"代码访问范围"), Description(AccessType_Description)]
-        public string AccessType => InnerField || DenyScope.HasFlag(AccessScopeType.Server) 
-                                    //||!IsRelation && !string.IsNullOrWhiteSpace(ExtendRole) &&
-                                    //ExtendRole.Contains(",")
+        public string AccessType => InnerField || DenyScope.HasFlag(AccessScopeType.Server)
+            //||!IsRelation && !string.IsNullOrWhiteSpace(ExtendRole) &&
+            //ExtendRole.Contains(",")
             ? "internal"
             : "public ";
 
@@ -1086,7 +1086,10 @@ namespace Agebull.EntityModel.Config
         [Category(@"API支持"), DisplayName(@"字段名称(json)")]
         public string JsonName
         {
-            get => WorkContext.InCoderGenerating ? _jsonName ?? Name : _jsonName;
+            get =>
+                !IsLinkField && Reference != null && Reference.IsInterfaceField
+                ? Reference.JsonName
+                : WorkContext.InCoderGenerating ? _jsonName ?? Name : _jsonName;
             set
             {
                 if (_jsonName == value)
@@ -1325,7 +1328,9 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"构建数据库索引"), Description("构建数据库索引的优化选项")]
-        public bool CreateDbIndex => IsPrimaryKey || IsIdentity || IsLinkKey || IsCaption || _isDbIndex;
+        public bool CreateDbIndex => Reference != null 
+            ? Reference.CreateDbIndex || _isDbIndex
+            : IsPrimaryKey || IsIdentity || IsLinkKey || IsCaption || _isDbIndex;
 
         /// <summary>
         /// 数据库索引

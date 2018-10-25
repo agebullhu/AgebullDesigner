@@ -226,6 +226,7 @@ using Newtonsoft.Json;
 
 using Agebull.Common;
 using Agebull.Common.DataModel;
+using Agebull.Common.Rpc;
 using Agebull.Common.WebApi;
 using Gboxt.Common;
 using Gboxt.Common.DataModel;

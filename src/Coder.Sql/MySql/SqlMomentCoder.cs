@@ -23,16 +23,17 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.MySql
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder< EntityConfig>("MySql", "生成表(SQL)", "sql",p=>!p.NoDataBase, CreateTable);
+            MomentCoder.RegisteCoder<EntityConfig>("MySql", "生成表(SQL)", "sql", p => !p.NoDataBase, CreateTable);
             MomentCoder.RegisteCoder("MySql", "插入表字段(SQL)", "sql", p => !p.NoDataBase, AddColumnCode);
             MomentCoder.RegisteCoder("MySql", "修改表字段(SQL)", "sql", p => !p.NoDataBase, ChangeColumnCode);
             MomentCoder.RegisteCoder("MySql", "修改BOOL字段(SQL)", "sql", p => !p.NoDataBase, ChangeBoolColumnCode);
             MomentCoder.RegisteCoder("MySql", "生成视图(SQL)", "sql", p => !p.NoDataBase, CreateView);
-            MomentCoder.RegisteCoder< ProjectConfig>("MySql", "插入页面表(SQL)", "sql", PageInsertSql);
+            MomentCoder.RegisteCoder<ProjectConfig>("MySql", "插入页面表(SQL)", "sql", PageInsertSql);
             MomentCoder.RegisteCoder("MySql", "删除视图(SQL)", "sql", p => !p.NoDataBase, DropView);
             MomentCoder.RegisteCoder("MySql", "删除表(SQL)", "sql", p => !p.NoDataBase, DropTable);
             MomentCoder.RegisteCoder("MySql", "清除表(SQL)", "sql", p => !p.NoDataBase, TruncateTable);
-            MomentCoder.RegisteCoder("MySql", "添加索引", "sql", p => !p.NoDataBase, AddIndex);
+            MomentCoder.RegisteCoder("MySql", "添加全部索引", "sql", p => !p.NoDataBase, AddIndex);
+            MomentCoder.RegisteCoder("MySql", "添加关键索引", "sql", p => !p.NoDataBase, AddRefIndex);
         }
         #endregion
         public static string AddIndex(EntityConfig entity)
@@ -41,7 +42,52 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.MySql
             code.Append($@"
 ALTER TABLE  `{entity.SaveTable}`");
             bool isFirst = true;
-            foreach (var property in entity.DbFields.Where(p=>p.CreateDbIndex))
+            foreach (var property in entity.DbFields.Where(p => p.CreateDbIndex))
+            {
+                if (isFirst)
+                    isFirst = false;
+                else code.Append(',');
+                if (property.IsPrimaryKey || property.IsIdentity)
+                {
+                    code.Append($@"
+    ADD UNIQUE (`{property.DbFieldName}`)");
+                    continue;
+                }
+                if (property.IsMemo || property.IsBlob)
+                {
+                    code.Append($@"
+    ADD FULLTEXT (`{property.DbFieldName}`)");
+                    continue;
+                }
+                code.Append($@"
+    ADD INDEX {property.Name}_Index (`{property.DbFieldName}`)");
+            }
+
+            if (entity.DbFields.Any(p => p.UniqueIndex > 0))
+            {
+                isFirst = true;
+                code.Append($@"
+    ADD INDEX {entity.Name}_Unique_Index (");
+                foreach (var property in entity.DbFields.Where(p => p.UniqueIndex > 0))
+                {
+                    if (isFirst)
+                        isFirst = false;
+                    else code.Append(',');
+                    code.Append($"`{property.DbFieldName}`");
+                }
+                code.Append(")");
+            }
+            code.Append(";");
+            return code.ToString();
+        }
+
+        public static string AddRefIndex(EntityConfig entity)
+        {
+            var code = new StringBuilder();
+            code.Append($@"
+ALTER TABLE  `{entity.SaveTable}`");
+            bool isFirst = true;
+            foreach (var property in entity.DbFields.Where(p => p.CreateDbIndex && p.IsSystemField))
             {
                 if (isFirst)
                     isFirst = false;
@@ -113,7 +159,7 @@ DROP VIEW `{entity.ReadTableName}`;
             string viewName;
             if (IsNullOrWhiteSpace(entity.ReadTableName) || entity.ReadTableName == entity.SaveTable)
             {
-                viewName = DataBaseHelper.ToViewName(entity); 
+                viewName = DataBaseHelper.ToViewName(entity);
             }
             else
             {
@@ -137,7 +183,7 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
                 {
                     if (tables.TryGetValue(field.LinkTable, out EntityConfig friend))
                     {
-                        var linkField =friend.Properties.FirstOrDefault(p => p.DbFieldName == field.LinkField || p.Name == field.LinkField);
+                        var linkField = friend.Properties.FirstOrDefault(p => p.DbFieldName == field.LinkField || p.Name == field.LinkField);
                         if (linkField != null)
                         {
                             builder.AppendFormat(@"`{0}`.`{1}` as `{2}`", friend.Name, linkField.DbFieldName, field.DbFieldName);
@@ -151,7 +197,7 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
     FROM `{entity.SaveTable}`");
             foreach (var table in tables.Values)
             {
-                var field = entity.DbFields.FirstOrDefault(p => p.IsLinkKey && (p.LinkTable == table.SaveTable|| p.LinkTable == table.Name));
+                var field = entity.DbFields.FirstOrDefault(p => p.IsLinkKey && (p.LinkTable == table.SaveTable || p.LinkTable == table.Name));
                 if (field == null)
                     continue;
                 var linkField = table.Properties.FirstOrDefault(p => p.Name == field.LinkField || p.DbFieldName == field.LinkField);
@@ -418,7 +464,7 @@ ALTER TABLE `{entity.SaveTable}`");
         /// <param name="field">字段</param>
         /// <param name="code">代码</param>
         /// <param name="idx"></param>
-        public static void FieldReadCode(EntityConfig entity, PropertyConfig field, StringBuilder code ,int idx)
+        public static void FieldReadCode(EntityConfig entity, PropertyConfig field, StringBuilder code, int idx)
         {
             if (!IsNullOrWhiteSpace(field.CustomType))
             {
@@ -432,7 +478,12 @@ ALTER TABLE `{entity.SaveTable}`");
             switch (type)
             {
                 case "byte[]":
-                    code.Append($@"
+                    if (field.IsImage)
+                        code.Append($@"
+                if (GlobalContext.Current.Feature != 1 && !reader.IsDBNull({idx}))
+                    entity._{field.Name.ToLWord()} = (byte[])reader[{idx}];");
+                    else
+                        code.Append($@"
                 if (!reader.IsDBNull({idx}))
                     entity._{field.Name.ToLWord()} = (byte[])reader[{idx}];");
                     return;
