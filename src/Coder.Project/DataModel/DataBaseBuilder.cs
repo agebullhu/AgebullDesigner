@@ -16,7 +16,7 @@ namespace Agebull.EntityModel.RobotCoder
         protected override void CreateBaCode(string path)
         {
 
-            string code = $@"
+            string code = $@"#region
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -38,6 +38,7 @@ using Gboxt.Common.DataModel;
 using Gboxt.Common.DataModel.MySql;
 
 {Project.UsingNameSpaces}
+#endregion
 
 namespace {Project.NameSpace}.DataAccess
 {{
@@ -121,7 +122,7 @@ namespace DALFactory
         protected override void CreateExCode(string path)
         {
             string file = Path.Combine(path, Project.DataBaseObjectName + ".cs");
-            string code = $@"
+            string code = $@"#region
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -144,6 +145,7 @@ using Gboxt.Common.DataModel;
 
 using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
 using Gboxt.Common.DataModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
+#endregion
 
 namespace {Project.NameSpace}.DataAccess
 {{

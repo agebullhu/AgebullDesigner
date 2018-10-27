@@ -13,7 +13,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// <summary>
         /// Ãû³Æ
         /// </summary>
-        protected override string FileName => "Form.htm";
+        protected override string FileName => "form.htm";
 
         protected override string LangName => "html";
 

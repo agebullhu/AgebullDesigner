@@ -40,7 +40,7 @@ var {Entity.Name}Form = {{
     /**
      * 表单地址
      */
-    formUrl: 'Form.htm',
+    formUrl: 'form.htm',
     /**
      * 表单参数
      */
@@ -132,7 +132,7 @@ var page = {{
     /**
      * 表单地址
      */
-    formUrl: 'Form.htm',
+    formUrl: 'form.htm',
     /**
      * 表单对象
      */

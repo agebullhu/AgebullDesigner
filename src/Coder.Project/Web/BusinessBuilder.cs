@@ -24,7 +24,8 @@ namespace Agebull.EntityModel.RobotCoder
                 if (Entity.Interfaces.Contains("IAuditData"))
                     baseClass = "BusinessLogicByAudit";
             }
-            var code = $@"using System;
+            var code = $@"#region
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -49,6 +50,7 @@ using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "Syste
 using Gboxt.Common.DataModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
 using Agebull.Common.DataModel.BusinessLogic;
 using {NameSpace}.DataAccess;
+#endregion
 
 namespace {NameSpace}.BusinessLogic
 {{
@@ -186,7 +188,7 @@ using Agebull.Common.Mvvm.ServiceAccess;
         /// </summary>
         protected override void CreateBaCode(string path)
         {
-            var code = $@"
+            var code = $@"#region
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -214,6 +216,7 @@ using {NameSpace}.DataAccess;
 using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
 using Gboxt.Common.DataModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
 {usingCode}
+#endregion
 
 namespace {NameSpace}.BusinessLogic
 {{

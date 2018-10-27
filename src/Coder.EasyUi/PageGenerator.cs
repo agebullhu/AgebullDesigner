@@ -53,7 +53,7 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
             //    WriteFile(file, ExportAspxCode());
             //}
             {
-                var file = ConfigPath(Entity, "File_Web_Form", path, folder, "Form.htm");
+                var file = ConfigPath(Entity, "File_Web_Form", path, folder, "form.htm");
                 {
                     var coder = new EasyUiFormCoder();
                     WriteFile(file, coder.BaseCode(Entity));

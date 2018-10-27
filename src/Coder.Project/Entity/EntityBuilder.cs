@@ -25,7 +25,7 @@ namespace Agebull.EntityModel.RobotCoder
         {
             string file = Path.Combine(path, Entity.Name + ".Designer.cs");
 
-            string code = $@"
+            string code = $@"#region
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -47,6 +47,7 @@ using Gboxt.Common.DataModel.Extends;
 using Agebull.Common.WebApi;
 
 {Project.UsingNameSpaces}
+#endregion
 
 namespace {NameSpace}
 {{
@@ -83,7 +84,7 @@ namespace {NameSpace}
         /// </summary>
         protected override void CreateExCode(string path)
         {
-            string code = $@"
+            string code = $@"#region
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -103,6 +104,7 @@ using Agebull.Common.DataModel;
 using Gboxt.Common.DataModel;
 using Agebull.Common.WebApi;
 {Project.UsingNameSpaces}
+#endregion
 
 namespace {NameSpace}
 {{

@@ -54,7 +54,7 @@ var page = {{
     /**
      * 表单地址
      */
-    formUrl: 'Form.htm',
+    formUrl: 'form.htm',
     /**
      * 表单参数
      */

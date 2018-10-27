@@ -208,7 +208,7 @@ namespace Agebull.EntityModel.RobotCoder
 {SimpleCode()}
 ";
 
-            return $@"
+            return $@"#region
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -234,6 +234,7 @@ using Gboxt.Common.DataModel;
 
 using Gboxt.Common.DataModel.Extends;
 using Gboxt.Common.DataModel.MySql;
+#endregion
 
 namespace {NameSpace}.DataAccess
 {{
@@ -306,7 +307,7 @@ namespace {NameSpace}.DataAccess
                 if (Entity.Interfaces.Contains("IStateData"))
                     baseClass = "DataStateTable";
             }
-            var code = $@"
+            var code = $@"#region
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -329,6 +330,7 @@ using Gboxt.Common.DataModel;
 using Gboxt.Common.DataModel.MySql;
 
 {Project.UsingNameSpaces}
+#endregion
 
 namespace {NameSpace}.DataAccess
 {{

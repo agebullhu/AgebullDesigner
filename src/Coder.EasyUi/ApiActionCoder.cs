@@ -26,7 +26,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         {
             var coder = new EasyUiHelperCoder();
             return
-                $@"
+                $@"#region
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -39,23 +39,24 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Runtime.Serialization;
 using System.IO;
-using System.Web.Http;
 using Newtonsoft.Json;
 
 using Agebull.Common;
 using Agebull.Common.DataModel;
 using Agebull.Common.DataModel.BusinessLogic;
+using Agebull.Common.Rpc;
 using Agebull.Common.WebApi;
+using Agebull.ZeroNet.ZeroApi;
+using Agebull.Common.DataModel.WebUI;
 using Gboxt.Common.DataModel;
 using Gboxt.Common.DataModel.MySql;
-using Agebull.Common.Rpc;
-using Agebull.Common.DataModel.WebUI;
 
 {Project.UsingNameSpaces}
 
 using {NameSpace};
 using {NameSpace}.BusinessLogic;
 using {NameSpace}.DataAccess;
+#endregion
 
 namespace {NameSpace}.WebApi.Entity
 {{
@@ -135,7 +136,7 @@ namespace {NameSpace}.WebApi.Entity
                     baseClass = "ApiControllerForAudit";
             }
             return
-                $@"
+                $@"#region
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -148,26 +149,30 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Runtime.Serialization;
 using System.IO;
-using System.Web.Http;
 using Newtonsoft.Json;
 
 using Agebull.Common;
 using Agebull.Common.DataModel;
+using Agebull.Common.DataModel.WebUI;
 using Agebull.Common.DataModel.BusinessLogic;
+using Agebull.Common.Rpc;
 using Agebull.Common.WebApi;
+using Agebull.ZeroNet.ZeroApi;
 using Gboxt.Common.DataModel;
 using Gboxt.Common.DataModel.MySql;
-using Agebull.Common.DataModel.WebUI;
-using Agebull.Common.Rpc;
 
 {Project.UsingNameSpaces}
 
 using {NameSpace};
 using {NameSpace}.BusinessLogic;
 using {NameSpace}.DataAccess;
+#endregion
 
 namespace {NameSpace}.WebApi.Entity
 {{
+    /// <summary>
+    ///  {ToRemString(Entity.Caption)}
+    /// </summary>
     [RoutePrefix(""{Project.Abbreviation?? Project.Name}/{Entity.Abbreviation ?? Entity.Name}/v1"")]
     public partial class {Entity.Name}ApiController : {baseClass}<{Entity.EntityName}, {Entity.Name}DataAccess, {Entity.Parent.DataBaseObjectName}, {Entity.Name}BusinessLogic>
     {{
@@ -208,28 +213,36 @@ namespace {NameSpace}.WebApi.Entity
         ///     载入树节点
         /// </summary>
         [HttpPost,Route(""edit/tree"")]
-        public ApiResponseMessage OnLoadTree()
+        public ApiArrayResult<EasyUiTreeNode> OnLoadTree()
         {
             var nodes = Business.LoadTree(this.GetIntArg(""id""));
-            this.SetCustomJsonResult(nodes);
+            return new ApiArrayResult<EasyUiTreeNode>
+            {{
+               Success = true,
+               ResultData = nodes
+            }};
         }");
             }
 
             var caption = Entity.Properties.FirstOrDefault(p => p.IsCaption);
             if (caption!=null)
             {
-                code.Append($@"
+        code.Append($@"
         /// <summary>下拉列表</summary>
         /// <returns></returns>
         [HttpPost]
         [Route(""edit/combo"")]
-        public ApiResponseMessage ComboData()
+        public ApiArrayResult<EasyComboValues> ComboData()
         {{
             GlobalContext.Current.IsManageMode = false;
             var datas = Business.All();
             var combos = datas.Select(p => new EasyComboValues(p.{Entity.PrimaryColumn.Name}, p.{caption.Name})).ToList();
             combos.Insert(0,new EasyComboValues(0, ""-""));
-            return Request.ToResponse(combos);
+            return new ApiArrayResult<EasyComboValues>
+            {{
+               Success = true,
+               ResultData = combos
+            }};
         }}");
             }
             foreach (var cmd in Entity.Commands.Where(p => !p.IsLocalAction))
@@ -242,7 +255,7 @@ namespace {NameSpace}.WebApi.Entity
         ///     {ToRemString(cmd.Description)}
         /// </remark>
         [HttpPost,Route(""edit/{cmd.Name.ToLWord()}"")]
-        public ApiResponseMessage On{cmd.Name}()
+        public ApiResult On{cmd.Name}()
         {{
             InitForm();");
                 if (cmd.IsSingleObject)
@@ -253,8 +266,8 @@ namespace {NameSpace}.WebApi.Entity
             return !this.Business.Do{cmd.Name}(this.GetIntArrayArg(""selects""))");
                 code.Append(@"
             return IsFailed
-                ? Request.ToResponse(ApiResult.Error(State, Message))
-                : Request.ToResponse(ApiResult.Succees());
+                ? ApiResult.Error(State, Message)
+                : ApiResult.Succees();
         }");
             }
 
