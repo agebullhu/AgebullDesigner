@@ -21,34 +21,46 @@ namespace Agebull.EntityModel.RobotCoder
             {
                 if (Entity.Interfaces.Contains("IStateData"))
                     baseClass = "BusinessLogicByStateData";
-                if (Entity.Interfaces.Contains("IHistoryData"))
-                    baseClass = "BusinessLogicByHistory";
                 if (Entity.Interfaces.Contains("IAuditData"))
                     baseClass = "BusinessLogicByAudit";
             }
-            var code = $@"
+            var code = $@"#region
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
+
+using Agebull.Common;
+using Agebull.Common.DataModel;
+using Gboxt.Common.DataModel;
+using Agebull.Common.WebApi;
+
+{Project.UsingNameSpaces}
 
 using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
 using Gboxt.Common.DataModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
-
-
-using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.BusinessLogic;
+using Agebull.Common.DataModel.BusinessLogic;
 using {NameSpace}.DataAccess;
+#endregion
 
 namespace {NameSpace}.BusinessLogic
 {{
     /// <summary>
     /// {Entity.Description}
     /// </summary>
-    public sealed partial class {Entity.Name}BusinessLogic : {baseClass}<{Entity.EntityName},{Entity.Name}DataAccess>
-    {{{CommandExCode()}
+    public sealed partial class {Entity.Name}BusinessLogic : {baseClass}<{Entity.EntityName},{Entity.Name}DataAccess,{Entity.Parent.DataBaseObjectName}>
+    {{
+{CommandExCode()}
+
         /*// <summary>
         ///     保存前的操作
         /// </summary>
@@ -76,7 +88,7 @@ namespace {NameSpace}.BusinessLogic
         /// <param name=""data"">数据</param>
         /// <param name=""isAdd"">是否为新增</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        protected override bool LastSavedByUser(MeetingData data, bool isAdd)
+        protected override bool LastSavedByUser({Entity.EntityName} data, bool isAdd)
         {{
             return base.LastSavedByUser(data, isAdd);
         }}
@@ -87,14 +99,14 @@ namespace {NameSpace}.BusinessLogic
         /// <param name=""data"">数据</param>
         /// <param name=""isAdd"">是否为新增</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        protected override bool PrepareSaveByUser(MeetingData data, bool isAdd)
+        protected override bool PrepareSaveByUser({Entity.EntityName} data, bool isAdd)
         {{
             return base.PrepareSaveByUser(data, isAdd);
         }}*/
     }}
 }}
 ";
-            var file = ConfigPath(Entity, FileSaveConfigName, path, "Business", Entity.Name + "BusinessLogic") ;
+            var file = ConfigPath(Entity, FileSaveConfigName, path, null, Entity.Name + "BusinessLogic") ;
             SaveCode(file + ".cs", code);
         }
         private string CommandExCode()
@@ -171,27 +183,40 @@ using Fuctures.Manage.BusinessLogical.WCF;
 using Agebull.Common.Mvvm.ServiceAccess;
 ";
 
-        private string EntityType => $"{Entity.Parent.DataBaseObjectName}.Table_{Entity.Name}";
-
         /// <summary>
         ///     生成扩展代码
         /// </summary>
         protected override void CreateBaCode(string path)
         {
-            var code = $@"
+            var code = $@"#region
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
-using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
-using Gboxt.Common.DataModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
+using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
+
+using Agebull.Common;
+using Agebull.Common.DataModel;
 using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.BusinessLogic;
+using Agebull.Common.WebApi;
+
+{Project.UsingNameSpaces}
+
+using Agebull.Common.DataModel.BusinessLogic;
 using {NameSpace}.DataAccess;
 
+using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
+using Gboxt.Common.DataModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
 {usingCode}
+#endregion
 
 namespace {NameSpace}.BusinessLogic
 {{
@@ -204,13 +229,13 @@ namespace {NameSpace}.BusinessLogic
         /// <summary>
         ///     实体类型
         /// </summary>
-        public override int EntityType => {EntityType};
+        public override int EntityType => { Entity.EntityName}._DataStruct_.EntityIdentity;
 
 {SyncCode()}
 {CommandCode()}
     }}
 }}";
-            var file = ConfigPath(Entity, FileSaveConfigName, path, "Business", Entity.Name + "BusinessLogic");
+            var file = ConfigPath(Entity, FileSaveConfigName, path, null, Entity.Name + "BusinessLogic");
             SaveCode(file + ".Designer.cs", code);
         }
 

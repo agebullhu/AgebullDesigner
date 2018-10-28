@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -12,43 +11,29 @@ namespace Agebull.EntityModel.RobotCoder
     [ExportMetadata("Symbol", '%')]
     internal class EnumMomentCoder : MomentCoderBase, IAutoRegister
     {
-        #region 注册
+        #region 娉ㄥ唽
 
         /// <summary>
-        /// 注册代码
+        /// 娉ㄥ唽浠ｇ爜
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("枚举", "枚举(C++)","cpp", (EnumCpp));
-            MomentCoder.RegisteCoder("枚举", "枚举(JS)", "js", EnumJs);
-            MomentCoder.RegisteCoder("枚举", "枚举(C#)", "cs", (EnumFunc));
-            MomentCoder.RegisteCoder("枚举", "枚举名称扩展方法(Enum.Caption())", "cs", EnumCs);
+            MomentCoder.RegisteCoder<EnumConfig>("鏋氫妇", "鏋氫妇(C++)", "cpp", (EnumCpp));
+            MomentCoder.RegisteCoder<EnumConfig>("鏋氫妇", "鏋氫妇(JS)", "js", EnumJs);
+            MomentCoder.RegisteCoder<EnumConfig>("鏋氫妇", "鏋氫妇(C#)", "cs", (EnumFunc));
+            MomentCoder.RegisteCoder<EnumConfig>("鏋氫妇", "鏋氫妇鍚嶇О鎵╁睍鏂规硶(Enum.Caption())", "cs", EnumCs);
         }
         #endregion
 
-        #region 枚举(C++)
+        #region 鏋氫妇(C++)
 
-        public static string EnumCpp(ConfigBase config)
+        public static string EnumCpp(EnumConfig config)
         {
             var code = new StringBuilder();
-            if (config is EnumConfig enumConfig)
-            {
-                EnumCpp(code, enumConfig);
-            }
-            else
-            {
-                foreach (var em in SolutionConfig.Current.Enums)
-                    EnumCpp(code, em);
-            }
-            return code.ToString();
-        }
-
-        private static void EnumCpp(StringBuilder code, EnumConfig config)
-        {
             code.Append($@"
 
 /**
-* @brief {ToRemString(config.Caption)}枚举
+* @brief {ToRemString(config.Caption)}鏋氫妇
 */
     enum class {config.Name}Classify
 {{");
@@ -57,19 +42,19 @@ namespace Agebull.EntityModel.RobotCoder
                 code.Append($@"
 
     //{item.Caption}");
-                if (Int32.TryParse(item.Value, out int vl))
-                    code.Append($@"
-    {item.Name} = 0x{vl:X},");
-                else
-                    code.Append($@"
+                code.Append(int.TryParse(item.Value, out int vl)
+                    ? $@"
+    {item.Name} = 0x{vl:X},"
+                    : $@"
     {item.Name} = item.Value,");
             }
             code.Append(@"
 };");
+            return code.ToString();
         }
         #endregion
 
-        #region 枚举(C#)
+        #region 鏋氫妇(C#)
 
         public static string EnumFunc(ConfigBase config)
         {
@@ -86,7 +71,7 @@ namespace Agebull.EntityModel.RobotCoder
                         foreach (var ef in entity.LastProperties.Where(p => p.EnumConfig != null))
                             if (!enums.Contains(ef.EnumConfig))
                                 enums.Add(ef.EnumConfig);
-                        ;
+
                     }
                     enums.ForEach(p => EnumCode(code, p));
                     break;
@@ -120,11 +105,10 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// {ToRemString(item.Caption)}
         /// </summary>");
-                if (Int32.TryParse(item.Value, out int vl))
-                    code.Append($@"
-        {item.Name} = 0x{vl:X},");
-                else
-                    code.Append($@"
+                code.Append(int.TryParse(item.Value, out int vl)
+                    ? $@"
+        {item.Name} = 0x{vl:X},"
+                    : $@"
         {item.Name} = item.Value,");
             }
             code.Append(@"
@@ -135,28 +119,10 @@ namespace Agebull.EntityModel.RobotCoder
 
         #region EnumJs
 
-        private static string EnumJs(ConfigBase config)
+        private static string EnumJs(EnumConfig enumc)
         {
             var code = new StringBuilder();
-            if (config is EnumConfig)
-            {
-                TypeDefaultScript(code, config as EnumConfig);
-            }
-            else
-            {
-                foreach (var item in SolutionConfig.Current.Enums)
-                {
-                    TypeDefaultScript(code, item);
-                }
-            }
-            return code.ToString();
-        }
 
-        /// <summary>
-        ///     生成枚举
-        /// </summary>
-        public static void TypeDefaultScript(StringBuilder code, EnumConfig enumc)
-        {
             code.Append($@"
 /**
  * {enumc.Caption}
@@ -176,37 +142,25 @@ var {enumc.Name.ToLWord()} = [");
 ];
 
 /**
- * {enumc.Caption}之表格格式化方法
+ * {enumc.Caption}涔嬭〃鏍兼牸寮忓寲鏂规硶
  */
 function {enumc.Name.ToLWord()}Format(value) {{
     return arrayFormat(value, {enumc.Name.ToLWord()});
 }}
 ");
+            return code.ToString();
         }
 
         #endregion
 
         #region EnumCs
 
-        private static string EnumCs(ConfigBase config)
+        private static string EnumCs(EnumConfig enumc)
         {
             var code = new StringBuilder();
-            List<EnumConfig> doed = new List<EnumConfig>();
-            ForeachByCurrent(enumc => EnumName(code, enumc, doed));
-            return code.ToString();
-        }
-
-        /// <summary>
-        ///     生成枚举
-        /// </summary>
-        public static void EnumName(StringBuilder code, EnumConfig enumc, List<EnumConfig> doed)
-        {
-            if (doed.Contains(enumc))
-                return;
-            doed.Add(enumc);
             code.Append($@"
         /// <summary>
-        ///     {enumc.Caption}名称转换
+        ///     {enumc.Caption}鍚嶇О杞崲
         /// </summary>
         public static string ToCaption(this {enumc.Name} value)
         {{
@@ -220,12 +174,12 @@ function {enumc.Name.ToLWord()}Format(value) {{
             }
             code.Append($@"
                 default:
-                    return ""{enumc.Caption}(未知)"";
+                    return ""{enumc.Caption}(閿欒)"";
             }}
         }}
 ");
+            return code.ToString();
         }
-
         #endregion
     }
 }

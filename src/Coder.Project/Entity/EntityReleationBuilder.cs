@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -185,7 +185,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// {0}
         /// </summary>
         [IgnoreDataMember,Browsable(false)]
-        public ObservableCollection<{1}> {2}
+        public NotificationList<{1}> {2}
         {{
             get
             {{
@@ -280,7 +280,7 @@ namespace Agebull.EntityModel.RobotCoder
                     , friend.Caption
                     , friend.Name
                     , field.Name
-                    , string.IsNullOrWhiteSpace(field.ExtendPropertyName) ? (field.Name + friend.Name) : field.ExtendPropertyName
+                    , string.IsNullOrWhiteSpace(field.ExtendPropertyName) ? field.Name + friend.Name : field.ExtendPropertyName
                     , string.IsNullOrWhiteSpace(field.ValueSeparate) ? "," : field.ValueSeparate
                     , field.Name.ToPluralism());
             }
@@ -299,7 +299,7 @@ namespace Agebull.EntityModel.RobotCoder
                 return {2} <= 0 ? null : (_{3} ?? (_{3} = {1}.GetById({2})));
             }}
         }}"
-                , friend.Caption, friend.Name, field.Name, field.ExtendPropertyName ?? ("V_" + field.Name));
+                , friend.Caption, friend.Name, field.Name, field.ExtendPropertyName ?? "V_" + field.Name);
         }
 
         private string SubClassCode(PropertyConfig field)
@@ -377,7 +377,7 @@ namespace Agebull.EntityModel.RobotCoder
                 return;
             code.AppendFormat(@"
         public sealed class {0}
-        {{", field.ExtendClassName ?? ("X_" + field.Name));
+        {{", field.ExtendClassName ?? "X_" + field.Name);
             foreach (var property in chFields)
             {
                 var tableSchema = property.Value as EntityConfig;
@@ -458,8 +458,8 @@ namespace Agebull.EntityModel.RobotCoder
                 , field.Name
                 , string.IsNullOrWhiteSpace(field.ArraySeparate) ? "#" : field.ArraySeparate
                 , string.IsNullOrWhiteSpace(field.ValueSeparate) ? "," : field.ValueSeparate
-                , field.ExtendClassName ?? ("X_" + field.Name)
-                , field.ExtendPropertyName ?? ("V_" + field.Name));
+                , field.ExtendClassName ?? "X_" + field.Name
+                , field.ExtendPropertyName ?? "V_" + field.Name);
             int idx = 0;
             foreach (var kv in chFields)
             {
@@ -485,7 +485,7 @@ namespace Agebull.EntityModel.RobotCoder
                 }}
                 return _{0};
             }}
-        }}", field.ExtendPropertyName ?? ("V_" + field.Name));
+        }}", field.ExtendPropertyName ?? "V_" + field.Name);
         }
 
         private void SignleArrayCode(StringBuilder code, PropertyConfig field)
@@ -548,7 +548,7 @@ namespace Agebull.EntityModel.RobotCoder
                     , field.Name
                     , string.IsNullOrWhiteSpace(field.ArraySeparate) ? "#" : field.ArraySeparate
                     , field.ExtendClassName
-                    , field.ExtendPropertyName ?? ("V_" + field.Name));
+                    , field.ExtendPropertyName ?? "V_" + field.Name);
                 return;
             }
             code.AppendFormat(@"
@@ -576,8 +576,8 @@ namespace Agebull.EntityModel.RobotCoder
                 , field.Name
                 , string.IsNullOrWhiteSpace(field.ArraySeparate) ? "#" : field.ArraySeparate
                 , string.IsNullOrWhiteSpace(field.ValueSeparate) ? "," : field.ValueSeparate
-                , ("X_" + field.Name)
-                , field.ExtendPropertyName ?? ("V_" + field.Name));
+                , "X_" + field.Name
+                , field.ExtendPropertyName ?? "V_" + field.Name);
             int idx = 0;
             foreach (var kv in chFields)
             {
@@ -603,7 +603,7 @@ namespace Agebull.EntityModel.RobotCoder
                 }}
                 return _{0};
             }}
-        }}", field.ExtendPropertyName ?? ("V_" + field.Name));
+        }}", field.ExtendPropertyName ?? "V_" + field.Name);
         }
 
 
@@ -633,7 +633,7 @@ namespace Agebull.EntityModel.RobotCoder
                     , field.Caption
                     , field.Name
                     , field.ExtendClassName
-                    , field.ExtendPropertyName ?? ("V_" + field.Name));
+                    , field.ExtendPropertyName ?? "V_" + field.Name);
                 return;
             }
             code.AppendFormat(@"
@@ -658,8 +658,8 @@ namespace Agebull.EntityModel.RobotCoder
                 , field.Caption
                 , field.Name
                 , string.IsNullOrWhiteSpace(field.ValueSeparate) ? "," : field.ValueSeparate
-                , field.ExtendClassName ?? ("X_" + field.Name)
-                , field.ExtendPropertyName ?? ("V_" + field.Name));
+                , field.ExtendClassName ?? "X_" + field.Name
+                , field.ExtendPropertyName ?? "V_" + field.Name);
             int idx = 0;
             foreach (var kv in chFields)
             {
@@ -977,7 +977,7 @@ namespace Agebull.EntityModel.RobotCoder
     }
 }
 
-/*
+
 
         string MemonyQueryCode()
         {

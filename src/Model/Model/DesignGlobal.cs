@@ -40,11 +40,17 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 解决方案
         /// </summary>
+        SolutionConfig IDesignGlobal.LocalSolution { get; set; }
+
+        /// <summary>
+        /// 解决方案
+        /// </summary>
         SolutionConfig IDesignGlobal.CurrentSolution
         {
             get => Context.Solution;
             set => Context.Solution = value;
         }
+
 
         /// <summary>
         /// 当前选择
@@ -59,18 +65,18 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     枚举集合
         /// </summary>
-        private ObservableCollection<SolutionConfig> _solutions;
+        private NotificationList<SolutionConfig> _solutions;
 
         /// <summary>
         ///     解决方案集合
         /// </summary>
-        ObservableCollection<SolutionConfig> IDesignGlobal.Solutions
+        NotificationList<SolutionConfig> IDesignGlobal.Solutions
         {
             get
             {
                 if (_solutions != null)
                     return _solutions;
-                _solutions = new ObservableCollection<SolutionConfig>();
+                _solutions = new NotificationList<SolutionConfig>();
                 return _solutions;
             }
         }
@@ -78,18 +84,18 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     枚举集合
         /// </summary>
-        private ObservableCollection<EnumConfig> _enums;
+        private NotificationList<EnumConfig> _enums;
 
         /// <summary>
         ///     枚举集合
         /// </summary>
-        ObservableCollection<EnumConfig> IDesignGlobal.Enums
+        NotificationList<EnumConfig> IDesignGlobal.Enums
         {
             get
             {
                 if (_enums != null)
                     return _enums;
-                _enums = new ObservableCollection<EnumConfig>();
+                _enums = new NotificationList<EnumConfig>();
                 return _enums;
             }
         }
@@ -97,18 +103,18 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     实体集合
         /// </summary>
-        private ObservableCollection<EntityConfig> _entities;
+        private NotificationList<EntityConfig> _entities;
 
         /// <summary>
         ///     实体集合
         /// </summary>
-        ObservableCollection<EntityConfig> IDesignGlobal.Entities
+        NotificationList<EntityConfig> IDesignGlobal.Entities
         {
             get
             {
                 if (_entities != null)
                     return _entities;
-                _entities = new ObservableCollection<EntityConfig>();
+                _entities = new NotificationList<EntityConfig>();
                 return _entities;
             }
         }
@@ -116,18 +122,18 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     项目集合
         /// </summary>
-        private ObservableCollection<ProjectConfig> _projects;
+        private NotificationList<ProjectConfig> _projects;
 
         /// <summary>
         ///     项目集合
         /// </summary>
-        ObservableCollection<ProjectConfig> IDesignGlobal.Projects
+        NotificationList<ProjectConfig> IDesignGlobal.Projects
         {
             get
             {
                 if (_projects != null)
                     return _projects;
-                _projects = new ObservableCollection<ProjectConfig>();
+                _projects = new NotificationList<ProjectConfig>();
                 return _projects;
             }
         }
@@ -135,18 +141,18 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     API集合
         /// </summary>
-        private ObservableCollection<ApiItem> _apiItems;
+        private NotificationList<ApiItem> _apiItems;
 
         /// <summary>
         ///     API集合
         /// </summary>
-        ObservableCollection<ApiItem> IDesignGlobal.ApiItems
+        NotificationList<ApiItem> IDesignGlobal.ApiItems
         {
             get
             {
                 if (_apiItems != null)
                     return _apiItems;
-                _apiItems = new ObservableCollection<ApiItem>();
+                _apiItems = new NotificationList<ApiItem>();
                 return _apiItems;
             }
         }

@@ -70,7 +70,7 @@ namespace Agebull.EntityModel.Designer
 
                 ImportTable(workbook, entity);
             }
-            if (start > 0 && start < (line - 1))
+            if (start > 0 && start < line - 1)
             {
                 SetCellRangeAddress(sheet, typeCell, start, line - 1, 0, 0);
             }
@@ -87,12 +87,15 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         private static void ImportTable(HSSFWorkbook workbook, EntityConfig entity)
         {
+            string name = string.IsNullOrWhiteSpace(entity.ReadTableName) ? entity.Name : entity.ReadTableName;
+            if (name.Length > 31)
+                name = name.Substring(0, 31);
             var labelCell = GetCellStyle(workbook, HorizontalAlignment.Left, VerticalAlignment.Center, true, CreateFontStyle(workbook, "宋体", 9, true));
             var valueCell = GetCellStyle(workbook, HorizontalAlignment.Left, VerticalAlignment.Center, true, CreateFontStyle(workbook, "宋体"));
-            if (workbook.GetSheet(entity.ReadTableName) != null)
+            if (workbook.GetSheet(name) != null)
                 return;
             
-            var sheet = workbook.CreateSheet(entity.ReadTableName);
+            var sheet = workbook.CreateSheet(name);
             int i = 0;
             sheet.SetColumnWidth(i++, 4000);
             sheet.SetColumnWidth(i++, 4000);
@@ -139,22 +142,24 @@ namespace Agebull.EntityModel.Designer
             row.CreateCell(i++).SetCell("外键", labelCell);
             row.CreateCell(i++).SetCell("索引", labelCell);
             row.CreateCell(i).SetCell("更新时间", labelCell);
-            var fields = entity.PublishProperty.ToArray();
+
+
+            var fields = entity.PublishProperty == null ? entity.Properties.ToArray() : entity.PublishProperty.ToArray();
             for (int line = 0; line < fields.Length; line++)
             {
                 var field = fields[line];
                 row = sheet.CreateRow(line + 4);
                 row.HeightInPoints = 20;//行高
                 i = 0;
-                row.CreateCell(i++).SetCell(field.ColumnName, valueCell);
-                row.CreateCell(i++).SetCell(field.DbType.ToUpper(), valueCell);
+                row.CreateCell(i++).SetCell(field.DbFieldName, valueCell);
+                row.CreateCell(i++).SetCell(field.DbType?.ToUpper(), valueCell);
                 row.CreateCell(i++).SetCell(field.CsType == "decimal" ? "(18,4)" : (field.Datalen > 0 ? field.Datalen.ToString() : "-"), valueCell);
                 row.CreateCell(i++).SetCell(field.DbNullable ? "是" : "否", valueCell);
                 row.CreateCell(i++).SetCell(field.IsPrimaryKey ? "是" : "否", valueCell);
                 row.CreateCell(i++).SetCell(field.Nullable ? field.Initialization : "0", valueCell);
                 row.CreateCell(i++).SetCell(field.Caption + "：" + field.Description, valueCell);
                 row.CreateCell(i++).SetCell("未指定", valueCell);
-                row.CreateCell(i++).SetCell(field.CreateIndex ? "是" : "否", valueCell);
+                row.CreateCell(i++).SetCell(field.IsDbIndex ? "是" : "否", valueCell);
                 row.CreateCell(i).SetCell("", valueCell);
             }
         }

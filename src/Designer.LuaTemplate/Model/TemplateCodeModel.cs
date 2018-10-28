@@ -115,7 +115,7 @@ namespace Agebull.EntityModel.Designer
         /// 生成命令对象
         /// </summary>
         /// <param name="commands"></param>
-        protected override void CreateCommands(ObservableCollection<CommandItemBase> commands)
+        protected override void CreateCommands(NotificationList<CommandItemBase> commands)
         {
             commands.AddRange(new CommandItemBase[]
             {
@@ -151,6 +151,7 @@ namespace Agebull.EntityModel.Designer
                 },
                 new CommandItem
                 {
+                    NoConfirm=true,
                     Action =arg=>Clipboard.SetText(ExtendCode ?? ""),
                     Caption = "复制代码",
                     Image = Application.Current.Resources["img_file"] as ImageSource
@@ -187,7 +188,7 @@ namespace Agebull.EntityModel.Designer
         }
         #region 语法树
 
-        public readonly ObservableCollection<AnalyzeBlock> Elements = new ObservableCollection<AnalyzeBlock>();
+        public readonly NotificationList<AnalyzeBlock> Elements = new NotificationList<AnalyzeBlock>();
 
 
         private void CreateLuaTree()

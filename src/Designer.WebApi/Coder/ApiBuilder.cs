@@ -5,8 +5,8 @@ using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer.WebApi
 {
-    [Export(typeof(IAutoRegister))]
-    [ExportMetadata("Symbol", '%')]
+    //[Export(typeof(IAutoRegister))]
+    //[ExportMetadata("Symbol", '%')]
     internal sealed class ApiBuilder : ProjectBuilder, IAutoRegister
     {
 
@@ -53,7 +53,7 @@ namespace Agebull.EntityModel.Designer.WebApi
             }
             {
                 var path = project.GetApiPath("WebApi");
-                var builder = new ApiControlerBuilder
+                var builder = new ApiControlerBuillder
                 {
                     Project = project
                 };
@@ -69,7 +69,7 @@ namespace Agebull.EntityModel.Designer.WebApi
             }
             {
                 var path = project.GetApiPath("WebApi");
-                var builder = new ApiControlerBuilder
+                var builder = new ApiControlerBuillder
                 {
                     Project = project
                 };
@@ -156,7 +156,7 @@ namespace Agebull.EntityModel.Designer.WebApi
             }
             {
                 var path = project.GetApiPath("WebApi");
-                var builder = new ApiControlerBuilder
+                var builder = new ApiControlerBuillder
                 {
                     Project = project,
                     Entity = entity

@@ -86,6 +86,15 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         string ConfirmMessage { get; set; }
 
+        /// <summary>
+        ///     无需确认
+        /// </summary>
+        bool NoConfirm
+        {
+            get;
+            set;
+        }
+
     }
 
     /// <summary>
@@ -100,6 +109,7 @@ namespace Agebull.Common.Mvvm
         /// <param name="sour">源</param>
         public static void CopyFrom(this ICommandItem dest, ICommandItem sour)
         {
+            dest.NoConfirm = sour.NoConfirm;
             dest.Name = sour.Name ?? sour.Caption;
             dest.Caption = sour.Caption?? sour.Name;
             dest.Description = sour.Description;

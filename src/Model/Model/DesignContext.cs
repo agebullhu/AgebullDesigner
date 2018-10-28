@@ -239,14 +239,14 @@ namespace Agebull.EntityModel.Designer
             var tables = new List<EntityConfig>();
             switch (SelectConfig)
             {
-                case PropertyConfig col:
-                    tables.Add(col.Parent);
+                case PropertyConfig property:
+                    tables.Add(property.Parent);
                     break;
-                case EntityConfig tableSchema:
-                    tables.Add(tableSchema);
+                case EntityConfig entity:
+                    tables.Add(entity);
                     break;
-                case ProjectConfig otype:
-                    tables.AddRange(otype.Entities);
+                case ProjectConfig project:
+                    tables.AddRange(project.Entities);
                     break;
                 default:
                     foreach (var project in Solution.Projects)
@@ -337,7 +337,7 @@ namespace Agebull.EntityModel.Designer
         internal void OnTreeSelectItemChanged(TreeItem item)
         {
             ConfigBase cfg = item?.Source as ConfigBase;
-            CurrentTrace.TraceMessage = item?.Extend.DependencyObjects.AutoDependency<TraceMessage>();
+            
             SetSelect(cfg);
             if (Editor.PropertyGrid != null)
                 Editor.PropertyGrid.SelectedObject = SelectConfig;

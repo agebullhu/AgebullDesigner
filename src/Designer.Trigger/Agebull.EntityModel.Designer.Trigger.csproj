@@ -46,9 +46,11 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Register.cs" />
+    <Compile Include="Trigger\ClassifyTrigger.cs" />
     <Compile Include="Trigger\ConfigBaseTrigger.cs" />
     <Compile Include="Trigger\ConfigTrigger.cs" />
     <Compile Include="Trigger\EntityTrigger.cs" />
+    <Compile Include="Trigger\EnumTrigger.cs" />
     <Compile Include="Trigger\OptionTrigger.cs" />
     <Compile Include="Trigger\ParentConfigTrigger.cs" />
     <Compile Include="Trigger\ProjectTrigger.cs" />

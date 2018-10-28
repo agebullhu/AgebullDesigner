@@ -11,12 +11,17 @@ namespace Agebull.EntityModel.RobotCoder
     /// </summary>
     public abstract class EntityCoderBase : CoderWithEntity
     {
+        /// <summary>
+        /// 统一的字段名称
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public static string FieldName(PropertyConfig property) => $"_{property.Name.ToLWord()}";
+
         protected abstract bool IsClient { get; }
 
         private PropertyConfig[] _columns;
-        protected PropertyConfig[] Columns => _columns ?? (_columns = IsClient
-                                                  ? Entity.CppProperty.ToArray()
-                                                  : Entity.PublishProperty.ToArray());
+        protected PropertyConfig[] Columns => _columns ?? (_columns = Entity.PublishProperty.ToArray());
 
         private PropertyConfig[] _rwcolumns;
         protected PropertyConfig[] ReadWriteColumns
@@ -50,22 +55,24 @@ namespace Agebull.EntityModel.RobotCoder
 
 
 
-        protected string Attribute(PropertyConfig property)
+        protected static string PropertyHeader(PropertyConfig property, string jsonName = null, bool? json = null)
         {
             var attribute = new StringBuilder();
-            attribute.Append("[IgnoreDataMember");
-            if (!IsClient)
+            attribute.Append(RemCode(property));
+
+            attribute.Append(@"
+        [DataMember");
+            if (json == null)
+                json = !property.NoneJson;
+            if (json.Value)
             {
-                if (!property.NoneJson)
-                {
-                    attribute.Append($@" , JsonProperty(""{property.Name}"", NullValueHandling = NullValueHandling.Ignore)");
-                    if (property.CsType == "DateTime")
-                        attribute.Append(" , JsonConverter(typeof(MyDateTimeConverter))");
-                }
-                else
-                {
-                    attribute.Append(" , JsonIgnore");
-                }
+                attribute.Append($@" , JsonProperty(""{jsonName ?? property.JsonName}"", NullValueHandling = NullValueHandling.Ignore)");
+                if (property.CsType == "DateTime")
+                    attribute.Append(" , JsonConverter(typeof(MyDateTimeConverter))");
+            }
+            else
+            {
+                attribute.Append(" , JsonIgnore");
             }
             if (property.IsBlob || property.InnerField)
                 attribute.Append(" , Browsable(false)");
@@ -77,6 +84,89 @@ namespace Agebull.EntityModel.RobotCoder
             return attribute.ToString();
         }
 
+        public static string RemCode(PropertyConfig property)
+        {
+            StringBuilder code = new StringBuilder();
+            code.Append($@"
+        /// <summary>
+        /// {ToRemString(property.Caption)}
+        /// </summary>");
+            if (!string.IsNullOrEmpty(property.Description) &&
+                !string.Equals(property.Description, property.Caption, StringComparison.OrdinalIgnoreCase))
+            {
+                code.Append($@"
+        /// <remarks>
+        /// {ToRemString(property.Description)}
+        /// </remarks>");
+            }
+
+            if (!string.IsNullOrEmpty(property.HelloCode))
+            {
+                code.Append($@"
+        /// <example>
+        /// {ToRemString(property.HelloCode)}
+        /// </example>");
+            }
+
+            if (!string.IsNullOrEmpty(property.DataRuleDesc))
+            {
+                code.Append($@"
+        /// <value>
+        /// {ToRemString(property.DataRuleDesc)}
+        /// </value>");
+            }
+
+            var re = code.ToString();
+            code.Append(@"
+        [DataRule(");
+            bool has = false;
+            if (property.CanEmpty || !property.IsRequired)
+            {
+                code.Append("CanNull = true");
+                has = true;
+            }
+
+            if (property.CsType == "DateTime")
+            {
+                if (!string.IsNullOrEmpty(property.Min))
+                {
+                    if (has)
+                        code.Append(',');
+                    else has = true;
+                    code.Append($@"MinDate = DateTime.Parse(""{property.Min}"")");
+                }
+
+                if (!string.IsNullOrEmpty(property.Max))
+                {
+                    if (has)
+                        code.Append(',');
+                    else has = true;
+                    code.Append($@"MaxDate = DateTime.Parse(""{property.Max}"")");
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(property.Min))
+                {
+                    if (has)
+                        code.Append(',');
+                    else has = true;
+                    code.Append($@"Min = {property.Min}");
+                }
+
+                if (!string.IsNullOrEmpty(property.Max))
+                {
+                    if (has)
+                        code.Append(',');
+                    else has = true;
+                    code.Append($@"Max = {property.Max}");
+                }
+            }
+            if (!has)
+                return re;
+            code.Append(")]");
+            return code.ToString();
+        }
         public static string HelloCode(EntityConfig entity)
         {
             StringBuilder code = new StringBuilder();
@@ -109,7 +199,7 @@ namespace Agebull.EntityModel.RobotCoder
             return code.ToString();
         }
 
-        public static string HelloCode(EntityConfig entity,string name)
+        public static string HelloCode(EntityConfig entity, string name)
         {
             StringBuilder code = new StringBuilder();
             foreach (var property in entity.ClientProperty)
@@ -138,52 +228,50 @@ namespace Agebull.EntityModel.RobotCoder
         }
         #region 枚举属性
 
-        protected static void EnumContentProperty(PropertyConfig property, StringBuilder code)
+        protected static void ContentProperty(PropertyConfig property, StringBuilder code)
         {
             var enumc = GlobalConfig.GetEnum(property.CustomType);
-            if (enumc == null)
-                return;
-            code.Append($@"
+            if (enumc != null)
+            {
+                var type = property.CsType == "enum" ? "int" : property.CsType;
+
+                code.Append($@"
         /// <summary>
         /// {property.Caption}的可读内容
         /// </summary>
         [IgnoreDataMember,JsonIgnore,DisplayName(""{property.Caption}"")]
-        public string {property.Name}_Content
-        {{
-            get
-            {{");
-            code.Append($@"
-                switch({property.Name})
-                {{");
-            foreach (var item in enumc.Items)
-            {
-                code.Append(
-                    $@"
-                case {enumc.Name}.{item.Name}:
-                    return @""{item.Caption}"";");
-            }
-            code.Append(@"
-                default:
-                    return null;
-                }
-            }
-        }");
-            code.Append($@"
+        public string {property.Name}_Content => {property.Name}.ToCaption();
+
         /// <summary>
         /// {property.Caption}的数字属性
         /// </summary>
         [IgnoreDataMember,JsonIgnore]
-        {property.AccessType} {property.CsType} {property.PropertyName}_Number
+        {property.AccessType} {type} {property.PropertyName}_Number
+        {{
+            get => ({type})this.{property.PropertyName};
+            set => this.{property.PropertyName} = ({property.CustomType})value;
+        }}");
+            }
+            if (property.DataType == "ByteArray")
+            {
+                code.Append($@"
+        {PropertyHeader(property, null, true)}
+        {property.AccessType} string {property.Name}_Base64
         {{
             get
             {{
-                return ({property.CsType})this.{property.PropertyName};
+                return this.{FieldName(property)} == null
+                       ? null
+                       : Convert.ToBase64String({property.Name});
             }}
             set
             {{
-                this.{property.PropertyName} = ({property.CustomType})value;
+                this.{property.Name} = string.IsNullOrWhiteSpace(value)
+                       ? null
+                       : Convert.FromBase64String(value);
             }}
         }}");
+            }
         }
         #endregion
     }

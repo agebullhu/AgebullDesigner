@@ -47,7 +47,7 @@ namespace Agebull.EntityModel
         /// </summary>
         protected TreeItemBase()
         {
-            Items = new ObservableCollection<TreeItem>();
+            Items = new NotificationList<TreeItem>();
             Items.CollectionChanged += OnItemsCollectionChanged;
         }
 
@@ -97,7 +97,7 @@ namespace Agebull.EntityModel
         /// <summary>
         ///     ×Ó¼¶
         /// </summary>
-        public ObservableCollection<TreeItem> Items
+        public NotificationList<TreeItem> Items
         {
             get;
         }

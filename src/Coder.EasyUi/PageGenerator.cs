@@ -1,6 +1,4 @@
-﻿using System.IO;
-using Agebull.Common;
-using Agebull.EntityModel.Config;
+﻿using Agebull.EntityModel.Config;
 using Agebull.EntityModel.RobotCoder.EasyUi;
 
 namespace Agebull.EntityModel.RobotCoder.AspNet
@@ -33,102 +31,87 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
         {
             if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
-            GlobalConfig.CheckPath(path, "Page");
-            ActionCsCode(path);
-            ExportCsCode(path);
+            ApiCode(path);
+            //ExportCsCode(path);
         }
+
+        #endregion
+
+        #region WebCode
 
         private void WebCode(string path)
         {
-            var file = ConfigPath(Entity, "File_Web_Index", path, $"{Entity.Parent.Name}\\{Entity.Name}", "Index.aspx");
+            var folder = string.IsNullOrEmpty(Entity.Classify)
+                ? Entity.Name
+                : $"{Entity.Classify}\\{Entity.Name}";
+            //file = ConfigPath(Entity, "File_Web_Action", path, folder, "Action.aspx");
+            //{
+            //    WriteFile(file, ActionAspxCode());
+            //}
+            //file = ConfigPath(Entity, "File_Web_Export", path, folder, "Export.aspx");
+            //{
+            //    WriteFile(file, ExportAspxCode());
+            //}
             {
-                var coder = new EasyUiIndexPageCoder
+                var file = ConfigPath(Entity, "File_Web_Form", path, folder, "form.htm");
                 {
-                    Entity = Entity,
-                    Project = Project
-                };
-                WriteFile(file, coder.Code());
-            }
-            file = ConfigPath(Entity, "File_Web_Action", path, $"{Entity.Parent.Name}\\{Entity.Name}", "Action.aspx");
-            {
-                WriteFile(file, ActionAspxCode());
-            }
-            file = ConfigPath(Entity, "File_Web_Export", path, $"{Entity.Parent.Name}\\{Entity.Name}", "Export.aspx");
-            {
-                WriteFile(file, ExportAspxCode());
-            }
-            file = ConfigPath(Entity, "File_Web_Form", path, $"{Entity.Parent.Name}\\{Entity.Name}", "Form.htm");
-            {
-                var coder = new EasyUiFormCoder
-                {
-                    Entity = Entity,
-                    Project = Project
-                };
-                WriteFile(file, coder.Code());
-            }
-            file = ConfigPath(Entity, "File_Web_Item", path, $"{Entity.Parent.Name}\\{Entity.Name}", "Item.aspx");
-            {
-                var coder = new EasyUiItemCoder
-                {
-                    Entity = Entity,
-                    Project = Project
-                };
-                WriteFile(file, coder.Code());
-            }
-
-            if (Entity.ListDetails)
-            {
-                file = ConfigPath(Entity, "File_Web_Details", path, $"{Entity.Parent.Name}\\{Entity.Name}", "Details.aspx");
-                {
-                    var coder = new EasyUiListDetailsPageCoder
-                    {
-                        Entity = Entity,
-                        Project = Project
-                    };
-                    WriteFile(file, coder.Code());
+                    var coder = new EasyUiFormCoder();
+                    WriteFile(file, coder.BaseCode(Entity));
                 }
             }
+            //file = ConfigPath(Entity, "File_Web_Item", path, folder, "Item.aspx");
+            //{
+            //    var coder = new EasyUiItemCoder
+            //    {
+            //        Entity = Entity,
+            //        Project = Project
+            //    };
+            //    WriteFile(file, coder.Code());
+            //}
+
+            //if (Entity.ListDetails)
+            //{
+            //    var file = ConfigPath(Entity, "File_Web_Details", path, folder, "Details.aspx");
+            //    {
+            //        var coder = new EasyUiListDetailsPageCoder();
+            //        WriteFile(file, coder.BaseCode(Entity));
+            //    }
+            //}
             {
-                var coder = new EasyUiPageScriptCoder
+                var coder = new EasyUiScriptCoder();
+                var file = ConfigPath(Entity, "File_Web_Script_js", path, folder, "script.js");
+                WriteFile(file, coder.BaseCode(Entity));
+                //file = ConfigPath(Entity, "File_Web_Form_js", path, folder, "form.js");
+                //WriteFile(file, coder.FormJsCode());
+                //file = ConfigPath(Entity, "File_Web_Page_js", path, folder, "page.js");
+                //WriteFile(file, coder.PageJsCode());
+            }
+            {
+
+                var file = ConfigPath(Entity, "File_Web_Index", path, folder, "Index.aspx");
                 {
-                    Entity = Entity,
-                    Project = Project
-                };
-                file = ConfigPath(Entity, "File_Web_Script_js", path, $"{Entity.Parent.Name}\\{Entity.Name}", "script.js");
-                WriteFile(file, coder.Code());
-                file = ConfigPath(Entity, "File_Web_Form_js", path, $"{Entity.Parent.Name}\\{Entity.Name}", "form.js");
-                WriteFile(file, coder.FormJsCode());
-                file = ConfigPath(Entity, "File_Web_Page_js", path, $"{Entity.Parent.Name}\\{Entity.Name}", "page.js");
-                WriteFile(file, coder.PageJsCode());
+                    var coder = new EasyUiIndexPageCoder();
+                    WriteFile(file, coder.BaseCode(Entity));
+                }
             }
         }
 
         #endregion
 
-        #region Action
+        #region API
 
-        private void ActionCsCode(string path)
+        private void ApiCode(string path)
         {
-            var file = ConfigPath(Entity, "File_Web_Action_cs", path, $"{Entity.Parent.Name}\\{Entity.Name}", "PageAction");
-            var coder = new ApiActionCoder
-            {
-                Entity = Entity,
-                Project = Project
-            };
-            GlobalConfig.CheckPaths(Path.GetDirectoryName(file));
-            WriteFile(file + ".cs", coder.Code());
-            WriteFile(file + ".Designer.cs", coder.BaseCode());
-        }
-
-        private string ActionAspxCode()
-        {
-            return $@"<%@ Page Language='C#' AutoEventWireup='true'  Inherits='{NameSpace}.{Entity.Name}Page.Action' %>";
+            var file = ConfigPath(Entity, "File_Web_Api_cs", path, Entity.Name, $"{Entity.Name}ApiController");
+            var coder = new ApiActionCoder();
+            WriteFile(file + ".cs", coder.ExtendCode(Entity));
+            WriteFile(file + ".Designer.cs", coder.BaseCode(Entity));
         }
 
         #endregion
 
         #region Export
-
+        /*
         private void ExportCsCode(string path)
         {
             var file = ConfigPath(Entity, "File_Web_Export_cs", path, $"Page\\{Entity.Parent.Name}\\{Entity.Name}", "Export.cs");
@@ -144,7 +127,7 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
         {
             return $@"<%@ Page Language='C#' AutoEventWireup='true'  Inherits='{NameSpace}.{Entity.Name}Page.ExportAction' %>";
         }
-
+        */
         #endregion
     }
 }

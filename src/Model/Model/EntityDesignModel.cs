@@ -26,50 +26,67 @@ namespace Agebull.EntityModel.Designer
         /// 生成命令对象
         /// </summary>
         /// <returns></returns>
-        public override ObservableCollection<CommandItemBase> CreateCommands()
+        public override NotificationList<CommandItemBase> CreateCommands()
         {
-            ObservableCollection<CommandItemBase> commands = new ObservableCollection<CommandItemBase>
+            return CreateCommands(true, true, true);
+        }
+
+        /// <summary>
+        /// 生成命令对象
+        /// </summary>
+        /// <returns></returns>
+        protected NotificationList<CommandItemBase> CreateCommands(bool edit, bool create, bool ext)
+        {
+            NotificationList<CommandItemBase> commands = new NotificationList<CommandItemBase>();
+            if (edit)
             {
-                new CommandItem
+                commands.Add(new CommandItem
                 {
-                    IsButton=true,
-                    Action = (CopyColumns),
+                    IsButton = true,
+                    NoConfirm = true,
+                    Action = CopyColumns,
                     Caption = "复制列",
                     Image = Application.Current.Resources["tree_item"] as ImageSource
-                },
-                new CommandItem
+                });
+                commands.Add(new CommandItem
                 {
-                    IsButton=true,
-                    Action = (PasteColumns),
+                    IsButton = true,
+                    Action = PasteColumns,
+                    NoConfirm = true,
                     Caption = "粘贴列",
                     Image = Application.Current.Resources["tree_item"] as ImageSource
-                },
-                new CommandItem
+                });
+                commands.Add(new CommandItem
                 {
-                    IsButton=true,
-                    Action = (ClearColumns),
+                    IsButton = true,
+                    Action = ClearColumns,
                     Caption = "清除列",
                     Image = Application.Current.Resources["img_del"] as ImageSource
-                },
-                new CommandItem
+                });
+                commands.Add(new CommandItem
                 {
-                    IsButton=true,
-                    Action = (DeleteColumns),
+                    IsButton = true,
+                    Action = DeleteColumns,
                     Caption = "删除所选列",
                     Image = Application.Current.Resources["img_del"] as ImageSource
-                },
-                new CommandItem
+                });
+                commands.Add(new CommandItem
                 {
-                IsButton=true,
-                Action = (AddProperty),
-                Caption = "新增字段",
-                Image = Application.Current.Resources["tree_Open"] as ImageSource
+                    IsButton = true,
+                    Action = AddProperty,
+                    NoConfirm = true,
+                    Caption = "新增字段",
+                    Image = Application.Current.Resources["tree_Open"] as ImageSource
+                });
             }
-            };
-            CreateCommands(commands);
-            var extends = CommandCoefficient.CoefficientEditor(typeof(EntityConfig), EditorName);
-            if (extends.Count > 0)
-                commands.AddRange(extends);
+            if (create)
+                CreateCommands(commands);
+            if (ext)
+            {
+                var extends = CommandCoefficient.CoefficientEditor(typeof(EntityConfig), EditorName);
+                if (extends.Count > 0)
+                    commands.AddRange(extends);
+            }
             return commands;
         }
 
@@ -128,7 +145,7 @@ namespace Agebull.EntityModel.Designer
 
         public void DeleteColumns(object arg)
         {
-            if (Context.SelectEntity == null || Context.SelectColumns ==null||
+            if (Context.SelectEntity == null || Context.SelectColumns == null ||
                 MessageBox.Show("确认删除所选字段吗?", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
             {
                 return;
@@ -142,83 +159,88 @@ namespace Agebull.EntityModel.Designer
 
         #region 复制
 
-        public void PateFields(bool yes, EntityConfig source, EntityConfig Entity, List<PropertyConfig> columns)
+        public void PateFields(bool toReference, EntityConfig source, EntityConfig Entity, List<PropertyConfig> columns)
         {
             foreach (var copyColumn in columns)
             {
-                PropertyConfig newColumn;
-                if (copyColumn.IsPrimaryKey && copyColumn.Name.ToLower() == "id")
+                var refe = toReference && !copyColumn.Parent.IsInterface;
+                PropertyConfig newColumn = null;
+                if (refe)
                 {
-                    string name = copyColumn.Parent.SaveTableName ?? copyColumn.Parent.ReadTableName;
-                    newColumn = Entity.Properties.FirstOrDefault(
-                        p => p.LinkTable == name && p.IsExtendKey);
+                    newColumn = Entity.Properties.FirstOrDefault(p => p.ReferenceKey == copyColumn.Key);
+                    if (newColumn == null)
+                    {
+                        string name = copyColumn.Parent.Name;
+                        if (copyColumn.IsPrimaryKey)
+                        {
+                            newColumn = Entity.Properties.FirstOrDefault(p => p.LinkTable == name && p.IsLinkKey);
+                        }
+                        else if (copyColumn.IsCaption)
+                        {
+                            newColumn = Entity.Properties.FirstOrDefault(p => p.LinkTable == name && p.IsLinkCaption);
+                        }
+                        else
+                        {
+                            newColumn = Entity.Properties.FirstOrDefault(
+                                p => string.Equals(p.LinkTable, name, StringComparison.OrdinalIgnoreCase) && (
+                                         string.Equals(p.LinkField, copyColumn.Name, StringComparison.OrdinalIgnoreCase) ||
+                                         string.Equals(p.LinkField, copyColumn.DbFieldName, StringComparison.OrdinalIgnoreCase)));
+                        }
+                    }
                 }
-                else if (copyColumn.IsCaption)
-                {
-                    string name = copyColumn.Parent.SaveTableName ?? copyColumn.Parent.ReadTableName;
-                    newColumn = Entity.Properties.FirstOrDefault(
-                        p => p.LinkTable == name && p.IsLinkCaption);
-                }
-                else
-                {
-                    newColumn = Entity.Properties.FirstOrDefault(p =>
-                        string.Equals(p.Name, copyColumn.Name, StringComparison.OrdinalIgnoreCase)
-                        || string.Equals(p.Alias, copyColumn.Name, StringComparison.OrdinalIgnoreCase)
-                        || string.Equals(p.Name, copyColumn.Alias, StringComparison.OrdinalIgnoreCase));
-                }
-
                 if (newColumn == null)
                 {
                     newColumn = new PropertyConfig();
-                    newColumn.CopyFrom(copyColumn);
-
-                    if (copyColumn.IsPrimaryKey && copyColumn.Name.ToLower() == "id")
+                    newColumn.CopyFromProperty(copyColumn, false, true, true);
+                    newColumn.Option.Index = newColumn.Option.Identity = 0;
+                    
+                    if (refe && !copyColumn.IsLinkField)
                     {
-                        newColumn.Name = copyColumn.Parent.Name + "Id";
-                        newColumn.Caption = copyColumn.Parent.Caption + "外键";
-                        newColumn.ColumnName = GlobalConfig.SplitWords(newColumn.Name).Select(p => p.ToLower()).LinkToString("_");
-                    }
-                    else if (copyColumn.IsCaption)
-                    {
-                        newColumn.Name = copyColumn.Parent.Name;
-                        newColumn.Caption = copyColumn.Parent.Caption;
-                        newColumn.ColumnName = GlobalConfig.SplitWords(newColumn.Name).Select(p => p.ToLower()).LinkToString("_");
+                        if (copyColumn.IsPrimaryKey)
+                        {
+                            newColumn.Name = copyColumn.Parent.Name + "Id";
+                            newColumn.Caption = copyColumn.Parent.Caption + "外键";
+                        }
+                        else if (copyColumn.IsCaption)
+                        {
+                            newColumn.Name = copyColumn.Parent.Name;
+                            newColumn.Caption = copyColumn.Parent.Caption;
+                        }
+                        newColumn.Option.IsLink = true;
+                        newColumn.Option.ReferenceConfig = copyColumn;
+                        newColumn.DbFieldName = DataBaseHelper.ToDbFieldName(newColumn.Name);
                     }
                     Entity.Add(newColumn);
                 }
-                newColumn.Parent = Entity;
-                if (yes)
+                if (refe)
                 {
-                    newColumn.LinkTable = string.IsNullOrEmpty(copyColumn.LinkTable)
-                        ? source.SaveTableName
-                        : copyColumn.LinkTable;
-                    newColumn.LinkField = string.IsNullOrEmpty(copyColumn.LinkField)
-                        ? copyColumn.Name
-                        : copyColumn.LinkField;
-                    if (copyColumn.IsLinkKey || copyColumn.IsPrimaryKey)
+                    if (copyColumn.IsLinkField)
                     {
-                        newColumn.IsLinkKey = true;
+                        newColumn.Option.IsLink = true;
+                        newColumn.Option.ReferenceConfig = copyColumn.Option.ReferenceConfig;
                     }
                     else
                     {
-                        newColumn.IsLinkCaption = copyColumn.IsCaption || copyColumn.IsLinkCaption;
-                        newColumn.IsCompute = copyColumn.IsCompute;
+                        newColumn.IsLinkField = true;
+                        newColumn.Option.ReferenceConfig = copyColumn;
+                        newColumn.LinkTable = source.Name;
+                        newColumn.LinkField = copyColumn.Name;
+                        if (copyColumn.IsLinkKey || copyColumn.IsPrimaryKey)
+                        {
+                            newColumn.IsLinkKey = true;
+                        }
+                        else if (copyColumn.IsCaption)
+                        {
+                            newColumn.IsLinkCaption = true;
+                            newColumn.IsCompute = true;
+                        }
                     }
-                    newColumn.IsCompute = !newColumn.IsLinkKey;
                 }
-                else
-                {
-                    newColumn.IsLinkField = false;
-                    newColumn.LinkTable = null;
-                    newColumn.IsLinkKey = false;
-                    newColumn.IsLinkCaption = false;
-                    newColumn.IsUserId = false;
-                    newColumn.LinkField = null;
-                    newColumn.IsCompute = false;
-
-                }
+                newColumn.Parent = Entity;
                 newColumn.IsPrimaryKey = false;
                 newColumn.IsCaption = false;
+                if (newColumn.IsLinkKey)
+                    newColumn.NoneApiArgument = true;
             }
             Entity.IsModify = true;
         }

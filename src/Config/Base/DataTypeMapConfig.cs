@@ -91,9 +91,9 @@ namespace Agebull.EntityModel.Config
             {
                 Name = "Enum",
                 Caption = "枚举",
-                CSharp = "enum",
-                Java = "enum",
-                Cpp = "enum",
+                CSharp = "int",
+                Java = "int",
+                Cpp = "int",
                 MySql = "int",
                 SqlServer = "int",
                 Oracle = "NUMBER(10)",
@@ -108,6 +108,19 @@ namespace Agebull.EntityModel.Config
                 Java = "byte",
                 Cpp = "unsigned char",
                 MySql = "VarBinary",
+                SqlServer = "VarBinary",
+                Oracle = "NUMBER(3)",
+                JavaScript = "byte"
+            },
+            /* Byte[]*/
+            new DataTypeMapConfig
+            {
+                Name = "ByteArray",
+                Caption = "有符号字节数组",
+                CSharp = "byte[]",
+                Java = "byte[]",
+                Cpp = "unsigned char",
+                MySql = "LONGBLOG",
                 SqlServer = "VarBinary",
                 Oracle = "NUMBER(3)",
                 JavaScript = "byte"

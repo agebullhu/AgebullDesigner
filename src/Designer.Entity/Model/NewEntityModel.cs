@@ -59,7 +59,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     字段
         /// </summary>
-        public ObservableCollection<PropertyConfig> Columns { get; } = new ConfigCollection<PropertyConfig>();
+        public NotificationList<PropertyConfig> Columns { get; } = new ConfigCollection<PropertyConfig>();
 
         #endregion
 
@@ -83,6 +83,14 @@ namespace Agebull.EntityModel.Designer
                     IsButton=true,
 
                     Caption = "规整文本(C#风格属性)",
+                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                },
+            new AsyncCommandItem<string, string>
+                (FormatPrepare, Format.DoFormatDocument, FormatEnd)
+                {
+                    IsButton=true,
+
+                    Caption = "规整文本(API文档)",
                     Image = Application.Current.Resources["tree_Assembly"] as ImageSource
                 },
             new AsyncCommandItem<string, string>

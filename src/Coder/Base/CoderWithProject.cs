@@ -22,7 +22,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         ///     数据库配置对象
         /// </summary>
-        public ProjectConfig Project { get; set; }
+        public virtual ProjectConfig Project { get; set; }
 
         /// <summary>
         ///     表配置集合

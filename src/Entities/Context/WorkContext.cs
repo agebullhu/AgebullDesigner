@@ -33,11 +33,26 @@ namespace Agebull.EntityModel
         /// </summary>
         public static bool IsNoChangedNotify => WorkModel >= WorkModel.Show;
 
+        /// <summary>
+        /// 正在载入
+        /// </summary>
+        public static bool InLoding => WorkModel == WorkModel.Loding;
 
         /// <summary>
-        /// 是否仅显示
+        /// 正在保存
         /// </summary>
-        public static bool IsShow => WorkModel == WorkModel.Show;
+        public static bool InSaving => WorkModel == WorkModel.Saving;
+
+        /// <summary>
+        /// 正在修复
+        /// </summary>
+        public static bool InRepair => WorkModel == WorkModel.Repair;
+
+
+        /// <summary>
+        /// 正在显示
+        /// </summary>
+        public static bool InShow => WorkModel == WorkModel.Show;
 
         /// <summary>
         /// 正在生成代码

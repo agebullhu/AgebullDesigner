@@ -17,7 +17,7 @@ namespace Agebull.CodeRefactor.CodeRefactor
 
         private TraceMessage _traceMessage;
 
-        
+
 
         /// <summary>
         /// 当前跟踪消息
@@ -57,7 +57,8 @@ namespace Agebull.CodeRefactor.CodeRefactor
 
         public CommandItem ClearTraceCommand => _clearTraceCommand ?? (_clearTraceCommand = new CommandItem
         {
-            Action = (ClearTrace),
+            NoConfirm=true,
+            Action = ClearTrace,
             Caption = "清除跟踪信息",
             Image = Application.Current.Resources["tree_Close"] as ImageSource
         });
@@ -70,7 +71,8 @@ namespace Agebull.CodeRefactor.CodeRefactor
 
         public CommandItem CopyTraceCommand => _copyTraceCommand ?? (_copyTraceCommand = new CommandItem
         {
-            Action = (CopyTrace),
+            NoConfirm = true,
+            Action = CopyTrace,
             Caption = "复制跟踪信息",
             Image = Application.Current.Resources["tree_Close"] as ImageSource
         });
@@ -79,12 +81,18 @@ namespace Agebull.CodeRefactor.CodeRefactor
         {
             get
             {
-                return (new CommandItem
+                return new CommandItem
                 {
-                    Action = ((arg) => TraceMessage = TraceMessage.DefaultTrace),
+                    Action = (arg) =>
+                    {
+                        TraceMessage = TraceMessage == TraceMessage.DefaultTrace 
+                            ? TreeRoot.Root?.Extend.DependencyObjects.AutoDependency<TraceMessage>() 
+                            : TraceMessage.DefaultTrace;
+                    },
+                    NoConfirm = true,
                     Caption = "切换到全局消息",
                     Image = Application.Current.Resources["tree_default"] as ImageSource
-                });
+                };
             }
         }
 

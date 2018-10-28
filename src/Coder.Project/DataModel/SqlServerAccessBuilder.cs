@@ -166,16 +166,23 @@ namespace Agebull.EntityModel.RobotCoder
             return $@"
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
-using System.Data.Sql;
-using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
+using Agebull.Common;
+using Agebull.Common.DataModel;
 using Gboxt.Common.DataModel;
-
 using Gboxt.Common.DataModel.SqlServer;
 
+{Project.UsingNameSpaces}
 
 namespace {NameSpace}.DataAccess
 {{
@@ -228,7 +235,7 @@ namespace {NameSpace}.DataAccess
                 }
                 return;
             }
-            var code = ($@"
+            var code = $@"
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -250,7 +257,7 @@ namespace {NameSpace}.DataAccess
 
     }}
 }}
-");
+";
             SaveCode(file, code);
         }
 
@@ -270,7 +277,7 @@ namespace {NameSpace}.DataAccess
         private string TableObject()
         {
             var name = Entity.Name.ToPluralism();
-            return ($@"
+            return $@"
 
         /// <summary>
         /// {Entity.Description}数据访问对象
@@ -286,12 +293,12 @@ namespace {NameSpace}.DataAccess
             {{
                 return this._{name.ToLWord()} ?? ( this._{name.ToLWord()} = new {Entity.Name}DataAccess{{ DataBase = this}});
             }}
-        }}");
+        }}";
         }
 
         private string TableSql()
         {
-            return ($@"
+            return $@"
 
         /// <summary>
         /// {Entity.Description}的结构语句
@@ -300,7 +307,7 @@ namespace {NameSpace}.DataAccess
         {{
             TableName = ""{Entity.ReadTableName}"",
             PimaryKey = ""{Entity.PrimaryColumn.PropertyName}""
-        }};");
+        }};";
         }
 
         private string Fields()
@@ -356,7 +363,7 @@ namespace {NameSpace}.DataAccess
                     sql.Append(",");
                 }
                 sql.Append($@"
-            {{ ""{field.PropertyName}"" , ""{field.ColumnName}"" }}");
+            {{ ""{field.PropertyName}"" , ""{field.DbFieldName}"" }}");
                 names.Add(field.PropertyName);
 
                 var alias = field.GetAliasPropertys();
@@ -368,13 +375,13 @@ namespace {NameSpace}.DataAccess
                     }
                     names.Add(a);
                     sql.Append($@",
-            {{ ""{a}"" , ""{field.ColumnName}"" }}");
+            {{ ""{a}"" , ""{field.DbFieldName}"" }}");
                 }
             }
             if (!table.DbFields.Any(p => p.PropertyName.Equals("Id", StringComparison.OrdinalIgnoreCase)))
             {
                 sql.Append($@",
-            {{ ""Id"" , ""{table.PrimaryColumn.ColumnName}"" }}");
+            {{ ""Id"" , ""{table.PrimaryColumn.DbFieldName}"" }}");
             }
         }
 
@@ -394,7 +401,7 @@ namespace {NameSpace}.DataAccess
                     sql.Append(",");
                 }
                 sql.AppendFormat(@"
-    [{0}] AS [{1}]", field.ColumnName, field.PropertyName);
+    [{0}] AS [{1}]", field.DbFieldName, field.PropertyName);
             }
             return sql.ToString();
         }
@@ -406,7 +413,7 @@ namespace {NameSpace}.DataAccess
         private string UniqueCondition()
         {
             if (!Entity.DbFields.Any(p => p.UniqueIndex > 0))
-                return $@"[{Entity.PrimaryColumn.ColumnName}] = @{Entity.PrimaryColumn.PropertyName}";
+                return $@"[{Entity.PrimaryColumn.DbFieldName}] = @{Entity.PrimaryColumn.PropertyName}";
 
             var code = new StringBuilder();
             var uniqueFields = Entity.DbFields.Where(p => p.UniqueIndex > 0).OrderBy(p => p.UniqueIndex).ToArray();
@@ -421,7 +428,7 @@ namespace {NameSpace}.DataAccess
                 {
                     code.Append(" AND ");
                 }
-                code.AppendFormat("{0}=@{1}", col.ColumnName, col.PropertyName);
+                code.AppendFormat("{0}=@{1}", col.DbFieldName, col.PropertyName);
             }
             return code.ToString();
         }
@@ -434,12 +441,12 @@ namespace {NameSpace}.DataAccess
             var code = new StringBuilder();
             code.Append($@"
 DECLARE @__myId INT;
-SELECT @__myId = [{Entity.PrimaryColumn.ColumnName}] FROM [{Entity.SaveTable}] WHERE {UniqueCondition()}");
+SELECT @__myId = [{Entity.PrimaryColumn.DbFieldName}] FROM [{Entity.SaveTable}] WHERE {UniqueCondition()}");
 
             code.Append($@"
 IF @__myId IS NULL
 BEGIN{OnlyInsertSql(true)}
-    SET @__myId = {(Entity.PrimaryColumn.IsIdentity ? "SCOPE_IDENTITY()" : Entity.PrimaryColumn.ColumnName)};
+    SET @__myId = {(Entity.PrimaryColumn.IsIdentity ? "SCOPE_IDENTITY()" : Entity.PrimaryColumn.DbFieldName)};
 END
 ELSE
 BEGIN
@@ -468,7 +475,7 @@ INSERT INTO [{Entity.SaveTable}]
                     sql.Append(",");
                 }
                 sql.Append($@"
-    [{field.ColumnName}]");
+    [{field.DbFieldName}]");
             }
             sql.Append(@"
 )
@@ -521,7 +528,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
                     sql.Append(",");
                 }
                 sql.AppendFormat(@"
-       [{0}] = @{1}", field.ColumnName, field.PropertyName);
+       [{0}] = @{1}", field.DbFieldName, field.PropertyName);
             }
             sql.AppendFormat(@"
  WHERE {0};", UniqueCondition());
@@ -545,7 +552,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
                 code.AppendFormat(@"
             //{0}
             if (data.__EntityStatus.ModifiedProperties[{1}.Real_{2}] > 0)
-                sql.AppendLine(""       [{3}] = @{2}"");", field.Caption, Entity.EntityName, field.PropertyName, field.ColumnName);
+                sql.AppendLine(""       [{3}] = @{2}"");", field.Caption, Entity.EntityName, field.PropertyName, field.DbFieldName);
             }
             code.AppendFormat(@"
             sql.Append("" WHERE {0};"");", UniqueCondition());
@@ -564,7 +571,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
 
         private string CreateScope()
         {
-            return ($@"
+            return $@"
 
         /// <summary>
         /// 构造一个缺省可用的数据库对象
@@ -582,7 +589,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
         {{
             var db = {Project.DataBaseObjectName}.Default ?? new {Project.DataBaseObjectName}();
             return SqlServerDataTableScope<{Entity.EntityName}>.CreateScope(db, db.{Entity.Name.ToPluralism()});
-        }}");
+        }}";
         }
 
         private string CreateFullSqlParameter()
@@ -712,7 +719,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
         {{
             cmd.CommandText = InsertSqlCode;
             CreateFullSqlParameter(entity, cmd);
-            return {(Entity.PrimaryColumn.IsIdentity).ToString().ToLower()};
+            return {Entity.PrimaryColumn.IsIdentity.ToString().ToLower()};
         }}";
         }
 
@@ -810,18 +817,18 @@ UPDATE [{0}] SET", Entity.SaveTable);
                             , idx++);
                         continue;
                     case "decimal":
-                        code.AppendFormat(field.DbNullable
-                                ? @"
+                        code.AppendFormat(/*field.DbNullable? */
+                                @"
                 if (!reader.IsDBNull({2}))
                     entity._{0} = (decimal){1}({2});"
-                                : @"
-                entity._{0} = (decimal){1}({2});"
+                                /*: @"
+                entity._{0} = (decimal){1}({2});"*/
                             , fieldName
                             , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
                             , idx++);
                         continue;
                 }
-                if (field.DbNullable)
+                //if (field.DbNullable)
                 {
                     if (string.Equals(field.CsType, field.DbType, StringComparison.OrdinalIgnoreCase))
                     {
@@ -861,7 +868,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
                             , idx++);
                     }
                 }
-                else
+                /*else
                 {
                     if (field.CsType.ToLower() == field.DbType.ToLower())
                     {
@@ -887,7 +894,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
                         code.Append($@"
                 entity._{fieldName} = ({field.CustomType ?? field.CsType}){CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)}({idx++});");
                     }
-                }
+                }*/
             }
             code.Append(@"
             }

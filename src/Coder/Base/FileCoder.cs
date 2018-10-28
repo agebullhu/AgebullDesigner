@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Agebull.Common;
 using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
@@ -43,7 +42,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         public void CreateExtendCode(string path)
         {
-            using (CodeGeneratorScope.CreateScope())
+            using (CodeGeneratorScope.CreateScope(CurrentConfig as EntityConfig))
             {
                 try
                 {
@@ -64,7 +63,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         public void CreateBaseCode(string path)
         {
-            using (CodeGeneratorScope.CreateScope())
+            using (CodeGeneratorScope.CreateScope(CurrentConfig as EntityConfig))
             {
                 try
                 {
@@ -95,7 +94,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         #endregion
 
-        #region 保存代码
+        #region 取得扩展配置的路径
 
         /// <summary>
         /// 取得扩展配置的路径
@@ -108,21 +107,25 @@ namespace Agebull.EntityModel.RobotCoder
         /// <returns></returns>
         protected static string ConfigPath(ConfigBase config, string key, string path, string defDir, string defName)
         {
-            key = key.ToLower();
-            var old = config.TryGetExtendConfig(key, null);
+            var old = config.Option[key];
             string full;
-            if (old == null)
+            if (!string.IsNullOrWhiteSpace(old))
             {
-                var p2 = Path.Combine(defDir, defName);
-                config.ExtendConfig.Add(new ConfigItem { Name = key, Value = p2 });
+                full = Path.Combine(path, old);
+                if (File.Exists(full))
+                    return full;
+            }
 
-                full = Path.Combine(path, defDir, defName);
+            if (string.IsNullOrEmpty(defDir))
+            {
+                config.Option[key]= defName;
+                full = Path.Combine(path, defName);
             }
             else
             {
-                full = Path.Combine(path, old);
+                config.Option[key] =  Path.Combine(defDir, defName);
+                full = Path.Combine(path, defDir, defName);
             }
-
             GlobalConfig.CheckPaths(Path.GetDirectoryName(full));
             return full;
         }
@@ -137,16 +140,6 @@ namespace Agebull.EntityModel.RobotCoder
         /// <returns>正确表示为C#注释的文本</returns>
         protected void SaveCode(string file, string code, bool overWirte = true)
         {
-            var name = FileSaveConfigName + (CurrentIsExtend ? "_ex" : "");
-            var old = CurrentConfig[name];
-            if (old == null)
-            {
-                CurrentConfig[name] = file.Replace(CurrentPath, "").Trim('\\');
-            }
-            else
-            {
-                file = Path.Combine(CurrentPath, old.Trim('\\'));
-            }
             WriteFile(file, code, overWirte);
         }
 
@@ -158,7 +151,11 @@ namespace Agebull.EntityModel.RobotCoder
         {
             WorkContext.FileCodes?.AddOrSwitch(file, code);
             if (!WorkContext.WriteToFile)
+            {
+                Trace.WriteLine(file, "阻止写入");
                 return;
+            }
+
             if (File.Exists(file))
             {
                 FileInfo f = new FileInfo(file);
@@ -170,10 +167,17 @@ namespace Agebull.EntityModel.RobotCoder
                 using (var reader = File.OpenText(file))
                 {
                     var mark = reader.ReadLine();
-                    if (String.IsNullOrWhiteSpace(mark) || !mark.Contains("此标记表明此文件可被设计器更新"))
+                    if (string.IsNullOrWhiteSpace(mark) || !mark.Contains("此标记表明此文件可被设计器更新"))
+                    {
+                        Trace.WriteLine(file, "无写入标识");
                         return;
+                    }
                     reader.Close();
                 }
+            }
+            else
+            {
+                GlobalConfig.CheckPaths(Path.GetDirectoryName(file));
             }
             StringBuilder sb = new StringBuilder();
             if (overWirte)
@@ -207,8 +211,12 @@ namespace Agebull.EntityModel.RobotCoder
                 {
                     old = old.Split(new[] { '\n' }, 2)[1].Trim();
                 }
-                if (String.Equals(code, old))
+
+                if (string.Equals(code, old))
+                {
+                    Trace.WriteLine(file, "内容相同");
                     return;
+                }
             }
             else
             {
@@ -228,7 +236,7 @@ namespace Agebull.EntityModel.RobotCoder
             //    //helper.CheckOut();
             //    //helper.CheckIn(file);
             //}
-            Trace.WriteLine(file);
+            Trace.WriteLine(file,"文件写入");
         }
         #endregion
     }

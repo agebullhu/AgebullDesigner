@@ -14,31 +14,29 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         protected override void OnLoad()
         {
-            base.OnLoad();
             using (WorkModelScope.CreateScope(WorkModel.Repair))
             {
                 foreach (var cfg in TargetConfig.Classifies)
                 {
                     GlobalTrigger.OnLoad(cfg);
                 }
-                TargetConfig.Option.IsReference = TargetConfig.Entities.Count > 0 && TargetConfig.Entities.All(p => p.IsReference);
-                foreach (var entity in TargetConfig.Entities)
+                foreach (var entityConfig in TargetConfig.Entities)
                 {
-                    entity.Project = TargetConfig.Name;
-                    entity.Parent = TargetConfig;
-                    GlobalTrigger.OnLoad(entity);
+                    entityConfig.Project = TargetConfig.Name;
+                    entityConfig.Parent = TargetConfig;
+                    GlobalTrigger.OnLoad(entityConfig);
                 }
-                foreach (var entity in TargetConfig.ApiItems)
+                foreach (var apiItem in TargetConfig.ApiItems)
                 {
-                    entity.Project = TargetConfig.Name;
-                    entity.Parent = TargetConfig;
-                    GlobalTrigger.OnLoad(entity);
+                    apiItem.Project = TargetConfig.Name;
+                    apiItem.Parent = TargetConfig;
+                    GlobalTrigger.OnLoad(apiItem);
                 }
-                foreach (var entity in TargetConfig.Enums)
+                foreach (var enumConfig in TargetConfig.Enums)
                 {
-                    entity.Project = TargetConfig.Name;
-                    entity.Parent = TargetConfig;
-                    GlobalTrigger.OnLoad(entity);
+                    enumConfig.Project = TargetConfig.Name;
+                    enumConfig.Parent = TargetConfig;
+                    GlobalTrigger.OnLoad(enumConfig);
                 }
                 TargetConfig.Entities.CollectionChanged += OnEntityCollectionChanged;
                 TargetConfig.Enums.CollectionChanged += OnEnumCollectionChanged;

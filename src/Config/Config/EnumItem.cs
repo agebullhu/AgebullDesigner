@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2017/7/12 22:06:39*/
+﻿/*design by:agebull designer date:2017/7/12 22:06:39*/
 /*****************************************************
 ©2008-2017 Copy right by agebull.hu(胡天水)
 作者:agebull.hu(胡天水)

@@ -11,16 +11,15 @@ namespace Agebull.EntityModel.RobotCoder
 {
     public sealed class MySqlAccessBuilder : CoderWithEntity
     {
-
+        private PropertyConfig[] dbFields;
         /// <summary>
         ///     公开的数据库字段
         /// </summary>
-        private IEnumerable<PropertyConfig> PublishDbFields
+        private PropertyConfig[] PublishDbFields
         {
             get
             {
-                return Entity.DbFields.Where(p => !p.DbInnerField &&
-                                                  !string.Equals(p.DbType, "EMPTY", StringComparison.OrdinalIgnoreCase));
+                return dbFields ?? (dbFields = Entity.DbFields.Where(p => !p.DbInnerField && !string.Equals(p.DbType, "EMPTY", StringComparison.OrdinalIgnoreCase)).ToArray());
             }
         }
         /// <summary>
@@ -36,10 +35,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 表的唯一标识
         /// </summary>
-        public override int TableId
-        {{
-            get {{ return {Project.DataBaseObjectName}.Table_{Entity.Name}; }}
-        }}
+        public override int TableId => {Entity.EntityName}._DataStruct_.EntityIdentity;
 
         /// <summary>
         /// 读取表名
@@ -66,13 +62,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 主键
         /// </summary>
-        protected sealed override string PrimaryKey
-        {{
-            get
-            {{
-                return @""{Entity.PrimaryColumn.Name}"";
-            }}
-        }}
+        protected sealed override string PrimaryKey => {Entity.EntityName}._DataStruct_.EntityPrimaryKey;
 
         /// <summary>
         /// 全表读取的SQL语句
@@ -126,7 +116,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         private string SimpleCode()
         {
-            var fields = Entity.DbFields.Where(p => p.ExtendConfigListBool["db_simple"]).ToArray();
+            var fields = Entity.DbFields.Where(p => p.ExtendConfigListBool["easyui", "simple"]).ToArray();
             var code = new StringBuilder();
             code.Append($@"
         #region 简单读取
@@ -152,10 +142,10 @@ namespace Agebull.EntityModel.RobotCoder
         {{
             using (new EditScope(entity.__EntityStatus, EditArrestMode.All, false))
             {{");
-
+            int idx = 0;
             foreach (var field in fields)
             {
-                SqlMomentCoder.FieldReadCode(field, code);
+                SqlMomentCoder.FieldReadCode(Entity, field, code, idx++);
             }
             code.Append(@"
             }
@@ -218,18 +208,33 @@ namespace Agebull.EntityModel.RobotCoder
 {SimpleCode()}
 ";
 
-            return $@"
+            return $@"#region
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
-using Gboxt.Common.DataModel;
-
+using System.Runtime.Serialization;
+using System.IO;
 using MySql.Data.MySqlClient;
-using Gboxt.Common.DataModel.MySql;
+using Newtonsoft.Json;
 
+using Agebull.Common;
+using Agebull.Common.DataModel;
+using Agebull.Common.Rpc;
+using Agebull.Common.WebApi;
+using Gboxt.Common;
+using Gboxt.Common.DataModel;
+{Project.UsingNameSpaces}
+
+using Gboxt.Common.DataModel.Extends;
+using Gboxt.Common.DataModel.MySql;
+#endregion
 
 namespace {NameSpace}.DataAccess
 {{
@@ -243,16 +248,16 @@ namespace {NameSpace}.DataAccess
         /// </summary>
         public {Entity.Name}DataAccess()
         {{
-            Name = @""{Entity.Name}"";
-            Caption = @""{Entity.Caption}"";
-            Description = @""{Entity.Description.Replace("\"", "\"\"")}"";
+            Name = {Entity.EntityName}._DataStruct_.EntityName;
+            Caption = {Entity.EntityName}._DataStruct_.EntityCaption;
+            Description = {Entity.EntityName}._DataStruct_.EntityDescription;
         }}
-{innerCode}
+        {innerCode}
+        {ExtendCode}
     }}
-
+    
     partial class {Project.DataBaseObjectName}
     {{
-{TablesEnum()}
 {TableSql()}
 {TableObject()}
     }}
@@ -260,19 +265,6 @@ namespace {NameSpace}.DataAccess
 ";
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        private string TablesEnum()
-        {
-            return $@"
-
-        /// <summary>
-        /// {Entity.Caption}({Entity.ReadTableName}):{Entity.Description}
-        /// </summary>
-        public const int Table_{Entity.Name} = 0x{Entity.Index:x};";
-        }
         /// <summary>
         ///     生成基础代码
         /// </summary>
@@ -309,18 +301,39 @@ namespace {NameSpace}.DataAccess
             {
                 if (Entity.Interfaces.Contains("IRowScopeData"))
                     baseClass = "RowScopeDataAccess";
-                else if (Entity.Interfaces.Contains("IStateData"))
+                //else if (Entity.Interfaces.Contains("IHistoryData"))
+                //    baseClass = "HitoryTable";
+                else
+                if (Entity.Interfaces.Contains("IStateData"))
                     baseClass = "DataStateTable";
             }
-            var code = $@"
+            var code = $@"#region
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
+
+using Agebull.Common;
+using Agebull.Common.DataModel;
+using Agebull.Common.Rpc;
+using Agebull.Common.WebApi;
+using Gboxt.Common.DataModel;
+using Gboxt.Common.DataModel.MySql;
+
+{Project.UsingNameSpaces}
+#endregion
 
 namespace {NameSpace}.DataAccess
 {{
-    using Gboxt.Common.DataModel;
-    using Gboxt.Common.DataModel.MySql;
     /// <summary>
     /// {Entity.Description}
     /// </summary>
@@ -331,12 +344,20 @@ namespace {NameSpace}.DataAccess
 }}";
             SaveCode(file, code);
         }
-        
+
+        private string ExtendCode
+        {
+            get
+            {
+                var code = new StringBuilder();
+                return code.ToString();
+            }
+        }
 
         private string TableObject()
         {
             var name = Entity.Name.ToPluralism();
-            return ($@"
+            return $@"
 
         /// <summary>
         /// {Entity.Description}数据访问对象
@@ -352,12 +373,12 @@ namespace {NameSpace}.DataAccess
             {{
                 return this._{name.ToLWord()} ?? ( this._{name.ToLWord()} = new {Entity.Name}DataAccess{{ DataBase = this}});
             }}
-        }}");
+        }}";
         }
 
         private string TableSql()
         {
-            return ($@"
+            return $@"
 
         /// <summary>
         /// {Entity.Description}的结构语句
@@ -366,7 +387,7 @@ namespace {NameSpace}.DataAccess
         {{
             TableName = ""{Entity.ReadTableName}"",
             PimaryKey = ""{Entity.PrimaryColumn.Name}""
-        }};");
+        }};";
         }
 
         private string Fields()
@@ -425,23 +446,23 @@ namespace {NameSpace}.DataAccess
             {
                 if (!names.ContainsKey(field.Name))
                 {
-                    names.Add(field.Name, field.ColumnName);
+                    names.Add(field.Name, field.DbFieldName);
                 }
-                if (!names.ContainsKey(field.ColumnName))
+                if (!names.ContainsKey(field.DbFieldName))
                 {
-                    names.Add(field.ColumnName, field.ColumnName);
+                    names.Add(field.DbFieldName, field.DbFieldName);
                 }
                 foreach (var alia in field.GetAliasPropertys())
                 {
                     if (!names.ContainsKey(alia))
                     {
-                        names.Add(alia, field.ColumnName);
+                        names.Add(alia, field.DbFieldName);
                     }
                 }
             }
             if (!names.ContainsKey("Id"))
             {
-                names.Add("Id", entity.PrimaryColumn.ColumnName);
+                names.Add("Id", entity.PrimaryColumn.DbFieldName);
             }
         }
 
@@ -453,23 +474,37 @@ namespace {NameSpace}.DataAccess
         /// <returns></returns>
         private string UniqueCondition()
         {
-            if (!PublishDbFields.Any(p => p.UniqueIndex > 0))
-                return $@"`{Entity.PrimaryColumn.ColumnName}` = ?{Entity.PrimaryColumn.Name}";
-
             var code = new StringBuilder();
-            var uniqueFields = PublishDbFields.Where(p => p.UniqueIndex > 0).OrderBy(p => p.UniqueIndex).ToArray();
-            var isFirst = true;
-            foreach (var col in uniqueFields)
+            if (!PublishDbFields.Any(p => p.UniqueIndex > 0))
             {
-                if (isFirst)
+                code.Append($@"`{Entity.PrimaryColumn.DbFieldName}` = ?{Entity.PrimaryColumn.Name}");
+            }
+            else
+            {
+                var uniqueFields = PublishDbFields.Where(p => p.UniqueIndex > 0).OrderBy(p => p.UniqueIndex).ToArray();
+                var isFirst = true;
+                foreach (var col in uniqueFields)
                 {
-                    isFirst = false;
+                    if (isFirst)
+                    {
+                        isFirst = false;
+                    }
+                    else
+                    {
+                        code.Append(" AND ");
+                    }
+
+                    code.Append($"`{col.DbFieldName}`=?{col.Name}");
                 }
-                else
-                {
-                    code.Append(" AND ");
-                }
-                code.Append($"`{col.ColumnName}`=?{col.Name}");
+            }
+            if (Entity.Interfaces?.Contains("IStateData") == true)
+            {
+                var f = Entity.Properties.FirstOrDefault(p => p.Name == "IsFreeze");
+                if (f != null)
+                    code.Append($@" AND `{f.DbFieldName}` = 0");
+                var s = Entity.Properties.FirstOrDefault(p => p.Name == "DataState");
+                if (s != null)
+                    code.Append($@" AND `{s.DbFieldName}` < 255");
             }
             return code.ToString();
         }
@@ -482,12 +517,12 @@ namespace {NameSpace}.DataAccess
             var code = new StringBuilder();
             code.Append($@"
 DECLARE ?__myId INT(4);
-SELECT ?__myId = `{Entity.PrimaryColumn.ColumnName}` FROM `{Entity.SaveTable}` WHERE {UniqueCondition()}");
+SELECT ?__myId = `{Entity.PrimaryColumn.DbFieldName}` FROM `{Entity.SaveTable}` WHERE {UniqueCondition()}");
 
             code.Append($@"
 IF ?__myId IS NULL
 BEGIN{OnlyInsertSql(true)}
-    SET ?__myId = {(Entity.PrimaryColumn.IsIdentity ? "@@IDENTITY" : Entity.PrimaryColumn.ColumnName)};
+    SET ?__myId = {(Entity.PrimaryColumn.IsIdentity ? "@@IDENTITY" : Entity.PrimaryColumn.DbFieldName)};
 END
 ELSE
 BEGIN
@@ -516,7 +551,7 @@ INSERT INTO `{0}`
                     sql.Append(",");
                 }
                 sql.AppendFormat(@"
-    `{0}`", field.ColumnName);
+    `{0}`", field.DbFieldName);
             }
             sql.Append(@"
 )
@@ -569,7 +604,7 @@ UPDATE `{Entity.SaveTable}` SET");
                     sql.Append(",");
                 }
                 sql.Append($@"
-       `{field.ColumnName}` = ?{field.Name}");
+       `{field.DbFieldName}` = ?{field.Name}");
             }
             sql.Append($@"
  WHERE {UniqueCondition()};");
@@ -592,8 +627,8 @@ UPDATE `{Entity.SaveTable}` SET");
             {
                 code.Append($@"
             //{field.Caption}
-            if (data.__EntityStatus.ModifiedProperties[{Entity.EntityName}.Real_{field.Name}] > 0)
-                sql.AppendLine(""       `{field.ColumnName}` = ?{field.Name}"");");
+            if (data.__EntityStatus.ModifiedProperties[{Entity.EntityName}._DataStruct_.Real_{field.Name}] > 0)
+                sql.AppendLine(""       `{field.DbFieldName}` = ?{field.Name}"");");
             }
             code.AppendFormat(@"
             sql.Append("" WHERE {0};"");", UniqueCondition());
@@ -655,7 +690,7 @@ UPDATE `{Entity.SaveTable}` SET");
                 if (!string.IsNullOrWhiteSpace(field.CustomType))
                 {
                     code.Append($@"
-            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field)}){{ Value = (int)entity.{field.Name}}});");
+            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)}){{ Value = (int)entity.{field.Name}}});");
                     continue;
                 }
                 switch (field.CsType)
@@ -664,7 +699,7 @@ UPDATE `{Entity.SaveTable}` SET");
                     case "string":
                         code.Append($@"
             {(isFirstNull ? "var " : "")}isNull = string.IsNullOrWhiteSpace({CustomName(field, "entity.")});
-            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field)} , isNull ? 10 : ({CustomName(field, "entity.")}).Length);
+            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)} , isNull ? 10 : ({CustomName(field, "entity.")}).Length);
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
@@ -675,7 +710,7 @@ UPDATE `{Entity.SaveTable}` SET");
                     case "Byte[]":
                         code.Append($@"
             {(isFirstNull ? "var " : "")}isNull = {CustomName(field, "entity.")} == null || {CustomName(field, "entity.")}.Length == 0;
-            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field)} , isNull ? 10 : {CustomName(field, "entity.")}.Length);
+            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)} , isNull ? 10 : {CustomName(field, "entity.")}.Length);
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
@@ -688,7 +723,7 @@ UPDATE `{Entity.SaveTable}` SET");
                         {
                             code.Append($@"
             {(isFirstNull ? "var " : "")}isNull = entity.{field.Name} == null || entity.{field.Name}.Value.Year < 1900;
-            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field)});
+            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)});
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
@@ -699,7 +734,7 @@ UPDATE `{Entity.SaveTable}` SET");
                         {
                             code.Append($@"
             {(isFirstNull ? "var " : "")}isNull = entity.{field.Name}.Year < 1900;
-            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field)});
+            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)});
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
@@ -716,7 +751,7 @@ UPDATE `{Entity.SaveTable}` SET");
                         }
                         code.Append($@"
             {(isFirstNull ? "var " : "")}isNull = entity.{field.Name} == null;
-            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field)});
+            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)});
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
@@ -727,12 +762,12 @@ UPDATE `{Entity.SaveTable}` SET");
                         if (!field.Nullable)
                         {
                             code.Append($@"
-            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field)}){{ Value = entity.{field.Name}}});");
+            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)}){{ Value = entity.{field.Name}}});");
                             continue;
                         }
                         code.Append($@"
             {(isFirstNull ? "var " : "")}isNull = entity.{field.Name} == null;
-            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field)});
+            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)});
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
@@ -752,7 +787,7 @@ UPDATE `{Entity.SaveTable}` SET");
 
         private string InsertCode()
         {
-            return$@"
+            return $@"
 
         /// <summary>
         /// 设置插入数据的命令
@@ -794,7 +829,7 @@ UPDATE `{Entity.SaveTable}` SET");
                 case ""{0}"":
                     return MySqlDbType.{1};"
                     , field.Name
-                    , MySqlDataBaseHelper.ToSqlDbType(field));
+                    , MySqlHelper.ToSqlDbType(field));
             }
 
             return
@@ -827,9 +862,10 @@ UPDATE `{Entity.SaveTable}` SET");
         {{
             using (new EditScope(entity.__EntityStatus, EditArrestMode.All, false))
             {{");
+            int idx = 0;
             foreach (var field in PublishDbFields)
             {
-                SqlMomentCoder.FieldReadCode(field, code);
+                SqlMomentCoder.FieldReadCode(Entity, field, code, idx++);
             }
             code.Append(@"
             }

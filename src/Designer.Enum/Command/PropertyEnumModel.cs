@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using Agebull.Common.Mvvm;
@@ -23,7 +24,7 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder<PropertyConfig>
             {
                 Catalog = "字段",
-                Action = (ReadEnum),
+                Action = ReadEnum,
                 TargetType = type,
                 Caption = "识别枚举",
                 Description = "形如【类型，1操作，2返回，3未知】样式的说明文字",
@@ -34,7 +35,8 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder<PropertyConfig>
             {
                 Catalog = "字段",
-                Action = (CheckEnum),
+                Action = CheckEnum,
+                NoConfirm=true,
                 TargetType = type,
                 Caption = "刷新对象引用",
                 IconName = "tree_item"
@@ -42,7 +44,8 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder
             {
                 Catalog = "字段",
-                Action = (BindEnum),
+                NoConfirm = true,
+                Action = BindEnum,
                 TargetType = type,
                 Caption = "绑定或新增枚举",
                 SignleSoruce = true,
@@ -51,7 +54,7 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder
             {
                 Catalog = "字段",
-                Action = (DeleteEnum),
+                Action = DeleteEnum,
                 TargetType = type,
                 Caption = "清除枚举绑定",
                 SignleSoruce = true,
@@ -62,29 +65,23 @@ namespace Agebull.EntityModel.Designer
         public void BindEnum(object arg)
         {
             PropertyConfig property = Context.SelectProperty;
-            property.EnumConfig = null;
-            if (property.CustomType != null)
-            {
-                property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
-            }
+            property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
             if (property.EnumConfig != null)
                 return;
             if (MessageBox.Show("是否新增一个枚举?", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                 return;
-            property.Parent.Parent.Add(property.EnumConfig = new EnumConfig
+            var enumConfig = new EnumConfig
             {
-                Name = property.CustomType ?? (property.Name.Contains("Type") ? property.Name : (property.Name + "Type")),
-                Caption = property.Caption + "枚举类型"
-            });
+                Name = property.CustomType ?? (property.Name.Contains("Type") ? property.Name : property.Name + "Type"),
+                Caption = property.Caption + "类型"
+            };
+            property.Parent.Parent.Add(enumConfig);
+            property.EnumConfig = enumConfig;
         }
 
         public void CheckEnum(PropertyConfig property)
         {
-            property.EnumConfig = null;
-            if (property.CustomType != null)
-            {
-                property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
-            }
+            property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
         }
         /// <summary>
         /// 删除枚举
@@ -93,46 +90,50 @@ namespace Agebull.EntityModel.Designer
         {
             PropertyConfig property = Context.SelectProperty;
             property.CustomType = null;
-            property.EnumConfig = null;
         }
 
         #region 识别枚举
 
         public void ReadEnum(PropertyConfig column)
         {
-            if (column.CsType == "bool" || column.EnumConfig != null)
+            if (column.CsType == "bool")
                 return;
-            ReadPropertyEnum(column);
-            if (column.EnumConfig != null)
-            {
-                column.EnumConfig.Name = column.Name + "Type";
-                column.EnumConfig.Caption = column.Caption + "自定义类型";
-                column.CustomType = column.EnumConfig.Name;
-                Context.StateMessage = $@"解析得到枚举类型:{column.EnumConfig.Name},参考内容{column.EnumConfig.Description}";
-                column.EnumConfig.Parent.Add(column.EnumConfig);
-            }
-            else
-            {
-                column.CustomType = null;
-            }
-        }
 
-
-        public static void ReadPropertyEnum(PropertyConfig column)
-        {
-            var line = column.Description?.Trim(CoderBase.NoneLanguageChar) ?? "";
+            EnumConfig ec= column.EnumConfig;
+            
+            string desc = column.Description ?? column.Caption ?? column.Name;
+            var line = desc.Trim(NameHelper.NoneLanguageChar) ?? "";
 
             StringBuilder sb = new StringBuilder();
             StringBuilder caption = new StringBuilder();
             bool preIsNumber = false;
             bool startEnum = false;
-            EnumConfig ec = new EnumConfig
+            bool isNew = false;
+            var name = column.Name;
+            if (name.Length <= 4 || !string.Equals(name.Substring(name.Length - 4, 4), "Type", StringComparison.OrdinalIgnoreCase))
             {
-                Name = column.Parent.Name.ToUWord() + column.Name.ToUWord(),
-                Description = column.Description,
-                Caption = column.Caption,
-                Items = new ConfigCollection<EnumItem>()
-            };
+                name = name.ToUWord() + "Type";
+            }
+            if (ec == null)
+            {
+                ec = GlobalConfig.GetEnum(name);
+                isNew = ec == null;
+            }
+            if (isNew)
+            {
+                ec = new EnumConfig
+                {
+                    Name = name,
+                    Description = desc,
+                    Caption = column.Caption,
+                    Items = new ConfigCollection<EnumItem>()
+                };
+            }
+            else
+            {
+                ec.Items.Clear();
+            }
+
             EnumItem ei = new EnumItem();
             foreach (var c in line)
             {
@@ -154,19 +155,16 @@ namespace Agebull.EntityModel.Designer
                     }
                     preIsNumber = true;
                 }
-                else
+                else if (preIsNumber && c != '.')
                 {
-                    if (preIsNumber)
+                    if (sb.Length > 0)
                     {
-                        if (sb.Length > 0)
+                        ei = new EnumItem
                         {
-                            ei = new EnumItem
-                            {
-                                Value = sb.ToString()
-                            };
-                            ec.Add(ei);
-                            sb = new StringBuilder();
-                        }
+                            Value = sb.ToString()
+                        };
+                        ec.Add(ei);
+                        sb = new StringBuilder();
                     }
                     preIsNumber = false;
                 }
@@ -174,7 +172,10 @@ namespace Agebull.EntityModel.Designer
             }
 
             if (!startEnum)
+            {
+                column.CustomType = null;
                 return;
+            }
             if (sb.Length > 0)
             {
                 if (preIsNumber)
@@ -189,37 +190,43 @@ namespace Agebull.EntityModel.Designer
                     ei.Caption = sb.ToString();
                 }
             }
-
-            if (ec.Items.Count > 0)
+            if (ec.Items.Count <= 1)
             {
+                column.CustomType = null;
+                return;
+            }
+            var items = ec.Items.ToArray();
+            ec.Items.Clear();
+            foreach (var item in items)
+            {
+                if (string.IsNullOrEmpty(item.Caption))
+                {
+                    continue;
+                }
+                var arr = item.Caption.Trim(NameHelper.NoneNameChar).Split(NameHelper.NoneNameChar, StringSplitOptions.RemoveEmptyEntries);
+                if (arr.Length == 0)
+                {
+                    continue;
+                }
+                item.Caption = arr[0].MulitReplace2("", "表示", "代表", "是", "为").Trim(NameHelper.NoneLanguageChar);
+                if (string.IsNullOrWhiteSpace(item.Name))
+                    item.Name = item.Caption;
+                ec.Items.Add(item);
+            }
+            if (ec.Items.Count > 1)
+            {
+                if (isNew)
+                    column.Parent.Parent.Add(ec);
+
                 ec.Option.ReferenceKey = column.Option.Key;
                 column.EnumConfig = ec;
-                column.CustomType = ec.Name;
                 column.Description = line;
-                foreach (var item in ec.Items)
-                {
-                    if (string.IsNullOrEmpty(item.Caption))
-                    {
-                        column.EnumConfig = null;
-                        column.CustomType = null;
-                        return;
-                    }
-                    var arr = item.Caption.Trim(CoderBase.NoneNameChar).Split(CoderBase.NoneNameChar, StringSplitOptions.RemoveEmptyEntries);
-                    if (arr.Length == 0)
-                    {
-                        column.EnumConfig = null;
-                        column.CustomType = null;
-                        return;
-                    }
-                    item.Caption = arr[0].MulitReplace2("", "表示", "代表", "是", "为");
-                    item.Name = item.Name;
-                }
                 if (caption.Length > 0)
-                    column.Caption = caption.ToString();
+                    ec.Caption = column.Caption = caption.ToString().Trim(NameHelper.NoneLanguageChar);
+                Context.StateMessage = $@"解析得到枚举类型:{column.EnumConfig.Name},参考内容{column.EnumConfig.Description}";
             }
             else
             {
-                column.EnumConfig = null;
                 column.CustomType = null;
             }
         }

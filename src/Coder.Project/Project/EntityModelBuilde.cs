@@ -1,4 +1,5 @@
 using System.ComponentModel.Composition;
+using System.IO;
 using Agebull.Common;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Designer;
@@ -23,7 +24,7 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
         /// <param name="project"></param>
         public override void CreateProjectCode(ProjectConfig project)
         {
-            var dbPath = GlobalConfig.CheckPath(project.ModelPath,"DataAccess", "DataBase");
+            var dbPath = GlobalConfig.CheckPath(project.ModelPath, "DataAccess", "DataBase");
             var db = new DataBaseBuilder
             {
                 Project = project
@@ -51,13 +52,22 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
         {
             if (schema.NoDataBase)
                 return;
-            var entityPath = project.GetModelPath("Entity");
+            var cls = schema.Classify;
+            if (cls == "数据实体" || string.IsNullOrWhiteSpace(cls))
+                cls = null;
+            var root = project.ModelPath;
+            var entityPath = IOHelper.CheckPath(root, "Entity");
             Message = entityPath;
-            CreateCode<EntityBuilder>(project, schema, project.GetModelPath("Entity", "Model"));
+            if (cls != null)
+            {
+                entityPath = IOHelper.CheckPath(entityPath,cls);
+            }
+            CreateCode<EntityBuilder>(project, schema, IOHelper.CheckPath(entityPath, "Model"));
+            if (Solution.HaseValidateCode)
+                CreateCode<EntityValidateBuilder>(project, schema, IOHelper.CheckPath(entityPath, "Validate"));
 
-            CreateCode<EntityValidateBuilder>(project, schema, entityPath);
-
-            var accessPath = project.GetModelPath("DataAccess", "DataAccess");
+            var accessPath = IOHelper.CheckPath(root, "DataAccess");
+            accessPath = IOHelper.CheckPath(accessPath, cls ?? "DataAccess");
             Message = accessPath;
 
             if (project.DbType == DataBaseType.MySql)
@@ -68,10 +78,17 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
             {
                 CreateCode<SqlServerAccessBuilder>(project, schema, accessPath);
             }
-            var blPath = project.GetModelPath("Business");
+            var blPath = IOHelper.CheckPath(root, "Business");
+            if (cls != null)
+            {
+                blPath = IOHelper.CheckPath(blPath,cls);
+            }
+            else
+            {
+                blPath = IOHelper.CheckPath(blPath, "Logical");
+            }
             CreateCode<BusinessBuilder>(project, schema, blPath);
             Message = blPath;
         }
-
     }
 }

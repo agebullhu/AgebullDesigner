@@ -25,11 +25,8 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// 
         /// </summary>
         /// <returns></returns>
-        public static string FormCode(ConfigBase config)
+        public static string FormCode(EntityConfig entity)
         {
-            var entity = config as EntityConfig;
-            if (entity == null)
-                return "请选择一个实体模型";
             var coder = new VueFormCoder
             {
                 Entity = entity,

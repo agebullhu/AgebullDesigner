@@ -1,8 +1,16 @@
-using System.Collections.ObjectModel;
+// /*****************************************************
+// (c)2008-2013 Copy right www.Gboxt.com
+// 作者:bull2
+// 配置:CodeRefactor-Agebull.CodeRefactor.CodeAnalyze.Application
+// 建立:2014-11-20
+// 修改:2014-11-29
+// *****************************************************/
+
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using Agebull.Common.Mvvm;
+using Agebull.EntityModel;
 using Agebull.EntityModel.Designer;
 using Agebull.EntityModel.RobotCoder;
 
@@ -20,57 +28,73 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
     {
         #region 操作命令
 
-        public override ObservableCollection<CommandItemBase> CreateCommands()
+        public override NotificationList<CommandItemBase> CreateCommands()
         {
-            return new ObservableCollection<CommandItemBase>
+            var items = CreateCommands(false, true, true);
+            items.Add(new CommandItem
             {
-                new CommandItem
-                {
-                    Action = (Format1 ),
-                    IsButton=true,
-                    Caption = "大驼峰名称",
-                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-                },
-                new CommandItem
-                {
-                    Action = (Format2 ),
-                    IsButton=true,
-                    Caption = "小驼峰名称",
-                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-                },
-                new CommandItem
-                {
-                    Action = (Format3 ),
-                    IsButton=true,
-                    Caption = "小写下划线名称(C风格)",
-                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-                }
-            };
+                Action = UpperHump,
+                IsButton = true,
+                Caption = "大驼峰名称",
+                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+            });
+            items.Add(new CommandItem
+            {
+                Action = LowerHump,
+                IsButton = true,
+                Caption = "小驼峰名称",
+                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+            });
+            items.Add(new CommandItem
+            {
+                Action = Underlined,
+                IsButton = true,
+                Caption = "小写下划线名称(C风格)",
+                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+            });
+            return items;
         }
         #endregion
 
         #region 扩展代码
-
-        public void Format1(object arg)
+        /// <summary>
+        /// 大驼峰
+        /// </summary>
+        /// <param name="arg"></param>
+        public void UpperHump(object arg)
         {
             foreach (var property in Context.SelectEntity.Properties)
             {
-                property.ColumnName = property.Name;
+                property.DbFieldName = property.Name;
             }
+            if (string.IsNullOrEmpty(Context.SelectEntity.SaveTableName))
+                Context.SelectEntity.SaveTableName = "tb_" + Context.SelectEntity.Name;
         }
-        internal void Format2(object arg)
+        /// <summary>
+        /// 小驼峰名称
+        /// </summary>
+        /// <param name="arg"></param>
+        internal void LowerHump(object arg)
         {
             foreach (var property in Context.SelectEntity.Properties)
             {
-                property.ColumnName = property.Name.ToLWord();
+                property.DbFieldName = property.Name.ToLWord();
             }
+            if (string.IsNullOrEmpty(Context.SelectEntity.SaveTableName))
+                Context.SelectEntity.SaveTableName = "tb_" + Context.SelectEntity.Name.ToLWord();
         }
-        internal void Format3(object arg)
+        /// <summary>
+        /// 小写下划线名称
+        /// </summary>
+        /// <param name="arg"></param>
+        internal void Underlined(object arg)
         {
             foreach (var property in Context.SelectEntity.Properties)
             {
-                property.ColumnName = CoderBase.ToLinkWordName(property.Name, "_", false);
+                property.DbFieldName = NameHelper.ToLinkWordName(property.Name, "_", false);
             }
+            if (string.IsNullOrEmpty(Context.SelectEntity.SaveTableName))
+                Context.SelectEntity.SaveTableName = "tb_" + NameHelper.ToLinkWordName(Context.SelectEntity.Name, "_", false);
         }
         #endregion
     }

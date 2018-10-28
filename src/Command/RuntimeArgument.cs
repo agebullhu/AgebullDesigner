@@ -37,26 +37,28 @@ namespace Agebull.EntityModel.Designer
         /// 默认的取当前实体的方法 
         /// </summary>
         /// <returns></returns>
-        void GetEntities()
+        private void GetEntities()
         {
             var list = new List<EntityConfig>();
-            if (_argument is EntityConfig entityConfig)
+            switch (_argument)
             {
-                list.Add(entityConfig);
-            }
-            else
-            {
-                if (_argument is PropertyConfig propertyConfig)
-                {
+                case EntityConfig entityConfig:
+                    list.Add(entityConfig);
+                    break;
+                case EntityClassify classify:
+                    list.AddRange(classify.Items);
+                    break;
+                case PropertyConfig propertyConfig:
                     list.Add(propertyConfig.Parent);
-                }
-                else
-                {
-                    list.AddRange(_argument is ProjectConfig projectConfig
-                        ? projectConfig.Entities
-                        : SolutionConfig.Current.Entities);
-                }
+                    break;
+                case ProjectConfig projectConfig:
+                    list.AddRange(projectConfig.Entities);
+                    break;
+                default:
+                    list.AddRange(SolutionConfig.Current.Entities);
+                    break;
             }
+            Entities = list;
 
             Projects = new List<ProjectConfig>();
             foreach (var entity in list)
@@ -67,7 +69,6 @@ namespace Agebull.EntityModel.Designer
                 if (!Projects.Contains(project))
                     Projects.Add(project);
             }
-            Entities = list;
         }
     }
 }

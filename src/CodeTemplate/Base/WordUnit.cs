@@ -113,7 +113,7 @@ namespace Agebull.EntityModel.RobotCoder.CodeTemplate
             _cusWord = null;
         }
 
-        public override bool IsEmpty => Start < 0 || End < 0 || (_cusWord == null && Chars.Count == 0);
+        public override bool IsEmpty => Start < 0 || End < 0 || _cusWord == null && Chars.Count == 0;
 
         #endregion
 

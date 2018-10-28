@@ -20,41 +20,15 @@ namespace Agebull.EntityModel.RobotCoder
         {
             MomentCoder.RegisteCoder("单元测试", "数据读取单元测试(C#)", "cs", EntityUt);
             MomentCoder.RegisteCoder("单元测试", "数据操作单元测试(C#)", "cs", UpdateUt);
-            MomentCoder.RegisteCoder("单元测试", "API单元测试(C#)", "cs", ApiUt);
+            MomentCoder.RegisteCoder<SolutionConfig>("单元测试", "API单元测试(C#)", "cs", ApiUt);
         }
         #endregion
 
         #region 数据读取单元测试
 
-        public static string EntityUt(ConfigBase config)
+        private static string EntityUt(EntityConfig config)
         {
-            var code = new StringBuilder();
-            var project = config as ProjectConfig;
-            if (project != null)
-            {
-                foreach (var em in project.Entities)
-                    EntityUt(code, em);
-            }
-            else
-            {
-                var entity = config as EntityConfig;
-                if (entity != null)
-                {
-                    EntityUt(code, entity);
-                    return code.ToString();
-                }
-                foreach (var em in SolutionConfig.Current.Entities)
-                    EntityUt(code, em);
-            }
-            return code.ToString();
-        }
-
-        private static void EntityUt(StringBuilder code, EntityConfig config)
-        {
-            if (config == null || config.IsDiscard)
-                return;
-
-            code.Append($@"
+            return ($@"
     try{{
         var access = new {config.Name}DataAccess();
         var data = access.First();
@@ -69,35 +43,9 @@ namespace Agebull.EntityModel.RobotCoder
 
         #region 数据读取单元测试
 
-        public static string UpdateUt(ConfigBase config)
+        public static string UpdateUt(EntityConfig config)
         {
-            var code = new StringBuilder();
-            var project = config as ProjectConfig;
-            if (project != null)
-            {
-                foreach (var em in project.Entities)
-                    UpdateUt(code, em);
-            }
-            else
-            {
-                var entity = config as EntityConfig;
-                if (entity != null)
-                {
-                    UpdateUt(code, entity);
-                    return code.ToString();
-                }
-                foreach (var em in SolutionConfig.Current.Entities)
-                    UpdateUt(code, em);
-            }
-            return code.ToString();
-        }
-
-        private static void UpdateUt(StringBuilder code, EntityConfig config)
-        {
-            if (config == null || config.IsDiscard || config.IsInternal)
-                return;
-
-            code.Append($@"
+            return ($@"
     try
     {{
         var access = new {config.Name}DataAccess();
@@ -125,7 +73,7 @@ namespace Agebull.EntityModel.RobotCoder
             var data = new {config.EntityName}
             {{");
             bool first = true;
-            foreach (PropertyConfig field in config.LastProperties.Where( p=>!p.DbInnerField && !p.InnerField ))
+            foreach (PropertyConfig field in config.LastProperties.Where(p => !p.DbInnerField && !p.InnerField))
             {
                 if (first)
                     first = false;
@@ -147,7 +95,7 @@ namespace Agebull.EntityModel.RobotCoder
             switch (type)
             {
                 case "bool":
-                    return (DateTime.Now.Ticks % 2) == 1 ? "true" : "false";
+                    return DateTime.Now.Ticks % 2 == 1 ? "true" : "false";
                 case "DateTime":
                     return "DateTime.Now";
                 case "double":
@@ -226,7 +174,7 @@ namespace Agebull.EntityModel.RobotCoder
         #endregion
         #region 数据读取单元测试
 
-        public static string ApiUt(ConfigBase config)
+        public static string ApiUt(SolutionConfig config)
         {
             var code = new StringBuilder();
             code.Append(@"
@@ -241,7 +189,7 @@ namespace Agebull.EntityModel.RobotCoder
                     result = caller.Get<ValiadateCodeResponse>(""v1/verification/getcode"");
                 }
                 Console.WriteLine(JsonConvert.SerializeObject(result));");
-            foreach (var item in SolutionConfig.Current.ApiItems)
+            foreach (var item in config.ApiItems)
                 ApiUt(code, item);
             return code.ToString();
         }
@@ -266,7 +214,7 @@ namespace Agebull.EntityModel.RobotCoder
                 Console.WriteLine(JsonConvert.SerializeObject(result));
         }");
         }
-        
+
         #endregion
     }
 }

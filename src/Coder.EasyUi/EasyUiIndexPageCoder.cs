@@ -1,5 +1,5 @@
 using System.ComponentModel.Composition;
-using System.IO;
+using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Designer;
 
@@ -9,53 +9,25 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
     [ExportMetadata("Symbol", '%')]
     public class EasyUiIndexPageCoder : EasyUiCoderBase
     {
+        protected override string LangName => "aspx";
+
         /// <summary>
         /// 名称
         /// </summary>
-        protected override string FileSaveConfigName => "File_Aspnet_Page_aspx";
+        protected override string FileName => "Index.aspx";
 
-        private const string listCheckSize = @"
-                $('#grid').datagrid('resize', window.o99);";
-        private const string treeCheckSize = @"
-                $('#layout').layout('resize', window.o99);
-                $('#grid').datagrid('resize', window.o99);";
-
-        private string treeInit => $@"
-            var tree = Object.create(TreeExtend);
-            tree.onTreeSelected = function (id, type, node) {{
-                page.setUrlArgs('pid=' + node.tag + '&type=' + type);
-            }};
-            tree.initialize('/{Entity["File_Web_Action"]?.Replace('\\', '/')}?action=tree');
-            page = Object.create({Entity.Name}Page);
-            page.tree = tree;
-            page.formUrl = '/{Entity["File_Web_Form"]?.Replace('\\','/')}';
-            //page.cmdPath = '/{Path.GetDirectoryName(Entity["File_Web_Action"])?.Replace('\\', '/')}/'; 
-            page.autoLoad = false;
-            page.initialize();";
-        private string gridInit => $@"
-            page = Object.create({Entity.Name}Page);
-            page.formUrl = '/{Entity["File_Web_Form"]?.Replace('\\', '/')}';
-            //page.cmdPath = '/{Path.GetDirectoryName(Entity["File_Web_Action"])?.Replace('\\', '/')}/'; 
-            page.initialize();";
-        public override string Code()
+        protected override string BaseCode()
         {
-            return $@"<%@ Page Title='' Language='C#' MasterPageFile='~/JquerySite.Master' AutoEventWireup='true' Inherits='Gboxt.Common.WebUI.UiPage'%>
+            var cls = Entity.Parent.Classifies.FirstOrDefault(p => p.Name == Entity.Classify);
+            var folder = cls == null
+                ? $"{Entity.Parent.Caption} > {Entity.Caption}"
+                : $"{Entity.Parent.Caption} > {cls.Caption } > {Entity.Caption}";
+            return $@"<%@ Page Title='' Language='C#' MasterPageFile='~/JquerySite.Master' AutoEventWireup='true' Inherits='System.Web.UI.Page'%>
 <asp:Content ID='cPagePathRegion' ContentPlaceHolderID='PagePathRegion' runat='server'>
-{Entity.Parent.Caption} > {Entity.Caption}
+{folder}
 </asp:Content>
 <asp:Content ID='cScriptRegion' ContentPlaceHolderID='ScriptRegion' runat='server'>
-    <script type='text/javascript' src='/{Entity["File_Web_Script"]?.Replace('\\', '/')}/script.js'></script>   
-    <script type='text/javascript'>
-        var page;
-        doPageInitialize = function() {{
-            allButton = <%= this.AllAction.ToString().ToLower() %>;
-            currentPageId = <%= this.PageItem.ID %>;
-            userButtons = [<%= this.UiButtons %>];
-            setPreQueryArgs(<%= PreQueryArgs %>);{(Entity.TreeUi ? treeInit : gridInit)}            
-            onCheckSize = function (wid, hei) {{{(Entity.TreeUi ? treeCheckSize : listCheckSize)}                
-            }}
-        }};
-    </script>
+    <script type='text/javascript' src='/{Project.PageFolder ?? Project.Name}/{Entity.Option["File_Web_Script_js"]?.Replace('\\', '/')}'></script>
 </asp:Content>
 <asp:Content ID='cBodyRegion' ContentPlaceHolderID='BodyRegion' runat='server'>{(Entity.TreeUi ? Tree : Grid)}
 </asp:Content>";
@@ -70,7 +42,20 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         </div>
     </div>";
 
-        private string Grid => $@"
+        private string Grid => Entity.IsUiReadOnly
+            ? $@"
+    <div id='pageToolbarEx'>
+        <div id='regCommand' style='display: block;'>
+            <a id='btnEdit' href='javascript:void(0)'>查看</a>
+        </div>
+        <div id='regQuery' class='toolbar_line'>
+            <label class='queryLabel'>关键字</label>
+            <input id = 'qKeyWord' class='inputValue inputS easyui-textbox' />{ExtQueryHtmlCode()}
+            <a id = 'btnQuery' href='javascript:void(0)'>查询</a>
+        </div>
+    </div>
+    <div id='grid'></div>"
+            : $@"
     <div id='pageToolbarEx'>
         <div id='regCommand' style='display: block;'>
             <a id='btnAdd' href='javascript:void(0)'>新增</a>
@@ -87,23 +72,24 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 
         private string ExtQueryHtmlCode()
         {
+            if (Entity.Interfaces == null) return null;
             var code = new StringBuilder();
-            string type = null;
-            if (Entity.Interfaces != null)
-            {
-                if (Entity.Interfaces.Contains("IAudit"))
-                    type = "auditType";
-                else if (Entity.Interfaces.Contains("IStateData"))
-                    type = "dataStateType";
-            }
-            if (type == null)
-                return null;
-            code.Append($@"
-            <label class='queryLabel'>状态:</label>
+            if (Entity.Interfaces.Contains("IStateData"))
+                code.Append(@"
+            <label class='queryLabel'>数据状态:</label>
             <label class='queryLabel'>
                 <input id='qAudit' class='inputValue_SSS inputS easyui-combobox' 
-                       data-options=""valueField:'value',textField:'text',data:{type}"" />
+                       data-options=""valueField:'value',textField:'text',data:dataStateType"" />
             </label>");
+            if (Entity.Interfaces.Contains("IAudit"))
+            {
+                code.Append(@"
+            <label class='queryLabel'>审核状态:</label>
+            <label class='queryLabel'>
+                <input id='qAudit' class='inputValue_SSS inputS easyui-combobox' 
+                       data-options=""valueField:'value',textField:'text',data:auditType"" />
+            </label>");
+            }
             return code.ToString();
         }
 
@@ -133,7 +119,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         <a id='btnDisable' href='javascript:void(0)'>禁用</a>
         <div style='display: inline;'><div class='toolbarSpace'></div></div>
         <a id='btnDiscard' href='javascript:void(0)'>废弃</a>
-        <a id='btnReset' href='javascript:void(0)'>还原</a>");
+        <a id='btnReset' href='javascript:void(0)'>重置</a>");
             }
             if (Entity.Commands.Count > 0)
                 code.Append(@"

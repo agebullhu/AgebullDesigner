@@ -86,10 +86,11 @@
     <Compile Include="Command\EntityDatabaseBusiness.cs" />
     <Compile Include="Command\MySqlImport.cs" />
     <Compile Include="Command\MySqlImporter.cs" />
+    <Compile Include="Command\PropertyDatabaseBusiness.cs" />
     <Compile Include="Command\SqlSchemaChecker.cs" />
     <Compile Include="Command\SqlServerImporter.cs" />
     <Compile Include="Command\LinkFieldCheck.cs" />
-    <Compile Include="Model\DataBaseModel.cs" />
+    <Compile Include="Command\DataBaseModel.cs" />
     <Compile Include="Model\DataRelationViewModel.cs" />
     <Compile Include="Model\DataRelationModel.cs" />
     <Compile Include="Model\DataBaseViewModel.cs" />

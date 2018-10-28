@@ -43,14 +43,14 @@ namespace Agebull.EntityModel.Designer
 
         public CommandItem CancelCommand => new CommandItem
         {
-            Action = (DoCancel),
+            Action = DoCancel,
             Caption = "取消",
             Image = Application.Current.Resources["img_error"] as ImageSource
         };
 
         public CommandItem OkCommand => new CommandItem
         {
-            Action = (DoClose),
+            Action = DoClose,
             Caption = "完成",
             Image = Application.Current.Resources["imgSave"] as ImageSource
         };

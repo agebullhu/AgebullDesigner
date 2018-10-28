@@ -17,13 +17,14 @@ using System.Windows;
 using System.Windows.Media;
 using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
+using Agebull.EntityModel.RobotCoder;
 
 #endregion
 
 namespace Agebull.EntityModel.Designer
 {
     /// <summary>
-    /// 关系连接检查
+    /// 命令注册器
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
@@ -39,14 +40,13 @@ namespace Agebull.EntityModel.Designer
     }
 
     /// <summary>
-    /// 关系连接检查
+    /// 命令注册器
     /// </summary>
     public sealed class DataTypeViewModel : ExtendViewModelBase<DesignModelBase>
     {
-        protected override ObservableCollection<CommandItemBase> CreateCommands()
+        protected override NotificationList<CommandItemBase> CreateCommands()
         {
-
-            return new ObservableCollection<CommandItemBase>
+            return new NotificationList<CommandItemBase>
             {
                 new CommandItem
                 {
@@ -60,82 +60,17 @@ namespace Agebull.EntityModel.Designer
                     Name="Sync",
                     Caption = "从C#语言解析字段数据类型",
                     IsButton=true,
-                    Action = CsDataType
+                    Action = arg =>Model.Context.Solution.Foreach<PropertyConfig>(DataTypeHelper.CsDataType)
                 },
                 new CommandItem
                 {
                     Name="Sync",
                     Caption = "标准化字段数据类型",
                     IsButton=true,
-                    Action = StandardDataType
+                    Action = arg=>Model.Context.Solution.Foreach<PropertyConfig>(DataTypeHelper.StandardDataType)
                 }
             };
         }
-        void CsDataType(object arg)
-        {
-            Model.Context.Solution.Foreach<PropertyConfig>(CsDataType);
-        }
 
-        void CsDataType(PropertyConfig arg)
-        {
-            string name = arg.IsEnum ? "Enum" : arg.CsType;
-            var dataType = Model.Context.Solution.DataTypeMap.FirstOrDefault(p =>
-                string.Equals(p.CSharp, name, StringComparison.OrdinalIgnoreCase)) ??
-                           Model.Context.Solution.DataTypeMap.FirstOrDefault(p =>
-                               string.Equals(p.CSharp, "object", StringComparison.OrdinalIgnoreCase));
-            if (dataType != null)
-            {
-                switch (arg.Parent.Parent.DbType)
-                {
-                    case DataBaseType.SqlServer:
-                        arg.DbType = dataType.SqlServer;
-                        break;
-                    case DataBaseType.MySql:
-                        arg.DbType = dataType.MySql;
-                        break;
-                }
-
-                arg.DataType = dataType.Name;
-                arg.CsType = dataType.CSharp;
-                arg.CppType = dataType.Cpp;
-                arg.Datalen = dataType.Datalen;
-                arg.Scale = dataType.Scale;
-            }
-        }
-
-        void StandardDataType(object arg)
-        {
-            Model.Context.Solution.Foreach<PropertyConfig>(StandardDataType);
-        }
-
-        void StandardDataType(PropertyConfig arg)
-        {
-            var dataType = Model.Context.Solution.DataTypeMap.FirstOrDefault(p =>
-                string.Equals(p.Name, arg.DataType, StringComparison.OrdinalIgnoreCase));
-            if (dataType == null)
-            {
-                Model.Context.Solution.DataTypeMap.Add(dataType = new DataTypeMapConfig
-                {
-                    Name = arg.DataType
-                });
-            }
-            else
-            {
-                switch (arg.Parent.Parent.DbType)
-                {
-                    case DataBaseType.SqlServer:
-                        arg.DbType = dataType.SqlServer;
-                        break;
-                    case DataBaseType.MySql:
-                        arg.DbType = dataType.MySql;
-                        break;
-                }
-                arg.DataType = dataType.Name;
-                arg.CsType = dataType.CSharp;
-                arg.CppType = dataType.Cpp;
-                arg.Datalen = dataType.Datalen;
-                arg.Scale = dataType.Scale;
-            }
-        }
     }
 }

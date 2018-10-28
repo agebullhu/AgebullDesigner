@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -16,17 +14,17 @@ namespace Agebull.EntityModel.Designer
     {
         public void DeleteEnum(ConfigTreeItem<PropertyConfig> p)
         {
+            if (p.Model.EnumConfig != null)
+            {
+                p.Model.EnumConfig.Option.IsDelete = true;
+            }
             p.Model.CustomType = null;
-            if (p.Model.EnumConfig == null)
-                return;
-            p.Model.EnumConfig.Option.IsDelete = true;
-            p.Model.EnumConfig = null;
             p.ReShow();
         }
         /// <summary>
         /// 扩展属性
         /// </summary>
-        public ObservableCollection<ExtendItem> ExtendItems { get; private set; }
+        public NotificationList<ConfigItem> ExtendItems { get; private set; }
 
         /// <summary>
         /// 上下文属性变化
@@ -43,21 +41,7 @@ namespace Agebull.EntityModel.Designer
 
         private void UpdateItems()
         {
-            if (Context.SelectConfig == null)
-            {
-                ExtendItems = new ConfigCollection<ExtendItem>();
-            }
-            else
-            {
-                var items = new ConfigCollection<ExtendItem>();
-                var keys = Context.SelectConfig.ExtendConfig.Select(p => p.Name).DistinctBy();
-                items.AddRange(keys.Select(p => new ExtendItem
-                {
-                    Name = p,
-                    Config = Context.SelectConfig
-                }));
-                ExtendItems = items;
-            }
+            ExtendItems = Context.SelectConfig?.Option.ExtendConfigList.Items;
             RaisePropertyChanged(nameof(ExtendItems));
         }
 
@@ -65,9 +49,9 @@ namespace Agebull.EntityModel.Designer
         /// 生成命令对象
         /// </summary>
         /// <returns></returns>
-        public override ObservableCollection<CommandItemBase> CreateCommands()
+        public override NotificationList<CommandItemBase> CreateCommands()
         {
-            return new ObservableCollection<CommandItemBase>
+            return new NotificationList<CommandItemBase>
             {
                 new CommandItem
                 {
@@ -93,16 +77,13 @@ namespace Agebull.EntityModel.Designer
                 MessageBox.Show("添加", "新名称不能为空");
                 return;
             }
-            if (Context.SelectConfig.ExtendConfig.Any(p => string.Equals(p.Name, NewName, StringComparison.OrdinalIgnoreCase)))
+            if (Context.SelectConfig.Option.ExtendConfigList.Items.Any(p=>
+                string.Equals(p.Name, NewName, StringComparison.OrdinalIgnoreCase)))
             {
                 MessageBox.Show("添加", "已存在同名内容");
                 return;
             }
-            ExtendItems.Add(new ExtendItem
-            {
-                Name = NewName,
-                Config = Context.SelectConfig
-            });
+            Context.SelectConfig.Option[NewName] = "";
         }
     }
 }

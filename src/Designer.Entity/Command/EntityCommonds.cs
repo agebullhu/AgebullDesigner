@@ -40,25 +40,43 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
                 IsButton = true,
-                Action = (SortFieldByIndex),
+                Action = IdentityByIndex,
+                Catalog = "工具",
+                ConfirmMessage = "如果使用了TSON序列化请立即取消,否则数据解码将混乱",
+                Caption = "标识与序号相同",
+                IconName = "tree_item"
+            });
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                IsButton = true,
+                Action = SortFields,
                 Catalog = "工具",
                 ConfirmMessage = "按序号大小排序并从0更新序号吗?",
-                Caption = "按序号重排(无规则)",
+                Caption = "排序(自然顺序)",
+                IconName = "tree_item"
+            });
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                IsButton = true,
+                Action = SortFieldByIndex,
+                Catalog = "工具",
+                ConfirmMessage = "按序号大小排序并从0更新序号吗?",
+                Caption = "排序(按序号)",
                 IconName = "tree_item"
             });
             commands.Add(new CommandItemBuilder
             {
                 SignleSoruce = false,
                 Catalog = "工具",
-                Action = (SortField),
-                Caption = "按序号重排(主键标题优先)",
+                Action = SortField,
+                Caption = "排序(主键标题优先)",
                 IconName = "tree_item"
             });
             commands.Add(new CommandItemBuilder
             {
                 SignleSoruce = true,
-                Action = (SortField),
-                Caption = "重排字段",
+                Action = SortField,
+                Caption = "排序(主键标题优先,表关联临近)",
                 Description = "主键-标题最前面，相同表关联的字段临近，其它按序号",
                 Catalog = "工具",
                 IconName = "img_filter"
@@ -66,22 +84,23 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder
             {
                 SignleSoruce = true,
-                Action = (SortByGroup),
-                Caption = "按组重新排",
+                Action = SortByGroup,
+                Caption = "排序(按组)",
+                Description = "主键-标题最前面，相同组的字段临近，其它按序号",
                 Catalog = "工具",
                 IconName = "img_filter"
             });
             commands.Add(new CommandItemBuilder
             {
                 SignleSoruce = true,
-                Action = (SplitTable),
+                Action = SplitTable,
                 Caption = "拆分到新表",
                 Catalog = "工具",
                 IconName = "img_add"
             });
             commands.Add(new CommandItemBuilder
             {
-                Action = (RepairRegular),
+                Action = RepairRegular,
                 Catalog = "工具",
                 Caption = "规则修复",
                 SignleSoruce = true,
@@ -99,7 +118,7 @@ namespace Agebull.EntityModel.Designer
             //});
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Action = (AddNewProperty),
+                Action = AddNewProperty,
                 Caption = "导入字段",
                 SignleSoruce = true,
                 IsButton = true,
@@ -108,8 +127,8 @@ namespace Agebull.EntityModel.Designer
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Action = (CopyTable),
-                Caption = "复制表",
+                Action = CopyTable,
+                Caption = "复制实体",
                 IsButton = true,
                 SignleSoruce = true,
                 Catalog = "编辑",
@@ -117,8 +136,8 @@ namespace Agebull.EntityModel.Designer
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Action = DeleteTable,
-                Caption = "删除表",
+                Action = DeleteEntity,
+                Caption = "删除实体",
                 SignleSoruce = true,
                 Catalog = "编辑",
                 IconName = "img_del"
@@ -169,8 +188,20 @@ namespace Agebull.EntityModel.Designer
             var business = new EntitySorter {Entity = entity};
             business.SortFieldByIndex(true);
         }
+        public void SortFields(EntityConfig entity)
+        {
+            int idx = 0;
+            foreach (var field in entity.Properties.OrderBy(p=>p.Identity))
+                field.Index = idx++;
 
+        }
+        public void IdentityByIndex(EntityConfig entity)
+        {
+            var business = new EntitySorter { Entity = entity };
+            business.IdentityByIndex();
+        }
         
+
         #endregion
 
 
@@ -236,7 +267,7 @@ namespace Agebull.EntityModel.Designer
             if (oldTable.PrimaryColumn != null)
             {
                 var kc = new PropertyConfig();
-                kc.CopyFrom(oldTable.PrimaryColumn);
+                kc.CopyFromProperty(oldTable.PrimaryColumn,true,true,true);
                 newTable.Add(kc);
             }
             foreach (var col in Context.SelectColumns.OfType<PropertyConfig>().ToArray())
@@ -250,10 +281,10 @@ namespace Agebull.EntityModel.Designer
         }
 
 
-        public void DeleteTable(EntityConfig entity)
+        public void DeleteEntity(EntityConfig entity)
         {
             if (entity == null ||
-                MessageBox.Show($"确认删除{entity.ReadTableName}吗?", "对象编辑", MessageBoxButton.YesNo) !=
+                MessageBox.Show($"确认删除{entity.Name}({entity.Caption})吗?", "对象编辑", MessageBoxButton.YesNo) !=
                 MessageBoxResult.Yes)
             {
                 return;

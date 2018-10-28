@@ -5,7 +5,7 @@ using Agebull.EntityModel.Designer;
 namespace Agebull.Common.Config.Designer.EasyUi
 {
     /// <summary>
-    /// 关系连接检查
+    /// 命令注册器
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
@@ -20,11 +20,12 @@ namespace Agebull.Common.Config.Designer.EasyUi
             GlobalTrigger.RegistTrigger<OptionTrigger>();
             GlobalTrigger.RegistTrigger<PropertyTrigger>();
             GlobalTrigger.RegistTrigger<EntityTrigger>();
+            GlobalTrigger.RegistTrigger<ClassifyTrigger>();
             GlobalTrigger.RegistTrigger<EntityChildTrigger>();
             GlobalTrigger.RegistTrigger<ProjectTrigger>();
             GlobalTrigger.RegistTrigger<ProjectChildTrigger>();
             GlobalTrigger.RegistTrigger<SolutionTrigger>();
+            GlobalTrigger.RegistTrigger<EnumTrigger>();
         }
-
     }
 }

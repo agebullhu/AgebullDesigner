@@ -1,5 +1,4 @@
 using System.ComponentModel.Composition;
-using System.IO;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Designer;
 using Agebull.EntityModel.RobotCoder.AspNet;
@@ -43,13 +42,18 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// <param name="schema"></param>
         public override void CreateEntityCode(ProjectConfig project, EntityConfig schema)
         {
+            if (!schema.HaseEasyUi)
+            {
+                TraceMessage.Track = $"{schema.Caption}:未进行页面配置,无法生成页面代码";
+                return;
+            }
             var pg = new PageGenerator
             {
                 Entity = schema,
                 Project = schema.Parent,
             };
-            pg.CreateBaseCode(project.FormatPath("Web"));
-            pg.CreateExtendCode(project.FormatPath("Page"));
+            pg.CreateBaseCode(project.PagePath);
+            pg.CreateExtendCode(project.ApiPath);
         }
     }
 }

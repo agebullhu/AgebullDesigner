@@ -4,65 +4,6 @@ using Agebull.Common.LUA;
 
 namespace Agebull.EntityModel.Config
 {
-
-    partial class ConfigBase
-    {
-        #region LUA结构支持
-
-        /// <summary>
-        ///     LUA结构支持
-        /// </summary>
-        /// <returns></returns>
-        public virtual void GetLuaStruct(StringBuilder code)
-        {
-            if (!string.IsNullOrWhiteSpace(Name))
-                code.AppendLine($@"['Name'] = '{Name.ToLuaString()}',");
-
-            if (!string.IsNullOrWhiteSpace(Caption))
-                code.AppendLine($@"['Caption'] = ""{Caption.ToLuaString()}"",");
-
-            if (!string.IsNullOrWhiteSpace(Description))
-                code.AppendLine($@"['Description'] = '{Description.ToLuaString()}',");
-
-            code.AppendLine($@"['IsReference'] = {IsReference.ToString().ToLower()},");
-
-            code.AppendLine($@"['Key'] = '{Key}',");
-
-            code.AppendLine($@"['Identity'] = {Identity},");
-
-            code.AppendLine($@"['Index'] = {Index},");
-
-            //code.AppendLine($@"['Discard'] = {(Discard.ToString().ToLower())},");
-
-            //code.AppendLine($@"['IsFreeze'] = {(IsFreeze.ToString().ToLower())},");
-
-            //code.AppendLine($@"['IsDelete'] = {(IsDelete.ToString().ToLower())},");
-
-            if (!string.IsNullOrWhiteSpace(Tag))
-                code.AppendLine($@"['Tag'] = '{Tag.ToLuaString()}',");
-
-            //if (!string.IsNullOrWhiteSpace(NameHistory))
-            //    code.AppendLine($@"['NameHistory'] = ""{NameHistory.ToLuaString()}"",");
-
-            //int idx = 0;
-            //code.Append("'OldNames':'{");
-            //foreach (var val in OldNames)
-            //    code.AppendLine($@"{++idx}:{val.GetLuaStruct()},");
-        }
-
-        /// <summary>
-        ///     LUA结构支持
-        /// </summary>
-        /// <returns></returns>
-        public string GetLuaStruct()
-        {
-            var code = new StringBuilder();
-            GetLuaStruct(code);
-            return "{" + code.ToString().TrimEnd('\r', '\n', ' ', '\t', ',') + "}";
-        }
-
-        #endregion
-    }
     partial class ApiItem
     {
         /// <summary>
@@ -556,7 +497,7 @@ namespace Agebull.EntityModel.Config
             else
                 code.AppendLine($@"['Group'] = nil,");
 
-            code.AppendLine($@"['CreateIndex'] ={(CreateIndex.ToString().ToLower())},");
+            code.AppendLine($@"['CreateIndex'] ={(CreateDbIndex.ToString().ToLower())},");
 
             code.AppendLine($@"['IsPrimaryKey'] ={(IsPrimaryKey.ToString().ToLower())},");
 
@@ -780,49 +721,6 @@ namespace Agebull.EntityModel.Config
             code.AppendLine($@"['ReadOnly'] ={(ReadOnly.ToString().ToLower())},");
 
             code.AppendLine($@"['CanInput'] ={(CanUserInput.ToString().ToLower())},");
-
-            if (!string.IsNullOrWhiteSpace(ExtendRole))
-                code.AppendLine($@"['ExtendRole'] = '{ExtendRole.ToLuaString()}',");
-            else
-                code.AppendLine($@"['ExtendRole'] = nil,");
-
-            if (!string.IsNullOrWhiteSpace(ValueSeparate))
-                code.AppendLine($@"['ValueSeparate'] = '{ValueSeparate.ToLuaString()}',");
-            else
-                code.AppendLine($@"['ValueSeparate'] = nil,");
-
-            if (!string.IsNullOrWhiteSpace(ArraySeparate))
-                code.AppendLine($@"['ArraySeparate'] = '{ArraySeparate.ToLuaString()}',");
-            else
-                code.AppendLine($@"['ArraySeparate'] = nil,");
-
-            code.AppendLine($@"['ExtendArray'] ={(ExtendArray.ToString().ToLower())},");
-
-            code.AppendLine($@"['IsKeyValueArray'] ={(IsKeyValueArray.ToString().ToLower())},");
-
-            code.AppendLine($@"['IsRelation'] ={(IsRelation.ToString().ToLower())},");
-
-            if (!string.IsNullOrWhiteSpace(ExtendPropertyName))
-                code.AppendLine($@"['ExtendPropertyName'] = '{ExtendPropertyName.ToLuaString()}',");
-            else
-                code.AppendLine($@"['ExtendPropertyName'] = nil,");
-
-            if (!string.IsNullOrWhiteSpace(ExtendClassName))
-                code.AppendLine($@"['ExtendClassName'] = '{ExtendClassName.ToLuaString()}',");
-            else
-                code.AppendLine($@"['ExtendClassName'] = nil,");
-
-            code.AppendLine($@"['ExtendClassIsPredestinate'] ={(ExtendClassIsPredestinate.ToString().ToLower())},");
-
-            code.AppendLine($@"['IsRelationField'] ={(IsRelationField.ToString().ToLower())},");
-
-            code.AppendLine($@"['IsRelationValue'] ={(IsRelationValue.ToString().ToLower())},");
-
-            code.AppendLine($@"['IsRelationArray'] ={(IsRelationArray.ToString().ToLower())},");
-
-            code.AppendLine($@"['IsExtendArray'] ={(IsExtendArray.ToString().ToLower())},");
-
-            code.AppendLine($@"['IsExtendValue'] ={(IsExtendValue.ToString().ToLower())},");
 
         }
     }

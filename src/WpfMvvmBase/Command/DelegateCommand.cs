@@ -213,6 +213,38 @@ namespace Agebull.Common.Mvvm
         {
             OnCanExecuteChanged();
         }
+        #region 能否执行处理
+
+        private INotifyPropertyChanged _detect;
+
+        /// <summary>
+        ///     侦测可执行状态变化的对象
+        /// </summary>
+        public INotifyPropertyChanged Detect
+        {
+            get => _detect;
+            set
+            {
+                if (_detect != null)
+                {
+                    _detect.PropertyChanged += OnDetectPropertyChanged;
+                }
+                if (Equals(_detect, value))
+                {
+                    return;
+                }
+                _detect = value;
+                value.PropertyChanged += OnDetectPropertyChanged;
+                OnCanExecuteChanged();
+            }
+        }
+
+        private void OnDetectPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            OnCanExecuteChanged();
+        }
+
+        #endregion
     }
 
     /// <summary>
@@ -300,8 +332,41 @@ namespace Agebull.Common.Mvvm
 
         #endregion
 
+        #region 能否执行处理
+
+        private INotifyPropertyChanged _detect;
+
+        /// <summary>
+        ///     侦测可执行状态变化的对象
+        /// </summary>
+        public INotifyPropertyChanged Detect
+        {
+            get => _detect;
+            set
+            {
+                if (_detect != null)
+                {
+                    _detect.PropertyChanged += OnDetectPropertyChanged;
+                }
+                if (Equals(_detect, value))
+                {
+                    return;
+                }
+                _detect = value;
+                value.PropertyChanged += OnDetectPropertyChanged;
+                OnCanExecuteChanged();
+            }
+        }
+
+        private void OnDetectPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            OnCanExecuteChanged();
+        }
+
+        #endregion
         #region 定义
 
+        private TParameter _parameter;
         /// <summary>
         ///     命令参数)
         /// </summary>
@@ -311,8 +376,16 @@ namespace Agebull.Common.Mvvm
         /// </remarks>
         public TParameter Parameter
         {
-            get;
-            set;
+            get => _parameter;
+            set
+            {
+                if (_parameter == value)
+                    return;
+                
+                _parameter = value;
+                Detect= value as INotifyPropertyChanged;
+                RaisePropertyChanged(nameof(Parameter));
+            }
         }
 
         /// <summary>
@@ -451,10 +524,7 @@ namespace Agebull.Common.Mvvm
         {
             try
             {
-                if (propertyChanged != null)
-                {
-                    propertyChanged(this, args);
-                }
+                propertyChanged?.Invoke(this, args);
             }
             catch (Exception ex)
             {

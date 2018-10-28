@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -12,6 +13,15 @@ namespace Agebull.EntityModel.Designer
         /// 字段文本内容
         /// </summary>
         public string Fields { get; set; }
+
+        /// <summary>
+        /// 生成的表格对象
+        /// </summary>
+        public EntityConfig Entity
+        {
+            get;
+            set;
+        }
 
 
         #region 规整文本(CSharp 类型 名称)
@@ -24,7 +34,11 @@ namespace Agebull.EntityModel.Designer
         /// <remarks></remarks>
         public string DoFormatCSharp(string arg)
         {
-            var lines = Fields.Split(new[] { '\r', '\n', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            if (string.IsNullOrWhiteSpace(Fields))
+                return null;
+
+            var lines = Fields.Replace("{", "\n{").Replace("}", "\n}")
+                .Split(new[] { '\r', '\n', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             string descript = null, caption = null;
             int next = 0;
             int barket = 0;
@@ -77,7 +91,7 @@ namespace Agebull.EntityModel.Designer
                         descript = words.Skip(1).LinkToString();
                     continue;
                 }
-                if (!Char.IsLetter(line[0]))
+                if (!char.IsLetter(line[0]))
                     continue;
                 var name = words[words.Length - 1];
                 var type = words[words.Length - 2];
@@ -90,6 +104,39 @@ namespace Agebull.EntityModel.Designer
                 caption = null;
                 descript = null;
                 next = 0;
+            }
+
+            return code.ToString();
+        }
+
+        #endregion
+
+        #region 规整文本(名称 是否必填 类型 标题)
+
+        public string DoFormatDocument(string arg)
+        {
+            var lines = Fields.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            var code = new StringBuilder();
+            foreach (var line in lines)
+            {
+                if (string.IsNullOrEmpty(line))
+                    continue;
+                var words = line.Trim().Split(new[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                if (words.Length < 3)
+                {
+                    code.Append(line);
+                    continue;
+                }
+                code.AppendLine();
+                var list = words.Select(p => p.Trim()).Where(p => !string.IsNullOrEmpty(p)).ToList();
+                if (words[1][0] > 128)
+                {
+                    list.RemoveAt(1);
+                    if (words[1][0] == '必')
+                        list[1] += '!';
+                }
+                code.Append(list.LinkToString(","));
             }
 
             return code.ToString();
@@ -198,7 +245,7 @@ namespace Agebull.EntityModel.Designer
             {
                 if (string.IsNullOrEmpty(line))
                     continue;
-                var words = line.Trim().Split(new[] { ' ', '\t', '[', ']', '`', ',' },
+                var words = line.Trim(' ', '\t', ',').Replace("(", " (").Split(new[] { ' ', '\t', '[', ']', '`', ',' },
                     StringSplitOptions.RemoveEmptyEntries);
                 if (words.Length == 1)
                     continue;
@@ -207,40 +254,61 @@ namespace Agebull.EntityModel.Designer
                 {
                     case "int":
                     case "bool":
-                        code.Append(",i,");
+                    case "smallint":
+                        code.Append(",i");
                         break;
+                    case "date":
                     case "datetime":
-                        code.Append(",DateTime,");
+                        code.Append(",DateTime");
                         break;
                     case "bit":
-                        code.Append(",bool,");
+                        code.Append(",bool");
                         break;
                     case "bigint":
-                        code.Append(",long,");
+                    case "largeint":
+                        code.Append(",long");
                         break;
                     case "decimal":
                     case "double":
                     case "float":
                     case "numbic":
-                        code.Append(",decimal,");
+                        code.Append(",decimal");
                         break;
                     case "text":
                         code.Append(",ls");
                         break;
                     default:
-                        code.Append(",s,");
+                        code.Append(",s");
                         break;
                 }
-
                 if (words.Length > 2 && words[2][0] == '(')
                 {
                     var len = words[2].Trim('(', ')');
                     code.Append($"-{len}");
                 }
-                else
+                for (int i = 2; i < words.Length; i++)
                 {
-                    code.Append("-#");
+                    if (string.Equals(words[i], "COMMENT", StringComparison.OrdinalIgnoreCase) && i + 1 < words.Length)
+                    {
+                        code.Append(",");
+                        code.Append(words[i + 1].Trim('\''));
+                    }
                 }
+                for (int i = 2; i < words.Length; i++)
+                {
+                    if (string.Equals(words[i], "NULL", StringComparison.OrdinalIgnoreCase) && string.Equals(words[i - 1], "NOT", StringComparison.OrdinalIgnoreCase))
+                    {
+                        code.Append(",#");
+                    }
+                }
+                for (int i = 2; i < words.Length; i++)
+                {
+                    if (string.Equals(words[i], "AUTO_INCREMENT", StringComparison.OrdinalIgnoreCase))
+                    {
+                        code.Append(",@");
+                    }
+                }
+                code.AppendLine();
             }
 
             return code.ToString();
@@ -255,15 +323,17 @@ namespace Agebull.EntityModel.Designer
         {
             var columns = new List<PropertyConfig>();
             var lines = Fields.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            var idx = 0;
+            var idx = Entity?.MaxIdentity ?? 1;
             foreach (var line in lines)
             {
                 if (string.IsNullOrEmpty(line))
                     continue;
                 var words = line.Trim().Split(new[] { ',', '，' }, StringSplitOptions.RemoveEmptyEntries);
 
-                var name = words[0].TrimStart('_').ToUWord();
-                
+                var name = GlobalConfig.ToLinkWordName(words[0], "", true);
+
+                var dbName = GlobalConfig.ToLinkWordName(words[0], "_",false);
+
                 /*
                 文本说明:
                 * 1 每行为一条数据
@@ -272,23 +342,34 @@ namespace Agebull.EntityModel.Designer
                 */
                 PropertyConfig column = new PropertyConfig
                 {
-                    IsPrimaryKey = name.Equals("ID", StringComparison.OrdinalIgnoreCase),
-                    ColumnName = name,
                     Name = name,
+                    IsPrimaryKey = name.Equals("ID", StringComparison.OrdinalIgnoreCase),
+                    DbFieldName = dbName,
+                    JsonName = words[0],
+                    ApiArgumentName = words[0],
+                    Datalen = 200,
+                    DataType = "String",
                     CsType = "string",
-                    DbType = "nvarchar"
+                    DbType = "NVARCHAR",
+                    Option =
+                    {
+                        Identity = idx++,
+                        Index = idx++
+                    }
                 };
-                column.Option.Index = idx++;
-                if (words.Length > 1) CsharpHelper.CheckType(column, words[1]);
-                if (words.Length > 2)
-                column.Caption = words[2];
-                if (words.Length > 3)
-                column.Description = words.Length < 4 ? null : words.Skip(3).LinkToString(",");
+                if (words.Length > 1)
+                    CsharpHelper.CheckType(column, words[1]);
+                if (words.Length > 2 && words[2] != "@" && words[2] != "#")
+                    column.Caption = words[2];
+                if (words.Length > 3 && words[3] != "@" && words[3] != "#")
+                    column.Description = words.Length < 4 ? null : words.Skip(3).LinkToString(",").TrimEnd('@', '#');
                 var old = columns.FirstOrDefault(p => p != null && p.Name == name);
                 if (old != null)
                 {
                     columns.Remove(old);
                 }
+
+                DataTypeHelper.CsDataType(column);
                 columns.Add(column);
             }
 

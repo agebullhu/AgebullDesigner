@@ -32,7 +32,7 @@ namespace Agebull.EntityModel.Designer
             {
                 IsRoot = true,
                 Caption = "扩展操作",
-                Items = Commands.Where(p => p.NoButton).ToObservableCollection<CommandItemBase>()
+                Items = Commands.Where(p => p.NoButton).ToNotificationList<CommandItemBase>()
             };
         /// <summary>
         ///     分类
@@ -152,7 +152,7 @@ namespace Agebull.EntityModel.Designer
             //RaisePropertyChanged(nameof(Context));
             //RaisePropertyChanged(nameof(DesignModel));
         }
-        protected override ObservableCollection<CommandItemBase> CreateCommands()
+        protected override NotificationList<CommandItemBase> CreateCommands()
         {
             return Model.CreateCommands();
         }

@@ -55,9 +55,9 @@ namespace Agebull.Common
         /// </summary>
         /// <param name="str">英文</param>
         /// <returns>中文</returns>
-        public static string ToWord(string str)
+        public static string ToEnglishWord(string str)
         {
-            string w = ToChiness(str);
+            string w = ToEnglish(str);
             if (string.IsNullOrWhiteSpace(w) || string.Equals(str, w, StringComparison.OrdinalIgnoreCase))
                 return str;
 

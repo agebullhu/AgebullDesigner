@@ -13,13 +13,15 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// <summary>
         /// Ãû³Æ
         /// </summary>
-        protected override string FileSaveConfigName => "File_Aspnet_Form";
+        protected override string FileName => "form.htm";
 
-        public override string Code()
+        protected override string LangName => "html";
+
+        protected override string BaseCode()
         {
             if (Entity.FormCloumn <= 0)
                 Entity.FormCloumn = 1;
-            var ext = Entity.MaxForm ? " isPanel='true'" : $" style='width:{Entity.FormCloumn * 485}px;'";
+            var ext = Entity.MaxForm ? " isPanel='true'" : $" style='width:{Entity.FormCloumn * 485 + 15}px;'";
             string name = Entity.Name.ToLWord();
             var fields = Entity.ClientProperty.Where(p => !p.NoneDetails).ToArray();
             return $@"
@@ -35,10 +37,10 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         private string FormHide()
         {
             StringBuilder code = new StringBuilder();
-            foreach (var field in Entity.ClientProperty.Where(p => p.NoneDetails && (p.IsPrimaryKey || p["user_form_hide"] == "True" || !p.IsCompute && !p.IsSystemField)))
+            foreach (var field in Entity.ClientProperty.Where(p => p.IsImage || p.NoneDetails && (p.IsPrimaryKey || p.ExtendConfigListBool["easyui", "userFormHide"] || !p.IsCompute && !p.IsSystemField)))
             {
                 code.Append($@"
-    <input name='{field.Name}' type='hidden' />");
+    <input name='{field.JsonName}' id='{field.JsonName}' type='hidden' />");
             }
             return code.ToString();
         }
@@ -82,19 +84,40 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                 code.Append(@"<br/>");
             }
 
+            if (field.IsImage)
+            {
+                code.Append($@"
+            <div style='float: left;width: 495px;'>
+                <div class='inputField{cssEnd}' id='fr_{field.JsonName}'>
+                    <div class='inputRegion' id='ir_{field.JsonName}'>
+                        <div class='inputLabel'>{caption}:</div>
+                        <div class=""inputValue input_image"">
+                            <img id=""img{field.Name}"" alt=""ÕÕÆ¬"" />
+                            <div style=""float: right"" >
+                                <a id=""btn{field.Name}Delete"" href=""javascript:void(0)"" class=""easyui-linkbutton""
+                                   data-options=""iconCls:'icon-delete',plain:true""
+                                   onclick=""clearImage('{field.JsonName}','img{field.Name}'); return false;""></a>
+                                <a id=""btn{field.Name}Select"" href=""javascript:void(0)"" class=""easyui-linkbutton""
+                                   data-options=""iconCls:'icon-edit',plain:true""
+                                   onclick=""selectImage('{field.JsonName}','img{field.Name}'); return false;""></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>");
+                return;
+            }
             code.Append($@"
-            <div class='inputField{cssEnd}' id='fr_{field.Name}'>
-                <div class='inputRegion' id='ir_{field.Name}'>
+            <div class='inputField{cssEnd}' id='fr_{field.JsonName}'>
+                <div class='inputRegion' id='ir_{field.JsonName}'>
                     <div class='inputLabel'>{caption}:</div>");
-
-            PropertyEasyUiModel.CheckField(field);
 
             if (field.InputType == "editor")
             {
                 var css = field.FormCloumnSapn <= 1 ? "inputValue_Rich_S" : "inputValue_Rich";
                 code.Append($@"<br/>
                     <div class='inputValue_Rich_b'>
-                        <div id='{field.Name}' name='{field.Name}' class='myueditor {css}'></div>
+                        <div id='{field.JsonName}' name='{field.JsonName}' class='myueditor {css}'></div>
                     </div>");
             }
             else
@@ -145,7 +168,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                         var title = field.Parent.ClientProperty.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
                         if (title != null)
                         {
-                            attributes += $" readfield='{title.Name}'";
+                            attributes += $" readfield='{title.JsonName}'";
                         }
                     }
                 }
@@ -153,13 +176,13 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 
                 var options = FieldOptions(field, description);
                 code.Append($@"{br}
-                    <input id='{field.Name}' name='{field.Name}' class='{css} {field.InputType}'{attributes}
+                    <input id='{field.JsonName}' name='{field.JsonName}' class='{css} {field.InputType}'{attributes}
                            data-options=""{options}""/>");
                 if (!string.IsNullOrWhiteSpace(field.Suffix))
                     code.Append(field.Suffix);
                 if (field.IsMoney)
                 {
-                    code.Append($@"<label id = 'cm_{field.Name}' style = 'color: red;' ></label>");
+                    code.Append($@"<label id = 'cm_{field.JsonName}' style = 'color: red;' ></label>");
                 }
             }
             code.Append(@"
@@ -168,7 +191,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             //code.Append(
             //    $@"
             //    </div>
-            //    <div class='inputHelp' id='hr_{field.Name}'>{
+            //    <div class='inputHelp' id='hr_{field.JsonName}'>{
             //        description}</div>
             //</div>");
         }
@@ -181,13 +204,9 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             {
                 options.Append(",multiline:true");
             }
-            if (field.IsUserReadOnly)
+            if (!field.CanUserInput)
             {
                 options.Append(",readonly:true");
-            }
-            if (!field.CanEmpty)
-            {
-                options.Append(",required:true");
             }
             if (!string.IsNullOrWhiteSpace(field.FormOption))
             {
@@ -197,10 +216,17 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             {
                 options.Append($",url:'{field.ComboBoxUrl}'");
             }
-            var validType = EasyUiPageScriptCoder.ValidType(field, out bool required);
+
+            if (!field.CanUserInput)
+                return options.ToString();
+            var validType = EasyUiPageScriptCoderBase.ValidType(field, out bool required);
             if (validType.Count > 0)
             {
                 options.Append($",validType:[{validType.LinkToString(",")}]");
+            }
+            if (required || field.IsRequired || !field.CanEmpty)
+            {
+                options.Append(",required:true");
             }
             return options.ToString();
         }

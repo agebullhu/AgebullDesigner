@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2017/7/12 23:16:38*/
+﻿/*design by:agebull designer date:2017/7/12 23:16:38*/
 /*****************************************************
 ©2008-2017 Copy right by agebull.hu(胡天水)
 作者:agebull.hu(胡天水)
@@ -7,9 +7,7 @@
 修改:2017-07-12
 *****************************************************/
 
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -189,10 +187,10 @@ namespace Agebull.EntityModel.Config
             get => WorkContext.InCoderGenerating ? (string.IsNullOrWhiteSpace(_entityName) ?  $"{Name}Data" : _entityName) : _entityName;
             set
             {
-                if(_entityName == value)
-                    return;
                 if (value == Name)
                     value = null;
+                if (_entityName == value)
+                    return;
                 BeforePropertyChanged(nameof(EntityName), _entityName,value);
                 _entityName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(EntityName));
@@ -521,7 +519,7 @@ namespace Agebull.EntityModel.Config
         /// 字段
         /// </summary>
         [DataMember, JsonProperty("_tableReleations", NullValueHandling = NullValueHandling.Ignore)]
-        internal ObservableCollection<EntityReleationConfig> _releations;
+        internal NotificationList<EntityReleationConfig> _releations;
 
         /// <summary>
         /// 字段
@@ -531,13 +529,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"字段"), Description("字段")]
-        public ObservableCollection<EntityReleationConfig> Releations
+        public NotificationList<EntityReleationConfig> Releations
         {
             get
             {
                 if (_releations != null)
                     return _releations;
-                _releations = new ObservableCollection<EntityReleationConfig>();
+                _releations = new NotificationList<EntityReleationConfig>();
                 OnPropertyChanged(nameof(Releations));
                 return _releations;
             }
@@ -554,7 +552,7 @@ namespace Agebull.EntityModel.Config
         /// 命令集合
         /// </summary>
         [DataMember,JsonProperty("_commands", NullValueHandling = NullValueHandling.Ignore)]
-        internal ObservableCollection<UserCommandConfig> _commands;
+        internal NotificationList<UserCommandConfig> _commands;
 
         /// <summary>
         /// 命令集合
@@ -564,13 +562,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember,JsonIgnore]
         [Category(@"业务模型"),DisplayName(@"命令集合"),Description("命令集合,数据模型中可调用的命令")]
-        public ObservableCollection<UserCommandConfig> Commands
+        public NotificationList<UserCommandConfig> Commands
         {
             get
             {
                 if (_commands != null)
                     return _commands;
-                _commands = new ObservableCollection<UserCommandConfig>();
+                _commands = new NotificationList<UserCommandConfig>();
                 RaisePropertyChanged(nameof(Commands));
                 return _commands;
             }
@@ -622,13 +620,13 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"),DisplayName(@"存储表名(设计录入)"),Description(ReadTableName_Description)]
         public string ReadTableName
         {
-            get => WorkContext.InCoderGenerating ? (_readTableName ?? SaveTableName) : _readTableName;
+            get => WorkContext.InCoderGenerating ? _readTableName ?? SaveTableName ?? Name : _readTableName;
             set
             {
-                if (_readTableName == value)
-                    return;
                 if (SaveTableName == value)
                     value = null;
+                if (_readTableName == value)
+                    return;
                 BeforePropertyChanged(nameof(ReadTableName), _readTableName,value);
                 _readTableName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(ReadTableName));
@@ -651,13 +649,13 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"),DisplayName(@"存储表名"),Description("存储表名")]
         public string SaveTableName
         {
-            get => WorkContext.InCoderGenerating ? (_saveTableName ?? Name) : _saveTableName;
+            get => WorkContext.InCoderGenerating ? _saveTableName ?? Name : _saveTableName;
             set
             {
-                if(_saveTableName == value)
-                    return;
                 if (Name == value)
                     value = null;
+                if (_saveTableName == value)
+                    return;
                 BeforePropertyChanged(nameof(SaveTableName), _saveTableName,value);
                 _saveTableName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(SaveTableName));
@@ -716,10 +714,56 @@ namespace Agebull.EntityModel.Config
                 _updateByModified = value;
                 OnPropertyChanged(nameof(UpdateByModified));
             }
-        } 
-        #endregion 
+        }
+        #endregion
         #region 用户界面
 
+        /// <summary>
+        /// 是否有界面
+        /// </summary>
+        [DataMember, JsonProperty("haseEasyUi", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _haseEasyUi;
+
+        /// <summary>
+        /// 界面只读
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"用户界面"), DisplayName(@"是否有界面"), Description("是否有界面")]
+        public bool HaseEasyUi
+        {
+            get => _haseEasyUi;
+            set
+            {
+                if (_haseEasyUi == value)
+                    return;
+                BeforePropertyChanged(nameof(HaseEasyUi), _haseEasyUi, value);
+                _haseEasyUi = value;
+                OnPropertyChanged(nameof(HaseEasyUi));
+            }
+        }
+        /// <summary>
+        /// 界面只读
+        /// </summary>
+        [DataMember, JsonProperty("isUiReadOnly", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isUiReadOnly;
+
+        /// <summary>
+        /// 界面只读
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"用户界面"), DisplayName(@"界面只读"), Description("界面只读")]
+        public bool IsUiReadOnly
+        {
+            get => _isUiReadOnly;
+            set
+            {
+                if (_isUiReadOnly == value)
+                    return;
+                BeforePropertyChanged(nameof(IsUiReadOnly), _isUiReadOnly, value);
+                _isUiReadOnly = value;
+                OnPropertyChanged(nameof(IsUiReadOnly));
+            }
+        }
         /// <summary>
         /// 页面文件夹名称
         /// </summary>
@@ -907,7 +951,7 @@ namespace Agebull.EntityModel.Config
                 _panelType = value;
                 OnPropertyChanged(nameof(PanelType));
             }
-        } 
+        }
         #endregion 
         #region C++
 
@@ -927,13 +971,13 @@ namespace Agebull.EntityModel.Config
         [Category(@"C++"),DisplayName(@"C++名称"),Description("C++字段名称")]
         public string CppName
         {
-            get => WorkContext.InCoderGenerating ? (_cppName ?? Name) : _cppName;
+            get => WorkContext.InCoderGenerating ? _cppName ?? Name : _cppName;
             set
             {
-                if (_cppName == value)
-                    return;
                 if (Name == value)
                     value = null;
+                if (_cppName == value)
+                    return;
                 BeforePropertyChanged(nameof(CppName), _cppName,value);
                 _cppName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(CppName));

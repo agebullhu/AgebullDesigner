@@ -179,7 +179,7 @@ namespace Agebull.Common.Mvvm
         /// <returns> </returns>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value is Visibility && ((Visibility)value) == Visibility.Visible;
+            return value is Visibility && (Visibility)value == Visibility.Visible;
         }
 
         #endregion
@@ -219,7 +219,7 @@ namespace Agebull.Common.Mvvm
         /// <returns> </returns>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return !(value is Visibility) || ((Visibility)value) == Visibility.Collapsed;
+            return !(value is Visibility) || (Visibility)value == Visibility.Collapsed;
         }
 
         #endregion

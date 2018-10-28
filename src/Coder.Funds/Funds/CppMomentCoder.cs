@@ -18,20 +18,20 @@ namespace Agebull.EntityModel.RobotCoder.Funds
         void IAutoRegister.AutoRegist()
         {
             MomentCoder.RegisteCoder("C++", "数据通知转发代码(C++)", "cpp", CommandCode);
-            MomentCoder.RegisteCoder("C++", "Form(WPF)","cpp", cfg => Run(cfg, WpfForm));
-            MomentCoder.RegisteCoder("C++", "DataGrid(WPF)","cpp", cfg => Run(cfg, WpfDataGrid));
-            MomentCoder.RegisteCoder("C++", "价格变化属性(WPF)","xml", cfg => Run(cfg, WpfColor));
-            MomentCoder.RegisteCoder("C++", "C++Json声明","cpp", cfg => Run(cfg, ToCppJsonDef));
-            MomentCoder.RegisteCoder("C++", "C++Json实现","cpp", cfg => Run(cfg, ToCppJson));
-            MomentCoder.RegisteCoder("C++", "C++Cout声明","cpp", cfg => Run(cfg, ToCppCoutDef));
-            MomentCoder.RegisteCoder("C++", "C++Cout实现","cpp", cfg => Run(cfg, ToCppCout));
-            MomentCoder.RegisteCoder("C++", "Redis读写(C++)","cpp", cfg => Run(cfg, Redis));
-            MomentCoder.RegisteCoder("C++", "C++Redis实现","cpp", cfg => Run(cfg, ToCppRedis));
-            MomentCoder.RegisteCoder("C++", "C++到C#声明","cpp", cfg => Run(cfg, CppFieldToCsEntityDef));
-            MomentCoder.RegisteCoder("C++", "C++到C#实现","cpp", cfg => Run(cfg, CppFieldToCsEntity));
-            MomentCoder.RegisteCoder("C++", "C++序列化","cpp", cfg => Run(cfg, CppFieldSaveDef));
-            MomentCoder.RegisteCoder("C++", "C++反序列化","cpp", cfg => Run(cfg, CppFieldSave));
-            MomentCoder.RegisteCoder("C++", "数据类型(C++)", "cpp", (DataType));
+            MomentCoder.RegisteCoder("C++", "Form(WPF)", "cpp", WpfForm);
+            MomentCoder.RegisteCoder("C++", "DataGrid(WPF)", "cpp", WpfDataGrid);
+            MomentCoder.RegisteCoder("C++", "价格变化属性(WPF)", "xml", WpfColor);
+            MomentCoder.RegisteCoder("C++", "C++Json声明", "cpp", ToCppJsonDef);
+            MomentCoder.RegisteCoder("C++", "C++Json实现", "cpp", ToCppJson);
+            MomentCoder.RegisteCoder("C++", "C++Cout声明", "cpp", ToCppCoutDef);
+            MomentCoder.RegisteCoder("C++", "C++Cout实现", "cpp", ToCppCout);
+            MomentCoder.RegisteCoder("C++", "Redis读写(C++)", "cpp", Redis);
+            MomentCoder.RegisteCoder("C++", "C++Redis实现", "cpp", ToCppRedis);
+            MomentCoder.RegisteCoder("C++", "C++到C#声明", "cpp", CppFieldToCsEntityDef);
+            MomentCoder.RegisteCoder("C++", "C++到C#实现", "cpp", CppFieldToCsEntity);
+            MomentCoder.RegisteCoder("C++", "C++序列化", "cpp", CppFieldSaveDef);
+            MomentCoder.RegisteCoder("C++", "C++反序列化", "cpp", CppFieldSave);
+            MomentCoder.RegisteCoder("C++", "数据类型(C++)", "cpp", DataType);
 
 
             MomentCoder.RegisteCoder("C++", "C++日志声明", "cpp", ToCppLogDef);
@@ -39,23 +39,18 @@ namespace Agebull.EntityModel.RobotCoder.Funds
             MomentCoder.RegisteCoder("C++", "C++枚举日志", "cpp", EnumLog);
 
 
-            MomentCoder.RegisteCoder("C++", "文件包含(C++)", "cpp", (IncludeFunc));
-            MomentCoder.RegisteCoder("C++", "工程文件包含(C++)", "cpp", (ProjectFile));
-            MomentCoder.RegisteCoder("C++", "工程文件分组(C++)", "cpp", (ProjectFilter));
+            MomentCoder.RegisteCoder<ProjectConfig>("C++", "文件包含(C++)", "cpp", IncludeFunc);
+            MomentCoder.RegisteCoder<ProjectConfig>("C++", "工程文件包含(C++)", "cpp", ProjectFile);
+            MomentCoder.RegisteCoder<ProjectConfig>("C++", "工程文件分组(C++)", "cpp", ProjectFilter);
 
         }
         #endregion
 
         #region 数据通知代码
 
-        private static string CommandCode(ConfigBase config)
+        private static string CommandCode(EntityConfig entity)
         {
-            var code = new StringBuilder();
-            foreach (var project in SolutionConfig.Current.Projects)
-            {
-                foreach (var entity in project.Entities.Where(p => p.LastProperties.Any(f => f.IsUserId)))
-                {
-                    code.Append($@"
+            return ($@"
                 case {entity.Parent.NameSpace.Replace(".", "::")}::TYPE_INDEX_{entity.Name.ToUpper()}:
 				{{
 					{entity.Parent.NameSpace.Replace(".", "::")}::{entity.Name} field;
@@ -71,18 +66,14 @@ namespace Agebull.EntityModel.RobotCoder.Funds
 					server_message_send(cmd);
                     return;
 				}}");
-                }
-            }
-            return code.ToString();
         }
 
         #endregion
 
         #region WPF
 
-        private static string WpfColor(ConfigBase config)
+        private static string WpfColor(EntityConfig entityConfig)
         {
-            EntityConfig entityConfig = (EntityConfig)config;
             var code = new StringBuilder();
             foreach (var field in entityConfig.LastProperties.Where(p => p.CsType == "decimal"))
             {
@@ -122,9 +113,8 @@ namespace Agebull.EntityModel.RobotCoder.Funds
 
         }
 
-        private static string WpfDataGrid(ConfigBase config)
+        private static string WpfDataGrid(EntityConfig entityConfig)
         {
-            EntityConfig entityConfig = (EntityConfig)config;
             var code = new StringBuilder();
             foreach (var field in entityConfig.LastProperties)
             {
@@ -153,10 +143,8 @@ namespace Agebull.EntityModel.RobotCoder.Funds
 
         }
 
-        private static string WpfInputForm(ConfigBase config)
+        private static string WpfInputForm(EntityConfig entityConfig)
         {
-
-            EntityConfig entityConfig = (EntityConfig)config;
             var code = new StringBuilder();
             foreach (var field in entityConfig.LastProperties)
             {
@@ -185,9 +173,8 @@ namespace Agebull.EntityModel.RobotCoder.Funds
 
         }
 
-        private static string WpfForm(ConfigBase config)
+        private static string WpfForm(EntityConfig entityConfig)
         {
-            EntityConfig entityConfig = (EntityConfig)config;
             var code = new StringBuilder();
             foreach (var field in entityConfig.LastProperties)
             {
@@ -221,19 +208,11 @@ namespace Agebull.EntityModel.RobotCoder.Funds
         #region 数据类型
 
 
-        public static string DataType(ConfigBase config)
+        public static string DataType(EntityConfig entity)
         {
-            var code = new StringBuilder();
-            foreach (var project in SolutionConfig.Current.Projects)
-            {
-                foreach (var entity in project.Entities)
-                {
-                    code.Append($@"
+            return ($@"
     case 0x{entity.Index:X}:
         return ""{entity.Caption}"";");
-                }
-            }
-            return code.ToString();
         }
 
         #endregion
@@ -462,9 +441,8 @@ void Deserialize(Deserializer& io, TEsAddressField* field)
 }
 */
 
-        public static string CppFieldSaveDef(ConfigBase config)
+        public static string CppFieldSaveDef(EntityConfig entityConfig)
         {
-            EntityConfig entityConfig = (EntityConfig)config;
             var code = new StringBuilder();
             code.AppendFormat(@"
 
@@ -483,9 +461,8 @@ void Deserialize(Deserializer& reader, {1}* field);", entityConfig.Caption, enti
             return code.ToString();
         }
 
-        public static string CppFieldSave(ConfigBase config)
+        public static string CppFieldSave(EntityConfig entityConfig)
         {
-            EntityConfig entityConfig = (EntityConfig)config;
             var code = new StringBuilder();
             code.AppendFormat(@"
 
@@ -537,8 +514,7 @@ void Deserialize(Deserializer& reader, {1}* field)
         private static void ToCppWriteCode(StringBuilder code, PropertyConfig field)
         {
             var type = CppTypeHelper.ToCppLastType(field.CppLastType);
-            var stru = type as EntityConfig;
-            if (stru != null)
+            if (type is EntityConfig stru)
             {
                 if (field.Datalen == 1)
                 {
@@ -604,8 +580,7 @@ void Deserialize(Deserializer& reader, {1}* field)
         private static void ToCppReadCode(StringBuilder code, PropertyConfig field)
         {
             var type = CppTypeHelper.ToCppLastType(field.CppLastType);
-            var stru = type as EntityConfig;
-            if (stru != null)
+            if (type is EntityConfig stru)
             {
                 if (field.Datalen == 1)
                 {
@@ -676,9 +651,8 @@ void Deserialize(Deserializer& reader, {1}* field)
         #endregion
         #region CppToCs
 
-        public static string CppFieldToCsEntityDef(ConfigBase config)
+        public static string CppFieldToCsEntityDef(EntityConfig entityConfig)
         {
-            EntityConfig entityConfig = (EntityConfig)config;
             var code = new StringBuilder();
             code.Append($@"
 ///{entityConfig.Caption} 结构复制到对应的.Net实体对象
@@ -690,9 +664,8 @@ void CopyToCache({entityConfig.ReadTableName}* field);");
             return code.ToString();
         }
 
-        public static string CppFieldToCsEntity(ConfigBase config)
+        public static string CppFieldToCsEntity(EntityConfig entityConfig)
         {
-            EntityConfig entityConfig = (EntityConfig)config;
             var code = new StringBuilder();
             code.Append($@"
 
@@ -725,8 +698,7 @@ void CopyToCache({entityConfig.ReadTableName}* field)
         private static void ToCppCopyCode(StringBuilder code, PropertyConfig field)
         {
             var type = CppTypeHelper.ToCppLastType(field.CppLastType);
-            var stru = type as EntityConfig;
-            if (stru != null)
+            if (type is EntityConfig)
             {
                 code.Append($@"
     item->{field.Name} = CreateCsEntity(&field->{field.Name});//{field.Caption}");
@@ -796,9 +768,8 @@ void CopyToCache({entityConfig.ReadTableName}* field)
 
         #endregion
         #region CppJson
-        public static string ToCppRedis(ConfigBase config)
+        public static string ToCppRedis(EntityConfig entityConfig)
         {
-            EntityConfig entityConfig = (EntityConfig)config;
             var code = new StringBuilder();
             code.Append($@"
 
@@ -816,18 +787,16 @@ void CopyToCache({entityConfig.ReadTableName}* field)
         }
 
 
-        public static string ToCppJsonDef(ConfigBase config)
+        public static string ToCppJsonDef(EntityConfig entityConfig)
         {
-            EntityConfig entityConfig = (EntityConfig)config;
-            return string.Format($@"
+            return ($@"
 
 ///{entityConfig.Caption} 格式化为JSON格式
 string toJson(const {entityConfig.Name}* value);");
         }
 
-        public static string ToCppJson(ConfigBase config)
+        public static string ToCppJson(EntityConfig entityConfig)
         {
-            EntityConfig entityConfig = (EntityConfig)config;
             var code = new StringBuilder();
             code.Append($@"
 
@@ -957,18 +926,16 @@ string toJson(const {entityConfig.Name}* value)
 
         #region CppCout
 
-        public static string ToCppCoutDef(ConfigBase config)
+        public static string ToCppCoutDef(EntityConfig entityConfig)
         {
-            EntityConfig entityConfig = (EntityConfig)config;
             return string.Format(@"
 
 ///{1} 显示到Cout
 void print_screen(const {0}* value);", entityConfig.Name, entityConfig.Caption);
         }
 
-        public static string ToCppCout(ConfigBase config)
+        public static string ToCppCout(EntityConfig entityConfig)
         {
-            EntityConfig entityConfig = (EntityConfig)config;
             var code = new StringBuilder();
             code.AppendFormat(@"
 
@@ -1079,58 +1046,46 @@ void print_screen(const {0}* value)
 
         #region 常量选择代码
 
-        public static string IncludeFunc(ConfigBase config)
+        public static string IncludeFunc(ProjectConfig project)
         {
             var code = new StringBuilder();
-
-            foreach (var project in SolutionConfig.Current.Projects)
-            {
-                if (project.IsReference)
-                    code.AppendFormat(@"
+            if (project.IsReference)
+                code.AppendFormat(@"
 #ifdef PROXY");
-                foreach (var entity in project.Entities)
-                    code.AppendFormat($@"
+            foreach (var entity in project.Entities)
+                code.AppendFormat($@"
 #include ""{project.Name}\{entity.Name}.h""");
-                if (project.IsReference)
-                    code.AppendFormat(@"
+            if (project.IsReference)
+                code.AppendFormat(@"
 #endif");
-            }
             return code.ToString();
         }
         #endregion
 
         #region 常量名称字典
 
-        public static string ProjectFile(ConfigBase config)
+        public static string ProjectFile(ProjectConfig project)
         {
             var code = new StringBuilder();
             code.AppendFormat(@"
   <ItemGroup>");
-            foreach (var project in SolutionConfig.Current.Projects)
+
+            foreach (var entity in project.Entities)
             {
-                foreach (var entity in project.Entities)
-                {
-                    code.Append($@"     
+                code.Append($@"     
     <ClInclude Include=""..\SharpCode\{project.Name}\{entity.Name}.h""/>");
-                }
-            }
-            code.AppendFormat(@"
-  </ItemGroup>
-  <ItemGroup>");
-            foreach (var project in SolutionConfig.Current.Projects)
-            {
-                foreach (var entity in project.Entities)
-                {
-                    code.Append($@"     
-    <ClCompile Include=""..\SharpCode\{project.Name}\{entity.Name}.cpp""/>");
-                }
             }
             code.AppendFormat(@"
   </ItemGroup>");
+            foreach (var entity in project.Entities)
+            {
+                code.Append($@"     
+    <ClCompile Include=""..\SharpCode\{project.Name}\{entity.Name}.cpp""/>");
+            }
             return code.ToString();
         }
 
-        public static string ProjectFilter(ConfigBase config)
+        public static string ProjectFilter(ProjectConfig project)
         {
             var code = new StringBuilder();
             //        foreach (var project in SolutionConfig.Current.Projects)
@@ -1141,40 +1096,28 @@ void print_screen(const {0}* value)
             //</Filter>");
             //        }
             //          code.AppendFormat(@"
-            //</ItemGroup>");
             code.AppendFormat(@"
   <ItemGroup>");
-            foreach (var project in SolutionConfig.Current.Projects)
+            foreach (var entity in project.Entities)
             {
-                foreach (var entity in project.Entities)
-                {
-                    code.Append($@"
+                code.Append($@"
     <ClInclude Include=""..\SharpCode\{project.Name}\{entity.Name}.h"">
       <Filter>business\{project.Name}</Filter>
     </ClInclude>");
-                }
             }
-            code.AppendFormat(@"
-  </ItemGroup>
-  <ItemGroup>");
-            foreach (var project in SolutionConfig.Current.Projects)
+            foreach (var entity in project.Entities)
             {
-                foreach (var entity in project.Entities)
-                {
-                    code.Append($@"
+                code.Append($@"
     <ClCompile Include=""..\SharpCode\{project.Name}\{entity.Name}.cpp"">
       <Filter>business\{project.Name}</Filter>
     </ClCompile>");
-                }
             }
-            code.AppendFormat(@"
-  </ItemGroup>");
             return code.ToString();
         }
         #endregion
         #region 日志
 
-        private static string EnumLog(ConfigBase config)
+        private static string EnumLog(EntityConfig entity)
         {
             var code = new StringBuilder();
             foreach (var em in SolutionConfig.Current.Enums)

@@ -118,7 +118,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command\CommandIoc.cs" />
-    <Compile Include="Config\ConfigDataModel.cs" />
     <Compile Include="Extend\DesignerManager.cs" />
     <Compile Include="Extend\ExtendItem.cs" />
     <Compile Include="Extend\ExtendViewModelBase.cs" />

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
 using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
@@ -79,7 +80,7 @@ namespace Agebull.EntityModel.RobotCoder
                 for (var index = 1; index < words.Count; index++)
                 {
                     var word = words[index];
-                    if ((word[0] < 255 && !preEn) || preEn)
+                    if (word[0] < 255 && !preEn || preEn)
                         sb.Append(link);
                     sb.Append(uWord ? word.ToUWord() : word.ToLower());
                     preEn = word[0] < 255;
@@ -108,7 +109,7 @@ namespace Agebull.EntityModel.RobotCoder
             for (var index = 1; index < words.Count; index++)
             {
                 var word = words[index];
-                if ((word[0] < 255 && !preEn) || preEn)
+                if (word[0] < 255 && !preEn || preEn)
                     sb.Append(link);
                 sb.Append(uWord ? word.ToUWord() : word.ToLower());
                 preEn = word[0] < 255;
@@ -135,24 +136,24 @@ namespace Agebull.EntityModel.RobotCoder
                     words.Add(word);
                     continue;
                 }
-                if (word.All(c => (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')))
+                if (word.All(c => c >= 'A' && c <= 'Z' || c >= '0' && c <= '9'))
                 {
                     words.Add(word);
                     continue;
                 }
-                if (word.All(c => (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')))
+                if (word.All(c => c >= 'a' && c <= 'z' || c >= '0' && c <= '9'))
                 {
                     words.Add(word);
                     continue;
                 }
                 foreach (var c in word)
                 {
-                    if ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'))
+                    if (c >= 'a' && c <= 'z' || c >= '0' && c <= '9')
                     {
                         sb.Append(c);
                         continue;
                     }
-                    if ((c >= 'A' && c <= 'Z') || (c > 255))
+                    if (c >= 'A' && c <= 'Z' || c > 255)
                     {
                         if (sb.Length > 0)
                         {
@@ -219,8 +220,7 @@ namespace Agebull.EntityModel.RobotCoder
         {
             if (string.IsNullOrWhiteSpace(str))
                 return null;
-            var rp = str.Replace("&", "»ò").Replace("\r", "").Replace("<", "¡´").Replace(">", "¡µ");
-            var sp = rp.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            var sp = str.Split(new[] { '\n', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             StringBuilder sb = new StringBuilder();
             bool isFirst = true;
             foreach (var line in sp)
@@ -237,7 +237,7 @@ namespace Agebull.EntityModel.RobotCoder
                     sb.Append(' ', space);
                     sb.Append("/// ");
                 }
-                sb.Append(line.Trim());
+                sb.Append(HttpUtility.HtmlEncode(line.Trim()));
             }
             return sb.ToString();
         }

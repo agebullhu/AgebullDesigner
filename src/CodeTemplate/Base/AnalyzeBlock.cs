@@ -33,21 +33,21 @@ namespace Agebull.EntityModel.RobotCoder.CodeTemplate
         /// <summary>
         /// 所有节点
         /// </summary>
-        private ObservableCollection<AnalyzeUnitBase> _elements = new ObservableCollection<AnalyzeUnitBase>();
+        private NotificationList<AnalyzeUnitBase> _elements = new NotificationList<AnalyzeUnitBase>();
 
         /// <summary>
         /// 所有节点
         /// </summary>
-        public ObservableCollection<AnalyzeUnitBase> Elements => _elements;
+        public NotificationList<AnalyzeUnitBase> Elements => _elements;
 
         /// <summary>
         /// 重置并返回重置前的节点
         /// </summary>
         /// <returns></returns>
-        public ObservableCollection<AnalyzeUnitBase> ResetElements()
+        public NotificationList<AnalyzeUnitBase> ResetElements()
         {
             var re = _elements;
-            _elements = new ObservableCollection<AnalyzeUnitBase>();
+            _elements = new NotificationList<AnalyzeUnitBase>();
             return re;
         }
 

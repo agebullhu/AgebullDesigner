@@ -85,7 +85,16 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void LoadGlobal()
         {
-            Load(Path.Combine(GlobalConfig.ProgramRoot, "Global", "global.json"));
+            Context.Solution = GlobalConfig.GlobalSolution;
+            Model.OnSolutionChanged();
+        }
+        /// <summary>
+        /// 载入解决方案
+        /// </summary>
+        public void LoadLocal()
+        {
+            Context.Solution = GlobalConfig.LocalSolution;
+            Model.OnSolutionChanged();
         }
         /// <summary>
         /// 重新载入

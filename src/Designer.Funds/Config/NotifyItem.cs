@@ -77,7 +77,7 @@ namespace Agebull.EntityModel.Config
                 if (_friend == value)
                     return;
                 BeforePropertyChanged(nameof(Friend), _friend, value);
-                _friend = String.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _friend = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Friend));
             }
         }
@@ -160,7 +160,7 @@ namespace Agebull.EntityModel.Config
                 if (_commandId == value)
                     return;
                 BeforePropertyChanged(nameof(CommandId), _commandId, value);
-                _commandId = String.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _commandId = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(CommandId));
             }
         }
@@ -187,7 +187,7 @@ namespace Agebull.EntityModel.Config
                 if (_notifyEntity == value)
                     return;
                 BeforePropertyChanged(nameof(NotifyEntity), _notifyEntity, value);
-                _notifyEntity = String.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _notifyEntity = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(NotifyEntity));
             }
         }
@@ -214,7 +214,7 @@ namespace Agebull.EntityModel.Config
                 if (_clientEntity == value)
                     return;
                 BeforePropertyChanged(nameof(ClientEntity), _clientEntity, value);
-                _clientEntity = String.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _clientEntity = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(ClientEntity));
             }
         }
@@ -295,7 +295,7 @@ namespace Agebull.EntityModel.Config
                 if (_org == value)
                     return;
                 BeforePropertyChanged(nameof(Org), _org, value);
-                _org = String.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _org = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Org));
             }
         }
@@ -312,35 +312,35 @@ namespace Agebull.EntityModel.Config
         public override void GetLuaStruct(StringBuilder code)
         {
             base.GetLuaStruct(code);
-            if (!String.IsNullOrWhiteSpace(Friend))
+            if (!string.IsNullOrWhiteSpace(Friend))
                 code.AppendLine($@"['Friend'] = '{Friend.ToLuaString()}',");
             else
                 code.AppendLine($@"['Friend'] = nil,");
 
             code.AppendLine($@"['FriendKey'] ='{FriendKey}',");
 
-            code.AppendLine($@"['LocalCommand'] ={(LocalCommand.ToString().ToLower())},");
+            code.AppendLine($@"['LocalCommand'] ={LocalCommand.ToString().ToLower()},");
 
-            if (!String.IsNullOrWhiteSpace(CommandId))
+            if (!string.IsNullOrWhiteSpace(CommandId))
                 code.AppendLine($@"['CommandId'] = '{CommandId.ToLuaString()}',");
             else
                 code.AppendLine($@"['CommandId'] = nil,");
 
-            if (!String.IsNullOrWhiteSpace(NotifyEntity))
+            if (!string.IsNullOrWhiteSpace(NotifyEntity))
                 code.AppendLine($@"['NotifyEntity'] = '{NotifyEntity.ToLuaString()}',");
             else
                 code.AppendLine($@"['NotifyEntity'] = nil,");
 
-            if (!String.IsNullOrWhiteSpace(ClientEntity))
+            if (!string.IsNullOrWhiteSpace(ClientEntity))
                 code.AppendLine($@"['ClientEntity'] = '{ClientEntity.ToLuaString()}',");
             else
                 code.AppendLine($@"['ClientEntity'] = nil,");
 
-            code.AppendLine($@"['IsCommandResult'] ={(IsCommandResult.ToString().ToLower())},");
+            code.AppendLine($@"['IsCommandResult'] ={IsCommandResult.ToString().ToLower()},");
 
-            code.AppendLine($@"['IsMulit'] ={(IsMulit.ToString().ToLower())},");
+            code.AppendLine($@"['IsMulit'] ={IsMulit.ToString().ToLower()},");
 
-            if (!String.IsNullOrWhiteSpace(Org))
+            if (!string.IsNullOrWhiteSpace(Org))
                 code.AppendLine($@"['Org'] = '{Org.ToLuaString()}',");
             else
                 code.AppendLine($@"['Org'] = nil,");

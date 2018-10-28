@@ -9,20 +9,20 @@ namespace Agebull.EntityModel
     public class CodeGeneratorScope : ScopeBase
     {
         readonly IDisposable _innerScope;
-        CodeGeneratorScope()
+        CodeGeneratorScope(NotificationObject config)
         {
-            if (WorkContext.WorkModel == WorkModel.Coder)
-                return;
             _innerScope = WorkModelScope.CreateScope(WorkModel.Coder);
-            GlobalTrigger.OnCodeGeneratorBegin();
+            if (config == null)
+                return;
+            GlobalTrigger.OnCodeGeneratorBegin(config);
         }
         /// <summary>
         /// Éú³É·¶Î§
         /// </summary>
         /// <returns></returns>
-        public static IDisposable CreateScope()
+        public static IDisposable CreateScope(NotificationObject config)
         {
-            return new CodeGeneratorScope();
+            return new CodeGeneratorScope(config);
         }
 
         /// <inheritdoc />

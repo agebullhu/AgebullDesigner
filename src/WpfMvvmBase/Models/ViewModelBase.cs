@@ -61,20 +61,20 @@ namespace Agebull.EntityModel
         }
 
 
-        private ObservableCollection<CommandItemBase> _commands;
+        private NotificationList<CommandItemBase> _commands;
 
         /// <summary>
         ///     对应的命令集合
         /// </summary>
-        public ObservableCollection<CommandItemBase> Commands => _commands ?? (_commands = CreateCommands());
+        public NotificationList<CommandItemBase> Commands => _commands ?? (_commands = CreateCommands());
 
         /// <summary>
         /// 构造命令列表
         /// </summary>
         /// <returns></returns>
-        protected virtual ObservableCollection<CommandItemBase> CreateCommands()
+        protected virtual NotificationList<CommandItemBase> CreateCommands()
         {
-            return new ObservableCollection<CommandItemBase>();
+            return new NotificationList<CommandItemBase>();
         }
     }
 

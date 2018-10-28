@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Designer;
+using Agebull.EntityModel.RobotCoder.EasyUi;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -18,26 +19,24 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("EasyUi","EasyUi表单", "xml", cfg => DoCode(cfg, EasyUiForm));
-            //MomentCoder.RegisteCoder("EasyUi","EasyUi表单保存",EasyUiHelperCoder.InputConvert4(Entity));
-            MomentCoder.RegisteCoder("EasyUi","EasyUi表格", "xml", cfg => DoCode(cfg, EasyUiGrid));
-            MomentCoder.RegisteCoder("EasyUi", "EasyUi详情", "xml", cfg => DoCode(cfg, EasyUiInfo));
-            MomentCoder.RegisteCoder("EasyUi", "MvcMenu", "xml", cfg => DoCode(cfg, MvcMenu));
+            MomentCoder.RegisteCoder("Web-EasyUi","表单", "html",  EasyUiForm);
+            MomentCoder.RegisteCoder("Web-EasyUi", "表单保存", "cs",  InputConvert4);
+            MomentCoder.RegisteCoder("Web-EasyUi","表格", "js",  EasyUiGrid);
+            MomentCoder.RegisteCoder("Web-EasyUi", "详情", "html",  EasyUiInfo);
+            MomentCoder.RegisteCoder("Web-EasyUi", "MvcMenu", "htm",  MvcMenu);
         }
+
         #endregion
 
-        string DoCode(ConfigBase config, Func<string> coder)
+        public string InputConvert4(EntityConfig entity)
         {
-            Entity = config as EntityConfig;
-            if (Entity == null)
-                return null;
-            return coder();
+            return EasyUiHelperCoder.InputConvert4(entity);
         }
 
-        public string EasyUiInfo()
+        public string EasyUiInfo(EntityConfig entity)
         {
             var jsonBuilder = new StringBuilder();
-            foreach (PropertyConfig field in Entity.PublishProperty)
+            foreach (PropertyConfig field in entity.PublishProperty)
             {
                 string ext = null;
                 if (field.CsType.ToLower() == "bool")
@@ -56,27 +55,27 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
 
-        public string MvcMenu()
+        public string MvcMenu(EntityConfig entity)
         {
             return
                 $@"
-           <div iconcls='icon-page' onclick=""javascript:location.href = '@Url.Action(""Index"", ""{Entity.Name}"")'"">
-           {Entity.Caption ?? Entity.Description ?? Entity.Name
+           <div iconcls='icon-page' onclick=""javascript:location.href = '@Url.Action(""Index"", ""{entity.Name}"")'"">
+           {entity.Caption ?? entity.Description ?? entity.Name
                     }
            </div>";
         }
 
-        private string EasyUiForm()
+        private string EasyUiForm(EntityConfig entity)
         {
             var jsonBuilder = new StringBuilder();
 
             jsonBuilder.AppendFormat(@"
 <form name='{0}Form' id='{0}Form'>
-    <div style='width:490px;display: block;'>", Entity.Name.ToLowerInvariant());
-            foreach (PropertyConfig field in Entity.PublishProperty)
+    <div style='width:490px;display: block;'>", entity.Name.ToLowerInvariant());
+            foreach (PropertyConfig field in entity.PublishProperty)
             {
                 string ext = null;
-                if (field.IsRequired)
+                if (field.CanUserInput && field.IsRequired)
                     ext = " data-options='required:true'";
                 string type = " easyui-text";
                 jsonBuilder.AppendFormat(@"
@@ -96,10 +95,10 @@ namespace Agebull.EntityModel.RobotCoder
             return jsonBuilder.ToString();
         }
 
-        private string EasyUiGrid()
+        private string EasyUiGrid(EntityConfig entity)
         {
             var jsonBuilder = new StringBuilder();
-            foreach (PropertyConfig field in Entity.PublishProperty)
+            foreach (PropertyConfig field in entity.PublishProperty)
             {
                 string align = field.CsType == "string" ? "left " : "center";
                 string sortable = field.CsType == "string" ? "true " : "false";

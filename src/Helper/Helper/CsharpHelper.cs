@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 
 namespace Agebull.EntityModel.Config
 {
@@ -10,56 +11,133 @@ namespace Agebull.EntityModel.Config
     {
         public static void CheckType(PropertyConfig column, string type)
         {
-            if (type[type.Length - 1] == '?')
-            {
+            if (type.Contains('?'))
                 column.Nullable = true;
-                type = type.TrimEnd('?');
-            }
 
-            var tp = type.TrimEnd('?');
-            var strs = tp.Split(new char[] { '-', '<', '>', '[' }, StringSplitOptions.RemoveEmptyEntries);
-            switch (strs[0].ToLower())
+            column.Datalen = 0;
+            column.IsDictionary = column.IsArray = false;
+            column.IsIdentity = false;
+            column.DbNullable = true;
+            column.CanEmpty = true;
+            column.CsType = null;
+            column.ReferenceType = null;
+
+            bool first = true;
+            StringBuilder code = new StringBuilder();
+            char prePunctuation = '\0';
+            int strLen = 0;
+            for (int i = 0; i < type.Length; i++)
+            {
+                if (char.IsPunctuation(type[i]))
+                {
+                    if (i == 0)
+                    {
+                        CheckPropertyType(column, "string");
+                        return;
+                    }
+                    if (first)
+                    {
+                        CheckPropertyType(column, code.ToString());
+                        code.Clear();
+                        strLen = 0;
+                        first = column.CsType == null;
+                    }
+                    else if (prePunctuation == '[' && type[i] == ']')
+                    {
+                        if (strLen > 0 && int.TryParse(code.ToString().Trim(), out var len))
+                            column.ArrayLen = len.ToString();
+                        column.IsArray = true;
+                    }
+                    else if (strLen > 0 && int.TryParse(code.ToString().Trim(), out var len))
+                    {
+                        if (column.Datalen <= 0)
+                            column.Datalen = len;
+                        else
+                            column.Scale = len;
+                    }
+
+                    prePunctuation = type[i];
+                    switch (type[i])
+                    {
+                        case '@':
+                            column.IsIdentity = true;
+                            break;
+                        case '#':
+                            column.DbNullable = false;
+                            break;
+                        case '!':
+                            column.CanEmpty = false;
+                            break;
+                    }
+                    continue;
+                }
+                code.Append(type[i]);
+                strLen++;
+            }
+            if (first)
+                CheckPropertyType(column, code.ToString());
+        }
+
+        private static void CheckPropertyType(PropertyConfig column, string type)
+        {
+            switch (type.ToLower())
             {
                 case "t":
                 case "s":
                 case "string":
                 case "nvarchar":
                     column.CsType = "string";
+                    column.DataType = "String";
+                    column.Datalen = 200;
                     break;
                 case "ls":
                     column.CsType = "string";
+                    column.DataType = "String";
                     column.IsBlob = true;
                     break;
                 case "b":
                 case "bit":
                 case "bool":
+                case "boolean":
                     column.CsType = "bool";
+                    column.DataType = "Boolean";
                     break;
                 case "i":
                 case "int":
+                case "int32":
                     column.CsType = "int";
+                    column.DataType = "Int32";
                     break;
                 case "l":
                 case "long":
                 case "bigint":
+                case "int64":
                     column.CsType = "long";
+                    column.DataType = "Int64";
                     break;
                 case "d":
                 case "decimal":
                 case "money":
                 case "numeric":
                     column.CsType = "decimal";
+                    column.DataType = "Decimal";
                     break;
                 case "f":
                 case "float":
+                case "double":
                     column.CsType = "double";
+                    column.DataType = "Double";
                     break;
                 case "p":
                     column.IsPrimaryKey = true;
-                    column.CsType = "int";
+                    column.CsType = "long";
+                    column.DataType = "Int64";
                     break;
                 case "datetime":
+                case "time":
+                case "date":
                     column.CsType = "DateTime";
+                    column.DataType = "DateTime";
                     break;
                 case "list":
                 case "ilist":
@@ -71,30 +149,18 @@ namespace Agebull.EntityModel.Config
                 case "queue":
                 case "sortedlist":
                 case "observablecollection":
-                    CheckType(column, strs.Last());
                     column.ReferenceType = type;
                     column.IsArray = true;
                     break;
                 case "dictionary":
-                    CheckType(column, strs.Last());
                     column.ReferenceType = type;
                     column.IsDictionary = true;
                     break;
                 default:
                     column.CsType = "object";
+                    column.DataType = "Object";
                     column.CustomType = type;
-                    column.ReferenceType = type;
                     break;
-            }
-            if (strs.Length == 1)
-                return;
-            if (strs[strs.Length - 1].Length > 1 && strs[strs.Length - 1][0] == '#' && int.TryParse(strs[strs.Length - 1].Substring(1), out var len))
-                column.Datalen = len;
-            if (strs[1].LastOrDefault() == ']')
-            {
-                if (int.TryParse(strs[1].Substring(0, strs.Length - 1), out len))
-                    column.ArrayLen = len.ToString();
-                column.IsArray = true;
             }
         }
 

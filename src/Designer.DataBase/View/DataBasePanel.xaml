@@ -25,20 +25,20 @@
             </StackPanel>-->
             <StackPanel>
                 <Label Content="存储表名" />
-                <TextBox Text="{Binding SaveTableName,Mode=TwoWay}" />
+                <TextBox Text="{Binding SaveTableName,Mode=TwoWay}" Width="300"/>
             </StackPanel>
             <StackPanel>
                 <Label Content="读取表名" />
-                <TextBox Text="{Binding ReadTableName,Mode=TwoWay}" />
+                <TextBox Text="{Binding ReadTableName,Mode=TwoWay}"  Width="300"/>
             </StackPanel>
             <!--<StackPanel>
                 <Label Content="数据库编号" />
                 <TextBox Text="{Binding DbIndex,Mode=TwoWay}" />
-            </StackPanel>-->
+            </StackPanel>
             <StackPanel>
                 <Label Content="按修改更新" />
                 <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding UpdateByModified,Mode=TwoWay}" />
-            </StackPanel>
+            </StackPanel>-->
             <StackPanel>
                 <Label Content="主键字段" />
                 <TextBox IsReadOnly="True" Text="{Binding PrimaryField,Mode=OneWay}" />
@@ -52,11 +52,11 @@
                 <WrapPanel>
                     <StackPanel>
                         <Label Content="字段名称" />
-                        <TextBox Text="{Binding ColumnName,Mode=TwoWay}" />
+                        <TextBox Text="{Binding DbFieldName,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="存储类型" />
-                        <ComboBox ItemsSource="{x:Static mysql1:MySqlDataBaseHelper.DataTypeList}"
+                        <ComboBox ItemsSource="{x:Static mysql1:MySqlHelper.DataTypeList}"
                                   SelectedValue="{Binding DbType,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel>
@@ -85,7 +85,7 @@
                 <WrapPanel>
                     <StackPanel>
                         <Label Content="构建索引" />
-                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding CreateIndex,Mode=TwoWay}" />
+                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsDbIndex,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="不存储" />
@@ -137,7 +137,7 @@
                 <DataGridCheckBoxColumn Binding="{Binding NoStorage,Mode=TwoWay}" Header="不存储" />
                 <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
                 <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="属性" />
-                <DataGridTextColumn Binding="{Binding ColumnName,Mode=TwoWay}" Header="字段" />
+                <DataGridTextColumn Binding="{Binding DbFieldName,Mode=TwoWay}" Header="字段" />
                 <DataGridCheckBoxColumn Binding="{Binding IsPrimaryKey,Mode=TwoWay}" Header="主键" />
                 <DataGridCheckBoxColumn Binding="{Binding IsIdentity,Mode=TwoWay}" Header="自增" />
                 <DataGridCheckBoxColumn Binding="{Binding IsCompute,Mode=TwoWay}" Header="外联" />

@@ -354,7 +354,7 @@ namespace Agebull.EntityModel.Designer
             }
             foreach (var field in fields)
             {
-                if (field.IsSpecialName || (field.Name[0]!='_' && !char.IsLetter(field.Name[0])))
+                if (field.IsSpecialName || field.Name[0]!='_' && !char.IsLetter(field.Name[0]))
                 {
                     continue;
                 }
@@ -410,7 +410,6 @@ namespace Agebull.EntityModel.Designer
                 {
                     //prperty.CustomType = ReflectionHelper.GetTypeName(type1);
                     prperty.NoStorage = true;
-                    prperty.IsLinkField = true;
                     prperty.LinkTable = prperty.CustomType;
                 }
             }

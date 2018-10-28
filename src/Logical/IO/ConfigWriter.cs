@@ -32,6 +32,8 @@ namespace Agebull.EntityModel.Designer
                 solution.SaveFileName = filename;
                 SaveSolution(solution);
             }
+            GlobalConfig.ConfigDictionary.Clear();
+            solution.Foreach<ConfigBase>(p => p.Option.IsNormal, p => GlobalConfig.AddConfig(p.Option));
         }
 
         /// <summary>
@@ -88,8 +90,17 @@ namespace Agebull.EntityModel.Designer
         public string SaveProject(ProjectConfig project, string directory, bool checkState = true)
         {
             var dir = GlobalConfig.CheckPath(directory, project.Name);
+            foreach (var cls in project.Classifies.ToArray())
+            {
+                foreach (var ch in cls.Items)
+                {
+                    ch.Classify = cls.IsDelete ? null : cls.Name;
+                }
 
-            Saventities(project, dir, checkState);
+                if (cls.IsDelete)
+                    project.Classifies.Remove(cls);
+            }
+            SavEntities(project, dir, checkState);
             SaveEnums(project, dir, checkState);
             SaveApies(project, dir, checkState);
             if (project.IsDelete)
@@ -99,14 +110,13 @@ namespace Agebull.EntityModel.Designer
             SaveConfig(Path.Combine(dir, "project.json"), project, checkState);
             return dir;
         }
-        private void Saventities(ProjectConfig project, string dir, bool checkState)
+        private void SavEntities(ProjectConfig project, string dir, bool checkState)
         {
             var path = GlobalConfig.CheckPath(dir, "Entity");
             foreach (var entity in project.Entities.ToArray())
             {
                 SaveEntity(entity, path, checkState);
             }
-
         }
         private void SaveEnums(ProjectConfig project, string dir, bool checkState)
         {

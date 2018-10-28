@@ -19,31 +19,60 @@ namespace Agebull.EntityModel.Designer
     {
         #region 操作命令
 
-        public override ObservableCollection<CommandItemBase> CreateCommands()
+        public override NotificationList<CommandItemBase> CreateCommands()
         {
-            return new ObservableCollection<CommandItemBase>
+            return new NotificationList<CommandItemBase>
             {
                 new CommandItem
                 {
-                    Action = (Format1 ),
+                    Action = Format1,
                     IsButton=true,
-                    Caption = "前后端名称一致(大驼峰名称)",
+                    Caption = "大驼峰(Json)",
                     Image = Application.Current.Resources["tree_Assembly"] as ImageSource
                 },
                 new CommandItem
                 {
-                    Action = (Format2 ),
+                    Action = Format2,
                     IsButton=true,
-                    Caption = "小驼峰名称",
+                    Caption = "小驼峰(Json)",
                     Image = Application.Current.Resources["tree_Assembly"] as ImageSource
                 },
                 new CommandItem
                 {
-                    Action = (Format3 ),
+                    Action = Format3,
                     IsButton=true,
-                    Caption = "小写下划线名称(C风格)",
+                    Caption = "小写下划线(Json)",
+                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                },
+                new CommandItem
+                {
+                    Action = Format4,
+                    IsButton=true,
+                    Caption = "大驼峰(API)",
+                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                },
+                new CommandItem
+                {
+                    Action = Format5,
+                    IsButton=true,
+                    Caption = "小驼峰(API)",
+                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                },
+                new CommandItem
+                {
+                    Action = Format6,
+                    IsButton=true,
+                    Caption = "小写下划线(API)",
+                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                },
+                new CommandItem
+                {
+                    Action = Check,
+                    IsButton=true,
+                    Caption = "检查",
                     Image = Application.Current.Resources["tree_Assembly"] as ImageSource
                 }
+                
             };
         }
         #endregion
@@ -54,21 +83,64 @@ namespace Agebull.EntityModel.Designer
         {
             foreach (var property in Context.SelectEntity.Properties)
             {
-                property.JsonName = null;
+                property.JsonName = NameHelper.ToWordName(property.Name);
             }
         }
         internal void Format2(object arg)
         {
             foreach (var property in Context.SelectEntity.Properties)
             {
-                property.JsonName = property.Name.ToLWord();
+                property.JsonName = NameHelper.ToTfWordName(property.Name);
             }
         }
         internal void Format3(object arg)
         {
             foreach (var property in Context.SelectEntity.Properties)
             {
-                property.JsonName = CoderBase.ToLinkWordName(property.Name, "_", false);
+                property.JsonName = NameHelper.ToLinkWordName(property.Name, "_", false);
+            }
+        }
+        #endregion
+
+
+        #region 扩展代码
+
+        public void Format4(object arg)
+        {
+            foreach (var property in Context.SelectEntity.Properties)
+            {
+                property.ApiArgumentName = NameHelper.ToWordName(property.Name);
+            }
+        }
+        internal void Format5(object arg)
+        {
+            foreach (var property in Context.SelectEntity.Properties)
+            {
+                property.ApiArgumentName = NameHelper.ToTfWordName(property.Name);
+            }
+        }
+        internal void Format6(object arg)
+        {
+            foreach (var property in Context.SelectEntity.Properties)
+            {
+                property.ApiArgumentName = NameHelper.ToLinkWordName(property.Name, "_", false);
+            }
+        }
+        internal void Check(object arg)
+        {
+            foreach (var property in Context.SelectEntity.Properties)
+            {
+                property.NoneApiArgument = property.IsSystemField || property.IsPrimaryKey || property.InnerField || property.DbInnerField;
+
+                if (property.NoneJson)
+                    property.JsonName = null;
+                else if (string.IsNullOrWhiteSpace(property.JsonName))
+                    property.JsonName = property.Name;
+
+                if (property.NoneApiArgument)
+                    property.ApiArgumentName = null;
+                else if(string.IsNullOrWhiteSpace(property.ApiArgumentName))
+                    property.ApiArgumentName = property.JsonName;
             }
         }
         #endregion

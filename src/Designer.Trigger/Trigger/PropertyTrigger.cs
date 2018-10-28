@@ -9,6 +9,14 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     public class PropertyTrigger : ConfigTriggerBase<PropertyConfig>
     {
+        protected override void OnLoad()
+        {
+            if (!string.IsNullOrEmpty(TargetConfig?.LinkField))
+            {
+                TargetConfig.Option.IsLink = true;
+            }
+        }
+
         /// <summary>
         /// 属性事件处理
         /// </summary>
@@ -20,12 +28,22 @@ namespace Agebull.EntityModel.Designer
             switch (property)
             {
                 case nameof(TargetConfig.Name):
-                case nameof(TargetConfig.ColumnName):
-                    SyncLinkField(field => field.LinkField = TargetConfig.ColumnName);
+                case nameof(TargetConfig.DbFieldName):
+                    SyncLinkField(field => field.LinkField = TargetConfig.DbFieldName);
                     break;
                 case nameof(TargetConfig.CanEmpty):
                     if (!TargetConfig.CanEmpty)
                         TargetConfig.IsRequired = true;
+                    break;
+                case nameof(TargetConfig.LinkField):
+                    if (!string.IsNullOrEmpty(TargetConfig.LinkField))
+                    {
+                        TargetConfig.Option.IsLink = true;
+                    }
+                    else if(!TargetConfig.Option.IsReference)
+                    {
+                        TargetConfig.Option.ReferenceConfig = null;
+                    }
                     break;
                 case nameof(TargetConfig.Nullable):
                     TargetConfig.RaisePropertyChanged(nameof(TargetConfig.DbNullable));
@@ -36,12 +54,15 @@ namespace Agebull.EntityModel.Designer
         private void SyncLinkField(Action<PropertyConfig> action)
         {
             string saveTable = TargetConfig.Parent.SaveTable;
+            string name = TargetConfig.Parent.Name;
             foreach (var entity in SolutionConfig.Current.Entities.Where(p => p != TargetConfig.Parent))
             {
                 foreach (var field in entity.Properties)
                 {
-                    if (field.LinkTable == saveTable && (field.IsLinkField || field.IsLinkKey || field.IsLinkCaption)
-                        && (field.LinkField == TargetConfig.ColumnName || field.LinkField == TargetConfig.Name))
+                    if ((field.LinkTable == saveTable || field.LinkTable == name) &&
+                        (field.IsLinkField || field.IsLinkKey || field.IsLinkCaption) &&
+                        (field.LinkField == TargetConfig.DbFieldName || field.LinkField == TargetConfig.Name))
+
                         action(field);
 
                 }

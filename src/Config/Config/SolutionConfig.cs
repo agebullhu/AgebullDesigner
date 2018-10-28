@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2017/7/12 22:06:40*/
+﻿/*design by:agebull designer date:2017/7/12 22:06:40*/
 /*****************************************************
 ©2008-2017 Copy right by agebull.hu(胡天水)
 作者:agebull.hu(胡天水)
@@ -7,11 +7,9 @@
 修改:2017-07-12
 *****************************************************/
 
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
 
 using Newtonsoft.Json;
@@ -30,7 +28,7 @@ namespace Agebull.EntityModel.Config
         /// 上帝模式
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        internal bool _godMode;
+        internal bool _godMode = true;
 
         /// <summary>
         /// 上帝模式
@@ -52,6 +50,32 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(GodMode));
             }
         }
+        /// <summary>
+        /// 生成校验代码
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        internal bool _haseValidateCode = false;
+
+        /// <summary>
+        /// 生成校验代码
+        /// </summary>
+        /// <remark>
+        /// 可以任意修改任意配置的生成校验代码
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"设计器支持"), DisplayName(@"生成校验代码")]
+        public bool HaseValidateCode
+        {
+            get => _haseValidateCode;
+            set
+            {
+                if (_haseValidateCode == value)
+                    return;
+                BeforePropertyChanged(nameof(HaseValidateCode), _haseValidateCode, value);
+                _haseValidateCode = value;
+                OnPropertyChanged(nameof(HaseValidateCode));
+            }
+        }
         #endregion
         #region 对象集合
 
@@ -59,7 +83,7 @@ namespace Agebull.EntityModel.Config
         /// 枚举集合
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        internal ObservableCollection<EnumConfig> _enums;
+        internal NotificationList<EnumConfig> _enums;
 
         /// <summary>
         /// 枚举集合
@@ -79,13 +103,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"对象集合"), DisplayName(@"枚举集合"), Description("枚举集合")]
-        public ObservableCollection<EnumConfig> EnumList
+        public NotificationList<EnumConfig> EnumList
         {
             get
             {
                 if (_enums != null)
                     return _enums;
-                _enums = new ObservableCollection<EnumConfig>();
+                _enums = new NotificationList<EnumConfig>();
                 RaisePropertyChanged(nameof(Enums));
                 return _enums;
             }
@@ -102,7 +126,7 @@ namespace Agebull.EntityModel.Config
         /// 实体集合
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        internal ObservableCollection<EntityConfig> _entities;
+        internal NotificationList<EntityConfig> _entities;
 
         /// <summary>
         /// 实体集合
@@ -122,13 +146,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"对象集合"), DisplayName(@"实体集合"), Description("所有表设置")]
-        public ObservableCollection<EntityConfig> EntityList
+        public NotificationList<EntityConfig> EntityList
         {
             get
             {
                 if (_entities != null)
                     return _entities;
-                _entities = new ObservableCollection<EntityConfig>();
+                _entities = new NotificationList<EntityConfig>();
                 RaisePropertyChanged(nameof(Entities));
                 return _entities;
             }
@@ -145,7 +169,7 @@ namespace Agebull.EntityModel.Config
         /// 项目集合
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        internal ObservableCollection<ProjectConfig> _projects;
+        internal NotificationList<ProjectConfig> _projects;
 
         /// <summary>
         /// 项目集合
@@ -164,13 +188,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"对象集合"), DisplayName(@"项目集合"), Description("项目")]
-        public ObservableCollection<ProjectConfig> ProjectList
+        public NotificationList<ProjectConfig> ProjectList
         {
             get
             {
                 if (_projects != null)
                     return _projects;
-                _projects = new ObservableCollection<ProjectConfig>();
+                _projects = new NotificationList<ProjectConfig>();
                 RaisePropertyChanged(nameof(Projects));
                 return _projects;
             }
@@ -188,7 +212,7 @@ namespace Agebull.EntityModel.Config
         /// API集合
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        internal ObservableCollection<ApiItem> _apiItems;
+        internal NotificationList<ApiItem> _apiItems;
 
         /// <summary>
         /// API集合
@@ -208,13 +232,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"对象集合"), DisplayName(@"API集合"), Description("对应的API集合")]
-        public ObservableCollection<ApiItem> ApiList
+        public NotificationList<ApiItem> ApiList
         {
             get
             {
                 if (_apiItems != null)
                     return _apiItems;
-                _apiItems = new ObservableCollection<ApiItem>();
+                _apiItems = new NotificationList<ApiItem>();
                 RaisePropertyChanged(nameof(ApiItems));
                 return _apiItems;
             }
@@ -229,6 +253,63 @@ namespace Agebull.EntityModel.Config
         }
         #endregion
         #region 代码生成
+
+        /// <summary>
+        /// 解决方案根路径
+        /// </summary>
+        [DataMember, JsonProperty("_rootPath", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _rootPath;
+
+        /// <summary>
+        /// 解决方案根路径
+        /// </summary>
+        /// <remark>
+        /// 解决方案根路径
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"代码生成"), DisplayName(@"解决方案根路径"), Description("解决方案根路径")]
+        public string RootPath
+        {
+            get => _rootPath;
+            set
+            {
+                if (_rootPath == value)
+                    return;
+                BeforePropertyChanged(nameof(RootPath), _rootPath, value);
+                _rootPath = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                OnPropertyChanged(nameof(RootPath));
+                OnPropertyChanged(nameof(AutoPagePath));
+            }
+        }
+
+        /// <summary>
+        /// 代码文件夹名称
+        /// </summary>
+        [DataMember, JsonProperty("pagePath", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _pagePath;
+
+        /// <summary>
+        /// 管理页面根路径
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"解决方案"), DisplayName(@"管理页面根路径"), Description("管理页面根路径")]
+        public string PagePath
+        {
+            get => WorkContext.InCoderGenerating ? _pagePath ?? Path.Combine(RootPath, "page") : _pagePath;
+            set
+            {
+                if (_pagePath == value)
+                    return;
+                BeforePropertyChanged(nameof(PagePath), _pagePath, value);
+                _pagePath = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                OnPropertyChanged(nameof(PagePath));
+            }
+        }
+        /// <summary>
+        /// 管理页面根路径
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        public string AutoPagePath => Path.Combine(RootPath, "page");
 
         /// <summary>
         /// 文档文件夹名称
@@ -246,7 +327,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"解决方案"), DisplayName(@"文档文件夹名称"), Description("文档文件夹名称")]
         public string DocFolder
         {
-            get => WorkContext.InCoderGenerating ? (_docFolder ?? "doc") : _docFolder;
+            get => WorkContext.InCoderGenerating ? _docFolder ?? "doc" : _docFolder;
             set
             {
                 if (_docFolder == value)
@@ -273,7 +354,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"解决方案"), DisplayName(@"代码文件夹名称"), Description("代码文件夹名称")]
         public string SrcFolder
         {
-            get => WorkContext.InCoderGenerating ? (_srcFolder ?? "src") : _srcFolder;
+            get => WorkContext.InCoderGenerating ? _srcFolder ?? "src" : _srcFolder;
             set
             {
                 if (_srcFolder == value)
@@ -281,33 +362,6 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(SrcFolder), _srcFolder, value);
                 _srcFolder = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(SrcFolder));
-            }
-        }
-
-        /// <summary>
-        /// 解决方案根路径
-        /// </summary>
-        [DataMember, JsonProperty("_rootPath", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _rootPath;
-
-        /// <summary>
-        /// 解决方案根路径
-        /// </summary>
-        /// <remark>
-        /// 解决方案根路径
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"代码生成"), DisplayName(@"解决方案根路径"), Description("解决方案根路径")]
-        public string RootPath
-        {
-            get => _rootPath;
-            set
-            {
-                if (_rootPath == value)
-                    return;
-                BeforePropertyChanged(nameof(RootPath), _rootPath, value);
-                _rootPath = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(RootPath));
             }
         }
 
@@ -344,7 +398,7 @@ namespace Agebull.EntityModel.Config
         /// 数据类型映射
         /// </summary>
         [DataMember, JsonProperty("dataTypeMap", NullValueHandling = NullValueHandling.Ignore)]
-        ObservableCollection<DataTypeMapConfig> _dataTypeMap;
+        NotificationList<DataTypeMapConfig> _dataTypeMap;
 
         /// <summary>
         /// 数据类型映射
@@ -354,13 +408,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"对象集合"), DisplayName(@"数据类型映射"), Description("数据类型映射")]
-        public ObservableCollection<DataTypeMapConfig> DataTypeMap
+        public NotificationList<DataTypeMapConfig> DataTypeMap
         {
             get
             {
                 if (_dataTypeMap != null)
                     return _dataTypeMap;
-                _dataTypeMap = new ObservableCollection<DataTypeMapConfig>();
+                _dataTypeMap = new NotificationList<DataTypeMapConfig>();
                 _dataTypeMap.AddRange(DataTypeMapConfig.DataTypeMap);
                 OnPropertyChanged(nameof(DataTypeMap));
                 return _dataTypeMap;
@@ -375,10 +429,10 @@ namespace Agebull.EntityModel.Config
             }
         }
 
-            /// <summary>
-            /// 解决方案类型
-            /// </summary>
-            [DataMember, JsonProperty("SolutionType", NullValueHandling = NullValueHandling.Ignore)]
+        /// <summary>
+        /// 解决方案类型
+        /// </summary>
+        [DataMember, JsonProperty("SolutionType", NullValueHandling = NullValueHandling.Ignore)]
         internal SolutionType _solutionType;
 
         /// <summary>
@@ -457,7 +511,7 @@ namespace Agebull.EntityModel.Config
         }
         [IgnoreDataMember, JsonIgnore]
         private string _workView;
-        
+
         /// <summary>
         /// 工作视角
         /// </summary>

@@ -8,9 +8,9 @@ namespace Agebull.EntityModel.Designer
 {
     public sealed class EnumEditViewModel : ExtendViewModelBase<EnumEditModel>
     {
-        protected override ObservableCollection<CommandItemBase> CreateCommands()
+        protected override NotificationList<CommandItemBase> CreateCommands()
         {
-            return new ObservableCollection<CommandItemBase>
+            return new NotificationList<CommandItemBase>
             {
                 new CommandItem
                 {

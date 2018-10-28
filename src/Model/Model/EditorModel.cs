@@ -135,14 +135,14 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 菜单
         /// </summary>
-        public ObservableCollection<CommandItemBase> Menus { get; set; }
+        public NotificationList<CommandItemBase> Menus { get; set; }
 
         private int fileMenuCount;
         /// <summary>
         /// 构造命令列表
         /// </summary>
         /// <returns></returns>
-        ObservableCollection<CommandItemBase> CreateMenus()
+        NotificationList<CommandItemBase> CreateMenus()
         {
             #region 文件菜单
 
@@ -150,7 +150,7 @@ namespace Agebull.EntityModel.Designer
             {
                 Caption = "文件",
                 IsRoot = true,
-                Items = new ObservableCollection<CommandItemBase>
+                Items = new NotificationList<CommandItemBase>
                 {
                     new CommandItem
                     {
@@ -163,6 +163,7 @@ namespace Agebull.EntityModel.Designer
                         IsButton=true,
                         Action =arg=> Model.ConfigIo.Load(),
                         Caption = "打开",
+                        NoConfirm=true,
                         Image = Application.Current.Resources["img_open"] as ImageSource
                     },
                     new CommandItem
@@ -176,12 +177,21 @@ namespace Agebull.EntityModel.Designer
                     {
                         Action = arg=>Model.ConfigIo.LoadGlobal(),
                         Caption = "全局",
+                        NoConfirm=true,
+                        Image = Application.Current.Resources["img_open"] as ImageSource
+                    },
+                    new CommandItem
+                    {
+                        Action = arg=>Model.ConfigIo.LoadLocal(),
+                        Caption = "本地",
+                        NoConfirm=true,
                         Image = Application.Current.Resources["img_open"] as ImageSource
                     },
                     CommandItemBase.Line,
                     new CommandItem
                     {
                         IsButton=true,
+                        NoConfirm=true,
                         Action = arg=>Model.ConfigIo.Save(),
                         Caption = "保存",
                         Image = Application.Current.Resources["imgSave"] as ImageSource
@@ -275,7 +285,7 @@ namespace Agebull.EntityModel.Designer
             viewMenu.Items.Add(vitem);
             viewMenu.Items.Add(CommandItemBase.Line);
             #endregion
-            return new ObservableCollection<CommandItemBase>
+            return new NotificationList<CommandItemBase>
             {
                 fileMenu,
                 viewMenu,
@@ -325,13 +335,13 @@ namespace Agebull.EntityModel.Designer
             {
                 IsRoot = true,
                 Caption = "编辑",
-                Items = new ObservableCollection<CommandItemBase>()
+                Items = new NotificationList<CommandItemBase>()
             });
             menus.Insert(3, new CommandItem
             {
                 IsRoot = true,
                 Caption = "其它",
-                Items = new ObservableCollection<CommandItemBase>()
+                Items = new NotificationList<CommandItemBase>()
             });
             if (item.Commands == null || item.Commands.Count == 0)
             {
@@ -376,7 +386,7 @@ namespace Agebull.EntityModel.Designer
                                 IsRoot = true,
                                 Name = cl,
                                 Caption = cl,
-                                Items = new ObservableCollection<CommandItemBase>()
+                                Items = new NotificationList<CommandItemBase>()
                             });
                         break;
                 }

@@ -42,7 +42,7 @@ namespace Agebull.EntityModel.Designer
         /// 生成命令对象
         /// </summary>
         /// <param name="commands"></param>
-        protected override void CreateCommands(ObservableCollection<CommandItemBase> commands)
+        protected override void CreateCommands(NotificationList<CommandItemBase> commands)
         {
             commands.Add(new CommandItem
             {
@@ -152,7 +152,7 @@ namespace Agebull.EntityModel.Designer
         {
             base.DoInitialize();
 
-            foreach (var clasf in MomentCoder.coders)
+            foreach (var clasf in MomentCoder.Coders)
             {
                 if (clasf.Value == null || clasf.Value.Count == 0)
                     continue;

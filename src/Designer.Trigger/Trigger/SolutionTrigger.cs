@@ -19,13 +19,15 @@ namespace Agebull.EntityModel.Designer
                 {
                     Solution = TargetConfig
                 };
-
+                
                 model.RepairByLoaded();
                 model.ResetStatus();
                 model.OnSolutionLoad();
 
                 TargetConfig.ProjectList.CollectionChanged += ConfigCollectionChanged;
 
+                foreach (var project in TargetConfig.Projects)
+                    GlobalTrigger.OnLoad(project);
             }
         }
 
@@ -38,7 +40,7 @@ namespace Agebull.EntityModel.Designer
             switch (property)
             {
                 case nameof(TargetConfig.IdDataType):
-                    TargetConfig.Foreach<PropertyConfig>(p => p.IsPrimaryKey || p.IsRelationField, p => p.DataType = TargetConfig.IdDataType);
+                    TargetConfig.Foreach<PropertyConfig>(p => p.IsPrimaryKey || p.IsLinkField, p => p.DataType = TargetConfig.IdDataType);
                     break;
                 case nameof(TargetConfig.UserIdDataType):
                     TargetConfig.Foreach<PropertyConfig>(p => p.IsUserId, p => p.DataType = TargetConfig.UserIdDataType);

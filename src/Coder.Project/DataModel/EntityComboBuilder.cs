@@ -24,10 +24,29 @@ namespace Agebull.EntityModel.RobotCoder
             string filter = "";
             if (Entity.Interfaces?.Contains("IStateData") ?? false)
                 filter = "p => p.DataState == DataStateType.Enable";
-            return  $@"using System.Collections.Generic;
+            return  $@"
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Configuration;
+using System.Data;
+using System.Diagnostics;
 using System.Linq;
-using Agebull.ProjectDeveloper.WebDomain.Models;
+using System.Linq.Expressions;
+using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
+
+using Agebull.Common;
+using Agebull.Common.DataModel;
+using Agebull.Common.WebApi;
 using Gboxt.Common.DataModel;
+
+{Project.UsingNameSpaces}
+
+using Agebull.ProjectDeveloper.WebDomain.Models;
 using Gboxt.Common.DataModel.MySql;
 using Gboxt.Common.WebUI;
 

@@ -196,7 +196,8 @@ namespace Agebull.EntityModel
             commands.Add(new CommandItem
             {
                 IsButton=true,
-                Name= "ExpandedChild",
+                NoConfirm = true,
+                Name = "ExpandedChild",
                 Caption = "ÇÐ»»Õ¹¿ª",
                 Catalog = "ÊÓÍ¼",
                 IconName = "tree_Open",

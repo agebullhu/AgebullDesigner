@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-namespace Agebull.EntityModel.Config
+﻿namespace Agebull.EntityModel.Config
 {
     /// <summary>
     /// 表示设计器的全局对象
@@ -27,6 +25,11 @@ namespace Agebull.EntityModel.Config
         SolutionConfig GlobalSolution { get; set; }
 
         /// <summary>
+        /// 全局公用解决方案
+        /// </summary>
+        SolutionConfig LocalSolution { get; set; }
+
+        /// <summary>
         /// 当前解决方案
         /// </summary>
         SolutionConfig CurrentSolution { get; set; }
@@ -39,27 +42,27 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     解决方案集合
         /// </summary>
-        ObservableCollection<SolutionConfig> Solutions { get; }
+        NotificationList<SolutionConfig> Solutions { get; }
 
         /// <summary>
         ///     枚举集合
         /// </summary>
-        ObservableCollection<EnumConfig> Enums { get; }
+        NotificationList<EnumConfig> Enums { get; }
 
         /// <summary>
         ///     实体集合
         /// </summary>
-        ObservableCollection<EntityConfig> Entities { get; }
+        NotificationList<EntityConfig> Entities { get; }
 
         /// <summary>
         ///     项目集合
         /// </summary>
-        ObservableCollection<ProjectConfig> Projects { get; }
+        NotificationList<ProjectConfig> Projects { get; }
 
         /// <summary>
         ///     API集合
         /// </summary>
-        ObservableCollection<ApiItem> ApiItems { get; }
+        NotificationList<ApiItem> ApiItems { get; }
 
     }
 }

@@ -22,9 +22,9 @@ namespace Agebull.EntityModel.Designer
 {
     public sealed class EnumListViewModel : ExtendViewModelBase<EnumListModel>
     {
-        protected override ObservableCollection<CommandItemBase> CreateCommands()
+        protected override NotificationList<CommandItemBase> CreateCommands()
         {
-            var commands = new ObservableCollection<CommandItemBase>();
+            var commands = new NotificationList<CommandItemBase>();
 
             var extends = CommandCoefficient.CoefficientEditor(typeof(EnumConfig));
             foreach (var cms in extends)

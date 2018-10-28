@@ -71,7 +71,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         protected override void CreateExCode(string path)
         {
-            var code = ($@"#include <stdafx.h>
+            var code = $@"#include <stdafx.h>
 #include ""ModelBase.h""
 #include ""DataFactory.h""
 {IncludeCode()}
@@ -112,7 +112,7 @@ namespace GBS
 			}}
 		}}
 	}}
-}}");
+}}";
             SaveCode(@"C:\work\SharpCode\DataModel\DataFactory.cpp", code);
         }
         #endregion
@@ -161,7 +161,7 @@ namespace GBS
         /// </summary>
         protected override void CreateBaCode(string path)
         {
-            var code = ($@"#include <stdafx.h>
+            var code = $@"#include <stdafx.h>
 #include ""ModelBase.h""
 #include ""DataFactory.h""
 {ClrIncludeCode()}
@@ -178,7 +178,7 @@ System::Object^ get_command_clr_data(PNetCommand command, int& type)
 	{{{ClrCode()}
 	}}
 	return nullptr;
-}}");
+}}";
             SaveCode(@"C:\work\SharpCode\DataModel\DataFactory_CLR.cpp", code);
         }
         #endregion

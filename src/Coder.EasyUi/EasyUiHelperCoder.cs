@@ -7,94 +7,114 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 
     public class EasyUiHelperCoder : MomentCoderBase
     {
-        public string InputConvert()
+        public string InputConvert(EntityConfig entity)
         {
             var code = new StringBuilder();
-            foreach (var group in Entity.ClientProperty.Where(p => p["user_form_hide"] == "True" || p.CanUserInput && !p.IsUserReadOnly).GroupBy(p => p.Group))
+            foreach (var group in entity.ClientProperty.Where(p => p.ExtendConfigListBool["easyui", "userFormHide"] || p.CanUserInput).GroupBy(p => p.Group))
             {
                 code.Append($@"
-            //{group.Key ?? "数据֪"}");
+            //{group.Key ?? "-"}");
                 foreach (var field in group.OrderBy(p => p.Index))
                 {
-                    code.Append($@"
-            data.{field.Name} = ");
-                    if (!string.IsNullOrWhiteSpace(field.CustomType))
+                    string type = field.CsType.ToLower();
+                    if (field.DataType == "ByteArray")
                     {
-                        code.AppendFormat(@"({0})convert.ToInteger(""{1}"");", field.CustomType, field.Name);
+                        if (field.IsImage)
+                        {
+                            code.Append($@"
+            {{
+                var file = convert.ToString(""{field.JsonName}"");
+                
+                if (string.IsNullOrEmpty(file))
+                    data.{field.Name}_Base64 = null;
+                else if(file != ""*"" && file.Length< 100 && file[0] == '/')
+                {{
+                    var call = new WebApiCaller(ConfigurationManager.AppSettings[""ManageAddress""]);
+                    var result = call.Get<string>(""/ueditor/ueditor.aspx"", $""action=base64&url={{file}}"");
+                    data.{field.Name}_Base64 = result.Success ? result.ResultData : null;
+                }}
+            }}");
+                            continue;
+                        }
+                        type = "string";
+                        code.Append($@"
+            data.{field.Name}_Base64 = ");
+                    }
+                    else
+                    {
+                        code.Append($@"
+            data.{field.Name} = ");
+                    }
+                    if (field.IsEnum && !string.IsNullOrWhiteSpace(field.CustomType))
+                    {
+                        code.Append($@"({field.CustomType})convert.ToInteger(""{field.JsonName}"");");
                         continue;
                     }
-                    switch (field.CsType.ToLower())
+                    switch (type)
                     {
                         case "short":
                         case "int16":
                         case "int":
                         case "int32":
                             code.Append(field.Nullable
-                                ? $@"convert.ToNullInteger(""{field.Name}"");"
-                                : $@"convert.ToInteger(""{field.Name}"");");
+                                ? $@"convert.ToNullInteger(""{field.JsonName}"");"
+                                : $@"convert.ToInteger(""{field.JsonName}"");");
                             break;
                         case "bigint":
                         case "long":
                         case "int64":
                             code.Append(field.Nullable
-                                ? $@"convert.ToNullLong(""{field.Name}"");"
-                                : $@"convert.ToLong(""{field.Name}"");");
+                                ? $@"convert.ToNullLong(""{field.JsonName}"");"
+                                : $@"convert.ToLong(""{field.JsonName}"");");
                             break;
                         case "decimal":
                         case "numeric":
                             code.Append(field.Nullable
-                                ? $@"convert.ToNullDecimal(""{field.Name}"");"
-                                : $@"convert.ToDecimal(""{field.Name}"");");
+                                ? $@"convert.ToNullDecimal(""{field.JsonName}"");"
+                                : $@"convert.ToDecimal(""{field.JsonName}"");");
                             break;
                         case "real":
                         case "double":
                             code.Append(field.Nullable
-                                ? $@"convert.ToNullDouble(""{field.Name}"");"
-                                : $@"convert.ToDouble(""{field.Name}"");");
+                                ? $@"convert.ToNullDouble(""{field.JsonName}"");"
+                                : $@"convert.ToDouble(""{field.JsonName}"");");
                             break;
                         case "float":
                             code.Append(field.Nullable
-                                ? $@"convert.ToNullSingle(""{field.Name}"");"
-                                : $@"convert.ToSingle(""{field.Name}"");");
+                                ? $@"convert.ToNullSingle(""{field.JsonName}"");"
+                                : $@"convert.ToSingle(""{field.JsonName}"");");
                             break;
                         case "datetime":
                         case "datetime2":
                             code.Append(field.Nullable
-                                ? $@"convert.ToNullDateTime(""{field.Name}"");"
-                                : $@"convert.ToDateTime(""{field.Name}"");");
+                                ? $@"convert.ToNullDateTime(""{field.JsonName}"");"
+                                : $@"convert.ToDateTime(""{field.JsonName}"");");
                             break;
                         case "bool":
                         case "boolean":
                             code.Append(field.Nullable
-                                ? $@"convert.ToNullBoolean(""{field.Name}"");"
-                                : $@"convert.ToBoolean(""{field.Name}"");");
+                                ? $@"convert.ToNullBoolean(""{field.JsonName}"");"
+                                : $@"convert.ToBoolean(""{field.JsonName}"");");
                             break;
                         case "byte":
                         case "Byte":
                             code.Append(field.Nullable
-                                ? $@"convert.ToNullByte(""{field.Name}"");"
-                                : $@"convert.ToByte(""{field.Name}"");");
+                                ? $@"convert.ToNullByte(""{field.JsonName}"");"
+                                : $@"convert.ToByte(""{field.JsonName}"");");
                             break;
                         case "sbyte":
                             code.Append(field.Nullable
-                                ? $@"convert.ToNullSByte(""{field.Name}"");"
-                                : $@"convert.ToSByte(""{field.Name}"");");
+                                ? $@"convert.ToNullSByte(""{field.JsonName}"");"
+                                : $@"convert.ToSByte(""{field.JsonName}"");");
                             break;
                         case "guid":
                         case "uniqueidentifier":
                             code.Append(field.Nullable
-                                ? $@"convert.ToNullGuid(""{field.Name}"");"
-                                : $@"convert.ToGuid(""{field.Name}"");");
+                                ? $@"convert.ToNullGuid(""{field.JsonName}"");"
+                                : $@"convert.ToGuid(""{field.JsonName}"");");
                             break;
-                        //case "byte":
-                        //case "char":
-                        //case "nchar":
-                        //case "varchar":
-                        //case "nvarchar":
-                        //case "string":
-                        //case "text":
                         default:
-                            code.Append($@"convert.ToString(""{field.Name}"");");
+                            code.Append($@"convert.ToString(""{field.JsonName}"");");
                             break;
                     }
                 }
@@ -116,91 +136,70 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                     case "int16":
                     case "int":
                     case "int32":
-                        if (field.Nullable)
-                            code.AppendFormat(@"
+                        code.AppendFormat(field.Nullable
+                                ? @"
             entity.{0} = convert.ToNullInteger(""{0}"");"
-                                , field.Name);
-                        else
-                            code.AppendFormat(@"
+                                : @"
             entity.{0} = convert.ToInteger(""{0}"");"
-                                , field.Name);
+                            , field.JsonName);
                         break;
                     case "bigint":
                     case "long":
                     case "int64":
-                        if (field.Nullable)
-                            code.AppendFormat(@"
+                        code.AppendFormat(field.Nullable
+                                ? @"
             entity.{0} = convert.ToNullLong(""{0}"");"
-                                , field.Name);
-                        else
-                            code.AppendFormat(@"
+                                : @"
             entity.{0} = convert.ToLong(""{0}"");"
-                                , field.Name);
+                            , field.JsonName);
                         break;
                     case "decimal":
                     case "numeric":
-                        if (field.Nullable)
-                            code.AppendFormat(@"
+                        code.AppendFormat(field.Nullable
+                                ? @"
             entity.{0} = convert.ToNullDecimal(""{0}"");"
-                                , field.Name);
-                        else
-                            code.AppendFormat(@"
+                                : @"
             entity.{0} = convert.ToDecimal(""{0}"");"
-                                , field.Name);
+                            , field.JsonName);
                         break;
                     case "real":
                     case "double":
-                        if (field.Nullable)
-                            code.AppendFormat(@"
-            entity.{0} = convert.ToNullDouble(""{0}"");"
-                                , field.Name);
-                        else
-                            code.AppendFormat(@"
-            entity.{0} = convert.ToDouble(""{0}"");"
-                                , field.Name);
+                        code.Append(field.Nullable
+                            ? $@"
+            entity.{field.JsonName} = convert.ToNullDouble(""{field.JsonName}"");"
+                            : $@"
+            entity.{field.JsonName} = convert.ToDouble(""{field.JsonName}"");");
                         break;
                     case "float":
-                        if (field.Nullable)
-                            code.AppendFormat(@"
-            entity.{0} = convert.ToNullSingle(""{0}"");"
-                                , field.Name);
-                        else
-                            code.AppendFormat(@"
-            entity.{0} = convert.ToSingle(""{0}"");"
-                                , field.Name);
+                        code.Append(field.Nullable
+                            ? $@"
+            entity.{field.JsonName} = convert.ToNullSingle(""{field.JsonName}"");"
+                            : $@"
+            entity.{field.JsonName} = convert.ToSingle(""{field.JsonName}"");");
                         break;
                     case "datetime":
                     case "datetime2":
-                        if (field.Nullable)
-                            code.AppendFormat(@"
-            entity.{0} = convert.ToNullDateTime(""{0}"");"
-                                , field.Name);
-                        else
-                            code.AppendFormat(@"
-            entity.{0} = convert.ToDateTime(""{0}"");"
-                                , field.Name);
+                        code.Append(field.Nullable
+                            ? $@"
+            entity.{field.JsonName} = convert.ToNullDateTime(""{field.JsonName}"");"
+                            : $@"
+            entity.{field.JsonName} = convert.ToDateTime(""{field.JsonName}"");");
                         break;
                     case "bool":
                     case "boolean":
-                        if (field.Nullable)
-                            code.AppendFormat(@"
-            entity.{0} = convert.ToNullBoolean(""{0}"");"
-                                , field.Name);
-                        else
-                            code.AppendFormat(@"
-            entity.{0} = convert.ToBoolean(""{0}"");"
-                                , field.Name);
+                        code.Append(field.Nullable
+                            ? $@"
+            entity.{field.JsonName} = convert.ToNullBoolean(""{field.JsonName}"");"
+                            : $@"
+            entity.{field.JsonName} = convert.ToBoolean(""{field.JsonName}"");");
                         break;
                     case "guid":
                     case "uniqueidentifier":
-                        if (field.Nullable)
-                            code.AppendFormat(@"
-            entity.{0} = convert.ToNullGuid(""{0}"");"
-                                , field.Name);
-                        else
-                            code.AppendFormat(@"
-            entity.{0} = convert.ToGuid(""{0}"");"
-                                , field.Name);
+                        code.Append(field.Nullable
+                            ? $@"
+            entity.{field.JsonName} = convert.ToNullGuid(""{field.JsonName}"");"
+                            : $@"
+            entity.{field.JsonName} = convert.ToGuid(""{field.JsonName}"");");
                         break;
                     //case "byte":
                     //case "char":
@@ -210,10 +209,8 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                     //case "string":
                     //case "text":
                     default:
-                        code.AppendFormat(@"
-            entity.{0} = convert.ToString(""{0}"",{1});"
-                            , field.Name
-                            , field.Nullable ? "true" : "false");
+                        code.Append($@"
+            entity.{field.JsonName} = convert.ToString(""{field.JsonName}"",{(field.Nullable ? "true" : "false")});");
                         break;
                 }
             }
@@ -281,11 +278,11 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                         if (field.Nullable)
                             code.AppendFormat(@"
             entity.{0} = convert.ToNullInteger(""{0}"");"
-                                , field.Name);
+                                , field.JsonName);
                         else
                             code.AppendFormat(@"
             entity.{0} = convert.ToInteger(""{0}"");"
-                                , field.Name);
+                                , field.JsonName);
                         break;
                     case "bigint":
                     case "long":
@@ -293,76 +290,76 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                         if (field.Nullable)
                             code.AppendFormat(@"
             entity.{0} = convert.ToNullLong(""{0}"");"
-                                , field.Name);
+                                , field.JsonName);
                         else
                             code.AppendFormat(@"
             entity.{0} = convert.ToLong(""{0}"");"
-                                , field.Name);
+                                , field.JsonName);
                         break;
                     case "decimal":
                     case "numeric":
                         if (field.Nullable)
                             code.AppendFormat(@"
             entity.{0} = convert.ToNullDecimal(""{0}"");"
-                                , field.Name);
+                                , field.JsonName);
                         else
                             code.AppendFormat(@"
             entity.{0} = convert.ToDecimal(""{0}"");"
-                                , field.Name);
+                                , field.JsonName);
                         break;
                     case "real":
                     case "double":
                         if (field.Nullable)
                             code.AppendFormat(@"
             entity.{0} = convert.ToNullDouble(""{0}"");"
-                                , field.Name);
+                                , field.JsonName);
                         else
                             code.AppendFormat(@"
             entity.{0} = convert.ToDouble(""{0}"");"
-                                , field.Name);
+                                , field.JsonName);
                         break;
                     case "float":
                         if (field.Nullable)
                             code.AppendFormat(@"
             entity.{0} = convert.ToNullSingle(""{0}"");"
-                                , field.Name);
+                                , field.JsonName);
                         else
                             code.AppendFormat(@"
             entity.{0} = convert.ToSingle(""{0}"");"
-                                , field.Name);
+                                , field.JsonName);
                         break;
                     case "datetime":
                     case "datetime2":
                         if (field.Nullable)
                             code.AppendFormat(@"
             entity.{0} = convert.ToNullDateTime(""{0}"");"
-                                , field.Name);
+                                , field.JsonName);
                         else
                             code.AppendFormat(@"
             entity.{0} = convert.ToDateTime(""{0}"");"
-                                , field.Name);
+                                , field.JsonName);
                         break;
                     case "bool":
                     case "boolean":
                         if (field.Nullable)
                             code.AppendFormat(@"
             entity.{0} = convert.ToNullBoolean(""{0}"");"
-                                , field.Name);
+                                , field.JsonName);
                         else
                             code.AppendFormat(@"
             entity.{0} = convert.ToBoolean(""{0}"");"
-                                , field.Name);
+                                , field.JsonName);
                         break;
                     case "guid":
                     case "uniqueidentifier":
                         if (field.Nullable)
                             code.AppendFormat(@"
             entity.{0} = convert.ToNullGuid(""{0}"");"
-                                , field.Name);
+                                , field.JsonName);
                         else
                             code.AppendFormat(@"
             entity.{0} = convert.ToGuid(""{0}"");"
-                                , field.Name);
+                                , field.JsonName);
                         break;
                     //case "byte":
                     //case "char":
@@ -374,7 +371,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                     default:
                         code.AppendFormat(@"
             entity.{0} = convert.ToString(""{0}"",{1});"
-                            , field.Name
+                            , field.JsonName
                             , field.Nullable ? "true" : "false");
                         break;
                 }

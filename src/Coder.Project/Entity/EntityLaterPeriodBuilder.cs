@@ -87,7 +87,7 @@ namespace Agebull.EntityModel.RobotCoder
             foreach (PropertyConfig property in ReadWriteColumns)
             {
                 code.Append($@"
-                On{property.Name}Modified(subsist,modifieds[Real_{property.Name}] == 1);");
+                On{property.Name}Modified(subsist,modifieds[_DataStruct_.Real_{property.Name}] == 1);");
 
                 //code.AppendFormat(@"
                 //if(modifieds[Real_{0}] == 1)

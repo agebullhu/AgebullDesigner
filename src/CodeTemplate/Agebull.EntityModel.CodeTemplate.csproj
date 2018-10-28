@@ -116,6 +116,10 @@
       <Project>{A7888162-CFBD-4087-8C4A-978445BBE02A}</Project>
       <Name>Agebull.EntityModel.Config.Helper</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WpfMvvmBase\Agebull.Common.Mvvm.csproj">
+      <Project>{6F6DC5D2-85EF-4BB5-82FA-BD21F7AA3053}</Project>
+      <Name>Agebull.Common.Mvvm</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

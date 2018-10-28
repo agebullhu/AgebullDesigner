@@ -114,7 +114,7 @@ namespace Agebull.EntityModel.Config
                 return;
             var strs = Property.Name.Split(new[] { ']', '[' }, StringSplitOptions.RemoveEmptyEntries);
             Property.Name = strs[0];
-            if (strs.Length > 0 && Int32.TryParse(strs[1], out int len))
+            if (strs.Length > 0 && int.TryParse(strs[1], out int len))
             {
                 if (Property.CsType == "string")
                     Property.Datalen = len;

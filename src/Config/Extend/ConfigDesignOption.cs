@@ -11,7 +11,7 @@ namespace Agebull.EntityModel.Config
     ///     配置的设计节点
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public partial class ConfigDesignOption : NotificationObject
+    public class ConfigDesignOption : NotificationObject
     {
         #region 设计
 
@@ -143,13 +143,6 @@ namespace Agebull.EntityModel.Config
 
 
         /// <summary>
-        /// 引用标签
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        public ConfigBase LastConfig => IsReference ? ReferenceConfig : Config;
-
-
-        /// <summary>
         /// 引用对象键
         /// </summary>
         [DataMember, JsonProperty("referenceKey", NullValueHandling = NullValueHandling.Ignore)]
@@ -165,17 +158,38 @@ namespace Agebull.EntityModel.Config
         [Category("引用"), DisplayName("引用对象键"), Description("引用对象键，指内部对象的引用")]
         public Guid ReferenceKey
         {
-            get => _referenceKey;
+            get => _referenceKey == _key ? Guid.Empty : _referenceKey;
             set
             {
                 if (_referenceKey == value)
                     return;
+                if (_referenceKey == _key)
+                    _referenceKey = Guid.Empty;
                 BeforePropertyChanged(nameof(ReferenceKey), _referenceKey, value);
                 _referenceKey = value;
+                IsReference = value != Guid.Empty;
                 OnPropertyChanged(nameof(ReferenceKey));
             }
         }
 
+        /// <summary>
+        /// 引用对象
+        /// </summary>
+        /// <remark>
+        /// 引用对象
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        public ConfigBase Reference => IsReference ? ReferenceConfig : null;
+
+
+        /// <summary>
+        /// 引用对象
+        /// </summary>
+        /// <remark>
+        /// 引用对象
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        public ConfigBase Link => IsLink ? ReferenceConfig : null;
 
         /// <summary>
         /// 引用对象
@@ -193,17 +207,36 @@ namespace Agebull.EntityModel.Config
         [Category("引用"), DisplayName("引用对象"), Description("引用对象，指内部对象的引用")]
         public ConfigBase ReferenceConfig
         {
-            get => _referenceConfig ?? (_referenceConfig =
-                       _referenceKey == Guid.Empty
-                           ? null
-                           : GlobalConfig.GetConfig(_referenceKey));
+            get
+            {
+                if (_referenceKey == Guid.Empty || _referenceKey == _key)
+                    return null;
+                if (Config == _referenceConfig)
+                {
+                    ReferenceKey = Guid.Empty;
+                    _referenceConfig = null;
+                    return null;
+                }
+                return _referenceConfig ?? (_referenceConfig = GlobalConfig.GetConfig(_referenceKey));
+            }
             set
             {
                 if (_referenceConfig == value)
                     return;
+                if (value == Config || value.Key == Key)
+                    value = null;
                 BeforePropertyChanged(nameof(ReferenceConfig), _referenceConfig, value);
                 _referenceConfig = value;
                 ReferenceKey = value?.Option.Key ?? Guid.Empty;
+                if (value == null)
+                {
+                    IsLink = false;
+                    IsReference = false;
+                }
+                else if (!IsReference)
+                {
+                    IsLink = true;
+                }
                 OnPropertyChanged(nameof(ReferenceConfig));
             }
         }
@@ -233,6 +266,7 @@ namespace Agebull.EntityModel.Config
             }
         }
         #endregion
+
         #region 状态
 
         /// <summary>
@@ -260,13 +294,38 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 是否参照对象
+        /// 是否关联对象
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category("设计器支持"), DisplayName("是否关联对象"), Description("是否关联对象")]
+        public bool IsLink
+        {
+            get => _state.HasFlag(ConfigStateType.Link);
+            set
+            {
+                BeforePropertyChanged(nameof(IsLink), IsLink, value);
+                if (value)
+                {
+                    _state &= ~ConfigStateType.Reference;
+                    _state |= ConfigStateType.Link;
+                }
+                else
+                {
+                    _state &= ~ConfigStateType.Link;
+                }
+                OnPropertyChanged(nameof(IsReference));
+                OnPropertyChanged(nameof(IsLink));
+            }
+        }
+
+        /// <summary>
+        /// 是否引用对象
         /// </summary>
         /// <remark>
-        /// 是否参照对象，是则永远只读
+        /// 是否引用对象，是则永远只读
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category("设计器支持"), DisplayName("是否参照对象"), Description("是否参照对象，是则永远只读")]
+        [Category("设计器支持"), DisplayName("是否引用对象"), Description("是否引用对象")]
         public bool IsReference
         {
             get => _state.HasFlag(ConfigStateType.Reference);
@@ -274,10 +333,16 @@ namespace Agebull.EntityModel.Config
             {
                 BeforePropertyChanged(nameof(IsReference), IsReference, value);
                 if (value)
+                {
+                    _state &= ~ConfigStateType.Link;
                     _state |= ConfigStateType.Reference;
+                }
                 else
+                {
                     _state &= ~ConfigStateType.Reference;
+                }
                 OnPropertyChanged(nameof(IsReference));
+                OnPropertyChanged(nameof(IsLink));
             }
         }
 
@@ -336,6 +401,7 @@ namespace Agebull.EntityModel.Config
             OnPropertyChanged(nameof(IsReadonly));
             OnPropertyChanged(nameof(IsReference));
             OnPropertyChanged(nameof(IsPredefined));
+            OnPropertyChanged(nameof(IsNormal));
         }
         /// <summary>
         /// 是否正常
@@ -363,6 +429,7 @@ namespace Agebull.EntityModel.Config
                 else
                     _state &= ~ConfigStateType.Discard;
                 OnPropertyChanged(nameof(IsDiscard));
+                OnPropertyChanged(nameof(IsNormal));
             }
         }
 
@@ -407,6 +474,7 @@ namespace Agebull.EntityModel.Config
                 else
                     _state &= ~ConfigStateType.Delete;
                 OnPropertyChanged(nameof(IsDelete));
+                OnPropertyChanged(nameof(IsNormal));
             }
         }
         #endregion 
@@ -449,20 +517,193 @@ namespace Agebull.EntityModel.Config
         [Description("曾用名")]
         public string NameHistory => OldNames.LinkToString(",");
 
-        #endregion
-
         /// <summary>
         /// 字段复制
         /// </summary>
         /// <param name="cfg"></param>
+        /// <param name="full"></param>
         /// <returns></returns>
-        public void Copy(ConfigDesignOption cfg)
+        public void Copy(ConfigDesignOption cfg, bool full)
         {
-            Index = cfg.Index;//序号
-            ReferenceKey = cfg.ReferenceKey;//引用对象键
-            ReferenceConfig = cfg.ReferenceConfig;//引用对象
-            ReferenceTag = cfg.ReferenceTag;//引用标签
-            _state = cfg._state;//状态
+            if (full)
+            {
+                Index = cfg.Index; //序号
+                ReferenceTag = cfg.ReferenceTag; //引用标签
+            }
+
+            _state = cfg._state; //状态
+            ReferenceKey = cfg.ReferenceKey; //引用对象键
+            ReferenceConfig = cfg.ReferenceConfig; //引用对象
+            if (cfg._extendConfig != null)
+            {
+                ExtendConfig.Clear();
+                ExtendConfig.AddRange(cfg._extendConfig);
+            }
+
+            if (cfg._extend == null)
+                return;
+            foreach (var items in cfg._extend)
+            {
+                if (!Extend.TryGetValue(items.Key, out var fItems))
+                {
+                    Extend.Add(items.Key, items.Value.ToDictionary(p => p.Key, p => p.Value));
+                }
+                else
+                {
+                    foreach (var item in fItems)
+                    {
+                        if (!items.Value.ContainsKey(item.Key))
+                            items.Value.Add(item.Key, item.Value);
+                        else
+                            items.Value[item.Key] = item.Value;
+                    }
+                }
+            }
         }
+
+        #endregion
+
+
+        #region 扩展配置
+
+        /// <summary>
+        /// 扩展配置
+        /// </summary>
+        [DataMember, JsonProperty("extend", NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, Dictionary<string, string>> _extend;
+
+
+        /// <summary>
+        /// 扩展配置
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category("设计器支持")]
+        [DisplayName("扩展配置")]
+        public Dictionary<string, Dictionary<string, string>> Extend
+        {
+            get
+            {
+                if (_extend != null)
+                    return _extend;
+                _extend = new Dictionary<string, Dictionary<string, string>>();
+                BeforePropertyChanged(nameof(Extend), null, _extend);
+                return _extend;
+            }
+        }
+
+        [IgnoreDataMember, JsonIgnore]
+        private ConfigItemDictionary _extendDictionary;
+
+        /// <summary>
+        /// 扩展配置
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore, Browsable(false)]
+        public ConfigItemDictionary ExtendDictionary => _extendDictionary ?? (_extendDictionary = new ConfigItemDictionary(Extend));
+
+        [IgnoreDataMember, JsonIgnore]
+        private ConfigItemListBool _extendBool;
+
+        /// <summary>
+        /// 扩展配置
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore, Browsable(false)]
+        public ConfigItemListBool ExtendConfigListBool => _extendBool ?? (_extendBool = new ConfigItemListBool(ExtendDictionary));
+
+        /// <summary>
+        /// 扩展配置
+        /// </summary>
+        [DataMember, JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        private NotificationList<ConfigItem> _extendConfig;
+
+
+        /// <summary>
+        /// 扩展配置
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category("设计器支持")]
+        [DisplayName("扩展配置")]
+        private NotificationList<ConfigItem> ExtendConfig
+        {
+            get
+            {
+                if (_extendConfig != null)
+                    return _extendConfig;
+                _extendConfig = new NotificationList<ConfigItem>();
+                BeforePropertyChanged(nameof(ExtendConfig), null, _extendConfig);
+                return _extendConfig;
+            }
+        }
+
+        [IgnoreDataMember, JsonIgnore]
+        private ConfigItemList _extendConfigList;
+        /// <summary>
+        /// 扩展配置
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore, Browsable(false)]
+        public ConfigItemList ExtendConfigList => _extendConfigList ?? (_extendConfigList = new ConfigItemList(ExtendConfig));
+
+        /// <summary>
+        /// 读写扩展配置
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public string this[string key]
+        {
+            get => TryGetExtendConfig(key, null);
+            set
+            {
+                if (key == null)
+                    return;
+                var mv = ExtendConfig.FirstOrDefault(p => string.Equals(p.Name, key, StringComparison.OrdinalIgnoreCase));
+                if (mv == null)
+                {
+                    ExtendConfig.Add(new ConfigItem { Name = key, Value = value });
+                }
+                else if (string.IsNullOrWhiteSpace(value))
+                {
+                    ExtendConfig.Remove(mv);
+                }
+                else
+                {
+                    mv.Value = value.Trim();
+                }
+                RaisePropertyChanged(key);
+            }
+        }
+        /// <summary>
+        /// 读写扩展配置
+        /// </summary>
+        /// <param name="classify">分类</param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public string this[string classify, string name]
+        {
+            get => ExtendDictionary[classify, name];
+            set
+            {
+                ExtendDictionary[classify, name] = value;
+                RaisePropertyChanged($"{classify}_{name}");
+            }
+        }
+
+        /// <summary>
+        /// 试图取得扩展配置,如果不存在或为空则加入默认值后返回
+        /// </summary>
+        /// <param name="key">键</param>
+        /// <param name="def">默认值</param>
+        /// <returns>扩展配置</returns>
+
+        public string TryGetExtendConfig(string key, string def)
+        {
+            if (key == null)
+                return def;
+            var mv = ExtendConfig.FirstOrDefault(p => string.Equals(p.Name, key, StringComparison.OrdinalIgnoreCase));
+            if (mv != null)
+                return mv.Value ?? (mv.Value = def);
+            ExtendConfig.Add(new ConfigItem { Name = key, Value = def });
+            return def;
+        }
+
+        #endregion
     }
 }

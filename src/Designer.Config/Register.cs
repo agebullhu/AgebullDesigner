@@ -6,7 +6,7 @@ using Agebull.EntityModel.Designer.NewConfig;
 namespace Agebull.Common.Config.Designer.EasyUi
 {
     /// <summary>
-    /// 关系连接检查
+    /// 命令注册器
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]

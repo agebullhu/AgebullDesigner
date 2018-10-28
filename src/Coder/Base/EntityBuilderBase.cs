@@ -16,25 +16,21 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder(CodeType, "Action.cs","cs", GetBaseCode);
+            MomentCoder.RegisteCoder(CodeType, "Action.cs", "cs", GetBaseCode);
             MomentCoder.RegisteCoder(CodeType, "Action.Designer.cs", "cs", GetExtendCode);
         }
 
 
-        public string GetBaseCode(ConfigBase config)
+        public string GetBaseCode(EntityConfig config)
         {
-            Entity = config as EntityConfig;
-            if (Entity == null)
-                return null;
+            Entity = config;
             Project = Entity.Parent;
             return CreateBaCode();
         }
 
-        public string GetExtendCode(ConfigBase config)
+        public string GetExtendCode(EntityConfig config)
         {
-            Entity = config as EntityConfig;
-            if (Entity == null)
-                return null;
+            Entity = config;
             Project = Entity.Parent;
             return CreateExCode();
         }
@@ -84,7 +80,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 代码文件夹名称
         /// </summary>
-        protected abstract string Folder { get; }
+        protected virtual string Folder => null;
 
 
         /// <summary>
@@ -92,7 +88,9 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         protected sealed override void CreateBaCode(string path)
         {
-            SaveCode(Path.Combine(path, Folder, Entity.Name + ".Designer.cs"), CreateBaCode());
+            SaveCode(Folder == null
+                ? Path.Combine(path, Entity.Name + ".Designer.cs")
+                : Path.Combine(path, Folder, Entity.Name + ".Designer.cs"), CreateBaCode());
         }
 
         /// <summary>
@@ -100,7 +98,10 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         protected sealed override void CreateExCode(string path)
         {
-            SaveCode(Path.Combine(path, Folder, Entity.Name + ".cs"), CreateExCode());
+
+            SaveCode(Folder == null
+                ? Path.Combine(path, Entity.Name + ".cs")
+                : Path.Combine(path, Folder, Entity.Name + ".cs"), CreateExCode());
         }
 
         /// <summary>
@@ -108,18 +109,27 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         protected virtual string CreateBaCode()
         {
-            return $@"using System;
-using System.IO;
+            return $@"
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
+
 using Agebull.Common;
+using Agebull.Common.DataModel;
 using Gboxt.Common.DataModel;
+using Agebull.Common.WebApi;
+
+{Project.UsingNameSpaces}
 
 {ExtendUsing}
 
@@ -140,11 +150,23 @@ namespace {NameSpace}
             return $@"
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
+using System.Data;
+using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Runtime.Serialization;
+using System.IO;
+
+using Agebull.Common;
+using Agebull.Common.DataModel;
 using Gboxt.Common.DataModel;
+using Agebull.Common.WebApi;
+
+{Project.UsingNameSpaces}
 
 namespace {NameSpace}
 {{
@@ -153,6 +175,5 @@ namespace {NameSpace}
     }}
 }}";
         }
-
     }
 }

@@ -21,11 +21,11 @@ namespace Agebull.EntityModel.RobotCoder
             if (Entity.PrimaryColumn == null)
                 return null;
             bool isFirst = true;
-            var code = new StringBuilder();
-            var code2 = new StringBuilder();
-            EntityStruct(Entity, code, code2, ref isFirst);
+            var codeConst = new StringBuilder();
+            var codeStruct = new StringBuilder();
+            EntityStruct(Entity, codeStruct, codeConst, ref isFirst);
             return $@"
-        {code2}
+        #region 数据结构
 
         /// <summary>
         /// 实体结构
@@ -35,69 +35,118 @@ namespace Agebull.EntityModel.RobotCoder
         {{
             get
             {{
-                return __struct;
+                return _DataStruct_.Struct;
             }}
         }}
-
         /// <summary>
         /// 实体结构
         /// </summary>
-        [IgnoreDataMember]
-        public static readonly EntitySturct __struct = new EntitySturct
+        public class _DataStruct_
         {{
-            EntityName = ""{Entity.Name}"",
-            PrimaryKey = ""{Entity.PrimaryColumn.Name}"",
-            EntityType = 0x{Entity.Identity:X},
-            Properties = new Dictionary<int, PropertySturct>
-            {{{code}
-            }}
-        }};
+            /// <summary>
+            /// 实体名称
+            /// </summary>
+            public const string EntityName = @""{Entity.Name}"";
+            /// <summary>
+            /// 实体标题
+            /// </summary>
+            public const string EntityCaption = @""{Entity.Caption}"";
+            /// <summary>
+            /// 实体说明
+            /// </summary>
+            public const string EntityDescription = @""{Entity.Description}"";
+            /// <summary>
+            /// 实体标识
+            /// </summary>
+            public const int EntityIdentity = 0x{Entity.Identity:X};
+            /// <summary>
+            /// 实体说明
+            /// </summary>
+            public const string EntityPrimaryKey = ""{Entity.PrimaryColumn.Name}"";
+            
+            {codeConst}
+
+            /// <summary>
+            /// 实体结构
+            /// </summary>
+            public static readonly EntitySturct Struct = new EntitySturct
+            {{
+                EntityName = EntityName,
+                Caption    = EntityCaption,
+                Description= EntityDescription,
+                PrimaryKey = EntityPrimaryKey,
+                EntityType = EntityIdentity,
+                Properties = new Dictionary<int, PropertySturct>
+                {{{codeStruct}
+                }}
+            }};
+        }}
+        #endregion
 ";
         }
 
-        private void EntityStruct(EntityConfig table, StringBuilder code, StringBuilder code2, ref bool isFirst)
+        private void EntityStruct(EntityConfig table, StringBuilder codeStruct, StringBuilder codeConst, ref bool isFirst)
         {
             if (table == null)
                 return;
             if (!string.IsNullOrEmpty(table.ModelBase))
-                EntityStruct(Project.Entities.FirstOrDefault(p => p.Name == table.ModelBase), code, code2, ref isFirst);
+                EntityStruct(Project.Entities.FirstOrDefault(p => p.Name == table.ModelBase), codeStruct, codeConst, ref isFirst);
 
             foreach (PropertyConfig property in table.PublishProperty)
             {
                 if (isFirst)
                     isFirst = false;
                 else
-                    code.Append(',');
+                    codeStruct.Append(',');
 
-                code.AppendFormat(@"
-                {{
-                    Real_{0},
-                    new PropertySturct
+                codeStruct.Append($@"
                     {{
-                        Index = Index_{0},
-                        Name = ""{0}"",
-                        Title = ""{5}"",
-                        ColumnName = ""{4}"",
-                        PropertyType = typeof({1}),
-                        CanNull = {2},
-                        ValueType = PropertyValueType.{3},
-                        CanImport = {6},
-                        CanExport = {7}
-                    }}
-                }}", property.Name
-                    , property.CustomType ?? property.CsType
-                    , property.Nullable ? "true" : "false"
-                    , CsharpHelper.PropertyValueType(property)
-                    , property.ColumnName
-                    , property.Caption
-                    , property["CanImport"] == "1" ? "true" : "false"
-                    , property["CanExport"] == "1" ? "true" : "false");
+                        Real_{property.Name},
+                        new PropertySturct
+                        {{
+                            Index        = {property.Name},
+                            Name         = ""{property.Name}"",
+                            Title        = ""{property.Caption}"",
+                            Caption      = @""{property.Caption}"",
+                            Description  = @""{property.Description}"",
+                            ColumnName   = ""{property.DbFieldName}"",
+                            PropertyType = typeof({property.CustomType ?? property.CsType}),
+                            CanNull      = {(property.Nullable ? "true" : "false")},
+                            ValueType    = PropertyValueType.{CsharpHelper.PropertyValueType(property)},
+                            CanImport    = {(property.ExtendConfigListBool["easyui", "CanImport"] ? "true" : "false")},
+                            CanExport    = {(property.ExtendConfigListBool["easyui", "CanExport"] ? "true" : "false")}
+                        }}
+                    }}");
             }
-            code2.Clear();
-            foreach (PropertyConfig property in table.PublishProperty)
+            codeConst.Clear();
+            int idx = 0;
+            if (table.PrimaryColumn != null)
             {
-                code2.AppendFormat(@"
-        public const byte Index_{0} = {1};", property.Name, property.Index);
+                codeConst.Append($@"
+            /// <summary>
+            /// {ToRemString(table.PrimaryColumn.Caption)}的数字标识
+            /// </summary>
+            public const byte {table.PrimaryColumn.Name} = {table.PrimaryColumn.Identity};
+            
+            /// <summary>
+            /// {ToRemString(table.PrimaryColumn.Caption)}的实时记录顺序
+            /// </summary>
+            public const int Real_{table.PrimaryColumn.Name} = {idx++};");
+            }
+
+            foreach (PropertyConfig property in table.PublishProperty.Where(p => p != table.PrimaryColumn).OrderBy(p => p.Index))
+            {
+                codeConst.Append($@"
+
+            /// <summary>
+            /// {ToRemString(property.Caption)}的数字标识
+            /// </summary>
+            public const byte {property.Name} = {property.Identity};
+            
+            /// <summary>
+            /// {ToRemString(property.Caption)}的实时记录顺序
+            /// </summary>
+            public const int Real_{property.Name} = {idx++};");
             }
 
         }

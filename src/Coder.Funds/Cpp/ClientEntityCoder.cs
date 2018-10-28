@@ -204,7 +204,7 @@ namespace {NameSpace}
         /// </summary>
         public void ChangePrimaryKey({property.LastCsType} {property.PropertyName.ToLower()})
         {{
-            _{property.PropertyName.ToLower()} = {property.PropertyName.ToLower()};
+            {FieldName(property)} = {property.PropertyName.ToLower()};
         }}
         
         /// <summary>
@@ -215,8 +215,8 @@ namespace {NameSpace}
         /// <summary>
         /// {ToRemString(property.Caption)}
         /// </summary>
-        [DataMember,JsonIgnore]
-        public {property.LastCsType} _{property.PropertyName.ToLower()};
+        [IgnoreDataMember,JsonIgnore]
+        public {property.LastCsType} {FieldName(property)};
 
         partial void On{property.PropertyName}Get();
 
@@ -226,28 +226,22 @@ namespace {NameSpace}
 
         partial void On{property.PropertyName}Seted();
 
-        /// <summary>
-        /// {ToRemString(property.Caption)}
-        /// </summary>
-        /// <remarks>
-        /// {ToRemString(property.Description)}
-        /// </remarks>
-        {Attribute(property)}
+        {PropertyHeader(property)}
         public {property.LastCsType} {property.PropertyName}
         {{
             get
             {{
                 On{property.PropertyName}Get();
-                return this._{property.PropertyName.ToLower()};
+                return this.{FieldName(property)};
             }}
             set
             {{
-                if(this._{property.PropertyName.ToLower()} == value)
+                if(this.{FieldName(property)} == value)
                     return;
-                //if(this._{property.PropertyName.ToLower()} > 0)
+                //if(this.{FieldName(property)} > 0)
                 //    throw new Exception(""主键一旦设置就不可以修改"");
                 On{property.PropertyName}Set(ref value);
-                this._{property.PropertyName.ToLower()} = value;
+                this.{FieldName(property)} = value;
                 this.OnPropertyChanged(nameof({property.PropertyName}));
                 On{property.PropertyName}Seted();
             }}
@@ -266,8 +260,8 @@ namespace {NameSpace}
         /// <summary>
         /// {ToRemString(property.Caption)}
         /// </summary>
-        [DataMember,JsonIgnore]
-        public {property.LastCsType} _{property.PropertyName.ToLower()};
+        [IgnoreDataMember,JsonIgnore]
+        public {property.LastCsType} {FieldName(property)};
 
         partial void On{property.PropertyName}Get();
 
@@ -275,36 +269,28 @@ namespace {NameSpace}
 
         partial void On{property.PropertyName}Seted();
 
-        /// <summary>
-        /// {ToRemString(property.Caption)}
-        /// </summary>
-        /// <remarks>
-        /// {ToRemString(property.Description)}
-        /// </remarks>
-        {Attribute(property)}
+        {PropertyHeader(property)}
         {property.AccessType} {property.LastCsType} {property.PropertyName}
         {{
             get
             {{
                 On{property.PropertyName}Get();
-                return this._{property.PropertyName.ToLower()};
+                return this.{FieldName(property)};
             }}
             set
             {{
-                if(this._{property.PropertyName.ToLower()} == value)
+                if(this.{FieldName(property)} == value)
                     return;
                 On{property.PropertyName}Set(ref value);
-                this._{property.PropertyName.ToLower()} = value;
+                this.{FieldName(property)} = value;
                 On{property.PropertyName}Seted();
                 OnPropertyChanged(nameof({property.PropertyName}));
                 {(property.EnumConfig == null
                     ? null
                     : $@"OnPropertyChanged(""{property.PropertyName}_Content"");")}
             }}
-        }}" /*Table.UpdateByModified ? "//" : ""*/);
-
-
-            EnumContentProperty(property, code);
+        }}");
+            ContentProperty(property, code);
         }
         
         /// <summary>
@@ -322,13 +308,7 @@ namespace {NameSpace}
             else if (string.IsNullOrWhiteSpace(property.ComputeSetCode))
             {
                 code.Append($@"
-        /// <summary>
-        /// {ToRemString(property.Caption + ":" + property.Description)}
-        /// </summary>
-        /// <remarks>
-        /// {ToRemString(property.Description)}
-        /// </remarks>
-        {Attribute(property)}
+        {PropertyHeader(property)}
         {property.AccessType} {property.LastCsType} {property.PropertyName}
         {{
             get
@@ -340,13 +320,7 @@ namespace {NameSpace}
             else if (string.IsNullOrWhiteSpace(property.ComputeGetCode))
             {
                 code.Append($@"
-        /// <summary>
-        /// {ToRemString(property.Caption)}
-        /// </summary>
-        /// <remarks>
-        /// {ToRemString(property.Description)}
-        /// </remarks>
-        [{Attribute(property)}]
+        [{PropertyHeader(property)}]
         [JsonProperty(""{property.PropertyName}"", NullValueHandling = NullValueHandling.Ignore)]
         {property.AccessType} {property.LastCsType} {property.PropertyName}
         {{
@@ -359,13 +333,7 @@ namespace {NameSpace}
             else
             {
                 code.Append($@"
-        /// <summary>
-        /// {ToRemString(property.Caption + ":" + property.Description)}
-        /// </summary>
-        /// <remarks>
-        /// {ToRemString(property.Description)}
-        /// </remarks>
-        {Attribute(property)}
+        {PropertyHeader(property)}
         [JsonProperty(""{property.PropertyName}"", NullValueHandling = NullValueHandling.Ignore)]
         {property.AccessType} {property.LastCsType} {property.PropertyName}
         {{

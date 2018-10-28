@@ -1,8 +1,12 @@
+using Agebull.EntityModel.Config.Mysql;
+using Agebull.EntityModel.Config.SqlServer;
+
 namespace Agebull.EntityModel.Config
 {
     public class PropertyValidater : ConfigValidaterBase
     {
         #region 定义
+        public DataBaseType DataBaseType { get; set; }
 
         public PropertyConfig Property { get; set; }
         bool IsClass => Property.Parent.NoDataBase;
@@ -23,7 +27,7 @@ namespace Agebull.EntityModel.Config
                 result = false;
                 Message.Track = "====>属性名称不能为空";
             }
-            else if (Property.Name == "NewField" || (Property.Name[0] >= '0' && Property.Name[0] <= '9'))
+            else if (Property.Name == "NewField" || Property.Name[0] >= '0' && Property.Name[0] <= '9')
             {
                 result = false;
                 Message.Track = "====>属性名称不正确:" + Property.Name;
@@ -52,16 +56,16 @@ namespace Agebull.EntityModel.Config
             }
             if (Property.NoStorage)
                 return result;
-            if (string.IsNullOrWhiteSpace(Property.ColumnName))
+            if (string.IsNullOrWhiteSpace(Property.DbFieldName))
             {
                 result = false;
                 Message.Track = "====>字段存储名称不能为空";
             }
-            else if (Property.ColumnName == "NewField" ||
-                     (Property.ColumnName[0] >= '0' && Property.ColumnName[0] <= '9'))
+            else if (Property.DbFieldName == "NewField" ||
+                     Property.DbFieldName[0] >= '0' && Property.DbFieldName[0] <= '9')
             {
                 result = false;
-                Message.Track = "====>字段存储名称不正确:" + Property.ColumnName;
+                Message.Track = "====>字段存储名称不正确:" + Property.DbFieldName;
             }
             //if (CreateIndex && IsPrimaryKey)
             //{
@@ -73,7 +77,10 @@ namespace Agebull.EntityModel.Config
             //    result = false;
             //    trace.Track = "====>字段为用户ID映射而字段类型不是Int型";
             //}
-            if (!DataBaseHelper.IsDataBaseType(Property.DbType))
+            bool ist = DataBaseType == DataBaseType.SqlServer
+                        ? SqlServerHelper.IsDataBaseType(Property.DbType)
+                        : MySqlHelper.IsDataBaseType(Property.DbType);
+            if (!ist)
             {
                 result = false;
                 Message.Track = "====>字段存储类型不正确" + Property.DbType;

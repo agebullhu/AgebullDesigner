@@ -24,6 +24,8 @@ namespace Agebull.EntityModel
     /// </summary>
     public sealed class TreeRoot : TreeItemBase
     {
+        public static TreeRoot Root;
+
         private TreeItem _selectItem;
 
         /// <summary>
@@ -31,7 +33,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public TreeRoot()
         {
-
+            Root = this;
         }
         /// <summary>
         /// 全局配置
@@ -112,7 +114,7 @@ namespace Agebull.EntityModel
 
         #region 扩展方法
 
-        private ObservableCollection<CommandItemBase> _commands;
+        private NotificationList<CommandItemBase> _commands;
 
         private ModelFunctionDictionary<TreeRoot> _modelFunction;
 
@@ -129,9 +131,9 @@ namespace Agebull.EntityModel
         /// <summary>
         ///     对应的命令集合
         /// </summary>
-        public ObservableCollection<CommandItemBase> Commands
+        public NotificationList<CommandItemBase> Commands
         {
-            get => _commands ?? (_commands = new ObservableCollection<CommandItemBase>() );
+            get => _commands ?? (_commands = new NotificationList<CommandItemBase>() );
             set
             {
                 if (_commands == value)

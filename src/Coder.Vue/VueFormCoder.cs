@@ -189,7 +189,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 code.Append($@"
             '{field.JsonName}':[");
                 var dot = "";
-                if (!field.IsRequired)
+                if (field.IsRequired && field.CanUserInput)
                 {
                     code.Append($@"{dot}
                 {{ required: true, message: '«Î ‰»Î{field.Caption}', trigger: 'blur' }}");

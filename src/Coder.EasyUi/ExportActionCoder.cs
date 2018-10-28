@@ -10,14 +10,36 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// <summary>
         /// Ãû³Æ
         /// </summary>
-        protected override string FileSaveConfigName => "File_Aspnet_Export";
+        protected override string FileName => "Export.cs";
 
-        public override string Code()
+        protected override string LangName => "aspx";
+
+
+        protected override string BaseCode()
         {
             return $@"
-using Gboxt.Common.DataModel;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Configuration;
+using System.Data;
+using System.Diagnostics;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
+
+using Agebull.Common;
+using Agebull.Common.DataModel;
+using Agebull.Common.WebApi;
 using Gboxt.Common.DataModel.MySql;
 using Gboxt.Common.WebUI;
+using Gboxt.Common.DataModel;
+
+{Project.UsingNameSpaces}
 
 using {NameSpace}.DataAccess;
 
@@ -41,7 +63,11 @@ namespace {NameSpace}.{Entity.Name}Page
         {{
             var filter = new LambdaItem<{Entity.EntityName}>
             {{
-                {(Entity.Interfaces?.Contains("IStateData") ?? false ? "Root = p => p.DataState <= DataStateType.Discard" : null)}
+                {(
+                Entity.Interfaces?.Contains("IStateData") ?? false 
+                    ? "Root = p => p.DataState <= DataStateType.Discard" 
+                    : null
+                )}
             }};
             var keyWord = GetArg(""keyWord"");
             if (!string.IsNullOrEmpty(keyWord))

@@ -8,10 +8,10 @@ using Agebull.EntityModel.Designer;
 namespace Agebull.Common.Config.Designer
 {
     /// <summary>
-    /// 接口实现检查
+    /// 规范实体主键
     /// </summary>
-    [Export(typeof(IAutoRegister))]
-    [ExportMetadata("Symbol", '%')]
+    //[Export(typeof(IAutoRegister))]
+    //[ExportMetadata("Symbol", '%')]
     internal sealed class EntityPrimaryKeyHelper : EntityCommandBase, IAutoRegister
     {
         
@@ -48,7 +48,7 @@ namespace Agebull.Common.Config.Designer
         public override bool Execute(EntityConfig entity)
         {
             StateMessage = entity.Caption + "...";
-            if (entity.Properties.Any(p => p.ColumnName == "number_id"))
+            if (entity.Properties.Any(p => p.DbFieldName == "number_id"))
             {
                 Trace.WriteLine($@"ALTER TABLE dbo.{entity.SaveTableName} ADD [number_id] int NOT NULL IDENTITY (1, 1);");
                 Trace.WriteLine("GO");
@@ -71,7 +71,7 @@ namespace Agebull.Common.Config.Designer
                 IsPrimaryKey = true,
                 IsIdentity = true,
                 CsType = "int",
-                ColumnName = "number_id",
+                DbFieldName = "number_id",
                 DbType = "int"
             });
             return true;

@@ -6,48 +6,72 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
     /// <summary>
     /// EasyUi基类，以实现自动注册
     /// </summary>
-    public abstract class EasyUiCoderBase : CoderWithEntity, IAutoRegister
+    public abstract class EasyUiCoderBase : CoderBase, IAutoRegister
     {
+        /// <summary>
+        /// 当前对象
+        /// </summary>
+        public ConfigBase CurrentConfig => Entity;
+
+        /// <summary>
+        /// 项目对象
+        /// </summary>
+        public ProjectConfig Project => Entity?.Parent;
+
+        /// <summary>
+        /// 当前表对象
+        /// </summary>
+        public EntityConfig Entity { get; set; }
+
+        /// <summary>
+        /// 名称
+        /// </summary>
+        protected string NameSpace => Project?.NameSpace;
+
+        /// <summary>
+        /// 名称
+        /// </summary>
+        protected abstract string FileName { get; }
+
+        /// <summary>
+        /// 名称
+        /// </summary>
+        protected virtual string ExFileName => null;
+
+        /// <summary>
+        /// 语言类型
+        /// </summary>
+        protected virtual string LangName => "js";
+
         /// <summary>
         /// 执行自动注册
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("EasyUi",FileSaveConfigName, "js", BaseCode);
-            MomentCoder.RegisteCoder("EasyUi", FileSaveConfigName, "js", ExtendCode);
+            MomentCoder.RegisteCoder("Web-EasyUi", FileName, LangName, BaseCode);
+            if (!string.IsNullOrEmpty(ExFileName))
+                MomentCoder.RegisteCoder("Web-EasyUi", ExFileName, LangName, ExtendCode);
         }
 
-        public static string BaseCode(ConfigBase config)
+        public string BaseCode(EntityConfig entity)
         {
-            var entity = config as EntityConfig;
-            if (entity == null)
-                return null;
-            var coder = new ApiActionCoder
-            {
-                Entity = entity,
-                Project = entity.Parent
-            };
-            return coder.BaseCode();
+            Entity = entity;
+            return BaseCode();
         }
-        public static string ExtendCode(ConfigBase config)
+        public string ExtendCode(EntityConfig config)
         {
-            var entity = config as EntityConfig;
-            if (entity == null)
+            Entity = config as EntityConfig;
+            if (Entity == null)
                 return null;
-            var coder = new ApiActionCoder
-            {
-                Entity = entity,
-                Project = entity.Parent
-            };
-            return coder.Code();
+            return ExtendCode();
         }
 
-        public virtual string BaseCode()
+        protected virtual string BaseCode()
         {
             return null;
         }
 
-        public virtual string Code()
+        protected virtual string ExtendCode()
         {
             return null;
         }

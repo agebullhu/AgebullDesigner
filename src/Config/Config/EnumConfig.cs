@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2017/7/12 22:06:39*/
+﻿/*design by:agebull designer date:2017/7/12 22:06:39*/
 /*****************************************************
 ©2008-2017 Copy right by agebull.hu(胡天水)
 作者:agebull.hu(胡天水)
@@ -8,8 +8,6 @@
 *****************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 
@@ -78,7 +76,7 @@ namespace Agebull.EntityModel.Config
         /// 枚举节点
         /// </summary>
         [DataMember,JsonProperty("_items", NullValueHandling = NullValueHandling.Ignore)]
-        internal ObservableCollection<EnumItem> _items;
+        internal NotificationList<EnumItem> _items;
 
         /// <summary>
         /// 枚举节点
@@ -88,13 +86,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember,JsonIgnore]
         [Category(@"设计器支持"),DisplayName(@"枚举节点"),Description("枚举节点")]
-        public ObservableCollection<EnumItem> Items
+        public NotificationList<EnumItem> Items
         {
             get
             {
                 if (_items != null)
                     return _items;
-                _items = new ObservableCollection<EnumItem>();
+                _items = new NotificationList<EnumItem>();
                 RaisePropertyChanged(nameof(Items));
                 return _items;
             }

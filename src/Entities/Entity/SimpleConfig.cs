@@ -19,7 +19,7 @@ namespace Agebull.EntityModel.Config
         ///     名称
         /// </summary>
         [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"名称")]
-        public string Name
+        public virtual string Name
         {
             get => _name;
             set
@@ -45,9 +45,9 @@ namespace Agebull.EntityModel.Config
         ///     标题
         /// </summary>
         [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"标题")]
-        public string Caption
+        public virtual string Caption
         {
-            get => WorkContext.InCoderGenerating ? (_caption ?? _name) : _caption;
+            get => WorkContext.InCoderGenerating ? _caption ?? _name : _caption;
             set
             {
                 if (_caption == value)
@@ -72,9 +72,9 @@ namespace Agebull.EntityModel.Config
         ///     说明
         /// </summary>
         [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"说明")]
-        public string Description
+        public virtual string Description
         {
-            get => WorkContext.InCoderGenerating ? (_description ?? Caption) : _description;
+            get => WorkContext.InCoderGenerating ? _description ?? Caption : _description;
             set
             {
                 var now = !string.IsNullOrWhiteSpace(value) ? value.Trim() : null;
@@ -94,7 +94,7 @@ namespace Agebull.EntityModel.Config
         /// 参见
         /// </summary>
         [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"参见")]
-        public string Remark
+        public virtual string Remark
         {
             get => _remark;
             set

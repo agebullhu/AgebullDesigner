@@ -7,7 +7,7 @@ namespace Agebull.EntityModel.Config.Mysql
     /// <summary>
     ///     实体实现接口的命令
     /// </summary>
-    public class MySqlDataBaseHelper
+    public class MySqlHelper
     {
 
         /// <summary>
@@ -144,9 +144,6 @@ namespace Agebull.EntityModel.Config.Mysql
                     case "real":
                     case "float":
                         return MySqlDbType.Float;
-                    case "binary":
-                    case "image":
-                        return MySqlDbType.Blob;
                     case "char":
                     case "nchar":
                         return MySqlDbType.String;
@@ -163,12 +160,17 @@ namespace Agebull.EntityModel.Config.Mysql
                     case "datetime2":
                     case "smalldatetime":
                         return MySqlDbType.DateTime;
+                    case "uuid":
                     case "guid":
                     case "uniqueidentifier":
                         return MySqlDbType.Guid;
-                    case "Binary":
-                    case "byte[]":
+                    case "binary":
+                    case "image":
+                    case "blob":
                         return MySqlDbType.Blob;
+                    case "longblob":
+                    case "byte[]":
+                        return MySqlDbType.LongBlob;
                     default:
                         return MySqlDbType.VarString;
                 }

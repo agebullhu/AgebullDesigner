@@ -28,10 +28,8 @@ namespace Agebull.EntityModel.Config
         {
             if (string.IsNullOrWhiteSpace(Alias))
                 return new List<string>();
-            var alias =
-                Alias.Split(new[] { ' ', ',', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Distinct();
-            return
-                alias.Where(p => !string.IsNullOrWhiteSpace(p) && p != PropertyName).Select(p => p.Trim()).ToList();
+            var alias = Alias.Split(new[] { ' ', ',', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Distinct();
+            return alias.Where(p => p != PropertyName).Select(p => p.Trim()).ToList();
         }
         
         #endregion

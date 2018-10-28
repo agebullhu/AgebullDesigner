@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Config
 {
@@ -25,7 +26,7 @@ namespace Agebull.EntityModel.Config
                 {
                     try
                     {
-                        Property.Datalen = Int32.Parse(type.ArrayLen);
+                        Property.Datalen = int.Parse(type.ArrayLen);
                     }
                     catch (Exception)
                     {
@@ -143,7 +144,6 @@ namespace Agebull.EntityModel.Config
                 if (Property.EnumConfig != null && Property.EnumConfig.Items.Count <= 1)
                 {
                     Property.EnumConfig.Option.IsDelete = true;
-                    Property.EnumConfig = null;
                     Property.CustomType = null;
                 }
                 else if (Property.EnumConfig == null && Property.CustomType != null)
@@ -175,7 +175,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (type.KeyWork == "char" && !string.IsNullOrWhiteSpace(type.ArrayLen))
                 {
-                    if (Int32.TryParse(type.ArrayLen, out int len))
+                    if (int.TryParse(type.ArrayLen, out int len))
                     {
                         link.Datalen = len;
                         Property.Datalen = len;
@@ -196,7 +196,6 @@ namespace Agebull.EntityModel.Config
 
             if (type.Items.Count <= 0)
             {
-                Property.EnumConfig = null;
                 Property.CustomType = null;
                 return true;
             }
@@ -210,16 +209,15 @@ namespace Agebull.EntityModel.Config
             if (enumcfg == null)
             {
                 Property.CustomType = null;
-                Property.EnumConfig = null;
             }
             else
             {
                 Property.CsType = "int";
-                Property.CustomType = enumcfg.Name;
-                Property.EnumConfig = enumcfg;
-                enumcfg.Option.ReferenceKey = Property.Option.Key;
+                Property.DataType = "Enum";
+                DataTypeHelper.ToStandard(Property);
                 Property.CppType = type.KeyWork;
                 Property.CppLastType = enumcfg.Name;
+                Property.EnumConfig = enumcfg;
             }
         }
 
@@ -227,7 +225,6 @@ namespace Agebull.EntityModel.Config
         {
             if (Property.EnumConfig == null)
             {
-                Property.CustomType = null;
                 return;
             }
             if (Property.EnumConfig.Items.All(p => !string.Equals(p.Name, "None", StringComparison.OrdinalIgnoreCase)))
@@ -239,14 +236,8 @@ namespace Agebull.EntityModel.Config
                     Value = "0"
                 });
             }
-            //int id = 0;
-            //foreach (var item in Property.EnumConfig.Items)
-            //{
-            //    item.Value = (++id).ToString();
-            //}
-            Property.CsType = "int";
-            if (Property.CppLastType != "int")
-                Property.CppLastType = "int";
+            Property.DataType = "Enum";
+            DataTypeHelper.StandardDataType(Property);
             Property.CustomType = Property.EnumConfig.Name;
         }
         #endregion

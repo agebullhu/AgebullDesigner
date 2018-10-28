@@ -48,26 +48,21 @@ namespace Agebull.EntityModel.Designer
         {
             if (string.IsNullOrWhiteSpace(field.CustomType))
             {
-                field.IsEnum = false;
                 field.CustomType = null;
             }
             else if (field.CustomType.Contains("[]"))
             {
-                field.IsArray = false;
-                field.IsEnum = false;
+                field.IsArray = true;
                 field.CsType = field.CustomType.Split('[')[0];
             }
             else if (field.CustomType.IndexOf("List<", StringComparison.Ordinal) >= 0)
             {
                 field.IsArray = true;
-                field.IsEnum = false;
                 field.CsType = field.CustomType.Split('<', '>')[1];
             }
             else
             {
                 field.EnumConfig = SolutionConfig.Current.Enums.FirstOrDefault(p => p.Name == field.CustomType);
-                field.IsEnum = field.EnumConfig != null;
-
             }
         }
         public void CheckName(PropertyConfig property)

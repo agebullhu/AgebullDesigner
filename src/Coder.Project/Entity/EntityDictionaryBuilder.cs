@@ -158,7 +158,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name=""value""></param>
         protected override void SetValueInner(int index, object value)
         {
-            /*switch(index)
+            switch(index)
             {");
 
             foreach (PropertyConfig field in ReadWriteColumns)
@@ -166,13 +166,13 @@ namespace Agebull.EntityModel.RobotCoder
                 if (!string.IsNullOrWhiteSpace(field.CustomType))
                 {
                     code.AppendFormat(@"
-            case Index_{0}:
+            case _DataStruct_.{0}:
                 this.{0} = ({1})value;
                 return;", field.Name, field.CustomType);
                     continue;
                 }
                 code.AppendFormat(@"
-            case Index_{0}:
+            case _DataStruct_.{0}:
                 this.{0} = {1};
                 return;", field.Name, ConvertCode(field, "value"));
             }
@@ -181,7 +181,7 @@ namespace Agebull.EntityModel.RobotCoder
             if (!string.IsNullOrWhiteSpace(Entity.ModelBase))
                 code.Append(@"
             base.SetValueInner(index,value);");
-            code.AppendLine(@"*/
+            code.AppendLine(@"
         }");
         }
 
@@ -232,17 +232,17 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name=""index""></param>
         protected override object GetValueInner(int index)
         {
-            /*switch(index)
+            switch(index)
             {");
 
             foreach (PropertyConfig property in Entity.PublishProperty)
             {
                 code.AppendFormat(@"
-                case Index_{0}:
+                case _DataStruct_.{0}:
                     return this.{0};", property.Name);
             }
             code.AppendLine(@"
-            }*/");
+            }");
             code.Append(!string.IsNullOrWhiteSpace(Entity.ModelBase)
                 ? @"
             return base.GetValueInner(index);"
@@ -259,11 +259,11 @@ namespace Agebull.EntityModel.RobotCoder
             {
                 case "string":
                 case "String":
-                    return ($"{arg} == null ? null : {arg}.ToString()");
+                    return $"{arg} == null ? null : {arg}.ToString()";
                 case "long":
                 case "Int64":
                     if (column.Nullable)
-                        return ($"{arg} == null ? null : (long?)Convert.ToInt64({arg})");
+                        return $"{arg} == null ? null : (long?)Convert.ToInt64({arg})";
                     return $"Convert.ToInt64({arg})";
                 case "int":
                 case "Int32":

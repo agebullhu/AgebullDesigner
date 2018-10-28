@@ -17,21 +17,18 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("WPF","表格列", "xml", cfg => Run(cfg, Views));
+            MomentCoder.RegisteCoder("WPF","表格列", "xml", Views);
         }
         #endregion
 
         #region 测试视图
 
-        public static string Views(ConfigBase config)
+        public static string Views(EntityConfig entityConfig)
         {
-            EntityConfig entityConfig = (EntityConfig)config;
             var code = new StringBuilder();
             foreach (var field in entityConfig.PublishProperty.Where(p => !p.DenyClient))
             {
-                var ty = field.CppTypeObject as TypedefItem;
-
-                if (ty != null && ty.Items.Count > 0)
+                if (field.CppTypeObject is TypedefItem ty && ty.Items.Count > 0)
                     code.AppendFormat(@"        
                 <DataGridTextColumn Binding = ""{{Binding {0}2}}"" Header = ""{1}"" />", field.Name, field.Caption);
                 else
@@ -67,7 +64,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// {1}
         /// </summary>
-       public ObservableCollection<{0}> List_{0} {{ get; set; }} = new ObjectCollection<{0}>();"
+       public NotificationList<{0}> List_{0} {{ get; set; }} = new ObjectCollection<{0}>();"
             , entityConfig.Name
             , entityConfig.Caption);
             return code.ToString();

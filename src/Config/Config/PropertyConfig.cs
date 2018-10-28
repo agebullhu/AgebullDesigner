@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2017/7/12 22:06:40*/
+﻿/*design by:agebull designer date:2017/7/12 22:06:40*/
 /*****************************************************
 ©2008-2017 Copy right by agebull.hu(胡天水)
 作者:agebull.hu(胡天水)
@@ -7,9 +7,10 @@
 修改:2017-07-12
 *****************************************************/
 
+using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-
+using System.Text;
 using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
@@ -96,7 +97,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"系统"), DisplayName(@"阻止编辑"), Description("阻止使用的范围")]
         public AccessScopeType DenyScope
         {
-            get => _denyScope;
+            get => Reference?.DenyScope ?? _denyScope;
             set
             {
                 if (_denyScope == value)
@@ -108,6 +109,11 @@ namespace Agebull.EntityModel.Config
         }
         #endregion
         #region 模型设计(C#)
+
+        private PropertyConfig Reference => Option.Reference == this ? null : Option.Reference as PropertyConfig;
+
+        private PropertyConfig ReferenceCfg => Option.ReferenceConfig == this ? null : Option.ReferenceConfig as PropertyConfig;
+
         /// <summary>
         /// 数据类型
         /// </summary>
@@ -124,7 +130,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计"), DisplayName(@"数据类型")]
         public string DataType
         {
-            get => _dataType;
+            get => ReferenceCfg != null ? ReferenceCfg.DataType : _dataType;
             set
             {
                 if (_dataType == value)
@@ -151,7 +157,8 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计(C#)"), DisplayName(@"语言类型(C#)"), Description("C#语言类型")]
         public string CsType
         {
-            get => WorkContext.InCoderGenerating ? (_csType ?? LastCsType ?? "string") : _csType;
+            get => ReferenceCfg != null ? ReferenceCfg.CsType :
+                (WorkContext.InCoderGenerating ? _csType ?? LastCsType ?? "string" : _csType);
             set
             {
                 if (_csType == value)
@@ -161,39 +168,6 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(CsType));
             }
         }
-        /// <summary>
-        /// 是否枚举类型
-        /// </summary>
-        [DataMember, JsonProperty("isEnum", NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isEnum;
-
-        /// <summary>
-        /// 枚举类型(C#)
-        /// </summary>
-        /// <remark>
-        /// 字段类型
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"模型设计"), DisplayName(@"是否枚举类型)"), Description("字段类型")]
-        public bool IsEnum
-        {
-            get => _isEnum;
-            set
-            {
-                if (_isEnum == value)
-                    return;
-                BeforePropertyChanged(nameof(IsEnum), _isEnum, value);
-                _isEnum = value;
-                OnPropertyChanged(nameof(IsEnum));
-            }
-        }
-
-        /// <summary>
-        /// 非基本类型名称(C#)
-        /// </summary>
-        [DataMember, JsonProperty("CustomType", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _customType;
-
         /// <summary>
         /// 是否数组
         /// </summary>
@@ -210,7 +184,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计"), DisplayName(@"是否数组"), Description("是否数组")]
         public bool IsArray
         {
-            get => _isArray;
+            get => Reference?.IsArray ?? _isArray;
             set
             {
                 if (_isArray == value)
@@ -236,7 +210,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计"), DisplayName(@"是否字典"), Description("是否字典")]
         public bool IsDictionary
         {
-            get => _isDictionary;
+            get => ReferenceCfg?.IsDictionary ?? _isDictionary;
             set
             {
                 if (_isDictionary == value)
@@ -246,6 +220,40 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(IsDictionary));
             }
         }
+
+        /// <summary>
+        /// 是否枚举类型
+        /// </summary>
+        [DataMember, JsonProperty("isEnum", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isEnum;
+
+        /// <summary>
+        /// 枚举类型(C#)
+        /// </summary>
+        /// <remark>
+        /// 字段类型
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"模型设计"), DisplayName(@"是否枚举类型)"), Description("字段类型")]
+        public bool IsEnum
+        {
+            get => ReferenceCfg?.IsEnum ?? _isEnum;
+            set
+            {
+                if (_isEnum == value)
+                    return;
+                BeforePropertyChanged(nameof(IsEnum), _isEnum, value);
+                _isEnum = value;
+                OnPropertyChanged(nameof(IsEnum));
+            }
+        }
+
+        /// <summary>
+        /// 非基本类型名称(C#)
+        /// </summary>
+        [DataMember, JsonProperty("CustomType", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _customType;
+
         /// <summary>
         /// 非基本类型名称(C#)
         /// </summary>
@@ -256,13 +264,22 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计(C#)"), DisplayName(@"非基本类型名称(C#)"), Description("字段类型")]
         public string CustomType
         {
-            get => _customType;
+            get => ReferenceCfg != null ? ReferenceCfg.CustomType : _customType;
             set
             {
                 if (_customType == value)
                     return;
                 BeforePropertyChanged(nameof(CustomType), _customType, value);
-                _customType = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                if (string.IsNullOrWhiteSpace(value) || value == CsType)
+                {
+                    _customType = null;
+                    EnumConfig = null;
+                    IsEnum = false;
+                }
+                else
+                {
+                    _customType = value.Trim();
+                }
                 OnPropertyChanged(nameof(CustomType));
             }
         }
@@ -305,6 +322,10 @@ namespace Agebull.EntityModel.Config
         {
             get
             {
+                if (ReferenceCfg != null)
+                {
+                    return ReferenceCfg.LastCsType;
+                }
                 if (!string.IsNullOrWhiteSpace(_referenceType))
                     return _referenceType;
                 if (!string.IsNullOrWhiteSpace(CustomType))
@@ -312,8 +333,8 @@ namespace Agebull.EntityModel.Config
                 if (CsType == null)
                     return null;
                 CustomType = null;
-                if (IsRelationField)
-                    return CsType;
+                if (IsArray)
+                    return CsType + "[]";
                 if (CsType.Contains("[") || CsType.ToLower() == "string")
                     return CsType;
                 if (Nullable)
@@ -343,7 +364,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计(C#)"), DisplayName(@"可空类型(C#)"), Description(Nullable_Description)]
         public bool Nullable
         {
-            get => _nullable;
+            get => Reference?.Nullable ?? _nullable;
             set
             {
                 if (_nullable == value)
@@ -382,6 +403,34 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(IsExtendValue));
             }
         }
+
+        /// <summary>
+        /// 对应枚举
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        internal Guid _enumKey;
+
+        /// <summary>
+        /// 对应枚举
+        /// </summary>
+        /// <remark>
+        /// 当使用自定义类型时的枚举对象
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"模型设计"), DisplayName(@"对应枚举"), Description("当使用自定义类型时的枚举对象")]
+        public Guid EnumKey
+        {
+            get => Reference?.EnumKey ?? _enumKey;
+            set
+            {
+                if (_enumKey == value)
+                    return;
+                BeforePropertyChanged(nameof(EnumKey), _enumConfig, value);
+                _enumKey = value;
+                OnPropertyChanged(nameof(EnumKey));
+            }
+        }
+
         /// <summary>
         /// 对应枚举
         /// </summary>
@@ -398,13 +447,24 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计"), DisplayName(@"对应枚举"), Description("当使用自定义类型时的枚举对象")]
         public EnumConfig EnumConfig
         {
-            get => _enumConfig;
+            get
+            {
+                if (Reference != null)
+                    return Reference.EnumConfig;
+                if (_customType == null)
+                    return null;
+                return _enumConfig ?? (_enumConfig = GlobalConfig.GetEnum(_customType));
+            }
             set
             {
                 if (_enumConfig == value)
                     return;
                 BeforePropertyChanged(nameof(EnumConfig), _enumConfig, value);
                 _enumConfig = value;
+                EnumKey = value?.Key ?? Guid.Empty;
+                IsEnum = value != null;
+                if (value != null)
+                    CustomType = value.Name;
                 OnPropertyChanged(nameof(EnumConfig));
             }
         }
@@ -425,7 +485,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计"), DisplayName(@"内部字段"), Description("是否内部字段,即非用户字段,不呈现给用户")]
         public bool InnerField
         {
-            get => _innerField;
+            get => Reference?.InnerField ?? _innerField;
             set
             {
                 if (_innerField == value)
@@ -452,7 +512,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计"), DisplayName(@"系统字段"), Description("系统字段")]
         public bool IsSystemField
         {
-            get => _isSystemField;
+            get => Reference?.IsSystemField ?? _isSystemField;
             set
             {
                 if (_isSystemField == value)
@@ -479,7 +539,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计"), DisplayName(@"接口字段"), Description("是否接口字段")]
         public bool IsInterfaceField
         {
-            get => _isInterfaceField;
+            get => Reference?.IsInterfaceField ?? _isInterfaceField;
             set
             {
                 if (_isInterfaceField == value)
@@ -504,9 +564,9 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"代码访问范围"), Description(AccessType_Description)]
-        public string AccessType => InnerField || DenyScope.HasFlag(AccessScopeType.Server) ||
-                                    !IsRelation && !string.IsNullOrWhiteSpace(ExtendRole) &&
-                                    ExtendRole.Contains(",")
+        public string AccessType => InnerField || DenyScope.HasFlag(AccessScopeType.Server)
+            //||!IsRelation && !string.IsNullOrWhiteSpace(ExtendRole) &&
+            //ExtendRole.Contains(",")
             ? "internal"
             : "public ";
 
@@ -672,7 +732,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计(C++)"), DisplayName(@"字段名称(C++)"), Description("C++字段名称")]
         public string CppName
         {
-            get => WorkContext.InCoderGenerating ? (_cppName ?? Name) : _cppName;
+            get => WorkContext.InCoderGenerating ? _cppName ?? Name : _cppName;
             set
             {
                 if (_cppName == value)
@@ -928,6 +988,94 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(IsCustomCompute));
             }
         }
+
+        #endregion
+        #region API支持
+
+        /// <summary>
+        /// 不参与ApiArgument序列化
+        /// </summary>
+        [DataMember, JsonProperty("noneApiArgument", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _noneApiArgument;
+
+        /// <summary>
+        /// 不参与ApiArgument序列化
+        /// </summary>
+        /// <remark>
+        /// 客户端不显示
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"API支持"), DisplayName(@"不参与ApiArgument序列化")]
+        public bool NoneApiArgument
+        {
+            get => (Reference?.NoneApiArgument ?? false) || _noneApiArgument;
+            set
+            {
+                if (_noneApiArgument == value)
+                    return;
+                BeforePropertyChanged(nameof(NoneApiArgument), _noneApiArgument, value);
+                _noneApiArgument = value;
+                OnPropertyChanged(nameof(NoneApiArgument));
+            }
+        }
+        /// <summary>
+        /// 字段名称(ApiArgument)
+        /// </summary>
+        [DataMember, JsonProperty("apiArgumentName", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _apiArgumentName;
+
+        /// <summary>
+        /// 字段名称(ApiArgument)
+        /// </summary>
+        /// <remark>
+        /// ApiArgument字段名称
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"API支持"), DisplayName(@"字段名称(ApiArgument)")]
+        public string ApiArgumentName
+        {
+            get => WorkContext.InCoderGenerating ? _apiArgumentName ?? JsonName : _apiArgumentName;
+            set
+            {
+                if (_apiArgumentName == value)
+                    return;
+                BeforePropertyChanged(nameof(ApiArgumentName), _apiArgumentName, value);
+                _apiArgumentName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                OnPropertyChanged(nameof(ApiArgumentName));
+            }
+        }
+        /// <summary>
+        /// 不参与Json序列化
+        /// </summary>
+        [DataMember, JsonProperty("NoneJson", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _noneJson;
+
+        /// <summary>
+        /// 不参与Json序列化
+        /// </summary>
+        /// <remark>
+        /// 客户端不显示
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"API支持"), DisplayName(@"不参与Json序列化")]
+        public bool NoneJson
+        {
+            get => _noneJson;
+            set
+            {
+                if (_noneJson == value)
+                    return;
+                BeforePropertyChanged(nameof(NoneJson), _noneJson, value);
+                _noneJson = value;
+                OnPropertyChanged(nameof(NoneJson));
+            }
+        }
+        /// <summary>
+        /// 字段名称(json)
+        /// </summary>
+        [DataMember, JsonProperty("jsonName", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _jsonName;
+
         /// <summary>
         /// 字段名称(json)
         /// </summary>
@@ -935,16 +1083,17 @@ namespace Agebull.EntityModel.Config
         /// json字段名称
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(@"模型设计"), DisplayName(@"字段名称(json)"), Description("json字段名称")]
+        [Category(@"API支持"), DisplayName(@"字段名称(json)")]
         public string JsonName
         {
-            get => WorkContext.InCoderGenerating ? (_jsonName ?? Name) : _jsonName;
+            get =>
+                !IsLinkField && Reference != null && Reference.IsInterfaceField
+                ? Reference.JsonName
+                : WorkContext.InCoderGenerating ? _jsonName ?? Name : _jsonName;
             set
             {
                 if (_jsonName == value)
                     return;
-                if (Name == value)
-                    value = null;
                 BeforePropertyChanged(nameof(JsonName), _jsonName, value);
                 _jsonName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(JsonName));
@@ -960,7 +1109,7 @@ namespace Agebull.EntityModel.Config
         /// 示例内容
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(@"模型设计"), DisplayName(@"示例内容"), Description(CanEmpty_Description)]
+        [Category(@"API支持"), DisplayName(@"示例内容")]
         public string HelloCode
         {
             get => _helloCode;
@@ -1171,31 +1320,42 @@ namespace Agebull.EntityModel.Config
         }
         #endregion
         #region 数据库
-
         /// <summary>
-        /// 数据库索引
-        /// </summary>
-        [DataMember, JsonProperty("CreateIndex", NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _createIndex;
-
-        /// <summary>
-        /// 数据库索引
+        /// 构建数据库索引
         /// </summary>
         /// <remark>
         /// 构建数据库索引的优化选项
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"数据库索引"), Description("构建数据库索引的优化选项")]
-        public bool CreateIndex
+        [Category(@"数据库"), DisplayName(@"构建数据库索引"), Description("构建数据库索引的优化选项")]
+        public bool CreateDbIndex => Reference != null 
+            ? Reference.CreateDbIndex || _isDbIndex
+            : IsPrimaryKey || IsIdentity || IsLinkKey || IsCaption || _isDbIndex;
+
+        /// <summary>
+        /// 数据库索引
+        /// </summary>
+        [DataMember, JsonProperty("isDbIndex", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isDbIndex;
+
+        /// <summary>
+        /// 是否数据库索引
+        /// </summary>
+        /// <remark>
+        /// 构建数据库索引的优化选项
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据库"), DisplayName(@"是否数据库索引"), Description("构建数据库索引的优化选项")]
+        public bool IsDbIndex
         {
-            get => _createIndex;
+            get => _isDbIndex;
             set
             {
-                if (_createIndex == value)
+                if (_isDbIndex == value)
                     return;
-                BeforePropertyChanged(nameof(CreateIndex), _createIndex, value);
-                _createIndex = value;
-                OnPropertyChanged(nameof(CreateIndex));
+                BeforePropertyChanged(nameof(IsDbIndex), _isDbIndex, value);
+                _isDbIndex = value;
+                OnPropertyChanged(nameof(IsDbIndex));
             }
         }
 
@@ -1217,7 +1377,7 @@ namespace Agebull.EntityModel.Config
         /// 数据库字段名称
         /// </summary>
         [DataMember, JsonProperty("_columnName", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _columnName;
+        internal string _dbFieldName;
 
         /// <summary>
         /// 数据库字段名称
@@ -1227,18 +1387,19 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"数据库字段名称"), Description("字段名称")]
-        public string ColumnName
+        public string DbFieldName
         {
-            get => WorkContext.InCoderGenerating ? (_columnName ?? Name) : _columnName;
+            get => Reference != null ? Reference.DbFieldName :
+            (WorkContext.InCoderGenerating ? _dbFieldName ?? Name : _dbFieldName);
             set
             {
-                if (_columnName == value)
+                if (_dbFieldName == value)
                     return;
                 if (Name == value)
                     value = null;
-                BeforePropertyChanged(nameof(ColumnName), _columnName, value);
-                _columnName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(ColumnName));
+                BeforePropertyChanged(nameof(DbFieldName), _dbFieldName, value);
+                _dbFieldName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                OnPropertyChanged(nameof(DbFieldName));
             }
         }
 
@@ -1263,7 +1424,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"能否存储空值"), Description(DbNullable_Description)]
         public bool DbNullable
         {
-            get => _dbNullable;
+            get => Reference?.DbNullable ?? _dbNullable;
             set
             {
                 if (_dbNullable == value)
@@ -1290,7 +1451,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"存储类型"), Description("存储类型")]
         public string DbType
         {
-            get => _dbType;
+            get => ReferenceCfg != null ? ReferenceCfg.DbType : _dbType;
             set
             {
                 if (_dbType == value)
@@ -1317,7 +1478,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"数据长度"), Description("文本或二进制存储的最大长度")]
         public int Datalen
         {
-            get => _datalen;
+            get => ReferenceCfg?.Datalen ?? _datalen;
             set
             {
                 if (_datalen == value)
@@ -1325,6 +1486,7 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(Datalen), _datalen, value);
                 _datalen = value;
                 OnPropertyChanged(nameof(Datalen));
+                OnPropertyChanged(nameof(AutoDataRuleDesc));
             }
         }
 
@@ -1344,7 +1506,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"数组长度"), Description("数组长度")]
         public string ArrayLen
         {
-            get => _arrayLen;
+            get => ReferenceCfg != null ? ReferenceCfg.ArrayLen : _arrayLen;
             set
             {
                 if (_arrayLen == value)
@@ -1371,7 +1533,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"存储精度"), Description("存储精度")]
         public int Scale
         {
-            get => _scale;
+            get => ReferenceCfg?.Scale ?? _scale;
             set
             {
                 if (_scale == value)
@@ -1379,6 +1541,7 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(Scale), _scale, value);
                 _scale = value;
                 OnPropertyChanged(nameof(Scale));
+                OnPropertyChanged(nameof(AutoDataRuleDesc));
             }
         }
 
@@ -1425,7 +1588,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"UNICODE"), Description("是否UNICODE字符串")]
         public bool Unicode
         {
-            get => _unicode;
+            get => ReferenceCfg?.Unicode ?? _unicode;
             set
             {
                 if (_unicode == value)
@@ -1452,7 +1615,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"固定长度"), Description("是否固定长度字符串")]
         public bool FixedLength
         {
-            get => _fixedLength;
+            get => ReferenceCfg?.FixedLength ?? _fixedLength;
             set
             {
                 if (_fixedLength == value)
@@ -1479,7 +1642,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"备注字段"), Description("是否备注字段")]
         public bool IsMemo
         {
-            get => _isMemo;
+            get => Reference?.IsMemo ?? _isMemo;
             set
             {
                 if (_isMemo == value)
@@ -1506,7 +1669,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"大数据"), Description("是否大数据")]
         public bool IsBlob
         {
-            get => _isBlob;
+            get => Reference?.IsBlob ?? _isBlob || DataType == "ByteArray";
             set
             {
                 if (_isBlob == value)
@@ -1538,7 +1701,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"内部字段(数据库)"), Description(DbInnerField_Description)]
         public bool DbInnerField
         {
-            get => _dbInnerField;
+            get => Reference?.DbInnerField ?? _dbInnerField;
             set
             {
                 if (_dbInnerField == value)
@@ -1570,7 +1733,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"非数据库字段"), Description(NoStorage_Description)]
         public bool NoStorage
         {
-            get => _noStorage;
+            get => Reference?.NoStorage ?? _noStorage;
             set
             {
                 if (_noStorage == value)
@@ -1597,7 +1760,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"*跳过保存的场景"), Description("跳过保存的场景")]
         public StorageScreenType KeepStorageScreen
         {
-            get => _keepStorageScreen;
+            get => Reference?.KeepStorageScreen ?? _keepStorageScreen;
             set
             {
                 if (_keepStorageScreen == value)
@@ -1629,7 +1792,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"自定义保存"), Description(CustomWrite_Description)]
         public bool CustomWrite
         {
-            get => _customWrite;
+            get => Reference?.CustomWrite ?? _customWrite;
             set
             {
                 if (_customWrite == value)
@@ -1702,7 +1865,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"用户是否可输入"), Description("用户是否可输入")]
-        public bool CanUserInput => !DenyClient && !IsUserReadOnly && !IsSystemField && !IsCompute && !(IsIdentity && IsIdentity);
+        public bool CanUserInput => !DenyClient && !IsUserReadOnly && !IsSystemField && !IsCompute && !(IsIdentity && IsIdentity) && (Parent != null && !Parent.IsUiReadOnly);
 
         /// <summary>
         /// 不可编辑
@@ -1720,7 +1883,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"), DisplayName(@"不可编辑"), Description("是否用户可编辑")]
         public bool IsUserReadOnly
         {
-            get => _isUserReadOnly;
+            get => Reference?.IsUserReadOnly ?? _isUserReadOnly;
             set
             {
                 if (_isUserReadOnly == value)
@@ -1755,39 +1918,6 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(MulitLine), _mulitLine, value);
                 _mulitLine = value;
                 OnPropertyChanged(nameof(MulitLine));
-            }
-        }
-
-        /// <summary>
-        /// 字段名称(json)
-        /// </summary>
-        [DataMember, JsonProperty("jsonName", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _jsonName;
-
-        /// <summary>
-        /// 不参与Json序列化
-        /// </summary>
-        [DataMember, JsonProperty("NoneJson", NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _noneJson;
-
-        /// <summary>
-        /// 不参与Json序列化
-        /// </summary>
-        /// <remark>
-        /// 客户端不显示
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"用户界面"), DisplayName(@"不参与Json序列化"), Description("客户端不显示")]
-        public bool NoneJson
-        {
-            get => _noneJson;
-            set
-            {
-                if (_noneJson == value)
-                    return;
-                BeforePropertyChanged(nameof(NoneJson), _noneJson, value);
-                _noneJson = value;
-                OnPropertyChanged(nameof(NoneJson));
             }
         }
 
@@ -1872,6 +2002,32 @@ namespace Agebull.EntityModel.Config
             }
         }
 
+        /// <summary>
+        /// 界面必填字段
+        /// </summary>
+        [DataMember, JsonProperty("uiRequired", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _uiRequired;
+
+        /// <summary>
+        /// 界面必填字段
+        /// </summary>
+        /// <remark>
+        /// 是否必填字段
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"用户界面"), DisplayName(@"界面必填字段"), Description("界面必填字段")]
+        public bool UiRequired
+        {
+            get => Reference?.UiRequired ?? _uiRequired;
+            set
+            {
+                if (_uiRequired == value)
+                    return;
+                BeforePropertyChanged(nameof(UiRequired), _uiRequired, value);
+                _uiRequired = value;
+                OnPropertyChanged(nameof(UiRequired));
+            }
+        }
         /// <summary>
         /// 输入类型
         /// </summary>
@@ -1977,6 +2133,32 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(ComboBoxUrl), _comboBoxUrl, value);
                 _comboBoxUrl = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(ComboBoxUrl));
+            }
+        }
+        /// <summary>
+        /// 是否图片
+        /// </summary>
+        [DataMember, JsonProperty("isImage", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isImage;
+
+        /// <summary>
+        /// 是否图片
+        /// </summary>
+        /// <remark>
+        /// 是否图片
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"用户界面"), DisplayName(@"是否图片"), Description("是否图片")]
+        public bool IsImage
+        {
+            get => _isImage;
+            set
+            {
+                if (_isImage == value)
+                    return;
+                BeforePropertyChanged(nameof(IsImage), _isImage, value);
+                _isImage = value;
+                OnPropertyChanged(nameof(IsImage));
             }
         }
 
@@ -2131,7 +2313,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"), DisplayName(@"列表不显示"), Description("列表不显示")]
         public bool NoneGrid
         {
-            get => _noneGrid;
+            get => Reference?.NoneGrid ?? (DenyClient || _noneGrid);
             set
             {
                 if (_noneGrid == value)
@@ -2158,7 +2340,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"), DisplayName(@"详细不显示"), Description("详细不显示")]
         public bool NoneDetails
         {
-            get => _noneDetails;
+            get => Reference?.NoneDetails ?? (DenyClient || _noneDetails);
             set
             {
                 if (_noneDetails == value)
@@ -2199,6 +2381,107 @@ namespace Agebull.EntityModel.Config
         #region 数据规则
 
         /// <summary>
+        /// 值说明
+        /// </summary>
+        [DataMember, JsonProperty("dataRuleDesc", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _dataRuleDesc;
+
+        /// <summary>
+        /// 值说明
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据规则"), DisplayName(@"数据说明"), Description("对于值数据规则的描述")]
+        public string DataRuleDesc
+        {
+            get => WorkContext.InCoderGenerating ? (_dataRuleDesc ?? AutoDataRuleDesc) : _dataRuleDesc;
+            set
+            {
+                if (_dataRuleDesc == value)
+                    return;
+                BeforePropertyChanged(nameof(DataRuleDesc), _dataRuleDesc, value);
+                _dataRuleDesc = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                OnPropertyChanged(nameof(DataRuleDesc));
+            }
+        }/// <summary>
+         /// 值说明
+         /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        public string AutoDataRuleDesc
+        {
+            get
+            {
+                StringBuilder decs = new StringBuilder();
+                bool checkNull;
+                switch (CsType?.ToLower() ?? "string")
+                {
+                    case "string":
+                    case "object":
+                        checkNull = true;
+                        break;
+                    default:
+                        checkNull = Nullable || IsArray || IsDictionary;
+                        break;
+                }
+                if (checkNull)
+                {
+                    if (!CanEmpty)
+                    {
+                        decs.Append("不能为空.");
+                    }
+                    else if (IsRequired)
+                    {
+                        decs.Append("提交时不能为空.");
+                    }
+                }
+
+                if (CsType == "string")
+                {
+                    string max = Max;
+                    if (!IsBlob && !IsMemo && Datalen > 0)
+                    {
+                        decs.Append($"可存储{Datalen}个字符.");
+                        if ((int.TryParse(max, out var len) && len > Datalen))
+                        {
+                            max = Max = null;
+                        }
+                        if (string.IsNullOrEmpty(max))
+                            max = Datalen.ToString();
+                    }
+
+                    if (!string.IsNullOrEmpty(Min) && !string.IsNullOrEmpty(max))
+                    {
+                        decs.Append($"合理长度在{Min}-{max}之间.");
+                    }
+                    else if (!string.IsNullOrEmpty(Min))
+                    {
+                        decs.Append($"合理长度应不小于{Min}.");
+                    }
+                    else if (!string.IsNullOrEmpty(max))
+                    {
+                        decs.Append($"合理长度应不大于{max}.");
+                    }
+                }
+                else
+                {
+                    string max = Max;
+                    if (!string.IsNullOrEmpty(Min) && !string.IsNullOrEmpty(max))
+                    {
+                        decs.Append($"合理值(大等于){Min}且(小于){max}.");
+                    }
+                    else if (!string.IsNullOrEmpty(Min))
+                    {
+                        decs.Append($"合理值不应小于{Min}.");
+                    }
+                    else if (!string.IsNullOrEmpty(max))
+                    {
+                        decs.Append($"合理值不应大于{max}.");
+                    }
+                }
+                return decs.ToString();
+            }
+        }
+
+        /// <summary>
         /// 校验代码
         /// </summary>
         [DataMember, JsonProperty("_validateCode", NullValueHandling = NullValueHandling.Ignore)]
@@ -2225,32 +2508,6 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 必填字段
-        /// </summary>
-        [DataMember, JsonProperty("_isRequired", NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isRequired;
-
-        /// <summary>
-        /// 必填字段
-        /// </summary>
-        /// <remark>
-        /// 是否必填字段
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据规则"), DisplayName(@"必填字段"), Description("是否必填字段")]
-        public bool IsRequired
-        {
-            get => _isRequired;
-            set
-            {
-                if (_isRequired == value)
-                    return;
-                BeforePropertyChanged(nameof(IsRequired), _isRequired, value);
-                _isRequired = value;
-                OnPropertyChanged(nameof(IsRequired));
-            }
-        }
-        /// <summary>
         /// 能否为空的说明文字
         /// </summary>
         const string CanEmpty_Description = @"这是数据相关的逻辑,表示在存储时必须写入数据,否则逻辑不正确";
@@ -2271,7 +2528,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据规则"), DisplayName(@"能否为空"), Description(CanEmpty_Description)]
         public bool CanEmpty
         {
-            get => _canEmpty;
+            get => Reference?.CanEmpty ?? _canEmpty;
             set
             {
                 if (_canEmpty == value)
@@ -2279,9 +2536,37 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(CanEmpty), _canEmpty, value);
                 _canEmpty = value;
                 OnPropertyChanged(nameof(CanEmpty));
+                OnPropertyChanged(nameof(AutoDataRuleDesc));
             }
         }
 
+        /// <summary>
+        /// 必填字段
+        /// </summary>
+        [DataMember, JsonProperty("_isRequired", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isRequired;
+
+        /// <summary>
+        /// 必填字段
+        /// </summary>
+        /// <remark>
+        /// 是否必填字段
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"用户界面"), DisplayName(@"必填字段"), Description("是否必填字段")]
+        public bool IsRequired
+        {
+            get => Reference?.IsRequired ?? _isRequired;
+            set
+            {
+                if (_isRequired == value)
+                    return;
+                BeforePropertyChanged(nameof(IsRequired), _isRequired, value);
+                _isRequired = value;
+                OnPropertyChanged(nameof(IsRequired));
+                OnPropertyChanged(nameof(AutoDataRuleDesc));
+            }
+        }
         /// <summary>
         /// 最大值
         /// </summary>
@@ -2298,7 +2583,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据规则"), DisplayName(@"最大值"), Description("最大")]
         public string Max
         {
-            get => _max;
+            get => Reference != null ? Reference.Max : _max;
             set
             {
                 if (_max == value)
@@ -2306,6 +2591,7 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(Max), _max, value);
                 _max = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Max));
+                OnPropertyChanged(nameof(AutoDataRuleDesc));
             }
         }
 
@@ -2325,7 +2611,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据规则"), DisplayName(@"最大值"), Description("最小")]
         public string Min
         {
-            get => _min;
+            get => Reference != null ? Reference.Min : _min;
             set
             {
                 if (_min == value)
@@ -2333,118 +2619,11 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(Min), _min, value);
                 _min = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Min));
+                OnPropertyChanged(nameof(AutoDataRuleDesc));
             }
         }
         #endregion
         #region 数据关联
-
-        /// <summary>
-        /// 是否关系字段
-        /// </summary>
-        [DataMember, JsonProperty("isRelationField", NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isRelationField;
-
-        /// <summary>
-        /// 是否关系字段
-        /// </summary>
-        /// <remark>
-        /// 是否关系字段
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@""), DisplayName(@"是否关系字段"), Description("是否关系字段")]
-        public bool IsRelationField
-        {
-            get => _isRelationField;
-            set
-            {
-                if (_isRelationField == value)
-                    return;
-                BeforePropertyChanged(nameof(IsRelationField), _isRelationField, value);
-                _isRelationField = value;
-                OnPropertyChanged(nameof(IsRelationField));
-            }
-        }
-
-        /// <summary>
-        /// 是否关系值
-        /// </summary>
-        [DataMember, JsonProperty("isRelationValue", NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isRelationValue;
-
-        /// <summary>
-        /// 是否关系值
-        /// </summary>
-        /// <remark>
-        /// 是否关系值
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@""), DisplayName(@"是否关系值"), Description("是否关系值")]
-        public bool IsRelationValue
-        {
-            get => _isRelationValue;
-            set
-            {
-                if (_isRelationValue == value)
-                    return;
-                BeforePropertyChanged(nameof(IsRelationValue), _isRelationValue, value);
-                _isRelationValue = value;
-                OnPropertyChanged(nameof(IsRelationValue));
-            }
-        }
-
-        /// <summary>
-        /// 是否关系数组
-        /// </summary>
-        [DataMember, JsonProperty("isRelationArray", NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isRelationArray;
-
-        /// <summary>
-        /// 是否关系数组
-        /// </summary>
-        /// <remark>
-        /// 是否关系数组
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@""), DisplayName(@"是否关系数组"), Description("是否关系数组")]
-        public bool IsRelationArray
-        {
-            get => _isRelationArray;
-            set
-            {
-                if (_isRelationArray == value)
-                    return;
-                BeforePropertyChanged(nameof(IsRelationArray), _isRelationArray, value);
-                _isRelationArray = value;
-                OnPropertyChanged(nameof(IsRelationArray));
-            }
-        }
-
-        /// <summary>
-        /// 是否扩展数组
-        /// </summary>
-        [DataMember, JsonProperty("isExtendArray", NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isExtendArray;
-
-        /// <summary>
-        /// 是否扩展数组
-        /// </summary>
-        /// <remark>
-        /// 是否扩展数组
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@""), DisplayName(@"是否扩展数组"), Description("是否扩展数组")]
-        public bool IsExtendArray
-        {
-            get => _isExtendArray;
-            set
-            {
-                if (_isExtendArray == value)
-                    return;
-                BeforePropertyChanged(nameof(IsExtendArray), _isExtendArray, value);
-                _isExtendArray = value;
-                OnPropertyChanged(nameof(IsExtendArray));
-            }
-        }
 
         /// <summary>
         /// 连接字段
@@ -2494,12 +2673,11 @@ namespace Agebull.EntityModel.Config
             {
                 if (_linkTable == value)
                     return;
-                if (value == Parent.SaveTable)
+                if (Parent != null && (string.Equals(value, Parent.Name, StringComparison.OrdinalIgnoreCase) ||
+                                       string.Equals(value, Parent.SaveTableName, StringComparison.OrdinalIgnoreCase) ||
+                                       string.Equals(value, Parent.ReadTableName, StringComparison.OrdinalIgnoreCase)))
                 {
                     value = null;
-                    IsLinkKey = false;
-                    IsLinkCaption = false;
-                    LinkField = null;
                 }
                 BeforePropertyChanged(nameof(LinkTable), _linkTable, value);
                 _linkTable = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
@@ -2615,290 +2793,5 @@ namespace Agebull.EntityModel.Config
             }
         }
         #endregion
-        #region 扩展配置(过时)
-
-        /// <summary>
-        /// 扩展组合规划的说明文字
-        /// </summary>
-        const string ExtendRole_Description = @"扩展组合规划,
-类JSON方式即[名称:类型]多个用逗号分开,
-类型说明:#表名,%小数,*整数,@日期,!文本(默认,可不填)
-例  ID:*,颜色,EID:#Equipments 解析结果: 两个属性的对象,ID为整数,颜色为文本,EID为关联到Equipments表的主键字段
-特殊说明:如果是否为关系表为真,只按 表名 解析成表间一对多关系";
-
-        /// <summary>
-        /// 扩展组合规划
-        /// </summary>
-        [DataMember, JsonProperty("ExtendRole", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _extendRole;
-
-        /// <summary>
-        /// 扩展组合规划
-        /// </summary>
-        /// <remark>
-        /// 扩展组合规划,
-        /// 类JSON方式即[名称:类型]多个用逗号分开,
-        /// 类型说明:#表名,%小数,*整数,@日期,!文本(默认,可不填)
-        /// 例  ID:*,颜色,EID:#Equipments 解析结果: 两个属性的对象,ID为整数,颜色为文本,EID为关联到Equipments表的主键字段
-        /// 特殊说明:如果是否为关系表为真,只按 表名 解析成表间一对多关系
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"扩展配置(过时)"), DisplayName(@"扩展组合规划"), Description(ExtendRole_Description)]
-        public string ExtendRole
-        {
-            get => _extendRole;
-            set
-            {
-                if (_extendRole == value)
-                    return;
-                BeforePropertyChanged(nameof(ExtendRole), _extendRole, value);
-                _extendRole = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(ExtendRole));
-            }
-        }
-
-        /// <summary>
-        /// 值分隔符
-        /// </summary>
-        [DataMember, JsonProperty("ValueSeparate", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _valueSeparate;
-
-        /// <summary>
-        /// 值分隔符
-        /// </summary>
-        /// <remark>
-        /// 值分隔符
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"扩展配置(过时)"), DisplayName(@"值分隔符"), Description("值分隔符")]
-        public string ValueSeparate
-        {
-            get => _valueSeparate;
-            set
-            {
-                if (_valueSeparate == value)
-                    return;
-                BeforePropertyChanged(nameof(ValueSeparate), _valueSeparate, value);
-                _valueSeparate = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(ValueSeparate));
-            }
-        }
-
-        /// <summary>
-        /// 数组分隔符
-        /// </summary>
-        [DataMember, JsonProperty("ArraySeparate", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _arraySeparate;
-
-        /// <summary>
-        /// 数组分隔符
-        /// </summary>
-        /// <remark>
-        /// 数组分隔符
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"扩展配置(过时)"), DisplayName(@"数组分隔符"), Description("数组分隔符")]
-        public string ArraySeparate
-        {
-            get => _arraySeparate;
-            set
-            {
-                if (_arraySeparate == value)
-                    return;
-                BeforePropertyChanged(nameof(ArraySeparate), _arraySeparate, value);
-                _arraySeparate = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(ArraySeparate));
-            }
-        }
-
-        /// <summary>
-        /// 是否扩展数组的说明文字
-        /// </summary>
-        const string ExtendArray_Description = @"是否扩展数组,是则解析为二维数组,否解析为一维数组";
-
-        /// <summary>
-        /// 是否扩展数组
-        /// </summary>
-        [DataMember, JsonProperty("ExtendArray", NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _extendArray;
-
-        /// <summary>
-        /// 是否扩展数组
-        /// </summary>
-        /// <remark>
-        /// 是否扩展数组,是则解析为二维数组,否解析为一维数组
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"扩展配置(过时)"), DisplayName(@"是否扩展数组"), Description(ExtendArray_Description)]
-        public bool ExtendArray
-        {
-            get => _extendArray;
-            set
-            {
-                if (_extendArray == value)
-                    return;
-                BeforePropertyChanged(nameof(ExtendArray), _extendArray, value);
-                _extendArray = value;
-                OnPropertyChanged(nameof(ExtendArray));
-            }
-        }
-
-        /// <summary>
-        /// 是否值对分隔方式的说明文字
-        /// </summary>
-        const string IsKeyValueArray_Description = @"是否值对分隔方式,
-如果是每组为一种类型的对象,否则一组是单个对象,举例如下:
-对象实际JSON表示方式为[{ID:1,颜色:黄},{ID:2,颜色:红},{ID:3,颜色:绿}]
-是的情况:1,2,3#红,黄,绿,第一组是ID属性,第二组是颜色属性,解析后为
-否的情况:1,红#2,黄#3,绿,分别对应三组";
-
-        /// <summary>
-        /// 是否值对分隔方式
-        /// </summary>
-        [DataMember, JsonProperty("IsKeyValueArray", NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isKeyValueArray;
-
-        /// <summary>
-        /// 是否值对分隔方式
-        /// </summary>
-        /// <remark>
-        /// 是否值对分隔方式,
-        /// 如果是每组为一种类型的对象,否则一组是单个对象,举例如下:
-        /// 对象实际JSON表示方式为[{ID:1,颜色:黄},{ID:2,颜色:红},{ID:3,颜色:绿}]
-        /// 是的情况:1,2,3#红,黄,绿,第一组是ID属性,第二组是颜色属性,解析后为
-        /// 否的情况:1,红#2,黄#3,绿,分别对应三组
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"扩展配置(过时)"), DisplayName(@"是否值对分隔方式"), Description(IsKeyValueArray_Description)]
-        public bool IsKeyValueArray
-        {
-            get => _isKeyValueArray;
-            set
-            {
-                if (_isKeyValueArray == value)
-                    return;
-                BeforePropertyChanged(nameof(IsKeyValueArray), _isKeyValueArray, value);
-                _isKeyValueArray = value;
-                OnPropertyChanged(nameof(IsKeyValueArray));
-            }
-        }
-
-        /// <summary>
-        /// 是否为关系表的说明文字
-        /// </summary>
-        const string IsRelation_Description = @"是否为关系表,是则扩展组合规划 按 表名 解析成表间一对多关系";
-
-        /// <summary>
-        /// 是否为关系表
-        /// </summary>
-        [DataMember, JsonProperty("IsRelation", NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isRelation;
-
-        /// <summary>
-        /// 是否为关系表
-        /// </summary>
-        /// <remark>
-        /// 是否为关系表,是则扩展组合规划 按 表名 解析成表间一对多关系
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"扩展配置(过时)"), DisplayName(@"是否为关系表"), Description(IsRelation_Description)]
-        public bool IsRelation
-        {
-            get => _isRelation;
-            set
-            {
-                if (_isRelation == value)
-                    return;
-                BeforePropertyChanged(nameof(IsRelation), _isRelation, value);
-                _isRelation = value;
-                OnPropertyChanged(nameof(IsRelation));
-            }
-        }
-
-        /// <summary>
-        /// 扩展对象属性名称
-        /// </summary>
-        [DataMember, JsonProperty("ExtendPropertyName", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _extendPropertyName;
-
-        /// <summary>
-        /// 扩展对象属性名称
-        /// </summary>
-        /// <remark>
-        /// 扩展对象属性名称
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"扩展配置(过时)"), DisplayName(@"扩展对象属性名称"), Description("扩展对象属性名称")]
-        public string ExtendPropertyName
-        {
-            get => _extendPropertyName;
-            set
-            {
-                if (_extendPropertyName == value)
-                    return;
-                BeforePropertyChanged(nameof(ExtendPropertyName), _extendPropertyName, value);
-                _extendPropertyName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(ExtendPropertyName));
-            }
-        }
-
-        /// <summary>
-        /// 扩展对象对象名称
-        /// </summary>
-        [DataMember, JsonProperty("ExtendClassName", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _extendClassName;
-
-        /// <summary>
-        /// 扩展对象对象名称
-        /// </summary>
-        /// <remark>
-        /// 扩展对象对象名称
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"扩展配置(过时)"), DisplayName(@"扩展对象对象名称"), Description("扩展对象对象名称")]
-        public string ExtendClassName
-        {
-            get => _extendClassName;
-            set
-            {
-                if (_extendClassName == value)
-                    return;
-                BeforePropertyChanged(nameof(ExtendClassName), _extendClassName, value);
-                _extendClassName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(ExtendClassName));
-            }
-        }
-
-        /// <summary>
-        /// 扩展对象对象已定义
-        /// </summary>
-        [DataMember, JsonProperty("ExtendClassIsPredestinate", NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _extendClassIsPredestinate;
-
-        /// <summary>
-        /// 扩展对象对象已定义
-        /// </summary>
-        /// <remark>
-        /// 扩展对象对象已定义
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"扩展配置(过时)"), DisplayName(@"扩展对象对象已定义"), Description("扩展对象对象已定义")]
-        public bool ExtendClassIsPredestinate
-        {
-            get => _extendClassIsPredestinate;
-            set
-            {
-                if (_extendClassIsPredestinate == value)
-                    return;
-                BeforePropertyChanged(nameof(ExtendClassIsPredestinate), _extendClassIsPredestinate, value);
-                _extendClassIsPredestinate = value;
-                OnPropertyChanged(nameof(ExtendClassIsPredestinate));
-            }
-        }
-        #endregion
-        #region 
-
-        #endregion
-
     }
 }

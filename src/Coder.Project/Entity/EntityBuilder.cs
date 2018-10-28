@@ -25,20 +25,29 @@ namespace Agebull.EntityModel.RobotCoder
         {
             string file = Path.Combine(path, Entity.Name + ".Designer.cs");
 
-            string code = $@"using System;
-using System.IO;
+            string code = $@"#region
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Runtime.Serialization;
-using Agebull.Common;
-using Gboxt.Common.DataModel;
-
+using System.IO;
 using Newtonsoft.Json;
+
+using Agebull.Common;
+using Agebull.Common.DataModel;
+using Gboxt.Common.DataModel;
+using Gboxt.Common.DataModel.Extends;
+using Agebull.Common.WebApi;
+
+{Project.UsingNameSpaces}
+#endregion
 
 namespace {NameSpace}
 {{
@@ -75,14 +84,27 @@ namespace {NameSpace}
         /// </summary>
         protected override void CreateExCode(string path)
         {
-            string code = $@"
+            string code = $@"#region
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
+using System.Data;
+using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
+
+using Agebull.Common;
+using Agebull.Common.DataModel;
 using Gboxt.Common.DataModel;
+using Agebull.Common.WebApi;
+{Project.UsingNameSpaces}
+#endregion
 
 namespace {NameSpace}
 {{
@@ -112,7 +134,7 @@ namespace {NameSpace}
         /// </summary>
         private string FullCode()
         {
-            if (Entity.NoDataBase)
+           if (Entity.NoDataBase)
                 return null;
             return $@"
 {GetBaseCode<EntityDictionaryBuilder>()}

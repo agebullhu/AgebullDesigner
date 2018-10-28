@@ -165,7 +165,7 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 开始代码生成
         /// </summary>
-        public virtual void OnCodeGeneratorBegin()
+        public virtual void OnCodeGeneratorBegin(NotificationObject config)
         {
            
         }

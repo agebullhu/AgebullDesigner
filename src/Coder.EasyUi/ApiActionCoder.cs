@@ -9,44 +9,73 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
     [ExportMetadata("Symbol", '%')]
     public class ApiActionCoder : EasyUiCoderBase
     {
+        protected override string LangName => "cs";
+
         /// <summary>
         /// 名称
         /// </summary>
-        protected override string FileSaveConfigName => "File_Aspnet_Action";
+        protected override string FileName => "ApiController.Designer.cs";
+
+        /// <summary>
+        /// 名称
+        /// </summary>
+        protected override string ExFileName => "ApiController.cs";
 
 
-        public override string BaseCode()
+        protected override string BaseCode()
         {
-            var coder = new EasyUiHelperCoder
-            {
-                Entity = Entity,
-                Project = Project
-            };
+            var coder = new EasyUiHelperCoder();
             return
-                $@"
+                $@"#region
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Configuration;
+using System.Data;
+using System.Diagnostics;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
 
+using Agebull.Common;
+using Agebull.Common.DataModel;
+using Agebull.Common.DataModel.BusinessLogic;
+using Agebull.Common.Rpc;
+using Agebull.Common.WebApi;
+using Agebull.ZeroNet.ZeroApi;
+using Agebull.Common.DataModel.WebUI;
 using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.BusinessLogic;
 using Gboxt.Common.DataModel.MySql;
-using Gboxt.Common.WebUI;
+
+{Project.UsingNameSpaces}
 
 using {NameSpace};
 using {NameSpace}.BusinessLogic;
 using {NameSpace}.DataAccess;
+#endregion
 
-namespace {NameSpace}.{Entity.Name}Page
+namespace {NameSpace}.WebApi.Entity
 {{
-    partial class Action
+    partial class {Entity.Name}ApiController
     {{
+        #region 设计器命令
+{CommandCsCode()}
+
+        #endregion
+
+        #region 基本扩展
         /// <summary>
         ///     取得列表数据
         /// </summary>
-        protected void DefaultGetListData()
+        protected ApiPageData<{Entity.EntityName}> DefaultGetListData()
         {{
             var filter = new LambdaItem<{Entity.EntityName}>();
             SetKeywordFilter(filter);
-            base.GetListData(filter);
+            return base.GetListData(filter);
         }}
 
         /// <summary>
@@ -54,12 +83,7 @@ namespace {NameSpace}.{Entity.Name}Page
         /// </summary>
         /// <param name=""filter"">筛选器</param>
         public void SetKeywordFilter(LambdaItem<{Entity.EntityName}> filter)
-        {{
-            var keyWord = GetArg(""keyWord"");
-            if (!string.IsNullOrEmpty(keyWord))
-            {{
-                filter.AddAnd(p => {QueryCode()});
-            }}
+        {{{QueryCode()}
         }}
 
         /// <summary>
@@ -68,10 +92,9 @@ namespace {NameSpace}.{Entity.Name}Page
         /// <param name=""data"">数据</param>
         /// <param name=""convert"">转化器</param>
         protected void DefaultReadFormData({Entity.EntityName} data, FormConvert convert)
-        {{{coder.InputConvert()}
+        {{{coder.InputConvert(Entity)}
         }}
-        #region 设计器命令
-{CommandCsCode()}
+
         #endregion
     }}
 }}";
@@ -79,69 +102,88 @@ namespace {NameSpace}.{Entity.Name}Page
 
         internal string QueryCode()
         {
-            var code = new StringBuilder();
+            var fields = Entity.UserProperty.Where(p => !p.DbInnerField && !p.IsSystemField && p.CsType == "string" && !p.IsBlob).ToArray();
+            if (fields.Length == 0)
+                return "";
+            var code = new StringBuilder(@"
+            var keyWord = GetArg(""keyWord"");
+            if (!string.IsNullOrEmpty(keyWord))
+            {
+                filter.AddAnd(p =>");
             bool first = true;
-            foreach (var field in Entity.UserProperty.Where(p => p.CsType == "string" && !p.IsBlob))
+            foreach (var field in fields)
             {
                 if (first)
                     first = false;
                 else
-                    code.Append(" || ");
+                    code.Append(@" || 
+                                   ");
                 code.Append($@"p.{field.Name}.Contains(keyWord)");
             }
+            code.Append(@");
+            }");
             return code.ToString();
         }
 
-        public override string Code()
+        protected override string ExtendCode()
         {
-            var baseClass = "ApiPageBaseEx";
+            var baseClass = "ApiController";
             if (Entity.Interfaces != null)
             {
                 if (Entity.Interfaces.Contains("IStateData"))
-                    baseClass = "ApiPageBaseForDataState";
+                    baseClass = "ApiControllerForDataState";
                 if (Entity.Interfaces.Contains("IAuditData"))
-                    baseClass = "ApiPageBaseForAudit";
+                    baseClass = "ApiControllerForAudit";
             }
             return
-                $@"
+                $@"#region
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Configuration;
+using System.Data;
+using System.Diagnostics;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
 
+using Agebull.Common;
+using Agebull.Common.DataModel;
+using Agebull.Common.DataModel.WebUI;
+using Agebull.Common.DataModel.BusinessLogic;
+using Agebull.Common.Rpc;
+using Agebull.Common.WebApi;
+using Agebull.ZeroNet.ZeroApi;
 using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.BusinessLogic;
 using Gboxt.Common.DataModel.MySql;
-using Gboxt.Common.WebUI;
+
+{Project.UsingNameSpaces}
 
 using {NameSpace};
 using {NameSpace}.BusinessLogic;
 using {NameSpace}.DataAccess;
+#endregion
 
-namespace {NameSpace}.{Entity.Name}Page
+namespace {NameSpace}.WebApi.Entity
 {{
-    public partial class Action : {baseClass}<{Entity.EntityName}, {Entity.Name}DataAccess, {Entity.Name}BusinessLogic>
+    /// <summary>
+    ///  {ToRemString(Entity.Caption)}
+    /// </summary>
+    [RoutePrefix(""{Project.Abbreviation?? Project.Name}/{Entity.Abbreviation ?? Entity.Name}/v1"")]
+    public partial class {Entity.Name}ApiController : {baseClass}<{Entity.EntityName}, {Entity.Name}DataAccess, {Entity.Parent.DataBaseObjectName}, {Entity.Name}BusinessLogic>
     {{
-        /// <summary>
-        /// 构造
-        /// </summary>
-        public Action()
-        {{
-            AllAction = true;
-            IsPublicPage = true;
-        }}
+        #region 基本扩展
+
         /// <summary>
         ///     取得列表数据
         /// </summary>
-        protected override void GetListData()
+        protected override ApiPageData<{Entity.EntityName}> GetListData()
         {{
-            DefaultGetListData();
-        }}
-
-        /// <summary>
-        ///     执行操作
-        /// </summary>
-        /// <param name=""action"">传入的动作参数,已转为小写</param>
-        protected override void DoActinEx(string action)
-        {{
-            DefaultActin(action);
+            return DefaultGetListData();
         }}
 
         /// <summary>
@@ -153,6 +195,8 @@ namespace {NameSpace}.{Entity.Name}Page
         {{
             DefaultReadFormData(data,convert);
         }}
+
+        #endregion
     }}
 }}";
         }
@@ -161,34 +205,6 @@ namespace {NameSpace}.{Entity.Name}Page
         private string CommandCsCode()
         {
             var code = new StringBuilder();
-            code.Append(@"
-
-        /// <summary>
-        ///     执行操作
-        /// </summary>
-        /// <param name=""action"">传入的动作参数,已转为小写</param>
-        void DefaultActin(string action)
-        { 
-            switch (action)
-            {");
-            if (Entity.TreeUi)
-            {
-                code.Append(@"
-                case ""tree"":
-                    OnLoadTree();
-                    break;");
-            }
-            foreach (var cmd in Entity.Commands.Where(p => !p.IsLocalAction))
-                code.Append($@"
-                case ""{cmd.Name.ToLower()}"":
-                    On{cmd.Name}();
-                    break;");
-            code.Append(@"
-                default:
-                    base.DoActinEx(action);
-                    break;
-            }
-        }");
             if (Entity.TreeUi)
             {
                 code.Append(@"
@@ -196,11 +212,38 @@ namespace {NameSpace}.{Entity.Name}Page
         /// <summary>
         ///     载入树节点
         /// </summary>
-        private void OnLoadTree()
+        [HttpPost,Route(""edit/tree"")]
+        public ApiArrayResult<EasyUiTreeNode> OnLoadTree()
         {
             var nodes = Business.LoadTree(this.GetIntArg(""id""));
-            this.SetCustomJsonResult(nodes);
+            return new ApiArrayResult<EasyUiTreeNode>
+            {{
+               Success = true,
+               ResultData = nodes
+            }};
         }");
+            }
+
+            var caption = Entity.Properties.FirstOrDefault(p => p.IsCaption);
+            if (caption!=null)
+            {
+        code.Append($@"
+        /// <summary>下拉列表</summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route(""edit/combo"")]
+        public ApiArrayResult<EasyComboValues> ComboData()
+        {{
+            GlobalContext.Current.IsManageMode = false;
+            var datas = Business.All();
+            var combos = datas.Select(p => new EasyComboValues(p.{Entity.PrimaryColumn.Name}, p.{caption.Name})).ToList();
+            combos.Insert(0,new EasyComboValues(0, ""-""));
+            return new ApiArrayResult<EasyComboValues>
+            {{
+               Success = true,
+               ResultData = combos
+            }};
+        }}");
             }
             foreach (var cmd in Entity.Commands.Where(p => !p.IsLocalAction))
             {
@@ -211,18 +254,20 @@ namespace {NameSpace}.{Entity.Name}Page
         /// <remark>
         ///     {ToRemString(cmd.Description)}
         /// </remark>
-        private void On{cmd.Name}()
-        {{");
+        [HttpPost,Route(""edit/{cmd.Name.ToLWord()}"")]
+        public ApiResult On{cmd.Name}()
+        {{
+            InitForm();");
                 if (cmd.IsSingleObject)
                     code.Append($@"
-            if (!this.Business.{cmd.Name}(this.GetIntArg(""id"")))");
+            return !this.Business.{cmd.Name}(this.GetIntArg(""id""))");
                 else
                     code.Append($@"
-            if (!this.Business.Do{cmd.Name}(this.GetIntArrayArg(""selects"")))");
+            return !this.Business.Do{cmd.Name}(this.GetIntArrayArg(""selects""))");
                 code.Append(@"
-            {
-                 this.SetFailed(BusinessContext.Current.LastMessage);
-            }
+            return IsFailed
+                ? ApiResult.Error(State, Message)
+                : ApiResult.Succees();
         }");
             }
 

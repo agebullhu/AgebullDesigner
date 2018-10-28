@@ -40,7 +40,7 @@ namespace Agebull.Common.Mvvm
         {
             get => IsRoot
                 ? null
-                : _image ?? (_image = IconName == null ? null : Application.Current.Resources[IconName] as ImageSource);
+                : _image ?? (_image = Application.Current.Resources[IconName ?? "imgDefault"] as ImageSource);
             set => _image = value;
         }
 
@@ -173,7 +173,7 @@ namespace Agebull.Common.Mvvm
         /// <summary>
         /// 所有按钮
         /// </summary>
-        public ObservableCollection<CommandItemBase> Items { get; set; } = new ObservableCollection<CommandItemBase>();
+        public NotificationList<CommandItemBase> Items { get; set; } = new NotificationList<CommandItemBase>();
 
         #endregion
 
@@ -205,7 +205,7 @@ namespace Agebull.Common.Mvvm
 
         void DoAction(object arg)
         {
-            if (!string.IsNullOrWhiteSpace(ConfirmMessage) && MessageBox.Show(ConfirmMessage, "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+            if (DoConfirm && MessageBox.Show(ConfirmMessage ?? $"确认执行【{Caption ?? Name}】操作吗?", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
             {
                 return;
             }

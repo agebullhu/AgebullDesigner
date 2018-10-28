@@ -20,7 +20,7 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder<EnumConfig>
             {
                 Catalog = "编辑",
-                Action = (SortEnum),
+                Action = SortEnum,
                 Caption = "排序",
                 IconName = "tree_sum"
             });
@@ -49,7 +49,6 @@ namespace Agebull.EntityModel.Designer
             property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
             if (property.EnumConfig != null)
             {
-                property.EnumConfig.Parent.Remove(property.EnumConfig);
                 property.Parent.Parent.Add(property.EnumConfig);
             }
         }

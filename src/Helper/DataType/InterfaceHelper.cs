@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
@@ -11,32 +9,47 @@ namespace Agebull.EntityModel.RobotCoder
     /// </summary>
     public class InterfaceHelper
     {
-
-        public static void JoinInterface(EntityConfig entity)
+        public static void CheckInterface(EntityConfig entity)
         {
-            if (entity.Interfaces == null)
+            if (string.IsNullOrWhiteSpace(entity.Interfaces))
                 return;
-            foreach (var inf in entity.Interfaces.Split(NameHelper.SplitChar, StringSplitOptions.RemoveEmptyEntries))
+            var interfaces = entity.Interfaces.Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var iField in entity.Properties.ToArray())
             {
-                JoinInterface(entity,inf);
-            }
-        }
-        public static void JoinInterface(EntityConfig entity, string inf)
-        {
-            var friend = GlobalConfig.GetEntity(inf);
-            if (friend == null)
-                return;
-            foreach (var field in friend.Properties)
-            {
-                if (entity.LastProperties.Any(p => p.ReferenceKey == field.Key))
+                if (!iField.IsReference)
                     continue;
-                var cpy = new PropertyConfig();
-                cpy.Copy(field);
-                cpy.Option.IsReference = true;
-                cpy.ReferenceKey = field.Key;
-                cpy.IsInterfaceField = true;
-                cpy.Group = inf;
-                entity.LastProperties.Add(cpy);
+                var refField = iField.Option.ReferenceConfig as PropertyConfig;
+                if (refField == null || !refField.Parent.IsInterface || interfaces.Contains(refField.Parent.Name))
+                {
+                    continue;
+                }
+                iField.Option.IsDiscard = true;
+            }
+            foreach (var inf in interfaces)
+            {
+                var ie = GlobalConfig.GetEntity(inf);
+                if (ie == null) continue;
+                foreach (var iField in ie.Properties)
+                {
+                    var field = entity.Properties.FirstOrDefault(p => p.ReferenceKey == iField.Key || p.Name == iField.Name);
+                    if (field == null)
+                    {
+                        entity.Add(new PropertyConfig
+                        {
+                            Option =
+                            {
+                                IsReference = true,
+                                ReferenceConfig = iField
+                            }
+                        });
+                    }
+                    else
+                    {
+                        field.Option.IsDiscard = false;
+                        field.Option.IsReference = true;
+                        field.Option.ReferenceConfig = iField;
+                    }
+                }
             }
         }
     }

@@ -74,10 +74,9 @@ namespace Agebull.EntityModel.RobotCoder
                 builder.CreateBaseCode(entityPath);
                 builder.CreateExtendCode(entityPath);
             }
-            if (schema.NoDataBase)
-                return;
-            var exPath = GlobalConfig.CheckPath(path, "Extend");
+            if(Solution.HaseValidateCode)
             {
+                var exPath = GlobalConfig.CheckPath(path, "Validate");
                 var builder = new EntityValidateBuilder
                 {
                     Entity = schema,
@@ -86,6 +85,8 @@ namespace Agebull.EntityModel.RobotCoder
                 builder.CreateBaseCode(exPath);
                 builder.CreateExtendCode(exPath);
             }
+            if (schema.NoDataBase)
+                return;
             var coPath = GlobalConfig.CheckPath(path, "Combo");
             {
                 var builder = new EntityComboBuilder

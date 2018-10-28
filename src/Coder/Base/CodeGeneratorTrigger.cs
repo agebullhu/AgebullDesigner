@@ -1,5 +1,6 @@
 
 using System;
+using System.Linq;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.RobotCoder;
 
@@ -10,42 +11,40 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     public class CodeGeneratorTrigger : EventTrigger
     {
+        private ConfigBase config;
+        /// <summary>
+        /// 开始代码生成
+        /// </summary>
+        public override void OnCodeGeneratorBegin(NotificationObject obj)
+        {
+            config = (ConfigBase)obj;
+            config.Foreach<EntityConfig>(CreateLast);
+        }
 
         /// <summary>
         /// 开始代码生成
         /// </summary>
-        public override void OnCodeGeneratorBegin()
+        public void CreateLast(EntityConfig entity)
         {
-            SolutionConfig.Current.Foreach<EntityConfig>(CreateLast);
+            entity.LastProperties = new System.Collections.Generic.List<PropertyConfig>();
+            InterfaceHelper.CheckInterface(entity);
+            //DataTypeHelper.ToStandard(entity);
+            int idx = 0;
+            foreach (var pro in entity.Properties.OrderBy(p => p.Index))
+            {
+                if (pro.IsDelete || pro.IsDiscard)
+                    continue;
+                pro.Option.Index = ++idx;
+                entity.LastProperties.Add(pro);
+            }
         }
+
         /// <summary>
         /// 完成代码生成
         /// </summary>
         public override void OnCodeGeneratorEnd()
         {
-            SolutionConfig.Current.Foreach<EntityConfig>(entity => entity.LastProperties = null);
-        }
-
-
-        /// <summary>
-        /// 完成代码生成
-        /// </summary>
-        public void CreateLast(EntityConfig entity)
-        {
-            entity.LastProperties = new System.Collections.Generic.List<PropertyConfig>();
-            InterfaceHelper.JoinInterface(entity);
-            DataTypeHelper.ToStandard(entity);
-            foreach (var pro in entity.Properties)
-            {
-                if (pro.IsDelete || pro.IsDiscard)
-                    continue;
-                entity.LastProperties.Add(pro.Option.LastConfig as PropertyConfig);
-            }
-        }
-
-        void CheckInterfaces()
-        {
-
+            config.Foreach<EntityConfig>(entity => entity.LastProperties = null);
         }
     }
 }

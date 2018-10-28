@@ -16,17 +16,29 @@ namespace Agebull.EntityModel.RobotCoder
         protected override void CreateBaCode(string path)
         {
 
-            string code = $@"
+            string code = $@"#region
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
-using System.Linq;
-using System.Text;
 using System.Diagnostics;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
 
+using Agebull.Common;
+using Agebull.Common.DataModel;
+using Agebull.Common.WebApi;
 using Gboxt.Common.DataModel;
 using Gboxt.Common.DataModel.MySql;
+
+{Project.UsingNameSpaces}
+#endregion
 
 namespace {Project.NameSpace}.DataAccess
 {{
@@ -38,11 +50,20 @@ namespace {Project.NameSpace}.DataAccess
         /// <summary>
         /// 构造
         /// </summary>
-        public {Project.DataBaseObjectName}()
+        static {Project.DataBaseObjectName}()
         {{
             /*tableSql = new Dictionary<string, TableSql>(StringComparer.OrdinalIgnoreCase)
             {{{Project.DataBaseObjectName}
             }};*/
+            DataUpdateHandler.RegisterUpdateHandler(new MySqlDataTrigger());
+            DataUpdateHandler.RegisterUpdateHandler(new RedisDataTrigger());
+        }}
+
+        /// <summary>
+        /// 构造
+        /// </summary>
+        public {Project.DataBaseObjectName}()
+        {{
             Name = @""{Project.Name}"";
             Caption = @""{Project.Caption}"";
             Description = @""{Project.Description.Replace("\"","\"\"")}"";
@@ -101,19 +122,30 @@ namespace DALFactory
         protected override void CreateExCode(string path)
         {
             string file = Path.Combine(path, Project.DataBaseObjectName + ".cs");
-            string code = $@"
+            string code = $@"#region
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data;
-using System.IO;
+using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
 
+using Agebull.Common;
+using Agebull.Common.DataModel;
+using Agebull.Common.WebApi;
 using Gboxt.Common.DataModel;
+{Project.UsingNameSpaces}
+
 using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
 using Gboxt.Common.DataModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
+#endregion
 
 namespace {Project.NameSpace}.DataAccess
 {{
@@ -137,17 +169,14 @@ namespace {Project.NameSpace}.DataAccess
         {{
             Default = new {Project.DataBaseObjectName}();
         }}
-        static {Project.DataBaseObjectName} _default;
+
         /// <summary>
         /// 缺省强类型数据库
         /// </summary>
         public static {Project.DataBaseObjectName} Default
         {{
-            get{{ return _default;}}
-            set
-            {{ 
-                 DefaultDataBase =  _default = value;
-            }}
+            get;
+            set;
         }}
 
         /// <summary>
@@ -156,7 +185,7 @@ namespace {Project.NameSpace}.DataAccess
         /// <returns></returns>
         protected override string LoadConnectionStringSetting()
         {{
-            return ConfigurationManager.ConnectionStrings[""{Project.NameSpace}""].ConnectionString;
+            return ConfigurationManager.AppSettings[""MySql""];
         }}
     }}
 }}";

@@ -34,20 +34,35 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public void RepairByLoaded()
         {
+            var type = Solution.DataTypeMap.FirstOrDefault(p => p.Name == Solution.IdDataType);
+            if (type == null)
+            {
+                type = Solution.DataTypeMap.FirstOrDefault(p => p.CSharp == Solution.IdDataType);
+                Solution.IdDataType = type?.Name ?? "Int64";
+            }
+            type = Solution.DataTypeMap.FirstOrDefault(p => p.Name == Solution.UserIdDataType);
+            if (type == null)
+                Solution.UserIdDataType = Solution.IdDataType;
+
+            foreach (var defType in DataTypeMapConfig.DataTypeMap)
+            {
+                if (Solution.DataTypeMap.All(p => p.Name != defType.Name))
+                    Solution.DataTypeMap.Add(defType);
+            }
+
             int projectid = Solution.ProjectList.Count == 0 ? 0 : Solution.Projects.Max(p => p.Index);
             foreach (var project in Solution.Projects)
             {
                 if (project.Option.Index == 0)
                     project.Option.Index = ++projectid;
-                if (project.Name.Contains("ES_"))
-                    project.ReadOnly = true;
-                int typeid = project.Entities.Count == 0 ? 0 : project.Entities.Max(p => p.Index);
-                foreach (var entity in project.Entities)
-                {
-                    RepairIdentity(entity, project, ref typeid);
-                }
+                //int typeid = project.Entities.Count == 0 ? 0 : project.Entities.Max(p => p.Index);
+                //foreach (var entity in project.Entities)
+                //{
+                //    RepairIdentity(entity, project, ref typeid);
+                //}
                 foreach (var entity in project.Entities.Where(p => !p.IsReference))
                 {
+                    entity.Parent = project;
                     RepairEntityByLoad(entity, project);
                 }
                 foreach (var cfg in project.ApiItems)
@@ -58,29 +73,7 @@ namespace Agebull.EntityModel.Config
                 {
                     cfg.Parent = project;
                 }
-                if (project.Classifies.Count == 0)
-                {
-                    var cls = project.Entities.Select(p => p.Classify).Distinct().ToArray();
-                    if (!cls.All(string.IsNullOrEmpty))
-                    {
-                        foreach (var cl in project.Entities.GroupBy(p => p.Classify))
-                        {
-                            var name = cl.Key ?? "None";
-                            var item = new ClassifyItem<EntityConfig>
-                            {
-                                Classify = name,
-                                Description = name,
-                                Caption = name
-                            };
-                            project.Classifies.Add(item);
-                            foreach (var entity in cl)
-                            {
-                                entity.Classify = name;
-                                item.Items.Add(entity);
-                            }
-                        }
-                    }
-                }
+                RepairClassifies(project);
 
                 //int apiid = project.ApiItems.Count == 0 ? 0 : project.ApiItems.Max(p => p.Index);
                 //foreach (var item in project.ApiItems)
@@ -90,6 +83,29 @@ namespace Agebull.EntityModel.Config
                 //}
             }
             RepairTypedefByLoad();
+        }
+
+        private static void RepairClassifies(ProjectConfig project)
+        {
+            foreach (var cl in project.Entities.GroupBy(p => p.Classify))
+            {
+                var name = cl.Key ?? "None";
+                var classify = project.Classifies.FirstOrDefault(p => p.Name == name);
+                if (classify == null)
+                {
+                    project.Classifies.Add(classify = new EntityClassify
+                    {
+                        Classify = name,
+                        Description = name,
+                        Caption = name
+                    });
+                }
+                foreach (var entity in cl)
+                {
+                    entity.Classify = name;
+                    classify.Items.Add(entity);
+                }
+            }
         }
 
         private void RepairEntityByLoad(EntityConfig entity, ProjectConfig project)
@@ -142,18 +158,13 @@ namespace Agebull.EntityModel.Config
                 entity.Add(field);
                 if (field["user_help"] == null)
                     field["user_help"] = field.Description ?? field.Caption;
-                if (field.Tag == null)
-                    field.Tag = entity.Tag + "," + field.Name;
-                if (field.LinkTable != null && field.LinkField == null)
-                    field.LinkField = field.Name;
+                //if (field.Tag == null)
+                //    field.Tag = entity.Tag + "," + field.Name;
+                //if (field.LinkTable != null && field.LinkField == null)
+                //    field.LinkField = field.Name;
 
-                if (string.IsNullOrEmpty(field.CustomType))
-                    continue;
                 field.EnumConfig = Solution.Enums.FirstOrDefault(p => p.Name == field.CustomType);
-                if (field.EnumConfig != null)
-                {
-                    field.EnumConfig.Option.ReferenceKey = field.Key;
-                }
+
             }
             foreach (var cmd in entity.Commands)
             {
@@ -163,7 +174,7 @@ namespace Agebull.EntityModel.Config
         private void RepairIdentity(EntityConfig entity, ProjectConfig project, ref int typeid)
         {
             if (entity.Option.Index == 0)
-                entity.Option.Index = (project.Option.Index << 16) | (++typeid);
+                entity.Option.Index = (project.Option.Index << 16) | ++typeid;
             if (entity.Option.Identity <= 0)
             {
                 entity.Option.Identity = entity.Option.Index;
@@ -304,7 +315,7 @@ namespace Agebull.EntityModel.Config
             Solution.EnumList.CollectionChanged += (s, e) => CollectionChanged(Projects, e);
             Solution.ApiList.CollectionChanged += (s, e) => CollectionChanged(Projects, e);
         }
-        private static void CollectionChanged<TConfig>(ObservableCollection<TConfig> collection, NotifyCollectionChangedEventArgs e)
+        private static void CollectionChanged<TConfig>(NotificationList<TConfig> collection, NotifyCollectionChangedEventArgs e)
             where TConfig : ConfigBase
         {
             if (e.Action == NotifyCollectionChangedAction.Reset)
@@ -333,15 +344,12 @@ namespace Agebull.EntityModel.Config
                 return;
             foreach (var project in Solution.Projects)
             {
-                if (project.PagePath != null)
-                    project.PagePath = project.PagePath.Replace(old, path);
                 if (project.BusinessPath != null)
                     project.BusinessPath = project.BusinessPath.Replace(old, path);
                 if (project.MobileCsPath != null)
                     project.MobileCsPath = project.MobileCsPath.Replace(old, path);
                 else
                     project.MobileCsPath = path.Trim('\\') + @"\TradeApp\TradeApp\Model\" + project.Name;
-
                 if (project.CppCodePath != null)
                     project.CppCodePath = project.CppCodePath.Replace(old, path);
             }

@@ -86,6 +86,7 @@ namespace Agebull.Common.Mvvm
         #region ×´Ì¬
         private Visibility _visibility;
 
+        /// <inheritdoc />
         /// <summary>
         ///     Í¼±ê
         /// </summary>
@@ -118,7 +119,8 @@ namespace Agebull.Common.Mvvm
                     return;
                 }
                 _status = value;
-                RaisePropertyChanged("IsBusy");
+                RaisePropertyChanged(nameof(Status));
+                RaisePropertyChanged(nameof(IsBusy));
             }
         }
 
@@ -197,11 +199,7 @@ namespace Agebull.Common.Mvvm
         {
             try
             {
-                var onPropertyChanged = propertyChanged;
-                if (onPropertyChanged != null)
-                {
-                    onPropertyChanged(this, args);
-                }
+                propertyChanged?.Invoke(this, args);
             }
             catch (Exception ex)
             {

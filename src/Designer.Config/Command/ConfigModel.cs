@@ -28,7 +28,7 @@ namespace Agebull.EntityModel.Designer
             });
             commands.Add(new CommandItemBuilder<ConfigBase>
             {
-                Action = (ClearFileConfig2),
+                Action = ClearFileConfig2,
                 Caption = "清除所有扩展信息",
                 Catalog = "工具",
                 SignleSoruce = false,
@@ -78,20 +78,12 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void ClearFileConfig(ConfigBase config)
         {
-            foreach (var kv in config.ExtendConfig.Where(p => p.Name != null && p.Name.IndexOf("File", StringComparison.OrdinalIgnoreCase) == 0).ToArray())
-            {
-                config.ExtendConfig.Remove(kv);
-            }
-            foreach (var kv in config.ExtendDictionary.Keys.Where(p => p != null && p.IndexOf("File", StringComparison.OrdinalIgnoreCase) == 0).ToArray())
-            {
-                config.ExtendDictionary.Remove(kv);
-            }
+            config?.Option.ExtendConfigList.ClearFileConfig();
         }
 
         public void ClearFileConfig2(ConfigBase config)
         {
-            config.ExtendConfig.Clear();
-            config.ExtendDictionary.Clear();
+            config?.Option.ExtendConfigList.Clear();
         }
     }
 }

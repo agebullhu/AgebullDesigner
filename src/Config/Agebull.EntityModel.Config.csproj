@@ -73,7 +73,7 @@
     <Compile Include="Extend\CommandItemBuilder.cs" />
     <Compile Include="Extend\ConfigIterator.cs" />
     <Compile Include="Extend\IteratorCommandItem.cs" />
-    <Compile Include="LUA\GetLuaStruct.cs" />
+    <Compile Include="LUA\ConfigBase.cs" />
     <Compile Include="LUA\LuaStringExtend.cs" />
     <Compile Include="LUA\UCharHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
