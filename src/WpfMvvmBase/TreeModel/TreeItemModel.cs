@@ -73,32 +73,13 @@ namespace Agebull.EntityModel
             }
         }
 
-        private bool _isExpend;
-
-        /// <summary>
-        ///     展开
-        /// </summary>
-        public bool IsExpanded
-        {
-            get => _isExpend;
-            set
-            {
-                if (_isExpend == value)
-                {
-                    return;
-                }
-                _isExpend = value;
-                RaisePropertyChanged(() => IsExpanded);
-                OnIsExpandedChanged();
-            }
-        }
 
         /// <summary>
         ///     切换展开
         /// </summary>
         public void ExpandedChild(object arg)
         {
-            ExpandedChild(!_isExpend);
+            ExpandedChild(!IsExpanded);
         }
 
         /// <summary>
@@ -142,13 +123,6 @@ namespace Agebull.EntityModel
             if (Source == obj)
                 return this;
             return Items.Select(child => child.Find(obj)).FirstOrDefault(item => item != null);
-        }
-
-        /// <summary>
-        /// 展开状态变化的处理
-        /// </summary>
-        protected virtual void OnIsExpandedChanged()
-        {
         }
 
         protected override void OnSourceChanged(bool isRemove)

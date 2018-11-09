@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -421,51 +422,53 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 查找
         /// </summary>
+        public bool Like(string dest, params string[] srcs) => srcs.Any(src => src != null && src.Contains(dest));
+
+        /// <summary>
+        /// 查找
+        /// </summary>
         public void Find(object arg)
         {
             if (string.IsNullOrWhiteSpace(Context.FindKey))
-                return;
-            var item = TreeRoot.Find(p =>
             {
-                if (!(p.Source is ConfigBase cfg))
-                    return false;
-                if (p.Source == Context.SelectConfig)
-                    return false;
-                if (cfg.Name == Context.FindKey || cfg.Caption == Context.FindKey || cfg.Option.ReferenceTag == Context.FindKey)
-                    return true;
-                if (p.Source is ApiItem || p.Source is EnumConfig)
-                    return null;
-                return false;
-            }) ?? TreeRoot.Find(p =>
-            {
-                if (!(p.Source is ConfigBase cfg))
-                    return false;
-                if (p.Source == Context.SelectConfig)
-                    return false;
-                if (cfg.Name != null && cfg.Name.Contains(Context.FindKey) ||
-                    cfg.Caption != null && cfg.Caption.Contains(Context.FindKey))
-                    return true;
-                if (p.Source is ApiItem || p.Source is EnumConfig)
-                    return null;
-                return false;
-            });
-            if (item == null)
-            {
-                Context.StateMessage = "查找失败";
+                TreeRoot.Foreach(p =>
+                {
+                    if (p.Visibility != Visibility.Visible)
+                        p.Visibility = Visibility.Visible;
+                    p.IsExpanded = false;
+                });
                 return;
             }
-            SetSelect(item);
-            item.IsSelected = true;
-            item.IsUiSelected = true;
-            while (item != null)
-            {
-                item.IsExpanded = true;
-                item = item.Parent as TreeItem;
-            }
-            Context.StateMessage = "查找成功-" + Context.SelectConfig.Caption;
 
+            var count = 0;
+            Foreach(TreeRoot, ref count);
+            Context.StateMessage = $"查找成功-{count}个";
         }
 
+        /// <summary>
+        /// 找对应节点
+        /// </summary>
+        /// <returns></returns>
+        public bool Foreach(TreeItemBase par, ref int count)
+        {
+            bool hase = false;
+            if (par.Source is ConfigBase cfg && Like(Context.FindKey, cfg.Name, cfg.Caption, cfg.Description))
+            {
+                count++;
+                hase = true;
+            }
+            foreach (var item in par.Items)
+            {
+                if (Foreach(item, ref count))
+                {
+                    hase = true;
+                    item.IsExpanded = true;
+                }
+            }
+            par.Visibility = hase ? Visibility.Visible : Visibility.Collapsed;
+
+            return hase;
+        }
         #endregion
     }
 }

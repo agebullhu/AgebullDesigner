@@ -50,6 +50,8 @@
                     Value="{Binding IsExpanded ,Mode=TwoWay}" />
         <Setter Property="ItemsSource"
                     Value="{Binding Items}" />
+        <Setter Property="Visibility"
+                Value="{Binding Visibility,Mode=TwoWay}" />
         <Setter Property="IsSelected"
                     Value="{Binding IsUiSelected,Mode=TwoWay}" />
         <Setter Property="Template">

@@ -15,6 +15,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Windows;
 using Agebull.Common.Reflection;
 using Agebull.EntityModel.Config;
 
@@ -122,6 +123,77 @@ namespace Agebull.EntityModel
             return null;
         }
         /// <summary>
+        /// 找对应节点
+        /// </summary>
+        /// <returns></returns>
+        public void Find(Func<TreeItem, bool> func,Action<TreeItem> action)
+        {
+            foreach (var item in Items)
+            {
+                if (func(item))
+                    action(item);
+                item.Find(func, action);
+            }
+        }
+        /// <summary>
+        /// 找对应节点
+        /// </summary>
+        /// <returns></returns>
+        public void Foreach(Action<TreeItem> action)
+        {
+            foreach (var item in Items)
+            {
+                action(item);
+                item.Foreach(action);
+            }
+        }
+        private Visibility _visibility = Visibility.Visible;
+
+        /// <summary>
+        ///     可见
+        /// </summary>
+        public Visibility Visibility
+        {
+            get => _visibility;
+            set
+            {
+                if (_visibility == value)
+                {
+                    return;
+                }
+                _visibility = value;
+                RaisePropertyChanged(() => Visibility);
+            }
+        }
+
+        private bool _isExpend;
+
+        /// <summary>
+        ///     展开
+        /// </summary>
+        public bool IsExpanded
+        {
+            get => _isExpend;
+            set
+            {
+                if (_isExpend == value)
+                {
+                    return;
+                }
+                _isExpend = value;
+                RaisePropertyChanged(() => IsExpanded);
+                OnIsExpandedChanged();
+            }
+        }
+
+        /// <summary>
+        /// 展开状态变化的处理
+        /// </summary>
+        protected virtual void OnIsExpandedChanged()
+        {
+        }
+
+        /// <summary>
         ///     是否被界面选中
         /// </summary>
         public bool IsUiSelected
@@ -138,6 +210,7 @@ namespace Agebull.EntityModel
                 RaisePropertyChanged(() => IsUiSelected);
             }
         }
+        
 
         /// <summary>
         ///     是否选中
