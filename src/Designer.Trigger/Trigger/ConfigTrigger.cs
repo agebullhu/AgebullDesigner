@@ -25,7 +25,7 @@ namespace Agebull.EntityModel.Designer
         /// <param name="newValue">新值</param>
         protected override void BeforePropertyChangedInner(string property, object oldValue, object newValue)
         {
-            Trace.WriteLine($"【{TargetConfig.Caption ?? TargetConfig.Name}.{property}】 从〖{oldValue ?? "<nui>"}〗改为〖{newValue ?? "<nui>"}〗");
+            //Trace.WriteLine($"【{TargetConfig.Caption ?? TargetConfig.Name}.{property}】 从〖{oldValue ?? "<nui>"}〗改为〖{newValue ?? "<nui>"}〗");
             switch (property)
             {
                 case nameof(TargetConfig.Name):

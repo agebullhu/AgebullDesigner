@@ -29,7 +29,7 @@ namespace Agebull.EntityModel.Designer
         private ProjectConfig _project;
         private TraceMessage _trace;
         private Dispatcher _dispatcher;
-        private string _connectionString,_database;
+        private string _connectionString, _database;
 
 
         public void Import(TraceMessage trace, ProjectConfig project, Dispatcher dispatcher)
@@ -44,8 +44,8 @@ namespace Agebull.EntityModel.Designer
                 UserID = project.DbUser,
                 Password = project.DbPassWord,
                 Database = project.DbSoruce,
-                SslMode= MySqlSslMode.None,
-                Port = 3308
+                SslMode = MySqlSslMode.None,
+                Port = 3306
             };
             _connectionString = csb.ConnectionString;
             DoImport();
@@ -60,7 +60,7 @@ namespace Agebull.EntityModel.Designer
                 _trace.Track = "正在连接...";
                 connection.Open();
                 _trace.Track = "连接成功";
-                var tables = new List<string>();
+                var tables = new Dictionary<string, string>();
 
                 _trace.Message1 = "分析数据表";
                 using (var cmd = connection.CreateCommand())
@@ -68,7 +68,7 @@ namespace Agebull.EntityModel.Designer
                     _trace.Message2 = "读取表名";
                     _trace.Track = "正在读取表名...";
                     cmd.CommandText =
-                        $@"select Table_Name from information_schema.tables where table_schema='{_database}' and table_type='base table';";
+                        $@"select Table_Name,TABLE_COMMENT from information_schema.tables where table_schema='{_database}' and table_type='base table';";
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (!reader.HasRows)
@@ -78,7 +78,7 @@ namespace Agebull.EntityModel.Designer
                         }
                         while (reader.Read())
                         {
-                            tables.Add(reader.GetString(0));
+                            tables.Add(reader.GetString(0), reader.GetString(1));
                         }
                     }
                     _trace.Track = $@"读取成功({tables.Count})";
@@ -86,9 +86,8 @@ namespace Agebull.EntityModel.Designer
                 _trace.Message1 = "分析表结构";
                 foreach (var t in tables)
                 {
-                    string table = t;
+                    string table = t.Key;
                     bool isnew = false;
-                    _trace.Message2 = table;
                     var entity = GlobalConfig.GetEntity(p => string.Equals(p.SaveTable, table, StringComparison.OrdinalIgnoreCase));
                     if (entity == null)
                     {
@@ -96,15 +95,23 @@ namespace Agebull.EntityModel.Designer
                         entity = new EntityConfig
                         {
                             ReadTableName = table,
-                            Name = CoderBase.ToWordName(table)
+                            SaveTableName = table,
+                            Name = NameHelper.ToWordName(table)
                         };
-                        _trace.Track = @"新增的表";
+                        if (!string.IsNullOrEmpty(t.Value))
+                        {
+                            var vl = t.Value.Split(NameHelper.NoneLanguageChar, 2);
+                            entity.Caption = vl[0];
+                            entity.Description = t.Value;
+                        }
                         _dispatcher.Invoke(() =>
                         {
                             _project.Add(entity);
+                            entity.Classify = table.SpliteWord()[0];
                         });
                     }
-                    _trace.Message3 = "列分析";
+                    _trace.Message2 = entity.Caption ?? entity.Name;
+                    //_trace.Message3 = "列分析";
                     using (var cmd = connection.CreateCommand())
                     {
                         LoadColumn(_database, cmd, table, entity, isnew);
@@ -141,8 +148,7 @@ namespace Agebull.EntityModel.Designer
         {
             cmd.CommandText =
                 $@"select COLUMN_NAME,IS_Nullable,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,COLUMN_KEY,COLUMN_COMMENT,EXTRA
-from information_schema.columns where table_schema='{
-                    db}' and table_name='{table}'";
+from information_schema.columns where table_schema='{db}' and table_name='{table}'";
             using (var reader = cmd.ExecuteReader())
             {
                 if (!reader.HasRows)
@@ -150,7 +156,7 @@ from information_schema.columns where table_schema='{
                 while (reader.Read())
                 {
                     var field = reader.GetString(0);
-                    _trace.Message4 = field;
+                    //_trace.Message4 = field;
                     if (field == null)
                         continue;
                     var dbType = reader.GetString(2);
@@ -158,14 +164,14 @@ from information_schema.columns where table_schema='{
                     bool isNew = isNewEntity;
                     if (column == null)
                     {
-                        _trace.Track = @"新字段";
+                        //_trace.Track = @"新字段";
                         isNew = true;
                         column = new PropertyConfig
                         {
                             DbFieldName = field,
                             DbType = dbType,
                             CsType = ToCstringType(dbType),
-                            Parent=entity 
+                            Parent = entity
                         };
 
                         InvokeInUiThread(() => entity.Add(column));
@@ -177,7 +183,7 @@ from information_schema.columns where table_schema='{
                     }
                     else if (column.DbType != dbType)
                     {
-                        _trace.Track = $@"字段类型变更:{column.DbType }->{dbType}";
+                        //_trace.Track = $@"字段类型变更:{column.DbType }->{dbType}";
                         column.DbType = dbType;
                         column.CsType = ToCstringType(column.DbType);
                     }
@@ -193,12 +199,12 @@ from information_schema.columns where table_schema='{
                     {
                         var ext = reader.GetString(6);
                         column.IsIdentity = ext.Contains("auto_increment");
-                        if (column.IsIdentity)
-                            _trace.Track = @"自增列";
+                        //if (column.IsIdentity)
+                        //_trace.Track = @"自增列";
                     }
                     if (!isNew)
                         continue;
-                    _trace.Track = @"分析属性名称";
+                    //_trace.Track = @"分析属性名称";
                     switch (column.DbType.ToLower())
                     {
                         case "varchar":
@@ -216,22 +222,29 @@ from information_schema.columns where table_schema='{
                             column.Name = FirstBy(column.DbFieldName, "m_", "M_");
                             break;
                     }
-                    column.Name = CoderBase.ToWordName(column.Name ?? column.DbFieldName);
-                    _trace.Track = $@"属性名称:{column.Name}";
-                    if (string.IsNullOrWhiteSpace(column.Caption))
+                    column.Name = NameHelper.ToWordName(column.Name ?? column.DbFieldName);
+                    if (!string.IsNullOrEmpty(column.Caption))
                     {
-                        column.Caption = column.Name;
+                        var vl = column.Caption;
+                        var vls = vl.Split(NameHelper.NoneLanguageChar, 2);
+                        column.Caption = vls[0];
+                        column.Description = vl;
                     }
-                    if (string.IsNullOrWhiteSpace(column.Description))
-                    {
-                        column.Description = column.Caption;
-                    }
-                    if (!string.IsNullOrWhiteSpace(column.Caption))
-                        column.Caption = column.Caption.Split(CoderBase.NoneLanguageChar, 2)[0];
+                    //_trace.Track = $@"属性名称:{column.Name}";
+                    //if (string.IsNullOrWhiteSpace(column.Caption))
+                    //{
+                    //    column.Caption = column.Name;
+                    //}
+                    //if (string.IsNullOrWhiteSpace(column.Description))
+                    //{
+                    //    column.Description = column.Caption;
+                    //}
+                    //if (!string.IsNullOrWhiteSpace(column.Caption))
+                    //    column.Caption = column.Caption.Split(NameHelper.NoneLanguageChar, 2)[0];
                 }
             }
         }
-        
+
 
         private string FirstBy(string str, params string[] args)
         {

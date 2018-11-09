@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
@@ -23,6 +24,13 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                Action = ToClassify,
+                Caption = "HIS分类",
+                Catalog = "HIS",
+                IconName = "tree_Type"
+            });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
                 Action = ToClass,
@@ -146,6 +154,11 @@ namespace Agebull.EntityModel.Designer
 
         #endregion
 
+        void ToClassify(EntityConfig entity)
+        {
+            if (string.Equals(entity.Classify, "None", StringComparison.OrdinalIgnoreCase))
+                entity.Classify = entity.ReadTableName.Split('_')[0];
+        }
         void ToClass(EntityConfig entity)
         {
             entity.NoDataBase = true;
@@ -185,13 +198,13 @@ namespace Agebull.EntityModel.Designer
 
         public void SortFieldByIndex(EntityConfig entity)
         {
-            var business = new EntitySorter {Entity = entity};
+            var business = new EntitySorter { Entity = entity };
             business.SortFieldByIndex(true);
         }
         public void SortFields(EntityConfig entity)
         {
             int idx = 0;
-            foreach (var field in entity.Properties.OrderBy(p=>p.Identity))
+            foreach (var field in entity.Properties.OrderBy(p => p.Identity))
                 field.Index = idx++;
 
         }
@@ -200,7 +213,7 @@ namespace Agebull.EntityModel.Designer
             var business = new EntitySorter { Entity = entity };
             business.IdentityByIndex();
         }
-        
+
 
         #endregion
 
@@ -267,7 +280,7 @@ namespace Agebull.EntityModel.Designer
             if (oldTable.PrimaryColumn != null)
             {
                 var kc = new PropertyConfig();
-                kc.CopyFromProperty(oldTable.PrimaryColumn,true,true,true);
+                kc.CopyFromProperty(oldTable.PrimaryColumn, true, true, true);
                 newTable.Add(kc);
             }
             foreach (var col in Context.SelectColumns.OfType<PropertyConfig>().ToArray())

@@ -72,6 +72,8 @@ namespace Agebull.EntityModel.Designer
                 //    SyncLinkTable(oldValue, newValue);
                 //    break;
                 case nameof(TargetConfig.Classify):
+                    if (WorkContext.WorkModel == WorkModel.Repair)
+                        return;
                     var old = TargetConfig.Parent.Classifies.FirstOrDefault(p => p.Name == (string)oldValue);
                     old?.Items.Remove(TargetConfig);
                     old = TargetConfig.Parent.Classifies.FirstOrDefault(p=>p.Name == (string)newValue);

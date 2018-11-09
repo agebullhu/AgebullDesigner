@@ -87,17 +87,16 @@ namespace Agebull.EntityModel.Config
 
         private static void RepairClassifies(ProjectConfig project)
         {
-            foreach (var cl in project.Entities.GroupBy(p => p.Classify))
+            foreach (var cl in project.Entities.GroupBy(p => p.Classify ?? "None"))
             {
-                var name = cl.Key ?? "None";
+                var name = cl.Key;
                 var classify = project.Classifies.FirstOrDefault(p => p.Name == name);
                 if (classify == null)
                 {
                     project.Classifies.Add(classify = new EntityClassify
                     {
                         Classify = name,
-                        Description = name,
-                        Caption = name
+                        Name = name
                     });
                 }
                 foreach (var entity in cl)
@@ -105,6 +104,10 @@ namespace Agebull.EntityModel.Config
                     entity.Classify = name;
                     classify.Items.Add(entity);
                 }
+            }
+            foreach (var cl in project.Classifies.Where(p => p.Items.Count ==0).ToArray())
+            {
+                project.Classifies.Remove(cl);
             }
         }
 

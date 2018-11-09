@@ -26,7 +26,8 @@ namespace Agebull.EntityModel.RobotCoder
                 StringBuilder sb = new StringBuilder();
                 words.ForEach(p =>
                 {
-                    sb.Append(p.ToUWord());
+                    if (p != null)
+                        sb.Append(p.ToLower().ToUWord());
                 });
                 return sb.ToString();
             }

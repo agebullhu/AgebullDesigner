@@ -1,4 +1,5 @@
-﻿using Agebull.EntityModel.Config;
+﻿using System.Linq;
+using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -19,8 +20,11 @@ namespace Agebull.EntityModel.Designer
             switch (property)
             {
                 case nameof(TargetConfig.Name):
-                    foreach (var entity in TargetConfig.Items)
-                        entity.Classify = TargetConfig.Name;
+                    using (WorkModelScope.CreateScope(WorkModel.Repair))
+                    {
+                        foreach (var entity in TargetConfig.Items.ToArray())
+                            entity.Classify = TargetConfig.Name;
+                    }
                     break;
             }
         }

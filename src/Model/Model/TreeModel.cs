@@ -115,7 +115,7 @@ namespace Agebull.EntityModel.Designer
             return new ConfigTreeItem<EntityClassify>(child)
             {
                 IsAssist = true,
-                IsExpanded = true,
+                IsExpanded = false,
                 Tag = "Entity",
                 CreateChildFunc = CreateEntityTreeItem,
                 FriendItems = child.Items,

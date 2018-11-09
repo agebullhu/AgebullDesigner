@@ -267,13 +267,19 @@ namespace Agebull.EntityModel
         /// <param name="args"></param>
         public void InvokeInUiThread<T>(Action<T> action, T args)
         {
-            if (WorkContext.SynchronousContext == null)
+            try
             {
-                action(args);
+                if (WorkContext.SynchronousContext == null)
+                {
+                    action(args);
+                }
+                else
+                {
+                    WorkContext.SynchronousContext.InvokeInUiThread(action, args);
+                }
             }
-            else
+            catch 
             {
-                WorkContext.SynchronousContext.InvokeInUiThread(action, args);
             }
         }
 #endif
