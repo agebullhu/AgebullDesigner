@@ -18,6 +18,7 @@ namespace Agebull.EntityModel.Designer
             {
                 foreach (var cfg in TargetConfig.Classifies)
                 {
+                    cfg.Project = TargetConfig;
                     GlobalTrigger.OnLoad(cfg);
                 }
                 foreach (var entityConfig in TargetConfig.Entities)

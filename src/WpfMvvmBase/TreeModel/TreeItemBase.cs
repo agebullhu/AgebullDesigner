@@ -465,7 +465,7 @@ namespace Agebull.EntityModel
 
         private Expression<Func<IList>> _soruceItemsExpression;
         /// <summary>
-        /// 取标题内容的方法
+        /// 子级对象（用于同步数据）
         /// </summary>
         [Browsable(false)]
         public Expression<Func<IList>> SoruceItemsExpression

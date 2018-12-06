@@ -45,28 +45,19 @@ using System.Runtime.Serialization;
 using System.IO;
 using Newtonsoft.Json;
 
-using Agebull.Common;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataModel;
-using Agebull.Common.WebApi;
-
-{Project.UsingNameSpaces}
-
-namespace {NameSpace}.WebApi
+namespace {NameSpace}
 {{
     /// <summary>
     /// {Entity.Description}
     /// </summary>
     [DataContract,JsonObject(MemberSerialization.OptIn)]
-    public partial class {Entity.Name} : IApiResultData , IApiArgument
+    public partial class {Entity.Name}
     {{
         {Properties()}
-        {ToData()}
-        {ValidateCode()}
     }}
 }}";
             var file = ConfigPath(Project, FileSaveConfigName, path, Entity.Classify, Entity.Name);
-            WriteFile(file + ".Designer.cs", code);
+            WriteFile(file + ".cs", code);
         }
 
         /// <summary>
@@ -75,6 +66,7 @@ namespace {NameSpace}.WebApi
         protected override void CreateExCode(string path)
         {
             string code = $@"
+#if API_EXTEND
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -98,17 +90,15 @@ using Agebull.Common.WebApi;
 
 namespace {NameSpace}.WebApi
 {{
-    sealed partial class {Entity.Name}
+    sealed partial class {Entity.Name} : IApiResultData , IApiArgument
     {{
-        /*// <summary>
-        /// 扩展校验
-        /// </summary>
-        /// <param name=""result"">结果存放处</param>
-        partial void ValidateEx(ValidateResult result);*/
+        {ToData()}
+        {ValidateCode()}
     }}
-}}";
+}}
+#endif";
             var file = ConfigPath(Project, FileSaveConfigName, path, Entity.Classify, Entity.Name);
-            WriteFile(file + ".cs", code);
+            WriteFile(file + ".api.cs", code);
         }
 
 
@@ -122,12 +112,18 @@ namespace {NameSpace}.WebApi
             var code = new StringBuilder();
             code.Append(@"
         #region 属性");
-            foreach (PropertyConfig property in Columns.Where(p => !p.NoneApiArgument))
+            foreach (PropertyConfig property in Columns)//.Where(p => !p.NoneApiArgument)
             {
                 string type = property.DataType == "ByteArray" ? "string" : property.LastCsType;
-                code.Append($@"
 
-        {PropertyHeader(property,property.ApiArgumentName,true)}
+                code.Append(RemCode(property));
+                code.Append(@"
+        [DataMember");
+                code.Append(property.NoneJson
+                    ? " , JsonIgnore"
+                    : $@" , JsonProperty(""{property.JsonName}"", NullValueHandling = NullValueHandling.Ignore)");
+                code.Append("]");
+                code.Append($@"
         public {type} {property.Name}
         {{
             get;
@@ -135,6 +131,7 @@ namespace {NameSpace}.WebApi
         }}");
             }
             code.Append(@"
+
         #endregion");
 
             return code.ToString();

@@ -95,6 +95,7 @@ namespace Agebull.EntityModel.Config
                 {
                     project.Classifies.Add(classify = new EntityClassify
                     {
+                        Project= project,
                         Classify = name,
                         Name = name
                     });

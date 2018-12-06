@@ -11,6 +11,11 @@ namespace Agebull.EntityModel.Config
     [DataContract, JsonObject(MemberSerialization.OptIn)]
     public class EntityClassify : ParentConfigBase
     {
+        /// <summary>
+        /// 上级
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        public ProjectConfig Project { get; set; }
 
         /// <summary>
         /// 子级

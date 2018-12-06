@@ -54,12 +54,11 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
 
-
         protected static string PropertyHeader(PropertyConfig property, string jsonName = null, bool? json = null)
         {
             var attribute = new StringBuilder();
             attribute.Append(RemCode(property));
-
+            attribute.Append(DataRuleCode(property));
             attribute.Append(@"
         [DataMember");
             if (json == null)
@@ -116,6 +115,12 @@ namespace Agebull.EntityModel.RobotCoder
         /// </value>");
             }
 
+            return code.ToString();
+        }
+
+        public static string DataRuleCode(PropertyConfig property)
+        {
+            StringBuilder code = new StringBuilder();
             var re = code.ToString();
             code.Append(@"
         [DataRule(");

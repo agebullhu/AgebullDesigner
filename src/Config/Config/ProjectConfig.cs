@@ -832,6 +832,19 @@ namespace Agebull.EntityModel.Config
                 entity.Parent = this;
                 if (!Entities.Contains(entity))
                     Entities.Add(entity);
+                var classf = Classifies.FirstOrDefault(p => p.Name == entity.Classify);
+                if (classf == null)
+                {
+                    Classifies.Add(classf = new EntityClassify
+                    {
+                        Project = this,
+                        Name = entity.Classify,
+                        Caption = entity.Classify
+                    });
+                }
+
+                if (!classf.Items.Contains(entity))
+                    classf.Items.Add(entity);
             }
             catch (Exception e)
             {

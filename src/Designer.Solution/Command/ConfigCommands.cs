@@ -95,6 +95,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     foreach (var cls in project.Classifies)
                     {
+                        cls.Project = project;
                         foreach (var entity in cls.Items)
                         {
                             entity.Name = entity.CppName;

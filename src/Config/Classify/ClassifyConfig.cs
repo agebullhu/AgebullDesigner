@@ -37,7 +37,7 @@ namespace Agebull.EntityModel.Config
         [Category("*设计"), DisplayName("分类"), Description("分类(仅引用可行)")]
         public string Classify
         {
-            get => _classify;
+            get => _classify ?? "None";
             set
             {
                 if (_classify == value)

@@ -9,7 +9,7 @@ namespace Agebull.EntityModel.RobotCoder
 {
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal class EnumMomentCoder : MomentCoderBase, IAutoRegister
+    public class EnumMomentCoder : MomentCoderBase, IAutoRegister
     {
         #region 注册
 
@@ -21,7 +21,7 @@ namespace Agebull.EntityModel.RobotCoder
             MomentCoder.RegisteCoder<EnumConfig>("枚举", "枚举(C++)", "cpp", (EnumCpp));
             MomentCoder.RegisteCoder<EnumConfig>("枚举", "枚举(JS)", "js", EnumJs);
             MomentCoder.RegisteCoder<EnumConfig>("枚举", "枚举(C#)", "cs", (EnumFunc));
-            MomentCoder.RegisteCoder<EnumConfig>("枚举", "枚举名称扩展方法(Enum.Caption())", "cs", EnumCs);
+            MomentCoder.RegisteCoder<EnumConfig>("枚举", "枚举名称扩展方法(Enum.Caption())", "cs", ToCaption);
         }
         #endregion
 
@@ -65,19 +65,20 @@ namespace Agebull.EntityModel.RobotCoder
                     EnumCode(code, enumConfig);
                     break;
                 case ProjectConfig project:
+                    project.Enums.Foreach(p => EnumCode(code, p));
+                    break;
+                case EntityConfig entity:
                     List<EnumConfig> enums = new List<EnumConfig>();
-                    foreach (var entity in project.Entities)
+                    using (CodeGeneratorScope.CreateScope(entity))
                     {
                         foreach (var ef in entity.LastProperties.Where(p => p.EnumConfig != null))
                             if (!enums.Contains(ef.EnumConfig))
                                 enums.Add(ef.EnumConfig);
-
                     }
                     enums.ForEach(p => EnumCode(code, p));
                     break;
                 default:
-                    foreach (var em in SolutionConfig.Current.Enums)
-                        EnumCode(code, em);
+                    SolutionConfig.Current.Enums.Foreach(p => EnumCode(code, p));
                     break;
             }
             return code.ToString();
@@ -113,6 +114,33 @@ namespace Agebull.EntityModel.RobotCoder
             }
             code.Append(@"
     }");
+        }
+
+
+        public static string ToCaption(EnumConfig enumc)
+        {
+            var code = new StringBuilder();
+            code.Append($@"
+        /// <summary>
+        ///     {enumc.Caption}名称转换
+        /// </summary>
+        public static string ToCaption(this {enumc.Name} value)
+        {{
+            switch(value)
+            {{");
+            foreach (var item in enumc.Items)
+            {
+                code.Append($@"
+                case {enumc.Name}.{item.Name}:
+                    return ""{item.Caption}"";");
+            }
+            code.Append($@"
+                default:
+                    return ""{enumc.Caption}(错误)"";
+            }}
+        }}
+");
+            return code.ToString();
         }
         #endregion
 
@@ -151,35 +179,6 @@ function {enumc.Name.ToLWord()}Format(value) {{
             return code.ToString();
         }
 
-        #endregion
-
-        #region EnumCs
-
-        private static string EnumCs(EnumConfig enumc)
-        {
-            var code = new StringBuilder();
-            code.Append($@"
-        /// <summary>
-        ///     {enumc.Caption}名称转换
-        /// </summary>
-        public static string ToCaption(this {enumc.Name} value)
-        {{
-            switch(value)
-            {{");
-            foreach (var item in enumc.Items)
-            {
-                code.Append($@"
-                case {enumc.Name}.{item.Name}:
-                    return ""{item.Caption}"";");
-            }
-            code.Append($@"
-                default:
-                    return ""{enumc.Caption}(错误)"";
-            }}
-        }}
-");
-            return code.ToString();
-        }
         #endregion
     }
 }

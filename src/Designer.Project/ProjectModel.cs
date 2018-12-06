@@ -43,7 +43,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "编辑",
                 SignleSoruce = true,
                 IsButton = true,
-                Caption = "增加表",
+                Caption = "增加实体",
                 Action = AddEntity,
                 IconName = "tree_Open"
             });
@@ -52,7 +52,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "编辑",
                 SignleSoruce = true,
                 IsButton = true,
-                Caption = "粘贴表",
+                Caption = "粘贴实体",
                 Action = PasteTable,
                 IconName = "tree_item"
             });
@@ -62,7 +62,7 @@ namespace Agebull.EntityModel.Designer
                 SignleSoruce = true,
                 IsButton = true,
                 Catalog = "编辑",
-                Caption = "复制到其它项目",
+                Caption = "复制基础配置到其它项目",
                 Action = CopyToProject,
                 IconName = "tree_item"
             });
@@ -108,7 +108,7 @@ namespace Agebull.EntityModel.Designer
             }
 
             var project = Context.SelectProject;
-            var entity = new EntityConfig();
+            var entity = new EntityConfig{ Parent = project };
             if (CommandIoc.EditEntityCommand(entity))
             {
                 project.Add(entity);

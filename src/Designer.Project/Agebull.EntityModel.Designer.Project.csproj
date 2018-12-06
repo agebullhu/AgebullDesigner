@@ -71,6 +71,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassifyModel.cs" />
     <Compile Include="Model\ApiListViewModel.cs" />
     <Compile Include="Model\EnumListViewModel.cs" />
     <Compile Include="Model\EntityListViewModel.cs" />
