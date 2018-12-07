@@ -22,7 +22,7 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal class SolutionCommands : ConfigCommands<SolutionConfig>
+    internal class SolutionCommands : DesignCommondBase<SolutionConfig>
     {
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
@@ -37,5 +37,13 @@ namespace Agebull.EntityModel.Designer
             });
         }
 
+        /// <summary>
+        /// 新增项目
+        /// </summary>
+        public void AddProject(object arg)
+        {
+            if (Model.CreateNew("新增项目", out ProjectConfig config))
+                Context.Solution.Add(config);
+        }
     }
 }

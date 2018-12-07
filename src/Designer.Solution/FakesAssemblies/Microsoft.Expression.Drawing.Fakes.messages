@@ -1,0 +1,92 @@
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.ICalloutGeometrySourceParameters 生成存根: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Controls.Callout 生成存根: 类型已密封。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.ILineArrowGeometrySourceParameters 生成存根: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Controls.LineArrow 生成存根: 类型已密封。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.PathGeometryHelper 生成存根: 类型已密封。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.PathSegmentHelper 生成存根: 类型已密封。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.BezierCurveFlattener 生成存根: 类型已密封。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.CommonExtensions 生成存根: 类型已密封。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.DrawingPropertyMetadataOptions 生成存根: 类型是一个值类型。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.DrawingPropertyChangedEventArgs 生成存根: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.DrawingPropertyMetadata 生成存根: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.GeometryHelper 生成存根: 类型已密封。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.MathHelper 生成存根: 类型已密封。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.PathFigureHelper 生成存根: 类型已密封。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.PathSegmentData 生成存根: 类型已密封。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.PolylineData 生成存根: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.MarchStopReason 生成存根: 类型是一个值类型。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.MarchLocation 生成存根: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.PolylineHelper 生成存根: 类型已密封。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.RandomEngine 生成存根: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.SimpleSegment 生成存根: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.TransformHelper 生成存根: 类型已密封。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.UnitType 生成存根: 类型是一个值类型。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.IArcGeometrySourceParameters 生成存根: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.ArcGeometrySource 生成存根: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.ArrowOrientation 生成存根: 类型是一个值类型。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.IBlockArrowGeometrySourceParameters 生成存根: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.PointPair 生成存根: 类型是一个值类型。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.BlockArrowGeometrySource 生成存根: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.CalloutStyle 生成存根: 类型是一个值类型。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.CalloutGeometrySource 生成存根: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.GeometryEffectConverter 生成存根: 类型已密封。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.InvalidateGeometryReasons 生成存根: 类型是一个值类型。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.IGeometrySourceExtensions 生成存根: 类型已密封。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.ArrowType 生成存根: 类型是一个值类型。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.CornerType 生成存根: 类型是一个值类型。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.LineArrowGeometrySource 生成存根: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.IPolygonGeometrySourceParameters 生成存根: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.PolygonGeometrySource 生成存根: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.SketchGeometryEffect 生成存根: 类型已密封。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Shapes.Arc 生成存根: 类型已密封。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Shapes.BlockArrow 生成存根: 类型已密封。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Shapes.RegularPolygon 生成存根: 类型已密封。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.BlendSDK.RuntimeVersion 生成存根: 类型已密封。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.BlendSDK.VersionConstants 生成存根: 类型已密封。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.ExceptionStringTable 生成存根: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.IGeometrySourceParameters 生成填充码: 类型是一个接口。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.IShape 生成填充码: 类型是一个接口。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.ICalloutGeometrySourceParameters 生成填充码: 类型是一个接口。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.ILineArrowGeometrySourceParameters 生成填充码: 类型是一个接口。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.PathGeometryHelper 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.PathSegmentHelper 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.BezierCurveFlattener 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.CommonExtensions 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.DrawingPropertyMetadataOptions 生成填充码: 类型是一个枚举。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.DrawingPropertyChangedEventArgs 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.DrawingPropertyMetadata 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.MathHelper 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.PathFigureHelper 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.PathSegmentData 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.PolylineData 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.MarchStopReason 生成填充码: 类型是一个枚举。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.MarchLocation 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.PolylineHelper 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.RandomEngine 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.SimpleSegment 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.Core.TransformHelper 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.UnitType 生成填充码: 类型是一个枚举。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.IArcGeometrySourceParameters 生成填充码: 类型是一个接口。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.IGeometrySource 生成填充码: 类型是一个接口。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.ArcGeometrySource 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.ArrowOrientation 生成填充码: 类型是一个枚举。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.IBlockArrowGeometrySourceParameters 生成填充码: 类型是一个接口。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.PointPair 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.BlockArrowGeometrySource 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.CalloutStyle 生成填充码: 类型是一个枚举。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.CalloutGeometrySource 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.GeometryEffect+<>c__DisplayClass2 生成填充码: 类型不受支持，因为存在内部限制。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.GeometryEffect+NoGeometryEffect 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.InvalidateGeometryReasons 生成填充码: 类型是一个枚举。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.IGeometrySourceExtensions 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.ArrowType 生成填充码: 类型是一个枚举。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.CornerType 生成填充码: 类型是一个枚举。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.LineArrowGeometrySource 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.IPolygonGeometrySourceParameters 生成填充码: 类型是一个接口。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.PolygonGeometrySource 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.SketchGeometryEffect+<>c__DisplayClass5 生成填充码: 类型不受支持，因为存在内部限制。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.SketchGeometryEffect+<>c__DisplayClass7 生成填充码: 类型不受支持，因为存在内部限制。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Media.SketchGeometryEffect+<GetEffectiveSegments>d__9 生成填充码: 类型不受支持，因为存在内部限制。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.BlendSDK.RuntimeVersion 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.BlendSDK.VersionConstants 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。
+D:\开源项目\AgebullDesigner\src\Designer.Solution\Fakes\Microsoft.Expression.Drawing.fakes : warning : 无法为 Microsoft.Expression.Drawing.ExceptionStringTable 生成填充码: 类型对 exported or assembly(Microsoft.Expression.Drawing.Fakes) 不可见。

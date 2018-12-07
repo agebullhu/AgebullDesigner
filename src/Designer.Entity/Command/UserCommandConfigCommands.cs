@@ -22,7 +22,7 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal class UserCommandConfigCommands : ConfigCommands<UserCommandConfig>
+    internal class UserCommandConfigCommands : DesignCommondBase<UserCommandConfig>
     {
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {

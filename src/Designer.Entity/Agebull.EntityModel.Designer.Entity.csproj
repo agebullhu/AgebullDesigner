@@ -70,13 +70,13 @@
   <ItemGroup>
     <Compile Include="Business\EntityBusinessModel.cs" />
     <Compile Include="Business\PropertyBusinessModel.cs" />
+    <Compile Include="Command\EntityCommands1.cs" />
     <Compile Include="Command\EntityHelper.cs" />
-    <Compile Include="Command\EntityInterfaceSeter.cs" />
     <Compile Include="Command\InterfaceCommand.cs" />
     <Compile Include="Command\EntityPrimaryKeyHelper.cs" />
-    <Compile Include="Command\InterfaceHelper.cs" />
     <Compile Include="Command\PropertyModel.cs" />
     <Compile Include="Command\EntityCommonds.cs" />
+    <Compile Include="Command\UserCommandConfigCommands.cs" />
     <Compile Include="Model\EntitySorter.cs" />
     <Compile Include="Model\AllFieldsViewModel.cs" />
     <Compile Include="Model\FieldFormatCommand.cs" />

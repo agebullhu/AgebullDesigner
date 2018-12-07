@@ -40,6 +40,14 @@ namespace Agebull.EntityModel.Designer
                 Caption = "ÐÞ¸´ÓÃ»§ÀàÐÍ",
                 IconName = "img_modify"
             });
+            commands.Add(new CommandItemBuilder<PropertyConfig>
+            {
+                Action = p => p.Parent.Remove(p),
+                Catalog = "±à¼­",
+                Caption = "É¾³ý×Ö¶Î",
+                SignleSoruce = true,
+                IconName = "img_del"
+            });
         }
 
         #endregion

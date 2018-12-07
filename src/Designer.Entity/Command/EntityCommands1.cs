@@ -9,6 +9,9 @@
 #region 引用
 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -19,8 +22,75 @@ using Agebull.Common.Mvvm;
 
 namespace Agebull.EntityModel.Designer
 {
-    public abstract class ConfigCommands<TConfig> : DesignCommondBase<TConfig>
+    /// <summary>
+    /// 导入导出相关模型
+    /// </summary>
+    [Export(typeof(IAutoRegister))]
+    [ExportMetadata("Symbol", '%')]
+    internal class EntityCommands1 : DesignCommondBase<EntityConfig>
     {
+        protected override void CreateCommands(List<ICommandItemBuilder> commands)
+        {
+            commands.Add(new CommandItemBuilder
+            {
+                Action = SaveEntity,
+                Caption = "保存所选对象",
+                SignleSoruce = true,
+                IsButton = true,
+                Catalog = "编辑",
+                ConfirmMessage= "确认强制保存吗?\n要知道这存在一定破坏性!",
+                IconName = "tree_item"
+            });
+
+            commands.Add(new CommandItemBuilder<string, string>(ValidatePrepare, Validate, ValidateEnd)
+            {
+                TargetType = typeof(EntityConfig),
+                Caption = "检查设计",
+                Catalog = "工具",
+                IconName = "tree_item"
+            });
+
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                SignleSoruce=true,
+                Action = AddCommand,
+                Caption = "新增命令",
+                Catalog = "编辑",
+                IconName = "tree_Open",
+                ViewModel = "Model"
+            });
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                SignleSoruce = true,
+                Action = AddAuditCommand,
+                Caption = "新增审核命令",
+                Catalog = "编辑",
+                IconName = "tree_Open",
+                ViewModel = "Model"
+            });
+        }
+
+        /// <summary>
+        /// 强制保存
+        /// </summary>
+        public void SaveEntity(object arg)
+        {
+            ConfigWriter writer = new ConfigWriter
+            {
+                Solution = Context.Solution,
+            };
+            if (Context.SelectProject != null)
+            {
+                writer.SaveProject(Context.SelectProject, Path.GetDirectoryName(Context.Solution.SaveFileName));
+                return;
+            }
+            var tables = Context.GetSelectEntities();
+            foreach (var entity in tables)
+            {
+                writer.SaveEntity(entity, Path.GetDirectoryName(Context.Solution.SaveFileName),true);
+            }
+        }
+
         #region 客户端检测
 
         public bool CheckClientPrepare(string arg, Action<string> setAction)
@@ -43,20 +113,12 @@ namespace Agebull.EntityModel.Designer
         #region 关联设置
 
         /// <summary>
-        /// 新增项目
-        /// </summary>
-        public void AddProject(object arg)
-        {
-            if (Model.CreateNew("新增项目",out ProjectConfig config))
-                Context.Solution.Add(config);
-        }
-        /// <summary>
         /// 新增命令
         /// </summary>
         /// <param name="entity"></param>
         public void AddCommand(EntityConfig entity)
         {
-            if (Model.CreateNew("新增命令",out UserCommandConfig config))
+            if (Model.CreateNew("新增命令", out UserCommandConfig config))
                 entity.Add(config);
         }
         /// <summary>
