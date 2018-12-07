@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.Designer
@@ -39,23 +40,23 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         private void GetEntities()
         {
-            var list = new List<EntityConfig>();
+            var list = new NotificationList<EntityConfig>();
             switch (_argument)
             {
                 case EntityConfig entityConfig:
                     list.Add(entityConfig);
                     break;
                 case EntityClassify classify:
-                    list.AddRange(classify.Items);
+                    classify.Items.Foreach(p=>list.TryAdd(p));
                     break;
                 case PropertyConfig propertyConfig:
-                    list.Add(propertyConfig.Parent);
+                    list.TryAdd(propertyConfig.Parent);
                     break;
                 case ProjectConfig projectConfig:
-                    list.AddRange(projectConfig.Entities);
+                    projectConfig.Entities.Foreach(p => list.TryAdd(p));
                     break;
                 default:
-                    list.AddRange(SolutionConfig.Current.Entities);
+                    SolutionConfig.Current.Entities.Foreach(p => list.TryAdd(p));
                     break;
             }
             Entities = list;

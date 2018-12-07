@@ -57,9 +57,9 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public override void ForeachChild(Action<ConfigBase> action)
         {
-            if (_projects != null)
-                foreach (var item in _projects)
-                    action(item);
+            if (_projects == null) return;
+            foreach (var item in _projects)
+                action(item);
         }
         /// <summary>
         ///  ‘Õºº”»Î
@@ -67,8 +67,7 @@ namespace Agebull.EntityModel.Config
         /// <param name="project"></param>
         public void Add(ProjectConfig project)
         {
-            if (!ProjectList.Contains(project))
-                ProjectList.Add(project);
+            ProjectList.TryAdd(project);
             GlobalConfig.Add(project);
         }
 
@@ -78,8 +77,7 @@ namespace Agebull.EntityModel.Config
         /// <param name="entity"></param>
         internal void Add(EntityConfig entity)
         {
-            if (!EntityList.Contains(entity))
-                EntityList.Add(entity);
+            EntityList.TryAdd(entity);
             GlobalConfig.Add(entity);
         }
 
@@ -89,8 +87,7 @@ namespace Agebull.EntityModel.Config
         /// <param name="enumConfig"></param>
         internal void Add(EnumConfig enumConfig)
         {
-            if (!EnumList.Contains(enumConfig))
-                EnumList.Add(enumConfig);
+            EnumList.TryAdd(enumConfig);
             GlobalConfig.Add(enumConfig);
         }
 
@@ -100,8 +97,7 @@ namespace Agebull.EntityModel.Config
         /// <param name="api"></param>
         internal void Add(ApiItem api)
         {
-            if (!ApiList.Contains(api))
-                ApiList.Add(api);
+            ApiList.TryAdd(api);
             GlobalConfig.Add(api);
         }
 

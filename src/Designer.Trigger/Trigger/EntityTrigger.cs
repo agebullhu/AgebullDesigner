@@ -74,14 +74,13 @@ namespace Agebull.EntityModel.Designer
                 case nameof(TargetConfig.Classify):
                     if (TargetConfig.Parent == null || WorkContext.WorkModel == WorkModel.Repair)
                         return;
-                    var old = TargetConfig.Parent.Classifies.FirstOrDefault(p => p.Name == (string)oldValue);
-                    old?.Items.Remove(TargetConfig);
-                    old = TargetConfig.Parent.Classifies.FirstOrDefault(p => p.Name == (string)newValue);
-                    old?.Items.Add(TargetConfig);
+                    var oldCls = TargetConfig.Parent.Classifies.FirstOrDefault(p => p.Name == (string)oldValue);
+                    oldCls?.Items.Remove(TargetConfig);
+                    var newoldCls = TargetConfig.Parent.Classifies.FirstOrDefault(p => p.Name == (string)newValue);
+                    newoldCls?.Items.TryAdd(TargetConfig);
                     break;
                 case nameof(TargetConfig.Properties):
-                    var ops = (NotificationList<PropertyConfig>)oldValue;
-                    if (ops != null)
+                    if (oldValue is NotificationList<PropertyConfig> ops)
                         ops.CollectionChanged -= OnPropertiesCollectionChanged;
                     break;
             }

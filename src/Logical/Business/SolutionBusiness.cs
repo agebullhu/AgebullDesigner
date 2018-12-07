@@ -103,7 +103,7 @@ namespace Agebull.EntityModel.Config
                 foreach (var entity in cl)
                 {
                     entity.Classify = name;
-                    classify.Items.Add(entity);
+                    classify.Items.TryAdd(entity);
                 }
             }
             foreach (var cl in project.Classifies.Where(p => p.Items.Count ==0).ToArray())

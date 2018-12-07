@@ -684,8 +684,7 @@ namespace Agebull.EntityModel.Config
         {
             if (project == null)
                 return;
-            if (!Projects.Contains(project))
-                Projects.Add(project);
+            Projects.TryAdd(project);
         }
 
         /// <summary>
@@ -696,8 +695,7 @@ namespace Agebull.EntityModel.Config
         {
             if (entity == null)
                 return;
-            if (!Entities.Contains(entity))
-                Entities.Add(entity);
+            Entities.TryAdd(entity);
         }
 
         /// <summary>
@@ -708,8 +706,7 @@ namespace Agebull.EntityModel.Config
         {
             if (enumConfig == null)
                 return;
-            if (!Enums.Contains(enumConfig))
-                Enums.Add(enumConfig);
+            Enums.TryAdd(enumConfig);
         }
 
         /// <summary>
@@ -720,8 +717,7 @@ namespace Agebull.EntityModel.Config
         {
             if (api == null)
                 return;
-            if (!ApiItems.Contains(api))
-                ApiItems.Add(api);
+            ApiItems.TryAdd(api);
         }
 
         /// <summary>

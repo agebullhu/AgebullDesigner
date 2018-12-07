@@ -284,9 +284,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="B.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Style\Images\audit.png" />
     <Resource Include="Style\Images\a_again.png" />
     <Resource Include="Style\Images\a_deny.png" />
@@ -333,16 +330,7 @@
     <Resource Include="Style\Images\del.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Style\Images\bull.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Style\Images\bull.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Style\Images\bull2.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Style\Images\find.png" />
@@ -375,6 +363,9 @@
     <PackageReference Include="NPOI">
       <Version>2.3.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Style\Images\bull.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

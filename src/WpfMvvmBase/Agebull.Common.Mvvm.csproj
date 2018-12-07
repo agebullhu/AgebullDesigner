@@ -88,6 +88,7 @@
     <Compile Include="Models\DispatcherSynchronousContext.cs" />
     <Compile Include="Models\MvvmBase.cs" />
     <Compile Include="Models\NotificationList.cs" />
+    <Compile Include="Models\NotificationListHelper.cs" />
     <Compile Include="Models\StepTackProxy.cs" />
     <Compile Include="Models\TraceModel.cs" />
     <Compile Include="Models\TraceModelBase.cs" />

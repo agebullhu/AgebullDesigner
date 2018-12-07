@@ -1,4 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Globalization;
+using System.Runtime.CompilerServices;
+using System.Security;
 using System.Windows;
 using System.Windows.Markup;
 
@@ -18,5 +22,6 @@ namespace Agebull.EntityModel.Designer
             };
             Trace.Listeners.Add(new MessageTraceListener());
         }
+
     }
 }

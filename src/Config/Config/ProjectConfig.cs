@@ -751,7 +751,7 @@ namespace Agebull.EntityModel.Config
                     return;
                 if (value != null)
                 {
-                    var words = value.Split(new []{ '\r', '\n', ';', '；'},StringSplitOptions.RemoveEmptyEntries );
+                    var words = value.Split(new[] { '\r', '\n', ';', '；' }, StringSplitOptions.RemoveEmptyEntries);
                     value = words.Length == 0 ? null : words.LinkToString(";\r\n") + ";";
                 }
                 BeforePropertyChanged(nameof(UsingNameSpaces), _usingNameSpaces, value);
@@ -823,6 +823,22 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 加入实体
         /// </summary>
+        /// <param name="classify"></param>
+        public void Add(EntityClassify classify)
+        {
+            try
+            {
+                classify.Project = this;
+                Classifies.TryAdd(classify);
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e);
+            }
+        }
+        /// <summary>
+        /// 加入实体
+        /// </summary>
         /// <param name="entity"></param>
         public void Add(EntityConfig entity)
         {
@@ -830,8 +846,7 @@ namespace Agebull.EntityModel.Config
             {
                 SolutionConfig.Current.Add(entity);
                 entity.Parent = this;
-                if (!Entities.Contains(entity))
-                    Entities.Add(entity);
+                Entities.TryAdd(entity);
                 var classf = Classifies.FirstOrDefault(p => p.Name == entity.Classify);
                 if (classf == null)
                 {
@@ -842,9 +857,7 @@ namespace Agebull.EntityModel.Config
                         Caption = entity.Classify
                     });
                 }
-
-                if (!classf.Items.Contains(entity))
-                    classf.Items.Add(entity);
+                classf.Items.TryAdd(entity);
             }
             catch (Exception e)
             {
@@ -863,8 +876,7 @@ namespace Agebull.EntityModel.Config
                 SolutionConfig.Current.Add(enumConfig);
                 enumConfig.Parent?.Remove(enumConfig);
                 enumConfig.Parent = this;
-                if (!Enums.Contains(enumConfig))
-                    Enums.Add(enumConfig);
+                Enums.TryAdd(enumConfig);
             }
             catch (Exception e)
             {
@@ -880,8 +892,7 @@ namespace Agebull.EntityModel.Config
         {
             SolutionConfig.Current.Add(api);
             api.Parent = this;
-            if (!ApiItems.Contains(api))
-                ApiItems.Add(api);
+            ApiItems.TryAdd(api);
         }
 
         /// <summary>
