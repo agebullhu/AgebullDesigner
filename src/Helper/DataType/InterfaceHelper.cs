@@ -18,8 +18,8 @@ namespace Agebull.EntityModel.RobotCoder
             {
                 if (!iField.IsReference)
                     continue;
-                var refField = iField.Option.ReferenceConfig as PropertyConfig;
-                if (refField == null || !refField.Parent.IsInterface || interfaces.Contains(refField.Parent.Name))
+                if (!(iField.Option.ReferenceConfig is PropertyConfig refField) ||
+                    !refField.Parent.IsInterface || interfaces.Contains(refField.Parent.Name))
                 {
                     continue;
                 }
@@ -29,14 +29,14 @@ namespace Agebull.EntityModel.RobotCoder
             {
                 var ie = GlobalConfig.GetEntity(inf);
                 if (ie == null) continue;
-                foreach (var iField in ie.Properties)
+                foreach (var iField in ie.Properties.ToArray())
                 {
                     var field = entity.Properties.FirstOrDefault(p => p.ReferenceKey == iField.Key || p.Name == iField.Name);
                     if (field == null)
                     {
                         entity.Add(new PropertyConfig
                         {
-                            Option =
+                            Option = new ConfigDesignOption
                             {
                                 IsReference = true,
                                 ReferenceConfig = iField

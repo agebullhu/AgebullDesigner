@@ -8,6 +8,9 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     public class ClassifyTrigger : ParentConfigTrigger<EntityClassify>
     {
+        /// <summary>
+        /// 载入事件处理
+        /// </summary>
         protected override void OnLoad()
         {
         }

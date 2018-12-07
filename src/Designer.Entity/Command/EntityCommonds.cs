@@ -285,7 +285,7 @@ namespace Agebull.EntityModel.Designer
             }
             foreach (var col in Context.SelectColumns.OfType<PropertyConfig>().ToArray())
             {
-                oldTable.Properties.Remove(col);
+                oldTable.Remove(col);
                 newTable.Add(col);
             }
             Context.SelectProject.Add(newTable);

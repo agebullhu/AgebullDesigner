@@ -19,14 +19,12 @@ namespace Agebull.EntityModel.Config
             propertyConfig.Parent = this;
             if (Properties.Contains(propertyConfig))
                 return;
-            if (!WorkContext.InLoding && !WorkContext.InSaving && !WorkContext.InRepair)
-            {
-                if (propertyConfig.Identity == 0)
-                    propertyConfig.Identity = ++MaxIdentity;
-                if (propertyConfig.Index == 0)
-                    propertyConfig.Index = Properties.Count == 0 ? 1 : Properties.Max(p => p.Index) + 1;
-            }
-            Properties.Add(propertyConfig);
+            Properties.TryAdd(propertyConfig);
+            if (WorkContext.InLoding || WorkContext.InSaving || WorkContext.InRepair)
+                return;
+            propertyConfig.Identity = ++MaxIdentity;
+            propertyConfig.Index = Properties.Count == 0 ? 1 : Properties.Max(p => p.Index) + 1;
+            MaxIdentity = Properties.Max(p => p.Identity);
         }
         /// <summary>
         /// 加入子级
@@ -34,11 +32,8 @@ namespace Agebull.EntityModel.Config
         /// <param name="propertyConfig"></param>
         public void Add(EntityReleationConfig propertyConfig)
         {
-            if (!Releations.Contains(propertyConfig))
-            {
-                propertyConfig.Parent = this;
-                Releations.Add(propertyConfig);
-            }
+            propertyConfig.Parent = this;
+            Releations.TryAdd(propertyConfig);
         }
         /// <summary>
         /// 加入子级
@@ -46,11 +41,8 @@ namespace Agebull.EntityModel.Config
         /// <param name="propertyConfig"></param>
         public void Add(UserCommandConfig propertyConfig)
         {
-            if (!Commands.Contains(propertyConfig))
-            {
-                propertyConfig.Parent = this;
-                Commands.Add(propertyConfig);
-            }
+            propertyConfig.Parent = this;
+            Commands.TryAdd(propertyConfig);
         }
 
         /// <summary>

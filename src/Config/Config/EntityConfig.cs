@@ -88,7 +88,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember,JsonIgnore]
         [Category(@"数据标识"),DisplayName(@"是否存在属性组合唯一值"),Description("是否存在属性组合唯一值")]
-        public bool IsUniqueUnion=>Properties.Count(p => p.UniqueIndex > 0) > 1;
+        public bool IsUniqueUnion=> Properties.Count >0 && Properties.Count(p => p.UniqueIndex > 0) > 1;
 
         /// <summary>
         /// 主键字段

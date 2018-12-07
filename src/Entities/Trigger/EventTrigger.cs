@@ -27,7 +27,7 @@ namespace Agebull.EntityModel
         public void BeforePropertyChanged(NotificationObject config, string property, object oldValue, object newValue)
         {
             Target = config;
-            var scope = EventScope.CreateScope(config,this.GetTypeName(), property);
+            var scope = NameEventScope.CreateScope(config,this.GetTypeName(), property);
             if (scope == null)
                 return;
             using (scope)
@@ -52,7 +52,7 @@ namespace Agebull.EntityModel
         internal void OnPropertyChanged(NotificationObject config, string property)
         {
             Target = config;
-            var scope = EventScope.CreateScope(config, this.GetTypeName(), property);
+            var scope = NameEventScope.CreateScope(config, this.GetTypeName(), property);
             if (scope == null)
                 return;
             using (scope)
@@ -76,7 +76,7 @@ namespace Agebull.EntityModel
         public void OnCreate(NotificationObject config)
         {
             Target = config;
-            var scope = EventScope.CreateScope(config, this.GetTypeName(), "_create_");
+            var scope = NameEventScope.CreateScope(config, this.GetTypeName(), nameof(OnCreate));
             if (scope == null)
                 return;
             using (scope)
@@ -99,7 +99,7 @@ namespace Agebull.EntityModel
         public void OnLoad(NotificationObject config)
         {
             Target = config;
-            var scope = EventScope.CreateScope(config, this.GetTypeName(), "_load_");
+            var scope = NameEventScope.CreateScope(config, this.GetTypeName(), nameof(OnLoad));
             if (scope == null)
                 return;
             using (scope)
@@ -122,7 +122,7 @@ namespace Agebull.EntityModel
         public void OnAdded(NotificationObject parent, NotificationObject config)
         {
             Target = parent;
-            var scope = EventScope.CreateScope(config, this.GetTypeName(), "_add_");
+            var scope = NameEventScope.CreateScope(config, this.GetTypeName(), nameof(OnAdded));
             if (scope == null)
                 return;
             using (scope)
@@ -146,7 +146,7 @@ namespace Agebull.EntityModel
         public void OnRemoved(NotificationObject parent, NotificationObject config)
         {
             Target = parent;
-            var scope = EventScope.CreateScope(config, this.GetTypeName(), "_del_");
+            var scope = NameEventScope.CreateScope(config, this.GetTypeName(), nameof(OnRemoved));
             if (scope == null)
                 return;
             using (scope)

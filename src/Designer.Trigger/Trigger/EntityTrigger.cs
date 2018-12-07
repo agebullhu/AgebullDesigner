@@ -17,12 +17,14 @@ namespace Agebull.EntityModel.Designer
         {
             using (WorkModelScope.CreateScope(WorkModel.Repair))
             {
-                foreach (var cfg in TargetConfig.Properties)
+                foreach (var field in TargetConfig.Properties)
                 {
-                    GlobalTrigger.OnLoad(cfg);
+                    GlobalTrigger.OnLoad(field);
                 }
+                TargetConfig.MaxIdentity = TargetConfig.Properties.Count == 0 ? 0 : TargetConfig.Properties.Max(p => p.Identity);
             }
         }
+
         /// <summary>
         /// 属性事件处理
         /// </summary>

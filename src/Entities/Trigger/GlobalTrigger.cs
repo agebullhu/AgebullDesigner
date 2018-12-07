@@ -58,7 +58,7 @@ namespace Agebull.EntityModel
             if (WorkContext.IsNoChangedNotify || config ==null)
                 return;
             var type = config.GetType();
-            var scope = EventScope.CreateScope(config, "Global", property);
+            var scope = NameEventScope.CreateScope(config, "Global", property);
             if (scope == null)
                 return;
             using (scope)
@@ -83,7 +83,7 @@ namespace Agebull.EntityModel
             if (WorkContext.IsNoChangedNotify || config == null)
                 return;
             var type = config.GetType();
-            var scope = EventScope.CreateScope(config, "Global_", property);
+            var scope = NameEventScope.CreateScope(config, "Global", property);
             if (scope == null)
                 return;
             using (scope)
@@ -105,7 +105,7 @@ namespace Agebull.EntityModel
             if (config == null)
                 return;
             var type = config.GetType();
-            var scope = EventScope.CreateScope(config, "Global", "OnLoad");
+            var scope = NameEventScope.CreateScope(config, "Global", nameof(OnLoad));
             if (scope == null)
                 return;
             using (scope)
@@ -138,7 +138,7 @@ namespace Agebull.EntityModel
             if (config == null)
                 return;
             var type = config.GetType();
-            var scope = EventScope.CreateScope(config, "Global", "OnCreate");
+            var scope = NameEventScope.CreateScope(config, "Global", nameof(OnCreate));
             if (scope == null)
                 return;
             using (scope)
@@ -162,7 +162,7 @@ namespace Agebull.EntityModel
         {
             if (config == null)
                 return;
-            var scope = EventScope.CreateScope(config, "Global", "OnAdded");
+            var scope = NameEventScope.CreateScope(config, "Global", nameof(OnAdded));
             if (scope == null)
                 return;
             using (scope)
@@ -184,7 +184,7 @@ namespace Agebull.EntityModel
         {
             if (config == null)
                 return;
-            var scope = EventScope.CreateScope(config, "Global", "OnRemoved");
+            var scope = NameEventScope.CreateScope(config, "Global", nameof(OnRemoved));
             if (scope == null)
                 return;
             using (scope)
@@ -209,7 +209,7 @@ namespace Agebull.EntityModel
         {
             if (config == null)
                 return;
-            var scope = EventScope.CreateScope(My, "Global", "OnCodeGeneratorBegin");
+            var scope = NameEventScope.CreateScope(My, "Global", nameof(OnCodeGeneratorBegin));
             if (scope == null)
                 return;
             using (scope)
@@ -225,7 +225,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public static void OnCodeGeneratorEnd()
         {
-            var scope = EventScope.CreateScope(My, "Global", "OnCodeGeneratorEnd");
+            var scope = NameEventScope.CreateScope(My, "Global", nameof(OnCodeGeneratorBegin));
             if (scope == null)
                 return;
             using (scope)

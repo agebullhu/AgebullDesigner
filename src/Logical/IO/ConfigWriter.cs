@@ -171,13 +171,13 @@ namespace Agebull.EntityModel.Designer
                 //É¾³ý×Ö¶Î´¦Àí
                 foreach (var field in entity.Properties.Where(p => p.IsDelete).ToArray())
                 {
-                    entity.Properties.Remove(field);
+                    entity.Remove(field);
                 }
 
                 //É¾³ýÃüÁî´¦Àí
                 foreach (var field in entity.Commands.Where(p => p.IsDelete).ToArray())
                 {
-                    entity.Commands.Remove(field);
+                    entity.Remove(field);
                 }
             }
 

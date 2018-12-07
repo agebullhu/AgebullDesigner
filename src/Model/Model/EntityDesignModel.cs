@@ -152,7 +152,7 @@ namespace Agebull.EntityModel.Designer
             }
             foreach (var col in Context.SelectColumns.OfType<PropertyConfig>().ToArray())
             {
-                Context.SelectEntity.Properties.Remove(col);
+                Context.SelectEntity.Remove(col);
             }
             Context.SelectColumns = null;
         }

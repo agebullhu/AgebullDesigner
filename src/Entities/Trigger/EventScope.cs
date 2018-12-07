@@ -4,9 +4,9 @@ using Agebull.Common.Base;
 namespace Agebull.EntityModel
 {
     /// <summary>
-    /// 事件范围,防止事件重入
+    /// 命名事件范围,防止同名事件重入
     /// </summary>
-    public class EventScope : ScopeBase
+    public class NameEventScope : ScopeBase
     {
         /// <summary>
         /// 当前正在处理的事件
@@ -28,36 +28,45 @@ namespace Agebull.EntityModel
         /// <param name="category">分类</param>
         /// <param name="property">属性</param>
         /// <returns>为空表示已重入,应该放弃处理,不为空则使用这个范围</returns>
-        public static EventScope CreateScope(object config,string category, string property)
+        public static NameEventScope CreateScope(object config,string category, string property)
         {
-            string name = $"{category}.{property}";
-            if (Events.TryGetValue(name, out var configs))
+            lock (Events)
             {
-                if (configs.Contains(config))
-                    return null;
+                string name = $"{category}.{property}";
+                if (Events.TryGetValue(name, out var configs))
+                {
+                    if (configs.Contains(config))
+                        return null;
+                }
+                else
+                {
+                    Events.Add(name, new List<object>());
+                }
+                return new NameEventScope(config, name);
             }
-            else
-            {
-                Events.Add(name, new List<object>());
-            }
-            return new EventScope(config, name);
         }
         /// <summary>
         /// 构造
         /// </summary>
         /// <param name="config"></param>
         /// <param name="property"></param>
-        private EventScope(object config, string property)
+        private NameEventScope(object config, string property)
         {
-            _config = config;
-            _property = property;
-            Events[property].Add(config);
+            lock (Events)
+            {
+                _config = config;
+                _property = property;
+                Events[property].Add(config);
+            }
         }
 
         /// <summary>清理资源</summary>
         protected override void OnDispose()
         {
-            Events[_property].Remove(_config);
+            lock (Events)
+            {
+                Events[_property].Remove(_config);
+            }
         }
     }
 }
