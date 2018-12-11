@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entity\ExtendMomentCoder.cs" />
+    <Compile Include="Entity\MakeDownCoder.cs" />
     <Compile Include="Entity\SelfMomentCoder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Entity\UnitTestCoder.cs" />
