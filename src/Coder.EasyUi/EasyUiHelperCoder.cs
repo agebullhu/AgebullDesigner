@@ -30,7 +30,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                 else if(file != ""*"" && file.Length< 100 && file[0] == '/')
                 {{
                     var call = new WebApiCaller(ConfigurationManager.AppSettings[""ManageAddress""]);
-                    var result = call.Get<string>(""/ueditor/ueditor.aspx"", $""action=base64&url={{file}}"");
+                    var result = call.Get<string>(""api/v1/ueditor/action"", $""action=base64&url={{file}}"");
                     data.{field.Name}_Base64 = result.Success ? result.ResultData : null;
                 }}
             }}");

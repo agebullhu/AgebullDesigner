@@ -55,7 +55,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 Entity = entity
             };
             builder.CreateBaseCode(path);
-            //builder.CreateExtendCode(path);
+            builder.CreateExtendCode(path);
             
         }
     }

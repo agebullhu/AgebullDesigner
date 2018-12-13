@@ -77,6 +77,10 @@ namespace Agebull.EntityModel.Designer
                     Caption = "分析文本",
                     Image = Application.Current.Resources["tree_Assembly"] as ImageSource
                 },
+            new CommandItem
+                {
+                    IsLine=true
+                },
             new AsyncCommandItem<string, string>
                 (FormatPrepare, Format.DoFormatCSharp, FormatEnd)
                 {

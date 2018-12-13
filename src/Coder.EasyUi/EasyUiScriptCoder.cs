@@ -241,6 +241,7 @@ var page = {{
     }},
     /**
     * 修改或查看{Entity.Caption}的界面操作
+    * @param {{int}} id 数据主键
     */
     edit: function (id) {{
         var me = this.tag;

@@ -88,7 +88,7 @@ using Agebull.Common.WebApi;
 
 {Project.UsingNameSpaces}
 
-namespace {NameSpace}.WebApi
+namespace {NameSpace}
 {{
     sealed partial class {Entity.Name} : IApiResultData , IApiArgument
     {{
@@ -110,8 +110,6 @@ namespace {NameSpace}.WebApi
         private string Properties()
         {
             var code = new StringBuilder();
-            code.Append(@"
-        #region ÊôÐÔ");
             foreach (PropertyConfig property in Columns)//.Where(p => !p.NoneApiArgument)
             {
                 string type = property.DataType == "ByteArray" ? "string" : property.LastCsType;
@@ -130,9 +128,6 @@ namespace {NameSpace}.WebApi
             set;
         }}");
             }
-            code.Append(@"
-
-        #endregion");
 
             return code.ToString();
         }

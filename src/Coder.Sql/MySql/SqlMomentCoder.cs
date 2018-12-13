@@ -250,7 +250,7 @@ set @pid = @@IDENTITY;");
             foreach (var entity in project.Entities.Where(p => !p.NoDataBase))
                 sb.Append($@"
 INSERT INTO `tb_app_page_item` (`item_type`,`name`,`caption`,`url`,`memo`,`parent_id`)
-VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Classify}/{entity.Name}/Index.aspx','{entity.Description}',@pid);");
+VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Classify}/{entity.Name}/index','{entity.Description}',@pid);");
             return sb.ToString();
         }
         #endregion

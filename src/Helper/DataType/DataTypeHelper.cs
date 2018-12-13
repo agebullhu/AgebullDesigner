@@ -83,8 +83,20 @@ namespace Agebull.EntityModel.RobotCoder
 
         public static void CsDataType(PropertyConfig arg)
         {
-            string name = arg.IsEnum ? "Enum" : arg.CsType;
-            var dataType = GlobalConfig.CurrentSolution.DataTypeMap.FirstOrDefault(p => string.Equals(p.CSharp, name, StringComparison.OrdinalIgnoreCase));
+            DataTypeMapConfig dataType;
+            if (arg.IsEnum)
+            {
+                dataType = GlobalConfig.CurrentSolution.DataTypeMap.FirstOrDefault(p => p.Name == "Enum");
+            }
+            else if (arg.CsType == "int")
+            {
+                dataType = GlobalConfig.CurrentSolution.DataTypeMap.FirstOrDefault(p => p.Name == "Int32");
+            }
+            else
+            {
+                string name = arg.IsEnum ? "Enum" : arg.CsType;
+                dataType = GlobalConfig.CurrentSolution.DataTypeMap.FirstOrDefault(p => string.Equals(p.CSharp, name, StringComparison.OrdinalIgnoreCase));
+            }
             if (dataType != null)
             {
                 arg.DataType = dataType.Name;
