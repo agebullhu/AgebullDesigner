@@ -53,9 +53,14 @@ namespace Agebull.Common.Mvvm
         string Catalog { get; set; }
 
         /// <summary>
-        ///     视角
+        ///     编辑视角
         /// </summary>
-        string ViewModel { get; set; }
+        string WorkView { get; set; }
+
+        /// <summary>
+        ///     类型视角
+        /// </summary>
+        string SoruceView { get; set; }
 
         /// <summary>
         ///     面对的编辑器
@@ -110,13 +115,14 @@ namespace Agebull.Common.Mvvm
         public static void CopyFrom(this ICommandItem dest, ICommandItem sour)
         {
             dest.NoConfirm = sour.NoConfirm;
-            dest.Name = sour.Name ?? sour.Caption;
-            dest.Caption = sour.Caption?? sour.Name;
+            dest.Name = sour.Name;
+            dest.Caption = sour.Caption;
             dest.Description = sour.Description;
             dest.IsButton = sour.IsButton;
             dest.SignleSoruce = sour.SignleSoruce;
             dest.Catalog = sour.Catalog;
-            dest.ViewModel = sour.ViewModel;
+            dest.WorkView = sour.WorkView;
+            dest.SoruceView = sour.SoruceView;
             dest.TargetType = sour.TargetType;
             dest.IconName = sour.IconName;
             dest.ConfirmMessage = sour.ConfirmMessage;

@@ -245,7 +245,7 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = OnWorkView,
                 Caption = "数据库设计",
-                Catalog = "DataBase"
+                WorkView = "DataBase"
             };
             vitem.Source = vitem;
             viewMenu.Items.Add(vitem);
@@ -253,7 +253,7 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = OnWorkView,
                 Caption = "实体设计",
-                Catalog = "Entity"
+                WorkView = "Entity"
             };
             vitem.Source = vitem;
             viewMenu.Items.Add(vitem);
@@ -261,7 +261,7 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = OnWorkView,
                 Caption = "模型设计",
-                Catalog = "Model"
+                WorkView = "Model"
             };
             vitem.Source = vitem;
             viewMenu.Items.Add(vitem);
@@ -269,7 +269,7 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = OnWorkView,
                 Caption = "接口设计",
-                Catalog = "Api"
+                WorkView = "Api"
             };
             vitem.Source = vitem;
             viewMenu.Items.Add(vitem);
@@ -278,7 +278,7 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = OnAdvancedView,
                 Caption = "高级设置",
-                Catalog = "Api",
+                WorkView = "Adv",
                 IsChecked = AdvancedView
             };
             vitem.Source = vitem;
@@ -363,7 +363,7 @@ namespace Agebull.EntityModel.Designer
                     if (cmd.TargetType != null && selType != cmd.TargetType && !selType.IsSubclassOf(cmd.TargetType))
                         continue;
                 }
-                else if (WorkView != null && cmd.ViewModel != null && !cmd.ViewModel.Contains(WorkView))
+                else if (WorkView != null && cmd.WorkView != null && !cmd.WorkView.Contains(WorkView))
                 {
                     continue;
                 }
@@ -427,14 +427,14 @@ namespace Agebull.EntityModel.Designer
 
         #region 业务视角
 
-        CommandItemBase preWorkViewItem;
-        public void OnWorkView(CommandItemBase view)
+        CommandItemBase _preWorkViewItem;
+        public void OnWorkView(CommandItemBase viewItem)
         {
-            if (preWorkViewItem != null)
-                preWorkViewItem.IsChecked = false;
-            preWorkViewItem = view;
-            view.IsChecked = true;
-            WorkView = view.Catalog;
+            if (_preWorkViewItem != null)
+                _preWorkViewItem.IsChecked = false;
+            _preWorkViewItem = viewItem;
+            viewItem.IsChecked = true;
+            WorkView = viewItem.WorkView;
             CheckWindow();
             DataModelDesignModel.SaveUserScreen();
         }
@@ -565,12 +565,12 @@ namespace Agebull.EntityModel.Designer
             if (viewMenu != null)
             {
                 var item = viewMenu.Items.FirstOrDefault(p => string.Equals(p.Catalog, WorkView, StringComparison.OrdinalIgnoreCase));
-                if (item != null && preWorkViewItem != item)
+                if (item != null && _preWorkViewItem != item)
                 {
                     item.IsChecked = true;
-                    if (preWorkViewItem != null)
-                        preWorkViewItem.IsChecked = false;
-                    preWorkViewItem = item;
+                    if (_preWorkViewItem != null)
+                        _preWorkViewItem.IsChecked = false;
+                    _preWorkViewItem = item;
                 }
 
             }

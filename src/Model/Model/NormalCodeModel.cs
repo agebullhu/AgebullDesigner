@@ -128,6 +128,9 @@ namespace Agebull.EntityModel.Designer
                 case "h":
                     _codeType = "cpp";
                     break;
+                //case "md":
+                //    _codeType = "makedown";
+                //    break;
                 case "aspx":
                 case "htm":
                 case "html":
@@ -255,7 +258,7 @@ namespace Agebull.EntityModel.Designer
         <meta name='referrer' content='never' />
         <script src='https://code.jquery.com/jquery-1.11.3.js'></script>
         <link href='https://highlightjs.org/static/demo/styles/vs2015.css' rel='stylesheet'>  
-        <script src='http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js'></script>  
+        <script src='http://cdn.bootcss.com/highlight.js/9.13.1/highlight.min.js'></script>  
         <script>
             hljs.initHighlightingOnLoad();
             $(document).ready(function() {{

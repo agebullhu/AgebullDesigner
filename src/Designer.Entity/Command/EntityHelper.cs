@@ -19,7 +19,7 @@ namespace Agebull.Common.Config.Designer
             Name = "规范实体名";
             Caption = "规范实体名([Name]Data)";
             Catalog = "工具";
-            ViewModel = "entity";
+            WorkView = "entity";
         }
 
         /// <summary>
@@ -44,7 +44,8 @@ namespace Agebull.Common.Config.Designer
         public override bool Execute(EntityConfig entity)
         {
             StateMessage = entity.Caption + "...";
-            entity.EntityName = entity.Name + "Data";
+            if (string.IsNullOrWhiteSpace(entity.EntityName))
+                entity.EntityName = entity.Name + "Data";
             return true;
         }
 

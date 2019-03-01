@@ -120,6 +120,7 @@ namespace Agebull.EntityModel.Designer
             var code = new StringBuilder();
             foreach (var line in lines)
             {
+                
                 if (string.IsNullOrEmpty(line))
                     continue;
                 var words = line.Trim().Split(new[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
@@ -129,12 +130,17 @@ namespace Agebull.EntityModel.Designer
                     continue;
                 }
                 code.AppendLine();
-                var list = words.Select(p => p.Trim()).Where(p => !string.IsNullOrEmpty(p)).ToList();
-                if (words[1][0] > 128)
+                var list = words.Select(p => p.Trim().Replace(',','£¬')).Where(p => !string.IsNullOrEmpty(p)).ToList();
+                if (list.Count > 1)
                 {
-                    list.RemoveAt(1);
-                    if (words[1][0] == '±Ø')
+                    words = list[1].Split('(',')');
+                    list[1] = words.LinkToString("-");
+                }
+                if (list.Count > 3)
+                {
+                    if (list[2][0] == '±Ø' || list[2][0] == 'ÊÇ')
                         list[1] += '!';
+                    list.RemoveAt(2);
                 }
                 code.Append(list.LinkToString(","));
             }

@@ -89,7 +89,33 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(Argument));
             }
         }
+        /// <summary>
+        /// API±àÂë
+        /// </summary>
+        [DataMember, JsonProperty("Code", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _code;
 
+        /// <summary>
+        /// API±àÂë
+        /// </summary>
+        /// <remark>
+        /// API±àÂë
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName("API±àÂë"), Description("API±àÂë")]
+        public string Code
+        {
+            get => _code;
+            set
+            {
+                if (_code == value)
+                    return;
+                BeforePropertyChanged(nameof(Code), _code, value);
+                _code = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                OnPropertyChanged(nameof(Code));
+            }
+        }
+        
         /// <summary>
         /// ·µ»Ø²ÎÊýÃû³Æ
         /// </summary>
@@ -140,7 +166,7 @@ namespace Agebull.EntityModel.Config
                 if (_routePath == value)
                     return;
                 BeforePropertyChanged(nameof(RoutePath), _routePath, value);
-                _routePath = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _routePath = string.IsNullOrWhiteSpace(value) ? null : value.Trim().Trim('/');
                 OnPropertyChanged(nameof(RoutePath));
             }
         }
@@ -343,7 +369,7 @@ namespace Agebull.EntityModel.Config
             get => CallArg == null ? null : _argument ?? (_argument = GlobalConfig.GetEntity(CallArg));
             set => CallArg = value?.Name;
         }
-
+        
         /// <summary>
         /// ·µ»ØÖµ
         /// </summary>

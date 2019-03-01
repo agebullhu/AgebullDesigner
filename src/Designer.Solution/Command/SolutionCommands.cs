@@ -29,6 +29,7 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder
             {
                 Catalog = "编辑",
+                SoruceView = "project",
                 IsButton = true,
                 SignleSoruce = true,
                 Caption = "新增项目",

@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Composition;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
@@ -22,7 +21,7 @@ namespace Agebull.Common.Config.Designer
             Name = "规范实体主键";
             Caption = "规范实体主键";
             Catalog = "工具";
-            ViewModel = "database";
+            WorkView = "database";
             TargetType = typeof(EntityConfig);
         }
 

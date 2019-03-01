@@ -5,15 +5,15 @@ using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer.WebApi
 {
-    //[Export(typeof(IAutoRegister))]
-    //[ExportMetadata("Symbol", '%')]
-    internal sealed class ApiBuilder : ProjectBuilder, IAutoRegister
+    [Export(typeof(IAutoRegister))]
+    [ExportMetadata("Symbol", '%')]
+    internal sealed class WebApiBuilder : ProjectBuilder, IAutoRegister
     {
 
         /// <summary>
         /// Ãû³Æ
         /// </summary>
-        protected override string Name => "Entity Api";
+        protected override string Name => "Web Api";
 
         /// <summary>
         /// ±êÌâ
@@ -25,7 +25,7 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            RegistBuilder<ApiBuilder>();
+            RegistBuilder<WebApiBuilder>();
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 builder.CreateExtendCode(path);
             }
             {
-                var path = project.GetApiPath("WebApi");
+                var path = project.GetApiPath("Logical");
                 var builder = new ApiControlerBuillder
                 {
                     Project = project
@@ -68,20 +68,11 @@ namespace Agebull.EntityModel.Designer.WebApi
                 builder.CreateExtendCode(path);
             }
             {
-                var path = project.GetApiPath("WebApi");
-                var builder = new ApiControlerBuillder
-                {
-                    Project = project
-                };
-                builder.CreateExtendCode(path);
-            }
-            {
                 var path = GetDocumentPath(project);
                 var builder = new ApiMarkBuilder
                 {
                     Project = project
                 };
-                builder.CreateBaseCode(path);
                 builder.CreateExtendCode(path);
             }
             {
@@ -89,7 +80,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 if (!string.IsNullOrWhiteSpace(project.ModelFolder))
                 {
                     var folders = project.ModelFolder.Split('\\');
-                    path = folders.Length == 1 
+                    path = folders.Length == 1
                         ? project.GetPath("Test", "UnitTest")
                         : project.GetPath(folders[0], "Test", "UnitTest");
                 }
@@ -123,71 +114,6 @@ namespace Agebull.EntityModel.Designer.WebApi
                 };
                 builder.CreateBaseCode(path);
                 builder.CreateExtendCode(path);
-            }
-            if (entity.NoDataBase)
-                return;
-            {
-                var path = project.GetApiPath("Contract");
-                var builder = new ApiInterfaceBuilder
-                {
-                    Project = project,
-                    Entity = entity
-                };
-                builder.CreateBaseCode(path);
-            }
-            {
-                var path = project.GetApiPath("Contract");
-                var builder = new ApiProxyBuilder
-                {
-                    Project = project,
-                    Entity = entity
-                };
-                builder.CreateBaseCode(path);
-            }
-
-            {
-                var path = project.GetApiPath("Logical");
-                var builder = new ApiLogicalBuilder
-                {
-                    Project = project,
-                    Entity = entity
-                };
-                builder.CreateBaseCode(path);
-            }
-            {
-                var path = project.GetApiPath("WebApi");
-                var builder = new ApiControlerBuillder
-                {
-                    Project = project,
-                    Entity = entity
-                };
-                builder.CreateBaseCode(path);
-            }
-            {
-
-                string path;
-                if (!string.IsNullOrWhiteSpace(project.ModelFolder))
-                {
-                    var folders = project.ModelFolder.Split('\\');
-                    if (folders.Length == 1)
-                    {
-                        path = project.GetPath("Test", "UnitTest");
-                    }
-                    else
-                    {
-                        path = project.GetPath(folders[0], "Test", "UnitTest");
-                    }
-                }
-                else
-                {
-                    path = project.GetPath("Test", "UnitTest");
-                }
-                var builder = new UnitTestBuilder
-                {
-                    Project = project,
-                    Entity = entity
-                };
-                builder.CreateBaseCode(path);
             }
         }
     }

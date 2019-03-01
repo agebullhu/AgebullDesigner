@@ -95,7 +95,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <returns>如果为真并返回结果数据</returns>
-        ApiResult<{Entity.Name}> I{Entity.Name}Api.AddNew({Entity.Name} data)
+        ApiResultEx<{Entity.Name}> I{Entity.Name}Api.AddNew({Entity.Name} data)
         {{
             return AddNew(data);
         }}
@@ -105,7 +105,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <returns>如果为真并返回结果数据</returns>
-        ApiResult<{Entity.Name}> I{Entity.Name}Api.Update({Entity.Name} data)
+        ApiResultEx<{Entity.Name}> I{Entity.Name}Api.Update({Entity.Name} data)
         {{
             return Update(data);
         }}
@@ -115,7 +115,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""dataKey"">数据主键</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        ApiResult I{Entity.Name}Api.Delete(Argument<{Entity.PrimaryColumn?.LastCsType ?? "int"}> dataKey)
+        ApiResultEx I{Entity.Name}Api.Delete(Argument<{Entity.PrimaryColumn?.LastCsType ?? "int"}> dataKey)
         {{
             return Delete(dataKey);
         }}
@@ -123,7 +123,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// <summary>
         ///     分页
         /// </summary>
-        ApiResult<ApiPageData<{Entity.Name}>> I{Entity.Name}Api.Query(PageArgument arg)
+        ApiResultEx<ApiPageData<{Entity.Name}>> I{Entity.Name}Api.Query(PageArgument arg)
         {{
             return Query(arg);
         }}
@@ -133,26 +133,26 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""arg"">数据</param>
         /// <returns>如果为真并返回结果数据</returns>
-        private ApiResult<{Entity.Name}> AddNew({Entity.Name} arg)
+        private ApiResultEx<{Entity.Name}> AddNew({Entity.Name} arg)
         {{
             try
             {{
                 var data = ToData(arg);
                 var vr = data.Validate();
                 if(!vr.succeed)
-                    return ApiResult<{Entity.Name}>.ErrorResult(ErrorCode.ArgumentError, vr.Messages.LinkToString(""；""));
+                    return ApiResultEx<{Entity.Name}>.ErrorResult(ErrorCode.ArgumentError, vr.Messages.LinkToString(""；""));
                 using (BusinessContextScope.CreateScope())
                 {{
                     var bl = new {Entity.Name}BusinessLogic();
                     if (bl.AddNew(data))
-                        return ApiResult<{Entity.Name}>.ErrorResult(ErrorCode.InnerError, BusinessContext.Current.LastMessage);
-                    return ApiResult<{Entity.Name}>.Succees(FromData(data));
+                        return ApiResultEx<{Entity.Name}>.ErrorResult(ErrorCode.InnerError, BusinessContext.Current.LastMessage);
+                    return ApiResultEx<{Entity.Name}>.Succees(FromData(data));
                 }}
             }}
             catch (Exception e)
             {{
                 LogRecorder.Exception(e);
-                return ApiResult<{Entity.Name}>.ErrorResult(ErrorCode.InnerError,""内部错误"");
+                return ApiResultEx<{Entity.Name}>.ErrorResult(ErrorCode.InnerError,""内部错误"");
             }}
         }}
 
@@ -161,26 +161,26 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""arg"">数据</param>
         /// <returns>如果为真并返回结果数据</returns>
-        private ApiResult<{Entity.Name}> Update({Entity.Name} arg)
+        private ApiResultEx<{Entity.Name}> Update({Entity.Name} arg)
         {{
             try
             {{
                 var data = ToData(arg);
                 var vr = data.Validate();
                 if(!vr.succeed)
-                    return ApiResult<{Entity.Name}>.ErrorResult(ErrorCode.ArgumentError, vr.Messages.LinkToString(""；""));
+                    return ApiResultEx<{Entity.Name}>.ErrorResult(ErrorCode.ArgumentError, vr.Messages.LinkToString(""；""));
                 using (BusinessContextScope.CreateScope())
                 {{
                     var bl = new {Entity.Name}BusinessLogic();
                     if (bl.Update(data))
-                        return ApiResult<{Entity.Name}>.ErrorResult(ErrorCode.InnerError, BusinessContext.Current.LastMessage);
-                    return ApiResult<{Entity.Name}>.Succees(FromData(data));
+                        return ApiResultEx<{Entity.Name}>.ErrorResult(ErrorCode.InnerError, BusinessContext.Current.LastMessage);
+                    return ApiResultEx<{Entity.Name}>.Succees(FromData(data));
                 }}
             }}
             catch (Exception e)
             {{
                 LogRecorder.Exception(e);
-                return ApiResult<{Entity.Name}>.ErrorResult(ErrorCode.InnerError,""内部错误"");
+                return ApiResultEx<{Entity.Name}>.ErrorResult(ErrorCode.InnerError,""内部错误"");
             }}
         }}
 
@@ -189,7 +189,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""arg"">数据主键</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        private ApiResult Delete(Argument<{Entity.PrimaryColumn?.LastCsType ?? "int"}> arg)
+        private ApiResultEx Delete(Argument<{Entity.PrimaryColumn?.LastCsType ?? "int"}> arg)
         {{
             try
             {{
@@ -197,27 +197,27 @@ namespace {NameSpace}.WebApi.EntityApi
                 {{
                     var bl = new {Entity.Name}BusinessLogic();
                     if (bl.Delete(arg.Value))
-                        return ApiResult.Error(ErrorCode.InnerError, BusinessContext.Current.LastMessage);
-                    return ApiResult.Succees();
+                        return ApiResultEx.Error(ErrorCode.InnerError, BusinessContext.Current.LastMessage);
+                    return ApiResultEx.Succees();
                 }}
             }}
             catch (Exception e)
             {{
                 LogRecorder.Exception(e);
-                return ApiResult.Error(ErrorCode.InnerError,""内部错误"");
+                return ApiResultEx.Error(ErrorCode.InnerError,""内部错误"");
             }}
         }}
 
         /// <summary>
         ///     分页
         /// </summary>
-        private ApiResult<ApiPageData<{Entity.Name}>> Query(PageArgument arg)
+        private ApiResultEx<ApiPageData<{Entity.Name}>> Query(PageArgument arg)
         {{
             try
             {{
                 string message;
                 if (!arg.Validate(out message))
-                    return ApiResult<ApiPageData<{Entity.Name}>>.ErrorResult(ErrorCode.ArgumentError, message);
+                    return ApiResultEx<ApiPageData<{Entity.Name}>>.ErrorResult(ErrorCode.ArgumentError, message);
                 using (BusinessContextScope.CreateScope())
                 {{
                     var bl = new {Entity.Name}BusinessLogic();
@@ -238,7 +238,7 @@ namespace {NameSpace}.WebApi.EntityApi
             catch (Exception e)
             {{
                 LogRecorder.Exception(e);
-                return ApiResult<ApiPageData<{Entity.Name}>>.ErrorResult(ErrorCode.InnerError,""内部错误"");
+                return ApiResultEx<ApiPageData<{Entity.Name}>>.ErrorResult(ErrorCode.InnerError,""内部错误"");
             }}
         }}
     }}
@@ -278,72 +278,34 @@ namespace {NameSpace}.WebApi.EntityApi
             StringBuilder code = new StringBuilder();
             code.Append($@"using System;
 using System.Linq;
-using Yizuan.Service.Api;
-using Yizuan.Service.Api.WebApi;
+using Gboxt.Common.DataModel;
 
-namespace {NameSpace}.WebApi
+namespace {NameSpace}
 {{
-    /// <summary>
-    /// {Project.Caption}API
-    /// </summary>
+   {RemCode(Project)}
     public partial class {Project.ApiName}Logical : I{Project.ApiName}
     {{");
 
             foreach (var item in Project.ApiItems)
             {
+                var res = item.Result == null ? "ApiResultEx" : "ApiResultEx <" + item.ResultArg + ">";
+                var arg = item.Argument == null ? "ApiArgument" : $"ApiArgument<{ item.CallArg}>";
 
+                code.Append(RemCode(item));
                 code.Append($@"
-        /// <summary>
-        ///     {item.Caption}:{item.Description}:
-        /// </summary>");
-                if (item.Argument != null)
-                {
-                    code.Append($@"
-        /// <param name=""arg"">{item.Argument?.Caption}</param>");
-                }
-                if (item.Result == null)
-                {
-                    code.Append(@"
-        /// <returns>操作结果</returns>");
-                }
-                else
-                {
-                    code.Append($@"
-        /// <returns>{item.Result.Caption}</returns>");
-                }
-                var res = item.Result == null ? null : "<" + item.Result.Name + ">";
-                var arg = item.Argument == null ? null : $"{item.Argument.Name} arg";
-
-                code.Append($@"
-        public ApiResult{res} {item.Name}({arg})
-        {{");
-                if (item.Argument != null)
-                {
-                    if(item.Result != null)
-                        code.Append($@"
-            var vr = arg.Validate();
-            if (!vr.succeed)
-                return ApiResult{res}.ErrorResult(ErrorCode.ArgumentError, vr.ToString());");
-                    else
-                        code.Append(@"
-            var vr = arg.Validate();
-            if (!vr.succeed)
-                return ApiResult.Error(ErrorCode.ArgumentError, vr.ToString());");
-                }
-
-                code.Append($@"
-            var result = new ApiResult{res}();
-            {item.Name}(");
-                if (item.Argument != null)
-                    code.Append("arg,");
-                code.Append($@"result);
+        /// <param name=""arg"">{item.CallArg ?? "标准参数"}</param>
+        /// <returns>{item.ResultArg ?? "操作结果"}</returns>
+        public {res} {item.Name}({arg} arg)
+        {{
+            var result = new {res}(arg);
+            if (!arg.Validate(out var message))
+                return result.Error(ErrorCode.LogicalError, message);
+            {item.Name}(arg , result);
             return result;
         }}
 
-        partial void {item.Name}(");
-                if (item.Argument != null)
-                    code.Append($"{arg},");
-                code.Append($@"ApiResult{res} result);");
+        partial void {item.Name}({arg} arg, {res} result);
+");
             }
 
             code.Append(@"
@@ -358,53 +320,36 @@ namespace {NameSpace}.WebApi
         {
             StringBuilder code = new StringBuilder();
             code.Append($@"using System;
-using Yizuan.Service.Api;
-using Yizuan.Service.Api.WebApi;
+using Agebull.ZeroNet.ZeroApi;
+using Gboxt.Common.DataModel;
 
-namespace {NameSpace}.WebApi
+namespace {NameSpace}
 {{
-    /// <summary>
-    /// {Project.Caption}API
-    /// </summary>
+   {RemCode(Project)}
     partial class {Project.ApiName}Logical
     {{");
 
             foreach (var item in Project.ApiItems)
             {
+                var res = item.Result == null ? "ApiResultEx" : "ApiResultEx <" + item.ResultArg + ">";
+                var arg = item.Argument == null ? "ApiArgument" : $"ApiArgument<{ item.CallArg}>";
+
+                code.Append(RemCode(item));
                 code.Append($@"
-        /// <summary>
-        ///     {item.Caption}:{item.Description}:
-        /// </summary>");
-                if (item.Argument != null)
-                {
-                    code.Append($@"
-        /// <param name=""arg"">{item.Argument?.Caption}</param>");
-                }
-                code.Append(@"
-        /// <param name=""result"">返回值</param>");
-                if (item.Result == null)
+        /// <param name=""arg"">{item.CallArg ?? "标准参数"}</param>
+        /// <param name=""result"">{item.ResultArg ?? "操作结果"}</param>
+        partial void {item.Name}({arg} arg, {res} result)
+        {{");
+                if (item.Result != null)
                 {
                     code.Append(@"
-        /// <returns>操作结果</returns>");
+            result.Data = ");
+                    using (CodeGeneratorScope.CreateScope(item.Result))
+                    {
+                        code.Append(HelloCode(item.Result));
+                    }
+                    code.Append(";");
                 }
-                else
-                {
-                    code.Append($@"
-        /// <returns>{item.Result.Caption}</returns>");
-                }
-                var res = item.Result == null ? null : "<" + item.Result.Name + ">";
-                var arg = item.Argument == null ? null : $"{item.Argument.Name} arg";
-
-                code.Append($@"
-        partial void {item.Name}(");
-                if (item.Argument != null)
-                    code.Append($"{arg},");
-                code.Append($@"ApiResult{res} result)
-        {{
-            result.Result = true;");
-                if (item.Result != null)
-                    code.Append($@"
-            result.ResultData = {HelloCode(item.Result)};");
                 code.Append(@"
         }");
             }

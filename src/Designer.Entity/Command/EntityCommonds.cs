@@ -26,24 +26,34 @@ namespace Agebull.EntityModel.Designer
         {
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
+                Catalog = "升级",
+                Action = ClearOldInterface,
+                Caption = "清理接口强绑定",
+                IconName = "tree_sum"
+            });
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
                 Action = ToClassify,
                 Caption = "HIS分类",
                 Catalog = "HIS",
-                IconName = "tree_Type"
+                IconName = "tree_Type",
+                WorkView = "adv"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
                 Action = ToClass,
                 Caption = "全部设置为普通类",
                 Catalog = "设计",
-                IconName = "tree_Type"
+                IconName = "tree_Type",
+                WorkView = "adv"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
                 Action = ToNoClass,
                 Caption = "全部设置为存储类",
                 Catalog = "设计",
-                IconName = "tree_Type"
+                IconName = "tree_Type",
+                WorkView = "adv"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
@@ -59,7 +69,7 @@ namespace Agebull.EntityModel.Designer
                 IsButton = true,
                 Action = SortFields,
                 Catalog = "工具",
-                ConfirmMessage = "按序号大小排序并从0更新序号吗?",
+                ConfirmMessage = "按自然顺序并从0更新序号吗?",
                 Caption = "排序(自然顺序)",
                 IconName = "tree_item"
             });
@@ -74,8 +84,9 @@ namespace Agebull.EntityModel.Designer
             });
             commands.Add(new CommandItemBuilder
             {
-                SignleSoruce = false,
+                SignleSoruce = true,
                 Catalog = "工具",
+                IsButton = false,
                 Action = SortField,
                 Caption = "排序(主键标题优先)",
                 IconName = "tree_item"
@@ -83,6 +94,7 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder
             {
                 SignleSoruce = true,
+                IsButton = false,
                 Action = SortField,
                 Caption = "排序(主键标题优先,表关联临近)",
                 Description = "主键-标题最前面，相同表关联的字段临近，其它按序号",
@@ -92,6 +104,7 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder
             {
                 SignleSoruce = true,
+                IsButton = false,
                 Action = SortByGroup,
                 Caption = "排序(按组)",
                 Description = "主键-标题最前面，相同组的字段临近，其它按序号",
@@ -101,19 +114,23 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder
             {
                 SignleSoruce = true,
+                IsButton = false,
                 Action = SplitTable,
                 Caption = "拆分到新表",
                 Catalog = "工具",
-                IconName = "img_add"
+                IconName = "img_add",
+                WorkView = "adv"
             });
             commands.Add(new CommandItemBuilder
             {
                 Action = RepairRegular,
+                IsButton = false,
                 Catalog = "工具",
                 Caption = "规则修复",
                 SignleSoruce = true,
                 Editor = "Regular",
-                IconName = "tree_item"
+                IconName = "tree_item",
+                WorkView = "adv"
             });
             //commands.Add(new CommandItemBuilder
             //{
@@ -131,7 +148,8 @@ namespace Agebull.EntityModel.Designer
                 SignleSoruce = true,
                 IsButton = true,
                 Catalog = "编辑",
-                IconName = "tree_Open"
+                IconName = "tree_Open",
+                SoruceView = "property"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
@@ -146,6 +164,7 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = DeleteEntity,
                 Caption = "删除实体",
+                IsButton = false,
                 SignleSoruce = true,
                 Catalog = "编辑",
                 IconName = "img_del"
@@ -154,6 +173,14 @@ namespace Agebull.EntityModel.Designer
 
         #endregion
 
+        public void ClearOldInterface(EntityConfig entity)
+        {
+            foreach (var field in entity.Properties.ToArray())
+            {
+                if (field.IsSystemField)
+                    entity.Remove(field);
+            }
+        }
         void ToClassify(EntityConfig entity)
         {
             if (string.Equals(entity.Classify, "None", StringComparison.OrdinalIgnoreCase))

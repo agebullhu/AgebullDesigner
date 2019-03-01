@@ -96,6 +96,7 @@ namespace Agebull.EntityModel.Designer
         ///     分类
         /// </summary>
         public virtual string Catalog { get; set; }
+
         /// <summary>
         ///     目标类型
         /// </summary>

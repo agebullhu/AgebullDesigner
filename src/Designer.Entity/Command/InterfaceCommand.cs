@@ -24,7 +24,6 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = InterfaceHelper.CheckInterface,
                 Caption = "刷新接口引用",
-
                 SignleSoruce = false,
                 Catalog = "接口",
                 IconName = "img_link"

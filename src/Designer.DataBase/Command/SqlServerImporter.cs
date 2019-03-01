@@ -25,6 +25,7 @@ namespace Agebull.Common.Config.Designer
             {
                 Caption = "导入SqlServer数据库",
                 Catalog = "数据库",
+                WorkView = "database",
                 IconName = "tree_Assembly"
             });
         }

@@ -62,16 +62,21 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void NameToEnglish(ConfigBase item)
         {
+            if (string.IsNullOrWhiteSpace(item.Name) || item.Name[0] < 128)
+                return;
             var name = item.Name;
             item.Name = BaiduFanYi.ToEnglishWord(item.Name);
             if (string.IsNullOrEmpty(item.Caption))
                 item.Caption = name;
         }
+
         /// <summary>
         ///     自动修复
         /// </summary>
         public void CaptionToEnglish(ConfigBase item)
         {
+            if (string.IsNullOrWhiteSpace(item.Caption) || item.Caption[0] < 128)
+                return;
             item.Caption = BaiduFanYi.ToEnglishWord(item.Caption);
         }
 
@@ -82,14 +87,28 @@ namespace Agebull.EntityModel.Designer
 
         private static void ToChiness(ConfigBase config)
         {
-            config.Caption = BaiduFanYi.ToChiness(config.Caption ?? config.Name);
-            config.Description = BaiduFanYi.ToChiness(config.Description);
+            if (string.IsNullOrWhiteSpace(config.Caption))
+            {
+                if (!string.IsNullOrWhiteSpace(config.Name) && config.Name[0] < 128)
+                    config.Caption = BaiduFanYi.ToChiness(config.Name);
+            }
+            else if (config.Caption[0] < 128)
+                config.Caption = BaiduFanYi.ToChiness(config.Caption);
+
+            if (!string.IsNullOrWhiteSpace(config.Description) && config.Description[0] < 128)
+                config.Description = BaiduFanYi.ToChiness(config.Description);
         }
 
 
         private static void Name2CaptionChiness(ConfigBase config)
         {
-            config.Caption = BaiduFanYi.ToChiness(config.Name);
+            if (string.IsNullOrWhiteSpace(config.Name))
+            {
+                if (!string.IsNullOrWhiteSpace(config.Caption) && config.Caption[0] < 128)
+                    config.Name = BaiduFanYi.ToChiness(config.Caption);
+            }
+            else if (config.Name[0] < 128)
+                config.Caption = BaiduFanYi.ToChiness(config.Name);
         }
         #endregion
     }

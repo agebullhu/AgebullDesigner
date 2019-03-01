@@ -83,6 +83,7 @@ namespace Agebull.EntityModel.Designer
             {
                 IsAssist = true,
                 Header = "实体",
+                SoruceView = "entity",
                 HeaderField = null,
                 CreateChildFunc = CreateEntityClassifiesTreeItem,
                 SoruceItemsExpression = () => project.Classifies,
@@ -97,6 +98,7 @@ namespace Agebull.EntityModel.Designer
                 IsAssist = true,
                 Header = "API",
                 Tag = "API",
+                SoruceView = "api",
                 HeaderField = null,
                 CreateChildFunc = CreateApiItemTreeItem,
                 SoruceItemsExpression = () => project.ApiItems,
@@ -116,6 +118,8 @@ namespace Agebull.EntityModel.Designer
             return new ConfigTreeItem<EntityClassify>(child)
             {
                 IsAssist = true,
+                Friend = child.Project,
+                FriendView = "entity",
                 IsExpanded = false,
                 Tag = "Entity",
                 CreateChildFunc = CreateEntityTreeItem,
@@ -135,7 +139,6 @@ namespace Agebull.EntityModel.Designer
                 relation.Parent = entity;
             var tableItem = new ConfigTreeItem<EntityConfig>(entity)
             {
-                Catalog = "字段",
                 CreateChildFunc = CreatePropertyTreeItem,
                 SoruceItemsExpression = () => entity.Properties,
                 CustomPropertyChanged = Entity_PropertyChanged
@@ -262,6 +265,7 @@ namespace Agebull.EntityModel.Designer
                 IsAssist = true,
                 //IsExpanded = true,
                 Header = "枚举",
+                SoruceView = "enum",
                 HeaderField = null,
                 CreateChildFunc = CreateEnumTreeItem,
                 SoruceItemsExpression = () => project.Enums,
@@ -300,15 +304,18 @@ namespace Agebull.EntityModel.Designer
             var item = new ConfigTreeItem<ApiItem>(child)
             {
                 Header = child.Name,
-                HeaderField = "Name,Caption,CallArg",
-                HeaderExtendExpression = m => $"{m.Caption}〖{m.Name}({m.CallArg})〗",
+                HeaderField = "Name,Caption",
+                HeaderExtendExpression = m => $"{m.Caption}",
                 SoruceTypeIcon = Application.Current.Resources["tree_item"] as BitmapImage
             };
             var item2 = new ConfigTreeItem<ApiItem>(child)
             {
                 IsAssist = true,
-                Header = "参数",
-                HeaderField = null,
+                SoruceView = "argument",
+                Header = $"参数{(child.CallArg == null ? null : "-" + child.CallArg)}",
+                HeaderField = "CallArg",
+                HeaderExtendExpression = m => $"参数{(m.CallArg == null ? null : "-" + m.CallArg)}",
+
                 SoruceTypeIcon = Application.Current.Resources["tree_item"] as BitmapImage
             };
             if (child.Argument != null)
@@ -320,8 +327,10 @@ namespace Agebull.EntityModel.Designer
             var item3 = new ConfigTreeItem<ApiItem>(child)
             {
                 IsAssist = true,
-                Header = "返回",
-                HeaderField = null,
+                SoruceView = "result",
+                Header = $"参数{(child.ResultArg == null ? null : "-" + child.ResultArg)}",
+                HeaderField = "ResultArg",
+                HeaderExtendExpression = m => $"参数{(m.ResultArg == null ? null : "-" + m.ResultArg)}",
                 SoruceTypeIcon = Application.Current.Resources["tree_item"] as BitmapImage
             };
             if (child.Result != null)
@@ -339,17 +348,18 @@ namespace Agebull.EntityModel.Designer
         {
             var item = (TreeItem)sender;
             var child = (ApiItem)item.Source;
-            if (e.PropertyName == "Argument")
+            switch (e.PropertyName)
             {
-                item.Items.Clear();
-                if (child.Argument != null)
-                    item.Items.Add(Model.Tree.CreateEntityTreeItem(child.Argument));
-            }
-            if (e.PropertyName == "Result")
-            {
-                item.Items.Clear();
-                if (child.Result != null)
-                    item.Items.Add(Model.Tree.CreateEntityTreeItem(child.Result));
+                case "Argument":
+                    item.Items.Clear();
+                    if (child.Argument != null)
+                        item.Items.Add(Model.Tree.CreateEntityTreeItem(child.Argument));
+                    break;
+                case "Result":
+                    item.Items.Clear();
+                    if (child.Result != null)
+                        item.Items.Add(Model.Tree.CreateEntityTreeItem(child.Result));
+                    break;
             }
         }
 
@@ -415,14 +425,14 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public CommandItem FindCommand => new CommandItem
         {
-            Caption = "查找",
-            Action = Find
+            Action = Find,
+            IconName = "img_find"
         };
 
         /// <summary>
         /// 查找
         /// </summary>
-        public bool Like(string dest, params string[] srcs) => srcs.Any(src => src != null && src.Contains(dest));
+        public bool Like(string dest, params string[] srcs) => srcs.Any(src => src != null && src.IndexOf(dest, 0, StringComparison.OrdinalIgnoreCase) >= 0);
 
         /// <summary>
         /// 查找
@@ -441,7 +451,7 @@ namespace Agebull.EntityModel.Designer
             }
 
             var count = 0;
-            Foreach(TreeRoot, ref count);
+            Find(TreeRoot, ref count);
             Context.StateMessage = $"查找成功-{count}个";
         }
 
@@ -449,7 +459,7 @@ namespace Agebull.EntityModel.Designer
         /// 找对应节点
         /// </summary>
         /// <returns></returns>
-        public bool Foreach(TreeItemBase par, ref int count)
+        public bool Find(TreeItemBase par, ref int count)
         {
             bool hase = false;
             if (par.Source is ConfigBase cfg && Like(Context.FindKey, cfg.Name, cfg.Caption, cfg.Description))
@@ -459,7 +469,7 @@ namespace Agebull.EntityModel.Designer
             }
             foreach (var item in par.Items)
             {
-                if (Foreach(item, ref count))
+                if (Find(item, ref count))
                 {
                     hase = true;
                     item.IsExpanded = true;

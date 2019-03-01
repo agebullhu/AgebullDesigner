@@ -29,19 +29,10 @@ namespace Agebull.EntityModel
             if (source is INotifyPropertyChanged pp)
             {
                 pp.PropertyChanged += OnModelPropertyChanged;
-                
             }
             Source = source as NotificationObject;
         }
 
-        /// <summary>
-        ///     分类
-        /// </summary>
-        public string Catalog
-        {
-            get;
-            set;
-        }
         /// <summary>
         ///     构造
         /// </summary>
@@ -135,13 +126,25 @@ namespace Agebull.EntityModel
                 {
                     _commands.Remove(cmd);
                 }
+
+                if (Friend == null) return;
+                foreach (var cmd in _commands.Where(p => p.Source == Friend).ToArray())
+                {
+                    _commands.Remove(cmd);
+                }
             }
             else
             {
-                var actions = CommandCoefficient.Coefficient(Source);
+                var actions = CommandCoefficient.Coefficient(Source, SoruceView);
                 foreach (var action in actions)
                 {
-                    action.Source = Source;
+                    _commands.Add(action);
+                }
+
+                if (Friend == null) return;
+                actions = CommandCoefficient.Coefficient(Friend, SoruceView);
+                foreach (var action in actions)
+                {
                     _commands.Add(action);
                 }
             }
@@ -157,19 +160,24 @@ namespace Agebull.EntityModel
         public List<CommandItemBase> CreateCommandList()
         {
             var commands = new List<CommandItemBase>();
-            var actions = CommandCoefficient.Coefficient(Source);
-            if (actions != null)
+            var actions = CommandCoefficient.Coefficient(Source, SoruceView);
+            foreach (var action in actions)
             {
+                action.Source = Source;
+                commands.Add(action);
+            }
+            if (Friend != null)
+            {
+                actions = CommandCoefficient.Coefficient(Friend, FriendView);
                 foreach (var action in actions)
                 {
-                    action.Source = Source;
-                    commands.Add(action);
+                    _commands.Add(action);
                 }
             }
             CreateCommandList(commands);
             commands.Add(new CommandItem
             {
-                IsButton=true,
+                IsButton = true,
                 NoConfirm = true,
                 Name = "ExpandedChild",
                 Caption = "切换展开",

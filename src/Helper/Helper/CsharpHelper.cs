@@ -11,9 +11,6 @@ namespace Agebull.EntityModel.Config
     {
         public static void CheckType(PropertyConfig column, string type)
         {
-            if (type.Contains('?'))
-                column.Nullable = true;
-
             column.Datalen = 0;
             column.IsDictionary = column.IsArray = false;
             column.IsIdentity = false;
@@ -21,61 +18,79 @@ namespace Agebull.EntityModel.Config
             column.CanEmpty = true;
             column.CsType = null;
             column.ReferenceType = null;
+            column.Nullable = false;
+            column.IsRequired = false;
 
-            bool first = true;
-            StringBuilder code = new StringBuilder();
-            char prePunctuation = '\0';
-            int strLen = 0;
-            for (int i = 0; i < type.Length; i++)
+            if (string.IsNullOrWhiteSpace(type))
             {
-                if (char.IsPunctuation(type[i]))
+                CheckPropertyType(column, "string");
+                return;
+            }
+            type = type.Trim();
+            StringBuilder code = new StringBuilder();
+            string valueType = "type";
+            foreach (var t in type)
+            {
+                if (char.IsPunctuation(t))
                 {
-                    if (i == 0)
+                    CheckValueType(column, ref valueType, code);
+                    switch (t)
                     {
-                        CheckPropertyType(column, "string");
-                        return;
-                    }
-                    if (first)
-                    {
-                        CheckPropertyType(column, code.ToString());
-                        code.Clear();
-                        strLen = 0;
-                        first = column.CsType == null;
-                    }
-                    else if (prePunctuation == '[' && type[i] == ']')
-                    {
-                        if (strLen > 0 && int.TryParse(code.ToString().Trim(), out var len))
-                            column.ArrayLen = len.ToString();
-                        column.IsArray = true;
-                    }
-                    else if (strLen > 0 && int.TryParse(code.ToString().Trim(), out var len))
-                    {
-                        if (column.Datalen <= 0)
-                            column.Datalen = len;
-                        else
-                            column.Scale = len;
-                    }
-
-                    prePunctuation = type[i];
-                    switch (type[i])
-                    {
+                        case '-':
+                            valueType = "len";
+                            break;
+                        case '[':
+                            valueType = "array";
+                            column.IsArray = true;
+                            break;
                         case '@':
                             column.IsIdentity = true;
+                            break;
+                        case '?':
+                            column.Nullable = true;
                             break;
                         case '#':
                             column.DbNullable = false;
                             break;
                         case '!':
                             column.CanEmpty = false;
+                            column.IsRequired = true;
                             break;
                     }
                     continue;
                 }
-                code.Append(type[i]);
-                strLen++;
+                code.Append(t);
             }
-            if (first)
-                CheckPropertyType(column, code.ToString());
+            CheckValueType(column, ref valueType, code);
+        }
+
+        private static void CheckValueType(PropertyConfig column, ref string valueType, StringBuilder code)
+        {
+            if (code.Length == 0)
+                return;
+            switch (valueType)
+            {
+                case "type":
+                    CheckPropertyType(column, code.ToString());
+                    column.Datalen = 0;
+                    if (column.CsType != null)
+                        valueType = "*";
+                    break;
+                case "array":
+                    if (int.TryParse(code.ToString(), out var alen))
+                        column.ArrayLen = alen.ToString();
+                    break;
+                case "len":
+                    if (int.TryParse(code.ToString(), out var len))
+                    {
+                        if (column.Datalen <= 0)
+                            column.Datalen = len;
+                        else
+                            column.Scale = len;
+                    }
+                    break;
+            }
+            code.Clear();
         }
 
         private static void CheckPropertyType(PropertyConfig column, string type)
@@ -88,7 +103,8 @@ namespace Agebull.EntityModel.Config
                 case "nvarchar":
                     column.CsType = "string";
                     column.DataType = "String";
-                    column.Datalen = 200;
+                    if (column.Datalen <= 0)
+                        column.Datalen = 200;
                     break;
                 case "ls":
                     column.CsType = "string";
@@ -105,6 +121,7 @@ namespace Agebull.EntityModel.Config
                 case "i":
                 case "int":
                 case "int32":
+                case "number":
                     column.CsType = "int";
                     column.DataType = "Int32";
                     break;

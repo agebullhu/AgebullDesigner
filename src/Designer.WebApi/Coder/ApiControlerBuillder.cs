@@ -47,9 +47,9 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <returns>如果为真并返回结果数据</returns>
-        [HttpPost, Route(""entity/{Entity.Name}/AddNew"")]
+        [Route(""entity/{Entity.Name}/AddNew"")]
         [ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Anymouse)]
-        public ApiResponseMessage<ApiResult<{Entity.Name}>> AddNew([FromBody]{Entity.Name} data)
+        public <ApiResultEx<{Entity.Name}>> AddNew([FromBody]{Entity.Name} data)
         {{
             var lg = new {Entity.Name}ApiLogical() as I{Entity.Name}Api;
             var result = lg.AddNew(data);
@@ -61,9 +61,9 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <returns>如果为真并返回结果数据</returns>
-        [HttpPost, Route(""entity/{Entity.Name}/Update"")]
+        [Route(""entity/{Entity.Name}/Update"")]
         [ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Anymouse)]
-        public ApiResponseMessage<ApiResult<{Entity.Name}>> Update([FromBody]{Entity.Name} data)
+        public <ApiResultEx<{Entity.Name}>> Update([FromBody]{Entity.Name} data)
         {{
             var lg = new {Entity.Name}ApiLogical() as I{Entity.Name}Api;
             var result = lg.Update(data);
@@ -75,9 +75,9 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""dataKey"">数据主键</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        [HttpPost, Route(""entity/{Entity.Name}/Delete"")]
+        [Route(""entity/{Entity.Name}/Delete"")]
         [ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Anymouse)]
-        public ApiResponseMessage Delete([FromBody]Argument<int> dataKey)
+        public  Delete([FromBody]Argument<int> dataKey)
         {{
             var lg = new {Entity.Name}ApiLogical() as I{Entity.Name}Api;
             var result = lg.Delete(dataKey);
@@ -87,9 +87,9 @@ namespace {NameSpace}.WebApi.EntityApi
         /// <summary>
         ///     分页
         /// </summary>
-        [HttpPost, Route(""entity/{Entity.Name}/Query"")]
+        [Route(""entity/{Entity.Name}/Query"")]
         [ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Anymouse)]
-        public ApiResponseMessage<ApiResult<ApiPageData<{Entity.Name}>>> Query([FromBody]PageArgument arg)
+        public <ApiResultEx<ApiPageData<{Entity.Name}>>> Query([FromBody]PageArgument arg)
         {{
             var lg = new {Entity.Name}ApiLogical() as I{Entity.Name}Api;
             var result = lg.Query(arg);
@@ -111,145 +111,80 @@ namespace {NameSpace}.WebApi.EntityApi
         {
             if (Project.ApiItems.Count == 0)
                 return;
-            Default1(path);
-            Default2(path);
-        }
-
-        void Default1(string path)
-        {
             StringBuilder code = new StringBuilder();
             code.Append($@"using System;
 using System.Collections.Generic;
-using System.Web.Http;
-using GoodLin.Common.Ioc;
-using Yizuan.Service.Api;
-using Yizuan.Service.Api.WebApi;
+using Agebull.Common.Ioc;
+using Agebull.ZeroNet.ZeroApi;
+using Gboxt.Common.DataModel;
+using Newtonsoft.Json;
 
-namespace {NameSpace}.WebApi
+namespace {NameSpace}
 {{
-    /// <summary>
-    /// 身份验证服务API
-    /// </summary>
+    {RemCode(Project, 4)}
     public class {Project.ApiName}Controller : ApiController
     {{");
 
             foreach (var item in Project.ApiItems)
             {
-                code.Append($@"
-        /// <summary>
-        ///     {item.Caption}:{item.Description}:
-        /// </summary>");
-                if (item.Argument != null)
-                {
-                    code.Append($@"
-        /// <param name=""arg"">{item.Argument?.Caption}</param>");
-                }
-                if (item.Result == null)
-                {
-                    code.Append(@"
-        /// <returns>操作结果</returns>");
-                }
-                else
-                {
-                    code.Append($@"
-        /// <returns>{item.Result.Caption}</returns>");
-                }
-                var res = item.Result == null ? null : "<ApiResult<" + item.ResultArg + ">>";
-                var arg = item.Argument == null ? null : $"[FromBody]{item.CallArg} arg";
+                var arg = item.Argument == null ? "ApiArgument" : $"ApiArgument<{ item.CallArg}>";
 
+                code.Append(RemCode(item));
                 code.Append($@"
-        [HttpPost, Route(""{item.RoutePath}"")]
+        /// <param name=""arg"">{item.CallArg ?? "标准参数"}</param>
+        /// <returns>{item.ResultArg ?? "操作结果"}</returns>
+        [Route(""{item.RoutePath.Trim('\\', '/')}"")]
         //[ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Anymouse)]
-        public ApiResponseMessage{res} {item.Name}({arg})
+        public ApiResultEx {item.Name}({arg} arg)
         {{
-            var lg = new {Project.ApiName}Logical() as I{Project.ApiName};");
-
-                if (item.Argument == null)
-                {
-                    code.Append($@"
-            var result = lg.{item.Name}();");
-                }
-                else
-                {
-                    code.Append($@"
-            var result = lg.{item.Name}(arg);");
-                }
-                code.Append(@"
-            return Request.ToResponse(result);
-        }");
+            var lg = IocHelper.Create<I{Project.ApiName}>();
+            return lg.{item.Name}(arg);
+        }}
+");
             }
 
+            foreach (var item in Project.ApiItems)
+            {
+                var arg = item.Argument == null ? "ApiArgument" : $"ApiArgument<{ item.CallArg}>";
+
+                code.Append(RemCode(item));
+                code.Append($@"
+        /// <param name=""arg"">{item.CallArg ?? "标准参数"}</param>
+        /// <returns>{item.ResultArg ?? "操作结果"}</returns>
+        [Route(""{item.RoutePath.Trim('\\','/')}/json"")]
+        //[ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Anymouse)]
+        public string {item.Name}_Json({arg} arg)
+        {{
+            var lg = IocHelper.Create<I{Project.ApiName}>();
+            var res = lg.{item.Name}(arg);
+            return JsonConvert.SerializeObject(res,Formatting.Indented);
+        }}
+");
+            }
+
+            foreach (var item in Project.ApiItems)
+            {
+                var arg = item.Argument == null ? "ApiArgument" : $"ApiArgument<{ item.CallArg}>";
+
+                code.Append(RemCode(item));
+                code.Append($@"
+        /// <param name=""arg"">{item.CallArg ?? "标准参数"}</param>
+        /// <returns>{item.ResultArg ?? "操作结果"}</returns>
+        [Route(""{item.RoutePath.Trim('\\', '/')}/xml"")]
+        //[ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Anymouse)]
+        public string {item.Name}_Xml({arg} arg)
+        {{
+            var lg = IocHelper.Create<I{Project.ApiName}>();
+            var res = lg.{item.Name}(arg);
+            return JsonConvert.DeserializeXmlNode(JsonConvert.SerializeObject(res), ""xml"").OuterXml;
+        }}
+");
+            }
             code.Append(@"
     }
 }
 ");
             var file = ConfigPath(Project, FileSaveConfigName, path, "Controllers", $"{Project.Name}_Controller.cs");
-            WriteFile(file, code.ToString());
-        }
-        void Default2(string path)
-        {
-            StringBuilder code = new StringBuilder();
-            code.Append($@"using System;
-using System.Collections.Generic;
-using System.Web.Http;
-using GoodLin.Common.Ioc;
-using Yizuan.Service.Api;
-using Yizuan.Service.Api.WebApi;
-
-namespace {NameSpace}.WebApi
-{{
-    /// <summary>
-    /// 身份验证服务API
-    /// </summary>
-    public class {Project.ApiName}Controller : ApiController
-    {{");
-
-            foreach (var item in Project.ApiItems)
-            {
-                code.Append($@"
-        /// <summary>
-        ///     {item.Caption}:{item.Description}:
-        /// </summary>");
-                if (item.Argument != null)
-                {
-                    code.Append($@"
-        /// <param name=""arg"">{item.Argument?.Caption}</param>");
-                }
-                if (item.Result == null)
-                {
-                    code.Append(@"
-        /// <returns>操作结果</returns>");
-                }
-                else
-                {
-                    code.Append($@"
-        /// <returns>{item.Result.Caption}</returns>");
-                }
-                var res = item.Result == null ? null : "<ApiResult<" + item.ResultArg + ">>";
-                var res2 = item.Result == null ? "ApiResult" : "ApiResult<" + item.ResultArg + ">";
-                var arg = item.Argument == null ? null : $"[FromBody]{item.CallArg} arg";
-
-                code.Append($@"
-        [HttpPost, Route(""{item.RoutePath}"")]
-        public ApiResponseMessage{res} {item.Name}({arg})
-        {{");
-                if (item.Result != null)
-                {
-                    code.Append($@"
-            return Request.ToResponse({res2}.Succees({HelloCode(item.Result)}));
-        }}");
-                }
-                else
-                code.Append($@"
-            return Request.ToResponse({res2}.Succees());
-        }}");
-            }
-
-            code.Append(@"
-    }
-}
-");
-            var file = ConfigPath(Project, FileSaveConfigName+"_HelloCode", path, "Controllers", $"{Project.Name}_Controller.HelloCode.cs");
             WriteFile(file, code.ToString());
         }
     }
