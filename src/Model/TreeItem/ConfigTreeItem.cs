@@ -26,6 +26,7 @@ namespace Agebull.EntityModel.Designer
         {
             InitDef();
         }
+
         /// <summary>
         ///     构造
         /// </summary>

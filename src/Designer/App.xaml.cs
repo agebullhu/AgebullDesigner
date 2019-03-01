@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Security;
 using System.Windows;
+using System.Windows.Interactivity;
 using System.Windows.Markup;
 
 namespace Agebull.EntityModel.Designer

@@ -27,7 +27,7 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal class EntityCommands1 : DesignCommondBase<EntityConfig>
+    internal class EntityCommands : DesignCommondBase<EntityConfig>
     {
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
@@ -57,7 +57,8 @@ namespace Agebull.EntityModel.Designer
                 Caption = "新增命令",
                 Catalog = "编辑",
                 IconName = "tree_Open",
-                ViewModel = "Model"
+                SoruceView = "command",
+                WorkView = "Model"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
@@ -66,7 +67,8 @@ namespace Agebull.EntityModel.Designer
                 Caption = "新增审核命令",
                 Catalog = "编辑",
                 IconName = "tree_Open",
-                ViewModel = "Model"
+                SoruceView = "command",
+                WorkView = "Model"
             });
         }
 

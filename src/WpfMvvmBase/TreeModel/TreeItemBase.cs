@@ -10,7 +10,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
@@ -415,32 +414,71 @@ namespace Agebull.EntityModel
         /// <summary>
         ///     绑定对象
         /// </summary>
-        private NotificationObject __source;
+        private NotificationObject _friend;
+
+        /// <summary>
+        ///     绑定对象
+        /// </summary>
+        public NotificationObject Friend
+        {
+            get => _friend;
+            set
+            {
+                if (_friend == value)
+                    return;
+                if (_friend != null)
+                {
+                    _friend.PropertyChanged -= OnSorucePropertyChanged;
+                }
+                OnSourceChanged(true);
+                _friend = value;
+                OnSourceChanged(false);
+                if (_friend != null)
+                {
+                    _friend.PropertyChanged += OnSorucePropertyChanged;
+                }
+                RaisePropertyChanged(nameof(Friend));
+            }
+        }
+        /// <summary>
+        ///     视角
+        /// </summary>
+        public string FriendView { get; set; }
+        /// <summary>
+        ///     绑定对象
+        /// </summary>
+        private NotificationObject _source;
 
         /// <summary>
         ///     绑定对象
         /// </summary>
         public NotificationObject Source
         {
-            get => __source;
+            get => _source;
             set
             {
-                if (__source == value)
+                if (_source == value)
                     return;
-                if (__source != null)
+                if (_source != null)
                 {
-                    __source.PropertyChanged -= OnSorucePropertyChanged;
-                    OnSourceChanged(true);
+                    _source.PropertyChanged -= OnSorucePropertyChanged;
                 }
-                __source = value;
-                if (__source != null)
+                OnSourceChanged(true);
+                _source = value;
+                OnSourceChanged(false);
+                if (_source != null)
                 {
-                    OnSourceChanged(false);
-                    __source.PropertyChanged += OnSorucePropertyChanged;
+                    _source.PropertyChanged += OnSorucePropertyChanged;
                 }
-                RaisePropertyChanged(nameof(NotificationObject));
+                RaisePropertyChanged(nameof(Source));
             }
         }
+
+        /// <summary>
+        ///     类型视角
+        /// </summary>
+        public string SoruceView { get; set; }
+
 
         protected virtual void OnSourceChanged(bool isRemove)
         {

@@ -10,10 +10,14 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 当前对象
         /// </summary>
-        public sealed override ConfigBase CurrentConfig => (ConfigBase)Entity ?? Project;
+        public sealed override ConfigBase CurrentConfig => (ConfigBase)Entity ?? base.Project;
 
         /// <inheritdoc />
-        public sealed override ProjectConfig Project => Entity?.Parent;
+        public sealed override ProjectConfig Project
+        {
+            get => Entity?.Parent ?? base.Project;
+            set => base.Project = value;
+        }
 
         /// <summary>
         /// 当前表对象

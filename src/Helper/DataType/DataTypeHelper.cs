@@ -92,7 +92,7 @@ namespace Agebull.EntityModel.RobotCoder
             {
                 dataType = GlobalConfig.CurrentSolution.DataTypeMap.FirstOrDefault(p => p.Name == "Int32");
             }
-            else
+            else 
             {
                 string name = arg.IsEnum ? "Enum" : arg.CsType;
                 dataType = GlobalConfig.CurrentSolution.DataTypeMap.FirstOrDefault(p => string.Equals(p.CSharp, name, StringComparison.OrdinalIgnoreCase));

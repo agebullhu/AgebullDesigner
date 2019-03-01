@@ -8,29 +8,11 @@ using Agebull.Common.Mvvm;
 namespace Agebull.EntityModel.Designer
 {
     /// <summary>
-    /// 命令注册器
-    /// </summary>
-    [Export(typeof(IAutoRegister))]
-    [ExportMetadata("Symbol", '%')]
-    internal sealed class Register : IAutoRegister
-    {
-        /// <summary>
-        /// 注册代码
-        /// </summary>
-        void IAutoRegister.AutoRegist()
-        {
-            DesignerManager.Registe<ProjectConfig, EntityListPanel>("实体列表");
-            DesignerManager.Registe<ProjectConfig, EnumListPanel>("枚举列表");
-            DesignerManager.Registe<ProjectConfig, ApiListPanel>("接口列表");
-        }
-    }
-
-    /// <summary>
     /// 扩展节点
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    public sealed class ProjectModel : DesignCommondBase<ProjectConfig>
+    public sealed class ProjectEntityCommand : DesignCommondBase<ProjectConfig>
     {
         /// <summary>
         /// 生成命令对象
@@ -41,6 +23,7 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder
             {
                 Catalog = "编辑",
+                SoruceView = "entity",
                 SignleSoruce = true,
                 IsButton = true,
                 Caption = "增加实体",
@@ -52,6 +35,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "编辑",
                 SignleSoruce = true,
                 IsButton = true,
+                SoruceView = "entity",
                 Caption = "粘贴实体",
                 Action = PasteTable,
                 IconName = "tree_item"
@@ -61,6 +45,7 @@ namespace Agebull.EntityModel.Designer
             {
                 SignleSoruce = true,
                 IsButton = true,
+                SoruceView = "entity",
                 Catalog = "编辑",
                 Caption = "复制基础配置到其它项目",
                 Action = CopyToProject,

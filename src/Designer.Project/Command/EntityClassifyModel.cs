@@ -12,7 +12,7 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    public sealed class ClassifyModel : DesignCommondBase<ClassifyConfig>
+    public sealed class EntityClassifyModel : DesignCommondBase<EntityClassify>
     {
         /// <summary>
         /// 生成命令对象

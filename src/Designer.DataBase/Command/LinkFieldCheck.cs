@@ -23,7 +23,8 @@ namespace Agebull.Common.Config.Designer
             Catalog = "¹¤¾ß";
             SignleSoruce = false;
             //Editor = "DataRelation";
-            ViewModel = "database,model";
+            
+            WorkView = "database,model";
         }
         /// <summary>
         /// ×¢²á´úÂë

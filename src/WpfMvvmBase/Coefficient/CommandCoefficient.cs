@@ -68,36 +68,47 @@ namespace Agebull.Common.Mvvm
         //    }
         //}
 
-        private static readonly Dictionary<Type, List<CommandItemBase>> Commands = new Dictionary<Type, List<CommandItemBase>>();
+        private static readonly Dictionary<string, List<CommandItemBase>> Commands = new Dictionary<string, List<CommandItemBase>>();
 
         /// <summary>
         /// 对象匹配
         /// </summary>
-        /// <param name="arg"></param>
+        /// <param name="binding">对象</param>
+        /// <param name="view">视角</param>
         /// <returns></returns>
-        public static List<CommandItemBase> Coefficient(object arg)
+        public static List<CommandItemBase> Coefficient(object binding, string view)
         {
-            if (arg == null)
-                return null;
+            if (binding == null)
+                return new List<CommandItemBase>();
+            string key = $"{binding.GetType().FullName}:{view}";
             var dictionary = new Dictionary<ICommandItemBuilder, bool>();
-            var type = arg.GetType();
-            if (Commands.TryGetValue(type, out var result))
-                return result;
-            Commands.Add(type, result = new List<CommandItemBase>());
-
-            foreach (var item in CommandBuilders)
+            var type = binding.GetType();
+            if (!Commands.TryGetValue(key, out var result))
             {
-                if (item.Key != type && !type.IsSubclassOf(item.Key))
-                    continue;
 
-                foreach (var action in item.Value.Where(p => p.Editor == null || !p.SignleSoruce))
+                Commands.Add(key, result = new List<CommandItemBase>());
+
+                foreach (var item in CommandBuilders)
                 {
-                    if (dictionary.ContainsKey(action))
+                    if (item.Key != type && !type.IsSubclassOf(item.Key))
                         continue;
-                    result.Add(action.ToCommand(arg, null));
-                    dictionary.Add(action, true);
+                    foreach (var action in item.Value.Where(p => p.Editor == null || !p.SignleSoruce))
+                    {
+                        if (action.SoruceView != null && view != null && !action.SoruceView.Contains(view))
+                            continue;
+                        if (dictionary.ContainsKey(action))
+                            continue;
+                        result.Add(action.ToCommand(binding, null));
+                        dictionary.Add(action, true);
+                    }
                 }
             }
+            else
+            {
+                foreach (var action in result)
+                    action.Source = binding;
+            }
+            return result;
 
             //foreach (var item in SourceTypeMap)
             //{
@@ -131,7 +142,7 @@ namespace Agebull.Common.Mvvm
             //        }
             //    }
             //}
-            return result;
+            //return result;
         }
 
 

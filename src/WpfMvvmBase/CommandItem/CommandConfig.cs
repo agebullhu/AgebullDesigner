@@ -1,6 +1,4 @@
 using System;
-using System.Windows;
-using System.Windows.Media;
 using Agebull.EntityModel;
 
 namespace Agebull.Common.Mvvm
@@ -59,10 +57,20 @@ namespace Agebull.Common.Mvvm
             set;
         }
 
+
         /// <summary>
-        ///     ViewModel
+        ///     类型视角
         /// </summary>
-        public string ViewModel
+        public string SoruceView
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        ///     工作视角
+        /// </summary>
+        public string WorkView
         {
             get;
             set;

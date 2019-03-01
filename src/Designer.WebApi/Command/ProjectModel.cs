@@ -24,7 +24,7 @@ namespace Agebull.EntityModel.Designer
                 IsButton = true,
                 Catalog = "编辑",
                 SignleSoruce = true,
-                Caption = "增加新接口",
+                Caption = "新增接口",
                 Action = arg => AddApi(),
                 IconName = "tree_Open"
             });

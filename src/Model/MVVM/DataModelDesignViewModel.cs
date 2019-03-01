@@ -78,6 +78,8 @@ namespace Agebull.EntityModel.Designer
 
         #region 扩展
 
+        public DelegateCommand SaveCommand => new DelegateCommand(Model.ConfigIo.Save);
+
         public DependencyAction TabControlBehavior => new DependencyAction
         {
             AttachAction = obj => Model.Editor.ExtendEditorPanel = (TabControl)obj

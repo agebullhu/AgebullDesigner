@@ -104,7 +104,7 @@ namespace Agebull.EntityModel.Designer
         public bool Execute(ProjectConfig project)
         {
             StateMessage = "正在生成" + project.Caption + "...";
-            using (CodeGeneratorScope.CreateScope(null))
+            using (CodeGeneratorScope.CreateScope(project))
             {
                 _builder.CreateProjectCode(project);
             }
@@ -219,7 +219,7 @@ namespace Agebull.EntityModel.Designer
 
         private bool Doing(object args)
         {
-            using (CodeGeneratorScope.CreateScope(null))
+            using (CodeGeneratorScope.CreateScope(SolutionConfig.Current))
             {
                 var argument = (RuntimeArgument)args;
                 if (!BeginDo(argument))

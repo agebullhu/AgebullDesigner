@@ -88,7 +88,7 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
             }
             {
 
-                var file = ConfigPath(Entity, "File_Web_Index", path, folder, "Index.aspx");
+                var file = ConfigPath(Entity, "File_Web_Index", path, folder, "index.htm");
                 {
                     var coder = new EasyUiIndexPageCoder();
                     WriteFile(file, coder.BaseCode(Entity));

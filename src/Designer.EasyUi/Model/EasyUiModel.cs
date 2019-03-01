@@ -42,6 +42,7 @@ namespace Agebull.EntityModel.Designer
                     //IsButton=true,
                     Catalog="用户界面",
                     Editor = "EasyUi",
+                    WorkView = "model",
                     Caption = "控件类型修复"
                 },
                 new CommandItemBuilder<EntityConfig>
@@ -50,6 +51,7 @@ namespace Agebull.EntityModel.Designer
                     //IsButton=true,
                     Catalog="用户界面",
                     Editor = "EasyUi",
+                    WorkView = "model",
                     Caption = "按文字计算宽度",
                     ConfirmMessage="是否继续?"
                 },
@@ -59,6 +61,7 @@ namespace Agebull.EntityModel.Designer
                     //IsButton=true,
                     Catalog="用户界面",
                     Editor = "EasyUi",
+                    WorkView = "model",
                     Caption = "自适应宽度",
                     ConfirmMessage="是否继续?"
                 },
@@ -67,6 +70,7 @@ namespace Agebull.EntityModel.Designer
                     Action = CheckExport,
                     Caption = "导出导出初始化",
                     //IsButton=true,
+                    WorkView = "model",
                     Catalog="用户界面",
                     Editor = "EasyUi",
                     ConfirmMessage="是否继续?"
@@ -76,6 +80,7 @@ namespace Agebull.EntityModel.Designer
                     Action = CheckSimple,
                     Caption = "界面字段初始化",
                     //IsButton=true,
+                    WorkView = "model",
                     Catalog="用户界面",
                     Editor = "EasyUi",
                     ConfirmMessage="是否继续?"

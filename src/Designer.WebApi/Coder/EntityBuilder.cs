@@ -66,7 +66,7 @@ namespace {NameSpace}
         protected override void CreateExCode(string path)
         {
             string code = $@"
-#if API_EXTEND
+//#if API_EXTEND
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -96,7 +96,7 @@ namespace {NameSpace}
         {ValidateCode()}
     }}
 }}
-#endif";
+//#endif";
             var file = ConfigPath(Project, FileSaveConfigName, path, Entity.Classify, Entity.Name);
             WriteFile(file + ".api.cs", code);
         }
@@ -227,11 +227,11 @@ namespace {NameSpace}
         /// <summary>数据校验</summary>
         /// <param name=""message"">返回的消息</param>
         /// <returns>成功则返回真</returns>
-        bool IApiArgument.Validate(out string message)
+        public bool Validate(out string message)
         {{
             var result = Validate();
-            message = result.Messages.LinkToString('；');
-            return result.succeed;
+            message = result.succeed ? null : result.Items.Where(p => !p.succeed).Select(p => $""{{p.Caption}}:{{ p.Message}}"").LinkToString(';');
+            return true;//result.succeed;
         }}
 
         /// <summary>

@@ -211,11 +211,37 @@ namespace Agebull.EntityModel.RobotCoder
             return ToName(words);
         }
 
+        public static string RemCode(ConfigBase config, int space = 8)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine();
+            sb.Append(' ', space);
+            sb.Append("/// <summary>");
+            sb.AppendLine();
+            sb.Append(' ', space);
+            sb.Append($@"///     {ToRemString(config.Caption, space)}");
+            sb.AppendLine();
+            sb.Append(' ', space);
+            sb.Append("/// </summary>");
+
+
+            sb.AppendLine();
+            sb.Append(' ', space);
+            sb.Append("/// <remarks>");
+            sb.AppendLine();
+            sb.Append(' ', space);
+            sb.Append($"///     {ToRemString(config.Description, space)}");
+            sb.AppendLine();
+            sb.Append(' ', space);
+            sb.Append("/// </remarks>");
+            return sb.ToString();
+        }
         /// <summary>
         /// 转换为注释文本
         /// </summary>
         /// <param name="str">要转换后的文本</param>
         /// <param name="space">空格数量</param>
+        /// <remarks></remarks>
         /// <returns>正确表示为C#注释的文本</returns>
         protected static string ToRemString(string str, int space = 8)
         {

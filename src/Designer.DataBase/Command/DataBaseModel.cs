@@ -38,6 +38,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "数据库",
                 Caption = "重构数据库设计",
                 Editor = "DataBase",
+                WorkView = "database",
                 IconName = "tree_item",
                 ConfirmMessage = "是否执行【重构数据库设计】操作"
             });
@@ -47,6 +48,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "数据库",
                 Caption = "修复数据库设计",
                 Editor = "DataBase",
+                WorkView = "database",
                 IconName = "tree_item",
                 ConfirmMessage = "是否执行【修复数据库设计】操作"
             });

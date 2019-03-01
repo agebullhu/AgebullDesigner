@@ -57,26 +57,26 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <returns>如果为真并返回结果数据</returns>
-        ApiResult<{Entity.Name}> AddNew({Entity.Name} data);
+        ApiResultEx<{Entity.Name}> AddNew({Entity.Name} data);
 
         /// <summary>
         ///     修改
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <returns>如果为真并返回结果数据</returns>
-        ApiResult<{Entity.Name}> Update({Entity.Name} data);
+        ApiResultEx<{Entity.Name}> Update({Entity.Name} data);
 
         /// <summary>
         ///     删除
         /// </summary>
         /// <param name=""dataKey"">数据主键</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        ApiResult Delete(Argument<{Entity.PrimaryColumn?.LastCsType ?? "int"}> dataKey);
+        ApiResultEx Delete(Argument<{Entity.PrimaryColumn?.LastCsType ?? "int"}> dataKey);
 
         /// <summary>
         ///     分页
         /// </summary>
-        ApiResult<ApiPageData<{Entity.Name}>> Query(PageArgument arg);
+        ApiResultEx<ApiPageData<{Entity.Name}>> Query(PageArgument arg);
 
     }}
 }}";
@@ -87,50 +87,30 @@ namespace {NameSpace}.WebApi.EntityApi
         /// <summary>
         ///     生成基础代码
         /// </summary>
+        /// <remarks></remarks>
         protected override void CreateExCode(string path)
         {
             StringBuilder code = new StringBuilder();
             code.Append($@"using System;
-using System.Web.Http;
-using GoodLin.Common.Ioc;
-using Yizuan.Service.Api;
-using Yizuan.Service.Api.WebApi;
+using Agebull.ZeroNet.ZeroApi;
+using Gboxt.Common.DataModel;
 
-namespace {NameSpace}.WebApi
+namespace {NameSpace}
 {{
-    /// <summary>
-    /// 身份验证服务API
-    /// </summary>
+    {RemCode(Project,4)}
     public interface I{Project.ApiName}
     {{");
 
             foreach (var item in Project.ApiItems)
             {
+                var res = item.Result == null ? "ApiResultEx" : $"ApiResultEx <{item.ResultArg}>";
+                var arg = item.Argument == null ? "ApiArgument" : $"ApiArgument<{ item.CallArg}>";
+                code.Append(RemCode(item));
                 code.Append($@"
-
-        /// <summary>
-        ///     {item.Caption}:{item.Description}:
-        /// </summary>");
-                if (item.Argument != null)
-                {
-                    code.Append($@"
-        /// <param name=""arg"">{item.Argument?.Caption}</param>");
-                }
-                if (item.Result == null)
-                {
-                    code.Append(@"
-        /// <returns>操作结果</returns>");
-                }
-                else
-                {
-                    code.Append($@"
-        /// <returns>{item.Result.Caption}</returns>");
-                }
-                var res = item.Result == null ? null : "<" + item.Result.Name + ">";
-                var arg = item.Argument == null ? null : $"{item.Argument.Name} arg";
-
-                code.Append($@"
-        ApiResult{res} {item.Name}({arg});");
+        /// <param name=""arg"">{item.CallArg ?? "标准参数"}</param>
+        /// <returns>{item.ResultArg ?? "操作结果"}</returns>
+        {res} {item.Name}({arg} arg);
+");
             }
 
             code.Append(@"

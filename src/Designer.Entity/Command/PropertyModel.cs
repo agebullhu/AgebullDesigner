@@ -24,8 +24,8 @@ namespace Agebull.EntityModel.Designer
         {
             commands.Add(new CommandItemBuilder<PropertyConfig>
             {
-                
                 SignleSoruce = false,
+                WorkView= "adv",
                 Catalog = "字段",
                 Action = CheckName,
                 Caption = "字段名称规范",
@@ -36,6 +36,7 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder<PropertyConfig>
             {
                 Catalog = "工具",
+                WorkView = "adv",
                 Action = UpdateCustomType,
                 Caption = "修复用户类型",
                 IconName = "img_modify"

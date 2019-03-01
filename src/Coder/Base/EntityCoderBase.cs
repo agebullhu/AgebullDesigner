@@ -186,7 +186,7 @@ namespace Agebull.EntityModel.RobotCoder
                 }
                 else if (property.CsType == "DateTime")
                 {
-                    value = value == null ? DateTime.Today.ToString(CultureInfo.InvariantCulture) : $"DateTime.Parse(\"{value}\")";
+                    value = value == null ? "new DateTime(2019,1,1)" : $"DateTime.Parse(\"{value}\")";
                 }
                 else if (property.CustomType != null)
                 {

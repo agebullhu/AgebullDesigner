@@ -76,7 +76,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <returns>如果为真并返回结果数据</returns>
-        public ApiResult<{Entity.Name}> AddNew({Entity.Name} data)
+        public ApiResultEx<{Entity.Name}> AddNew({Entity.Name} data)
         {{
             return Caller.Post<{Entity.Name}>(""entity/{Entity.Name}/AddNew"", data);
         }}
@@ -86,7 +86,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <returns>如果为真并返回结果数据</returns>
-        public ApiResult<{Entity.Name}> Update({Entity.Name} data)
+        public ApiResultEx<{Entity.Name}> Update({Entity.Name} data)
         {{
             return Caller.Post<{Entity.Name}>(""entity/{Entity.Name}/Update"", data);
         }}
@@ -96,7 +96,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""dataKey"">数据主键</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        public ApiResult Delete(Argument<{Entity.PrimaryColumn?.LastCsType ?? "int"}> dataKey)
+        public ApiResultEx Delete(Argument<{Entity.PrimaryColumn?.LastCsType ?? "int"}> dataKey)
         {{
             return Caller.Post(""entity/{Entity.Name}/Delete"", dataKey);
         }}
@@ -106,7 +106,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""arg"">分页参数</param>
         /// <returns>结果数据</returns>
-        public ApiResult<ApiPageData<{Entity.Name}>> Query(PageArgument arg)
+        public ApiResultEx<ApiPageData<{Entity.Name}>> Query(PageArgument arg)
         {{
             return Caller.Post<ApiPageData<{Entity.Name}>>(""entity/{Entity.Name}/Query"", arg);
         }}
@@ -123,68 +123,36 @@ namespace {NameSpace}.WebApi.EntityApi
         {
             StringBuilder code = new StringBuilder();
             code.Append($@"using System;
-using System.Web.Http;
-using GoodLin.Common.Ioc;
-using Yizuan.Service.Api;
-using Yizuan.Service.Api.WebApi;
+using Agebull.Common.Logging;
+using Agebull.Common.WebApi;
+using Agebull.ZeroNet.ZeroApi;
+using Gboxt.Common.DataModel;
+using Newtonsoft.Json;
 
-namespace {NameSpace}.WebApi
+namespace {NameSpace}
 {{
-    /// <summary>
-    /// {Project.Caption}服务API
-    /// </summary>
+    
+    {RemCode(Project, 4)}
     public class {Project.ApiName}Proxy : I{Project.ApiName}
     {{
-        /// <summary>
-        ///     服务地址
-        /// </summary>
-        public string Host
-        {{
-            get
-            {{
-                return caller.Host;
-            }}
-            set
-            {{
-                caller.Host = value;
-            }}
-        }}
-        
-        /// <summary>
-        ///     服务调用对象
-        /// </summary>
-        WebApiCaller caller = new WebApiCaller();");
+");
 
             foreach (var item in Project.ApiItems)
             {
-                code.Append($@"
-        /// <summary>
-        ///     {item.Caption}:{item.Description}:
-        /// </summary>");
-                if (item.Argument != null)
-                {
-                    code.Append($@"
-        /// <param name=""arg"">{item.Argument?.Caption}</param>");
-                }
-                if (item.Result == null)
-                {
-                    code.Append(@"
-        /// <returns>操作结果</returns>");
-                }
-                else
-                {
-                    code.Append($@"
-        /// <returns>{item.Result.Caption}</returns>");
-                }
-                var res = item.Result == null ? null : "<" + item.Result.Name + ">";
-                var arg = item.Argument == null ? null : $"{item.Argument.Name} arg";
+                var res = item.Result == null ? "ApiResultEx" : "ApiResultEx <" + item.ResultArg + ">";
+                var arg = item.Argument == null ? "ApiArgument" : $"ApiArgument<{ item.CallArg}>";
 
-                var arg2 = item.Argument == null ? "\"\"" : "arg";
+                code.Append(RemCode(item));
                 code.Append($@"
-        public ApiResult{res} {item.Name}({arg})
+        /// <param name=""arg"">{item.CallArg ?? "标准参数"}</param>
+        /// <returns>{item.ResultArg ?? "操作结果"}</returns>
+        public {res} {item.Name}({arg} arg)
         {{
-            return caller.Post{res}(""{item.RoutePath}"", {arg2});
-        }}");
+            if (!arg.Validate(out var message))
+                return {res}.Error(ErrorCode.LogicalError, message);
+            return ApiClient.Call<{ arg},{ res}>(""{Project.ApiName}"", ""{item.RoutePath}"",arg);
+        }}
+");
             }
 
             code.Append(@"

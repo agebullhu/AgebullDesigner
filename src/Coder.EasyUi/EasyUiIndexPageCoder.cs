@@ -9,12 +9,12 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
     [ExportMetadata("Symbol", '%')]
     public class EasyUiIndexPageCoder : EasyUiCoderBase
     {
-        protected override string LangName => "aspx";
+        protected override string LangName => "html";
 
         /// <summary>
         /// 名称
         /// </summary>
-        protected override string FileName => "Index.aspx";
+        protected override string FileName => "index.html";
 
         protected override string BaseCode()
         {
@@ -22,15 +22,88 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             var folder = cls == null
                 ? $"{Entity.Parent.Caption} > {Entity.Caption}"
                 : $"{Entity.Parent.Caption} > {cls.Caption } > {Entity.Caption}";
-            return $@"<%@ Page Title='' Language='C#' MasterPageFile='~/JquerySite.Master' AutoEventWireup='true' Inherits='System.Web.UI.Page'%>
-<asp:Content ID='cPagePathRegion' ContentPlaceHolderID='PagePathRegion' runat='server'>
-{folder}
-</asp:Content>
-<asp:Content ID='cScriptRegion' ContentPlaceHolderID='ScriptRegion' runat='server'>
+            return $@"<!DOCTYPE html>
+<html>
+<head><meta name='renderer' content='webkit' /><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=21' />
+<title>{folder}
+</title>
+	<meta charset='utf-8' />
+	<meta name='viewport' content='width=device-width' />
+	<meta name='renderer' content='webkit' />
+	<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+	<link rel='stylesheet' type='text/css' href='/styles/css/default.css?v=20190105' />
+    <!--JQuery-->
+    <script type='text/javascript' src='/scripts/jquery-3.3.1.min.js?v=20190105'></script>
+    <script type='text/javascript'>
+        window.UEDITOR_HOME_URL = '/ueditor/';
+    </script>
+    <!--ueditor-->
+    <script type='text/javascript' charset='utf-8' src='/ueditor/ueditor.config.js?v=20190105'></script>
+    <script type='text/javascript' charset='utf-8' src='/ueditor/ueditor.all.min.js?v=20190105'> </script>
+    <script type='text/javascript' charset='utf-8' src='/ueditor/ueditor.parse.min.js?v=20190105'> </script>
+    <script type='text/javascript' charset='utf-8' src='/ueditor/lang/zh-cn/zh-cn.js?v=20190105'></script>
+    <script type='text/javascript' src='/ueditor/third-party/codemirror/codemirror.js'></script>
+    <script type='text/javascript' src='/ueditor/third-party/zeroclipboard/ZeroClipboard.min.js?v=20190105'></script>
+    <!--EasyUI-->
+    
+    <link rel='stylesheet' type='text/css' href='/scripts/themes/metro/easyui.css?v=20190105' /><link rel='stylesheet' type='text/css' href='/scripts/themes/icon.css?v=20190105' />
+    <script type='text/javascript' src='/scripts/jquery.easyui.min.js?v=20190105'></script>
+    <script type='text/javascript' src='/scripts/datagrid-detailview.js?v=20190105'></script>
+    <script type='text/javascript' src='/scripts/locale/easyui-lang-zh_CN.js?v=20190105'></script>
+    <!--Extend-->
+    <script type='text/javascript' src='/scripts/extend/core.js?v=20190105'></script>
+    <script type='text/javascript' src='/scripts/extend/button.js?v=20190105'></script>
+    <script type='text/javascript' src='/scripts/extend/ajax.js?v=20190105'></script>
+    <script type='text/javascript' src='/scripts/extend/extend.js?v=20190105'></script>
+    
+    <script type='text/javascript' src='/scripts/extend/page.js?v=20190105'></script>
+    <script type='text/javascript' src='/scripts/extend/dialog.js?v=20190105'></script>
+    <script type='text/javascript' src='/scripts/extend/tree.js?v=20190105'></script>
+    <script type='text/javascript' src='/scripts/extend/grid_panel.js'></script>
+    <script type='text/javascript' src='/scripts/extend/card_panel.js?v=20190105'></script>
+    <script type='text/javascript' src='/scripts/extend/type.js?v=20190105'></script>
+    <script type='text/javascript' src='/scripts/extend/ueditor_ex.js?v=20190105'></script>
+    <!--Business-->
+    <script type='text/javascript' src='/scripts/business/type.js?v=20190105'></script>
+    <script type='text/javascript' src='/scripts/business/business.js?v=20190105'></script>
+    <script type='text/javascript' src='/scripts/business/userjob.js?v=20190105'></script>
+    <link rel='stylesheet' type='text/css' href='/styles/model/Site.css?v=20190105' /><link rel='stylesheet' type='text/css' href='/styles/model/icon.css?v=20190105' />
+    <style type='text/css'>
+        .parentInput {{
+            border: 0 white solid;
+            color: red;
+            text-align: right;
+        }}
+
+        .selectInput {{
+            border: 0 white solid;
+            color: blue;
+            text-align: right;
+        }}
+
+        .editInput {{
+            border - bottom: 1px black solid;
+            border-left: 0 black solid;
+            border-right: 0 black solid;
+            border-top: 0 black solid;
+            text-align: right;
+        }}
+    </style>
     <script type='text/javascript' src='/{Project.PageFolder ?? Project.Name}/{Entity.Option["File_Web_Script_js"]?.Replace('\\', '/')}'></script>
-</asp:Content>
-<asp:Content ID='cBodyRegion' ContentPlaceHolderID='BodyRegion' runat='server'>{(Entity.TreeUi ? Tree : Grid)}
-</asp:Content>";
+</head>
+<body>
+    <div id='rBody' class='content_body' style='visibility: hidden;'>
+    {(Entity.TreeUi ? Tree : Grid)}
+    </div>
+    <div style='display: none; visibility: collapse;'>
+        <div id='xx_dialog_region_xx' style='display: none; visibility: collapse;'></div>
+    </div>
+    <div id='__loading__'>
+        <div class='panel-loading busy_body'>正在拼命执行中...</div>
+    </div>
+    <div id='__ueditor_hide__' style='width: 1px; height: 1px; left: 0px; top: 0; visibility: hidden; position: absolute; z-index: 99999'></div>
+</body>
+</html>";
         }
 
         private string Tree => $@"
