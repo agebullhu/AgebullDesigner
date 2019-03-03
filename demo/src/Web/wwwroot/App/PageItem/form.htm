@@ -1,0 +1,118 @@
+﻿<form name="pageitemForm" id="pageitemForm" method="POST">
+    <input name="id" type="hidden" />
+    <input name="parentId" type="hidden" />
+    <div id="pageitemRegion" class="formRegion" style="display: block; width: 985px;">
+        <div class="inputField" id="fr_ItemType">
+            <div class="inputRegion" id="ir_ItemType">
+                <div class="inputLabel">节点类型：</div>
+                <input id="itemType" name="itemType" class="inputValue inputS easyui-combobox"
+                       data-options="prompt:'节点类型',valueField:'value',textField:'text',data:itemType,required:true" />
+            </div>
+        </div>
+        <div class="inputField">
+            <div class="inputRegion">
+                <div class="inputLabel">排列顺序：</div>
+                <input name="index" class="inputValue inputS  easyui-numberbox" data-options="required:true" />
+            </div>
+        </div><br />
+        <div class="inputField">
+            <div class="inputRegion">
+                <div class="inputLabel">节点标题：</div>
+                <input name="caption" class="inputValue inputS  easyui-textbox" data-options="required:true" />
+            </div>
+        </div>
+        <div class="inputField">
+            <div class="inputRegion">
+                <div class="inputLabel">内部名称：</div>
+                <input name="name" class="inputValue inputS  easyui-textbox" data-options="required:true" />
+            </div>
+        </div>
+        <div class="inputField">
+            <div class="inputRegion">
+                <div class="inputLabel">图标：</div>
+                <input name="icon" class="inputValue inputS  easyui-textbox" data-options="prompt:'图标的CSS类名'" />
+            </div>
+        </div>
+        <div class="inputField">
+            <div class="inputRegion">
+                <div class="inputLabel">是否隐藏：</div>
+                <input id="hide" name="hide" class="inputValue inputS easyui-combobox"
+                       data-options="prompt:'是否隐藏',valueField:'value',textField:'text',data:yesnoType" />
+            </div>
+        </div>
+        <br />
+        <div id="pageAttr" style="visibility:visible">
+            <div class="inputField">
+                <div class="inputRegion">
+                    <div class="inputLabel">页面地址：</div>
+                    <input name="url" class="inputValue inputS easyui-textbox" />
+                </div>
+            </div>
+            <div class="inputField">
+                <div class="inputRegion">
+                    <div class="inputLabel">接口地址：</div>
+                    <input name="apiHost" class="inputValue inputS easyui-textbox" />
+                </div>
+            </div>
+            <div class="inputField">
+                <div class="inputRegion">
+                    <div class="inputLabel">权限链接页面：</div>
+                    <input name="master_page" class="inputValue inputS  easyui-textbox" data-options="required:true" />
+                </div>
+            </div>
+            <div class="inputField">
+                <div class="inputRegion">
+                    <div class="inputLabel">内部类名：</div>
+                    <input id="type" name="type" class="inputValue inputS easyui-textbox" />
+                </div>
+            </div>
+            <div class="inputField">
+                <div class="inputRegion">
+                    <div class="inputLabel">数据编辑：</div>
+                    <input id="edit" name="edit" class="inputValue inputS easyui-combobox"
+                           data-options="prompt:'数据编辑',valueField:'value',textField:'text',data:yesnoType" />
+                </div>
+            </div>
+            <div class="inputField">
+                <div class="inputRegion">
+                    <div class="inputLabel">审批对象：</div>
+                    <input id="audit" name="audit" class="inputValue inputS easyui-combobox"
+                           data-options="prompt:'审批对象',valueField:'value',textField:'text',data:yesnoType" />
+                </div>
+            </div>
+            <div class="inputField">
+                <div class="inputRegion">
+                    <div class="inputLabel">逐级审批：</div>
+                    <input id="level_audit" name="level_audit" class="inputValue inputS easyui-combobox"
+                           data-options="prompt:'逐级审批',valueField:'value',textField:'text',data:yesnoType" />
+                </div>
+            </div>
+            <div class="inputField">
+                <div class="inputRegion">
+                    <div class="inputLabel">审批页面：</div>
+                    <input id="audit_page" name="audit_page" class="inputValue inputS easyui-textbox" />
+                </div>
+            </div>
+            <div class="inputField">
+                <div class="inputRegion">
+                    <div class="inputLabel">数据管理：</div>
+                    <input id="data_state" name="data_state" class="inputValue inputS easyui-combobox"
+                           data-options="prompt:'数据管理',valueField:'value',textField:'text',data:yesnoType" />
+                </div>
+            </div>
+            <div class="inputField">
+                <div class="inputRegion">
+                    <div class="inputLabel">扩展属性：</div>
+                    <input name="ExtendValue" class="inputValue inputS easyui-textbox" />
+                </div>
+            </div>
+        </div><br />
+        <div class="inputField_L">
+            <div class="inputRegion">
+                <div class="inputLabel">页面说明：</div>
+                <textarea name="memo" class="inputValue_Memo"></textarea>
+            </div>
+
+        </div>
+    </div>
+</form>

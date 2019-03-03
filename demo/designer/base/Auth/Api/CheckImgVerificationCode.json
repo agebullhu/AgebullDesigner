@@ -1,0 +1,1 @@
+﻿{"Method":1,"CallArg":"ValiadateCodeCheckRequest","RoutePath":"v2/vc/img/valiadate","IsUserCommand":false,"_project":"Auth","IsGlobal":false,"_caption":"验证图片验证码","_description":"验证图片验证码","_name":"CheckImgVerificationCode","option":{"_key":"a21f33d3-f6d5-4660-8fc2-43dd6a816762","Identity":0,"Index":0,"referenceKey":"00000000-0000-0000-0000-000000000000","state":0}}

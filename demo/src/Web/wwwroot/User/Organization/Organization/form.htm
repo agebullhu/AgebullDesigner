@@ -1,0 +1,160 @@
+﻿<!--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/2 23:20:41-->
+<form name='organizationForm' id='organizationForm' method='POST' enctype='multipart/form-data'>
+    <input name='Id' id='Id' type='hidden' />
+    <div id='organizationRegion' class='formRegion' style='width:500px;'>
+            <div class='inputField' id='fr_Type'>
+                <div class='inputRegion' id='ir_Type'>
+                    <div class='inputLabel'>机构类型:</div>
+                    <input id='Type' name='Type' class='inputValue inputS easyui-combobox'
+                           data-options="prompt:'类型',valueField:'value',textField:'text',data:organizationType,validType:['selectNoZero[\'#Type\']'],required:true"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_Code'>
+                <div class='inputRegion' id='ir_Code'>
+                    <div class='inputLabel'>编码:</div>
+                    <input id='Code' name='Code' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'代码',validType:['strLimit[0,200]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_FullName'>
+                <div class='inputRegion' id='ir_FullName'>
+                    <div class='inputLabel'>全称:</div>
+                    <input id='FullName' name='FullName' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'全称',validType:['strLimit[0,200]'],required:true"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_ShortName'>
+                <div class='inputRegion' id='ir_ShortName'>
+                    <div class='inputLabel'>简称:</div>
+                    <input id='ShortName' name='ShortName' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'短名称',validType:['strLimit[0,200]'],required:true"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_TreeName'>
+                <div class='inputRegion' id='ir_TreeName'>
+                    <div class='inputLabel'>树形名称:</div>
+                    <input id='TreeName' name='TreeName' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'树的名字',validType:['strLimit[0,200]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_OrgLevel'>
+                <div class='inputRegion' id='ir_OrgLevel'>
+                    <div class='inputLabel'>级别:</div>
+                    <input id='OrgLevel' name='OrgLevel' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'级别'"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_LevelIndex'>
+                <div class='inputRegion' id='ir_LevelIndex'>
+                    <div class='inputLabel'>层级的序号:</div>
+                    <input id='LevelIndex' name='LevelIndex' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'层级的序号'"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_parentId'>
+                <div class='inputRegion' id='ir_parentId'>
+                    <div class='inputLabel'>上级标识:</div>
+                    <input id='parentId' name='parentId' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'上级标识'"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_OrgId'>
+                <div class='inputRegion' id='ir_OrgId'>
+                    <div class='inputLabel'>边界机构标识:</div>
+                    <input id='OrgId' name='OrgId' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'边界机构标识：不互相访问的锁定标识。如公司独立管理，公司间不互相访问则设置为公司的标识，部门不独立管理则不可设置为部门标识。'"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_Memo'>
+                <div class='inputRegion' id='ir_Memo'>
+                    <div class='inputLabel'>备注:</div><br/>
+                    <input id='Memo' name='Memo' class='inputValue_Memo_S easyui-textbox'
+                           data-options="prompt:'备忘录',multiline:true"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_super_orgcode'>
+                <div class='inputRegion' id='ir_super_orgcode'>
+                    <div class='inputLabel'>上级机构代码:</div>
+                    <input id='super_orgcode' name='super_orgcode' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'无上级机构时,传当前注册管理机构代码,允许更新',validType:['strLimit[0,10]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_manag_orgcode'>
+                <div class='inputRegion' id='ir_manag_orgcode'>
+                    <div class='inputLabel'>注册管理机构代码:</div>
+                    <input id='manag_orgcode' name='manag_orgcode' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'注册管理机构代码',validType:['strLimit[0,10]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_manag_orgname'>
+                <div class='inputRegion' id='ir_manag_orgname'>
+                    <div class='inputLabel'>注册管理机构名称:</div>
+                    <input id='manag_orgname' name='manag_orgname' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'注册管理机构名称',validType:['strLimit[0,50]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_city_code'>
+                <div class='inputRegion' id='ir_city_code'>
+                    <div class='inputLabel'>所在市级编码:</div>
+                    <input id='city_code' name='city_code' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'参照数据字典【行政区划】,允许更新',validType:['strLimit[0,6]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_district_code'>
+                <div class='inputRegion' id='ir_district_code'>
+                    <div class='inputLabel'>所在区县编码:</div>
+                    <input id='district_code' name='district_code' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'允许更新',validType:['strLimit[0,6]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_org_address'>
+                <div class='inputRegion' id='ir_org_address'>
+                    <div class='inputLabel'>机构详细地址:</div>
+                    <input id='org_address' name='org_address' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'允许更新',validType:['strLimit[0,128]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_law_personname'>
+                <div class='inputRegion' id='ir_law_personname'>
+                    <div class='inputLabel'>机构负责人:</div>
+                    <input id='law_personname' name='law_personname' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'允许更新',validType:['strLimit[0,50]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_law_persontel'>
+                <div class='inputRegion' id='ir_law_persontel'>
+                    <div class='inputLabel'>机构负责人电话:</div>
+                    <input id='law_persontel' name='law_persontel' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'允许更新',validType:['strLimit[0,20]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_contact_name'>
+                <div class='inputRegion' id='ir_contact_name'>
+                    <div class='inputLabel'>机构联系人:</div>
+                    <input id='contact_name' name='contact_name' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'允许更新',validType:['strLimit[0,50]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_contact_tel'>
+                <div class='inputRegion' id='ir_contact_tel'>
+                    <div class='inputLabel'>机构联系人电话:</div>
+                    <input id='contact_tel' name='contact_tel' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'允许更新',validType:['strLimit[0,20]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_areaId'>
+                <div class='inputRegion' id='ir_areaId'>
+                    <div class='inputLabel'>行政区域外键:</div>
+                    <input id='areaId' name='areaId' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'行政区域外键',readonly:true"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_area'>
+                <div class='inputRegion' id='ir_area'>
+                    <div class='inputLabel'>行政区域:</div>
+                    <input id='area' name='area' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'行政区域',readonly:true"/>
+                </div>
+            </div>
+    </div>
+</form>

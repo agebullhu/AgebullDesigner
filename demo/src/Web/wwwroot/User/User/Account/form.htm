@@ -1,0 +1,36 @@
+﻿<!--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2018/10/5 23:06:23-->
+<form name='accountForm' id='accountForm' method='POST' enctype='multipart/form-data'>
+    <input name='Id' id='Id' type='hidden' />
+    <input name='UserId' id='UserId' type='hidden' />
+    <input name='RoleId' id='RoleId' type='hidden' />
+    <div id='accountRegion' class='formRegion' style='width:500px;'>
+        <div class='inputField' id='fr_RealName'>
+            <div class='inputRegion' id='ir_RealName'>
+                <div class='inputLabel'>姓名:</div>
+                <input id='RealName' name='RealName' class='inputValue inputS easyui-textbox'
+                       data-options="prompt:'姓名',readonly:true" />
+            </div>
+        </div>
+        <div class='inputField' id='fr_Person'>
+            <div class='inputRegion' id='ir_Person'>
+                <div class='inputLabel'>手机号:</div>
+                <input id='Person' name='phoneNumber' class='inputValue inputS easyui-textbox'
+                       data-options="prompt:'用户手机号',readonly:true" />
+            </div>
+        </div>
+        <div class='inputField' id='fr_AccountName'>
+            <div class='inputRegion' id='ir_AccountName'>
+                <div class='inputLabel'>账户名:</div>
+                <input id='AccountName' name='AccountName' class='inputValue inputS easyui-textbox'
+                       data-options="prompt:'账户名',readonly:true" />
+            </div>
+        </div>
+        <div class='inputField' id='fr_AccountType'>
+            <div class='inputRegion' id='ir_AccountType'>
+                <div class='inputLabel'>账户类型:</div>
+                <input id='AccountType' name='AccountType' class='inputValue inputS easyui-combobox'
+                       data-options="readonly:true,valueField:'value',textField:'text',data:authorizeType" />
+            </div>
+        </div>
+    </div>
+</form>

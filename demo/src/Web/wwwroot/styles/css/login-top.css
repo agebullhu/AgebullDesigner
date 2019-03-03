@@ -1,0 +1,24 @@
+.wrap {
+    width: 100%;
+    background: #f2f2f2;
+    /* overflow:scroll;*/
+    overflow: hidden;
+    min-width: 1200px;
+    font-family: "Microsoft YaHei";
+}
+
+body {
+    width: 100%;
+}
+
+.clear:after {
+    content: ".";
+    clear: both;
+    display: block;
+    visibility: hidden;
+    height: 0;
+}
+
+.clear {
+    zoom: 1;
+}

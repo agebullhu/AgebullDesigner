@@ -1,0 +1,969 @@
+[2019-03-02 16:17:41Z] 0000001E-AgebullMac:Background:28H9-7-ZR4WHSiXHW-Zi75QD44MN > 
+Summary : Station no find
+
+[2019-03-02 16:17:41Z] 00000022-AgebullMac:Background:28H9-7-LQRi85NA3A-67QCKPX5KH > 
+Summary : OnObjectFailed
+
+[2019-03-02 16:18:24Z] 0000001E-AgebullMac:Background:38M9-10-X932QRPFSV-SPUUDKK1BK > 
+Summary : Station no find
+
+[2019-03-02 16:18:24Z] 00000022-AgebullMac:Background:38M9-10-6RWQWiTTS4-B8REBSQFMV > 
+Summary : OnObjectFailed
+
+[2019-03-02 16:22:04Z] 0000001E-AgebullMac:Background:AiT5-7-40KHEJN0XU-ZS4PVRZHP3 > 
+Summary : Station no find
+
+[2019-03-02 16:22:04Z] 00000022-AgebullMac:Background:AiT5-7-UQRCN4059C-F64UXSGiDS > 
+Summary : OnObjectFailed
+
+[2019-03-02 16:22:57Z] 0000001E-AgebullMac:Background:AiA5-11-iiAiHBi60Y-HGVJ368R44 > 
+Summary : Station no find
+
+[2019-03-02 16:22:57Z] 00000022-AgebullMac:Background:AiA5-11-GQQYPHAEZ3-1C3WXTRZ3W > 
+Summary : OnObjectFailed
+
+[2019-03-02 16:25:13Z] 0000000E-AgebullMac:Background:2UTJ-1-Y2DZE9K2HL-E5LDJ0JSA8 > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 16:25:15Z] 000000CA-AgebullMac:Background:2UTJ-7-i5ERFT8KTR-467R3K08UF > 
+Summary : Station no find
+
+[2019-03-02 16:25:15Z] 000000CE-AgebullMac:Background:2UTJ-7-E0KH0JN0RU-5S5PVRQHG3 > 
+Summary : OnObjectFailed
+
+[2019-03-02 16:27:53Z] 0000000E-AgebullMac:Background:RUKJ-1-222ZU9P27L-R5MDV0ZS58 > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 16:27:55Z] 000000CA-AgebullMac:Background:RUKJ-7-95iR5T6KSR-46NRPK98YF > 
+Summary : Station no find
+
+[2019-03-02 16:27:55Z] 000000CE-AgebullMac:Background:RUKJ-7-403HSJ704U-ZS9PCRAH93 > 
+Summary : OnObjectFailed
+
+[2019-03-02 16:30:10Z] 00000113-AgebullMac:Background:RUKJ-7-BG001ZD7KA-GQNiZM236B > 
+Summary : Station no find
+
+[2019-03-02 16:30:10Z] 00000117-AgebullMac:Background:RUKJ-7-55FZYH9N7N-JHG0LS0TQE > 
+Summary : OnObjectFailed
+
+[2019-03-02 16:32:42Z] 00000137-AgebullMac:Background:RUKJ-10--7PLVQ4--7PLVQ4 > 
+系统错误
+GetDeviceId
+MySql.Data.MySqlClient.MySqlException (0x80004005): Unable to connect to any of the specified MySQL hosts. ---> System.AggregateException: One or more errors occurred. (由于目标计算机积极拒绝，无法连接。 172.29.204.49:3306) ---> System.Net.Internals.SocketExceptionFactory+ExtendedSocketException: 由于目标计算机积极拒绝，无法连接。 172.29.204.49:3306
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+   at System.Net.Sockets.Socket.MultipleAddressConnectCallback(IAsyncResult result)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.<>c.<ConnectAsync>b__28_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)
+   at MySql.Data.Common.StreamCreator.GetTcpStream(MySqlConnectionStringBuilder settings)
+   at MySql.Data.MySqlClient.NativeDriver.Open()
+---> (Inner Exception #0) System.Net.Internals.SocketExceptionFactory+ExtendedSocketException (10061): 由于目标计算机积极拒绝，无法连接。 172.29.204.49:3306
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+   at System.Net.Sockets.Socket.MultipleAddressConnectCallback(IAsyncResult result)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.<>c.<ConnectAsync>b__28_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)<---
+
+   at MySql.Data.MySqlClient.NativeDriver.Open()
+   at MySql.Data.MySqlClient.Driver.Open()
+   at MySql.Data.MySqlClient.Driver.Create(MySqlConnectionStringBuilder settings)
+   at MySql.Data.MySqlClient.MySqlPool.CreateNewPooledConnection()
+   at MySql.Data.MySqlClient.MySqlPool.GetPooledConnection()
+   at MySql.Data.MySqlClient.MySqlPool.TryToGetDriver()
+   at MySql.Data.MySqlClient.MySqlPool.GetConnection()
+   at MySql.Data.MySqlClient.MySqlConnection.Open()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.InitConnection()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.get_Connection()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.CreateCommand(String sql, IEnumerable`1 args)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.InsertInner(TData entity)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.Insert(TData entity)
+   at Agebull.OAuth.Business.AuthBusiness.CreateDeviceId(DeviceArgument arg) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ZeroApi\Business\AuthBusiness.cs:line 440
+   at Agebull.OAuth.Business.AuthBusiness.Agebull.Common.Authority.IOAuthBusiness.GetDeviceId(DeviceArgument arg) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ZeroApi\Business\AuthBusiness.cs:line 359
+
+[2019-03-02 16:34:38Z] 0000000E-AgebullMac:Background:PUiJ-1-J22Z39U2KL-K55DB0FSQ8 > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 16:34:42Z] 000000CA-AgebullMac:Background:PUiJ-8-XQUCZ5i88Z-R9KQMTF4SR > 
+Summary : Station no find
+
+[2019-03-02 16:34:42Z] 000000CE-AgebullMac:Background:PUiJ-8-X2YCERQEDC-8ED4DVF5FK > 
+Summary : OnObjectFailed
+
+[2019-03-02 16:44:21Z] 000000F5-AgebullMac:Background:PUiJ-17-*ACFKBGXA_APP_LINUX-CSSR8i-*ACFKBGXA_APP_LINUX-CSSR8i > 
+系统错误
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at Agebull.Common.Authority.UserInfoApiLogical.AccountLogin(PhoneLoginRequest arg, ApiResult`1 result) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ZeroApi\Business\UserInfoApiLogical.cs:line 614
+   at Agebull.Common.Authority.UserInfoApiLogical.Agebull.Common.Authority.IUserInfoApi.AccountLogin(PhoneLoginRequest arg) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ZeroApi\Business\UserInfoApiLogical.Designer.cs:line 116
+   at Agebull.UserCenter.WebApi.LoginApiController.AccountLogin(PhoneLoginRequest arg) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ZeroApi\Controller\LoginApiController.cs:line 28
+   at AccountLogin(IApiArgument )
+   at Agebull.ZeroNet.ZeroApi.ApiAction`2.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-02 16:44:21Z] 000000F7-AgebullMac:Background:PUiJ-17-*ACFKBGXA_APP_LINUX-CSSR8i-*ACFKBGXA_APP_LINUX-CSSR8i > 
+系统错误
+Authority : v1/login/account * execute * {"LocalId":null,"Caller":"+>AgebullMac:HttpRoute:LAJH-Authority-NPXQ","Title":"+>AgebullMac:HttpRoute:LAJH-Authority-NPXQ","Command":"v1/login/account","ApiName":"v1/login/account","Argument":"{\"mark\":\"1\",\"MobilePhone\":\"root\",\"UserPassword\":\"root\"}","Result":null,"Status":0,"Originals":{},"State":1,"Tag":0,"Head":"Kz5BZ2VidWxsTWFjOkh0dHBSb3V0ZTpMQUpILUF1dGhvcml0eS1OUFhR","GlobalId":"37436171902517642","CallId":"37436171902517640","RequestId":"*ACFKBGXA_APP_LINUX-CSSR8i","Context":"{\r\n  \"user\": {\r\n    \"userId\": -1,\r\n    \"openId\": null,\r\n    \"roleId\": 0,\r\n    \"groupId\": 0,\r\n    \"orgId\": 0,\r\n    \"depId\": 0,\r\n    \"nickName\": \"游客\",\r\n    \"account\": \"Anymouse\",\r\n    \"state\": 0,\r\n    \"loginType\": 0,\r\n    \"depLevel\": 0\r\n  },\r\n  \"org\": {\r\n    \"orgId\": 0,\r\n    \"name\": null,\r\n    \"key\": null,\r\n    \"routeName\": null\r\n  },\r\n  \"req\": {\r\n    \"localGlobalId\": \"37436171902517640\",\r\n    \"service\": \"AgebullMac\",\r\n    \"requestId\": \"*ACFKBGXA_APP_LINUX-CSSR8i\",\r\n    \"token\": \"*ACFKBGXA_APP_LINUX\",\r\n    \"argumentType\": 1,\r\n    \"requestType\": 1,\r\n    \"ip\": \"127.0.0.1\",\r\n    \"port\": \"6136\",\r\n    \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0\"\r\n  }\r\n}","Content":"{\"mark\":\"1\",\"MobilePhone\":\"root\",\"UserPassword\":\"root\"}","CommandOrSubTitle":"v1/login/account","Requester":"HttpRoute","Station":null,"StationType":null}
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at Agebull.Common.Authority.UserInfoApiLogical.AccountLogin(PhoneLoginRequest arg, ApiResult`1 result) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ZeroApi\Business\UserInfoApiLogical.cs:line 614
+   at Agebull.Common.Authority.UserInfoApiLogical.Agebull.Common.Authority.IUserInfoApi.AccountLogin(PhoneLoginRequest arg) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ZeroApi\Business\UserInfoApiLogical.Designer.cs:line 116
+   at Agebull.UserCenter.WebApi.LoginApiController.AccountLogin(PhoneLoginRequest arg) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ZeroApi\Controller\LoginApiController.cs:line 28
+   at AccountLogin(IApiArgument )
+   at Agebull.ZeroNet.ZeroApi.ApiAction`2.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-02 16:44:52Z] 000000F9-AgebullMac:Background:PUiJ-11-NVMC07VYiL-7TF1U9WURY > 
+Zero center monitor failed : There was no message for a long time
+
+[2019-03-02 16:44:55Z] 0000011F-AgebullMac:Background:PUiJ-107-7UDUSGEGW9-CD1YQW3SGJ > 
+Summary : Station no find
+
+[2019-03-02 16:44:55Z] 00000123-AgebullMac:Background:PUiJ-107-VU7U6UHTAP-UF4FX2WC5L > 
+Summary : OnObjectFailed
+
+[2019-03-02 16:47:21Z] 0000000E-AgebullMac:Background:0LN2-1-75ED10AS18-YRZGWCCXRJ > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 16:47:23Z] 000000CA-AgebullMac:Background:0LN2-7-D51RST0KWR-S6NRiKJ8SF > 
+Summary : Station no find
+
+[2019-03-02 16:47:23Z] 000000CE-AgebullMac:Background:0LN2-7-X0VHGJJ03U-CS2PLRHHV3 > 
+Summary : OnObjectFailed
+
+[2019-03-02 16:47:47Z] 000000F7-AgebullMac:Background:0LN2-15-#580860358A584BD5990BA2C0F4B39FD3-YJKY7P-#580860358A584BD5990BA2C0F4B39FD3-YJKY7P > 
+系统错误
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at Agebull.Common.AppManage.Entity.PageItemApiController.GetPageInfo(Argument arg) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\AppManage\Api\PageItem\PageItemApiController.cs:line 84
+   at GetPageInfo(IApiArgument )
+   at Agebull.ZeroNet.ZeroApi.ApiAction`2.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-02 16:47:47Z] 000000F9-AgebullMac:Background:0LN2-15-#580860358A584BD5990BA2C0F4B39FD3-YJKY7P-#580860358A584BD5990BA2C0F4B39FD3-YJKY7P > 
+系统错误
+AppManage : app/page/v1/global/info * execute * {"LocalId":null,"Caller":"+>AgebullMac:HttpRoute:LAJH-AppManage-2W0U","Title":"+>AgebullMac:HttpRoute:LAJH-AppManage-2W0U","Command":"app/page/v1/global/info","ApiName":"app/page/v1/global/info","Argument":"{\"value\":\"AppInfoData\"}","Result":null,"Status":0,"Originals":{},"State":1,"Tag":0,"Head":"Kz5BZ2VidWxsTWFjOkh0dHBSb3V0ZTpMQUpILUFwcE1hbmFnZS0yVzBV","GlobalId":"37436171902517671","CallId":"37436171902517669","RequestId":"#580860358A584BD5990BA2C0F4B39FD3-YJKY7P","Context":"{\r\n  \"user\": {\r\n    \"userId\": 1,\r\n    \"openId\": \"KDP9M7NQFATCS\",\r\n    \"roleId\": 0,\r\n    \"groupId\": 0,\r\n    \"orgId\": 0,\r\n    \"depId\": 0,\r\n    \"nickName\": \"游客\",\r\n    \"account\": null,\r\n    \"state\": 1,\r\n    \"loginType\": 0,\r\n    \"os\": \"LINUX\",\r\n    \"app\": \"APP\",\r\n    \"depLevel\": 0\r\n  },\r\n  \"org\": {\r\n    \"orgId\": 0,\r\n    \"name\": null,\r\n    \"key\": null,\r\n    \"routeName\": null\r\n  },\r\n  \"req\": {\r\n    \"localGlobalId\": \"37436171902517669\",\r\n    \"service\": \"AgebullMac\",\r\n    \"requestId\": \"#580860358A584BD5990BA2C0F4B39FD3-YJKY7P\",\r\n    \"token\": \"#580860358A584BD5990BA2C0F4B39FD3\",\r\n    \"argumentType\": 1,\r\n    \"requestType\": 1,\r\n    \"ip\": \"127.0.0.1\",\r\n    \"port\": \"6256\",\r\n    \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0\"\r\n  }\r\n}","Content":"{\"value\":\"AppInfoData\"}","CommandOrSubTitle":"app/page/v1/global/info","Requester":"HttpRoute","Station":null,"StationType":null}
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at Agebull.Common.AppManage.Entity.PageItemApiController.GetPageInfo(Argument arg) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\AppManage\Api\PageItem\PageItemApiController.cs:line 84
+   at GetPageInfo(IApiArgument )
+   at Agebull.ZeroNet.ZeroApi.ApiAction`2.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-02 16:51:20Z] 0000000E-AgebullMac:Background:VCN9-1-iR3GQCUX7J-NZCM33Y6P9 > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 16:51:22Z] 000000C9-AgebullMac:Background:VCN9-7-GRKW1SDXXW-2iY5ADU42N > 
+Summary : Station no find
+
+[2019-03-02 16:51:22Z] 000000CD-AgebullMac:Background:VCN9-7-TQTiW5KAWA-X7HCUP95GH > 
+Summary : OnObjectFailed
+
+[2019-03-02 17:10:39Z] 0000000E-AgebullMac:Background:VCN9-1-FRGGKCLXDJ-GZJMU386i9 > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 17:10:41Z] 000000C9-AgebullMac:Background:VCN9-8-4MAFN0QPJW-03LWQH2DZG > 
+Summary : Station no find
+
+[2019-03-02 17:10:41Z] 000000CD-AgebullMac:Background:VCN9-8-6ZYMKQS7ZZ-2WAFLK3iEX > 
+Summary : OnObjectFailed
+
+[2019-03-02 17:13:30Z] 0000000E-AgebullMac:Background:6CT9-1-X8U3K2SL40-CGVK87iXMC > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 17:13:32Z] 000000C9-AgebullMac:Background:6CT9-7-9W8iQXYJH2-FVHD2P2FZB > 
+Summary : Station no find
+
+[2019-03-02 17:13:32Z] 000000CD-AgebullMac:Background:6CT9-7-Z7i2HFTJ3J-K1WYRD9L7R > 
+Summary : OnObjectFailed
+
+[2019-03-02 17:14:34Z] 000001D0-AgebullMac:Background:6CT9-13-#580860358A584BD5990BA2C0F4B39FD3-A38iSS-#580860358A584BD5990BA2C0F4B39FD3-A38iSS > 
+系统错误
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at Agebull.Common.WebApi.Auth.SystemApiController.FlushCache() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ManageApi\Logial\SystemApiController.cs:line 45
+
+[2019-03-02 17:16:18Z] 0000000E-AgebullMac:Background:GASH-1-GG6KH7YXFC-R21Z1982LL > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 17:16:20Z] 000000CA-AgebullMac:Background:GASH-10-UJR3BYZ26K-EiQXMA8AND > 
+Summary : Station no find
+
+[2019-03-02 17:16:20Z] 000000CE-AgebullMac:Background:GASH-10-NiJKDT4YXV-T1N2RV40DW > 
+Summary : OnObjectFailed
+
+[2019-03-02 17:31:24Z] 0000000E-AgebullMac:Background:NARH-1-iGZKR72XXC-E2BZT9E2CL > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 17:31:26Z] 000000CA-AgebullMac:Background:NARH-7-Y0SHRJL0LU-XSAPKRTHV3 > 
+Summary : Station no find
+
+[2019-03-02 17:31:26Z] 000000CE-AgebullMac:Background:NARH-7-KQiC54359C-V67U1SWiYS > 
+Summary : OnObjectFailed
+
+[2019-03-02 17:31:35Z] 000000EF-AgebullMac:Background:NARH-16-#580860358A584BD5990BA2C0F4B39FD3-MQ137J-#580860358A584BD5990BA2C0F4B39FD3-MQ137J > 
+系统错误
+MySql.Data.MySqlClient.MySqlException (0x80004005): Unknown column 'app_info_id' in 'field list'
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadPageData(Int32 page, Int32 limit, String order, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.PageData(Int32 page, Int32 limit, String sort, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiController`4.LoadListData(String condition, MySqlParameter[] args)
+   at Agebull.Common.AppManage.Entity.PageItemApiController.GetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\AppManage\Api\PageItem\PageItemApiController.cs:line 194
+   at Agebull.Common.WebApi.ApiController`4.List2()
+   at List()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-02 17:31:35Z] 000000F1-AgebullMac:Background:NARH-16-#580860358A584BD5990BA2C0F4B39FD3-MQ137J-#580860358A584BD5990BA2C0F4B39FD3-MQ137J > 
+系统错误
+AppManage : app/page/v1/edit/list * execute * {"LocalId":null,"Caller":"+>ubuntu:HttpRoute:YCQ9-AppManage-SHiA","Title":"+>ubuntu:HttpRoute:YCQ9-AppManage-SHiA","Command":"app/page/v1/edit/list","ApiName":"app/page/v1/edit/list","Argument":"{\"fid\":\"1495\",\"keyWord\":\"\",\"page\":\"1\",\"rows\":\"20\",\"sort\":\"Id\",\"order\":\"desc\"}","Result":null,"Status":0,"Originals":{},"State":1,"Tag":0,"Head":"Kz51YnVudHU6SHR0cFJvdXRlOllDUTktQXBwTWFuYWdlLVNIaUE=","GlobalId":"37436171902518269","CallId":"37436171902518267","RequestId":"#580860358A584BD5990BA2C0F4B39FD3-MQ137J","Context":"{\n  \"user\": {\n    \"userId\": 1,\n    \"openId\": \"KDP9M7NQFATCS\",\n    \"roleId\": 0,\n    \"groupId\": 0,\n    \"orgId\": 0,\n    \"depId\": 0,\n    \"nickName\": \"游客\",\n    \"account\": null,\n    \"state\": 1,\n    \"loginType\": 0,\n    \"os\": \"LINUX\",\n    \"app\": \"APP\",\n    \"depLevel\": 0\n  },\n  \"org\": {\n    \"orgId\": 0,\n    \"name\": null,\n    \"key\": null,\n    \"routeName\": null\n  },\n  \"req\": {\n    \"localGlobalId\": \"37436171902518267\",\n    \"service\": \"ubuntu\",\n    \"requestId\": \"#580860358A584BD5990BA2C0F4B39FD3-MQ137J\",\n    \"token\": \"#580860358A584BD5990BA2C0F4B39FD3\",\n    \"argumentType\": 1,\n    \"requestType\": 1,\n    \"ip\": \"192.168.1.198\",\n    \"port\": \"7191\",\n    \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0\"\n  }\n}","Content":"{\"fid\":\"1495\",\"keyWord\":\"\",\"page\":\"1\",\"rows\":\"20\",\"sort\":\"Id\",\"order\":\"desc\"}","CommandOrSubTitle":"app/page/v1/edit/list","Requester":"HttpRoute","Station":null,"StationType":null}
+MySql.Data.MySqlClient.MySqlException (0x80004005): Unknown column 'app_info_id' in 'field list'
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadPageData(Int32 page, Int32 limit, String order, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.PageData(Int32 page, Int32 limit, String sort, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiController`4.LoadListData(String condition, MySqlParameter[] args)
+   at Agebull.Common.AppManage.Entity.PageItemApiController.GetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\AppManage\Api\PageItem\PageItemApiController.cs:line 194
+   at Agebull.Common.WebApi.ApiController`4.List2()
+   at List()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-02 17:41:11Z] 0000000E-AgebullMac:Background:iARH-1-DGCK676XBC-D29ZX9J26L > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 17:41:12Z] 000000CA-AgebullMac:Background:iARH-8-6Q772NZZ2M-BEJHVPY4WW > 
+Summary : Station no find
+
+[2019-03-02 17:41:12Z] 000000CE-AgebullMac:Background:iARH-8-69MQDTR4HR-6JG0W5iK7U > 
+Summary : OnObjectFailed
+
+[2019-03-02 17:44:00Z] 0000000E-AgebullMac:Background:BA2H-1-YGZKD7DX8C-Z22ZL9Z2CL > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 17:44:02Z] 000000CA-AgebullMac:Background:BA2H-8-XZ9MXQN7VZ-SWKFYK0iAX > 
+Summary : Station no find
+
+[2019-03-02 17:44:02Z] 000000CE-AgebullMac:Background:BA2H-8-RD1VZ0K10T-MZDB1YX5FW > 
+Summary : OnObjectFailed
+
+[2019-03-02 17:44:20Z] 0000011D-AgebullMac:Background:BA2H-15-#580860358A584BD5990BA2C0F4B39FD3-AP9G9i-#580860358A584BD5990BA2C0F4B39FD3-AP9G9i > 
+系统错误
+System.InvalidCastException: Unable to cast object of type 'System.UInt64' to type 'System.Int64'.
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadValues[TField](Expression`1 fieldExpression, Expression`1 lambda)
+   at Agebull.Common.AppManage.BusinessLogic.PageItemBusinessLogic.DeleteChild(Int64 id) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\AppManage\Model\Business\App\PageItemBusinessLogic.cs:line 125
+   at Agebull.Common.AppManage.BusinessLogic.PageItemBusinessLogic.PrepareDelete(Int64 id) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\AppManage\Model\Business\App\PageItemBusinessLogic.cs:line 119
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.Delete(Int64 id)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.Delete(IEnumerable`1 lid)
+   at Agebull.Common.WebApi.ApiController`4.DoDelete()
+   at Agebull.Common.WebApi.ApiController`4.Delete()
+   at Delete()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-02 17:44:20Z] 0000011F-AgebullMac:Background:BA2H-15-#580860358A584BD5990BA2C0F4B39FD3-AP9G9i-#580860358A584BD5990BA2C0F4B39FD3-AP9G9i > 
+系统错误
+AppManage : app/page/v1/edit/delete * execute * {"LocalId":null,"Caller":"+>ubuntu:HttpRoute:YCQ9-AppManage-SHiA","Title":"+>ubuntu:HttpRoute:YCQ9-AppManage-SHiA","Command":"app/page/v1/edit/delete","ApiName":"app/page/v1/edit/delete","Argument":"{\"selects\":\"1509,\"}","Result":null,"Status":0,"Originals":{},"State":1,"Tag":0,"Head":"Kz51YnVudHU6SHR0cFJvdXRlOllDUTktQXBwTWFuYWdlLVNIaUE=","GlobalId":"37436171902518421","CallId":"37436171902518419","RequestId":"#580860358A584BD5990BA2C0F4B39FD3-AP9G9i","Context":"{\n  \"user\": {\n    \"userId\": 1,\n    \"openId\": \"KDP9M7NQFATCS\",\n    \"roleId\": 0,\n    \"groupId\": 0,\n    \"orgId\": 0,\n    \"depId\": 0,\n    \"nickName\": \"游客\",\n    \"account\": null,\n    \"state\": 1,\n    \"loginType\": 0,\n    \"os\": \"LINUX\",\n    \"app\": \"APP\",\n    \"depLevel\": 0\n  },\n  \"org\": {\n    \"orgId\": 0,\n    \"name\": null,\n    \"key\": null,\n    \"routeName\": null\n  },\n  \"req\": {\n    \"localGlobalId\": \"37436171902518419\",\n    \"service\": \"ubuntu\",\n    \"requestId\": \"#580860358A584BD5990BA2C0F4B39FD3-AP9G9i\",\n    \"token\": \"#580860358A584BD5990BA2C0F4B39FD3\",\n    \"argumentType\": 1,\n    \"requestType\": 1,\n    \"ip\": \"192.168.1.198\",\n    \"port\": \"7397\",\n    \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0\"\n  }\n}","Content":"{\"selects\":\"1509,\"}","CommandOrSubTitle":"app/page/v1/edit/delete","Requester":"HttpRoute","Station":null,"StationType":null}
+System.InvalidCastException: Unable to cast object of type 'System.UInt64' to type 'System.Int64'.
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadValues[TField](Expression`1 fieldExpression, Expression`1 lambda)
+   at Agebull.Common.AppManage.BusinessLogic.PageItemBusinessLogic.DeleteChild(Int64 id) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\AppManage\Model\Business\App\PageItemBusinessLogic.cs:line 125
+   at Agebull.Common.AppManage.BusinessLogic.PageItemBusinessLogic.PrepareDelete(Int64 id) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\AppManage\Model\Business\App\PageItemBusinessLogic.cs:line 119
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.Delete(Int64 id)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.Delete(IEnumerable`1 lid)
+   at Agebull.Common.WebApi.ApiController`4.DoDelete()
+   at Agebull.Common.WebApi.ApiController`4.Delete()
+   at Delete()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-02 17:46:30Z] 0000000E-AgebullMac:Background:2AJH-1-XGSK57EXBC-Y2VZE902GL > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 17:46:32Z] 000000CA-AgebullMac:Background:2AJH-7-QRYWXSRXTW-Ai656D34XN > 
+Summary : Station no find
+
+[2019-03-02 17:46:32Z] 000000CE-AgebullMac:Background:2AJH-7-YQ2i056AXA-N7SCJPQ54H > 
+Summary : OnObjectFailed
+
+[2019-03-02 17:48:24Z] 0000000E-AgebullMac:Background:AADH-1-LG5KU7RXJC-62YZP9S2SL > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 17:48:25Z] 000000CA-AgebullMac:Background:AADH-8-6SBQQP07KR-05W4WDPUUN > 
+Summary : Station no find
+
+[2019-03-02 17:48:25Z] 000000CE-AgebullMac:Background:AADH-8-VB4MCW1QE8-KT9CTNRY85 > 
+Summary : OnObjectFailed
+
+[2019-03-02 18:29:14Z] 0000000E-AgebullMac:Background:UABH-1-4W9DBHJK7K-P88UNVSHPY > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 18:29:16Z] 000000CA-AgebullMac:Background:UABH-7-EVED0P2FMB-JE9HG0YBHC > 
+Summary : Station no find
+
+[2019-03-02 18:29:16Z] 000000CE-AgebullMac:Background:UABH-7-B1RYHD7L6R-R7YCMB69ZB > 
+Summary : OnObjectFailed
+
+[2019-03-02 18:29:47Z] 0000000E-AgebullMac:Background:JA9H-1-ZWXDYHTK2K-i8QUTVUH9Y > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 18:29:49Z] 000000CA-AgebullMac:Background:JA9H-7-B5MRMTDKRR-R6NRAK489F > 
+Summary : Station no find
+
+[2019-03-02 18:29:49Z] 000000CE-AgebullMac:Background:JA9H-7-P03HGJW08U-NS0P8RAH43 > 
+Summary : OnObjectFailed
+
+[2019-03-02 18:31:30Z] 00000116-AgebullMac:Background:JA9H-14-#580860358A584BD5990BA2C0F4B39FD3-K04ZDA-#580860358A584BD5990BA2C0F4B39FD3-K04ZDA > 
+系统错误
+MySql.Data.MySqlClient.MySqlException (0x80004005): Unknown column 'tel' in 'field list'
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadPageData(Int32 page, Int32 limit, String order, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.PageData(Int32 page, Int32 limit, String sort, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiController`4.LoadListData(String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiControllerForAudit`4.GetListData(LambdaItem`1 lambda)
+   at Agebull.Common.UserCenter.WebApi.Entity.PositionPersonnelApiController.GetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ManageApi\PositionPersonnel\PositionPersonnelApiController.cs:line 92
+   at Agebull.Common.WebApi.ApiController`4.List2()
+   at List()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-02 18:31:30Z] 00000118-AgebullMac:Background:JA9H-14-#580860358A584BD5990BA2C0F4B39FD3-K04ZDA-#580860358A584BD5990BA2C0F4B39FD3-K04ZDA > 
+系统错误
+UserManage : sys/person/v1/edit/list * execute * {"LocalId":null,"Caller":"+>ubuntu:HttpRoute:YCQ9-UserManage-CBJF","Title":"+>ubuntu:HttpRoute:YCQ9-UserManage-CBJF","Command":"sys/person/v1/edit/list","ApiName":"sys/person/v1/edit/list","Argument":"{\"oid\":\"1\",\"audit\":\"256\",\"keyWord\":\"\",\"page\":\"1\",\"rows\":\"20\",\"sort\":\"Id\",\"order\":\"desc\"}","Result":null,"Status":0,"Originals":{},"State":1,"Tag":0,"Head":"Kz51YnVudHU6SHR0cFJvdXRlOllDUTktVXNlck1hbmFnZS1DQkpG","GlobalId":"37436171902519088","CallId":"37436171902519086","RequestId":"#580860358A584BD5990BA2C0F4B39FD3-K04ZDA","Context":"{\n  \"user\": {\n    \"userId\": 1,\n    \"openId\": \"KDP9M7NQFATCS\",\n    \"roleId\": 0,\n    \"groupId\": 0,\n    \"orgId\": 0,\n    \"depId\": 0,\n    \"nickName\": \"游客\",\n    \"account\": null,\n    \"state\": 1,\n    \"loginType\": 0,\n    \"os\": \"LINUX\",\n    \"app\": \"APP\",\n    \"depLevel\": 0\n  },\n  \"org\": {\n    \"orgId\": 0,\n    \"name\": null,\n    \"key\": null,\n    \"routeName\": null\n  },\n  \"req\": {\n    \"localGlobalId\": \"37436171902519086\",\n    \"service\": \"ubuntu\",\n    \"requestId\": \"#580860358A584BD5990BA2C0F4B39FD3-K04ZDA\",\n    \"token\": \"#580860358A584BD5990BA2C0F4B39FD3\",\n    \"argumentType\": 1,\n    \"requestType\": 1,\n    \"ip\": \"192.168.1.198\",\n    \"port\": \"8210\",\n    \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0\"\n  }\n}","Content":"{\"oid\":\"1\",\"audit\":\"256\",\"keyWord\":\"\",\"page\":\"1\",\"rows\":\"20\",\"sort\":\"Id\",\"order\":\"desc\"}","CommandOrSubTitle":"sys/person/v1/edit/list","Requester":"HttpRoute","Station":null,"StationType":null}
+MySql.Data.MySqlClient.MySqlException (0x80004005): Unknown column 'tel' in 'field list'
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadPageData(Int32 page, Int32 limit, String order, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.PageData(Int32 page, Int32 limit, String sort, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiController`4.LoadListData(String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiControllerForAudit`4.GetListData(LambdaItem`1 lambda)
+   at Agebull.Common.UserCenter.WebApi.Entity.PositionPersonnelApiController.GetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ManageApi\PositionPersonnel\PositionPersonnelApiController.cs:line 92
+   at Agebull.Common.WebApi.ApiController`4.List2()
+   at List()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-02 18:31:32Z] 0000011A-AgebullMac:Background:JA9H-14-#580860358A584BD5990BA2C0F4B39FD3-BXCBQY-#580860358A584BD5990BA2C0F4B39FD3-BXCBQY > 
+系统错误
+MySql.Data.MySqlClient.MySqlException (0x80004005): Unknown column 'tel' in 'field list'
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadPageData(Int32 page, Int32 limit, String order, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.PageData(Int32 page, Int32 limit, String sort, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiController`4.LoadListData(String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiControllerForAudit`4.GetListData(LambdaItem`1 lambda)
+   at Agebull.Common.UserCenter.WebApi.Entity.PositionPersonnelApiController.GetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ManageApi\PositionPersonnel\PositionPersonnelApiController.cs:line 92
+   at Agebull.Common.WebApi.ApiController`4.List2()
+   at List()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-02 18:31:32Z] 0000011C-AgebullMac:Background:JA9H-14-#580860358A584BD5990BA2C0F4B39FD3-BXCBQY-#580860358A584BD5990BA2C0F4B39FD3-BXCBQY > 
+系统错误
+UserManage : sys/person/v1/edit/list * execute * {"LocalId":null,"Caller":"+>ubuntu:HttpRoute:YCQ9-UserManage-CBJF","Title":"+>ubuntu:HttpRoute:YCQ9-UserManage-CBJF","Command":"sys/person/v1/edit/list","ApiName":"sys/person/v1/edit/list","Argument":"{\"oid\":\"2\",\"audit\":\"256\",\"keyWord\":\"\",\"page\":\"1\",\"rows\":\"20\",\"sort\":\"Id\",\"order\":\"desc\"}","Result":null,"Status":0,"Originals":{},"State":1,"Tag":0,"Head":"Kz51YnVudHU6SHR0cFJvdXRlOllDUTktVXNlck1hbmFnZS1DQkpG","GlobalId":"37436171902519091","CallId":"37436171902519089","RequestId":"#580860358A584BD5990BA2C0F4B39FD3-BXCBQY","Context":"{\n  \"user\": {\n    \"userId\": 1,\n    \"openId\": \"KDP9M7NQFATCS\",\n    \"roleId\": 0,\n    \"groupId\": 0,\n    \"orgId\": 0,\n    \"depId\": 0,\n    \"nickName\": \"游客\",\n    \"account\": null,\n    \"state\": 1,\n    \"loginType\": 0,\n    \"os\": \"LINUX\",\n    \"app\": \"APP\",\n    \"depLevel\": 0\n  },\n  \"org\": {\n    \"orgId\": 0,\n    \"name\": null,\n    \"key\": null,\n    \"routeName\": null\n  },\n  \"req\": {\n    \"localGlobalId\": \"37436171902519089\",\n    \"service\": \"ubuntu\",\n    \"requestId\": \"#580860358A584BD5990BA2C0F4B39FD3-BXCBQY\",\n    \"token\": \"#580860358A584BD5990BA2C0F4B39FD3\",\n    \"argumentType\": 1,\n    \"requestType\": 1,\n    \"ip\": \"192.168.1.198\",\n    \"port\": \"8210\",\n    \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0\"\n  }\n}","Content":"{\"oid\":\"2\",\"audit\":\"256\",\"keyWord\":\"\",\"page\":\"1\",\"rows\":\"20\",\"sort\":\"Id\",\"order\":\"desc\"}","CommandOrSubTitle":"sys/person/v1/edit/list","Requester":"HttpRoute","Station":null,"StationType":null}
+MySql.Data.MySqlClient.MySqlException (0x80004005): Unknown column 'tel' in 'field list'
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadPageData(Int32 page, Int32 limit, String order, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.PageData(Int32 page, Int32 limit, String sort, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiController`4.LoadListData(String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiControllerForAudit`4.GetListData(LambdaItem`1 lambda)
+   at Agebull.Common.UserCenter.WebApi.Entity.PositionPersonnelApiController.GetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ManageApi\PositionPersonnel\PositionPersonnelApiController.cs:line 92
+   at Agebull.Common.WebApi.ApiController`4.List2()
+   at List()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-02 18:45:07Z] 0000000E-AgebullMac:Background:QA1H-1-JW9D1HPKFK-Z8AUPVGHXY > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 18:45:09Z] 000000CA-AgebullMac:Background:QA1H-7-H0PHHJ80FU-SSMPSR0HG3 > 
+Summary : Station no find
+
+[2019-03-02 18:45:09Z] 000000CE-AgebullMac:Background:QA1H-7-7Q2CF4258C-W6LUGSDi6S > 
+Summary : OnObjectFailed
+
+[2019-03-02 19:12:51Z] 0000000E-AgebullMac:Background:BA3H-1-0W6DVHJKZK-G8TUXVQHDY > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 19:12:53Z] 000000CA-AgebullMac:Background:BA3H-8-09PQ8Ti4ER-WJF0751KGU > 
+Summary : Station no find
+
+[2019-03-02 19:12:53Z] 000000CE-AgebullMac:Background:BA3H-8-5EH4EV65CK-62ZQJD094Y > 
+Summary : OnObjectFailed
+
+[2019-03-02 19:46:11Z] 0000000E-AgebullMac:Background:AAGH-1-SWADMHAKMK-T8DUWVWHSY > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 19:46:12Z] 000000CB-AgebullMac:Background:AAGH-7-DRHWTSUXWW-EiK52DF41N > 
+Summary : Station no find
+
+[2019-03-02 19:46:12Z] 000000CF-AgebullMac:Background:AAGH-7-KQGiH5NANA-17NCMPM5FH > 
+Summary : OnObjectFailed
+
+[2019-03-02 19:51:35Z] 0000000E-AgebullMac:Background:EA8H-1-CWKD2H7KiK-L80U7V5HTY > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 19:51:37Z] 000000CB-AgebullMac:Background:EA8H-7-058RFT7KiR-P6SRGKi8GF > 
+Summary : Station no find
+
+[2019-03-02 19:51:37Z] 000000CF-AgebullMac:Background:EA8H-7-N07HWJH0JU-7SZPRRiHS3 > 
+Summary : OnObjectFailed
+
+[2019-03-02 19:56:47Z] 00002634-AgebullMac:Background:EA8H-14-#5A074492DE9D40ECA9D13DE9F0D90282-MPMRYA-#5A074492DE9D40ECA9D13DE9F0D90282-MPMRYA > 
+系统错误
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at Agebull.Common.OAuth.BusinessLogic.OrganizationBusinessLogic.CreateNode(OrganizationData data, String attribute)
+   at Agebull.Common.OAuth.BusinessLogic.OrganizationBusinessLogic.CreateRootNode()
+   at Agebull.Common.OAuth.BusinessLogic.OrganizationBusinessLogic.CreateAreaTree(RedisProxy proxy)
+   at Agebull.Common.OAuth.BusinessLogic.OrganizationBusinessLogic.Cache()
+   at Agebull.Common.OAuth.BusinessLogic.OrganizationBusinessLogic.OnInnerCommand(OrganizationData data, BusinessCommandType cmd)
+   at Agebull.Common.DataModel.BusinessLogic.BusinessLogicByStateData`3.OnStateChanged(TData data, BusinessCommandType cmd)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.AddNew(TData data)
+   at Agebull.Common.OAuth.BusinessLogic.OrganizationBusinessLogic.Import(String texts)
+   at Agebull.Common.UserCenter.WebApi.Entity.OrganizationApiController.Import() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ManageApi\Organization\OrganizationApiController.cs:line 44
+   at Import()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-02 19:56:47Z] 00002636-AgebullMac:Background:EA8H-14-#5A074492DE9D40ECA9D13DE9F0D90282-MPMRYA-#5A074492DE9D40ECA9D13DE9F0D90282-MPMRYA > 
+系统错误
+UserManage : sys/org/v1/edit/import * execute * {"LocalId":null,"Caller":"+>ubuntu:HttpRoute:YCQ9-UserManage-KSNC","Title":"+>ubuntu:HttpRoute:YCQ9-UserManage-KSNC","Command":"sys/org/v1/edit/import","ApiName":"sys/org/v1/edit/import","Argument":"{\"_\":\"0\",\"reg\":\"市辖区\\t330301000000\\t\\r\\n鹿城区\\t330302000000\\r\\n\\t五马街道\\t330302006000\\r\\n\\t\\t鼓楼居委会\\t330302006044\\t\\t\\r\\n\\t\\t墨池居委会\\t330302006045\\t\\t\\r\\n\\t\\t八仙楼居委会\\t330302006071\\t\\t\\r\\n\\t\\t百里坊居委会\\t330302006073\\t\\t\\r\\n\\t\\t安澜居委会\\t330302006097\\t\\t\\r\\n\\t\\t矮凳桥居委会\\t330302006105\\t\\t\\r\\n\\t\\t十八家居委会\\t330302006108\\t\\t\\r\\n\\t\\t府前居委会\\t330302006109\\t\\t\\r\\n\\t\\t朔门居委会\\t330302006110\\t\\t\\r\\n\\t\\t谢池居委会\\t330302006\\t\\t\\t\\r\\n\\t\\t黎明西路居委会\\t330302006114\\t\\t\\r\\n\\t\\t城西街居委会\\t330302006115\\t\\t\\r\\n\\t\\t路湾社区\\t330302006116\\t\\t\\r\\n\\t\\t乘凉社区\\t330302006117\\t\\t\\t\\r\\n\\t七都街道\\t330302023000\\t\\r\\n\\t滨江街道\\t330302024000\\t\\r\\n\\t南汇街道\\t330302025000\\t\\r\\n\\t松台街道\\t330302026000\\t\\r\\n\\t双屿街道\\t330302027000\\t\\r\\n\\t仰义街道\\t330302028000\\t\\r\\n\\t大南街道\\t330302029000\\t\\r\\n\\t蒲鞋市街道\\t330302030000\\t\\r\\n\\t南郊街道\\t330302031000\\t\\r\\n\\t广化街道\\t330302032000\\t\\r\\n\\t丰门街道\\t330302033000\\t\\r\\n\\t藤桥镇\\t330302102000\\t\\r\\n\\t山福镇\\t330302105000\\t\\r\\n龙湾区\\t330303000000\\t\\r\\n瓯海区\\t330304000000\\t\\r\\n洞头区\\t330305000000\\t\\r\\n永嘉县\\t330324000000\\t\\r\\n平阳县\\t330326000000\\t\\r\\n苍南县\\t330327000000\\t\\r\\n文成县\\t330328000000\\t\\r\\n泰顺县\\t330329000000\\t\\r\\n温州经济技术开发区\\t330371000000\\t\\r\\n瑞安市\\t330381000000\\t\\r\\n乐清市\\t330382000000\"}","Result":null,"Status":0,"Originals":{},"State":1,"Tag":0,"Head":"Kz51YnVudHU6SHR0cFJvdXRlOllDUTktVXNlck1hbmFnZS1LU05D","GlobalId":"37436171902519640","CallId":"37436171902519638","RequestId":"#5A074492DE9D40ECA9D13DE9F0D90282-MPMRYA","Context":"{\n  \"user\": {\n    \"userId\": 1,\n    \"openId\": \"KDP9M7NQFATCS\",\n    \"roleId\": 0,\n    \"groupId\": 0,\n    \"orgId\": 0,\n    \"depId\": 0,\n    \"nickName\": \"游客\",\n    \"account\": null,\n    \"state\": 1,\n    \"loginType\": 0,\n    \"os\": \"LINUX\",\n    \"app\": \"APP\",\n    \"depLevel\": 0\n  },\n  \"org\": {\n    \"orgId\": 0,\n    \"name\": null,\n    \"key\": null,\n    \"routeName\": null\n  },\n  \"req\": {\n    \"localGlobalId\": \"37436171902519638\",\n    \"service\": \"ubuntu\",\n    \"requestId\": \"#5A074492DE9D40ECA9D13DE9F0D90282-MPMRYA\",\n    \"token\": \"#5A074492DE9D40ECA9D13DE9F0D90282\",\n    \"argumentType\": 1,\n    \"requestType\": 1,\n    \"ip\": \"192.168.1.198\",\n    \"port\": \"9713\",\n    \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0\"\n  }\n}","Content":"{\"_\":\"0\",\"reg\":\"市辖区\\t330301000000\\t\\r\\n鹿城区\\t330302000000\\r\\n\\t五马街道\\t330302006000\\r\\n\\t\\t鼓楼居委会\\t330302006044\\t\\t\\r\\n\\t\\t墨池居委会\\t330302006045\\t\\t\\r\\n\\t\\t八仙楼居委会\\t330302006071\\t\\t\\r\\n\\t\\t百里坊居委会\\t330302006073\\t\\t\\r\\n\\t\\t安澜居委会\\t330302006097\\t\\t\\r\\n\\t\\t矮凳桥居委会\\t330302006105\\t\\t\\r\\n\\t\\t十八家居委会\\t330302006108\\t\\t\\r\\n\\t\\t府前居委会\\t330302006109\\t\\t\\r\\n\\t\\t朔门居委会\\t330302006110\\t\\t\\r\\n\\t\\t谢池居委会\\t330302006\\t\\t\\t\\r\\n\\t\\t黎明西路居委会\\t330302006114\\t\\t\\r\\n\\t\\t城西街居委会\\t330302006115\\t\\t\\r\\n\\t\\t路湾社区\\t330302006116\\t\\t\\r\\n\\t\\t乘凉社区\\t330302006117\\t\\t\\t\\r\\n\\t七都街道\\t330302023000\\t\\r\\n\\t滨江街道\\t330302024000\\t\\r\\n\\t南汇街道\\t330302025000\\t\\r\\n\\t松台街道\\t330302026000\\t\\r\\n\\t双屿街道\\t330302027000\\t\\r\\n\\t仰义街道\\t330302028000\\t\\r\\n\\t大南街道\\t330302029000\\t\\r\\n\\t蒲鞋市街道\\t330302030000\\t\\r\\n\\t南郊街道\\t330302031000\\t\\r\\n\\t广化街道\\t330302032000\\t\\r\\n\\t丰门街道\\t330302033000\\t\\r\\n\\t藤桥镇\\t330302102000\\t\\r\\n\\t山福镇\\t330302105000\\t\\r\\n龙湾区\\t330303000000\\t\\r\\n瓯海区\\t330304000000\\t\\r\\n洞头区\\t330305000000\\t\\r\\n永嘉县\\t330324000000\\t\\r\\n平阳县\\t330326000000\\t\\r\\n苍南县\\t330327000000\\t\\r\\n文成县\\t330328000000\\t\\r\\n泰顺县\\t330329000000\\t\\r\\n温州经济技术开发区\\t330371000000\\t\\r\\n瑞安市\\t330381000000\\t\\r\\n乐清市\\t330382000000\"}","CommandOrSubTitle":"sys/org/v1/edit/import","Requester":"HttpRoute","Station":null,"StationType":null}
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at Agebull.Common.OAuth.BusinessLogic.OrganizationBusinessLogic.CreateNode(OrganizationData data, String attribute)
+   at Agebull.Common.OAuth.BusinessLogic.OrganizationBusinessLogic.CreateRootNode()
+   at Agebull.Common.OAuth.BusinessLogic.OrganizationBusinessLogic.CreateAreaTree(RedisProxy proxy)
+   at Agebull.Common.OAuth.BusinessLogic.OrganizationBusinessLogic.Cache()
+   at Agebull.Common.OAuth.BusinessLogic.OrganizationBusinessLogic.OnInnerCommand(OrganizationData data, BusinessCommandType cmd)
+   at Agebull.Common.DataModel.BusinessLogic.BusinessLogicByStateData`3.OnStateChanged(TData data, BusinessCommandType cmd)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.AddNew(TData data)
+   at Agebull.Common.OAuth.BusinessLogic.OrganizationBusinessLogic.Import(String texts)
+   at Agebull.Common.UserCenter.WebApi.Entity.OrganizationApiController.Import() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ManageApi\Organization\OrganizationApiController.cs:line 44
+   at Import()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-02 19:58:02Z] 0000000E-AgebullMac:Background:QALH-1-DW9DYHKKLK-U8VU0VRH1Y > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 19:58:05Z] 000000CB-AgebullMac:Background:QALH-8-KS5QYP571R-65J47DLU6N > 
+Summary : Station no find
+
+[2019-03-02 19:58:05Z] 000000CF-AgebullMac:Background:QALH-8-iB8MZW7Q98-PTHCBNAYR5 > 
+Summary : OnObjectFailed
+
+[2019-03-02 20:07:51Z] 0000000E-AgebullMac:Background:SAQH-1-4W7DNH7KAK-N8LULV1HWY > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 20:07:54Z] 000000CA-AgebullMac:Background:SAQH-8-0J7XNT7U6X-URYQBB4KP7 > 
+Summary : Station no find
+
+[2019-03-02 20:07:54Z] 000000CE-AgebullMac:Background:SAQH-8-AZ1FMG3CZ7-BHGJ1NEGVB > 
+Summary : OnObjectFailed
+
+[2019-03-02 20:12:07Z] 0000000E-AgebullMac:Background:5A8H-1-6WEDGHKK5K-F8UULVJHFY > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 20:12:08Z] 000000CA-AgebullMac:Background:5A8H-7-E0KH9JF0HU-iS8P7R3H23 > 
+Summary : Station no find
+
+[2019-03-02 20:12:08Z] 000000CE-AgebullMac:Background:5A8H-7-7QSCE4X51C-T65UNSDi5S > 
+Summary : OnObjectFailed
+
+[2019-03-02 20:14:15Z] 0000000E-AgebullMac:Background:2AZH-1-NWND4HYKEK-T8RUHVXHWY > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 20:14:18Z] 000000CA-AgebullMac:Background:2AZH-8-6QRCK5F8RZ-69UQUT14WR > 
+Summary : Station no find
+
+[2019-03-02 20:14:18Z] 000000CE-AgebullMac:Background:2AZH-8-L2TC3RNE8C-1E048VM50K > 
+Summary : OnObjectFailed
+
+[2019-03-02 20:23:37Z] 0000000E-AgebullMac:Background:QATH-1-4WZD6HHKXK-U8YUMV4HRY > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 20:23:39Z] 000000CB-AgebullMac:Background:QATH-7-AW3iXX9J62-LVJDWPYF8B > 
+Summary : Station no find
+
+[2019-03-02 20:23:39Z] 000000CF-AgebullMac:Background:QATH-7-F7W2DFVJZJ-R1BYCDJL1R > 
+Summary : OnObjectFailed
+
+[2019-03-02 20:25:45Z] 0000000E-AgebullMac:Background:VAZH-1-FW2DNHPKJK-98DUWVAH6Y > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 20:25:48Z] 000000CA-AgebullMac:Background:VAZH-8-LQLC85R81Z-69EQ3TS49R > 
+Summary : Station no find
+
+[2019-03-02 20:25:48Z] 000000CE-AgebullMac:Background:VAZH-8-U2LCJRLEBC-YEA4HV95WK > 
+Summary : OnObjectFailed
+
+[2019-03-02 20:34:09Z] 0000000E-AgebullMac:Background:QAZH-1-3WGD2HQK2K-98QUEVUHiY > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 20:34:11Z] 000000CA-AgebullMac:Background:QAZH-7-B0PH2JL07U-5SNP4RiH33 > 
+Summary : Station no find
+
+[2019-03-02 20:34:11Z] 000000CE-AgebullMac:Background:QAZH-7-8QVC64F5RC-S6MU0SHiYS > 
+Summary : OnObjectFailed
+
+[2019-03-02 20:35:30Z] 0000000E-AgebullMac:Background:EABH-1-DWYDiHYK7K-H82UWVXHPY > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 20:35:32Z] 000000CB-AgebullMac:Background:EABH-10-WP6UAKK1UK-DCB20BN09i > 
+Summary : Station no find
+
+[2019-03-02 20:35:32Z] 000000CF-AgebullMac:Background:EABH-10-Q8iE8S6FHV-9iXD6J0C3L > 
+Summary : OnObjectFailed
+
+[2019-03-02 20:38:31Z] 0000000E-AgebullMac:Background:XACH-1-WWKDUH2KRK-78LUDVGHXY > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 20:38:33Z] 000000CB-AgebullMac:Background:XACH-8-NZMM1QA7BZ-NWiFTKPi6X > 
+Summary : Station no find
+
+[2019-03-02 20:38:33Z] 000000CF-AgebullMac:Background:XACH-8-XD3VX0F1PT-GZWBSYG5XW > 
+Summary : OnObjectFailed
+
+[2019-03-02 20:39:31Z] 0000000E-AgebullMac:Background:NAKH-1-DWWDTHKKTK-B8ZU9VFH5Y > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 20:39:33Z] 000000CB-AgebullMac:Background:NAKH-7-NRPWYSDX7W-7iH5SDF4EN > 
+Summary : Station no find
+
+[2019-03-02 20:39:33Z] 000000CF-AgebullMac:Background:NAKH-7-BQWiB5SAUA-F7KC9PF5EH > 
+Summary : OnObjectFailed
+
+[2019-03-02 20:55:46Z] 0000000E-AgebullMac:Background:KAZH-1-PN5TRNKUSH-N22YHFYYMW > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 20:55:48Z] 000000CB-AgebullMac:Background:KAZH-10-4NEDVV57FH-T7Z2X6GJCZ > 
+Summary : Station no find
+
+[2019-03-02 20:55:48Z] 000000CF-AgebullMac:Background:KAZH-10-GJW37YS25K-WiNXYAFA2D > 
+Summary : OnObjectFailed
+
+[2019-03-02 21:00:47Z] 000000FC-AgebullMac:Background:KAZH-15-#5A074492DE9D40ECA9D13DE9F0D90282-NPQH0U-#5A074492DE9D40ECA9D13DE9F0D90282-NPQH0U > 
+系统错误
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at MySql.Data.MySqlClient.MySqlDataReader.Close()
+   at MySql.Data.MySqlClient.MySqlConnection.Close()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.Close()
+
+[2019-03-02 21:02:30Z] 0000014D-AgebullMac:Background:KAZH-13-HNCSBGPVPV-H80X5G0GXE > 
+系统错误
+Receive : tcp://zero.yizuanbao.cn:8000 * Exception
+System.Runtime.InteropServices.SEHException (0x80004005): External component has thrown an exception.
+   at ZeroMQ.lib.zmq.zmq_msg_recv(IntPtr msg, IntPtr socket, Int32 flags)
+   at ZeroMQ.ZSocket.RecvFrame(ZFrame& frame, Int32 flags)
+   at ZeroMQ.ZSocket.Recv(ZMessage& message, Int32 flags)
+   at Agebull.ZeroNet.Core.ZeroCommandExtend.Receive[TZeroResultData](ZSocket socket)
+
+[2019-03-02 21:10:23Z] 0000000E-AgebullMac:Background:ZASH-1-ZNSTMNiUWH-F2DYPFPYBW > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 21:10:24Z] 000000CC-AgebullMac:Background:ZASH-7-E5GR1TKKPR-46LRGKB8iF > 
+Summary : Station no find
+
+[2019-03-02 21:10:24Z] 000000D0-AgebullMac:Background:ZASH-7-T0ZH9JJ04U-NS4PURMHA3 > 
+Summary : OnObjectFailed
+
+[2019-03-02 21:12:19Z] 0000000E-AgebullMac:Background:YAHH-1-MNATMNFUDH-32CY3FXYPW > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 21:12:21Z] 000000CC-AgebullMac:Background:YAHH-7-SVHD6PFF7B-XECHM0BB2C > 
+Summary : Station no find
+
+[2019-03-02 21:12:21Z] 000000D0-AgebullMac:Background:YAHH-7-X1ZY5D4L1R-H7YCHBC9JB > 
+Summary : OnObjectFailed
+
+[2019-03-02 21:12:43Z] 0000000E-AgebullMac:Background:MAFH-1-6N5TYN0UiH-V2DYBFQYYW > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 21:12:45Z] 000000CC-AgebullMac:Background:MAFH-8-Y30WNHCDUG-35VR4X8RPT > 
+Summary : Station no find
+
+[2019-03-02 21:12:45Z] 000000D0-AgebullMac:Background:MAFH-8-0WHFRKWiHX-2XEQAP0M5N > 
+Summary : OnObjectFailed
+
+[2019-03-02 21:14:37Z] 00000111-AgebullMac:Background:MAFH-16-#ED5DA7DDBBA648F680C48CBF7F879651-YRSRP1-#ED5DA7DDBBA648F680C48CBF7F879651-YRSRP1 > 
+系统错误
+MySql.Data.MySqlClient.MySqlException (0x80004005): Fatal error encountered attempting to read the resultset. ---> MySql.Data.MySqlClient.MySqlException (0x80004005): Fatal error encountered attempting to read the resultset. ---> MySql.Data.MySqlClient.MySqlException (0x80004005): Reading from the stream has failed. ---> System.IO.IOException: Unable to read data from the transport connection: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。. ---> System.Net.Sockets.SocketException: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
+   at System.Net.Sockets.NetworkStream.Read(Byte[] buffer, Int32 offset, Int32 size)
+   --- End of inner exception stack trace ---
+   at System.Net.Sockets.NetworkStream.Read(Byte[] buffer, Int32 offset, Int32 size)
+   at MySql.Data.MySqlClient.TimedStream.Read(Byte[] buffer, Int32 offset, Int32 count)
+   at MySql.Data.MySqlClient.MySqlStream.ReadFully(Stream stream, Byte[] buffer, Int32 offset, Int32 count)
+   at MySql.Data.MySqlClient.MySqlStream.LoadPacket()
+   at MySql.Data.MySqlClient.MySqlStream.LoadPacket()
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetColumnData(MySqlField field)
+   at MySql.Data.MySqlClient.NativeDriver.GetColumnsData(MySqlField[] columns)
+   at MySql.Data.MySqlClient.Driver.GetColumns(Int32 count)
+   at MySql.Data.MySqlClient.ResultSet.LoadColumns(Int32 numCols)
+   at MySql.Data.MySqlClient.ResultSet..ctor(Driver d, Int32 statementId, Int32 numCols)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadFirstInner(String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.BusinessLogicByStateData`3.OnStateChanged(Int64 id, BusinessCommandType cmd)
+   at Agebull.Common.DataModel.BusinessLogic.BusinessLogicByStateData`3.OnDeleted(Int64 id)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.Delete(Int64 id)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.Delete(IEnumerable`1 lid)
+   at Agebull.Common.WebApi.ApiController`4.DoDelete()
+   at Agebull.Common.WebApi.ApiController`4.Delete()
+   at Delete()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-02 21:14:37Z] 00000113-AgebullMac:Background:MAFH-16-#ED5DA7DDBBA648F680C48CBF7F879651-YRSRP1-#ED5DA7DDBBA648F680C48CBF7F879651-YRSRP1 > 
+系统错误
+UserManage : sys/post/v1/edit/delete * execute * {"LocalId":null,"Caller":"+>ubuntu:HttpRoute:YCQ9-UserManage-W82Y","Title":"+>ubuntu:HttpRoute:YCQ9-UserManage-W82Y","Command":"sys/post/v1/edit/delete","ApiName":"sys/post/v1/edit/delete","Argument":"{\"selects\":\"175,174,173,171,169,168,167,\"}","Result":null,"Status":0,"Originals":{},"State":1,"Tag":0,"Head":"Kz51YnVudHU6SHR0cFJvdXRlOllDUTktVXNlck1hbmFnZS1XODJZ","GlobalId":"37436171902520305","CallId":"37436171902520303","RequestId":"#ED5DA7DDBBA648F680C48CBF7F879651-YRSRP1","Context":"{\n  \"user\": {\n    \"userId\": 1,\n    \"openId\": \"KDP9M7NQFATCS\",\n    \"roleId\": 0,\n    \"groupId\": 0,\n    \"orgId\": 0,\n    \"depId\": 0,\n    \"nickName\": \"游客\",\n    \"account\": null,\n    \"state\": 1,\n    \"loginType\": 0,\n    \"os\": \"LINUX\",\n    \"app\": \"APP\",\n    \"depLevel\": 0\n  },\n  \"org\": {\n    \"orgId\": 0,\n    \"name\": null,\n    \"key\": null,\n    \"routeName\": null\n  },\n  \"req\": {\n    \"localGlobalId\": \"37436171902520303\",\n    \"service\": \"ubuntu\",\n    \"requestId\": \"#ED5DA7DDBBA648F680C48CBF7F879651-YRSRP1\",\n    \"token\": \"#ED5DA7DDBBA648F680C48CBF7F879651\",\n    \"argumentType\": 1,\n    \"requestType\": 1,\n    \"ip\": \"192.168.1.198\",\n    \"port\": \"11334\",\n    \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0\"\n  }\n}","Content":"{\"selects\":\"175,174,173,171,169,168,167,\"}","CommandOrSubTitle":"sys/post/v1/edit/delete","Requester":"HttpRoute","Station":null,"StationType":null}
+MySql.Data.MySqlClient.MySqlException (0x80004005): Fatal error encountered attempting to read the resultset. ---> MySql.Data.MySqlClient.MySqlException (0x80004005): Fatal error encountered attempting to read the resultset. ---> MySql.Data.MySqlClient.MySqlException (0x80004005): Reading from the stream has failed. ---> System.IO.IOException: Unable to read data from the transport connection: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。. ---> System.Net.Sockets.SocketException: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
+   at System.Net.Sockets.NetworkStream.Read(Byte[] buffer, Int32 offset, Int32 size)
+   --- End of inner exception stack trace ---
+   at System.Net.Sockets.NetworkStream.Read(Byte[] buffer, Int32 offset, Int32 size)
+   at MySql.Data.MySqlClient.TimedStream.Read(Byte[] buffer, Int32 offset, Int32 count)
+   at MySql.Data.MySqlClient.MySqlStream.ReadFully(Stream stream, Byte[] buffer, Int32 offset, Int32 count)
+   at MySql.Data.MySqlClient.MySqlStream.LoadPacket()
+   at MySql.Data.MySqlClient.MySqlStream.LoadPacket()
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetColumnData(MySqlField field)
+   at MySql.Data.MySqlClient.NativeDriver.GetColumnsData(MySqlField[] columns)
+   at MySql.Data.MySqlClient.Driver.GetColumns(Int32 count)
+   at MySql.Data.MySqlClient.ResultSet.LoadColumns(Int32 numCols)
+   at MySql.Data.MySqlClient.ResultSet..ctor(Driver d, Int32 statementId, Int32 numCols)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadFirstInner(String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.BusinessLogicByStateData`3.OnStateChanged(Int64 id, BusinessCommandType cmd)
+   at Agebull.Common.DataModel.BusinessLogic.BusinessLogicByStateData`3.OnDeleted(Int64 id)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.Delete(Int64 id)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.Delete(IEnumerable`1 lid)
+   at Agebull.Common.WebApi.ApiController`4.DoDelete()
+   at Agebull.Common.WebApi.ApiController`4.Delete()
+   at Delete()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-02 21:15:53Z] 00000147-AgebullMac:Background:MAFH-16-#ED5DA7DDBBA648F680C48CBF7F879651-7FDFJ4-#ED5DA7DDBBA648F680C48CBF7F879651-7FDFJ4 > 
+系统错误
+MySql.Data.MySqlClient.MySqlException (0x80004005): Unknown column 'boundary_id' in 'field list'
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteScalar()
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.InsertInner(TData entity)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.Insert(TData entity)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.AddNew(TData data)
+   at Agebull.Common.WebApi.ApiController`4.DoAddNew()
+   at Agebull.Common.WebApi.ApiController`4.AddNew()
+   at AddNew()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-02 21:15:53Z] 00000149-AgebullMac:Background:MAFH-16-#ED5DA7DDBBA648F680C48CBF7F879651-7FDFJ4-#ED5DA7DDBBA648F680C48CBF7F879651-7FDFJ4 > 
+系统错误
+UserManage : sys/post/v1/edit/addnew * execute * {"LocalId":null,"Caller":"+>ubuntu:HttpRoute:YCQ9-UserManage-D8LV","Title":"+>ubuntu:HttpRoute:YCQ9-UserManage-D8LV","Command":"sys/post/v1/edit/addnew","ApiName":"sys/post/v1/edit/addnew","Argument":"{\"id\":\"0\",\"DepartmentId\":\"1\",\"Position\":\"a\",\"RoleId\":\"0\",\"Memo\":\"\"}","Result":null,"Status":0,"Originals":{},"State":1,"Tag":0,"Head":"Kz51YnVudHU6SHR0cFJvdXRlOllDUTktVXNlck1hbmFnZS1EOExW","GlobalId":"37436171902520389","CallId":"37436171902520387","RequestId":"#ED5DA7DDBBA648F680C48CBF7F879651-7FDFJ4","Context":"{\n  \"user\": {\n    \"userId\": 1,\n    \"openId\": \"KDP9M7NQFATCS\",\n    \"roleId\": 0,\n    \"groupId\": 0,\n    \"orgId\": 0,\n    \"depId\": 0,\n    \"nickName\": \"游客\",\n    \"account\": null,\n    \"state\": 1,\n    \"loginType\": 0,\n    \"os\": \"LINUX\",\n    \"app\": \"APP\",\n    \"depLevel\": 0\n  },\n  \"org\": {\n    \"orgId\": 0,\n    \"name\": null,\n    \"key\": null,\n    \"routeName\": null\n  },\n  \"req\": {\n    \"localGlobalId\": \"37436171902520387\",\n    \"service\": \"ubuntu\",\n    \"requestId\": \"#ED5DA7DDBBA648F680C48CBF7F879651-7FDFJ4\",\n    \"token\": \"#ED5DA7DDBBA648F680C48CBF7F879651\",\n    \"argumentType\": 1,\n    \"requestType\": 1,\n    \"ip\": \"192.168.1.198\",\n    \"port\": \"11334\",\n    \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0\"\n  }\n}","Content":"{\"id\":\"0\",\"DepartmentId\":\"1\",\"Position\":\"a\",\"RoleId\":\"0\",\"Memo\":\"\"}","CommandOrSubTitle":"sys/post/v1/edit/addnew","Requester":"HttpRoute","Station":null,"StationType":null}
+MySql.Data.MySqlClient.MySqlException (0x80004005): Unknown column 'boundary_id' in 'field list'
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteScalar()
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.InsertInner(TData entity)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.Insert(TData entity)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.AddNew(TData data)
+   at Agebull.Common.WebApi.ApiController`4.DoAddNew()
+   at Agebull.Common.WebApi.ApiController`4.AddNew()
+   at AddNew()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-02 21:26:47Z] 0000000E-AgebullMac:Background:KABH-1-YN3TZNiUiH-Z26Y8F4YNW > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 21:26:49Z] 000000CC-AgebullMac:Background:KABH-8-5QV74N2ZYM-AEQHKPY4SW > 
+Summary : Station no find
+
+[2019-03-02 21:26:49Z] 000000D0-AgebullMac:Background:KABH-8-29PQ3T246R-MJR0P5XKTU > 
+Summary : OnObjectFailed
+
+[2019-03-02 21:32:43Z] 0000000E-AgebullMac:Background:WANH-1-FNYTiNHUAH-A2PY6FEYTW > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 21:32:45Z] 000000CC-AgebullMac:Background:WANH-7-7WRiMXNJP2-7VFDYP2F6B > 
+Summary : Station no find
+
+[2019-03-02 21:32:45Z] 000000D0-AgebullMac:Background:WANH-7-X7W26FKJ3J-61RYQDUL9R > 
+Summary : OnObjectFailed
+
+[2019-03-02 21:41:10Z] 0000000E-AgebullMac:Background:9AMH-1-HNQTLNDUHH-32WYFFVY8W > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 21:41:13Z] 000000CB-AgebullMac:Background:9AMH-7-XRUW4SRXEW-HiT5GDZ4WN > 
+Summary : Station no find
+
+[2019-03-02 21:41:13Z] 000000CF-AgebullMac:Background:9AMH-7-KQLi754A1A-N7VC8PK5ZH > 
+Summary : OnObjectFailed
+
+[2019-03-02 21:44:23Z] 0000000E-AgebullMac:Background:XA1H-1-KN3T3NGU5H-V23YMFUYCW > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 21:44:26Z] 000000CC-AgebullMac:Background:XA1H-7-F5MR6T5KDR-A6SRRK98JF > 
+Summary : Station no find
+
+[2019-03-02 21:44:26Z] 000000D0-AgebullMac:Background:XA1H-7-F0BHUJ205U-ASHPER5HA3 > 
+Summary : OnObjectFailed
+
+[2019-03-02 21:46:14Z] 0000010D-AgebullMac:Background:XA1H-14-#ED5DA7DDBBA648F680C48CBF7F879651-6CFP07-#ED5DA7DDBBA648F680C48CBF7F879651-6CFP07 > 
+系统错误
+MySql.Data.MySqlClient.MySqlException (0x80004005): View 'db_zeronet_base.view_org_position_personnel' references invalid table(s) or column(s) or function(s) or definer/invoker of view lack rights to use them
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadPageData(Int32 page, Int32 limit, String order, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.PageData(Int32 page, Int32 limit, String sort, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiController`4.LoadListData(String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiControllerForAudit`4.GetListData(LambdaItem`1 lambda)
+   at Agebull.Common.UserCenter.WebApi.Entity.PositionPersonnelApiController.GetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ManageApi\PositionPersonnel\PositionPersonnelApiController.cs:line 98
+   at Agebull.Common.WebApi.ApiController`4.List2()
+   at List()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-02 21:46:14Z] 0000010F-AgebullMac:Background:XA1H-14-#ED5DA7DDBBA648F680C48CBF7F879651-6CFP07-#ED5DA7DDBBA648F680C48CBF7F879651-6CFP07 > 
+系统错误
+UserManage : sys/person/v1/edit/list * execute * {"LocalId":null,"Caller":"+>ubuntu:HttpRoute:YCQ9-UserManage-44BM","Title":"+>ubuntu:HttpRoute:YCQ9-UserManage-44BM","Command":"sys/person/v1/edit/list","ApiName":"sys/person/v1/edit/list","Argument":"{\"page\":\"1\",\"rows\":\"20\",\"sort\":\"Id\",\"order\":\"desc\"}","Result":null,"Status":0,"Originals":{},"State":1,"Tag":0,"Head":"Kz51YnVudHU6SHR0cFJvdXRlOllDUTktVXNlck1hbmFnZS00NEJN","GlobalId":"37436171902520575","CallId":"37436171902520573","RequestId":"#ED5DA7DDBBA648F680C48CBF7F879651-6CFP07","Context":"{\n  \"user\": {\n    \"userId\": 1,\n    \"openId\": \"KDP9M7NQFATCS\",\n    \"roleId\": 0,\n    \"groupId\": 0,\n    \"orgId\": 0,\n    \"depId\": 0,\n    \"nickName\": \"游客\",\n    \"account\": null,\n    \"state\": 1,\n    \"loginType\": 0,\n    \"os\": \"LINUX\",\n    \"app\": \"APP\",\n    \"depLevel\": 0\n  },\n  \"org\": {\n    \"orgId\": 0,\n    \"name\": null,\n    \"key\": null,\n    \"routeName\": null\n  },\n  \"req\": {\n    \"localGlobalId\": \"37436171902520573\",\n    \"service\": \"ubuntu\",\n    \"requestId\": \"#ED5DA7DDBBA648F680C48CBF7F879651-6CFP07\",\n    \"token\": \"#ED5DA7DDBBA648F680C48CBF7F879651\",\n    \"argumentType\": 1,\n    \"requestType\": 1,\n    \"ip\": \"192.168.1.198\",\n    \"port\": \"11917\",\n    \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0\"\n  }\n}","Content":"{\"page\":\"1\",\"rows\":\"20\",\"sort\":\"Id\",\"order\":\"desc\"}","CommandOrSubTitle":"sys/person/v1/edit/list","Requester":"HttpRoute","Station":null,"StationType":null}
+MySql.Data.MySqlClient.MySqlException (0x80004005): View 'db_zeronet_base.view_org_position_personnel' references invalid table(s) or column(s) or function(s) or definer/invoker of view lack rights to use them
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadPageData(Int32 page, Int32 limit, String order, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.PageData(Int32 page, Int32 limit, String sort, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiController`4.LoadListData(String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiControllerForAudit`4.GetListData(LambdaItem`1 lambda)
+   at Agebull.Common.UserCenter.WebApi.Entity.PositionPersonnelApiController.GetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ManageApi\PositionPersonnel\PositionPersonnelApiController.cs:line 98
+   at Agebull.Common.WebApi.ApiController`4.List2()
+   at List()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-02 21:46:14Z] 00000111-AgebullMac:Background:XA1H-14-#ED5DA7DDBBA648F680C48CBF7F879651-0EJ6WS-#ED5DA7DDBBA648F680C48CBF7F879651-0EJ6WS > 
+系统错误
+MySql.Data.MySqlClient.MySqlException (0x80004005): View 'db_zeronet_base.view_org_position_personnel' references invalid table(s) or column(s) or function(s) or definer/invoker of view lack rights to use them
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadPageData(Int32 page, Int32 limit, String order, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.PageData(Int32 page, Int32 limit, String sort, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiController`4.LoadListData(String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiControllerForAudit`4.GetListData(LambdaItem`1 lambda)
+   at Agebull.Common.UserCenter.WebApi.Entity.PositionPersonnelApiController.GetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ManageApi\PositionPersonnel\PositionPersonnelApiController.cs:line 98
+   at Agebull.Common.WebApi.ApiController`4.List2()
+   at List()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-02 21:46:14Z] 00000113-AgebullMac:Background:XA1H-14-#ED5DA7DDBBA648F680C48CBF7F879651-0EJ6WS-#ED5DA7DDBBA648F680C48CBF7F879651-0EJ6WS > 
+系统错误
+UserManage : sys/person/v1/edit/list * execute * {"LocalId":null,"Caller":"+>ubuntu:HttpRoute:YCQ9-UserManage-D8LV","Title":"+>ubuntu:HttpRoute:YCQ9-UserManage-D8LV","Command":"sys/person/v1/edit/list","ApiName":"sys/person/v1/edit/list","Argument":"{\"audit\":\"256\",\"keyWord\":\"\",\"page\":\"1\",\"rows\":\"20\",\"sort\":\"Id\",\"order\":\"desc\"}","Result":null,"Status":0,"Originals":{},"State":1,"Tag":0,"Head":"Kz51YnVudHU6SHR0cFJvdXRlOllDUTktVXNlck1hbmFnZS1EOExW","GlobalId":"37436171902520578","CallId":"37436171902520576","RequestId":"#ED5DA7DDBBA648F680C48CBF7F879651-0EJ6WS","Context":"{\n  \"user\": {\n    \"userId\": 1,\n    \"openId\": \"KDP9M7NQFATCS\",\n    \"roleId\": 0,\n    \"groupId\": 0,\n    \"orgId\": 0,\n    \"depId\": 0,\n    \"nickName\": \"游客\",\n    \"account\": null,\n    \"state\": 1,\n    \"loginType\": 0,\n    \"os\": \"LINUX\",\n    \"app\": \"APP\",\n    \"depLevel\": 0\n  },\n  \"org\": {\n    \"orgId\": 0,\n    \"name\": null,\n    \"key\": null,\n    \"routeName\": null\n  },\n  \"req\": {\n    \"localGlobalId\": \"37436171902520576\",\n    \"service\": \"ubuntu\",\n    \"requestId\": \"#ED5DA7DDBBA648F680C48CBF7F879651-0EJ6WS\",\n    \"token\": \"#ED5DA7DDBBA648F680C48CBF7F879651\",\n    \"argumentType\": 1,\n    \"requestType\": 1,\n    \"ip\": \"192.168.1.198\",\n    \"port\": \"11948\",\n    \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0\"\n  }\n}","Content":"{\"audit\":\"256\",\"keyWord\":\"\",\"page\":\"1\",\"rows\":\"20\",\"sort\":\"Id\",\"order\":\"desc\"}","CommandOrSubTitle":"sys/person/v1/edit/list","Requester":"HttpRoute","Station":null,"StationType":null}
+MySql.Data.MySqlClient.MySqlException (0x80004005): View 'db_zeronet_base.view_org_position_personnel' references invalid table(s) or column(s) or function(s) or definer/invoker of view lack rights to use them
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadPageData(Int32 page, Int32 limit, String order, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.PageData(Int32 page, Int32 limit, String sort, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiController`4.LoadListData(String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiControllerForAudit`4.GetListData(LambdaItem`1 lambda)
+   at Agebull.Common.UserCenter.WebApi.Entity.PositionPersonnelApiController.GetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ManageApi\PositionPersonnel\PositionPersonnelApiController.cs:line 98
+   at Agebull.Common.WebApi.ApiController`4.List2()
+   at List()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-02 22:11:21Z] 0000000E-AgebullMac:Background:QAXH-1-iNDTHN1UEH-22SYFFVY0W > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 22:11:23Z] 000000CC-AgebullMac:Background:QAXH-7-3WUiUXRJJ2-NV2D3P3FNB > 
+Summary : Station no find
+
+[2019-03-02 22:11:23Z] 000000D0-AgebullMac:Background:QAXH-7-G7i2AF6J6J-S1ZY8DVL9R > 
+Summary : OnObjectFailed
+
+[2019-03-02 22:12:40Z] 000000F5-AgebullMac:Background:QAXH-19-AgebullMac-WLZ1ZC-AgebullMac-WLZ1ZC > 
+系统错误
+MySql.Data.MySqlClient.MySqlException (0x80004005): Fatal error encountered attempting to read the resultset. ---> MySql.Data.MySqlClient.MySqlException (0x80004005): Fatal error encountered attempting to read the resultset. ---> MySql.Data.MySqlClient.MySqlException (0x80004005): Reading from the stream has failed. ---> System.IO.IOException: Unable to read data from the transport connection: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。. ---> System.Net.Sockets.SocketException: 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。
+   at System.Net.Sockets.NetworkStream.Read(Byte[] buffer, Int32 offset, Int32 size)
+   --- End of inner exception stack trace ---
+   at System.Net.Sockets.NetworkStream.Read(Byte[] buffer, Int32 offset, Int32 size)
+   at MySql.Data.MySqlClient.TimedStream.Read(Byte[] buffer, Int32 offset, Int32 count)
+   at MySql.Data.MySqlClient.MySqlStream.ReadFully(Stream stream, Byte[] buffer, Int32 offset, Int32 count)
+   at MySql.Data.MySqlClient.MySqlStream.LoadPacket()
+   at MySql.Data.MySqlClient.MySqlStream.LoadPacket()
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetColumnData(MySqlField field)
+   at MySql.Data.MySqlClient.NativeDriver.GetColumnsData(MySqlField[] columns)
+   at MySql.Data.MySqlClient.Driver.GetColumns(Int32 count)
+   at MySql.Data.MySqlClient.ResultSet.LoadColumns(Int32 numCols)
+   at MySql.Data.MySqlClient.ResultSet..ctor(Driver d, Int32 statementId, Int32 numCols)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.ReLoadInner(TData entity)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.Insert(TData entity)
+   at Agebull.Common.OAuth.BusinessLogic.SubjectionBusinessLogic.SyncSubjection(Int64 parId, List`1 pars) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\Model\Business\Organization\SubjectionBusinessLogic.cs:line 30
+   at Agebull.Common.OAuth.BusinessLogic.SubjectionBusinessLogic.SyncSubjection(Int64 parId, List`1 pars) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\Model\Business\Organization\SubjectionBusinessLogic.cs:line 55
+   at Agebull.Common.OAuth.BusinessLogic.SubjectionBusinessLogic.SyncSubjection(Int64 parId, List`1 pars) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\Model\Business\Organization\SubjectionBusinessLogic.cs:line 55
+   at Agebull.Common.OAuth.BusinessLogic.SubjectionBusinessLogic.SyncSubjection(Int64 parId, List`1 pars) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\Model\Business\Organization\SubjectionBusinessLogic.cs:line 55
+   at Agebull.Common.OAuth.BusinessLogic.SubjectionBusinessLogic.SyncSubjection() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\Model\Business\Organization\SubjectionBusinessLogic.cs:line 24
+   at Agebull.Common.OAuth.BusinessLogic.OrganizationBusinessLogic.CacheTask() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\Model\Business\Organization\OrganizationBusinessLogic.cs:line 322
+
+[2019-03-02 22:12:40Z] 000000F6-AgebullMac:Background:QAXH-13-#ED5DA7DDBBA648F680C48CBF7F879651-DJFE9V-#ED5DA7DDBBA648F680C48CBF7F879651-DJFE9V > 
+系统错误
+MySql.Data.MySqlClient.MySqlException (0x80004005): There is already an open DataReader associated with this Connection which must be closed first.
+   at MySql.Data.MySqlClient.Interceptors.ExceptionInterceptor.Throw(Exception exception)
+   at MySql.Data.MySqlClient.MySqlCommand.Throw(Exception ex)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadValuesInner(String field, String condition, MySqlParameter[] args)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadValues[TField](Expression`1 fieldExpression, Func`2 parse, Expression`1 lambda)
+   at Agebull.Common.UserCenter.BusinessLogic.RoleCache.CachePageAuditUser(RedisProxy proxy) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ManageApi\Logial\RoleCache.cs:line 431
+   at Agebull.Common.UserCenter.BusinessLogic.RoleCache.CachePageAuditUser() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ManageApi\Logial\RoleCache.cs:line 371
+   at Agebull.Common.UserCenter.BusinessLogic.RoleCache.DoCache() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ManageApi\Logial\RoleCache.cs:line 149
+   at Agebull.Common.UserCenter.BusinessLogic.RoleCache.Cache() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ManageApi\Logial\RoleCache.cs:line 109
+   at Agebull.Common.WebApi.Auth.SystemApiController.FlushCache() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ManageApi\Logial\SystemApiController.cs:line 45
+
+[2019-03-02 22:14:39Z] 00000103-AgebullMac:Background:QAXH-13-#ED5DA7DDBBA648F680C48CBF7F879651-LTU6AP-#ED5DA7DDBBA648F680C48CBF7F879651-LTU6AP > 
+系统错误
+MySql.Data.MySqlClient.MySqlException (0x80004005): There is already an open DataReader associated with this Connection which must be closed first.
+   at MySql.Data.MySqlClient.Interceptors.ExceptionInterceptor.Throw(Exception exception)
+   at MySql.Data.MySqlClient.MySqlCommand.Throw(Exception ex)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadValuesInner(String field, String condition, MySqlParameter[] args)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadValues[TField](Expression`1 fieldExpression, Func`2 parse, Expression`1 lambda)
+   at Agebull.Common.UserCenter.BusinessLogic.RoleCache.CachePageAuditUser(RedisProxy proxy) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ManageApi\Logial\RoleCache.cs:line 431
+   at Agebull.Common.UserCenter.BusinessLogic.RoleCache.CachePageAuditUser() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ManageApi\Logial\RoleCache.cs:line 371
+   at Agebull.Common.UserCenter.BusinessLogic.RoleCache.DoCache() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ManageApi\Logial\RoleCache.cs:line 149
+   at Agebull.Common.UserCenter.BusinessLogic.RoleCache.Cache() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ManageApi\Logial\RoleCache.cs:line 109
+   at Agebull.Common.WebApi.Auth.SystemApiController.FlushCache() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ManageApi\Logial\SystemApiController.cs:line 45
+
+[2019-03-02 22:14:39Z] 00000105-AgebullMac:Background:QAXH-72-AgebullMac-269F8i-AgebullMac-269F8i > 
+系统错误
+System.Collections.Generic.KeyNotFoundException: The given key '0' was not present in the dictionary.
+   at System.Collections.Generic.Dictionary`2.get_Item(TKey key)
+   at MySql.Data.MySqlClient.MySqlField.SetFieldEncoding()
+   at MySql.Data.MySqlClient.NativeDriver.GetColumnData(MySqlField field)
+   at MySql.Data.MySqlClient.NativeDriver.GetColumnsData(MySqlField[] columns)
+   at MySql.Data.MySqlClient.Driver.GetColumns(Int32 count)
+   at MySql.Data.MySqlClient.ResultSet.LoadColumns(Int32 numCols)
+   at MySql.Data.MySqlClient.ResultSet..ctor(Driver d, Int32 statementId, Int32 numCols)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.ReLoadInner(TData entity)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.Insert(TData entity)
+   at Agebull.Common.OAuth.BusinessLogic.SubjectionBusinessLogic.SyncSubjection(Int64 parId, List`1 pars) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\Model\Business\Organization\SubjectionBusinessLogic.cs:line 49
+   at Agebull.Common.OAuth.BusinessLogic.SubjectionBusinessLogic.SyncSubjection(Int64 parId, List`1 pars) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\Model\Business\Organization\SubjectionBusinessLogic.cs:line 55
+   at Agebull.Common.OAuth.BusinessLogic.SubjectionBusinessLogic.SyncSubjection(Int64 parId, List`1 pars) in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\Model\Business\Organization\SubjectionBusinessLogic.cs:line 55
+   at Agebull.Common.OAuth.BusinessLogic.SubjectionBusinessLogic.SyncSubjection() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\Model\Business\Organization\SubjectionBusinessLogic.cs:line 24
+   at Agebull.Common.OAuth.BusinessLogic.OrganizationBusinessLogic.CacheTask() in C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\Model\Business\Organization\OrganizationBusinessLogic.cs:line 322
+
+[2019-03-02 22:21:41Z] 0000000E-AgebullMac:Background:RAMH-1-1NHTBNNU8H-W2DYYFPYSW > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 22:21:44Z] 000000CB-AgebullMac:Background:RAMH-7-3WUi7XHJF2-MVMD2PiFMB > 
+Summary : Station no find
+
+[2019-03-02 22:21:44Z] 000000D0-AgebullMac:Background:RAMH-7-97L2TFPJTJ-A14YYDiLKR > 
+Summary : OnObjectFailed
+
+[2019-03-02 22:22:52Z] 0000000E-AgebullMac:Background:FAHH-1-5N4T6N2UPH-X2SYAFQYJW > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 22:22:54Z] 000000CC-AgebullMac:Background:FAHH-8-B3MWUHBDJG-G5GRAX7RET > 
+Summary : Station no find
+
+[2019-03-02 22:22:54Z] 000000D0-AgebullMac:Background:FAHH-8-3W2FVKCiSX-8XXQBP9MLN > 
+Summary : OnObjectFailed
+
+[2019-03-02 22:23:42Z] 0000000E-AgebullMac:Background:1A2H-1-FNGT7NKUWH-F2JYFF6Y1W > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 22:23:44Z] 000000CC-AgebullMac:Background:1A2H-10-EJX3WYZ2RK-Ai9XYABA6D > 
+Summary : Station no find
+
+[2019-03-02 22:23:44Z] 000000D0-AgebullMac:Background:1A2H-10-Xi9K1T7YUV-D1G26V60LW > 
+Summary : OnObjectFailed
+
+[2019-03-02 22:53:25Z] 000001C6-AgebullMac:Background:1A2H-11-YVMCF7RYKL-UTZ1H92U0Y > 
+Zero center monitor failed : There was no message for a long time
+
+[2019-03-02 22:54:06Z] 0000000E-AgebullMac:Background:QAMH-1-CNBT6NZUXH-Y2AYiF7YEW > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 22:54:07Z] 000000CB-AgebullMac:Background:QAMH-8-M9HQZTU46R-ZJM0X5VKTU > 
+Summary : Station no find
+
+[2019-03-02 22:54:07Z] 000000CF-AgebullMac:Background:QAMH-8-PE74NVA5YK-Q2DQ5DH98Y > 
+Summary : OnObjectFailed
+
+[2019-03-02 22:56:11Z] 0000000E-AgebullMac:Background:7A8H-1-JNPTYNWUSH-J2LYQF9YNW > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 22:56:13Z] 000000CC-AgebullMac:Background:7A8H-7-402HPJL0iU-7SAP8RZH73 > 
+Summary : Station no find
+
+[2019-03-02 22:56:13Z] 000000D0-AgebullMac:Background:7A8H-7-1QLCP4J5MC-06PU4SEiZS > 
+Summary : OnObjectFailed
+
+[2019-03-02 22:59:12Z] 0000000E-AgebullMac:Background:2A5H-1-4N1TLNHULH-D2WY6FRYRW > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-02 22:59:15Z] 000000CB-AgebullMac:Background:2A5H-7-MRXF5AUZGC-iC9M7S5UW5 > 
+Summary : Station no find
+
+[2019-03-02 22:59:15Z] 000000CF-AgebullMac:Background:2A5H-7-DDWF3HPZT4-Di8792DMJW > 
+Summary : OnObjectFailed
+

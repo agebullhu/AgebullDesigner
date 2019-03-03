@@ -90,8 +90,10 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClassifyModel.cs" />
-    <Compile Include="ImportModel.cs" />
+    <Compile Include="Command\ApiItemCommand.cs" />
+    <Compile Include="Command\EntityClassifyModel.cs" />
+    <Compile Include="Command\ImportModel.cs" />
+    <Compile Include="Command\ProjectEntityCommand.cs" />
     <Compile Include="Import\AssemblyImporter.cs" />
     <Compile Include="Import\DesignToExcel.cs" />
     <Compile Include="Import\EdmxReader.cs" />
@@ -99,8 +101,6 @@
     <Compile Include="Model\ApiListViewModel.cs" />
     <Compile Include="Model\EnumListViewModel.cs" />
     <Compile Include="Model\EntityListViewModel.cs" />
-    <Compile Include="EnumModel.cs" />
-    <Compile Include="ProjectModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -114,6 +114,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Register.cs" />
     <Compile Include="View\ApiListPanel.xaml.cs">
       <DependentUpon>ApiListPanel.xaml</DependentUpon>
     </Compile>

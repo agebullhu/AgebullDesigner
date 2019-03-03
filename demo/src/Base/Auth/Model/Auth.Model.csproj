@@ -1,0 +1,61 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Label="Globals">
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Description>用户中心业务逻辑</Description>
+    <AssemblyTitle>Flysh.Authority.Model</AssemblyTitle>
+    <Version>2.0.0.0</Version>
+    <DebugType>portable</DebugType>
+    <AssemblyName>Auth.Model</AssemblyName>
+    <PackageId>Flysh.Authority.Model</PackageId>
+    <PackageTags>Flysh.Authority.Model</PackageTags>
+    <PackageVersion>2.0.0.0</PackageVersion>
+    <IncludeSymbols>true</IncludeSymbols>
+    <IncludeSource>false</IncludeSource>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Agebull</Authors>
+    <Company>Flysh</Company>
+    <Product>Flysh.Authority.Model</Product>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+    <Copyright />
+    <PackageReleaseNotes>用户中心业务逻辑</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netcoreapp2.1\Flysh.Authority.Model.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Business\None\**" />
+    <Compile Remove="DataAccess\None\**" />
+    <Compile Remove="Entity\None\**" />
+    <EmbeddedResource Remove="Business\None\**" />
+    <EmbeddedResource Remove="DataAccess\None\**" />
+    <EmbeddedResource Remove="Entity\None\**" />
+    <None Remove="Business\None\**" />
+    <None Remove="DataAccess\None\**" />
+    <None Remove="Entity\None\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Agebull.Zero.ModelApi" Version="1.3.4.4" />
+    <PackageReference Include="MySql.Data" Version="8.0.15" />
+  </ItemGroup>
+</Project>

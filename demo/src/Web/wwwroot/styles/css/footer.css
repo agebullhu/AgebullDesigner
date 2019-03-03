@@ -1,0 +1,49 @@
+footer{
+    width:100%;
+    margin-top:110px;
+    height:568px;
+    min-width:1200px;
+}
+.spread{
+    height:420px;
+    background:#0050a5;
+    padding-top:50px;
+}
+.spread-item{
+    width:80%;
+
+    height:220px;
+    margin:0 auto;
+    min-width:1200px;
+}
+.spread-item ul{
+    margin-right:200px;
+}
+.spread-item .canvass{
+    margin-left:59px;
+}
+.spread-item .follow{
+    margin-right:59px;
+}
+.spread-item ul .spread-article{
+    font-size:21px;
+    color:white;
+}
+.spread-item li{
+    font-size:18px;
+    color:white;
+    margin-top:18px;
+    text-align:center;
+}
+.link{
+    margin:80px auto 0;
+    /*height:30px;*/
+}
+.link li{
+    float:left;
+    margin-left:52px;  
+}
+.link li a,.link li{
+    font-size:18px;
+    color:white;
+}

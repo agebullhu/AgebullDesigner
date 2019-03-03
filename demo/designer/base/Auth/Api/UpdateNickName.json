@@ -1,0 +1,1 @@
+﻿{"Method":1,"CallArg":"NickNameRequest","RoutePath":"v2/user/update/name","IsUserCommand":false,"_project":"Auth","IsGlobal":false,"_caption":"修改昵称","_description":"修改昵称","_name":"UpdateNickName","option":{"_key":"7e38ef6d-61ee-43db-a0ed-3d0812a07e03","Identity":0,"Index":0,"referenceKey":"00000000-0000-0000-0000-000000000000","state":0}}

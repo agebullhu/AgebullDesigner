@@ -1,0 +1,29 @@
+﻿
+<form name="organizePositionForm" id="organizePositionForm" method="POST">
+    <input name="DepartmentId" type="hidden" />
+    <input name="Id" type="hidden" />
+    <div id="organizePositionRegion" class="formRegion" style="width:490px;display: block;">
+        <div class="inputField" id="fr_Position">
+            <div class="inputRegion" id="ir_Position">
+                <div class="inputLabel">称谓:</div>
+                <input id="Position" name="Position" class="inputValue inputS easyui-textbox"
+                       data-options="prompt:'称谓'" />
+            </div>
+        </div>
+        <div class="inputField" id="fr_RoleId">
+            <div class="inputRegion" id="ir_RoleId">
+                <div class="inputLabel">角色:</div>
+                <input id="RoleId" name="RoleId" class="inputValue inputS easyui-combobox"
+                       data-options="prompt:'角色',valueField:'id', textField:'text'" />
+
+            </div>
+        </div>
+        <div class="inputField" id="fr_Memo">
+            <div class="inputRegion" id="ir_Memo">
+                <div class="inputLabel">备注:</div>
+                <input id="Memo" name="Memo" class="inputValue_Memo easyui-textbox"
+                       data-options="prompt:'备注',multiline:true" />
+            </div>
+        </div>
+    </div>
+</form>

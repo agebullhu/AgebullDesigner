@@ -1,0 +1,72 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <ApplicationIcon />
+    <StartupObject />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Argument\**" />
+    <Compile Remove="IdentityDocument\**" />
+    <Compile Remove="Logical\**" />
+    <Compile Remove="LoginLog\Account\**" />
+    <Compile Remove="LoginLog\Auth\**" />
+    <Compile Remove="Organization\**" />
+    <Compile Remove="OrganizePosition\**" />
+    <Compile Remove="PositionPersonnel\**" />
+    <EmbeddedResource Remove="Argument\**" />
+    <EmbeddedResource Remove="IdentityDocument\**" />
+    <EmbeddedResource Remove="Logical\**" />
+    <EmbeddedResource Remove="LoginLog\Account\**" />
+    <EmbeddedResource Remove="LoginLog\Auth\**" />
+    <EmbeddedResource Remove="Organization\**" />
+    <EmbeddedResource Remove="OrganizePosition\**" />
+    <EmbeddedResource Remove="PositionPersonnel\**" />
+    <None Remove="Argument\**" />
+    <None Remove="IdentityDocument\**" />
+    <None Remove="Logical\**" />
+    <None Remove="LoginLog\Account\**" />
+    <None Remove="LoginLog\Auth\**" />
+    <None Remove="Organization\**" />
+    <None Remove="OrganizePosition\**" />
+    <None Remove="PositionPersonnel\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Program.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="appSettings.json" />
+    <None Remove="libzmq.dll" />
+    <None Remove="libzmq.pdb" />
+    <None Remove="libzmq.so" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Organization\OrganizationApiController.cs" />
+    <Compile Include="Organization\OrganizationApiController.Designer.cs" />
+    <Compile Include="OrganizePosition\OrganizePositionApiController.cs" />
+    <Compile Include="OrganizePosition\OrganizePositionApiController.Designer.cs" />
+    <Compile Include="PositionPersonnel\PositionPersonnelApiController.cs" />
+    <Compile Include="PositionPersonnel\PositionPersonnelApiController.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Agebull.Common.Extend" Version="2.3.3" />
+    <PackageReference Include="Agebull.EntityModel.Core" Version="2.3.3" />
+    <PackageReference Include="Agebull.Rpc.Abstractions" Version="2.3.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AppManage\Model\AppManage.Model.csproj" />
+    <ProjectReference Include="..\Model\Auth.Model.csproj" />
+  </ItemGroup>
+
+</Project>

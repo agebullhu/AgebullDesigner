@@ -1,0 +1,1 @@
+﻿{"Method":1,"CallArg":"PhoneLoginRequest","ResultArg":"LoginResponse","RoutePath":"v2/login/phone","IsUserCommand":false,"_project":"Auth","IsGlobal":false,"_caption":"基本手机号的账号登录","_description":"基本手机号的账号登录","_name":"PhoneAccountLogin","option":{"_key":"ce2fc6ef-9e93-40ab-9605-037f0012f0c9","Identity":0,"Index":0,"referenceKey":"00000000-0000-0000-0000-000000000000","state":0}}

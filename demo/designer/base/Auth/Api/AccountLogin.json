@@ -1,0 +1,1 @@
+﻿{"Method":1,"CallArg":"PhoneLoginRequest","ResultArg":"LoginResponse","RoutePath":"v2/login/account","IsUserCommand":false,"_project":"Auth","IsGlobal":false,"_caption":"账户登录","_description":"账户登录","_name":"AccountLogin","option":{"_key":"2d408d14-0476-4fbf-bcfb-d5d63d929bc2","Identity":0,"Index":0,"referenceKey":"00000000-0000-0000-0000-000000000000","state":0}}

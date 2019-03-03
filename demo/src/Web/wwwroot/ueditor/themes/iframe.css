@@ -1,0 +1,55 @@
+/*可以在这里添加你自己的css*/
+
+html body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    color: #333;
+    font-size: 18px;
+    word-wrap: break-word;
+    line-height: 40px;
+    font-family: "微软雅黑", "Microsoft Yahei"arial,tahoma,sans-serif;
+}
+
+H1 {
+    font-size: 34px;
+    font-weight: 400;
+    line-height: 1.15;
+    margin: 0 10px 0 0;
+    vertical-align: sub;
+    display: inline-block;
+    padding: 3px;
+    text-align: center;
+}
+H2 {
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 1.15;
+    margin: 0 10px 0 0;
+    vertical-align: sub;
+    display: inline-block;
+    padding: 3px;
+    text-align: left;
+}
+H3 {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1.15;
+    margin: 0 10px 0 0;
+    vertical-align: sub;
+    display: inline-block;
+    padding: 3px;
+    text-align: left;
+}
+hr {
+    color: #d7d7d7;
+}
+p{
+    display: inline;
+    margin: 0;
+    line-height: 40px;
+}
+p{
+    display: inline;
+    margin: 0;
+    line-height: 40px;
+}

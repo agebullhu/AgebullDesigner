@@ -1,0 +1,1 @@
+﻿{"Method":1,"CallArg":"","ResultArg":"ImgValiadateResponse","RoutePath":"v2/vc/img/get","IsUserCommand":false,"_project":"Auth","IsGlobal":false,"_caption":"获取图片验证码","_description":"获取图片验证码","_name":"GetImgVerificationCode","option":{"_key":"43770e8c-d860-40f7-9370-0ea899d07f27","Identity":0,"Index":0,"referenceKey":"00000000-0000-0000-0000-000000000000","state":0}}
