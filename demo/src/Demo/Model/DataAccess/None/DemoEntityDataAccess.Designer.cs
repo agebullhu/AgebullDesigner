@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/6 10:20:20*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/6 17:20:20*/
 #region
 using System;
 using System.Collections.Generic;
@@ -91,7 +91,8 @@ namespace Agebull.EntityModel.Demo.DataAccess
     `name` AS `Name`,
     `price` AS `Price`,
     `value` AS `Value`,
-    `memo` AS `Memo`";
+    `memo` AS `Memo`,
+    `type` AS `Type`";
             }
         }
 
@@ -110,14 +111,16 @@ INSERT INTO `tb_demo_entity`
     `name`,
     `price`,
     `value`,
-    `memo`
+    `memo`,
+    `type`
 )
 VALUES
 (
     ?Name,
     ?Price,
     ?Value,
-    ?Memo
+    ?Memo,
+    ?Type
 );
 SELECT @@IDENTITY;";
             }
@@ -135,7 +138,8 @@ UPDATE `tb_demo_entity` SET
        `name` = ?Name,
        `price` = ?Price,
        `value` = ?Value,
-       `memo` = ?Memo
+       `memo` = ?Memo,
+       `type` = ?Type
  WHERE `id` = ?Id;";
             }
         }
@@ -161,6 +165,9 @@ UPDATE `tb_demo_entity` SET
             //注释
             if (data.__EntityStatus.ModifiedProperties[DemoEntityData._DataStruct_.Real_Memo] > 0)
                 sql.AppendLine("       `memo` = ?Memo");
+            //商品类型
+            if (data.__EntityStatus.ModifiedProperties[DemoEntityData._DataStruct_.Real_Type] > 0)
+                sql.AppendLine("       `type` = ?Type");
             sql.Append(" WHERE `id` = ?Id;");
             return sql.ToString();
         }
@@ -173,7 +180,7 @@ UPDATE `tb_demo_entity` SET
         /// <summary>
         ///  所有字段
         /// </summary>
-        static string[] _fields = new string[]{ "Id","Name","Price","Value","Memo" };
+        static string[] _fields = new string[]{ "Id","Name","Price","Value","Memo","Type" };
 
         /// <summary>
         ///  所有字段
@@ -195,7 +202,8 @@ UPDATE `tb_demo_entity` SET
             { "Name" , "name" },
             { "Price" , "price" },
             { "Value" , "value" },
-            { "Memo" , "memo" }
+            { "Memo" , "memo" },
+            { "Type" , "type" }
         };
 
         /// <summary>
@@ -228,6 +236,8 @@ UPDATE `tb_demo_entity` SET
                     entity._value = (int)reader.GetInt32(3);
                 if (!reader.IsDBNull(4))
                     entity._memo = reader.GetString(4).ToString();
+                if (!reader.IsDBNull(5))
+                    entity._type = (Type)reader.GetInt32(5);
             }
         }
 
@@ -250,6 +260,8 @@ UPDATE `tb_demo_entity` SET
                     return MySqlDbType.Int32;
                 case "Memo":
                     return MySqlDbType.VarString;
+                case "Type":
+                    return MySqlDbType.Int32;
             }
             return MySqlDbType.VarChar;
         }
@@ -285,6 +297,8 @@ UPDATE `tb_demo_entity` SET
             else
                 parameter.Value = entity.Memo;
             cmd.Parameters.Add(parameter);
+            //07:商品类型(Type)
+            cmd.Parameters.Add(new MySqlParameter("Type",MySqlDbType.Int32){ Value = (int)entity.Type});
         }
 
 

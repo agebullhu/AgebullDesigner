@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/6 10:43:20*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/6 17:20:20*/
 #region
 using System;
 using System.Collections.Generic;
@@ -62,7 +62,7 @@ namespace Agebull.EntityModel.Demo.DataAccess
         /// <returns></returns>
         protected override string LoadConnectionStringSetting()
         {
-            return ConfigurationManager.AppSettings["ProjectDemoDb"];
+            return ConfigurationManager.ConnectionStrings["ProjectDemoDb"];
         }
     }
 }

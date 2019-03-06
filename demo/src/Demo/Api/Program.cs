@@ -18,10 +18,11 @@ namespace DemoDataModel
         static void Main(string[] args)
         {
             IocHelper.AddScoped<IRedis, StackExchangeRedis>();
-            IocHelper.AddScoped<IEntityEventProxy, EntityEventProxy>();
+            IocHelper.AddSingleton<IRedis, StackExchangeRedis>();
+            IocHelper.AddTransient<IEntityEventProxy, EntityEventProxy>();
             IocHelper.AddScoped<UserCenterDb, UserCenterDb>();
             IocHelper.AddScoped<AppManageDb, AppManageDb>();
-
+            
             IocHelper.AddScoped<IOAuthBusiness, AuthBusiness>();
             IocHelper.AddScoped<IUserInfoApi, UserInfoApiLogical>();
             ZeroApplication.CheckOption();

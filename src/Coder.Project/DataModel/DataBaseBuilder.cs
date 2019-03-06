@@ -185,7 +185,7 @@ namespace {Project.NameSpace}.DataAccess
         /// <returns></returns>
         protected override string LoadConnectionStringSetting()
         {{
-            return ConfigurationManager.AppSettings[""{Project.DataBaseObjectName}""];
+            return ConfigurationManager.ConnectionStrings[""{Project.DataBaseObjectName}""];
         }}
     }}
 }}";

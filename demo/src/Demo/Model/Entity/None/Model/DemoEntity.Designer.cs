@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/6 10:20:20*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/6 17:20:19*/
 #region
 using System;
 using System.Collections.Generic;
@@ -245,6 +245,41 @@ namespace Agebull.EntityModel.Demo
                 this.OnPropertyChanged(_DataStruct_.Real_Memo);
             }
         }
+        /// <summary>
+        /// 商品类型
+        /// </summary>
+        [IgnoreDataMember,JsonIgnore]
+        public Type _type;
+
+        partial void OnTypeGet();
+
+        partial void OnTypeSet(ref Type value);
+
+        partial void OnTypeSeted();
+
+        
+        /// <summary>
+        /// 商品类型
+        /// </summary>
+        [DataRule(CanNull = true)]
+        [DataMember , JsonProperty("Type", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"商品类型")]
+        public  Type Type
+        {
+            get
+            {
+                OnTypeGet();
+                return this._type;
+            }
+            set
+            {
+                if(this._type == value)
+                    return;
+                OnTypeSet(ref value);
+                this._type = value;
+                OnTypeSeted();
+                this.OnPropertyChanged(_DataStruct_.Real_Type);
+            }
+        }
 
         #region 接口属性
 
@@ -284,6 +319,36 @@ namespace Agebull.EntityModel.Demo
             case "memo":
                 this.Memo = value == null ? null : value.ToString();
                 return;
+            case "type":
+                if (value != null)
+                {
+                    if(value is int)
+                    {
+                        this.Type = (Type)(int)value;
+                    }
+                    else if(value is Type)
+                    {
+                        this.Type = (Type)value;
+                    }
+                    else
+                    {
+                        var str = value.ToString();
+                        Type val;
+                        if (Type.TryParse(str, out val))
+                        {
+                            this.Type = val;
+                        }
+                        else
+                        {
+                            int vl;
+                            if (int.TryParse(str, out vl))
+                            {
+                                this.Type = (Type)vl;
+                            }
+                        }
+                    }
+                }
+                return;
             }
 
             //System.Diagnostics.Trace.WriteLine(property + @"=>" + value);
@@ -316,6 +381,9 @@ namespace Agebull.EntityModel.Demo
             case _DataStruct_.Memo:
                 this.Memo = value == null ? null : value.ToString();
                 return;
+            case _DataStruct_.Type:
+                this.Type = (Type)value;
+                return;
             }
         }
 
@@ -338,6 +406,8 @@ namespace Agebull.EntityModel.Demo
                 return this.Value;
             case "memo":
                 return this.Memo;
+            case "type":
+                return this.Type;
             }
 
             return null;
@@ -362,6 +432,8 @@ namespace Agebull.EntityModel.Demo
                     return this.Value;
                 case _DataStruct_.Memo:
                     return this.Memo;
+                case _DataStruct_.Type:
+                    return this.Type;
             }
 
             return null;
@@ -388,6 +460,7 @@ namespace Agebull.EntityModel.Demo
             this._price = sourceEntity._price;
             this._value = sourceEntity._value;
             this._memo = sourceEntity._memo;
+            this._type = sourceEntity._type;
             CopyExtendValue(sourceEntity);
             this.__EntityStatus.SetModified();
         }
@@ -403,6 +476,7 @@ namespace Agebull.EntityModel.Demo
                 this.Price = source.Price;
                 this.Value = source.Value;
                 this.Memo = source.Memo;
+                this.Type = source.Type;
         }
         #endregion
 
@@ -426,6 +500,7 @@ namespace Agebull.EntityModel.Demo
                 OnPriceModified(subsist,false);
                 OnValueModified(subsist,false);
                 OnMemoModified(subsist,false);
+                OnTypeModified(subsist,false);
                 return;
             }
             else if (subsist == EntitySubsist.Adding || subsist == EntitySubsist.Added)
@@ -435,15 +510,17 @@ namespace Agebull.EntityModel.Demo
                 OnPriceModified(subsist,true);
                 OnValueModified(subsist,true);
                 OnMemoModified(subsist,true);
+                OnTypeModified(subsist,true);
                 return;
             }
-            else if(modifieds != null && modifieds[5] > 0)
+            else if(modifieds != null && modifieds[6] > 0)
             {
                 OnIdModified(subsist,modifieds[_DataStruct_.Real_Id] == 1);
                 OnNameModified(subsist,modifieds[_DataStruct_.Real_Name] == 1);
                 OnPriceModified(subsist,modifieds[_DataStruct_.Real_Price] == 1);
                 OnValueModified(subsist,modifieds[_DataStruct_.Real_Value] == 1);
                 OnMemoModified(subsist,modifieds[_DataStruct_.Real_Memo] == 1);
+                OnTypeModified(subsist,modifieds[_DataStruct_.Real_Type] == 1);
             }
         }
 
@@ -496,6 +573,16 @@ namespace Agebull.EntityModel.Demo
         /// 对关联的属性的更改,请自行保存,否则可能丢失
         /// </remarks>
         partial void OnMemoModified(EntitySubsist subsist,bool isModified);
+
+        /// <summary>
+        /// 商品类型修改的后期处理(保存前)
+        /// </summary>
+        /// <param name="subsist">当前对象状态</param>
+        /// <param name="isModified">是否被修改</param>
+        /// <remarks>
+        /// 对关联的属性的更改,请自行保存,否则可能丢失
+        /// </remarks>
+        partial void OnTypeModified(EntitySubsist subsist,bool isModified);
         #endregion
 
         #region 数据结构
@@ -587,6 +674,16 @@ namespace Agebull.EntityModel.Demo
             /// 注释的实时记录顺序
             /// </summary>
             public const int Real_Memo = 4;
+
+            /// <summary>
+            /// 商品类型的数字标识
+            /// </summary>
+            public const byte Type = 6;
+            
+            /// <summary>
+            /// 商品类型的实时记录顺序
+            /// </summary>
+            public const int Real_Type = 5;
 
             /// <summary>
             /// 实体结构
@@ -681,6 +778,23 @@ namespace Agebull.EntityModel.Demo
                             PropertyType = typeof(string),
                             CanNull      = false,
                             ValueType    = PropertyValueType.String,
+                            CanImport    = false,
+                            CanExport    = false
+                        }
+                    },
+                    {
+                        Real_Type,
+                        new PropertySturct
+                        {
+                            Index        = Type,
+                            Name         = "Type",
+                            Title        = "商品类型",
+                            Caption      = @"商品类型",
+                            Description  = @"商品类型",
+                            ColumnName   = "type",
+                            PropertyType = typeof(Type),
+                            CanNull      = false,
+                            ValueType    = PropertyValueType.Value,
                             CanImport    = false,
                             CanExport    = false
                         }
