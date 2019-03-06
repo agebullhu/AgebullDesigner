@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
@@ -32,6 +31,7 @@ using System.IO;
 using Newtonsoft.Json;
 
 using Agebull.Common;
+using Agebull.Common.Configuration;
 using Agebull.Common.DataModel;
 using Agebull.Common.WebApi;
 using Gboxt.Common.DataModel;
@@ -127,7 +127,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
@@ -138,6 +137,7 @@ using System.IO;
 using Newtonsoft.Json;
 
 using Agebull.Common;
+using Agebull.Common.Configuration;
 using Agebull.Common.DataModel;
 using Agebull.Common.WebApi;
 using Gboxt.Common.DataModel;
@@ -185,7 +185,7 @@ namespace {Project.NameSpace}.DataAccess
         /// <returns></returns>
         protected override string LoadConnectionStringSetting()
         {{
-            return ConfigurationManager.AppSettings[""MySql""];
+            return ConfigurationManager.AppSettings[""{Project.DataBaseObjectName}""];
         }}
     }}
 }}";

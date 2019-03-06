@@ -12,10 +12,6 @@ namespace Agebull.Common.AppManage
     [DataContract]
     sealed partial class RolePowerData : EditDataObject, IRolePower
     {
-        long IRolePower.Id { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        long IRolePower.RoleId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        long IRolePower.PageItemId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        WebApi.Auth.RolePowerType IRolePower.Power { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         /// <summary>
         /// 初始化

@@ -51,6 +51,6 @@ function doLogin() {
         }
     }, function() {
         $("#cMsg").text("未知错误");
-    });
+    },"UserCenter/");
     return false;
 } 

@@ -14,6 +14,7 @@ using Agebull.Common.UserCenter;
 using Agebull.Common.UserCenter.BusinessLogic;
 using Agebull.Common.UserCenter.WebApi.Entity;
 using Agebull.Common.WebApi.Auth;
+using Agebull.EntityModel.Demo.DataAccess;
 using Agebull.OAuth.Business;
 using Agebull.ZeroNet.Core;
 using Agebull.ZeroNet.WebSocket;
@@ -25,6 +26,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Agebull.EntityModel.Demo.WebApi.Entity;
 
 namespace Agebull.ZeroNet.ManageApplication
 {
@@ -41,6 +43,7 @@ namespace Agebull.ZeroNet.ManageApplication
             IocHelper.AddScoped<IEntityEventProxy, EntityEventProxy>();
             IocHelper.AddScoped<UserCenterDb, UserCenterDb>();
             IocHelper.AddScoped<AppManageDb, AppManageDb>();
+            IocHelper.AddScoped<ProjectDemoDb, ProjectDemoDb>(); 
 
             IocHelper.AddScoped<IOAuthBusiness, AuthBusiness>();
             IocHelper.AddScoped<IUserInfoApi, UserInfoApiLogical>();
@@ -64,9 +67,11 @@ namespace Agebull.ZeroNet.ManageApplication
             IocHelper.AddScoped<AnnexDb, AnnexDb>();
             IocHelper.AddScoped<GlobalContext, GlobalContext>();
             ZeroApplication.RegistZeroObject<Zero2WebSocketBridge>();
-            ZeroApplication.Discove(typeof(UserApiController).Assembly, "UserManage");
-            ZeroApplication.Discove(typeof(AppInfoApiController).Assembly, "AppManage");
+            ZeroApplication.Discove(typeof(UserApiController).Assembly, "User");
+            ZeroApplication.Discove(typeof(AppInfoApiController).Assembly, "App");
             ZeroApplication.Discove(typeof(AuthBusiness).Assembly, "Authority");
+
+            ZeroApplication.Discove(typeof(DemoEntityApiController).Assembly, "Demo");
             ZeroApplication.Initialize();
         }
 

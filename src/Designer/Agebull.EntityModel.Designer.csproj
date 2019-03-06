@@ -367,6 +367,9 @@
   <ItemGroup>
     <Resource Include="Style\Images\bull.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Style\Images\finds.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

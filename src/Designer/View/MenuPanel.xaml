@@ -5,32 +5,44 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" Background="WhiteSmoke">
     <StackPanel Orientation="Vertical">
-        <DockPanel>
-            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                <TextBox Text="{Binding Model.Context.FindKey,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}" Margin="2" Width="300"  />
-                <ContentControl DataContext="{Binding Model.Tree.FindCommand}">
-                    <Button Style="{StaticResource  CommandButton}" />
-                </ContentControl>
-            </StackPanel>
-            <Menu ItemsSource="{Binding Model.Editor.WindowMenu.Items}"  DockPanel.Dock="Right"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
             <Menu ItemsSource="{Binding Model.Editor.Menus}"/>
-        </DockPanel>
+            <Border Grid.Column="1" Margin="2" Height="24" VerticalAlignment="Top" BorderThickness="1" BorderBrush="Black" DockPanel.Dock="Right" Background="White">
+                <StackPanel Orientation="Horizontal" Background="White">
+                    <TextBox BorderThickness="0" Text="{Binding Model.Context.FindKey,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}" Margin="2"  Width="200"  />
+                    <ContentControl DataContext="{Binding Model.Tree.FindCommand}">
+                        <Button Style="{StaticResource CommandButton}" />
+                    </ContentControl>
+                </StackPanel>
+            </Border>
+        </Grid>
         <Border BorderBrush="WhiteSmoke" BorderThickness="0,0,1,0" Padding="2" MinHeight="32">
-        <ItemsControl VerticalAlignment="Stretch"
-                      HorizontalAlignment="Stretch"
-                      ItemsSource="{Binding Model.Editor.Buttons}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Button Style="{StaticResource CommandButton}" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                        <WrapPanel VerticalAlignment="Stretch"
-                                   HorizontalAlignment="Stretch" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            </ItemsControl>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <ItemsControl VerticalAlignment="Stretch"
+                              HorizontalAlignment="Stretch"
+                              ItemsSource="{Binding Model.Editor.Buttons}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Style="{StaticResource CommandButton}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel VerticalAlignment="Stretch"
+                                       HorizontalAlignment="Stretch" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+                <Menu Grid.Column="1"  ItemsSource="{Binding Model.Editor.WindowMenu.Items}"  DockPanel.Dock="Right"/>
+            </Grid>
         </Border>
     </StackPanel>
 </UserControl>

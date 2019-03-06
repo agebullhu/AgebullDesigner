@@ -132,9 +132,9 @@ var page = {
         createRoleButton("设置分类", "setparent", "#btnSetParent", "icon-cmd", function () {
             page.doSetParent();
         });
-        createRoleButton("页面静态化", "setparent", "#btnToHtml", "icon-cmd", function () {
-            page.doToHtml();
-        });//
+        //createRoleButton("页面静态化", "setparent", "#btnToHtml", "icon-cmd", function () {
+        //    page.doToHtml();
+        //});
     },
     /*
         删除一条项目模板节点的界面操作
@@ -149,13 +149,13 @@ var page = {
                 $("#tree").tree("reload");
         });
     },
-    doToHtml: function () {
-        var pid = page.curFolderId;
-        if (!pid) {
-            pid = 0;
-        }
-        call_remote("页面静态化", page.apiPrefix + "page/static", { id: pid, host: location.host });
-    },
+    //doToHtml: function () {
+    //    var pid = page.curFolderId;
+    //    if (!pid) {
+    //        pid = 0;
+    //    }
+    //    call_remote("页面静态化", page.apiPrefix + "page/static", { id: pid, host: location.host });
+    //},
     doSetParent: function () {
         var cla = $("#cParent").textbox("getValue");
         if (!cla) {
@@ -165,7 +165,7 @@ var page = {
         }
     },
     doFlushCache: function () {
-        call_remote("刷新系统缓存", "v1/sys/flush_cache", null, null, null, "UserManage/");
+        call_remote("刷新系统缓存", "v1/sys/flush_cache", null, null, null, globalOptions.api.userApiHost);
     },
     columns: [[
         { halign: "center", align: "center", field: "IsSelected", checkbox: true },

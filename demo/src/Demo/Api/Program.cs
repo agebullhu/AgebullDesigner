@@ -6,6 +6,7 @@ using Agebull.Common.Ioc;
 using Agebull.Common.OAuth;
 using Agebull.Common.OAuth.DataAccess;
 using Agebull.Common.UserCenter.WebApi.Entity;
+using Agebull.EntityModel.Demo.WebApi.Entity;
 using Agebull.ZeroNet.Core;
 using Agebull.OAuth.Business;
 using Gboxt.Common.DataModel.ExtendEvents;
@@ -24,7 +25,7 @@ namespace DemoDataModel
             IocHelper.AddScoped<IOAuthBusiness, AuthBusiness>();
             IocHelper.AddScoped<IUserInfoApi, UserInfoApiLogical>();
             ZeroApplication.CheckOption();
-            ZeroApplication.Discove(typeof(UserApiController).Assembly, "UserManage");
+            ZeroApplication.Discove(typeof(DemoEntityApiController).Assembly, "Demo");
             ZeroApplication.Discove(typeof(AppInfoApiController).Assembly, "AppManage");
             ZeroApplication.Discove(typeof(AuthBusiness).Assembly, "Authority");
             ZeroApplication.Initialize();

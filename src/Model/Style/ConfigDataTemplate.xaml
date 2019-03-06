@@ -12,7 +12,8 @@
 
     <DataTemplate x:Key="ParentConfigTemplate" DataType="config:ParentConfigBase">
         <GroupBox Header="设计器支持" Margin="5" Style="{StaticResource AdvGroupBox}"
-                  DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type Border}},Path=DataContext}">
+                  DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type Border}},Path=DataContext}"
+                  Visibility="{Binding Solution.AdvancedView,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
             <WrapPanel>
                 <StackPanel Style="{StaticResource FieldPanel}">
                     <Label Content="简称" />
@@ -140,11 +141,11 @@
                         <Label Content="数据对象名称" />
                         <TextBox Text="{Binding DataBaseObjectName,Mode=TwoWay}" Tag="{Binding Name,Mode=OneWay}" />
                     </StackPanel>
-                    <StackPanel Style="{StaticResource FieldPanel}">
+                    <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="数据库地址" />
                         <TextBox Text="{Binding DbHost,Mode=TwoWay}" />
                     </StackPanel>
-                    <StackPanel Style="{StaticResource FieldPanel}">
+                    <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="数据库名称" />
                         <TextBox Text="{Binding DbSoruce,Mode=TwoWay}" />
                     </StackPanel>

@@ -55,4 +55,5 @@
     <BitmapImage x:Key="async_Succeed" UriSource="Images/async_Succeed.png" />
     <BitmapImage x:Key="async_Faulted" UriSource="Images/async_Faulted.png" />
     <BitmapImage x:Key="ImgSubmit" UriSource="Images/a_submit.png" />
+    <BitmapImage x:Key="img_find" UriSource="Images/finds.png" /> 
 </ResourceDictionary> 

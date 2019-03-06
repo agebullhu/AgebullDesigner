@@ -118,7 +118,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         private string Grid => Entity.IsUiReadOnly
             ? $@"
     <div id='pageToolbarEx'>
-        <div id='regCommand' style='inline-block;'>
+        <div id='regCommand' style='display:inline-block;'>
             <a id='btnEdit' href='javascript:void(0)'>查看</a>
         </div>
         <div id='regQuery' class='toolbar_line'>
@@ -130,7 +130,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
     <div id='grid'></div>"
             : $@"
     <div id='pageToolbarEx'>
-        <div id='regCommand' style='inline-block;'>
+        <div id='regCommand' style='display:inline-block;'>
             <a id='btnAdd' href='javascript:void(0)'>新增</a>
             <a id='btnEdit' href='javascript:void(0)'>修改</a>
             <a id='btnDelete' href='javascript:void(0)'>删除</a>{CommandHtmlCode()}

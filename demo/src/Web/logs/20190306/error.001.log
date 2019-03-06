@@ -1,0 +1,551 @@
+[2019-03-06 09:44:07Z] 0000000E-AgebullMac:Background:RARH-1-AFQUXF7MC9-5UV0HDBLi0 > 
+ReadEntity : over flow * GovernmentAreaData
+
+[2019-03-06 09:44:07Z] 00000010-AgebullMac:Background:RARH-1-NV5TXDU2LY-DYJiA9PE1P > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-06 09:44:08Z] 000000E7-AgebullMac:Background:RARH-7-25FR2T2KPR-H6YRWKM8ZF > 
+Summary : Station no find
+
+[2019-03-06 09:44:08Z] 000000EB-AgebullMac:Background:RARH-7-V0RH1JL0UU-4SXP9RGHi3 > 
+Summary : OnObjectFailed
+
+[2019-03-06 09:52:26Z] 0000000E-AgebullMac:Background:0AZH-1-CFDUSFRM39-RUE0FDHLL0 > 
+ReadEntity : over flow * GovernmentAreaData
+
+[2019-03-06 09:52:26Z] 00000010-AgebullMac:Background:0AZH-1-GVNTBDR2KY-BYTiW9VERP > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-06 09:52:28Z] 000000E7-AgebullMac:Background:0AZH-7-80KHSJT0KU-NSDPiRGHG3 > 
+Summary : Station no find
+
+[2019-03-06 09:52:28Z] 000000EB-AgebullMac:Background:0AZH-7-iQUC24E5PC-F62U3SCi4S > 
+Summary : OnObjectFailed
+
+[2019-03-06 09:54:03Z] 0000000E-AgebullMac:Background:3A5H-1-XFYUFF3M49-YU20NDPL90 > 
+ReadEntity : over flow * GovernmentAreaData
+
+[2019-03-06 09:54:03Z] 00000010-AgebullMac:Background:3A5H-1-ZV1TFDE2iY-9YMi29KE2P > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-06 09:54:05Z] 000000E7-AgebullMac:Background:3A5H-7-3QFiE52AXA-J7NCKP15PH > 
+Summary : Station no find
+
+[2019-03-06 09:54:05Z] 000000EB-AgebullMac:Background:3A5H-7-7PLLM9REUJ-LY8UDKAPQS > 
+Summary : OnObjectFailed
+
+[2019-03-06 10:12:24Z] 00000157-AgebullMac:Background:3A5H-19-#01CA35F551C44EE784CA3A83298933D1-014VPY-#01CA35F551C44EE784CA3A83298933D1-014VPY > 
+系统错误
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadPageData(Int32 page, Int32 limit, String order, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.PageData(Int32 page, Int32 limit, String sort, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiController`4.LoadListData(String condition, MySqlParameter[] args)
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.DefaultGetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.Designer.cs:line 51
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.GetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.cs:line 49
+   at Agebull.Common.WebApi.ApiController`4.List2()
+   at List()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-06 10:12:24Z] 00000159-AgebullMac:Background:3A5H-19-#01CA35F551C44EE784CA3A83298933D1-014VPY-#01CA35F551C44EE784CA3A83298933D1-014VPY > 
+系统错误
+Demo : ProjectDemo/de/v1/edit/list * execute * {"LocalId":null,"Caller":"+>ZeroCenter:WeichatBridge:7N31-Demo-7X0Y","Title":"+>ZeroCenter:WeichatBridge:7N31-Demo-7X0Y","Command":"ProjectDemo/de/v1/edit/list","ApiName":"ProjectDemo/de/v1/edit/list","Argument":"{\"keyWord\":\"\",\"page\":\"1\",\"rows\":\"20\",\"sort\":\"Id\",\"order\":\"desc\"}","Result":null,"Status":0,"Originals":{},"State":1,"Tag":0,"Head":"Kz5aZXJvQ2VudGVyOldlaWNoYXRCcmlkZ2U6N04zMS1EZW1vLTdYMFk=","GlobalId":"37436171902529630","CallId":"37436171902529628","RequestId":"#01CA35F551C44EE784CA3A83298933D1-014VPY","Context":"{\n  \"user\": {\n    \"defPatient\": {\n      \"cardId\": 13,\n      \"cardNo\": \"KDP9M7NQFATCS\",\n      \"idCardName\": \"d\",\n      \"relation\": \"本人\"\n    },\n    \"userId\": 1,\n    \"openId\": \"KDP9M7NQFATCS\",\n    \"roleId\": 0,\n    \"groupId\": 0,\n    \"orgId\": 0,\n    \"depId\": 0,\n    \"nickName\": \"游客\",\n    \"account\": null,\n    \"state\": 1,\n    \"loginType\": 0,\n    \"os\": \"LINUX\",\n    \"app\": \"APP\",\n    \"depLevel\": 0\n  },\n  \"org\": {\n    \"orgId\": 0,\n    \"name\": null,\n    \"key\": null,\n    \"routeName\": null\n  },\n  \"req\": {\n    \"localGlobalId\": \"37436171902529628\",\n    \"service\": \"ZeroCenter\",\n    \"requestId\": \"#01CA35F551C44EE784CA3A83298933D1-014VPY\",\n    \"token\": \"#01CA35F551C44EE784CA3A83298933D1\",\n    \"argumentType\": 1,\n    \"requestType\": 1,\n    \"ip\": \"::ffff:125.108.206.194\",\n    \"port\": \"7006\",\n    \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0\"\n  }\n}","Content":"{\"keyWord\":\"\",\"page\":\"1\",\"rows\":\"20\",\"sort\":\"Id\",\"order\":\"desc\"}","CommandOrSubTitle":"ProjectDemo/de/v1/edit/list","Requester":"WeichatBridge","Station":null,"StationType":null}
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadPageData(Int32 page, Int32 limit, String order, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.PageData(Int32 page, Int32 limit, String sort, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiController`4.LoadListData(String condition, MySqlParameter[] args)
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.DefaultGetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.Designer.cs:line 51
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.GetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.cs:line 49
+   at Agebull.Common.WebApi.ApiController`4.List2()
+   at List()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-06 10:12:24Z] 0000015B-AgebullMac:Background:3A5H-19-#01CA35F551C44EE784CA3A83298933D1-R3UXSC-#01CA35F551C44EE784CA3A83298933D1-R3UXSC > 
+系统错误
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadPageData(Int32 page, Int32 limit, String order, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.PageData(Int32 page, Int32 limit, String sort, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiController`4.LoadListData(String condition, MySqlParameter[] args)
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.DefaultGetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.Designer.cs:line 51
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.GetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.cs:line 49
+   at Agebull.Common.WebApi.ApiController`4.List2()
+   at List()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-06 10:12:24Z] 0000015D-AgebullMac:Background:3A5H-19-#01CA35F551C44EE784CA3A83298933D1-R3UXSC-#01CA35F551C44EE784CA3A83298933D1-R3UXSC > 
+系统错误
+Demo : ProjectDemo/de/v1/edit/list * execute * {"LocalId":null,"Caller":"+>ZeroCenter:WeichatBridge:7N31-Demo-7X0Y","Title":"+>ZeroCenter:WeichatBridge:7N31-Demo-7X0Y","Command":"ProjectDemo/de/v1/edit/list","ApiName":"ProjectDemo/de/v1/edit/list","Argument":"{\"keyWord\":\"\",\"page\":\"1\",\"rows\":\"20\",\"sort\":\"Id\",\"order\":\"desc\"}","Result":null,"Status":0,"Originals":{},"State":1,"Tag":0,"Head":"Kz5aZXJvQ2VudGVyOldlaWNoYXRCcmlkZ2U6N04zMS1EZW1vLTdYMFk=","GlobalId":"37436171902529633","CallId":"37436171902529631","RequestId":"#01CA35F551C44EE784CA3A83298933D1-R3UXSC","Context":"{\n  \"user\": {\n    \"defPatient\": {\n      \"cardId\": 13,\n      \"cardNo\": \"KDP9M7NQFATCS\",\n      \"idCardName\": \"d\",\n      \"relation\": \"本人\"\n    },\n    \"userId\": 1,\n    \"openId\": \"KDP9M7NQFATCS\",\n    \"roleId\": 0,\n    \"groupId\": 0,\n    \"orgId\": 0,\n    \"depId\": 0,\n    \"nickName\": \"游客\",\n    \"account\": null,\n    \"state\": 1,\n    \"loginType\": 0,\n    \"os\": \"LINUX\",\n    \"app\": \"APP\",\n    \"depLevel\": 0\n  },\n  \"org\": {\n    \"orgId\": 0,\n    \"name\": null,\n    \"key\": null,\n    \"routeName\": null\n  },\n  \"req\": {\n    \"localGlobalId\": \"37436171902529631\",\n    \"service\": \"ZeroCenter\",\n    \"requestId\": \"#01CA35F551C44EE784CA3A83298933D1-R3UXSC\",\n    \"token\": \"#01CA35F551C44EE784CA3A83298933D1\",\n    \"argumentType\": 1,\n    \"requestType\": 1,\n    \"ip\": \"::ffff:125.108.206.194\",\n    \"port\": \"7006\",\n    \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0\"\n  }\n}","Content":"{\"keyWord\":\"\",\"page\":\"1\",\"rows\":\"20\",\"sort\":\"Id\",\"order\":\"desc\"}","CommandOrSubTitle":"ProjectDemo/de/v1/edit/list","Requester":"WeichatBridge","Station":null,"StationType":null}
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadPageData(Int32 page, Int32 limit, String order, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.PageData(Int32 page, Int32 limit, String sort, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiController`4.LoadListData(String condition, MySqlParameter[] args)
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.DefaultGetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.Designer.cs:line 51
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.GetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.cs:line 49
+   at Agebull.Common.WebApi.ApiController`4.List2()
+   at List()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-06 10:14:38Z] 0000000E-AgebullMac:Background:KUZR-1-LUi0AD8LN0-JN0T5NFUXH > 
+ReadEntity : over flow * GovernmentAreaData
+
+[2019-03-06 10:14:38Z] 00000010-AgebullMac:Background:KUZR-1-AYRiJ95EMP-4AHR7U1A5V > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-06 10:14:39Z] 000000E7-AgebullMac:Background:KUZR-8-33WW5HiDNG-N54REXVRST > 
+Summary : Station no find
+
+[2019-03-06 10:14:39Z] 000000EB-AgebullMac:Background:KUZR-8-9WUFKK6iEX-EXYQYP6MVN > 
+Summary : OnObjectFailed
+
+[2019-03-06 10:14:52Z] 00000113-AgebullMac:Background:KUZR-19-#01CA35F551C44EE784CA3A83298933D1-SJ14LW-#01CA35F551C44EE784CA3A83298933D1-SJ14LW > 
+系统错误
+MySql.Data.MySqlClient.MySqlException (0x80004005): Unable to connect to any of the specified MySQL hosts. ---> System.AggregateException: One or more errors occurred. (由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306) ---> System.Net.Internals.SocketExceptionFactory+ExtendedSocketException: 由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+   at System.Net.Sockets.Socket.MultipleAddressConnectCallback(IAsyncResult result)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.<>c.<ConnectAsync>b__28_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)
+   at MySql.Data.Common.StreamCreator.GetTcpStream(MySqlConnectionStringBuilder settings)
+   at MySql.Data.MySqlClient.NativeDriver.Open()
+---> (Inner Exception #0) System.Net.Internals.SocketExceptionFactory+ExtendedSocketException (10061): 由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+   at System.Net.Sockets.Socket.MultipleAddressConnectCallback(IAsyncResult result)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.<>c.<ConnectAsync>b__28_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)<---
+
+   at MySql.Data.MySqlClient.NativeDriver.Open()
+   at MySql.Data.MySqlClient.Driver.Open()
+   at MySql.Data.MySqlClient.Driver.Create(MySqlConnectionStringBuilder settings)
+   at MySql.Data.MySqlClient.MySqlPool.CreateNewPooledConnection()
+   at MySql.Data.MySqlClient.MySqlPool.GetPooledConnection()
+   at MySql.Data.MySqlClient.MySqlPool.TryToGetDriver()
+   at MySql.Data.MySqlClient.MySqlPool.GetConnection()
+   at MySql.Data.MySqlClient.MySqlConnection.Open()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.InitConnection()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.get_Connection()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.CreateCommand(String sql, IEnumerable`1 args)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadPageData(Int32 page, Int32 limit, String order, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.PageData(Int32 page, Int32 limit, String sort, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiController`4.LoadListData(String condition, MySqlParameter[] args)
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.DefaultGetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.Designer.cs:line 51
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.GetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.cs:line 49
+   at Agebull.Common.WebApi.ApiController`4.List2()
+   at List()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-06 10:14:52Z] 00000115-AgebullMac:Background:KUZR-19-#01CA35F551C44EE784CA3A83298933D1-SJ14LW-#01CA35F551C44EE784CA3A83298933D1-SJ14LW > 
+系统错误
+Demo : ProjectDemo/de/v1/edit/list * execute * {"LocalId":null,"Caller":"+>ZeroCenter:WeichatBridge:7N31-Demo-7X0Y","Title":"+>ZeroCenter:WeichatBridge:7N31-Demo-7X0Y","Command":"ProjectDemo/de/v1/edit/list","ApiName":"ProjectDemo/de/v1/edit/list","Argument":"{\"keyWord\":\"\",\"page\":\"1\",\"rows\":\"20\",\"sort\":\"Id\",\"order\":\"desc\"}","Result":null,"Status":0,"Originals":{},"State":1,"Tag":0,"Head":"Kz5aZXJvQ2VudGVyOldlaWNoYXRCcmlkZ2U6N04zMS1EZW1vLTdYMFk=","GlobalId":"37436171902529652","CallId":"37436171902529650","RequestId":"#01CA35F551C44EE784CA3A83298933D1-SJ14LW","Context":"{\n  \"user\": {\n    \"defPatient\": {\n      \"cardId\": 13,\n      \"cardNo\": \"KDP9M7NQFATCS\",\n      \"idCardName\": \"d\",\n      \"relation\": \"本人\"\n    },\n    \"userId\": 1,\n    \"openId\": \"KDP9M7NQFATCS\",\n    \"roleId\": 0,\n    \"groupId\": 0,\n    \"orgId\": 0,\n    \"depId\": 0,\n    \"nickName\": \"游客\",\n    \"account\": null,\n    \"state\": 1,\n    \"loginType\": 0,\n    \"os\": \"LINUX\",\n    \"app\": \"APP\",\n    \"depLevel\": 0\n  },\n  \"org\": {\n    \"orgId\": 0,\n    \"name\": null,\n    \"key\": null,\n    \"routeName\": null\n  },\n  \"req\": {\n    \"localGlobalId\": \"37436171902529650\",\n    \"service\": \"ZeroCenter\",\n    \"requestId\": \"#01CA35F551C44EE784CA3A83298933D1-SJ14LW\",\n    \"token\": \"#01CA35F551C44EE784CA3A83298933D1\",\n    \"argumentType\": 1,\n    \"requestType\": 1,\n    \"ip\": \"::ffff:125.108.206.194\",\n    \"port\": \"7226\",\n    \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0\"\n  }\n}","Content":"{\"keyWord\":\"\",\"page\":\"1\",\"rows\":\"20\",\"sort\":\"Id\",\"order\":\"desc\"}","CommandOrSubTitle":"ProjectDemo/de/v1/edit/list","Requester":"WeichatBridge","Station":null,"StationType":null}
+MySql.Data.MySqlClient.MySqlException (0x80004005): Unable to connect to any of the specified MySQL hosts. ---> System.AggregateException: One or more errors occurred. (由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306) ---> System.Net.Internals.SocketExceptionFactory+ExtendedSocketException: 由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+   at System.Net.Sockets.Socket.MultipleAddressConnectCallback(IAsyncResult result)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.<>c.<ConnectAsync>b__28_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)
+   at MySql.Data.Common.StreamCreator.GetTcpStream(MySqlConnectionStringBuilder settings)
+   at MySql.Data.MySqlClient.NativeDriver.Open()
+---> (Inner Exception #0) System.Net.Internals.SocketExceptionFactory+ExtendedSocketException (10061): 由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+   at System.Net.Sockets.Socket.MultipleAddressConnectCallback(IAsyncResult result)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.<>c.<ConnectAsync>b__28_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)<---
+
+   at MySql.Data.MySqlClient.NativeDriver.Open()
+   at MySql.Data.MySqlClient.Driver.Open()
+   at MySql.Data.MySqlClient.Driver.Create(MySqlConnectionStringBuilder settings)
+   at MySql.Data.MySqlClient.MySqlPool.CreateNewPooledConnection()
+   at MySql.Data.MySqlClient.MySqlPool.GetPooledConnection()
+   at MySql.Data.MySqlClient.MySqlPool.TryToGetDriver()
+   at MySql.Data.MySqlClient.MySqlPool.GetConnection()
+   at MySql.Data.MySqlClient.MySqlConnection.Open()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.InitConnection()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.get_Connection()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.CreateCommand(String sql, IEnumerable`1 args)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadPageData(Int32 page, Int32 limit, String order, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.PageData(Int32 page, Int32 limit, String sort, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiController`4.LoadListData(String condition, MySqlParameter[] args)
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.DefaultGetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.Designer.cs:line 51
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.GetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.cs:line 49
+   at Agebull.Common.WebApi.ApiController`4.List2()
+   at List()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-06 10:14:56Z] 00000117-AgebullMac:Background:KUZR-19-#01CA35F551C44EE784CA3A83298933D1-Q3XSXi-#01CA35F551C44EE784CA3A83298933D1-Q3XSXi > 
+系统错误
+MySql.Data.MySqlClient.MySqlException (0x80004005): Unable to connect to any of the specified MySQL hosts. ---> System.AggregateException: One or more errors occurred. (由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306) ---> System.Net.Internals.SocketExceptionFactory+ExtendedSocketException: 由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+   at System.Net.Sockets.Socket.MultipleAddressConnectCallback(IAsyncResult result)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.<>c.<ConnectAsync>b__28_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)
+   at MySql.Data.Common.StreamCreator.GetTcpStream(MySqlConnectionStringBuilder settings)
+   at MySql.Data.MySqlClient.NativeDriver.Open()
+---> (Inner Exception #0) System.Net.Internals.SocketExceptionFactory+ExtendedSocketException (10061): 由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+   at System.Net.Sockets.Socket.MultipleAddressConnectCallback(IAsyncResult result)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.<>c.<ConnectAsync>b__28_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)<---
+
+   at MySql.Data.MySqlClient.NativeDriver.Open()
+   at MySql.Data.MySqlClient.Driver.Open()
+   at MySql.Data.MySqlClient.Driver.Create(MySqlConnectionStringBuilder settings)
+   at MySql.Data.MySqlClient.MySqlPool.CreateNewPooledConnection()
+   at MySql.Data.MySqlClient.MySqlPool.GetPooledConnection()
+   at MySql.Data.MySqlClient.MySqlPool.TryToGetDriver()
+   at MySql.Data.MySqlClient.MySqlPool.GetConnection()
+   at MySql.Data.MySqlClient.MySqlConnection.Open()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.InitConnection()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.get_Connection()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.CreateCommand(String sql, IEnumerable`1 args)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadPageData(Int32 page, Int32 limit, String order, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.PageData(Int32 page, Int32 limit, String sort, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiController`4.LoadListData(String condition, MySqlParameter[] args)
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.DefaultGetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.Designer.cs:line 51
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.GetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.cs:line 49
+   at Agebull.Common.WebApi.ApiController`4.List2()
+   at List()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-06 10:14:56Z] 00000119-AgebullMac:Background:KUZR-19-#01CA35F551C44EE784CA3A83298933D1-Q3XSXi-#01CA35F551C44EE784CA3A83298933D1-Q3XSXi > 
+系统错误
+Demo : ProjectDemo/de/v1/edit/list * execute * {"LocalId":null,"Caller":"+>ZeroCenter:WeichatBridge:7N31-Demo-KiJL","Title":"+>ZeroCenter:WeichatBridge:7N31-Demo-KiJL","Command":"ProjectDemo/de/v1/edit/list","ApiName":"ProjectDemo/de/v1/edit/list","Argument":"{\"keyWord\":\"\",\"page\":\"1\",\"rows\":\"20\",\"sort\":\"Id\",\"order\":\"desc\"}","Result":null,"Status":0,"Originals":{},"State":1,"Tag":0,"Head":"Kz5aZXJvQ2VudGVyOldlaWNoYXRCcmlkZ2U6N04zMS1EZW1vLUtpSkw=","GlobalId":"37436171902529656","CallId":"37436171902529654","RequestId":"#01CA35F551C44EE784CA3A83298933D1-Q3XSXi","Context":"{\n  \"user\": {\n    \"defPatient\": {\n      \"cardId\": 13,\n      \"cardNo\": \"KDP9M7NQFATCS\",\n      \"idCardName\": \"d\",\n      \"relation\": \"本人\"\n    },\n    \"userId\": 1,\n    \"openId\": \"KDP9M7NQFATCS\",\n    \"roleId\": 0,\n    \"groupId\": 0,\n    \"orgId\": 0,\n    \"depId\": 0,\n    \"nickName\": \"游客\",\n    \"account\": null,\n    \"state\": 1,\n    \"loginType\": 0,\n    \"os\": \"LINUX\",\n    \"app\": \"APP\",\n    \"depLevel\": 0\n  },\n  \"org\": {\n    \"orgId\": 0,\n    \"name\": null,\n    \"key\": null,\n    \"routeName\": null\n  },\n  \"req\": {\n    \"localGlobalId\": \"37436171902529654\",\n    \"service\": \"ZeroCenter\",\n    \"requestId\": \"#01CA35F551C44EE784CA3A83298933D1-Q3XSXi\",\n    \"token\": \"#01CA35F551C44EE784CA3A83298933D1\",\n    \"argumentType\": 1,\n    \"requestType\": 1,\n    \"ip\": \"::ffff:125.108.206.194\",\n    \"port\": \"7225\",\n    \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0\"\n  }\n}","Content":"{\"keyWord\":\"\",\"page\":\"1\",\"rows\":\"20\",\"sort\":\"Id\",\"order\":\"desc\"}","CommandOrSubTitle":"ProjectDemo/de/v1/edit/list","Requester":"WeichatBridge","Station":null,"StationType":null}
+MySql.Data.MySqlClient.MySqlException (0x80004005): Unable to connect to any of the specified MySQL hosts. ---> System.AggregateException: One or more errors occurred. (由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306) ---> System.Net.Internals.SocketExceptionFactory+ExtendedSocketException: 由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+   at System.Net.Sockets.Socket.MultipleAddressConnectCallback(IAsyncResult result)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.<>c.<ConnectAsync>b__28_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)
+   at MySql.Data.Common.StreamCreator.GetTcpStream(MySqlConnectionStringBuilder settings)
+   at MySql.Data.MySqlClient.NativeDriver.Open()
+---> (Inner Exception #0) System.Net.Internals.SocketExceptionFactory+ExtendedSocketException (10061): 由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+   at System.Net.Sockets.Socket.MultipleAddressConnectCallback(IAsyncResult result)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.<>c.<ConnectAsync>b__28_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)<---
+
+   at MySql.Data.MySqlClient.NativeDriver.Open()
+   at MySql.Data.MySqlClient.Driver.Open()
+   at MySql.Data.MySqlClient.Driver.Create(MySqlConnectionStringBuilder settings)
+   at MySql.Data.MySqlClient.MySqlPool.CreateNewPooledConnection()
+   at MySql.Data.MySqlClient.MySqlPool.GetPooledConnection()
+   at MySql.Data.MySqlClient.MySqlPool.TryToGetDriver()
+   at MySql.Data.MySqlClient.MySqlPool.GetConnection()
+   at MySql.Data.MySqlClient.MySqlConnection.Open()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.InitConnection()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.get_Connection()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.CreateCommand(String sql, IEnumerable`1 args)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadPageData(Int32 page, Int32 limit, String order, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.PageData(Int32 page, Int32 limit, String sort, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiController`4.LoadListData(String condition, MySqlParameter[] args)
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.DefaultGetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.Designer.cs:line 51
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.GetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.cs:line 49
+   at Agebull.Common.WebApi.ApiController`4.List2()
+   at List()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-06 10:15:49Z] 0000000E-AgebullMac:Background:3U4R-1-0UZ0ED3LX0-RNJT9N4UMH > 
+ReadEntity : over flow * GovernmentAreaData
+
+[2019-03-06 10:15:49Z] 00000010-AgebullMac:Background:3U4R-1-5YBi19CEUP-VA2RKUVA0V > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-06 10:15:51Z] 000000E7-AgebullMac:Background:3U4R-7-3VWD1PVFNB-8E3HM0GB9C > 
+Summary : Station no find
+
+[2019-03-06 10:15:51Z] 000000EB-AgebullMac:Background:3U4R-7-81AY0D0LVR-Y7CCQB89TB > 
+Summary : OnObjectFailed
+
+[2019-03-06 10:17:10Z] 00000116-AgebullMac:Background:3U4R-19-#01CA35F551C44EE784CA3A83298933D1-CBiR59-#01CA35F551C44EE784CA3A83298933D1-CBiR59 > 
+系统错误
+MySql.Data.MySqlClient.MySqlException (0x80004005): Unable to connect to any of the specified MySQL hosts. ---> System.AggregateException: One or more errors occurred. (由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306) ---> System.Net.Internals.SocketExceptionFactory+ExtendedSocketException: 由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+   at System.Net.Sockets.Socket.MultipleAddressConnectCallback(IAsyncResult result)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.<>c.<ConnectAsync>b__28_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)
+   at MySql.Data.Common.StreamCreator.GetTcpStream(MySqlConnectionStringBuilder settings)
+   at MySql.Data.MySqlClient.NativeDriver.Open()
+---> (Inner Exception #0) System.Net.Internals.SocketExceptionFactory+ExtendedSocketException (10061): 由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+   at System.Net.Sockets.Socket.MultipleAddressConnectCallback(IAsyncResult result)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.<>c.<ConnectAsync>b__28_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)<---
+
+   at MySql.Data.MySqlClient.NativeDriver.Open()
+   at MySql.Data.MySqlClient.Driver.Open()
+   at MySql.Data.MySqlClient.Driver.Create(MySqlConnectionStringBuilder settings)
+   at MySql.Data.MySqlClient.MySqlPool.CreateNewPooledConnection()
+   at MySql.Data.MySqlClient.MySqlPool.GetPooledConnection()
+   at MySql.Data.MySqlClient.MySqlPool.TryToGetDriver()
+   at MySql.Data.MySqlClient.MySqlPool.GetConnection()
+   at MySql.Data.MySqlClient.MySqlConnection.Open()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.InitConnection()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.get_Connection()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.CreateCommand(String sql, IEnumerable`1 args)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadPageData(Int32 page, Int32 limit, String order, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.PageData(Int32 page, Int32 limit, String sort, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiController`4.LoadListData(String condition, MySqlParameter[] args)
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.DefaultGetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.Designer.cs:line 51
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.GetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.cs:line 49
+   at Agebull.Common.WebApi.ApiController`4.List2()
+   at List()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-06 10:17:10Z] 00000118-AgebullMac:Background:3U4R-19-#01CA35F551C44EE784CA3A83298933D1-CBiR59-#01CA35F551C44EE784CA3A83298933D1-CBiR59 > 
+系统错误
+Demo : ProjectDemo/de/v1/edit/list * execute * {"LocalId":null,"Caller":"+>ZeroCenter:WeichatBridge:7N31-Demo-7X0Y","Title":"+>ZeroCenter:WeichatBridge:7N31-Demo-7X0Y","Command":"ProjectDemo/de/v1/edit/list","ApiName":"ProjectDemo/de/v1/edit/list","Argument":"{\"keyWord\":\"\",\"page\":\"1\",\"rows\":\"20\",\"sort\":\"Id\",\"order\":\"desc\"}","Result":null,"Status":0,"Originals":{},"State":1,"Tag":0,"Head":"Kz5aZXJvQ2VudGVyOldlaWNoYXRCcmlkZ2U6N04zMS1EZW1vLTdYMFk=","GlobalId":"37436171902529684","CallId":"37436171902529682","RequestId":"#01CA35F551C44EE784CA3A83298933D1-CBiR59","Context":"{\n  \"user\": {\n    \"defPatient\": {\n      \"cardId\": 13,\n      \"cardNo\": \"KDP9M7NQFATCS\",\n      \"idCardName\": \"d\",\n      \"relation\": \"本人\"\n    },\n    \"userId\": 1,\n    \"openId\": \"KDP9M7NQFATCS\",\n    \"roleId\": 0,\n    \"groupId\": 0,\n    \"orgId\": 0,\n    \"depId\": 0,\n    \"nickName\": \"游客\",\n    \"account\": null,\n    \"state\": 1,\n    \"loginType\": 0,\n    \"os\": \"LINUX\",\n    \"app\": \"APP\",\n    \"depLevel\": 0\n  },\n  \"org\": {\n    \"orgId\": 0,\n    \"name\": null,\n    \"key\": null,\n    \"routeName\": null\n  },\n  \"req\": {\n    \"localGlobalId\": \"37436171902529682\",\n    \"service\": \"ZeroCenter\",\n    \"requestId\": \"#01CA35F551C44EE784CA3A83298933D1-CBiR59\",\n    \"token\": \"#01CA35F551C44EE784CA3A83298933D1\",\n    \"argumentType\": 1,\n    \"requestType\": 1,\n    \"ip\": \"::ffff:125.108.206.194\",\n    \"port\": \"7402\",\n    \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0\"\n  }\n}","Content":"{\"keyWord\":\"\",\"page\":\"1\",\"rows\":\"20\",\"sort\":\"Id\",\"order\":\"desc\"}","CommandOrSubTitle":"ProjectDemo/de/v1/edit/list","Requester":"WeichatBridge","Station":null,"StationType":null}
+MySql.Data.MySqlClient.MySqlException (0x80004005): Unable to connect to any of the specified MySQL hosts. ---> System.AggregateException: One or more errors occurred. (由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306) ---> System.Net.Internals.SocketExceptionFactory+ExtendedSocketException: 由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+   at System.Net.Sockets.Socket.MultipleAddressConnectCallback(IAsyncResult result)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.<>c.<ConnectAsync>b__28_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)
+   at MySql.Data.Common.StreamCreator.GetTcpStream(MySqlConnectionStringBuilder settings)
+   at MySql.Data.MySqlClient.NativeDriver.Open()
+---> (Inner Exception #0) System.Net.Internals.SocketExceptionFactory+ExtendedSocketException (10061): 由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+   at System.Net.Sockets.Socket.MultipleAddressConnectCallback(IAsyncResult result)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.<>c.<ConnectAsync>b__28_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)<---
+
+   at MySql.Data.MySqlClient.NativeDriver.Open()
+   at MySql.Data.MySqlClient.Driver.Open()
+   at MySql.Data.MySqlClient.Driver.Create(MySqlConnectionStringBuilder settings)
+   at MySql.Data.MySqlClient.MySqlPool.CreateNewPooledConnection()
+   at MySql.Data.MySqlClient.MySqlPool.GetPooledConnection()
+   at MySql.Data.MySqlClient.MySqlPool.TryToGetDriver()
+   at MySql.Data.MySqlClient.MySqlPool.GetConnection()
+   at MySql.Data.MySqlClient.MySqlConnection.Open()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.InitConnection()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.get_Connection()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.CreateCommand(String sql, IEnumerable`1 args)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadPageData(Int32 page, Int32 limit, String order, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.PageData(Int32 page, Int32 limit, String sort, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiController`4.LoadListData(String condition, MySqlParameter[] args)
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.DefaultGetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.Designer.cs:line 51
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.GetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.cs:line 49
+   at Agebull.Common.WebApi.ApiController`4.List2()
+   at List()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-06 10:17:14Z] 0000011A-AgebullMac:Background:3U4R-19-#01CA35F551C44EE784CA3A83298933D1-ZGGCP1-#01CA35F551C44EE784CA3A83298933D1-ZGGCP1 > 
+系统错误
+MySql.Data.MySqlClient.MySqlException (0x80004005): Unable to connect to any of the specified MySQL hosts. ---> System.AggregateException: One or more errors occurred. (由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306) ---> System.Net.Internals.SocketExceptionFactory+ExtendedSocketException: 由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+   at System.Net.Sockets.Socket.MultipleAddressConnectCallback(IAsyncResult result)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.<>c.<ConnectAsync>b__28_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)
+   at MySql.Data.Common.StreamCreator.GetTcpStream(MySqlConnectionStringBuilder settings)
+   at MySql.Data.MySqlClient.NativeDriver.Open()
+---> (Inner Exception #0) System.Net.Internals.SocketExceptionFactory+ExtendedSocketException (10061): 由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+   at System.Net.Sockets.Socket.MultipleAddressConnectCallback(IAsyncResult result)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.<>c.<ConnectAsync>b__28_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)<---
+
+   at MySql.Data.MySqlClient.NativeDriver.Open()
+   at MySql.Data.MySqlClient.Driver.Open()
+   at MySql.Data.MySqlClient.Driver.Create(MySqlConnectionStringBuilder settings)
+   at MySql.Data.MySqlClient.MySqlPool.CreateNewPooledConnection()
+   at MySql.Data.MySqlClient.MySqlPool.GetPooledConnection()
+   at MySql.Data.MySqlClient.MySqlPool.TryToGetDriver()
+   at MySql.Data.MySqlClient.MySqlPool.GetConnection()
+   at MySql.Data.MySqlClient.MySqlConnection.Open()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.InitConnection()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.get_Connection()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.CreateCommand(String sql, IEnumerable`1 args)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadPageData(Int32 page, Int32 limit, String order, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.PageData(Int32 page, Int32 limit, String sort, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiController`4.LoadListData(String condition, MySqlParameter[] args)
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.DefaultGetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.Designer.cs:line 51
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.GetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.cs:line 49
+   at Agebull.Common.WebApi.ApiController`4.List2()
+   at List()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-06 10:17:14Z] 0000011C-AgebullMac:Background:3U4R-19-#01CA35F551C44EE784CA3A83298933D1-ZGGCP1-#01CA35F551C44EE784CA3A83298933D1-ZGGCP1 > 
+系统错误
+Demo : ProjectDemo/de/v1/edit/list * execute * {"LocalId":null,"Caller":"+>ZeroCenter:WeichatBridge:7N31-Demo-KiJL","Title":"+>ZeroCenter:WeichatBridge:7N31-Demo-KiJL","Command":"ProjectDemo/de/v1/edit/list","ApiName":"ProjectDemo/de/v1/edit/list","Argument":"{\"keyWord\":\"\",\"page\":\"1\",\"rows\":\"20\",\"sort\":\"Id\",\"order\":\"desc\"}","Result":null,"Status":0,"Originals":{},"State":1,"Tag":0,"Head":"Kz5aZXJvQ2VudGVyOldlaWNoYXRCcmlkZ2U6N04zMS1EZW1vLUtpSkw=","GlobalId":"37436171902529687","CallId":"37436171902529685","RequestId":"#01CA35F551C44EE784CA3A83298933D1-ZGGCP1","Context":"{\n  \"user\": {\n    \"defPatient\": {\n      \"cardId\": 13,\n      \"cardNo\": \"KDP9M7NQFATCS\",\n      \"idCardName\": \"d\",\n      \"relation\": \"本人\"\n    },\n    \"userId\": 1,\n    \"openId\": \"KDP9M7NQFATCS\",\n    \"roleId\": 0,\n    \"groupId\": 0,\n    \"orgId\": 0,\n    \"depId\": 0,\n    \"nickName\": \"游客\",\n    \"account\": null,\n    \"state\": 1,\n    \"loginType\": 0,\n    \"os\": \"LINUX\",\n    \"app\": \"APP\",\n    \"depLevel\": 0\n  },\n  \"org\": {\n    \"orgId\": 0,\n    \"name\": null,\n    \"key\": null,\n    \"routeName\": null\n  },\n  \"req\": {\n    \"localGlobalId\": \"37436171902529685\",\n    \"service\": \"ZeroCenter\",\n    \"requestId\": \"#01CA35F551C44EE784CA3A83298933D1-ZGGCP1\",\n    \"token\": \"#01CA35F551C44EE784CA3A83298933D1\",\n    \"argumentType\": 1,\n    \"requestType\": 1,\n    \"ip\": \"::ffff:125.108.206.194\",\n    \"port\": \"7401\",\n    \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0\"\n  }\n}","Content":"{\"keyWord\":\"\",\"page\":\"1\",\"rows\":\"20\",\"sort\":\"Id\",\"order\":\"desc\"}","CommandOrSubTitle":"ProjectDemo/de/v1/edit/list","Requester":"WeichatBridge","Station":null,"StationType":null}
+MySql.Data.MySqlClient.MySqlException (0x80004005): Unable to connect to any of the specified MySQL hosts. ---> System.AggregateException: One or more errors occurred. (由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306) ---> System.Net.Internals.SocketExceptionFactory+ExtendedSocketException: 由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+   at System.Net.Sockets.Socket.MultipleAddressConnectCallback(IAsyncResult result)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.<>c.<ConnectAsync>b__28_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)
+   at MySql.Data.Common.StreamCreator.GetTcpStream(MySqlConnectionStringBuilder settings)
+   at MySql.Data.MySqlClient.NativeDriver.Open()
+---> (Inner Exception #0) System.Net.Internals.SocketExceptionFactory+ExtendedSocketException (10061): 由于目标计算机积极拒绝，无法连接。 192.168.1.136:3306
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.DoMultipleAddressConnectCallback(Object result, MultipleAddressConnectAsyncResult context)
+   at System.Net.Sockets.Socket.MultipleAddressConnectCallback(IAsyncResult result)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.EndConnect(IAsyncResult asyncResult)
+   at System.Net.Sockets.TcpClient.<>c.<ConnectAsync>b__28_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)<---
+
+   at MySql.Data.MySqlClient.NativeDriver.Open()
+   at MySql.Data.MySqlClient.Driver.Open()
+   at MySql.Data.MySqlClient.Driver.Create(MySqlConnectionStringBuilder settings)
+   at MySql.Data.MySqlClient.MySqlPool.CreateNewPooledConnection()
+   at MySql.Data.MySqlClient.MySqlPool.GetPooledConnection()
+   at MySql.Data.MySqlClient.MySqlPool.TryToGetDriver()
+   at MySql.Data.MySqlClient.MySqlPool.GetConnection()
+   at MySql.Data.MySqlClient.MySqlConnection.Open()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.InitConnection()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.get_Connection()
+   at Gboxt.Common.DataModel.MySql.MySqlDataBase.CreateCommand(String sql, IEnumerable`1 args)
+   at Gboxt.Common.DataModel.MySql.MySqlTable`2.LoadPageData(Int32 page, Int32 limit, String order, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.DataModel.BusinessLogic.UiBusinessLogicBase`3.PageData(Int32 page, Int32 limit, String sort, Boolean desc, String condition, MySqlParameter[] args)
+   at Agebull.Common.WebApi.ApiController`4.LoadListData(String condition, MySqlParameter[] args)
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.DefaultGetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.Designer.cs:line 51
+   at Agebull.EntityModel.Demo.WebApi.Entity.DemoEntityApiController.GetListData() in C:\Projects\Agebull\AgebullDesigner\demo\src\Demo\Api\DemoEntity\DemoEntityApiController.cs:line 49
+   at Agebull.Common.WebApi.ApiController`4.List2()
+   at List()
+   at Agebull.ZeroNet.ZeroApi.ApiAction`1.Execute()
+   at Agebull.ZeroNet.ZeroApi.ApiExecuter.ExecCommand(ApiCallItem item)
+
+[2019-03-06 10:18:46Z] 0000000E-AgebullMac:Background:HUCR-1-3UN0ADRL70-HNPTYNHUQH > 
+ReadEntity : over flow * GovernmentAreaData
+
+[2019-03-06 10:18:46Z] 00000010-AgebullMac:Background:HUCR-1-LY7iE9JERP-UAWRHULAMV > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-06 10:18:48Z] 000000E7-AgebullMac:Background:HUCR-8-HQV7BNMZJM-LEiH9PA44W > 
+Summary : Station no find
+
+[2019-03-06 10:18:48Z] 000000EB-AgebullMac:Background:HUCR-8-U9ZQHTJ4iR-TJW095XKEU > 
+Summary : OnObjectFailed
+
+[2019-03-06 10:20:24Z] 00000151-AgebullMac:Background:HUCR-18-42HZ7Ni2G1-QJSU77DUFC > 
+系统错误
+Receive : tcp://zero.yizuanbao.cn:8000 * Exception
+System.Runtime.InteropServices.SEHException (0x80004005): External component has thrown an exception.
+   at ZeroMQ.lib.zmq.zmq_msg_recv(IntPtr msg, IntPtr socket, Int32 flags)
+   at ZeroMQ.ZSocket.RecvFrame(ZFrame& frame, Int32 flags)
+   at ZeroMQ.ZSocket.Recv(ZMessage& message, Int32 flags)
+   at Agebull.ZeroNet.Core.ZeroCommandExtend.Receive[TZeroResultData](ZSocket socket)
+
+[2019-03-06 10:20:35Z] 0000000E-AgebullMac:Background:SUHR-1-1U80SDZLR0-ANET0NUUFH > 
+ReadEntity : over flow * GovernmentAreaData
+
+[2019-03-06 10:20:35Z] 00000010-AgebullMac:Background:SUHR-1-DYPiH9FEFP-TAQR5U6AYV > 
+ReadEntity : over flow * OrganizationData
+
+[2019-03-06 10:20:36Z] 000000E7-AgebullMac:Background:SUHR-7-V0YHYJA03U-VSDPVRiHQ3 > 
+Summary : Station no find
+
+[2019-03-06 10:20:36Z] 000000EB-AgebullMac:Background:SUHR-7-8QECP4L5WC-C6MU7SYiKS > 
+Summary : OnObjectFailed
+

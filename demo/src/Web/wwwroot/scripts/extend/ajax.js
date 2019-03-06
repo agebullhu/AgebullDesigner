@@ -1,32 +1,22 @@
-﻿var apihost =     //"http://localhost:8080/";
-//"http://zero.yizuanbao.cn/";
-"http://192.168.1.196:8080/";
+﻿var apihost = "http://zero.yizuanbao.cn/";
 
 var globalOptions = {
-    geturl: function (addr, host) {
-        var href;
-        if (!host)
-            href = globalOptions.api.customHost
-                ? globalOptions.api.customHost
-                : globalOptions.api.defApiHost;
-        else
-            href = host;
-        return apihost + href + addr;
-    },
-
     /**
      * api访问配置
      */
     api: {
-
+        /**
+         * Demo的api访问地址
+         */
+        projectDemoHost:"Demo/",
         /**
          * api访问基地址
          */
-        defApiHost: 'UserManage/',
+        defApiHost: 'User/',
         /**
          * api访问基地址
          */
-        userApiHost: 'UserManage/',
+        userApiHost: 'User/',
         /**
          * 用户中心api访问基地址
          */
@@ -34,7 +24,7 @@ var globalOptions = {
         /**
          * 页面api访问基地址
          */
-        appApiHost: 'AppManage/',
+        appApiHost: 'App/',
         /**
         * 超时时间设置为10秒
         */
@@ -44,6 +34,25 @@ var globalOptions = {
          */
         customHost: null
     },
+
+    /**
+	 * 组合并得到一个正确的api调用的url
+     * @param {string} addr 地址
+     * @param {string} host 主机
+	 * @returns {string} url
+	 */
+    geturl: function (addr, host) {
+        var href;
+        if (!host)
+            href = globalOptions.api.customHost
+                ? globalOptions.api.customHost
+                : globalOptions.api.defApiHost;
+        else
+            href = host;
+        
+        return apihost + href + addr;
+    },
+
     /**
 	 * 系统操作
 	 */
