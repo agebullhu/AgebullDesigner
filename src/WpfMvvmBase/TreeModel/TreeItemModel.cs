@@ -171,7 +171,7 @@ namespace Agebull.EntityModel
                 actions = CommandCoefficient.Coefficient(Friend, FriendView);
                 foreach (var action in actions)
                 {
-                    _commands.Add(action);
+                    commands.Add(action);
                 }
             }
             CreateCommandList(commands);
