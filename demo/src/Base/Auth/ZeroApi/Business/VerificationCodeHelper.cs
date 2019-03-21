@@ -1,8 +1,8 @@
-﻿using System;
-using Agebull.Common.Configuration;
+﻿using Agebull.Common.Configuration;
+using Agebull.Common.Context;
+using Agebull.EntityModel.Redis;
+using System;
 using System.Diagnostics;
-using Agebull.Common.DataModel.Redis;
-using Agebull.Common.Redis;
 
 
 namespace Agebull.Common.OAuth
@@ -43,7 +43,7 @@ namespace Agebull.Common.OAuth
             string codeFromRedis;
             using (var proxy = new RedisProxy(RedisProxy.DbSystem))
             {
-                var key = RedisKeyBuilder.ToBusinessKey("vc", "img", RpcToken ?? Agebull.Common.Rpc.GlobalContext.Current.Token);
+                var key = RedisKeyBuilder.ToBusinessKey("vc", "img", RpcToken ?? GlobalContext.Current.Token);
                 codeFromRedis = proxy.Get(key);
                 if (codeFromRedis != null)
                 {
@@ -63,7 +63,7 @@ namespace Agebull.Common.OAuth
             using (var proxy = new RedisProxy(RedisProxy.DbSystem))
             {
                 
-                var key = RedisKeyBuilder.ToBusinessKey("vc", "img", RpcToken??Agebull.Common.Rpc.GlobalContext.Current.Token);
+                var key = RedisKeyBuilder.ToBusinessKey("vc", "img", RpcToken??GlobalContext.Current.Token);
                 proxy.Set(key, code, TimeSpan.FromMinutes(5));
             }
         }

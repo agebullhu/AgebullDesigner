@@ -1,6 +1,7 @@
-﻿using System.Runtime.Serialization;
-using System.Text;
+﻿using Agebull.MicroZero.ZeroApis;
 using Newtonsoft.Json;
+using System.Runtime.Serialization;
+using System.Text;
 
 namespace Agebull.Common.OAuth
 {
@@ -8,7 +9,7 @@ namespace Agebull.Common.OAuth
     /// 请求分配DeviceId请求参数
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public class DeviceArgument : Gboxt.Common.DataModel.IApiArgument
+    public class DeviceArgument : MicroZero.ZeroApis.IApiArgument
     {
         /// <summary>
         /// 请求者应用

@@ -1,5 +1,5 @@
 ﻿using System.Runtime.Serialization;
-using Gboxt.Common.DataModel;
+using Agebull.EntityModel.Common;
 using Newtonsoft.Json;
 
 namespace Agebull.Common.AppManage

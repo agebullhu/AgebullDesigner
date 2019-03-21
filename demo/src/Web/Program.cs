@@ -1,6 +1,6 @@
 ﻿using System;
 using Agebull.Common.Configuration;
-using Agebull.ZeroNet.Core;
+using Agebull.MicroZero;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 

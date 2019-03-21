@@ -1,17 +1,19 @@
 ﻿using System;
-using Agebull.ZeroNet.ZeroApi;
-using Agebull.Common.DataModel.WebUI;
 using Agebull.Common.Ioc;
 using Agebull.Common.Logging;
 using Agebull.Common.OAuth.BusinessLogic;
-using Agebull.Common.Rpc;
+using Agebull.MicroZero.ZeroApis;
 using Agebull.Common.UserCenter.BusinessLogic;
-using Gboxt.Common.DataModel;
 using IRoleCache = Agebull.Common.AppManage.BusinessLogic.IRoleCache;
+
+using Agebull.MicroZero.ZeroApis;
+using Agebull.Common.Context;
+using Agebull.MicroZero;
+using Agebull.EntityModel.EasyUI;
 
 #pragma warning disable 168
 
-namespace Agebull.Common.WebApi.Auth
+namespace Agebull.Common.OAuth
 {
     /// <summary>
     /// 身份验证服务API

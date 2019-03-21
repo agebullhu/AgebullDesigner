@@ -11,10 +11,11 @@ using System.Text;
 using System.Runtime.Serialization;
 using System.Web;
 using Agebull.Common;
-using Gboxt.Common.DataModel;
+using Agebull.EntityModel.Common;
 
 
 using Newtonsoft.Json;
+using Agebull.MicroZero.ZeroApis;
 
 namespace Agebull.Common.OAuth
 {
@@ -22,7 +23,7 @@ namespace Agebull.Common.OAuth
     /// 基于手机号的注册请求参数
     /// </summary>
     [DataContract,JsonObject(MemberSerialization.OptIn)]
-    public partial class RegByPhoneRequest  : IApiArgument
+    public partial class RegByPhoneRequest  : MicroZero.ZeroApis.IApiArgument
     {
         
         #region 属性
@@ -115,7 +116,7 @@ namespace Agebull.Common.OAuth
         /// <summary>数据校验</summary>
         /// <param name="message">返回的消息</param>
         /// <returns>成功则返回真</returns>
-        bool IApiArgument.Validate(out string message)
+        bool MicroZero.ZeroApis.IApiArgument.Validate(out string message)
         {
             var result = Validate();
             message = result.Messages.LinkToString('；');

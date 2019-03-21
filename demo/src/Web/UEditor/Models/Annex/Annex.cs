@@ -1,6 +1,6 @@
 ﻿/*design by:agebull designer date:2017/5/31 16:32:03*/
 using System.Runtime.Serialization;
-using Gboxt.Common.DataModel;
+using Agebull.EntityModel.Common;
 using Newtonsoft.Json;
 
 namespace Agebull.ZeroNet.ManageApplication

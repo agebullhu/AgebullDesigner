@@ -1,8 +1,8 @@
 ﻿/*design by:agebull designer date:2018/9/2 10:50:01*/
-using System.Runtime.Serialization;
-using Agebull.Common.DataModel.WebUI;
-using Gboxt.Common.DataModel;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.EasyUI;
 using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 
 namespace Agebull.Common.OAuth

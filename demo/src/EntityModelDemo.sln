@@ -23,8 +23,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppManage.Model", "Base\App
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppManage.ManageApi", "Base\AppManage\Api\AppManage.ManageApi.csproj", "{9D903F51-5760-40F9-B19A-D227AEDD2B62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{6A5B6736-D8AA-443C-A133-0FA92D82E736}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,10 +61,6 @@ Global
 		{9D903F51-5760-40F9-B19A-D227AEDD2B62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D903F51-5760-40F9-B19A-D227AEDD2B62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D903F51-5760-40F9-B19A-D227AEDD2B62}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6A5B6736-D8AA-443C-A133-0FA92D82E736}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6A5B6736-D8AA-443C-A133-0FA92D82E736}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6A5B6736-D8AA-443C-A133-0FA92D82E736}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6A5B6736-D8AA-443C-A133-0FA92D82E736}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,7 +73,6 @@ Global
 		{8274FCF5-685C-4A7E-B5A1-6A1E941315A4} = {14B0B7CE-E5CD-4A09-BED3-647E6FE3D54A}
 		{84D6A83F-80BC-4155-A7E0-E5B88528EA90} = {14B0B7CE-E5CD-4A09-BED3-647E6FE3D54A}
 		{9D903F51-5760-40F9-B19A-D227AEDD2B62} = {14B0B7CE-E5CD-4A09-BED3-647E6FE3D54A}
-		{6A5B6736-D8AA-443C-A133-0FA92D82E736} = {2702E0AD-DF15-432A-838C-8D73101C7BD4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {15C9C11A-FA26-4997-9E26-494B6A0B6CBF}

@@ -1,35 +1,12 @@
 ﻿/*design by:agebull designer date:2019/3/2 23:49:06*/
 #region
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Runtime.Serialization;
-using System.IO;
-using Newtonsoft.Json;
-
-using Agebull.Common;
-using Agebull.Common.DataModel;
-using Agebull.Common.DataModel.WebUI;
-using Agebull.Common.DataModel.BusinessLogic;
 using Agebull.Common.Logging;
-using Agebull.Common.Rpc;
-using Agebull.Common.WebApi;
-using Agebull.ZeroNet.ZeroApi;
-using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.MySql;
+using Agebull.MicroZero.ZeroApis;
 
-
-
-using Agebull.Common.OAuth;
 using Agebull.Common.OAuth.BusinessLogic;
 using Agebull.Common.OAuth.DataAccess;
+using Agebull.EntityModel.EasyUI;
 #endregion
 
 namespace Agebull.Common.OAuth.WebApi.Entity

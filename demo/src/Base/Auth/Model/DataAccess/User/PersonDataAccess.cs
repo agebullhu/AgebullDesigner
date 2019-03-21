@@ -1,10 +1,11 @@
 ﻿#region
 
-using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.MySql;
 
 
 #endregion
+
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.MySql;
 
 namespace Agebull.Common.OAuth.DataAccess
 {

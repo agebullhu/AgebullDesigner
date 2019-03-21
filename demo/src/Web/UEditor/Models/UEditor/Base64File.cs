@@ -2,7 +2,7 @@
 using System.IO;
 using Agebull.Common.Configuration;
 using Agebull.Common.Logging;
-using Gboxt.Common.DataModel;
+using Agebull.MicroZero.ZeroApis;
 using Agebull.ZeroNet.ManageApplication.DataAccess;
 
 namespace Agebull.ZeroNet.ManageApplication

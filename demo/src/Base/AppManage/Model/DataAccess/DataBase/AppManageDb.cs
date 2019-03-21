@@ -1,6 +1,6 @@
 ﻿/*design by:agebull designer date:2018/9/2 13:00:45*/
 using Agebull.Common.Configuration;
-using Gboxt.Common.DataModel.MySql;
+using Agebull.EntityModel.MySql;
 
 namespace Agebull.Common.AppManage.DataAccess
 {

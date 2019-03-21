@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.MySql;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.MySql;
 using MySql.Data.MySqlClient;
 
 namespace Agebull.Common.OAuth.DataAccess

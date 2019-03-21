@@ -1,37 +1,15 @@
 ﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/5 13:54:14*/
 #region
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Runtime.Serialization;
-using System.IO;
-using Newtonsoft.Json;
-
-using Agebull.Common;
-using Agebull.Common.DataModel;
-using Agebull.Common.DataModel.WebUI;
-using Agebull.Common.DataModel.BusinessLogic;
-using Agebull.Common.Rpc;
-using Agebull.Common.WebApi;
-using Agebull.ZeroNet.ZeroApi;
-using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.MySql;
 
 
+using Agebull.MicroZero.Demo;
+using Agebull.MicroZero.Demo.BusinessLogic;
+using Agebull.MicroZero.Demo.DataAccess;
 
-using Agebull.EntityModel.Demo;
-using Agebull.EntityModel.Demo.BusinessLogic;
-using Agebull.EntityModel.Demo.DataAccess;
+using Agebull.MicroZero.ZeroApis;
 #endregion
 
-namespace Agebull.EntityModel.Demo.WebApi.Entity
+namespace Agebull.MicroZero.Entity
 {
     /// <summary>
     ///  演示实体

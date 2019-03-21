@@ -6,10 +6,10 @@ using System.Data;
 using System.Data.Sql;
 using System.Linq;
 using System.Text;
-using Gboxt.Common.DataModel;
+using Agebull.EntityModel.Common;
 
 using MySql.Data.MySqlClient;
-using Gboxt.Common.DataModel.MySql;
+using Agebull.EntityModel.MySql;
 using Agebull.Common.Ioc;
 
 namespace Agebull.ZeroNet.ManageApplication.DataAccess

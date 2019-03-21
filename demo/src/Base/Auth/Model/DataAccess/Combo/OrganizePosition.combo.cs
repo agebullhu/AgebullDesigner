@@ -1,9 +1,9 @@
 ﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2017/6/27 9:11:33*/
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.EasyUI;
+using Agebull.EntityModel.Redis;
 using System.Collections.Generic;
 using System.Linq;
-using Agebull.Common.DataModel.Redis;
-using Agebull.Common.DataModel.WebUI;
-using Gboxt.Common.DataModel;
 
 
 namespace Agebull.Common.OAuth.DataAccess

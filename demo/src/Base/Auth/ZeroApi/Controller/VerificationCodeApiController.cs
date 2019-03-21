@@ -1,9 +1,8 @@
-﻿using Agebull.ZeroNet.ZeroApi;
-using System.ComponentModel;
-
-using Gboxt.Common.DataModel;
+﻿using System.ComponentModel;
 using Agebull.Common.OAuth;
-using Agebull.Common.Rpc;
+using Agebull.EntityModel.Common;
+using Agebull.MicroZero;
+using Agebull.MicroZero.ZeroApis;
 
 namespace FenXiang.InternetPro.UnifiedIdentity.UserCard.Model.WebApi.EntityApi
 {

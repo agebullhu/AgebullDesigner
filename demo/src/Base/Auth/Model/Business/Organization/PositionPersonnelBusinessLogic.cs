@@ -2,8 +2,9 @@
 
 
 
-using Agebull.Common.DataModel.BusinessLogic;
+using Agebull.Common.Context;
 using Agebull.Common.OAuth.DataAccess;
+using Agebull.EntityModel.MySql.BusinessLogic;
 
 namespace Agebull.Common.OAuth.BusinessLogic
 {
@@ -66,7 +67,7 @@ namespace Agebull.Common.OAuth.BusinessLogic
         {
             if (null == data.PhoneNumber)
             {
-                Rpc.GlobalContext.Current.LastMessage = "手机号码用于登录系统不能为空";
+                GlobalContext.Current.LastMessage = "手机号码用于登录系统不能为空";
                 return false;
             }
             //if (Access.Any(p => p.Id != data.Id && p.Mobile == data.Mobile))

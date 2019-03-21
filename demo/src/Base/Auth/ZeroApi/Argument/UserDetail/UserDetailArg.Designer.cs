@@ -14,11 +14,10 @@ using System.IO;
 using Newtonsoft.Json;
 
 using Agebull.Common;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataModel;
-using Agebull.Common.WebApi;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Common;
 
-
+using Agebull.MicroZero.ZeroApis;
 
 namespace Agebull.Common.OAuth
 {
@@ -88,7 +87,7 @@ namespace Agebull.Common.OAuth
         /// <summary>数据校验</summary>
         /// <param name="message">返回的消息</param>
         /// <returns>成功则返回真</returns>
-        bool IApiArgument.Validate(out string message)
+        bool MicroZero.ZeroApis.IApiArgument.Validate(out string message)
         {
             var result = Validate();
             message = result.Messages.LinkToString('；');

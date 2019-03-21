@@ -10,11 +10,11 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Runtime.Serialization;
 using Agebull.Common;
-using Gboxt.Common.DataModel;
+using Agebull.EntityModel.Common;
 
 using Newtonsoft.Json;
 using  Agebull.ZeroNet.ManageApplication;
-using Gboxt.Common.DataModel.Extends;
+using Agebull.EntityModel.Interfaces;
 
 namespace Agebull.ZeroNet.ManageApplication
 {

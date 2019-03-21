@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Demo.DataModel
+﻿namespace Demo.DataModel
 {
-    
+
     /// <summary>
     /// 商品类型类型
     /// </summary>

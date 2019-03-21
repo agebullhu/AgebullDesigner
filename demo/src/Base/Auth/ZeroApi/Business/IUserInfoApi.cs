@@ -1,6 +1,4 @@
-﻿
-
-using Gboxt.Common.DataModel;
+﻿using Agebull.MicroZero.ZeroApis;
 
 namespace Agebull.Common.OAuth
 {

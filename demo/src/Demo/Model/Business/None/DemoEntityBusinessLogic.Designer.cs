@@ -15,21 +15,21 @@ using System.IO;
 using Newtonsoft.Json;
 
 using Agebull.Common;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataModel;
-using Agebull.Common.WebApi;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Common;
 
 
 
-using Agebull.Common.DataModel.BusinessLogic;
-using Agebull.EntityModel.Demo.DataAccess;
+
+using Agebull.EntityModel.MySql.BusinessLogic;
+using Agebull.MicroZero.Demo.DataAccess;
 
 using MySql.Data.MySqlClient;
-using Gboxt.Common.DataModel.MySql;
+using Agebull.EntityModel.MySql;
 
 #endregion
 
-namespace Agebull.EntityModel.Demo.BusinessLogic
+namespace Agebull.MicroZero.Demo.BusinessLogic
 {
     /// <summary>
     /// 用于演示实体的作用

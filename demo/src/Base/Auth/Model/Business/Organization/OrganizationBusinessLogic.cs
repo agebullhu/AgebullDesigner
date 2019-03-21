@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Agebull.Common.Configuration;
-using Agebull.Common.DataModel.BusinessLogic;
-using Agebull.Common.DataModel.Redis;
-using Agebull.Common.DataModel.WebUI;
+using Agebull.Common.Context;
 using Agebull.Common.Logging;
 using Agebull.Common.OAuth.DataAccess;
-using Agebull.Common.Rpc;
-using Gboxt.Common.DataModel;
-using Newtonsoft.Json;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.EasyUI;
+using Agebull.EntityModel.MySql.BusinessLogic;
+using Agebull.EntityModel.Redis;
 
 namespace Agebull.Common.OAuth.BusinessLogic
 {

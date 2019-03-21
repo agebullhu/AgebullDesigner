@@ -9,8 +9,7 @@
 #region 引用
 
 using System.Collections.Generic;
-using Agebull.Common.DataModel;
-using Agebull.Common.DataModel.Redis;
+using Agebull.EntityModel.Redis;
 using Newtonsoft.Json;
 
 #endregion

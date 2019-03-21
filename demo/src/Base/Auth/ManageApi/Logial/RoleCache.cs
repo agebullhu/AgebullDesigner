@@ -5,15 +5,15 @@ using System.Linq;
 using Agebull.Common.AppManage;
 using Agebull.Common.AppManage.BusinessLogic;
 using Agebull.Common.AppManage.DataAccess;
-using Agebull.Common.DataModel;
-using Agebull.Common.DataModel.Redis;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Redis;
 using Agebull.Common.Logging;
 using Agebull.Common.OAuth.DataAccess;
-using Agebull.Common.WebApi.Auth;
-using Agebull.Common.DataModel.WebUI;
-using Agebull.Common.Rpc;
+using Agebull.Common.OAuth;
 using Agebull.Common.OAuth;
 using Agebull.Common.OAuth.BusinessLogic;
+using Agebull.EntityModel.EasyUI;
+using Agebull.Common.Context;
 
 namespace Agebull.Common.UserCenter.BusinessLogic
 {
@@ -525,17 +525,17 @@ namespace Agebull.Common.UserCenter.BusinessLogic
                 var page = PageItemBusinessLogic.GetPageItem(pid);
                 if (page == null)
                     return new List<EasyUiTreeNode>();
-                int level;
-                if (!page.LevelAudit)
-                    level = 0;//BusinessContext.Current.LoginUser.DepartmentId;
-                else
-                {
-                    level = GlobalContext.Current.User.DepartmentLevel;
-                    if (level < 1)
-                        level = 1;
-                    else if (level > 2)
-                        level = 2;
-                }
+                int level=0;
+                //if (!page.LevelAudit)
+                //    level = 0;//BusinessContext.Current.LoginUser.DepartmentId;
+                //else
+                //{
+                //    level = GlobalContext.Current.User.DepartmentLevel;
+                //    if (level < 1)
+                //        level = 1;
+                //    else if (level > 2)
+                //        level = 2;
+                //}
                 var nodes = proxy.Get<List<EasyUiTreeNode>>($"audit:page:users:nodes:{pid}:{level}");
                 if (level <= 1)
                     return nodes;
@@ -546,7 +546,7 @@ namespace Agebull.Common.UserCenter.BusinessLogic
                     nodes.Clear();
                     foreach (var arr in arrs)
                     {
-                        if (arr.ID == 0 - GlobalContext.Current.User.DepartmentId)
+                        if (arr.ID == 0 - GlobalContext.Current.User.OrganizationId)
                         {
                             nodes.Add(arr);
                         }

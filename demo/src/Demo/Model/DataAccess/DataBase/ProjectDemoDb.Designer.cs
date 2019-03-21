@@ -15,15 +15,17 @@ using Newtonsoft.Json;
 
 using Agebull.Common;
 using Agebull.Common.Configuration;
-using Agebull.Common.DataModel;
-using Agebull.Common.WebApi;
-using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.MySql;
+using Agebull.EntityModel.Common;
+
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.MySql;
+using Agebull.EntityModel.Redis;
+using Agebull.EntityModel.Events;
 
 
 #endregion
 
-namespace Agebull.EntityModel.Demo.DataAccess
+namespace Agebull.MicroZero.Demo.DataAccess
 {
     /// <summary>
     /// 本地数据库

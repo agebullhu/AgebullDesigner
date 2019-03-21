@@ -1,6 +1,5 @@
-﻿using System.Runtime.Serialization;
-using Agebull.Common.OAuth;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace Agebull.Common.OAuth
 {

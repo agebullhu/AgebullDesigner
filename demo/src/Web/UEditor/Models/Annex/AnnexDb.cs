@@ -1,5 +1,5 @@
 ﻿using Agebull.Common.Configuration;
-using Gboxt.Common.DataModel.MySql;
+using Agebull.EntityModel.MySql;
 
 namespace Agebull.ZeroNet.ManageApplication.DataAccess
 {

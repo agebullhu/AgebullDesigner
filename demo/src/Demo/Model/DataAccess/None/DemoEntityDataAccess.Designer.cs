@@ -16,18 +16,15 @@ using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 
 using Agebull.Common;
-using Agebull.Common.DataModel;
-using Agebull.Common.Rpc;
-using Agebull.Common.WebApi;
-using Gboxt.Common;
-using Gboxt.Common.DataModel;
+using Agebull.EntityModel.Common;
 
 
-using Gboxt.Common.DataModel.Extends;
-using Gboxt.Common.DataModel.MySql;
+using Agebull.EntityModel.Interfaces;
+using Agebull.EntityModel.MySql;
+using Demo.DataModel;
 #endregion
 
-namespace Agebull.EntityModel.Demo.DataAccess
+namespace Agebull.MicroZero.Demo.DataAccess
 {
     /// <summary>
     /// 用于演示实体的作用
@@ -237,7 +234,7 @@ UPDATE `tb_demo_entity` SET
                 if (!reader.IsDBNull(4))
                     entity._memo = reader.GetString(4).ToString();
                 if (!reader.IsDBNull(5))
-                    entity._type = (Type)reader.GetInt32(5);
+                    entity._type = (ProductType)reader.GetInt32(5);
             }
         }
 

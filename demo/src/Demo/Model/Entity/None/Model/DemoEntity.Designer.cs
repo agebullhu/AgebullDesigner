@@ -15,15 +15,16 @@ using System.IO;
 using Newtonsoft.Json;
 
 using Agebull.Common;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.Extends;
-using Agebull.Common.WebApi;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Interfaces;
+
+using Demo.DataModel;
 
 
 #endregion
 
-namespace Agebull.EntityModel.Demo
+namespace Agebull.MicroZero.Demo
 {
     /// <summary>
     /// 用于演示实体的作用
@@ -249,11 +250,11 @@ namespace Agebull.EntityModel.Demo
         /// 商品类型
         /// </summary>
         [IgnoreDataMember,JsonIgnore]
-        public Type _type;
+        public ProductType _type;
 
         partial void OnTypeGet();
 
-        partial void OnTypeSet(ref Type value);
+        partial void OnTypeSet(ref ProductType value);
 
         partial void OnTypeSeted();
 
@@ -263,7 +264,7 @@ namespace Agebull.EntityModel.Demo
         /// </summary>
         [DataRule(CanNull = true)]
         [DataMember , JsonProperty("Type", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"商品类型")]
-        public  Type Type
+        public ProductType Type
         {
             get
             {
@@ -324,17 +325,17 @@ namespace Agebull.EntityModel.Demo
                 {
                     if(value is int)
                     {
-                        this.Type = (Type)(int)value;
+                        this.Type = (ProductType)(int)value;
                     }
                     else if(value is Type)
                     {
-                        this.Type = (Type)value;
+                        this.Type = (ProductType)value;
                     }
                     else
                     {
                         var str = value.ToString();
-                        Type val;
-                        if (Type.TryParse(str, out val))
+                        ProductType val;
+                        if (ProductType.TryParse(str, out val))
                         {
                             this.Type = val;
                         }
@@ -343,7 +344,7 @@ namespace Agebull.EntityModel.Demo
                             int vl;
                             if (int.TryParse(str, out vl))
                             {
-                                this.Type = (Type)vl;
+                                this.Type = (ProductType)vl;
                             }
                         }
                     }
@@ -382,7 +383,7 @@ namespace Agebull.EntityModel.Demo
                 this.Memo = value == null ? null : value.ToString();
                 return;
             case _DataStruct_.Type:
-                this.Type = (Type)value;
+                this.Type = (ProductType)value;
                 return;
             }
         }

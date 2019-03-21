@@ -11,7 +11,7 @@ using System.Text;
 using System.Runtime.Serialization;
 using System.Web;
 using Agebull.Common;
-using Gboxt.Common.DataModel;
+using Agebull.EntityModel.Common;
 
 
 using Newtonsoft.Json;
@@ -22,7 +22,7 @@ namespace Agebull.Common.OAuth
     /// 错误登录次数返回值
     /// </summary>
     [DataContract,JsonObject(MemberSerialization.OptIn)]
-    public partial class LoginErrorCountResponse  : IApiArgument
+    public partial class LoginErrorCountResponse  : MicroZero.ZeroApis.IApiArgument
     {
         
         #region 属性
@@ -63,7 +63,7 @@ namespace Agebull.Common.OAuth
         /// <summary>数据校验</summary>
         /// <param name="message">返回的消息</param>
         /// <returns>成功则返回真</returns>
-        bool IApiArgument.Validate(out string message)
+        bool MicroZero.ZeroApis.IApiArgument.Validate(out string message)
         {
             var result = Validate();
             message = result.Messages.LinkToString('；');

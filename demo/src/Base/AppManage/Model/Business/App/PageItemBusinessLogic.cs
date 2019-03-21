@@ -4,19 +4,18 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
-using Gboxt.Common.DataModel.MySql;
+using Agebull.EntityModel.MySql;
 
 
-using Gboxt.Common.DataModel;
-using Agebull.Common.DataModel;
-using Agebull.Common.DataModel.BusinessLogic;
-using Agebull.Common.DataModel.Redis;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Redis;
 using Agebull.Common.AppManage.DataAccess;
 using Agebull.Common.Configuration;
-using Agebull.Common.DataModel.WebUI;
 using Agebull.Common.Logging;
-using Agebull.Common.Rpc;
 using Newtonsoft.Json;
+using Agebull.EntityModel.MySql.BusinessLogic;
+using Agebull.EntityModel.EasyUI;
+using Agebull.Common.Context;
 
 namespace Agebull.Common.AppManage.BusinessLogic
 {

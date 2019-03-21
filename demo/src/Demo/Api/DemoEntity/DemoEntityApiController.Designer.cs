@@ -15,23 +15,23 @@ using System.IO;
 using Newtonsoft.Json;
 
 using Agebull.Common;
-using Agebull.Common.DataModel;
-using Agebull.Common.DataModel.BusinessLogic;
-using Agebull.Common.Rpc;
-using Agebull.Common.WebApi;
-using Agebull.ZeroNet.ZeroApi;
-using Agebull.Common.DataModel.WebUI;
-using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.MySql;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.MySql.BusinessLogic;
+using Agebull.MicroZero.ZeroApis;
 
 
 
-using Agebull.EntityModel.Demo;
-using Agebull.EntityModel.Demo.BusinessLogic;
-using Agebull.EntityModel.Demo.DataAccess;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.MySql;
+
+
+
+using Agebull.MicroZero.Demo;
+using Agebull.MicroZero.Demo.BusinessLogic;
+using Agebull.MicroZero.Demo.DataAccess;
 #endregion
 
-namespace Agebull.EntityModel.Demo.WebApi.Entity
+namespace Agebull.MicroZero.Entity
 {
     partial class DemoEntityApiController
     {

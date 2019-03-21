@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Agebull.Zero.ModelApi" Version="1.3.4.4" />
+    <PackageReference Include="Agebull.MicroZero.ModelApi" Version="1.4.0.1" />
     <PackageReference Include="MySql.Data" Version="8.0.15" />
   </ItemGroup>
 

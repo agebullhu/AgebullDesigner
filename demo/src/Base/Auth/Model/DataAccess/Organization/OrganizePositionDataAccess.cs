@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Agebull.EntityModel.EasyUI;
+using Agebull.EntityModel.MySql;
+using Agebull.EntityModel.Redis;
+using System.Collections.Generic;
 using System.Linq;
-using Agebull.Common.DataModel.Redis;
-using Agebull.Common.DataModel.WebUI;
-using Gboxt.Common.DataModel.MySql;
 
 
 namespace Agebull.Common.OAuth.DataAccess

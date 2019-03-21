@@ -3,10 +3,11 @@ using System.Linq;
 using Agebull.Common.AppManage;
 using Agebull.Common.AppManage.BusinessLogic;
 using Agebull.Common.AppManage.DataAccess;
-using Agebull.ZeroNet.ZeroApi;
-using Gboxt.Common.DataModel;
-using Agebull.Common.WebApi;
-using Agebull.Common.DataModel.WebUI;
+using Agebull.EntityModel.Common;
+
+
+using Agebull.MicroZero.ZeroApis;
+using Agebull.EntityModel.EasyUI;
 
 namespace Agebull.Common.UserCenter.WebApi.Entity
 {

@@ -97,9 +97,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Agebull.Zero.ModelApi" Version="1.3.4.4" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
     <PackageReference Include="Vue.Js.Element.UI" Version="2.4.8.1" />
   </ItemGroup>
 
