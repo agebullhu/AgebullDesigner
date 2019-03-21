@@ -1,1 +1,0 @@
-﻿{"Method":1,"CallArg":"RegByPhoneRequest","ResultArg":"LoginResponse","RoutePath":"v2/regist/wechat","IsUserCommand":false,"_project":"Auth","IsGlobal":false,"_caption":"微信用户注册","_description":"微信用户注册","_name":"WechatRigist","option":{"_key":"3b5f1603-9212-4232-be17-374523c5c557","Identity":0,"Index":0,"referenceKey":"00000000-0000-0000-0000-000000000000","state":0}}

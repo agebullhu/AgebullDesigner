@@ -1,1 +1,0 @@
-﻿{"Method":1,"CallArg":"MobilePhoneRequest","ResultArg":"ApiValueResult<bool>","RoutePath":"v2/check/phone","IsUserCommand":false,"_project":"Auth","IsGlobal":false,"_caption":"检查手机是否注册","_description":"检查手机是否注册","_name":"MobileCheck","option":{"_key":"5edb58dd-1194-45bf-87bd-6de5a56d724f","Identity":0,"Index":0,"referenceKey":"00000000-0000-0000-0000-000000000000","state":0}}

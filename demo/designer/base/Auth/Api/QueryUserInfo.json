@@ -1,1 +1,0 @@
-﻿{"Method":1,"CallArg":"UserBaseInfo","ResultArg":"UserBaseInfo","RoutePath":"v2/user/query","IsUserCommand":false,"_project":"Auth","IsGlobal":false,"_caption":"查询用户信息","_description":"查询用户信息","_name":"QueryUserInfo","option":{"_key":"2f4072c5-4b80-4ac1-aee3-811a81800066","Identity":0,"Index":0,"referenceKey":"00000000-0000-0000-0000-000000000000","state":0}}

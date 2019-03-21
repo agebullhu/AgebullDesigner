@@ -209,15 +209,24 @@ namespace Agebull.EntityModel.Config
         {
             get
             {
-                if (_referenceKey == Guid.Empty || _referenceKey == _key)
+                if (_referenceKey == Guid.Empty)
                     return null;
-                if (Config == _referenceConfig)
+                if (_referenceKey == _key || Config == _referenceConfig)
                 {
                     ReferenceKey = Guid.Empty;
                     _referenceConfig = null;
                     return null;
                 }
-                return _referenceConfig ?? (_referenceConfig = GlobalConfig.GetConfig(_referenceKey));
+
+                if (_referenceConfig != null)
+                    return _referenceConfig;
+                 _referenceConfig = GlobalConfig.GetConfig(_referenceKey);
+
+                if (_referenceConfig != null && Config != _referenceConfig)
+                    return _referenceConfig;
+                ReferenceKey = Guid.Empty;
+                _referenceConfig = null;
+                return null;
             }
             set
             {

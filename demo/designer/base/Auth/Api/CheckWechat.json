@@ -1,1 +1,0 @@
-﻿{"Method":1,"CallArg":"Wechat","ResultArg":"Wechat","RoutePath":"v2/check/wechat","IsUserCommand":false,"_project":"Auth","IsGlobal":false,"_caption":"检查微信账号","_description":"检查微信账号","_name":"CheckWechat","option":{"_key":"b98e5a23-8c3a-4b8f-99fc-e5600b8e901c","Identity":0,"Index":0,"referenceKey":"00000000-0000-0000-0000-000000000000","state":0}}

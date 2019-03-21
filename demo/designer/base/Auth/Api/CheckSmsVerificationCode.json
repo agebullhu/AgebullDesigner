@@ -1,1 +1,0 @@
-﻿{"Method":1,"CallArg":"ValiadateCodeCheckRequest","RoutePath":"v2/vc/sms/valiadate","IsUserCommand":false,"_project":"Auth","IsGlobal":false,"_caption":"验证短信验证码","_description":"验证短信验证码","_name":"CheckSmsVerificationCode","option":{"_key":"2537ad46-ea43-402e-bb2f-6921d76c57d7","Identity":0,"Index":0,"referenceKey":"00000000-0000-0000-0000-000000000000","state":0}}

@@ -1,1 +1,0 @@
-﻿{"Method":1,"CallArg":"LoginbySmsRequest","ResultArg":"LoginResponse","RoutePath":"v2/login/sms","IsUserCommand":false,"_project":"Auth","IsGlobal":false,"_caption":"短信登录","_description":"短信登录","_name":"LoginBySms","option":{"_key":"330be569-b1bf-43b4-8c29-119006ace0a6","Identity":0,"Index":0,"referenceKey":"00000000-0000-0000-0000-000000000000","state":0}}

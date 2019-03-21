@@ -1,0 +1,1 @@
+﻿{"Method":1,"CallArg":"RegByPhoneRequest","ResultArg":"LoginResponse","RoutePath":"v2/register/phone","IsUserCommand":false,"_project":"UserInfo","IsGlobal":false,"_caption":"基于手机的注册","_description":"基于手机的注册","_name":"RegisterByPhone","option":{"_key":"080c1ebb-9ec9-4def-b7a7-cb5aa3f02942","Identity":0,"Index":0,"referenceKey":"00000000-0000-0000-0000-000000000000","state":0}}

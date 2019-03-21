@@ -1,0 +1,1 @@
+﻿{"Method":1,"CallArg":"MobilePhoneRequest","RoutePath":"v2/vc/sms/get","IsUserCommand":false,"_project":"UserInfo","IsGlobal":false,"_caption":"获取短信验证码","_description":"获取短信验证码","_name":"GetSmsVerificationCode","option":{"_key":"1e604078-9494-446e-8789-eef50a3b2987","Identity":0,"Index":0,"referenceKey":"00000000-0000-0000-0000-000000000000","state":0}}

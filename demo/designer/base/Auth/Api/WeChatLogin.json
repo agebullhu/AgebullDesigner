@@ -1,1 +1,0 @@
-﻿{"Method":1,"ResultArg":"LoginResponse","RoutePath":"v2/login/wechat","IsUserCommand":false,"_project":"Auth","IsGlobal":false,"_caption":"微信登录","_description":"微信登录","_name":"WeChatLogin","option":{"_key":"230c469b-8bec-4860-b49a-85e330924c1b","Identity":0,"Index":0,"referenceKey":"00000000-0000-0000-0000-000000000000","state":0}}
