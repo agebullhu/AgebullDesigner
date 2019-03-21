@@ -1,12 +1,11 @@
 ﻿/*design by:agebull designer date:2017/11/15 15:34:41*/
 
 using System.ComponentModel;
-
 using Agebull.Common.Ioc;
-using Agebull.Common.Rpc;
 using Agebull.Common.OAuth;
-using Agebull.ZeroNet.ZeroApi;
-using Gboxt.Common.DataModel;
+using Agebull.MicroZero;
+
+using Agebull.MicroZero.ZeroApis;
 
 namespace Agebull.UserCenter.WebApi
 {

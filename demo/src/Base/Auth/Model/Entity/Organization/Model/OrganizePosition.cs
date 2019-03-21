@@ -1,5 +1,6 @@
-﻿using System.Runtime.Serialization;
-using Gboxt.Common.DataModel;
+﻿using Agebull.EntityModel.Common;
+using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace Agebull.Common.OAuth
 {

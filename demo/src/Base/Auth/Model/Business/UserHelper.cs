@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Agebull.Common.Configuration;
-using Agebull.Common.DataModel.Redis;
+using Agebull.Common.Context;
 using Agebull.Common.Logging;
 using Agebull.Common.OAuth.DataAccess;
-using Agebull.Common.Rpc;
-using Agebull.Common.OAuth;
-using Agebull.Common.Redis;
-using Gboxt.Common.DataModel;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Redis;
 
 namespace Agebull.Common.OAuth
 {

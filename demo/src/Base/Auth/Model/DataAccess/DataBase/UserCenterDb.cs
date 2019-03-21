@@ -1,6 +1,7 @@
 ﻿/*design by:agebull designer date:2017/11/1 16:13:52*/
 
-using Gboxt.Common.DataModel.MySql;
+
+using Agebull.EntityModel.MySql;
 
 namespace Agebull.Common.OAuth.DataAccess
 {

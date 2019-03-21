@@ -1,7 +1,7 @@
 ﻿/*design by:agebull designer date:2017/6/14 1:30:12*/
 
 using Agebull.Common.Ioc;
-using Gboxt.Common.DataModel.MySql;
+using Agebull.EntityModel.MySql;
 
 namespace Agebull.ZeroNet.ManageApplication.DataAccess
 {

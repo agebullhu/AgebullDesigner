@@ -15,17 +15,16 @@ using System.IO;
 using Newtonsoft.Json;
 
 using Agebull.Common;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataModel;
-using Agebull.Common.WebApi;
+using Agebull.EntityModel.Common;
 
-using Agebull.Common.WebApi.Auth;
 
-using Agebull.Common.DataModel.BusinessLogic;
+using Agebull.Common.OAuth;
+
+using Agebull.EntityModel.MySql.BusinessLogic;
 using Agebull.Common.AppManage.DataAccess;
 
 using MySql.Data.MySqlClient;
-using Gboxt.Common.DataModel.MySql;
+using Agebull.EntityModel.MySql;
 
 #endregion
 

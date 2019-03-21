@@ -15,20 +15,11 @@ using System.IO;
 using Newtonsoft.Json;
 
 using Agebull.Common;
-using Agebull.Common.DataModel;
-using Agebull.Common.DataModel.BusinessLogic;
-using Agebull.Common.Rpc;
-using Agebull.Common.WebApi;
-using Agebull.ZeroNet.ZeroApi;
-using Agebull.Common.DataModel.WebUI;
-using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.MySql;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.MySql.BusinessLogic;
+using Agebull.MicroZero.ZeroApis;
 
 
-
-using Agebull.Common.OAuth;
-using Agebull.Common.OAuth.BusinessLogic;
-using Agebull.Common.OAuth.DataAccess;
 #endregion
 
 namespace Agebull.Common.OAuth.WebApi.Entity

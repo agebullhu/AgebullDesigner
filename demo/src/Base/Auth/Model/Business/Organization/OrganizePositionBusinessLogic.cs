@@ -1,5 +1,5 @@
-﻿using Agebull.Common.DataModel.BusinessLogic;
-using Agebull.Common.OAuth.DataAccess;
+﻿using Agebull.Common.OAuth.DataAccess;
+using Agebull.EntityModel.MySql.BusinessLogic;
 
 namespace Agebull.Common.OAuth.BusinessLogic
 {

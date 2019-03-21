@@ -4,8 +4,8 @@ using System;
 using System.IO;
 using System.Threading;
 using Agebull.Common;
-using Agebull.Common.DataModel.BusinessLogic;
-using Gboxt.Common.DataModel;
+using Agebull.EntityModel.MySql.BusinessLogic;
+using Agebull.EntityModel.Common;
 using Agebull.ZeroNet.ManageApplication.DataAccess;
 
 namespace Agebull.ZeroNet.ManageApplication

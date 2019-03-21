@@ -1,7 +1,7 @@
 ﻿/*design by:agebull designer date:2018/9/28 20:25:28*/
 
-using Agebull.Common.DataModel.BusinessLogic;
 using Agebull.Common.AppManage.DataAccess;
+using Agebull.EntityModel.MySql.BusinessLogic;
 
 namespace Agebull.Common.AppManage.BusinessLogic
 {

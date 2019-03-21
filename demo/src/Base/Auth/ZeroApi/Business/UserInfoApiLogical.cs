@@ -1,14 +1,14 @@
 ﻿/*design by:agebull designer date:2017/11/2 22:22:24*/
 using System;
 using System.Diagnostics;
-using Agebull.Common.DataModel.Redis;
+using Agebull.Common.Context;
 using Agebull.Common.Ioc;
 using Agebull.Common.Logging;
-using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.MySql;
 using Agebull.Common.OAuth.DataAccess;
-using Agebull.Common.Redis;
-using Agebull.Common.Rpc;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.MySql;
+using Agebull.EntityModel.Redis;
+using Agebull.MicroZero.ZeroApis;
 
 namespace Agebull.Common.OAuth
 {

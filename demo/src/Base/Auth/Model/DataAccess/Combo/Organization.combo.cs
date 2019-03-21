@@ -1,8 +1,8 @@
 ﻿/*design by:agebull designer date:2017/6/27 8:45:14*/
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.EasyUI;
+using Agebull.EntityModel.Redis;
 using System.Collections.Generic;
-using Agebull.Common.DataModel.Redis;
-using Agebull.Common.DataModel.WebUI;
-using Gboxt.Common.DataModel;
 
 
 namespace Agebull.Common.OAuth.DataAccess

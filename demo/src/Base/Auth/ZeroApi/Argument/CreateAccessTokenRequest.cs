@@ -1,6 +1,6 @@
-﻿using System.Runtime.Serialization;
-
+﻿using Agebull.MicroZero.ZeroApis;
 using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace Agebull.Common.OAuth
 {
@@ -8,7 +8,7 @@ namespace Agebull.Common.OAuth
     /// 生成AT的请求参数
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public class CreateAccessTokenRequest : Gboxt.Common.DataModel.IApiArgument
+    public class CreateAccessTokenRequest : MicroZero.ZeroApis.IApiArgument
     {
         /// <summary>
         /// 用户ID

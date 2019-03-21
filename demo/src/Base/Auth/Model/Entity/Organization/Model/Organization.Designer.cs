@@ -15,10 +15,10 @@ using System.IO;
 using Newtonsoft.Json;
 
 using Agebull.Common;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.Extends;
-using Agebull.Common.WebApi;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Interfaces;
+
 
 
 #endregion

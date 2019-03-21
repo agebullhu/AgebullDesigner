@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Agebull.Common.WebApi.Auth;
-using Gboxt.Common.DataModel.MySql;
-using Agebull.Common.DataModel.BusinessLogic;
+using Agebull.Common.OAuth;
+using Agebull.EntityModel.MySql;
+using Agebull.EntityModel.MySql.BusinessLogic;
 using Agebull.Common.AppManage.DataAccess;
-using Agebull.Common.DataModel;
-using Agebull.Common.DataModel.WebUI;
+using Agebull.EntityModel.Common;
 using Agebull.Common.Ioc;
+using Agebull.EntityModel.EasyUI;
 
 namespace Agebull.Common.AppManage.BusinessLogic
 {

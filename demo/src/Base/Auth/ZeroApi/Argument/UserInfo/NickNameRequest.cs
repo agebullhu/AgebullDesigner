@@ -1,10 +1,12 @@
 ﻿/*design by:agebull designer date:2017/11/7 21:14:55*/
 
-using Gboxt.Common.DataModel;
+
+using Agebull.EntityModel.Common;
+using Agebull.MicroZero.ZeroApis;
 
 namespace Agebull.Common.OAuth
 {
-    sealed partial class NickNameRequest : Gboxt.Common.DataModel.IApiArgument
+    sealed partial class NickNameRequest : MicroZero.ZeroApis.IApiArgument
     {
         /// <summary>
         /// 扩展校验

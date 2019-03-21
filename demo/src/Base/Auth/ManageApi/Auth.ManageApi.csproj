@@ -59,12 +59,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Agebull.Common.Extend" Version="2.3.3" />
-    <PackageReference Include="Agebull.EntityModel.Core" Version="2.3.3" />
-    <PackageReference Include="Agebull.Rpc.Abstractions" Version="2.3.3" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\AppManage\Model\AppManage.Model.csproj" />
     <ProjectReference Include="..\Model\Auth.Model.csproj" />
   </ItemGroup>

@@ -15,16 +15,8 @@ using System.IO;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 
-using Agebull.Common;
-using Agebull.Common.DataModel;
-using Agebull.Common.Rpc;
-using Agebull.Common.WebApi;
-using Gboxt.Common;
-using Gboxt.Common.DataModel;
-using Agebull.Common.WebApi.Auth;
-
-using Gboxt.Common.DataModel.Extends;
-using Gboxt.Common.DataModel.MySql;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.MySql;
 #endregion
 
 namespace Agebull.Common.AppManage.DataAccess

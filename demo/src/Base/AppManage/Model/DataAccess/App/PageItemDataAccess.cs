@@ -1,7 +1,7 @@
 ﻿/*design by:agebull designer date:2018/9/2 13:00:40*/
 using Newtonsoft.Json;
-using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.MySql;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.MySql;
 
 namespace Agebull.Common.AppManage.DataAccess
 {

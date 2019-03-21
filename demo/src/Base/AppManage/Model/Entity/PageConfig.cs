@@ -1,5 +1,5 @@
 using System.Runtime.Serialization;
-using Gboxt.Common.DataModel;
+using Agebull.MicroZero.ZeroApis;
 using Newtonsoft.Json;
 
 namespace Agebull.Common.AppManage
@@ -51,7 +51,7 @@ namespace Agebull.Common.AppManage
     /// </summary>
     [DataContract]
     [JsonObject(MemberSerialization.OptIn)]
-    public class PageConfig : IApiArgument
+    public class PageConfig : MicroZero.ZeroApis.IApiArgument
     {
         /// <summary>
         /// “≥√ÊID
@@ -105,7 +105,7 @@ namespace Agebull.Common.AppManage
         [JsonProperty("edit", NullValueHandling = NullValueHandling.Ignore)]
         public bool Edit { get; set; }
 
-        bool IApiArgument.Validate(out string message)
+        bool MicroZero.ZeroApis.IApiArgument.Validate(out string message)
         {
             message = null;
             return true;

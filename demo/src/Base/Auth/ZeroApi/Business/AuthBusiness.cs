@@ -1,16 +1,14 @@
 ﻿using System;
 using Agebull.Common.Configuration;
-using Agebull.Common.DataModel.Redis;
+using Agebull.Common.Context;
 using Agebull.Common.Logging;
 using Agebull.Common.OAuth;
-using Agebull.Common.OAuth;
 using Agebull.Common.OAuth.DataAccess;
-using Agebull.Common.OAuth;
-using Agebull.Common.Redis;
-using Agebull.Common.Rpc;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.MySql;
+using Agebull.EntityModel.Redis;
+using Agebull.MicroZero.ZeroApis;
 using Agebull.OAuth.Contract;
-using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.MySql;
 
 namespace Agebull.OAuth.Business
 {
@@ -509,15 +507,7 @@ namespace Agebull.OAuth.Business
             var position = ppAccess.FirstOrDefault(p => p.UserId == userInfo.UserId);
             if (position == null)
                 return;
-            userInfo.DepartmentId = position.DepartmentId;
-            var orgAccess = new OrganizationDataAccess();
-            var org = orgAccess.LoadByPrimaryKey(position.DepartmentId);
-            if (org == null)
-                return;
-            org = GetOrganization(org, orgAccess);
-            userInfo.OrganizationId = org.Id;
-            org = GetGroup(org, orgAccess);
-            userInfo.GroupId = org.Id;
+            userInfo.OrganizationId = position.OrganizationId;
         }
 
         /// <summary>

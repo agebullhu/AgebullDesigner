@@ -1,7 +1,8 @@
 ﻿/*design by:agebull designer date:2018/9/2 12:32:49*/
 
 
-using Agebull.Common.DataModel.WebUI;
+
+using Agebull.EntityModel.EasyUI;
 
 namespace Agebull.Common.AppManage.BusinessLogic
 {

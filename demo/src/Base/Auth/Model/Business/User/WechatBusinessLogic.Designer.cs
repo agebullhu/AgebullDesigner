@@ -15,21 +15,30 @@ using System.IO;
 using Newtonsoft.Json;
 
 using Agebull.Common;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataModel;
-using Agebull.Common.WebApi;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Common;
 
 
 
+<<<<<<< HEAD:demo/src/Base/Auth/Model/Business/User/WechatBusinessLogic.Designer.cs
 using Agebull.Common.DataModel.BusinessLogic;
 using Agebull.Common.Organizations.DataAccess;
+=======
+
+using Agebull.EntityModel.MySql.BusinessLogic;
+using Agebull.MicroZero.Demo.DataAccess;
+>>>>>>> dad19e146e305fb88b1600da6828c94bbc6b8c63:demo/src/Demo/Model/Business/None/DemoEntityBusinessLogic.Designer.cs
 
 using MySql.Data.MySqlClient;
-using Gboxt.Common.DataModel.MySql;
+using Agebull.EntityModel.MySql;
 
 #endregion
 
+<<<<<<< HEAD:demo/src/Base/Auth/Model/Business/User/WechatBusinessLogic.Designer.cs
 namespace Agebull.Common.Organizations.BusinessLogic
+=======
+namespace Agebull.MicroZero.Demo.BusinessLogic
+>>>>>>> dad19e146e305fb88b1600da6828c94bbc6b8c63:demo/src/Demo/Model/Business/None/DemoEntityBusinessLogic.Designer.cs
 {
     /// <summary>
     /// 微信联合认证关联的用户信息

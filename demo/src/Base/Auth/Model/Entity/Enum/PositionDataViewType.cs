@@ -1,4 +1,4 @@
-namespace Gboxt.Common.DataModel
+namespace Agebull.EntityModel.Common
 {
     /// <summary>
     /// 职位数据视角类型

@@ -4,11 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Agebull.Common.Configuration;
-using Gboxt.Common.DataModel;
-using Agebull.Common.DataModel.BusinessLogic;
-using Agebull.Common.DataModel.WebUI;
 using Agebull.Common.Logging;
 using Agebull.Common.OAuth.DataAccess;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.EasyUI;
+using Agebull.EntityModel.MySql.BusinessLogic;
 #endregion
 
 namespace Agebull.Common.OAuth.BusinessLogic

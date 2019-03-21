@@ -1,6 +1,6 @@
 ﻿using System;
 using Agebull.Common.Logging;
-using Agebull.ZeroNet.PubSub;
+using Agebull.MicroZero.PubSub;
 
 namespace Agebull.ZeroNet.WebSocket
 {
