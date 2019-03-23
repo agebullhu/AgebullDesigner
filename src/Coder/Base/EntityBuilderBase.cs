@@ -64,8 +64,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 类定义之前的代码
         /// </summary>
-        protected virtual string ClassHead => $@"/* {Entity.Description}*/
-";
+        protected virtual string ClassHead => EntityRemHeader;
 
         /// <summary>
         /// 类继承的扩展
@@ -125,17 +124,16 @@ using System.IO;
 using Newtonsoft.Json;
 
 using Agebull.Common;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataModel;
-using Agebull.Common.WebApi;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Interfaces;
 
 {Project.UsingNameSpaces}
 
 {ExtendUsing}
 
 namespace {NameSpace}
-{{
-    /* {Entity.Description}*/
+{{    
+    {EntityRemHeader}
     partial class {Entity.EntityName}
     {{{BaseCode}
     }}
@@ -162,15 +160,15 @@ using System.Runtime.Serialization;
 using System.IO;
 
 using Agebull.Common;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataModel;
-using Agebull.Common.WebApi;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Interfaces;
 
 {Project.UsingNameSpaces}
 
 namespace {NameSpace}
 {{
-    {ClassHead}partial class {Entity.EntityName}{ClassExtend}
+    {ClassHead}
+    partial class {Entity.EntityName}{ClassExtend}
     {{{ExtendCode}
     }}
 }}";

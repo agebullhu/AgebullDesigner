@@ -12,6 +12,16 @@ namespace Agebull.EntityModel.RobotCoder
     public abstract class EntityCoderBase : CoderWithEntity
     {
         /// <summary>
+        /// 实体的注释头
+        /// </summary>
+        public string EntityRemHeader => $@"/// <summary>
+        /// {ToRemString(Entity.Caption, 4)}
+        /// </summary>
+        /// <remark>
+        /// {ToRemString(Entity.Description, 4)}
+        /// </remark>";
+
+        /// <summary>
         /// 统一的字段名称
         /// </summary>
         /// <param name="property"></param>

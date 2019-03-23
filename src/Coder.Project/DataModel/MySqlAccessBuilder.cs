@@ -224,8 +224,8 @@ using System.IO;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 
-using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
-using Agebull.EntityModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
+using MySql.Data.MySqlClient;
+using Agebull.EntityModel.MySql;
 
 using Agebull.Common;
 using Agebull.Common.OAuth;
@@ -321,8 +321,8 @@ using System.Runtime.Serialization;
 using System.IO;
 using Newtonsoft.Json;
 
-using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
-using Agebull.EntityModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
+using MySql.Data.MySqlClient;
+using Agebull.EntityModel.MySql;
 
 using Agebull.Common;
 using Agebull.Common.OAuth;

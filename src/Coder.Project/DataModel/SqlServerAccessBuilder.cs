@@ -159,7 +159,6 @@ namespace Agebull.EntityModel.RobotCoder
 {CreateFullSqlParameter()}
 {UpdateCode()}
 {InsertCode()}
-{CreateScope()}
         #endregion
 ";
 
@@ -170,6 +169,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data;
+using System.Data.Sql;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
@@ -246,14 +247,14 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 
-using Gboxt.Common.DataModel.SqlServer;
+using Agebull.EntityModel.SqlServer;
 
 namespace {NameSpace}.DataAccess
 {{
     /// <summary>
     /// {Entity.Description}
     /// </summary>
-    sealed partial class {Entity.Name}DataAccess : SqlServerTable<{Entity.EntityName}>
+    sealed partial class {Entity.Name}DataAccess : SqlServerTable<{Entity.EntityName},{Project.DataBaseObjectName}>
     {{
 
     }}
@@ -345,7 +346,7 @@ namespace {NameSpace}.DataAccess
             {
                 return;
             }
-            if (!string.IsNullOrEmpty(table.ModelBase))
+            if (!String.IsNullOrEmpty(table.ModelBase))
             {
                 FieldMap(Project.Entities.FirstOrDefault(p => p.EntityName == table.ModelBase), sql, names, ref isFirst);
             }
@@ -552,7 +553,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
             {
                 code.AppendFormat(@"
             //{0}
-            if (data.__EntityStatus.ModifiedProperties[{1}.Real_{2}] > 0)
+            if (data.__EntityStatus.ModifiedProperties[{1}._DataStruct_.Real_{2}] > 0)
                 sql.AppendLine(""       [{3}] = @{2}"");", field.Caption, Entity.EntityName, field.PropertyName, field.DbFieldName);
             }
             code.AppendFormat(@"
@@ -570,28 +571,6 @@ UPDATE [{0}] SET", Entity.SaveTable);
             return col.CustomType == null ? $"{pre}{col.PropertyName}" : $"({col.CsType}){pre}{col.PropertyName}";
         }
 
-        private string CreateScope()
-        {
-            return $@"
-
-        /// <summary>
-        /// 构造一个缺省可用的数据库对象
-        /// </summary>
-        /// <returns></returns>
-        protected override SqlServerDataBase CreateDefaultDataBase()
-        {{
-            return {Project.DataBaseObjectName}.Default ?? new {Project.DataBaseObjectName}();
-        }}
-        
-        /// <summary>
-        /// 生成数据库访问范围
-        /// </summary>
-        public static SqlServerDataTableScope<{Entity.EntityName}> CreateScope()
-        {{
-            var db = {Project.DataBaseObjectName}.Default ?? new {Project.DataBaseObjectName}();
-            return SqlServerDataTableScope<{Entity.EntityName}>.CreateScope(db, db.{Entity.Name.ToPluralism()});
-        }}";
-        }
 
         private string CreateFullSqlParameter()
         {
@@ -612,7 +591,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
             {
                 code.AppendFormat(@"
             //{2:D2}:{0}({1})", field.Caption, field.PropertyName, field.Index + 1);
-                if (!string.IsNullOrWhiteSpace(field.CustomType))
+                if (!String.IsNullOrWhiteSpace(field.CustomType))
                 {
                     code.AppendFormat(@"
             cmd.Parameters.Add(new SqlParameter(""{0}"",SqlDbType.Int){{ Value = (int)entity.{0}}});"
@@ -786,7 +765,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
             foreach (var field in Entity.DbFields)
             {
                 string fieldName = field.PropertyName.ToLWord();
-                if (!string.IsNullOrWhiteSpace(field.CustomType))
+                if (!String.IsNullOrWhiteSpace(field.CustomType))
                 {
                     code.AppendFormat(@"
                 if (!reader.IsDBNull({2}))
@@ -814,7 +793,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
                 if (!reader.IsDBNull({2}))
                     entity._{0} = {1}({2}).ToString();"
                             , fieldName
-                            , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
+                            , GetDBReaderFunctionName(field.DbType)
                             , idx++);
                         continue;
                     case "decimal":
@@ -825,19 +804,19 @@ UPDATE [{0}] SET", Entity.SaveTable);
                                 /*: @"
                 entity._{0} = (decimal){1}({2});"*/
                             , fieldName
-                            , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
+                            , GetDBReaderFunctionName(field.DbType)
                             , idx++);
                         continue;
                 }
                 //if (field.DbNullable)
                 {
-                    if (string.Equals(field.CsType, field.DbType, StringComparison.OrdinalIgnoreCase))
+                    if (String.Equals(field.CsType, field.DbType, StringComparison.OrdinalIgnoreCase))
                     {
                         code.AppendFormat(@"
                 if (!reader.IsDBNull({2}))
                     entity._{0} = {1}({2});"
                             , fieldName
-                            , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
+                            , GetDBReaderFunctionName(field.DbType)
                             , idx++);
                     }
                     else if (field.CsType.ToLower() == "bool" && field.DbType.ToLower() == "int")
@@ -846,7 +825,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
                 if (!reader.IsDBNull({2}))
                     entity._{0} = {1}({2}) == 1;"
                             , fieldName
-                            , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
+                            , GetDBReaderFunctionName(field.DbType)
                             , idx++);
                     }
                     else if (field.CsType.ToLower() == "decimal")
@@ -855,7 +834,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
                 if (!reader.IsDBNull({2}))
                     entity._{0} = new decimal({1}({2}));"
                             , fieldName
-                            , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
+                            , GetDBReaderFunctionName(field.DbType)
                             , idx++);
                     }
                     else
@@ -865,7 +844,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
                     entity._{0} = ({1}){2}({3});"
                             , fieldName
                             , field.CsType
-                            , CodeBuilderDefault.GetDBReaderFunctionName(field.DbType)
+                            , GetDBReaderFunctionName(field.DbType)
                             , idx++);
                     }
                 }
@@ -901,6 +880,75 @@ UPDATE [{0}] SET", Entity.SaveTable);
             }
         }");
             return code.ToString();
+        }
+
+        /// <summary>
+        ///     取得对应类型的DBReader的方法名称
+        /// </summary>
+        /// <param name="csharpType">C#的类型</param>
+        /// <param name="readerName">读取器的名称</param>
+        /// <returns>读取方法名</returns>
+        public static string GetDBReaderFunctionName(string csharpType, string readerName = "reader")
+        {
+            switch (csharpType.ToLower())
+            {
+                case "bit":
+                case "bool":
+                case "boolean":
+                    return readerName + ".GetBoolean";
+
+                case "byte":
+                    return readerName + ".GetByte";
+
+                case "byte[]":
+                case "binary":
+                    return readerName + ".GetBytes";
+                case "char":
+                    return readerName + ".GetChar";
+
+                case "short":
+                case "int16":
+                    return readerName + ".GetInt16";
+
+                case "int":
+                case "int32":
+                    return readerName + ".GetInt32";
+
+                case "bigint":
+                case "long":
+                case "int64":
+                    return readerName + ".GetInt64";
+
+                case "datetime":
+                case "datetime2":
+                    return readerName + ".GetDateTime";
+
+                case "decimal":
+                case "numeric":
+                    return readerName + ".GetDecimal";
+
+                case "real":
+                case "float":
+                    return $"(float){readerName}.GetDouble";
+                case "double":
+                    return readerName + ".GetDouble";
+
+                case "guid":
+                case "uniqueidentifier":
+                    return readerName + ".GetGuid";
+
+                case "nchar":
+                case "varchar":
+                case "nvarchar":
+                case "string":
+                case "text":
+                case "longtext":
+
+                    return readerName + ".GetString";
+
+                default:
+                    return $"/*({csharpType})*/{readerName}.GetValue";
+            }
         }
 
         /// <summary>

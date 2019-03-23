@@ -31,18 +31,26 @@ namespace Agebull.EntityModel.Designer
                 Caption = "清理接口强绑定",
                 IconName = "tree_sum"
             });
+            //commands.Add(new CommandItemBuilder<EntityConfig>
+            //{
+            //    Action = ToClassify,
+            //    Caption = "HIS分类",
+            //    Catalog = "HIS",
+            //    IconName = "tree_Type",
+            //    WorkView = "adv"
+            //});
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Action = ToClassify,
-                Caption = "HIS分类",
-                Catalog = "HIS",
+                Action = ToClass,
+                Caption = "全部设置为普通类",
+                Catalog = "设计",
                 IconName = "tree_Type",
                 WorkView = "adv"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Action = ToClass,
-                Caption = "全部设置为普通类",
+                Action = EmptyFromDb,
+                Caption = "空值校验同数据库",
                 Catalog = "设计",
                 IconName = "tree_Type",
                 WorkView = "adv"
@@ -194,6 +202,15 @@ namespace Agebull.EntityModel.Designer
         {
             entity.NoDataBase = false;
         }
+        void EmptyFromDb(EntityConfig entity)
+        {
+            foreach (var field in entity.Properties)
+            {
+                field.CanEmpty = field.DbNullable;
+                field.IsRequired = !field.DbNullable;
+            }
+        }
+        
 
         #region 字段编辑
         public void SortByGroup(object arg)

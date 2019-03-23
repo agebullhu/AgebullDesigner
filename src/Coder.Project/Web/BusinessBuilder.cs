@@ -46,7 +46,7 @@ using Agebull.Common.OAuth;
 using Agebull.EntityModel.Common;
 
 using Agebull.EntityModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
-using Agebull.EntityModel.MySql.BusinessLogic;
+using Agebull.EntityModel.BusinessLogic.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
 
 {Project.UsingNameSpaces}
 
@@ -211,7 +211,7 @@ using Agebull.Common.OAuth;
 using Agebull.EntityModel.Common;
 
 using Agebull.EntityModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
-using Agebull.EntityModel.MySql.BusinessLogic;
+using Agebull.EntityModel.BusinessLogic.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
 
 {Project.UsingNameSpaces}
 

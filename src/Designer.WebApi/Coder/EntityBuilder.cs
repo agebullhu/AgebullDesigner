@@ -47,9 +47,7 @@ using Newtonsoft.Json;
 
 namespace {NameSpace}
 {{
-    /// <summary>
-    /// {Entity.Description}
-    /// </summary>
+    {EntityRemHeader}
     [DataContract,JsonObject(MemberSerialization.OptIn)]
     public partial class {Entity.Name}
     {{
@@ -65,9 +63,7 @@ namespace {NameSpace}
         /// </summary>
         protected override void CreateExCode(string path)
         {
-            string code = $@"
-//#if API_EXTEND
-using System;
+            string code = $@"using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -81,10 +77,7 @@ using System.Runtime.Serialization;
 using System.IO;
 using Newtonsoft.Json;
 
-using Agebull.Common;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataModel;
-using Agebull.Common.WebApi;
+using Agebull.EntityModel.Common;
 
 {Project.UsingNameSpaces}
 
@@ -95,8 +88,7 @@ namespace {NameSpace}
         {ToData()}
         {ValidateCode()}
     }}
-}}
-//#endif";
+}}";
             var file = ConfigPath(Project, FileSaveConfigName, path, Entity.Classify, Entity.Name);
             WriteFile(file + ".api.cs", code);
         }
