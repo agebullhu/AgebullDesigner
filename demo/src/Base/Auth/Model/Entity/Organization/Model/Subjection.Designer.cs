@@ -23,7 +23,7 @@ using Agebull.EntityModel.Interfaces;
 
 #endregion
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// 行级权限关联

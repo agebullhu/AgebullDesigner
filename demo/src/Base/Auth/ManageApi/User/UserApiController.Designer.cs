@@ -1,4 +1,5 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2018/10/6 2:42:25*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:27:49*/
+#region
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,25 +12,25 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Runtime.Serialization;
 using System.IO;
-
 using Newtonsoft.Json;
 
 using Agebull.Common;
+using Agebull.Common.Context;
+using Agebull.Common.Ioc;
+using Agebull.Common.OAuth;
 using Agebull.EntityModel.Common;
-using Agebull.EntityModel.MySql.BusinessLogic;
-
 using Agebull.EntityModel.EasyUI;
-using Agebull.EntityModel.MySql;
+using Agebull.MicroZero;
 using Agebull.MicroZero.ZeroApis;
 
 using Agebull.Common.OAuth;
 
-using Agebull.Common.OAuth;
-using Agebull.Common.OAuth.BusinessLogic;
-using Agebull.Common.OAuth.DataAccess;
-using Agebull.MicroZero.ZeroApis;
+using Agebull.Common.Organizations;
+using Agebull.Common.Organizations.BusinessLogic;
+using Agebull.Common.Organizations.DataAccess;
+#endregion
 
-namespace Agebull.Common.UserCenter.WebApi.Entity
+namespace Agebull.Common.Organizations.WebApi.Entity
 {
     partial class UserApiController
     {
@@ -58,7 +59,7 @@ namespace Agebull.Common.UserCenter.WebApi.Entity
             var keyWord = GetArg("keyWord");
             if (!string.IsNullOrEmpty(keyWord))
             {
-                filter.AddAnd(p => p.OpenId.Contains(keyWord) || 
+                filter.AddAnd(p =>p.OpenId.Contains(keyWord) || 
                                    p.Os.Contains(keyWord) || 
                                    p.App.Contains(keyWord) || 
                                    p.DeviceId.Contains(keyWord) || 
@@ -74,6 +75,20 @@ namespace Agebull.Common.UserCenter.WebApi.Entity
         /// <param name="convert">转化器</param>
         protected void DefaultReadFormData(UserData data, FormConvert convert)
         {
+            //
+            data.UserId = convert.ToLong("UserId");
+            data.UserType = (UserType)convert.ToInteger("UserType");
+            data.OpenId = convert.ToString("OpenId");
+            //-
+            data.Status = (UserStatusType)convert.ToInteger("Status");
+            data.AuthorizeScreen = (AuthorizeType)convert.ToInteger("AuthorizeScreen");
+            //来源
+            data.RegistSoure = (AuthorizeType)convert.ToInteger("RegistSoure");
+            data.Os = convert.ToString("Os");
+            data.App = convert.ToString("App");
+            data.DeviceId = convert.ToString("DeviceId");
+            data.Channel = convert.ToString("Channel");
+            data.TraceMark = convert.ToString("TraceMark");
         }
 
         #endregion

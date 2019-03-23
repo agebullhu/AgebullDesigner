@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 
 #endregion
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// 行级权限关联

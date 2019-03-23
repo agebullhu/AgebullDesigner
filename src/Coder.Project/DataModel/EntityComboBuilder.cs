@@ -40,15 +40,15 @@ using System.IO;
 using Newtonsoft.Json;
 
 using Agebull.Common;
-using Agebull.Common.DataModel;
-using Agebull.Common.WebApi;
-using Gboxt.Common.DataModel;
+using Agebull.Common.Configuration;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Interfaces;
+using Agebull.EntityModel.MySql;
+using Agebull.EntityModel.Redis;
+using Agebull.EntityModel.EasyUI;
 
 {Project.UsingNameSpaces}
 
-using Agebull.ProjectDeveloper.WebDomain.Models;
-using Gboxt.Common.DataModel.MySql;
-using Gboxt.Common.WebUI;
 
 namespace {NameSpace}.DataAccess
 {{

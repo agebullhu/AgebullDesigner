@@ -27,7 +27,7 @@ using Agebull.EntityModel.Interfaces;
 using Agebull.EntityModel.MySql;
 #endregion
 
-namespace Agebull.Common.OAuth.DataAccess
+namespace Agebull.Common.Organizations.DataAccess
 {
     /// <summary>
     /// 行级权限关联

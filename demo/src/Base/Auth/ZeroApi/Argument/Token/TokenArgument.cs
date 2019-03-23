@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using System.Runtime.Serialization;
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// AT校验请求参数

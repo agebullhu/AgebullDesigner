@@ -42,14 +42,13 @@ using System.IO;
 using Newtonsoft.Json;
 
 using Agebull.Common;
-using Agebull.Common.DataModel;
-using Agebull.Common.DataModel.BusinessLogic;
-using Agebull.Common.Rpc;
-using Agebull.Common.WebApi;
-using Agebull.ZeroNet.ZeroApi;
-using Agebull.Common.DataModel.WebUI;
-using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.MySql;
+using Agebull.Common.Context;
+using Agebull.Common.Ioc;
+using Agebull.Common.OAuth;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.EasyUI;
+using Agebull.MicroZero;
+using Agebull.MicroZero.ZeroApis;
 
 {Project.UsingNameSpaces}
 
@@ -152,14 +151,13 @@ using System.IO;
 using Newtonsoft.Json;
 
 using Agebull.Common;
-using Agebull.Common.DataModel;
-using Agebull.Common.DataModel.WebUI;
-using Agebull.Common.DataModel.BusinessLogic;
-using Agebull.Common.Rpc;
-using Agebull.Common.WebApi;
-using Agebull.ZeroNet.ZeroApi;
-using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.MySql;
+using Agebull.Common.Context;
+using Agebull.Common.Ioc;
+using Agebull.Common.OAuth;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.EasyUI;
+using Agebull.MicroZero;
+using Agebull.MicroZero.ZeroApis;
 
 {Project.UsingNameSpaces}
 

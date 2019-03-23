@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/3 1:24:04*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 9:58:46*/
 #region
 using System;
 using System.Collections.Generic;
@@ -15,19 +15,18 @@ using System.IO;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 
-using Agebull.Common;
-using Agebull.EntityModel.Common;
-using Agebull.MicroZero.ZeroApis;
-
-using Agebull.Common;
-using Agebull.EntityModel.Common;
-
-
-using Agebull.EntityModel.Interfaces;
+using MySql.Data.MySqlClient;
 using Agebull.EntityModel.MySql;
+
+using Agebull.Common;
+using Agebull.Common.OAuth;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Interfaces;
+using Agebull.Common.OAuth;
+
 #endregion
 
-namespace Agebull.Common.OAuth.DataAccess
+namespace Agebull.Common.Organizations.DataAccess
 {
     /// <summary>
     /// 机构职位设置
@@ -104,8 +103,7 @@ namespace Agebull.Common.OAuth.DataAccess
     `author_id` AS `AuthorId`,
     `auditor_id` AS `AuditorId`,
     `audit_date` AS `AuditDate`,
-    `audit_state` AS `AuditState`,
-    `area_id` AS `AreaId`";
+    `audit_state` AS `AuditState`";
             }
         }
 
@@ -133,8 +131,7 @@ INSERT INTO `tb_org_organize_position`
     `author_id`,
     `auditor_id`,
     `audit_date`,
-    `audit_state`,
-    `area_id`
+    `audit_state`
 )
 VALUES
 (
@@ -150,8 +147,7 @@ VALUES
     ?AuthorId,
     ?AuditorId,
     ?AuditDate,
-    ?AuditState,
-    ?AreaId
+    ?AuditState
 );
 SELECT @@IDENTITY;";
             }
@@ -176,8 +172,7 @@ UPDATE `tb_org_organize_position` SET
        `last_reviser_id` = ?LastReviserId,
        `auditor_id` = ?AuditorId,
        `audit_date` = ?AuditDate,
-       `audit_state` = ?AuditState,
-       `area_id` = ?AreaId
+       `audit_state` = ?AuditState
  WHERE `id` = ?Id AND `is_freeze` = 0 AND `data_state` < 255;";
             }
         }
@@ -224,9 +219,6 @@ UPDATE `tb_org_organize_position` SET
             //审核状态
             if (data.__EntityStatus.ModifiedProperties[OrganizePositionData._DataStruct_.Real_AuditState] > 0)
                 sql.AppendLine("       `audit_state` = ?AuditState");
-            //行政区域外键
-            if (data.__EntityStatus.ModifiedProperties[OrganizePositionData._DataStruct_.Real_AreaId] > 0)
-                sql.AppendLine("       `area_id` = ?AreaId");
             sql.Append(" WHERE `id` = ?Id AND `is_freeze` = 0 AND `data_state` < 255;");
             return sql.ToString();
         }
@@ -239,7 +231,7 @@ UPDATE `tb_org_organize_position` SET
         /// <summary>
         ///  所有字段
         /// </summary>
-        static string[] _fields = new string[]{ "Id","Position","DepartmentId","Department","OrgLevel","BoundaryId","RoleId","Role","Memo","IsFreeze","DataState","AddDate","LastReviserId","LastModifyDate","AuthorId","AuditorId","AuditDate","AuditState","MasterId","AreaId" };
+        static string[] _fields = new string[]{ "Id","Position","DepartmentId","Department","OrgLevel","BoundaryId","RoleId","Role","Memo","IsFreeze","DataState","AddDate","LastReviserId","LastModifyDate","AuthorId","AuditorId","AuditDate","AuditState" };
 
         /// <summary>
         ///  所有字段
@@ -289,11 +281,7 @@ UPDATE `tb_org_organize_position` SET
             { "AuditDate" , "audit_date" },
             { "audit_date" , "audit_date" },
             { "AuditState" , "audit_state" },
-            { "audit_state" , "audit_state" },
-            { "MasterId" , "master_id" },
-            { "master_id" , "master_id" },
-            { "AreaId" , "area_id" },
-            { "area_id" , "area_id" }
+            { "audit_state" , "audit_state" }
         };
 
         /// <summary>
@@ -352,8 +340,6 @@ UPDATE `tb_org_organize_position` SET
                     try{entity._auditDate = reader.GetMySqlDateTime(16).Value;}catch{}
                 if (!reader.IsDBNull(17))
                     entity._auditState = (AuditStateType)reader.GetInt32(17);
-                if (!reader.IsDBNull(18))
-                    entity._areaId = (long)reader.GetInt64(18);
             }
         }
 
@@ -402,8 +388,6 @@ UPDATE `tb_org_organize_position` SET
                     return MySqlDbType.DateTime;
                 case "AuditState":
                     return MySqlDbType.Int32;
-                case "AreaId":
-                    return MySqlDbType.Int64;
             }
             return MySqlDbType.VarChar;
         }
@@ -495,8 +479,6 @@ UPDATE `tb_org_organize_position` SET
             cmd.Parameters.Add(parameter);
             //19:审核状态(AuditState)
             cmd.Parameters.Add(new MySqlParameter("AuditState",MySqlDbType.Int32){ Value = (int)entity.AuditState});
-            //21:行政区域外键(AreaId)
-            cmd.Parameters.Add(new MySqlParameter("AreaId",MySqlDbType.Int64){ Value = entity.AreaId});
         }
 
 
@@ -536,8 +518,7 @@ UPDATE `tb_org_organize_position` SET
         {
             get
             {
-                return @"
-    `area_id` AS `AreaId`";
+                return @"";
             }
         }
 
@@ -551,8 +532,6 @@ UPDATE `tb_org_organize_position` SET
         {
             using (new EditScope(entity.__EntityStatus, EditArrestMode.All, false))
             {
-                if (!reader.IsDBNull(0))
-                    entity._areaId = (long)reader.GetInt64(0);
             }
         }
         #endregion

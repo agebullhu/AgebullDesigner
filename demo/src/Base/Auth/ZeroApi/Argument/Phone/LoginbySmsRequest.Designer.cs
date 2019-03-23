@@ -16,7 +16,7 @@ using Agebull.EntityModel.Common;
 
 using Newtonsoft.Json;
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// 短信登录参数

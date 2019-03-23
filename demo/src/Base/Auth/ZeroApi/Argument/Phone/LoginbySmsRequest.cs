@@ -4,7 +4,7 @@
 using Agebull.EntityModel.Common;
 using Agebull.MicroZero.ZeroApis;
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     sealed partial class LoginbySmsRequest : MicroZero.ZeroApis.IApiArgument
     {

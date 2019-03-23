@@ -1,0 +1,41 @@
+﻿<!--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:27:49-->
+<form name='positionPersonnelForm' id='positionPersonnelForm' method='POST' enctype='multipart/form-data'>
+    <input name='Id' id='Id' type='hidden' />
+    <div id='positionPersonnelRegion' class='formRegion' style='width:500px;'>
+            <div class='inputField' id='fr_Appellation'>
+                <div class='inputRegion' id='ir_Appellation'>
+                    <div class='inputLabel'>称谓:</div>
+                    <input id='Appellation' name='Appellation' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'称谓',validType:['strLimit[0,200]'],required:true"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_RoleId'>
+                <div class='inputRegion' id='ir_RoleId'>
+                    <div class='inputLabel'>角色:</div>
+                    <input id='RoleId' name='RoleId' class='inputValue inputS easyui-combobox' readfield='Role'
+                           data-options="prompt:'角色',readonly:true,valueField:'id', textField:'text'"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_OrganizePositionId'>
+                <div class='inputRegion' id='ir_OrganizePositionId'>
+                    <div class='inputLabel'>职位:</div>
+                    <input id='OrganizePositionId' name='OrganizePositionId' class='inputValue inputS easyui-combobox' readfield='Position'
+                           data-options="prompt:'称谓',valueField:'id', textField:'text'"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_OrganizationId'>
+                <div class='inputRegion' id='ir_OrganizationId'>
+                    <div class='inputLabel'>所在机构:</div>
+                    <input id='OrganizationId' name='OrganizationId' class='inputValue inputS easyui-combobox' readfield='Organization'
+                           data-options="prompt:'所在机构',readonly:true,valueField:'id', textField:'text'"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_Memo'>
+                <div class='inputRegion' id='ir_Memo'>
+                    <div class='inputLabel'>备注:</div><br/>
+                    <input id='Memo' name='Memo' class='inputValue_Memo_S easyui-textbox'
+                           data-options="prompt:'备注',multiline:true"/>
+                </div>
+            </div>
+    </div>
+</form>

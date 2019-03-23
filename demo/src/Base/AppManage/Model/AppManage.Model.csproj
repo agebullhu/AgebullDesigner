@@ -20,7 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Agebull.MicroZero.ModelApi" Version="1.4.0.1" />
     <PackageReference Include="MySql.Data" Version="8.0.15" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Auth\Model\Auth.Model.csproj" />
   </ItemGroup>
 </Project>

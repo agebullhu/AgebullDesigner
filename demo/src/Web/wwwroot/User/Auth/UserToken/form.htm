@@ -1,61 +1,61 @@
-﻿<!--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2018/9/23 21:26:21-->
+﻿<!--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:27:50-->
 <form name='userTokenForm' id='userTokenForm' method='POST' enctype='multipart/form-data'>
-    <input name='Id' type='hidden' />
-    <div id='userTokenRegion' class='formRegion' style='width:485px;'>
-            <div class='inputField' id='fr_UserId'>
-                <div class='inputRegion' id='ir_UserId'>
-                    <div class='inputLabel'>用户标识:</div>
-                    <input id='UserId' name='UserId' class='inputValue inputS easyui-textbox'
-                           data-options="prompt:'用户标识',readonly:true"/>
-                </div>
-            </div>
+    <input name='Id' id='Id' type='hidden' />
+    <div id='userTokenRegion' class='formRegion' style='width:500px;'>
             <div class='inputField' id='fr_UserDeviceId'>
                 <div class='inputRegion' id='ir_UserDeviceId'>
                     <div class='inputLabel'>设备标识:</div>
                     <input id='UserDeviceId' name='UserDeviceId' class='inputValue inputS easyui-textbox'
-                           data-options="prompt:'设备标识',readonly:true"/>
+                           data-options="prompt:'设备标识'"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_AddDate'>
+                <div class='inputRegion' id='ir_AddDate'>
+                    <div class='inputLabel'>登录时间:</div>
+                    <input id='AddDate' name='AddDate' class='inputValue inputS easyui-datebox'
+                           data-options="prompt:'登录时间'"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_UserId'>
+                <div class='inputRegion' id='ir_UserId'>
+                    <div class='inputLabel'>用户标识:</div>
+                    <input id='UserId' name='UserId' class='inputValue inputS easyui-combobox'
+                           data-options="prompt:'用户标识',valueField:'id', textField:'text'"/>
                 </div>
             </div>
             <div class='inputField' id='fr_DeviceId'>
                 <div class='inputRegion' id='ir_DeviceId'>
                     <div class='inputLabel'>设备标识:</div>
                     <input id='DeviceId' name='DeviceId' class='inputValue inputS easyui-textbox'
-                           data-options="prompt:'App 端用户生成的DeviceId',readonly:true"/>
+                           data-options="prompt:'App 端用户生成的DeviceId',validType:['strLimit[0,100]']"/>
                 </div>
             </div>
             <div class='inputField' id='fr_AccessToken'>
                 <div class='inputRegion' id='ir_AccessToken'>
                     <div class='inputLabel'>访问令牌:</div>
                     <input id='AccessToken' name='AccessToken' class='inputValue inputS easyui-textbox'
-                           data-options="prompt:'用户accesstoken',readonly:true"/>
+                           data-options="prompt:'用户accesstoken',validType:['strLimit[0,200]']"/>
                 </div>
             </div>
             <div class='inputField' id='fr_RefreshToken'>
                 <div class='inputRegion' id='ir_RefreshToken'>
                     <div class='inputLabel'>刷新令牌:</div>
                     <input id='RefreshToken' name='RefreshToken' class='inputValue inputS easyui-textbox'
-                           data-options="prompt:'用户的Refresh token，用于刷新access token',readonly:true"/>
-                </div>
-            </div>
-            <div class='inputField' id='fr_AddDate'>
-                <div class='inputRegion' id='ir_AddDate'>
-                    <div class='inputLabel'>生成时间:</div>
-                    <input id='AddDate' name='AddDate' class='inputValue inputS easyui-datebox'
-                           data-options="prompt:'生成时间',readonly:true"/>
+                           data-options="prompt:'用户的Refresh token，用于刷新access token',validType:['strLimit[0,200]']"/>
                 </div>
             </div>
             <div class='inputField' id='fr_AccessTokenExpiresTime'>
                 <div class='inputRegion' id='ir_AccessTokenExpiresTime'>
                     <div class='inputLabel'>访问令牌过期时间:</div>
                     <input id='AccessTokenExpiresTime' name='AccessTokenExpiresTime' class='inputValue inputS easyui-datebox'
-                           data-options="prompt:'访问令牌过期时间',readonly:true"/>
+                           data-options="prompt:'access token过期时间'"/>
                 </div>
             </div>
             <div class='inputField' id='fr_RefreshTokenExpiresTime'>
                 <div class='inputRegion' id='ir_RefreshTokenExpiresTime'>
                     <div class='inputLabel'>刷新令牌过期时间:</div>
                     <input id='RefreshTokenExpiresTime' name='RefreshTokenExpiresTime' class='inputValue inputS easyui-datebox'
-                           data-options="prompt:'RefreshToken过期时间',readonly:true"/>
+                           data-options="prompt:'refresh token 过期时间'"/>
                 </div>
             </div>
     </div>

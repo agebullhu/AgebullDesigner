@@ -178,9 +178,10 @@ using System.Runtime.Serialization;
 using System.IO;
 using Newtonsoft.Json;
 using Agebull.Common;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.SqlServer;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.SqlServer;
+using Agebull.EntityModel.Redis;
+using Agebull.EntityModel.EasyUI;
 
 {Project.UsingNameSpaces}
 

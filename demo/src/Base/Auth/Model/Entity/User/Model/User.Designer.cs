@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/1/2 20:11:23*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:14:39*/
 #region
 using System;
 using System.Collections.Generic;
@@ -14,16 +14,15 @@ using System.Runtime.Serialization;
 using System.IO;
 using Newtonsoft.Json;
 
+
 using Agebull.Common;
-using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Interfaces;
 
-
-
+using Agebull.Common.OAuth;
 #endregion
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// APP端用户信息表
@@ -99,11 +98,11 @@ namespace Agebull.Common.OAuth
         /// 用户类型
         /// </summary>
         [IgnoreDataMember,JsonIgnore]
-        public AuthorizeType _userType;
+        public UserType _userType;
 
         partial void OnUserTypeGet();
 
-        partial void OnUserTypeSet(ref AuthorizeType value);
+        partial void OnUserTypeSet(ref UserType value);
 
         partial void OnUserTypeSeted();
 
@@ -111,11 +110,8 @@ namespace Agebull.Common.OAuth
         /// <summary>
         /// 用户类型
         /// </summary>
-        /// <remarks>
-        /// 0 无,1 手机认证，2 账户认证，4 微信认证，8 微博认证
-        /// </remarks>
         [DataMember , JsonProperty("UserType", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"用户类型")]
-        public  AuthorizeType UserType
+        public  UserType UserType
         {
             get
             {
@@ -145,7 +141,7 @@ namespace Agebull.Common.OAuth
         public  int UserType_Number
         {
             get => (int)this.UserType;
-            set => this.UserType = (AuthorizeType)value;
+            set => this.UserType = (UserType)value;
         }
         /// <summary>
         /// 用户代码
@@ -240,39 +236,53 @@ namespace Agebull.Common.OAuth
             set => this.Status = (UserStatusType)value;
         }
         /// <summary>
-        /// 制作时间
+        /// 已认证场景
         /// </summary>
         [IgnoreDataMember,JsonIgnore]
-        public DateTime _addDate;
+        public AuthorizeType _authorizeScreen;
 
-        partial void OnAddDateGet();
+        partial void OnAuthorizeScreenGet();
 
-        partial void OnAddDateSet(ref DateTime value);
+        partial void OnAuthorizeScreenSet(ref AuthorizeType value);
 
-        partial void OnAddDateSeted();
+        partial void OnAuthorizeScreenSeted();
 
         
         /// <summary>
-        /// 制作时间
+        /// 已认证场景
         /// </summary>
-        [DataRule(CanNull = true)]
-        [DataMember , JsonProperty("addDate", NullValueHandling = NullValueHandling.Ignore) , JsonConverter(typeof(MyDateTimeConverter)) , DisplayName(@"制作时间")]
-        public  DateTime AddDate
+        [DataMember , JsonProperty("AuthorizeScreen", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"已认证场景")]
+        public  AuthorizeType AuthorizeScreen
         {
             get
             {
-                OnAddDateGet();
-                return this._addDate;
+                OnAuthorizeScreenGet();
+                return this._authorizeScreen;
             }
             set
             {
-                if(this._addDate == value)
+                if(this._authorizeScreen == value)
                     return;
-                OnAddDateSet(ref value);
-                this._addDate = value;
-                OnAddDateSeted();
-                this.OnPropertyChanged(_DataStruct_.Real_AddDate);
+                OnAuthorizeScreenSet(ref value);
+                this._authorizeScreen = value;
+                OnAuthorizeScreenSeted();
+                this.OnPropertyChanged(_DataStruct_.Real_AuthorizeScreen);
             }
+        }
+        /// <summary>
+        /// 已认证场景的可读内容
+        /// </summary>
+        [IgnoreDataMember,JsonIgnore,DisplayName("已认证场景")]
+        public string AuthorizeScreen_Content => AuthorizeScreen.ToCaption();
+
+        /// <summary>
+        /// 已认证场景的数字属性
+        /// </summary>
+        [IgnoreDataMember,JsonIgnore]
+        public  int AuthorizeScreen_Number
+        {
+            get => (int)this.AuthorizeScreen;
+            set => this.AuthorizeScreen = (AuthorizeType)value;
         }
         /// <summary>
         /// 注册来源
@@ -670,6 +680,41 @@ namespace Agebull.Common.OAuth
             }
         }
         /// <summary>
+        /// 制作时间
+        /// </summary>
+        [IgnoreDataMember,JsonIgnore]
+        public DateTime _addDate;
+
+        partial void OnAddDateGet();
+
+        partial void OnAddDateSet(ref DateTime value);
+
+        partial void OnAddDateSeted();
+
+        
+        /// <summary>
+        /// 制作时间
+        /// </summary>
+        [DataRule(CanNull = true)]
+        [DataMember , JsonProperty("addDate", NullValueHandling = NullValueHandling.Ignore) , JsonConverter(typeof(MyDateTimeConverter)) , DisplayName(@"制作时间")]
+        public  DateTime AddDate
+        {
+            get
+            {
+                OnAddDateGet();
+                return this._addDate;
+            }
+            set
+            {
+                if(this._addDate == value)
+                    return;
+                OnAddDateSet(ref value);
+                this._addDate = value;
+                OnAddDateSeted();
+                this.OnPropertyChanged(_DataStruct_.Real_AddDate);
+            }
+        }
+        /// <summary>
         /// 制作人
         /// </summary>
         [IgnoreDataMember,JsonIgnore]
@@ -752,17 +797,17 @@ namespace Agebull.Common.OAuth
                 {
                     if(value is int)
                     {
-                        this.UserType = (AuthorizeType)(int)value;
+                        this.UserType = (UserType)(int)value;
                     }
-                    else if(value is AuthorizeType)
+                    else if(value is UserType)
                     {
-                        this.UserType = (AuthorizeType)value;
+                        this.UserType = (UserType)value;
                     }
                     else
                     {
                         var str = value.ToString();
-                        AuthorizeType val;
-                        if (AuthorizeType.TryParse(str, out val))
+                        UserType val;
+                        if (UserType.TryParse(str, out val))
                         {
                             this.UserType = val;
                         }
@@ -771,7 +816,7 @@ namespace Agebull.Common.OAuth
                             int vl;
                             if (int.TryParse(str, out vl))
                             {
-                                this.UserType = (AuthorizeType)vl;
+                                this.UserType = (UserType)vl;
                             }
                         }
                     }
@@ -810,8 +855,35 @@ namespace Agebull.Common.OAuth
                     }
                 }
                 return;
-            case "adddate":
-                this.AddDate = Convert.ToDateTime(value);
+            case "authorizescreen":
+                if (value != null)
+                {
+                    if(value is int)
+                    {
+                        this.AuthorizeScreen = (AuthorizeType)(int)value;
+                    }
+                    else if(value is AuthorizeType)
+                    {
+                        this.AuthorizeScreen = (AuthorizeType)value;
+                    }
+                    else
+                    {
+                        var str = value.ToString();
+                        AuthorizeType val;
+                        if (AuthorizeType.TryParse(str, out val))
+                        {
+                            this.AuthorizeScreen = val;
+                        }
+                        else
+                        {
+                            int vl;
+                            if (int.TryParse(str, out vl))
+                            {
+                                this.AuthorizeScreen = (AuthorizeType)vl;
+                            }
+                        }
+                    }
+                }
                 return;
             case "registsoure":
                 if (value != null)
@@ -908,6 +980,9 @@ namespace Agebull.Common.OAuth
             case "lastmodifydate":
                 this.LastModifyDate = Convert.ToDateTime(value);
                 return;
+            case "adddate":
+                this.AddDate = Convert.ToDateTime(value);
+                return;
             case "authorid":
                 this.AuthorId = (long)Convert.ToDecimal(value);
                 return;
@@ -932,7 +1007,7 @@ namespace Agebull.Common.OAuth
                 this.UserId = Convert.ToInt64(value);
                 return;
             case _DataStruct_.UserType:
-                this.UserType = (AuthorizeType)value;
+                this.UserType = (UserType)value;
                 return;
             case _DataStruct_.OpenId:
                 this.OpenId = value == null ? null : value.ToString();
@@ -940,8 +1015,8 @@ namespace Agebull.Common.OAuth
             case _DataStruct_.Status:
                 this.Status = (UserStatusType)value;
                 return;
-            case _DataStruct_.AddDate:
-                this.AddDate = Convert.ToDateTime(value);
+            case _DataStruct_.AuthorizeScreen:
+                this.AuthorizeScreen = (AuthorizeType)value;
                 return;
             case _DataStruct_.RegistSoure:
                 this.RegistSoure = (AuthorizeType)value;
@@ -973,6 +1048,9 @@ namespace Agebull.Common.OAuth
             case _DataStruct_.LastModifyDate:
                 this.LastModifyDate = Convert.ToDateTime(value);
                 return;
+            case _DataStruct_.AddDate:
+                this.AddDate = Convert.ToDateTime(value);
+                return;
             case _DataStruct_.AuthorId:
                 this.AuthorId = Convert.ToInt64(value);
                 return;
@@ -996,8 +1074,8 @@ namespace Agebull.Common.OAuth
                 return this.OpenId;
             case "status":
                 return this.Status.ToCaption();
-            case "adddate":
-                return this.AddDate;
+            case "authorizescreen":
+                return this.AuthorizeScreen.ToCaption();
             case "registsoure":
                 return this.RegistSoure.ToCaption();
             case "os":
@@ -1018,6 +1096,8 @@ namespace Agebull.Common.OAuth
                 return this.LastReviserId;
             case "lastmodifydate":
                 return this.LastModifyDate;
+            case "adddate":
+                return this.AddDate;
             case "authorid":
                 return this.AuthorId;
             }
@@ -1042,8 +1122,8 @@ namespace Agebull.Common.OAuth
                     return this.OpenId;
                 case _DataStruct_.Status:
                     return this.Status;
-                case _DataStruct_.AddDate:
-                    return this.AddDate;
+                case _DataStruct_.AuthorizeScreen:
+                    return this.AuthorizeScreen;
                 case _DataStruct_.RegistSoure:
                     return this.RegistSoure;
                 case _DataStruct_.Os:
@@ -1064,6 +1144,8 @@ namespace Agebull.Common.OAuth
                     return this.LastReviserId;
                 case _DataStruct_.LastModifyDate:
                     return this.LastModifyDate;
+                case _DataStruct_.AddDate:
+                    return this.AddDate;
                 case _DataStruct_.AuthorId:
                     return this.AuthorId;
             }
@@ -1091,7 +1173,7 @@ namespace Agebull.Common.OAuth
             this._userType = sourceEntity._userType;
             this._openId = sourceEntity._openId;
             this._status = sourceEntity._status;
-            this._addDate = sourceEntity._addDate;
+            this._authorizeScreen = sourceEntity._authorizeScreen;
             this._registSoure = sourceEntity._registSoure;
             this._os = sourceEntity._os;
             this._app = sourceEntity._app;
@@ -1102,6 +1184,7 @@ namespace Agebull.Common.OAuth
             this._dataState = sourceEntity._dataState;
             this._lastReviserId = sourceEntity._lastReviserId;
             this._lastModifyDate = sourceEntity._lastModifyDate;
+            this._addDate = sourceEntity._addDate;
             this._authorId = sourceEntity._authorId;
             CopyExtendValue(sourceEntity);
             this.__EntityStatus.SetModified();
@@ -1117,7 +1200,7 @@ namespace Agebull.Common.OAuth
                 this.UserType = source.UserType;
                 this.OpenId = source.OpenId;
                 this.Status = source.Status;
-                this.AddDate = source.AddDate;
+                this.AuthorizeScreen = source.AuthorizeScreen;
                 this.RegistSoure = source.RegistSoure;
                 this.Os = source.Os;
                 this.App = source.App;
@@ -1128,6 +1211,7 @@ namespace Agebull.Common.OAuth
                 this.DataState = source.DataState;
                 this.LastReviserId = source.LastReviserId;
                 this.LastModifyDate = source.LastModifyDate;
+                this.AddDate = source.AddDate;
                 this.AuthorId = source.AuthorId;
         }
         #endregion
@@ -1151,7 +1235,7 @@ namespace Agebull.Common.OAuth
                 OnUserTypeModified(subsist,false);
                 OnOpenIdModified(subsist,false);
                 OnStatusModified(subsist,false);
-                OnAddDateModified(subsist,false);
+                OnAuthorizeScreenModified(subsist,false);
                 OnRegistSoureModified(subsist,false);
                 OnOsModified(subsist,false);
                 OnAppModified(subsist,false);
@@ -1162,6 +1246,7 @@ namespace Agebull.Common.OAuth
                 OnDataStateModified(subsist,false);
                 OnLastReviserIdModified(subsist,false);
                 OnLastModifyDateModified(subsist,false);
+                OnAddDateModified(subsist,false);
                 OnAuthorIdModified(subsist,false);
                 return;
             }
@@ -1171,7 +1256,7 @@ namespace Agebull.Common.OAuth
                 OnUserTypeModified(subsist,true);
                 OnOpenIdModified(subsist,true);
                 OnStatusModified(subsist,true);
-                OnAddDateModified(subsist,true);
+                OnAuthorizeScreenModified(subsist,true);
                 OnRegistSoureModified(subsist,true);
                 OnOsModified(subsist,true);
                 OnAppModified(subsist,true);
@@ -1182,16 +1267,17 @@ namespace Agebull.Common.OAuth
                 OnDataStateModified(subsist,true);
                 OnLastReviserIdModified(subsist,true);
                 OnLastModifyDateModified(subsist,true);
+                OnAddDateModified(subsist,true);
                 OnAuthorIdModified(subsist,true);
                 return;
             }
-            else if(modifieds != null && modifieds[16] > 0)
+            else if(modifieds != null && modifieds[17] > 0)
             {
                 OnUserIdModified(subsist,modifieds[_DataStruct_.Real_UserId] == 1);
                 OnUserTypeModified(subsist,modifieds[_DataStruct_.Real_UserType] == 1);
                 OnOpenIdModified(subsist,modifieds[_DataStruct_.Real_OpenId] == 1);
                 OnStatusModified(subsist,modifieds[_DataStruct_.Real_Status] == 1);
-                OnAddDateModified(subsist,modifieds[_DataStruct_.Real_AddDate] == 1);
+                OnAuthorizeScreenModified(subsist,modifieds[_DataStruct_.Real_AuthorizeScreen] == 1);
                 OnRegistSoureModified(subsist,modifieds[_DataStruct_.Real_RegistSoure] == 1);
                 OnOsModified(subsist,modifieds[_DataStruct_.Real_Os] == 1);
                 OnAppModified(subsist,modifieds[_DataStruct_.Real_App] == 1);
@@ -1202,6 +1288,7 @@ namespace Agebull.Common.OAuth
                 OnDataStateModified(subsist,modifieds[_DataStruct_.Real_DataState] == 1);
                 OnLastReviserIdModified(subsist,modifieds[_DataStruct_.Real_LastReviserId] == 1);
                 OnLastModifyDateModified(subsist,modifieds[_DataStruct_.Real_LastModifyDate] == 1);
+                OnAddDateModified(subsist,modifieds[_DataStruct_.Real_AddDate] == 1);
                 OnAuthorIdModified(subsist,modifieds[_DataStruct_.Real_AuthorId] == 1);
             }
         }
@@ -1247,14 +1334,14 @@ namespace Agebull.Common.OAuth
         partial void OnStatusModified(EntitySubsist subsist,bool isModified);
 
         /// <summary>
-        /// 制作时间修改的后期处理(保存前)
+        /// 已认证场景修改的后期处理(保存前)
         /// </summary>
         /// <param name="subsist">当前对象状态</param>
         /// <param name="isModified">是否被修改</param>
         /// <remarks>
         /// 对关联的属性的更改,请自行保存,否则可能丢失
         /// </remarks>
-        partial void OnAddDateModified(EntitySubsist subsist,bool isModified);
+        partial void OnAuthorizeScreenModified(EntitySubsist subsist,bool isModified);
 
         /// <summary>
         /// 注册来源修改的后期处理(保存前)
@@ -1357,6 +1444,16 @@ namespace Agebull.Common.OAuth
         partial void OnLastModifyDateModified(EntitySubsist subsist,bool isModified);
 
         /// <summary>
+        /// 制作时间修改的后期处理(保存前)
+        /// </summary>
+        /// <param name="subsist">当前对象状态</param>
+        /// <param name="isModified">是否被修改</param>
+        /// <remarks>
+        /// 对关联的属性的更改,请自行保存,否则可能丢失
+        /// </remarks>
+        partial void OnAddDateModified(EntitySubsist subsist,bool isModified);
+
+        /// <summary>
         /// 制作人修改的后期处理(保存前)
         /// </summary>
         /// <param name="subsist">当前对象状态</param>
@@ -1410,7 +1507,7 @@ namespace Agebull.Common.OAuth
             /// <summary>
             /// 用户Id的数字标识
             /// </summary>
-            public const byte UserId = 1;
+            public const byte UserId = 2;
             
             /// <summary>
             /// 用户Id的实时记录顺序
@@ -1420,7 +1517,7 @@ namespace Agebull.Common.OAuth
             /// <summary>
             /// 用户类型的数字标识
             /// </summary>
-            public const byte UserType = 2;
+            public const byte UserType = 3;
             
             /// <summary>
             /// 用户类型的实时记录顺序
@@ -1430,7 +1527,7 @@ namespace Agebull.Common.OAuth
             /// <summary>
             /// 用户代码的数字标识
             /// </summary>
-            public const byte OpenId = 9;
+            public const byte OpenId = 4;
             
             /// <summary>
             /// 用户代码的实时记录顺序
@@ -1440,7 +1537,7 @@ namespace Agebull.Common.OAuth
             /// <summary>
             /// 用户状态的数字标识
             /// </summary>
-            public const byte Status = 11;
+            public const byte Status = 5;
             
             /// <summary>
             /// 用户状态的实时记录顺序
@@ -1448,19 +1545,19 @@ namespace Agebull.Common.OAuth
             public const int Real_Status = 3;
 
             /// <summary>
-            /// 制作时间的数字标识
+            /// 已认证场景的数字标识
             /// </summary>
-            public const byte AddDate = 12;
+            public const byte AuthorizeScreen = 6;
             
             /// <summary>
-            /// 制作时间的实时记录顺序
+            /// 已认证场景的实时记录顺序
             /// </summary>
-            public const int Real_AddDate = 4;
+            public const int Real_AuthorizeScreen = 4;
 
             /// <summary>
             /// 注册来源的数字标识
             /// </summary>
-            public const byte RegistSoure = 3;
+            public const byte RegistSoure = 7;
             
             /// <summary>
             /// 注册来源的实时记录顺序
@@ -1470,7 +1567,7 @@ namespace Agebull.Common.OAuth
             /// <summary>
             /// 注册来源操作系统的数字标识
             /// </summary>
-            public const byte Os = 6;
+            public const byte Os = 8;
             
             /// <summary>
             /// 注册来源操作系统的实时记录顺序
@@ -1480,7 +1577,7 @@ namespace Agebull.Common.OAuth
             /// <summary>
             /// 注册时的应用的数字标识
             /// </summary>
-            public const byte App = 7;
+            public const byte App = 9;
             
             /// <summary>
             /// 注册时的应用的实时记录顺序
@@ -1490,7 +1587,7 @@ namespace Agebull.Common.OAuth
             /// <summary>
             /// 注册时设备识别码的数字标识
             /// </summary>
-            public const byte DeviceId = 8;
+            public const byte DeviceId = 10;
             
             /// <summary>
             /// 注册时设备识别码的实时记录顺序
@@ -1500,7 +1597,7 @@ namespace Agebull.Common.OAuth
             /// <summary>
             /// 注册来源渠道码的数字标识
             /// </summary>
-            public const byte Channel = 4;
+            public const byte Channel = 11;
             
             /// <summary>
             /// 注册来源渠道码的实时记录顺序
@@ -1510,7 +1607,7 @@ namespace Agebull.Common.OAuth
             /// <summary>
             /// 注册来源活动跟踪码的数字标识
             /// </summary>
-            public const byte TraceMark = 5;
+            public const byte TraceMark = 12;
             
             /// <summary>
             /// 注册来源活动跟踪码的实时记录顺序
@@ -1558,14 +1655,24 @@ namespace Agebull.Common.OAuth
             public const int Real_LastModifyDate = 14;
 
             /// <summary>
+            /// 制作时间的数字标识
+            /// </summary>
+            public const byte AddDate = 17;
+            
+            /// <summary>
+            /// 制作时间的实时记录顺序
+            /// </summary>
+            public const int Real_AddDate = 15;
+
+            /// <summary>
             /// 制作人的数字标识
             /// </summary>
-            public const byte AuthorId = 17;
+            public const byte AuthorId = 18;
             
             /// <summary>
             /// 制作人的实时记录顺序
             /// </summary>
-            public const int Real_AuthorId = 15;
+            public const int Real_AuthorId = 16;
 
             /// <summary>
             /// 实体结构
@@ -1604,9 +1711,9 @@ namespace Agebull.Common.OAuth
                             Name         = "UserType",
                             Title        = "用户类型",
                             Caption      = @"用户类型",
-                            Description  = @"0 无,1 手机认证，2 账户认证，4 微信认证，8 微博认证",
+                            Description  = @"用户类型",
                             ColumnName   = "user_type",
-                            PropertyType = typeof(AuthorizeType),
+                            PropertyType = typeof(UserType),
                             CanNull      = false,
                             ValueType    = PropertyValueType.Value,
                             CanImport    = false,
@@ -1648,16 +1755,16 @@ namespace Agebull.Common.OAuth
                         }
                     },
                     {
-                        Real_AddDate,
+                        Real_AuthorizeScreen,
                         new PropertySturct
                         {
-                            Index        = AddDate,
-                            Name         = "AddDate",
-                            Title        = "制作时间",
-                            Caption      = @"制作时间",
-                            Description  = @"制作时间",
-                            ColumnName   = "add_date",
-                            PropertyType = typeof(DateTime),
+                            Index        = AuthorizeScreen,
+                            Name         = "AuthorizeScreen",
+                            Title        = "已认证场景",
+                            Caption      = @"已认证场景",
+                            Description  = @"已认证场景",
+                            ColumnName   = "authorize_screen",
+                            PropertyType = typeof(AuthorizeType),
                             CanNull      = false,
                             ValueType    = PropertyValueType.Value,
                             CanImport    = false,
@@ -1673,7 +1780,7 @@ namespace Agebull.Common.OAuth
                             Title        = "注册来源",
                             Caption      = @"注册来源",
                             Description  = @"来源",
-                            ColumnName   = "regist_soure",
+                            ColumnName   = "regist_screen",
                             PropertyType = typeof(AuthorizeType),
                             CanNull      = false,
                             ValueType    = PropertyValueType.Value,
@@ -1827,6 +1934,23 @@ namespace Agebull.Common.OAuth
                             Caption      = @"最后修改日期",
                             Description  = @"最后修改日期",
                             ColumnName   = "last_modify_date",
+                            PropertyType = typeof(DateTime),
+                            CanNull      = false,
+                            ValueType    = PropertyValueType.Value,
+                            CanImport    = false,
+                            CanExport    = false
+                        }
+                    },
+                    {
+                        Real_AddDate,
+                        new PropertySturct
+                        {
+                            Index        = AddDate,
+                            Name         = "AddDate",
+                            Title        = "制作时间",
+                            Caption      = @"制作时间",
+                            Description  = @"制作时间",
+                            ColumnName   = "add_date",
                             PropertyType = typeof(DateTime),
                             CanNull      = false,
                             ValueType    = PropertyValueType.Value,

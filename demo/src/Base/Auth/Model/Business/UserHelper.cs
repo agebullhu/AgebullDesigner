@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using Agebull.Common.Configuration;
 using Agebull.Common.Context;
 using Agebull.Common.Logging;
-using Agebull.Common.OAuth.DataAccess;
+using Agebull.Common.OAuth;
+using Agebull.Common.Organizations.DataAccess;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Redis;
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// 用户辅助类
@@ -48,7 +49,7 @@ namespace Agebull.Common.OAuth
         {
             UserId = SmallFlakes<long>.Oxidize(),
             OpenId = NewOpenId(),
-            UserType = AuthorizeType.Account,
+            AuthorizeScreen = AuthorizeType.Account,
             RegistSoure = AuthorizeType.Account,
             DeviceId = GlobalContext.Customer.DeviceId,
             AddDate = DateTime.Now,

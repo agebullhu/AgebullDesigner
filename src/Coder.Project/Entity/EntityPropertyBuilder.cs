@@ -27,13 +27,9 @@ using Newtonsoft.Json;
 
 using Agebull.Common;
 using Agebull.Common.DataModel;
-using Gboxt.Common.DataModel;
-using Agebull.Common.WebApi;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Interfaces;
 {Project.UsingNameSpaces}
-
-//using {NameSpace}.DataAccess;
-//using Gboxt.Common.DataModel.SqlServer;
-using Newtonsoft.Json;
 ";
         protected override string ClassHead => $@"/// <summary>
     /// {ToRemString(Entity.Description)}

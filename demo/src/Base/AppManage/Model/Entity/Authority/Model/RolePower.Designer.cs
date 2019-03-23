@@ -1,12 +1,25 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/1 15:31:53*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:16:57*/
 #region
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
+using System.Data;
+using System.Diagnostics;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
 using System.Runtime.Serialization;
+using System.IO;
 using Newtonsoft.Json;
-using Agebull.EntityModel.Common;
 
+
+using Agebull.Common;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Interfaces;
+
+using Agebull.Common.Organizations;
 using Agebull.Common.OAuth;
 #endregion
 
@@ -206,11 +219,11 @@ namespace Agebull.Common.AppManage
         /// 权限范围
         /// </summary>
         [IgnoreDataMember,JsonIgnore]
-        public SubjectionType _dataScope;
+        public DataScopeType _dataScope;
 
         partial void OnDataScopeGet();
 
-        partial void OnDataScopeSet(ref SubjectionType value);
+        partial void OnDataScopeSet(ref DataScopeType value);
 
         partial void OnDataScopeSeted();
 
@@ -220,7 +233,7 @@ namespace Agebull.Common.AppManage
         /// </summary>
         [DataRule(CanNull = true)]
         [DataMember , JsonProperty("DataScope", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"权限范围")]
-        public  SubjectionType DataScope
+        public  DataScopeType DataScope
         {
             get
             {
@@ -250,7 +263,7 @@ namespace Agebull.Common.AppManage
         public  int DataScope_Number
         {
             get => (int)this.DataScope;
-            set => this.DataScope = (SubjectionType)value;
+            set => this.DataScope = (DataScopeType)value;
         }
 
         #region 接口属性
@@ -336,17 +349,17 @@ namespace Agebull.Common.AppManage
                 {
                     if(value is int)
                     {
-                        this.DataScope = (SubjectionType)(int)value;
+                        this.DataScope = (DataScopeType)(int)value;
                     }
-                    else if(value is SubjectionType)
+                    else if(value is DataScopeType)
                     {
-                        this.DataScope = (SubjectionType)value;
+                        this.DataScope = (DataScopeType)value;
                     }
                     else
                     {
                         var str = value.ToString();
-                        SubjectionType val;
-                        if (SubjectionType.TryParse(str, out val))
+                        DataScopeType val;
+                        if (DataScopeType.TryParse(str, out val))
                         {
                             this.DataScope = val;
                         }
@@ -355,7 +368,7 @@ namespace Agebull.Common.AppManage
                             int vl;
                             if (int.TryParse(str, out vl))
                             {
-                                this.DataScope = (SubjectionType)vl;
+                                this.DataScope = (DataScopeType)vl;
                             }
                         }
                     }
@@ -391,7 +404,7 @@ namespace Agebull.Common.AppManage
                 this.Power = (RolePowerType)value;
                 return;
             case _DataStruct_.DataScope:
-                this.DataScope = (SubjectionType)value;
+                this.DataScope = (DataScopeType)value;
                 return;
             }
         }
@@ -755,7 +768,7 @@ namespace Agebull.Common.AppManage
                             Caption      = @"权限范围",
                             Description  = @"权限范围",
                             ColumnName   = "data_scope",
-                            PropertyType = typeof(SubjectionType),
+                            PropertyType = typeof(DataScopeType),
                             CanNull      = false,
                             ValueType    = PropertyValueType.Value,
                             CanImport    = false,

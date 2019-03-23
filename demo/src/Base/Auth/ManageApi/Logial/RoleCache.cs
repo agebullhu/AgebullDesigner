@@ -8,12 +8,12 @@ using Agebull.Common.AppManage.DataAccess;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Redis;
 using Agebull.Common.Logging;
-using Agebull.Common.OAuth.DataAccess;
+using Agebull.Common.Organizations.DataAccess;
 using Agebull.Common.OAuth;
-using Agebull.Common.OAuth;
-using Agebull.Common.OAuth.BusinessLogic;
 using Agebull.EntityModel.EasyUI;
 using Agebull.Common.Context;
+using Agebull.Common.Organizations;
+using Agebull.Common.Organizations.BusinessLogic;
 
 namespace Agebull.Common.UserCenter.BusinessLogic
 {

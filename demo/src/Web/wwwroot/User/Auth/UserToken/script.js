@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2018/9/23 21:26:21*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:27:50*/
 /*
 *   用户令牌的前端操作类对象,实现基本的增删改查的界面操作
 */
@@ -18,7 +18,7 @@ var page = {
     /**
      * API前缀
      */
-    apiPrefix: 'uc/UserToken/v1/',
+    apiPrefix: 'user/UserToken/v1/',
     /**
      * 列表的URL
      */
@@ -56,11 +56,11 @@ var page = {
      */
     toolbarId: '#pageToolbarEx',
     /**
-     * 当前录入是否校验正确
-     */
+    * 当前录入是否校验正确
+    */
     inputSucceed: true,
     /**
-     * 用户令牌的页面初始化
+    * 用户令牌的页面初始化
     */
     initialize: function() {
         var me = this;
@@ -70,13 +70,13 @@ var page = {
         me.initToolBar();
     },
     /**
-     * 初始化工具栏
+    * 初始化工具栏
     */
     initToolBar: function() {
         var me = this;
     },
     /**
-     * 初始化列表表格
+    * 初始化列表表格
     */
     initGrid: function() {
         var me = this;
@@ -122,7 +122,7 @@ var page = {
         }
     },
     /**
-    *    历史查询条件还原
+    * 历史查询条件还原
     */
     initHistoryQuery: function() {
         $('#qKeyWord').textbox('setValue', preQueryArgs.keyWord);
@@ -130,7 +130,7 @@ var page = {
     },
     /**
     * 读取查询条件
-     * @returns {object} 查询条件
+    * @returns {object} 查询条件
     */
     getQueryParams: function () {
         return {
@@ -139,54 +139,47 @@ var page = {
         };
     },
     /**
-    *  重新载入用户令牌的列表数据
+    * 重新载入用户令牌的列表数据
     */
     reload:function() {
         $(this.gridId).datagrid('reload');
     },
     /**
-    *    录入界面载入时执行控件初始化
-     * @param {object} editor 编辑器
-     * @param {Function} callback 回调
+    * 录入界面载入时执行控件初始化
+    * @param {object} editor 编辑器
+    * @param {Function} callback 回调
     */
     onFormUiLoaded: function (editor,callback) {
         var me = editor.ex;
         me.setFormValidate();
-        //TO DO:控件初始化代码
-        
+        //用户标识下拉列表
+        comboRemote('#UserId', 'user/User/v1/edit/combo');
         if (callback)
             callback();
     },
     /**
-    *     录入界面数据载入后给Form赋值前,对数据进行预处理
-     * @param {object} editor 编辑器
-     * @param {Function} callback 回调
+    * 录入界面数据载入后给Form赋值前,对数据进行预处理
+    * @param {object} data 数据
+    * @param {object} editor 编辑器
     */
     onFormDataLoaded: function (data, editor) {
-        //var me = editor.ex;
-        //TO DO:数据预处理
     },
     /**
-    *    录入界面数据载入后且已给Form赋值,对进行界面逻辑处理
+    * 录入界面数据载入后且已给Form赋值,对进行界面逻辑处理
+    * @param {object} data 数据
+    * @param {object} editor 编辑器
     */
     afterFormDataLoaded: function (data, editor) {
         var me = editor.ex;
         me.inputSucceed = true;
-        //TO DO:界面逻辑处理
     },
     /**
-    *    录入界面数据校验
-     * @returns {boolean} 数据是否合格
-    */
-    doFormValidate: function() {
-        var me = this;
-        //TO DO:数据校验
-        return me.NoError;
-    },
-    /**
-    *     设置校验规则
+    * 设置校验规则
     */
     setFormValidate: function() {
+        $('#DeviceId').textbox({validType:['strLimit[0,100]']});
+        $('#AccessToken').textbox({validType:['strLimit[0,200]']});
+        $('#RefreshToken').textbox({validType:['strLimit[0,200]']});
 
     },
 
@@ -218,8 +211,8 @@ var page = {
         };
         return editor;
     },
-    /*
-        新增一条用户令牌的界面操作
+    /**
+    * 新增一条用户令牌的界面操作
     */
     addNew: function () {
         var me = this.tag;
@@ -233,34 +226,35 @@ var page = {
         editor.dataId = 0;
         editor.show();
     },
-    /*
-        修改或查看用户令牌的界面操作
+    /**
+    * 修改或查看用户令牌的界面操作
+    * @param {int} id 数据主键
     */
     edit: function (id) {
         var me = this.tag;
         var editor = me.createEditor(me);
-        editor.readOnly=true;
+        
         editor.uiUrl = me.formUrl + '?' + me.formArg + '&id=' + id;
         editor.dataUrl = me.apiPrefix + 'edit/details?id=';
         editor.saveUrl = me.apiPrefix + 'edit/update?id=';
         editor.dataId = id;
         editor.show();
     },
-    /*
-        列表表格的列信息
+    /**
+    * 列表表格的列信息
     */
     columns:
     [
        [
             { styler: vlStyle, halign: 'center', align: 'center', field: 'IsSelected', checkbox: true}
-            , { styler: vlStyle, halign: 'center', align: 'center', sortable: true, field: 'Id', title: 'ID'}
-            , { styler: vlStyle,width:1, halign: 'center', align: 'left', sortable: true, field: 'UserDeviceId', title: '设备标识'}
-            , { styler: vlStyle,width:2, halign: 'center', align: 'left', sortable: true, field: 'DeviceId', title: '设备标识'}
-            , { styler: vlStyle,width:3, halign: 'center', align: 'left', sortable: true, field: 'AccessToken', title: '访问令牌'}
-            , { styler: vlStyle,width:3, halign: 'center', align: 'left', sortable: true, field: 'RefreshToken', title: '刷新令牌'}
-            , { styler: vlStyle,width:1, halign: 'center', align: 'left', sortable: true, field: 'AddDate', title: '生成时间', formatter: dateTimeFormat}
-            , { styler: vlStyle,width:1, halign: 'center', align: 'left', sortable: true, field: 'AccessTokenExpiresTime', title: '访问令牌过期时间', formatter: dateTimeFormat}
-            , { styler: vlStyle,width:1, halign: 'center', align: 'left', sortable: true, field: 'RefreshTokenExpiresTime', title: '刷新令牌过期时间', formatter: dateTimeFormat}
+            //, { styler: vlStyle, halign: 'center', align: 'center', sortable: true, field: 'Id', title: 'ID'}
+            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'UserDeviceId', title: '设备标识' , width:1}
+            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'AddDate', title: '登录时间', formatter: dateTimeFormat , width:1}
+            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'DeviceId', title: '设备标识' , width:2}
+            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'AccessToken', title: '访问令牌' , width:3}
+            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'RefreshToken', title: '刷新令牌' , width:3}
+            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'AccessTokenExpiresTime', title: '访问令牌过期时间', formatter: dateTimeFormat , width:1}
+            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'RefreshTokenExpiresTime', title: '刷新令牌过期时间', formatter: dateTimeFormat , width:1}
         ]
     ]
 };
@@ -270,7 +264,7 @@ var page = {
  */
 mainPageOptions.extend({
     doPageInitialize: function (callback) {
-        globalOptions.api.customHost = globalOptions.api.userApiHost;
+        globalOptions.api.customHost = globalOptions.api.userHost;
         mainPageOptions.loadPageInfo(page.name, function () {
             page.initialize();
             callback();

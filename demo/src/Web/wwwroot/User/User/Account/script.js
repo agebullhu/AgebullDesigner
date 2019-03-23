@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2018/10/5 23:06:23*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:27:49*/
 /*
 *   登录账户的前端操作类对象,实现基本的增删改查的界面操作
 */
@@ -10,31 +10,31 @@ var page = {
     /**
      * 标题
      */
-    title:"登录账户",
+    title:'登录账户',
     /**
      * 名称
      */
-    name: "AccountData",
+    name: 'AccountData',
     /**
      * API前缀
      */
-    apiPrefix: "UserCenter/Account/v1/",
+    apiPrefix: 'user/Account/v1/',
     /**
      * 列表的URL
      */
-    listUrl: "edit/list",
+    listUrl: 'edit/list',
     /**
      * 列表的URL的扩展参数
      */
-    urlArg: "",
+    urlArg: '',
     /**
      * 表单地址
      */
-    formUrl: "form.htm",
+    formUrl: 'form.htm',
     /**
      * 表单参数
      */
-    formArg: "_-_=1",
+    formArg: '_-_=1',
     /**
      * 是否自动载入数据
      */
@@ -46,15 +46,15 @@ var page = {
     /**
      * 默认支持命令按钮的名称后缀
      */
-    cmdElementEx: "",
+    cmdElementEx: '',
     /**
      * 表节点名称
      */
-    gridId: "#grid",
+    gridId: '#grid',
     /**
      * 工具栏节点名称
      */
-    toolbarId: "#pageToolbarEx",
+    toolbarId: '#pageToolbarEx',
     /**
     * 当前录入是否校验正确
     */
@@ -83,7 +83,7 @@ var page = {
         var grid = new GridPanel();
         me.grid=grid;
         grid.tag = me;
-        grid.idField = "Id";
+        grid.idField = 'Id';
         grid.cmdPath = page.apiPrefix;
         grid.auditData = false;
         grid.historyData = true;
@@ -99,8 +99,8 @@ var page = {
             grid.getQueryParams = me.getQueryParams;
         grid.auditData = false;
         var options = grid.getGridOption();
-        options.sortName = "Id";
-        options.sortOrder = "asc";
+        options.sortName = 'Id';
+        options.sortOrder = 'asc';
         }
         if(me.autoLoad){
             me.setUrlArgs(me.urlArg);
@@ -113,12 +113,12 @@ var page = {
     */
     setUrlArgs: function (args) {
         var me = this;
-        if (args) {
+        if (args && args != '') {
             me.urlArg = args;
             me.formArg = args;
-            me.grid.changedUrl(me.apiPrefix + me.listUrl + "?" + args);
+            me.grid.changedUrl(me.apiPrefix + me.listUrl + '?' + args);
         } else {
-            me.formArg = me.urlArg = "_-_=1";
+            me.formArg = me.urlArg = '_-_=1';
             me.grid.changedUrl(me.apiPrefix + me.listUrl);
         }
     },
@@ -126,11 +126,11 @@ var page = {
     * 历史查询条件还原
     */
     initHistoryQuery: function() {
-        $("#qKeyWord").textbox("setValue", preQueryArgs.keyWord);
+        $('#qKeyWord').textbox('setValue', preQueryArgs.keyWord);
         
         if (!preQueryArgs.dataState|| preQueryArgs.dataState > 0x100)
             preQueryArgs.dataState = 0x100;
-        $("#qAudit").combobox("setValue", preQueryArgs.dataState); 
+        $('#qAudit').combobox('setValue', preQueryArgs.dataState); 
     },
     /**
     * 读取查询条件
@@ -138,15 +138,15 @@ var page = {
     */
     getQueryParams: function () {
         return {
-            keyWord:$("#qKeyWord").textbox("getValue")
-            ,dataState: $("#qAudit").combobox("getValue")
+            keyWord:$('#qKeyWord').textbox('getValue')
+            ,dataState: $('#qAudit').combobox('getValue')
         };
     },
     /**
     * 重新载入登录账户的列表数据
     */
     reload:function() {
-        $(this.gridId).datagrid("reload");
+        $(this.gridId).datagrid('reload');
     },
     /**
     * 录入界面载入时执行控件初始化
@@ -156,6 +156,10 @@ var page = {
     onFormUiLoaded: function (editor,callback) {
         var me = editor.ex;
         me.setFormValidate();
+        //角色标识下拉列表
+        comboRemote('#RoleId', 'app/Role/v1/edit/combo');
+        //用户Id下拉列表
+        comboRemote('#UserId', 'user/Person/v1/edit/combo');
         if (callback)
             callback();
     },
@@ -179,6 +183,7 @@ var page = {
     * 设置校验规则
     */
     setFormValidate: function() {
+        $('#AccountName').textbox({validType:['strLimit[0,200]']});
 
     },
 
@@ -193,7 +198,7 @@ var page = {
         editor.title = me.title;
         if(me.grid.auditData) {
             editor.showValidate = true;
-            editor.validatePath = me.apiPrefix + "audit/validate";
+            editor.validatePath = me.apiPrefix + 'audit/validate';
             editor.setFormValidate= me.setFormValidate;
         }
         editor.onUiLoaded = function (ed, callback) {
@@ -216,26 +221,26 @@ var page = {
     addNew: function () {
         var me = this.tag;
         var editor = me.createEditor(me);
-        editor.uiUrl = me.formUrl + "?" + me.formArg + "&id=0";
+        editor.uiUrl = me.formUrl + '?' + me.formArg + '&id=0';
         if(me.urlArg)
-            editor.dataUrl = me.apiPrefix + "edit/details?" + me.urlArg + "&id=";
+            editor.dataUrl = me.apiPrefix + 'edit/details?' + me.urlArg + '&id=';
         else
-            editor.dataUrl = me.apiPrefix + "edit/details?id=";
-        editor.saveUrl = me.apiPrefix + "edit/addnew?id=";
+            editor.dataUrl = me.apiPrefix + 'edit/details?id=';
+        editor.saveUrl = me.apiPrefix + 'edit/addnew?id=';
         editor.dataId = 0;
         editor.show();
     },
     /**
     * 修改或查看登录账户的界面操作
-     * @param {number} id 数据主键
+    * @param {int} id 数据主键
     */
     edit: function (id) {
         var me = this.tag;
         var editor = me.createEditor(me);
-        editor.readOnly=true;
-        editor.uiUrl = me.formUrl + "?" + me.formArg + "&id=" + id;
-        editor.dataUrl = me.apiPrefix + "edit/details?id=";
-        editor.saveUrl = me.apiPrefix + "edit/update?id=";
+        
+        editor.uiUrl = me.formUrl + '?' + me.formArg + '&id=' + id;
+        editor.dataUrl = me.apiPrefix + 'edit/details?id=';
+        editor.saveUrl = me.apiPrefix + 'edit/update?id=';
         editor.dataId = id;
         editor.show();
     },
@@ -245,14 +250,15 @@ var page = {
     columns:
     [
        [
-            { styler: vlStyle, halign: "center", align: "center", field: "IsSelected", checkbox: true}
+            { styler: vlStyle, halign: 'center', align: 'center', field: 'IsSelected', checkbox: true}
             //, { styler: vlStyle, halign: 'center', align: 'center', sortable: true, field: 'Id', title: 'ID'}
-            , { styler: vlStyle, halign: "center", align: "center", sortable: true, field: "dataState", title: "状态", formatter: dataStateIconFormat }
-            , { styler: vlStyle,halign: "center", align: "left", sortable: true, field: "RealName", title: "姓名"}
-                , { styler: vlStyle, halign: "center", align: "left", sortable: true, field: "phoneNumber", title: "手机号"}
-            , { styler: vlStyle,halign: "center", align: "left", sortable: true, field: "AccountName", title: "账户名"}
-            , { styler: vlStyle,halign: "center", align: "left", sortable: true, field: "AccountType", title: "账户类型", formatter: authorizeTypeFormat}
-            , { styler: vlStyle,halign: "center", align: "left", sortable: true, field: "Role", title: "角色"}
+            , { styler: vlStyle, halign: 'center', align: 'center', sortable: true, field: 'DataState', title: '状态', formatter: dataStateIconFormat }
+            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'Role', title: '角色' , width:3}
+            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'NickName', title: '昵称' , width:2}
+            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'IdCard', title: '身份证号' , width:2}
+            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'phoneNumber', title: '手机号'}
+            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'RealName', title: '真实姓名' , width:3}
+            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'AccountName', title: '账户名' , width:3}
         ]
     ]
 };
@@ -262,7 +268,7 @@ var page = {
  */
 mainPageOptions.extend({
     doPageInitialize: function (callback) {
-        globalOptions.api.customHost = globalOptions.api.userCenterHost;
+        globalOptions.api.customHost = globalOptions.api.userHost;
         mainPageOptions.loadPageInfo(page.name, function () {
             page.initialize();
             callback();
@@ -270,6 +276,6 @@ mainPageOptions.extend({
     },
     onCheckSize: function (wid, hei) {
 
-        $("#grid").datagrid("resize", window.o99);
+        $('#grid').datagrid('resize', window.o99);
     }
 });

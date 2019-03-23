@@ -1,4 +1,4 @@
-﻿namespace Agebull.Common.OAuth
+﻿namespace Agebull.Common.Organizations
 {
 
 
@@ -15,9 +15,9 @@
         /// </summary>
         None = 0x0,
         /// <summary>
-        /// 行政区域
+        /// 区域
         /// </summary>
-        Region = 0x1,
+        Area = 0x1,
         /// <summary>
         /// 组织或机构
         /// </summary>

@@ -224,16 +224,15 @@ using System.IO;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 
+using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
+using Agebull.EntityModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
+
 using Agebull.Common;
-using Agebull.Common.DataModel;
-using Agebull.Common.Rpc;
-using Agebull.Common.WebApi;
-using Gboxt.Common;
-using Gboxt.Common.DataModel;
+using Agebull.Common.OAuth;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Interfaces;
 {Project.UsingNameSpaces}
 
-using Gboxt.Common.DataModel.Extends;
-using Gboxt.Common.DataModel.MySql;
 #endregion
 
 namespace {NameSpace}.DataAccess
@@ -322,12 +321,13 @@ using System.Runtime.Serialization;
 using System.IO;
 using Newtonsoft.Json;
 
+using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
+using Agebull.EntityModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
+
 using Agebull.Common;
-using Agebull.Common.DataModel;
-using Agebull.Common.Rpc;
-using Agebull.Common.WebApi;
-using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.MySql;
+using Agebull.Common.OAuth;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Interfaces;
 
 {Project.UsingNameSpaces}
 #endregion

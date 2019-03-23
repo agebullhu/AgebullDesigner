@@ -1,17 +1,15 @@
 ﻿/*design by:agebull designer date:2017/5/26 19:43:33*/
 
 using Agebull.EntityModel.Common;
-using Agebull.Common.OAuth.BusinessLogic;
-using Agebull.Common.OAuth.DataAccess;
+using Agebull.Common.Organizations.DataAccess;
 using Agebull.MicroZero.ZeroApis;
 
-using Agebull.Common.OAuth;
-
-using Agebull.MicroZero.ZeroApis;
 using Agebull.EntityModel.EasyUI;
 using Agebull.Common.Context;
+using Agebull.Common.Organizations;
+using Agebull.Common.Organizations.BusinessLogic;
 
-namespace Agebull.Common.UserCenter.WebApi.Entity
+namespace Agebull.Common.Organizations.WebApi.Entity
 {
     [RoutePrefix("sys/person/v1")]
     public partial class PositionPersonnelApiController : ApiControllerForAudit<PositionPersonnelData, PositionPersonnelDataAccess, UserCenterDb, PositionPersonnelBusinessLogic>

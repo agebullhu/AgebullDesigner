@@ -3,7 +3,7 @@
 
 using Agebull.MicroZero.ZeroApis;
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     sealed partial class AvatarRequest : MicroZero.ZeroApis.IApiArgument
     {

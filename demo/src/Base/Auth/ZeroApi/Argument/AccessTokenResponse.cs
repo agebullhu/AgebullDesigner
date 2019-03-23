@@ -1,7 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System.Runtime.Serialization;
+using Agebull.Common.OAuth;
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// 返回与AT相关的请求

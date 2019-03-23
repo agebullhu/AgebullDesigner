@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/2 23:21:22*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 9:58:45*/
 #region
 using System;
 using System.Collections.Generic;
@@ -15,19 +15,18 @@ using System.IO;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 
-using Agebull.Common;
-using Agebull.EntityModel.Common;
-using Agebull.MicroZero.ZeroApis;
-
-using Agebull.Common;
-using Agebull.EntityModel.Common;
-
-
-using Agebull.EntityModel.Interfaces;
+using MySql.Data.MySqlClient;
 using Agebull.EntityModel.MySql;
+
+using Agebull.Common;
+using Agebull.Common.OAuth;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Interfaces;
+using Agebull.Common.OAuth;
+
 #endregion
 
-namespace Agebull.Common.OAuth.DataAccess
+namespace Agebull.Common.Organizations.DataAccess
 {
     /// <summary>
     /// 机构
@@ -59,7 +58,7 @@ namespace Agebull.Common.OAuth.DataAccess
         {
             get
             {
-                return @"view_org_organization";
+                return @"tb_org_organization";
             }
         }
 
@@ -96,7 +95,7 @@ namespace Agebull.Common.OAuth.DataAccess
     `org_level` AS `OrgLevel`,
     `level_index` AS `LevelIndex`,
     `parent_id` AS `ParentId`,
-    `boundary_id` AS `BoundaryId`,
+    `org_id` AS `BoundaryId`,
     `memo` AS `Memo`,
     `is_freeze` AS `IsFreeze`,
     `data_state` AS `DataState`,
@@ -116,9 +115,7 @@ namespace Agebull.Common.OAuth.DataAccess
     `law_personname` AS `LawPersonname`,
     `law_persontel` AS `LawPersontel`,
     `contact_name` AS `ContactName`,
-    `contact_tel` AS `ContactTel`,
-    `area_id` AS `AreaId`,
-    `area` AS `Area`";
+    `contact_tel` AS `ContactTel`";
             }
         }
 
@@ -142,7 +139,7 @@ INSERT INTO `tb_org_organization`
     `org_level`,
     `level_index`,
     `parent_id`,
-    `boundary_id`,
+    `org_id`,
     `memo`,
     `is_freeze`,
     `data_state`,
@@ -161,8 +158,7 @@ INSERT INTO `tb_org_organization`
     `law_personname`,
     `law_persontel`,
     `contact_name`,
-    `contact_tel`,
-    `area_id`
+    `contact_tel`
 )
 VALUES
 (
@@ -193,8 +189,7 @@ VALUES
     ?LawPersonname,
     ?LawPersontel,
     ?ContactName,
-    ?ContactTel,
-    ?AreaId
+    ?ContactTel
 );
 SELECT @@IDENTITY;";
             }
@@ -217,7 +212,7 @@ UPDATE `tb_org_organization` SET
        `org_level` = ?OrgLevel,
        `level_index` = ?LevelIndex,
        `parent_id` = ?ParentId,
-       `boundary_id` = ?BoundaryId,
+       `org_id` = ?BoundaryId,
        `memo` = ?Memo,
        `is_freeze` = ?IsFreeze,
        `data_state` = ?DataState,
@@ -234,8 +229,7 @@ UPDATE `tb_org_organization` SET
        `law_personname` = ?LawPersonname,
        `law_persontel` = ?LawPersontel,
        `contact_name` = ?ContactName,
-       `contact_tel` = ?ContactTel,
-       `area_id` = ?AreaId
+       `contact_tel` = ?ContactTel
  WHERE `id` = ?Id AND `is_freeze` = 0 AND `data_state` < 255;";
             }
         }
@@ -275,7 +269,7 @@ UPDATE `tb_org_organization` SET
                 sql.AppendLine("       `parent_id` = ?ParentId");
             //边界机构标识
             if (data.__EntityStatus.ModifiedProperties[OrganizationData._DataStruct_.Real_BoundaryId] > 0)
-                sql.AppendLine("       `boundary_id` = ?BoundaryId");
+                sql.AppendLine("       `org_id` = ?BoundaryId");
             //备注
             if (data.__EntityStatus.ModifiedProperties[OrganizationData._DataStruct_.Real_Memo] > 0)
                 sql.AppendLine("       `memo` = ?Memo");
@@ -327,9 +321,6 @@ UPDATE `tb_org_organization` SET
             //机构联系人电话
             if (data.__EntityStatus.ModifiedProperties[OrganizationData._DataStruct_.Real_ContactTel] > 0)
                 sql.AppendLine("       `contact_tel` = ?ContactTel");
-            //行政区域外键
-            if (data.__EntityStatus.ModifiedProperties[OrganizationData._DataStruct_.Real_AreaId] > 0)
-                sql.AppendLine("       `area_id` = ?AreaId");
             sql.Append(" WHERE `id` = ?Id AND `is_freeze` = 0 AND `data_state` < 255;");
             return sql.ToString();
         }
@@ -342,7 +333,7 @@ UPDATE `tb_org_organization` SET
         /// <summary>
         ///  所有字段
         /// </summary>
-        static string[] _fields = new string[]{ "Id","Type","Code","FullName","ShortName","TreeName","OrgLevel","LevelIndex","ParentId","BoundaryId","Memo","IsFreeze","DataState","AddDate","LastReviserId","LastModifyDate","AuthorId","AuditorId","AuditDate","AuditState","SuperOrgcode","ManagOrgcode","ManagOrgname","CityCode","DistrictCode","OrgAddress","LawPersonname","LawPersontel","ContactName","ContactTel","AreaId","Area" };
+        static string[] _fields = new string[]{ "Id","Type","Code","FullName","ShortName","TreeName","OrgLevel","LevelIndex","ParentId","BoundaryId","Memo","IsFreeze","DataState","AddDate","LastReviserId","LastModifyDate","AuthorId","AuditorId","AuditDate","AuditState","SuperOrgcode","ManagOrgcode","ManagOrgname","CityCode","DistrictCode","OrgAddress","LawPersonname","LawPersontel","ContactName","ContactTel" };
 
         /// <summary>
         ///  所有字段
@@ -375,8 +366,8 @@ UPDATE `tb_org_organization` SET
             { "level_index" , "level_index" },
             { "ParentId" , "parent_id" },
             { "parent_id" , "parent_id" },
-            { "BoundaryId" , "boundary_id" },
-            { "boundary_id" , "boundary_id" },
+            { "BoundaryId" , "org_id" },
+            { "org_id" , "org_id" },
             { "Memo" , "memo" },
             { "IsFreeze" , "is_freeze" },
             { "is_freeze" , "is_freeze" },
@@ -415,10 +406,7 @@ UPDATE `tb_org_organization` SET
             { "ContactName" , "contact_name" },
             { "contact_name" , "contact_name" },
             { "ContactTel" , "contact_tel" },
-            { "contact_tel" , "contact_tel" },
-            { "AreaId" , "area_id" },
-            { "area_id" , "area_id" },
-            { "Area" , "area" }
+            { "contact_tel" , "contact_tel" }
         };
 
         /// <summary>
@@ -501,10 +489,6 @@ UPDATE `tb_org_organization` SET
                     entity._contactName = reader.GetString(28);
                 if (!reader.IsDBNull(29))
                     entity._contactTel = reader.GetString(29);
-                if (!reader.IsDBNull(30))
-                    entity._areaId = (long)reader.GetInt64(30);
-                if (!reader.IsDBNull(31))
-                    entity._area = reader.GetString(31);
             }
         }
 
@@ -576,10 +560,6 @@ UPDATE `tb_org_organization` SET
                 case "ContactName":
                     return MySqlDbType.VarString;
                 case "ContactTel":
-                    return MySqlDbType.VarString;
-                case "AreaId":
-                    return MySqlDbType.Int64;
-                case "Area":
                     return MySqlDbType.VarString;
             }
             return MySqlDbType.VarChar;
@@ -762,16 +742,6 @@ UPDATE `tb_org_organization` SET
             else
                 parameter.Value = entity.ContactTel;
             cmd.Parameters.Add(parameter);
-            //32:行政区域外键(AreaId)
-            cmd.Parameters.Add(new MySqlParameter("AreaId",MySqlDbType.Int64){ Value = entity.AreaId});
-            //33:行政区域(Area)
-            isNull = string.IsNullOrWhiteSpace(entity.Area);
-            parameter = new MySqlParameter("Area",MySqlDbType.VarString , isNull ? 10 : (entity.Area).Length);
-            if(isNull)
-                parameter.Value = DBNull.Value;
-            else
-                parameter.Value = entity.Area;
-            cmd.Parameters.Add(parameter);
         }
 
 
@@ -821,9 +791,7 @@ UPDATE `tb_org_organization` SET
     `law_personname` AS `LawPersonname`,
     `law_persontel` AS `LawPersontel`,
     `contact_name` AS `ContactName`,
-    `contact_tel` AS `ContactTel`,
-    `area_id` AS `AreaId`,
-    `area` AS `Area`";
+    `contact_tel` AS `ContactTel`";
             }
         }
 
@@ -857,10 +825,6 @@ UPDATE `tb_org_organization` SET
                     entity._contactName = reader.GetString(8);
                 if (!reader.IsDBNull(9))
                     entity._contactTel = reader.GetString(9);
-                if (!reader.IsDBNull(10))
-                    entity._areaId = (long)reader.GetInt64(10);
-                if (!reader.IsDBNull(11))
-                    entity._area = reader.GetString(11);
             }
         }
         #endregion
@@ -875,9 +839,9 @@ UPDATE `tb_org_organization` SET
         /// <summary>
         /// 机构的结构语句
         /// </summary>
-        private TableSql _view_org_organizationSql = new TableSql
+        private TableSql _tb_org_organizationSql = new TableSql
         {
-            TableName = "view_org_organization",
+            TableName = "tb_org_organization",
             PimaryKey = "Id"
         };
 

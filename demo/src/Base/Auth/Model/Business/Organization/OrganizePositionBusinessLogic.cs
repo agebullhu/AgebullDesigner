@@ -1,7 +1,7 @@
-﻿using Agebull.Common.OAuth.DataAccess;
+﻿using Agebull.Common.Organizations.DataAccess;
 using Agebull.EntityModel.MySql.BusinessLogic;
 
-namespace Agebull.Common.OAuth.BusinessLogic
+namespace Agebull.Common.Organizations.BusinessLogic
 {
     /// <summary>
     /// 职位组织关联
@@ -16,11 +16,6 @@ namespace Agebull.Common.OAuth.BusinessLogic
         }
         protected override bool OnSaving(OrganizePositionData data, bool isAdd)
         {
-            var oAccess = new OrganizationDataAccess();
-            var org = oAccess.LoadByPrimaryKey(data.DepartmentId);
-            if (org == null)
-                return false;
-            data.AreaId = org.AreaId;
             return base.OnSaving(data, isAdd);
         }
         /// <summary>

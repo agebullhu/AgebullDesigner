@@ -5,7 +5,7 @@ using System;
 using System.Diagnostics;
 
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
 
     /// <summary>

@@ -1,9 +1,9 @@
 ﻿/*design by:agebull designer date:2018/9/2 12:32:49*/
 using System.Collections.Generic;
 using System.Linq;
-using Agebull.EntityModel.Redis;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.MySql;
+using Agebull.EntityModel.Redis;
 using Agebull.EntityModel.EasyUI;
 
 namespace Agebull.Common.AppManage.DataAccess

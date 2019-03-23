@@ -40,11 +40,10 @@ using System.Runtime.Serialization;
 using System.IO;
 using Newtonsoft.Json;
 
+
 using Agebull.Common;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.Extends;
-using Agebull.Common.WebApi;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Interfaces;
 
 {Project.UsingNameSpaces}
 #endregion
@@ -84,7 +83,7 @@ namespace {NameSpace}
         /// </summary>
         protected override void CreateExCode(string path)
         {
-            string code = $@"#region
+            string code = $@"#region using
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -100,9 +99,8 @@ using System.IO;
 using Newtonsoft.Json;
 
 using Agebull.Common;
-using Agebull.Common.DataModel;
-using Gboxt.Common.DataModel;
-using Agebull.Common.WebApi;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Interfaces;
 {Project.UsingNameSpaces}
 #endregion
 

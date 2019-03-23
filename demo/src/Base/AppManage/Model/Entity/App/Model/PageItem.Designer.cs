@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/2 17:33:40*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 12:20:04*/
 #region
 using System;
 using System.Collections.Generic;
@@ -14,10 +14,12 @@ using System.Runtime.Serialization;
 using System.IO;
 using Newtonsoft.Json;
 
+
 using Agebull.Common;
 using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Interfaces;
 
-
+using Agebull.Common.Organizations;
 using Agebull.Common.OAuth;
 #endregion
 
@@ -234,6 +236,21 @@ namespace Agebull.Common.AppManage
                 OnItemTypeSeted();
                 this.OnPropertyChanged(_DataStruct_.Real_ItemType);
             }
+        }
+        /// <summary>
+        /// 节点类型的可读内容
+        /// </summary>
+        [IgnoreDataMember,JsonIgnore,DisplayName("节点类型")]
+        public string ItemType_Content => ItemType.ToCaption();
+
+        /// <summary>
+        /// 节点类型的数字属性
+        /// </summary>
+        [IgnoreDataMember,JsonIgnore]
+        public  int ItemType_Number
+        {
+            get => (int)this.ItemType;
+            set => this.ItemType = (PageItemType)value;
         }
         /// <summary>
         /// 序号
@@ -649,7 +666,7 @@ namespace Agebull.Common.AppManage
             case "caption":
                 return this.Caption;
             case "itemtype":
-                return this.ItemType;
+                return this.ItemType.ToCaption();
             case "index":
                 return this.Index;
             case "icon":

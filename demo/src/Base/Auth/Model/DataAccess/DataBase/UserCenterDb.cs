@@ -3,7 +3,7 @@
 
 using Agebull.EntityModel.MySql;
 
-namespace Agebull.Common.OAuth.DataAccess
+namespace Agebull.Common.Organizations.DataAccess
 {
     /// <summary>
     /// 本地数据库

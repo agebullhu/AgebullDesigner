@@ -1,0 +1,82 @@
+﻿<!--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:27:49-->
+<form name='userForm' id='userForm' method='POST' enctype='multipart/form-data'>
+    <div id='userRegion' class='formRegion' style='width:500px;'>
+            <div class='inputField' id='fr_UserId'>
+                <div class='inputRegion' id='ir_UserId'>
+                    <div class='inputLabel'>用户Id:</div>
+                    <input id='UserId' name='UserId' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'用户Id'"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_UserType'>
+                <div class='inputRegion' id='ir_UserType'>
+                    <div class='inputLabel'>用户类型:</div>
+                    <input id='UserType' name='UserType' class='inputValue inputS easyui-combobox'
+                           data-options="prompt:'用户类型',valueField:'value',textField:'text',data:userType"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_OpenId'>
+                <div class='inputRegion' id='ir_OpenId'>
+                    <div class='inputLabel'>用户代码:</div>
+                    <input id='OpenId' name='OpenId' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'本系统发布的数字与大写字母组成的用户代码',validType:['strLimit[0,16]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_Status'>
+                <div class='inputRegion' id='ir_Status'>
+                    <div class='inputLabel'>用户状态:</div>
+                    <input id='Status' name='Status' class='inputValue inputS easyui-combobox'
+                           data-options="prompt:'是否可用,0:不可用;1:可用',valueField:'value',textField:'text',data:userStatusType"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_AuthorizeScreen'>
+                <div class='inputRegion' id='ir_AuthorizeScreen'>
+                    <div class='inputLabel'>已认证场景:</div>
+                    <input id='AuthorizeScreen' name='AuthorizeScreen' class='inputValue inputS easyui-combobox'
+                           data-options="prompt:'已认证场景',valueField:'value',textField:'text',data:authorizeType"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_RegistSoure'>
+                <div class='inputRegion' id='ir_RegistSoure'>
+                    <div class='inputLabel'>注册来源:</div>
+                    <input id='RegistSoure' name='RegistSoure' class='inputValue inputS easyui-combobox'
+                           data-options="prompt:'来源',valueField:'value',textField:'text',data:authorizeType"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_Os'>
+                <div class='inputRegion' id='ir_Os'>
+                    <div class='inputLabel'>注册来源操作系统:</div>
+                    <input id='Os' name='Os' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'注册来源操作系统',validType:['strLimit[0,200]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_App'>
+                <div class='inputRegion' id='ir_App'>
+                    <div class='inputLabel'>注册时的应用:</div>
+                    <input id='App' name='App' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'注册时的应用',validType:['strLimit[0,200]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_DeviceId'>
+                <div class='inputRegion' id='ir_DeviceId'>
+                    <div class='inputLabel'>注册时设备识别码:</div>
+                    <input id='DeviceId' name='DeviceId' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'注册时设备识别码',validType:['strLimit[0,100]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_Channel'>
+                <div class='inputRegion' id='ir_Channel'>
+                    <div class='inputLabel'>注册来源渠道码:</div>
+                    <input id='Channel' name='Channel' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'注册来源渠道码',validType:['strLimit[0,200]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_TraceMark'>
+                <div class='inputRegion' id='ir_TraceMark'>
+                    <div class='inputLabel'>注册来源活动跟踪码:</div>
+                    <input id='TraceMark' name='TraceMark' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'注册来源活动跟踪码',validType:['strLimit[0,200]']"/>
+                </div>
+            </div>
+    </div>
+</form>

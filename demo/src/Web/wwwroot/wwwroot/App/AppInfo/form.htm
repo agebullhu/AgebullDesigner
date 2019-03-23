@@ -1,0 +1,48 @@
+﻿<!--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:22:43-->
+<form name='appInfoForm' id='appInfoForm' method='POST' enctype='multipart/form-data'>
+    <input name='id' id='id' type='hidden' />
+    <div id='appInfoRegion' class='formRegion' style='width:985px;'>
+            <div class='inputField' id='fr_AppType'>
+                <div class='inputRegion' id='ir_AppType'>
+                    <div class='inputLabel'>应用类型:</div>
+                    <input id='AppType' name='AppType' class='inputValue inputS easyui-combobox'
+                           data-options="prompt:'应用类型',valueField:'value',textField:'text',data:classifyType"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_shortName'>
+                <div class='inputRegion' id='ir_shortName'>
+                    <div class='inputLabel'>应用简称:</div>
+                    <input id='shortName' name='shortName' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'应用简称',validType:['strLimit[0,200]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_fullName'>
+                <div class='inputRegion' id='ir_fullName'>
+                    <div class='inputLabel'>应用全称:</div>
+                    <input id='fullName' name='fullName' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'应用全称',validType:['strLimit[0,200]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_appId'>
+                <div class='inputRegion' id='ir_appId'>
+                    <div class='inputLabel'>应用标识:</div>
+                    <input id='appId' name='appId' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'应用标识',validType:['strLimit[0,200]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_AppKey'>
+                <div class='inputRegion' id='ir_AppKey'>
+                    <div class='inputLabel'>应用令牌:</div>
+                    <input id='AppKey' name='AppKey' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'应用令牌',validType:['strLimit[0,200]'],required:true"/>
+                </div>
+            </div><br/>
+            <div class='inputField_2c' id='fr_memo'>
+                <div class='inputRegion' id='ir_memo'>
+                    <div class='inputLabel'>备注:</div><br/>
+                    <input id='memo' name='memo' class='inputValue_Memo easyui-textbox'
+                           data-options="prompt:'备注',multiline:true"/>
+                </div>
+            </div>
+    </div>
+</form>

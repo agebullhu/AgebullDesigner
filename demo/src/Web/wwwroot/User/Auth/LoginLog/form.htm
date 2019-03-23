@@ -1,68 +1,68 @@
-﻿<!--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2018/9/23 17:42:44-->
+﻿<!--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:27:49-->
 <form name='loginLogForm' id='loginLogForm' method='POST' enctype='multipart/form-data'>
-    <input name='Id' type='hidden' />
-    <div id='loginLogRegion' class='formRegion' style='width:485px;'>
+    <input name='Id' id='Id' type='hidden' />
+    <div id='loginLogRegion' class='formRegion' style='width:500px;'>
             <div class='inputField' id='fr_UserId'>
                 <div class='inputRegion' id='ir_UserId'>
                     <div class='inputLabel'>用户Id:</div>
-                    <input id='UserId' name='UserId' class='inputValue inputS easyui-textbox'
-                           data-options="prompt:'用户Id',readonly:true"/>
+                    <input id='UserId' name='UserId' class='inputValue inputS easyui-combobox'
+                           data-options="prompt:'用户Id',valueField:'id', textField:'text'"/>
                 </div>
             </div>
             <div class='inputField' id='fr_LoginName'>
                 <div class='inputRegion' id='ir_LoginName'>
                     <div class='inputLabel'>登录账号:</div>
                     <input id='LoginName' name='LoginName' class='inputValue inputS easyui-textbox'
-                           data-options="prompt:'视不同登录方式内容不同  用户名称密码登录是用户名，其它联合登录是对应的OpenId或UnionCode',readonly:true"/>
+                           data-options="prompt:'视不同登录方式内容不同  用户名称密码登录是用户名，其它联合登录是对应的OpenId或UnionCode',validType:['strLimit[0,200]']"/>
                 </div>
             </div>
             <div class='inputField' id='fr_AddDate'>
                 <div class='inputRegion' id='ir_AddDate'>
                     <div class='inputLabel'>登录时间:</div>
                     <input id='AddDate' name='AddDate' class='inputValue inputS easyui-datebox'
-                           data-options="prompt:'登录时间',readonly:true"/>
+                           data-options="prompt:'登录时间'"/>
                 </div>
             </div>
             <div class='inputField' id='fr_DeviceId'>
                 <div class='inputRegion' id='ir_DeviceId'>
                     <div class='inputLabel'>设备识别码:</div>
                     <input id='DeviceId' name='DeviceId' class='inputValue inputS easyui-textbox'
-                           data-options="prompt:'App 客户端生成的deviceId',readonly:true"/>
+                           data-options="prompt:'App 客户端生成的deviceId',validType:['strLimit[0,100]']"/>
                 </div>
             </div>
             <div class='inputField' id='fr_App'>
                 <div class='inputRegion' id='ir_App'>
                     <div class='inputLabel'>登录系统:</div>
                     <input id='App' name='App' class='inputValue inputS easyui-textbox'
-                           data-options="prompt:'设备识别码所在的浏览器，App中不写',readonly:true"/>
+                           data-options="prompt:'设备识别码所在的浏览器，App中不写',validType:['strLimit[0,200]']"/>
                 </div>
             </div>
             <div class='inputField' id='fr_Os'>
                 <div class='inputRegion' id='ir_Os'>
                     <div class='inputLabel'>登录操作系统:</div>
                     <input id='Os' name='Os' class='inputValue inputS easyui-textbox'
-                           data-options="prompt:'注册来源操作系统',readonly:true"/>
+                           data-options="prompt:'注册来源操作系统',validType:['strLimit[0,200]']"/>
                 </div>
             </div>
             <div class='inputField' id='fr_Channal'>
                 <div class='inputRegion' id='ir_Channal'>
                     <div class='inputLabel'>登录渠道:</div>
                     <input id='Channal' name='Channal' class='inputValue inputS easyui-textbox'
-                           data-options="prompt:'注册来源渠道码',readonly:true"/>
+                           data-options="prompt:'注册来源渠道码',validType:['strLimit[0,200]']"/>
                 </div>
             </div>
             <div class='inputField' id='fr_LoginType'>
                 <div class='inputRegion' id='ir_LoginType'>
                     <div class='inputLabel'>登录方式:</div>
                     <input id='LoginType' name='LoginType' class='inputValue inputS easyui-combobox'
-                           data-options="prompt:'来源',readonly:true,valueField:'value',textField:'text',data:authorizeType"/>
+                           data-options="prompt:'来源',valueField:'value',textField:'text',data:authorizeType"/>
                 </div>
             </div>
             <div class='inputField' id='fr_Success'>
                 <div class='inputRegion' id='ir_Success'>
                     <div class='inputLabel'>是否成功:</div>
                     <input id='Success' name='Success' class='inputValue inputS easyui-combobox'
-                           data-options="prompt:'是否登录成功',readonly:true,valueField:'value',textField:'text',data:yesnoType"/>
+                           data-options="prompt:'是否登录成功',valueField:'value',textField:'text',data:yesnoType"/>
                 </div>
             </div>
     </div>

@@ -1,12 +1,36 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2018/10/5 23:06:23*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:27:49*/
+#region
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using Agebull.Common.Configuration;
+using System.Data;
+using System.Diagnostics;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
 
+using Agebull.Common;
+using Agebull.Common.Context;
+using Agebull.Common.Ioc;
+using Agebull.Common.OAuth;
 using Agebull.EntityModel.Common;
-
+using Agebull.EntityModel.EasyUI;
+using Agebull.MicroZero;
 using Agebull.MicroZero.ZeroApis;
 
 using Agebull.Common.OAuth;
 
-namespace Agebull.Common.UserCenter.WebApi.Entity
+using Agebull.Common.Organizations;
+using Agebull.Common.Organizations.BusinessLogic;
+using Agebull.Common.Organizations.DataAccess;
+#endregion
+
+namespace Agebull.Common.Organizations.WebApi.Entity
 {
     partial class AccountApiController
     {
@@ -35,11 +59,12 @@ namespace Agebull.Common.UserCenter.WebApi.Entity
             var keyWord = GetArg("keyWord");
             if (!string.IsNullOrEmpty(keyWord))
             {
-                filter.AddAnd(p =>p.RealName.Contains(keyWord) || 
+                filter.AddAnd(p =>p.Role.Contains(keyWord) || 
+                                   p.NickName.Contains(keyWord) || 
+                                   p.IdCard.Contains(keyWord) || 
                                    p.PhoneNumber.Contains(keyWord) || 
-                                   p.AccountName.Contains(keyWord) ||
-                                  p.NickName.Contains(keyWord) ||
-                                  p.Role.Contains(keyWord));
+                                   p.RealName.Contains(keyWord) || 
+                                   p.AccountName.Contains(keyWord));
             }
         }
 
@@ -50,6 +75,11 @@ namespace Agebull.Common.UserCenter.WebApi.Entity
         /// <param name="convert">转化器</param>
         protected void DefaultReadFormData(AccountData data, FormConvert convert)
         {
+            //-
+            data.Id = convert.ToLong("Id");
+            data.RoleId = convert.ToLong("RoleId");
+            data.UserId = convert.ToLong("UserId");
+            data.AccountName = convert.ToString("AccountName");
         }
 
         #endregion

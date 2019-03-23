@@ -22,14 +22,14 @@ using Agebull.EntityModel.Common;
 
 
 using Agebull.EntityModel.MySql.BusinessLogic;
-using Agebull.Common.OAuth.DataAccess;
+using Agebull.Common.Organizations.DataAccess;
 
 using MySql.Data.MySqlClient;
 using Agebull.EntityModel.MySql;
 
 #endregion
 
-namespace Agebull.Common.OAuth.BusinessLogic
+namespace Agebull.Common.Organizations.BusinessLogic
 {
     /// <summary>
     /// 行级权限关联

@@ -1,6 +1,6 @@
 ﻿using Agebull.MicroZero.ZeroApis;
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// 身份验证服务API

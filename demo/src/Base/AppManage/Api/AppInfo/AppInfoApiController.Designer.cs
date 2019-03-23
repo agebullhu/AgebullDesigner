@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/2 17:27:14*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:23:21*/
 #region
 using System;
 using System.Collections.Generic;
@@ -15,15 +15,15 @@ using System.IO;
 using Newtonsoft.Json;
 
 using Agebull.Common;
+using Agebull.Common.Context;
+using Agebull.Common.Ioc;
+using Agebull.Common.OAuth;
 using Agebull.EntityModel.Common;
-using Agebull.EntityModel.MySql.BusinessLogic;
+using Agebull.EntityModel.EasyUI;
+using Agebull.MicroZero;
 using Agebull.MicroZero.ZeroApis;
 
-
-
-using Agebull.EntityModel.Common;
-using Agebull.EntityModel.MySql;
-
+using Agebull.Common.Organizations;
 using Agebull.Common.OAuth;
 
 using Agebull.Common.AppManage;
@@ -60,22 +60,10 @@ namespace Agebull.Common.AppManage.WebApi.Entity
             var keyWord = GetArg("keyWord");
             if (!string.IsNullOrEmpty(keyWord))
             {
-                filter.AddAnd(p =>p.Organization.Contains(keyWord) || 
-                                   p.ShortName.Contains(keyWord) || 
+                filter.AddAnd(p =>p.ShortName.Contains(keyWord) || 
                                    p.FullName.Contains(keyWord) || 
                                    p.AppId.Contains(keyWord) || 
-                                   p.ManagOrgcode.Contains(keyWord) || 
-                                   p.ManagOrgname.Contains(keyWord) || 
-                                   p.CityCode.Contains(keyWord) || 
-                                   p.DistrictCode.Contains(keyWord) || 
-                                   p.OrgAddress.Contains(keyWord) || 
-                                   p.LawPersonname.Contains(keyWord) || 
-                                   p.LawPersontel.Contains(keyWord) || 
-                                   p.ContactName.Contains(keyWord) || 
-                                   p.ContactTel.Contains(keyWord) || 
-                                   p.SuperOrgcode.Contains(keyWord) || 
-                                   p.UpdateUserid.Contains(keyWord) || 
-                                   p.UpdateUsername.Contains(keyWord) || 
+                                   p.AppKey.Contains(keyWord) || 
                                    p.Memo.Contains(keyWord));
             }
         }
@@ -89,24 +77,11 @@ namespace Agebull.Common.AppManage.WebApi.Entity
         {
             //-
             data.Id = convert.ToLong("id");
-            data.OrgId = convert.ToLong("orgId");
+            data.AppType = (AppType)convert.ToInteger("AppType");
             data.ShortName = convert.ToString("shortName");
             data.FullName = convert.ToString("fullName");
-            data.Classify = (ClassifyType)convert.ToInteger("classify");
             data.AppId = convert.ToString("appId");
-            data.ManagOrgcode = convert.ToString("managOrgcode");
-            data.ManagOrgname = convert.ToString("managOrgname");
-            data.CityCode = convert.ToString("cityCode");
-            data.DistrictCode = convert.ToString("districtCode");
-            data.OrgAddress = convert.ToString("orgAddress");
-            data.LawPersonname = convert.ToString("lawPersonname");
-            data.LawPersontel = convert.ToString("lawPersontel");
-            data.ContactName = convert.ToString("contactName");
-            data.ContactTel = convert.ToString("contactTel");
-            data.SuperOrgcode = convert.ToString("superOrgcode");
-            data.UpdateDate = convert.ToDateTime("updateDate");
-            data.UpdateUserid = convert.ToString("updateUserid");
-            data.UpdateUsername = convert.ToString("updateUsername");
+            data.AppKey = convert.ToString("AppKey");
             data.Memo = convert.ToString("memo");
         }
 

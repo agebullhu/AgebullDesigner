@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 using Agebull.Common.Configuration;
 using Agebull.Common.Context;
 using Agebull.Common.Logging;
-using Agebull.Common.OAuth.DataAccess;
+using Agebull.Common.Organizations.DataAccess;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.EasyUI;
 using Agebull.EntityModel.MySql.BusinessLogic;
 using Agebull.EntityModel.Redis;
 
-namespace Agebull.Common.OAuth.BusinessLogic
+namespace Agebull.Common.Organizations.BusinessLogic
 {
     /// <summary>
     ///     组织机构
@@ -38,14 +38,6 @@ namespace Agebull.Common.OAuth.BusinessLogic
         /// <returns>如果为否将阻止后续操作</returns>
         protected override bool OnSaving(OrganizationData data, bool isAdd)
         {
-            if (!isAdd)
-                return true;
-            if (data.ParentId <= 0)
-                return true;
-            var par = Access.LoadByPrimaryKey(data.ParentId);
-            if(par == null)
-                return false;
-            data.AreaId = par.AreaId;
             return true;
         }
 
@@ -108,8 +100,7 @@ namespace Agebull.Common.OAuth.BusinessLogic
         /// <returns></returns>
         public List<OrganizationData> LoadTree(long pid)
         {
-            var aAccess = new GovernmentAreaDataAccess();
-            var area = aAccess.LoadByPrimaryKey(pid);
+            var area = Access.LoadByPrimaryKey(pid);
             if (area == null)
                 return null;
             var root = new OrganizationData
@@ -117,9 +108,10 @@ namespace Agebull.Common.OAuth.BusinessLogic
                 ShortName = area.ShortName,
                 FullName = area.FullName,
                 TreeName = area.TreeName,
-                Type = OrganizationType.Region
+                Type = OrganizationType.Area
             };
-            var lists = Access.All(p => p.AreaId == pid && p.Type == OrganizationType.Organization && p.DataState < DataStateType.Delete);
+            var max = ((pid >> 48) + 1) << 48;
+            var lists = Access.All(p => p.Id > pid && p.Id < max && p.Type == OrganizationType.Organization && p.DataState < DataStateType.Delete);
 
             foreach (var child in lists.OrderBy(p => p.LevelIndex))
             {
@@ -178,12 +170,12 @@ namespace Agebull.Common.OAuth.BusinessLogic
                 OrganizationData data;
                 Access.Insert(data = new OrganizationData
                 {
+                    Id = areaId << 48 | (DateTime.Now.Ticks & int.MaxValue),
                     ParentId = stack.Current.Id,
                     OrgLevel = stack.StackCount,
                     FullName = words[0],
                     ShortName = words[0],
-                    Type = OrganizationType.Region,
-                    AreaId = areaId,
+                    Type = OrganizationType.Area,
                     Code = words[1]
                 });
                 stack.Push(data);
@@ -324,8 +316,8 @@ namespace Agebull.Common.OAuth.BusinessLogic
         {
             try
             {
-                var sl = new SubjectionBusinessLogic();
-                sl.SyncSubjection();
+                //var sl = new SubjectionBusinessLogic();
+                //sl.SyncSubjection();
                 var bl = new OrganizationBusinessLogic();
                 using (var proxy = new RedisProxy(RedisProxy.DbSystem))
                 {
@@ -543,17 +535,35 @@ namespace Agebull.Common.OAuth.BusinessLogic
 
         private EasyUiTreeNode CreateRootNode()
         {
-            return CreateNode(new OrganizationData
+            var node = CreateNode(new OrganizationData
             {
                 ShortName = ConfigurationManager.GetAppSetting("orgShortName", "根"),
                 FullName = ConfigurationManager.GetAppSetting("orgFullName", "根"),
                 Type = OrganizationType.None
-            },"root");
+            });
+            node.Attributes =  "root";
+            return node;
         }
 
 
-        private static EasyUiTreeNode CreateNode(OrganizationData data, string attribute="org")
+        private static EasyUiTreeNode CreateNode(OrganizationData data)
         {
+            string attribute;
+            switch (data.Type)
+            {
+                case OrganizationType.Area:
+                    attribute = "area";
+                    break;
+                case OrganizationType.Organization:
+                    attribute = "org";
+                    break;
+                case OrganizationType.Department:
+                    attribute = "dep";
+                    break;
+                default:
+                    attribute = "non";
+                    break;
+            }
             return new EasyUiTreeNode
             {
                 ID = data.Id,
@@ -565,19 +575,7 @@ namespace Agebull.Common.OAuth.BusinessLogic
                 Text = data.ShortName
             };
         }
-        private static EasyUiTreeNode CreateNode(GovernmentAreaData data)
-        {
-            return new EasyUiTreeNode
-            {
-                ID = data.Id,
-                Icon = "icon-area",
-                IsOpen = true,
-                IsFolder = true,
-                Attributes = "area",
-                Title = data.FullName,
-                Text = data.ShortName
-            };
-        }
+
 
 
         private static EasyUiTreeNode CreateNode(OrganizePositionData data)
@@ -599,7 +597,7 @@ namespace Agebull.Common.OAuth.BusinessLogic
         {
             switch (type)
             {
-                case OrganizationType.Region:
+                case OrganizationType.Area:
                     return "icon-area";
                 case OrganizationType.Organization:
                     return "icon-com";
@@ -619,8 +617,7 @@ namespace Agebull.Common.OAuth.BusinessLogic
         internal void CreateOrgPosTree(RedisProxy proxy)
         {
             var root = CreateRootNode();
-            var aAccess = new GovernmentAreaDataAccess();
-            var areas = aAccess.All(p => p.DataState < DataStateType.Delete);
+            var areas = Access.All(p =>p.Type == OrganizationType.Area && p.DataState < DataStateType.Delete);
             CreateOrgPosTree(root, areas, proxy);
         }
 
@@ -630,11 +627,13 @@ namespace Agebull.Common.OAuth.BusinessLogic
         /// <param name="par"></param>
         /// <param name="areas"></param>
         /// <param name="proxy"></param>
-        private bool CreateOrgPosTree(EasyUiTreeNode par, List<GovernmentAreaData> areas, RedisProxy proxy)
+        private bool CreateOrgPosTree(EasyUiTreeNode par, List<OrganizationData> areas, RedisProxy proxy)
         {
             bool hase = false;
+
+            var max = ((par.ID >> 48) + 1) << 48;
             var orgs = Access.All(p =>
-                p.AreaId == par.ID && p.Type == OrganizationType.Organization && p.DataState < DataStateType.Delete);
+                p.Id > par.ID && p.Id < max && p.Type == OrganizationType.Organization && p.DataState < DataStateType.Delete);
             if (orgs.Count > 0)
             {
                 par.IsFolder = true;
@@ -708,8 +707,7 @@ namespace Agebull.Common.OAuth.BusinessLogic
         private void CreateFullOrgTree(RedisProxy proxy)
         {
             var root = CreateRootNode();
-            var aAccess = new GovernmentAreaDataAccess();
-            var areas = aAccess.All(p => p.DataState < DataStateType.Delete);
+            var areas = Access.All(p => p.Type == OrganizationType.Area && p.DataState < DataStateType.Delete);
             CreateOrgTree(root, areas, proxy);
         }
 
@@ -719,10 +717,11 @@ namespace Agebull.Common.OAuth.BusinessLogic
         /// <param name="par"></param>
         /// <param name="areas"></param>
         /// <param name="proxy"></param>
-        private bool CreateOrgTree(EasyUiTreeNode par, List<GovernmentAreaData> areas, RedisProxy proxy)
+        private bool CreateOrgTree(EasyUiTreeNode par, List<OrganizationData> areas, RedisProxy proxy)
         {
             bool hase = false;
-            var orgs = Access.All(p => p.AreaId == par.ID && p.Type == OrganizationType.Organization && p.DataState < DataStateType.Delete);
+            var max = ((par.ID >> 48) + 1) << 48;
+            var orgs = Access.All(p => p.Id > par.ID && p.Id < max && p.Type == OrganizationType.Organization && p.DataState < DataStateType.Delete);
             if (orgs.Count > 0)
             {
                 par.IsFolder = true;
@@ -785,8 +784,7 @@ namespace Agebull.Common.OAuth.BusinessLogic
         public EasyUiTreeNode CreateAreaTree(RedisProxy proxy)
         {
             var root = CreateRootNode();
-            var aAccess = new GovernmentAreaDataAccess();
-            var lists = aAccess.All(p => p.DataState < DataStateType.Delete);
+            var lists = Access.All(p => p.Type == OrganizationType.Area && p.DataState < DataStateType.Delete);
             CreateAreaTree(root, lists, proxy);
             return root;
         }
@@ -797,7 +795,7 @@ namespace Agebull.Common.OAuth.BusinessLogic
         /// <param name="par"></param>
         /// <param name="lists"></param>
         /// <param name="proxy"></param>
-        private void CreateAreaTree(EasyUiTreeNode par, List<GovernmentAreaData> lists, RedisProxy proxy)
+        private void CreateAreaTree(EasyUiTreeNode par, List<OrganizationData> lists, RedisProxy proxy)
         {
             var childs = lists.Where(p => p.ParentId == par.ID).ToArray();
             if (childs.Length != 0)

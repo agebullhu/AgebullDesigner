@@ -1,12 +1,12 @@
-﻿<!--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/2 23:20:41-->
+﻿<!--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:27:49-->
 <form name='organizationForm' id='organizationForm' method='POST' enctype='multipart/form-data'>
     <input name='Id' id='Id' type='hidden' />
-    <div id='organizationRegion' class='formRegion' style='width:500px;'>
+    <div id='organizationRegion' class='formRegion' style='width:985px;'>
             <div class='inputField' id='fr_Type'>
                 <div class='inputRegion' id='ir_Type'>
                     <div class='inputLabel'>机构类型:</div>
                     <input id='Type' name='Type' class='inputValue inputS easyui-combobox'
-                           data-options="prompt:'类型',valueField:'value',textField:'text',data:organizationType,validType:['selectNoZero[\'#Type\']'],required:true"/>
+                           data-options="prompt:'类型',valueField:'value',textField:'text',data:organizationType"/>
                 </div>
             </div>
             <div class='inputField' id='fr_Code'>
@@ -20,7 +20,7 @@
                 <div class='inputRegion' id='ir_FullName'>
                     <div class='inputLabel'>全称:</div>
                     <input id='FullName' name='FullName' class='inputValue inputS easyui-textbox'
-                           data-options="prompt:'全称',validType:['strLimit[0,200]'],required:true"/>
+                           data-options="prompt:'全称',validType:['strLimit[0,200]']"/>
                 </div>
             </div>
             <div class='inputField' id='fr_ShortName'>
@@ -140,20 +140,6 @@
                     <div class='inputLabel'>机构联系人电话:</div>
                     <input id='contact_tel' name='contact_tel' class='inputValue inputS easyui-textbox'
                            data-options="prompt:'允许更新',validType:['strLimit[0,20]']"/>
-                </div>
-            </div>
-            <div class='inputField' id='fr_areaId'>
-                <div class='inputRegion' id='ir_areaId'>
-                    <div class='inputLabel'>行政区域外键:</div>
-                    <input id='areaId' name='areaId' class='inputValue inputS easyui-textbox'
-                           data-options="prompt:'行政区域外键',readonly:true"/>
-                </div>
-            </div>
-            <div class='inputField' id='fr_area'>
-                <div class='inputRegion' id='ir_area'>
-                    <div class='inputLabel'>行政区域:</div>
-                    <input id='area' name='area' class='inputValue inputS easyui-textbox'
-                           data-options="prompt:'行政区域',readonly:true"/>
                 </div>
             </div>
     </div>

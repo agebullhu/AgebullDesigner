@@ -1,4 +1,5 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2018/9/2 18:26:24*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:27:49*/
+#region
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,30 +12,46 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Runtime.Serialization;
 using System.IO;
-
 using Newtonsoft.Json;
 
 using Agebull.Common;
-using Agebull.EntityModel.Common;
-using Agebull.EntityModel.MySql.BusinessLogic;
-
-
-using Agebull.EntityModel.Common;
-using Agebull.EntityModel.MySql;
-
+using Agebull.Common.Context;
+using Agebull.Common.Ioc;
 using Agebull.Common.OAuth;
-
-using Agebull.Common.OAuth;
-using Agebull.Common.OAuth.BusinessLogic;
-using Agebull.Common.OAuth.DataAccess;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.EasyUI;
+using Agebull.MicroZero;
 using Agebull.MicroZero.ZeroApis;
 
-namespace Agebull.Common.OAuth.WebApi.Entity
+using Agebull.Common.OAuth;
+
+using Agebull.Common.Organizations;
+using Agebull.Common.Organizations.BusinessLogic;
+using Agebull.Common.Organizations.DataAccess;
+#endregion
+
+namespace Agebull.Common.Organizations.WebApi.Entity
 {
     partial class OrganizePositionApiController
     {
         #region 设计器命令
 
+        /// <summary>下拉列表</summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("edit/combo")]
+        public ApiArrayResult<EasyComboValues> ComboData()
+        {
+            GlobalContext.Current.IsManageMode = false;
+            var datas = Business.All();
+            var combos = datas.Select(p => new EasyComboValues(p.Id, p.Position)).ToList();
+            combos.Insert(0,new EasyComboValues(0, "-"));
+            return new ApiArrayResult<EasyComboValues>
+            {
+               Success = true,
+               ResultData = combos
+            };
+        }
 
         #endregion
 
@@ -57,9 +74,12 @@ namespace Agebull.Common.OAuth.WebApi.Entity
         {
             var keyWord = GetArg("keyWord");
             if (!string.IsNullOrEmpty(keyWord))
-            {{
-                filter.AddAnd(p => p.Position.Contains(keyWord) || p.Department.Contains(keyWord) || p.Role.Contains(keyWord) || p.Memo.Contains(keyWord));
-            }}
+            {
+                filter.AddAnd(p =>p.Position.Contains(keyWord) || 
+                                   p.Department.Contains(keyWord) || 
+                                   p.Role.Contains(keyWord) || 
+                                   p.Memo.Contains(keyWord));
+            }
         }
 
         /// <summary>
@@ -69,11 +89,12 @@ namespace Agebull.Common.OAuth.WebApi.Entity
         /// <param name="convert">转化器</param>
         protected void DefaultReadFormData(OrganizePositionData data, FormConvert convert)
         {
+            //数据
+            data.Id = convert.ToLong("Id");
+            data.DepartmentId = convert.ToLong("DepartmentId");
+            data.BoundaryId = convert.ToLong("OrgId");
             //职位
             data.Position = convert.ToString("Position");
-            data.RoleId = convert.ToLong("RoleId");
-            //数据
-            data.DepartmentId = convert.ToLong("DepartmentId");
             //备注
             data.Memo = convert.ToString("Memo");
         }

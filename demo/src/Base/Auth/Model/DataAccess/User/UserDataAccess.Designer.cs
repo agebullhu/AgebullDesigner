@@ -1,13 +1,32 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/1/2 20:11:23*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:14:39*/
 #region
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Configuration;
+using System.Data;
+using System.Diagnostics;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
+
+using MySql.Data.MySqlClient;
+using Agebull.EntityModel.MySql;
+
+using Agebull.Common;
+using Agebull.Common.OAuth;
 using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Interfaces;
+using Agebull.Common.OAuth;
+
 #endregion
 
-namespace Agebull.Common.OAuth.DataAccess
+namespace Agebull.Common.Organizations.DataAccess
 {
     /// <summary>
     /// APP端用户信息表
@@ -71,8 +90,8 @@ namespace Agebull.Common.OAuth.DataAccess
     `user_type` AS `UserType`,
     `open_id` AS `OpenId`,
     `status` AS `Status`,
-    `add_date` AS `AddDate`,
-    `regist_soure` AS `RegistSoure`,
+    `authorize_screen` AS `AuthorizeScreen`,
+    `regist_screen` AS `RegistSoure`,
     `os` AS `Os`,
     `app` AS `App`,
     `device_id` AS `DeviceId`,
@@ -82,6 +101,7 @@ namespace Agebull.Common.OAuth.DataAccess
     `data_state` AS `DataState`,
     `last_reviser_id` AS `LastReviserId`,
     `last_modify_date` AS `LastModifyDate`,
+    `add_date` AS `AddDate`,
     `author_id` AS `AuthorId`";
             }
         }
@@ -102,8 +122,8 @@ INSERT INTO `tb_user_user`
     `user_type`,
     `open_id`,
     `status`,
-    `add_date`,
-    `regist_soure`,
+    `authorize_screen`,
+    `regist_screen`,
     `os`,
     `app`,
     `device_id`,
@@ -112,6 +132,7 @@ INSERT INTO `tb_user_user`
     `is_freeze`,
     `data_state`,
     `last_reviser_id`,
+    `add_date`,
     `author_id`
 )
 VALUES
@@ -120,7 +141,7 @@ VALUES
     ?UserType,
     ?OpenId,
     ?Status,
-    ?AddDate,
+    ?AuthorizeScreen,
     ?RegistSoure,
     ?Os,
     ?App,
@@ -130,6 +151,7 @@ VALUES
     ?IsFreeze,
     ?DataState,
     ?LastReviserId,
+    ?AddDate,
     ?AuthorId
 );";
             }
@@ -147,7 +169,8 @@ UPDATE `tb_user_user` SET
        `user_type` = ?UserType,
        `open_id` = ?OpenId,
        `status` = ?Status,
-       `regist_soure` = ?RegistSoure,
+       `authorize_screen` = ?AuthorizeScreen,
+       `regist_screen` = ?RegistSoure,
        `os` = ?Os,
        `app` = ?App,
        `device_id` = ?DeviceId,
@@ -178,9 +201,12 @@ UPDATE `tb_user_user` SET
             //用户状态
             if (data.__EntityStatus.ModifiedProperties[UserData._DataStruct_.Real_Status] > 0)
                 sql.AppendLine("       `status` = ?Status");
+            //已认证场景
+            if (data.__EntityStatus.ModifiedProperties[UserData._DataStruct_.Real_AuthorizeScreen] > 0)
+                sql.AppendLine("       `authorize_screen` = ?AuthorizeScreen");
             //注册来源
             if (data.__EntityStatus.ModifiedProperties[UserData._DataStruct_.Real_RegistSoure] > 0)
-                sql.AppendLine("       `regist_soure` = ?RegistSoure");
+                sql.AppendLine("       `regist_screen` = ?RegistSoure");
             //注册来源操作系统
             if (data.__EntityStatus.ModifiedProperties[UserData._DataStruct_.Real_Os] > 0)
                 sql.AppendLine("       `os` = ?Os");
@@ -217,7 +243,7 @@ UPDATE `tb_user_user` SET
         /// <summary>
         ///  所有字段
         /// </summary>
-        static string[] _fields = new string[]{ "UserId","UserType","OpenId","Status","AddDate","RegistSoure","Os","App","DeviceId","Channel","TraceMark","IsFreeze","DataState","LastReviserId","LastModifyDate","AuthorId" };
+        static string[] _fields = new string[]{ "UserId","UserType","OpenId","Status","AuthorizeScreen","RegistSoure","Os","App","DeviceId","Channel","TraceMark","IsFreeze","DataState","LastReviserId","LastModifyDate","AddDate","AuthorId" };
 
         /// <summary>
         ///  所有字段
@@ -242,10 +268,10 @@ UPDATE `tb_user_user` SET
             { "OpenId" , "open_id" },
             { "open_id" , "open_id" },
             { "Status" , "status" },
-            { "AddDate" , "add_date" },
-            { "add_date" , "add_date" },
-            { "RegistSoure" , "regist_soure" },
-            { "regist_soure" , "regist_soure" },
+            { "AuthorizeScreen" , "authorize_screen" },
+            { "authorize_screen" , "authorize_screen" },
+            { "RegistSoure" , "regist_screen" },
+            { "regist_screen" , "regist_screen" },
             { "Os" , "os" },
             { "App" , "app" },
             { "DeviceId" , "device_id" },
@@ -261,6 +287,8 @@ UPDATE `tb_user_user` SET
             { "last_reviser_id" , "last_reviser_id" },
             { "LastModifyDate" , "last_modify_date" },
             { "last_modify_date" , "last_modify_date" },
+            { "AddDate" , "add_date" },
+            { "add_date" , "add_date" },
             { "AuthorId" , "author_id" },
             { "author_id" , "author_id" },
             { "Id" , "user_id" }
@@ -289,13 +317,13 @@ UPDATE `tb_user_user` SET
                 if (!reader.IsDBNull(0))
                     entity._userId = (long)reader.GetInt64(0);
                 if (!reader.IsDBNull(1))
-                    entity._userType = (AuthorizeType)reader.GetInt32(1);
+                    entity._userType = (UserType)reader.GetInt32(1);
                 if (!reader.IsDBNull(2))
                     entity._openId = reader.GetString(2).ToString();
                 if (!reader.IsDBNull(3))
                     entity._status = (UserStatusType)reader.GetInt32(3);
                 if (!reader.IsDBNull(4))
-                    try{entity._addDate = reader.GetMySqlDateTime(4).Value;}catch{}
+                    entity._authorizeScreen = (AuthorizeType)reader.GetInt32(4);
                 if (!reader.IsDBNull(5))
                     entity._registSoure = (AuthorizeType)reader.GetInt32(5);
                 if (!reader.IsDBNull(6))
@@ -317,7 +345,9 @@ UPDATE `tb_user_user` SET
                 if (!reader.IsDBNull(14))
                     try{entity._lastModifyDate = reader.GetMySqlDateTime(14).Value;}catch{}
                 if (!reader.IsDBNull(15))
-                    entity._authorId = (long)reader.GetInt64(15);
+                    try{entity._addDate = reader.GetMySqlDateTime(15).Value;}catch{}
+                if (!reader.IsDBNull(16))
+                    entity._authorId = (long)reader.GetInt64(16);
             }
         }
 
@@ -338,8 +368,8 @@ UPDATE `tb_user_user` SET
                     return MySqlDbType.VarString;
                 case "Status":
                     return MySqlDbType.Int32;
-                case "AddDate":
-                    return MySqlDbType.DateTime;
+                case "AuthorizeScreen":
+                    return MySqlDbType.Int32;
                 case "RegistSoure":
                     return MySqlDbType.Int32;
                 case "Os":
@@ -359,6 +389,8 @@ UPDATE `tb_user_user` SET
                 case "LastReviserId":
                     return MySqlDbType.Int64;
                 case "LastModifyDate":
+                    return MySqlDbType.DateTime;
+                case "AddDate":
                     return MySqlDbType.DateTime;
                 case "AuthorId":
                     return MySqlDbType.Int64;
@@ -389,14 +421,8 @@ UPDATE `tb_user_user` SET
             cmd.Parameters.Add(parameter);
             //05:用户状态(Status)
             cmd.Parameters.Add(new MySqlParameter("Status",MySqlDbType.Int32){ Value = (int)entity.Status});
-            //06:制作时间(AddDate)
-            isNull = entity.AddDate.Year < 1900;
-            parameter = new MySqlParameter("AddDate",MySqlDbType.DateTime);
-            if(isNull)
-                parameter.Value = DBNull.Value;
-            else
-                parameter.Value = entity.AddDate;
-            cmd.Parameters.Add(parameter);
+            //06:已认证场景(AuthorizeScreen)
+            cmd.Parameters.Add(new MySqlParameter("AuthorizeScreen",MySqlDbType.Int32){ Value = (int)entity.AuthorizeScreen});
             //07:注册来源(RegistSoure)
             cmd.Parameters.Add(new MySqlParameter("RegistSoure",MySqlDbType.Int32){ Value = (int)entity.RegistSoure});
             //08:注册来源操作系统(Os)
@@ -453,7 +479,15 @@ UPDATE `tb_user_user` SET
             else
                 parameter.Value = entity.LastModifyDate;
             cmd.Parameters.Add(parameter);
-            //17:制作人(AuthorId)
+            //17:制作时间(AddDate)
+            isNull = entity.AddDate.Year < 1900;
+            parameter = new MySqlParameter("AddDate",MySqlDbType.DateTime);
+            if(isNull)
+                parameter.Value = DBNull.Value;
+            else
+                parameter.Value = entity.AddDate;
+            cmd.Parameters.Add(parameter);
+            //18:制作人(AuthorId)
             cmd.Parameters.Add(new MySqlParameter("AuthorId",MySqlDbType.Int64){ Value = entity.AuthorId});
         }
 

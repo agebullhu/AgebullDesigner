@@ -1,4 +1,4 @@
-﻿namespace Agebull.Common.OAuth
+﻿namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// 密码加密解密算法

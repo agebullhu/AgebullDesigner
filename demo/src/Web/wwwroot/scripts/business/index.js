@@ -70,16 +70,7 @@ var vue_option = {
             vue_option.data.isCollapse = true;
             vue_option.data.cwid = vue_option.data.isCollapse ? '' : '260px';
             vue_option.data.ctxt = vue_option.data.isCollapse ? '' : vue_option.data.user;
-            showIframe('/home.htm');
-        },
-        go_monitor() {
-            location.href = "/Monitor";
-        },
-        go_trace() {
-            location.href = "/Trace";
-        },
-        go_plan() {
-            location.href = "/Plan";
+            showIframe('/help.html');
         },
         logout() {
             onLogout();

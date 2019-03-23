@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/2 23:21:22*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 9:58:45*/
 #region
 using System;
 using System.Collections.Generic;
@@ -14,16 +14,15 @@ using System.Runtime.Serialization;
 using System.IO;
 using Newtonsoft.Json;
 
+
 using Agebull.Common;
-using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Interfaces;
 
-
-
+using Agebull.Common.OAuth;
 #endregion
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// 机构
@@ -1242,67 +1241,6 @@ namespace Agebull.Common.OAuth
                 this.OnPropertyChanged(_DataStruct_.Real_ContactTel);
             }
         }
-        /// <summary>
-        /// 行政区域外键
-        /// </summary>
-        [IgnoreDataMember,JsonIgnore]
-        public long _areaId;
-
-        partial void OnAreaIdGet();
-
-        partial void OnAreaIdSet(ref long value);
-
-        partial void OnAreaIdSeted();
-
-        
-        /// <summary>
-        /// 行政区域外键
-        /// </summary>
-        [DataRule(CanNull = true)]
-        [DataMember , JsonProperty("areaId", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"行政区域外键")]
-        public  long AreaId
-        {
-            get
-            {
-                OnAreaIdGet();
-                return this._areaId;
-            }
-            set
-            {
-                if(this._areaId == value)
-                    return;
-                OnAreaIdSet(ref value);
-                this._areaId = value;
-                OnAreaIdSeted();
-                this.OnPropertyChanged(_DataStruct_.Real_AreaId);
-            }
-        }
-        /// <summary>
-        /// 行政区域
-        /// </summary>
-        [IgnoreDataMember,JsonIgnore]
-        public string _area;
-
-        
-        /// <summary>
-        /// 行政区域
-        /// </summary>
-        /// <value>
-        /// 可存储100个字符.合理长度应不大于100.
-        /// </value>
-        [DataRule(CanNull = true)]
-        [DataMember , JsonProperty("area", NullValueHandling = NullValueHandling.Ignore) , ReadOnly(true) , DisplayName(@"行政区域")]
-        public  string Area
-        {
-            get
-            {
-                return this._area;
-            }
-            set
-            {
-                this._area = value;
-            }
-        }
 
         #region 接口属性
 
@@ -1509,12 +1447,6 @@ namespace Agebull.Common.OAuth
             case "contacttel":
                 this.ContactTel = value == null ? null : value.ToString();
                 return;
-            case "areaid":
-                this.AreaId = (long)Convert.ToDecimal(value);
-                return;
-            case "area":
-                this.Area = value == null ? null : value.ToString();
-                return;
             }
 
             //System.Diagnostics.Trace.WriteLine(property + @"=>" + value);
@@ -1622,12 +1554,6 @@ namespace Agebull.Common.OAuth
             case _DataStruct_.ContactTel:
                 this.ContactTel = value == null ? null : value.ToString();
                 return;
-            case _DataStruct_.AreaId:
-                this.AreaId = Convert.ToInt64(value);
-                return;
-            case _DataStruct_.Area:
-                this.Area = value == null ? null : value.ToString();
-                return;
             }
         }
 
@@ -1700,10 +1626,6 @@ namespace Agebull.Common.OAuth
                 return this.ContactName;
             case "contacttel":
                 return this.ContactTel;
-            case "areaid":
-                return this.AreaId;
-            case "area":
-                return this.Area;
             }
 
             return null;
@@ -1778,10 +1700,6 @@ namespace Agebull.Common.OAuth
                     return this.ContactName;
                 case _DataStruct_.ContactTel:
                     return this.ContactTel;
-                case _DataStruct_.AreaId:
-                    return this.AreaId;
-                case _DataStruct_.Area:
-                    return this.Area;
             }
 
             return null;
@@ -1833,8 +1751,6 @@ namespace Agebull.Common.OAuth
             this._lawPersontel = sourceEntity._lawPersontel;
             this._contactName = sourceEntity._contactName;
             this._contactTel = sourceEntity._contactTel;
-            this._areaId = sourceEntity._areaId;
-            this._area = sourceEntity._area;
             CopyExtendValue(sourceEntity);
             this.__EntityStatus.SetModified();
         }
@@ -1875,8 +1791,6 @@ namespace Agebull.Common.OAuth
                 this.LawPersontel = source.LawPersontel;
                 this.ContactName = source.ContactName;
                 this.ContactTel = source.ContactTel;
-                this.AreaId = source.AreaId;
-                this.Area = source.Area;
         }
         #endregion
 
@@ -1925,8 +1839,6 @@ namespace Agebull.Common.OAuth
                 OnLawPersontelModified(subsist,false);
                 OnContactNameModified(subsist,false);
                 OnContactTelModified(subsist,false);
-                OnAreaIdModified(subsist,false);
-                OnAreaModified(subsist,false);
                 return;
             }
             else if (subsist == EntitySubsist.Adding || subsist == EntitySubsist.Added)
@@ -1961,11 +1873,9 @@ namespace Agebull.Common.OAuth
                 OnLawPersontelModified(subsist,true);
                 OnContactNameModified(subsist,true);
                 OnContactTelModified(subsist,true);
-                OnAreaIdModified(subsist,true);
-                OnAreaModified(subsist,true);
                 return;
             }
-            else if(modifieds != null && modifieds[32] > 0)
+            else if(modifieds != null && modifieds[30] > 0)
             {
                 OnIdModified(subsist,modifieds[_DataStruct_.Real_Id] == 1);
                 OnTypeModified(subsist,modifieds[_DataStruct_.Real_Type] == 1);
@@ -1997,8 +1907,6 @@ namespace Agebull.Common.OAuth
                 OnLawPersontelModified(subsist,modifieds[_DataStruct_.Real_LawPersontel] == 1);
                 OnContactNameModified(subsist,modifieds[_DataStruct_.Real_ContactName] == 1);
                 OnContactTelModified(subsist,modifieds[_DataStruct_.Real_ContactTel] == 1);
-                OnAreaIdModified(subsist,modifieds[_DataStruct_.Real_AreaId] == 1);
-                OnAreaModified(subsist,modifieds[_DataStruct_.Real_Area] == 1);
             }
         }
 
@@ -2301,26 +2209,6 @@ namespace Agebull.Common.OAuth
         /// 对关联的属性的更改,请自行保存,否则可能丢失
         /// </remarks>
         partial void OnContactTelModified(EntitySubsist subsist,bool isModified);
-
-        /// <summary>
-        /// 行政区域外键修改的后期处理(保存前)
-        /// </summary>
-        /// <param name="subsist">当前对象状态</param>
-        /// <param name="isModified">是否被修改</param>
-        /// <remarks>
-        /// 对关联的属性的更改,请自行保存,否则可能丢失
-        /// </remarks>
-        partial void OnAreaIdModified(EntitySubsist subsist,bool isModified);
-
-        /// <summary>
-        /// 行政区域修改的后期处理(保存前)
-        /// </summary>
-        /// <param name="subsist">当前对象状态</param>
-        /// <param name="isModified">是否被修改</param>
-        /// <remarks>
-        /// 对关联的属性的更改,请自行保存,否则可能丢失
-        /// </remarks>
-        partial void OnAreaModified(EntitySubsist subsist,bool isModified);
         #endregion
 
         #region 数据结构
@@ -2664,26 +2552,6 @@ namespace Agebull.Common.OAuth
             public const int Real_ContactTel = 29;
 
             /// <summary>
-            /// 行政区域外键的数字标识
-            /// </summary>
-            public const byte AreaId = 32;
-            
-            /// <summary>
-            /// 行政区域外键的实时记录顺序
-            /// </summary>
-            public const int Real_AreaId = 30;
-
-            /// <summary>
-            /// 行政区域的数字标识
-            /// </summary>
-            public const byte Area = 33;
-            
-            /// <summary>
-            /// 行政区域的实时记录顺序
-            /// </summary>
-            public const int Real_Area = 31;
-
-            /// <summary>
             /// 实体结构
             /// </summary>
             public static readonly EntitySturct Struct = new EntitySturct
@@ -2857,7 +2725,7 @@ namespace Agebull.Common.OAuth
                             Title        = "边界机构标识",
                             Caption      = @"边界机构标识",
                             Description  = @"边界机构标识：不互相访问的锁定标识。如公司独立管理，公司间不互相访问则设置为公司的标识，部门不独立管理则不可设置为部门标识。",
-                            ColumnName   = "boundary_id",
+                            ColumnName   = "org_id",
                             PropertyType = typeof(long),
                             CanNull      = false,
                             ValueType    = PropertyValueType.Value,
@@ -3198,40 +3066,6 @@ namespace Agebull.Common.OAuth
                             Caption      = @"机构联系人电话",
                             Description  = @"允许更新",
                             ColumnName   = "contact_tel",
-                            PropertyType = typeof(string),
-                            CanNull      = false,
-                            ValueType    = PropertyValueType.String,
-                            CanImport    = false,
-                            CanExport    = false
-                        }
-                    },
-                    {
-                        Real_AreaId,
-                        new PropertySturct
-                        {
-                            Index        = AreaId,
-                            Name         = "AreaId",
-                            Title        = "行政区域外键",
-                            Caption      = @"行政区域外键",
-                            Description  = @"行政区域外键",
-                            ColumnName   = "area_id",
-                            PropertyType = typeof(long),
-                            CanNull      = false,
-                            ValueType    = PropertyValueType.Value,
-                            CanImport    = false,
-                            CanExport    = false
-                        }
-                    },
-                    {
-                        Real_Area,
-                        new PropertySturct
-                        {
-                            Index        = Area,
-                            Name         = "Area",
-                            Title        = "行政区域",
-                            Caption      = @"行政区域",
-                            Description  = @"行政区域",
-                            ColumnName   = "area",
                             PropertyType = typeof(string),
                             CanNull      = false,
                             ValueType    = PropertyValueType.String,

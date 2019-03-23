@@ -3,7 +3,7 @@ using Agebull.EntityModel.Common;
 using Agebull.EntityModel.MySql;
 using MySql.Data.MySqlClient;
 
-namespace Agebull.Common.OAuth.DataAccess
+namespace Agebull.Common.Organizations.DataAccess
 {
     /// <summary>
     /// 员工职位关联

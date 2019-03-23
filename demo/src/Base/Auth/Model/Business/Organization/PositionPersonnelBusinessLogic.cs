@@ -3,10 +3,10 @@
 
 
 using Agebull.Common.Context;
-using Agebull.Common.OAuth.DataAccess;
+using Agebull.Common.Organizations.DataAccess;
 using Agebull.EntityModel.MySql.BusinessLogic;
 
-namespace Agebull.Common.OAuth.BusinessLogic
+namespace Agebull.Common.Organizations.BusinessLogic
 {
     /// <summary>
     /// 行级权限关联
@@ -90,7 +90,7 @@ namespace Agebull.Common.OAuth.BusinessLogic
             var post = oAccess.LoadByPrimaryKey(data.OrganizePositionId);
             if (post == null)
                 return false;
-            data.AreaId = post.AreaId;
+            data.DepartmentId = post.DepartmentId;
             //手机号检验,已注册的，直接登录
             var aAccess = new UserDataAccess();
             var pAccess = new PersonDataAccess();

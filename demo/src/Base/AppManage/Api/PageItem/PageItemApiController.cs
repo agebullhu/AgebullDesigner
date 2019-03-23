@@ -10,18 +10,19 @@
 
 using System;
 using System.Collections.Generic;
-using Agebull.EntityModel.Common;
-
+using Agebull.Common;
+using Agebull.Common.Context;
+using Agebull.Common.Ioc;
 using Agebull.Common.OAuth;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.EasyUI;
+using Agebull.MicroZero;
+using Agebull.MicroZero.ZeroApis;
+
 using Agebull.Common.AppManage.DataAccess;
 using Agebull.Common.AppManage.BusinessLogic;
-using Agebull.Common.Ioc;
-using Agebull.Common.OAuth.BusinessLogic;
 
-using Agebull.MicroZero.ZeroApis;
-using Agebull.MicroZero;
-using Agebull.Common.Context;
-using Agebull.EntityModel.EasyUI;
+using Agebull.Common.Organizations.BusinessLogic;
 
 #endregion
 

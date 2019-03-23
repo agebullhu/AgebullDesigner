@@ -1,15 +1,14 @@
 ﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2018/10/5 23:06:23*/
 
 
-using Agebull.Common.OAuth;
-using Agebull.Common.OAuth.BusinessLogic;
-using Agebull.Common.OAuth.DataAccess;
-
+using Agebull.Common.Organizations;
+using Agebull.Common.Organizations.BusinessLogic;
+using Agebull.Common.Organizations.DataAccess;
 using Agebull.MicroZero.ZeroApis;
 
-namespace Agebull.Common.UserCenter.WebApi.Entity
+namespace Agebull.Common.Organizations.WebApi.Entity
 {
-    [RoutePrefix("UserCenter/Account/v1")]
+    [RoutePrefix("user/Account/v1")]
     public partial class AccountApiController : ApiControllerForDataState<AccountData, AccountDataAccess, UserCenterDb, AccountBusinessLogic>
     {
         #region 基本扩展

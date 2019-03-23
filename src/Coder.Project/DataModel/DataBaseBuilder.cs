@@ -30,12 +30,15 @@ using System.Runtime.Serialization;
 using System.IO;
 using Newtonsoft.Json;
 
+using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
+
 using Agebull.Common;
 using Agebull.Common.Configuration;
-using Agebull.Common.DataModel;
-using Agebull.Common.WebApi;
-using Gboxt.Common.DataModel;
-using Gboxt.Common.DataModel.MySql;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Interfaces;
+using Agebull.EntityModel.Events;
+using Agebull.EntityModel.Redis;
+using Agebull.EntityModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
 
 {Project.UsingNameSpaces}
 #endregion
@@ -136,15 +139,16 @@ using System.Runtime.Serialization;
 using System.IO;
 using Newtonsoft.Json;
 
+using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
+
 using Agebull.Common;
 using Agebull.Common.Configuration;
-using Agebull.Common.DataModel;
-using Agebull.Common.WebApi;
-using Gboxt.Common.DataModel;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Interfaces;
+using Agebull.EntityModel.Events;
+using Agebull.EntityModel.Redis;
+using Agebull.EntityModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
 {Project.UsingNameSpaces}
-
-using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
-using Gboxt.Common.DataModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
 #endregion
 
 namespace {Project.NameSpace}.DataAccess

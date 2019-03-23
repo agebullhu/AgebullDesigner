@@ -1,4 +1,4 @@
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     /// <summary>
     ///     表示一个部门所有者数据

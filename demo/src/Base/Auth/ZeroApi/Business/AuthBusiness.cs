@@ -3,7 +3,8 @@ using Agebull.Common.Configuration;
 using Agebull.Common.Context;
 using Agebull.Common.Logging;
 using Agebull.Common.OAuth;
-using Agebull.Common.OAuth.DataAccess;
+using Agebull.Common.Organizations;
+using Agebull.Common.Organizations.DataAccess;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.MySql;
 using Agebull.EntityModel.Redis;
@@ -533,14 +534,14 @@ namespace Agebull.OAuth.Business
         /// </summary>
         OrganizationData GetGroup(OrganizationData org, OrganizationDataAccess access)
         {
-            if (org.Type == OrganizationType.Region)
+            if (org.Type == OrganizationType.Area)
                 return org;
             if (org.ParentId == 0)
                 return org;
             var par = access.LoadByPrimaryKey(org.ParentId);
             if (par == null)
                 return org;
-            return par.Type == OrganizationType.Region ? par : GetOrganization(par, access);
+            return par.Type == OrganizationType.Area ? par : GetOrganization(par, access);
         }
         #endregion
 

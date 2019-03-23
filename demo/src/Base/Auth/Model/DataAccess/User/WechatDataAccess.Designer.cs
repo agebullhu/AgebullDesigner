@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/21 22:02:23*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 9:58:46*/
 #region
 using System;
 using System.Collections.Generic;
@@ -15,16 +15,15 @@ using System.IO;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 
+using MySql.Data.MySqlClient;
+using Agebull.EntityModel.MySql;
+
 using Agebull.Common;
-using Agebull.Common.DataModel;
-using Agebull.Common.Rpc;
-using Agebull.Common.WebApi;
-using Gboxt.Common;
-using Gboxt.Common.DataModel;
+using Agebull.Common.OAuth;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Interfaces;
+using Agebull.Common.OAuth;
 
-
-using Gboxt.Common.DataModel.Extends;
-using Gboxt.Common.DataModel.MySql;
 #endregion
 
 namespace Agebull.Common.Organizations.DataAccess

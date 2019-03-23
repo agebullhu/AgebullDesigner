@@ -1,15 +1,14 @@
 ﻿/*design by:agebull designer date:2017/5/26 19:43:32*/
 
-using Agebull.Common.OAuth.BusinessLogic;
-using Agebull.Common.OAuth.DataAccess;
+using Agebull.Common.Organizations.DataAccess;
 
 using Agebull.Common.Logging;
-using Agebull.MicroZero.ZeroApis;
+using Agebull.Common.Organizations.BusinessLogic;
 using Agebull.MicroZero.ZeroApis;
 
 using Agebull.EntityModel.EasyUI;
 
-namespace Agebull.Common.OAuth.WebApi.Entity
+namespace Agebull.Common.Organizations.WebApi.Entity
 {
     [RoutePrefix("sys/org/v1")]
     public partial class OrganizationApiController : ApiControllerForDataState<OrganizationData, OrganizationDataAccess, UserCenterDb, OrganizationBusinessLogic>
@@ -73,8 +72,7 @@ namespace Agebull.Common.OAuth.WebApi.Entity
                 return null;
             }
 
-            var aAccess = new GovernmentAreaDataAccess();
-            var area = aAccess.LoadByPrimaryKey(oid);
+            var area = Business.Access.LoadByPrimaryKey(oid);
             if (area == null)
             {
                 SetFailed("请选择一个有效的行政区划");
@@ -85,8 +83,6 @@ namespace Agebull.Common.OAuth.WebApi.Entity
                 ParentId = pid,
                 Type = OrganizationType.Organization,
                 OrgLevel = 1,
-                AreaId = oid,
-                Area = area.FullName,
                 CityCode = area.Code,
                 DistrictCode = area.Code
             };

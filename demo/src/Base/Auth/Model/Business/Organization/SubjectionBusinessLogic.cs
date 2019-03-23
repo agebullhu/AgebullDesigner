@@ -2,11 +2,11 @@
 
 using System;
 using System.Collections.Generic;
-using Agebull.Common.OAuth.DataAccess;
+using Agebull.Common.Organizations.DataAccess;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.MySql.BusinessLogic;
 
-namespace Agebull.Common.OAuth.BusinessLogic
+namespace Agebull.Common.Organizations.BusinessLogic
 {
     /// <summary>
     /// 行级权限关联

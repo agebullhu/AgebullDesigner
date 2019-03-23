@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2018/11/14 19:10:09*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 9:58:46*/
 #region
 using System;
 using System.Collections.Generic;
@@ -14,22 +14,23 @@ using System.Runtime.Serialization;
 using System.IO;
 using Newtonsoft.Json;
 
-using Agebull.Common;
-using Agebull.EntityModel.Common;
-using Agebull.EntityModel.Common;
-
-
-
-
-using Agebull.EntityModel.MySql.BusinessLogic;
-using Agebull.Common.OAuth.DataAccess;
-
 using MySql.Data.MySqlClient;
+
+using Agebull.Common;
+using Agebull.Common.OAuth;
+using Agebull.EntityModel.Common;
+
 using Agebull.EntityModel.MySql;
+using Agebull.EntityModel.MySql.BusinessLogic;
+
+using Agebull.Common.OAuth;
+
+using Agebull.Common.Organizations.DataAccess;
+
 
 #endregion
 
-namespace Agebull.Common.OAuth.BusinessLogic
+namespace Agebull.Common.Organizations.BusinessLogic
 {
     /// <summary>
     /// 人员职位设置

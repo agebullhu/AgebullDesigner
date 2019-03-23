@@ -2,7 +2,7 @@
 
 using Agebull.MicroZero.ZeroApis;
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     sealed partial class MobilePhoneRequest : MicroZero.ZeroApis.IApiArgument
     {

@@ -10,6 +10,7 @@ using Agebull.EntityModel.MySql.BusinessLogic;
 using Agebull.Common.AppManage.DataAccess;
 using Agebull.EntityModel.Common;
 using Agebull.Common.Ioc;
+using Agebull.Common.Organizations;
 using Agebull.EntityModel.EasyUI;
 
 namespace Agebull.Common.AppManage.BusinessLogic
@@ -40,7 +41,7 @@ namespace Agebull.Common.AppManage.BusinessLogic
                             RoleId = roleId,
                             PageItemId = int.Parse(line[0]),
                             Power = RolePowerType.Allow,
-                            DataScope = (SubjectionType)int.Parse(line[1])
+                            DataScope = (DataScopeType)int.Parse(line[1])
                         });
                     }
                 }

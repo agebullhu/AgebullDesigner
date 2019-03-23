@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/2 23:20:42*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:27:49*/
 /*
 *   机构的前端操作类对象,实现基本的增删改查的界面操作
 */
@@ -18,7 +18,7 @@ var page = {
     /**
      * API前缀
      */
-    apiPrefix: 'Auth/org/v1/',
+    apiPrefix: 'user/org/v1/',
     /**
      * 列表的URL
      */
@@ -152,8 +152,6 @@ var page = {
     onFormUiLoaded: function (editor,callback) {
         var me = editor.ex;
         me.setFormValidate();
-        //行政区域外键下拉列表
-        comboRemote('#areaId', 'Auth/GovernmentArea/v1/edit/combo');
         if (callback)
             callback();
     },
@@ -177,9 +175,8 @@ var page = {
     * 设置校验规则
     */
     setFormValidate: function() {
-        $('#Type').combobox({validType:['selectNoZero[\'#Type\']']});
         $('#Code').textbox({validType:['strLimit[0,200]']});
-        $('#FullName').textbox({required:true,validType:['strLimit[0,200]']});
+        $('#FullName').textbox({validType:['strLimit[0,200]']});
         $('#ShortName').textbox({required:true,validType:['strLimit[0,200]']});
         $('#TreeName').textbox({validType:['strLimit[0,200]']});
         $('#SuperOrgcode').textbox({validType:['strLimit[0,10]']});
@@ -281,7 +278,6 @@ var page = {
             , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'law_persontel', title: '机构负责人电话'}
             , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'contact_name', title: '机构联系人'}
             , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'contact_tel', title: '机构联系人电话'}
-            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'area', title: '行政区域' , width:3}
         ]
     ]
 };
@@ -291,7 +287,7 @@ var page = {
  */
 mainPageOptions.extend({
     doPageInitialize: function (callback) {
-        globalOptions.api.customHost = globalOptions.api.authHost;
+        globalOptions.api.customHost = globalOptions.api.userHost;
         mainPageOptions.loadPageInfo(page.name, function () {
             page.initialize();
             callback();

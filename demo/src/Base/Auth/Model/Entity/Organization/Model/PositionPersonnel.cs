@@ -5,7 +5,7 @@ using Agebull.EntityModel.Common;
 using Newtonsoft.Json;
 using System.Runtime.Serialization;
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// 员工职位关联

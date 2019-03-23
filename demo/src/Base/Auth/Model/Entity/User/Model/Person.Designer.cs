@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/2 23:17:39*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 9:58:46*/
 #region
 using System;
 using System.Collections.Generic;
@@ -14,16 +14,15 @@ using System.Runtime.Serialization;
 using System.IO;
 using Newtonsoft.Json;
 
+
 using Agebull.Common;
-using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Interfaces;
 
-
-
+using Agebull.Common.OAuth;
 #endregion
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// 用户的个人信息
@@ -94,206 +93,6 @@ namespace Agebull.Common.OAuth
                 this._userId = value;
                 this.OnPropertyChanged(_DataStruct_.Real_UserId);
                 OnUserIdSeted();
-            }
-        }
-        /// <summary>
-        /// 性别
-        /// </summary>
-        [IgnoreDataMember,JsonIgnore]
-        public SexType _sex;
-
-        partial void OnSexGet();
-
-        partial void OnSexSet(ref SexType value);
-
-        partial void OnSexSeted();
-
-        
-        /// <summary>
-        /// 性别
-        /// </summary>
-        /// <remarks>
-        /// 性别,0:女;1:男
-        /// </remarks>
-        [DataMember , JsonProperty("Sex", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"性别")]
-        public  SexType Sex
-        {
-            get
-            {
-                OnSexGet();
-                return this._sex;
-            }
-            set
-            {
-                if(this._sex == value)
-                    return;
-                OnSexSet(ref value);
-                this._sex = value;
-                OnSexSeted();
-                this.OnPropertyChanged(_DataStruct_.Real_Sex);
-            }
-        }
-        /// <summary>
-        /// 性别的可读内容
-        /// </summary>
-        [IgnoreDataMember,JsonIgnore,DisplayName("性别")]
-        public string Sex_Content => Sex.ToCaption();
-
-        /// <summary>
-        /// 性别的数字属性
-        /// </summary>
-        [IgnoreDataMember,JsonIgnore]
-        public  int Sex_Number
-        {
-            get => (int)this.Sex;
-            set => this.Sex = (SexType)value;
-        }
-        /// <summary>
-        /// 所在省
-        /// </summary>
-        [IgnoreDataMember,JsonIgnore]
-        public int _regionProvince;
-
-        partial void OnRegionProvinceGet();
-
-        partial void OnRegionProvinceSet(ref int value);
-
-        partial void OnRegionProvinceSeted();
-
-        
-        /// <summary>
-        /// 所在省
-        /// </summary>
-        /// <remarks>
-        /// 所在省id
-        /// </remarks>
-        [DataMember , JsonProperty("RegionProvince", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"所在省")]
-        public  int RegionProvince
-        {
-            get
-            {
-                OnRegionProvinceGet();
-                return this._regionProvince;
-            }
-            set
-            {
-                if(this._regionProvince == value)
-                    return;
-                OnRegionProvinceSet(ref value);
-                this._regionProvince = value;
-                OnRegionProvinceSeted();
-                this.OnPropertyChanged(_DataStruct_.Real_RegionProvince);
-            }
-        }
-        /// <summary>
-        /// 所在市
-        /// </summary>
-        [IgnoreDataMember,JsonIgnore]
-        public int _regionCity;
-
-        partial void OnRegionCityGet();
-
-        partial void OnRegionCitySet(ref int value);
-
-        partial void OnRegionCitySeted();
-
-        
-        /// <summary>
-        /// 所在市
-        /// </summary>
-        /// <remarks>
-        /// 所在市ID
-        /// </remarks>
-        [DataMember , JsonProperty("RegionCity", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"所在市")]
-        public  int RegionCity
-        {
-            get
-            {
-                OnRegionCityGet();
-                return this._regionCity;
-            }
-            set
-            {
-                if(this._regionCity == value)
-                    return;
-                OnRegionCitySet(ref value);
-                this._regionCity = value;
-                OnRegionCitySeted();
-                this.OnPropertyChanged(_DataStruct_.Real_RegionCity);
-            }
-        }
-        /// <summary>
-        /// 所在县
-        /// </summary>
-        [IgnoreDataMember,JsonIgnore]
-        public int _regionCounty;
-
-        partial void OnRegionCountyGet();
-
-        partial void OnRegionCountySet(ref int value);
-
-        partial void OnRegionCountySeted();
-
-        
-        /// <summary>
-        /// 所在县
-        /// </summary>
-        /// <remarks>
-        /// 所在县Id
-        /// </remarks>
-        [DataMember , JsonProperty("RegionCounty", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"所在县")]
-        public  int RegionCounty
-        {
-            get
-            {
-                OnRegionCountyGet();
-                return this._regionCounty;
-            }
-            set
-            {
-                if(this._regionCounty == value)
-                    return;
-                OnRegionCountySet(ref value);
-                this._regionCounty = value;
-                OnRegionCountySeted();
-                this.OnPropertyChanged(_DataStruct_.Real_RegionCounty);
-            }
-        }
-        /// <summary>
-        /// 头像
-        /// </summary>
-        [IgnoreDataMember,JsonIgnore]
-        public string _avatarUrl;
-
-        partial void OnAvatarUrlGet();
-
-        partial void OnAvatarUrlSet(ref string value);
-
-        partial void OnAvatarUrlSeted();
-
-        
-        /// <summary>
-        /// 头像
-        /// </summary>
-        /// <value>
-        /// 不能为空.可存储200个字符.合理长度应不大于200.
-        /// </value>
-        [DataMember , JsonProperty("AvatarUrl", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"头像")]
-        public  string AvatarUrl
-        {
-            get
-            {
-                OnAvatarUrlGet();
-                return this._avatarUrl;
-            }
-            set
-            {
-                if(this._avatarUrl == value)
-                    return;
-                OnAvatarUrlSet(ref value);
-                this._avatarUrl = value;
-                OnAvatarUrlSeted();
-                this.OnPropertyChanged(_DataStruct_.Real_AvatarUrl);
             }
         }
         /// <summary>
@@ -371,6 +170,41 @@ namespace Agebull.Common.OAuth
             }
         }
         /// <summary>
+        /// 证件类型
+        /// </summary>
+        [IgnoreDataMember,JsonIgnore]
+        public CardType _certType;
+
+        partial void OnCertTypeGet();
+
+        partial void OnCertTypeSet(ref CardType value);
+
+        partial void OnCertTypeSeted();
+
+        
+        /// <summary>
+        /// 证件类型
+        /// </summary>
+        [DataRule(CanNull = true)]
+        [DataMember , JsonProperty("certType", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"证件类型")]
+        public  CardType CertType
+        {
+            get
+            {
+                OnCertTypeGet();
+                return this._certType;
+            }
+            set
+            {
+                if(this._certType == value)
+                    return;
+                OnCertTypeSet(ref value);
+                this._certType = value;
+                OnCertTypeSeted();
+                this.OnPropertyChanged(_DataStruct_.Real_CertType);
+            }
+        }
+        /// <summary>
         /// 真实姓名
         /// </summary>
         [IgnoreDataMember,JsonIgnore]
@@ -405,6 +239,157 @@ namespace Agebull.Common.OAuth
                 this._realName = value;
                 OnRealNameSeted();
                 this.OnPropertyChanged(_DataStruct_.Real_RealName);
+            }
+        }
+        /// <summary>
+        /// 性别
+        /// </summary>
+        [IgnoreDataMember,JsonIgnore]
+        public SexType _sex;
+
+        partial void OnSexGet();
+
+        partial void OnSexSet(ref SexType value);
+
+        partial void OnSexSeted();
+
+        
+        /// <summary>
+        /// 性别
+        /// </summary>
+        /// <remarks>
+        /// 性别,0:女;1:男
+        /// </remarks>
+        [DataMember , JsonProperty("Sex", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"性别")]
+        public  SexType Sex
+        {
+            get
+            {
+                OnSexGet();
+                return this._sex;
+            }
+            set
+            {
+                if(this._sex == value)
+                    return;
+                OnSexSet(ref value);
+                this._sex = value;
+                OnSexSeted();
+                this.OnPropertyChanged(_DataStruct_.Real_Sex);
+            }
+        }
+        /// <summary>
+        /// 性别的可读内容
+        /// </summary>
+        [IgnoreDataMember,JsonIgnore,DisplayName("性别")]
+        public string Sex_Content => Sex.ToCaption();
+
+        /// <summary>
+        /// 性别的数字属性
+        /// </summary>
+        [IgnoreDataMember,JsonIgnore]
+        public  int Sex_Number
+        {
+            get => (int)this.Sex;
+            set => this.Sex = (SexType)value;
+        }
+        /// <summary>
+        /// 头像
+        /// </summary>
+        [IgnoreDataMember,JsonIgnore]
+        public string _avatarUrl;
+
+        partial void OnAvatarUrlGet();
+
+        partial void OnAvatarUrlSet(ref string value);
+
+        partial void OnAvatarUrlSeted();
+
+        
+        /// <summary>
+        /// 头像
+        /// </summary>
+        /// <value>
+        /// 不能为空.可存储200个字符.合理长度应不大于200.
+        /// </value>
+        [DataMember , JsonProperty("AvatarUrl", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"头像")]
+        public  string AvatarUrl
+        {
+            get
+            {
+                OnAvatarUrlGet();
+                return this._avatarUrl;
+            }
+            set
+            {
+                if(this._avatarUrl == value)
+                    return;
+                OnAvatarUrlSet(ref value);
+                this._avatarUrl = value;
+                OnAvatarUrlSeted();
+                this.OnPropertyChanged(_DataStruct_.Real_AvatarUrl);
+            }
+        }
+        /// <summary>
+        /// 头像照片
+        /// </summary>
+        [IgnoreDataMember,JsonIgnore]
+        public byte[] _icon;
+
+        partial void OnIconGet();
+
+        partial void OnIconSet(ref byte[] value);
+
+        partial void OnIconSeted();
+
+        
+        /// <summary>
+        /// 头像照片
+        /// </summary>
+        /// <remarks>
+        /// BASE64二进制
+        /// </remarks>
+        [DataRule(CanNull = true)]
+        [DataMember , JsonIgnore , Browsable(false) , DisplayName(@"头像照片")]
+        public  byte[] Icon
+        {
+            get
+            {
+                OnIconGet();
+                return this._icon;
+            }
+            set
+            {
+                if(this._icon == value)
+                    return;
+                OnIconSet(ref value);
+                this._icon = value;
+                OnIconSeted();
+                this.OnPropertyChanged(_DataStruct_.Real_Icon);
+            }
+        }
+        
+        /// <summary>
+        /// 头像照片
+        /// </summary>
+        /// <remarks>
+        /// BASE64二进制
+        /// </remarks>
+        [DataRule(CanNull = true)]
+        [DataMember , JsonProperty("icon", NullValueHandling = NullValueHandling.Ignore) , Browsable(false) , DisplayName(@"头像照片")]
+        public  string Icon_Base64
+        {
+            get
+            {
+                return this._icon == null
+                       ? null
+                       : Convert.ToBase64String(Icon);
+            }
+            set
+            {
+                this.Icon = string.IsNullOrWhiteSpace(value)
+                       ? null
+                       : Convert.FromBase64String(value);
             }
         }
         /// <summary>
@@ -481,103 +466,6 @@ namespace Agebull.Common.OAuth
                 this._birthday = value;
                 OnBirthdaySeted();
                 this.OnPropertyChanged(_DataStruct_.Real_Birthday);
-            }
-        }
-        /// <summary>
-        /// 证件类型
-        /// </summary>
-        [IgnoreDataMember,JsonIgnore]
-        public CardType _certType;
-
-        partial void OnCertTypeGet();
-
-        partial void OnCertTypeSet(ref CardType value);
-
-        partial void OnCertTypeSeted();
-
-        
-        /// <summary>
-        /// 证件类型
-        /// </summary>
-        [DataRule(CanNull = true)]
-        [DataMember , JsonProperty("certType", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"证件类型")]
-        public  CardType CertType
-        {
-            get
-            {
-                OnCertTypeGet();
-                return this._certType;
-            }
-            set
-            {
-                if(this._certType == value)
-                    return;
-                OnCertTypeSet(ref value);
-                this._certType = value;
-                OnCertTypeSeted();
-                this.OnPropertyChanged(_DataStruct_.Real_CertType);
-            }
-        }
-        /// <summary>
-        /// 头像照片
-        /// </summary>
-        [IgnoreDataMember,JsonIgnore]
-        public byte[] _icon;
-
-        partial void OnIconGet();
-
-        partial void OnIconSet(ref byte[] value);
-
-        partial void OnIconSeted();
-
-        
-        /// <summary>
-        /// 头像照片
-        /// </summary>
-        /// <remarks>
-        /// BASE64二进制
-        /// </remarks>
-        [DataRule(CanNull = true)]
-        [DataMember , JsonIgnore , Browsable(false) , DisplayName(@"头像照片")]
-        public  byte[] Icon
-        {
-            get
-            {
-                OnIconGet();
-                return this._icon;
-            }
-            set
-            {
-                if(this._icon == value)
-                    return;
-                OnIconSet(ref value);
-                this._icon = value;
-                OnIconSeted();
-                this.OnPropertyChanged(_DataStruct_.Real_Icon);
-            }
-        }
-        
-        /// <summary>
-        /// 头像照片
-        /// </summary>
-        /// <remarks>
-        /// BASE64二进制
-        /// </remarks>
-        [DataRule(CanNull = true)]
-        [DataMember , JsonProperty("icon", NullValueHandling = NullValueHandling.Ignore) , Browsable(false) , DisplayName(@"头像照片")]
-        public  string Icon_Base64
-        {
-            get
-            {
-                return this._icon == null
-                       ? null
-                       : Convert.ToBase64String(Icon);
-            }
-            set
-            {
-                this.Icon = string.IsNullOrWhiteSpace(value)
-                       ? null
-                       : Convert.FromBase64String(value);
             }
         }
         /// <summary>
@@ -733,85 +621,114 @@ namespace Agebull.Common.OAuth
             }
         }
         /// <summary>
-        /// 所在公司
+        /// 所在省
         /// </summary>
         [IgnoreDataMember,JsonIgnore]
-        public string _company;
+        public int _regionProvince;
 
-        partial void OnCompanyGet();
+        partial void OnRegionProvinceGet();
 
-        partial void OnCompanySet(ref string value);
+        partial void OnRegionProvinceSet(ref int value);
 
-        partial void OnCompanySeted();
+        partial void OnRegionProvinceSeted();
 
         
         /// <summary>
-        /// 所在公司
+        /// 所在省
         /// </summary>
         /// <remarks>
-        /// 访客填写的所在公司
+        /// 所在省id
         /// </remarks>
-        /// <value>
-        /// 可存储200个字符.合理长度应不大于200.
-        /// </value>
-        [DataRule(CanNull = true)]
-        [DataMember , JsonProperty("company", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"所在公司")]
-        public  string Company
+        [DataMember , JsonProperty("RegionProvince", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"所在省")]
+        public  int RegionProvince
         {
             get
             {
-                OnCompanyGet();
-                return this._company;
+                OnRegionProvinceGet();
+                return this._regionProvince;
             }
             set
             {
-                if(this._company == value)
+                if(this._regionProvince == value)
                     return;
-                OnCompanySet(ref value);
-                this._company = value;
-                OnCompanySeted();
-                this.OnPropertyChanged(_DataStruct_.Real_Company);
+                OnRegionProvinceSet(ref value);
+                this._regionProvince = value;
+                OnRegionProvinceSeted();
+                this.OnPropertyChanged(_DataStruct_.Real_RegionProvince);
             }
         }
         /// <summary>
-        /// 职位称呼
+        /// 所在市
         /// </summary>
         [IgnoreDataMember,JsonIgnore]
-        public string _jobTitle;
+        public int _regionCity;
 
-        partial void OnJobTitleGet();
+        partial void OnRegionCityGet();
 
-        partial void OnJobTitleSet(ref string value);
+        partial void OnRegionCitySet(ref int value);
 
-        partial void OnJobTitleSeted();
+        partial void OnRegionCitySeted();
 
         
         /// <summary>
-        /// 职位称呼
+        /// 所在市
         /// </summary>
         /// <remarks>
-        /// 访客填写的职位称呼
+        /// 所在市ID
         /// </remarks>
-        /// <value>
-        /// 可存储200个字符.合理长度应不大于200.
-        /// </value>
-        [DataRule(CanNull = true)]
-        [DataMember , JsonProperty("jobTitle", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"职位称呼")]
-        public  string JobTitle
+        [DataMember , JsonProperty("RegionCity", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"所在市")]
+        public  int RegionCity
         {
             get
             {
-                OnJobTitleGet();
-                return this._jobTitle;
+                OnRegionCityGet();
+                return this._regionCity;
             }
             set
             {
-                if(this._jobTitle == value)
+                if(this._regionCity == value)
                     return;
-                OnJobTitleSet(ref value);
-                this._jobTitle = value;
-                OnJobTitleSeted();
-                this.OnPropertyChanged(_DataStruct_.Real_JobTitle);
+                OnRegionCitySet(ref value);
+                this._regionCity = value;
+                OnRegionCitySeted();
+                this.OnPropertyChanged(_DataStruct_.Real_RegionCity);
+            }
+        }
+        /// <summary>
+        /// 所在县
+        /// </summary>
+        [IgnoreDataMember,JsonIgnore]
+        public int _regionCounty;
+
+        partial void OnRegionCountyGet();
+
+        partial void OnRegionCountySet(ref int value);
+
+        partial void OnRegionCountySeted();
+
+        
+        /// <summary>
+        /// 所在县
+        /// </summary>
+        /// <remarks>
+        /// 所在县Id
+        /// </remarks>
+        [DataMember , JsonProperty("RegionCounty", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"所在县")]
+        public  int RegionCounty
+        {
+            get
+            {
+                OnRegionCountyGet();
+                return this._regionCounty;
+            }
+            set
+            {
+                if(this._regionCounty == value)
+                    return;
+                OnRegionCountySet(ref value);
+                this._regionCounty = value;
+                OnRegionCountySeted();
+                this.OnPropertyChanged(_DataStruct_.Real_RegionCounty);
             }
         }
         /// <summary>
@@ -1085,62 +1002,11 @@ namespace Agebull.Common.OAuth
             case "userid":
                 this.UserId = (long)Convert.ToDecimal(value);
                 return;
-            case "sex":
-                if (value != null)
-                {
-                    if(value is int)
-                    {
-                        this.Sex = (SexType)(int)value;
-                    }
-                    else if(value is SexType)
-                    {
-                        this.Sex = (SexType)value;
-                    }
-                    else
-                    {
-                        var str = value.ToString();
-                        SexType val;
-                        if (SexType.TryParse(str, out val))
-                        {
-                            this.Sex = val;
-                        }
-                        else
-                        {
-                            int vl;
-                            if (int.TryParse(str, out vl))
-                            {
-                                this.Sex = (SexType)vl;
-                            }
-                        }
-                    }
-                }
-                return;
-            case "regionprovince":
-                this.RegionProvince = (int)Convert.ToDecimal(value);
-                return;
-            case "regioncity":
-                this.RegionCity = (int)Convert.ToDecimal(value);
-                return;
-            case "regioncounty":
-                this.RegionCounty = (int)Convert.ToDecimal(value);
-                return;
-            case "avatarurl":
-                this.AvatarUrl = value == null ? null : value.ToString();
-                return;
             case "nickname":
                 this.NickName = value == null ? null : value.ToString();
                 return;
             case "idcard":
                 this.IdCard = value == null ? null : value.ToString();
-                return;
-            case "realname":
-                this.RealName = value == null ? null : value.ToString();
-                return;
-            case "phonenumber":
-                this.PhoneNumber = value == null ? null : value.ToString();
-                return;
-            case "birthday":
-                this.Birthday = Convert.ToDateTime(value);
                 return;
             case "certtype":
                 if (value != null)
@@ -1172,8 +1038,50 @@ namespace Agebull.Common.OAuth
                     }
                 }
                 return;
+            case "realname":
+                this.RealName = value == null ? null : value.ToString();
+                return;
+            case "sex":
+                if (value != null)
+                {
+                    if(value is int)
+                    {
+                        this.Sex = (SexType)(int)value;
+                    }
+                    else if(value is SexType)
+                    {
+                        this.Sex = (SexType)value;
+                    }
+                    else
+                    {
+                        var str = value.ToString();
+                        SexType val;
+                        if (SexType.TryParse(str, out val))
+                        {
+                            this.Sex = val;
+                        }
+                        else
+                        {
+                            int vl;
+                            if (int.TryParse(str, out vl))
+                            {
+                                this.Sex = (SexType)vl;
+                            }
+                        }
+                    }
+                }
+                return;
+            case "avatarurl":
+                this.AvatarUrl = value == null ? null : value.ToString();
+                return;
             case "icon":
                 this.Icon = (byte[])value;
+                return;
+            case "phonenumber":
+                this.PhoneNumber = value == null ? null : value.ToString();
+                return;
+            case "birthday":
+                this.Birthday = Convert.ToDateTime(value);
                 return;
             case "nation":
                 this.Nation = value == null ? null : value.ToString();
@@ -1187,11 +1095,14 @@ namespace Agebull.Common.OAuth
             case "homeaddress":
                 this.HomeAddress = value == null ? null : value.ToString();
                 return;
-            case "company":
-                this.Company = value == null ? null : value.ToString();
+            case "regionprovince":
+                this.RegionProvince = (int)Convert.ToDecimal(value);
                 return;
-            case "jobtitle":
-                this.JobTitle = value == null ? null : value.ToString();
+            case "regioncity":
+                this.RegionCity = (int)Convert.ToDecimal(value);
+                return;
+            case "regioncounty":
+                this.RegionCounty = (int)Convert.ToDecimal(value);
                 return;
             case "isfreeze":
                 if (value != null)
@@ -1269,41 +1180,32 @@ namespace Agebull.Common.OAuth
             case _DataStruct_.UserId:
                 this.UserId = Convert.ToInt64(value);
                 return;
-            case _DataStruct_.Sex:
-                this.Sex = (SexType)value;
-                return;
-            case _DataStruct_.RegionProvince:
-                this.RegionProvince = Convert.ToInt32(value);
-                return;
-            case _DataStruct_.RegionCity:
-                this.RegionCity = Convert.ToInt32(value);
-                return;
-            case _DataStruct_.RegionCounty:
-                this.RegionCounty = Convert.ToInt32(value);
-                return;
-            case _DataStruct_.AvatarUrl:
-                this.AvatarUrl = value == null ? null : value.ToString();
-                return;
             case _DataStruct_.NickName:
                 this.NickName = value == null ? null : value.ToString();
                 return;
             case _DataStruct_.IdCard:
                 this.IdCard = value == null ? null : value.ToString();
                 return;
+            case _DataStruct_.CertType:
+                this.CertType = (CardType)value;
+                return;
             case _DataStruct_.RealName:
                 this.RealName = value == null ? null : value.ToString();
+                return;
+            case _DataStruct_.Sex:
+                this.Sex = (SexType)value;
+                return;
+            case _DataStruct_.AvatarUrl:
+                this.AvatarUrl = value == null ? null : value.ToString();
+                return;
+            case _DataStruct_.Icon:
+                this.Icon = (byte[])value;
                 return;
             case _DataStruct_.PhoneNumber:
                 this.PhoneNumber = value == null ? null : value.ToString();
                 return;
             case _DataStruct_.Birthday:
                 this.Birthday = Convert.ToDateTime(value);
-                return;
-            case _DataStruct_.CertType:
-                this.CertType = (CardType)value;
-                return;
-            case _DataStruct_.Icon:
-                this.Icon = (byte[])value;
                 return;
             case _DataStruct_.Nation:
                 this.Nation = value == null ? null : value.ToString();
@@ -1317,11 +1219,14 @@ namespace Agebull.Common.OAuth
             case _DataStruct_.HomeAddress:
                 this.HomeAddress = value == null ? null : value.ToString();
                 return;
-            case _DataStruct_.Company:
-                this.Company = value == null ? null : value.ToString();
+            case _DataStruct_.RegionProvince:
+                this.RegionProvince = Convert.ToInt32(value);
                 return;
-            case _DataStruct_.JobTitle:
-                this.JobTitle = value == null ? null : value.ToString();
+            case _DataStruct_.RegionCity:
+                this.RegionCity = Convert.ToInt32(value);
+                return;
+            case _DataStruct_.RegionCounty:
+                this.RegionCounty = Convert.ToInt32(value);
                 return;
             case _DataStruct_.IsFreeze:
                 this.IsFreeze = Convert.ToBoolean(value);
@@ -1355,30 +1260,24 @@ namespace Agebull.Common.OAuth
             {
             case "userid":
                 return this.UserId;
-            case "sex":
-                return this.Sex.ToCaption();
-            case "regionprovince":
-                return this.RegionProvince;
-            case "regioncity":
-                return this.RegionCity;
-            case "regioncounty":
-                return this.RegionCounty;
-            case "avatarurl":
-                return this.AvatarUrl;
             case "nickname":
                 return this.NickName;
             case "idcard":
                 return this.IdCard;
+            case "certtype":
+                return this.CertType;
             case "realname":
                 return this.RealName;
+            case "sex":
+                return this.Sex.ToCaption();
+            case "avatarurl":
+                return this.AvatarUrl;
+            case "icon":
+                return this.Icon;
             case "phonenumber":
                 return this.PhoneNumber;
             case "birthday":
                 return this.Birthday;
-            case "certtype":
-                return this.CertType;
-            case "icon":
-                return this.Icon;
             case "nation":
                 return this.Nation;
             case "tel":
@@ -1387,10 +1286,12 @@ namespace Agebull.Common.OAuth
                 return this.Email;
             case "homeaddress":
                 return this.HomeAddress;
-            case "company":
-                return this.Company;
-            case "jobtitle":
-                return this.JobTitle;
+            case "regionprovince":
+                return this.RegionProvince;
+            case "regioncity":
+                return this.RegionCity;
+            case "regioncounty":
+                return this.RegionCounty;
             case "isfreeze":
                 return this.IsFreeze;
             case "datastate":
@@ -1419,30 +1320,24 @@ namespace Agebull.Common.OAuth
             {
                 case _DataStruct_.UserId:
                     return this.UserId;
-                case _DataStruct_.Sex:
-                    return this.Sex;
-                case _DataStruct_.RegionProvince:
-                    return this.RegionProvince;
-                case _DataStruct_.RegionCity:
-                    return this.RegionCity;
-                case _DataStruct_.RegionCounty:
-                    return this.RegionCounty;
-                case _DataStruct_.AvatarUrl:
-                    return this.AvatarUrl;
                 case _DataStruct_.NickName:
                     return this.NickName;
                 case _DataStruct_.IdCard:
                     return this.IdCard;
+                case _DataStruct_.CertType:
+                    return this.CertType;
                 case _DataStruct_.RealName:
                     return this.RealName;
+                case _DataStruct_.Sex:
+                    return this.Sex;
+                case _DataStruct_.AvatarUrl:
+                    return this.AvatarUrl;
+                case _DataStruct_.Icon:
+                    return this.Icon;
                 case _DataStruct_.PhoneNumber:
                     return this.PhoneNumber;
                 case _DataStruct_.Birthday:
                     return this.Birthday;
-                case _DataStruct_.CertType:
-                    return this.CertType;
-                case _DataStruct_.Icon:
-                    return this.Icon;
                 case _DataStruct_.Nation:
                     return this.Nation;
                 case _DataStruct_.Tel:
@@ -1451,10 +1346,12 @@ namespace Agebull.Common.OAuth
                     return this.Email;
                 case _DataStruct_.HomeAddress:
                     return this.HomeAddress;
-                case _DataStruct_.Company:
-                    return this.Company;
-                case _DataStruct_.JobTitle:
-                    return this.JobTitle;
+                case _DataStruct_.RegionProvince:
+                    return this.RegionProvince;
+                case _DataStruct_.RegionCity:
+                    return this.RegionCity;
+                case _DataStruct_.RegionCounty:
+                    return this.RegionCounty;
                 case _DataStruct_.IsFreeze:
                     return this.IsFreeze;
                 case _DataStruct_.DataState:
@@ -1489,24 +1386,22 @@ namespace Agebull.Common.OAuth
             if(sourceEntity == null)
                 return;
             this._userId = sourceEntity._userId;
-            this._sex = sourceEntity._sex;
-            this._regionProvince = sourceEntity._regionProvince;
-            this._regionCity = sourceEntity._regionCity;
-            this._regionCounty = sourceEntity._regionCounty;
-            this._avatarUrl = sourceEntity._avatarUrl;
             this._nickName = sourceEntity._nickName;
             this._idCard = sourceEntity._idCard;
+            this._certType = sourceEntity._certType;
             this._realName = sourceEntity._realName;
+            this._sex = sourceEntity._sex;
+            this._avatarUrl = sourceEntity._avatarUrl;
+            this._icon = sourceEntity._icon;
             this._phoneNumber = sourceEntity._phoneNumber;
             this._birthday = sourceEntity._birthday;
-            this._certType = sourceEntity._certType;
-            this._icon = sourceEntity._icon;
             this._nation = sourceEntity._nation;
             this._tel = sourceEntity._tel;
             this._email = sourceEntity._email;
             this._homeAddress = sourceEntity._homeAddress;
-            this._company = sourceEntity._company;
-            this._jobTitle = sourceEntity._jobTitle;
+            this._regionProvince = sourceEntity._regionProvince;
+            this._regionCity = sourceEntity._regionCity;
+            this._regionCounty = sourceEntity._regionCounty;
             this._isFreeze = sourceEntity._isFreeze;
             this._dataState = sourceEntity._dataState;
             this._addDate = sourceEntity._addDate;
@@ -1524,24 +1419,22 @@ namespace Agebull.Common.OAuth
         public void Copy(PersonData source)
         {
                 this.UserId = source.UserId;
-                this.Sex = source.Sex;
-                this.RegionProvince = source.RegionProvince;
-                this.RegionCity = source.RegionCity;
-                this.RegionCounty = source.RegionCounty;
-                this.AvatarUrl = source.AvatarUrl;
                 this.NickName = source.NickName;
                 this.IdCard = source.IdCard;
+                this.CertType = source.CertType;
                 this.RealName = source.RealName;
+                this.Sex = source.Sex;
+                this.AvatarUrl = source.AvatarUrl;
+                this.Icon = source.Icon;
                 this.PhoneNumber = source.PhoneNumber;
                 this.Birthday = source.Birthday;
-                this.CertType = source.CertType;
-                this.Icon = source.Icon;
                 this.Nation = source.Nation;
                 this.Tel = source.Tel;
                 this.Email = source.Email;
                 this.HomeAddress = source.HomeAddress;
-                this.Company = source.Company;
-                this.JobTitle = source.JobTitle;
+                this.RegionProvince = source.RegionProvince;
+                this.RegionCity = source.RegionCity;
+                this.RegionCounty = source.RegionCounty;
                 this.IsFreeze = source.IsFreeze;
                 this.DataState = source.DataState;
                 this.AddDate = source.AddDate;
@@ -1567,24 +1460,22 @@ namespace Agebull.Common.OAuth
             if (subsist == EntitySubsist.Deleting)
             {
                 OnUserIdModified(subsist,false);
-                OnSexModified(subsist,false);
-                OnRegionProvinceModified(subsist,false);
-                OnRegionCityModified(subsist,false);
-                OnRegionCountyModified(subsist,false);
-                OnAvatarUrlModified(subsist,false);
                 OnNickNameModified(subsist,false);
                 OnIdCardModified(subsist,false);
+                OnCertTypeModified(subsist,false);
                 OnRealNameModified(subsist,false);
+                OnSexModified(subsist,false);
+                OnAvatarUrlModified(subsist,false);
+                OnIconModified(subsist,false);
                 OnPhoneNumberModified(subsist,false);
                 OnBirthdayModified(subsist,false);
-                OnCertTypeModified(subsist,false);
-                OnIconModified(subsist,false);
                 OnNationModified(subsist,false);
                 OnTelModified(subsist,false);
                 OnEmailModified(subsist,false);
                 OnHomeAddressModified(subsist,false);
-                OnCompanyModified(subsist,false);
-                OnJobTitleModified(subsist,false);
+                OnRegionProvinceModified(subsist,false);
+                OnRegionCityModified(subsist,false);
+                OnRegionCountyModified(subsist,false);
                 OnIsFreezeModified(subsist,false);
                 OnDataStateModified(subsist,false);
                 OnAddDateModified(subsist,false);
@@ -1596,24 +1487,22 @@ namespace Agebull.Common.OAuth
             else if (subsist == EntitySubsist.Adding || subsist == EntitySubsist.Added)
             {
                 OnUserIdModified(subsist,true);
-                OnSexModified(subsist,true);
-                OnRegionProvinceModified(subsist,true);
-                OnRegionCityModified(subsist,true);
-                OnRegionCountyModified(subsist,true);
-                OnAvatarUrlModified(subsist,true);
                 OnNickNameModified(subsist,true);
                 OnIdCardModified(subsist,true);
+                OnCertTypeModified(subsist,true);
                 OnRealNameModified(subsist,true);
+                OnSexModified(subsist,true);
+                OnAvatarUrlModified(subsist,true);
+                OnIconModified(subsist,true);
                 OnPhoneNumberModified(subsist,true);
                 OnBirthdayModified(subsist,true);
-                OnCertTypeModified(subsist,true);
-                OnIconModified(subsist,true);
                 OnNationModified(subsist,true);
                 OnTelModified(subsist,true);
                 OnEmailModified(subsist,true);
                 OnHomeAddressModified(subsist,true);
-                OnCompanyModified(subsist,true);
-                OnJobTitleModified(subsist,true);
+                OnRegionProvinceModified(subsist,true);
+                OnRegionCityModified(subsist,true);
+                OnRegionCountyModified(subsist,true);
                 OnIsFreezeModified(subsist,true);
                 OnDataStateModified(subsist,true);
                 OnAddDateModified(subsist,true);
@@ -1622,27 +1511,25 @@ namespace Agebull.Common.OAuth
                 OnAuthorIdModified(subsist,true);
                 return;
             }
-            else if(modifieds != null && modifieds[25] > 0)
+            else if(modifieds != null && modifieds[23] > 0)
             {
                 OnUserIdModified(subsist,modifieds[_DataStruct_.Real_UserId] == 1);
-                OnSexModified(subsist,modifieds[_DataStruct_.Real_Sex] == 1);
-                OnRegionProvinceModified(subsist,modifieds[_DataStruct_.Real_RegionProvince] == 1);
-                OnRegionCityModified(subsist,modifieds[_DataStruct_.Real_RegionCity] == 1);
-                OnRegionCountyModified(subsist,modifieds[_DataStruct_.Real_RegionCounty] == 1);
-                OnAvatarUrlModified(subsist,modifieds[_DataStruct_.Real_AvatarUrl] == 1);
                 OnNickNameModified(subsist,modifieds[_DataStruct_.Real_NickName] == 1);
                 OnIdCardModified(subsist,modifieds[_DataStruct_.Real_IdCard] == 1);
+                OnCertTypeModified(subsist,modifieds[_DataStruct_.Real_CertType] == 1);
                 OnRealNameModified(subsist,modifieds[_DataStruct_.Real_RealName] == 1);
+                OnSexModified(subsist,modifieds[_DataStruct_.Real_Sex] == 1);
+                OnAvatarUrlModified(subsist,modifieds[_DataStruct_.Real_AvatarUrl] == 1);
+                OnIconModified(subsist,modifieds[_DataStruct_.Real_Icon] == 1);
                 OnPhoneNumberModified(subsist,modifieds[_DataStruct_.Real_PhoneNumber] == 1);
                 OnBirthdayModified(subsist,modifieds[_DataStruct_.Real_Birthday] == 1);
-                OnCertTypeModified(subsist,modifieds[_DataStruct_.Real_CertType] == 1);
-                OnIconModified(subsist,modifieds[_DataStruct_.Real_Icon] == 1);
                 OnNationModified(subsist,modifieds[_DataStruct_.Real_Nation] == 1);
                 OnTelModified(subsist,modifieds[_DataStruct_.Real_Tel] == 1);
                 OnEmailModified(subsist,modifieds[_DataStruct_.Real_Email] == 1);
                 OnHomeAddressModified(subsist,modifieds[_DataStruct_.Real_HomeAddress] == 1);
-                OnCompanyModified(subsist,modifieds[_DataStruct_.Real_Company] == 1);
-                OnJobTitleModified(subsist,modifieds[_DataStruct_.Real_JobTitle] == 1);
+                OnRegionProvinceModified(subsist,modifieds[_DataStruct_.Real_RegionProvince] == 1);
+                OnRegionCityModified(subsist,modifieds[_DataStruct_.Real_RegionCity] == 1);
+                OnRegionCountyModified(subsist,modifieds[_DataStruct_.Real_RegionCounty] == 1);
                 OnIsFreezeModified(subsist,modifieds[_DataStruct_.Real_IsFreeze] == 1);
                 OnDataStateModified(subsist,modifieds[_DataStruct_.Real_DataState] == 1);
                 OnAddDateModified(subsist,modifieds[_DataStruct_.Real_AddDate] == 1);
@@ -1661,56 +1548,6 @@ namespace Agebull.Common.OAuth
         /// 对关联的属性的更改,请自行保存,否则可能丢失
         /// </remarks>
         partial void OnUserIdModified(EntitySubsist subsist,bool isModified);
-
-        /// <summary>
-        /// 性别修改的后期处理(保存前)
-        /// </summary>
-        /// <param name="subsist">当前对象状态</param>
-        /// <param name="isModified">是否被修改</param>
-        /// <remarks>
-        /// 对关联的属性的更改,请自行保存,否则可能丢失
-        /// </remarks>
-        partial void OnSexModified(EntitySubsist subsist,bool isModified);
-
-        /// <summary>
-        /// 所在省修改的后期处理(保存前)
-        /// </summary>
-        /// <param name="subsist">当前对象状态</param>
-        /// <param name="isModified">是否被修改</param>
-        /// <remarks>
-        /// 对关联的属性的更改,请自行保存,否则可能丢失
-        /// </remarks>
-        partial void OnRegionProvinceModified(EntitySubsist subsist,bool isModified);
-
-        /// <summary>
-        /// 所在市修改的后期处理(保存前)
-        /// </summary>
-        /// <param name="subsist">当前对象状态</param>
-        /// <param name="isModified">是否被修改</param>
-        /// <remarks>
-        /// 对关联的属性的更改,请自行保存,否则可能丢失
-        /// </remarks>
-        partial void OnRegionCityModified(EntitySubsist subsist,bool isModified);
-
-        /// <summary>
-        /// 所在县修改的后期处理(保存前)
-        /// </summary>
-        /// <param name="subsist">当前对象状态</param>
-        /// <param name="isModified">是否被修改</param>
-        /// <remarks>
-        /// 对关联的属性的更改,请自行保存,否则可能丢失
-        /// </remarks>
-        partial void OnRegionCountyModified(EntitySubsist subsist,bool isModified);
-
-        /// <summary>
-        /// 头像修改的后期处理(保存前)
-        /// </summary>
-        /// <param name="subsist">当前对象状态</param>
-        /// <param name="isModified">是否被修改</param>
-        /// <remarks>
-        /// 对关联的属性的更改,请自行保存,否则可能丢失
-        /// </remarks>
-        partial void OnAvatarUrlModified(EntitySubsist subsist,bool isModified);
 
         /// <summary>
         /// 昵称修改的后期处理(保存前)
@@ -1733,6 +1570,16 @@ namespace Agebull.Common.OAuth
         partial void OnIdCardModified(EntitySubsist subsist,bool isModified);
 
         /// <summary>
+        /// 证件类型修改的后期处理(保存前)
+        /// </summary>
+        /// <param name="subsist">当前对象状态</param>
+        /// <param name="isModified">是否被修改</param>
+        /// <remarks>
+        /// 对关联的属性的更改,请自行保存,否则可能丢失
+        /// </remarks>
+        partial void OnCertTypeModified(EntitySubsist subsist,bool isModified);
+
+        /// <summary>
         /// 真实姓名修改的后期处理(保存前)
         /// </summary>
         /// <param name="subsist">当前对象状态</param>
@@ -1741,6 +1588,36 @@ namespace Agebull.Common.OAuth
         /// 对关联的属性的更改,请自行保存,否则可能丢失
         /// </remarks>
         partial void OnRealNameModified(EntitySubsist subsist,bool isModified);
+
+        /// <summary>
+        /// 性别修改的后期处理(保存前)
+        /// </summary>
+        /// <param name="subsist">当前对象状态</param>
+        /// <param name="isModified">是否被修改</param>
+        /// <remarks>
+        /// 对关联的属性的更改,请自行保存,否则可能丢失
+        /// </remarks>
+        partial void OnSexModified(EntitySubsist subsist,bool isModified);
+
+        /// <summary>
+        /// 头像修改的后期处理(保存前)
+        /// </summary>
+        /// <param name="subsist">当前对象状态</param>
+        /// <param name="isModified">是否被修改</param>
+        /// <remarks>
+        /// 对关联的属性的更改,请自行保存,否则可能丢失
+        /// </remarks>
+        partial void OnAvatarUrlModified(EntitySubsist subsist,bool isModified);
+
+        /// <summary>
+        /// 头像照片修改的后期处理(保存前)
+        /// </summary>
+        /// <param name="subsist">当前对象状态</param>
+        /// <param name="isModified">是否被修改</param>
+        /// <remarks>
+        /// 对关联的属性的更改,请自行保存,否则可能丢失
+        /// </remarks>
+        partial void OnIconModified(EntitySubsist subsist,bool isModified);
 
         /// <summary>
         /// 手机号修改的后期处理(保存前)
@@ -1761,26 +1638,6 @@ namespace Agebull.Common.OAuth
         /// 对关联的属性的更改,请自行保存,否则可能丢失
         /// </remarks>
         partial void OnBirthdayModified(EntitySubsist subsist,bool isModified);
-
-        /// <summary>
-        /// 证件类型修改的后期处理(保存前)
-        /// </summary>
-        /// <param name="subsist">当前对象状态</param>
-        /// <param name="isModified">是否被修改</param>
-        /// <remarks>
-        /// 对关联的属性的更改,请自行保存,否则可能丢失
-        /// </remarks>
-        partial void OnCertTypeModified(EntitySubsist subsist,bool isModified);
-
-        /// <summary>
-        /// 头像照片修改的后期处理(保存前)
-        /// </summary>
-        /// <param name="subsist">当前对象状态</param>
-        /// <param name="isModified">是否被修改</param>
-        /// <remarks>
-        /// 对关联的属性的更改,请自行保存,否则可能丢失
-        /// </remarks>
-        partial void OnIconModified(EntitySubsist subsist,bool isModified);
 
         /// <summary>
         /// 民族修改的后期处理(保存前)
@@ -1823,24 +1680,34 @@ namespace Agebull.Common.OAuth
         partial void OnHomeAddressModified(EntitySubsist subsist,bool isModified);
 
         /// <summary>
-        /// 所在公司修改的后期处理(保存前)
+        /// 所在省修改的后期处理(保存前)
         /// </summary>
         /// <param name="subsist">当前对象状态</param>
         /// <param name="isModified">是否被修改</param>
         /// <remarks>
         /// 对关联的属性的更改,请自行保存,否则可能丢失
         /// </remarks>
-        partial void OnCompanyModified(EntitySubsist subsist,bool isModified);
+        partial void OnRegionProvinceModified(EntitySubsist subsist,bool isModified);
 
         /// <summary>
-        /// 职位称呼修改的后期处理(保存前)
+        /// 所在市修改的后期处理(保存前)
         /// </summary>
         /// <param name="subsist">当前对象状态</param>
         /// <param name="isModified">是否被修改</param>
         /// <remarks>
         /// 对关联的属性的更改,请自行保存,否则可能丢失
         /// </remarks>
-        partial void OnJobTitleModified(EntitySubsist subsist,bool isModified);
+        partial void OnRegionCityModified(EntitySubsist subsist,bool isModified);
+
+        /// <summary>
+        /// 所在县修改的后期处理(保存前)
+        /// </summary>
+        /// <param name="subsist">当前对象状态</param>
+        /// <param name="isModified">是否被修改</param>
+        /// <remarks>
+        /// 对关联的属性的更改,请自行保存,否则可能丢失
+        /// </remarks>
+        partial void OnRegionCountyModified(EntitySubsist subsist,bool isModified);
 
         /// <summary>
         /// 冻结更新修改的后期处理(保存前)
@@ -1946,7 +1813,7 @@ namespace Agebull.Common.OAuth
             /// <summary>
             /// 用户标识的数字标识
             /// </summary>
-            public const byte UserId = 1;
+            public const byte UserId = 2;
             
             /// <summary>
             /// 用户标识的实时记录顺序
@@ -1954,244 +1821,224 @@ namespace Agebull.Common.OAuth
             public const int Real_UserId = 0;
 
             /// <summary>
-            /// 性别的数字标识
-            /// </summary>
-            public const byte Sex = 2;
-            
-            /// <summary>
-            /// 性别的实时记录顺序
-            /// </summary>
-            public const int Real_Sex = 1;
-
-            /// <summary>
-            /// 所在省的数字标识
-            /// </summary>
-            public const byte RegionProvince = 3;
-            
-            /// <summary>
-            /// 所在省的实时记录顺序
-            /// </summary>
-            public const int Real_RegionProvince = 2;
-
-            /// <summary>
-            /// 所在市的数字标识
-            /// </summary>
-            public const byte RegionCity = 4;
-            
-            /// <summary>
-            /// 所在市的实时记录顺序
-            /// </summary>
-            public const int Real_RegionCity = 3;
-
-            /// <summary>
-            /// 所在县的数字标识
-            /// </summary>
-            public const byte RegionCounty = 5;
-            
-            /// <summary>
-            /// 所在县的实时记录顺序
-            /// </summary>
-            public const int Real_RegionCounty = 4;
-
-            /// <summary>
-            /// 头像的数字标识
-            /// </summary>
-            public const byte AvatarUrl = 6;
-            
-            /// <summary>
-            /// 头像的实时记录顺序
-            /// </summary>
-            public const int Real_AvatarUrl = 5;
-
-            /// <summary>
             /// 昵称的数字标识
             /// </summary>
-            public const byte NickName = 7;
+            public const byte NickName = 3;
             
             /// <summary>
             /// 昵称的实时记录顺序
             /// </summary>
-            public const int Real_NickName = 6;
+            public const int Real_NickName = 1;
 
             /// <summary>
             /// 身份证号的数字标识
             /// </summary>
-            public const byte IdCard = 8;
+            public const byte IdCard = 4;
             
             /// <summary>
             /// 身份证号的实时记录顺序
             /// </summary>
-            public const int Real_IdCard = 7;
-
-            /// <summary>
-            /// 真实姓名的数字标识
-            /// </summary>
-            public const byte RealName = 9;
-            
-            /// <summary>
-            /// 真实姓名的实时记录顺序
-            /// </summary>
-            public const int Real_RealName = 8;
-
-            /// <summary>
-            /// 手机号的数字标识
-            /// </summary>
-            public const byte PhoneNumber = 16;
-            
-            /// <summary>
-            /// 手机号的实时记录顺序
-            /// </summary>
-            public const int Real_PhoneNumber = 9;
-
-            /// <summary>
-            /// 生日的数字标识
-            /// </summary>
-            public const byte Birthday = 17;
-            
-            /// <summary>
-            /// 生日的实时记录顺序
-            /// </summary>
-            public const int Real_Birthday = 10;
+            public const int Real_IdCard = 2;
 
             /// <summary>
             /// 证件类型的数字标识
             /// </summary>
-            public const byte CertType = 18;
+            public const byte CertType = 5;
             
             /// <summary>
             /// 证件类型的实时记录顺序
             /// </summary>
-            public const int Real_CertType = 11;
+            public const int Real_CertType = 3;
+
+            /// <summary>
+            /// 真实姓名的数字标识
+            /// </summary>
+            public const byte RealName = 6;
+            
+            /// <summary>
+            /// 真实姓名的实时记录顺序
+            /// </summary>
+            public const int Real_RealName = 4;
+
+            /// <summary>
+            /// 性别的数字标识
+            /// </summary>
+            public const byte Sex = 7;
+            
+            /// <summary>
+            /// 性别的实时记录顺序
+            /// </summary>
+            public const int Real_Sex = 5;
+
+            /// <summary>
+            /// 头像的数字标识
+            /// </summary>
+            public const byte AvatarUrl = 8;
+            
+            /// <summary>
+            /// 头像的实时记录顺序
+            /// </summary>
+            public const int Real_AvatarUrl = 6;
 
             /// <summary>
             /// 头像照片的数字标识
             /// </summary>
-            public const byte Icon = 20;
+            public const byte Icon = 9;
             
             /// <summary>
             /// 头像照片的实时记录顺序
             /// </summary>
-            public const int Real_Icon = 12;
+            public const int Real_Icon = 7;
+
+            /// <summary>
+            /// 手机号的数字标识
+            /// </summary>
+            public const byte PhoneNumber = 10;
+            
+            /// <summary>
+            /// 手机号的实时记录顺序
+            /// </summary>
+            public const int Real_PhoneNumber = 8;
+
+            /// <summary>
+            /// 生日的数字标识
+            /// </summary>
+            public const byte Birthday = 11;
+            
+            /// <summary>
+            /// 生日的实时记录顺序
+            /// </summary>
+            public const int Real_Birthday = 9;
 
             /// <summary>
             /// 民族的数字标识
             /// </summary>
-            public const byte Nation = 21;
+            public const byte Nation = 12;
             
             /// <summary>
             /// 民族的实时记录顺序
             /// </summary>
-            public const int Real_Nation = 13;
+            public const int Real_Nation = 10;
 
             /// <summary>
             /// 电话的数字标识
             /// </summary>
-            public const byte Tel = 22;
+            public const byte Tel = 13;
             
             /// <summary>
             /// 电话的实时记录顺序
             /// </summary>
-            public const int Real_Tel = 14;
+            public const int Real_Tel = 11;
 
             /// <summary>
             /// 电子邮件的数字标识
             /// </summary>
-            public const byte Email = 23;
+            public const byte Email = 14;
             
             /// <summary>
             /// 电子邮件的实时记录顺序
             /// </summary>
-            public const int Real_Email = 15;
+            public const int Real_Email = 12;
 
             /// <summary>
             /// 地址的数字标识
             /// </summary>
-            public const byte HomeAddress = 24;
+            public const byte HomeAddress = 15;
             
             /// <summary>
             /// 地址的实时记录顺序
             /// </summary>
-            public const int Real_HomeAddress = 16;
+            public const int Real_HomeAddress = 13;
 
             /// <summary>
-            /// 所在公司的数字标识
+            /// 所在省的数字标识
             /// </summary>
-            public const byte Company = 25;
+            public const byte RegionProvince = 16;
             
             /// <summary>
-            /// 所在公司的实时记录顺序
+            /// 所在省的实时记录顺序
             /// </summary>
-            public const int Real_Company = 17;
+            public const int Real_RegionProvince = 14;
 
             /// <summary>
-            /// 职位称呼的数字标识
+            /// 所在市的数字标识
             /// </summary>
-            public const byte JobTitle = 26;
+            public const byte RegionCity = 17;
             
             /// <summary>
-            /// 职位称呼的实时记录顺序
+            /// 所在市的实时记录顺序
             /// </summary>
-            public const int Real_JobTitle = 18;
+            public const int Real_RegionCity = 15;
+
+            /// <summary>
+            /// 所在县的数字标识
+            /// </summary>
+            public const byte RegionCounty = 18;
+            
+            /// <summary>
+            /// 所在县的实时记录顺序
+            /// </summary>
+            public const int Real_RegionCounty = 16;
 
             /// <summary>
             /// 冻结更新的数字标识
             /// </summary>
-            public const byte IsFreeze = 27;
+            public const byte IsFreeze = 19;
             
             /// <summary>
             /// 冻结更新的实时记录顺序
             /// </summary>
-            public const int Real_IsFreeze = 19;
+            public const int Real_IsFreeze = 17;
 
             /// <summary>
             /// 数据状态的数字标识
             /// </summary>
-            public const byte DataState = 28;
+            public const byte DataState = 20;
             
             /// <summary>
             /// 数据状态的实时记录顺序
             /// </summary>
-            public const int Real_DataState = 20;
+            public const int Real_DataState = 18;
 
             /// <summary>
             /// 制作时间的数字标识
             /// </summary>
-            public const byte AddDate = 29;
+            public const byte AddDate = 21;
             
             /// <summary>
             /// 制作时间的实时记录顺序
             /// </summary>
-            public const int Real_AddDate = 21;
+            public const int Real_AddDate = 19;
 
             /// <summary>
             /// 最后修改者的数字标识
             /// </summary>
-            public const byte LastReviserId = 30;
+            public const byte LastReviserId = 22;
             
             /// <summary>
             /// 最后修改者的实时记录顺序
             /// </summary>
-            public const int Real_LastReviserId = 22;
+            public const int Real_LastReviserId = 20;
 
             /// <summary>
             /// 最后修改日期的数字标识
             /// </summary>
-            public const byte LastModifyDate = 31;
+            public const byte LastModifyDate = 23;
             
             /// <summary>
             /// 最后修改日期的实时记录顺序
             /// </summary>
-            public const int Real_LastModifyDate = 23;
+            public const int Real_LastModifyDate = 21;
 
             /// <summary>
             /// 制作人的数字标识
             /// </summary>
-            public const byte AuthorId = 32;
+            public const byte AuthorId = 24;
             
             /// <summary>
             /// 制作人的实时记录顺序
             /// </summary>
-            public const int Real_AuthorId = 24;
+            public const int Real_AuthorId = 22;
 
             /// <summary>
             /// 实体结构
@@ -2218,91 +2065,6 @@ namespace Agebull.Common.OAuth
                             PropertyType = typeof(long),
                             CanNull      = false,
                             ValueType    = PropertyValueType.Value,
-                            CanImport    = false,
-                            CanExport    = false
-                        }
-                    },
-                    {
-                        Real_Sex,
-                        new PropertySturct
-                        {
-                            Index        = Sex,
-                            Name         = "Sex",
-                            Title        = "性别",
-                            Caption      = @"性别",
-                            Description  = @"性别,0:女;1:男",
-                            ColumnName   = "sex",
-                            PropertyType = typeof(SexType),
-                            CanNull      = false,
-                            ValueType    = PropertyValueType.Value,
-                            CanImport    = false,
-                            CanExport    = false
-                        }
-                    },
-                    {
-                        Real_RegionProvince,
-                        new PropertySturct
-                        {
-                            Index        = RegionProvince,
-                            Name         = "RegionProvince",
-                            Title        = "所在省",
-                            Caption      = @"所在省",
-                            Description  = @"所在省id",
-                            ColumnName   = "region_province",
-                            PropertyType = typeof(int),
-                            CanNull      = false,
-                            ValueType    = PropertyValueType.Value,
-                            CanImport    = false,
-                            CanExport    = false
-                        }
-                    },
-                    {
-                        Real_RegionCity,
-                        new PropertySturct
-                        {
-                            Index        = RegionCity,
-                            Name         = "RegionCity",
-                            Title        = "所在市",
-                            Caption      = @"所在市",
-                            Description  = @"所在市ID",
-                            ColumnName   = "region_city",
-                            PropertyType = typeof(int),
-                            CanNull      = false,
-                            ValueType    = PropertyValueType.Value,
-                            CanImport    = false,
-                            CanExport    = false
-                        }
-                    },
-                    {
-                        Real_RegionCounty,
-                        new PropertySturct
-                        {
-                            Index        = RegionCounty,
-                            Name         = "RegionCounty",
-                            Title        = "所在县",
-                            Caption      = @"所在县",
-                            Description  = @"所在县Id",
-                            ColumnName   = "region_county",
-                            PropertyType = typeof(int),
-                            CanNull      = false,
-                            ValueType    = PropertyValueType.Value,
-                            CanImport    = false,
-                            CanExport    = false
-                        }
-                    },
-                    {
-                        Real_AvatarUrl,
-                        new PropertySturct
-                        {
-                            Index        = AvatarUrl,
-                            Name         = "AvatarUrl",
-                            Title        = "头像",
-                            Caption      = @"头像",
-                            Description  = @"头像",
-                            ColumnName   = "avatar_url",
-                            PropertyType = typeof(string),
-                            CanNull      = false,
-                            ValueType    = PropertyValueType.String,
                             CanImport    = false,
                             CanExport    = false
                         }
@@ -2342,6 +2104,23 @@ namespace Agebull.Common.OAuth
                         }
                     },
                     {
+                        Real_CertType,
+                        new PropertySturct
+                        {
+                            Index        = CertType,
+                            Name         = "CertType",
+                            Title        = "证件类型",
+                            Caption      = @"证件类型",
+                            Description  = @"证件类型",
+                            ColumnName   = "cert_type",
+                            PropertyType = typeof(CardType),
+                            CanNull      = false,
+                            ValueType    = PropertyValueType.Value,
+                            CanImport    = false,
+                            CanExport    = false
+                        }
+                    },
+                    {
                         Real_RealName,
                         new PropertySturct
                         {
@@ -2354,6 +2133,57 @@ namespace Agebull.Common.OAuth
                             PropertyType = typeof(string),
                             CanNull      = false,
                             ValueType    = PropertyValueType.String,
+                            CanImport    = false,
+                            CanExport    = false
+                        }
+                    },
+                    {
+                        Real_Sex,
+                        new PropertySturct
+                        {
+                            Index        = Sex,
+                            Name         = "Sex",
+                            Title        = "性别",
+                            Caption      = @"性别",
+                            Description  = @"性别,0:女;1:男",
+                            ColumnName   = "sex",
+                            PropertyType = typeof(SexType),
+                            CanNull      = false,
+                            ValueType    = PropertyValueType.Value,
+                            CanImport    = false,
+                            CanExport    = false
+                        }
+                    },
+                    {
+                        Real_AvatarUrl,
+                        new PropertySturct
+                        {
+                            Index        = AvatarUrl,
+                            Name         = "AvatarUrl",
+                            Title        = "头像",
+                            Caption      = @"头像",
+                            Description  = @"头像",
+                            ColumnName   = "avatar_url",
+                            PropertyType = typeof(string),
+                            CanNull      = false,
+                            ValueType    = PropertyValueType.String,
+                            CanImport    = false,
+                            CanExport    = false
+                        }
+                    },
+                    {
+                        Real_Icon,
+                        new PropertySturct
+                        {
+                            Index        = Icon,
+                            Name         = "Icon",
+                            Title        = "头像照片",
+                            Caption      = @"头像照片",
+                            Description  = @"BASE64二进制",
+                            ColumnName   = "icon",
+                            PropertyType = typeof(byte[]),
+                            CanNull      = false,
+                            ValueType    = PropertyValueType.Object,
                             CanImport    = false,
                             CanExport    = false
                         }
@@ -2388,40 +2218,6 @@ namespace Agebull.Common.OAuth
                             PropertyType = typeof(DateTime),
                             CanNull      = false,
                             ValueType    = PropertyValueType.Value,
-                            CanImport    = false,
-                            CanExport    = false
-                        }
-                    },
-                    {
-                        Real_CertType,
-                        new PropertySturct
-                        {
-                            Index        = CertType,
-                            Name         = "CertType",
-                            Title        = "证件类型",
-                            Caption      = @"证件类型",
-                            Description  = @"证件类型",
-                            ColumnName   = "cert_type",
-                            PropertyType = typeof(CardType),
-                            CanNull      = false,
-                            ValueType    = PropertyValueType.Value,
-                            CanImport    = false,
-                            CanExport    = false
-                        }
-                    },
-                    {
-                        Real_Icon,
-                        new PropertySturct
-                        {
-                            Index        = Icon,
-                            Name         = "Icon",
-                            Title        = "头像照片",
-                            Caption      = @"头像照片",
-                            Description  = @"BASE64二进制",
-                            ColumnName   = "icon",
-                            PropertyType = typeof(byte[]),
-                            CanNull      = false,
-                            ValueType    = PropertyValueType.Object,
                             CanImport    = false,
                             CanExport    = false
                         }
@@ -2495,35 +2291,52 @@ namespace Agebull.Common.OAuth
                         }
                     },
                     {
-                        Real_Company,
+                        Real_RegionProvince,
                         new PropertySturct
                         {
-                            Index        = Company,
-                            Name         = "Company",
-                            Title        = "所在公司",
-                            Caption      = @"所在公司",
-                            Description  = @"访客填写的所在公司",
-                            ColumnName   = "company",
-                            PropertyType = typeof(string),
+                            Index        = RegionProvince,
+                            Name         = "RegionProvince",
+                            Title        = "所在省",
+                            Caption      = @"所在省",
+                            Description  = @"所在省id",
+                            ColumnName   = "region_province",
+                            PropertyType = typeof(int),
                             CanNull      = false,
-                            ValueType    = PropertyValueType.String,
+                            ValueType    = PropertyValueType.Value,
                             CanImport    = false,
                             CanExport    = false
                         }
                     },
                     {
-                        Real_JobTitle,
+                        Real_RegionCity,
                         new PropertySturct
                         {
-                            Index        = JobTitle,
-                            Name         = "JobTitle",
-                            Title        = "职位称呼",
-                            Caption      = @"职位称呼",
-                            Description  = @"访客填写的职位称呼",
-                            ColumnName   = "job_title",
-                            PropertyType = typeof(string),
+                            Index        = RegionCity,
+                            Name         = "RegionCity",
+                            Title        = "所在市",
+                            Caption      = @"所在市",
+                            Description  = @"所在市ID",
+                            ColumnName   = "region_city",
+                            PropertyType = typeof(int),
                             CanNull      = false,
-                            ValueType    = PropertyValueType.String,
+                            ValueType    = PropertyValueType.Value,
+                            CanImport    = false,
+                            CanExport    = false
+                        }
+                    },
+                    {
+                        Real_RegionCounty,
+                        new PropertySturct
+                        {
+                            Index        = RegionCounty,
+                            Name         = "RegionCounty",
+                            Title        = "所在县",
+                            Caption      = @"所在县",
+                            Description  = @"所在县Id",
+                            ColumnName   = "region_county",
+                            PropertyType = typeof(int),
+                            CanNull      = false,
+                            ValueType    = PropertyValueType.Value,
                             CanImport    = false,
                             CanExport    = false
                         }

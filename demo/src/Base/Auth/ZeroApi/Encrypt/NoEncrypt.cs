@@ -1,4 +1,4 @@
-﻿namespace Agebull.Common.OAuth
+﻿namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// 原字符串返回 无加密解密

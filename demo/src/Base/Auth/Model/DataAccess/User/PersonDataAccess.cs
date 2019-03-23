@@ -7,7 +7,7 @@
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.MySql;
 
-namespace Agebull.Common.OAuth.DataAccess
+namespace Agebull.Common.Organizations.DataAccess
 {
     /// <summary>
     /// 用户的个人信息

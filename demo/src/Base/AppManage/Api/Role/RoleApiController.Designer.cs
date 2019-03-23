@@ -25,14 +25,13 @@ using Agebull.MicroZero.ZeroApis;
 
 using Agebull.Common.OAuth;
 
-using Agebull.Common.OAuth;
-using Agebull.Common.OAuth.BusinessLogic;
-using Agebull.Common.OAuth.DataAccess;
+using Agebull.Common.Organizations.BusinessLogic;
+using Agebull.Common.Organizations.DataAccess;
 using Agebull.Common.AppManage;
 using Agebull.EntityModel.EasyUI;
 using Agebull.Common.Context;
 
-namespace Agebull.Common.UserCenter.WebApi.Entity
+namespace Agebull.Common.Organizations.WebApi.Entity
 {
     partial class RoleApiController
     {

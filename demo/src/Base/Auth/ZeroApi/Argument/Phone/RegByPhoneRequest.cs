@@ -5,7 +5,7 @@
 using Agebull.EntityModel.Common;
 using Agebull.MicroZero.ZeroApis;
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     sealed partial class RegByPhoneRequest : MicroZero.ZeroApis.IApiArgument
     {

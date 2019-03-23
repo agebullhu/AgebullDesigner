@@ -106,7 +106,6 @@
     <ProjectReference Include="..\Base\AppManage\Api\AppManage.ManageApi.csproj" />
     <ProjectReference Include="..\Base\Auth\ManageApi\Auth.ManageApi.csproj" />
     <ProjectReference Include="..\Base\Auth\ZeroApi\Auth.ZeroApi.csproj" />
-    <ProjectReference Include="..\Demo\Api\Demo.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>

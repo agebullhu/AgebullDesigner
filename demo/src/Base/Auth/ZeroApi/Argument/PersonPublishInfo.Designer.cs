@@ -16,7 +16,7 @@ using Agebull.EntityModel.Common;
 
 using Newtonsoft.Json;
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// 用户的公开信息

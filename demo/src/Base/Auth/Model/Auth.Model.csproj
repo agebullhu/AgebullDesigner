@@ -51,6 +51,15 @@
     <None Remove="DataAccess\None\**" />
     <None Remove="Entity\None\**" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Business\Organization\SubjectionBusinessLogic.cs" />
+    <Compile Remove="Business\Organization\SubjectionBusinessLogic.Designer.cs" />
+    <Compile Remove="DataAccess\Organization\SubjectionDataAccess.cs" />
+    <Compile Remove="DataAccess\Organization\SubjectionDataAccess.Designer.cs" />
+    <Compile Remove="Entity\Organization\Model\Subjection.cs" />
+    <Compile Remove="Entity\Organization\Model\Subjection.Designer.cs" />
+  </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>

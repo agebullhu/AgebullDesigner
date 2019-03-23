@@ -1,4 +1,5 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2018/10/9 13:26:23*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:27:49*/
+#region
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,40 +12,30 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Runtime.Serialization;
 using System.IO;
-
 using Newtonsoft.Json;
 
 using Agebull.Common;
+using Agebull.Common.Context;
+using Agebull.Common.Ioc;
+using Agebull.Common.OAuth;
 using Agebull.EntityModel.Common;
-using Agebull.EntityModel.MySql.BusinessLogic;
-
-
+using Agebull.EntityModel.EasyUI;
+using Agebull.MicroZero;
+using Agebull.MicroZero.ZeroApis;
 
 using Agebull.Common.OAuth;
 
-using Agebull.EntityModel.EasyUI;
-using Agebull.Common.Context;
-using Agebull.MicroZero.ZeroApis;
-using Agebull.MicroZero.WebApi;
+using Agebull.Common.Organizations;
+using Agebull.Common.Organizations.BusinessLogic;
+using Agebull.Common.Organizations.DataAccess;
+#endregion
 
-namespace Agebull.Common.UserCenter.WebApi.Entity
+namespace Agebull.Common.Organizations.WebApi.Entity
 {
     partial class PersonApiController
     {
         #region 设计器命令
 
-        /// <summary>下拉列表</summary>
-        /// <returns></returns>
-        
-        [Route("edit/combo")]
-        public List<EasyComboValues> ComboData()
-        {
-            GlobalContext.Current.IsManageMode = false;
-            var datas = Business.All();
-            var combos = datas.Select(p => new EasyComboValues(p.UserId, p.PhoneNumber)).ToList();
-            combos.Insert(0,new EasyComboValues(0, "-"));
-            return combos;
-        }
 
         #endregion
 
@@ -68,17 +59,15 @@ namespace Agebull.Common.UserCenter.WebApi.Entity
             var keyWord = GetArg("keyWord");
             if (!string.IsNullOrEmpty(keyWord))
             {
-                filter.AddAnd(p =>p.AvatarUrl.Contains(keyWord) || 
-                                   p.RealName.Contains(keyWord) || 
-                                   p.PhoneNumber.Contains(keyWord) || 
-                                   p.NickName.Contains(keyWord) || 
+                filter.AddAnd(p =>p.NickName.Contains(keyWord) || 
                                    p.IdCard.Contains(keyWord) || 
+                                   p.RealName.Contains(keyWord) || 
+                                   p.AvatarUrl.Contains(keyWord) || 
+                                   p.PhoneNumber.Contains(keyWord) || 
                                    p.Nation.Contains(keyWord) || 
                                    p.Tel.Contains(keyWord) || 
                                    p.Email.Contains(keyWord) || 
-                                   p.HomeAddress.Contains(keyWord) || 
-                                   p.Company.Contains(keyWord) || 
-                                   p.JobTitle.Contains(keyWord));
+                                   p.HomeAddress.Contains(keyWord));
             }
         }
 
@@ -90,32 +79,18 @@ namespace Agebull.Common.UserCenter.WebApi.Entity
         protected void DefaultReadFormData(PersonData data, FormConvert convert)
         {
             //-
-            {
-                var file = convert.ToString("icon");
-                
-                if (string.IsNullOrEmpty(file))
-                    data.Icon_Base64 = null;
-                else if(file != "*" && file.Length< 100 && file[0] == '/')
-                {
-                    var call = new WebApiCaller(ConfigurationManager.AppSettings["ManageAddress"]);
-                    var result = call.Get<string>(ConfigurationManager.AppSettings["ManageApi"], $"action=base64&url={file}");
-                    data.Icon_Base64 = result.Success ? result.ResultData : null;
-                }
-            }
-            data.AvatarUrl = convert.ToString("avatarUrl");
-            data.RealName = convert.ToString("realName");
-            data.PhoneNumber = convert.ToString("phoneNumber");
-            data.Sex = (SexType)convert.ToInteger("sex");
-            data.NickName = convert.ToString("nickName");
+            data.Icon_Base64 = convert.ToString("icon");
+            data.NickName = convert.ToString("NickName");
+            data.IdCard = convert.ToString("IdCard");
             data.CertType = (CardType)convert.ToInteger("certType");
-            data.IdCard = convert.ToString("idCard");
+            data.RealName = convert.ToString("RealName");
+            data.AvatarUrl = convert.ToString("AvatarUrl");
+            data.PhoneNumber = convert.ToString("phoneNumber");
             data.Birthday = convert.ToDateTime("birthday");
             data.Nation = convert.ToString("nation");
             data.Tel = convert.ToString("tel");
             data.Email = convert.ToString("email");
             data.HomeAddress = convert.ToString("homeAddress");
-            data.Company = convert.ToString("company");
-            data.JobTitle = convert.ToString("jobTitle");
         }
 
         #endregion

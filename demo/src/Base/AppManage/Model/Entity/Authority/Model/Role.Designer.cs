@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/1 15:34:58*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:16:57*/
 #region
 using System;
 using System.Collections.Generic;
@@ -14,11 +14,13 @@ using System.Runtime.Serialization;
 using System.IO;
 using Newtonsoft.Json;
 
+
 using Agebull.Common;
 using Agebull.EntityModel.Common;
-
-using Agebull.Common.OAuth;
 using Agebull.EntityModel.Interfaces;
+
+using Agebull.Common.Organizations;
+using Agebull.Common.OAuth;
 #endregion
 
 namespace Agebull.Common.AppManage

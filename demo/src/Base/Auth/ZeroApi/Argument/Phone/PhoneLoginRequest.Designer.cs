@@ -17,7 +17,7 @@ using Agebull.EntityModel.Common;
 using Newtonsoft.Json;
 using Agebull.MicroZero.ZeroApis;
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// 基于手机的账号登录参数

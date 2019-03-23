@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2018/11/14 19:10:10*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 9:58:46*/
 #region
 using System;
 using System.Collections.Generic;
@@ -15,19 +15,18 @@ using System.IO;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 
-using Agebull.Common;
-using Agebull.EntityModel.Common;
-using Agebull.MicroZero.ZeroApis;
-
-using Agebull.Common;
-using Agebull.EntityModel.Common;
-
-
-using Agebull.EntityModel.Interfaces;
+using MySql.Data.MySqlClient;
 using Agebull.EntityModel.MySql;
+
+using Agebull.Common;
+using Agebull.Common.OAuth;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Interfaces;
+using Agebull.Common.OAuth;
+
 #endregion
 
-namespace Agebull.Common.OAuth.DataAccess
+namespace Agebull.Common.Organizations.DataAccess
 {
     /// <summary>
     /// 用户设备信息

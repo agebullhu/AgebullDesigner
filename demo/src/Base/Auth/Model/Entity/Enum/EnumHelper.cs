@@ -1,10 +1,59 @@
-﻿namespace Agebull.Common.OAuth
+﻿namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// 枚举扩展
     /// </summary>
     public static class EnumHelper
     {
+
+        /// <summary>
+        ///     权限范围枚举类型名称转换
+        /// </summary>
+        public static string ToCaption(this DataScopeType value)
+        {
+            switch (value)
+            {
+                case DataScopeType.None:
+                    return "无";
+                case DataScopeType.Person:
+                    return "本人";
+                case DataScopeType.Home:
+                    return "本级";
+                case DataScopeType.PersonAndHome:
+                    return "本人及本级";
+                case DataScopeType.Lower:
+                    return "下级";
+                case DataScopeType.HomeAndLower:
+                    return "本级及以下";
+                case DataScopeType.Full:
+                    return "本人本级及下级";
+                case DataScopeType.Unlimited:
+                    return "无限制";
+                default:
+                    return "权限范围枚举类型(错误)";
+            }
+        }
+
+
+        /// <summary>
+        ///     应用归类类型名称转换
+        /// </summary>
+        public static string ToCaption(this AppType value)
+        {
+            switch (value)
+            {
+                case AppType.None:
+                    return "无权限";
+                case AppType.Background:
+                    return "管理后台";
+                case AppType.InternetApp:
+                    return "公众应用";
+                default:
+                    return "应用归类类型(错误)";
+            }
+        }
+
+
         /// <summary>
         ///     证件类型名称转换
         /// </summary>
@@ -174,7 +223,7 @@
             {
                 case OrganizationType.None:
                     return "未确定";
-                case OrganizationType.Region:
+                case OrganizationType.Area:
                     return "集团或医联体";
                 case OrganizationType.Organization:
                     return "公司或医院";

@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/2 20:38:51*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 16:21:16*/
 #region
 using System;
 using System.Collections.Generic;
@@ -15,9 +15,16 @@ using System.IO;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 
-using Agebull.Common;
-using Agebull.EntityModel.Common;
+using MySql.Data.MySqlClient;
 using Agebull.EntityModel.MySql;
+
+using Agebull.Common;
+using Agebull.Common.OAuth;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Interfaces;
+using Agebull.Common.Organizations;
+using Agebull.Common.OAuth;
+
 #endregion
 
 namespace Agebull.Common.AppManage.DataAccess
@@ -52,7 +59,7 @@ namespace Agebull.Common.AppManage.DataAccess
         {
             get
             {
-                return @"view_app_app_info";
+                return @"tb_app_app_info";
             }
         }
 
@@ -81,32 +88,19 @@ namespace Agebull.Common.AppManage.DataAccess
             {
                 return @"
     `id` AS `Id`,
-    `org_id` AS `OrgId`,
-    `organization` AS `Organization`,
+    `app_type` AS `AppType`,
     `short_name` AS `ShortName`,
     `full_name` AS `FullName`,
-    `Classify` AS `Classify`,
-    `app_key` AS `AppId`,
-    `manag_orgcode` AS `ManagOrgcode`,
-    `manag_orgname` AS `ManagOrgname`,
-    `city_code` AS `CityCode`,
-    `district_code` AS `DistrictCode`,
-    `org_address` AS `OrgAddress`,
-    `law_personname` AS `LawPersonname`,
-    `law_persontel` AS `LawPersontel`,
-    `contact_name` AS `ContactName`,
-    `contact_tel` AS `ContactTel`,
-    `super_orgcode` AS `SuperOrgcode`,
-    `update_date` AS `UpdateDate`,
-    `update_userid` AS `UpdateUserid`,
-    `update_username` AS `UpdateUsername`,
+    `app_id` AS `AppId`,
+    `app_key` AS `AppKey`,
     `memo` AS `Memo`,
-    `data_state` AS `DataState`,
+    `data_state_type` AS `DataStateType`,
     `is_freeze` AS `IsFreeze`,
     `add_date` AS `AddDate`,
+    `author_id` AS `AuthorId`,
     `last_reviser_id` AS `LastReviserId`,
     `last_modify_date` AS `LastModifyDate`,
-    `author_id` AS `AuthorId`";
+    `data_state` AS `DataState`";
             }
         }
 
@@ -122,57 +116,33 @@ namespace Agebull.Common.AppManage.DataAccess
                 return @"
 INSERT INTO `tb_app_app_info`
 (
-    `org_id`,
+    `app_type`,
     `short_name`,
     `full_name`,
-    `Classify`,
+    `app_id`,
     `app_key`,
-    `manag_orgcode`,
-    `manag_orgname`,
-    `city_code`,
-    `district_code`,
-    `org_address`,
-    `law_personname`,
-    `law_persontel`,
-    `contact_name`,
-    `contact_tel`,
-    `super_orgcode`,
-    `update_date`,
-    `update_userid`,
-    `update_username`,
     `memo`,
-    `data_state`,
+    `data_state_type`,
     `is_freeze`,
     `add_date`,
+    `author_id`,
     `last_reviser_id`,
-    `author_id`
+    `data_state`
 )
 VALUES
 (
-    ?OrgId,
+    ?AppType,
     ?ShortName,
     ?FullName,
-    ?Classify,
     ?AppId,
-    ?ManagOrgcode,
-    ?ManagOrgname,
-    ?CityCode,
-    ?DistrictCode,
-    ?OrgAddress,
-    ?LawPersonname,
-    ?LawPersontel,
-    ?ContactName,
-    ?ContactTel,
-    ?SuperOrgcode,
-    ?UpdateDate,
-    ?UpdateUserid,
-    ?UpdateUsername,
+    ?AppKey,
     ?Memo,
-    ?DataState,
+    ?DataStateType,
     ?IsFreeze,
     ?AddDate,
+    ?AuthorId,
     ?LastReviserId,
-    ?AuthorId
+    ?DataState
 );
 SELECT @@IDENTITY;";
             }
@@ -187,28 +157,16 @@ SELECT @@IDENTITY;";
             {
                 return @"
 UPDATE `tb_app_app_info` SET
-       `org_id` = ?OrgId,
+       `app_type` = ?AppType,
        `short_name` = ?ShortName,
        `full_name` = ?FullName,
-       `Classify` = ?Classify,
-       `app_key` = ?AppId,
-       `manag_orgcode` = ?ManagOrgcode,
-       `manag_orgname` = ?ManagOrgname,
-       `city_code` = ?CityCode,
-       `district_code` = ?DistrictCode,
-       `org_address` = ?OrgAddress,
-       `law_personname` = ?LawPersonname,
-       `law_persontel` = ?LawPersontel,
-       `contact_name` = ?ContactName,
-       `contact_tel` = ?ContactTel,
-       `super_orgcode` = ?SuperOrgcode,
-       `update_date` = ?UpdateDate,
-       `update_userid` = ?UpdateUserid,
-       `update_username` = ?UpdateUsername,
+       `app_id` = ?AppId,
+       `app_key` = ?AppKey,
        `memo` = ?Memo,
-       `data_state` = ?DataState,
+       `data_state_type` = ?DataStateType,
        `is_freeze` = ?IsFreeze,
-       `last_reviser_id` = ?LastReviserId
+       `last_reviser_id` = ?LastReviserId,
+       `data_state` = ?DataState
  WHERE `id` = ?Id AND `is_freeze` = 0 AND `data_state` < 255;";
             }
         }
@@ -222,72 +180,36 @@ UPDATE `tb_app_app_info` SET
                 return ";";
             StringBuilder sql = new StringBuilder();
             sql.AppendLine("UPDATE `tb_app_app_info` SET");
-            //组织标识
-            if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_OrgId] > 0)
-                sql.AppendLine("       `org_id` = ?OrgId");
+            //应用类型
+            if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_AppType] > 0)
+                sql.AppendLine("       `app_type` = ?AppType");
             //应用简称
             if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_ShortName] > 0)
                 sql.AppendLine("       `short_name` = ?ShortName");
             //应用全称
             if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_FullName] > 0)
                 sql.AppendLine("       `full_name` = ?FullName");
-            //应用类型
-            if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_Classify] > 0)
-                sql.AppendLine("       `Classify` = ?Classify");
             //应用标识
             if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_AppId] > 0)
-                sql.AppendLine("       `app_key` = ?AppId");
-            //注册管理机构代码
-            if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_ManagOrgcode] > 0)
-                sql.AppendLine("       `manag_orgcode` = ?ManagOrgcode");
-            //注册管理机构名称
-            if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_ManagOrgname] > 0)
-                sql.AppendLine("       `manag_orgname` = ?ManagOrgname");
-            //所在市级编码
-            if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_CityCode] > 0)
-                sql.AppendLine("       `city_code` = ?CityCode");
-            //所在区县编码
-            if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_DistrictCode] > 0)
-                sql.AppendLine("       `district_code` = ?DistrictCode");
-            //机构详细地址
-            if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_OrgAddress] > 0)
-                sql.AppendLine("       `org_address` = ?OrgAddress");
-            //机构负责人
-            if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_LawPersonname] > 0)
-                sql.AppendLine("       `law_personname` = ?LawPersonname");
-            //机构负责人电话
-            if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_LawPersontel] > 0)
-                sql.AppendLine("       `law_persontel` = ?LawPersontel");
-            //机构联系人
-            if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_ContactName] > 0)
-                sql.AppendLine("       `contact_name` = ?ContactName");
-            //机构联系人电话
-            if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_ContactTel] > 0)
-                sql.AppendLine("       `contact_tel` = ?ContactTel");
-            //上级机构代码
-            if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_SuperOrgcode] > 0)
-                sql.AppendLine("       `super_orgcode` = ?SuperOrgcode");
-            //更新时间
-            if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_UpdateDate] > 0)
-                sql.AppendLine("       `update_date` = ?UpdateDate");
-            //更新操作员工号
-            if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_UpdateUserid] > 0)
-                sql.AppendLine("       `update_userid` = ?UpdateUserid");
-            //更新操作员姓名
-            if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_UpdateUsername] > 0)
-                sql.AppendLine("       `update_username` = ?UpdateUsername");
+                sql.AppendLine("       `app_id` = ?AppId");
+            //应用令牌
+            if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_AppKey] > 0)
+                sql.AppendLine("       `app_key` = ?AppKey");
             //备注
             if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_Memo] > 0)
                 sql.AppendLine("       `memo` = ?Memo");
-            //数据状态
-            if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_DataState] > 0)
-                sql.AppendLine("       `data_state` = ?DataState");
+            //数据状态枚举类型
+            if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_DataStateType] > 0)
+                sql.AppendLine("       `data_state_type` = ?DataStateType");
             //冻结更新
             if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_IsFreeze] > 0)
                 sql.AppendLine("       `is_freeze` = ?IsFreeze");
             //最后修改者
             if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_LastReviserId] > 0)
                 sql.AppendLine("       `last_reviser_id` = ?LastReviserId");
+            //数据状态
+            if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_DataState] > 0)
+                sql.AppendLine("       `data_state` = ?DataState");
             sql.Append(" WHERE `id` = ?Id AND `is_freeze` = 0 AND `data_state` < 255;");
             return sql.ToString();
         }
@@ -300,7 +222,7 @@ UPDATE `tb_app_app_info` SET
         /// <summary>
         ///  所有字段
         /// </summary>
-        static string[] _fields = new string[]{ "Id","OrgId","Organization","ShortName","FullName","Classify","AppId","ManagOrgcode","ManagOrgname","CityCode","DistrictCode","OrgAddress","LawPersonname","LawPersontel","ContactName","ContactTel","SuperOrgcode","UpdateDate","UpdateUserid","UpdateUsername","Memo","DataState","IsFreeze","AddDate","LastReviserId","LastModifyDate","AuthorId" };
+        static string[] _fields = new string[]{ "Id","AppType","ShortName","FullName","AppId","AppKey","Memo","DataStateType","IsFreeze","AddDate","AuthorId","LastReviserId","LastModifyDate","DataState" };
 
         /// <summary>
         ///  所有字段
@@ -319,55 +241,31 @@ UPDATE `tb_app_app_info` SET
         public static Dictionary<string, string> fieldMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
             { "Id" , "id" },
-            { "OrgId" , "org_id" },
-            { "org_id" , "org_id" },
-            { "Organization" , "organization" },
+            { "AppType" , "app_type" },
+            { "app_type" , "app_type" },
             { "ShortName" , "short_name" },
             { "short_name" , "short_name" },
             { "FullName" , "full_name" },
             { "full_name" , "full_name" },
-            { "Classify" , "Classify" },
-            { "AppId" , "app_key" },
+            { "AppId" , "app_id" },
+            { "app_id" , "app_id" },
+            { "AppKey" , "app_key" },
             { "app_key" , "app_key" },
-            { "ManagOrgcode" , "manag_orgcode" },
-            { "manag_orgcode" , "manag_orgcode" },
-            { "ManagOrgname" , "manag_orgname" },
-            { "manag_orgname" , "manag_orgname" },
-            { "CityCode" , "city_code" },
-            { "city_code" , "city_code" },
-            { "DistrictCode" , "district_code" },
-            { "district_code" , "district_code" },
-            { "OrgAddress" , "org_address" },
-            { "org_address" , "org_address" },
-            { "LawPersonname" , "law_personname" },
-            { "law_personname" , "law_personname" },
-            { "LawPersontel" , "law_persontel" },
-            { "law_persontel" , "law_persontel" },
-            { "ContactName" , "contact_name" },
-            { "contact_name" , "contact_name" },
-            { "ContactTel" , "contact_tel" },
-            { "contact_tel" , "contact_tel" },
-            { "SuperOrgcode" , "super_orgcode" },
-            { "super_orgcode" , "super_orgcode" },
-            { "UpdateDate" , "update_date" },
-            { "update_date" , "update_date" },
-            { "UpdateUserid" , "update_userid" },
-            { "update_userid" , "update_userid" },
-            { "UpdateUsername" , "update_username" },
-            { "update_username" , "update_username" },
             { "Memo" , "memo" },
-            { "DataState" , "data_state" },
-            { "data_state" , "data_state" },
+            { "DataStateType" , "data_state_type" },
+            { "data_state_type" , "data_state_type" },
             { "IsFreeze" , "is_freeze" },
             { "is_freeze" , "is_freeze" },
             { "AddDate" , "add_date" },
             { "add_date" , "add_date" },
+            { "AuthorId" , "author_id" },
+            { "author_id" , "author_id" },
             { "LastReviserId" , "last_reviser_id" },
             { "last_reviser_id" , "last_reviser_id" },
             { "LastModifyDate" , "last_modify_date" },
             { "last_modify_date" , "last_modify_date" },
-            { "AuthorId" , "author_id" },
-            { "author_id" , "author_id" }
+            { "DataState" , "data_state" },
+            { "data_state" , "data_state" }
         };
 
         /// <summary>
@@ -393,57 +291,31 @@ UPDATE `tb_app_app_info` SET
                 if (!reader.IsDBNull(0))
                     entity._id = (long)reader.GetInt64(0);
                 if (!reader.IsDBNull(1))
-                    entity._orgId = (long)reader.GetInt64(1);
+                    entity._appType = (AppType)reader.GetInt32(1);
                 if (!reader.IsDBNull(2))
-                    entity._organization = reader.GetString(2);
+                    entity._shortName = reader.GetString(2).ToString();
                 if (!reader.IsDBNull(3))
-                    entity._shortName = reader.GetString(3).ToString();
+                    entity._fullName = reader.GetString(3).ToString();
                 if (!reader.IsDBNull(4))
-                    entity._fullName = reader.GetString(4).ToString();
+                    entity._appId = reader.GetString(4).ToString();
                 if (!reader.IsDBNull(5))
-                    entity._classify = (ClassifyType)reader.GetInt32(5);
+                    entity._appKey = reader.GetString(5).ToString();
                 if (!reader.IsDBNull(6))
-                    entity._appId = reader.GetString(6).ToString();
+                    entity._memo = reader.GetString(6).ToString();
                 if (!reader.IsDBNull(7))
-                    entity._managOrgcode = reader.GetString(7);
+                    entity._dataStateType = (DataStateType)reader.GetInt32(7);
                 if (!reader.IsDBNull(8))
-                    entity._managOrgname = reader.GetString(8);
+                    entity._isFreeze = (bool)reader.GetBoolean(8);
                 if (!reader.IsDBNull(9))
-                    entity._cityCode = reader.GetString(9);
+                    try{entity._addDate = reader.GetMySqlDateTime(9).Value;}catch{}
                 if (!reader.IsDBNull(10))
-                    entity._districtCode = reader.GetString(10);
+                    entity._authorId = (long)reader.GetInt64(10);
                 if (!reader.IsDBNull(11))
-                    entity._orgAddress = reader.GetString(11);
+                    entity._lastReviserId = (long)reader.GetInt64(11);
                 if (!reader.IsDBNull(12))
-                    entity._lawPersonname = reader.GetString(12);
+                    try{entity._lastModifyDate = reader.GetMySqlDateTime(12).Value;}catch{}
                 if (!reader.IsDBNull(13))
-                    entity._lawPersontel = reader.GetString(13);
-                if (!reader.IsDBNull(14))
-                    entity._contactName = reader.GetString(14);
-                if (!reader.IsDBNull(15))
-                    entity._contactTel = reader.GetString(15);
-                if (!reader.IsDBNull(16))
-                    entity._superOrgcode = reader.GetString(16);
-                if (!reader.IsDBNull(17))
-                    try{entity._updateDate = reader.GetMySqlDateTime(17).Value;}catch{}
-                if (!reader.IsDBNull(18))
-                    entity._updateUserid = reader.GetString(18);
-                if (!reader.IsDBNull(19))
-                    entity._updateUsername = reader.GetString(19);
-                if (!reader.IsDBNull(20))
-                    entity._memo = reader.GetString(20).ToString();
-                if (!reader.IsDBNull(21))
-                    entity._dataState = (DataStateType)reader.GetInt32(21);
-                if (!reader.IsDBNull(22))
-                    entity._isFreeze = (bool)reader.GetBoolean(22);
-                if (!reader.IsDBNull(23))
-                    try{entity._addDate = reader.GetMySqlDateTime(23).Value;}catch{}
-                if (!reader.IsDBNull(24))
-                    entity._lastReviserId = (long)reader.GetInt64(24);
-                if (!reader.IsDBNull(25))
-                    try{entity._lastModifyDate = reader.GetMySqlDateTime(25).Value;}catch{}
-                if (!reader.IsDBNull(26))
-                    entity._authorId = (long)reader.GetInt64(26);
+                    entity._dataState = (DataStateType)reader.GetInt32(13);
             }
         }
 
@@ -458,58 +330,32 @@ UPDATE `tb_app_app_info` SET
             {
                 case "Id":
                     return MySqlDbType.Int64;
-                case "OrgId":
-                    return MySqlDbType.Int64;
-                case "Organization":
-                    return MySqlDbType.VarString;
+                case "AppType":
+                    return MySqlDbType.Int32;
                 case "ShortName":
                     return MySqlDbType.VarString;
                 case "FullName":
                     return MySqlDbType.VarString;
-                case "Classify":
-                    return MySqlDbType.Int32;
                 case "AppId":
                     return MySqlDbType.VarString;
-                case "ManagOrgcode":
-                    return MySqlDbType.VarString;
-                case "ManagOrgname":
-                    return MySqlDbType.VarString;
-                case "CityCode":
-                    return MySqlDbType.VarString;
-                case "DistrictCode":
-                    return MySqlDbType.VarString;
-                case "OrgAddress":
-                    return MySqlDbType.VarString;
-                case "LawPersonname":
-                    return MySqlDbType.VarString;
-                case "LawPersontel":
-                    return MySqlDbType.VarString;
-                case "ContactName":
-                    return MySqlDbType.VarString;
-                case "ContactTel":
-                    return MySqlDbType.VarString;
-                case "SuperOrgcode":
-                    return MySqlDbType.VarString;
-                case "UpdateDate":
-                    return MySqlDbType.DateTime;
-                case "UpdateUserid":
-                    return MySqlDbType.VarString;
-                case "UpdateUsername":
+                case "AppKey":
                     return MySqlDbType.VarString;
                 case "Memo":
                     return MySqlDbType.Text;
-                case "DataState":
+                case "DataStateType":
                     return MySqlDbType.Int32;
                 case "IsFreeze":
                     return MySqlDbType.Byte;
                 case "AddDate":
                     return MySqlDbType.DateTime;
+                case "AuthorId":
+                    return MySqlDbType.Int64;
                 case "LastReviserId":
                     return MySqlDbType.Int64;
                 case "LastModifyDate":
                     return MySqlDbType.DateTime;
-                case "AuthorId":
-                    return MySqlDbType.Int64;
+                case "DataState":
+                    return MySqlDbType.Int32;
             }
             return MySqlDbType.VarChar;
         }
@@ -525,25 +371,17 @@ UPDATE `tb_app_app_info` SET
         {
             //02:标识(Id)
             cmd.Parameters.Add(new MySqlParameter("Id",MySqlDbType.Int64){ Value = entity.Id});
-            //03:组织标识(OrgId)
-            cmd.Parameters.Add(new MySqlParameter("OrgId",MySqlDbType.Int64){ Value = entity.OrgId});
-            //04:机构(Organization)
-            var isNull = string.IsNullOrWhiteSpace(entity.Organization);
-            var parameter = new MySqlParameter("Organization",MySqlDbType.VarString , isNull ? 10 : (entity.Organization).Length);
-            if(isNull)
-                parameter.Value = DBNull.Value;
-            else
-                parameter.Value = entity.Organization;
-            cmd.Parameters.Add(parameter);
-            //05:应用简称(ShortName)
-            isNull = string.IsNullOrWhiteSpace(entity.ShortName);
-            parameter = new MySqlParameter("ShortName",MySqlDbType.VarString , isNull ? 10 : (entity.ShortName).Length);
+            //03:应用类型(AppType)
+            cmd.Parameters.Add(new MySqlParameter("AppType",MySqlDbType.Int32){ Value = (int)entity.AppType});
+            //04:应用简称(ShortName)
+            var isNull = string.IsNullOrWhiteSpace(entity.ShortName);
+            var parameter = new MySqlParameter("ShortName",MySqlDbType.VarString , isNull ? 10 : (entity.ShortName).Length);
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
                 parameter.Value = entity.ShortName;
             cmd.Parameters.Add(parameter);
-            //06:应用全称(FullName)
+            //05:应用全称(FullName)
             isNull = string.IsNullOrWhiteSpace(entity.FullName);
             parameter = new MySqlParameter("FullName",MySqlDbType.VarString , isNull ? 10 : (entity.FullName).Length);
             if(isNull)
@@ -551,9 +389,7 @@ UPDATE `tb_app_app_info` SET
             else
                 parameter.Value = entity.FullName;
             cmd.Parameters.Add(parameter);
-            //07:应用类型(Classify)
-            cmd.Parameters.Add(new MySqlParameter("Classify",MySqlDbType.Int32){ Value = (int)entity.Classify});
-            //08:应用标识(AppId)
+            //06:应用标识(AppId)
             isNull = string.IsNullOrWhiteSpace(entity.AppId);
             parameter = new MySqlParameter("AppId",MySqlDbType.VarString , isNull ? 10 : (entity.AppId).Length);
             if(isNull)
@@ -561,111 +397,15 @@ UPDATE `tb_app_app_info` SET
             else
                 parameter.Value = entity.AppId;
             cmd.Parameters.Add(parameter);
-            //09:注册管理机构代码(ManagOrgcode)
-            isNull = string.IsNullOrWhiteSpace(entity.ManagOrgcode);
-            parameter = new MySqlParameter("ManagOrgcode",MySqlDbType.VarString , isNull ? 10 : (entity.ManagOrgcode).Length);
+            //07:应用令牌(AppKey)
+            isNull = string.IsNullOrWhiteSpace(entity.AppKey);
+            parameter = new MySqlParameter("AppKey",MySqlDbType.VarString , isNull ? 10 : (entity.AppKey).Length);
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
-                parameter.Value = entity.ManagOrgcode;
+                parameter.Value = entity.AppKey;
             cmd.Parameters.Add(parameter);
-            //10:注册管理机构名称(ManagOrgname)
-            isNull = string.IsNullOrWhiteSpace(entity.ManagOrgname);
-            parameter = new MySqlParameter("ManagOrgname",MySqlDbType.VarString , isNull ? 10 : (entity.ManagOrgname).Length);
-            if(isNull)
-                parameter.Value = DBNull.Value;
-            else
-                parameter.Value = entity.ManagOrgname;
-            cmd.Parameters.Add(parameter);
-            //11:所在市级编码(CityCode)
-            isNull = string.IsNullOrWhiteSpace(entity.CityCode);
-            parameter = new MySqlParameter("CityCode",MySqlDbType.VarString , isNull ? 10 : (entity.CityCode).Length);
-            if(isNull)
-                parameter.Value = DBNull.Value;
-            else
-                parameter.Value = entity.CityCode;
-            cmd.Parameters.Add(parameter);
-            //12:所在区县编码(DistrictCode)
-            isNull = string.IsNullOrWhiteSpace(entity.DistrictCode);
-            parameter = new MySqlParameter("DistrictCode",MySqlDbType.VarString , isNull ? 10 : (entity.DistrictCode).Length);
-            if(isNull)
-                parameter.Value = DBNull.Value;
-            else
-                parameter.Value = entity.DistrictCode;
-            cmd.Parameters.Add(parameter);
-            //13:机构详细地址(OrgAddress)
-            isNull = string.IsNullOrWhiteSpace(entity.OrgAddress);
-            parameter = new MySqlParameter("OrgAddress",MySqlDbType.VarString , isNull ? 10 : (entity.OrgAddress).Length);
-            if(isNull)
-                parameter.Value = DBNull.Value;
-            else
-                parameter.Value = entity.OrgAddress;
-            cmd.Parameters.Add(parameter);
-            //14:机构负责人(LawPersonname)
-            isNull = string.IsNullOrWhiteSpace(entity.LawPersonname);
-            parameter = new MySqlParameter("LawPersonname",MySqlDbType.VarString , isNull ? 10 : (entity.LawPersonname).Length);
-            if(isNull)
-                parameter.Value = DBNull.Value;
-            else
-                parameter.Value = entity.LawPersonname;
-            cmd.Parameters.Add(parameter);
-            //15:机构负责人电话(LawPersontel)
-            isNull = string.IsNullOrWhiteSpace(entity.LawPersontel);
-            parameter = new MySqlParameter("LawPersontel",MySqlDbType.VarString , isNull ? 10 : (entity.LawPersontel).Length);
-            if(isNull)
-                parameter.Value = DBNull.Value;
-            else
-                parameter.Value = entity.LawPersontel;
-            cmd.Parameters.Add(parameter);
-            //16:机构联系人(ContactName)
-            isNull = string.IsNullOrWhiteSpace(entity.ContactName);
-            parameter = new MySqlParameter("ContactName",MySqlDbType.VarString , isNull ? 10 : (entity.ContactName).Length);
-            if(isNull)
-                parameter.Value = DBNull.Value;
-            else
-                parameter.Value = entity.ContactName;
-            cmd.Parameters.Add(parameter);
-            //17:机构联系人电话(ContactTel)
-            isNull = string.IsNullOrWhiteSpace(entity.ContactTel);
-            parameter = new MySqlParameter("ContactTel",MySqlDbType.VarString , isNull ? 10 : (entity.ContactTel).Length);
-            if(isNull)
-                parameter.Value = DBNull.Value;
-            else
-                parameter.Value = entity.ContactTel;
-            cmd.Parameters.Add(parameter);
-            //18:上级机构代码(SuperOrgcode)
-            isNull = string.IsNullOrWhiteSpace(entity.SuperOrgcode);
-            parameter = new MySqlParameter("SuperOrgcode",MySqlDbType.VarString , isNull ? 10 : (entity.SuperOrgcode).Length);
-            if(isNull)
-                parameter.Value = DBNull.Value;
-            else
-                parameter.Value = entity.SuperOrgcode;
-            cmd.Parameters.Add(parameter);
-            //19:更新时间(UpdateDate)
-            isNull = entity.UpdateDate.Year < 1900;
-            parameter = new MySqlParameter("UpdateDate",MySqlDbType.DateTime);
-            if(isNull)
-                parameter.Value = DBNull.Value;
-            else
-                parameter.Value = entity.UpdateDate;
-            cmd.Parameters.Add(parameter);
-            //20:更新操作员工号(UpdateUserid)
-            isNull = string.IsNullOrWhiteSpace(entity.UpdateUserid);
-            parameter = new MySqlParameter("UpdateUserid",MySqlDbType.VarString , isNull ? 10 : (entity.UpdateUserid).Length);
-            if(isNull)
-                parameter.Value = DBNull.Value;
-            else
-                parameter.Value = entity.UpdateUserid;
-            cmd.Parameters.Add(parameter);
-            //21:更新操作员姓名(UpdateUsername)
-            isNull = string.IsNullOrWhiteSpace(entity.UpdateUsername);
-            parameter = new MySqlParameter("UpdateUsername",MySqlDbType.VarString , isNull ? 10 : (entity.UpdateUsername).Length);
-            if(isNull)
-                parameter.Value = DBNull.Value;
-            else
-                parameter.Value = entity.UpdateUsername;
-            cmd.Parameters.Add(parameter);
-            //22:备注(Memo)
+            //08:备注(Memo)
             isNull = string.IsNullOrWhiteSpace(entity.Memo);
             parameter = new MySqlParameter("Memo",MySqlDbType.Text , isNull ? 10 : (entity.Memo).Length);
             if(isNull)
@@ -673,11 +413,11 @@ UPDATE `tb_app_app_info` SET
             else
                 parameter.Value = entity.Memo;
             cmd.Parameters.Add(parameter);
-            //23:数据状态(DataState)
-            cmd.Parameters.Add(new MySqlParameter("DataState",MySqlDbType.Int32){ Value = (int)entity.DataState});
-            //24:冻结更新(IsFreeze)
+            //09:数据状态枚举类型(DataStateType)
+            cmd.Parameters.Add(new MySqlParameter("DataStateType",MySqlDbType.Int32){ Value = (int)entity.DataStateType});
+            //10:冻结更新(IsFreeze)
             cmd.Parameters.Add(new MySqlParameter("IsFreeze",MySqlDbType.Byte) { Value = entity.IsFreeze ? (byte)1 : (byte)0 });
-            //25:制作时间(AddDate)
+            //11:制作时间(AddDate)
             isNull = entity.AddDate.Year < 1900;
             parameter = new MySqlParameter("AddDate",MySqlDbType.DateTime);
             if(isNull)
@@ -685,9 +425,11 @@ UPDATE `tb_app_app_info` SET
             else
                 parameter.Value = entity.AddDate;
             cmd.Parameters.Add(parameter);
-            //26:最后修改者(LastReviserId)
+            //12:制作人(AuthorId)
+            cmd.Parameters.Add(new MySqlParameter("AuthorId",MySqlDbType.Int64){ Value = entity.AuthorId});
+            //13:最后修改者(LastReviserId)
             cmd.Parameters.Add(new MySqlParameter("LastReviserId",MySqlDbType.Int64){ Value = entity.LastReviserId});
-            //27:最后修改日期(LastModifyDate)
+            //14:最后修改日期(LastModifyDate)
             isNull = entity.LastModifyDate.Year < 1900;
             parameter = new MySqlParameter("LastModifyDate",MySqlDbType.DateTime);
             if(isNull)
@@ -695,8 +437,8 @@ UPDATE `tb_app_app_info` SET
             else
                 parameter.Value = entity.LastModifyDate;
             cmd.Parameters.Add(parameter);
-            //28:制作人(AuthorId)
-            cmd.Parameters.Add(new MySqlParameter("AuthorId",MySqlDbType.Int64){ Value = entity.AuthorId});
+            //15:数据状态(DataState)
+            cmd.Parameters.Add(new MySqlParameter("DataState",MySqlDbType.Int32){ Value = (int)entity.DataState});
         }
 
 
@@ -738,26 +480,11 @@ UPDATE `tb_app_app_info` SET
             {
                 return @"
     `id` AS `Id`,
-    `org_id` AS `OrgId`,
-    `organization` AS `Organization`,
+    `app_type` AS `AppType`,
     `short_name` AS `ShortName`,
     `full_name` AS `FullName`,
-    `Classify` AS `Classify`,
-    `app_key` AS `AppId`,
-    `manag_orgcode` AS `ManagOrgcode`,
-    `manag_orgname` AS `ManagOrgname`,
-    `city_code` AS `CityCode`,
-    `district_code` AS `DistrictCode`,
-    `org_address` AS `OrgAddress`,
-    `law_personname` AS `LawPersonname`,
-    `law_persontel` AS `LawPersontel`,
-    `contact_name` AS `ContactName`,
-    `contact_tel` AS `ContactTel`,
-    `super_orgcode` AS `SuperOrgcode`,
-    `update_date` AS `UpdateDate`,
-    `update_userid` AS `UpdateUserid`,
-    `update_username` AS `UpdateUsername`,
-    `data_state` AS `DataState`,
+    `app_id` AS `AppId`,
+    `data_state_type` AS `DataStateType`,
     `is_freeze` AS `IsFreeze`";
             }
         }
@@ -775,47 +502,17 @@ UPDATE `tb_app_app_info` SET
                 if (!reader.IsDBNull(0))
                     entity._id = (long)reader.GetInt64(0);
                 if (!reader.IsDBNull(1))
-                    entity._orgId = (long)reader.GetInt64(1);
+                    entity._appType = (AppType)reader.GetInt32(1);
                 if (!reader.IsDBNull(2))
-                    entity._organization = reader.GetString(2);
+                    entity._shortName = reader.GetString(2).ToString();
                 if (!reader.IsDBNull(3))
-                    entity._shortName = reader.GetString(3).ToString();
+                    entity._fullName = reader.GetString(3).ToString();
                 if (!reader.IsDBNull(4))
-                    entity._fullName = reader.GetString(4).ToString();
+                    entity._appId = reader.GetString(4).ToString();
                 if (!reader.IsDBNull(5))
-                    entity._classify = (ClassifyType)reader.GetInt32(5);
+                    entity._dataStateType = (DataStateType)reader.GetInt32(5);
                 if (!reader.IsDBNull(6))
-                    entity._appId = reader.GetString(6).ToString();
-                if (!reader.IsDBNull(7))
-                    entity._managOrgcode = reader.GetString(7);
-                if (!reader.IsDBNull(8))
-                    entity._managOrgname = reader.GetString(8);
-                if (!reader.IsDBNull(9))
-                    entity._cityCode = reader.GetString(9);
-                if (!reader.IsDBNull(10))
-                    entity._districtCode = reader.GetString(10);
-                if (!reader.IsDBNull(11))
-                    entity._orgAddress = reader.GetString(11);
-                if (!reader.IsDBNull(12))
-                    entity._lawPersonname = reader.GetString(12);
-                if (!reader.IsDBNull(13))
-                    entity._lawPersontel = reader.GetString(13);
-                if (!reader.IsDBNull(14))
-                    entity._contactName = reader.GetString(14);
-                if (!reader.IsDBNull(15))
-                    entity._contactTel = reader.GetString(15);
-                if (!reader.IsDBNull(16))
-                    entity._superOrgcode = reader.GetString(16);
-                if (!reader.IsDBNull(17))
-                    try{entity._updateDate = reader.GetMySqlDateTime(17).Value;}catch{}
-                if (!reader.IsDBNull(18))
-                    entity._updateUserid = reader.GetString(18);
-                if (!reader.IsDBNull(19))
-                    entity._updateUsername = reader.GetString(19);
-                if (!reader.IsDBNull(20))
-                    entity._dataState = (DataStateType)reader.GetInt32(20);
-                if (!reader.IsDBNull(21))
-                    entity._isFreeze = (bool)reader.GetBoolean(21);
+                    entity._isFreeze = (bool)reader.GetBoolean(6);
             }
         }
         #endregion
@@ -830,9 +527,9 @@ UPDATE `tb_app_app_info` SET
         /// <summary>
         /// 系统内的应用的信息的结构语句
         /// </summary>
-        private TableSql _view_app_app_infoSql = new TableSql
+        private TableSql _tb_app_app_infoSql = new TableSql
         {
-            TableName = "view_app_app_info",
+            TableName = "tb_app_app_info",
             PimaryKey = "Id"
         };
 

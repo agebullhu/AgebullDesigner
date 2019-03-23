@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/21 22:02:24*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 9:58:46*/
 #region
 using System;
 using System.Collections.Generic;
@@ -14,31 +14,23 @@ using System.Runtime.Serialization;
 using System.IO;
 using Newtonsoft.Json;
 
-using Agebull.Common;
-using Agebull.EntityModel.Common;
-using Agebull.EntityModel.Common;
-
-
-
-<<<<<<< HEAD:demo/src/Base/Auth/Model/Business/User/WechatBusinessLogic.Designer.cs
-using Agebull.Common.DataModel.BusinessLogic;
-using Agebull.Common.Organizations.DataAccess;
-=======
-
-using Agebull.EntityModel.MySql.BusinessLogic;
-using Agebull.MicroZero.Demo.DataAccess;
->>>>>>> dad19e146e305fb88b1600da6828c94bbc6b8c63:demo/src/Demo/Model/Business/None/DemoEntityBusinessLogic.Designer.cs
-
 using MySql.Data.MySqlClient;
+
+using Agebull.Common;
+using Agebull.Common.OAuth;
+using Agebull.EntityModel.Common;
+
 using Agebull.EntityModel.MySql;
+using Agebull.EntityModel.MySql.BusinessLogic;
+
+using Agebull.Common.OAuth;
+
+using Agebull.Common.Organizations.DataAccess;
+
 
 #endregion
 
-<<<<<<< HEAD:demo/src/Base/Auth/Model/Business/User/WechatBusinessLogic.Designer.cs
 namespace Agebull.Common.Organizations.BusinessLogic
-=======
-namespace Agebull.MicroZero.Demo.BusinessLogic
->>>>>>> dad19e146e305fb88b1600da6828c94bbc6b8c63:demo/src/Demo/Model/Business/None/DemoEntityBusinessLogic.Designer.cs
 {
     /// <summary>
     /// 微信联合认证关联的用户信息

@@ -1,0 +1,83 @@
+﻿<!--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:27:49-->
+<form name='personForm' id='personForm' method='POST' enctype='multipart/form-data'>
+    <input name='icon' id='icon' type='hidden' />
+    <div id='personRegion' class='formRegion' style='width:500px;'>
+            <div class='inputField' id='fr_NickName'>
+                <div class='inputRegion' id='ir_NickName'>
+                    <div class='inputLabel'>昵称:</div>
+                    <input id='NickName' name='NickName' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'昵称',validType:['strLimit[0,100]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_IdCard'>
+                <div class='inputRegion' id='ir_IdCard'>
+                    <div class='inputLabel'>身份证号:</div>
+                    <input id='IdCard' name='IdCard' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'身份证号',validType:['strLimit[0,100]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_certType'>
+                <div class='inputRegion' id='ir_certType'>
+                    <div class='inputLabel'>证件类型:</div>
+                    <input id='certType' name='certType' class='inputValue inputS easyui-combobox'
+                           data-options="prompt:'证件类型',valueField:'value',textField:'text',data:cardType"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_RealName'>
+                <div class='inputRegion' id='ir_RealName'>
+                    <div class='inputLabel'>真实姓名:</div>
+                    <input id='RealName' name='RealName' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'真实姓名',validType:['strLimit[0,200]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_AvatarUrl'>
+                <div class='inputRegion' id='ir_AvatarUrl'>
+                    <div class='inputLabel'>头像:</div>
+                    <input id='AvatarUrl' name='AvatarUrl' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'头像',validType:['strLimit[0,200]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_phoneNumber'>
+                <div class='inputRegion' id='ir_phoneNumber'>
+                    <div class='inputLabel'>手机号:</div>
+                    <input id='phoneNumber' name='phoneNumber' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'用户手机号',validType:['strLimit[0,20]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_birthday'>
+                <div class='inputRegion' id='ir_birthday'>
+                    <div class='inputLabel'>生日:</div>
+                    <input id='birthday' name='birthday' class='inputValue inputS easyui-datebox'
+                           data-options="prompt:'生日'"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_nation'>
+                <div class='inputRegion' id='ir_nation'>
+                    <div class='inputLabel'>民族:</div>
+                    <input id='nation' name='nation' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'民族',validType:['strLimit[0,200]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_tel'>
+                <div class='inputRegion' id='ir_tel'>
+                    <div class='inputLabel'>电话:</div>
+                    <input id='tel' name='tel' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'电话',validType:['strLimit[0,200]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_email'>
+                <div class='inputRegion' id='ir_email'>
+                    <div class='inputLabel'>电子邮件:</div>
+                    <input id='email' name='email' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'电子邮件',validType:['strLimit[0,200]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_homeAddress'>
+                <div class='inputRegion' id='ir_homeAddress'>
+                    <div class='inputLabel'>地址:</div>
+                    <input id='homeAddress' name='homeAddress' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'地址',validType:['strLimit[0,200]']"/>
+                </div>
+            </div>
+    </div>
+</form>

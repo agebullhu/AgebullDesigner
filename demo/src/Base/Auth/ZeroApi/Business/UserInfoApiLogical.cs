@@ -4,13 +4,13 @@ using System.Diagnostics;
 using Agebull.Common.Context;
 using Agebull.Common.Ioc;
 using Agebull.Common.Logging;
-using Agebull.Common.OAuth.DataAccess;
+using Agebull.Common.Organizations.DataAccess;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.MySql;
 using Agebull.EntityModel.Redis;
 using Agebull.MicroZero.ZeroApis;
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// 用户信息API

@@ -1,5 +1,6 @@
 ﻿using Agebull.Common.Ioc;
 using Agebull.Common.OAuth;
+using Agebull.Common.Organizations;
 using Agebull.EntityModel.Common;
 using Agebull.MicroZero;
 

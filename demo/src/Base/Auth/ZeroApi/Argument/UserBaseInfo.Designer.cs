@@ -17,7 +17,7 @@ using Agebull.EntityModel.Common;
 using Newtonsoft.Json;
 using Agebull.MicroZero.ZeroApis;
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// 用户基本信息

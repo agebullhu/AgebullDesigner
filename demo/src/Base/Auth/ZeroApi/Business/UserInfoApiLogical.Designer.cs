@@ -5,7 +5,7 @@ using System.Linq;
 
 
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// 用户信息API

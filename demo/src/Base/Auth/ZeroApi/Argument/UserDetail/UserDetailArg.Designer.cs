@@ -19,7 +19,7 @@ using Agebull.EntityModel.Common;
 
 using Agebull.MicroZero.ZeroApis;
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// 获取用户信息参数

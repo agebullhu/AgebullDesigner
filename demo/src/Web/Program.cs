@@ -8,6 +8,7 @@ namespace Agebull.ZeroNet.ManageApplication
 {
     public class Program
     {
+
         public static void Main(string[] args)
         {
             ConfigurationManager.BasePath = Environment.CurrentDirectory;
@@ -15,7 +16,6 @@ namespace Agebull.ZeroNet.ManageApplication
             ZeroApplication.Shutdown();
         }
         
-
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)

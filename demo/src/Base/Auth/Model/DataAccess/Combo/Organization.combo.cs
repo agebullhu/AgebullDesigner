@@ -5,7 +5,7 @@ using Agebull.EntityModel.Redis;
 using System.Collections.Generic;
 
 
-namespace Agebull.Common.OAuth.DataAccess
+namespace Agebull.Common.Organizations.DataAccess
 {
     partial class OrganizationDataAccess
     {

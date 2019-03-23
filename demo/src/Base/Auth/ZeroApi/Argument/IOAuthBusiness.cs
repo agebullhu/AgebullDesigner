@@ -1,6 +1,7 @@
-﻿using Agebull.MicroZero.ZeroApis;
+﻿using Agebull.Common.OAuth;
+using Agebull.MicroZero.ZeroApis;
 
-namespace Agebull.Common.OAuth
+namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// 用户认证接口

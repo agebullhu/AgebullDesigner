@@ -1,4 +1,5 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2018/9/23 17:42:44*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:27:50*/
+#region
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,24 +12,25 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Runtime.Serialization;
 using System.IO;
-
 using Newtonsoft.Json;
 
 using Agebull.Common;
-using Agebull.EntityModel.Common;
-using Agebull.EntityModel.MySql.BusinessLogic;
-
-using Agebull.EntityModel.Common;
-using Agebull.EntityModel.MySql;
-
-
-
+using Agebull.Common.Context;
+using Agebull.Common.Ioc;
 using Agebull.Common.OAuth;
-using Agebull.Common.OAuth.BusinessLogic;
-using Agebull.Common.OAuth.DataAccess;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.EasyUI;
+using Agebull.MicroZero;
 using Agebull.MicroZero.ZeroApis;
 
-namespace Agebull.Common.UserCenter.WebApi.Entity
+using Agebull.Common.OAuth;
+
+using Agebull.Common.Organizations;
+using Agebull.Common.Organizations.BusinessLogic;
+using Agebull.Common.Organizations.DataAccess;
+#endregion
+
+namespace Agebull.Common.Organizations.WebApi.Entity
 {
     partial class UserTokenApiController
     {
@@ -56,9 +58,11 @@ namespace Agebull.Common.UserCenter.WebApi.Entity
         {
             var keyWord = GetArg("keyWord");
             if (!string.IsNullOrEmpty(keyWord))
-            {{
-                filter.AddAnd(p => p.DeviceId.Contains(keyWord) || p.AccessToken.Contains(keyWord) || p.RefreshToken.Contains(keyWord));
-            }}
+            {
+                filter.AddAnd(p =>p.DeviceId.Contains(keyWord) || 
+                                   p.AccessToken.Contains(keyWord) || 
+                                   p.RefreshToken.Contains(keyWord));
+            }
         }
 
         /// <summary>
@@ -68,8 +72,16 @@ namespace Agebull.Common.UserCenter.WebApi.Entity
         /// <param name="convert">转化器</param>
         protected void DefaultReadFormData(UserTokenData data, FormConvert convert)
         {
-            //数据֪
+            //-
             data.Id = convert.ToLong("Id");
+            data.UserDeviceId = convert.ToLong("UserDeviceId");
+            data.AddDate = convert.ToDateTime("AddDate");
+            data.UserId = convert.ToLong("UserId");
+            data.DeviceId = convert.ToString("DeviceId");
+            data.AccessToken = convert.ToString("AccessToken");
+            data.RefreshToken = convert.ToString("RefreshToken");
+            data.AccessTokenExpiresTime = convert.ToDateTime("AccessTokenExpiresTime");
+            data.RefreshTokenExpiresTime = convert.ToDateTime("RefreshTokenExpiresTime");
         }
 
         #endregion

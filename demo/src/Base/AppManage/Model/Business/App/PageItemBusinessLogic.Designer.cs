@@ -1,8 +1,32 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/1 15:31:53*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 12:20:04*/
 #region
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Configuration;
+using System.Data;
+using System.Diagnostics;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
 
+using MySql.Data.MySqlClient;
 
+using Agebull.Common;
+using Agebull.Common.OAuth;
+using Agebull.EntityModel.Common;
 
+using Agebull.EntityModel.MySql;
+using Agebull.EntityModel.MySql.BusinessLogic;
+
+using Agebull.Common.Organizations;
+using Agebull.Common.OAuth;
+
+using Agebull.Common.AppManage.DataAccess;
 
 
 #endregion

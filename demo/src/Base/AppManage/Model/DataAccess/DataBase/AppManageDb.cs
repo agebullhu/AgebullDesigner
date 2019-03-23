@@ -34,6 +34,7 @@ namespace Agebull.Common.AppManage.DataAccess
             set;
         }
 
+
         /// <summary>
         /// 读取连接字符串
         /// </summary>

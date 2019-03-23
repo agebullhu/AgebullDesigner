@@ -1,15 +1,41 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2018/10/6 2:42:25*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:27:49*/
+#region
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Configuration;
+using System.Data;
+using System.Diagnostics;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Runtime.Serialization;
+using System.IO;
+using Newtonsoft.Json;
 
-
+using Agebull.Common;
+using Agebull.Common.Context;
+using Agebull.Common.Ioc;
 using Agebull.Common.OAuth;
-using Agebull.Common.OAuth.BusinessLogic;
-using Agebull.Common.OAuth.DataAccess;
+using Agebull.EntityModel.Common;
+using Agebull.EntityModel.EasyUI;
+using Agebull.MicroZero;
 using Agebull.MicroZero.ZeroApis;
 
+using Agebull.Common.OAuth;
 
-namespace Agebull.Common.UserCenter.WebApi.Entity
+using Agebull.Common.Organizations;
+using Agebull.Common.Organizations.BusinessLogic;
+using Agebull.Common.Organizations.DataAccess;
+#endregion
+
+namespace Agebull.Common.Organizations.WebApi.Entity
 {
-    [RoutePrefix("UserCenter/User/v1")]
+    /// <summary>
+    ///  用户信息
+    /// </summary>
+    [RoutePrefix("user/User/v1")]
     public partial class UserApiController : ApiControllerForDataState<UserData, UserDataAccess, UserCenterDb, UserBusinessLogic>
     {
         #region 基本扩展

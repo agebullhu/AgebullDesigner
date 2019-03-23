@@ -1,16 +1,15 @@
 ﻿/*design by:agebull designer date:2017/5/26 19:43:33*/
 
-using Agebull.Common.OAuth.BusinessLogic;
-using Agebull.Common.OAuth.DataAccess;
+using Agebull.Common.Organizations.DataAccess;
 using Agebull.EntityModel.Common;
 
-using Agebull.MicroZero.ZeroApis;
 using Agebull.MicroZero.ZeroApis;
 using Agebull.EntityModel.EasyUI;
 
 using Agebull.Common.Context;
+using Agebull.Common.Organizations.BusinessLogic;
 
-namespace Agebull.Common.OAuth.WebApi.Entity
+namespace Agebull.Common.Organizations.WebApi.Entity
 {
     [RoutePrefix("sys/post/v1")]
     public partial class OrganizePositionApiController : ApiControllerForDataState<OrganizePositionData, OrganizePositionDataAccess, UserCenterDb, OrganizePositionBusinessLogic>
@@ -57,15 +56,14 @@ namespace Agebull.Common.OAuth.WebApi.Entity
         protected override ApiPageData<OrganizePositionData> GetListData()
         {
             var filter = new LambdaItem<OrganizePositionData>();
-            var oid = GetIntArg("oid");
-            SetKeywordFilter(filter);
-            if (oid <= 0)
-                return base.GetListData(filter);
-            using (ReadTableScope<OrganizePositionData>.CreateScope(Business.Access, "view_org_organize_position_master"))
+            var oid = GetLongArg("oid");
+            if (oid > 0)
             {
-                filter.Root = p => p.MasterId == oid;
-                return base.GetListData(filter);
+                var max = ((oid >> 48) + 1) << 48;
+                filter.Root = p => p.Id > oid && p.Id < max;
             }
+            SetKeywordFilter(filter);
+            return base.GetListData(filter);
         }
     }
 }
