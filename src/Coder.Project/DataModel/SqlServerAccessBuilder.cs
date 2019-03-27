@@ -346,7 +346,7 @@ namespace {NameSpace}.DataAccess
             {
                 return;
             }
-            if (!String.IsNullOrEmpty(table.ModelBase))
+            if (!string.IsNullOrEmpty(table.ModelBase))
             {
                 FieldMap(Project.Entities.FirstOrDefault(p => p.EntityName == table.ModelBase), sql, names, ref isFirst);
             }
@@ -443,12 +443,12 @@ namespace {NameSpace}.DataAccess
             var code = new StringBuilder();
             code.Append($@"
 DECLARE @__myId INT;
-SELECT @__myId = [{Entity.PrimaryColumn.DbFieldName}] FROM [{Entity.SaveTable}] WHERE {UniqueCondition()}");
+SELECT @__myId = [{Entity.PrimaryColumn.DbFieldName}] FROM [{{ContextWriteTable}}] WHERE {UniqueCondition()}");
 
             code.Append($@"
 IF @__myId IS NULL
 BEGIN{OnlyInsertSql(true)}
-    SET @__myId = {(Entity.PrimaryColumn.IsIdentity ? "SCOPE_IDENTITY()" : Entity.PrimaryColumn.DbFieldName)};
+    SET @__myId = {(Entity.PrimaryColumn.IsIdentity ? "SCOPE_IDENTITY()" : ("@"+ Entity.PrimaryColumn.DbFieldName))};
 END
 ELSE
 BEGIN
@@ -462,8 +462,8 @@ SELECT @__myId;");
         {
             var sql = new StringBuilder();
             var columns = Entity.DbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
-            sql.Append($@"
-INSERT INTO [{Entity.SaveTable}]
+            sql.Append(@"
+INSERT INTO [{ContextWriteTable}]
 (");
             var isFirst = true;
             foreach (var field in columns)
@@ -516,8 +516,8 @@ SELECT SCOPE_IDENTITY();");
         {
             var sql = new StringBuilder();
             IEnumerable<PropertyConfig> columns = Entity.DbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
-            sql.AppendFormat(@"
-UPDATE [{0}] SET", Entity.SaveTable);
+            sql.Append(@"
+UPDATE [{ContextWriteTable}] SET");
             var isFirst = true;
             foreach (var field in columns)
             {
@@ -529,11 +529,11 @@ UPDATE [{0}] SET", Entity.SaveTable);
                 {
                     sql.Append(",");
                 }
-                sql.AppendFormat(@"
-       [{0}] = @{1}", field.DbFieldName, field.PropertyName);
+                sql.Append($@"
+       [{field.DbFieldName}] = @{field.PropertyName}");
             }
-            sql.AppendFormat(@"
- WHERE {0};", UniqueCondition());
+            sql.Append($@"
+ WHERE {UniqueCondition()};");
             if (isInner)
             {
                 sql.Replace("\n", "\n    ");
@@ -545,19 +545,19 @@ UPDATE [{0}] SET", Entity.SaveTable);
         {
             var code = new StringBuilder();
             IEnumerable<PropertyConfig> columns = Entity.DbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
-            code.AppendFormat(@"
-            sql.AppendLine(""UPDATE [{0}] SET"");", Entity.SaveTable);
+            code.Append(@"
+            sql.AppendLine(""UPDATE [{ContextWriteTable}] SET"");");
 
 
             foreach (var field in columns)
             {
-                code.AppendFormat(@"
-            //{0}
-            if (data.__EntityStatus.ModifiedProperties[{1}._DataStruct_.Real_{2}] > 0)
-                sql.AppendLine(""       [{3}] = @{2}"");", field.Caption, Entity.EntityName, field.PropertyName, field.DbFieldName);
+                code.Append($@"
+            //{field.Caption}
+            if (data.__EntityStatus.ModifiedProperties[{Entity.EntityName}._DataStruct_.Real_{field.PropertyName}] > 0)
+                sql.AppendLine(""       [{field.DbFieldName}] = @{field.PropertyName}"");");
             }
-            code.AppendFormat(@"
-            sql.Append("" WHERE {0};"");", UniqueCondition());
+            code.Append($@"
+            sql.Append("" WHERE {UniqueCondition()};"");");
             return code.ToString();
         }
 
@@ -583,96 +583,79 @@ UPDATE [{0}] SET", Entity.SaveTable);
         /// <param name=""entity"">实体对象</param>
         /// <param name=""cmd"">命令</param>
         /// <returns>返回真说明要取主键</returns>
-        private void CreateFullSqlParameter({Entity.EntityName} entity, SqlCommand cmd)
+        public void CreateFullSqlParameter({Entity.EntityName} entity, SqlCommand cmd)
         {{");
 
             var isFirstNull = true;
             foreach (var field in Entity.DbFields.OrderBy(p => p.Index))
             {
-                code.AppendFormat(@"
-            //{2:D2}:{0}({1})", field.Caption, field.PropertyName, field.Index + 1);
-                if (!String.IsNullOrWhiteSpace(field.CustomType))
+                code.Append($@"
+            //{field.Index + 1:D2}:{field.Caption}({field.PropertyName})");
+                if (!string.IsNullOrWhiteSpace(field.CustomType))
                 {
-                    code.AppendFormat(@"
-            cmd.Parameters.Add(new SqlParameter(""{0}"",SqlDbType.Int){{ Value = (int)entity.{0}}});"
-                        , field.PropertyName);
+                    code.Append($@"
+            cmd.Parameters.Add(new SqlParameter(""{field.PropertyName}"",SqlDbType.Int){{ Value = (int)entity.{field.PropertyName}}});");
                     continue;
                 }
                 switch (field.CsType)
                 {
                     case "String":
                     case "string":
-                        code.AppendFormat(@"
-            {3}isNull = string.IsNullOrWhiteSpace({1});
-            {3}parameter = new SqlParameter(""{0}"",SqlDbType.NVarChar , isNull ? 10 : ({1}).Length);
+                        code.Append($@"
+            {(isFirstNull ? "var " : "")}isNull = string.IsNullOrWhiteSpace({PropertyName(field, "entity.")});
+            {(isFirstNull ? "var " : "")}parameter = new SqlParameter(""{field.PropertyName}"",SqlDbType.NVarChar , isNull ? 10 : ({PropertyName(field, "entity.")}).Length);
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
-                parameter.Value = {2};
-            cmd.Parameters.Add(parameter);"
-                            , field.PropertyName
-                            , PropertyName(field, "entity.")
-                            , PropertyName2(field, "entity.")
-                            , isFirstNull ? "var " : "");
+                parameter.Value = {PropertyName2(field, "entity.")};
+            cmd.Parameters.Add(parameter);");
                         break;
                     case "byte[]":
                     case "Byte[]":
-                        code.AppendFormat(@"
-            {3}isNull = {1} == null || {1}.Length == 0;
-            {3}parameter = new SqlParameter(""{0}"",SqlDbType.VarBinary , isNull ? 10 : {1}.Length);
+                        code.Append($@"
+            {(isFirstNull ? "var " : "")}isNull = {PropertyName(field, "entity.")} == null || {PropertyName(field, "entity.")}.Length == 0;
+            {(isFirstNull ? "var " : "")}parameter = new SqlParameter(""{field.PropertyName}"",SqlDbType.VarBinary , isNull ? 10 : {PropertyName(field, "entity.")}.Length);
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
-                parameter.Value = {2};
-            cmd.Parameters.Add(parameter);"
-                            , field.PropertyName
-                            , PropertyName(field, "entity.")
-                            , PropertyName2(field, "entity.")
-                            , isFirstNull ? "var " : "");
+                parameter.Value = {PropertyName2(field, "entity.")};
+            cmd.Parameters.Add(parameter);");
                         break;
                     case "DateTime":
                         field.DbNullable = true;
-                        code.AppendFormat(field.Nullable
-                                ? @"
-            {1}isNull = entity.{0} == null || entity.{0}.Value.Year < 1900;
-            {1}parameter = new SqlParameter(""{0}"",SqlDbType.DateTime);
+                        code.Append(field.Nullable
+                                ? string.Format($@"
+            {(isFirstNull ? "var " : "")}isNull = entity.{field.PropertyName} == null || entity.{field.PropertyName}.Value.Year < 1900;
+            {(isFirstNull ? "var " : "")}parameter = new SqlParameter(""{field.PropertyName}"",SqlDbType.DateTime);
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
-                parameter.Value = entity.{0};
-            cmd.Parameters.Add(parameter);"
-                                : @"
-            {1}isNull = entity.{0}.Year < 1900;
-            {1}parameter = new SqlParameter(""{0}"",SqlDbType.DateTime);
+                parameter.Value = entity.{field.PropertyName};
+            cmd.Parameters.Add(parameter);")
+                                : string.Format($@"
+            {(isFirstNull ? "var " : "")}isNull = entity.{field.PropertyName}.Year < 1900;
+            {(isFirstNull ? "var " : "")}parameter = new SqlParameter(""{field.PropertyName}"",SqlDbType.DateTime);
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
-                parameter.Value = entity.{0};
-            cmd.Parameters.Add(parameter);"
-                            , field.PropertyName
-                            , isFirstNull ? "var " : "");
+                parameter.Value = entity.{field.PropertyName};
+            cmd.Parameters.Add(parameter);)"));
                         break;
                     default:
                         if (!field.Nullable)
                         {
-                            code.AppendFormat(@"
-            cmd.Parameters.Add(new SqlParameter(""{0}"",SqlDbType.{1}){{ Value = entity.{0}}});"
-                                , field.PropertyName
-                                , ToSqlDbType(field.CsType));
+                            code.Append($@"
+            cmd.Parameters.Add(new SqlParameter(""{field.PropertyName}"",SqlDbType.{ToSqlDbType(field.CsType)}){{ Value = entity.{field.PropertyName}}});");
                             continue;
                         }
-                        code.AppendFormat(@"
-            {0}isNull = entity.{1} == null;
-            {0}parameter = new SqlParameter(""{1}"",SqlDbType.{2});
+                        code.Append($@"
+            {(isFirstNull ? "var " : "")}isNull = entity.{field.PropertyName} == null;
+            {(isFirstNull ? "var " : "")}parameter = new SqlParameter(""{field.PropertyName}"",SqlDbType.{ToSqlDbType(field.CsType)});
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
-                parameter.Value = {3};
-            cmd.Parameters.Add(parameter);"
-                            , isFirstNull ? "var " : ""
-                            , field.PropertyName
-                            , ToSqlDbType(field.CsType)
-                            , PropertyName2(field, "entity."));
+                parameter.Value = {PropertyName2(field, "entity.")};
+            cmd.Parameters.Add(parameter);");
                         break;
                 }
                 if (isFirstNull)
@@ -765,7 +748,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
             foreach (var field in Entity.DbFields)
             {
                 string fieldName = field.PropertyName.ToLWord();
-                if (!String.IsNullOrWhiteSpace(field.CustomType))
+                if (!string.IsNullOrWhiteSpace(field.CustomType))
                 {
                     code.AppendFormat(@"
                 if (!reader.IsDBNull({2}))
@@ -810,7 +793,7 @@ UPDATE [{0}] SET", Entity.SaveTable);
                 }
                 //if (field.DbNullable)
                 {
-                    if (String.Equals(field.CsType, field.DbType, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(field.CsType, field.DbType, StringComparison.OrdinalIgnoreCase))
                     {
                         code.AppendFormat(@"
                 if (!reader.IsDBNull({2}))

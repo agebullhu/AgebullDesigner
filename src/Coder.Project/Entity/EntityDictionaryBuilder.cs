@@ -32,11 +32,81 @@ namespace Agebull.EntityModel.RobotCoder
         private string GetSetValues()
         {
             var code = new StringBuilder();
+            SetStringValues(code);
             SetValues(code);
             GetValues(code);
 
             return code.ToString();
         }
+
+        private void GetValues(StringBuilder code)
+        {
+            code.Append(@"
+
+        /// <summary>
+        ///     读取属性值
+        /// </summary>
+        /// <param name=""property""></param>
+        protected override object GetValueInner(string property)
+        {
+            switch(property)
+            {");
+
+            foreach (PropertyConfig field in Columns)
+            {
+                var names = field.GetAliasPropertys().Select(p => p.ToLower()).ToList();
+                var name = field.Name.ToLower();
+                if (!names.Contains(name))
+                    names.Add(name);
+                foreach (var alias in names)
+                    code.Append($@"
+            case ""{alias}"":");
+                code.Append(field.EnumConfig == null
+                    ? $@"
+                return this.{field.Name};"
+                    : $@"
+                return this.{field.Name}.ToCaption();");
+            }
+            code.AppendLine(@"
+            }");
+            code.AppendLine(!string.IsNullOrWhiteSpace(Entity.ModelBase)
+                ? @"
+            return base.GetValueInner(property);
+        }"
+                : @"
+            return null;
+        }");
+            if (IsClient)
+                return;
+            code.Append(@"
+
+        /// <summary>
+        ///     读取属性值
+        /// </summary>
+        /// <param name=""index""></param>
+        protected override object GetValueInner(int index)
+        {
+            switch(index)
+            {");
+
+            foreach (PropertyConfig property in Entity.PublishProperty)
+            {
+                code.AppendFormat(@"
+                case _DataStruct_.{0}:
+                    return this.{0};", property.Name);
+            }
+            code.AppendLine(@"
+            }");
+            code.Append(!string.IsNullOrWhiteSpace(Entity.ModelBase)
+                ? @"
+            return base.GetValueInner(index);"
+                : @"
+            return null;");
+            code.AppendLine(@"
+        }");
+
+        }
+
 
         /// <summary>
         /// </summary>
@@ -165,16 +235,16 @@ namespace Agebull.EntityModel.RobotCoder
             {
                 if (!string.IsNullOrWhiteSpace(field.CustomType))
                 {
-                    code.AppendFormat(@"
-            case _DataStruct_.{0}:
-                this.{0} = ({1})value;
-                return;", field.Name, field.CustomType);
+                    code.Append($@"
+            case _DataStruct_.{field.Name}:
+                this.{field.Name} = ({field.CustomType})value;
+                return;");
                     continue;
                 }
-                code.AppendFormat(@"
-            case _DataStruct_.{0}:
-                this.{0} = {1};
-                return;", field.Name, ConvertCode(field, "value"));
+                code.Append($@"
+            case _DataStruct_.{field.Name}:
+                this.{field.Name} = {ConvertCode(field, "value")};
+                return;");
             }
             code.Append(@"
             }");
@@ -184,75 +254,6 @@ namespace Agebull.EntityModel.RobotCoder
             code.AppendLine(@"
         }");
         }
-
-        private void GetValues(StringBuilder code)
-        {
-            code.Append(@"
-
-        /// <summary>
-        ///     读取属性值
-        /// </summary>
-        /// <param name=""property""></param>
-        protected override object GetValueInner(string property)
-        {
-            switch(property)
-            {");
-
-            foreach (PropertyConfig field in Columns)
-            {
-                var names = field.GetAliasPropertys().Select(p => p.ToLower()).ToList();
-                var name = field.Name.ToLower();
-                if (!names.Contains(name))
-                    names.Add(name);
-                foreach (var alias in names)
-                    code.Append($@"
-            case ""{alias}"":");
-                code.Append(field.EnumConfig == null
-                    ? $@"
-                return this.{field.Name};"
-                    : $@"
-                return this.{field.Name}.ToCaption();");
-            }
-            code.AppendLine(@"
-            }");
-            code.AppendLine(!string.IsNullOrWhiteSpace(Entity.ModelBase)
-                ? @"
-            return base.GetValueInner(property);
-        }"
-                : @"
-            return null;
-        }");
-            if (IsClient)
-                return;
-            code.Append(@"
-
-        /// <summary>
-        ///     读取属性值
-        /// </summary>
-        /// <param name=""index""></param>
-        protected override object GetValueInner(int index)
-        {
-            switch(index)
-            {");
-
-            foreach (PropertyConfig property in Entity.PublishProperty)
-            {
-                code.AppendFormat(@"
-                case _DataStruct_.{0}:
-                    return this.{0};", property.Name);
-            }
-            code.AppendLine(@"
-            }");
-            code.Append(!string.IsNullOrWhiteSpace(Entity.ModelBase)
-                ? @"
-            return base.GetValueInner(index);"
-                : @"
-            return null;");
-            code.AppendLine(@"
-        }");
-
-        }
-
         private string ConvertCode(PropertyConfig column, string arg)
         {
             switch (column.CsType)
@@ -291,6 +292,86 @@ namespace Agebull.EntityModel.RobotCoder
                     return $"Convert.ToDateTime({arg})";
             }
             return $"({column.LastCsType}){arg}";
+        }
+
+
+
+        /// <summary>
+        /// </summary>
+        /// <remarks></remarks>
+        /// <returns></returns>
+        private void SetStringValues(StringBuilder code)
+        {
+            code.Append(@"
+    
+
+        /// <summary>
+        ///     设置属性值
+        /// </summary>
+        /// <param name=""property""></param>
+        /// <param name=""value""></param>
+        protected override bool SetValueInner(string property, string value)
+        {
+            if(property == null) return false;
+            switch(property.Trim().ToLower())
+            {");
+
+            foreach (PropertyConfig field in ReadWriteColumns)
+            {
+                var names = field.GetAliasPropertys().Select(p => p.ToLower()).ToList();
+                var name = field.Name.ToLower();
+                if (!names.Contains(name))
+                    names.Add(name);
+                foreach (var alia in names)
+                    code.Append($@"
+            case ""{alia}"":");
+
+                if (!string.IsNullOrWhiteSpace(field.CustomType))
+                {
+                    code.Append($@"
+                if (!string.IsNullOrWhiteSpace(value))
+                {{
+                    if ({field.CustomType}.TryParse(value, out var val))
+                    {{
+                        this.{field.Name} = val;
+                        return true;
+                    }}
+                    else if (int.TryParse(value, out var vl))
+                    {{
+                        this.{field.Name} = ({field.CustomType})vl;
+                        return true;
+                    }}
+                }}
+                return false;");
+                    continue;
+                }
+
+                switch (field.CsType)
+                {
+                    case "string":
+                    case "String":
+                        code.Append($@"
+                this.{field.Name} = string.IsNullOrWhiteSpace(value) ? null : value;
+                return true;");
+                        continue;
+                    default:
+                        code.Append($@"
+                if (!string.IsNullOrWhiteSpace(value))
+                {{
+                    if ({field.CsType}.TryParse(value, out var vl))
+                    {{
+                        this.{field.Name} = vl;
+                        return true;
+                    }}
+                }}
+                return false;");
+                        continue;
+                }
+            }
+            code.AppendLine(@"
+            }
+            return false;
+        }");
         }
         #endregion
     }

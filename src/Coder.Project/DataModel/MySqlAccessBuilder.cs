@@ -510,35 +510,36 @@ namespace {NameSpace}.DataAccess
         }
         private string InsertSql()
         {
-            if (!PublishDbFields.Any(p => p.UniqueIndex > 0))
+            return OnlyInsertSql();
+            /*if (!PublishDbFields.Any(p => p.UniqueIndex > 0))
             {
                 return OnlyInsertSql();
             }
             var code = new StringBuilder();
             code.Append($@"
 DECLARE ?__myId INT(4);
-SELECT ?__myId = `{Entity.PrimaryColumn.DbFieldName}` FROM `{Entity.SaveTable}` WHERE {UniqueCondition()}");
+SELECT ?__myId = `{Entity.PrimaryColumn.DbFieldName}` FROM `{{ContextWriteTable}}` WHERE {UniqueCondition()}");
 
             code.Append($@"
 IF ?__myId IS NULL
-BEGIN{OnlyInsertSql(true)}
-    SET ?__myId = {(Entity.PrimaryColumn.IsIdentity ? "@@IDENTITY" : Entity.PrimaryColumn.DbFieldName)};
+BEGIN{}
+    SET ?__myId = {(Entity.PrimaryColumn.IsIdentity ? "@@IDENTITY" : Entity.PrimaryColumn.PropertyName)};
 END
 ELSE
 BEGIN
-    SET ?{Entity.PrimaryColumn.Name}=?__myId;{UpdateSql(true)}
+    SET ?{Entity.PrimaryColumn.PropertyName}=?__myId;{UpdateSql(true)}
 END
 SELECT ?__myId;");
-            return code.ToString();
+            return code.ToString();*/
         }
 
         private string OnlyInsertSql(bool isInner = false)
         {
             var sql = new StringBuilder();
             var columns = PublishDbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
-            sql.AppendFormat(@"
-INSERT INTO `{0}`
-(", Entity.SaveTable);
+            sql.Append(@"
+INSERT INTO `{ContextWriteTable}`
+(");
             var isFirst = true;
             foreach (var field in columns)
             {
@@ -550,8 +551,8 @@ INSERT INTO `{0}`
                 {
                     sql.Append(",");
                 }
-                sql.AppendFormat(@"
-    `{0}`", field.DbFieldName);
+                sql.Append($@"
+    `{field.DbFieldName}`");
             }
             sql.Append(@"
 )
@@ -568,8 +569,8 @@ VALUES
                 {
                     sql.Append(",");
                 }
-                sql.AppendFormat(@"
-    ?{0}", field.Name);
+                sql.Append($@"
+    ?{field.Name}");
             }
             sql.Append(@"
 );");
@@ -590,8 +591,8 @@ SELECT @@IDENTITY;");
         {
             var sql = new StringBuilder();
             IEnumerable<PropertyConfig> columns = PublishDbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
-            sql.Append($@"
-UPDATE `{Entity.SaveTable}` SET");
+            sql.Append(@"
+UPDATE `{ContextWriteTable}` SET");
             var isFirst = true;
             foreach (var field in columns)
             {
@@ -619,8 +620,8 @@ UPDATE `{Entity.SaveTable}` SET");
         {
             var code = new StringBuilder();
             IEnumerable<PropertyConfig> columns = PublishDbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
-            code.Append($@"
-            sql.AppendLine(""UPDATE `{Entity.SaveTable}` SET"");");
+            code.Append(@"
+            sql.AppendLine(""UPDATE `{ContextWriteTable}` SET"");");
 
 
             foreach (var field in columns)
@@ -630,8 +631,8 @@ UPDATE `{Entity.SaveTable}` SET");
             if (data.__EntityStatus.ModifiedProperties[{Entity.EntityName}._DataStruct_.Real_{field.Name}] > 0)
                 sql.AppendLine(""       `{field.DbFieldName}` = ?{field.Name}"");");
             }
-            code.AppendFormat(@"
-            sql.Append("" WHERE {0};"");", UniqueCondition());
+            code.Append($@"
+            sql.Append("" WHERE {UniqueCondition()};"");");
             return code.ToString();
         }
 
@@ -679,14 +680,14 @@ UPDATE `{Entity.SaveTable}` SET");
         /// <param name=""entity"">实体对象</param>
         /// <param name=""cmd"">命令</param>
         /// <returns>返回真说明要取主键</returns>
-        private void CreateFullSqlParameter({Entity.EntityName} entity, MySqlCommand cmd)
+        public void CreateFullSqlParameter({Entity.EntityName} entity, MySqlCommand cmd)
         {{");
 
             var isFirstNull = true;
             foreach (var field in PublishDbFields.OrderBy(p => p.Index))
             {
-                code.AppendFormat(@"
-            //{2:D2}:{0}({1})", field.Caption, field.Name, field.Index + 1);
+                code.Append($@"
+            //{field.Index + 1:D2}:{field.Caption}({field.Name})");
                 if (!string.IsNullOrWhiteSpace(field.CustomType))
                 {
                     code.Append($@"
@@ -719,20 +720,16 @@ UPDATE `{Entity.SaveTable}` SET");
                         break;
                     case "DateTime":
                         field.DbNullable = true;
-                        if (field.Nullable)
-                        {
-                            code.Append($@"
+                        code.Append(field.Nullable
+                            ? $@"
             {(isFirstNull ? "var " : "")}isNull = entity.{field.Name} == null || entity.{field.Name}.Value.Year < 1900;
             {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)});
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
                 parameter.Value = entity.{field.Name};
-            cmd.Parameters.Add(parameter);");
-                        }
-                        else
-                        {
-                            code.Append($@"
+            cmd.Parameters.Add(parameter);"
+                            : $@"
             {(isFirstNull ? "var " : "")}isNull = entity.{field.Name}.Year < 1900;
             {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)});
             if(isNull)
@@ -740,7 +737,6 @@ UPDATE `{Entity.SaveTable}` SET");
             else
                 parameter.Value = entity.{field.Name};
             cmd.Parameters.Add(parameter);");
-                        }
                         break;
                     case "bool":
                         if (!field.Nullable)
@@ -825,11 +821,9 @@ UPDATE `{Entity.SaveTable}` SET");
             var code = new StringBuilder();
             foreach (var field in PublishDbFields)
             {
-                code.AppendFormat(@"
-                case ""{0}"":
-                    return MySqlDbType.{1};"
-                    , field.Name
-                    , MySqlHelper.ToSqlDbType(field));
+                code.Append($@"
+                case ""{field.Name}"":
+                    return MySqlDbType.{MySqlHelper.ToSqlDbType(field)};");
             }
 
             return
