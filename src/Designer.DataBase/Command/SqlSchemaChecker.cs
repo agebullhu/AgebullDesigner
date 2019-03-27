@@ -44,10 +44,15 @@ namespace Agebull.EntityModel.Designer
                     {
                         while (reader.Read())
                         {
-                            var idx = reader.GetInt32(2);
+                            var idx = reader.IsDBNull(2)
+                                ? 0
+                                : reader.GetInt32(2);
                             string name = reader.GetString(0);
+                            string desc = reader.IsDBNull(1)
+                                ? null
+                                : reader.GetString(1);
                             if (!tables.ContainsKey(name))
-                                tables.Add(name, idx == 0 ? reader.GetString(1) : name);
+                                tables.Add(name, desc);
                         }
                     }
                 }
@@ -125,7 +130,12 @@ ORDER BY [Tables].object_id, [Columns].column_id";
             {
                 cmd.Parameters.Add(parameter = new SqlParameter("@entity", SqlDbType.NVarChar, 256));
                 var ch = table.Split('_');
+
                 var name = ch.Length > 2 ? ch[2] : table;
+                if (table.IndexOf("tb") == 0)
+                    name = table.Substring(2);
+                else
+                    name = table;
                 var entity = new EntityConfig
                 {
                     Name = name,

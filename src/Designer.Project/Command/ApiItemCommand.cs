@@ -19,6 +19,8 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
+
+
             commands.Add(new CommandItemBuilder
             {
                 Catalog = "编辑",

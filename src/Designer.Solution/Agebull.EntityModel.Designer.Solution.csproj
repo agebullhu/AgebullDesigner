@@ -67,6 +67,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaiduFanYi\WordMap.cs" />
     <Compile Include="BaiduFanYi\BaiduFanYi.cs" />
     <Compile Include="BaiduFanYi\BaiduFanYiCommand.cs" />
     <Compile Include="Command\SolutionCommands.cs" />

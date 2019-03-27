@@ -270,7 +270,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"代码生成"), DisplayName(@"解决方案根路径"), Description("解决方案根路径")]
         public string RootPath
         {
-            get => _rootPath;
+            get => _rootPath ?? string.Empty ;
             set
             {
                 if (_rootPath == value)

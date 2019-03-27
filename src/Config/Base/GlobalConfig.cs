@@ -315,7 +315,7 @@ namespace Agebull.EntityModel.Config
             var words = new List<string>();
             if (string.IsNullOrWhiteSpace(str))
                 return words;
-            str = str.Replace("ID", "Id").Replace("URL", "Url");
+            //str = str.Replace("ID", "Id").Replace("URL", "Url");
             var baseWords = str.Split(NoneLanguageChar, StringSplitOptions.RemoveEmptyEntries);
             var sb = new StringBuilder();
             foreach (var word in baseWords)

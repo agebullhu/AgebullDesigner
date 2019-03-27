@@ -169,7 +169,10 @@ namespace Agebull.EntityModel.Designer
             {
                 return;
             }
-            DesignToExcel.Import(dialog.FileName, Context.GetSelectEntities());
+            using (CodeGeneratorScope.CreateScope(SolutionConfig.Current))
+            {
+                DesignToExcel.Import(dialog.FileName, Context.GetSelectEntities());
+            }
         }
         #endregion
 

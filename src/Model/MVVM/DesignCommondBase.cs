@@ -90,8 +90,15 @@ namespace Agebull.EntityModel.Designer
                     command.TargetType = SourceType;
                 CommandCoefficient.RegisterCommand(command);
             }
+            DoRegist();
         }
 
+        /// <summary>
+        /// ×¢²á´úÂë
+        /// </summary>
+        protected virtual void DoRegist()
+        {
+        }
         /// <summary>
         ///     ·ÖÀà
         /// </summary>

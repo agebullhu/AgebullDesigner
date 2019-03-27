@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
+using Agebull.Common;
 
 #endregion
 
@@ -24,8 +25,24 @@ namespace Agebull.EntityModel.Designer
     [ExportMetadata("Symbol", '%')]
     internal class SolutionCommands : DesignCommondBase<SolutionConfig>
     {
+        /// <summary>
+        /// 注册代码
+        /// </summary>
+        protected sealed override void DoRegist()
+        {
+            WordMap.Prepare();
+        }
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
+            commands.Add(new CommandItemBuilder
+            {
+                Catalog = "文件",
+                SignleSoruce = false,
+                SoruceView = "project",
+                Caption = "重新载入名称字典",
+                Action = p=> WordMap.Prepare(),
+                IconName = "img_add"
+            });
             commands.Add(new CommandItemBuilder
             {
                 Catalog = "编辑",
@@ -35,7 +52,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "新增项目",
                 Action = AddProject,
                 IconName = "img_add"
-            });
+            }); 
         }
 
         /// <summary>

@@ -41,7 +41,9 @@ namespace Agebull.Common.Config.Designer
                 MessageBox.Show("请选择一个项目并正确设置连接信息后继续");
                 return false;
             }
-            if (MessageBox.Show($"确认在【{DataModelDesignModel.Current.Context.SelectProject.Caption}】中执行【导入SQLSERVER数据库】操作吗?",
+            var name = DataModelDesignModel.Current.Context.SelectProject.Caption ??
+                DataModelDesignModel.Current.Context.SelectProject.Name;
+            if (MessageBox.Show($"确认在【{name}】中执行【导入SQLSERVER数据库】操作吗?",
                           "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                 return false;
 
