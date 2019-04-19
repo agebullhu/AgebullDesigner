@@ -23,78 +23,37 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 表的唯一标识
         /// </summary>
-        public override int TableId
-        {{
-            get {{ return {Project.DataBaseObjectName}.Table_{Entity.Name}; }}
-        }}
+        public override int TableId => {Project.DataBaseObjectName}.Table_{Entity.Name};
 
         /// <summary>
         /// 读取表名
         /// </summary>
-        protected sealed override string ReadTableName
-        {{
-            get
-            {{
-                return @""{Entity.ReadTableName}"";
-            }}
-        }}
+        protected sealed override string ReadTableName => @""{Entity.ReadTableName}"";
 
         /// <summary>
         /// 写入表名
         /// </summary>
-        protected sealed override string WriteTableName
-        {{
-            get
-            {{
-                return @""{Entity.SaveTable}"";
-            }}
-        }}
+        protected sealed override string WriteTableName => @""{Entity.SaveTable}"";
 
         /// <summary>
         /// 主键
         /// </summary>
-        protected sealed override string PrimaryKey
-        {{
-            get
-            {{
-                return @""{Entity.PrimaryColumn.PropertyName}"";
-            }}
-        }}
+        protected sealed override string PrimaryKey =>  @""{Entity.PrimaryColumn.PropertyName}"";
 
         /// <summary>
         /// 全表读取的SQL语句
         /// </summary>
-        protected sealed override string FullLoadFields
-        {{
-            get
-            {{
-                return @""{FullLoadSql()}"";
-            }}
-        }}
-
-        
+        protected sealed override string FullLoadFields => @""{FullLoadSql()}"";
 
         /// <summary>
         /// 插入的SQL语句
         /// </summary>
-        protected sealed override string InsertSqlCode
-        {{
-            get
-            {{
-                return @""{InsertSql()}"";
-            }}
-        }}
+        protected sealed override string InsertSqlCode => $@""{InsertSql()}"";
 
         /// <summary>
         /// 全部更新的SQL语句
         /// </summary>
-        protected sealed override string UpdateSqlCode
-        {{
-            get
-            {{
-                return @""{UpdateSql()}"";
-            }}
-        }}
+        protected sealed override string UpdateSqlCode => $@""{UpdateSql()}"";
 
         /// <summary>
         /// 取得仅更新的SQL语句
@@ -189,10 +148,10 @@ using Agebull.EntityModel.EasyUI;
 namespace {NameSpace}.DataAccess
 {{
     /// <summary>
-    /// {Entity.Description}
+    /// {Entity.Caption}
     /// </summary>
     {(Entity.IsInternal ? "internal" : "public")} partial class {Entity.Name}DataAccess
-    {{{null}{innerCode}
+    {{{innerCode}
     }}
 
     sealed partial class {Project.DataBaseObjectName}
@@ -245,6 +204,7 @@ using System.Data;
 using System.Data.Sql;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 using Agebull.EntityModel.SqlServer;
@@ -252,11 +212,21 @@ using Agebull.EntityModel.SqlServer;
 namespace {NameSpace}.DataAccess
 {{
     /// <summary>
-    /// {Entity.Description}
+    /// {Entity.Caption}
     /// </summary>
     sealed partial class {Entity.Name}DataAccess : SqlServerTable<{Entity.EntityName},{Project.DataBaseObjectName}>
     {{
-
+        /// <summary>
+        /// 构造单个读取命令
+        /// </summary>
+        /// <summary>编译查询条件</summary>
+        /// <param name=""lambda"">条件</param>
+        /// <returns>命令对象</returns>
+        public SqlCommand CreateCommand(Expression<Func<{Entity.EntityName}, bool>> lambda)
+        {{
+            var convert = Compile(lambda);
+            return CreateOnceCommand(convert.ConditionSql, KeyField, false, convert.Parameters);
+        }}
     }}
 }}
 ";
@@ -272,7 +242,7 @@ namespace {NameSpace}.DataAccess
             return $@"
 
         /// <summary>
-        /// {Entity.Caption}({Entity.ReadTableName}):{Entity.Description}
+        /// {Entity.Caption}({Entity.ReadTableName}):{Entity.Caption}
         /// </summary>
         public const int Table_{Entity.Name} = 0x{Entity.Index:x};";
         }
@@ -282,12 +252,12 @@ namespace {NameSpace}.DataAccess
             return $@"
 
         /// <summary>
-        /// {Entity.Description}数据访问对象
+        /// {Entity.Caption}数据访问对象
         /// </summary>
         private {Entity.Name}DataAccess _{name.ToLWord()};
 
         /// <summary>
-        /// {Entity.Description}数据访问对象
+        /// {Entity.Caption}数据访问对象
         /// </summary>
         {(Entity.IsInternal ? "internal" : "public")} {Entity.Name}DataAccess {name}
         {{
@@ -303,7 +273,7 @@ namespace {NameSpace}.DataAccess
             return $@"
 
         /// <summary>
-        /// {Entity.Description}的结构语句
+        /// {Entity.Caption}的结构语句
         /// </summary>
         private TableSql _{Entity.ReadTableName}Sql = new TableSql
         {{
@@ -402,8 +372,8 @@ namespace {NameSpace}.DataAccess
                 {
                     sql.Append(",");
                 }
-                sql.AppendFormat(@"
-    [{0}] AS [{1}]", field.DbFieldName, field.PropertyName);
+                sql.Append($@"
+    [{field.DbFieldName}] AS [{field.PropertyName}]");
             }
             return sql.ToString();
         }
@@ -546,7 +516,7 @@ UPDATE [{ContextWriteTable}] SET");
             var code = new StringBuilder();
             IEnumerable<PropertyConfig> columns = Entity.DbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
             code.Append(@"
-            sql.AppendLine(""UPDATE [{ContextWriteTable}] SET"");");
+            sql.AppendLine($""UPDATE [{ContextWriteTable}] SET"");");
 
 
             foreach (var field in columns)
@@ -624,22 +594,22 @@ UPDATE [{ContextWriteTable}] SET");
                     case "DateTime":
                         field.DbNullable = true;
                         code.Append(field.Nullable
-                                ? string.Format($@"
+                                ? $@"
             {(isFirstNull ? "var " : "")}isNull = entity.{field.PropertyName} == null || entity.{field.PropertyName}.Value.Year < 1900;
             {(isFirstNull ? "var " : "")}parameter = new SqlParameter(""{field.PropertyName}"",SqlDbType.DateTime);
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
                 parameter.Value = entity.{field.PropertyName};
-            cmd.Parameters.Add(parameter);")
-                                : string.Format($@"
+            cmd.Parameters.Add(parameter);"
+                                : $@"
             {(isFirstNull ? "var " : "")}isNull = entity.{field.PropertyName}.Year < 1900;
             {(isFirstNull ? "var " : "")}parameter = new SqlParameter(""{field.PropertyName}"",SqlDbType.DateTime);
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
                 parameter.Value = entity.{field.PropertyName};
-            cmd.Parameters.Add(parameter);)"));
+            cmd.Parameters.Add(parameter);");
                         break;
                     default:
                         if (!field.Nullable)

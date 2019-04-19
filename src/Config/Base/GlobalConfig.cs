@@ -284,6 +284,24 @@ namespace Agebull.EntityModel.Config
         ///     到名称格式
         /// </summary>
         /// <param name="words">单词组</param>
+        /// <returns>名称</returns>
+        public static string ToName(List<string> words)
+        {
+            if (words.Count == 0)
+                return string.Empty;
+            var sb = new StringBuilder();
+            sb.Append(words[0]);
+            for (var index = 1; index < words.Count; index++)
+            {
+                var word = words[index];
+                sb.Append(word.ToUWord());
+            }
+            return sb.ToString();
+        }
+        /// <summary>
+        ///     到名称格式
+        /// </summary>
+        /// <param name="words">单词组</param>
         /// <param name="link">连接字符</param>
         /// <param name="uWord">是否大写</param>
         /// <returns>名称</returns>

@@ -29,7 +29,7 @@ namespace Agebull.Common.Config.Designer
                 IconName = "tree_Assembly"
             });
         }
-        
+
         /// <summary>
         /// 导入数据库
         /// </summary>
@@ -70,7 +70,7 @@ namespace Agebull.Common.Config.Designer
         /// <param name="cnt">导入的表的数量</param>
         internal void EndImportSqlServer(CommandStatus status, Exception ex, int cnt)
         {
-            MessageBox.Show(status == CommandStatus.Succeed ? $"成功导入{cnt}个表" : "导入失败");
+            MessageBox.Show(status == CommandStatus.Succeed ? $"成功导入{cnt}个表" : $"导入失败{ex?.Message }");
         }
     }
 }

@@ -84,7 +84,7 @@ namespace Agebull.EntityModel.RobotCoder
         {{
             get
             {{
-                return @""{InsertSql()}"";
+                return $@""{InsertSql()}"";
             }}
         }}
 
@@ -95,7 +95,7 @@ namespace Agebull.EntityModel.RobotCoder
         {{
             get
             {{
-                return @""{UpdateSql()}"";
+                return $@""{UpdateSql()}"";
             }}
         }}
 

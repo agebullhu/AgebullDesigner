@@ -847,6 +847,8 @@ namespace Agebull.EntityModel.Config
                 SolutionConfig.Current.Add(entity);
                 entity.Parent = this;
                 Entities.TryAdd(entity);
+                if (string.IsNullOrWhiteSpace(entity.Classify))
+                    return;
                 var classf = Classifies.FirstOrDefault(p => p.Name == entity.Classify);
                 if (classf == null)
                 {

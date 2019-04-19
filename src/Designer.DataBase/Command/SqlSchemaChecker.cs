@@ -44,10 +44,11 @@ namespace Agebull.EntityModel.Designer
                     {
                         while (reader.Read())
                         {
-                            var idx = reader.GetInt32(2);
                             string name = reader.GetString(0);
+                            var idx = reader.IsDBNull(2) ? 0 : reader.GetInt32(2);
+                            var des = reader.IsDBNull(1) ? null : reader.GetString(1);
                             if (!tables.ContainsKey(name))
-                                tables.Add(name, idx == 0 ? reader.GetString(1) : name);
+                                tables.Add(name, des);
                         }
                     }
                 }
@@ -124,35 +125,45 @@ ORDER BY [Tables].object_id, [Columns].column_id";
             using (var cmd = new SqlCommand(sql, connection))
             {
                 cmd.Parameters.Add(parameter = new SqlParameter("@entity", SqlDbType.NVarChar, 256));
-                var ch = table.Split('_');
-                var name = ch.Length > 2 ? ch[2] : table;
-                var entity = new EntityConfig
-                {
-                    Name = name,
-                    Caption = description,
-                    Description = description,
-                    ReadTableName = table,
-                    SaveTableName = table,
-                    Parent = Project
-                };
+                var ch = GlobalConfig.SplitWords(table);
+                if (ch[0].Equals("tb", StringComparison.OrdinalIgnoreCase))
+                    ch.RemoveAt(0);
+                var name = GlobalConfig.ToName(ch);
+                var entity = GlobalConfig.GetEntity(name);
+                bool isNew = entity == null;
+                if (isNew)
+                    entity = new EntityConfig
+                    {
+                        Name = name,
+                        Classify = ch[0],
+                        Caption = description,
+                        Description = description,
+                        ReadTableName = table,
+                        SaveTableName = table,
+                        Parent = Project
+                    };
                 CheckColumns(cmd, entity);
-                Project.Add(entity);
+                
+                if (isNew)
+                {
+                    Project.Add(entity);
+                }
             }
         }
-        private void CheckColumns(SqlCommand cmd, EntityConfig schema)
+        private void CheckColumns(SqlCommand cmd, EntityConfig entity)
         {
-            parameter.Value = schema.ReadTableName;
-            foreach (PropertyConfig col in schema.Properties)
+            parameter.Value = entity.ReadTableName;
+            foreach (PropertyConfig col in entity.Properties)
                 col.DbIndex = 0;
             using (SqlDataReader reader = cmd.ExecuteReader())
             {
                 while (reader.Read())
                 {
                     string field = reader.GetString(0);
-                    PropertyConfig col = schema.Properties.FirstOrDefault(p => string.Equals(p.DbFieldName, field, StringComparison.OrdinalIgnoreCase));
+                    PropertyConfig col = entity.Properties.FirstOrDefault(p => string.Equals(p.DbFieldName, field, StringComparison.OrdinalIgnoreCase));
                     if (col == null)
                     {
-                        schema.Add(col = new PropertyConfig
+                        entity.Add(col = new PropertyConfig
                         {
                             Name = field,
                             DbFieldName = field,
@@ -167,6 +178,10 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                             col.Datalen = Convert.ToInt32(reader.GetValue(4));
                         }
                         col.CsType = ToCstringType(col.DbType);
+                        if (!reader.IsDBNull(7))
+                        {
+                            col.Caption = col.Description = reader.GetString(7);
+                        }
                     }
                     else
                     {
@@ -183,10 +198,6 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                     }
                     col.DbNullable = reader.GetBoolean(5);
                     col.DbIndex = Convert.ToInt32(reader.GetValue(6));
-                    if (!reader.IsDBNull(7))
-                    {
-                        col.Caption = col.Description = reader.GetString(7);
-                    }
                     col.IsPrimaryKey = !reader.IsDBNull(8);
                     col.IsIdentity = reader.GetBoolean(9);
                     col.IsCompute = reader.GetBoolean(10);

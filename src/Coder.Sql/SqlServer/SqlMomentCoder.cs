@@ -233,9 +233,7 @@ EXECUTE sp_addextendedproperty N'MS_Description', @v, N'SCHEMA', N'dbo', N'TABLE
             {
                 code.Append($@"
 SET @v = N'{col.Caption?.Replace('\'', 'бо')}:{col.Description?.Replace('\'', 'бо')}'
-EXECUTE sp_addextendedproperty N'MS_Description', @v, N'SCHEMA', N'dbo', N'TABLE', N'Table_1', N'COLUMN', N'{
-                        col.DbFieldName
-                    }';");
+EXECUTE sp_addextendedproperty N'MS_Description', @v, N'SCHEMA', N'dbo', N'TABLE', N'{entity.SaveTableName}', N'COLUMN', N'{col.DbFieldName}';");
             }
         }
 

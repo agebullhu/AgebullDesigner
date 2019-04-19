@@ -331,12 +331,12 @@ namespace Agebull.EntityModel.RobotCoder
                     code.Append($@"
                 if (!string.IsNullOrWhiteSpace(value))
                 {{
-                    if ({field.CustomType}.TryParse(value, out var val))
+                    if ({field.CustomType}.TryParse(value, out {field.CustomType} val))
                     {{
                         this.{field.Name} = val;
                         return true;
                     }}
-                    else if (int.TryParse(value, out var vl))
+                    else if (int.TryParse(value, out int vl))
                     {{
                         this.{field.Name} = ({field.CustomType})vl;
                         return true;
