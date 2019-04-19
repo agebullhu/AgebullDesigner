@@ -26,7 +26,7 @@ using Agebull.Common.Organizations.BusinessLogic;
 
 #endregion
 
-namespace Agebull.Common.AppManage.Entity
+namespace Agebull.Common.AppManage.WebApi.Entity
 {
     [RoutePrefix("app/page/v1")]
     public partial class PageItemApiController : ApiController<PageItemData, PageItemDataAccess, AppManageDb, PageItemBusinessLogic>
@@ -206,7 +206,7 @@ namespace Agebull.Common.AppManage.Entity
         {
             data.Name = convert.ToString("Name", false);
             data.Json = convert.ToString("Json", false);
-            data.ExtendValue = convert.ToString("ExtendValue", false);
+            data.Tags = convert.ToString("tags", false);
             data.Caption = convert.ToString("Caption", false);
             //data.Folder = convert.ToString("Folder", false);
             data.Url = convert.ToString("Url", true);

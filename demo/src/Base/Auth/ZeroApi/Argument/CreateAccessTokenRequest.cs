@@ -1,5 +1,4 @@
-﻿using Agebull.MicroZero.ZeroApis;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Runtime.Serialization;
 
 namespace Agebull.Common.Organizations

@@ -23,6 +23,7 @@ using Agebull.EntityModel.Events;
 using Agebull.Common.Context;
 using Agebull.Common.Organizations;
 using Agebull.Common.Organizations.WebApi.Entity;
+using HPC.Projects.DataAccess;
 
 namespace Agebull.ZeroNet.ManageApplication
 {
@@ -41,7 +42,7 @@ namespace Agebull.ZeroNet.ManageApplication
             IocHelper.AddScoped<AppManageDb, AppManageDb>();
 
             IocHelper.AddScoped<IOAuthBusiness, AuthBusiness>();
-            IocHelper.AddScoped<IUserInfoApi, UserInfoApiLogical>();
+            IocHelper.AddScoped<IUserApi, UserBusinessLogical>();
             ZeroApplication.CheckOption();
         }
 
@@ -60,6 +61,7 @@ namespace Agebull.ZeroNet.ManageApplication
             
             IocHelper.SetServiceCollection(services);
             IocHelper.AddScoped<AnnexDb, AnnexDb>();
+            IocHelper.AddScoped<HpcSqlServerDb, HpcSqlServerDb>();
             IocHelper.AddScoped<GlobalContext, GlobalContext>();
             ZeroApplication.RegistZeroObject<Zero2WebSocketBridge>();
             ZeroApplication.Discove(typeof(UserApiController).Assembly, "User");

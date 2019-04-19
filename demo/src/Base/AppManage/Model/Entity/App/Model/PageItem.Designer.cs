@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 12:20:04*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/4/15 10:58:48*/
 #region
 using System;
 using System.Collections.Generic;
@@ -435,6 +435,148 @@ namespace Agebull.Common.AppManage
             }
         }
         /// <summary>
+        /// 上级标识
+        /// </summary>
+        [IgnoreDataMember,JsonIgnore]
+        public long _parentId;
+
+        partial void OnParentIdGet();
+
+        partial void OnParentIdSet(ref long value);
+
+        partial void OnParentIdSeted();
+
+        
+        /// <summary>
+        /// 上级标识
+        /// </summary>
+        [DataMember , JsonProperty("parentId", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"上级标识")]
+        public  long ParentId
+        {
+            get
+            {
+                OnParentIdGet();
+                return this._parentId;
+            }
+            set
+            {
+                if(this._parentId == value)
+                    return;
+                OnParentIdSet(ref value);
+                this._parentId = value;
+                OnParentIdSeted();
+                this.OnPropertyChanged(_DataStruct_.Real_ParentId);
+            }
+        }
+        /// <summary>
+        /// 是否显示
+        /// </summary>
+        [IgnoreDataMember,JsonIgnore]
+        public bool _isShow;
+
+        partial void OnIsShowGet();
+
+        partial void OnIsShowSet(ref bool value);
+
+        partial void OnIsShowSeted();
+
+        
+        /// <summary>
+        /// 是否显示
+        /// </summary>
+        [DataRule(CanNull = true)]
+        [DataMember , JsonProperty("IsShow", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"是否显示")]
+        public  bool IsShow
+        {
+            get
+            {
+                OnIsShowGet();
+                return this._isShow;
+            }
+            set
+            {
+                if(this._isShow == value)
+                    return;
+                OnIsShowSet(ref value);
+                this._isShow = value;
+                OnIsShowSeted();
+                this.OnPropertyChanged(_DataStruct_.Real_IsShow);
+            }
+        }
+        /// <summary>
+        /// 图标大小
+        /// </summary>
+        [IgnoreDataMember,JsonIgnore]
+        public int _iconSize;
+
+        partial void OnIconSizeGet();
+
+        partial void OnIconSizeSet(ref int value);
+
+        partial void OnIconSizeSeted();
+
+        
+        /// <summary>
+        /// 图标大小
+        /// </summary>
+        [DataRule(CanNull = true)]
+        [DataMember , JsonProperty("IconSize", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"图标大小")]
+        public  int IconSize
+        {
+            get
+            {
+                OnIconSizeGet();
+                return this._iconSize;
+            }
+            set
+            {
+                if(this._iconSize == value)
+                    return;
+                OnIconSizeSet(ref value);
+                this._iconSize = value;
+                OnIconSizeSeted();
+                this.OnPropertyChanged(_DataStruct_.Real_IconSize);
+            }
+        }
+        /// <summary>
+        /// 图标颜色
+        /// </summary>
+        [IgnoreDataMember,JsonIgnore]
+        public string _iconColor;
+
+        partial void OnIconColorGet();
+
+        partial void OnIconColorSet(ref string value);
+
+        partial void OnIconColorSeted();
+
+        
+        /// <summary>
+        /// 图标颜色
+        /// </summary>
+        /// <value>
+        /// 可存储20个字符.合理长度应不大于20.
+        /// </value>
+        [DataRule(CanNull = true)]
+        [DataMember , JsonProperty("IconColor", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"图标颜色")]
+        public  string IconColor
+        {
+            get
+            {
+                OnIconColorGet();
+                return this._iconColor;
+            }
+            set
+            {
+                if(this._iconColor == value)
+                    return;
+                OnIconColorSet(ref value);
+                this._iconColor = value;
+                OnIconColorSeted();
+                this.OnPropertyChanged(_DataStruct_.Real_IconColor);
+            }
+        }
+        /// <summary>
         /// 备注
         /// </summary>
         [IgnoreDataMember,JsonIgnore]
@@ -472,37 +614,41 @@ namespace Agebull.Common.AppManage
             }
         }
         /// <summary>
-        /// 上级标识
+        /// 页面标识
         /// </summary>
         [IgnoreDataMember,JsonIgnore]
-        public long _parentId;
+        public long _pageItemId;
 
-        partial void OnParentIdGet();
+        partial void OnPageItemIdGet();
 
-        partial void OnParentIdSet(ref long value);
+        partial void OnPageItemIdSet(ref long value);
 
-        partial void OnParentIdSeted();
+        partial void OnPageItemIdSeted();
 
         
         /// <summary>
-        /// 上级标识
+        /// 页面标识
         /// </summary>
-        [DataMember , JsonProperty("parentId", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"上级标识")]
-        public  long ParentId
+        /// <remarks>
+        /// API与页面强绑定的关联,即API访问的前提是在此页面内访问,而非无限制访问
+        /// </remarks>
+        [DataRule(CanNull = true)]
+        [DataMember , JsonProperty("PageItemId", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"页面标识")]
+        public  long PageItemId
         {
             get
             {
-                OnParentIdGet();
-                return this._parentId;
+                OnPageItemIdGet();
+                return this._pageItemId;
             }
             set
             {
-                if(this._parentId == value)
+                if(this._pageItemId == value)
                     return;
-                OnParentIdSet(ref value);
-                this._parentId = value;
-                OnParentIdSeted();
-                this.OnPropertyChanged(_DataStruct_.Real_ParentId);
+                OnPageItemIdSet(ref value);
+                this._pageItemId = value;
+                OnPageItemIdSeted();
+                this.OnPropertyChanged(_DataStruct_.Real_PageItemId);
             }
         }
 
@@ -516,6 +662,131 @@ namespace Agebull.Common.AppManage
 
 
         #region 名称的属性操作
+
+    
+
+        /// <summary>
+        ///     设置属性值
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="value"></param>
+        protected override bool SetValueInner(string property, string value)
+        {
+            if(property == null) return false;
+            switch(property.Trim().ToLower())
+            {
+            case "id":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (long.TryParse(value, out var vl))
+                    {
+                        this.Id = vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "appinfoid":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (long.TryParse(value, out var vl))
+                    {
+                        this.AppInfoId = vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "name":
+                this.Name = string.IsNullOrWhiteSpace(value) ? null : value;
+                return true;
+            case "caption":
+                this.Caption = string.IsNullOrWhiteSpace(value) ? null : value;
+                return true;
+            case "itemtype":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (PageItemType.TryParse(value, out var val))
+                    {
+                        this.ItemType = val;
+                        return true;
+                    }
+                    else if (int.TryParse(value, out var vl))
+                    {
+                        this.ItemType = (PageItemType)vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "index":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (int.TryParse(value, out var vl))
+                    {
+                        this.Index = vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "icon":
+                this.Icon = string.IsNullOrWhiteSpace(value) ? null : value;
+                return true;
+            case "url":
+                this.Url = string.IsNullOrWhiteSpace(value) ? null : value;
+                return true;
+            case "extendvalue":
+                this.ExtendValue = string.IsNullOrWhiteSpace(value) ? null : value;
+                return true;
+            case "json":
+                this.Json = string.IsNullOrWhiteSpace(value) ? null : value;
+                return true;
+            case "parentid":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (long.TryParse(value, out var vl))
+                    {
+                        this.ParentId = vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "isshow":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (bool.TryParse(value, out var vl))
+                    {
+                        this.IsShow = vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "iconsize":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (int.TryParse(value, out var vl))
+                    {
+                        this.IconSize = vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "iconcolor":
+                this.IconColor = string.IsNullOrWhiteSpace(value) ? null : value;
+                return true;
+            case "memo":
+                this.Memo = string.IsNullOrWhiteSpace(value) ? null : value;
+                return true;
+            case "pageitemid":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (long.TryParse(value, out var vl))
+                    {
+                        this.PageItemId = vl;
+                        return true;
+                    }
+                }
+                return false;
+            }
+            return false;
+        }
 
     
 
@@ -586,11 +857,34 @@ namespace Agebull.Common.AppManage
             case "json":
                 this.Json = value == null ? null : value.ToString();
                 return;
+            case "parentid":
+                this.ParentId = (long)Convert.ToDecimal(value);
+                return;
+            case "isshow":
+                if (value != null)
+                {
+                    int vl;
+                    if (int.TryParse(value.ToString(), out vl))
+                    {
+                        this.IsShow = vl != 0;
+                    }
+                    else
+                    {
+                        this.IsShow = Convert.ToBoolean(value);
+                    }
+                }
+                return;
+            case "iconsize":
+                this.IconSize = (int)Convert.ToDecimal(value);
+                return;
+            case "iconcolor":
+                this.IconColor = value == null ? null : value.ToString();
+                return;
             case "memo":
                 this.Memo = value == null ? null : value.ToString();
                 return;
-            case "parentid":
-                this.ParentId = (long)Convert.ToDecimal(value);
+            case "pageitemid":
+                this.PageItemId = (long)Convert.ToDecimal(value);
                 return;
             }
 
@@ -639,11 +933,23 @@ namespace Agebull.Common.AppManage
             case _DataStruct_.Json:
                 this.Json = value == null ? null : value.ToString();
                 return;
+            case _DataStruct_.ParentId:
+                this.ParentId = Convert.ToInt64(value);
+                return;
+            case _DataStruct_.IsShow:
+                this.IsShow = Convert.ToBoolean(value);
+                return;
+            case _DataStruct_.IconSize:
+                this.IconSize = Convert.ToInt32(value);
+                return;
+            case _DataStruct_.IconColor:
+                this.IconColor = value == null ? null : value.ToString();
+                return;
             case _DataStruct_.Memo:
                 this.Memo = value == null ? null : value.ToString();
                 return;
-            case _DataStruct_.ParentId:
-                this.ParentId = Convert.ToInt64(value);
+            case _DataStruct_.PageItemId:
+                this.PageItemId = Convert.ToInt64(value);
                 return;
             }
         }
@@ -677,10 +983,18 @@ namespace Agebull.Common.AppManage
                 return this.ExtendValue;
             case "json":
                 return this.Json;
-            case "memo":
-                return this.Memo;
             case "parentid":
                 return this.ParentId;
+            case "isshow":
+                return this.IsShow;
+            case "iconsize":
+                return this.IconSize;
+            case "iconcolor":
+                return this.IconColor;
+            case "memo":
+                return this.Memo;
+            case "pageitemid":
+                return this.PageItemId;
             }
 
             return null;
@@ -715,10 +1029,18 @@ namespace Agebull.Common.AppManage
                     return this.ExtendValue;
                 case _DataStruct_.Json:
                     return this.Json;
-                case _DataStruct_.Memo:
-                    return this.Memo;
                 case _DataStruct_.ParentId:
                     return this.ParentId;
+                case _DataStruct_.IsShow:
+                    return this.IsShow;
+                case _DataStruct_.IconSize:
+                    return this.IconSize;
+                case _DataStruct_.IconColor:
+                    return this.IconColor;
+                case _DataStruct_.Memo:
+                    return this.Memo;
+                case _DataStruct_.PageItemId:
+                    return this.PageItemId;
             }
 
             return null;
@@ -750,8 +1072,12 @@ namespace Agebull.Common.AppManage
             this._url = sourceEntity._url;
             this._extendValue = sourceEntity._extendValue;
             this._json = sourceEntity._json;
-            this._memo = sourceEntity._memo;
             this._parentId = sourceEntity._parentId;
+            this._isShow = sourceEntity._isShow;
+            this._iconSize = sourceEntity._iconSize;
+            this._iconColor = sourceEntity._iconColor;
+            this._memo = sourceEntity._memo;
+            this._pageItemId = sourceEntity._pageItemId;
             CopyExtendValue(sourceEntity);
             this.__EntityStatus.SetModified();
         }
@@ -772,8 +1098,12 @@ namespace Agebull.Common.AppManage
                 this.Url = source.Url;
                 this.ExtendValue = source.ExtendValue;
                 this.Json = source.Json;
-                this.Memo = source.Memo;
                 this.ParentId = source.ParentId;
+                this.IsShow = source.IsShow;
+                this.IconSize = source.IconSize;
+                this.IconColor = source.IconColor;
+                this.Memo = source.Memo;
+                this.PageItemId = source.PageItemId;
         }
         #endregion
 
@@ -802,8 +1132,12 @@ namespace Agebull.Common.AppManage
                 OnUrlModified(subsist,false);
                 OnExtendValueModified(subsist,false);
                 OnJsonModified(subsist,false);
-                OnMemoModified(subsist,false);
                 OnParentIdModified(subsist,false);
+                OnIsShowModified(subsist,false);
+                OnIconSizeModified(subsist,false);
+                OnIconColorModified(subsist,false);
+                OnMemoModified(subsist,false);
+                OnPageItemIdModified(subsist,false);
                 return;
             }
             else if (subsist == EntitySubsist.Adding || subsist == EntitySubsist.Added)
@@ -818,11 +1152,15 @@ namespace Agebull.Common.AppManage
                 OnUrlModified(subsist,true);
                 OnExtendValueModified(subsist,true);
                 OnJsonModified(subsist,true);
-                OnMemoModified(subsist,true);
                 OnParentIdModified(subsist,true);
+                OnIsShowModified(subsist,true);
+                OnIconSizeModified(subsist,true);
+                OnIconColorModified(subsist,true);
+                OnMemoModified(subsist,true);
+                OnPageItemIdModified(subsist,true);
                 return;
             }
-            else if(modifieds != null && modifieds[12] > 0)
+            else if(modifieds != null && modifieds[16] > 0)
             {
                 OnIdModified(subsist,modifieds[_DataStruct_.Real_Id] == 1);
                 OnAppInfoIdModified(subsist,modifieds[_DataStruct_.Real_AppInfoId] == 1);
@@ -834,8 +1172,12 @@ namespace Agebull.Common.AppManage
                 OnUrlModified(subsist,modifieds[_DataStruct_.Real_Url] == 1);
                 OnExtendValueModified(subsist,modifieds[_DataStruct_.Real_ExtendValue] == 1);
                 OnJsonModified(subsist,modifieds[_DataStruct_.Real_Json] == 1);
-                OnMemoModified(subsist,modifieds[_DataStruct_.Real_Memo] == 1);
                 OnParentIdModified(subsist,modifieds[_DataStruct_.Real_ParentId] == 1);
+                OnIsShowModified(subsist,modifieds[_DataStruct_.Real_IsShow] == 1);
+                OnIconSizeModified(subsist,modifieds[_DataStruct_.Real_IconSize] == 1);
+                OnIconColorModified(subsist,modifieds[_DataStruct_.Real_IconColor] == 1);
+                OnMemoModified(subsist,modifieds[_DataStruct_.Real_Memo] == 1);
+                OnPageItemIdModified(subsist,modifieds[_DataStruct_.Real_PageItemId] == 1);
             }
         }
 
@@ -940,6 +1282,46 @@ namespace Agebull.Common.AppManage
         partial void OnJsonModified(EntitySubsist subsist,bool isModified);
 
         /// <summary>
+        /// 上级标识修改的后期处理(保存前)
+        /// </summary>
+        /// <param name="subsist">当前对象状态</param>
+        /// <param name="isModified">是否被修改</param>
+        /// <remarks>
+        /// 对关联的属性的更改,请自行保存,否则可能丢失
+        /// </remarks>
+        partial void OnParentIdModified(EntitySubsist subsist,bool isModified);
+
+        /// <summary>
+        /// 是否显示修改的后期处理(保存前)
+        /// </summary>
+        /// <param name="subsist">当前对象状态</param>
+        /// <param name="isModified">是否被修改</param>
+        /// <remarks>
+        /// 对关联的属性的更改,请自行保存,否则可能丢失
+        /// </remarks>
+        partial void OnIsShowModified(EntitySubsist subsist,bool isModified);
+
+        /// <summary>
+        /// 图标大小修改的后期处理(保存前)
+        /// </summary>
+        /// <param name="subsist">当前对象状态</param>
+        /// <param name="isModified">是否被修改</param>
+        /// <remarks>
+        /// 对关联的属性的更改,请自行保存,否则可能丢失
+        /// </remarks>
+        partial void OnIconSizeModified(EntitySubsist subsist,bool isModified);
+
+        /// <summary>
+        /// 图标颜色修改的后期处理(保存前)
+        /// </summary>
+        /// <param name="subsist">当前对象状态</param>
+        /// <param name="isModified">是否被修改</param>
+        /// <remarks>
+        /// 对关联的属性的更改,请自行保存,否则可能丢失
+        /// </remarks>
+        partial void OnIconColorModified(EntitySubsist subsist,bool isModified);
+
+        /// <summary>
         /// 备注修改的后期处理(保存前)
         /// </summary>
         /// <param name="subsist">当前对象状态</param>
@@ -950,14 +1332,14 @@ namespace Agebull.Common.AppManage
         partial void OnMemoModified(EntitySubsist subsist,bool isModified);
 
         /// <summary>
-        /// 上级标识修改的后期处理(保存前)
+        /// 页面标识修改的后期处理(保存前)
         /// </summary>
         /// <param name="subsist">当前对象状态</param>
         /// <param name="isModified">是否被修改</param>
         /// <remarks>
         /// 对关联的属性的更改,请自行保存,否则可能丢失
         /// </remarks>
-        partial void OnParentIdModified(EntitySubsist subsist,bool isModified);
+        partial void OnPageItemIdModified(EntitySubsist subsist,bool isModified);
         #endregion
 
         #region 数据结构
@@ -1101,16 +1483,6 @@ namespace Agebull.Common.AppManage
             public const int Real_Json = 9;
 
             /// <summary>
-            /// 备注的数字标识
-            /// </summary>
-            public const byte Memo = 12;
-            
-            /// <summary>
-            /// 备注的实时记录顺序
-            /// </summary>
-            public const int Real_Memo = 10;
-
-            /// <summary>
             /// 上级标识的数字标识
             /// </summary>
             public const byte ParentId = 9;
@@ -1118,7 +1490,57 @@ namespace Agebull.Common.AppManage
             /// <summary>
             /// 上级标识的实时记录顺序
             /// </summary>
-            public const int Real_ParentId = 11;
+            public const int Real_ParentId = 10;
+
+            /// <summary>
+            /// 是否显示的数字标识
+            /// </summary>
+            public const byte IsShow = 14;
+            
+            /// <summary>
+            /// 是否显示的实时记录顺序
+            /// </summary>
+            public const int Real_IsShow = 11;
+
+            /// <summary>
+            /// 图标大小的数字标识
+            /// </summary>
+            public const byte IconSize = 15;
+            
+            /// <summary>
+            /// 图标大小的实时记录顺序
+            /// </summary>
+            public const int Real_IconSize = 12;
+
+            /// <summary>
+            /// 图标颜色的数字标识
+            /// </summary>
+            public const byte IconColor = 16;
+            
+            /// <summary>
+            /// 图标颜色的实时记录顺序
+            /// </summary>
+            public const int Real_IconColor = 13;
+
+            /// <summary>
+            /// 备注的数字标识
+            /// </summary>
+            public const byte Memo = 12;
+            
+            /// <summary>
+            /// 备注的实时记录顺序
+            /// </summary>
+            public const int Real_Memo = 14;
+
+            /// <summary>
+            /// 页面标识的数字标识
+            /// </summary>
+            public const byte PageItemId = 17;
+            
+            /// <summary>
+            /// 页面标识的实时记录顺序
+            /// </summary>
+            public const int Real_PageItemId = 15;
 
             /// <summary>
             /// 实体结构
@@ -1303,6 +1725,74 @@ namespace Agebull.Common.AppManage
                         }
                     },
                     {
+                        Real_ParentId,
+                        new PropertySturct
+                        {
+                            Index        = ParentId,
+                            Name         = "ParentId",
+                            Title        = "上级标识",
+                            Caption      = @"上级标识",
+                            Description  = @"上级标识",
+                            ColumnName   = "parent_id",
+                            PropertyType = typeof(long),
+                            CanNull      = false,
+                            ValueType    = PropertyValueType.Value,
+                            CanImport    = false,
+                            CanExport    = false
+                        }
+                    },
+                    {
+                        Real_IsShow,
+                        new PropertySturct
+                        {
+                            Index        = IsShow,
+                            Name         = "IsShow",
+                            Title        = "是否显示",
+                            Caption      = @"是否显示",
+                            Description  = @"是否显示",
+                            ColumnName   = "is_show",
+                            PropertyType = typeof(bool),
+                            CanNull      = false,
+                            ValueType    = PropertyValueType.Value,
+                            CanImport    = false,
+                            CanExport    = false
+                        }
+                    },
+                    {
+                        Real_IconSize,
+                        new PropertySturct
+                        {
+                            Index        = IconSize,
+                            Name         = "IconSize",
+                            Title        = "图标大小",
+                            Caption      = @"图标大小",
+                            Description  = @"图标大小",
+                            ColumnName   = "icon_size",
+                            PropertyType = typeof(int),
+                            CanNull      = false,
+                            ValueType    = PropertyValueType.Value,
+                            CanImport    = false,
+                            CanExport    = false
+                        }
+                    },
+                    {
+                        Real_IconColor,
+                        new PropertySturct
+                        {
+                            Index        = IconColor,
+                            Name         = "IconColor",
+                            Title        = "图标颜色",
+                            Caption      = @"图标颜色",
+                            Description  = @"图标颜色",
+                            ColumnName   = "icon_color",
+                            PropertyType = typeof(string),
+                            CanNull      = false,
+                            ValueType    = PropertyValueType.String,
+                            CanImport    = false,
+                            CanExport    = false
+                        }
+                    },
+                    {
                         Real_Memo,
                         new PropertySturct
                         {
@@ -1320,15 +1810,15 @@ namespace Agebull.Common.AppManage
                         }
                     },
                     {
-                        Real_ParentId,
+                        Real_PageItemId,
                         new PropertySturct
                         {
-                            Index        = ParentId,
-                            Name         = "ParentId",
-                            Title        = "上级标识",
-                            Caption      = @"上级标识",
-                            Description  = @"上级标识",
-                            ColumnName   = "parent_id",
+                            Index        = PageItemId,
+                            Name         = "PageItemId",
+                            Title        = "页面标识",
+                            Caption      = @"页面标识",
+                            Description  = @"API与页面强绑定的关联,即API访问的前提是在此页面内访问,而非无限制访问",
+                            ColumnName   = "page_item_id",
                             PropertyType = typeof(long),
                             CanNull      = false,
                             ValueType    = PropertyValueType.Value,

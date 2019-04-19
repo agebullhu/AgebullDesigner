@@ -1,4 +1,5 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2018/9/2 16:30:04*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/4/7 0:20:45*/
+#region
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,30 +12,47 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Runtime.Serialization;
 using System.IO;
-
 using Newtonsoft.Json;
 
 using Agebull.Common;
+using Agebull.Common.Context;
+using Agebull.Common.Ioc;
+using Agebull.Common.OAuth;
 using Agebull.EntityModel.Common;
-using Agebull.EntityModel.MySql.BusinessLogic;
+using Agebull.EntityModel.EasyUI;
+using Agebull.MicroZero;
+using Agebull.MicroZero.ZeroApis;
 
-
-using Agebull.EntityModel.Common;
-using Agebull.EntityModel.MySql;
-
+using Agebull.Common.Organizations;
 using Agebull.Common.OAuth;
 
 using Agebull.Common.AppManage;
 using Agebull.Common.AppManage.BusinessLogic;
 using Agebull.Common.AppManage.DataAccess;
-using Agebull.MicroZero.ZeroApis;
+#endregion
 
-namespace Agebull.Common.AppManage.Entity
+namespace Agebull.Common.AppManage.WebApi.Entity
 {
     partial class PageItemApiController
     {
         #region 设计器命令
 
+        /// <summary>下拉列表</summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("edit/combo")]
+        public ApiArrayResult<EasyComboValues> ComboData()
+        {
+            GlobalContext.Current.IsManageMode = false;
+            var datas = Business.All();
+            var combos = datas.Select(p => new EasyComboValues(p.Id, p.Name)).ToList();
+            combos.Insert(0,new EasyComboValues(0, "-"));
+            return new ApiArrayResult<EasyComboValues>
+            {
+               Success = true,
+               ResultData = combos
+            };
+        }
 
         #endregion
 
@@ -58,9 +76,12 @@ namespace Agebull.Common.AppManage.Entity
             var keyWord = GetArg("keyWord");
             if (!string.IsNullOrEmpty(keyWord))
             {
-                filter.AddAnd(p =>
-                    p.Name.Contains(keyWord) || p.Caption.Contains(keyWord) || p.Icon.Contains(keyWord) ||
-                    p.Url.Contains(keyWord) || p.ExtendValue.Contains(keyWord) || p.Memo.Contains(keyWord));
+                filter.AddAnd(p =>p.Name.Contains(keyWord) || 
+                                   p.Caption.Contains(keyWord) || 
+                                   p.Icon.Contains(keyWord) || 
+                                   p.Url.Contains(keyWord) || 
+                                   p.Tags.Contains(keyWord) || 
+                                   p.Memo.Contains(keyWord));
             }
         }
 
@@ -71,17 +92,18 @@ namespace Agebull.Common.AppManage.Entity
         /// <param name="convert">转化器</param>
         protected void DefaultReadFormData(PageItemData data, FormConvert convert)
         {
-            //数据֪
-            data.Name = convert.ToString("Name");
-            data.Caption = convert.ToString("Caption");
-            data.ItemType = (PageItemType)convert.ToInteger("ItemType");
-            data.Index = convert.ToInteger("Index");
-            data.Icon = convert.ToString("Icon");
-            data.Url = convert.ToString("Url");
-            data.ExtendValue = convert.ToString("ExtendValue");
-            data.Json = convert.ToString("Json");
-            data.Memo = convert.ToString("Memo");
-            data.ParentId = convert.ToLong("ParentId");
+            //-
+            data.Id = convert.ToLong("id");
+            data.Name = convert.ToString("name");
+            data.Caption = convert.ToString("caption");
+            data.ItemType = (PageItemType)convert.ToInteger("itemType");
+            data.Index = convert.ToInteger("index");
+            data.Icon = convert.ToString("icon");
+            data.Url = convert.ToString("url");
+            data.Tags = convert.ToString("tags");
+            data.Json = convert.ToString("json");
+            data.Memo = convert.ToString("memo");
+            data.ParentId = convert.ToLong("parentId");
         }
 
         #endregion

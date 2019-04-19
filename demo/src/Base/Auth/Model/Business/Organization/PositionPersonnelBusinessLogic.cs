@@ -4,7 +4,7 @@
 
 using Agebull.Common.Context;
 using Agebull.Common.Organizations.DataAccess;
-using Agebull.EntityModel.MySql.BusinessLogic;
+using Agebull.EntityModel.BusinessLogic.MySql;
 
 namespace Agebull.Common.Organizations.BusinessLogic
 {

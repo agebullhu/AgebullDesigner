@@ -5,7 +5,7 @@ namespace Agebull.Common.Organizations
     /// <summary>
     /// 身份验证服务API
     /// </summary>
-    public interface IUserInfoApi
+    public interface IUserApi
     {
 
         #region Mobile
@@ -28,6 +28,13 @@ namespace Agebull.Common.Organizations
         /// <param name="arg">基于手机的账号登录参数</param>
         /// <returns>登录返回数据</returns>
         ApiResult<LoginResponse> AccountLogin(PhoneLoginRequest arg);
+
+        /// <summary>
+        ///     账户登录
+        /// </summary>
+        /// <param name="arg">基于手机的账号登录参数</param>
+        /// <returns>登录返回数据</returns>
+        string HpcLogin(PhoneLoginRequest arg);
 
 
 

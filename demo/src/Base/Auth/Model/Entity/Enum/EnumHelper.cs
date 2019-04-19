@@ -1,39 +1,12 @@
-﻿namespace Agebull.Common.Organizations
+﻿using Agebull.Common.OAuth;
+
+namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// 枚举扩展
     /// </summary>
     public static class EnumHelper
     {
-
-        /// <summary>
-        ///     权限范围枚举类型名称转换
-        /// </summary>
-        public static string ToCaption(this DataScopeType value)
-        {
-            switch (value)
-            {
-                case DataScopeType.None:
-                    return "无";
-                case DataScopeType.Person:
-                    return "本人";
-                case DataScopeType.Home:
-                    return "本级";
-                case DataScopeType.PersonAndHome:
-                    return "本人及本级";
-                case DataScopeType.Lower:
-                    return "下级";
-                case DataScopeType.HomeAndLower:
-                    return "本级及以下";
-                case DataScopeType.Full:
-                    return "本人本级及下级";
-                case DataScopeType.Unlimited:
-                    return "无限制";
-                default:
-                    return "权限范围枚举类型(错误)";
-            }
-        }
-
 
         /// <summary>
         ///     应用归类类型名称转换
@@ -81,16 +54,14 @@
         {
             switch (value)
             {
-                case UserType.Stranger:
+                case UserType.Anymouse:
                     return "陌生人";
-                case UserType.Staff:
-                    return "员工";
-                case UserType.Visitor:
-                    return "访客";
-                case UserType.Companion:
-                    return "访客同伴";
-                case UserType.Vip:
-                    return "VIP客户";
+                case UserType.InnerEmployee:
+                    return "内部员工";
+                case UserType.Customer:
+                    return "客户";
+                case UserType.OutsideEmployee:
+                    return "外部员工";
                 case UserType.Black:
                     return "黑名单";
                 default:

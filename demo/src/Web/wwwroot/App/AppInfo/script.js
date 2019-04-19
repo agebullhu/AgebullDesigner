@@ -267,19 +267,6 @@ var page = {
             , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'fullName', title: '应用全称' }
             , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'Classify', title: '应用类型', formatter: classifyTypeFormat}
             , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'appId', title: '应用标识' }
-            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'manag_orgcode', title: '注册管理机构代码'}
-            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'manag_orgname', title: '注册管理机构名称'}
-            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'city_code', title: '所在市级编码'}
-            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'district_code', title: '所在区县编码'}
-            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'org_address', title: '机构详细地址'}
-            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'law_personname', title: '机构负责人'}
-            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'law_persontel', title: '机构负责人电话'}
-            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'contact_name', title: '机构联系人'}
-            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'contact_tel', title: '机构联系人电话'}
-            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'super_orgcode', title: '上级机构代码'}
-            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'update_date', title: '更新时间', formatter: dateFormat}
-            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'update_userid', title: '更新操作员工号'}
-            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'update_username', title: '更新操作员姓名'}
         ]
     ]
 };

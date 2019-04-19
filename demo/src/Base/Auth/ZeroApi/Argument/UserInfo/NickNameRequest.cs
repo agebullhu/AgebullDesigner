@@ -2,7 +2,6 @@
 
 
 using Agebull.EntityModel.Common;
-using Agebull.MicroZero.ZeroApis;
 
 namespace Agebull.Common.Organizations
 {

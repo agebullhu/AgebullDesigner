@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using Agebull.Common.Configuration;
 using Agebull.Common.Context;
 using Agebull.Common.Logging;
@@ -8,8 +9,12 @@ using Agebull.Common.Organizations.DataAccess;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.MySql;
 using Agebull.EntityModel.Redis;
+using Agebull.MicroZero.PubSub;
 using Agebull.MicroZero.ZeroApis;
 using Agebull.OAuth.Contract;
+using HPC.Projects;
+using ConfigurationManager = Agebull.Common.Configuration.ConfigurationManager;
+using UserData = Agebull.Common.Organizations.UserData;
 
 namespace Agebull.OAuth.Business
 {
@@ -20,30 +25,47 @@ namespace Agebull.OAuth.Business
     {
         #region 配置
 
-        //static OAuthBusiness()
-        //{
-        //    if (!int.TryParse(ConfigurationManager.AppSettings["AccessTokenExpiresMinute"],
-        //        out AccessTokenExpiresMinute))
-        //        throw new ConfigurationErrorsException("AppSettings中必须配置以分钟为单位的AccessTokenExpiresMinute");
-        //    if (!int.TryParse(ConfigurationManager.AppSettings["RefreshTokenExpiresMinute"],
-        //        out RefreshTokenExpiresMinute))
-        //        throw new ConfigurationErrorsException("AppSettings中必须配置以分钟为单位的RefreshTokenExpiresMinute");
-        //}
-
         /// <summary>
         ///     以小时为单位的AccessToken过期时间
         /// </summary>
-        protected static int AccessTokenExpiresHour;
+        protected static int AccessTokenExpiresHour = ConfigurationManager.AppSettings.GetInt("AccessTokenExpiresHour", 2);
 
 
         /// <summary>
         ///     以小时为单位的RefreshToken过期时间
         /// </summary>
-        protected static int RefreshTokenExpiresHour;
+        protected static int RefreshTokenExpiresHour = ConfigurationManager.AppSettings.GetInt("RefreshTokenExpiresHour", 72);
 
         #endregion
 
         #region 接口实现
+
+        /// <summary>
+        ///     生成DeviceId
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <returns></returns>
+        ApiValueResult IOAuthBusiness.GetDeviceId(DeviceArgument arg)
+        {
+            using (MonitorScope.CreateScope("GetDeviceId"))
+            {
+                try
+                {
+                    string did;
+                    using (MonitorScope.CreateScope("db"))
+                    {
+                        did = CreateDeviceId(arg);
+                    }
+
+                    return ApiValueResult.Succees(did);
+                }
+                catch (Exception e)
+                {
+                    LogRecorder.Exception(e, "GetDeviceId");
+                    return ApiValueResult.ErrorResult(ErrorCode.LocalError);
+                }
+            }
+        }
 
         /// <summary>
         ///     Refresh access token
@@ -86,108 +108,51 @@ namespace Agebull.OAuth.Business
             }
         }
 
-        /// <summary>检查设备标识（来自未登录用户）</summary>
-        /// <param name="uid">用户ID</param>
+        /// <summary>
+        ///     Create access token
+        /// </summary>
         /// <returns></returns>
-        public ApiResult<LoginUserInfo> GetUserProfile(long uid)
+        ApiResult<AccessTokenResponse> IOAuthBusiness.CreateAccessToken(long userId, string account, string type, string deviceId)
         {
-            using (MonitorScope.CreateScope("GetUserProfile"))
+            using (MonitorScope.CreateScope("CreateAccessToken"))
             {
-                var user = UserHelper.GetLoginUserInfo(uid, false);
-                if (user != null && user.State == UserStateType.Enable)
-                    return ApiResult.Succees(user);
-
-                LogRecorder.MonitorTrace($"{(user == null ? "错误" : "禁用")}的UserId{uid}");
-                return ApiResult.Error<LoginUserInfo>(ErrorCode.Auth_User_Unknow);
+                return CreateAccessToken(userId, deviceId);
             }
         }
 
         /// <summary>
         ///     取得用户信息
         /// </summary>
-        /// <param name="token">令牌</param>
+        /// <param name="value">令牌或用户ID</param>
         /// <returns>用户信息</returns>
-        ApiResult<LoginUserInfo> IOAuthBusiness.GetLoginUser(string token)
+        ApiResult<LoginUserInfo> IOAuthBusiness.GetLoginUser(string value)
         {
             using (MonitorScope.CreateScope("GetLoginUser"))
             {
-                if (string.IsNullOrWhiteSpace(token))
-                {
-                    LogRecorder.MonitorTrace("空的AT");
-                    return ApiResult.Error<LoginUserInfo>(ErrorCode.Auth_Device_Unknow);
-                }
-
-                if (token[0] == '#')
-                {
-                    var tokenData = Redis_UserToken_GetByAccessToken(token);
-                    if (tokenData == null)
-                    {
-                        LogRecorder.MonitorTrace($"AT无效或过期{token}");
-                        return ApiResult.Succees(UserHelper.AnymouseUser);
-                    }
-
-                    var user = UserHelper.GetLoginUserInfo(tokenData.UserId, false);
-                    if (user != null && user.State == UserStateType.Enable)
-                        return ApiResult.Succees(user);
-
-                    LogRecorder.MonitorTrace($"{(user == null ? "错误" : "禁用")}的UserId{tokenData.UserId}");
-                    return ApiResult.Error<LoginUserInfo>(ErrorCode.Auth_User_Unknow);
-                }
-
-                if (long.TryParse(token, out var uid))
-                {
-                    var user1 = UserHelper.GetLoginUserInfo(uid, false);
-                    if (user1 != null && user1.State == UserStateType.Enable)
-                        return ApiResult.Succees(user1);
-                    LogRecorder.MonitorTrace($"不正确的UserId{uid}");
-                    return ApiResult.Error<LoginUserInfo>(ErrorCode.Auth_User_Unknow);
-                }
-
-                var info = GetDeviceInfo(token);
-                if (!string.IsNullOrWhiteSpace(info.Os) && !string.IsNullOrWhiteSpace(info.App))
-                    return ApiResult.Succees(UserHelper.AnymouseUser);
-                return ApiResult.Error<LoginUserInfo>(ErrorCode.Auth_Device_Unknow);
+                return GetLoginUser(value);
             }
         }
 
         #endregion
 
-
         #region AT
-
-        /// <summary>
-        ///     检查调用的ServiceKey（来自内部调用）
-        /// </summary>
-        /// <param name="token">令牌</param>
-        /// <returns></returns>
-        public ApiResult ValidateServiceKey(string token)
-        {
-            using (MonitorScope.CreateScope("ValidateServiceKey"))
-            {
-                return ApiResult.Succees();
-            }
-        }
 
         /// <summary>
         ///     Create access token
         /// </summary>
         /// <returns></returns>
-        public ApiResult<AccessTokenResponse> CreateAccessToken(UserData user, string account, string type,
-            string deviceId)
+        public ApiResult<AccessTokenResponse> CreateAccessToken(UserData user, PersonData person, EmployeeData employee, string deviceId)
         {
-            if (string.IsNullOrEmpty(deviceId) || "?"== deviceId)
+            if (string.IsNullOrEmpty(deviceId) || "?" == deviceId)
             {
                 deviceId = CreateDeviceId(new DeviceArgument());
             }
-            var deviceData = GetDeviceInfo(deviceId);
-
+            var deviceData = GetDeviceInfo(deviceId, false);
             if (deviceData == null)
             {
                 return ApiResult<AccessTokenResponse>.ErrorResult(4000, "无法取得设备标识");
             }
-            var userProfile = UserHelper.GetLoginUserInfo(user.Id, true);
-            if (userProfile == null) return ApiResult<AccessTokenResponse>.ErrorResult(4001, "无法取得用户信息");
-            GetUserOrgInfo(userProfile);
+            var userProfile = UserHelper.CacheUserInfo(user, person, employee.OrgOID, employee.SiteSID);
 
             GlobalContext.SetUser(userProfile);
 
@@ -210,7 +175,100 @@ namespace Agebull.OAuth.Business
                 RefreshTokenExpiresTime = DateTime.Now.AddHours(RefreshTokenExpiresHour)
             });
             Redis_UserToken_Cache(tokenData);
-            //AuthEvents.RaiseUserStateChanegd(tokenData.UserId, type, deviceData.App);
+            return ApiResult.Succees(new AccessTokenResponse
+            {
+                AccessToken = token.AccessToken,
+                RefreshToken = token.RefreshToken,
+                Profile = userProfile
+            });
+        }
+
+        /// <summary>
+        ///     Create access token
+        /// </summary>
+        /// <returns></returns>
+        public ApiResult<AccessTokenResponse> CreateAccessToken(UserData user, PersonData person, string deviceId)
+        {
+            if (string.IsNullOrEmpty(deviceId) || "?" == deviceId)
+            {
+                deviceId = CreateDeviceId(new DeviceArgument());
+            }
+            var deviceData = GetDeviceInfo(deviceId, false);
+            if (deviceData == null)
+            {
+                return ApiResult<AccessTokenResponse>.ErrorResult(4000, "无法取得设备标识");
+            }
+            var userProfile = UserHelper.CacheUserInfo(user, person);
+
+            GlobalContext.SetUser(userProfile);
+
+            var token = new AuthTokenItem
+            {
+                AccessToken = CreateAccessToken(),
+                RefreshToken = CreateRefreshToken()
+            };
+            UserTokenData tokenData;
+            var tAccess = new UserTokenDataAccess();
+            tAccess.Insert(tokenData = new UserTokenData
+            {
+                UserId = userProfile.UserId,
+                UserDeviceId = deviceData.Id,
+                DeviceId = deviceData.DeviceId,
+                RefreshToken = token.RefreshToken,
+                AccessToken = token.AccessToken,
+                AddDate = DateTime.Now,
+                AccessTokenExpiresTime = DateTime.Now.AddHours(AccessTokenExpiresHour),
+                RefreshTokenExpiresTime = DateTime.Now.AddHours(RefreshTokenExpiresHour)
+            });
+            Redis_UserToken_Cache(tokenData);
+            return ApiResult.Succees(new AccessTokenResponse
+            {
+                AccessToken = token.AccessToken,
+                RefreshToken = token.RefreshToken,
+                Profile = userProfile
+            });
+        }
+
+        /// <summary>
+        ///     Create access token
+        /// </summary>
+        /// <returns></returns>
+        public ApiResult<AccessTokenResponse> CreateAccessToken(long userId, string deviceId)
+        {
+            if (string.IsNullOrEmpty(deviceId) || "?" == deviceId)
+            {
+                deviceId = CreateDeviceId(new DeviceArgument());
+            }
+            var deviceData = GetDeviceInfo(deviceId, false);
+            if (deviceData == null)
+            {
+                return ApiResult<AccessTokenResponse>.ErrorResult(4000, "无法取得设备标识");
+            }
+            var userProfile = UserHelper.ReloadUserInfo(userId);
+            if (userProfile == null)
+                return ApiResult<AccessTokenResponse>.ErrorResult(4001, "无法取得用户信息");
+
+            GlobalContext.SetUser(userProfile);
+
+            var token = new AuthTokenItem
+            {
+                AccessToken = CreateAccessToken(),
+                RefreshToken = CreateRefreshToken()
+            };
+            UserTokenData tokenData;
+            var tAccess = new UserTokenDataAccess();
+            tAccess.Insert(tokenData = new UserTokenData
+            {
+                UserId = userProfile.UserId,
+                UserDeviceId = deviceData.Id,
+                DeviceId = deviceData.DeviceId,
+                RefreshToken = token.RefreshToken,
+                AccessToken = token.AccessToken,
+                AddDate = DateTime.Now,
+                AccessTokenExpiresTime = DateTime.Now.AddHours(AccessTokenExpiresHour),
+                RefreshTokenExpiresTime = DateTime.Now.AddHours(RefreshTokenExpiresHour)
+            });
+            Redis_UserToken_Cache(tokenData);
             return ApiResult.Succees(new AccessTokenResponse
             {
                 AccessToken = token.AccessToken,
@@ -233,20 +291,20 @@ namespace Agebull.OAuth.Business
                 return ApiResult<LoginUserInfo>.ErrorResult(ErrorCode.Auth_AccessToken_TimeOut);
             }
 
-            var userProfile = UserHelper.GetLoginUserInfo(tokenData.UserId, false);
+            var userProfile = UserHelper.GetLoginUserInfo(tokenData.UserId);
             if (userProfile == null || userProfile.State != UserStateType.Enable)
             {
                 LogRecorder.MonitorTrace($"用户不存在或禁用{tokenData.UserId}");
                 return ApiResult<LoginUserInfo>.ErrorResult(ErrorCode.Auth_AccessToken_TimeOut);
             }
 
-            var deviceInfo = GetDeviceInfo(tokenData.DeviceId);
+            var deviceInfo = GetDeviceInfo(tokenData.DeviceId, false);
             if (deviceInfo == null)
             {
                 LogRecorder.MonitorTrace($"DeviceId不存在或过期{tokenData.DeviceId}");
                 return ApiResult<LoginUserInfo>.ErrorResult(ErrorCode.Auth_AccessToken_TimeOut);
             }
-
+            userProfile.AccessToken = token;
             userProfile.Os = deviceInfo.Os;
             userProfile.App = deviceInfo.App;
             //AuthEvents.RaiseUserStateChanegd(tokenData.UserId, "active", deviceInfo.App);
@@ -267,7 +325,7 @@ namespace Agebull.OAuth.Business
                 {
                     AccessToken = request.AccessToken,
                     RefreshToken = request.RefreshToken,
-                    Profile = UserHelper.GetLoginUserInfo(tokenData.UserId, false)
+                    Profile = UserHelper.GetLoginUserInfo(tokenData.UserId)
                 });
             }
 
@@ -280,14 +338,14 @@ namespace Agebull.OAuth.Business
 
             Redis_UserToken_ClearByRefreshToken(request.RefreshToken);
 
-            var userProfile = UserHelper.GetLoginUserInfo(token.UserId, true);
+            var userProfile = UserHelper.GetLoginUserInfo(token.UserId);
             if (userProfile == null || userProfile.State != UserStateType.Enable)
             {
                 LogRecorder.MonitorTrace($"用户不存在或禁用{token.UserId}");
                 return ApiResult<AccessTokenResponse>.ErrorResult(ErrorCode.Auth_RefreshToken_Unknow);
             }
 
-            var deviceInfo = GetDeviceInfo(token.DeviceId);
+            var deviceInfo = GetDeviceInfo(token.DeviceId, true);
             if (deviceInfo == null)
             {
                 LogRecorder.MonitorTrace($"deviceInfo不存在或禁用{token.DeviceId}");
@@ -320,54 +378,64 @@ namespace Agebull.OAuth.Business
             });
         }
 
-        #endregion
-
-        #region 用户信息
-
-        #endregion
-
-        #region 功能实现
 
         private string CreateAccessToken()
         {
-            return "#" + Guid.NewGuid().ToString("N").ToUpper();
+            return $"#{RandomOperate.Generate(12)}";
         }
 
         private static string CreateRefreshToken()
         {
-            return Guid.NewGuid().ToString("N").ToUpper();
+            return $"${RandomOperate.Generate(12)}";
         }
+        #endregion
 
+        #region User
+
+        /// <summary>
+        ///     取得用户信息
+        /// </summary>
+        /// <param name="value">令牌或用户ID</param>
+        /// <returns>用户信息</returns>
+        ApiResult<LoginUserInfo> GetLoginUser(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                LogRecorder.MonitorTrace("参数错误");
+                return ApiResult.Error<LoginUserInfo>(ErrorCode.LogicalError, "参数错误");
+            }
+
+            if (value[0] == '#')
+            {
+                var tokenData = Redis_UserToken_GetByAccessToken(value);
+                if (tokenData == null)
+                {
+                    LogRecorder.MonitorTrace($"AT无效或过期{value}");
+                    return ApiResult.Error<LoginUserInfo>(ErrorCode.Auth_AccessToken_Unknow);
+                }
+
+                var user = UserHelper.GetLoginUserInfo(tokenData.UserId);
+                if (user != null && user.State == UserStateType.Enable)
+                    return ApiResult.Succees(user);
+
+                LogRecorder.MonitorTrace($"{(user == null ? "错误" : "禁用")}的UserId{tokenData.UserId}");
+                return ApiResult.Error<LoginUserInfo>(ErrorCode.Auth_User_Unknow);
+            }
+
+            if (long.TryParse(value, out var uid))
+            {
+                var user1 = UserHelper.GetLoginUserInfo(uid);
+                if (user1 != null && user1.State == UserStateType.Enable)
+                    return ApiResult.Succees(user1);
+                LogRecorder.MonitorTrace($"不正确的UserId{uid}");
+                return ApiResult.Error<LoginUserInfo>(ErrorCode.Auth_User_Unknow);
+            }
+            return ApiResult.Error<LoginUserInfo>(ErrorCode.LogicalError, "参数错误");
+        }
         #endregion
 
         #region DeviceId
 
-        /// <summary>
-        ///     生成DeviceId
-        /// </summary>
-        /// <param name="arg"></param>
-        /// <returns></returns>
-        ApiValueResult IOAuthBusiness.GetDeviceId(DeviceArgument arg)
-        {
-            using (MonitorScope.CreateScope("GetDeviceId"))
-            {
-                try
-                {
-                    string did;
-                    using (MonitorScope.CreateScope("db"))
-                    {
-                        did = CreateDeviceId(arg);
-                    }
-
-                    return ApiValueResult.Succees(did);
-                }
-                catch (Exception e)
-                {
-                    LogRecorder.Exception(e, "GetDeviceId");
-                    return ApiValueResult.ErrorResult(ErrorCode.LocalError);
-                }
-            }
-        }
 
         /// <summary>
         ///     检查设备标识（来自未登录用户）
@@ -378,7 +446,7 @@ namespace Agebull.OAuth.Business
         {
             using (MonitorScope.CreateScope("ValidateDeviceId"))
             {
-                var dv = GetDeviceInfo(token);
+                var dv = GetDeviceInfo(token, false);
 
                 if (string.IsNullOrWhiteSpace(dv?.Os) || string.IsNullOrWhiteSpace(dv.App))
                     return ApiResult<LoginUserInfo>.ErrorResult(ErrorCode.Auth_Device_Unknow);
@@ -465,10 +533,11 @@ namespace Agebull.OAuth.Business
         ///     取得缓存DeviceId
         /// </summary>
         /// <param name="deviceId"></param>
-        internal UserDeviceData GetDeviceInfo(string deviceId)
+        /// <param name="reload"></param>
+        internal UserDeviceData GetDeviceInfo(string deviceId, bool reload)
         {
             var deviceInfo = Redis_Device_Get(deviceId);
-            if (deviceInfo != null)
+            if (deviceInfo != null || !reload)
                 return deviceInfo;
             var dAccess = new UserDeviceDataAccess();
             deviceInfo = dAccess.FirstOrDefault(p => p.DeviceId == deviceId);
@@ -486,65 +555,6 @@ namespace Agebull.OAuth.Business
 
         #endregion
 
-
-        #region 配置
-
-        static AuthBusiness()
-        {
-            AccessTokenExpiresHour = ConfigurationManager.AppSettings.GetInt("AccessTokenExpiresHour", 0);
-            RefreshTokenExpiresHour = ConfigurationManager.AppSettings.GetInt("RefreshTokenExpiresHour", 0);
-        }
-
-        #endregion
-
-        #region 用户信息
-
-        /// <summary>
-        /// 取得用户组织信息
-        /// </summary>
-        private void GetUserOrgInfo(LoginUserInfo userInfo)
-        {
-            var ppAccess = new PositionPersonnelDataAccess();
-            var position = ppAccess.FirstOrDefault(p => p.UserId == userInfo.UserId);
-            if (position == null)
-                return;
-            userInfo.OrganizationId = position.OrganizationId;
-        }
-
-        /// <summary>
-        /// 取得用户组织信息
-        /// </summary>
-        OrganizationData GetOrganization(OrganizationData org, OrganizationDataAccess access)
-        {
-            if (org.Type == OrganizationType.Organization)
-                return org;
-            if (org.ParentId == 0)
-                return org;
-            var par = access.LoadByPrimaryKey(org.ParentId);
-            if (par == null)
-                return org;
-            if (par.Type == OrganizationType.Organization)
-                return par;
-            return GetOrganization(par, access);
-        }
-
-
-        /// <summary>
-        /// 取得用户组织信息
-        /// </summary>
-        OrganizationData GetGroup(OrganizationData org, OrganizationDataAccess access)
-        {
-            if (org.Type == OrganizationType.Area)
-                return org;
-            if (org.ParentId == 0)
-                return org;
-            var par = access.LoadByPrimaryKey(org.ParentId);
-            if (par == null)
-                return org;
-            return par.Type == OrganizationType.Area ? par : GetOrganization(par, access);
-        }
-        #endregion
-
         #region Redis Cache
 
         /// <summary>
@@ -555,7 +565,7 @@ namespace Agebull.OAuth.Business
         {
             using (var proxy = new RedisProxy(RedisProxy.DbAuthority))
             {
-                proxy.Set(RedisKeyBuilder.ToAuthKey("token", "did", tokenData.DeviceId), tokenData);
+                proxy.Set(RedisKeyBuilder.ToAuthKey("token", "did", tokenData.DeviceId), tokenData, TimeSpan.FromHours(AccessTokenExpiresHour * 2));
             }
         }
 
@@ -579,10 +589,8 @@ namespace Agebull.OAuth.Business
         {
             using (var proxy = new RedisProxy(RedisProxy.DbAuthority))
             {
-                proxy.Set(RedisKeyBuilder.ToAuthKey("at", tokenData.AccessToken), tokenData,
-                    TimeSpan.FromHours(AccessTokenExpiresHour));
-                proxy.Set(RedisKeyBuilder.ToAuthKey("rt", tokenData.RefreshToken), tokenData,
-                    TimeSpan.FromHours(RefreshTokenExpiresHour));
+                proxy.Set(RedisKeyBuilder.ToAuthKey("at", tokenData.AccessToken), tokenData, TimeSpan.FromHours(AccessTokenExpiresHour));
+                proxy.Set(RedisKeyBuilder.ToAuthKey("rt", tokenData.RefreshToken), tokenData, TimeSpan.FromHours(RefreshTokenExpiresHour));
             }
         }
 

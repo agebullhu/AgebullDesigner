@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:23:21*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/4/7 0:19:44*/
 #region
 using System;
 using System.Collections.Generic;
@@ -37,6 +37,22 @@ namespace Agebull.Common.AppManage.WebApi.Entity
     {
         #region 设计器命令
 
+        /// <summary>下拉列表</summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("edit/combo")]
+        public ApiArrayResult<EasyComboValues> ComboData()
+        {
+            GlobalContext.Current.IsManageMode = false;
+            var datas = Business.All();
+            var combos = datas.Select(p => new EasyComboValues(p.Id, p.ShortName)).ToList();
+            combos.Insert(0,new EasyComboValues(0, "-"));
+            return new ApiArrayResult<EasyComboValues>
+            {
+               Success = true,
+               ResultData = combos
+            };
+        }
 
         #endregion
 

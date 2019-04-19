@@ -420,9 +420,9 @@ function getFormJson(id) {
     var dataJson = {};
     var test = $(id).serializeArray();
     for (var i = 0; i < test.length; i++) {
-        var nameT = test[i].name;
-        var valueT = test[i].value;
-        dataJson[nameT] = valueT.trim();
+        var name2 = test[i].name;
+        var value2 = test[i].value;
+        dataJson[name2] = value2.trim();
     }
     /*隐藏*/
     $(id + " input[type='hidden']").each(function () {

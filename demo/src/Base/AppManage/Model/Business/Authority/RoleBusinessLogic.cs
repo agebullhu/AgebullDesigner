@@ -21,7 +21,7 @@ using Agebull.Common.OAuth;
 using Agebull.EntityModel.Common;
 
 using Agebull.EntityModel.MySql;
-using Agebull.EntityModel.MySql.BusinessLogic;
+using Agebull.EntityModel.BusinessLogic.MySql;
 
 using Agebull.Common.Organizations;
 using Agebull.Common.OAuth;

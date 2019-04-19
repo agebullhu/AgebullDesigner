@@ -11,12 +11,21 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\netcoreapp2.1\Flysh.Authority.ZeroApi.xml</DocumentationFile>
+    <DocumentationFile>C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ZeroApi\Auth.ZeroApi.xml</DocumentationFile>
     <OutputPath></OutputPath>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Projects\Agebull\AgebullDesigner\demo\src\Base\Auth\ZeroApi\Auth.ZeroApi.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\Model\Auth.Model.csproj" />
+    <PackageReference Include="Agebull.MicroZero.ModelApi" Version="1.4.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\HPC\HpcUser\HpcUser.csproj" />
+    <ProjectReference Include="..\..\AppManage\Model\AppManage.Model.csproj" />
   </ItemGroup>
 
   <ItemGroup>

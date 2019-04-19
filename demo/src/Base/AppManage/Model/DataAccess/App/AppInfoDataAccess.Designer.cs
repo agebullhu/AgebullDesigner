@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 16:21:16*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/4/15 10:58:40*/
 #region
 using System;
 using System.Collections.Generic;
@@ -114,7 +114,7 @@ namespace Agebull.Common.AppManage.DataAccess
             get
             {
                 return @"
-INSERT INTO `tb_app_app_info`
+INSERT INTO `{ContextWriteTable}`
 (
     `app_type`,
     `short_name`,
@@ -156,7 +156,7 @@ SELECT @@IDENTITY;";
             get
             {
                 return @"
-UPDATE `tb_app_app_info` SET
+UPDATE `{ContextWriteTable}` SET
        `app_type` = ?AppType,
        `short_name` = ?ShortName,
        `full_name` = ?FullName,
@@ -179,7 +179,7 @@ UPDATE `tb_app_app_info` SET
             if (data.__EntityStatusNull || !data.__EntityStatus.IsModified)
                 return ";";
             StringBuilder sql = new StringBuilder();
-            sql.AppendLine("UPDATE `tb_app_app_info` SET");
+            sql.AppendLine("UPDATE `{ContextWriteTable}` SET");
             //应用类型
             if (data.__EntityStatus.ModifiedProperties[AppInfoData._DataStruct_.Real_AppType] > 0)
                 sql.AppendLine("       `app_type` = ?AppType");
@@ -367,7 +367,7 @@ UPDATE `tb_app_app_info` SET
         /// <param name="entity">实体对象</param>
         /// <param name="cmd">命令</param>
         /// <returns>返回真说明要取主键</returns>
-        private void CreateFullSqlParameter(AppInfoData entity, MySqlCommand cmd)
+        public void CreateFullSqlParameter(AppInfoData entity, MySqlCommand cmd)
         {
             //02:标识(Id)
             cmd.Parameters.Add(new MySqlParameter("Id",MySqlDbType.Int64){ Value = entity.Id});

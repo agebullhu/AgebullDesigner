@@ -31,6 +31,16 @@ namespace Agebull.EntityModel.Designer
     {
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                Catalog = "编辑",
+                SignleSoruce = false,
+                IsButton = false,
+                Caption = "自动分类",
+                Action = AutoClassify,
+                SoruceView = "argument",
+                IconName = "tree_Open"
+            }); 
             commands.Add(new CommandItemBuilder
             {
                 Action = SaveEntity,
@@ -114,6 +124,28 @@ namespace Agebull.EntityModel.Designer
 
         #region 关联设置
 
+        /// <summary>
+        ///     导出到Excel
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="tables"></param>
+        public void AutoClassify(EntityConfig entity)
+        {
+            var words = GlobalConfig.SplitWords(entity.Name);
+            if (words.Count > 1)
+            {
+                var cls = entity.Parent.Classifies.FirstOrDefault(p => p.Name == words[0]);
+                if (cls == null)
+                {
+                    entity.Parent.Classifies.Add(cls = new EntityClassify
+                    {
+                        Name = words[0]
+                    });
+                }
+                entity.Classify = cls.Name;
+                cls.Items.Add(entity);
+            }
+        }
         /// <summary>
         /// 新增命令
         /// </summary>

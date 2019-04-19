@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:16:57*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/4/15 10:58:48*/
 #region
 using System;
 using System.Collections.Generic;
@@ -451,6 +451,76 @@ namespace Agebull.Common.AppManage
                 this.OnPropertyChanged(_DataStruct_.Real_AuthorId);
             }
         }
+        /// <summary>
+        /// 组织标识
+        /// </summary>
+        [IgnoreDataMember,JsonIgnore]
+        public long _orgID;
+
+        partial void OnOrgIDGet();
+
+        partial void OnOrgIDSet(ref long value);
+
+        partial void OnOrgIDSeted();
+
+        
+        /// <summary>
+        /// 组织标识
+        /// </summary>
+        [DataRule(CanNull = true)]
+        [DataMember , JsonProperty("OrgID", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"组织标识")]
+        public  long OrgID
+        {
+            get
+            {
+                OnOrgIDGet();
+                return this._orgID;
+            }
+            set
+            {
+                if(this._orgID == value)
+                    return;
+                OnOrgIDSet(ref value);
+                this._orgID = value;
+                OnOrgIDSeted();
+                this.OnPropertyChanged(_DataStruct_.Real_OrgID);
+            }
+        }
+        /// <summary>
+        /// 站点标识
+        /// </summary>
+        [IgnoreDataMember,JsonIgnore]
+        public long _siteID;
+
+        partial void OnSiteIDGet();
+
+        partial void OnSiteIDSet(ref long value);
+
+        partial void OnSiteIDSeted();
+
+        
+        /// <summary>
+        /// 站点标识
+        /// </summary>
+        [DataRule(CanNull = true)]
+        [DataMember , JsonProperty("SiteID", NullValueHandling = NullValueHandling.Ignore) , DisplayName(@"站点标识")]
+        public  long SiteID
+        {
+            get
+            {
+                OnSiteIDGet();
+                return this._siteID;
+            }
+            set
+            {
+                if(this._siteID == value)
+                    return;
+                OnSiteIDSet(ref value);
+                this._siteID = value;
+                OnSiteIDSeted();
+                this.OnPropertyChanged(_DataStruct_.Real_SiteID);
+            }
+        }
 
         #region 接口属性
 
@@ -462,6 +532,127 @@ namespace Agebull.Common.AppManage
 
 
         #region 名称的属性操作
+
+    
+
+        /// <summary>
+        ///     设置属性值
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="value"></param>
+        protected override bool SetValueInner(string property, string value)
+        {
+            if(property == null) return false;
+            switch(property.Trim().ToLower())
+            {
+            case "id":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (long.TryParse(value, out var vl))
+                    {
+                        this.Id = vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "name":
+            case "role":
+                this.Role = string.IsNullOrWhiteSpace(value) ? null : value;
+                return true;
+            case "caption":
+                this.Caption = string.IsNullOrWhiteSpace(value) ? null : value;
+                return true;
+            case "memo":
+                this.Memo = string.IsNullOrWhiteSpace(value) ? null : value;
+                return true;
+            case "isfreeze":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (bool.TryParse(value, out var vl))
+                    {
+                        this.IsFreeze = vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "datastate":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (DataStateType.TryParse(value, out var val))
+                    {
+                        this.DataState = val;
+                        return true;
+                    }
+                    else if (int.TryParse(value, out var vl))
+                    {
+                        this.DataState = (DataStateType)vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "adddate":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (DateTime.TryParse(value, out var vl))
+                    {
+                        this.AddDate = vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "lastreviserid":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (long.TryParse(value, out var vl))
+                    {
+                        this.LastReviserId = vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "lastmodifydate":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (DateTime.TryParse(value, out var vl))
+                    {
+                        this.LastModifyDate = vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "authorid":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (long.TryParse(value, out var vl))
+                    {
+                        this.AuthorId = vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "orgid":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (long.TryParse(value, out var vl))
+                    {
+                        this.OrgID = vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "siteid":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (long.TryParse(value, out var vl))
+                    {
+                        this.SiteID = vl;
+                        return true;
+                    }
+                }
+                return false;
+            }
+            return false;
+        }
 
     
 
@@ -544,6 +735,12 @@ namespace Agebull.Common.AppManage
             case "authorid":
                 this.AuthorId = (long)Convert.ToDecimal(value);
                 return;
+            case "orgid":
+                this.OrgID = (long)Convert.ToDecimal(value);
+                return;
+            case "siteid":
+                this.SiteID = (long)Convert.ToDecimal(value);
+                return;
             }
 
             //System.Diagnostics.Trace.WriteLine(property + @"=>" + value);
@@ -591,6 +788,12 @@ namespace Agebull.Common.AppManage
             case _DataStruct_.AuthorId:
                 this.AuthorId = Convert.ToInt64(value);
                 return;
+            case _DataStruct_.OrgID:
+                this.OrgID = Convert.ToInt64(value);
+                return;
+            case _DataStruct_.SiteID:
+                this.SiteID = Convert.ToInt64(value);
+                return;
             }
         }
 
@@ -624,6 +827,10 @@ namespace Agebull.Common.AppManage
                 return this.LastModifyDate;
             case "authorid":
                 return this.AuthorId;
+            case "orgid":
+                return this.OrgID;
+            case "siteid":
+                return this.SiteID;
             }
 
             return null;
@@ -658,6 +865,10 @@ namespace Agebull.Common.AppManage
                     return this.LastModifyDate;
                 case _DataStruct_.AuthorId:
                     return this.AuthorId;
+                case _DataStruct_.OrgID:
+                    return this.OrgID;
+                case _DataStruct_.SiteID:
+                    return this.SiteID;
             }
 
             return null;
@@ -689,6 +900,8 @@ namespace Agebull.Common.AppManage
             this._lastReviserId = sourceEntity._lastReviserId;
             this._lastModifyDate = sourceEntity._lastModifyDate;
             this._authorId = sourceEntity._authorId;
+            this._orgID = sourceEntity._orgID;
+            this._siteID = sourceEntity._siteID;
             CopyExtendValue(sourceEntity);
             this.__EntityStatus.SetModified();
         }
@@ -709,6 +922,8 @@ namespace Agebull.Common.AppManage
                 this.LastReviserId = source.LastReviserId;
                 this.LastModifyDate = source.LastModifyDate;
                 this.AuthorId = source.AuthorId;
+                this.OrgID = source.OrgID;
+                this.SiteID = source.SiteID;
         }
         #endregion
 
@@ -737,6 +952,8 @@ namespace Agebull.Common.AppManage
                 OnLastReviserIdModified(subsist,false);
                 OnLastModifyDateModified(subsist,false);
                 OnAuthorIdModified(subsist,false);
+                OnOrgIDModified(subsist,false);
+                OnSiteIDModified(subsist,false);
                 return;
             }
             else if (subsist == EntitySubsist.Adding || subsist == EntitySubsist.Added)
@@ -751,9 +968,11 @@ namespace Agebull.Common.AppManage
                 OnLastReviserIdModified(subsist,true);
                 OnLastModifyDateModified(subsist,true);
                 OnAuthorIdModified(subsist,true);
+                OnOrgIDModified(subsist,true);
+                OnSiteIDModified(subsist,true);
                 return;
             }
-            else if(modifieds != null && modifieds[10] > 0)
+            else if(modifieds != null && modifieds[12] > 0)
             {
                 OnIdModified(subsist,modifieds[_DataStruct_.Real_Id] == 1);
                 OnRoleModified(subsist,modifieds[_DataStruct_.Real_Role] == 1);
@@ -765,6 +984,8 @@ namespace Agebull.Common.AppManage
                 OnLastReviserIdModified(subsist,modifieds[_DataStruct_.Real_LastReviserId] == 1);
                 OnLastModifyDateModified(subsist,modifieds[_DataStruct_.Real_LastModifyDate] == 1);
                 OnAuthorIdModified(subsist,modifieds[_DataStruct_.Real_AuthorId] == 1);
+                OnOrgIDModified(subsist,modifieds[_DataStruct_.Real_OrgID] == 1);
+                OnSiteIDModified(subsist,modifieds[_DataStruct_.Real_SiteID] == 1);
             }
         }
 
@@ -867,6 +1088,26 @@ namespace Agebull.Common.AppManage
         /// 对关联的属性的更改,请自行保存,否则可能丢失
         /// </remarks>
         partial void OnAuthorIdModified(EntitySubsist subsist,bool isModified);
+
+        /// <summary>
+        /// 组织标识修改的后期处理(保存前)
+        /// </summary>
+        /// <param name="subsist">当前对象状态</param>
+        /// <param name="isModified">是否被修改</param>
+        /// <remarks>
+        /// 对关联的属性的更改,请自行保存,否则可能丢失
+        /// </remarks>
+        partial void OnOrgIDModified(EntitySubsist subsist,bool isModified);
+
+        /// <summary>
+        /// 站点标识修改的后期处理(保存前)
+        /// </summary>
+        /// <param name="subsist">当前对象状态</param>
+        /// <param name="isModified">是否被修改</param>
+        /// <remarks>
+        /// 对关联的属性的更改,请自行保存,否则可能丢失
+        /// </remarks>
+        partial void OnSiteIDModified(EntitySubsist subsist,bool isModified);
         #endregion
 
         #region 数据结构
@@ -1008,6 +1249,26 @@ namespace Agebull.Common.AppManage
             /// 制作人的实时记录顺序
             /// </summary>
             public const int Real_AuthorId = 9;
+
+            /// <summary>
+            /// 组织标识的数字标识
+            /// </summary>
+            public const byte OrgID = 13;
+            
+            /// <summary>
+            /// 组织标识的实时记录顺序
+            /// </summary>
+            public const int Real_OrgID = 10;
+
+            /// <summary>
+            /// 站点标识的数字标识
+            /// </summary>
+            public const byte SiteID = 14;
+            
+            /// <summary>
+            /// 站点标识的实时记录顺序
+            /// </summary>
+            public const int Real_SiteID = 11;
 
             /// <summary>
             /// 实体结构
@@ -1184,6 +1445,40 @@ namespace Agebull.Common.AppManage
                             Caption      = @"制作人",
                             Description  = @"制作人",
                             ColumnName   = "author_id",
+                            PropertyType = typeof(long),
+                            CanNull      = false,
+                            ValueType    = PropertyValueType.Value,
+                            CanImport    = false,
+                            CanExport    = false
+                        }
+                    },
+                    {
+                        Real_OrgID,
+                        new PropertySturct
+                        {
+                            Index        = OrgID,
+                            Name         = "OrgID",
+                            Title        = "组织标识",
+                            Caption      = @"组织标识",
+                            Description  = @"组织标识",
+                            ColumnName   = "org_id",
+                            PropertyType = typeof(long),
+                            CanNull      = false,
+                            ValueType    = PropertyValueType.Value,
+                            CanImport    = false,
+                            CanExport    = false
+                        }
+                    },
+                    {
+                        Real_SiteID,
+                        new PropertySturct
+                        {
+                            Index        = SiteID,
+                            Name         = "SiteID",
+                            Title        = "站点标识",
+                            Caption      = @"站点标识",
+                            Description  = @"站点标识",
+                            ColumnName   = "site_id",
                             PropertyType = typeof(long),
                             CanNull      = false,
                             ValueType    = PropertyValueType.Value,

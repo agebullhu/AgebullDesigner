@@ -8,14 +8,18 @@ using Agebull.Common.Organizations.DataAccess;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.MySql;
 using Agebull.EntityModel.Redis;
+using Agebull.MicroZero.PubSub;
 using Agebull.MicroZero.ZeroApis;
+using HPC.Projects;
+using HPC.Projects.BusinessLogic;
+using Newtonsoft.Json;
 
 namespace Agebull.Common.Organizations
 {
     /// <summary>
     /// 用户信息API
     /// </summary>
-    sealed partial class UserInfoApiLogical
+    sealed partial class UserBusinessLogical
     {
 
         #region 修改信息
@@ -158,7 +162,7 @@ namespace Agebull.Common.Organizations
                 ErrorCode = ErrorCode.Success,
                 ClientMessage = "修改成功"
             };
-            UserHelper.SyncUserProfile(GlobalContext.Customer.UserId);
+            UserHelper.CacheUserInfo(GlobalContext.Customer.UserId);
         }
 
 
@@ -179,7 +183,7 @@ namespace Agebull.Common.Organizations
                 ErrorCode = ErrorCode.Success,
                 ClientMessage = "修改成功"
             };
-            UserHelper.SyncUserProfile(GlobalContext.Customer.UserId);
+            UserHelper.CacheUserInfo(GlobalContext.Customer.UserId);
         }
         partial void UpdatePassword(UpdatePasswordRequest arg, ApiResult result)
         {
@@ -352,37 +356,21 @@ namespace Agebull.Common.Organizations
             }
         }
 
-
-
         /// <summary>
         /// 生成并返回登录信息
         /// </summary>
-        private void CreateAccessToken(ApiResult<LoginResponse> result, UserData user, PersonData person, string account, string type)
+        private void CreateAccessToken(ApiResult<LoginResponse> result, PersonData person, UserData user, EmployeeData employee, string account, string type)
         {
             try
             {
                 ClearErrorCount(account);
                 var bl = IocHelper.Create<IOAuthBusiness>();
-                var re = bl.CreateAccessToken(user, type, account, GlobalContext.Current.Token);
+                var re = bl.CreateAccessToken(user, person, employee, null);
                 result.Success = re.Success;
                 result.Status = re.Status;
                 if (!result.Success)
                     return;
-                result.ResultData = new LoginResponse
-                {
-                    AccessToken = re.ResultData?.AccessToken,
-                    RefreshToken = re.ResultData?.RefreshToken,
-                    Profile = new PersonPublishInfo
-                    {
-                        NickName = re.ResultData?.Profile?.NickName ?? UserHelper.GetDefaultNikeName(person.PhoneNumber),
-                        AvatarUrl = re.ResultData?.Profile?.AvatarUrl ?? UserHelper.DefaultAvatarUrlPath,
-                        PhoneNumber = person.PhoneNumber
-                    }
-                };
-                //#region 添加微信票据信息
-                //WechatHelp.FillLoginResponseWithWechatData(user.UserId, result.ResultData);
-                ////WechatHelp.FillLoginResponseWithWechatData(user.UserId, result.ResultData,result);
-                //#endregion
+                ToResult(result, person, type, re);
             }
             catch (Exception e)
             {
@@ -396,7 +384,83 @@ namespace Agebull.Common.Organizations
         }
 
 
-        [Conditional("LoginLog")]
+        /// <summary>
+        /// 生成并返回登录信息
+        /// </summary>
+        private void CreateAccessToken(ApiResult<LoginResponse> result, PersonData person, UserData user, string account, string type)
+        {
+            try
+            {
+                ClearErrorCount(account);
+                var bl = IocHelper.Create<IOAuthBusiness>();
+                var re = bl.CreateAccessToken(user, person, GlobalContext.Current.Token);
+                result.Success = re.Success;
+                result.Status = re.Status;
+                if (!result.Success)
+                    return;
+                ToResult(result, person, type, re);
+            }
+            catch (Exception e)
+            {
+                LogRecorder.Exception(e);
+                result.Success = false;
+                result.Status = new ApiStatusResult
+                {
+                    ErrorCode = ErrorCode.LocalException
+                };
+            }
+        }
+
+        /// <summary>
+        /// 生成并返回登录信息
+        /// </summary>
+        private void CreateAccessToken(ApiResult<LoginResponse> result, PersonData person, string account, string type)
+        {
+            try
+            {
+                ClearErrorCount(account);
+                var bl = IocHelper.Create<IOAuthBusiness>();
+                var re = bl.CreateAccessToken(person.UserId, type, account, GlobalContext.Current.Token);
+                result.Success = re.Success;
+                result.Status = re.Status;
+                if (!result.Success)
+                    return;
+                ToResult(result, person, type, re);
+            }
+            catch (Exception e)
+            {
+                LogRecorder.Exception(e);
+                result.Success = false;
+                result.Status = new ApiStatusResult
+                {
+                    ErrorCode = ErrorCode.LocalException
+                };
+            }
+        }
+
+
+
+        private static void ToResult(ApiResult<LoginResponse> result, PersonData person, string type, ApiResult<AccessTokenResponse> re)
+        {
+            result.ResultData = new LoginResponse
+            {
+                AccessToken = re.ResultData?.AccessToken,
+                RefreshToken = re.ResultData?.RefreshToken,
+                Profile = new PersonPublishInfo
+                {
+                    NickName = re.ResultData?.Profile?.NickName ?? UserHelper.GetDefaultNikeName(person.PhoneNumber),
+                    AvatarUrl = re.ResultData?.Profile?.AvatarUrl ?? UserHelper.DefaultAvatarUrlPath,
+                    PhoneNumber = person.PhoneNumber
+                }
+            };
+            //#region 添加微信票据信息
+            //WechatHelp.FillLoginResponseWithWechatData(user.UserId, result.ResultData);
+            ////WechatHelp.FillLoginResponseWithWechatData(user.UserId, result.ResultData,result);
+            //#endregion
+            ZeroPublisher.DoPublish("AuthMessage", "User", type, new Argument<long> { Value = person.UserId });
+        }
+
+        //[Conditional("LoginLog")]
         private static void LoginLog(long userId, string channal, AuthorizeType loginType, string loginName, bool state = true)
         {
             var access = new LoginLogDataAccess();
@@ -475,13 +539,13 @@ namespace Agebull.Common.Organizations
                         aAccess.Insert(user = UserHelper.NewUser());
                     }
                     LoginLog(user.UserId, arg.Channel, AuthorizeType.MobilePhone, arg.MobilePhone);
-                    CreateAccessToken(result, user, person, person.PhoneNumber, "login");
+                    CreateAccessToken(result, person, user, person.PhoneNumber, "login");
                 }
                 else
                 {
                     var user = InsertUserByPhone(arg, out person);
                     LoginLog(user.UserId, arg.Channel, AuthorizeType.MobilePhone, arg.MobilePhone);
-                    CreateAccessToken(result, user, person, person.PhoneNumber, "registe");
+                    CreateAccessToken(result, person, user, person.PhoneNumber, "registe");
                 }
             }
         }
@@ -526,32 +590,32 @@ namespace Agebull.Common.Organizations
                     }
                     using (var tc = TransactionScope.CreateScope(scope.DataBase))
                     {
-                        UserData user;
                         var pAccess = new PersonDataAccess();
                         var person = pAccess.FirstOrDefault(p => p.PhoneNumber.Equals(arg.MobilePhone));
                         if (person == null)
                         {
-                            user = InsertUserByPhone(new RegByPhoneRequest
+                            var user =InsertUserByPhone(new RegByPhoneRequest
                             {
                                 MobilePhone = arg.MobilePhone,
                                 Channel = arg.Channel,
                                 TraceMark = arg.TraceMark
                             }, out person);
-                            CreateAccessToken(result, user, person, person.PhoneNumber, "regist");
+                            LoginLog(person.UserId, arg.Channel, AuthorizeType.MobilePhone, arg.MobilePhone);
+                            CreateAccessToken(result, person, user, person.PhoneNumber, "regist");
                         }
                         else
                         {
+                            var uAccess = new UserDataAccess();
+                            var user = uAccess.LoadByPrimaryKey(person.Id);
                             //手机号检验,已注册的，直接登录
-                            var aAccess = new UserDataAccess();
-                            user = aAccess.LoadByPrimaryKey(person.UserId);
-                            CreateAccessToken(result, user, person, person.PhoneNumber, "login");
+                            LoginLog(person.UserId, arg.Channel, AuthorizeType.MobilePhone, arg.MobilePhone);
+                            CreateAccessToken(result, person, user, person.PhoneNumber, "login");
                         }
 
                         if (result.Success)
                         {
                             result.ResultData.Profile.IsRegist = person.IdCard == null;
                         }
-                        LoginLog(user.UserId, arg.Channel, AuthorizeType.MobilePhone, arg.MobilePhone);
                         tc.SetState(true);
                     }
                 }
@@ -580,6 +644,87 @@ namespace Agebull.Common.Organizations
         }
 
 
+        /// <summary>
+        ///     账户登录:账户登录:
+        /// </summary>
+        /// <param name="arg">基于手机的账号登录参数</param>
+        /// <returns>登录返回数据</returns>
+        string IUserApi.HpcLogin(PhoneLoginRequest arg)
+        {
+            var vr = arg.Validate();
+            if (!vr.Succeed)
+                return JsonConvert.SerializeObject(ApiResult<LoginResponse>.ErrorResult(ErrorCode.LogicalError, vr.ToString()));
+            var bl = new EmployeeBusinessLogic();
+            var e = bl.Login(arg.MobilePhone, arg.UserPassword, out var result);
+            if (e == null)
+            {
+                return result;
+            }
+
+            //手机号检验,已注册的，直接登录
+            var aAccess = new AccountDataAccess();
+            var account = aAccess.FirstOrDefault(p => p.AccountName.Equals(arg.MobilePhone));
+            if (account == null)
+            {
+                aAccess.Insert(new AccountData
+                {
+                    UserId = e.EID,
+                    AccountName = e.Phone,
+                    Password = passwordEncrypt.Encrypt(arg.UserPassword)
+                });
+            }
+
+            var pAccess = new PersonDataAccess();
+            var person = pAccess.LoadByPrimaryKey(e.EID) ?? pAccess.First(p => p.PhoneNumber == arg.MobilePhone);
+            long uid = 0;
+            if (person == null)
+            {
+                pAccess.Insert(person = new PersonData
+                {
+                    UserId = e.EID,
+                    PhoneNumber = e.Phone,
+                    RealName = e.EmployeeName,
+                    Sex = e.Gender == "女" ? SexType.Female : e.Gender == "男" ? SexType.Male : SexType.None ,
+                    Email = e.Email
+                });
+                uid = person.UserId;
+            }
+            else
+            {
+                uid = person.UserId;
+                if (e.EID != person.UserId)
+                {
+                    pAccess.SetValue(p => p.Id, e.EID, uid);
+                }
+            }
+
+            var uAccess = new UserDataAccess();
+            var user = uAccess.LoadByPrimaryKey(uid);
+            if (user == null)
+            {
+                uAccess.Insert(user = new UserData
+                {
+                    UserId = e.EID,
+                    RegistSoure = AuthorizeType.Account,
+                    AuthorizeScreen = AuthorizeType.Account,
+                    App = "HPC",
+                    OpenId = UserHelper.NewOpenId(),
+                    Status = UserStatusType.Regist,
+                    UserType = UserType.InnerEmployee
+                });
+            }
+            else if (e.EID != user.UserId)
+            {
+                uAccess.SetValue(p => p.Id, e.EID, uid);
+            }
+
+            ApiResult<LoginResponse> re = new ApiResult<LoginResponse>();
+            LoginLog(user.UserId, null, AuthorizeType.Account, arg.MobilePhone);
+            CreateAccessToken(re, person, user,e, arg.MobilePhone, "login");
+            return !re.Success 
+                ? MessageProtocol.getReturnMessage(MessageProtocol.StateError, re.Status.ClientMessage)
+                : bl.LoginInfo(e, re.ResultData?.AccessToken);
+        }
 
 
         /// <summary>
@@ -638,7 +783,7 @@ namespace Agebull.Common.Organizations
                 var pAccess = new PersonDataAccess();
                 var person = pAccess.LoadByPrimaryKey(account.UserId);
                 LoginLog(user.UserId, null, AuthorizeType.Account, arg.MobilePhone);
-                CreateAccessToken(result, user, person, arg.MobilePhone, "login");
+                CreateAccessToken(result, person, user, arg.MobilePhone, "login");
             }
         }
 

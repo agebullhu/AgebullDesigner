@@ -95,6 +95,7 @@
     <Compile Include="Command\ImportModel.cs" />
     <Compile Include="Command\ProjectEntityCommand.cs" />
     <Compile Include="Import\AssemblyImporter.cs" />
+    <Compile Include="Import\AutoClassify.cs" />
     <Compile Include="Import\DesignToExcel.cs" />
     <Compile Include="Import\EdmxReader.cs" />
     <Compile Include="Import\FilterWriter.cs" />

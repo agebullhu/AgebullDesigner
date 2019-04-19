@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 12:20:04*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/4/15 10:58:48*/
 #region
 using System;
 using System.Collections.Generic;
@@ -59,7 +59,7 @@ namespace Agebull.Common.AppManage.DataAccess
         {
             get
             {
-                return @"tb_app_page_item";
+                return @"tb_app_page";
             }
         }
 
@@ -70,7 +70,7 @@ namespace Agebull.Common.AppManage.DataAccess
         {
             get
             {
-                return @"tb_app_page_item";
+                return @"tb_app_page";
             }
         }
 
@@ -97,8 +97,12 @@ namespace Agebull.Common.AppManage.DataAccess
     `url` AS `Url`,
     `extend_value` AS `ExtendValue`,
     `json` AS `Json`,
+    `parent_id` AS `ParentId`,
+    `is_show` AS `IsShow`,
+    `icon_size` AS `IconSize`,
+    `icon_color` AS `IconColor`,
     `memo` AS `Memo`,
-    `parent_id` AS `ParentId`";
+    `page_item_id` AS `PageItemId`";
             }
         }
 
@@ -112,8 +116,9 @@ namespace Agebull.Common.AppManage.DataAccess
             get
             {
                 return @"
-INSERT INTO `tb_app_page_item`
+INSERT INTO `{ContextWriteTable}`
 (
+    `id`,
     `app_info_id`,
     `name`,
     `caption`,
@@ -123,11 +128,16 @@ INSERT INTO `tb_app_page_item`
     `url`,
     `extend_value`,
     `json`,
+    `parent_id`,
+    `is_show`,
+    `icon_size`,
+    `icon_color`,
     `memo`,
-    `parent_id`
+    `page_item_id`
 )
 VALUES
 (
+    ?Id,
     ?AppInfoId,
     ?Name,
     ?Caption,
@@ -137,10 +147,13 @@ VALUES
     ?Url,
     ?ExtendValue,
     ?Json,
+    ?ParentId,
+    ?IsShow,
+    ?IconSize,
+    ?IconColor,
     ?Memo,
-    ?ParentId
-);
-SELECT @@IDENTITY;";
+    ?PageItemId
+);";
             }
         }
 
@@ -152,7 +165,8 @@ SELECT @@IDENTITY;";
             get
             {
                 return @"
-UPDATE `tb_app_page_item` SET
+UPDATE `{ContextWriteTable}` SET
+       `id` = ?Id,
        `app_info_id` = ?AppInfoId,
        `name` = ?Name,
        `caption` = ?Caption,
@@ -162,8 +176,12 @@ UPDATE `tb_app_page_item` SET
        `url` = ?Url,
        `extend_value` = ?ExtendValue,
        `json` = ?Json,
+       `parent_id` = ?ParentId,
+       `is_show` = ?IsShow,
+       `icon_size` = ?IconSize,
+       `icon_color` = ?IconColor,
        `memo` = ?Memo,
-       `parent_id` = ?ParentId
+       `page_item_id` = ?PageItemId
  WHERE `id` = ?Id;";
             }
         }
@@ -176,7 +194,10 @@ UPDATE `tb_app_page_item` SET
             if (data.__EntityStatusNull || !data.__EntityStatus.IsModified)
                 return ";";
             StringBuilder sql = new StringBuilder();
-            sql.AppendLine("UPDATE `tb_app_page_item` SET");
+            sql.AppendLine("UPDATE `{ContextWriteTable}` SET");
+            //标识
+            if (data.__EntityStatus.ModifiedProperties[PageItemData._DataStruct_.Real_Id] > 0)
+                sql.AppendLine("       `id` = ?Id");
             //应用信息外键
             if (data.__EntityStatus.ModifiedProperties[PageItemData._DataStruct_.Real_AppInfoId] > 0)
                 sql.AppendLine("       `app_info_id` = ?AppInfoId");
@@ -204,12 +225,24 @@ UPDATE `tb_app_page_item` SET
             //扩展的JSON配置
             if (data.__EntityStatus.ModifiedProperties[PageItemData._DataStruct_.Real_Json] > 0)
                 sql.AppendLine("       `json` = ?Json");
-            //备注
-            if (data.__EntityStatus.ModifiedProperties[PageItemData._DataStruct_.Real_Memo] > 0)
-                sql.AppendLine("       `memo` = ?Memo");
             //上级标识
             if (data.__EntityStatus.ModifiedProperties[PageItemData._DataStruct_.Real_ParentId] > 0)
                 sql.AppendLine("       `parent_id` = ?ParentId");
+            //是否显示
+            if (data.__EntityStatus.ModifiedProperties[PageItemData._DataStruct_.Real_IsShow] > 0)
+                sql.AppendLine("       `is_show` = ?IsShow");
+            //图标大小
+            if (data.__EntityStatus.ModifiedProperties[PageItemData._DataStruct_.Real_IconSize] > 0)
+                sql.AppendLine("       `icon_size` = ?IconSize");
+            //图标颜色
+            if (data.__EntityStatus.ModifiedProperties[PageItemData._DataStruct_.Real_IconColor] > 0)
+                sql.AppendLine("       `icon_color` = ?IconColor");
+            //备注
+            if (data.__EntityStatus.ModifiedProperties[PageItemData._DataStruct_.Real_Memo] > 0)
+                sql.AppendLine("       `memo` = ?Memo");
+            //页面标识
+            if (data.__EntityStatus.ModifiedProperties[PageItemData._DataStruct_.Real_PageItemId] > 0)
+                sql.AppendLine("       `page_item_id` = ?PageItemId");
             sql.Append(" WHERE `id` = ?Id;");
             return sql.ToString();
         }
@@ -222,7 +255,7 @@ UPDATE `tb_app_page_item` SET
         /// <summary>
         ///  所有字段
         /// </summary>
-        static string[] _fields = new string[]{ "Id","AppInfoId","Name","Caption","ItemType","Index","Icon","Url","ExtendValue","Json","Memo","ParentId" };
+        static string[] _fields = new string[]{ "Id","AppInfoId","Name","Caption","ItemType","Index","Icon","Url","ExtendValue","Json","ParentId","IsShow","IconSize","IconColor","Memo","PageItemId" };
 
         /// <summary>
         ///  所有字段
@@ -253,9 +286,17 @@ UPDATE `tb_app_page_item` SET
             { "ExtendValue" , "extend_value" },
             { "extend_value" , "extend_value" },
             { "Json" , "json" },
-            { "Memo" , "memo" },
             { "ParentId" , "parent_id" },
-            { "parent_id" , "parent_id" }
+            { "parent_id" , "parent_id" },
+            { "IsShow" , "is_show" },
+            { "is_show" , "is_show" },
+            { "IconSize" , "icon_size" },
+            { "icon_size" , "icon_size" },
+            { "IconColor" , "icon_color" },
+            { "icon_color" , "icon_color" },
+            { "Memo" , "memo" },
+            { "PageItemId" , "page_item_id" },
+            { "page_item_id" , "page_item_id" }
         };
 
         /// <summary>
@@ -299,9 +340,17 @@ UPDATE `tb_app_page_item` SET
                 if (!reader.IsDBNull(9))
                     entity._json = /*(LONGTEXT)*/reader.GetValue(9).ToString();
                 if (!reader.IsDBNull(10))
-                    entity._memo = reader.GetString(10).ToString();
+                    entity._parentId = (long)reader.GetInt64(10);
                 if (!reader.IsDBNull(11))
-                    entity._parentId = (long)reader.GetInt64(11);
+                    entity._isShow = (bool)reader.GetBoolean(11);
+                if (!reader.IsDBNull(12))
+                    entity._iconSize = (int)reader.GetInt32(12);
+                if (!reader.IsDBNull(13))
+                    entity._iconColor = reader.GetString(13).ToString();
+                if (!reader.IsDBNull(14))
+                    entity._memo = reader.GetString(14).ToString();
+                if (!reader.IsDBNull(15))
+                    entity._pageItemId = (long)reader.GetInt64(15);
             }
         }
 
@@ -334,9 +383,17 @@ UPDATE `tb_app_page_item` SET
                     return MySqlDbType.VarString;
                 case "Json":
                     return MySqlDbType.LongText;
+                case "ParentId":
+                    return MySqlDbType.Int64;
+                case "IsShow":
+                    return MySqlDbType.VarString;
+                case "IconSize":
+                    return MySqlDbType.Int32;
+                case "IconColor":
+                    return MySqlDbType.VarString;
                 case "Memo":
                     return MySqlDbType.Text;
-                case "ParentId":
+                case "PageItemId":
                     return MySqlDbType.Int64;
             }
             return MySqlDbType.VarChar;
@@ -349,7 +406,7 @@ UPDATE `tb_app_page_item` SET
         /// <param name="entity">实体对象</param>
         /// <param name="cmd">命令</param>
         /// <returns>返回真说明要取主键</returns>
-        private void CreateFullSqlParameter(PageItemData entity, MySqlCommand cmd)
+        public void CreateFullSqlParameter(PageItemData entity, MySqlCommand cmd)
         {
             //02:标识(Id)
             cmd.Parameters.Add(new MySqlParameter("Id",MySqlDbType.Int64){ Value = entity.Id});
@@ -407,7 +464,21 @@ UPDATE `tb_app_page_item` SET
             else
                 parameter.Value = entity.Json;
             cmd.Parameters.Add(parameter);
-            //12:备注(Memo)
+            //12:上级标识(ParentId)
+            cmd.Parameters.Add(new MySqlParameter("ParentId",MySqlDbType.Int64){ Value = entity.ParentId});
+            //13:是否显示(IsShow)
+            cmd.Parameters.Add(new MySqlParameter("IsShow",MySqlDbType.Byte) { Value = entity.IsShow ? (byte)1 : (byte)0 });
+            //14:图标大小(IconSize)
+            cmd.Parameters.Add(new MySqlParameter("IconSize",MySqlDbType.Int32){ Value = entity.IconSize});
+            //15:图标颜色(IconColor)
+            isNull = string.IsNullOrWhiteSpace(entity.IconColor);
+            parameter = new MySqlParameter("IconColor",MySqlDbType.VarString , isNull ? 10 : (entity.IconColor).Length);
+            if(isNull)
+                parameter.Value = DBNull.Value;
+            else
+                parameter.Value = entity.IconColor;
+            cmd.Parameters.Add(parameter);
+            //16:备注(Memo)
             isNull = string.IsNullOrWhiteSpace(entity.Memo);
             parameter = new MySqlParameter("Memo",MySqlDbType.Text , isNull ? 10 : (entity.Memo).Length);
             if(isNull)
@@ -415,8 +486,8 @@ UPDATE `tb_app_page_item` SET
             else
                 parameter.Value = entity.Memo;
             cmd.Parameters.Add(parameter);
-            //13:上级标识(ParentId)
-            cmd.Parameters.Add(new MySqlParameter("ParentId",MySqlDbType.Int64){ Value = entity.ParentId});
+            //17:页面标识(PageItemId)
+            cmd.Parameters.Add(new MySqlParameter("PageItemId",MySqlDbType.Int64){ Value = entity.PageItemId});
         }
 
 
@@ -442,7 +513,7 @@ UPDATE `tb_app_page_item` SET
         {
             cmd.CommandText = InsertSqlCode;
             CreateFullSqlParameter(entity, cmd);
-            return true;
+            return false;
         }
 
         #endregion
@@ -484,9 +555,9 @@ UPDATE `tb_app_page_item` SET
         /// <summary>
         /// 页面节点的结构语句
         /// </summary>
-        private TableSql _tb_app_page_itemSql = new TableSql
+        private TableSql _tb_app_pageSql = new TableSql
         {
-            TableName = "tb_app_page_item",
+            TableName = "tb_app_page",
             PimaryKey = "Id"
         };
 

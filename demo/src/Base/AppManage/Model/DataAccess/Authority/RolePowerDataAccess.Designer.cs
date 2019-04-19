@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:16:57*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/4/15 10:58:48*/
 #region
 using System;
 using System.Collections.Generic;
@@ -59,7 +59,7 @@ namespace Agebull.Common.AppManage.DataAccess
         {
             get
             {
-                return @"tb_auth_role_power";
+                return @"tb_app_role_power";
             }
         }
 
@@ -70,7 +70,7 @@ namespace Agebull.Common.AppManage.DataAccess
         {
             get
             {
-                return @"tb_auth_role_power";
+                return @"tb_app_role_power";
             }
         }
 
@@ -91,7 +91,10 @@ namespace Agebull.Common.AppManage.DataAccess
     `page_item_id` AS `PageItemId`,
     `role_id` AS `RoleId`,
     `power` AS `Power`,
-    `data_scope` AS `DataScope`";
+    `data_scope` AS `DataScope`,
+    `site_id` AS `SiteID`,
+    `org_id` AS `OrgID`,
+    `app_page_id` AS `AppPageId`";
             }
         }
 
@@ -105,21 +108,28 @@ namespace Agebull.Common.AppManage.DataAccess
             get
             {
                 return @"
-INSERT INTO `tb_auth_role_power`
+INSERT INTO `{ContextWriteTable}`
 (
+    `id`,
     `page_item_id`,
     `role_id`,
     `power`,
-    `data_scope`
+    `data_scope`,
+    `site_id`,
+    `org_id`,
+    `app_page_id`
 )
 VALUES
 (
+    ?ID,
     ?PageItemId,
     ?RoleId,
     ?Power,
-    ?DataScope
-);
-SELECT @@IDENTITY;";
+    ?DataScope,
+    ?SiteID,
+    ?OrgID,
+    ?AppPageId
+);";
             }
         }
 
@@ -131,11 +141,15 @@ SELECT @@IDENTITY;";
             get
             {
                 return @"
-UPDATE `tb_auth_role_power` SET
+UPDATE `{ContextWriteTable}` SET
+       `id` = ?ID,
        `page_item_id` = ?PageItemId,
        `role_id` = ?RoleId,
        `power` = ?Power,
-       `data_scope` = ?DataScope
+       `data_scope` = ?DataScope,
+       `site_id` = ?SiteID,
+       `org_id` = ?OrgID,
+       `app_page_id` = ?AppPageId
  WHERE `id` = ?ID;";
             }
         }
@@ -148,7 +162,10 @@ UPDATE `tb_auth_role_power` SET
             if (data.__EntityStatusNull || !data.__EntityStatus.IsModified)
                 return ";";
             StringBuilder sql = new StringBuilder();
-            sql.AppendLine("UPDATE `tb_auth_role_power` SET");
+            sql.AppendLine("UPDATE `{ContextWriteTable}` SET");
+            //标识
+            if (data.__EntityStatus.ModifiedProperties[RolePowerData._DataStruct_.Real_ID] > 0)
+                sql.AppendLine("       `id` = ?ID");
             //页面标识
             if (data.__EntityStatus.ModifiedProperties[RolePowerData._DataStruct_.Real_PageItemId] > 0)
                 sql.AppendLine("       `page_item_id` = ?PageItemId");
@@ -161,6 +178,15 @@ UPDATE `tb_auth_role_power` SET
             //权限范围
             if (data.__EntityStatus.ModifiedProperties[RolePowerData._DataStruct_.Real_DataScope] > 0)
                 sql.AppendLine("       `data_scope` = ?DataScope");
+            //站点标识
+            if (data.__EntityStatus.ModifiedProperties[RolePowerData._DataStruct_.Real_SiteID] > 0)
+                sql.AppendLine("       `site_id` = ?SiteID");
+            //组织标识
+            if (data.__EntityStatus.ModifiedProperties[RolePowerData._DataStruct_.Real_OrgID] > 0)
+                sql.AppendLine("       `org_id` = ?OrgID");
+            //应用页面关联外键
+            if (data.__EntityStatus.ModifiedProperties[RolePowerData._DataStruct_.Real_AppPageId] > 0)
+                sql.AppendLine("       `app_page_id` = ?AppPageId");
             sql.Append(" WHERE `id` = ?ID;");
             return sql.ToString();
         }
@@ -173,7 +199,7 @@ UPDATE `tb_auth_role_power` SET
         /// <summary>
         ///  所有字段
         /// </summary>
-        static string[] _fields = new string[]{ "ID","PageItemId","RoleId","Power","DataScope" };
+        static string[] _fields = new string[]{ "ID","PageItemId","RoleId","Power","DataScope","SiteID","OrgID","AppPageId" };
 
         /// <summary>
         ///  所有字段
@@ -198,7 +224,13 @@ UPDATE `tb_auth_role_power` SET
             { "role_id" , "role_id" },
             { "Power" , "power" },
             { "DataScope" , "data_scope" },
-            { "data_scope" , "data_scope" }
+            { "data_scope" , "data_scope" },
+            { "SiteID" , "site_id" },
+            { "site_id" , "site_id" },
+            { "OrgID" , "org_id" },
+            { "org_id" , "org_id" },
+            { "AppPageId" , "app_page_id" },
+            { "app_page_id" , "app_page_id" }
         };
 
         /// <summary>
@@ -231,6 +263,12 @@ UPDATE `tb_auth_role_power` SET
                     entity._power = (RolePowerType)reader.GetInt32(3);
                 if (!reader.IsDBNull(4))
                     entity._dataScope = (DataScopeType)reader.GetInt32(4);
+                if (!reader.IsDBNull(5))
+                    entity._siteID = (long)reader.GetInt64(5);
+                if (!reader.IsDBNull(6))
+                    entity._orgID = (long)reader.GetInt64(6);
+                if (!reader.IsDBNull(7))
+                    entity._appPageId = (long)reader.GetInt64(7);
             }
         }
 
@@ -253,6 +291,12 @@ UPDATE `tb_auth_role_power` SET
                     return MySqlDbType.Int32;
                 case "DataScope":
                     return MySqlDbType.Int32;
+                case "SiteID":
+                    return MySqlDbType.Int64;
+                case "OrgID":
+                    return MySqlDbType.Int64;
+                case "AppPageId":
+                    return MySqlDbType.Int64;
             }
             return MySqlDbType.VarChar;
         }
@@ -264,7 +308,7 @@ UPDATE `tb_auth_role_power` SET
         /// <param name="entity">实体对象</param>
         /// <param name="cmd">命令</param>
         /// <returns>返回真说明要取主键</returns>
-        private void CreateFullSqlParameter(RolePowerData entity, MySqlCommand cmd)
+        public void CreateFullSqlParameter(RolePowerData entity, MySqlCommand cmd)
         {
             //02:标识(ID)
             cmd.Parameters.Add(new MySqlParameter("ID",MySqlDbType.Int64){ Value = entity.ID});
@@ -276,6 +320,12 @@ UPDATE `tb_auth_role_power` SET
             cmd.Parameters.Add(new MySqlParameter("Power",MySqlDbType.Int32){ Value = (int)entity.Power});
             //06:权限范围(DataScope)
             cmd.Parameters.Add(new MySqlParameter("DataScope",MySqlDbType.Int32){ Value = (int)entity.DataScope});
+            //07:站点标识(SiteID)
+            cmd.Parameters.Add(new MySqlParameter("SiteID",MySqlDbType.Int64){ Value = entity.SiteID});
+            //08:组织标识(OrgID)
+            cmd.Parameters.Add(new MySqlParameter("OrgID",MySqlDbType.Int64){ Value = entity.OrgID});
+            //09:应用页面关联外键(AppPageId)
+            cmd.Parameters.Add(new MySqlParameter("AppPageId",MySqlDbType.Int64){ Value = entity.AppPageId});
         }
 
 
@@ -301,7 +351,7 @@ UPDATE `tb_auth_role_power` SET
         {
             cmd.CommandText = InsertSqlCode;
             CreateFullSqlParameter(entity, cmd);
-            return true;
+            return false;
         }
 
         #endregion
@@ -343,9 +393,9 @@ UPDATE `tb_auth_role_power` SET
         /// <summary>
         /// 角色权限的结构语句
         /// </summary>
-        private TableSql _tb_auth_role_powerSql = new TableSql
+        private TableSql _tb_app_role_powerSql = new TableSql
         {
-            TableName = "tb_auth_role_power",
+            TableName = "tb_app_role_power",
             PimaryKey = "ID"
         };
 

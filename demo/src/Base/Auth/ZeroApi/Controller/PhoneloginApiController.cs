@@ -2,7 +2,6 @@
 
 using System.ComponentModel;
 using Agebull.Common.Ioc;
-using Agebull.Common.OAuth;
 using Agebull.Common.Organizations;
 using Agebull.MicroZero;
 
@@ -26,7 +25,7 @@ namespace Agebull.UserCenter.WebApi
         [ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Anymouse)]
         public ApiResult MobileCheck(Argument arg)
         {
-            var lg = IocHelper.Create<IUserInfoApi>();
+            var lg = IocHelper.Create<IUserApi>();
             var result = lg.MobileCheck(arg);
             return result;
         }
@@ -59,7 +58,7 @@ namespace Agebull.UserCenter.WebApi
         [ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Anymouse)]
         public ApiResult<LoginResponse> RegisterByPhone(RegByPhoneRequest arg)
         {
-            var lg = IocHelper.Create<IUserInfoApi>();
+            var lg = IocHelper.Create<IUserApi>();
             var result = lg.RegisterByPhone(arg);
             return result;
         }
@@ -79,7 +78,7 @@ namespace Agebull.UserCenter.WebApi
         [ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Anymouse)]
         public ApiResult<LoginResponse> LoginBySms(LoginbySmsRequest arg)
         {
-            var lg = IocHelper.Create<IUserInfoApi>();
+            var lg = IocHelper.Create<IUserApi>();
             var result = lg.LoginBySms(arg);
             return result;
         }
@@ -109,7 +108,7 @@ namespace Agebull.UserCenter.WebApi
         [ApiAccessOptionFilter(ApiAccessOption.Internal)]
         public ApiResult ClearErrorCount(Argument data)
         {
-            new UserInfoApiLogical().ClearErrorCount(data.Value);
+            new UserBusinessLogical().ClearErrorCount(data.Value);
             return new ApiResult();
         }
 

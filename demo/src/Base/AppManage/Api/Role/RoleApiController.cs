@@ -9,7 +9,7 @@ using Agebull.EntityModel.Common;
 using Agebull.MicroZero.ZeroApis;
 using Agebull.EntityModel.EasyUI;
 
-namespace Agebull.Common.Organizations.WebApi.Entity
+namespace Agebull.Common.AppManage.WebApi.Entity
 {
     [RoutePrefix("sys/role/v1")]
     public partial class RoleApiController : ApiControllerForDataState<RoleData, RoleDataAccess, AppManageDb, RoleBusinessLogic>

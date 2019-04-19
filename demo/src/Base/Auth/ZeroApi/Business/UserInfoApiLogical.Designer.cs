@@ -1,6 +1,7 @@
 ﻿
 using Agebull.EntityModel.Common;
 using Agebull.MicroZero.ZeroApis;
+using Newtonsoft.Json;
 using System.Linq;
 
 
@@ -10,7 +11,7 @@ namespace Agebull.Common.Organizations
     /// <summary>
     /// 用户信息API
     /// </summary>
-    public partial class UserInfoApiLogical : IUserInfoApi
+    public partial class UserBusinessLogical : IUserApi
     {
 
 
@@ -22,10 +23,10 @@ namespace Agebull.Common.Organizations
         /// </summary>
         /// <param name="arg">手机号请求参数</param>
         /// <returns>操作结果</returns>
-        ApiResult IUserInfoApi.MobileCheck(Argument arg)
+        ApiResult IUserApi.MobileCheck(Argument arg)
         {
             //var vr = arg.Validate();
-            //if (!vr.succeed)
+            //if (!vr.Succeed)
             //    return ApiResult.Error(ErrorCode.LogicalError, vr.ToString());
             var result = new ApiResult();
             MobileCheck(arg, result);
@@ -40,10 +41,10 @@ namespace Agebull.Common.Organizations
         /// </summary>
         /// <param name="arg">基于手机号的注册请求参数</param>
         /// <returns>登录返回数据</returns>
-        ApiResult<LoginResponse> IUserInfoApi.RegisterByPhone(RegByPhoneRequest arg)
+        ApiResult<LoginResponse> IUserApi.RegisterByPhone(RegByPhoneRequest arg)
         {
             var vr = arg.Validate();
-            if (!vr.succeed)
+            if (!vr.Succeed)
                 return ApiResult<LoginResponse>.ErrorResult(ErrorCode.LogicalError, vr.ToString());
             var result = new ApiResult<LoginResponse>();
             RegisteByPhone(arg, result);
@@ -63,10 +64,10 @@ namespace Agebull.Common.Organizations
         /// </summary>
         /// <param name="arg">短信登录参数</param>
         /// <returns>登录返回数据</returns>
-        ApiResult<LoginResponse> IUserInfoApi.LoginBySms(LoginbySmsRequest arg)
+        ApiResult<LoginResponse> IUserApi.LoginBySms(LoginbySmsRequest arg)
         {
             var vr = arg.Validate();
-            if (!vr.succeed)
+            if (!vr.Succeed)
                 return ApiResult<LoginResponse>.ErrorResult(ErrorCode.LogicalError, vr.ToString());
             var result = new ApiResult<LoginResponse>();
             LoginBySms(arg, result);
@@ -82,10 +83,10 @@ namespace Agebull.Common.Organizations
         /// </summary>
         /// <param name="arg">基于手机的账号登录参数</param>
         /// <returns>登录返回数据</returns>
-        ApiResult<LoginResponse> IUserInfoApi.PhoneAccountLogin(PhoneLoginRequest arg)
+        ApiResult<LoginResponse> IUserApi.PhoneAccountLogin(PhoneLoginRequest arg)
         {
             var vr = arg.Validate();
-            if (!vr.succeed)
+            if (!vr.Succeed)
                 return ApiResult<LoginResponse>.ErrorResult(ErrorCode.LogicalError, vr.ToString());
             var result = new ApiResult<LoginResponse>();
             PhoneAccountLogin(arg, result);
@@ -99,19 +100,15 @@ namespace Agebull.Common.Organizations
 
 
 
-
-
-
-
         /// <summary>
         ///     账户登录:账户登录:
         /// </summary>
         /// <param name="arg">基于手机的账号登录参数</param>
         /// <returns>登录返回数据</returns>
-        ApiResult<LoginResponse> IUserInfoApi.AccountLogin(PhoneLoginRequest arg)
+        ApiResult<LoginResponse> IUserApi.AccountLogin(PhoneLoginRequest arg)
         {
             var vr = arg.Validate();
-            if (!vr.succeed)
+            if (!vr.Succeed)
                 return ApiResult<LoginResponse>.ErrorResult(ErrorCode.LogicalError, vr.ToString());
             var result = new ApiResult<LoginResponse>();
             AccountLogin(arg,result);
@@ -120,17 +117,17 @@ namespace Agebull.Common.Organizations
 
         partial void AccountLogin(PhoneLoginRequest arg,ApiResult<LoginResponse> result);
 
-
+        
 
         /// <summary>
         ///     通过手机验证码 重置密码
         /// </summary>
         /// <param name="arg">找回密码请求参数</param>
         /// <returns>操作结果</returns>
-        ApiResult IUserInfoApi.FindPassword(FindPasswordRequest arg)
+        ApiResult IUserApi.FindPassword(FindPasswordRequest arg)
         {
             var vr = arg.Validate();
-            if (!vr.succeed)
+            if (!vr.Succeed)
                 return ApiResult.Error(ErrorCode.LogicalError, vr.ToString());
             var result = new ApiResult();
             FindPassword(arg,result);
@@ -144,10 +141,10 @@ namespace Agebull.Common.Organizations
         /// </summary>
         /// <param name="arg">手机号请求参数</param>
         /// <returns>错误登录次数返回值</returns>
-        ApiResult<LoginErrorCountResponse> IUserInfoApi.LoginErrorCount(MobilePhoneRequest arg)
+        ApiResult<LoginErrorCountResponse> IUserApi.LoginErrorCount(MobilePhoneRequest arg)
         {
             var vr = arg.Validate();
-            if (!vr.succeed)
+            if (!vr.Succeed)
                 return ApiResult<LoginErrorCountResponse>.ErrorResult(ErrorCode.LogicalError, vr.ToString());
             var result = new ApiResult<LoginErrorCountResponse>();
             LoginErrorCount(arg,result);
@@ -166,7 +163,7 @@ namespace Agebull.Common.Organizations
         /// </summary>
         /// <param name="arg">用户基本信息</param>
         /// <returns>用户基本信息</returns>
-        ApiResult<UserBaseInfo> IUserInfoApi.QueryUserInfo(UserBaseInfo arg)
+        ApiResult<UserBaseInfo> IUserApi.QueryUserInfo(UserBaseInfo arg)
         {
             var result = new ApiResult<UserBaseInfo>();
             QueryUserInfo(arg,result);
@@ -180,10 +177,10 @@ namespace Agebull.Common.Organizations
         /// </summary>
         /// <param name="arg">修改头像参数</param>
         /// <returns>操作结果</returns>
-        ApiResult IUserInfoApi.UpdateAvatar(AvatarRequest arg)
+        ApiResult IUserApi.UpdateAvatar(AvatarRequest arg)
         {
             var vr = arg.Validate();
-            if (!vr.succeed)
+            if (!vr.Succeed)
                 return ApiResult.Error(ErrorCode.LogicalError, vr.ToString());
             var result = new ApiResult();
             UpdateAvatar(arg,result);
@@ -196,10 +193,10 @@ namespace Agebull.Common.Organizations
         /// </summary>
         /// <param name="arg">修改昵称参数</param>
         /// <returns>操作结果</returns>
-        ApiResult IUserInfoApi.UpdateNickName(NickNameRequest arg)
+        ApiResult IUserApi.UpdateNickName(NickNameRequest arg)
         {
             var vr = arg.Validate();
-            if (!vr.succeed)
+            if (!vr.Succeed)
                 return ApiResult.Error(ErrorCode.LogicalError, vr.ToString());
             var result = new ApiResult();
             UpdateNickName(arg,result);
@@ -212,10 +209,10 @@ namespace Agebull.Common.Organizations
         /// </summary>
         /// <param name="arg">修改密码参数</param>
         /// <returns>操作结果</returns>
-        ApiResult IUserInfoApi.UpdatePassword(UpdatePasswordRequest arg)
+        ApiResult IUserApi.UpdatePassword(UpdatePasswordRequest arg)
         {
             var vr = arg.Validate();
-            if (!vr.succeed)
+            if (!vr.Succeed)
                 return ApiResult.Error(ErrorCode.LogicalError, vr.ToString());
             var result = new ApiResult();
             UpdatePassword(arg,result);

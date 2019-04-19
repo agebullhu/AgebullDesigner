@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:16:57*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/4/15 10:58:48*/
 #region
 using System;
 using System.Collections.Generic;
@@ -59,7 +59,7 @@ namespace Agebull.Common.AppManage.DataAccess
         {
             get
             {
-                return @"tb_auth_role";
+                return @"tb_app_role";
             }
         }
 
@@ -70,7 +70,7 @@ namespace Agebull.Common.AppManage.DataAccess
         {
             get
             {
-                return @"tb_auth_role";
+                return @"tb_app_role";
             }
         }
 
@@ -96,7 +96,9 @@ namespace Agebull.Common.AppManage.DataAccess
     `add_date` AS `AddDate`,
     `last_reviser_id` AS `LastReviserId`,
     `last_modify_date` AS `LastModifyDate`,
-    `author_id` AS `AuthorId`";
+    `author_id` AS `AuthorId`,
+    `org_id` AS `OrgID`,
+    `site_id` AS `SiteID`";
             }
         }
 
@@ -110,8 +112,9 @@ namespace Agebull.Common.AppManage.DataAccess
             get
             {
                 return @"
-INSERT INTO `tb_auth_role`
+INSERT INTO `{ContextWriteTable}`
 (
+    `id`,
     `role`,
     `caption`,
     `memo`,
@@ -119,10 +122,13 @@ INSERT INTO `tb_auth_role`
     `data_state`,
     `add_date`,
     `last_reviser_id`,
-    `author_id`
+    `author_id`,
+    `org_id`,
+    `site_id`
 )
 VALUES
 (
+    ?Id,
     ?Role,
     ?Caption,
     ?Memo,
@@ -130,9 +136,10 @@ VALUES
     ?DataState,
     ?AddDate,
     ?LastReviserId,
-    ?AuthorId
-);
-SELECT @@IDENTITY;";
+    ?AuthorId,
+    ?OrgID,
+    ?SiteID
+);";
             }
         }
 
@@ -144,13 +151,16 @@ SELECT @@IDENTITY;";
             get
             {
                 return @"
-UPDATE `tb_auth_role` SET
+UPDATE `{ContextWriteTable}` SET
+       `id` = ?Id,
        `role` = ?Role,
        `caption` = ?Caption,
        `memo` = ?Memo,
        `is_freeze` = ?IsFreeze,
        `data_state` = ?DataState,
-       `last_reviser_id` = ?LastReviserId
+       `last_reviser_id` = ?LastReviserId,
+       `org_id` = ?OrgID,
+       `site_id` = ?SiteID
  WHERE `id` = ?Id AND `is_freeze` = 0 AND `data_state` < 255;";
             }
         }
@@ -163,7 +173,10 @@ UPDATE `tb_auth_role` SET
             if (data.__EntityStatusNull || !data.__EntityStatus.IsModified)
                 return ";";
             StringBuilder sql = new StringBuilder();
-            sql.AppendLine("UPDATE `tb_auth_role` SET");
+            sql.AppendLine("UPDATE `{ContextWriteTable}` SET");
+            //标识
+            if (data.__EntityStatus.ModifiedProperties[RoleData._DataStruct_.Real_Id] > 0)
+                sql.AppendLine("       `id` = ?Id");
             //角色
             if (data.__EntityStatus.ModifiedProperties[RoleData._DataStruct_.Real_Role] > 0)
                 sql.AppendLine("       `role` = ?Role");
@@ -182,6 +195,12 @@ UPDATE `tb_auth_role` SET
             //最后修改者
             if (data.__EntityStatus.ModifiedProperties[RoleData._DataStruct_.Real_LastReviserId] > 0)
                 sql.AppendLine("       `last_reviser_id` = ?LastReviserId");
+            //组织标识
+            if (data.__EntityStatus.ModifiedProperties[RoleData._DataStruct_.Real_OrgID] > 0)
+                sql.AppendLine("       `org_id` = ?OrgID");
+            //站点标识
+            if (data.__EntityStatus.ModifiedProperties[RoleData._DataStruct_.Real_SiteID] > 0)
+                sql.AppendLine("       `site_id` = ?SiteID");
             sql.Append(" WHERE `id` = ?Id AND `is_freeze` = 0 AND `data_state` < 255;");
             return sql.ToString();
         }
@@ -194,7 +213,7 @@ UPDATE `tb_auth_role` SET
         /// <summary>
         ///  所有字段
         /// </summary>
-        static string[] _fields = new string[]{ "Id","Role","Caption","Memo","IsFreeze","DataState","AddDate","LastReviserId","LastModifyDate","AuthorId" };
+        static string[] _fields = new string[]{ "Id","Role","Caption","Memo","IsFreeze","DataState","AddDate","LastReviserId","LastModifyDate","AuthorId","OrgID","SiteID" };
 
         /// <summary>
         ///  所有字段
@@ -228,7 +247,11 @@ UPDATE `tb_auth_role` SET
             { "LastModifyDate" , "last_modify_date" },
             { "last_modify_date" , "last_modify_date" },
             { "AuthorId" , "author_id" },
-            { "author_id" , "author_id" }
+            { "author_id" , "author_id" },
+            { "OrgID" , "org_id" },
+            { "org_id" , "org_id" },
+            { "SiteID" , "site_id" },
+            { "site_id" , "site_id" }
         };
 
         /// <summary>
@@ -271,6 +294,10 @@ UPDATE `tb_auth_role` SET
                     try{entity._lastModifyDate = reader.GetMySqlDateTime(8).Value;}catch{}
                 if (!reader.IsDBNull(9))
                     entity._authorId = (long)reader.GetInt64(9);
+                if (!reader.IsDBNull(10))
+                    entity._orgID = (long)reader.GetInt64(10);
+                if (!reader.IsDBNull(11))
+                    entity._siteID = (long)reader.GetInt64(11);
             }
         }
 
@@ -303,6 +330,10 @@ UPDATE `tb_auth_role` SET
                     return MySqlDbType.DateTime;
                 case "AuthorId":
                     return MySqlDbType.Int64;
+                case "OrgID":
+                    return MySqlDbType.Int64;
+                case "SiteID":
+                    return MySqlDbType.Int64;
             }
             return MySqlDbType.VarChar;
         }
@@ -314,7 +345,7 @@ UPDATE `tb_auth_role` SET
         /// <param name="entity">实体对象</param>
         /// <param name="cmd">命令</param>
         /// <returns>返回真说明要取主键</returns>
-        private void CreateFullSqlParameter(RoleData entity, MySqlCommand cmd)
+        public void CreateFullSqlParameter(RoleData entity, MySqlCommand cmd)
         {
             //02:标识(Id)
             cmd.Parameters.Add(new MySqlParameter("Id",MySqlDbType.Int64){ Value = entity.Id});
@@ -366,6 +397,10 @@ UPDATE `tb_auth_role` SET
             cmd.Parameters.Add(parameter);
             //11:制作人(AuthorId)
             cmd.Parameters.Add(new MySqlParameter("AuthorId",MySqlDbType.Int64){ Value = entity.AuthorId});
+            //12:组织标识(OrgID)
+            cmd.Parameters.Add(new MySqlParameter("OrgID",MySqlDbType.Int64){ Value = entity.OrgID});
+            //13:站点标识(SiteID)
+            cmd.Parameters.Add(new MySqlParameter("SiteID",MySqlDbType.Int64){ Value = entity.SiteID});
         }
 
 
@@ -391,7 +426,7 @@ UPDATE `tb_auth_role` SET
         {
             cmd.CommandText = InsertSqlCode;
             CreateFullSqlParameter(entity, cmd);
-            return true;
+            return false;
         }
 
         #endregion
@@ -433,9 +468,9 @@ UPDATE `tb_auth_role` SET
         /// <summary>
         /// 角色的结构语句
         /// </summary>
-        private TableSql _tb_auth_roleSql = new TableSql
+        private TableSql _tb_app_roleSql = new TableSql
         {
-            TableName = "tb_auth_role",
+            TableName = "tb_app_role",
             PimaryKey = "Id"
         };
 

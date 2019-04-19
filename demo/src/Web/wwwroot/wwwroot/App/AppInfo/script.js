@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:20:10*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/4/18 13:39:54*/
 /*
 *   应用信息的前端操作类对象,实现基本的增删改查的界面操作
 */
@@ -179,7 +179,6 @@ var page = {
         $('#ShortName').textbox({validType:['strLimit[0,200]']});
         $('#FullName').textbox({validType:['strLimit[0,200]']});
         $('#AppId').textbox({validType:['strLimit[0,200]']});
-        $('#AppKey').textbox({validType:['strLimit[0,200]']});
 
     },
 
@@ -249,11 +248,11 @@ var page = {
             { styler: vlStyle, halign: 'center', align: 'center', field: 'IsSelected', checkbox: true}
             //, { styler: vlStyle, halign: 'center', align: 'center', sortable: true, field: 'id', title: 'ID'}
             , { styler: vlStyle, halign: 'center', align: 'center', sortable: true, field: 'DataState', title: '状态', formatter: dataStateIconFormat }
-            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'AppType', title: '应用类型', formatter: appTypeFormat , width:1}
             , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'shortName', title: '应用简称' , width:3}
             , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'fullName', title: '应用全称' , width:3}
             , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'appId', title: '应用标识' , width:3}
-            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'AppKey', title: '应用令牌'}
+            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'appFeature', title: '应用特性', formatter: appFeatureTypeFormat}
+            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'appClassify', title: '应用归类', formatter: appClassifyTypeFormat , width:1}
         ]
     ]
 };

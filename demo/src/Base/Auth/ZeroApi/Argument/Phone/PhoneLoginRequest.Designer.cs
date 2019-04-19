@@ -94,7 +94,7 @@ namespace Agebull.Common.Organizations
         {
             var result = Validate();
             message = result.ToJson();
-            return result.succeed;
+            return result.Succeed;
         }
 
         /// <summary>

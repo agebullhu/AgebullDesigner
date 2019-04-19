@@ -217,7 +217,7 @@ namespace Agebull.Common.UserCenter.BusinessLogic
                     Text = folder.Caption,
                     Icon = folder.Icon ?? "icon-item",
                     Attributes = "home",
-                    Tag = folder.ExtendValue,
+                    Tag = folder.Tags,
                     IsFolder = true
                 };
                 foreach (var page in _pages.Where(p => p.ParentId == folder.Id && p.ItemType <= PageItemType.Page).OrderBy(p => p.Index))
@@ -308,7 +308,7 @@ namespace Agebull.Common.UserCenter.BusinessLogic
                     Icon = filter.Icon ?? "icon-item",
                     Text = filter.Caption,
                     Title = filter.Caption,
-                    Tag = filter.ExtendValue,
+                    Tag = filter.Tags,
                     IsFolder = true
                 };
                 CreatePowerTree(node, filter);
@@ -344,7 +344,7 @@ namespace Agebull.Common.UserCenter.BusinessLogic
                     ID = item.Id,
                     Text = item.Caption,
                     Title = item.Name,
-                    Tag = item.ExtendValue,
+                    Tag = item.Tags,
                     Memo = item.Memo,
                     IsOpen = true,
                     Icon = item.ItemType == PageItemType.Action ? "icon-cmd" : "icon-cus",
@@ -408,7 +408,7 @@ namespace Agebull.Common.UserCenter.BusinessLogic
                     continue;
                 }
 
-                var items = _actions[page.Id].Where(p => _audits.Contains(p.ExtendValue)).ToArray();
+                var items = _actions[page.Id].Where(p => _audits.Contains(p.Tags)).ToArray();
                 if (items.Length == 0)
                 {
                     //Trace.WriteLine("Ã»ÓÐÉóºË²Ù×÷", page.Caption + page.Id);
@@ -605,7 +605,7 @@ namespace Agebull.Common.UserCenter.BusinessLogic
             {
                 if (!_actions.ContainsKey(page.Id))
                     continue;
-                var items = _actions[page.Id].Where(p => actions.Contains(p.ExtendValue)).ToArray();
+                var items = _actions[page.Id].Where(p => actions.Contains(p.Tags)).ToArray();
                 if (items.Length == 0)
                     continue;
                 var itemIds = items.Select(p => p.Id).ToList();
@@ -711,9 +711,9 @@ namespace Agebull.Common.UserCenter.BusinessLogic
                 : _actions[page.Id].Where(p => AllPowers.Any(a => a.PageItemId == p.Id)).ToArray();
             foreach (var bp in actions)
             {
-                if (string.IsNullOrEmpty(bp.ExtendValue) || dictionary.ContainsKey(bp.ExtendValue))
+                if (string.IsNullOrEmpty(bp.Tags) || dictionary.ContainsKey(bp.Tags))
                     continue;
-                dictionary.Add(bp.ExtendValue, bp.Id);
+                dictionary.Add(bp.Tags, bp.Id);
             }
 
             if (page.AuditPage > 0 && _actions.ContainsKey(page.AuditPage))
@@ -723,9 +723,9 @@ namespace Agebull.Common.UserCenter.BusinessLogic
                     : _actions[page.AuditPage].Where(p => AllPowers.Any(a => a.PageItemId == p.Id)).ToArray();
                 foreach (var bp in friendsItemDatas)
                 {
-                    if (string.IsNullOrEmpty(bp.ExtendValue) || dictionary.ContainsKey(bp.ExtendValue))
+                    if (string.IsNullOrEmpty(bp.Tags) || dictionary.ContainsKey(bp.Tags))
                         continue;
-                    dictionary.Add(bp.ExtendValue, bp.Id);
+                    dictionary.Add(bp.Tags, bp.Id);
                 }
             }
             AddActionSynonym(dictionary, "list", "details");

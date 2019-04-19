@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:16:57*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/4/15 10:58:40*/
 #region
 using System;
 using System.Collections.Generic;
@@ -621,6 +621,142 @@ namespace Agebull.Common.AppManage
 
 
         #region 名称的属性操作
+
+    
+
+        /// <summary>
+        ///     设置属性值
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="value"></param>
+        protected override bool SetValueInner(string property, string value)
+        {
+            if(property == null) return false;
+            switch(property.Trim().ToLower())
+            {
+            case "id":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (long.TryParse(value, out var vl))
+                    {
+                        this.Id = vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "apptype":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (AppType.TryParse(value, out var val))
+                    {
+                        this.AppType = val;
+                        return true;
+                    }
+                    else if (int.TryParse(value, out var vl))
+                    {
+                        this.AppType = (AppType)vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "shortname":
+                this.ShortName = string.IsNullOrWhiteSpace(value) ? null : value;
+                return true;
+            case "fullname":
+                this.FullName = string.IsNullOrWhiteSpace(value) ? null : value;
+                return true;
+            case "appid":
+                this.AppId = string.IsNullOrWhiteSpace(value) ? null : value;
+                return true;
+            case "appkey":
+                this.AppKey = string.IsNullOrWhiteSpace(value) ? null : value;
+                return true;
+            case "memo":
+                this.Memo = string.IsNullOrWhiteSpace(value) ? null : value;
+                return true;
+            case "datastatetype":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (DataStateType.TryParse(value, out var val))
+                    {
+                        this.DataStateType = val;
+                        return true;
+                    }
+                    else if (int.TryParse(value, out var vl))
+                    {
+                        this.DataStateType = (DataStateType)vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "isfreeze":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (bool.TryParse(value, out var vl))
+                    {
+                        this.IsFreeze = vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "adddate":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (DateTime.TryParse(value, out var vl))
+                    {
+                        this.AddDate = vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "authorid":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (long.TryParse(value, out var vl))
+                    {
+                        this.AuthorId = vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "lastreviserid":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (long.TryParse(value, out var vl))
+                    {
+                        this.LastReviserId = vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "lastmodifydate":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (DateTime.TryParse(value, out var vl))
+                    {
+                        this.LastModifyDate = vl;
+                        return true;
+                    }
+                }
+                return false;
+            case "datastate":
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    if (DataStateType.TryParse(value, out var val))
+                    {
+                        this.DataState = val;
+                        return true;
+                    }
+                    else if (int.TryParse(value, out var vl))
+                    {
+                        this.DataState = (DataStateType)vl;
+                        return true;
+                    }
+                }
+                return false;
+            }
+            return false;
+        }
 
     
 

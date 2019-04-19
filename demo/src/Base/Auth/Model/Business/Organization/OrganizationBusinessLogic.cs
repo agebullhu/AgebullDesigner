@@ -6,9 +6,10 @@ using Agebull.Common.Configuration;
 using Agebull.Common.Context;
 using Agebull.Common.Logging;
 using Agebull.Common.Organizations.DataAccess;
+using Agebull.EntityModel.BusinessLogic;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.EasyUI;
-using Agebull.EntityModel.MySql.BusinessLogic;
+using Agebull.EntityModel.BusinessLogic.MySql;
 using Agebull.EntityModel.Redis;
 
 namespace Agebull.Common.Organizations.BusinessLogic

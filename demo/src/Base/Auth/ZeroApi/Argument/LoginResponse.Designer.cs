@@ -1,20 +1,9 @@
 ﻿
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
 using System.Runtime.Serialization;
-using System.IO;
 using Newtonsoft.Json;
-
-using Agebull.Common;
-using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Common;
 
 using Agebull.MicroZero.ZeroApis;
@@ -139,7 +128,7 @@ namespace Agebull.Common.Organizations
         {
             var result = Validate();
             message = result.Messages.LinkToString('；');
-            return result.succeed;
+            return result.Succeed;
         }
 
         /// <summary>

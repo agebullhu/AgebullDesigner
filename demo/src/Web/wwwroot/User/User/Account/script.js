@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:27:49*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/4/18 22:19:07*/
 /*
 *   登录账户的前端操作类对象,实现基本的增删改查的界面操作
 */
@@ -83,7 +83,7 @@ var page = {
         var grid = new GridPanel();
         me.grid=grid;
         grid.tag = me;
-        grid.idField = 'Id';
+        grid.idField = 'id';
         grid.cmdPath = page.apiPrefix;
         grid.auditData = false;
         grid.historyData = true;
@@ -99,7 +99,7 @@ var page = {
             grid.getQueryParams = me.getQueryParams;
         grid.auditData = false;
         var options = grid.getGridOption();
-        options.sortName = 'Id';
+        options.sortName = 'id';
         options.sortOrder = 'asc';
         }
         if(me.autoLoad){
@@ -157,9 +157,9 @@ var page = {
         var me = editor.ex;
         me.setFormValidate();
         //角色标识下拉列表
-        comboRemote('#RoleId', 'app/Role/v1/edit/combo');
+        comboRemote('#roleId', 'app/Role/v1/edit/combo');
         //用户Id下拉列表
-        comboRemote('#UserId', 'user/Person/v1/edit/combo');
+        comboRemote('#userId', 'user/Person/v1/edit/combo');
         if (callback)
             callback();
     },
@@ -251,14 +251,14 @@ var page = {
     [
        [
             { styler: vlStyle, halign: 'center', align: 'center', field: 'IsSelected', checkbox: true}
-            //, { styler: vlStyle, halign: 'center', align: 'center', sortable: true, field: 'Id', title: 'ID'}
+            //, { styler: vlStyle, halign: 'center', align: 'center', sortable: true, field: 'id', title: 'ID'}
             , { styler: vlStyle, halign: 'center', align: 'center', sortable: true, field: 'DataState', title: '状态', formatter: dataStateIconFormat }
-            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'Role', title: '角色' , width:3}
-            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'NickName', title: '昵称' , width:2}
-            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'IdCard', title: '身份证号' , width:2}
+            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'role', title: '角色' , width:3}
+            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'nickName', title: '昵称' , width:2}
+            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'idCard', title: '身份证号' , width:2}
             , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'phoneNumber', title: '手机号'}
-            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'RealName', title: '真实姓名' , width:3}
-            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'AccountName', title: '账户名' , width:3}
+            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'realName', title: '真实姓名' , width:3}
+            , { styler: vlStyle,halign: 'center', align: 'left', sortable: true, field: 'accountName', title: '账户名' , width:3}
         ]
     ]
 };

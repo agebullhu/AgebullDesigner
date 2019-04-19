@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using Agebull.Common.Context;
 using Agebull.Common.Ioc;
-using Agebull.Common.OAuth;
 using Agebull.Common.Organizations;
 using Agebull.EntityModel.Common;
 using Agebull.MicroZero;
@@ -27,11 +26,11 @@ namespace Agebull.UserCenter.WebApi
         [ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Anymouse)]
         public ApiResult<LoginResponse> AccountLogin(PhoneLoginRequest arg)
         {
-            var lg = IocHelper.Create<IUserInfoApi>();
+            var lg = IocHelper.Create<IUserApi>();
             var result = lg.AccountLogin(arg);
             return result;
         }
-
+        
         /// <summary>
         /// 获取设备标识
         /// </summary>
@@ -96,7 +95,7 @@ namespace Agebull.UserCenter.WebApi
         [ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Anymouse)]
         public ApiResult<LoginErrorCountResponse> LoginErrorCount(MobilePhoneRequest arg)
         {
-            var lg = IocHelper.Create<IUserInfoApi>();
+            var lg = IocHelper.Create<IUserApi>();
             var result = lg.LoginErrorCount(arg);
             return result;
         }

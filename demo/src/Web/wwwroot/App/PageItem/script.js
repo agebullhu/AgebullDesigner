@@ -94,7 +94,7 @@ var page = {
     itemTypeChagned: function (editor) {
         $("#itemType").combobox({
             onSelect: function (rec) {
-                if (rec.value == 2)
+                if (rec.value === 2)
                     $('#pageAttr').show();
                 else
                     $('#pageAttr').hide();
@@ -182,7 +182,7 @@ var page = {
         { halign: "center", align: "left", field: "url", title: "链接地址" },
         { halign: "center", align: "left", field: "name", title: "系统名称", sortable: true },
         { halign: "center", align: "left", field: "type", title: "系统对象" },
-        { halign: "center", align: "left", field: "extendValue", title: "扩展" }
+        { halign: "center", align: "left", field: "tags", title: "扩展" }
     ]]
 
 };

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Agebull.Common.OAuth;
 using Agebull.EntityModel.MySql;
-using Agebull.EntityModel.MySql.BusinessLogic;
+using Agebull.EntityModel.BusinessLogic.MySql;
 using Agebull.Common.AppManage.DataAccess;
 using Agebull.EntityModel.Common;
 using Agebull.Common.Ioc;

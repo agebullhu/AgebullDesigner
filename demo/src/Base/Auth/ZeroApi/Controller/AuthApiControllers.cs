@@ -3,59 +3,37 @@ using Agebull.Common.OAuth;
 using Agebull.Common.Organizations;
 using Agebull.EntityModel.Common;
 using Agebull.MicroZero;
-
 using Agebull.MicroZero.ZeroApis;
 
 namespace Agebull.UserCenter.WebApi
 {
     /// <summary>
-    /// 令牌服务
+    ///     令牌服务
     /// </summary>
     public class AuthApiControllers : ApiController
     {
         /// <summary>
-        /// 校验AT并得到用户信息
+        ///     校验AT并得到用户信息
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-
         [Route("v1/verify/at")]
         [ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Anymouse)]
         public ApiResult<LoginUserInfo> VerifyAccessToken(TokenArgument request)
         {
             string message = null;
             if (request == null || !request.Validate(out message))
-            {
                 return ApiResult<LoginUserInfo>.ErrorResult(ErrorCode.Auth_AccessToken_TimeOut, message);
-            }
             var bl = IocHelper.Create<IOAuthBusiness>();
             var result = bl.VerifyAccessToken(request);
             return result;
         }
 
-
         /// <summary>
-        /// 校验ServiceKey
+        ///     校验DeviceId
         /// </summary>
         /// <param name="request">令牌</param>
         /// <returns></returns>
-
-        [Route("v1/verify/sk")]
-        [ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Anymouse)]
-        public ApiResult ValidateServiceKey(TokenArgument request)
-        {
-            var bl = IocHelper.Create<IOAuthBusiness>();
-            var result = bl.ValidateServiceKey(request?.Token);
-            return result;
-        }
-
-
-        /// <summary>
-        /// 校验DeviceId
-        /// </summary>
-        /// <param name="request">令牌</param>
-        /// <returns></returns>
-
         [Route("v1/verify/did")]
         [ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Anymouse)]
         public ApiResult<LoginUserInfo> ValidateDeviceId(TokenArgument request)
@@ -68,14 +46,11 @@ namespace Agebull.UserCenter.WebApi
         }
 
 
-
-
         /// <summary>
-        /// 获取用户信息
+        ///     获取用户信息
         /// </summary>
         /// <param name="argument">用户ID 或者用户AccessToken 或者 DeviceId</param>
         /// <returns></returns>
-
         [Route("v1/oauth/user")]
         [ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Anymouse)]
         public ApiResult<LoginUserInfo> GetLoginUser(Argument argument)
@@ -84,8 +59,5 @@ namespace Agebull.UserCenter.WebApi
             var result = bl.GetLoginUser(argument.Value);
             return result;
         }
-
-
-
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using Agebull.Common.OAuth;
 using Agebull.Common.Organizations;
 using Agebull.EntityModel.Common;
 using Agebull.MicroZero;
@@ -24,7 +23,7 @@ namespace FenXiang.InternetPro.UnifiedIdentity.UserCard.Model.WebApi.EntityApi
         public ApiResult CacheImg(CacheImgReq data)
         {
             var vr = data.Validate();
-            if (!vr.succeed)
+            if (!vr.Succeed)
                 return ApiResult.Error(ErrorCode.LogicalError, vr.ToString());
 
    
@@ -45,7 +44,7 @@ namespace FenXiang.InternetPro.UnifiedIdentity.UserCard.Model.WebApi.EntityApi
         public ApiResult ValidateImg(CacheImgReq data)
         {
             var vr = data.Validate();
-            if (!vr.succeed)
+            if (!vr.Succeed)
                 return ApiResult.Error(ErrorCode.LogicalError, vr.ToString());
 
 
@@ -68,7 +67,7 @@ namespace FenXiang.InternetPro.UnifiedIdentity.UserCard.Model.WebApi.EntityApi
         public ApiResult CacheSms(CacheSmsReq data)
         {
             var vr = data.Validate();
-            if (!vr.succeed)
+            if (!vr.Succeed)
                 return ApiResult.Error(ErrorCode.LogicalError, vr.ToString());
 
             string vc = data.SmsVerificationCode;
@@ -87,7 +86,7 @@ namespace FenXiang.InternetPro.UnifiedIdentity.UserCard.Model.WebApi.EntityApi
         public ApiResult ValidateSms(CacheSmsReq data)
         {
             var vr = data.Validate();
-            if (!vr.succeed)
+            if (!vr.Succeed)
                 return ApiResult.Error(ErrorCode.LogicalError, vr.ToString());
 
             string vc = data.SmsVerificationCode;

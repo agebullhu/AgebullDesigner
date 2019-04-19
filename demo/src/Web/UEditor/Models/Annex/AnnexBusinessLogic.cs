@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Threading;
 using Agebull.Common;
-using Agebull.EntityModel.MySql.BusinessLogic;
+using Agebull.EntityModel.BusinessLogic.MySql;
 using Agebull.EntityModel.Common;
 using Agebull.ZeroNet.ManageApplication.DataAccess;
 

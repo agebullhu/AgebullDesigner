@@ -1,4 +1,5 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2018/10/5 23:06:24*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/4/7 0:20:45*/
+#region
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,27 +12,26 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Runtime.Serialization;
 using System.IO;
-
 using Newtonsoft.Json;
 
 using Agebull.Common;
+using Agebull.Common.Context;
+using Agebull.Common.Ioc;
+using Agebull.Common.OAuth;
 using Agebull.EntityModel.Common;
-using Agebull.EntityModel.MySql.BusinessLogic;
-
-using Agebull.EntityModel.Common;
-using Agebull.EntityModel.MySql;
+using Agebull.EntityModel.EasyUI;
+using Agebull.MicroZero;
 using Agebull.MicroZero.ZeroApis;
 
-
+using Agebull.Common.Organizations;
 using Agebull.Common.OAuth;
 
-using Agebull.Common.Organizations.BusinessLogic;
-using Agebull.Common.Organizations.DataAccess;
 using Agebull.Common.AppManage;
-using Agebull.EntityModel.EasyUI;
-using Agebull.Common.Context;
+using Agebull.Common.AppManage.BusinessLogic;
+using Agebull.Common.AppManage.DataAccess;
+#endregion
 
-namespace Agebull.Common.Organizations.WebApi.Entity
+namespace Agebull.Common.AppManage.WebApi.Entity
 {
     partial class RoleApiController
     {
@@ -39,15 +39,19 @@ namespace Agebull.Common.Organizations.WebApi.Entity
 
         /// <summary>下拉列表</summary>
         /// <returns></returns>
-        
+        [HttpPost]
         [Route("edit/combo")]
-        public List<EasyComboValues> ComboData()
+        public ApiArrayResult<EasyComboValues> ComboData()
         {
             GlobalContext.Current.IsManageMode = false;
             var datas = Business.All();
             var combos = datas.Select(p => new EasyComboValues(p.Id, p.Caption)).ToList();
             combos.Insert(0,new EasyComboValues(0, "-"));
-            return (combos);
+            return new ApiArrayResult<EasyComboValues>
+            {
+               Success = true,
+               ResultData = combos
+            };
         }
 
         #endregion
@@ -72,8 +76,11 @@ namespace Agebull.Common.Organizations.WebApi.Entity
             var keyWord = GetArg("keyWord");
             if (!string.IsNullOrEmpty(keyWord))
             {
-                filter.AddAnd(p =>p.Name.Contains(keyWord) || 
+                filter.AddAnd(p =>p.Role.Contains(keyWord) || 
                                    p.Caption.Contains(keyWord) || 
+                                   p.AppId.Contains(keyWord) || 
+                                   p.AppInfo.Contains(keyWord) || 
+                                   p.Organization.Contains(keyWord) || 
                                    p.Memo.Contains(keyWord));
             }
         }
@@ -86,10 +93,13 @@ namespace Agebull.Common.Organizations.WebApi.Entity
         protected void DefaultReadFormData(RoleData data, FormConvert convert)
         {
             //数据
-            data.Name = convert.ToString("Role");
+            data.Id = convert.ToLong("Id");
+            data.Role = convert.ToString("Role");
+            data.OrganizationId = convert.ToLong("OrganizationId");
             data.Memo = convert.ToString("Memo");
             //-
             data.Caption = convert.ToString("Caption");
+            data.AppId = convert.ToString("appId");
         }
 
         #endregion

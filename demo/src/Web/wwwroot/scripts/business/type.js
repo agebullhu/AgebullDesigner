@@ -266,8 +266,8 @@ function organizationTypeFormat(value) {
  */
 var classifyType = [
     { value: 0, text: '无权限' },
-    { value: 1, text: '医院' },
-    { value: 2, text: 'App应用' }
+    { value: 1, text: '后台管理' },
+    { value: 2, text: '线上应用' }
 ];
 
 /**

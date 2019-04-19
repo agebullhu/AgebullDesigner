@@ -106,7 +106,7 @@ namespace Agebull.Common.Organizations
         {
             var result = Validate();
             message = result.Messages.LinkToString('；');
-            return result.succeed;
+            return result.Succeed;
         }
 
         /// <summary>

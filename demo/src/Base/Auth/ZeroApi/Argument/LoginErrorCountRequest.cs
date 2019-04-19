@@ -1,5 +1,4 @@
 ﻿/*design by:agebull designer date:2017/11/13 21:07:31*/
-using Agebull.Common.OAuth;
 using Agebull.Common.Organizations;
 using Agebull.EntityModel.Common;
 

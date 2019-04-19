@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using Agebull.Common.Ioc;
-using Agebull.Common.OAuth;
 using Agebull.Common.Organizations;
 using Agebull.MicroZero;
 
@@ -14,6 +13,7 @@ namespace Agebull.UserCenter.WebApi
     [Category("用户信息")]
     public class UserInfoController : ApiController
     {
+
         /// <summary>
         /// 通过手机验证码 重置密码
         /// </summary>
@@ -23,11 +23,10 @@ namespace Agebull.UserCenter.WebApi
         [ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Anymouse)]
         public ApiResult FindPassword(FindPasswordRequest argument)
         {
-            var lg = IocHelper.Create<IUserInfoApi>();
+            var lg = IocHelper.Create<IUserApi>();
             return lg.FindPassword(argument);
         }
 
-      
 
         /// <summary>
         ///     修改头像
@@ -38,7 +37,7 @@ namespace Agebull.UserCenter.WebApi
         [ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Customer)]
         public ApiResult UpdateAvatar(AvatarRequest arg)
         {
-            var lg = IocHelper.Create<IUserInfoApi>();
+            var lg = IocHelper.Create<IUserApi>();
             var result = lg.UpdateAvatar(arg);
             return result;
         }
@@ -53,7 +52,7 @@ namespace Agebull.UserCenter.WebApi
         public ApiResult UpdateNickName(NickNameRequest arg)
 
         {
-            var lg = IocHelper.Create<IUserInfoApi>();
+            var lg = IocHelper.Create<IUserApi>();
             var result = lg.UpdateNickName(arg);
             return result;
         }
@@ -67,7 +66,7 @@ namespace Agebull.UserCenter.WebApi
         [ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Customer)]
         public ApiResult UpdatePassword(UpdatePasswordRequest arg)
         {
-            var lg = IocHelper.Create<IUserInfoApi>();
+            var lg = IocHelper.Create<IUserApi>();
             var result = lg.UpdatePassword(arg);
             return result;
         }

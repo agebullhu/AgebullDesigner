@@ -19,7 +19,7 @@ namespace Agebull.Common.Organizations.DataAccess
         /// <param name="operatorType">操作类型</param>
         protected override void OnDataSaved(DataOperatorType operatorType, PersonData entity)
         {
-            UserHelper.SyncUserProfile(entity.UserId);
+            UserHelper.CacheUserInfo(entity);
             base.OnDataSaved(operatorType, entity);
         }
     }

@@ -13,7 +13,7 @@ using Agebull.Common.AppManage.DataAccess;
 using Agebull.Common.Configuration;
 using Agebull.Common.Logging;
 using Newtonsoft.Json;
-using Agebull.EntityModel.MySql.BusinessLogic;
+using Agebull.EntityModel.BusinessLogic.MySql;
 using Agebull.EntityModel.EasyUI;
 using Agebull.Common.Context;
 
@@ -48,7 +48,7 @@ namespace Agebull.Common.AppManage.BusinessLogic
                     ItemType = type == "action" ? PageItemType.Action : PageItemType.Button,
                     Name = name,
                     Caption = title,
-                    ExtendValue = action,
+                    Tags = action,
                     Config = { SystemType = type }
                 };
                 access.Insert(item);
@@ -56,7 +56,7 @@ namespace Agebull.Common.AppManage.BusinessLogic
             else
             {
                 item.Caption = title;
-                item.ExtendValue = action;
+                item.Tags = action;
                 item.Config.SystemType = type;
                 item.ItemType = type == "action" ? PageItemType.Action : PageItemType.Button;
                 access.Update(item);
@@ -189,10 +189,10 @@ namespace Agebull.Common.AppManage.BusinessLogic
                 if (type.GetInterfaces().Any(p => p.Name == "ILevelAuditData"))
                     page.Config.LevelAudit = true;
                 page.Config.SystemType = type.FullName;
-                if (page.ExtendValue == "hide")
+                if (page.Tags == "hide")
                 {
                     page.Config.Hide = true;
-                    page.ExtendValue = null;
+                    page.Tags = null;
                 }
                 Access.SetValue(p => p.Name, type.Name, page.Id);
             }
@@ -230,7 +230,7 @@ namespace Agebull.Common.AppManage.BusinessLogic
         {
             using (MySqlDataBaseScope.CreateScope(Access.DataBase))
             {
-                DeleteButtonItem(p => p.ExtendValue == "list" || p.ExtendValue == "physical_delete");
+                DeleteButtonItem(p => p.Tags == "list" || p.Tags == "physical_delete");
                 if (pid < 0)
                 {
                     var ids = Access.LoadValues(p => p.Id, Convert.ToInt64, p => p.ItemType == PageItemType.Page);
@@ -277,7 +277,7 @@ namespace Agebull.Common.AppManage.BusinessLogic
                 SaveButtonItem(pid, "#btnAdd", "新增", "addnew");
 
                 SaveButtonItem(pid, "#btnEdit", "详细", "details");
-                if (Access.Any(p => p.ParentId == pid && p.ExtendValue == "details"))
+                if (Access.Any(p => p.ParentId == pid && p.Tags == "details"))
                 {
                     Save(pid, "#btnSave", "修改", "update", "extend");
                 }
@@ -297,12 +297,12 @@ namespace Agebull.Common.AppManage.BusinessLogic
             }
             else
             {
-                DeleteButtonItem(p => p.ParentId == pid && p.ExtendValue == "disable");
-                DeleteButtonItem(p => p.ParentId == pid && p.ExtendValue == "enable");
-                DeleteButtonItem(p => p.ParentId == pid && p.ExtendValue == "reset");
-                DeleteButtonItem(p => p.ParentId == pid && p.ExtendValue == "discard");
-                DeleteButtonItem(p => p.ParentId == pid && p.ExtendValue == "lock");
-                DeleteButtonItem(p => p.ParentId == pid && p.ExtendValue == "physical_delete");
+                DeleteButtonItem(p => p.ParentId == pid && p.Tags == "disable");
+                DeleteButtonItem(p => p.ParentId == pid && p.Tags == "enable");
+                DeleteButtonItem(p => p.ParentId == pid && p.Tags == "reset");
+                DeleteButtonItem(p => p.ParentId == pid && p.Tags == "discard");
+                DeleteButtonItem(p => p.ParentId == pid && p.Tags == "lock");
+                DeleteButtonItem(p => p.ParentId == pid && p.Tags == "physical_delete");
             }
 
             if (page.Config.Audit)
@@ -316,12 +316,12 @@ namespace Agebull.Common.AppManage.BusinessLogic
             }
             else
             {
-                DeleteButtonItem(p => p.ParentId == pid && p.ExtendValue == "pullback");
-                DeleteButtonItem(p => p.ParentId == pid && p.ExtendValue == "submit");
-                DeleteButtonItem(p => p.ParentId == pid && p.ExtendValue == "pass");
-                DeleteButtonItem(p => p.ParentId == pid && p.ExtendValue == "deny");
-                DeleteButtonItem(p => p.ParentId == pid && p.ExtendValue == "back");
-                DeleteButtonItem(p => p.ParentId == pid && p.ExtendValue == "reaudit");
+                DeleteButtonItem(p => p.ParentId == pid && p.Tags == "pullback");
+                DeleteButtonItem(p => p.ParentId == pid && p.Tags == "submit");
+                DeleteButtonItem(p => p.ParentId == pid && p.Tags == "pass");
+                DeleteButtonItem(p => p.ParentId == pid && p.Tags == "deny");
+                DeleteButtonItem(p => p.ParentId == pid && p.Tags == "back");
+                DeleteButtonItem(p => p.ParentId == pid && p.Tags == "reaudit");
             }
             //Update(page);
         }
@@ -335,14 +335,14 @@ namespace Agebull.Common.AppManage.BusinessLogic
 
         private void SaveButtonItem(long pid, string element, string caption, string action, bool isButton = true)
         {
-            var b = Access.All(p => p.ParentId == pid && p.ExtendValue == action);
+            var b = Access.All(p => p.ParentId == pid && p.Tags == action);
             if (b.Count != 0)
             {
                 for (int i = 1; i < b.Count; i++)
                     Access.PhysicalDelete(b[i].Id);
                 b[0].Caption = caption;
                 b[0].Name = isButton ? element : action;
-                b[0].ExtendValue = action;
+                b[0].Tags = action;
                 b[0].ItemType = isButton ? PageItemType.Button : PageItemType.Action;
                 b[0].Memo = caption;
                 Access.Update(b[0]);
@@ -356,7 +356,7 @@ namespace Agebull.Common.AppManage.BusinessLogic
                     Name = isButton ? element : action,
                     Caption = caption,
                     Memo = caption,
-                    ExtendValue = action
+                    Tags = action
                 });
             }
         }
