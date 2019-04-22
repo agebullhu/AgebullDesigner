@@ -1,30 +1,97 @@
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
+using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Designer;
 
 namespace Agebull.EntityModel.RobotCoder.EasyUi
 {
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    public class ApiActionCoder : EasyUiCoderBase
+    public class ProjectApiActionCoder : CoderWithEntity, IAutoRegister
     {
-        protected override string LangName => "cs";
 
+        #region 继承实现
         /// <summary>
         /// 名称
         /// </summary>
-        protected override string FileName => "ApiController.Designer.cs";
+        protected override string FileSaveConfigName => "File_API_CS";
 
         /// <summary>
-        /// 名称
+        ///     生成基础代码
         /// </summary>
-        protected override string ExFileName => "ApiController.cs";
-
-
-        protected override string BaseCode()
+        protected override void CreateBaCode(string path)
         {
-            var coder = new EasyUiHelperCoder();
+            if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
+                return;
+            var file = ConfigPath(Entity, "File_Web_Api_cs", path, Entity.Name, $"{Entity.Name}ApiController");
+            WriteFile(file + ".Designer.cs", BaseCode());
+        }
+
+        /// <summary>
+        ///     生成扩展代码
+        /// </summary>
+        protected override void CreateExCode(string path)
+        {
+            if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
+                return;
+            var file = ConfigPath(Entity, "File_Web_Api_cs", path, Entity.Name, $"{Entity.Name}ApiController");
+            WriteFile(file + ".cs", ExtendCode());
+            //ExportCsCode(path);
+        }
+
+        #endregion
+
+        #region Export
+        /*
+        private void ExportCsCode(string path)
+        {
+            var file = ConfigPath(Entity, "File_Web_Export_cs", path, $"Page\\{Entity.Parent.Name}\\{Entity.Name}", "Export.cs");
+            var coder = new ExportActionCoder
+            {
+                Entity = Entity,
+                Project = Project
+            };
+            WriteFile(file, coder.Code());
+        }
+
+        private string ExportAspxCode()
+        {
+            return $@"<%@ Page Language='C#' AutoEventWireup='true'  Inherits='{NameSpace}.{Entity.Name}Page.ExportAction' %>";
+        }
+        */
+        #endregion
+
+        #region 代码片断
+
+        /// <summary>
+        /// 执行自动注册
+        /// </summary>
+        void IAutoRegister.AutoRegist()
+        {
+            MomentCoder.RegisteCoder("Web-Api", "表单保存", "cs", ApiHelperCoder.InputConvert4);
+            MomentCoder.RegisteCoder("Web-Api", "ApiController.cs", "cs", BaseCode);
+            MomentCoder.RegisteCoder("Web-Api", "ApiController.Designer.cs", "cs", ExtendCode);
+        }
+        public string ExtendCode(EntityConfig entity)
+        {
+            Entity = entity;
+            return ExtendCode();
+        }
+
+        public string BaseCode(EntityConfig entity)
+        {
+            Entity = entity;
+            return BaseCode();
+        }
+
+        #endregion
+
+        #region 代码
+
+        private string BaseCode()
+        {
+            var coder = new ApiHelperCoder();
             return
                 $@"#region
 using System;
@@ -99,7 +166,7 @@ namespace {NameSpace}.WebApi.Entity
 }}";
         }
 
-        internal string QueryCode()
+        public string QueryCode()
         {
             var fields = Entity.UserProperty.Where(p => !p.DbInnerField && !p.IsSystemField && p.CsType == "string" && !p.IsBlob).ToArray();
             if (fields.Length == 0)
@@ -124,8 +191,16 @@ namespace {NameSpace}.WebApi.Entity
             return code.ToString();
         }
 
-        protected override string ExtendCode()
+        private string ExtendCode()
         {
+            var folder = !string.IsNullOrWhiteSpace(Entity.PageFolder)
+                ? Entity.PageFolder.Replace('\\', '/')
+                    : string.IsNullOrEmpty(Entity.Classify)
+                        ? Entity.Name
+                        : $"{Entity.Classify}/{Entity.Name}";
+
+            var page = $"/{Project.PageRoot}/{folder}/index.htm";
+
             var baseClass = "ApiController";
             if (Entity.Interfaces != null)
             {
@@ -134,8 +209,7 @@ namespace {NameSpace}.WebApi.Entity
                 if (Entity.Interfaces.Contains("IAuditData"))
                     baseClass = "ApiControllerForAudit";
             }
-            return
-                $@"#region
+            return $@"#region
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -171,7 +245,8 @@ namespace {NameSpace}.WebApi.Entity
     /// <summary>
     ///  {ToRemString(Entity.Caption)}
     /// </summary>
-    [RoutePrefix(""{Project.Abbreviation?? Project.Name}/{Entity.Abbreviation ?? Entity.Name}/v1"")]
+    [RoutePrefix(""{Project.Abbreviation}/{Entity.Abbreviation}/v1"")]
+    [ApiPage(""{page}"")]
     public partial class {Entity.Name}ApiController : {baseClass}<{Entity.EntityName}, {Entity.Name}DataAccess, {Entity.Parent.DataBaseObjectName}, {Entity.Name}BusinessLogic>
     {{
         #region 基本扩展
@@ -193,7 +268,6 @@ namespace {NameSpace}.WebApi.Entity
         {{
             DefaultReadFormData(data,convert);
         }}
-
         #endregion
     }}
 }}";
@@ -210,7 +284,7 @@ namespace {NameSpace}.WebApi.Entity
         /// <summary>
         ///     载入树节点
         /// </summary>
-        [HttpPost,Route(""edit/tree"")]
+        [Route(""edit/tree"")]
         public ApiArrayResult<EasyUiTreeNode> OnLoadTree()
         {
             var nodes = Business.LoadTree(this.GetIntArg(""id""));
@@ -221,26 +295,29 @@ namespace {NameSpace}.WebApi.Entity
             }};
         }");
             }
-
-            var caption = Entity.Properties.FirstOrDefault(p => p.IsCaption);
-            if (caption!=null)
+            var cap = Entity.Properties.FirstOrDefault(p => p.IsCaption);
+            if (cap != null)
             {
-        code.Append($@"
-        /// <summary>下拉列表</summary>
-        /// <returns></returns>
-        [HttpPost]
+                code.Append(@"
+        /// <summary>
+        /// 载入下拉列表数据
+        /// </summary>
         [Route(""edit/combo"")]
-        public ApiArrayResult<EasyComboValues> ComboData()
-        {{
-            GlobalContext.Current.IsManageMode = false;
-            var datas = Business.All();
-            var combos = datas.Select(p => new EasyComboValues(p.{Entity.PrimaryColumn.Name}, p.{caption.Name})).ToList();
-            combos.Insert(0,new EasyComboValues(0, ""-""));
-            return new ApiArrayResult<EasyComboValues>
-            {{
-               Success = true,
-               ResultData = combos
-            }};
+        public ApiArrayResult<EasyComboValues> ComboValues()
+        {");
+                code.Append(Entity.Interfaces.Contains("IStateData")
+                    ? @"
+            var datas = Business.All(p=>p.DataState <= EntityModel.Common.DataStateType.Enable);"
+                    : @"
+            var datas = Business.All();");
+                code.Append($@"
+            return ApiArrayResult<EasyComboValues>.Succees(datas.Count == 0
+                ? new System.Collections.Generic.List<EasyComboValues>()
+                : datas.OrderBy(p => p.{cap.Name}).Select(p => new EasyComboValues
+                {{
+                    Key = p.{Entity.PrimaryField},
+                    Value = p.{cap.Name}
+                }}).ToList());
         }}");
             }
             foreach (var cmd in Entity.Commands.Where(p => !p.IsLocalAction))
@@ -252,15 +329,14 @@ namespace {NameSpace}.WebApi.Entity
         /// <remark>
         ///     {ToRemString(cmd.Description)}
         /// </remark>
-        [HttpPost,Route(""edit/{cmd.Name.ToLWord()}"")]
+        [Route(""edit/{cmd.Name.ToLWord()}"")]
         public ApiResult On{cmd.Name}()
         {{
             InitForm();");
-                if (cmd.IsSingleObject)
-                    code.Append($@"
-            return !this.Business.{cmd.Name}(this.GetIntArg(""id""))");
-                else
-                    code.Append($@"
+                code.Append(cmd.IsSingleObject
+                    ? $@"
+            return !this.Business.{cmd.Name}(this.GetIntArg(""id""))"
+                    : $@"
             return !this.Business.Do{cmd.Name}(this.GetIntArrayArg(""selects""))");
                 code.Append(@"
             return IsFailed
@@ -271,6 +347,8 @@ namespace {NameSpace}.WebApi.Entity
 
             return code.ToString();
         }
+
+        #endregion
 
     }
 }

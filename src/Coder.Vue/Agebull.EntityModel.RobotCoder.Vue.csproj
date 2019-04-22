@@ -44,7 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PorjectVUEGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VUEBuilde.cs" />
     <Compile Include="VueFormCoder.cs" />
     <Compile Include="VueMomentCoder.cs" />
   </ItemGroup>

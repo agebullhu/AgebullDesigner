@@ -15,7 +15,6 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("Web-EasyUi", "Form服务端读取", "cs", InputConvert);
             MomentCoder.RegisteCoder("Web-EasyUi", "下拉列表方法", "xml", ApiCode);
             MomentCoder.RegisteCoder("Web-EasyUi", "下拉列表选择", "xml", ApiSwitch);
 
@@ -42,16 +41,6 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             return coder.BaseCode(entity);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public static string InputConvert(EntityConfig entity)
-        {
-            var coder = new EasyUiHelperCoder();
-            return coder.InputConvert(entity);
-
-        }
         /// <summary>
         /// 
         /// </summary>

@@ -1346,6 +1346,11 @@
             WEB页面主文件夹
             </summary>
         </member>
+        <member name="P:Agebull.EntityModel.Config.ProjectConfig.PageRoot">
+            <summary>
+            WEB页面主文件夹
+            </summary>
+        </member>
         <member name="F:Agebull.EntityModel.Config.ProjectConfig._branchFolder">
             <summary>
             子级文件夹
@@ -1736,6 +1741,16 @@
             <remark>
             C#语言类型
             </remark>
+        </member>
+        <member name="F:Agebull.EntityModel.Config.PropertyConfig._isTime">
+            <summary>
+            是否时间
+            </summary>
+        </member>
+        <member name="P:Agebull.EntityModel.Config.PropertyConfig.IsTime">
+            <summary>
+            是否时间
+            </summary>
         </member>
         <member name="F:Agebull.EntityModel.Config.PropertyConfig._isArray">
             <summary>

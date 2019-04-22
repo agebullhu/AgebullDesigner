@@ -20,7 +20,6 @@ namespace Agebull.EntityModel.RobotCoder
         void IAutoRegister.AutoRegist()
         {
             MomentCoder.RegisteCoder("Web-EasyUi","表单", "html",  EasyUiForm);
-            MomentCoder.RegisteCoder("Web-EasyUi", "表单保存", "cs",  InputConvert4);
             MomentCoder.RegisteCoder("Web-EasyUi","表格", "js",  EasyUiGrid);
             MomentCoder.RegisteCoder("Web-EasyUi", "详情", "html",  EasyUiInfo);
             MomentCoder.RegisteCoder("Web-EasyUi", "MvcMenu", "htm",  MvcMenu);
@@ -28,10 +27,6 @@ namespace Agebull.EntityModel.RobotCoder
 
         #endregion
 
-        public string InputConvert4(EntityConfig entity)
-        {
-            return EasyUiHelperCoder.InputConvert4(entity);
-        }
 
         public string EasyUiInfo(EntityConfig entity)
         {

@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:27:50*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/4/22 1:36:27*/
 /*
 *   微信认证的前端操作类对象,实现基本的增删改查的界面操作
 */
@@ -18,7 +18,7 @@ var page = {
     /**
      * API前缀
      */
-    apiPrefix: 'user/Wechat/v1/',
+    apiPrefix: 'user/wechat/v1/',
     /**
      * 列表的URL
      */

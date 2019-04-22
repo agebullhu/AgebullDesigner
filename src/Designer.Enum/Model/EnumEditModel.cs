@@ -159,26 +159,29 @@ namespace Agebull.EntityModel.Designer
                 }
                 if (!char.IsLetter(line[0]))
                     continue;
-                string svl = value.ToString();
                 if (baseLine.Length > 1)
                 {
-                    svl = baseLine[1];
-                    if (int.TryParse(baseLine[1], out var vl))
+                    if (baseLine[1].IndexOf("0X", StringComparison.OrdinalIgnoreCase) == 0 && baseLine[1].Length > 2)
+                    {
+                        value = Convert.ToInt32(baseLine[1].Substring(2), 16);
+                    }
+                    else if (int.TryParse(baseLine[1], out var vl))
                     {
                         value = vl;
                     }
                 }
                 var name = words[words.Length - 1];
-                code.Append($"{svl}\t{name}");
+                code.Append($"{value}\t{name}");
                 if (caption != null)
                     code.Append($"\t{caption}");
                 if (descript != null)
                     code.Append($"\t{descript}");
                 code.AppendLine();
+
                 columns.Add(new EnumItem
                 {
                     Name = name,
-                    Value = svl,
+                    Value = value.ToString(),
                     Description = descript,
                     Caption = caption
                 });

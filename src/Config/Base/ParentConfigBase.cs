@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using System.Text;
 using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
@@ -33,7 +34,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"设计器支持"), DisplayName(@"简称"), Description(@"简称")]
         public string Abbreviation
         {
-            get => _abbreviation;
+            get => WorkContext.InCoderGenerating ? _abbreviation ?? Name.ToLWord() : _abbreviation;
             set
             {
                 if (_abbreviation == value)

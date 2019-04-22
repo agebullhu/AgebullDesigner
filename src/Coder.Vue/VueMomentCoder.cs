@@ -15,7 +15,8 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("Web-Vue", "Form","xml", FormCode);
+            MomentCoder.RegisteCoder("Web-Vue", "Html", "html", HtmlCode);
+            MomentCoder.RegisteCoder("Web-Vue", "Script", "js", ScriptCode);
         }
         #endregion
 
@@ -25,14 +26,27 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// 
         /// </summary>
         /// <returns></returns>
-        public static string FormCode(EntityConfig entity)
+        public static string HtmlCode(EntityConfig entity)
         {
             var coder = new VueFormCoder
             {
                 Entity = entity,
                 Project = entity.Parent
             };
-            return coder.Code();
+            return coder.HtmlCode();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static string ScriptCode(EntityConfig entity)
+        {
+            var coder = new VueFormCoder
+            {
+                Entity = entity,
+                Project = entity.Parent
+            };
+            return coder.ScriptCode();
         }
         #endregion
     }

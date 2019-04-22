@@ -1,33 +1,32 @@
-using System.ComponentModel.Composition;
+锘縰sing System.ComponentModel.Composition;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Designer;
-using Agebull.EntityModel.RobotCoder.AspNet;
 
 namespace Agebull.EntityModel.RobotCoder.EasyUi
 {
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal sealed class EasyUiProjectBuilde : ProjectBuilder, IAutoRegister
+    internal sealed class ProjectApiBuilde : ProjectBuilder, IAutoRegister
     {
         /// <summary>
-        /// 名称
+        /// 鍚嶇О
         /// </summary>
-        protected override string Name => "EasyUi";
+        protected override string Name => "Edit Api";
 
         /// <summary>
-        /// 标题
+        /// 鏍囬
         /// </summary>
         public override string Caption => Name;
         /// <summary>
-        /// 执行自动注册
+        /// 鎵ц鑷姩娉ㄥ唽
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            RegistBuilder<EasyUiProjectBuilde>();
+            RegistBuilder<ProjectApiBuilde>();
         }
 
         /// <summary>
-        /// 生成项目代码
+        /// 鐢熸垚椤圭洰浠ｇ爜
         /// </summary>
         /// <param name="project"></param>
         public override void CreateProjectCode(ProjectConfig project)
@@ -36,23 +35,19 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         }
 
         /// <summary>
-        /// 生成实体代码
+        /// 鐢熸垚瀹炰綋浠ｇ爜
         /// </summary>
         /// <param name="project"></param>
         /// <param name="schema"></param>
         public override void CreateEntityCode(ProjectConfig project, EntityConfig schema)
         {
-            if (!schema.HaseEasyUi)
-            {
-                TraceMessage.Track = $"{schema.Caption}:未进行页面配置,无法生成页面代码";
-                return;
-            }
-            var pg = new PageGenerator
+            var pg = new ProjectApiActionCoder
             {
                 Entity = schema,
                 Project = schema.Parent,
             };
-            pg.CreateBaseCode(project.PagePath);
+            pg.CreateBaseCode(project.ApiPath);
+            pg.CreateExtendCode(project.ApiPath);
         }
     }
 }

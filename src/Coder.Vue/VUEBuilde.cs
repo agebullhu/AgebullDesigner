@@ -1,18 +1,18 @@
 using System.ComponentModel.Composition;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Designer;
-using Agebull.EntityModel.RobotCoder.AspNet;
+using Agebull.EntityModel.RobotCoder.VUE;
 
-namespace Agebull.EntityModel.RobotCoder.EasyUi
+namespace Agebull.EntityModel.RobotCoder.VUE
 {
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal sealed class EasyUiProjectBuilde : ProjectBuilder, IAutoRegister
+    internal sealed class VUEBuilde : ProjectBuilder, IAutoRegister
     {
         /// <summary>
         /// 名称
         /// </summary>
-        protected override string Name => "EasyUi";
+        protected override string Name => "VUE";
 
         /// <summary>
         /// 标题
@@ -23,9 +23,9 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            RegistBuilder<EasyUiProjectBuilde>();
+            RegistBuilder<VUEBuilde>();
         }
-
+        
         /// <summary>
         /// 生成项目代码
         /// </summary>
@@ -42,17 +42,13 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// <param name="schema"></param>
         public override void CreateEntityCode(ProjectConfig project, EntityConfig schema)
         {
-            if (!schema.HaseEasyUi)
-            {
-                TraceMessage.Track = $"{schema.Caption}:未进行页面配置,无法生成页面代码";
-                return;
-            }
-            var pg = new PageGenerator
+            var pg = new PorjectVUEGenerator
             {
                 Entity = schema,
                 Project = schema.Parent,
             };
             pg.CreateBaseCode(project.PagePath);
+            pg.CreateExtendCode(project.PagePath);
         }
     }
 }

@@ -168,6 +168,32 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(CsType));
             }
         }
+
+
+        /// <summary>
+        /// 是否时间
+        /// </summary>
+        [DataMember, JsonProperty("isTime", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isTime;
+
+        /// <summary>
+        /// 是否时间
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"模型设计"), DisplayName(@"是否时间"), Description("是否时间")]
+        public bool IsTime
+        {
+            get => Reference?.IsTime ?? _isTime;
+            set
+            {
+                if (_isTime == value)
+                    return;
+                BeforePropertyChanged(nameof(IsTime), _isTime, value);
+                _isTime = value;
+                OnPropertyChanged(nameof(IsTime));
+            }
+        }
+
         /// <summary>
         /// 是否数组
         /// </summary>

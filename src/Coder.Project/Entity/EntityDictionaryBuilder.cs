@@ -354,6 +354,12 @@ namespace Agebull.EntityModel.RobotCoder
                 this.{field.Name} = string.IsNullOrWhiteSpace(value) ? null : value;
                 return true;");
                         continue;
+                    case "byte[]":
+                    case "Byte[]":
+                        code.Append($@"
+                this.{field.Name} = string.IsNullOrWhiteSpace(value) ? null : Convert.FromBase64String(value);
+                return true;");
+                        continue;
                     default:
                         code.Append($@"
                 if (!string.IsNullOrWhiteSpace(value))

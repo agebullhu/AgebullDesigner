@@ -1,4 +1,4 @@
-﻿<!--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/4/18 13:39:54-->
+﻿<!--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/4/20 9:30:45-->
 <form name='appInfoForm' id='appInfoForm' method='POST' enctype='multipart/form-data'>
     <input name='id' id='id' type='hidden' />
     <div id='appInfoRegion' class='formRegion' style='width:985px;'>
@@ -21,6 +21,13 @@
                     <div class='inputLabel'>应用标识:</div>
                     <input id='appId' name='appId' class='inputValue inputS easyui-textbox'
                            data-options="prompt:'应用标识',validType:['strLimit[0,200]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_host'>
+                <div class='inputRegion' id='ir_host'>
+                    <div class='inputLabel'>基地址:</div>
+                    <input id='host' name='host' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'基地址',validType:['strLimit[0,200]']"/>
                 </div>
             </div>
             <div class='inputField' id='fr_appFeature'>

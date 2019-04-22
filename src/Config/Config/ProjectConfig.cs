@@ -158,7 +158,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"解决方案"), DisplayName(@"接口名称"), Description("接口名称")]
         public string ApiName
         {
-            get => WorkContext.InCoderGenerating ? _apiName ?? Name : _apiName;
+            get => WorkContext.InCoderGenerating ? _apiName ?? Abbreviation : _apiName;
             set
             {
                 if (_apiName == value)
@@ -288,6 +288,12 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(PagePath));
             }
         }
+
+        /// <summary>
+        /// WEB页面主文件夹
+        /// </summary>
+        public string PageRoot => _pageFolder ?? Name;
+
         /// <summary>
         /// 子级文件夹
         /// </summary>

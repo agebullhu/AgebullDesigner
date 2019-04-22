@@ -16,7 +16,11 @@
         <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal" DataContext="{Binding Model.Context.SelectEntity}">
             <WrapPanel.Resources>
                 <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
-            </WrapPanel.Resources>
+            </WrapPanel.Resources> 
+            <StackPanel>
+                <Label Content="启用界面" />
+                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding HaseEasyUi,Mode=TwoWay}" />
+            </StackPanel>
             <StackPanel>
                 <Label Content="页面文件夹名称" />
                 <TextBox Text="{Binding PageFolder,Mode=TwoWay}" />

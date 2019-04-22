@@ -58,6 +58,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\ApiHelperCoder.cs" />
+    <Compile Include="Api\ExportActionCoder.cs" />
+    <Compile Include="Api\ProjectApiActionCoder.cs" />
+    <Compile Include="Api\ProjectApiBuilde.cs" />
     <Compile Include="DataModel\DataBaseBuilder.cs" />
     <Compile Include="Entity\EntityBuilder.cs" />
     <Compile Include="DataModel\EntityComboBuilder.cs" />
@@ -81,8 +85,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Project\EntityModelBuilde.cs" />
     <Compile Include="Web\BusinessBuilder.cs" />
-    <Compile Include="Web\WebserviceProjectBuilde.cs" />
-    <Compile Include="Web\WebServiceBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Coder.Sql\Agebull.EntityModel.RobotCoder.DataBase.csproj">

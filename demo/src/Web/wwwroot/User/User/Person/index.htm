@@ -1,107 +1,228 @@
-﻿<!--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/3/22 10:27:49-->
+﻿<!--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/4/22 11:48:23-->
 <!DOCTYPE html>
 <html>
-<head><meta name='renderer' content='webkit' /><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=21' />
-<title>用户中心 > 用户 > 个人信息
-</title>
-	<meta charset='utf-8' />
-	<meta name='viewport' content='width=device-width' />
-	<meta name='renderer' content='webkit' />
-	<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
-	<link rel='stylesheet' type='text/css' href='/styles/css/default.css?v=20190105' />
+<head>
+    <meta name='renderer' content='webkit'/>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=21'/>
+    <title>
+        用户中心 > 用户 > 个人信息
+    </title>
+    <meta charset='utf-8'/>
+    <meta name='viewport' content='width=device-width'/>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8-bom'/>
+    <link rel='stylesheet' type='text/css' href='/styles/vuePage.css?v=201910001'/>
+    <link rel='stylesheet' type='text/css' href='/styles/font-awesome/css/font-awesome.min.css'>
     <!--JQuery-->
-    <script type='text/javascript' src='/scripts/jquery-3.3.1.min.js?v=20190105'></script>
-    <script type='text/javascript'>
-        window.UEDITOR_HOME_URL = '/ueditor/';
-    </script>
-    <!--ueditor-->
-    <script type='text/javascript' charset='utf-8' src='/ueditor/ueditor.config.js?v=20190105'></script>
-    <script type='text/javascript' charset='utf-8' src='/ueditor/ueditor.all.min.js?v=20190105'> </script>
-    <script type='text/javascript' charset='utf-8' src='/ueditor/ueditor.parse.min.js?v=20190105'> </script>
-    <script type='text/javascript' charset='utf-8' src='/ueditor/lang/zh-cn/zh-cn.js?v=20190105'></script>
-    <script type='text/javascript' src='/ueditor/third-party/codemirror/codemirror.js'></script>
-    <script type='text/javascript' src='/ueditor/third-party/zeroclipboard/ZeroClipboard.min.js?v=20190105'></script>
-    <!--EasyUI-->
-    
-    <link rel='stylesheet' type='text/css' href='/scripts/themes/metro/easyui.css?v=20190105' /><link rel='stylesheet' type='text/css' href='/scripts/themes/icon.css?v=20190105' />
-    <script type='text/javascript' src='/scripts/jquery.easyui.min.js?v=20190105'></script>
-    <script type='text/javascript' src='/scripts/datagrid-detailview.js?v=20190105'></script>
-    <script type='text/javascript' src='/scripts/locale/easyui-lang-zh_CN.js?v=20190105'></script>
+    <script type='text/javascript' src='/scripts/jquery-3.3.1.min.js?v=201910001'></script>
+    <!--VUE-->
+    <link href='http://cdn.staticfile.org/element-ui/2.6.1/theme-chalk/index.css' rel='stylesheet'>
+    <script src='http://cdn.staticfile.org/vue/2.6.10/vue.js'></script>
+    <script src='http://cdn.staticfile.org/element-ui/2.6.1/index.js'></script>
+    <script src='http://cdn.staticfile.org/element-ui/2.6.1/locale/zh-CN.min.js'></script>
     <!--Extend-->
-    <script type='text/javascript' src='/scripts/extend/core.js?v=20190105'></script>
-    <script type='text/javascript' src='/scripts/extend/button.js?v=20190105'></script>
-    <script type='text/javascript' src='/scripts/extend/ajax.js?v=20190105'></script>
-    <script type='text/javascript' src='/scripts/extend/extend.js?v=20190105'></script>
-    
-    <script type='text/javascript' src='/scripts/extend/page.js?v=20190105'></script>
-    <script type='text/javascript' src='/scripts/extend/dialog.js?v=20190105'></script>
-    <script type='text/javascript' src='/scripts/extend/tree.js?v=20190105'></script>
-    <script type='text/javascript' src='/scripts/extend/grid_panel.js'></script>
-    <script type='text/javascript' src='/scripts/extend/card_panel.js?v=20190105'></script>
-    <script type='text/javascript' src='/scripts/extend/type.js?v=20190105'></script>
-    <script type='text/javascript' src='/scripts/extend/ueditor_ex.js?v=20190105'></script>
-    <!--Business-->
-    <script type='text/javascript' src='/scripts/business/type.js?v=20190105'></script>
-    <script type='text/javascript' src='/scripts/business/business.js?v=20190105'></script>
-    <script type='text/javascript' src='/scripts/business/userjob.js?v=20190105'></script>
-    <link rel='stylesheet' type='text/css' href='/styles/model/Site.css?v=20190105' /><link rel='stylesheet' type='text/css' href='/styles/model/icon.css?v=20190105' />
-    <style type='text/css'>
-        .parentInput {
-            border: 0 white solid;
-            color: red;
-            text-align: right;
-        }
-
-        .selectInput {
-            border: 0 white solid;
-            color: blue;
-            text-align: right;
-        }
-
-        .editInput {
-            border-bottom: 1px black solid;
-            border-left: 0 black solid;
-            border-right: 0 black solid;
-            border-top: 0 black solid;
-            text-align: right;
-        }
-    </style>
-    <script type='text/javascript' src='/User/User/Person/script.js'></script>
+    <script type='text/javascript' src='/scripts/extend/vue_ex.js?v=201910001'></script>
+    <script type='text/javascript' src='/scripts/extend/core.js?v=201910001'></script>
+    <script type='text/javascript' src='/scripts/extend/ajax.js?v=201910001'></script>
+    <script type='text/javascript' src='/scripts/extend/ajax_vue.js?v=201910001'></script>
+    <script type='text/javascript' src='/scripts/extend/extend.js?v=201910001'></script>
+    <script type='text/javascript' src='/scripts/extend/type.js?v=201910001'></script>
 </head>
 <body>
-    <div id='rBody' class='content_body' style='visibility: hidden;'>
+<div id='work_space' class='tiled' v-cloak>
+    <el-container style='height: 100%; width: 100%'>
+        <el-header style='height: 50px; padding: 5px'>
+            <div style='display: inline-block;'>
+                <el-button-group>
+                    <el-tooltip placement='top' effect='light'>
+                        <div slot='content'>新增一条数据</div>
+                        <el-button type='primary' icon='fa fa-plus' @click='doAddNew'></el-button>
+                    </el-tooltip>
+                    <el-tooltip placement='top' effect='light'>
+                        <div slot='content'>编辑当前选行的数据</div>
+                        <el-button type='primary' icon='el-icon-edit' @click='doEdit'></el-button>
+                    </el-tooltip>
+                    <el-tooltip placement='top' effect='light'>
+                        <div slot='content'>删除当前选中的一或多行数据的数据</div>
+                        <el-button type='primary' icon='fa fa-times' @click='doDelete'></el-button>
+                    </el-tooltip>
+                </el-button-group>
+                <el-button-group>
+                    <el-tooltip placement='top' effect='light'>
+                        <div slot='content'>使当前选中的一或多行数据的数据成为<b>启用</b>状态</div>
+                        <el-button type='primary' icon='fa fa-star' @click='doEnable'>启用</el-button>
+                    </el-tooltip>
+                    <el-tooltip placement='top' effect='light'>
+                        <div slot='content'>使当前选中的一或多行数据的数据成为<b>禁用</b>状态</div>
+                        <el-button type='primary' icon='fa fa-star-o' @click='doDisable'>禁用</el-button>
+                    </el-tooltip>
+                    <el-tooltip placement='top' effect='light'>
+                        <div slot='content'>使当前选中的一或多行数据的数据成为<b>废弃</b>状态</div>
+                        <el-button type='primary' icon='el-icon-delete' @click='doDiscard'>废弃</el-button>
+                    </el-tooltip>
+                    <el-tooltip placement='top' effect='light'>
+                        <div slot='content'>使当前选中的一或多行数据的数据<b>还原</b>为草稿状态,使之可编辑</div>
+                        <el-button type='primary' icon='fa fa-pencil' @click='doReset'>还原</el-button>
+                    </el-tooltip>
+                </el-button-group>
+            </div>
+            <div style='display: inline-block; float: right'>
+                <el-input placeholder='请输入搜索内容' v-model='query.keyWords' class='input-with-select'>
+                    <el-select v-model='query.dataState' slot='prepend' placeholder='数据状态' style='width: 130px;'>
+                        <el-option value='256' label='-'></el-option>
+                        <el-option value='0' label='草稿'></el-option>
+                        <el-option value='1' label='启用'></el-option>
+                        <el-option value='2' label='停用'></el-option>
+                        <el-option value='14' label='查看'></el-option>
+                        <el-option value='15' label='锁定'></el-option>
+                        <el-option value='16' label='废弃'></el-option>
+                        <el-option value='255' label='删除'></el-option>
+                    </el-select>
+                    <el-button slot='append' icon='el-icon-search'></el-button>
+                </el-input>
+            </div>
+        </el-header>
+        <el-main style='margin: 0; padding: 0'>
+            <template>
+                <!-- Grid -->
+                <el-table :data='list.rows'
+                          border
+                          ref='dataTable'
+                          highlight-current-row
+                          @row-dblclick='dblclick'
+                          @current-change='currentRowChange'
+                          @selection-change='selectionRowChange'
+                          style='width: 100%'>
+                    <el-table-column type='selection'
+                                     align='center'
+                                     header-align='center'>
+                    </el-table-column><el-table-column label='状态'
+                                     align='center'
+                                     header-align='center'
+                                     width='50'>
+                        <template slot-scope='scope'>
+                            <i :class='scope.row.dataState | dataStateIcon'></i>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop='NickName'
+                                     header-align='center'
+                                     label='昵称'>
+                    </el-table-column>
+                    <el-table-column prop='IdCard'
+                                     header-align='center'
+                                     label='身份证号'>
+                    </el-table-column>
+                    <el-table-column prop='certType'
+                                     header-align='center'
+                                     label='证件类型'>
+                    </el-table-column>
+                    <el-table-column prop='RealName'
+                                     header-align='center'
+                                     label='真实姓名'>
+                    </el-table-column>
+                    <el-table-column prop='AvatarUrl'
+                                     header-align='center'
+                                     label='头像'>
+                    </el-table-column>
+                    <el-table-column prop='phoneNumber'
+                                     header-align='center'
+                                     label='手机号'>
+                    </el-table-column>
+                    <el-table-column prop='birthday'
+                                     header-align='center'
+                                     label='生日'>
+                        <template slot-scope='scope'>
+                            <span style='margin-left: 10px'>
+                                {{scope.row.birthday | formatDate}}
+                            </span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop='nation'
+                                     header-align='center'
+                                     label='民族'>
+                    </el-table-column>
+                    <el-table-column prop='tel'
+                                     header-align='center'
+                                     label='电话'>
+                    </el-table-column>
+                    <el-table-column prop='email'
+                                     header-align='center'
+                                     label='电子邮件'>
+                    </el-table-column>
+                    <el-table-column prop='homeAddress'
+                                     header-align='center'
+                                     label='地址'>
+                    </el-table-column>
+                </el-table>
+            </template>
+        </el-main>
+        <el-footer>
+            <el-pagination @size-change='pageChange'
+                           @current-change='pageChange'
+                           background
+                           :current-page='list.page'
+                           :page-sizes='[20, 30, 50, 100]'
+                           :page-size='list.pageSize'
+                           layout='total, sizes, prev, pager, next, jumper'
+                           :total='list.total'>
+            </el-pagination>
+        </el-footer>
+    </el-container>
+    <!-- Form -->
     
-    <div id='pageToolbarEx'>
-        <div id='regCommand' style='display:inline-block;'>
-            <a id='btnAdd' href='javascript:void(0)'>新增</a>
-            <a id='btnEdit' href='javascript:void(0)'>修改</a>
-            <a id='btnDelete' href='javascript:void(0)'>删除</a>
-        <div style='display: inline;'><div class='toolbarSpace'></div></div>
-        <a id='btnEnable' href='javascript:void(0)'>启用</a>
-        <a id='btnDisable' href='javascript:void(0)'>禁用</a>
-        <div style='display: inline;'><div class='toolbarSpace'></div></div>
-        <a id='btnDiscard' href='javascript:void(0)'>废弃</a>
-        <a id='btnReset' href='javascript:void(0)'>重置</a>
+     <el-dialog title='个人信息编辑'
+                :visible.sync='form.visible'
+                v-loading='form.loading'
+                element-loading-text='正在处理'
+                element-loading-spinner='el-icon-loading'
+                element-loading-background='rgba(0, 0, 0, 0.8)'>
+            <div style='background-color: white; border: solid 1px silver; padding: 10px'>
+            <el-form :model='form.data'
+                     :rules='form.rules'
+                     label-position='left'
+                     label-width='100px'
+                     ref='dataForm' 
+                     @submit.native.prevent>
+            <el-form-item label='昵称' prop='NickName'>
+                <el-input v-model='form.data.NickName' placeholder='昵称' auto-complete='off' clearable></el-input>
+            </el-form-item>
+            <el-form-item label='身份证号' prop='IdCard'>
+                <el-input v-model='form.data.IdCard' placeholder='身份证号' auto-complete='off' clearable></el-input>
+            </el-form-item>
+            <el-form-item label='证件类型' prop='certType'>
+                <el-input v-model='form.data.certType' placeholder='证件类型' auto-complete='off' clearable></el-input>
+            </el-form-item>
+            <el-form-item label='真实姓名' prop='RealName'>
+                <el-input v-model='form.data.RealName' placeholder='真实姓名' auto-complete='off' clearable></el-input>
+            </el-form-item>
+            <el-form-item label='头像' prop='AvatarUrl'>
+                <el-input v-model='form.data.AvatarUrl' placeholder='头像' auto-complete='off' clearable></el-input>
+            </el-form-item>
+            <el-form-item label='手机号' prop='phoneNumber'>
+                <el-input v-model='form.data.phoneNumber' placeholder='用户手机号' auto-complete='off' clearable></el-input>
+            </el-form-item>
+            <el-form-item label='生日' prop='birthday'>
+                <el-date-picker v-model='form.data.birthday' placeholder='生日' type='datetime'></el-date-picker>
+            </el-form-item>
+            <el-form-item label='民族' prop='nation'>
+                <el-input v-model='form.data.nation' placeholder='民族' auto-complete='off' clearable></el-input>
+            </el-form-item>
+            <el-form-item label='电话' prop='tel'>
+                <el-input v-model='form.data.tel' placeholder='电话' auto-complete='off' clearable></el-input>
+            </el-form-item>
+            <el-form-item label='电子邮件' prop='email'>
+                <el-input v-model='form.data.email' placeholder='电子邮件' auto-complete='off' clearable></el-input>
+            </el-form-item>
+            <el-form-item label='地址' prop='homeAddress'>
+                <el-input v-model='form.data.homeAddress' placeholder='地址' auto-complete='off' clearable></el-input>
+            </el-form-item>
+            </el-form>
         </div>
-        <div id='regQuery' class='toolbar_line'>
-            <label class='queryLabel'>关键字</label>
-            <input id = 'qKeyWord' class='inputValue inputS easyui-textbox' />
-            <label class='queryLabel'>数据状态:</label>
-            <label class='queryLabel'>
-                <input id='qAudit' class='inputValue_SSS inputS easyui-combobox' 
-                       data-options="valueField:'value',textField:'text',data:dataStateType" />
-            </label>
-            <a id = 'btnQuery' href='javascript:void(0)'>查询</a>
+        <div slot='footer'>
+            <el-button icon='el-icon-close' @click='form.visible = false'>取消</el-button>
+            <el-button icon='el-icon-check' @click='save' type='primary'>保存</el-button>
         </div>
-    </div>
-    <div id='grid'></div>
-    </div>
-    <div style='display: none; visibility: collapse;'>
-        <div id='xx_dialog_region_xx' style='display: none; visibility: collapse;'></div>
-    </div>
-    <div id='__loading__'>
-        <div class='panel-loading busy_body'>正在拼命执行中...</div>
-    </div>
-    <div id='__ueditor_hide__' style='width: 1px; height: 1px; left: 0px; top: 0; visibility: hidden; position: absolute; z-index: 99999'></div>
+    </el-dialog>
+</div>
+<script type='text/javascript' src='script.js'></script>
 </body>
 </html>

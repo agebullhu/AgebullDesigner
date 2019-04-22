@@ -21,29 +21,11 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
         {
             if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
-            WebCode(path);
-        }
-
-        /// <summary>
-        ///     生成扩展代码
-        /// </summary>
-        protected override void CreateExCode(string path)
-        {
-            if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
-                return;
-            ApiCode(path);
-            //ExportCsCode(path);
-        }
-
-        #endregion
-
-        #region WebCode
-
-        private void WebCode(string path)
-        {
-            var folder = string.IsNullOrEmpty(Entity.Classify)
-                ? Entity.Name
-                : $"{Entity.Classify}\\{Entity.Name}";
+            var folder = !string.IsNullOrWhiteSpace(Entity.PageFolder)
+                ? Entity.PageFolder
+                    : string.IsNullOrEmpty(Entity.Classify)
+                        ? Entity.Name
+                        : $"{Entity.Classify}\\{Entity.Name}";
             //file = ConfigPath(Entity, "File_Web_Action", path, folder, "Action.aspx");
             //{
             //    WriteFile(file, ActionAspxCode());
@@ -96,38 +78,14 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
             }
         }
 
-        #endregion
-
-        #region API
-
-        private void ApiCode(string path)
+        /// <summary>
+        ///     生成扩展代码
+        /// </summary>
+        protected override void CreateExCode(string path)
         {
-            var file = ConfigPath(Entity, "File_Web_Api_cs", path, Entity.Name, $"{Entity.Name}ApiController");
-            var coder = new ApiActionCoder();
-            WriteFile(file + ".cs", coder.ExtendCode(Entity));
-            WriteFile(file + ".Designer.cs", coder.BaseCode(Entity));
         }
 
         #endregion
 
-        #region Export
-        /*
-        private void ExportCsCode(string path)
-        {
-            var file = ConfigPath(Entity, "File_Web_Export_cs", path, $"Page\\{Entity.Parent.Name}\\{Entity.Name}", "Export.cs");
-            var coder = new ExportActionCoder
-            {
-                Entity = Entity,
-                Project = Project
-            };
-            WriteFile(file, coder.Code());
-        }
-
-        private string ExportAspxCode()
-        {
-            return $@"<%@ Page Language='C#' AutoEventWireup='true'  Inherits='{NameSpace}.{Entity.Name}Page.ExportAction' %>";
-        }
-        */
-        #endregion
     }
 }

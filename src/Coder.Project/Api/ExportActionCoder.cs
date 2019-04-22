@@ -1,21 +1,58 @@
 using System.ComponentModel.Composition;
+using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Designer;
 
 namespace Agebull.EntityModel.RobotCoder.EasyUi
 {
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    public class ExportActionCoder : EasyUiCoderBase
+    public class ExportActionCoder : CoderWithEntity, IAutoRegister
     {
+        #region 代码片断
+
+        /// <summary>
+        /// 执行自动注册
+        /// </summary>
+        void IAutoRegister.AutoRegist()
+        {
+            MomentCoder.RegisteCoder("Web-Api", "Export.cs", "cs", BaseCode);
+        }
+
+        public string BaseCode(EntityConfig entity)
+        {
+            Entity = entity;
+            return BaseCode();
+        }
+
+        #endregion
+
+        #region 继承实现
         /// <summary>
         /// 名称
         /// </summary>
-        protected override string FileName => "Export.cs";
+        protected override string FileSaveConfigName => "File_Export_CS";
 
-        protected override string LangName => "aspx";
+        /// <summary>
+        ///     生成基础代码
+        /// </summary>
+        protected override void CreateBaCode(string path)
+        {
+            if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
+                return;
+            var file = ConfigPath(Entity, "File_Web_Api_cs", path, Entity.Name, Entity.Name);
+            WriteFile(file + "Export.cs", BaseCode());
+        }
 
+        /// <summary>
+        ///     生成扩展代码
+        /// </summary>
+        protected override void CreateExCode(string path)
+        {
+        }
 
-        protected override string BaseCode()
+        #endregion
+
+        private string BaseCode()
         {
             return $@"
 using System;
@@ -72,7 +109,7 @@ namespace {NameSpace}.{Entity.Name}Page
             var keyWord = GetArg(""keyWord"");
             if (!string.IsNullOrEmpty(keyWord))
             {{
-                filter.AddAnd(p => {new ApiActionCoder { Entity = Entity }.QueryCode()});
+                filter.AddAnd(p => {new ProjectApiActionCoder { Entity = Entity }.QueryCode()});
             }}
             return filter;
         }}
