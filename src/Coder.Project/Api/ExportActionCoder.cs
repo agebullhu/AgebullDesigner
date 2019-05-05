@@ -105,12 +105,7 @@ namespace {NameSpace}.{Entity.Name}Page
                     ? "Root = p => p.DataState <= DataStateType.Discard" 
                     : null
                 )}
-            }};
-            var keyWord = GetArg(""keyWord"");
-            if (!string.IsNullOrEmpty(keyWord))
-            {{
-                filter.AddAnd(p => {new ProjectApiActionCoder { Entity = Entity }.QueryCode()});
-            }}
+            }};{new ProjectApiActionCoder { Entity = Entity }.QueryCode()}
             return filter;
         }}
     }}

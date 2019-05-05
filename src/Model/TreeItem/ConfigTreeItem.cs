@@ -164,7 +164,9 @@ namespace Agebull.EntityModel.Designer
                                 ? imgDiscard 
                                 : m.IsFreeze 
                                     ? imgLock
-                                    : imgDefault;
+                                    : m.IsModify
+                                        ? imgModify
+                                        : imgDefault;
         }
         #endregion
         #region 默认方法

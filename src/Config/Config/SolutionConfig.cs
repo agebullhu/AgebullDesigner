@@ -25,6 +25,32 @@ namespace Agebull.EntityModel.Config
         #region 设计器支持
 
         /// <summary>
+        /// 详细输出
+        /// </summary>
+        [IgnoreDataMember, JsonProperty("detailTrace")]
+        internal bool _detailTrace;
+
+        /// <summary>
+        /// 详细输出
+        /// </summary>
+        /// <remark>
+        /// 输出最详细的跟踪消息
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"设计器支持"), DisplayName(@"详细输出"), Description("输出最详细的跟踪消息")]
+        public bool DetailTrace
+        {
+            get => _detailTrace;
+            set
+            {
+                if (_detailTrace == value)
+                    return;
+                BeforePropertyChanged(nameof(DetailTrace), _detailTrace, value);
+                _detailTrace = value;
+                OnPropertyChanged(nameof(DetailTrace));
+            }
+        }
+        /// <summary>
         /// 上帝模式
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
@@ -53,8 +79,8 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 生成校验代码
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        internal bool _haseValidateCode = false;
+        [IgnoreDataMember, JsonProperty("haseValidateCode")]
+        internal bool _haseValidateCode;
 
         /// <summary>
         /// 生成校验代码
@@ -314,7 +340,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 文档文件夹名称
         /// </summary>
-        [DataMember, JsonProperty("_docFolder", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("docFolder", NullValueHandling = NullValueHandling.Ignore)]
         internal string _docFolder;
 
         /// <summary>
@@ -333,7 +359,7 @@ namespace Agebull.EntityModel.Config
                 if (_docFolder == value)
                     return;
                 BeforePropertyChanged(nameof(DocFolder), _docFolder, value);
-                _docFolder = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _docFolder = string.IsNullOrWhiteSpace(value) || value == "doc" ? null : value.Trim();
                 OnPropertyChanged(nameof(DocFolder));
             }
         }
@@ -360,7 +386,7 @@ namespace Agebull.EntityModel.Config
                 if (_srcFolder == value)
                     return;
                 BeforePropertyChanged(nameof(SrcFolder), _srcFolder, value);
-                _srcFolder = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _srcFolder = string.IsNullOrWhiteSpace(value) || value == "src" ? null : value.Trim();
                 OnPropertyChanged(nameof(SrcFolder));
             }
         }
@@ -397,7 +423,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 数据类型映射
         /// </summary>
-        [DataMember, JsonProperty("dataTypeMap", NullValueHandling = NullValueHandling.Ignore)]
+        /*[DataMember, JsonProperty("dataTypeMap", NullValueHandling = NullValueHandling.Ignore)]*/
         NotificationList<DataTypeMapConfig> _dataTypeMap;
 
         /// <summary>

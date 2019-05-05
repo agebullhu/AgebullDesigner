@@ -136,6 +136,25 @@ namespace Agebull.EntityModel
         }
 
         /// <summary>
+        ///    在集合中加入
+        /// </summary>
+        /// <param name="item">节点</param>
+        /// <returns>false表示之前已存在集合中，true表示新加入集合</returns>
+        public void DoAdd(T item)
+        {
+            base.Add(item);
+        }
+
+        /// <summary>
+        ///     在集合中加入
+        /// </summary>
+        /// <param name="item">节点</param>
+        /// <returns>false表示之前已存在集合中，true表示新加入集合</returns>
+        public new void Add(T item)
+        {
+            base.Add(item);
+        }
+        /// <summary>
         ///     如果不在集合中就加入
         /// </summary>
         /// <param name="item">节点</param>

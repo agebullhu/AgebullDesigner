@@ -28,7 +28,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// <returns></returns>
         public static string HtmlCode(EntityConfig entity)
         {
-            var coder = new VueFormCoder
+            var coder = new VueCoder
             {
                 Entity = entity,
                 Project = entity.Parent
@@ -41,7 +41,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// <returns></returns>
         public static string ScriptCode(EntityConfig entity)
         {
-            var coder = new VueFormCoder
+            var coder = new VueCoder
             {
                 Entity = entity,
                 Project = entity.Parent

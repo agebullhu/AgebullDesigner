@@ -21,6 +21,50 @@ namespace Agebull.EntityModel.Config
     [DataContract, JsonObject(MemberSerialization.OptIn)]
     public partial class PropertyConfig : EntityChildConfig
     {
+        #region 环境
+
+        /// <summary>
+        /// 是否接口引用对象
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category("设计器支持"), DisplayName("是否参照对象"), Description("是否接口引用对象")]
+        public bool IsInterface => Option.IsReference;
+
+        /// <summary>
+        /// 是否关联对象
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category("设计器支持"), DisplayName("是否关联对象"), Description("是否关联对象")]
+        public bool IsLink => Option.IsLink;
+
+
+        /// <summary>
+        /// 是否正在生成代码
+        /// </summary>
+        private static bool InCoding => WorkContext.InCoderGenerating;
+
+        /// <summary>
+        /// 链接的原始对象(字段与之有逻辑上的关联关系)
+        /// </summary>
+        private PropertyConfig InterfaceOrThis => Option.Reference as PropertyConfig ?? this;
+
+        /// <summary>
+        /// 链接的原始对象(字段与之有逻辑上的关联关系)
+        /// </summary>
+        private PropertyConfig InterfaceProperty => Option.Reference as PropertyConfig;
+
+        /// <summary>
+        /// 引用对象(无论接口还是引用)
+        /// </summary>
+        private PropertyConfig ReferenceOrThis => Option.ReferenceConfig as PropertyConfig ?? this;
+
+        /// <summary>
+        /// 引用对象(无论接口还是引用)
+        /// </summary>
+        private PropertyConfig ReferenceProperty => Option.ReferenceConfig as PropertyConfig;
+
+
+        #endregion
         #region 设计器支持
 
         /// <summary>
@@ -97,7 +141,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"系统"), DisplayName(@"阻止编辑"), Description("阻止使用的范围")]
         public AccessScopeType DenyScope
         {
-            get => Reference?.DenyScope ?? _denyScope;
+            get => InterfaceOrThis._denyScope;
             set
             {
                 if (_denyScope == value)
@@ -109,10 +153,6 @@ namespace Agebull.EntityModel.Config
         }
         #endregion
         #region 模型设计(C#)
-
-        private PropertyConfig Reference => Option.Reference == this ? null : Option.Reference as PropertyConfig;
-
-        private PropertyConfig ReferenceCfg => Option.ReferenceConfig == this ? null : Option.ReferenceConfig as PropertyConfig;
 
         /// <summary>
         /// 数据类型
@@ -130,7 +170,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计"), DisplayName(@"数据类型")]
         public string DataType
         {
-            get => ReferenceCfg != null ? ReferenceCfg.DataType : _dataType;
+            get => ReferenceOrThis._dataType;
             set
             {
                 if (_dataType == value)
@@ -157,8 +197,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计(C#)"), DisplayName(@"语言类型(C#)"), Description("C#语言类型")]
         public string CsType
         {
-            get => ReferenceCfg != null ? ReferenceCfg.CsType :
-                (WorkContext.InCoderGenerating ? _csType ?? LastCsType ?? "string" : _csType);
+            get => ReferenceOrThis.GetCsType();
             set
             {
                 if (_csType == value)
@@ -169,6 +208,7 @@ namespace Agebull.EntityModel.Config
             }
         }
 
+        string GetCsType() => InCoding ? _csType ?? "string" : _csType;
 
         /// <summary>
         /// 是否时间
@@ -183,7 +223,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计"), DisplayName(@"是否时间"), Description("是否时间")]
         public bool IsTime
         {
-            get => Reference?.IsTime ?? _isTime;
+            get => ReferenceOrThis._isTime;
             set
             {
                 if (_isTime == value)
@@ -210,7 +250,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计"), DisplayName(@"是否数组"), Description("是否数组")]
         public bool IsArray
         {
-            get => Reference?.IsArray ?? _isArray;
+            get => ReferenceOrThis._isArray;
             set
             {
                 if (_isArray == value)
@@ -236,7 +276,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计"), DisplayName(@"是否字典"), Description("是否字典")]
         public bool IsDictionary
         {
-            get => ReferenceCfg?.IsDictionary ?? _isDictionary;
+            get => ReferenceOrThis._isDictionary;
             set
             {
                 if (_isDictionary == value)
@@ -263,7 +303,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计"), DisplayName(@"是否枚举类型)"), Description("字段类型")]
         public bool IsEnum
         {
-            get => ReferenceCfg?.IsEnum ?? _isEnum;
+            get => ReferenceOrThis._isEnum;
             set
             {
                 if (_isEnum == value)
@@ -290,7 +330,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计(C#)"), DisplayName(@"非基本类型名称(C#)"), Description("字段类型")]
         public string CustomType
         {
-            get => ReferenceCfg != null ? ReferenceCfg.CustomType : _customType;
+            get => ReferenceOrThis._customType;
             set
             {
                 if (_customType == value)
@@ -344,31 +384,28 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计(C#)"), DisplayName(@"结果类型(C#)"), Description("最终生成C#代码时的属性类型")]
-        public string LastCsType
-        {
-            get
-            {
-                if (ReferenceCfg != null)
-                {
-                    return ReferenceCfg.LastCsType;
-                }
-                if (!string.IsNullOrWhiteSpace(_referenceType))
-                    return _referenceType;
-                if (!string.IsNullOrWhiteSpace(CustomType))
-                    return CustomType;
-                if (CsType == null)
-                    return null;
-                CustomType = null;
-                if (IsArray)
-                    return CsType + "[]";
-                if (CsType.Contains("[") || CsType.ToLower() == "string")
-                    return CsType;
-                if (Nullable)
-                    return CsType + "?";
-                return CsType;
-            }
-        }
+        public string LastCsType => ReferenceOrThis.ToLastCsType();
 
+        private string ToLastCsType()
+        {
+            if (!string.IsNullOrWhiteSpace(_referenceType))
+                return _referenceType;
+            if (!string.IsNullOrWhiteSpace(_customType))
+                return CustomType;
+            _customType = null;
+            if (_csType == null)
+                return null;
+            if (_csType.Contains("["))
+            {
+                CsType = _csType.Split('[')[0];
+                IsArray=true;
+            }
+            if (IsArray)
+                return $"{_csType}[]";
+            if (string.Equals(_csType, "string", StringComparison.OrdinalIgnoreCase))
+                return _csType;
+            return Nullable ? $"{_csType}?" : _csType;
+        }
         /// <summary>
         /// 可空类型(C#)的说明文字
         /// </summary>
@@ -390,7 +427,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计(C#)"), DisplayName(@"可空类型(C#)"), Description(Nullable_Description)]
         public bool Nullable
         {
-            get => Reference?.Nullable ?? _nullable;
+            get => ReferenceOrThis._nullable;
             set
             {
                 if (_nullable == value)
@@ -446,7 +483,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计"), DisplayName(@"对应枚举"), Description("当使用自定义类型时的枚举对象")]
         public Guid EnumKey
         {
-            get => Reference?.EnumKey ?? _enumKey;
+            get => ReferenceOrThis._enumKey;
             set
             {
                 if (_enumKey == value)
@@ -473,14 +510,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计"), DisplayName(@"对应枚举"), Description("当使用自定义类型时的枚举对象")]
         public EnumConfig EnumConfig
         {
-            get
-            {
-                if (Reference != null)
-                    return Reference.EnumConfig;
-                if (_customType == null)
-                    return null;
-                return _enumConfig ?? (_enumConfig = GlobalConfig.GetEnum(_customType));
-            }
+            get => CustomType == null ? null : ReferenceOrThis.GetEnumConfig();
             set
             {
                 if (_enumConfig == value)
@@ -494,6 +524,8 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(EnumConfig));
             }
         }
+
+        EnumConfig GetEnumConfig() => _enumConfig ?? (_enumConfig = GlobalConfig.GetEnum(_customType));
 
         /// <summary>
         /// 内部字段
@@ -511,7 +543,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计"), DisplayName(@"内部字段"), Description("是否内部字段,即非用户字段,不呈现给用户")]
         public bool InnerField
         {
-            get => Reference?.InnerField ?? _innerField;
+            get => InterfaceOrThis._innerField;
             set
             {
                 if (_innerField == value)
@@ -538,7 +570,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计"), DisplayName(@"系统字段"), Description("系统字段")]
         public bool IsSystemField
         {
-            get => Reference?.IsSystemField ?? _isSystemField;
+            get => InterfaceOrThis._isSystemField;
             set
             {
                 if (_isSystemField == value)
@@ -565,7 +597,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计"), DisplayName(@"接口字段"), Description("是否接口字段")]
         public bool IsInterfaceField
         {
-            get => Reference?.IsInterfaceField ?? _isInterfaceField;
+            get => _isInterfaceField;
             set
             {
                 if (_isInterfaceField == value)
@@ -758,7 +790,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计(C++)"), DisplayName(@"字段名称(C++)"), Description("C++字段名称")]
         public string CppName
         {
-            get => WorkContext.InCoderGenerating ? _cppName ?? Name : _cppName;
+            get => InCoding ? _cppName ?? Name : _cppName;
             set
             {
                 if (_cppName == value)
@@ -1034,7 +1066,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"API支持"), DisplayName(@"不参与ApiArgument序列化")]
         public bool NoneApiArgument
         {
-            get => (Reference?.NoneApiArgument ?? false) || _noneApiArgument;
+            get => _noneApiArgument;
             set
             {
                 if (_noneApiArgument == value)
@@ -1060,7 +1092,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"API支持"), DisplayName(@"字段名称(ApiArgument)")]
         public string ApiArgumentName
         {
-            get => WorkContext.InCoderGenerating ? _apiArgumentName ?? JsonName : _apiArgumentName;
+            get => InCoding ? _apiArgumentName ?? JsonName : _apiArgumentName;
             set
             {
                 if (_apiArgumentName == value)
@@ -1112,10 +1144,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"API支持"), DisplayName(@"字段名称(json)")]
         public string JsonName
         {
-            get =>
-                !IsLinkField && Reference != null && Reference.IsInterfaceField
-                ? Reference.JsonName
-                : WorkContext.InCoderGenerating ? _jsonName ?? Name : _jsonName;
+            get => InCoding ? _jsonName ?? Name : _jsonName;
             set
             {
                 if (_jsonName == value)
@@ -1345,7 +1374,9 @@ namespace Agebull.EntityModel.Config
             }
         }
         #endregion
+
         #region 数据库
+
         /// <summary>
         /// 构建数据库索引
         /// </summary>
@@ -1354,9 +1385,8 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"构建数据库索引"), Description("构建数据库索引的优化选项")]
-        public bool CreateDbIndex => Reference != null 
-            ? Reference.CreateDbIndex || _isDbIndex
-            : IsPrimaryKey || IsIdentity || IsLinkKey || IsCaption || _isDbIndex;
+        public bool CreateDbIndex => _isDbIndex || (ReferenceProperty?.CreateDbIndex ?? IsPrimaryKey || IsIdentity || IsLinkKey || IsCaption);
+
 
         /// <summary>
         /// 数据库索引
@@ -1415,8 +1445,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"数据库字段名称"), Description("字段名称")]
         public string DbFieldName
         {
-            get => Reference != null ? Reference.DbFieldName :
-            (WorkContext.InCoderGenerating ? _dbFieldName ?? Name : _dbFieldName);
+            get => InCoding ? _dbFieldName ?? Name : _dbFieldName;
             set
             {
                 if (_dbFieldName == value)
@@ -1450,7 +1479,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"能否存储空值"), Description(DbNullable_Description)]
         public bool DbNullable
         {
-            get => Reference?.DbNullable ?? _dbNullable;
+            get => InterfaceOrThis._dbNullable;
             set
             {
                 if (_dbNullable == value)
@@ -1477,7 +1506,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"存储类型"), Description("存储类型")]
         public string DbType
         {
-            get => ReferenceCfg != null ? ReferenceCfg.DbType : _dbType;
+            get => ReferenceOrThis._dbType;
             set
             {
                 if (_dbType == value)
@@ -1504,7 +1533,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"数据长度"), Description("文本或二进制存储的最大长度")]
         public int Datalen
         {
-            get => ReferenceCfg?.Datalen ?? _datalen;
+            get => ReferenceOrThis._datalen;
             set
             {
                 if (_datalen == value)
@@ -1532,7 +1561,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"数组长度"), Description("数组长度")]
         public string ArrayLen
         {
-            get => ReferenceCfg != null ? ReferenceCfg.ArrayLen : _arrayLen;
+            get => ReferenceOrThis._arrayLen;
             set
             {
                 if (_arrayLen == value)
@@ -1559,7 +1588,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"存储精度"), Description("存储精度")]
         public int Scale
         {
-            get => ReferenceCfg?.Scale ?? _scale;
+            get => ReferenceOrThis._scale;
             set
             {
                 if (_scale == value)
@@ -1599,33 +1628,6 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// UNICODE
-        /// </summary>
-        [DataMember, JsonProperty("Unicode", NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _unicode;
-
-        /// <summary>
-        /// UNICODE
-        /// </summary>
-        /// <remark>
-        /// 是否UNICODE字符串
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"UNICODE"), Description("是否UNICODE字符串")]
-        public bool Unicode
-        {
-            get => ReferenceCfg?.Unicode ?? _unicode;
-            set
-            {
-                if (_unicode == value)
-                    return;
-                BeforePropertyChanged(nameof(Unicode), _unicode, value);
-                _unicode = value;
-                OnPropertyChanged(nameof(Unicode));
-            }
-        }
-
-        /// <summary>
         /// 固定长度
         /// </summary>
         [DataMember, JsonProperty("FixedLength", NullValueHandling = NullValueHandling.Ignore)]
@@ -1641,7 +1643,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"固定长度"), Description("是否固定长度字符串")]
         public bool FixedLength
         {
-            get => ReferenceCfg?.FixedLength ?? _fixedLength;
+            get => ReferenceOrThis._fixedLength;
             set
             {
                 if (_fixedLength == value)
@@ -1668,7 +1670,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"备注字段"), Description("是否备注字段")]
         public bool IsMemo
         {
-            get => Reference?.IsMemo ?? _isMemo;
+            get => _isMemo;
             set
             {
                 if (_isMemo == value)
@@ -1695,9 +1697,10 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"大数据"), Description("是否大数据")]
         public bool IsBlob
         {
-            get => Reference?.IsBlob ?? _isBlob || DataType == "ByteArray";
+            get => InterfaceOrThis._isBlob || DataType == "ByteArray";
             set
             {
+                value = value || DataType == "ByteArray";
                 if (_isBlob == value)
                     return;
                 BeforePropertyChanged(nameof(IsBlob), _isBlob, value);
@@ -1727,7 +1730,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"内部字段(数据库)"), Description(DbInnerField_Description)]
         public bool DbInnerField
         {
-            get => Reference?.DbInnerField ?? _dbInnerField;
+            get => InterfaceOrThis._dbInnerField;
             set
             {
                 if (_dbInnerField == value)
@@ -1759,7 +1762,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"非数据库字段"), Description(NoStorage_Description)]
         public bool NoStorage
         {
-            get => Reference?.NoStorage ?? _noStorage;
+            get => (Parent?.Parent != null && Parent.Parent.NoRelation && IsCompute && IsLinkField) || InterfaceOrThis._noStorage;
             set
             {
                 if (_noStorage == value)
@@ -1786,7 +1789,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"*跳过保存的场景"), Description("跳过保存的场景")]
         public StorageScreenType KeepStorageScreen
         {
-            get => Reference?.KeepStorageScreen ?? _keepStorageScreen;
+            get => IsCompute && IsLinkField ? StorageScreenType.All : InterfaceOrThis._keepStorageScreen;
             set
             {
                 if (_keepStorageScreen == value)
@@ -1818,7 +1821,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"自定义保存"), Description(CustomWrite_Description)]
         public bool CustomWrite
         {
-            get => Reference?.CustomWrite ?? _customWrite;
+            get => _customWrite;
             set
             {
                 if (_customWrite == value)
@@ -1909,7 +1912,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"), DisplayName(@"不可编辑"), Description("是否用户可编辑")]
         public bool IsUserReadOnly
         {
-            get => Reference?.IsUserReadOnly ?? _isUserReadOnly;
+            get => _isUserReadOnly;
             set
             {
                 if (_isUserReadOnly == value)
@@ -2044,7 +2047,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"), DisplayName(@"界面必填字段"), Description("界面必填字段")]
         public bool UiRequired
         {
-            get => Reference?.UiRequired ?? _uiRequired;
+            get => _uiRequired;
             set
             {
                 if (_uiRequired == value)
@@ -2132,6 +2135,30 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(FormOption), _formOption, value);
                 _formOption = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(FormOption));
+            }
+        }
+
+        /// <summary>
+        /// 用户排序
+        /// </summary>
+        [DataMember, JsonProperty("userOrder", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _userOrder;
+
+        /// <summary>
+        /// 用户排序
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"用户界面"), DisplayName(@"用户排序"), Description("用户排序")]
+        public bool UserOrder
+        {
+            get => _userOrder;
+            set
+            {
+                if (_userOrder == value)
+                    return;
+                BeforePropertyChanged(nameof(UserOrder), _userOrder, value);
+                _userOrder = value;
+                OnPropertyChanged(nameof(UserOrder));
             }
         }
 
@@ -2312,7 +2339,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"), DisplayName(@"显示在列表详细页中"), Description("显示在列表详细页中")]
         public bool GridDetails
         {
-            get => _gridDetails;
+            get => InCoding ? _gridDetails && !NoneJson : _gridDetails;
             set
             {
                 if (_gridDetails == value)
@@ -2339,7 +2366,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"), DisplayName(@"列表不显示"), Description("列表不显示")]
         public bool NoneGrid
         {
-            get => Reference?.NoneGrid ?? (DenyClient || _noneGrid);
+            get => DenyClient || _noneGrid;
             set
             {
                 if (_noneGrid == value)
@@ -2366,7 +2393,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"), DisplayName(@"详细不显示"), Description("详细不显示")]
         public bool NoneDetails
         {
-            get => Reference?.NoneDetails ?? (DenyClient || _noneDetails);
+            get => DenyClient || _noneDetails;
             set
             {
                 if (_noneDetails == value)
@@ -2419,7 +2446,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据规则"), DisplayName(@"数据说明"), Description("对于值数据规则的描述")]
         public string DataRuleDesc
         {
-            get => WorkContext.InCoderGenerating ? (_dataRuleDesc ?? AutoDataRuleDesc) : _dataRuleDesc;
+            get => InCoding ? (_dataRuleDesc ?? AutoDataRuleDesc) : _dataRuleDesc;
             set
             {
                 if (_dataRuleDesc == value)
@@ -2450,13 +2477,13 @@ namespace Agebull.EntityModel.Config
                 }
                 if (checkNull)
                 {
+                    if (IsRequired)
+                    {
+                        decs.Append("用户提交时不能为空,");
+                    }
                     if (!CanEmpty)
                     {
-                        decs.Append("不能为空.");
-                    }
-                    else if (IsRequired)
-                    {
-                        decs.Append("提交时不能为空.");
+                        decs.Append("后台保存时不能为空,");
                     }
                 }
 
@@ -2554,7 +2581,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据规则"), DisplayName(@"能否为空"), Description(CanEmpty_Description)]
         public bool CanEmpty
         {
-            get => Reference?.CanEmpty ?? _canEmpty;
+            get => InterfaceOrThis._canEmpty;
             set
             {
                 if (_canEmpty == value)
@@ -2582,7 +2609,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"), DisplayName(@"必填字段"), Description("是否必填字段")]
         public bool IsRequired
         {
-            get => Reference?.IsRequired ?? _isRequired;
+            get => !CanEmpty || _isRequired;
             set
             {
                 if (_isRequired == value)
@@ -2609,7 +2636,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据规则"), DisplayName(@"最大值"), Description("最大")]
         public string Max
         {
-            get => Reference != null ? Reference.Max : _max;
+            get => _max;
             set
             {
                 if (_max == value)
@@ -2637,7 +2664,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据规则"), DisplayName(@"最大值"), Description("最小")]
         public string Min
         {
-            get => Reference != null ? Reference.Min : _min;
+            get => _min;
             set
             {
                 if (_min == value)
@@ -2667,7 +2694,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据关联"), DisplayName(@"连接字段"), Description("连接字段")]
         public bool IsLinkField
         {
-            get => _isLinkField;
+            get => IsLinkKey || IsLinkCaption || _isLinkField;
             set
             {
                 if (_isLinkField == value)
@@ -2707,6 +2734,7 @@ namespace Agebull.EntityModel.Config
                 }
                 BeforePropertyChanged(nameof(LinkTable), _linkTable, value);
                 _linkTable = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
                 OnPropertyChanged(nameof(LinkTable));
             }
         }

@@ -105,14 +105,7 @@ namespace {NameSpace}
             foreach (PropertyConfig property in Columns)//.Where(p => !p.NoneApiArgument)
             {
                 string type = property.DataType == "ByteArray" ? "string" : property.LastCsType;
-
-                code.Append(RemCode(property));
-                code.Append(@"
-        [DataMember");
-                code.Append(property.NoneJson
-                    ? " , JsonIgnore"
-                    : $@" , JsonProperty(""{property.JsonName}"", NullValueHandling = NullValueHandling.Ignore)");
-                code.Append("]");
+                code.Append(PropertyHeader(property));
                 code.Append($@"
         public {type} {property.Name}
         {{

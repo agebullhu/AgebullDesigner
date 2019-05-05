@@ -25,6 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Agebull.EntityModel.RobotCoder.Project.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,6 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Agebull.EntityModel.RobotCoder.Project.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Agebull.Common.Extend">
@@ -62,6 +64,7 @@
     <Compile Include="Api\ExportActionCoder.cs" />
     <Compile Include="Api\ProjectApiActionCoder.cs" />
     <Compile Include="Api\ProjectApiBuilde.cs" />
+    <Compile Include="DataModel\AccessBuilderBase.cs" />
     <Compile Include="DataModel\DataBaseBuilder.cs" />
     <Compile Include="Entity\EntityBuilder.cs" />
     <Compile Include="DataModel\EntityComboBuilder.cs" />

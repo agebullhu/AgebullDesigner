@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Agebull.EntityModel.Config
 {
@@ -19,6 +20,9 @@ namespace Agebull.EntityModel.Config
         public static void Foreach<T>(this ConfigBase starting, Action<T> action)
             where T : ConfigBase
         {
+            if (starting.IsDiscard || starting.IsDelete)
+                return;
+            Trace.WriteLineIf(SolutionConfig.Current.DetailTrace,$"{starting.Caption}({starting.Name})","配置遍历");
             level = 0;
             switch (starting)
             {
@@ -113,6 +117,9 @@ namespace Agebull.EntityModel.Config
         public static void Foreach<T>(this ConfigBase starting, Func<T, bool> condition, Action<T> action)
             where T : ConfigBase
         {
+            if (starting.IsDiscard || starting.IsDelete)
+                return;
+            Trace.WriteLineIf(SolutionConfig.Current.DetailTrace, $"{starting.Caption}({starting.Name})", "配置遍历");
             level = 0;
             switch (starting)
             {
@@ -177,6 +184,8 @@ namespace Agebull.EntityModel.Config
         private static void DoAction<T>(Action<T> action, ConfigBase config)
             where T : ConfigBase
         {
+            if (config.IsDiscard || config.IsDelete)
+                return;
             if (config is T t)
             {
                 action(t);
@@ -197,6 +206,9 @@ namespace Agebull.EntityModel.Config
         private static void Foreach<T>(Action<T> action, EntityConfig entity)
             where T : ConfigBase
         {
+            if (entity.IsDiscard || entity.IsDelete)
+                return;
+            Trace.WriteLineIf(SolutionConfig.Current.DetailTrace, $"{entity.Caption}({entity.Name})", "配置遍历");
             int lv = level;
             DoAction(action, entity);
             foreach (var property in entity.Properties)
@@ -216,6 +228,9 @@ namespace Agebull.EntityModel.Config
         private static void Foreach<T>(Action<T> action, EntityClassify classify)
             where T : ConfigBase
         {
+            if (classify.IsDiscard || classify.IsDelete)
+                return;
+            Trace.WriteLineIf(SolutionConfig.Current.DetailTrace, $"{classify.Caption}({classify.Name})", "配置遍历");
             int lv = level;
             DoAction(action, classify);
             foreach (var entity in classify.Items)
@@ -228,6 +243,9 @@ namespace Agebull.EntityModel.Config
         private static void Foreach<T>(Action<T> action, ProjectConfig project)
             where T : ConfigBase
         {
+            if (project.IsDiscard || project.IsDelete)
+                return;
+            Trace.WriteLineIf(SolutionConfig.Current.DetailTrace, $"{project.Caption}({project.Name})", "配置遍历");
             int lv = level;
             DoAction(action, project);
             foreach (var entity in project.Entities)
@@ -253,6 +271,9 @@ namespace Agebull.EntityModel.Config
         private static void Foreach<T>(Action<T> action, EnumConfig @enum)
             where T : ConfigBase
         {
+            if (@enum.IsDiscard || @enum.IsDelete)
+                return;
+            Trace.WriteLineIf(SolutionConfig.Current.DetailTrace, $"{@enum.Caption}({@enum.Name})", "配置遍历");
             int lv = level;
             DoAction(action, @enum);
             foreach (var item in @enum.Items)
@@ -266,6 +287,9 @@ namespace Agebull.EntityModel.Config
         private static void Foreach<T>(Action<T> action, SolutionConfig solution)
             where T : ConfigBase
         {
+            if (solution.IsDiscard || solution.IsDelete)
+                return;
+            Trace.WriteLineIf(SolutionConfig.Current.DetailTrace, $"{solution.Caption}({solution.Name})", "配置遍历");
             int lv = level;
             DoAction(action, solution);
             foreach (var project in solution.Projects)
@@ -273,7 +297,6 @@ namespace Agebull.EntityModel.Config
                 level = lv + 1;
                 Foreach(action, project);
             }
-
             level = lv;
         }
 
@@ -281,6 +304,9 @@ namespace Agebull.EntityModel.Config
         private static void DoAction<T>(Func<T, bool> condition, Action<T> action, ConfigBase config)
             where T : ConfigBase
         {
+            if (config.IsDiscard || config.IsDelete)
+                return;
+            Trace.WriteLineIf(SolutionConfig.Current.DetailTrace, $"{config.Caption}({config.Name})", "配置遍历");
             if (!(config is T t))
                 return;
             int lv = level;
@@ -292,6 +318,9 @@ namespace Agebull.EntityModel.Config
         private static void Foreach<T>(Func<T, bool> condition, Action<T> action, EntityConfig entity)
             where T : ConfigBase
         {
+            if (entity.IsDiscard || entity.IsDelete)
+                return;
+            Trace.WriteLineIf(SolutionConfig.Current.DetailTrace, $"{entity.Caption}({entity.Name})", "配置遍历");
             DoAction(condition, action, entity);
             if (typeof(T) == typeof(EntityConfig))
                 return;
@@ -311,6 +340,9 @@ namespace Agebull.EntityModel.Config
         private static void Foreach<T>(Func<T, bool> condition, Action<T> action, EnumConfig @enum)
             where T : ConfigBase
         {
+            if (@enum.IsDiscard || @enum.IsDelete)
+                return;
+            Trace.WriteLineIf(SolutionConfig.Current.DetailTrace, $"{@enum.Caption}({@enum.Name})", "配置遍历");
             DoAction(action, @enum);
             if (typeof(T) == typeof(EnumConfig))
                 return;
@@ -326,6 +358,9 @@ namespace Agebull.EntityModel.Config
         private static void Foreach<T>(Func<T, bool> condition, Action<T> action, ProjectConfig project)
             where T : ConfigBase
         {
+            if (project.IsDiscard || project.IsDelete)
+                return;
+            Trace.WriteLineIf(SolutionConfig.Current.DetailTrace, $"{project.Caption}({project.Name})", "配置遍历");
             DoAction(condition, action, project);
             if (typeof(T) == typeof(ProjectConfig))
                 return;
@@ -354,6 +389,9 @@ namespace Agebull.EntityModel.Config
         private static void Foreach<T>(Func<T, bool> condition, Action<T> action, SolutionConfig solution)
             where T : ConfigBase
         {
+            if (solution.IsDiscard || solution.IsDelete)
+                return;
+            Trace.WriteLineIf(SolutionConfig.Current.DetailTrace, $"{solution.Caption}({solution.Name})", "配置遍历");
             DoAction(condition, action, solution);
             if (typeof(T) == typeof(ProjectConfig))
                 return;

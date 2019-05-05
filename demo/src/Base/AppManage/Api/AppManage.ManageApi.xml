@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AppManage.ManageApi</name>
+    </assembly>
+    <members>
+        <member name="T:Agebull.Common.AppManage.WebApi.Entity.AppInfoApiController">
+            <summary>
+             应用信息
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.AppManage.WebApi.Entity.AppInfoApiController.GetListData">
+            <summary>
+                取得列表数据
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.AppManage.WebApi.Entity.AppInfoApiController.ReadFormData(Agebull.Common.AppManage.AppInfoData,Agebull.MicroZero.ZeroApis.FormConvert)">
+            <summary>
+            读取Form传过来的数据
+            </summary>
+            <param name="data">数据</param>
+            <param name="convert">转化器</param>
+        </member>
+        <member name="M:Agebull.Common.AppManage.WebApi.Entity.AppInfoApiController.DefaultGetListData">
+            <summary>
+                取得列表数据
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.AppManage.WebApi.Entity.AppInfoApiController.SetKeywordFilter(Agebull.EntityModel.Common.LambdaItem{Agebull.Common.AppManage.AppInfoData})">
+            <summary>
+                关键字查询缺省实现
+            </summary>
+            <param name="filter">筛选器</param>
+        </member>
+        <member name="M:Agebull.Common.AppManage.WebApi.Entity.AppInfoApiController.DefaultReadFormData(Agebull.Common.AppManage.AppInfoData,Agebull.MicroZero.ZeroApis.FormConvert)">
+            <summary>
+            读取Form传过来的数据
+            </summary>
+            <param name="data">数据</param>
+            <param name="convert">转化器</param>
+        </member>
+        <member name="T:Agebull.Common.AppManage.ButtonInfoArgument">
+            <summary>
+            页面动作自动保存参数
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.AppManage.ButtonInfoArgument.PageId">
+            <summary>
+            页面标识
+            </summary>
+        </member>
+        <member name="T:Agebull.Common.AppManage.PageInfo">
+            <summary>
+            页面信息
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.AppManage.PageInfo.AllAction">
+            <summary>
+            无内部权限控制,内部控制全部可访问
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.AppManage.PageInfo.PageId">
+            <summary>
+            页面标识
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.AppManage.PageInfo.HistoryQueryArgs">
+            <summary>
+            历史查询参数
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.AppManage.PageInfo.RoleAllowActions">
+            <summary>
+            允许访问的页面内行为
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.AppManage.Entity.PageItemApiController.BindPageType(Agebull.Common.AppManage.PageConfig)">
+            <summary>
+                绑定页面数据类型
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.AppManage.Entity.PageItemApiController.SaveButton(Agebull.Common.AppManage.ButtonInfoArgument)">
+            <summary>
+                保存页面对应的按钮信息
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.AppManage.Entity.PageItemApiController.GetPageInfo(Agebull.MicroZero.ZeroApis.Argument)">
+            <summary>
+                获取页面信息
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.AppManage.Entity.PageItemApiController.StaticHtml">
+            <summary>
+                页面树
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.AppManage.Entity.PageItemApiController.GetTree">
+            <summary>
+                页面树
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.AppManage.Entity.PageItemApiController.CreateData">
+            <summary>
+                新增一条带默认值的数据
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.AppManage.Entity.PageItemApiController.GetListData">
+            <summary>
+                取得列表数据
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.AppManage.Entity.PageItemApiController.ReadFormData(Agebull.Common.AppManage.PageItemData,Agebull.MicroZero.ZeroApis.FormConvert)">
+            <summary>
+                读取Form传过来的数据
+            </summary>
+            <param name="data">数据</param>
+            <param name="convert">转化器</param>
+        </member>
+        <member name="M:Agebull.Common.AppManage.Entity.PageItemApiController.DefaultGetListData">
+            <summary>
+                取得列表数据
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.AppManage.Entity.PageItemApiController.SetKeywordFilter(Agebull.EntityModel.Common.LambdaItem{Agebull.Common.AppManage.PageItemData})">
+            <summary>
+                关键字查询缺省实现
+            </summary>
+            <param name="filter">筛选器</param>
+        </member>
+        <member name="M:Agebull.Common.AppManage.Entity.PageItemApiController.DefaultReadFormData(Agebull.Common.AppManage.PageItemData,Agebull.MicroZero.ZeroApis.FormConvert)">
+            <summary>
+            读取Form传过来的数据
+            </summary>
+            <param name="data">数据</param>
+            <param name="convert">转化器</param>
+        </member>
+        <member name="M:Agebull.Common.Organizations.WebApi.Entity.RoleApiController.GetListData">
+            <summary>
+                取得列表数据
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.WebApi.Entity.RoleApiController.ReadFormData(Agebull.Common.AppManage.RoleData,Agebull.MicroZero.ZeroApis.FormConvert)">
+            <summary>
+            读取Form传过来的数据
+            </summary>
+            <param name="data">数据</param>
+            <param name="convert">转化器</param>
+        </member>
+        <member name="M:Agebull.Common.Organizations.WebApi.Entity.RoleApiController.Roles">
+            <summary>
+            载入全部
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.WebApi.Entity.RoleApiController.LoadPowers">
+            <summary>
+            载入当前角色权限
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.WebApi.Entity.RoleApiController.SavePowers">
+            <summary>
+            保存权限分配
+            </summary>
+            <summary>
+            载入当前角色权限
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.WebApi.Entity.RoleApiController.ComboData">
+            <summary>下拉列表</summary>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.WebApi.Entity.RoleApiController.DefaultGetListData">
+            <summary>
+                取得列表数据
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.WebApi.Entity.RoleApiController.SetKeywordFilter(Agebull.EntityModel.Common.LambdaItem{Agebull.Common.AppManage.RoleData})">
+            <summary>
+                关键字查询缺省实现
+            </summary>
+            <param name="filter">筛选器</param>
+        </member>
+        <member name="M:Agebull.Common.Organizations.WebApi.Entity.RoleApiController.DefaultReadFormData(Agebull.Common.AppManage.RoleData,Agebull.MicroZero.ZeroApis.FormConvert)">
+            <summary>
+            读取Form传过来的数据
+            </summary>
+            <param name="data">数据</param>
+            <param name="convert">转化器</param>
+        </member>
+    </members>
+</doc>

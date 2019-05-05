@@ -134,8 +134,6 @@
                                 Binding="{Binding Scale, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
             <DataGridTextColumn Header="存储列ID"
                                 Binding="{Binding DbIndex, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
-            <DataGridCheckBoxColumn Header="是否UNICODE"
-                                    Binding="{Binding Unicode, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridCheckBoxColumn Header="是否固定长度"
                                     Binding="{Binding FixedLength, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridCheckBoxColumn Header="是否大数据"

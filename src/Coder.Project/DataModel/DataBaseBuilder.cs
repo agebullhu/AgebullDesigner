@@ -37,7 +37,7 @@ using Agebull.Common.Configuration;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Interfaces;
 using Agebull.EntityModel.Events;
-using Agebull.EntityModel.Redis;
+
 using Agebull.EntityModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
 
 {Project.UsingNameSpaces}
@@ -57,9 +57,9 @@ namespace {Project.NameSpace}.DataAccess
         {{
             /*tableSql = new Dictionary<string, TableSql>(StringComparer.OrdinalIgnoreCase)
             {{{Project.DataBaseObjectName}
-            }};*/
-            DataUpdateHandler.RegisterUpdateHandler(new MySqlDataTrigger());
-            DataUpdateHandler.RegisterUpdateHandler(new RedisDataTrigger());
+            }};
+            DataUpdateHandler.RegisterUpdateHandler(new RedisDataTrigger());*/
+            DataUpdateHandler.RegisterUpdateHandler(new {Project.DbType}DataTrigger());
         }}
 
         /// <summary>
@@ -146,7 +146,7 @@ using Agebull.Common.Configuration;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Interfaces;
 using Agebull.EntityModel.Events;
-using Agebull.EntityModel.Redis;
+
 using Agebull.EntityModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
 {Project.UsingNameSpaces}
 #endregion

@@ -19,10 +19,20 @@ namespace Agebull.EntityModel.RobotCoder
             set => base.Project = value;
         }
 
+        private EntityConfig _entity;
+
         /// <summary>
         /// 当前表对象
         /// </summary>
-        public EntityConfig Entity { get; set; }
+        public EntityConfig Entity
+        {
+            get => _entity;
+            set
+            {
+                _entity = value;
+                _entity?.CreateLast();
+            }
+        }
 
         /// <summary>
         /// 是否可写

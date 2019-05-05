@@ -52,6 +52,16 @@ namespace Agebull.EntityModel.Designer
                 IconName = "tree_item",
                 ConfirmMessage = "是否执行【修复数据库设计】操作"
             });
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                Action = CheckRelation,
+                Catalog = "数据库",
+                Caption = "修复数据关联",
+                Editor = "DataBase",
+                WorkView = "database",
+                IconName = "tree_item",
+                ConfirmMessage = "是否执行【修复数据库设计】操作"
+            }); 
         }
 
         #region 基础
@@ -60,6 +70,18 @@ namespace Agebull.EntityModel.Designer
 
 
         #region 数据库设计检查
+
+        /// <summary>
+        /// 数据库设计检查
+        /// </summary>
+        public void CheckRelation(EntityConfig entity)
+        {
+            var business = new EntityDatabaseBusiness
+            {
+                Entity = entity
+            };
+            business.CheckRelation();
+        }
 
         /// <summary>
         /// 数据库设计检查

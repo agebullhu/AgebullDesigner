@@ -1,0 +1,103 @@
+﻿<!--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/4/19 16:39:39-->
+<form name='pageItemForm' id='pageItemForm' method='POST' enctype='multipart/form-data'>
+    <div id='pageItemRegion' class='formRegion' style='width:985px;'>
+            <div class='inputField' id='fr_id'>
+                <div class='inputRegion' id='ir_id'>
+                    <div class='inputLabel'>标识:</div>
+                    <input id='id' name='id' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'标识'"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_appInfoId'>
+                <div class='inputRegion' id='ir_appInfoId'>
+                    <div class='inputLabel'>应用信息外键:</div>
+                    <input id='appInfoId' name='appInfoId' class='inputValue inputS easyui-combobox'
+                           data-options="prompt:'应用信息外键',valueField:'id', textField:'text'"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_name'>
+                <div class='inputRegion' id='ir_name'>
+                    <div class='inputLabel'>名称:</div>
+                    <input id='name' name='name' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'名称',validType:['strLimit[0,200]'],required:true"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_caption'>
+                <div class='inputRegion' id='ir_caption'>
+                    <div class='inputLabel'>标题:</div>
+                    <input id='caption' name='caption' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'标题',validType:['strLimit[0,200]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_itemType'>
+                <div class='inputRegion' id='ir_itemType'>
+                    <div class='inputLabel'>节点类型:</div>
+                    <input id='itemType' name='itemType' class='inputValue inputS easyui-combobox'
+                           data-options="prompt:'节点类型',valueField:'value',textField:'text',data:pageItemType"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_index'>
+                <div class='inputRegion' id='ir_index'>
+                    <div class='inputLabel'>序号:</div>
+                    <input id='index' name='index' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'序号'"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_icon'>
+                <div class='inputRegion' id='ir_icon'>
+                    <div class='inputLabel'>图标:</div>
+                    <input id='icon' name='icon' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'图标',validType:['strLimit[0,200]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_url'>
+                <div class='inputRegion' id='ir_url'>
+                    <div class='inputLabel'>链接地址:</div>
+                    <input id='url' name='url' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'链接地址'"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_tags'>
+                <div class='inputRegion' id='ir_tags'>
+                    <div class='inputLabel'>扩展值:</div>
+                    <input id='tags' name='tags' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'扩展值',validType:['strLimit[0,200]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_parentId'>
+                <div class='inputRegion' id='ir_parentId'>
+                    <div class='inputLabel'>上级标识:</div>
+                    <input id='parentId' name='parentId' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'上级标识'"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_isShow'>
+                <div class='inputRegion' id='ir_isShow'>
+                    <div class='inputLabel'>是否显示:</div>
+                    <input id='isShow' name='isShow' class='inputValue inputS easyui-combobox'
+                           data-options="prompt:'是否显示',valueField:'value',textField:'text',data:yesnoType"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_iconSize'>
+                <div class='inputRegion' id='ir_iconSize'>
+                    <div class='inputLabel'>图标大小:</div>
+                    <input id='iconSize' name='iconSize' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'图标大小'"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_iconColor'>
+                <div class='inputRegion' id='ir_iconColor'>
+                    <div class='inputLabel'>图标颜色:</div>
+                    <input id='iconColor' name='iconColor' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'图标颜色',validType:['strLimit[0,20]']"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_memo'>
+                <div class='inputRegion' id='ir_memo'>
+                    <div class='inputLabel'>备注:</div>
+                    <input id='memo' name='memo' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'备注'"/>
+                </div>
+            </div>
+    </div>
+</form>

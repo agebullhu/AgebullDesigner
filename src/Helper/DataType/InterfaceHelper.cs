@@ -34,21 +34,22 @@ namespace Agebull.EntityModel.RobotCoder
                     var field = entity.Properties.FirstOrDefault(p => p.ReferenceKey == iField.Key || p.Name == iField.Name);
                     if (field == null)
                     {
-                        entity.Add(new PropertyConfig
+                        field = new PropertyConfig
                         {
                             Option = new ConfigDesignOption
                             {
-                                IsReference = true,
-                                ReferenceConfig = iField
+                                ReferenceKey = iField.Key
                             }
-                        });
+                        };
+                        field.CopyFromProperty(iField,false,true,false);
+                        entity.Add(field);
                     }
                     else
                     {
-                        field.Option.IsDiscard = false;
-                        field.Option.IsReference = true;
                         field.Option.ReferenceConfig = iField;
                     }
+                    field.Option.IsDiscard = false;
+                    field.Option.IsReference = true;
                 }
             }
         }

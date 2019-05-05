@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using Agebull.EntityModel.Config.SqlServer;
+using System.Text;
 
 namespace Agebull.EntityModel.Config
 {
@@ -18,16 +16,24 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static string ToTableName(EntityConfig entity)
         {
-            string head = "tb_";
+            var head = new StringBuilder("tb_");
             if (!string.IsNullOrWhiteSpace(entity.Parent.Abbreviation))
-                head += entity.Parent.Abbreviation.ToLower() + "_";
+            {
+                head.Append(entity.Parent.Abbreviation.ToLWord());
+                head.Append('_');
+            }
             if (entity.Classify != null)
             {
                 var cls = entity.Parent.Classifies.FirstOrDefault(p => p.Name == entity.Classify);
-                if (cls != null && !string.IsNullOrEmpty(cls.Abbreviation))
-                    head += cls.Abbreviation?.ToLower() + "_";
+                if (!string.IsNullOrEmpty(cls?.Abbreviation))
+                {
+                    head.Append(entity.Parent.Abbreviation.ToLWord());
+                    head.Append('_');
+                }
             }
-            return GlobalConfig.SplitWords(entity.Name).Select(p => p.ToLower()).LinkToString(head, "_");
+            head.Append(entity.Parent.Abbreviation.ToLWord());
+            head.Append('_');
+            return GlobalConfig.SplitWords(entity.Name).Select(p => p.ToLower()).LinkToString(head.ToString(), "_");
         }
 
         /// <summary>
@@ -35,7 +41,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public static string ToViewName(EntityConfig entity) => "view_" + entity.SaveTable.Replace("tb_", "view_");
+        public static string ToViewName(EntityConfig entity) => "view_" + entity.Name.Replace("tb_", "");
 
         /// <summary>
         /// 到标准数据表名称
@@ -68,7 +74,8 @@ namespace Agebull.EntityModel.Config
                 {
                     pro = GlobalConfig.GetConfig<PropertyConfig>(field.Option.ReferenceKey);
                 }
-
+                //if (pro != null && field.LinkField != null && field.LinkField != pro.Name)
+                //    pro = null;
                 if (pro == null || pro == field || pro.Parent == entity)
                 {
                     var table = GlobalConfig.GetEntity(
@@ -93,11 +100,11 @@ namespace Agebull.EntityModel.Config
 
                 field.IsLinkField = true;
                 field.IsLinkKey = pro.IsPrimaryKey;
-                if (field.IsLinkKey)
-                    field.IsCompute = false;
+                field.IsCompute = !field.IsLinkKey;
                 field.IsLinkCaption = pro.IsCaption;
                 field.LinkTable = pro.Parent.Name;
                 field.LinkField = pro.Name;
+                field.NoStorage = false;
                 hase = true;
             }
             return hase;
@@ -106,11 +113,7 @@ namespace Agebull.EntityModel.Config
         private static void SetNoLink(PropertyConfig field)
         {
             field.LinkTable = field.LinkField = null;
-            if (!field.Option.IsReference)
-            {
-                field.Option.ReferenceKey = Guid.Empty;
-            }
-            field.Option.IsLink = false;
+            field.Option.ReferenceKey = Guid.Empty;
             field.IsLinkField = field.IsLinkKey = field.IsLinkCaption = false;
         }
     }

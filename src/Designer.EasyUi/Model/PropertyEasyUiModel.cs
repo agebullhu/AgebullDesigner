@@ -127,6 +127,83 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="field"></param>
         /// <returns></returns>
+        public void CheckFieldShow(PropertyConfig field)
+        {
+            if (field.IsPrimaryKey || field.IsLinkKey)
+            {
+                field.GridDetails = true;
+            }
+            if (field.Name.ToLower().Contains("memo") || field.Name.ToLower().Contains("remark"))
+            {
+                field.IsMemo = true;
+            }
+            if (field.IsMemo)
+            {
+                field.GridDetails = true;
+                field.MulitLine = true;
+                field.NoneGrid = true;
+                field.FormCloumnSapn = 2;
+                field.Index = 999;
+            }
+            if (field.LinkTable == "Site" && field.IsLinkCaption)
+            {
+                field.GridDetails = false;
+                field.NoneGrid = false;
+                field.Caption = "站点名称";
+            }
+            if (field.LinkTable == "Organization" && field.IsLinkCaption)
+            {
+                field.GridDetails = false;
+                field.NoneGrid = false;
+                field.Caption = "组织单元名称";
+            }
+            if (field.LinkTable == "User" && field.IsLinkCaption)
+            {
+                field.GridDetails = false;
+                field.NoneGrid = false;
+                field.Caption = "顾客昵称";
+            }
+            if (field.IsLinkKey &&!field.NoneGrid)
+            {
+                field.GridDetails = true;
+                field.NoneGrid = true;
+            }
+            CheckKeyShow(field);
+        }
+
+        /// <summary>
+        ///     取字段录入类型（EasyUi）
+        /// </summary>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        public void CheckKeyShow(PropertyConfig field)
+        {
+            if (field.IsPrimaryKey)
+            {
+                field.NoneGrid = true;
+                field.NoneDetails = true;
+            }
+            if (field.IsLinkKey)
+            {
+                field.NoneGrid = true;
+                field.NoneDetails = false;
+                field.ExtendConfigListBool["easyui", "userFormHide"] = true;
+            }
+            if (field.IsLinkCaption)
+            {
+                field.NoneGrid = false;
+                field.NoneDetails = true;
+            }
+            else if (field.IsLinkField && field.IsCompute)
+            {
+                field.IsUserReadOnly = true;
+            }
+        }
+        /// <summary>
+        ///     取字段录入类型（EasyUi）
+        /// </summary>
+        /// <param name="field"></param>
+        /// <returns></returns>
         private static void RepairInputConfig(PropertyConfig field)
         {
             if (field.DenyClient || field.IsSystemField || field.IsCompute || field.IsIdentity && field.IsIdentity)

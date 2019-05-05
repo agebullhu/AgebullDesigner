@@ -8,7 +8,7 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class SqlServerAccessBuilder : CoderWithEntity
+    public sealed class SqlServerAccessBuilder : AccessBuilderBase
     {
         /// <summary>
         /// 名称
@@ -70,57 +70,8 @@ namespace Agebull.EntityModel.RobotCoder
 ";
         }
 
-        private string FieldCode()
-        {
-            return $@"
-        #region 字段
-
-        /// <summary>
-        ///  所有字段
-        /// </summary>
-        static string[] _fields = new string[]{{ {Fields()} }};
-
-        /// <summary>
-        ///  所有字段
-        /// </summary>
-        public sealed override string[] Fields
-        {{
-            get
-            {{
-                return _fields;
-            }}
-        }}
-
-        /// <summary>
-        ///  字段字典
-        /// </summary>
-        public static Dictionary<string, string> fieldMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-        {{{FieldMap()}
-        }};
-
-        /// <summary>
-        ///  字段字典
-        /// </summary>
-        public sealed override Dictionary<string, string> FieldMap
-        {{
-            get {{ return fieldMap ; }}
-        }}
-        #endregion";
-        }
-
         private string CreateCode()
         {
-            var innerCode = $@"{SqlCode()}{FieldCode()}
-
-        #region 方法实现
-{LoadEntityCode()}
-{GetDbTypeCode()}
-{CreateFullSqlParameter()}
-{UpdateCode()}
-{InsertCode()}
-        #endregion
-";
-
             return $@"
 using System;
 using System.Collections.Generic;
@@ -140,8 +91,6 @@ using Newtonsoft.Json;
 using Agebull.Common;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.SqlServer;
-using Agebull.EntityModel.Redis;
-using Agebull.EntityModel.EasyUI;
 
 {Project.UsingNameSpaces}
 
@@ -151,15 +100,27 @@ namespace {NameSpace}.DataAccess
     /// {Entity.Caption}
     /// </summary>
     {(Entity.IsInternal ? "internal" : "public")} partial class {Entity.Name}DataAccess
-    {{{innerCode}
-    }}
-
-    sealed partial class {Project.DataBaseObjectName}
     {{
-{TableSql()}
-{TableObject()}
-{TablesEnum()}
+        /// <summary>
+        /// 构造
+        /// </summary>
+        public {Entity.Name}DataAccess()
+        {{
+            Name = {Entity.EntityName}._DataStruct_.EntityName;
+            Caption = {Entity.EntityName}._DataStruct_.EntityCaption;
+            Description = {Entity.EntityName}._DataStruct_.EntityDescription;
+        }}
+{SqlCode()}
+{FieldCode()}
+        #region 方法实现
+{LoadEntityCode()}
+{GetDbTypeCode()}
+{CreateFullSqlParameter()}
+{UpdateCode()}
+{InsertCode()}
+        #endregion
     }}
+{DataBaseExtend()}
 }}
 ";
         }
@@ -233,129 +194,6 @@ namespace {NameSpace}.DataAccess
             SaveCode(file, code);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        private string TablesEnum()
-        {
-            return $@"
-
-        /// <summary>
-        /// {Entity.Caption}({Entity.ReadTableName}):{Entity.Caption}
-        /// </summary>
-        public const int Table_{Entity.Name} = 0x{Entity.Index:x};";
-        }
-        private string TableObject()
-        {
-            var name = Entity.Name.ToPluralism();
-            return $@"
-
-        /// <summary>
-        /// {Entity.Caption}数据访问对象
-        /// </summary>
-        private {Entity.Name}DataAccess _{name.ToLWord()};
-
-        /// <summary>
-        /// {Entity.Caption}数据访问对象
-        /// </summary>
-        {(Entity.IsInternal ? "internal" : "public")} {Entity.Name}DataAccess {name}
-        {{
-            get
-            {{
-                return this._{name.ToLWord()} ?? ( this._{name.ToLWord()} = new {Entity.Name}DataAccess{{ DataBase = this}});
-            }}
-        }}";
-        }
-
-        private string TableSql()
-        {
-            return $@"
-
-        /// <summary>
-        /// {Entity.Caption}的结构语句
-        /// </summary>
-        private TableSql _{Entity.ReadTableName}Sql = new TableSql
-        {{
-            TableName = ""{Entity.ReadTableName}"",
-            PimaryKey = ""{Entity.PrimaryColumn.PropertyName}""
-        }};";
-        }
-
-        private string Fields()
-        {
-            var sql = new StringBuilder();
-            var isFirst = true;
-            foreach (var field in Entity.DbFields)
-            {
-                if (isFirst)
-                {
-                    isFirst = false;
-                }
-                else
-                {
-                    sql.Append(",");
-                }
-                sql.AppendFormat(@"""{0}""", field.PropertyName);
-            }
-            return sql.ToString();
-        }
-
-        private string FieldMap()
-        {
-            var sql = new StringBuilder();
-            var isFirst = true;
-            var names = new List<string>();
-            FieldMap(Entity, sql, names, ref isFirst);
-            return sql.ToString();
-        }
-
-        private void FieldMap(EntityConfig table, StringBuilder sql, List<string> names, ref bool isFirst)
-        {
-            if (table == null)
-            {
-                return;
-            }
-            if (!string.IsNullOrEmpty(table.ModelBase))
-            {
-                FieldMap(Project.Entities.FirstOrDefault(p => p.EntityName == table.ModelBase), sql, names, ref isFirst);
-            }
-            foreach (var field in table.DbFields)
-            {
-                if (names.Contains(field.PropertyName))
-                {
-                    continue;
-                }
-                if (isFirst)
-                {
-                    isFirst = false;
-                }
-                else
-                {
-                    sql.Append(",");
-                }
-                sql.Append($@"
-            {{ ""{field.PropertyName}"" , ""{field.DbFieldName}"" }}");
-                names.Add(field.PropertyName);
-
-                var alias = field.GetAliasPropertys();
-                foreach (var a in alias)
-                {
-                    if (names.Contains(a))
-                    {
-                        continue;
-                    }
-                    names.Add(a);
-                    sql.Append($@",
-            {{ ""{a}"" , ""{field.DbFieldName}"" }}");
-                }
-            }
-            if (!table.DbFields.Any(p => p.PropertyName.Equals("Id", StringComparison.OrdinalIgnoreCase)))
-            {
-                sql.Append($@",
-            {{ ""Id"" , ""{table.PrimaryColumn.DbFieldName}"" }}");
-            }
-        }
 
         private string FullLoadSql()
         {

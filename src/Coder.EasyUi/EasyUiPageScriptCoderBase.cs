@@ -404,9 +404,9 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             if (Entity.Interfaces == null)
                 return null;
             if (Entity.Interfaces.Contains("IAuditData"))
-                return ",audit: $('#qAudit').combobox('getValue')";
+                return ",_audit_: $('#qAudit').combobox('getValue')";
             if (Entity.Interfaces.Contains("IStateData"))
-                return ",dataState: $('#qAudit').combobox('getValue')";
+                return ",_dataState_: $('#qAudit').combobox('getValue')";
             return null;
         }
 

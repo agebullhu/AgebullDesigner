@@ -150,12 +150,18 @@ DROP VIEW `{entity.ReadTableName}`;
         }
         public static string CreateView(EntityConfig entity)
         {
-            var hase = DataBaseHelper.CheckFieldLink(entity);
-            if (!hase && !entity.DbFields.Any(p => p.IsLinkField && !p.IsLinkKey))
+            DataBaseHelper.CheckFieldLink(entity);
+            var array = entity.DbFields.Where(p => p.IsLinkField && !p.IsLinkKey).ToArray();
+            if (array.Length == 0)
             {
-                return "--没有设置关联表，无法生成SQL";
+                return $"/**********{entity.Caption}**********没有字段引用其它表的无需视图**********/";
             }
-            var tables = entity.DbFields.Where(p => p.IsLinkField).Select(p => p.LinkTable).Distinct().Select(GlobalConfig.GetEntity).ToDictionary(p => p.Name);
+            var tables = entity.DbFields.Where(p => p.IsLinkField && !p.IsLinkKey).Select(p => p.LinkTable).Distinct().Select(GlobalConfig.GetEntity).ToDictionary(p => p.Name);
+            if (tables.Count == 0)
+            {
+                entity.ReadTableName = entity.SaveTable; ;
+                return $"/**********{entity.Caption}**********没有字段引用其它表的无需视图**********/";
+            }
             string viewName;
             if (IsNullOrWhiteSpace(entity.ReadTableName) || entity.ReadTableName == entity.SaveTable)
             {
@@ -171,7 +177,7 @@ DROP VIEW `{entity.ReadTableName}`;
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS 
     SELECT ");
             bool first = true;
-            foreach (PropertyConfig field in entity.PublishProperty)
+            foreach (PropertyConfig field in entity.DbFields)
             {
                 if (first)
                     first = false;

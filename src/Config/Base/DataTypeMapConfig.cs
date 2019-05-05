@@ -19,19 +19,6 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public static List<DataTypeMapConfig> DataTypeMap = new List<DataTypeMapConfig>
         {
-            /* Object*/
-            new DataTypeMapConfig
-            {
-                Name = "Object",
-                Caption = "对象",
-                CSharp = "object",
-                Java = "object",
-                Cpp = "-",
-                MySql = "-",
-                SqlServer = "-",
-                Oracle = "-",
-                JavaScript = "object"
-            },
             /* Boolean*/
             new DataTypeMapConfig
             {
@@ -43,7 +30,6 @@ namespace Agebull.EntityModel.Config
                 MySql = "BOOL",
                 SqlServer = "bit",
                 Oracle = "CHAR(1)",
-
                 JavaScript = "bool"
             },
             /* String*/
@@ -86,19 +72,6 @@ namespace Agebull.EntityModel.Config
                 Oracle = "CHAR(36)",
                 JavaScript = "Date"
             },
-            /* Guid*/
-            new DataTypeMapConfig
-            {
-                Name = "Enum",
-                Caption = "枚举",
-                CSharp = "int",
-                Java = "int",
-                Cpp = "int",
-                MySql = "int",
-                SqlServer = "int",
-                Oracle = "NUMBER(10)",
-                JavaScript = "Number"
-            },
             /* Byte*/
             new DataTypeMapConfig
             {
@@ -112,6 +85,7 @@ namespace Agebull.EntityModel.Config
                 Oracle = "NUMBER(3)",
                 JavaScript = "byte"
             },
+
             /* Byte[]*/
             new DataTypeMapConfig
             {
@@ -125,32 +99,6 @@ namespace Agebull.EntityModel.Config
                 Oracle = "NUMBER(3)",
                 JavaScript = "byte"
             },
-            /* SByte*/
-            new DataTypeMapConfig
-            {
-                Name = "SByte",
-                Caption = "无符号字节",
-                CSharp = "sbyte",
-                Java = "sbyte",
-                Cpp = "char",
-                MySql = "VarBinary",
-                SqlServer = "VarBinary",
-                Oracle = "NUMBER(3)",
-                JavaScript = "byte"
-            },
-            /* UInt16*/
-            new DataTypeMapConfig
-            {
-                Name = "UInt16",
-                Caption = "无符号短整数",
-                CSharp = "ushort",
-                Java = "ushort",
-                Cpp = "unsigned short",
-                MySql = "SMALLINT UNSIGNED",
-                SqlServer = "smallint",
-                Oracle = "NUMBER(5)",
-                JavaScript = "Number"
-            },
             /* Int16*/
             new DataTypeMapConfig
             {
@@ -160,21 +108,8 @@ namespace Agebull.EntityModel.Config
                 Java = "short",
                 Cpp = "short",
                 MySql = "SMALLINT",
-                SqlServer = "int",
+                SqlServer = "smallint",
                 Oracle = "NUMBER(5)",
-                JavaScript = "Number"
-            },
-            /* UInt32*/
-            new DataTypeMapConfig
-            {
-                Name = "UInt32",
-                Caption = "无符号32位整数",
-                CSharp = "uint",
-                Java = "uint",
-                Cpp = "unsigned int",
-                MySql = "INT UNSIGNED",
-                SqlServer = "BIGINT",
-                Oracle = "NUMBER(10)",
                 JavaScript = "Number"
             },
             /* Int32*/
@@ -188,19 +123,6 @@ namespace Agebull.EntityModel.Config
                 MySql = "INT",
                 SqlServer = "INT",
                 Oracle = "NUMBER(10)",
-                JavaScript = "Number"
-            },
-            /* UInt64*/
-            new DataTypeMapConfig
-            {
-                Name = "UInt64",
-                Caption = "无符号64位整数",
-                CSharp = "ulong",
-                Java = "ulong",
-                Cpp = "unsigned long long",
-                MySql = "BIGINT UNSIGNED",
-                SqlServer = "real",
-                Oracle = "NUMBER(19)",
                 JavaScript = "Number"
             },
             /* Int64*/
@@ -254,12 +176,103 @@ namespace Agebull.EntityModel.Config
                 SqlServer = "DECIMAL(18,8)",
                 JavaScript = "Number",
                 Oracle = "DECIMAL(33,3)"
+            },
+            /* Object*/
+            new DataTypeMapConfig
+            {
+                Name = "Object",
+                Caption = "对象",
+                CSharp = "object",
+                Java = "object",
+                Cpp = "-",
+                MySql = "-",
+                SqlServer = "-",
+                Oracle = "-",
+                JavaScript = "object",
+                NoDbCheck=true
+            },
+            /* SByte*/
+            new DataTypeMapConfig
+            {
+                Name = "SByte",
+                Caption = "无符号字节",
+                CSharp = "sbyte",
+                Java = "sbyte",
+                Cpp = "char",
+                MySql = "VarBinary",
+                SqlServer = "VarBinary",
+                Oracle = "NUMBER(3)",
+                JavaScript = "byte",
+                NoDbCheck=true
+            },
+            /* UInt32*/
+            new DataTypeMapConfig
+            {
+                Name = "UInt32",
+                Caption = "无符号32位整数",
+                CSharp = "uint",
+                Java = "uint",
+                Cpp = "unsigned int",
+                MySql = "INT UNSIGNED",
+                SqlServer = "BIGINT",
+                Oracle = "NUMBER(10)",
+                JavaScript = "Number",
+                NoDbCheck=true
+            },
+            /* UInt16*/
+            new DataTypeMapConfig
+            {
+                Name = "UInt16",
+                Caption = "无符号短整数",
+                CSharp = "ushort",
+                Java = "ushort",
+                Cpp = "unsigned short",
+                MySql = "SMALLINT UNSIGNED",
+                SqlServer = "smallint",
+                Oracle = "NUMBER(5)",
+                JavaScript = "Number",
+                NoDbCheck=true
+            },
+            /* Enum*/
+            new DataTypeMapConfig
+            {
+                Name = "Enum",
+                Caption = "枚举",
+                CSharp = "int",
+                Java = "int",
+                Cpp = "int",
+                MySql = "int",
+                SqlServer = "int",
+                Oracle = "NUMBER(10)",
+                JavaScript = "Number",
+                NoDbCheck=true
+            },
+            /* UInt64*/
+            new DataTypeMapConfig
+            {
+                Name = "UInt64",
+                Caption = "无符号64位整数",
+                CSharp = "ulong",
+                Java = "ulong",
+                Cpp = "unsigned long long",
+                MySql = "BIGINT UNSIGNED",
+                SqlServer = "real",
+                Oracle = "NUMBER(19)",
+                JavaScript = "Number",
+                NoDbCheck=true
             }
         };
 
         #endregion
 
         #region 设计标识
+
+        /// <summary>
+        /// 不参与数据库类型还原
+        /// </summary>
+        [DataMember, JsonProperty("noDbCheck", NullValueHandling = NullValueHandling.Ignore)]
+        public bool NoDbCheck;
+
 
         /// <summary>
         /// 数据长度
@@ -552,7 +565,7 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(Sqlite));
             }
         }
-        
+
 
         /// <summary>
         ///     JavaScript

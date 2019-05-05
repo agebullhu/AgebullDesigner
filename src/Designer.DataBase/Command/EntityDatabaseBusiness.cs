@@ -18,7 +18,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public void CheckDbConfig(bool repair)
         {
-            if (Entity.IsFreeze)
+            if (Entity.IsFreeze || Entity.IsInterface)
                 return;
             if (Entity.NoDataBase)
             {
@@ -27,41 +27,37 @@ namespace Agebull.EntityModel.Config
                     col.DbFieldName = null;
                     col.DbType = null;
                 }
+
                 Entity.IsModify = true;
                 Entity.NoDataBase = true;
                 Entity.ReadTableName = null;
                 Entity.SaveTableName = null;
                 return;
             }
-            if (!Entity.IsInterface)
+
+            if (Entity.PrimaryColumn == null)
             {
-                if (Entity.PrimaryColumn == null)
-                {
-                    var idf = Entity.Properties.FirstOrDefault(p => string.Equals(p.Name, "Id", System.StringComparison.OrdinalIgnoreCase));
-                    if (idf != null)
-                        idf.IsPrimaryKey = true;
-                    else
-                        Entity.Add(new PropertyConfig
-                        {
-                            Name = "Id",
-                            Caption = Entity.Caption + "标识",
-                            Description = Entity.Caption + "标识",
-                            IsIdentity = true,
-                            IsPrimaryKey = true,
-                            DataType = SolutionConfig.Current.IdDataType
-                        });
-                }
-                if (repair || string.IsNullOrWhiteSpace(Entity.SaveTableName))
-                {
-                    Entity.SaveTableName = DataBaseHelper.ToTableName(Entity);
-                }
-                if (repair)
-                    Entity.ReadTableName = Entity.SaveTableName;
+                var idf = Entity.Properties.FirstOrDefault(p =>
+                    string.Equals(p.Name, "Id", System.StringComparison.OrdinalIgnoreCase));
+                if (idf != null)
+                    idf.IsPrimaryKey = true;
+                else
+                    Entity.Add(new PropertyConfig
+                    {
+                        Name = "Id",
+                        Caption = Entity.Caption + "编号",
+                        IsIdentity = true,
+                        IsPrimaryKey = true,
+                        DataType = SolutionConfig.Current.IdDataType
+                    });
             }
-            var model = new PropertyDatabaseBusiness
+
+            if (repair || string.IsNullOrWhiteSpace(Entity.SaveTableName))
             {
-                DataBaseType = Entity.Parent.DbType
-            };
+                Entity.SaveTableName = DataBaseHelper.ToTableName(Entity);
+            }
+            CheckRelation(repair);
+            var model = new PropertyDatabaseBusiness();
             foreach (var col in Entity.Properties)
             {
                 col.Parent = Entity;
@@ -71,25 +67,26 @@ namespace Agebull.EntityModel.Config
                 }
                 model.Property = col;
                 model.CheckByDb(repair);
-                col.IsModify = true;
             }
-            CheckRelation();
-            Entity.IsModify = true;
         }
 
-        private void CheckRelation()
+        public void CheckRelation()
         {
-            if (Entity.Properties.All(p => string.IsNullOrEmpty(p.LinkTable)))
+            CheckRelation(false);
+        }
+        public void CheckRelation(bool repair)
+        {
+            DataBaseHelper.CheckFieldLink(Entity);
+            if (Entity.Properties.Any(p => p.IsLinkField && !p.IsLinkKey))
             {
-                return;
+                if (Entity.ReadTableName == Entity.SaveTableName || repair)
+                {
+                    Entity.ReadTableName = DataBaseHelper.ToViewName(Entity);
+                }
             }
-            if (!DataBaseHelper.CheckFieldLink(Entity))
+            else
             {
-                Entity.ReadTableName = Entity.SaveTable;
-            }
-            else if (string.IsNullOrEmpty(Entity.SaveTableName) || string.Equals(Entity.SaveTableName, Entity.ReadTableName))
-            {
-                Entity.ReadTableName = DataBaseHelper.ToViewName(Entity);
+                Entity.ReadTableName = null;
             }
         }
     }

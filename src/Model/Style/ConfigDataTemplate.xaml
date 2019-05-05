@@ -698,7 +698,7 @@
                     </StackPanel>
                     <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="是否时间" />
-                        <TextBox Text="{Binding IsTime,Mode=TwoWay}" />
+                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsTime,Mode=TwoWay}" />
                     </StackPanel> 
                     <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="图像字段" />

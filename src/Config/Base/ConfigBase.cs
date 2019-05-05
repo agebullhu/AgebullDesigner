@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -50,7 +49,7 @@ namespace Agebull.EntityModel.Config
         #endregion
 
         #region ºÃ≥–
-
+        /*
         /// <summary>
         ///     √˚≥∆
         /// </summary>
@@ -89,7 +88,7 @@ namespace Agebull.EntityModel.Config
         {
             get => Option.Reference != null ? Option.Reference.Remark : base.Remark;
             set => base.Remark = value;
-        }
+        }*/
         #endregion
 
         #region ¿©’π≈‰÷√

@@ -1,0 +1,1948 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Auth.ZeroApi</name>
+    </assembly>
+    <members>
+        <member name="T:Agebull.Common.Organizations.AccessTokenResponse">
+            <summary>
+            返回与AT相关的请求
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.AccessTokenResponse.AccessToken">
+            <summary>
+            AT
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.AccessTokenResponse.RefreshToken">
+            <summary>
+            RT
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.AccessTokenResponse.Profile">
+            <summary>
+            用户
+            </summary>
+        </member>
+        <member name="T:Agebull.Common.Organizations.CreateAccessTokenRequest">
+            <summary>
+            生成AT的请求参数
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.CreateAccessTokenRequest.UserId">
+            <summary>
+            用户ID
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.CreateAccessTokenRequest.DeviceId">
+            <summary>
+            设备ID
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.CreateAccessTokenRequest.Type">
+            <summary>
+            设备ID
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.CreateAccessTokenRequest.ToFormString">
+            <summary>转为Form的文本</summary>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.CreateAccessTokenRequest.Validate(System.String@)">
+            <summary>
+            数据校验
+            </summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.DeviceArgument">
+            <summary>
+            请求分配DeviceId请求参数
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.DeviceArgument.App">
+            <summary>
+            请求者应用
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.DeviceArgument.AppKey">
+            <summary>
+            请求者应用标识
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.DeviceArgument.DeviceId">
+            <summary>
+            请求者的设备号
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.DeviceArgument.Os">
+            <summary>
+            请求者操作系统
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.DeviceArgument.Browser">
+            <summary>
+            请求者操作系统
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.DeviceArgument.DeviceInformation">
+            <summary>
+            设备信息
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.DeviceArgument.Version">
+            <summary>
+            当前请求的实现版本号
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.DeviceArgument.ToFormString">
+            <summary>
+            转为Form的文本
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.DeviceArgument.Validate(System.String@)">
+            <summary>
+            数据校验
+            </summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.IOAuthBusiness">
+            <summary>
+            用户认证接口
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.IOAuthBusiness.RefreshAccessToken(Agebull.Common.Organizations.RefreshAccessTokenRequest)">
+            <summary>
+            更新AccessToken
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.IOAuthBusiness.VerifyAccessToken(Agebull.Common.Organizations.TokenArgument)">
+            <summary>
+            校验AccessToken
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.IOAuthBusiness.GetDeviceId(Agebull.Common.Organizations.DeviceArgument)">
+            <summary>
+            取得设备识别号
+            </summary>
+            <param name="arg"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.IOAuthBusiness.CreateAccessToken(System.Int64,System.String,System.String,System.String)">
+            <summary>
+            生成AccessToken
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.IOAuthBusiness.CreateAccessToken(Agebull.Common.Organizations.UserData,Agebull.Common.Organizations.PersonData,HPC.Projects.EmployeeData,System.String)">
+            <summary>
+            生成AccessToken
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.IOAuthBusiness.CreateAccessToken(Agebull.Common.Organizations.UserData,Agebull.Common.Organizations.PersonData,System.String)">
+            <summary>
+            生成AccessToken
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.IOAuthBusiness.ValidateDeviceId(System.String)">
+            <summary>检查设备标识（来自未登录用户）</summary>
+            <param name="token">令牌</param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.IOAuthBusiness.GetLoginUser(System.String)">
+            <summary>取得用户信息</summary>
+            <param name="value">令牌或用户ID</param>
+            <returns>用户信息</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.LoginErrorCountResponse">
+            <summary>
+            错误登录次数返回值
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.LoginErrorCountResponse.ErrorCount">
+            <summary>
+            错误登录次数
+            </summary>
+            <remarks>
+            错误登录次数
+            </remarks>
+        </member>
+        <member name="M:Agebull.Common.Organizations.LoginErrorCountResponse.ToFormString">
+            <summary>转为符合HTTP协议的FORM的文本</summary>
+            <returns>符合HTTP协议的FORM的文本</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.LoginErrorCountResponse.ToString">
+            <summary>到文本</summary>
+            <returns>文本</returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Agebull.Common.Organizations.LoginErrorCountResponse.Agebull#MicroZero#ZeroApis#IApiArgument#Validate(System.String@)">
+            <summary>数据校验</summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.LoginErrorCountResponse.Validate">
+            <summary>
+            数据校验
+            </summary>
+            <returns>数据校验对象</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.LoginResponse">
+            <summary>
+            登陆结果
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.LoginResponse.AccessToken">
+            <summary>
+            访问令牌
+            </summary>
+            <value>
+            可存储200个字符.合理长度应不大于200.
+            </value>
+        </member>
+        <member name="P:Agebull.Common.Organizations.LoginResponse.RefreshToken">
+            <summary>
+            刷新令牌
+            </summary>
+            <value>
+            可存储200个字符.合理长度应不大于200.
+            </value>
+        </member>
+        <member name="P:Agebull.Common.Organizations.LoginResponse.Profile">
+            <summary>
+            用户对象存储的用户信息
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.LoginResponse.WechatAccessToken">
+            <summary>
+            用户的微信at
+            </summary>
+            <value>
+            可存储200个字符.合理长度应不大于200.
+            </value>
+        </member>
+        <member name="P:Agebull.Common.Organizations.LoginResponse.WechatAccessTokenExpires">
+            <summary>
+            用户的微信at过期时间
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.LoginResponse.WechatRefreshToken">
+            <summary>
+            用户的微信rt
+            </summary>
+            <value>
+            可存储200个字符.合理长度应不大于200.
+            </value>
+        </member>
+        <member name="P:Agebull.Common.Organizations.LoginResponse.WechatAppId">
+            <summary>
+            微信公共号AppId
+            </summary>
+            <value>
+            可存储200个字符.合理长度应不大于200.
+            </value>
+        </member>
+        <member name="M:Agebull.Common.Organizations.LoginResponse.Agebull#MicroZero#ZeroApis#IApiArgument#Validate(System.String@)">
+            <summary>数据校验</summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.LoginResponse.Validate">
+            <summary>
+            数据校验
+            </summary>
+            <returns>数据校验对象</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.PersonPublishInfo">
+            <summary>
+            用户的公开信息
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.PersonPublishInfo.AvatarUrl">
+            <summary>
+            头像
+            </summary>
+            <remarks>
+            头像
+            </remarks>
+        </member>
+        <member name="P:Agebull.Common.Organizations.PersonPublishInfo.IsRegist">
+            <summary>
+            昵称
+            </summary>
+            <remarks>
+            昵称
+            </remarks>
+        </member>
+        <member name="P:Agebull.Common.Organizations.PersonPublishInfo.NickName">
+            <summary>
+            昵称
+            </summary>
+            <remarks>
+            昵称
+            </remarks>
+        </member>
+        <member name="P:Agebull.Common.Organizations.PersonPublishInfo.PhoneNumber">
+            <summary>
+            手机号码
+            </summary>
+            <remarks>
+            所在县Id
+            </remarks>
+        </member>
+        <member name="M:Agebull.Common.Organizations.PersonPublishInfo.ToFormString">
+            <summary>转为符合HTTP协议的FORM的文本</summary>
+            <returns>符合HTTP协议的FORM的文本</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.PersonPublishInfo.ToString">
+            <summary>到文本</summary>
+            <returns>文本</returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Agebull.Common.Organizations.PersonPublishInfo.Agebull#MicroZero#ZeroApis#IApiArgument#Validate(System.String@)">
+            <summary>数据校验</summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.PersonPublishInfo.Validate">
+            <summary>
+            数据校验
+            </summary>
+            <returns>数据校验对象</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.LoginbySmsRequest">
+            <summary>
+            短信登录参数
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.LoginbySmsRequest.SMSVerificationCode">
+            <summary>
+            短信验证码
+            </summary>
+            <remarks>
+            短信验证码
+            </remarks>
+        </member>
+        <member name="P:Agebull.Common.Organizations.LoginbySmsRequest.TraceMark">
+            <summary>
+            活动跟踪码
+            </summary>
+            <remarks>
+            活动跟踪码
+            </remarks>
+        </member>
+        <member name="P:Agebull.Common.Organizations.LoginbySmsRequest.Channel">
+            <summary>
+            App渠道
+            </summary>
+            <remarks>
+            App渠道
+            </remarks>
+        </member>
+        <member name="P:Agebull.Common.Organizations.LoginbySmsRequest.MobilePhone">
+            <summary>
+            注册的手机号
+            </summary>
+            <remarks>
+            注册的手机号
+            </remarks>
+        </member>
+        <member name="M:Agebull.Common.Organizations.LoginbySmsRequest.ToFormString">
+            <summary>转为符合HTTP协议的FORM的文本</summary>
+            <returns>符合HTTP协议的FORM的文本</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.LoginbySmsRequest.ToString">
+            <summary>到文本</summary>
+            <returns>文本</returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Agebull.Common.Organizations.LoginbySmsRequest.Agebull#MicroZero#ZeroApis#IApiArgument#Validate(System.String@)">
+            <summary>数据校验</summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.LoginbySmsRequest.ValidateEx(Agebull.EntityModel.Common.ValidateResult)">
+            <summary>
+            扩展校验
+            </summary>
+            <param name="result">结果存放处</param>
+        </member>
+        <member name="M:Agebull.Common.Organizations.LoginbySmsRequest.Validate">
+            <summary>
+            数据校验
+            </summary>
+            <returns>数据校验对象</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.MobilePhoneRequest">
+            <summary>
+            手机号请求参数
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.MobilePhoneRequest.MobilePhone">
+            <summary>
+            电话号码
+            </summary>
+            <remarks>
+            电话号码
+            </remarks>
+        </member>
+        <member name="P:Agebull.Common.Organizations.MobilePhoneRequest.ImgVc">
+            <summary>
+            图形验证码
+            </summary>
+            <remarks>
+            图形验证码
+            </remarks>
+        </member>
+        <member name="M:Agebull.Common.Organizations.MobilePhoneRequest.ToFormString">
+            <summary>转为符合HTTP协议的FORM的文本</summary>
+            <returns>符合HTTP协议的FORM的文本</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.MobilePhoneRequest.ToString">
+            <summary>到文本</summary>
+            <returns>文本</returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Agebull.Common.Organizations.MobilePhoneRequest.Agebull#MicroZero#ZeroApis#IApiArgument#Validate(System.String@)">
+            <summary>数据校验</summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.MobilePhoneRequest.Validate">
+            <summary>
+            数据校验
+            </summary>
+            <returns>数据校验对象</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.PhoneLoginRequest">
+            <summary>
+            基于手机的账号登录参数
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.PhoneLoginRequest.MobilePhone">
+            <summary>
+            手机号
+            </summary>
+            <remarks>
+            旧版本编号
+            </remarks>
+        </member>
+        <member name="P:Agebull.Common.Organizations.PhoneLoginRequest.UserPassword">
+            <summary>
+            密码
+            </summary>
+            <remarks>
+            密码
+            </remarks>
+        </member>
+        <member name="P:Agebull.Common.Organizations.PhoneLoginRequest.VerificationCode">
+            <summary>
+            图片验证码
+            </summary>
+            <remarks>
+            图片验证码（4位数字+英文）
+            </remarks>
+        </member>
+        <member name="M:Agebull.Common.Organizations.PhoneLoginRequest.ToFormString">
+            <summary>转为符合HTTP协议的FORM的文本</summary>
+            <returns>符合HTTP协议的FORM的文本</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.PhoneLoginRequest.ToString">
+            <summary>到文本</summary>
+            <returns>文本</returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Agebull.Common.Organizations.PhoneLoginRequest.Agebull#MicroZero#ZeroApis#IApiArgument#Validate(System.String@)">
+            <summary>数据校验</summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.PhoneLoginRequest.ValidateEx(Agebull.EntityModel.Common.ValidateResult)">
+            <summary>
+            扩展校验
+            </summary>
+            <param name="result">结果存放处</param>
+        </member>
+        <member name="M:Agebull.Common.Organizations.PhoneLoginRequest.Validate">
+            <summary>
+            数据校验
+            </summary>
+            <returns>数据校验对象</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.RegByPhoneRequest">
+            <summary>
+            基于手机号的注册请求参数
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.RegByPhoneRequest.SMSVerificationCode">
+            <summary>
+            短信验证码
+            </summary>
+            <remarks>
+            短信验证码（6位数字）
+            </remarks>
+        </member>
+        <member name="P:Agebull.Common.Organizations.RegByPhoneRequest.UserPassword">
+            <summary>
+            登陆密码
+            </summary>
+            <remarks>
+            登陆密码（6-16）
+            </remarks>
+        </member>
+        <member name="P:Agebull.Common.Organizations.RegByPhoneRequest.TraceMark">
+            <summary>
+            活动跟踪码
+            </summary>
+            <remarks>
+            活动跟踪码
+            </remarks>
+        </member>
+        <member name="P:Agebull.Common.Organizations.RegByPhoneRequest.Channel">
+            <summary>
+            渠道
+            </summary>
+            <remarks>
+            渠道
+            </remarks>
+        </member>
+        <member name="P:Agebull.Common.Organizations.RegByPhoneRequest.MobilePhone">
+            <summary>
+            注册的手机号
+            </summary>
+            <remarks>
+            注册的手机号
+            </remarks>
+        </member>
+        <member name="M:Agebull.Common.Organizations.RegByPhoneRequest.ToFormString">
+            <summary>转为符合HTTP协议的FORM的文本</summary>
+            <returns>符合HTTP协议的FORM的文本</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.RegByPhoneRequest.ToString">
+            <summary>到文本</summary>
+            <returns>文本</returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Agebull.Common.Organizations.RegByPhoneRequest.Agebull#MicroZero#ZeroApis#IApiArgument#Validate(System.String@)">
+            <summary>数据校验</summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.RegByPhoneRequest.ValidateEx(Agebull.EntityModel.Common.ValidateResult)">
+            <summary>
+            扩展校验
+            </summary>
+            <param name="result">结果存放处</param>
+        </member>
+        <member name="M:Agebull.Common.Organizations.RegByPhoneRequest.Validate">
+            <summary>
+            数据校验
+            </summary>
+            <returns>数据校验对象</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.RefreshAccessTokenRequest">
+            <summary>
+            刷新AT请求参数
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.RefreshAccessTokenRequest.AccessToken">
+            <summary>
+            AT
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.RefreshAccessTokenRequest.RefreshToken">
+            <summary>
+            RT
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.RefreshAccessTokenRequest.ToFormString">
+            <summary>转为Form的文本</summary>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.RefreshAccessTokenRequest.Validate(System.String@)">
+            <summary>
+            数据校验
+            </summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.TokenArgument">
+            <summary>
+            AT校验请求参数
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.TokenArgument.Token">
+            <summary>
+            AT
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.TokenArgument.Validate(System.String@)">
+            <summary>
+            数据校验
+            </summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.UserBaseInfo">
+            <summary>
+            用户基本信息
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.UserBaseInfo.UserId">
+            <summary>
+            用户ID
+            </summary>
+            <remarks>
+            用户ID
+            </remarks>
+        </member>
+        <member name="P:Agebull.Common.Organizations.UserBaseInfo.Phone">
+            <summary>
+            用户手机
+            </summary>
+            <remarks>
+            用户手机
+            </remarks>
+        </member>
+        <member name="P:Agebull.Common.Organizations.UserBaseInfo.OpenId">
+            <summary>
+            开放标识
+            </summary>
+            <remarks>
+            开放标识
+            </remarks>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBaseInfo.ToFormString">
+            <summary>转为符合HTTP协议的FORM的文本</summary>
+            <returns>符合HTTP协议的FORM的文本</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBaseInfo.ToString">
+            <summary>到文本</summary>
+            <returns>文本</returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBaseInfo.Agebull#MicroZero#ZeroApis#IApiArgument#Validate(System.String@)">
+            <summary>数据校验</summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBaseInfo.Validate">
+            <summary>
+            数据校验
+            </summary>
+            <returns>数据校验对象</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.UserDetailArg">
+            <summary>
+            获取用户信息参数
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.UserDetailArg.UserId">
+            <summary>
+            UserId
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.UserDetailArg.OpenId">
+            <summary>
+            OpenId
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.UserDetailArg.At">
+            <summary>
+            access token
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.UserDetailArg.DataDesc">
+            <summary>
+            返回数据的描述
+            </summary>
+            <remarks>
+            （标志位，可同时传递多个，例如6）2：微信用户信息   4：当前就诊人信息
+            </remarks>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserDetailArg.Agebull#MicroZero#ZeroApis#IApiArgument#Validate(System.String@)">
+            <summary>数据校验</summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserDetailArg.Validate">
+            <summary>
+            数据校验
+            </summary>
+            <returns>数据校验对象</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.UserDetailRes">
+            <summary>
+            获取永久信息
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserDetailRes.Agebull#MicroZero#ZeroApis#IApiArgument#Validate(System.String@)">
+            <summary>数据校验</summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserDetailRes.Validate">
+            <summary>
+            数据校验
+            </summary>
+            <returns>数据校验对象</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.AvatarRequest">
+            <summary>
+            修改头像参数
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.AvatarRequest.AvatarUrlPath">
+            <summary>
+            头像地址
+            </summary>
+            <remarks>
+            头像地址
+            </remarks>
+        </member>
+        <member name="M:Agebull.Common.Organizations.AvatarRequest.ToFormString">
+            <summary>转为符合HTTP协议的FORM的文本</summary>
+            <returns>符合HTTP协议的FORM的文本</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.AvatarRequest.ToString">
+            <summary>到文本</summary>
+            <returns>文本</returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Agebull.Common.Organizations.AvatarRequest.Agebull#MicroZero#ZeroApis#IApiArgument#Validate(System.String@)">
+            <summary>数据校验</summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.AvatarRequest.Validate">
+            <summary>
+            数据校验
+            </summary>
+            <returns>数据校验对象</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.FindPasswordRequest">
+            <summary>
+            找回密码请求参数
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.FindPasswordRequest.UserPassword">
+            <summary>
+            密码
+            </summary>
+            <remarks>
+            密码
+            </remarks>
+        </member>
+        <member name="P:Agebull.Common.Organizations.FindPasswordRequest.SMSVerificationCode">
+            <summary>
+            短信验证码
+            </summary>
+            <remarks>
+            短信验证码
+            </remarks>
+        </member>
+        <member name="P:Agebull.Common.Organizations.FindPasswordRequest.MobilePhone">
+            <summary>
+            注册的手机号
+            </summary>
+            <remarks>
+            注册的手机号
+            </remarks>
+        </member>
+        <member name="M:Agebull.Common.Organizations.FindPasswordRequest.ToFormString">
+            <summary>转为符合HTTP协议的FORM的文本</summary>
+            <returns>符合HTTP协议的FORM的文本</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.FindPasswordRequest.ToString">
+            <summary>到文本</summary>
+            <returns>文本</returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Agebull.Common.Organizations.FindPasswordRequest.Agebull#MicroZero#ZeroApis#IApiArgument#Validate(System.String@)">
+            <summary>数据校验</summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.FindPasswordRequest.ValidateEx(Agebull.EntityModel.Common.ValidateResult)">
+            <summary>
+            扩展校验
+            </summary>
+            <param name="result">结果存放处</param>
+        </member>
+        <member name="M:Agebull.Common.Organizations.FindPasswordRequest.Validate">
+            <summary>
+            数据校验
+            </summary>
+            <returns>数据校验对象</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.NickNameRequest">
+            <summary>
+            修改昵称参数
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.NickNameRequest.Name">
+            <summary>
+            新昵称
+            </summary>
+            <remarks>
+            新昵称
+            </remarks>
+        </member>
+        <member name="M:Agebull.Common.Organizations.NickNameRequest.ToFormString">
+            <summary>转为符合HTTP协议的FORM的文本</summary>
+            <returns>符合HTTP协议的FORM的文本</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.NickNameRequest.ToString">
+            <summary>到文本</summary>
+            <returns>文本</returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Agebull.Common.Organizations.NickNameRequest.Agebull#MicroZero#ZeroApis#IApiArgument#Validate(System.String@)">
+            <summary>数据校验</summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.NickNameRequest.ValidateEx(Agebull.EntityModel.Common.ValidateResult)">
+            <summary>
+            扩展校验
+            </summary>
+            <param name="result">结果存放处</param>
+        </member>
+        <member name="M:Agebull.Common.Organizations.NickNameRequest.Validate">
+            <summary>
+            数据校验
+            </summary>
+            <returns>数据校验对象</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.UpdatePasswordRequest">
+            <summary>
+            修改密码参数
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.UpdatePasswordRequest.UserPassword">
+            <summary>
+            新密码
+            </summary>
+            <remarks>
+            新密码
+            </remarks>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UpdatePasswordRequest.ToFormString">
+            <summary>转为符合HTTP协议的FORM的文本</summary>
+            <returns>符合HTTP协议的FORM的文本</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UpdatePasswordRequest.ToString">
+            <summary>到文本</summary>
+            <returns>文本</returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UpdatePasswordRequest.Agebull#MicroZero#ZeroApis#IApiArgument#Validate(System.String@)">
+            <summary>数据校验</summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UpdatePasswordRequest.ValidateEx(Agebull.EntityModel.Common.ValidateResult)">
+            <summary>
+            扩展校验
+            </summary>
+            <param name="result">结果存放处</param>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UpdatePasswordRequest.Validate">
+            <summary>
+            数据校验
+            </summary>
+            <returns>数据校验对象</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.Validater">
+            <summary>
+            数据校验
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.Validater.CheckNikeName(System.String,System.String@)">
+            <summary>
+            校验昵称
+            </summary>
+            <param name="nikeName">电话号码</param>
+            <param name="message">返回消息</param>
+            <returns>是否通过</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.Validater.CheckPhoneNumber(System.String,System.String@)">
+            <summary>
+            校验电话号码
+            </summary>
+            <param name="phone">电话号码</param>
+            <param name="message">返回消息</param>
+            <returns>是否通过</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.Validater.CheckVerificationCode(System.String,System.String@)">
+            <summary>
+            校验短信校验码
+            </summary>
+            <param name="vc">短信校验码</param>
+            <param name="message">返回消息</param>
+            <returns>是否通过</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.Validater.CheckPassword(System.String,System.String@)">
+            <summary>
+            校验密码规则
+            </summary>
+            <param name="pwd">密码</param>
+            <param name="message">返回消息</param>
+            <returns>是否通过</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.CacheImgReq">
+            <summary>
+            缓存图片验证码参数
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.CacheImgReq.RpcToken">
+            <summary>
+            RpcToken
+            </summary>
+            <value>
+            可存储200个字符.合理长度应不大于200.
+            </value>
+        </member>
+        <member name="P:Agebull.Common.Organizations.CacheImgReq.VerificationCode">
+            <summary>
+            验证码
+            </summary>
+            <value>
+            可存储200个字符.合理长度应不大于200.
+            </value>
+        </member>
+        <member name="M:Agebull.Common.Organizations.CacheImgReq.Agebull#MicroZero#ZeroApis#IApiArgument#Validate(System.String@)">
+            <summary>数据校验</summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.CacheImgReq.Validate">
+            <summary>
+            数据校验
+            </summary>
+            <returns>数据校验对象</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.CacheSmsReq">
+            <summary>
+            缓存短信验证码参数
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.Organizations.CacheSmsReq.Phone">
+            <summary>
+            手机号
+            </summary>
+            <value>
+            可存储200个字符.合理长度应不大于200.
+            </value>
+        </member>
+        <member name="P:Agebull.Common.Organizations.CacheSmsReq.SmsVerificationCode">
+            <summary>
+            短信验证码
+            </summary>
+            <value>
+            可存储200个字符.合理长度应不大于200.
+            </value>
+        </member>
+        <member name="M:Agebull.Common.Organizations.CacheSmsReq.Agebull#MicroZero#ZeroApis#IApiArgument#Validate(System.String@)">
+            <summary>数据校验</summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.CacheSmsReq.Validate">
+            <summary>
+            数据校验
+            </summary>
+            <returns>数据校验对象</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.IUserApi">
+            <summary>
+            身份验证服务API
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.IUserApi.MobileCheck(Agebull.MicroZero.ZeroApis.Argument)">
+            <summary>
+            检查手机是否注册
+            </summary>
+            <param name="arg">手机号请求参数</param>
+            <returns>操作结果</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.IUserApi.AccountLogin(Agebull.Common.Organizations.PhoneLoginRequest)">
+            <summary>
+                账户登录
+            </summary>
+            <param name="arg">基于手机的账号登录参数</param>
+            <returns>登录返回数据</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.IUserApi.HpcLogin(Agebull.Common.Organizations.PhoneLoginRequest)">
+            <summary>
+                账户登录
+            </summary>
+            <param name="arg">基于手机的账号登录参数</param>
+            <returns>登录返回数据</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.IUserApi.FindPassword(Agebull.Common.Organizations.FindPasswordRequest)">
+            <summary>
+                通过手机验证码 重置密码
+            </summary>
+            <param name="arg">找回密码请求参数</param>
+            <returns>操作结果</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.IUserApi.LoginBySms(Agebull.Common.Organizations.LoginbySmsRequest)">
+            <summary>
+                短信登录:短信登录:
+            </summary>
+            <param name="arg">短信登录参数</param>
+            <returns>登录返回数据</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.IUserApi.LoginErrorCount(Agebull.Common.Organizations.MobilePhoneRequest)">
+            <summary>
+                错误登录次数:错误登录次数:
+            </summary>
+            <param name="arg">手机号请求参数</param>
+            <returns>错误登录次数返回值</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.IUserApi.PhoneAccountLogin(Agebull.Common.Organizations.PhoneLoginRequest)">
+            <summary>
+                基本手机号的账号登录:基本手机号的账号登录:
+            </summary>
+            <param name="arg">基于手机的账号登录参数</param>
+            <returns>登录返回数据</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.IUserApi.QueryUserInfo(Agebull.Common.Organizations.UserBaseInfo)">
+            <summary>
+                查询用户信息:查询用户信息:
+            </summary>
+            <param name="arg">用户基本信息</param>
+            <returns>用户基本信息</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.IUserApi.RegisterByPhone(Agebull.Common.Organizations.RegByPhoneRequest)">
+            <summary>
+             手机短信注册
+            </summary>
+            <param name="arg">基于手机号的注册请求参数</param>
+            <returns>登录返回数据</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.IUserApi.UpdateAvatar(Agebull.Common.Organizations.AvatarRequest)">
+            <summary>
+                修改头像:修改头像:
+            </summary>
+            <param name="arg">修改头像参数</param>
+            <returns>操作结果</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.IUserApi.UpdateNickName(Agebull.Common.Organizations.NickNameRequest)">
+            <summary>
+                修改昵称:修改昵称:
+            </summary>
+            <param name="arg">修改昵称参数</param>
+            <returns>操作结果</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.IUserApi.UpdatePassword(Agebull.Common.Organizations.UpdatePasswordRequest)">
+            <summary>
+                修改密码:修改密码:
+            </summary>
+            <param name="arg">修改密码参数</param>
+            <returns>操作结果</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.UserBusinessLogical">
+            <summary>
+            用户信息API
+            </summary>
+            <summary>
+            用户信息API
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.WriteErrorCount(System.String)">
+            <summary>
+            记录错误次数
+            </summary>
+            <param name="account"></param>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.ClearErrorCount(System.String)">
+            <summary>
+            清除错误次数
+            </summary>
+            <param name="account"></param>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.ValidateImgVerificationCode(System.String,System.String)">
+            <summary>
+            校验图形验证码
+            </summary>
+            <param name="phone">电话号码</param>
+            <param name="imgCode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.InsertUserByPhone(Agebull.Common.Organizations.RegByPhoneRequest,Agebull.Common.Organizations.PersonData@)">
+            <summary>
+            基于手机号注册方式写入用户(会根据是否有密码选择写入账号表)
+            </summary>
+            <param name="arg"></param>
+            <param name="person"></param>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.CheckAccount(System.String,System.Int64,System.String)">
+            <summary>
+            完善账号信息（若账号不存在 则新建；若存在，则重置为指定数据）
+            若pwd为空，则什么都不做
+            </summary>
+            <param name="pwd"></param>
+            <param name="userId"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.CreateAccessToken(Agebull.MicroZero.ZeroApis.ApiResult{Agebull.Common.Organizations.LoginResponse},Agebull.Common.Organizations.PersonData,Agebull.Common.Organizations.UserData,HPC.Projects.EmployeeData,System.String,System.String)">
+            <summary>
+            生成并返回登录信息
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.CreateAccessToken(Agebull.MicroZero.ZeroApis.ApiResult{Agebull.Common.Organizations.LoginResponse},Agebull.Common.Organizations.PersonData,Agebull.Common.Organizations.UserData,System.String,System.String)">
+            <summary>
+            生成并返回登录信息
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.CreateAccessToken(Agebull.MicroZero.ZeroApis.ApiResult{Agebull.Common.Organizations.LoginResponse},Agebull.Common.Organizations.PersonData,System.String,System.String)">
+            <summary>
+            生成并返回登录信息
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.Agebull#Common#Organizations#IUserApi#HpcLogin(Agebull.Common.Organizations.PhoneLoginRequest)">
+            <summary>
+                账户登录:账户登录:
+            </summary>
+            <param name="arg">基于手机的账号登录参数</param>
+            <returns>登录返回数据</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.Agebull#Common#Organizations#IUserApi#MobileCheck(Agebull.MicroZero.ZeroApis.Argument)">
+            <summary>
+            检查手机是否注册
+            </summary>
+            <param name="arg">手机号请求参数</param>
+            <returns>操作结果</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.Agebull#Common#Organizations#IUserApi#RegisterByPhone(Agebull.Common.Organizations.RegByPhoneRequest)">
+            <summary>
+            手机短信注册
+            </summary>
+            <param name="arg">基于手机号的注册请求参数</param>
+            <returns>登录返回数据</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.RegisteByPhone(Agebull.Common.Organizations.RegByPhoneRequest,Agebull.MicroZero.ZeroApis.ApiResult{Agebull.Common.Organizations.LoginResponse})">
+            <summary>
+            手机短信注册
+            </summary>
+            <param name="arg">基于手机号的注册请求参数</param>
+            <param name="result">登录返回数据</param>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.Agebull#Common#Organizations#IUserApi#LoginBySms(Agebull.Common.Organizations.LoginbySmsRequest)">
+            <summary>
+            短信登录(会校验短信验证码)。校验短信成功后，若用户不存在 则自动创建用户
+            </summary>
+            <param name="arg">短信登录参数</param>
+            <returns>登录返回数据</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.LoginBySms(Agebull.Common.Organizations.LoginbySmsRequest,Agebull.MicroZero.ZeroApis.ApiResult{Agebull.Common.Organizations.LoginResponse})">
+            <summary>
+            短信登录(会校验短信验证码)。校验短信成功后，若用户不存在 则自动创建用户
+            </summary>
+            <param name="arg"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.Agebull#Common#Organizations#IUserApi#PhoneAccountLogin(Agebull.Common.Organizations.PhoneLoginRequest)">
+            <summary>
+            基于手机号的账号密码登录
+            </summary>
+            <param name="arg">基于手机的账号登录参数</param>
+            <returns>登录返回数据</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.PhoneAccountLogin(Agebull.Common.Organizations.PhoneLoginRequest,Agebull.MicroZero.ZeroApis.ApiResult{Agebull.Common.Organizations.LoginResponse})">
+            <summary>
+            手机登录
+            </summary>
+            <param name="arg"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.Agebull#Common#Organizations#IUserApi#AccountLogin(Agebull.Common.Organizations.PhoneLoginRequest)">
+            <summary>
+                账户登录:账户登录:
+            </summary>
+            <param name="arg">基于手机的账号登录参数</param>
+            <returns>登录返回数据</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.AccountLogin(Agebull.Common.Organizations.PhoneLoginRequest,Agebull.MicroZero.ZeroApis.ApiResult{Agebull.Common.Organizations.LoginResponse})">
+            <summary>
+            手机账号密码登录
+            </summary>
+            <param name="arg"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.Agebull#Common#Organizations#IUserApi#FindPassword(Agebull.Common.Organizations.FindPasswordRequest)">
+            <summary>
+                通过手机验证码 重置密码
+            </summary>
+            <param name="arg">找回密码请求参数</param>
+            <returns>操作结果</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.FindPassword(Agebull.Common.Organizations.FindPasswordRequest,Agebull.MicroZero.ZeroApis.ApiResult)">
+            <summary>
+            通过手机验证码 重置密码
+            </summary>
+            <param name="arg"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.Agebull#Common#Organizations#IUserApi#LoginErrorCount(Agebull.Common.Organizations.MobilePhoneRequest)">
+            <summary>
+                错误登录次数:错误登录次数:
+            </summary>
+            <param name="arg">手机号请求参数</param>
+            <returns>错误登录次数返回值</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.Agebull#Common#Organizations#IUserApi#QueryUserInfo(Agebull.Common.Organizations.UserBaseInfo)">
+            <summary>
+                查询用户信息:查询用户信息:
+            </summary>
+            <param name="arg">用户基本信息</param>
+            <returns>用户基本信息</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.QueryUserInfo(Agebull.Common.Organizations.UserBaseInfo,Agebull.MicroZero.ZeroApis.ApiResult{Agebull.Common.Organizations.UserBaseInfo})">
+            <summary>
+            查询用户信息
+            </summary>
+            <param name="arg"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.Agebull#Common#Organizations#IUserApi#UpdateAvatar(Agebull.Common.Organizations.AvatarRequest)">
+            <summary>
+                修改头像:修改头像:
+            </summary>
+            <param name="arg">修改头像参数</param>
+            <returns>操作结果</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.UpdateAvatar(Agebull.Common.Organizations.AvatarRequest,Agebull.MicroZero.ZeroApis.ApiResult)">
+            <summary>
+            修改头像
+            </summary>
+            <param name="arg"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.Agebull#Common#Organizations#IUserApi#UpdateNickName(Agebull.Common.Organizations.NickNameRequest)">
+            <summary>
+                修改昵称:修改昵称:
+            </summary>
+            <param name="arg">修改昵称参数</param>
+            <returns>操作结果</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.UpdateNickName(Agebull.Common.Organizations.NickNameRequest,Agebull.MicroZero.ZeroApis.ApiResult)">
+            <summary>
+            修改昵称
+            </summary>
+            <param name="arg"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:Agebull.Common.Organizations.UserBusinessLogical.Agebull#Common#Organizations#IUserApi#UpdatePassword(Agebull.Common.Organizations.UpdatePasswordRequest)">
+            <summary>
+                修改密码:修改密码:
+            </summary>
+            <param name="arg">修改密码参数</param>
+            <returns>操作结果</returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.VerificationCodeHelper">
+            <summary>
+            校验码辅助类
+            </summary>
+        </member>
+        <member name="F:Agebull.Common.Organizations.VerificationCodeHelper.SupperImgVc">
+            <summary>
+            超级图片验证码 请勿设置的过于简单，可以不设置，若设置为"Ignore",则传递任何图片验证码皆可验证通过
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.VerificationCodeHelper.ValidateImg(System.String,System.String)">
+            <summary>
+            检验图片验证码
+            </summary>
+            <param name="code"></param>
+            <param name="RpcToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.VerificationCodeHelper.CacheImg(System.String,System.String)">
+            <summary>
+            缓存图片验证码(5分钟后自动失效)
+            </summary>
+            <param name="code"></param>
+            <param name="RpcToken"></param>
+        </member>
+        <member name="F:Agebull.Common.Organizations.VerificationCodeHelper.supper">
+            <summary>
+            超级短信验证码 请勿设置的过于简单，限制为 “6位数字” 或者 “4位字母数字(区分大小写）”
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.VerificationCodeHelper.ValidateSms(System.String,System.String)">
+            <summary>
+            检验短信验证码
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.VerificationCodeHelper.CacheSms(System.String,System.String)">
+            <summary>
+            缓存短信验证码(5分钟后自动失效)
+            </summary>
+            <param name="vc"></param>
+            <param name="phone"></param>
+        </member>
+        <member name="T:Agebull.Common.Organizations.IEncrypt">
+            <summary>
+            密码加密解密算法
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.IEncrypt.Encrypt(System.String)">
+            <summary>
+            加密
+            </summary>
+            <param name="encryptString">待加密字符</param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.IEncrypt.Decrypt(System.String)">
+            <summary>
+            解密
+            </summary>
+            <param name="decryptString">待解密字符</param>
+            <returns></returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.NoEncrypt">
+            <summary>
+            原字符串返回 无加密解密
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.NoEncrypt.Encrypt(System.String)">
+            <summary>
+            加密
+            </summary>
+            <param name="encryptString">待加密字符</param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.NoEncrypt.Decrypt(System.String)">
+            <summary>
+            解密
+            </summary>
+            <param name="decryptString">待解密字符</param>
+            <returns></returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.RsaPasswordEncrypt">
+            <summary>
+            密码加密算法
+            </summary>
+        </member>
+        <member name="F:Agebull.Common.Organizations.RsaPasswordEncrypt.PrivateKey">
+            <summary>
+            私钥
+            </summary>
+        </member>
+        <member name="F:Agebull.Common.Organizations.RsaPasswordEncrypt.PublicKey">
+            <summary>
+            公钥
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.RsaPasswordEncrypt.RsaEncrypt(System.String)">
+            <summary>
+            公钥加密
+            </summary>
+            <param name="encryptString">要加密字符</param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.RsaPasswordEncrypt.RsaDecrypt(System.String)">
+            <summary>
+            私钥解密认证
+            </summary>
+            <param name="decryptString">加密后字符</param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.RsaPasswordEncrypt.Encrypt(System.String,System.String)">
+            <summary>
+            加密字符串
+            </summary>
+            <param name="str">传入的明文</param>
+            <param name="key">密钥</param>
+            <returns>返回密文</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.RsaPasswordEncrypt.Decrypt(System.String,System.String)">
+            <summary>
+            解密字符串
+            </summary>
+            <param name="str">传入的加密字符串</param>
+            <param name="key">密钥</param>
+            <returns>返回明文</returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.RsaPasswordEncrypt.FromXmlStringExtensions(System.Security.Cryptography.RSA,System.String)">
+            <summary>
+            扩展FromXmlString
+            </summary>
+            <param name="rsa"></param>
+            <param name="xmlString"></param>
+        </member>
+        <member name="T:Agebull.Common.Organizations.RsaHelper">
+            <summary>
+            RSA加解密 使用OpenSSL的公钥加密/私钥解密
+            作者：李志强
+            创建时间：2017年10月30日15:50:14
+            QQ:501232752
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.Organizations.RsaHelper.#ctor(Agebull.Common.Organizations.RsaType,System.Text.Encoding,System.String,System.String)">
+            <summary>
+            实例化RSAHelper
+            </summary>
+            <param name="rsaType">加密算法类型 RSA SHA1;RSA2 SHA256 密钥长度至少为2048</param>
+            <param name="encoding">编码类型</param>
+            <param name="privateKey">私钥</param>
+            <param name="publicKey">公钥</param>
+        </member>
+        <member name="M:Agebull.Common.Organizations.RsaHelper.Sign(System.String)">
+            <summary>
+            使用私钥签名
+            </summary>
+            <param name="data">原始数据</param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.Common.Organizations.RsaHelper.Verify(System.String,System.String)">
+            <summary>
+            使用公钥验证签名
+            </summary>
+            <param name="data">原始数据</param>
+            <param name="sign">签名</param>
+            <returns></returns>
+        </member>
+        <member name="T:Agebull.Common.Organizations.RsaType">
+            <summary>
+            RSA算法类型
+            </summary>
+        </member>
+        <member name="F:Agebull.Common.Organizations.RsaType.Rsa">
+            <summary>
+            SHA1
+            </summary>
+        </member>
+        <member name="F:Agebull.Common.Organizations.RsaType.Rsa2">
+            <summary>
+            RSA2 密钥长度至少为2048
+            SHA256
+            </summary>
+        </member>
+        <member name="T:Agebull.Common.UserCenter.WebApi.LoginErrorCountRequest">
+            <summary>
+            错误登录次数参数
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.UserCenter.WebApi.LoginErrorCountRequest.MobilePhone">
+            <summary>
+            电话号码
+            </summary>
+            <remarks>
+            电话号码
+            </remarks>
+        </member>
+        <member name="M:Agebull.Common.UserCenter.WebApi.LoginErrorCountRequest.ToFormString">
+            <summary>转为符合HTTP协议的FORM的文本</summary>
+            <returns>符合HTTP协议的FORM的文本</returns>
+        </member>
+        <member name="M:Agebull.Common.UserCenter.WebApi.LoginErrorCountRequest.ToString">
+            <summary>到文本</summary>
+            <returns>文本</returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:Agebull.Common.UserCenter.WebApi.LoginErrorCountRequest.Agebull#MicroZero#ZeroApis#IApiArgument#Validate(System.String@)">
+            <summary>数据校验</summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="M:Agebull.Common.UserCenter.WebApi.LoginErrorCountRequest.ValidateEx(Agebull.EntityModel.Common.ValidateResult)">
+            <summary>
+            扩展校验
+            </summary>
+            <param name="result">结果存放处</param>
+        </member>
+        <member name="M:Agebull.Common.UserCenter.WebApi.LoginErrorCountRequest.Validate">
+            <summary>
+            数据校验
+            </summary>
+            <returns>数据校验对象</returns>
+        </member>
+        <member name="T:Agebull.Common.OAuth.AppSceneType">
+            <summary>
+            场景类型
+            </summary>
+        </member>
+        <member name="F:Agebull.Common.OAuth.AppSceneType.None">
+            <summary>
+            未知
+            </summary>
+        </member>
+        <member name="F:Agebull.Common.OAuth.AppSceneType.Page">
+            <summary>
+            页面
+            </summary>
+        </member>
+        <member name="F:Agebull.Common.OAuth.AppSceneType.Flow">
+            <summary>
+            流程
+            </summary>
+        </member>
+        <member name="F:Agebull.Common.OAuth.AppSceneType.Task">
+            <summary>
+            任务
+            </summary>
+        </member>
+        <member name="T:Agebull.Common.OAuth.BeginSceneArgument">
+            <summary>
+            开始场景请求参数
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.OAuth.BeginSceneArgument.AppName">
+            <summary>
+            应用名称
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.OAuth.BeginSceneArgument.SceneName">
+            <summary>
+            场景名称
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.OAuth.BeginSceneArgument.SceneType">
+            <summary>
+            场景类型
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.OAuth.BeginSceneArgument.Validate(System.String@)">
+            <summary>
+            数据校验
+            </summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="T:Agebull.Common.OAuth.ScreenTokenArgument">
+            <summary>
+            场景校验请求参数
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.OAuth.ScreenTokenArgument.AccessToken">
+            <summary>
+            访问令牌
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.OAuth.ScreenTokenArgument.ScreenToken">
+            <summary>
+            场景令牌
+            </summary>
+        </member>
+        <member name="P:Agebull.Common.OAuth.ScreenTokenArgument.ApiName">
+            <summary>
+            Api名称
+            </summary>
+        </member>
+        <member name="M:Agebull.Common.OAuth.ScreenTokenArgument.Validate(System.String@)">
+            <summary>
+            数据校验
+            </summary>
+            <param name="message">返回的消息</param>
+            <returns>成功则返回真</returns>
+        </member>
+        <member name="T:Agebull.OAuth.Contract.AuthTokenItem">
+            <summary>
+            令牌信息节点
+            </summary>
+        </member>
+        <member name="P:Agebull.OAuth.Contract.AuthTokenItem.UserId">
+            <summary>
+            用户ID
+            </summary>
+        </member>
+        <member name="P:Agebull.OAuth.Contract.AuthTokenItem.DeviceId">
+            <summary>
+            设备标识
+            </summary>
+        </member>
+        <member name="P:Agebull.OAuth.Contract.AuthTokenItem.RefreshToken">
+            <summary>
+            RT
+            </summary>
+        </member>
+        <member name="P:Agebull.OAuth.Contract.AuthTokenItem.AccessToken">
+            <summary>
+            AT
+            </summary>
+        </member>
+        <member name="T:Agebull.OAuth.Business.AuthBusiness">
+            <summary>
+                Auth校验实现
+            </summary>
+        </member>
+        <member name="F:Agebull.OAuth.Business.AuthBusiness.AccessTokenExpiresHour">
+            <summary>
+                以小时为单位的AccessToken过期时间
+            </summary>
+        </member>
+        <member name="F:Agebull.OAuth.Business.AuthBusiness.RefreshTokenExpiresHour">
+            <summary>
+                以小时为单位的RefreshToken过期时间
+            </summary>
+        </member>
+        <member name="M:Agebull.OAuth.Business.AuthBusiness.Agebull#Common#Organizations#IOAuthBusiness#GetDeviceId(Agebull.Common.Organizations.DeviceArgument)">
+            <summary>
+                生成DeviceId
+            </summary>
+            <param name="arg"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.OAuth.Business.AuthBusiness.Agebull#Common#Organizations#IOAuthBusiness#RefreshAccessToken(Agebull.Common.Organizations.RefreshAccessTokenRequest)">
+            <summary>
+                Refresh access token
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.OAuth.Business.AuthBusiness.Agebull#Common#Organizations#IOAuthBusiness#VerifyAccessToken(Agebull.Common.Organizations.TokenArgument)">
+            <summary>
+                检查AT(来自登录用户)
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.OAuth.Business.AuthBusiness.Agebull#Common#Organizations#IOAuthBusiness#CreateAccessToken(System.Int64,System.String,System.String,System.String)">
+            <summary>
+                Create access token
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.OAuth.Business.AuthBusiness.Agebull#Common#Organizations#IOAuthBusiness#GetLoginUser(System.String)">
+            <summary>
+                取得用户信息
+            </summary>
+            <param name="value">令牌或用户ID</param>
+            <returns>用户信息</returns>
+        </member>
+        <member name="M:Agebull.OAuth.Business.AuthBusiness.CreateAccessToken(Agebull.Common.Organizations.UserData,Agebull.Common.Organizations.PersonData,HPC.Projects.EmployeeData,System.String)">
+            <summary>
+                Create access token
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.OAuth.Business.AuthBusiness.CreateAccessToken(Agebull.Common.Organizations.UserData,Agebull.Common.Organizations.PersonData,System.String)">
+            <summary>
+                Create access token
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.OAuth.Business.AuthBusiness.CreateAccessToken(System.Int64,System.String)">
+            <summary>
+                Create access token
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.OAuth.Business.AuthBusiness.VerifyAccessToken(System.String)">
+            <summary>
+                检查AT(来自登录用户)
+            </summary>
+            <param name="token"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.OAuth.Business.AuthBusiness.RefreshAccessToken(Agebull.Common.Organizations.RefreshAccessTokenRequest)">
+            <summary>
+                刷新AT
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.OAuth.Business.AuthBusiness.GetLoginUser(System.String)">
+            <summary>
+                取得用户信息
+            </summary>
+            <param name="value">令牌或用户ID</param>
+            <returns>用户信息</returns>
+        </member>
+        <member name="M:Agebull.OAuth.Business.AuthBusiness.ValidateDeviceId(System.String)">
+            <summary>
+                检查设备标识（来自未登录用户）
+            </summary>
+            <param name="token">令牌</param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.OAuth.Business.AuthBusiness.CreateDeviceId(Agebull.Common.Organizations.DeviceArgument)">
+            <summary>
+                生成DeviceId
+            </summary>
+            <param name="arg"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.OAuth.Business.AuthBusiness.GetDeviceInfo(System.String,System.Boolean)">
+            <summary>
+                取得缓存DeviceId
+            </summary>
+            <param name="deviceId"></param>
+            <param name="reload"></param>
+        </member>
+        <member name="M:Agebull.OAuth.Business.AuthBusiness.Redis_Device_Cache(Agebull.Common.Organizations.UserDeviceData)">
+            <summary>
+                缓存DeviceData
+            </summary>
+            <param name="tokenData"></param>
+        </member>
+        <member name="M:Agebull.OAuth.Business.AuthBusiness.Redis_Device_Get(System.String)">
+            <summary>
+                获取缓存中的DeviceData
+            </summary>
+            <param name="did"></param>
+        </member>
+        <member name="M:Agebull.OAuth.Business.AuthBusiness.Redis_UserToken_Cache(Agebull.Common.Organizations.UserTokenData)">
+            <summary>
+                缓存UserToken
+            </summary>
+            <param name="tokenData"></param>
+        </member>
+        <member name="M:Agebull.OAuth.Business.AuthBusiness.Redis_UserToken_GetByAccessToken(System.String)">
+            <summary>
+                获取缓存中的UserToken
+            </summary>
+            <param name="accessToken"></param>
+        </member>
+        <member name="M:Agebull.OAuth.Business.AuthBusiness.Redis_UserToken_GetByRefreshToken(System.String)">
+            <summary>
+                获取缓存中的UserToken
+            </summary>
+            <param name="refreshToken"></param>
+        </member>
+        <member name="M:Agebull.OAuth.Business.AuthBusiness.Redis_UserToken_ClearByRefreshToken(System.String)">
+            <summary>
+                清除缓存中的UserToken
+            </summary>
+            <param name="refreshToken"></param>
+        </member>
+        <member name="T:Agebull.UserCenter.WebApi.AuthApiControllers">
+            <summary>
+                令牌服务
+            </summary>
+        </member>
+        <member name="M:Agebull.UserCenter.WebApi.AuthApiControllers.VerifyAccessToken(Agebull.Common.Organizations.TokenArgument)">
+            <summary>
+                校验AT并得到用户信息
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.UserCenter.WebApi.AuthApiControllers.ValidateDeviceId(Agebull.Common.Organizations.TokenArgument)">
+            <summary>
+                校验DeviceId
+            </summary>
+            <param name="request">令牌</param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.UserCenter.WebApi.AuthApiControllers.GetLoginUser(Agebull.MicroZero.ZeroApis.Argument)">
+            <summary>
+                获取用户信息
+            </summary>
+            <param name="argument">用户ID 或者用户AccessToken 或者 DeviceId</param>
+            <returns></returns>
+        </member>
+        <member name="T:Agebull.UserCenter.WebApi.HpcApiControllers">
+            <summary>
+            场景API服务
+            </summary>
+        </member>
+        <member name="M:Agebull.UserCenter.WebApi.HpcApiControllers.HpcLogin(Agebull.Common.Organizations.PhoneLoginRequest)">
+            <summary>
+             使用账号密码验证码登录
+            </summary>
+            <param name="arg">基于手机的账号登录参数</param>
+            <returns>登录返回数据</returns>
+        </member>
+        <member name="M:Agebull.UserCenter.WebApi.HpcApiControllers.GetDefaultInfoByToken">
+            <summary>
+                页根据token获得用户默认信息：站点名称、管理员名称、默认菜单
+            </summary>
+            <remarks>
+                测试：http://localhost:13239/WebService/Permit/Login_Manager.ashx?action=getDefaultInfoByToken
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="T:Agebull.UserCenter.WebApi.LoginApiController">
+            <summary>
+            登录
+            </summary>
+        </member>
+        <member name="M:Agebull.UserCenter.WebApi.LoginApiController.AccountLogin(Agebull.Common.Organizations.PhoneLoginRequest)">
+            <summary>
+             使用账号密码验证码登录
+            </summary>
+            <param name="arg">基于手机的账号登录参数</param>
+            <returns>登录返回数据</returns>
+        </member>
+        <member name="M:Agebull.UserCenter.WebApi.LoginApiController.GetDeviceId(Agebull.Common.Organizations.DeviceArgument)">
+            <summary>
+            获取设备标识
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.UserCenter.WebApi.LoginApiController.RefreshAccessToken(Agebull.Common.Organizations.RefreshAccessTokenRequest)">
+            <summary>
+            刷新令牌
+            </summary>
+            <param name="request">请求参数</param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.UserCenter.WebApi.LoginApiController.LoginErrorCount(Agebull.Common.Organizations.MobilePhoneRequest)">
+            <summary>
+                错误登录次数
+            </summary>
+            <param name="arg">手机号请求参数</param>
+            <returns>错误登录次数返回值</returns>
+        </member>
+        <member name="T:Agebull.UserCenter.WebApi.PhoneloginApiController">
+            <summary>
+            Phone
+            </summary>
+        </member>
+        <member name="M:Agebull.UserCenter.WebApi.PhoneloginApiController.MobileCheck(Agebull.MicroZero.ZeroApis.Argument)">
+            <summary>
+            检查手机是否注册
+            </summary>
+            <param name="arg">手机号码</param>
+            <returns>操作结果</returns>
+        </member>
+        <member name="M:Agebull.UserCenter.WebApi.PhoneloginApiController.RegisterByPhone(Agebull.Common.Organizations.RegByPhoneRequest)">
+            <summary>
+            手机短信注册
+            </summary>
+            <param name="arg">基于手机号的注册请求参数</param>
+            <returns>登录返回数据</returns>
+        </member>
+        <member name="M:Agebull.UserCenter.WebApi.PhoneloginApiController.LoginBySms(Agebull.Common.Organizations.LoginbySmsRequest)">
+            <summary>
+            短信登录(会校验短信验证码)。校验短信成功后，若用户不存在 则自动创建用户
+            </summary>
+            <param name="arg">短信登录参数</param>
+            <returns>登录返回数据</returns>
+        </member>
+        <member name="M:Agebull.UserCenter.WebApi.PhoneloginApiController.ClearErrorCount(Agebull.MicroZero.ZeroApis.Argument)">
+            <summary>
+            清除手机号的错误登录次数
+            </summary>
+            <param name="data">手机号</param>
+            <returns>如果为真并返回结果数据</returns>
+        </member>
+        <member name="M:Agebull.UserCenter.WebApi.PhoneloginApiController.PhoneSendSms(Agebull.MicroZero.ZeroApis.Argument)">
+            <summary>
+            发送手机短信验证码
+            </summary>
+            <param name="data">手机号</param>
+            <returns>登录返回数据</returns>
+        </member>
+        <member name="T:Agebull.UserCenter.WebApi.SceneApiControllers">
+            <summary>
+                场景API服务
+            </summary>
+        </member>
+        <member name="M:Agebull.UserCenter.WebApi.SceneApiControllers.GetSiteOrgList">
+            <summary>
+                管理员获取当前站点下可用的组织单元（default页和多店统计页）
+            </summary>
+            <remarks>
+                测试：http://localhost:13239/WebService/Permit/Login_Manager.ashx?action=EmpGetSiteHasOrgList
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.UserCenter.WebApi.SceneApiControllers.SetEmployeeSiteID(Agebull.MicroZero.ZeroApis.Argument)">
+            <summary>
+                设置场景下的站点
+            </summary>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <!-- 对于成员“M:Agebull.UserCenter.WebApi.SceneApiControllers.SetEmployeeOrgID(Agebull.MicroZero.ZeroApis.Argument)”忽略有格式错误的 XML 注释 -->
+        <member name="M:Agebull.UserCenter.WebApi.SceneApiControllers.BeginScene(Agebull.Common.OAuth.BeginSceneArgument)">
+            <summary>
+                开始场景并获得令牌
+            </summary>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.UserCenter.WebApi.SceneApiControllers.CloseScene(Agebull.Common.OAuth.ScreenTokenArgument)">
+            <summary>
+                结束场景并销毁令牌
+            </summary>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.UserCenter.WebApi.SceneApiControllers.VerifySceneToken(Agebull.Common.OAuth.ScreenTokenArgument)">
+            <summary>
+                校验场景并得到用户信息
+            </summary>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Agebull.UserCenter.WebApi.UserInfoController">
+            <summary>
+            用户信息
+            </summary>
+        </member>
+        <member name="M:Agebull.UserCenter.WebApi.UserInfoController.FindPassword(Agebull.Common.Organizations.FindPasswordRequest)">
+            <summary>
+            通过手机验证码 重置密码
+            </summary>
+            <param name="argument">FindPasswordRequest</param>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.UserCenter.WebApi.UserInfoController.UpdateAvatar(Agebull.Common.Organizations.AvatarRequest)">
+            <summary>
+                修改头像
+            </summary>
+            <param name="arg">修改头像参数</param>
+            <returns>操作结果</returns>
+        </member>
+        <member name="M:Agebull.UserCenter.WebApi.UserInfoController.UpdateNickName(Agebull.Common.Organizations.NickNameRequest)">
+            <summary>
+                修改昵称
+            </summary>
+            <param name="arg">修改昵称参数</param>
+            <returns>操作结果</returns>
+        </member>
+        <member name="M:Agebull.UserCenter.WebApi.UserInfoController.UpdatePassword(Agebull.Common.Organizations.UpdatePasswordRequest)">
+            <summary>
+             已登录用户 修改密码
+            </summary>
+            <param name="arg">修改密码参数</param>
+            <returns>操作结果</returns>
+        </member>
+        <member name="T:FenXiang.InternetPro.UnifiedIdentity.UserCard.Model.WebApi.EntityApi.VerificationCodeApiController">
+            <summary>
+            图片验证码 和 短信验证码
+            </summary>
+        </member>
+        <member name="M:FenXiang.InternetPro.UnifiedIdentity.UserCard.Model.WebApi.EntityApi.VerificationCodeApiController.CacheImg(Agebull.Common.Organizations.CacheImgReq)">
+            <summary>
+            缓存图片验证码(5分钟后自动失效)
+            </summary>
+            <param name="data">图片验证码参数</param>
+            <returns>如果为真并返回结果数据</returns>
+        </member>
+        <member name="M:FenXiang.InternetPro.UnifiedIdentity.UserCard.Model.WebApi.EntityApi.VerificationCodeApiController.ValidateImg(Agebull.Common.Organizations.CacheImgReq)">
+            <summary>
+            验证图片验证码
+            </summary>
+            <param name="data">图片验证码参数</param>
+            <returns>如果为真并返回结果数据</returns>
+        </member>
+        <member name="M:FenXiang.InternetPro.UnifiedIdentity.UserCard.Model.WebApi.EntityApi.VerificationCodeApiController.CacheSms(Agebull.Common.Organizations.CacheSmsReq)">
+            <summary>
+            缓存短信验证码(5分钟后自动失效)
+            </summary>
+            <param name="data">数据</param>
+            <returns>如果为真并返回结果数据</returns>
+        </member>
+        <member name="M:FenXiang.InternetPro.UnifiedIdentity.UserCard.Model.WebApi.EntityApi.VerificationCodeApiController.ValidateSms(Agebull.Common.Organizations.CacheSmsReq)">
+            <summary>
+            验证短信验证码
+            </summary>
+            <param name="data">数据</param>
+            <returns>如果为真并返回结果数据</returns>
+        </member>
+    </members>
+</doc>

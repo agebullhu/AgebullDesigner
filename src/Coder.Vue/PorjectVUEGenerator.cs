@@ -1,4 +1,6 @@
-﻿using Agebull.EntityModel.Config;
+﻿using System;
+using System.Diagnostics;
+using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder.VUE
 {
@@ -29,12 +31,20 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
             var file = ConfigPath(Entity, "File_VUE_HTML", path, folder, "index.htm");
 
-            var coder = new VueFormCoder
+            var coder = new VueCoder
             {
                 Entity = Entity,
                 Project = Project
             };
-            WriteFile(file, coder.HtmlCode());
+            try
+            {
+                var code =coder.HtmlCode();
+                WriteFile(file, code);
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e);
+            }
         }
 
         /// <summary>
@@ -53,7 +63,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
             var file = ConfigPath(Entity, "File_VUE_JS", path, folder, "script.js");
 
-            var coder = new VueFormCoder
+            var coder = new VueCoder
             {
                 Entity = Entity,
                 Project = Project

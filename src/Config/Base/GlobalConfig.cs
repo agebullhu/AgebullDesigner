@@ -22,7 +22,10 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static EntityConfig GetEntity(string name)
         {
-            return name == null ? null : GetEntity(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
+            return name == null 
+                ? null 
+                : GetEntity(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase))
+                ?? GetEntity(p => string.Equals(p.ReadTableName, name, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -333,16 +336,10 @@ namespace Agebull.EntityModel.Config
             var words = new List<string>();
             if (string.IsNullOrWhiteSpace(str))
                 return words;
-            //str = str.Replace("ID", "Id").Replace("URL", "Url");
             var baseWords = str.Split(NoneLanguageChar, StringSplitOptions.RemoveEmptyEntries);
             var sb = new StringBuilder();
             foreach (var word in baseWords)
             {
-                if (word.All(c => c > 255))
-                {
-                    words.Add(word);
-                    continue;
-                }
                 if (word.All(c => c >= 'A' && c <= 'Z' || c >= '0' && c <= '9'))
                 {
                     words.Add(word);
@@ -353,50 +350,59 @@ namespace Agebull.EntityModel.Config
                     words.Add(word);
                     continue;
                 }
+                if (word.All(c => !(c >= 'A' && c <= 'Z') && !(c >= 'a' && c <= 'z') && !(c >= '0' && c <= '9')))
+                {
+                    words.Add(word);
+                    continue;
+                }
+                int preType = 0;
                 foreach (var c in word)
                 {
-                    if (c >= 'a' && c <= 'z' || c >= '0' && c <= '9')
+                    int nowType;
+                    if (c >= 'a' && c <= 'z')
                     {
-                        sb.Append(c);
-                        continue;
+                        nowType = 1;
                     }
-                    if (c >= 'A' && c <= 'Z' || c > 255)
+                    else if (c >= 'A' && c <= 'Z')
                     {
-                        if (sb.Length > 0)
+                        nowType = 2;
+                    }
+                    else if (c >= '0' && c <= '9')
+                    {
+                        nowType = 3;
+                    }
+                    else
+                    {
+                        nowType = 4;
+                    }
+                    
+                    if(nowType != preType && preType > 0)
+                    {
+                        if (preType == 2 && nowType == 1)
+                        {
+                            if (sb.Length > 1)
+                            {
+                                var preChar = sb[sb.Length-1];
+                                sb.Remove(sb.Length - 1, 1);
+                                words.Add(sb.ToString());
+                                sb.Clear();
+                                sb.Append(preChar);
+                            }
+                        }
+                        else if (sb.Length > 0)
                         {
                             words.Add(sb.ToString());
                             sb.Clear();
                         }
-                        sb.Append(c);
-                        continue;
                     }
-                    if (sb.Length > 0)
-                    {
-                        words.Add(sb.ToString());
-                        sb.Clear();
-                    }
+                    sb.Append(c);
+                    preType = nowType;
                 }
-                if (sb.Length > 0)
-                {
-                    words.Add(sb.ToString());
-                    sb.Clear();
-                }
+
+                if (sb.Length <= 0)
+                    continue;
+                words.Add(sb.ToString());
             }
-            //var result = new List<string>();
-            //string pre = null;
-            //foreach (var word in words)
-            //{
-            //    if (pre != null)
-            //        if (pre == "I" && word == "D")
-            //        {
-            //            if (result.Count > 0)
-            //                result.RemoveAt(result.Count - 1);
-            //            result.Add("ID");
-            //            continue;
-            //        }
-            //    result.Add(word);
-            //    pre = word;
-            //}
             return words;
         }
 

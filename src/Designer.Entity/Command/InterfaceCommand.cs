@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.RobotCoder;
@@ -22,64 +23,80 @@ namespace Agebull.EntityModel.Designer
         {
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
+                Catalog = "修复",
+                Action = ClearOldInterface,
+                Caption = "清理无效接口绑定",
+                IconName = "tree_sum"
+            });
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
                 Action = InterfaceHelper.CheckInterface,
                 Caption = "刷新接口引用",
                 SignleSoruce = false,
                 Catalog = "接口",
                 IconName = "img_link"
-            });/*
+            });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Action = (ToIDataState),
+                Action = CheckISiteData,
+                Caption = "发现并绑定ISiteData接口",
+                SignleSoruce = false,
+                Catalog = "接口",
+                IconName = "img_link"
+            });
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                Action = CheckISiteOrgData,
+                Caption = "发现并绑定ISiteOrgData接口",
+                SignleSoruce = false,
+                Catalog = "接口",
+                IconName = "img_link"
+            });
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                Action = ToIDataState,
                 Caption = "实现状态数据(IStateData)接口",
-
                 SignleSoruce = false,
                 Catalog = "接口",
                 IconName = "img_link"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Action = (ToIHistory),
+                Action = ToIHistory,
                 Caption = "实现历史数据(IHistoryData)接口",
-
                 SignleSoruce = false,
                 Catalog = "接口",
                 IconName = "img_link"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Action = (ToIAudit),
+                Action = ToIAudit,
                 Caption = "实现审核(IAudit)接口",
-
                 SignleSoruce = false,
                 Catalog = "接口",
                 IconName = "img_link"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Action = (ToMemo),
+                Action = ToMemo,
                 Caption = "添加备注(Memo)字段",
-
                 SignleSoruce = false,
                 Catalog = "接口",
                 IconName = "img_link"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Action = (ToSelfRelation),
-                Caption = "添加上级关联(ParentId)字段",
+                Action = ToSelfRelation,
+                Caption = "实现内联树形接口(IInnerTree)",
                 Catalog = "接口",
-
                 SignleSoruce = false,
                 IconName = "img_link"
             });
         }
-        //public void ToSelfRelation(EntityConfig entity)
-        //{
-        //    ToInterface(entity, "ISelfRelation");
-        //    var cmd = new EntityInterfaceSeter();
-        //    cmd.ToSelfRelation(entity);
-        //}
+        public void ToSelfRelation(EntityConfig entity)
+        {
+            ToInterface(entity, "IInnerTree");
+        }
 
         public void ToMemo(EntityConfig entity)
         {
@@ -98,9 +115,35 @@ namespace Agebull.EntityModel.Designer
         public void ToIAudit(EntityConfig entity)
         {
             ToInterface(entity, "IAudit");
-        */
         }
+        public void CheckISiteData(EntityConfig entity)
+        {
+            var site = entity.Properties.FirstOrDefault(p => p.Name.Equals("SiteSID"));
+            if (site == null || !site.IsLinkKey)
+                return;
+            ToInterface(entity, "ISiteData");
+        }
+        public void CheckISiteOrgData(EntityConfig entity)
+        {
+            var site = entity.Properties.FirstOrDefault(p => p.Name.Equals("SiteSID"));
+            if (site == null || !site.IsLinkKey)
+                return;
+            var org = entity.Properties.FirstOrDefault(p => p.Name.Equals("OrgOID"));
+            if (org == null || !site.IsLinkKey)
+                return;
+            ToInterface(entity, "ISiteOrgData");
+        }
+        
 
+        public void ClearOldInterface(EntityConfig entity)
+        {
+            foreach (var field in entity.Properties.ToArray())
+            {
+                if (field.Option.ReferenceConfig is PropertyConfig refer && refer.Parent.Parent != null &&
+                    refer.Parent.IsInterface && !entity.Interfaces.Contains(refer.Parent.Name))
+                    entity.Remove(field);
+            }
+        }
         public void ToInterface(EntityConfig entity, string it)
         {
             if (string.IsNullOrWhiteSpace(entity.Interfaces))

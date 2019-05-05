@@ -111,15 +111,15 @@
                                   SelectedValue="{Binding MulitLine,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel>
-                        <Label Content="列宽" />
+                        <Label Content="宽度倍数" />
                         <TextBox Text="{Binding FormCloumnSapn,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel>
-                        <Label Content="ComboUrl" />
+                        <Label Content="EasyUI ComboUrl" />
                         <TextBox Style="{StaticResource MidTextBox}" Text="{Binding ComboBoxUrl,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel>
-                        <Label Content="Options" />
+                        <Label Content="EasyUI Options" />
                         <TextBox Style="{StaticResource MaxTextBox}" Text="{Binding FormOption,Mode=TwoWay}" />
                     </StackPanel>
                 </WrapPanel>
@@ -176,24 +176,22 @@
                     Binding="{Binding NoneGrid,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BoolReversalConverter}}"
                     Header="列表" />
                 <DataGridCheckBoxColumn
+                    Binding="{Binding GridDetails,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="列表详细" />
+                <DataGridCheckBoxColumn
                     Binding="{Binding ExtendConfigListBool[easyui_simple],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                     Header="轻量数据" />
                 <DataGridCheckBoxColumn
-                    Binding="{Binding NoSort,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BoolReversalConverter}}"
+                    Binding="{Binding UserOrder,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                     Header="排序" />
+                <DataGridCheckBoxColumn
+                    Binding="{Binding NoneDetails,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BoolReversalConverter}}"
+                    Header="编辑" />
                 <DataGridCheckBoxColumn
                     Binding="{Binding ExtendConfigListBool[easyui_CanImport],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                     Header="导入" />
                 <DataGridCheckBoxColumn
                     Binding="{Binding ExtendConfigListBool[easyui_CanExport],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                     Header="导出" />
-                <DataGridTextColumn Binding="{Binding GridWidth,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                    Header="宽度" />
-                <DataGridCheckBoxColumn
-                    Binding="{Binding GridDetails,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="列表详细" />
-                <DataGridCheckBoxColumn
-                    Binding="{Binding NoneDetails,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BoolReversalConverter}}"
-                    Header="详细" />
                 <DataGridCheckBoxColumn
                     Binding="{Binding IsImage,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                     Header="图片" />
@@ -202,10 +200,6 @@
                     Header="货币" />
                 <DataGridCheckBoxColumn
                     Binding="{Binding MulitLine,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="多行" />
-                <DataGridTextColumn Binding="{Binding InputType,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                    Header="控件类型" />
-                <DataGridTextColumn
-                    Binding="{Binding FormCloumnSapn,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="宽度" />
             </DataGrid.Columns>
             <i:Interaction.Behaviors>
                 <behaviors:DataGridGenertColumnsBehavior />

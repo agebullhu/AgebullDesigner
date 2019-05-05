@@ -36,10 +36,12 @@ namespace Agebull.EntityModel.Config
             if (_enums != null)
                 foreach (var item in _enums)
                     action(item);
-            if (_apiItems != null)
-                foreach (var item in _apiItems)
-                    action(item);
+            if (_apiItems == null)
+                return;
+            foreach (var item in _apiItems)
+                action(item);
         }
+
         /// <summary>
         /// 实体分组
         /// </summary>
@@ -541,6 +543,7 @@ namespace Agebull.EntityModel.Config
         }
 
         #endregion
+
         #region 数据库
 
         /// <summary>
@@ -677,8 +680,57 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(DbUser));
             }
         }
+        /// <summary>
+        /// 不使用数据关系
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据库"), DisplayName(@"不使用数据关系"), Description("不使用数据关系")]
+        public bool NoRelation
+        {
+            get => _noRelation;
+            set
+            {
+                if (_noRelation == value)
+                    return;
+                BeforePropertyChanged(nameof(NoRelation), _noRelation, value);
+                _noRelation = value;
+                OnPropertyChanged(nameof(NoRelation));
+            }
+        }
         #endregion
+
         #region 数据模型
+
+        /// <summary>
+        /// 应用标识
+        /// </summary>
+        [DataMember, JsonProperty("_appId", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _appId;
+
+        /// <summary>
+        /// 应用标识
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"解决方案"), DisplayName(@"应用标识"), Description("应用标识")]
+        public string AppId
+        {
+            get => _appId;
+            set
+            {
+                if (_appId == value)
+                    return;
+                BeforePropertyChanged(nameof(AppId), _appId, value);
+                _appId = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                OnPropertyChanged(nameof(AppId));
+            }
+        }
+
+        /// <summary>
+        /// 不使用数据关系
+        /// </summary>
+        [DataMember, JsonProperty("noRelation", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _noRelation;
+
 
         /// <summary>
         /// 项目类型

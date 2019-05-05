@@ -90,7 +90,7 @@ namespace Agebull.EntityModel.Designer
                     Image = Application.Current.Resources["tree_Assembly"] as ImageSource
                 },
             new AsyncCommandItem<string, string>
-                (FormatPrepare, Format.DoFormatDocument, FormatEnd)
+                (FormatPrepare, Format.DoFormatDocument2, FormatEnd)
                 {
                     IsButton=true,
 

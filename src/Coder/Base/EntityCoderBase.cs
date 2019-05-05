@@ -64,67 +64,108 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
 
-        protected static string PropertyHeader(PropertyConfig property, string jsonName = null, bool? json = null)
+        protected static string PropertyHeader(PropertyConfig property, bool? json = null)
         {
-            var attribute = new StringBuilder();
-            attribute.Append(RemCode(property));
-            attribute.Append(DataRuleCode(property));
-            attribute.Append(@"
+            var code = new StringBuilder();
+            code.Append(RemCode(property));
+            code.Append(DataRuleCode(property));
+            code.Append(@"
         [DataMember");
             if (json == null)
                 json = !property.NoneJson;
             if (json.Value)
             {
-                attribute.Append($@" , JsonProperty(""{jsonName ?? property.JsonName}"", NullValueHandling = NullValueHandling.Ignore)");
+                code.Append($@" , JsonProperty(""{property.JsonName}"", NullValueHandling = NullValueHandling.Ignore)");
                 if (property.CsType == "DateTime")
-                    attribute.Append(" , JsonConverter(typeof(MyDateTimeConverter))");
+                    code.Append(" , JsonConverter(typeof(MyDateTimeConverter))");
             }
             else
             {
-                attribute.Append(" , JsonIgnore");
+                code.Append(" , JsonIgnore");
             }
             if (property.IsBlob || property.InnerField)
-                attribute.Append(" , Browsable(false)");
+                code.Append(" , Browsable(false)");
             if (property.ReadOnly)
-                attribute.Append(" , ReadOnly(true)");
+                code.Append(" , ReadOnly(true)");
             if (property.Caption != null)
-                attribute.AppendFormat(@" , DisplayName(@""{0}"")", property.Caption);
-            attribute.Append("]");
-            return attribute.ToString();
+                code.AppendFormat(@" , DisplayName(@""{0}"")", property.Caption);
+            code.Append("]");
+            return code.ToString();
         }
 
-        public static string RemCode(PropertyConfig property)
+        public static string RemCode(PropertyConfig property,bool simple=false, int space = 8)
         {
-            StringBuilder code = new StringBuilder();
-            code.Append($@"
-        /// <summary>
-        /// {ToRemString(property.Caption)}
-        /// </summary>");
-            if (!string.IsNullOrEmpty(property.Description) &&
-                !string.Equals(property.Description, property.Caption, StringComparison.OrdinalIgnoreCase))
+            var code = new StringBuilder();
+            code.AppendLine();
+            code.Append(' ', space);
+            code.Append("/// <summary>");
+            code.AppendLine();
+            code.Append(' ', space);
+            code.Append($@"///  {ToRemString(property.Caption, space)}");
+            code.AppendLine();
+            if (!simple && !property.Parent.NoDataBase)
             {
-                code.Append($@"
-        /// <remarks>
-        /// {ToRemString(property.Description)}
-        /// </remarks>");
+                if (property.IsLinkKey)
+                {
+                    code.Append(' ', space);
+                    code.AppendLine($@"///  --外键 : [{property.LinkTable}-{property.LinkField}]");
+                }
+                else if (property.IsLinkField)
+                {
+                    code.Append(' ', space);
+                    code.AppendLine($@"///  --{(!property.NoStorage && property.IsCompute ? "链接" : "冗余")}字段 : [{property.LinkTable}-{property.LinkField}]");
+                }
+                else if(property.NoStorage)
+                {
+                    code.Append(' ', space);
+                    code.AppendLine(@"///  -- 此字段不存储在数据库中");
+                }
+            }
+            code.Append(' ', space);
+            code.Append("/// </summary>");
+            if (simple)
+                return code.ToString();
+            if (!string.IsNullOrWhiteSpace(property.Description) 
+                && property.Description != property.Name
+                && property.Description != property.Caption)
+            {
+                code.AppendLine();
+                code.Append(' ', space);
+                code.Append("/// <remarks>");
+                code.AppendLine();
+                code.Append(' ', space);
+                code.Append($"///     {ToRemString(property.Description, space)}");
+                code.AppendLine();
+                code.Append(' ', space);
+                code.Append("/// </remarks>");
             }
 
-            if (!string.IsNullOrEmpty(property.HelloCode))
+            var helloCode = HelloCode(property, false);
+            if (!string.IsNullOrEmpty(helloCode))
             {
-                code.Append($@"
-        /// <example>
-        /// {ToRemString(property.HelloCode)}
-        /// </example>");
+                code.AppendLine();
+                code.Append(' ', space);
+                code.Append("/// <example>");
+                code.AppendLine();
+                code.Append(' ', space);
+                code.Append($"///     {ToRemString(helloCode, space)}");
+                code.AppendLine();
+                code.Append(' ', space);
+                code.Append("/// </example>");
             }
 
             if (!string.IsNullOrEmpty(property.DataRuleDesc))
             {
-                code.Append($@"
-        /// <value>
-        /// {ToRemString(property.DataRuleDesc)}
-        /// </value>");
+                code.AppendLine();
+                code.Append(' ', space);
+                code.Append("/// <value>");
+                code.AppendLine();
+                code.Append(' ', space);
+                code.Append($"///     {ToRemString(property.DataRuleDesc, space)}");
+                code.AppendLine();
+                code.Append(' ', space);
+                code.Append("/// </value>");
             }
-
             return code.ToString();
         }
 
@@ -135,7 +176,7 @@ namespace Agebull.EntityModel.RobotCoder
             code.Append(@"
         [DataRule(");
             bool has = false;
-            if (property.CanEmpty || !property.IsRequired)
+            if (!property.IsRequired)
             {
                 code.Append("CanNull = true");
                 has = true;
@@ -185,56 +226,69 @@ namespace Agebull.EntityModel.RobotCoder
         public static string HelloCode(EntityConfig entity)
         {
             StringBuilder code = new StringBuilder();
+            bool first = true;
             code.Append($@"new {entity.Name}
             {{");
-            foreach (var property in entity.LastProperties.Where(p => p.CanUserInput))
+            foreach (var property in entity.ClientProperty)
             {
-                var value = property.HelloCode;
-                if (property.CsType == "string")
+                var value = HelloCode(property);
+                switch (property.CsType)
                 {
-                    value = value == null ? "null" : $"\"{value}\"";
+                    case "string":
+                        value = value == null ? "null" : $"\"{value}\"";
+                        break;
+                    case "DateTime":
+                        value = $"DateTime.Parse(\"{value}\")";
+                        break;
                 }
-                else if (property.CsType == "DateTime")
-                {
-                    value = value == null ? "new DateTime(2019,1,1)" : $"DateTime.Parse(\"{value}\")";
-                }
-                else if (property.CustomType != null)
-                {
-                    value = value == null ? $"default({property.CustomType})" : $"{property.CustomType}.{value}";
-                }
+
+                if (first)
+                    first = false;
                 else
-                {
-                    value = value ?? $"default({property.CsType})";
-                }
+                    code.Append(',');
                 code.Append($@"
-                {property.Name} = {value},");
+                {property.Name} = {value}");
             }
             code.Append(@"
             }");
             return code.ToString();
         }
 
+        static string HelloCode(PropertyConfig property, bool cs = true)
+        {
+            if (!string.IsNullOrWhiteSpace(property.HelloCode))
+                return property.HelloCode;
+            if (property.EnumConfig != null)
+            {
+                return cs
+                    ? property.EnumConfig.Items.FirstOrDefault()?.Name ?? "None"
+                    : property.EnumConfig.Items.FirstOrDefault()?.Value ?? "0";
+            }
+            switch (property.DataType)
+            {
+                case "String":
+                    return null;
+                case "Boolean":
+                    return "true";
+                case "DateTime":
+                    return property.IsTime ? "2012-12-21 23:59:59" : "2012-12-21";
+                default:
+                    return "0";
+            }
+        }
         public static string HelloCode(EntityConfig entity, string name)
         {
             StringBuilder code = new StringBuilder();
             foreach (var property in entity.ClientProperty)
             {
-                var value = property.HelloCode;
+                var value = HelloCode(property);
                 if (property.CsType == "string")
                 {
                     value = value == null ? "null" : $"\"{value}\"";
                 }
                 else if (property.CsType == "DateTime")
                 {
-                    value = value == null ? DateTime.Today.ToString(CultureInfo.InvariantCulture) : $"DateTime.Parse(\"{value}\")";
-                }
-                else if (property.CustomType != null)
-                {
-                    value = value == null ? $"default({property.CustomType})" : $"{property.CustomType}.{value}";
-                }
-                else
-                {
-                    value = value ?? $"default({property.CsType})";
+                    value = $"DateTime.Parse(\"{value}\")";
                 }
                 code.Append($@"
             {name}.{property.Name} = {value};");
@@ -270,7 +324,7 @@ namespace Agebull.EntityModel.RobotCoder
             if (property.DataType == "ByteArray")
             {
                 code.Append($@"
-        {PropertyHeader(property, null, true)}
+        {PropertyHeader(property, true)}
         {property.AccessType} string {property.Name}_Base64
         {{
             get

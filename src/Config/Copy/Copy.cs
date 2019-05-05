@@ -334,7 +334,7 @@ namespace Agebull.EntityModel.Config
         /// <param name="full">全量</param>
         /// <param name="option">系统配置</param>
         /// <param name="primary">主键相关</param>
-        public void CopyFromProperty(PropertyConfig cfg, bool primary, bool full,bool option)
+        public void CopyFromProperty(PropertyConfig cfg, bool primary, bool full, bool option)
         {
             Name = cfg.Name;
             Caption = cfg.Caption;
@@ -378,7 +378,6 @@ namespace Agebull.EntityModel.Config
             ArrayLen = cfg.ArrayLen;//数组长度
             Scale = cfg.Scale;//存储精度
             DbIndex = cfg.DbIndex;//存储列ID
-            Unicode = cfg.Unicode;//UNICODE
             FixedLength = cfg.FixedLength;//固定长度
             IsMemo = cfg.IsMemo;//备注字段
             IsBlob = cfg.IsBlob;//大数据
@@ -449,11 +448,10 @@ namespace Agebull.EntityModel.Config
                 NoneGrid = cfg.NoneGrid;//列表不显示
                 NoneDetails = cfg.NoneDetails;//详细不显示
                 GridDetailsCode = cfg.GridDetailsCode;//列表详细页代码
-                
+
             }
             if (primary)
             {
-
                 IsCaption = cfg.IsCaption;//标题字段
                 IsPrimaryKey = cfg.IsPrimaryKey;//主键字段
                 IsExtendKey = cfg.IsExtendKey;//唯一值字段
@@ -475,7 +473,7 @@ namespace Agebull.EntityModel.Config
             var cfg = dest as PropertyConfig;
             if (cfg == null)
                 return;
-            CopyFromProperty(cfg,true,true,true);
+            CopyFromProperty(cfg,true,true, true);
         }
 
     }

@@ -16,10 +16,9 @@ namespace Agebull.EntityModel.Config
         /// <param name="propertyConfig"></param>
         public void Add(PropertyConfig propertyConfig)
         {
-            propertyConfig.Parent = this;
-            if (Properties.Contains(propertyConfig))
+            if (Properties.Any(p=>p.Name== propertyConfig.Name) ||!Properties.TryAdd(propertyConfig))
                 return;
-            Properties.TryAdd(propertyConfig);
+            propertyConfig.Parent = this;
             if (WorkContext.InLoding || WorkContext.InSaving || WorkContext.InRepair)
                 return;
             propertyConfig.Identity = ++MaxIdentity;
@@ -95,6 +94,22 @@ namespace Agebull.EntityModel.Config
         /// 最终有效的属性
         /// </summary>
         public List<PropertyConfig> LastProperties { get; set; }
+
+        /// <summary>
+        /// 开始代码生成
+        /// </summary>
+        public void CreateLast()
+        {
+            LastProperties = new List<PropertyConfig>();
+            int idx = 0;
+            foreach (var pro in Properties.OrderBy(p => p.Index))
+            {
+                if (pro.IsDelete || pro.IsDiscard)
+                    continue;
+                pro.Option.Index = ++idx;
+                LastProperties.Add(pro);
+            }
+        }
 
         /// <summary>
         /// 公开的属性

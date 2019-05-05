@@ -9,6 +9,9 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
     {
         public string InputConvert(EntityConfig entity)
         {
+            if (entity.IsUiReadOnly)
+                return null;
+
             var code = new StringBuilder();
             foreach (var group in entity.ClientProperty.Where(p => p.ExtendConfigListBool["easyui", "userFormHide"] || p.CanUserInput).GroupBy(p => p.Group))
             {

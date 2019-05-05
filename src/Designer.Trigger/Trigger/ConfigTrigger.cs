@@ -7,7 +7,7 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// TargetConfig触发器
     /// </summary>
-    public class ConfigTrigger : ConfigTriggerBase<ConfigBase>
+    public sealed class ConfigTrigger : ConfigTriggerBase<ConfigBase>
     {
         /// <summary>
         /// 载入事件处理
@@ -25,7 +25,9 @@ namespace Agebull.EntityModel.Designer
         /// <param name="newValue">新值</param>
         protected override void BeforePropertyChangedInner(string property, object oldValue, object newValue)
         {
-            //Trace.WriteLine($"【{TargetConfig.Caption ?? TargetConfig.Name}.{property}】 从〖{oldValue ?? "<nui>"}〗改为〖{newValue ?? "<nui>"}〗");
+            Trace.WriteLineIf(SolutionConfig.Current.DetailTrace,
+                $"[{oldValue}] => [{newValue}]",
+                $"属性修改({Target.GetType().Name }) : {TargetConfig.Name}.{property}");
             switch (property)
             {
                 case nameof(TargetConfig.Name):

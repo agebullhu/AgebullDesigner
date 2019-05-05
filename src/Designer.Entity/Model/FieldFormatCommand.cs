@@ -148,6 +148,39 @@ namespace Agebull.EntityModel.Designer
             return code.ToString();
         }
 
+        public string DoFormatDocument2(string arg)
+        {
+            var lines = Fields.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            var code = new StringBuilder();
+            foreach (var line in lines)
+            {
+
+                if (string.IsNullOrEmpty(line))
+                    continue;
+                var words = line.Trim().Split(new[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                if (words.Length < 3)
+                {
+                    //code.Append(line);
+                    continue;
+                }
+                //var list = words.Select(p => p.Trim().Replace(',', '，')).Where(p => !string.IsNullOrEmpty(p)).ToList();
+                //if (list.Count > 1)
+                //{
+                //    words = list[1].Split('(', ')');
+                //    list[1] = words.LinkToString("-");
+                //}
+                //if (list.Count > 3)
+                //{
+                //    if (list[2][0] == '必' || list[2][0] == '是')
+                //        list[1] += '!';
+                //    list.RemoveAt(2);
+                //}
+                code.AppendLine($"{words[2]},{words[3]},{words[0]}");
+            }
+
+            return code.ToString();
+        }
         #endregion
 
         #region 规整文本(名称 类型 标题)

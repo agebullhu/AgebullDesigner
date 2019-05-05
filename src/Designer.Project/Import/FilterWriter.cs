@@ -120,7 +120,6 @@ namespace Agebull.EntityModel.Designer
                     column.Min = GetAttribute(xProperty, "MinLength");
                     column.Nullable = GetAttribute(xProperty, "Nullable", true);
                     column.FixedLength = GetAttribute(xProperty, "FixedLength", false);
-                    column.Unicode = GetAttribute(xProperty, "Unicode", false);
                 }
 
                 foreach (XElement xProperty in xMap.Elements(ns + "Key"))

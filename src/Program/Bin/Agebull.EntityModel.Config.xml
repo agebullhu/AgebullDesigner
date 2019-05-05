@@ -43,26 +43,6 @@
                 当前实例
             </summary>
         </member>
-        <member name="P:Agebull.EntityModel.Config.ConfigBase.Name">
-            <summary>
-                名称
-            </summary>
-        </member>
-        <member name="P:Agebull.EntityModel.Config.ConfigBase.Caption">
-            <summary>
-                标题
-            </summary>
-        </member>
-        <member name="P:Agebull.EntityModel.Config.ConfigBase.Description">
-            <summary>
-                说明
-            </summary>
-        </member>
-        <member name="P:Agebull.EntityModel.Config.ConfigBase.Remark">
-            <summary>
-            参见
-            </summary>
-        </member>
         <member name="P:Agebull.EntityModel.Config.ConfigBase.Item(System.String,System.String)">
             <summary>
             读写扩展配置
@@ -328,6 +308,11 @@
                 基本数据类型列表
             </summary>
         </member>
+        <member name="F:Agebull.EntityModel.Config.DataTypeMapConfig.NoDbCheck">
+            <summary>
+            不参与数据库类型还原
+            </summary>
+        </member>
         <member name="F:Agebull.EntityModel.Config.DataTypeMapConfig._datalen">
             <summary>
             数据长度
@@ -541,6 +526,11 @@
         <member name="P:Agebull.EntityModel.Config.EntityConfig.LastProperties">
             <summary>
             最终有效的属性
+            </summary>
+        </member>
+        <member name="M:Agebull.EntityModel.Config.EntityConfig.CreateLast">
+            <summary>
+            开始代码生成
             </summary>
         </member>
         <member name="P:Agebull.EntityModel.Config.EntityConfig.PublishProperty">
@@ -1535,6 +1525,26 @@
             数据库名称
             </remark>
         </member>
+        <member name="P:Agebull.EntityModel.Config.ProjectConfig.NoRelation">
+            <summary>
+            不使用数据关系
+            </summary>
+        </member>
+        <member name="F:Agebull.EntityModel.Config.ProjectConfig._appId">
+            <summary>
+            应用标识
+            </summary>
+        </member>
+        <member name="P:Agebull.EntityModel.Config.ProjectConfig.AppId">
+            <summary>
+            应用标识
+            </summary>
+        </member>
+        <member name="F:Agebull.EntityModel.Config.ProjectConfig._noRelation">
+            <summary>
+            不使用数据关系
+            </summary>
+        </member>
         <member name="F:Agebull.EntityModel.Config.ProjectConfig._projectType">
             <summary>
             项目类型
@@ -1668,6 +1678,41 @@
                 取别名属性
             </summary>
             <returns></returns>
+        </member>
+        <member name="P:Agebull.EntityModel.Config.PropertyConfig.IsInterface">
+            <summary>
+            是否接口引用对象
+            </summary>
+        </member>
+        <member name="P:Agebull.EntityModel.Config.PropertyConfig.IsLink">
+            <summary>
+            是否关联对象
+            </summary>
+        </member>
+        <member name="P:Agebull.EntityModel.Config.PropertyConfig.InCoding">
+            <summary>
+            是否正在生成代码
+            </summary>
+        </member>
+        <member name="P:Agebull.EntityModel.Config.PropertyConfig.InterfaceOrThis">
+            <summary>
+            链接的原始对象(字段与之有逻辑上的关联关系)
+            </summary>
+        </member>
+        <member name="P:Agebull.EntityModel.Config.PropertyConfig.InterfaceProperty">
+            <summary>
+            链接的原始对象(字段与之有逻辑上的关联关系)
+            </summary>
+        </member>
+        <member name="P:Agebull.EntityModel.Config.PropertyConfig.ReferenceOrThis">
+            <summary>
+            引用对象(无论接口还是引用)
+            </summary>
+        </member>
+        <member name="P:Agebull.EntityModel.Config.PropertyConfig.ReferenceProperty">
+            <summary>
+            引用对象(无论接口还是引用)
+            </summary>
         </member>
         <member name="M:Agebull.EntityModel.Config.PropertyConfig.#ctor">
             <summary>
@@ -2432,19 +2477,6 @@
             存储列ID,即在数据库内部对应的列ID
             </remark>
         </member>
-        <member name="F:Agebull.EntityModel.Config.PropertyConfig._unicode">
-            <summary>
-            UNICODE
-            </summary>
-        </member>
-        <member name="P:Agebull.EntityModel.Config.PropertyConfig.Unicode">
-            <summary>
-            UNICODE
-            </summary>
-            <remark>
-            是否UNICODE字符串
-            </remark>
-        </member>
         <member name="F:Agebull.EntityModel.Config.PropertyConfig._fixedLength">
             <summary>
             固定长度
@@ -2701,6 +2733,16 @@
             <remark>
             Form中的EasyUi设置
             </remark>
+        </member>
+        <member name="F:Agebull.EntityModel.Config.PropertyConfig._userOrder">
+            <summary>
+            用户排序
+            </summary>
+        </member>
+        <member name="P:Agebull.EntityModel.Config.PropertyConfig.UserOrder">
+            <summary>
+            用户排序
+            </summary>
         </member>
         <member name="F:Agebull.EntityModel.Config.PropertyConfig._comboBoxUrl">
             <summary>
@@ -3067,6 +3109,19 @@
             删除
             </summary>
             <param name="api"></param>
+        </member>
+        <member name="F:Agebull.EntityModel.Config.SolutionConfig._detailTrace">
+            <summary>
+            详细输出
+            </summary>
+        </member>
+        <member name="P:Agebull.EntityModel.Config.SolutionConfig.DetailTrace">
+            <summary>
+            详细输出
+            </summary>
+            <remark>
+            输出最详细的跟踪消息
+            </remark>
         </member>
         <member name="F:Agebull.EntityModel.Config.SolutionConfig._godMode">
             <summary>
@@ -3488,22 +3543,6 @@
             引用对象键
             </remark>
         </member>
-        <member name="P:Agebull.EntityModel.Config.ConfigDesignOption.Reference">
-            <summary>
-            引用对象
-            </summary>
-            <remark>
-            引用对象
-            </remark>
-        </member>
-        <member name="P:Agebull.EntityModel.Config.ConfigDesignOption.Link">
-            <summary>
-            引用对象
-            </summary>
-            <remark>
-            引用对象
-            </remark>
-        </member>
         <member name="F:Agebull.EntityModel.Config.ConfigDesignOption._referenceConfig">
             <summary>
             引用对象
@@ -3514,8 +3553,18 @@
             引用对象
             </summary>
             <remark>
-            引用对象
+            指内部对象的引用
             </remark>
+        </member>
+        <member name="P:Agebull.EntityModel.Config.ConfigDesignOption.Reference">
+            <summary>
+            引用对象(接口)
+            </summary>
+        </member>
+        <member name="P:Agebull.EntityModel.Config.ConfigDesignOption.Link">
+            <summary>
+            链接对象(外连接)
+            </summary>
         </member>
         <member name="F:Agebull.EntityModel.Config.ConfigDesignOption._referenceTag">
             <summary>

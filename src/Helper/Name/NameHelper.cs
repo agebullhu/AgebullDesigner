@@ -236,6 +236,7 @@ namespace Agebull.EntityModel.RobotCoder
             sb.Append("/// </remarks>");
             return sb.ToString();
         }
+
         /// <summary>
         /// 转换为注释文本
         /// </summary>

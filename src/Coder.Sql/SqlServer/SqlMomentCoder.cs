@@ -55,31 +55,21 @@ TRUNCATE TABLE [{entity.SaveTable}];
             return $@"
 /*******************************{entity.Caption}*******************************/
 DROP VIEW [{entity.ReadTableName}];
-";
+GO";
         }
         public static string CreateView(EntityConfig entity)
         {
-            if (entity.NoDataBase || entity.DbFields.All(p => IsNullOrEmpty(p.LinkTable)))
-                return "--这个设置为普通类(IsClass=true)或没有关联表，无法生成SQL";//这个设置为普通类，无法生成SQL
-            var tables = new Dictionary<string, EntityConfig>();
-            foreach (var field in entity.DbFields)
+            DataBaseHelper.CheckFieldLink(entity);
+            var array = entity.DbFields.Where(p => p.IsLinkField && !p.IsLinkKey).ToArray();
+            if (array.Length == 0)
             {
-                if (IsNullOrWhiteSpace(field.LinkTable))
-                    continue;
-                if (field.LinkTable == entity.Name || field.LinkTable == entity.ReadTableName ||
-                    field.LinkTable == entity.SaveTableName)
-                {
-                    continue;
-                }
-                if (tables.ContainsKey(field.LinkTable))
-                    continue;
-                string name = field.LinkTable;
-                var table = GlobalConfig.GetEntity(p => p.SaveTableName == name || p.ReadTableName == name || p.Name == name);
-                if (table == null || table == entity)
-                {
-                    continue;
-                }
-                tables.Add(name, table);
+                return $"/**********{entity.Caption}**********没有字段引用其它表的无需视图**********/";
+            }
+            var tables = entity.DbFields.Where(p => p.IsLinkField && !p.IsLinkKey).Select(p => p.LinkTable).Distinct().Select(GlobalConfig.GetEntity).ToDictionary(p => p.Name);
+            if (tables.Count == 0)
+            {
+                entity.ReadTableName = entity.SaveTable; ;
+                return $"/**********{entity.Caption}**********没有字段引用其它表的无需视图**********/";
             }
             string viewName;
             if (IsNullOrWhiteSpace(entity.ReadTableName) || entity.ReadTableName == entity.SaveTable)
@@ -96,7 +86,7 @@ DROP VIEW [{entity.ReadTableName}];
 CREATE VIEW [{viewName}] AS 
     SELECT ");
             bool first = true;
-            foreach (PropertyConfig field in entity.PublishProperty)
+            foreach (PropertyConfig field in entity.DbFields)
             {
                 if (first)
                     first = false;
@@ -136,6 +126,7 @@ CREATE VIEW [{viewName}] AS
                         , entity.SaveTable, table.SaveTable, field.DbFieldName, linkField.DbFieldName, table.Name);
             }
             builder.Append(';');
+            builder.AppendLine("GO");
             builder.AppendLine();
             return builder.ToString();
         }
@@ -148,7 +139,8 @@ CREATE VIEW [{viewName}] AS
                 return $"{entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
             return $@"
 /*******************************{entity.Caption}*******************************/
-DROP TABLE [{entity.SaveTable}];";
+DROP TABLE [{entity.SaveTable}];
+GO";
             //            return string.Format(@"
             //truncate TABLE dbo.{0};
             //GO

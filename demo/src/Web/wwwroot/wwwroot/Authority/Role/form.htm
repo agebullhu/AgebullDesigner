@@ -1,0 +1,48 @@
+﻿<!--此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/4/15 11:44:13-->
+<form name='roleForm' id='roleForm' method='POST' enctype='multipart/form-data'>
+    <input name='appInfoId' id='appInfoId' type='hidden' />
+    <div id='roleRegion' class='formRegion' style='width:500px;'>
+            <div class='inputField' id='fr_Id'>
+                <div class='inputRegion' id='ir_Id'>
+                    <div class='inputLabel'>标识:</div>
+                    <input id='Id' name='Id' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'标识',readonly:true"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_Role'>
+                <div class='inputRegion' id='ir_Role'>
+                    <div class='inputLabel'>角色:</div>
+                    <input id='Role' name='Role' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'名称',validType:['strLimit[0,200]'],required:true"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_Caption'>
+                <div class='inputRegion' id='ir_Caption'>
+                    <div class='inputLabel'>标题:</div>
+                    <input id='Caption' name='Caption' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'标题',validType:['strLimit[0,200]'],required:true"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_Memo'>
+                <div class='inputRegion' id='ir_Memo'>
+                    <div class='inputLabel'>备注:</div><br/>
+                    <input id='Memo' name='Memo' class='inputValue_Memo_S easyui-textbox'
+                           data-options="prompt:'备注',multiline:true"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_OrgID'>
+                <div class='inputRegion' id='ir_OrgID'>
+                    <div class='inputLabel'>组织标识:</div>
+                    <input id='OrgID' name='OrgID' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'组织标识'"/>
+                </div>
+            </div>
+            <div class='inputField' id='fr_SiteID'>
+                <div class='inputRegion' id='ir_SiteID'>
+                    <div class='inputLabel'>站点标识:</div>
+                    <input id='SiteID' name='SiteID' class='inputValue inputS easyui-textbox'
+                           data-options="prompt:'站点标识'"/>
+                </div>
+            </div>
+    </div>
+</form>

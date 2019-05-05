@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
 
@@ -24,7 +22,7 @@ namespace Agebull.EntityModel.RobotCoder
         {
             StringBuilder code = new StringBuilder();
 
-            using (CodeGeneratorScope.CreateScope(config))
+            using (CodeGeneratorScope.CreateScope(GlobalConfig.CurrentSolution))
             {
                 config.Foreach<TConfig>(arg =>
                 {
@@ -47,7 +45,7 @@ namespace Agebull.EntityModel.RobotCoder
         {
             StringBuilder code = new StringBuilder();
 
-            using (CodeGeneratorScope.CreateScope(config))
+            using (CodeGeneratorScope.CreateScope(GlobalConfig.CurrentSolution))
             {
                 config.Foreach(condition, arg =>
                 {

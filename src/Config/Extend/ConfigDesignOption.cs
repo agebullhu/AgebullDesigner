@@ -167,29 +167,23 @@ namespace Agebull.EntityModel.Config
                     _referenceKey = Guid.Empty;
                 BeforePropertyChanged(nameof(ReferenceKey), _referenceKey, value);
                 _referenceKey = value;
-                IsReference = value != Guid.Empty;
+                if (_referenceKey == Guid.Empty)
+                {
+                    _state &= ~ConfigStateType.Reference;
+                    _state &= ~ConfigStateType.Link;
+                }
+                else if (!_state.HasSomeFlags(ConfigStateType.Reference, ConfigStateType.Link))
+                {
+                    _state |= ConfigStateType.Reference;
+                }
+                OnPropertyChanged(nameof(Link));
+                OnPropertyChanged(nameof(IsLink));
+                OnPropertyChanged(nameof(Reference));
+                OnPropertyChanged(nameof(IsReference));
                 OnPropertyChanged(nameof(ReferenceKey));
+                OnPropertyChanged(nameof(ReferenceConfig));
             }
         }
-
-        /// <summary>
-        /// 引用对象
-        /// </summary>
-        /// <remark>
-        /// 引用对象
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        public ConfigBase Reference => IsReference ? ReferenceConfig : null;
-
-
-        /// <summary>
-        /// 引用对象
-        /// </summary>
-        /// <remark>
-        /// 引用对象
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        public ConfigBase Link => IsLink ? ReferenceConfig : null;
 
         /// <summary>
         /// 引用对象
@@ -201,7 +195,7 @@ namespace Agebull.EntityModel.Config
         /// 引用对象
         /// </summary>
         /// <remark>
-        /// 引用对象
+        /// 指内部对象的引用
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category("引用"), DisplayName("引用对象"), Description("引用对象，指内部对象的引用")]
@@ -213,46 +207,65 @@ namespace Agebull.EntityModel.Config
                     return null;
                 if (_referenceKey == _key || Config == _referenceConfig)
                 {
-                    ReferenceKey = Guid.Empty;
+                    _referenceKey = Guid.Empty;
                     _referenceConfig = null;
                     return null;
                 }
 
                 if (_referenceConfig != null)
                     return _referenceConfig;
-                 _referenceConfig = GlobalConfig.GetConfig(_referenceKey);
+                _referenceConfig = GlobalConfig.GetConfig(_referenceKey);
 
-                if (_referenceConfig != null && Config != _referenceConfig)
-                    return _referenceConfig;
-                ReferenceKey = Guid.Empty;
-                _referenceConfig = null;
-                return null;
+                if (_referenceConfig == null || Config == _referenceConfig)
+                {
+                    _referenceKey = Guid.Empty;
+                    _referenceConfig = null;
+                }
+                return _referenceConfig;
             }
             set
             {
                 if (_referenceConfig == value)
                     return;
-                if (value == Config || value.Key == Key)
+                if (value != null && (value == Config || value.Key == Key))
                     value = null;
-                BeforePropertyChanged(nameof(ReferenceConfig), _referenceConfig, value);
                 _referenceConfig = value;
-                ReferenceKey = value?.Option.Key ?? Guid.Empty;
+                _referenceKey = value?.Option.Key ?? Guid.Empty;
                 if (value == null)
                 {
-                    IsLink = false;
-                    IsReference = false;
+                    _state &= ~ConfigStateType.Reference;
+                    _state &= ~ConfigStateType.Link;
                 }
-                else if (!IsReference)
+                else if (!_state.HasSomeFlags(ConfigStateType.Reference, ConfigStateType.Link))
                 {
-                    IsLink = true;
+                    _state |= ConfigStateType.Reference;
                 }
+                BeforePropertyChanged(nameof(ReferenceConfig), _referenceConfig, value);
+                OnPropertyChanged(nameof(Link));
+                OnPropertyChanged(nameof(IsLink));
+                OnPropertyChanged(nameof(Reference));
+                OnPropertyChanged(nameof(IsReference));
+                OnPropertyChanged(nameof(ReferenceKey));
                 OnPropertyChanged(nameof(ReferenceConfig));
             }
         }
         /// <summary>
+        /// 引用对象(接口)
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        public ConfigBase Reference => IsReference ? ReferenceConfig : null;
+        
+        /// <summary>
+        /// 链接对象(外连接)
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        public ConfigBase Link => IsLink ? ReferenceConfig : null;
+
+        /// <summary>
         /// 引用标签
         /// </summary>
-        [DataMember, JsonProperty("referenceTag", NullValueHandling = NullValueHandling.Ignore)] private string _referenceTag;
+        [DataMember, JsonProperty("referenceTag", NullValueHandling = NullValueHandling.Ignore)]
+        private string _referenceTag;
 
         /// <summary>
         /// 引用标签

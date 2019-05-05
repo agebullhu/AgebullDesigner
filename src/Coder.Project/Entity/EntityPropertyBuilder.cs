@@ -130,8 +130,8 @@ using Agebull.EntityModel.Interfaces;
             }}
         }}", Entity.PrimaryColumn.LastCsType, Entity.PrimaryColumn.Name);
                 }
-                if(Entity.PrimaryColumn.CsType == "int")
-                code.Append($@"
+                if (Entity.PrimaryColumn.CsType == "int")
+                    code.Append($@"
 
         /// <summary>
         /// Id键
@@ -147,22 +147,22 @@ using Agebull.EntityModel.Interfaces;
                 this.{Entity.PrimaryColumn.Name} = value;
             }}
         }}");
-        //        else
-        //            code.AppendFormat(@"
+                //        else
+                //            code.AppendFormat(@"
 
-        ///// <summary>
-        ///// Id键
-        ///// </summary>
-        //int IIdentityData.Id
-        //{{
-        //    get
-        //    {{
-        //        throw new Exception(""不支持"");//BUG:ID不是INT类型
-        //    }}
-        //    set
-        //    {{
-        //    }}
-        //}}");
+                ///// <summary>
+                ///// Id键
+                ///// </summary>
+                //int IIdentityData.Id
+                //{{
+                //    get
+                //    {{
+                //        throw new Exception(""不支持"");//B UG:ID不是INT类型
+                //    }}
+                //    set
+                //    {{
+                //    }}
+                //}}");
                 if (Entity.PrimaryColumn.IsGlobalKey)
                 {
                     code.AppendFormat(@"
@@ -284,7 +284,7 @@ using Agebull.EntityModel.Interfaces;
 
         partial void On{property.Name}Seted();
 
-        {PropertyHeader(property,null, property.DataType != "ByteArray")}
+        {PropertyHeader(property, property.DataType != "ByteArray")}
         {property.AccessType} {property.LastCsType} {property.Name}
         {{
             get
@@ -315,10 +315,7 @@ using Agebull.EntityModel.Interfaces;
         {
             if (string.IsNullOrWhiteSpace(property.ComputeGetCode) && string.IsNullOrWhiteSpace(property.ComputeSetCode))
             {
-                code.Append($@"
-        /// <summary>
-        /// {ToRemString(property.Caption)}
-        /// </summary>
+                code.Append($@"{RemCode(property,true)}
         [IgnoreDataMember,JsonIgnore]
         public {property.LastCsType} {FieldName(property)};
 
@@ -377,6 +374,9 @@ using Agebull.EntityModel.Interfaces;
             }
             ContentProperty(property, code);
         }
+
+        private Dictionary<string, string> ExistProperties;
+
         /// <summary>
         /// 别名属性
         /// </summary>
@@ -386,16 +386,15 @@ using Agebull.EntityModel.Interfaces;
         {
             if (property == null)
                 return;
-            var hase = new Dictionary<string, string> {
-                {property.Name,property.Name }
-            };
             foreach (var alias in property.GetAliasPropertys())
             {
-                if (hase.ContainsKey(alias))
+                if (ExistProperties.ContainsKey(alias))
                     continue;
-                hase.Add(alias, alias);
+                ExistProperties.Add(alias, alias);
                 code.Append($@"
-        {PropertyHeader(property, alias)}
+        /// <summary>
+        /// {ToRemString(property.Caption)}\n--{property.Name}的别名
+        /// </summary>
         public {property.LastCsType} {alias}
         {{
             get => this.{property.Name};
@@ -405,20 +404,26 @@ using Agebull.EntityModel.Interfaces;
         }
         private string Properties()
         {
+            ExistProperties = new Dictionary<string, string>();
             var code = new StringBuilder();
             code.Append(PrimaryKeyPropertyCode());
-            AliasPropertyCode(Entity.PrimaryColumn, code);
-            foreach (PropertyConfig property in Columns.Where(p =>!p.DbInnerField && !p.IsPrimaryKey))
+            ExistProperties.Add(Entity.PrimaryField, Entity.PrimaryField);
+            foreach (PropertyConfig property in Columns.Where(p => !p.DbInnerField && !p.IsPrimaryKey))
             {
                 if (property.IsCompute)
-                    ComputePropertyCode(property,  code);
+                    ComputePropertyCode(property, code);
                 else
                     PropertyCode(property, code);
-                AliasPropertyCode(property, code);
+                ExistProperties.Add(property.Name, property.Name);
             }
-            foreach (PropertyConfig property in Entity.DbFields.Where(p => p.DbInnerField && !p.IsPrimaryKey))
+            foreach (PropertyConfig property in Columns.Where(p => p.DbInnerField && !p.IsPrimaryKey))
             {
                 DbInnerProperty(property, code);
+                ExistProperties.Add(property.Name, property.Name);
+            }
+            foreach (PropertyConfig property in Columns)
+            {
+                AliasPropertyCode(property, code);
             }
             return code.ToString();
         }
@@ -427,10 +432,10 @@ using Agebull.EntityModel.Interfaces;
             code.Append($@"
 
         /// <summary>
-        /// {ToRemString(property.Caption)}
+        /// {ToRemString(property.Caption)}(仅限用于查询的Lambda表达式使用)
         /// </summary>
         /// <remarks>
-        /// 仅限用于查询的Lambda表达式使用
+        /// {ToRemString(property.Description)}
         /// </remarks>
         [IgnoreDataMember , Browsable(false),JsonIgnore]
         public {property.LastCsType} {property.Name} => throw new Exception(""{ToRemString(property.Caption)}属性仅限用于查询的Lambda表达式使用"");");
@@ -473,7 +478,7 @@ using Agebull.EntityModel.Interfaces;
             }}
         }}");
             }
-            
+
             return code.ToString();
         }
 
