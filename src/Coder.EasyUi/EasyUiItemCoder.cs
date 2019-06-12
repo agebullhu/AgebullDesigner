@@ -169,7 +169,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             <span class='details_value'>{field.Prefix}<%= ToHtmlParagraph(details.{field.Name}) %>{field.Suffix}</span>
         </div>";
             //        return $@"
-            //<% if (!string.IsNullOrEmpty({field.Name})){{%>
+            //<% if (!string.IsNullOrWhiteSpace({field.Name})){{%>
             //<fieldset>
             //    <legend>{field.Caption ?? field.Name}</legend>
             //    <%= ToHtmlParagraph(details.{field.Name}) %>

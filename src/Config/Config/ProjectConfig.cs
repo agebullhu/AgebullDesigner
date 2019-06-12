@@ -436,7 +436,7 @@ namespace Agebull.EntityModel.Config
             code.Append('\\');
             code.Append(Solution.SrcFolder ?? "src");
             code.Append('\\');
-            if (!isRoot && !string.IsNullOrEmpty(BranchFolder))
+            if (!isRoot && !string.IsNullOrWhiteSpace(BranchFolder))
             {
                 code.Append(BranchFolder);
                 code.Append('\\');

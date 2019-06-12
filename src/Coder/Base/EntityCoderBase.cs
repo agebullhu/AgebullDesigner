@@ -141,7 +141,7 @@ namespace Agebull.EntityModel.RobotCoder
             }
 
             var helloCode = HelloCode(property, false);
-            if (!string.IsNullOrEmpty(helloCode))
+            if (!string.IsNullOrWhiteSpace(helloCode))
             {
                 code.AppendLine();
                 code.Append(' ', space);
@@ -154,7 +154,7 @@ namespace Agebull.EntityModel.RobotCoder
                 code.Append("/// </example>");
             }
 
-            if (!string.IsNullOrEmpty(property.DataRuleDesc))
+            if (!string.IsNullOrWhiteSpace(property.DataRuleDesc))
             {
                 code.AppendLine();
                 code.Append(' ', space);
@@ -184,7 +184,7 @@ namespace Agebull.EntityModel.RobotCoder
 
             if (property.CsType == "DateTime")
             {
-                if (!string.IsNullOrEmpty(property.Min))
+                if (!string.IsNullOrWhiteSpace(property.Min))
                 {
                     if (has)
                         code.Append(',');
@@ -192,7 +192,7 @@ namespace Agebull.EntityModel.RobotCoder
                     code.Append($@"MinDate = DateTime.Parse(""{property.Min}"")");
                 }
 
-                if (!string.IsNullOrEmpty(property.Max))
+                if (!string.IsNullOrWhiteSpace(property.Max))
                 {
                     if (has)
                         code.Append(',');
@@ -202,7 +202,7 @@ namespace Agebull.EntityModel.RobotCoder
             }
             else
             {
-                if (!string.IsNullOrEmpty(property.Min))
+                if (!string.IsNullOrWhiteSpace(property.Min))
                 {
                     if (has)
                         code.Append(',');
@@ -210,7 +210,7 @@ namespace Agebull.EntityModel.RobotCoder
                     code.Append($@"Min = {property.Min}");
                 }
 
-                if (!string.IsNullOrEmpty(property.Max))
+                if (!string.IsNullOrWhiteSpace(property.Max))
                 {
                     if (has)
                         code.Append(',');

@@ -43,7 +43,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public void AnnexDelegate<TAction>(TAction action, string name = null) where TAction : class
         {
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrWhiteSpace(name))
             {
                 var type = typeof(TAction);
                 if (_dependencyDictionary.ContainsKey(type))
@@ -89,7 +89,7 @@ namespace Agebull.EntityModel
         public TAction GetDelegate<TAction>(string name = null)where TAction : class
         {
             object value;
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrWhiteSpace(name))
             {
                 var type = typeof(TAction);
                 if (!_dependencyDictionary.TryGetValue(type, out value))

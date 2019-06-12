@@ -163,7 +163,7 @@ namespace Agebull.Common
             JsonTextReader jsonReader = new JsonTextReader(sr); //引用Newtonsoft.Json 自带
             JsonSerializer serializer = new JsonSerializer();
             var r = serializer.Deserialize<FanYiResult>(jsonReader); //因为获取后的为json对象 ，实行转换
-            if (string.IsNullOrEmpty(r.ErrorCode) && r.Result != null && r.Result.Length > 0)
+            if (string.IsNullOrWhiteSpace(r.ErrorCode) && r.Result != null && r.Result.Length > 0)
             {
                 return r.Result[0].Dest; //dst为翻译后的值
             }

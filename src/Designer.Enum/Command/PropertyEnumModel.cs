@@ -23,7 +23,7 @@ namespace Agebull.EntityModel.Designer
             var type = typeof(PropertyConfig);
             commands.Add(new CommandItemBuilder<PropertyConfig>
             {
-                Catalog = "字段",
+                Catalog = "枚举",
                 Action = ReadEnum,
                 TargetType = type,
                 Caption = "识别枚举",
@@ -34,16 +34,16 @@ namespace Agebull.EntityModel.Designer
             });
             commands.Add(new CommandItemBuilder<PropertyConfig>
             {
-                Catalog = "字段",
+                Catalog = "枚举",
                 Action = CheckEnum,
                 NoConfirm=true,
                 TargetType = type,
-                Caption = "刷新对象引用",
+                Caption = "刷新枚举引用",
                 IconName = "tree_item"
             });
             commands.Add(new CommandItemBuilder
             {
-                Catalog = "字段",
+                Catalog = "枚举",
                 NoConfirm = true,
                 Action = BindEnum,
                 TargetType = type,
@@ -53,7 +53,7 @@ namespace Agebull.EntityModel.Designer
             });
             commands.Add(new CommandItemBuilder
             {
-                Catalog = "字段",
+                Catalog = "枚举",
                 Action = DeleteEnum,
                 TargetType = type,
                 Caption = "清除枚举绑定",
@@ -199,7 +199,7 @@ namespace Agebull.EntityModel.Designer
             ec.Items.Clear();
             foreach (var item in items)
             {
-                if (string.IsNullOrEmpty(item.Caption))
+                if (string.IsNullOrWhiteSpace(item.Caption))
                 {
                     continue;
                 }

@@ -118,7 +118,7 @@ namespace Agebull.EntityModel.RobotCoder
                 builder.CreateBaseCode(accessPath);
                 builder.CreateExtendCode(accessPath);
             }
-            //if (!string.IsNullOrEmpty(project.BusinessPath))
+            //if (!string.IsNullOrWhiteSpace(project.BusinessPath))
             {
                 var businessPath =
                     GlobalConfig.CheckPath(

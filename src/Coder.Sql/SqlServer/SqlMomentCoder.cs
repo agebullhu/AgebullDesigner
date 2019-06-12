@@ -94,7 +94,7 @@ CREATE VIEW [{viewName}] AS
                     builder.Append(@",
         ");
 
-                if (!field.IsLinkKey && !IsNullOrEmpty(field.LinkTable))
+                if (!field.IsLinkKey && !IsNullOrWhiteSpace(field.LinkTable))
                 {
                     if (tables.TryGetValue(field.LinkTable, out EntityConfig friend))
                     {

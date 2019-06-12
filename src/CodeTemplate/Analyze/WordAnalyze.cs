@@ -52,7 +52,7 @@ namespace Agebull.EntityModel.RobotCoder.CodeTemplate
         /// </summary>
         public static List<WordElement> Analyze(string code)
         {
-            return string.IsNullOrEmpty(code)
+            return string.IsNullOrWhiteSpace(code)
                     ? new List<WordElement>()
                     : new WordAnalyze().AnalyzeWords(code);
         }

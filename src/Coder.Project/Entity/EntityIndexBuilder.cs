@@ -12,7 +12,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         protected override bool IsClient => false;
 
-        public override string BaseCode => $@"
+        public override string BaseCode => @"
         #region 索引
         /*代码已过时*/
         #endregion";

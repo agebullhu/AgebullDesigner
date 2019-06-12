@@ -523,7 +523,7 @@ public void {item.Name}({type})
                 ? $@"CommandProxy.{item.Name}();"
                 : $@"CommandProxy.{item.Name}(arg);")}
 }}");
-                if (!string.IsNullOrEmpty(type))
+                if (!string.IsNullOrWhiteSpace(type))
                     code.Append($@"
 
 /// <summary>

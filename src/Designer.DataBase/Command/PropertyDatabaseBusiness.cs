@@ -38,7 +38,7 @@ namespace Agebull.EntityModel.Config
             RobotCoder.DataTypeHelper.ToStandard(Property);
             if (Property.DbType == null)
                 return;
-            Property.Datalen = 0;
+            
             switch (Property.DbType = Property.DbType.ToUpper())
             {
                 case "EMPTY":
@@ -59,7 +59,7 @@ namespace Agebull.EntityModel.Config
                     {
                         Property.Datalen = 200;
                     }
-                    break;
+                    return;
                 case "CHAR":
                 case "VARCHAR":
                 case "NVARCHAR":
@@ -81,7 +81,7 @@ namespace Agebull.EntityModel.Config
                     {
                         Property.Datalen = 200;
                     }
-                    break;
+                    return;
             }
         }
     }

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.SqlServer;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -70,8 +71,19 @@ namespace Agebull.EntityModel.RobotCoder
 ";
         }
 
-        private string CreateCode()
+        private string CreateBaseCode()
         {
+            StringBuilder alias = new StringBuilder();
+            if (!string.IsNullOrWhiteSpace(Entity.Alias))
+            {
+            alias.Append($@"
+    /// <summary>
+    /// {Entity.Description} 别名
+    /// </summary>
+    {(Entity.IsInternal ? "internal" : "public")} sealed class {Entity.Alias}DataAccess : {Entity.Name}DataAccess
+    {{
+    }}");
+            }
             return $@"
 using System;
 using System.Collections.Generic;
@@ -93,6 +105,7 @@ using Agebull.EntityModel.Common;
 using Agebull.EntityModel.SqlServer;
 
 {Project.UsingNameSpaces}
+using {SolutionConfig.Current.NameSpace}.DataAccess;
 
 namespace {NameSpace}.DataAccess
 {{
@@ -119,7 +132,7 @@ namespace {NameSpace}.DataAccess
 {UpdateCode()}
 {InsertCode()}
         #endregion
-    }}
+    }}{alias}
 {DataBaseExtend()}
 }}
 ";
@@ -137,9 +150,25 @@ namespace {NameSpace}.DataAccess
                 {
                     Directory.Move(file, file + ".bak");
                 }
+                else if (!string.IsNullOrWhiteSpace(Entity.Alias))
+                {
+                    var oldFile = Path.Combine(path, Entity.Alias + "DataAccess.Designer.cs");
+                    if (File.Exists(oldFile))
+                    {
+                        Directory.Move(oldFile, file + ".bak");
+                    }
+                }
                 return;
             }
-            SaveCode(file, CreateCode());
+            if (!string.IsNullOrWhiteSpace(Entity.Alias))
+            {
+                var oldFile = Path.Combine(path, Entity.Alias + "DataAccess.Designer.cs");
+                if (File.Exists(oldFile))
+                {
+                    Directory.Move(oldFile, file);
+                }
+            }
+            SaveCode(file, CreateBaseCode());
         }
         
 
@@ -155,7 +184,23 @@ namespace {NameSpace}.DataAccess
                 {
                     Directory.Move(file, file + ".bak");
                 }
+                else if (!string.IsNullOrWhiteSpace(Entity.Alias))
+                {
+                    var oldFile = Path.Combine(path, Entity.Alias + "DataAccess.cs");
+                    if (File.Exists(oldFile))
+                    {
+                        Directory.Move(oldFile, file + ".bak");
+                    }
+                }
                 return;
+            }
+            if (!string.IsNullOrWhiteSpace(Entity.Alias))
+            {
+                var oldFile = Path.Combine(path, Entity.Alias + "DataAccess.cs");
+                if (File.Exists(oldFile))
+                {
+                    Directory.Move(oldFile, file);
+                }
             }
             var code = $@"
 using System;
@@ -169,13 +214,14 @@ using System.Linq.Expressions;
 using System.Text;
 
 using Agebull.EntityModel.SqlServer;
+using {SolutionConfig.Current.NameSpace}.DataAccess;
 
 namespace {NameSpace}.DataAccess
 {{
     /// <summary>
     /// {Entity.Caption}
     /// </summary>
-    sealed partial class {Entity.Name}DataAccess : SqlServerTable<{Entity.EntityName},{Project.DataBaseObjectName}>
+    partial class {Entity.Name}DataAccess : SqlServerTable<{Entity.EntityName},{Project.DataBaseObjectName}>
     {{
         /// <summary>
         /// 构造单个读取命令
@@ -453,12 +499,12 @@ UPDATE [{ContextWriteTable}] SET");
                         if (!field.Nullable)
                         {
                             code.Append($@"
-            cmd.Parameters.Add(new SqlParameter(""{field.PropertyName}"",SqlDbType.{ToSqlDbType(field.CsType)}){{ Value = entity.{field.PropertyName}}});");
+            cmd.Parameters.Add(new SqlParameter(""{field.PropertyName}"",SqlDbType.{SqlServerHelper.ToSqlDbType(field)}){{ Value = entity.{field.PropertyName}}});");
                             continue;
                         }
                         code.Append($@"
             {(isFirstNull ? "var " : "")}isNull = entity.{field.PropertyName} == null;
-            {(isFirstNull ? "var " : "")}parameter = new SqlParameter(""{field.PropertyName}"",SqlDbType.{ToSqlDbType(field.CsType)});
+            {(isFirstNull ? "var " : "")}parameter = new SqlParameter(""{field.PropertyName}"",SqlDbType.{SqlServerHelper.ToSqlDbType(field)});
             if(isNull)
                 parameter.Value = DBNull.Value;
             else
@@ -515,11 +561,14 @@ UPDATE [{ContextWriteTable}] SET");
             var code = new StringBuilder();
             foreach (var field in Entity.DbFields)
             {
+                if (field.DbFieldName != field.Name)
+                    code.Append($@"
+                case ""{field.DbFieldName}"":");
                 code.AppendFormat(@"
                 case ""{0}"":
                     return SqlDbType.{1};"
                     , field.PropertyName
-                    , ToSqlDbType(field.CsType));
+                    , SqlServerHelper.ToSqlDbType(field));
             }
 
             return$@"
@@ -739,64 +788,6 @@ UPDATE [{ContextWriteTable}] SET");
 
                 default:
                     return $"/*({csharpType})*/{readerName}.GetValue";
-            }
-        }
-
-        /// <summary>
-        ///     从C#的类型转为DBType
-        /// </summary>
-        /// <param name="csharpType"> </param>
-        public static SqlDbType ToSqlDbType(string csharpType)
-        {
-            switch (csharpType)
-            {
-                case "Boolean":
-                case "bool":
-                    return SqlDbType.Bit;
-                case "byte":
-                case "Byte":
-                case "sbyte":
-                case "SByte":
-                case "Char":
-                case "char":
-                    return SqlDbType.Char;
-                case "short":
-                case "Int16":
-                case "ushort":
-                case "UInt16":
-                    return SqlDbType.SmallInt;
-                case "int":
-                case "Int32":
-                case "IntPtr":
-                case "uint":
-                case "UInt32":
-                case "UIntPtr":
-                    return SqlDbType.Int;
-                case "long":
-                case "Int64":
-                case "ulong":
-                case "UInt64":
-                    return SqlDbType.BigInt;
-                case "decimal":
-                case "Decimal":
-                case "float":
-                case "Float":
-                case "double":
-                case "Double":
-                    return SqlDbType.Decimal;
-                case "Guid":
-                    return SqlDbType.UniqueIdentifier;
-                case "DateTime":
-                    return SqlDbType.DateTime;
-                case "String":
-                case "string":
-                    return SqlDbType.NVarChar;
-                case "Binary":
-                case "byte[]":
-                case "Byte[]":
-                    return SqlDbType.Binary;
-                default:
-                    return SqlDbType.Binary;
             }
         }
     }

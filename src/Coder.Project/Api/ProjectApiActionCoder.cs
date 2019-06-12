@@ -1,15 +1,16 @@
 using System;
 using System.ComponentModel.Composition;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Agebull.Common;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Designer;
 
 namespace Agebull.EntityModel.RobotCoder.EasyUi
 {
+    /// <summary>
+    /// API代码生成
+    /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
     public class ProjectApiActionCoder : CoderWithEntity, IAutoRegister
@@ -28,8 +29,18 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         {
             if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
-            var file = CheckOldFile(path);
-            WriteFile(file + ".Designer.cs", BaseCode());
+            var fileName = "ApiController.Designer.cs";
+            var file = Path.Combine(path, Project.Name, Entity.Name + fileName);
+            if (!string.IsNullOrWhiteSpace(Entity.Alias))
+            {
+                var oldFile = Path.Combine(path, Project.Name, Entity.Alias + fileName);
+                if (File.Exists(oldFile))
+                {
+                    Directory.Move(oldFile, file);
+                }
+            }
+            //var file = ConfigPath(Entity, "File_Edit_Api_d_cs", path, Entity.Classify, $"{Entity.Name}ApiController");
+            WriteFile(file, BaseCode());
         }
 
         /// <summary>
@@ -39,34 +50,21 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         {
             if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
-            var file = CheckOldFile(path);
-            WriteFile(file + ".cs", ExtendCode());
+            var fileName = "ApiController.cs";
+            var file = Path.Combine(path,Project.Name, Entity.Name + fileName);
+            if (!string.IsNullOrWhiteSpace(Entity.Alias))
+            {
+                var oldFile = Path.Combine(path, Project.Name, Entity.Alias + fileName);
+                if (File.Exists(oldFile))
+                {
+                    Directory.Move(oldFile, file);
+                }
+            }
+            //var file = ConfigPath(Entity, "File_Edit_Api_d_cs", path, Entity.Classify, $"{Entity.Name}ApiController");
+            WriteFile(file, ExtendCode());
             //ExportCsCode(path);
         }
 
-        string CheckOldFile(string path)
-        {
-            var fileNew = ConfigPath(Entity, "File_Edit_Api_d_cs", path, Entity.Classify, $"{Entity.Name}ApiController");
-            return fileNew;
-            var folderNew = Path.GetDirectoryName(fileNew);
-            var fileOld = ConfigPath(Entity, "File_Web_Api_cs", path, Entity.Name, $"{Entity.Name}ApiController");
-            var folderOld = Path.GetDirectoryName(fileOld);
-
-            if (folderNew == folderOld || !File.Exists(fileOld + ".Designer.cs"))
-                return fileNew;
-            try
-            {
-                IOHelper.CheckPath(path, Entity.Classify);
-                File.Move(fileOld + ".Designer.cs", fileNew + ".Designer.cs");
-                File.Move(fileOld + ".cs", fileNew + ".cs");
-                Directory.Delete(folderOld);
-            }
-            catch (Exception e)
-            {
-                Trace.WriteLine(e);
-            }
-            return fileNew;
-        }
         #endregion
 
         #region Export
@@ -96,7 +94,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("Web-Api", "表单保存", "cs", ApiHelperCoder.InputConvert4);
+            MomentCoder.RegisteCoder("Web-Api", "表单保存", "cs", ReadFormValue);
             MomentCoder.RegisteCoder("Web-Api", "ApiController.cs", "cs", BaseCode);
             MomentCoder.RegisteCoder("Web-Api", "ApiController.Designer.cs", "cs", ExtendCode);
         }
@@ -126,9 +124,18 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 
         #region 代码
 
+        static string ReadFormValue(EntityConfig entity)
+        {
+            var code = new StringBuilder();
+            code.Append($@"
+        static void ReadFormValue(I{entity.Name} entity, FormConvert convert)
+        {{{ApiHelperCoder.InputConvert(entity)}
+        }}");
+            return code.ToString();
+        }
+
         private string BaseCode()
         {
-            var coder = new ApiHelperCoder();
             return
                 $@"#region
 using System;
@@ -177,15 +184,15 @@ namespace {NameSpace}.WebApi.Entity
         protected ApiPageData<{Entity.EntityName}> DefaultGetListData()
         {{
             var filter = new LambdaItem<{Entity.EntityName}>();
-            SetKeywordFilter(filter);
+            ReadQueryFilter(filter);
             return base.GetListData(filter);
         }}
 
         /// <summary>
-        ///     关键字查询缺省实现
+        ///     读取查询条件
         /// </summary>
         /// <param name=""filter"">筛选器</param>
-        public void SetKeywordFilter(LambdaItem<{Entity.EntityName}> filter)
+        public void ReadQueryFilter(LambdaItem<{Entity.EntityName}> filter)
         {{{QueryCode()}
         }}
 
@@ -195,7 +202,7 @@ namespace {NameSpace}.WebApi.Entity
         /// <param name=""data"">数据</param>
         /// <param name=""convert"">转化器</param>
         protected void DefaultReadFormData({Entity.EntityName} data, FormConvert convert)
-        {{{coder.InputConvert(Entity)}
+        {{{ApiHelperCoder.InputConvert(Entity)}
         }}
 
         #endregion
@@ -210,98 +217,73 @@ namespace {NameSpace}.WebApi.Entity
         public string QueryCode()
         {
             var code = new StringBuilder();
-            var fields = Entity.ClientProperty.Where(p => !p.NoStorage && p.CanUserInput && p.CsType == "string" && !p.IsBlob).ToArray();
+
+            code.Append(@"
+            if (TryGet(""_value_"", out string value))
+            {
+                var field = GetArg(""_field_"");
+                ");
+
+            var fields = Entity.ClientProperty.Where(p => !p.NoStorage && /*p.CanUserInput && */p.CsType == "string" && !p.IsBlob).ToArray();
             if (fields.Length > 0)
             {
-                code.Append(@"
-            var keyWord = GetArg(""keyWord"");
-            if (!string.IsNullOrEmpty(keyWord))
-            {
-                filter.AddAnd(p =>");
+                code.Append(@"if (string.IsNullOrWhiteSpace(field) || field == ""_any_"")
+                    filter.AddAnd(p => ");
                 bool first = true;
                 foreach (var field in fields)
                 {
                     if (first)
                         first = false;
                     else
-                        code.Append(@" || 
-                                   ");
-                    code.Append($@"p.{field.Name}.Contains(keyWord)");
+                        code.Append(@"
+                                    || ");
+                    code.Append($@"p.{field.Name}.Contains(value)");
                 }
                 code.Append(@");
-            }");
+                else ");
             }
-
-            fields = Entity.ClientProperty.Where(p => !p.IsDiscard && p.CanUserInput).ToArray();
+            code.Append(@"this[field] = value;
+            }");
+            fields = Entity.ClientProperty.Where(p => !p.NoStorage).ToArray();
             foreach (var field in fields)
             {
-                code.Append($@"
-            if(ContainsArgument(""{field.JsonName}""))
-            {{
-                var {field.JsonName} =");
-
-                switch (field.CsType.ToLower())
-                {
-                    case "short":
-                    case "int16":
-                    case "int":
-                    case "int32":
-                        code.Append($@"GetIntArg(""{field.JsonName}"");");
-                        break;
-                    case "bigint":
-                    case "long":
-                    case "int64":
-                        code.Append($@"GetLongArg(""{field.JsonName}"");");
-                        break;
-                    case "decimal":
-                        code.Append($@"GetDecimalArg(""{field.JsonName}"");");
-                        break;
-                    case "double":
-                        code.Append($@"GetDoubleArg(""{field.JsonName}"");
-                if (!double.IsNaN({field.JsonName}))");
-                        break;
-                    case "float":
-                        code.Append($@"GetSingleArg(""{field.JsonName}"");
-                if (!float.IsNaN({field.JsonName}))");
-                        break;
-                    case "datetime":
-                        code.Append($@"GetDateArg(""{field.JsonName}"");
-                if ({field.JsonName} > DateTime.MinValue)");
-                        break;
-                    case "bool":
-                    case "boolean":
-                        code.Append($@"GetBoolArg(""{field.JsonName}"");");
-                        break;
-                    case "byte":
-                    case "sbyte":
-                        code.Append($@"GetByteArg(""{field.JsonName}"");");
-                        break;
-                    case "guid":
-                        code.Append($@"GetGuidArg(""{field.JsonName}"");");
-                        break;
-                    default:
-                        code.Append($@"GetArg(""{field.JsonName}"");
-                if (!string.IsNullOrEmpty({field.JsonName}))
-                {{
-                    if({field.JsonName} == ""*null*"")
-                        filter.AddAnd(p => p.{field.Name} == null); 
-                    else if({field.JsonName}[0] == '%')
-                        filter.AddAnd(p => p.{field.Name}.Contains({field.JsonName}.Trim('%'))); 
-                    else
-                        filter.AddAnd(p => p.{field.Name} == {field.JsonName}); 
-                }}
-            }}");
-                        continue;
-                }
-                if (field.IsEnum && !string.IsNullOrWhiteSpace(field.CustomType))
+                if (field.IsPrimaryKey || field.IsLinkKey)
                 {
                     code.Append($@"
-                    filter.AddAnd(p => p.{field.Name} == ({field.CustomType}){field.JsonName});");
+            if(TryGetIDs(""{field.JsonName}"" , out var {field.JsonName}))
+            {{
+                filter.AddAnd(p => {field.JsonName}.Contains(p.{field.Name}));
+            }}"); 
                 }
                 else
+                {
                     code.Append($@"
-                    filter.AddAnd(p => p.{field.Name} == {field.JsonName});
-            }}");
+            if(TryGet(""{field.JsonName}"" , out {field.CsType} {field.JsonName}))
+            {{");
+
+                    switch (field.CsType.ToLower())
+                    {
+                        case "datetime":
+                            code.Append($@"
+                var day = {field.JsonName}.Date;
+                var nextDay = day.AddDays(1);
+                filter.AddAnd(p => (p.{field.Name} >= day && p.{field.Name} < nextDay));");
+                            break;
+                        case "string":
+                            code.Append($@"
+                filter.AddAnd(p => p.{field.Name}.Contains({field.JsonName}));");
+                            break;
+                        default:
+                            code.Append(!string.IsNullOrWhiteSpace(field.CustomType)
+                                ? $@"
+                filter.AddAnd(p => p.{field.Name} == ({field.CustomType}){field.JsonName});"
+                                : $@"
+                filter.AddAnd(p => p.{field.Name} == {field.JsonName});");
+                            break;
+                    }
+                    code.Append(@"
+            }");
+                }
             }
             return code.ToString();
         }
@@ -310,7 +292,7 @@ namespace {NameSpace}.WebApi.Entity
         {
             var folder = !string.IsNullOrWhiteSpace(Entity.PageFolder)
                 ? Entity.PageFolder.Replace('\\', '/')
-                    : string.IsNullOrEmpty(Entity.Classify)
+                    : string.IsNullOrWhiteSpace(Entity.Classify)
                         ? Entity.Name
                         : $"{Entity.Classify}/{Entity.Name}";
 
@@ -403,7 +385,7 @@ namespace {NameSpace}.WebApi.Entity
         [Route(""edit/tree"")]
         public ApiArrayResult<EasyUiTreeNode> OnLoadTree()
         {
-            var nodes = Business.LoadTree(this.GetIntArg(""id""));
+            var nodes = Business.LoadTree(this.GetLongArg(""id""));
             return new ApiArrayResult<EasyUiTreeNode>
             {{
                Success = true,
@@ -414,40 +396,15 @@ namespace {NameSpace}.WebApi.Entity
             var cap = Entity.Properties.FirstOrDefault(p => p.IsCaption);
             if (cap != null)
             {
-                code.Append($@"
+                code.Append(@"
         /// <summary>
         /// 载入下拉列表数据
         /// </summary>
         [Route(""edit/combo"")]
         public ApiArrayResult<EasyComboValues> ComboValues()
-        {{");
-                code.Append(Project.DbType == DataBaseType.MySql
-                    ?$@"
-            var fields = $""`{{Business.Access.FieldMap[nameof({Entity.EntityName}.{Entity.PrimaryField})]}}`,`{{Business.Access.FieldMap[nameof({cap.Name})]}}`"";"
-                    : $@"
-            var fields = $""[{{Business.Access.FieldMap[nameof({Entity.EntityName}.{Entity.PrimaryField})]}}],[{{Business.Access.FieldMap[nameof({cap.Name})]}}]"";");
-
-                code.Append($@"
-            List<{Entity.EntityName}> datas;
-            using (DbReaderScope<{Entity.EntityName}>.CreateScope(Business.Access, fields, (reader, data) =>
-            {{
-                data.{Entity.PrimaryField} = reader.GetInt64(0);
-                data.{cap.Name} = reader.IsDBNull(1) ? null : reader.GetString(1);
-            }}))
-            {{
-                datas = Business.All(");
-                if (Entity.Interfaces.Contains("IStateData"))
-                    code.Append("p => p.DataState <= EntityModel.Common.DataStateType.Enable");
-                code.Append($@");
-            }}
-            return ApiArrayResult<EasyComboValues>.Succees(datas.Count == 0
-                ? new System.Collections.Generic.List<EasyComboValues>()
-                : datas.OrderBy(p => p.{cap.Name}).Select(p => new EasyComboValues
-                {{
-                    Key = p.{Entity.PrimaryField},
-                    Value = p.{cap.Name}
-                }}).ToList());
-        }}");
+        {
+            return ApiArrayResult<EasyComboValues>.Succees(Business.ComboValues());
+        }");
             }
             foreach (var cmd in Entity.Commands.Where(p => !p.IsLocalAction))
             {
@@ -478,6 +435,5 @@ namespace {NameSpace}.WebApi.Entity
         }
 
         #endregion
-
     }
 }

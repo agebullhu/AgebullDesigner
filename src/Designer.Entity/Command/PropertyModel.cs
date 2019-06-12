@@ -28,10 +28,21 @@ namespace Agebull.EntityModel.Designer
                 WorkView= "adv",
                 Catalog = "字段",
                 Action = CheckName,
-                Caption = "字段名称规范",
-                Description= "第一个[逗号/括号]后解析为说明",
+                Caption = "属性名称大驼峰",
                 IconName = "tree_item",
                 ConfirmMessage= "确认执行【字段名称规范】的操作吗?"
+            });
+
+            commands.Add(new CommandItemBuilder<PropertyConfig>
+            {
+                SignleSoruce = false,
+                WorkView = "adv",
+                Catalog = "字段",
+                Action = CheckCaption,
+                Caption = "标题与注释拆解",
+                Description = "第一个[标点]后解析为说明",
+                IconName = "tree_item",
+                ConfirmMessage = "确认执行【字段名称规范】的操作吗?"
             });
             commands.Add(new CommandItemBuilder<PropertyConfig>
             {
@@ -74,15 +85,28 @@ namespace Agebull.EntityModel.Designer
                 field.EnumConfig = SolutionConfig.Current.Enums.FirstOrDefault(p => p.Name == field.CustomType);
             }
         }
+
         public void CheckName(PropertyConfig property)
+        {
+            var bak = property.DbFieldName;
+            if (string.IsNullOrWhiteSpace(bak))
+                bak = property.Name;
+            property.Name = GlobalConfig.ToLinkWordName(bak, null,true);
+            property.DbFieldName = bak;
+        }
+        public void CheckCaption(PropertyConfig property)
         {
             if (string.IsNullOrWhiteSpace(property.Caption))
                 return;
-            var words = property.Caption.Split(new[] { ',', '，', '(', '（' }, 2, StringSplitOptions.RemoveEmptyEntries);
-            if (words.Length > 1)
+            var caption = property.Caption;
+            for (var idx = 0;idx < caption.Length; idx++)
             {
-                property.Caption = words[0];
-                property.Description = words[1];
+                if (char.IsPunctuation(caption[idx]))
+                {
+                    property.Caption = caption.Substring(0,idx);
+                    property.Description = caption;
+                    return;
+                }
             }
         }
 

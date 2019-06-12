@@ -278,7 +278,7 @@ namespace Agebull.EntityModel.Designer
         public static IFont CreateFontStyle(HSSFWorkbook hssfworkbook, string fontname = null, int fontsize = 9, bool body = false, bool isItalic = false)
         {
             IFont font1 = hssfworkbook.CreateFont();
-            if (string.IsNullOrEmpty(fontname))
+            if (string.IsNullOrWhiteSpace(fontname))
             {
                 font1.FontName = fontname;
             }
@@ -381,7 +381,7 @@ namespace Agebull.EntityModel.Designer
         public static IFont CreateFontStyle(HSSFWorkbook hssfworkbook, string fontname = null, int fontsize = 12, bool body = false, bool isItalic = false)
         {
             IFont font1 = hssfworkbook.CreateFont();
-            if (string.IsNullOrEmpty(fontname))
+            if (string.IsNullOrWhiteSpace(fontname))
             {
                 font1.FontName = fontname;
             }

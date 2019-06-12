@@ -45,7 +45,7 @@ namespace Agebull.EntityModel.Designer
             var code = new StringBuilder();
             foreach (var l in lines)
             {
-                if (string.IsNullOrEmpty(l))
+                if (string.IsNullOrWhiteSpace(l))
                     continue;
                 var line = l.Trim().TrimEnd(';');
                 if (line[0] == '{')
@@ -121,7 +121,7 @@ namespace Agebull.EntityModel.Designer
             foreach (var line in lines)
             {
                 
-                if (string.IsNullOrEmpty(line))
+                if (string.IsNullOrWhiteSpace(line))
                     continue;
                 var words = line.Trim().Split(new[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
                 if (words.Length < 3)
@@ -130,7 +130,7 @@ namespace Agebull.EntityModel.Designer
                     continue;
                 }
                 code.AppendLine();
-                var list = words.Select(p => p.Trim().Replace(',','£¬')).Where(p => !string.IsNullOrEmpty(p)).ToList();
+                var list = words.Select(p => p.Trim().Replace(',','£¬')).Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
                 if (list.Count > 1)
                 {
                     words = list[1].Split('(',')');
@@ -156,7 +156,7 @@ namespace Agebull.EntityModel.Designer
             foreach (var line in lines)
             {
 
-                if (string.IsNullOrEmpty(line))
+                if (string.IsNullOrWhiteSpace(line))
                     continue;
                 var words = line.Trim().Split(new[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
                 if (words.Length < 3)
@@ -164,7 +164,7 @@ namespace Agebull.EntityModel.Designer
                     //code.Append(line);
                     continue;
                 }
-                //var list = words.Select(p => p.Trim().Replace(',', '£¬')).Where(p => !string.IsNullOrEmpty(p)).ToList();
+                //var list = words.Select(p => p.Trim().Replace(',', '£¬')).Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
                 //if (list.Count > 1)
                 //{
                 //    words = list[1].Split('(', ')');
@@ -192,7 +192,7 @@ namespace Agebull.EntityModel.Designer
             var code = new StringBuilder();
             foreach (var line in lines)
             {
-                if (string.IsNullOrEmpty(line))
+                if (string.IsNullOrWhiteSpace(line))
                     continue;
                 var words = line.Trim().Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
                 code.AppendLine(words.LinkToString(","));
@@ -213,7 +213,7 @@ namespace Agebull.EntityModel.Designer
             var code = new StringBuilder();
             foreach (var line in lines)
             {
-                if (string.IsNullOrEmpty(line))
+                if (string.IsNullOrWhiteSpace(line))
                     continue;
                 var words = line.Trim().Split(new[] { ' ', '\t', '[', ']', '`', ',' },
                     StringSplitOptions.RemoveEmptyEntries);
@@ -282,7 +282,7 @@ namespace Agebull.EntityModel.Designer
             var code = new StringBuilder();
             foreach (var line in lines)
             {
-                if (string.IsNullOrEmpty(line))
+                if (string.IsNullOrWhiteSpace(line))
                     continue;
                 var words = line.Trim(' ', '\t', ',').Replace("(", " (").Split(new[] { ' ', '\t', '[', ']', '`', ',' },
                     StringSplitOptions.RemoveEmptyEntries);
@@ -365,7 +365,7 @@ namespace Agebull.EntityModel.Designer
             var idx = Entity?.MaxIdentity ?? 1;
             foreach (var line in lines)
             {
-                if (string.IsNullOrEmpty(line))
+                if (string.IsNullOrWhiteSpace(line))
                     continue;
                 var words = line.Trim().Split(new[] { ',', '£¬' }, StringSplitOptions.RemoveEmptyEntries);
 

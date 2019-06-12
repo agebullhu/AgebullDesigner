@@ -132,6 +132,6 @@ namespace Agebull.Common.Mvvm
         /// <summary>
         /// 无需确认
         /// </summary>
-        public bool DoConfirm => !string.IsNullOrEmpty(ConfirmMessage);
+        public bool DoConfirm => !string.IsNullOrWhiteSpace(ConfirmMessage);
     }
 }

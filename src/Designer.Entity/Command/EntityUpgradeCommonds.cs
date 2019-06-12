@@ -35,6 +35,20 @@ namespace Agebull.EntityModel.Designer
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
+                Action = CheckName,
+                Caption = "名称中的[标识]统一替换为[编号]",
+                Catalog = "修复",
+                IconName = "tree_item"
+            });
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                Action = ToStandardName,
+                Caption = "规范名称",
+                Catalog = "修复",
+                IconName = "tree_Type"
+            });
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
                 Action = EmptyFromDb,
                 Caption = "空值校验同数据库",
                 Catalog = "修复",
@@ -83,10 +97,56 @@ namespace Agebull.EntityModel.Designer
 
         #endregion
 
+        /// <summary>
+        /// 数据对象名称检查
+        /// </summary>
+        public void CheckName(EntityConfig entity)
+        {
+            foreach (var property in entity.Properties)
+            {
+                if (string.IsNullOrWhiteSpace(property.Caption))
+                    return;
+                if (property.IsPrimaryKey && property.Caption == "主键")
+                    property.Caption = $"{entity.Caption}编号(主键)";
+                else
+                    property.Caption = property.Caption.Replace("标识", "编号");
+
+                if (!property.IsLinkField)
+                    continue;
+                var link = GlobalConfig.GetEntity(property.LinkTable);
+                var fi = link?.Properties.FirstOrDefault(p => p.Name == property.LinkField);
+                if (fi == null)
+                    continue;
+                if (property.IsLinkKey)
+                    property.Caption = $"{link.Caption}编号(外键)";
+                else if (fi.Caption.Contains(link.Caption))
+                    property.Caption = fi.Caption;
+            }
+        }
         void ToClass(EntityConfig entity)
         {
             entity.NoDataBase = true;
         }
+        void ToStandardName(EntityConfig entity)
+        {
+            var name = entity.Name;
+            var words = GlobalConfig.ToWords(entity.Name);
+            if (words[0].Equals("GL", StringComparison.OrdinalIgnoreCase))
+            {
+                words.RemoveAt(0);
+            }
+            if (words[0].Equals(entity.Parent.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                words.RemoveAt(0);
+            }
+            entity.Name = GlobalConfig.ToName(words);
+            entity.SaveTableName = DataBaseHelper.ToTableName(entity);
+            if (entity.ReadTableName == name)
+                entity.ReadTableName = null;
+            if (entity.OldName == null)
+                entity.OldName = name;
+        }
+
         void ToNoClass(EntityConfig entity)
         {
             entity.NoDataBase = false;

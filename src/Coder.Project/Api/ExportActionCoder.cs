@@ -18,6 +18,11 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             MomentCoder.RegisteCoder("Web-Api", "Export.cs", "cs", BaseCode);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public string BaseCode(EntityConfig entity)
         {
             Entity = entity;

@@ -23,7 +23,16 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         protected override void CreateBaCode(string path)
         {
-            string file = Path.Combine(path, Entity.Name + ".Designer.cs");
+            var fileName = ".Designer.cs";
+            var file = Path.Combine(path, Entity.Name + fileName);
+            if (!string.IsNullOrWhiteSpace(Entity.Alias))
+            {
+                var oldFile = Path.Combine(path, Entity.Alias + fileName);
+                if (File.Exists(oldFile))
+                {
+                    Directory.Move(oldFile, file);
+                }
+            }
 
             string code = $@"#region
 using System;
@@ -83,6 +92,16 @@ namespace {NameSpace}
         /// </summary>
         protected override void CreateExCode(string path)
         {
+            var fileName = ".cs";
+            var file = Path.Combine(path, Entity.Name + fileName);
+            if (!string.IsNullOrWhiteSpace(Entity.Alias))
+            {
+                var oldFile = Path.Combine(path, Entity.Alias + fileName);
+                if (File.Exists(oldFile))
+                {
+                    Directory.Move(oldFile, file);
+                }
+            }
             string code = $@"#region using
 using System;
 using System.Collections.Generic;

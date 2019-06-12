@@ -628,32 +628,6 @@ namespace Agebull.EntityModel.Config
             ? "internal"
             : "public ";
 
-        /// <summary>
-        /// 别名
-        /// </summary>
-        [DataMember, JsonProperty("Alias", NullValueHandling = NullValueHandling.Ignore)]
-        internal string _alias;
-
-        /// <summary>
-        /// 别名
-        /// </summary>
-        /// <remark>
-        /// 属性别名
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"模型设计"), DisplayName(@"别名"), Description("属性别名")]
-        public string Alias
-        {
-            get => _alias;
-            set
-            {
-                if (_alias == value)
-                    return;
-                BeforePropertyChanged(nameof(Alias), _alias, value);
-                _alias = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(Alias));
-            }
-        }
 
         /// <summary>
         /// 初始值的说明文字
@@ -1894,7 +1868,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"用户是否可输入"), Description("用户是否可输入")]
-        public bool CanUserInput => !DenyClient && !IsUserReadOnly && !IsSystemField && !IsCompute && !(IsIdentity && IsIdentity) && (Parent != null && !Parent.IsUiReadOnly);
+        public bool CanUserInput => !DenyClient && !IsUserReadOnly && !IsSystemField  && !(IsIdentity && IsIdentity) && (Parent != null && !Parent.IsUiReadOnly);
 
         /// <summary>
         /// 不可编辑
@@ -2497,19 +2471,19 @@ namespace Agebull.EntityModel.Config
                         {
                             max = Max = null;
                         }
-                        if (string.IsNullOrEmpty(max))
+                        if (string.IsNullOrWhiteSpace(max))
                             max = Datalen.ToString();
                     }
 
-                    if (!string.IsNullOrEmpty(Min) && !string.IsNullOrEmpty(max))
+                    if (!string.IsNullOrWhiteSpace(Min) && !string.IsNullOrWhiteSpace(max))
                     {
                         decs.Append($"合理长度在{Min}-{max}之间.");
                     }
-                    else if (!string.IsNullOrEmpty(Min))
+                    else if (!string.IsNullOrWhiteSpace(Min))
                     {
                         decs.Append($"合理长度应不小于{Min}.");
                     }
-                    else if (!string.IsNullOrEmpty(max))
+                    else if (!string.IsNullOrWhiteSpace(max))
                     {
                         decs.Append($"合理长度应不大于{max}.");
                     }
@@ -2517,15 +2491,15 @@ namespace Agebull.EntityModel.Config
                 else
                 {
                     string max = Max;
-                    if (!string.IsNullOrEmpty(Min) && !string.IsNullOrEmpty(max))
+                    if (!string.IsNullOrWhiteSpace(Min) && !string.IsNullOrWhiteSpace(max))
                     {
                         decs.Append($"合理值(大等于){Min}且(小于){max}.");
                     }
-                    else if (!string.IsNullOrEmpty(Min))
+                    else if (!string.IsNullOrWhiteSpace(Min))
                     {
                         decs.Append($"合理值不应小于{Min}.");
                     }
-                    else if (!string.IsNullOrEmpty(max))
+                    else if (!string.IsNullOrWhiteSpace(max))
                     {
                         decs.Append($"合理值不应大于{max}.");
                     }

@@ -235,10 +235,10 @@ namespace Agebull.EntityModel.Designer
             bool isInStruct = false;
             foreach (string l in lines)
             {
-                if (string.IsNullOrEmpty(l))
+                if (string.IsNullOrWhiteSpace(l))
                     continue;
                 var line = l.Trim(' ', '\t', ';');
-                if (string.IsNullOrEmpty(line))
+                if (string.IsNullOrWhiteSpace(line))
                     continue;
                 switch (line)
                 {

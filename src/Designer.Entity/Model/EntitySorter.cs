@@ -32,7 +32,7 @@ namespace Agebull.EntityModel.Config
                 pc.Option.Index = ++idx;
                 Entity.Add(pc);
             }
-            var groups = columns.Where(p => !string.IsNullOrEmpty(p.Group)).Select(p => p.Group).Distinct();
+            var groups = columns.Where(p => !string.IsNullOrWhiteSpace(p.Group)).Select(p => p.Group).Distinct();
             foreach (var group in groups)
             {
                 foreach (var column in columns.Where(p => p.Group == group).OrderBy(p => p.Index))
@@ -41,7 +41,7 @@ namespace Agebull.EntityModel.Config
                     Entity.Add(column);
                 }
             }
-            foreach (var column in columns.Where(p => string.IsNullOrEmpty(p.Group)).OrderBy(p => p.Index))
+            foreach (var column in columns.Where(p => string.IsNullOrWhiteSpace(p.Group)).OrderBy(p => p.Index))
             {
                 column.Option.Index = ++idx;
                 Entity.Add(column);

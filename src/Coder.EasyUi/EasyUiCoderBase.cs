@@ -49,7 +49,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         void IAutoRegister.AutoRegist()
         {
             MomentCoder.RegisteCoder("Web-EasyUi", FileName, LangName, BaseCode);
-            if (!string.IsNullOrEmpty(ExFileName))
+            if (!string.IsNullOrWhiteSpace(ExFileName))
                 MomentCoder.RegisteCoder("Web-EasyUi", ExFileName, LangName, ExtendCode);
         }
 

@@ -46,6 +46,60 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public SolutionConfig Solution => Option.Solution;
 
+        /// <summary>
+        /// 别名
+        /// </summary>
+        [DataMember, JsonProperty("Alias", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _alias;
+
+        /// <summary>
+        /// 别名
+        /// </summary>
+        /// <remark>
+        /// 属性别名
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"模型设计"), DisplayName(@"别名"), Description("属性别名")]
+        public string Alias
+        {
+            get => _alias == Name ? null : _alias;
+            set
+            {
+                if (_alias == value)
+                    return;
+                BeforePropertyChanged(nameof(Alias), _alias, value);
+                _alias = string.IsNullOrWhiteSpace(value) || value == Name ? null : value.Trim();
+                OnPropertyChanged(nameof(Alias));
+            }
+        }
+
+
+        /// <summary>
+        /// 原始名称
+        /// </summary>
+        [DataMember, JsonProperty("oldName", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _oldName;
+
+        /// <summary>
+        /// 别名
+        /// </summary>
+        /// <remark>
+        /// 属性别名
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"模型设计"), DisplayName(@"别名"), Description("属性别名")]
+        public string OldName
+        {
+            get => _oldName;
+            set
+            {
+                if (_oldName == value)
+                    return;
+                BeforePropertyChanged(nameof(OldName), _oldName, value);
+                _oldName = value?.Trim();
+                OnPropertyChanged(nameof(OldName));
+            }
+        }
         #endregion
 
         #region 继承

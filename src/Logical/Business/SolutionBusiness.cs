@@ -344,7 +344,7 @@ namespace Agebull.EntityModel.Config
         /// <param name="path"></param>
         public void CheckProjectPath(string old, string path)
         {
-            if (string.IsNullOrEmpty(old) || string.IsNullOrEmpty(path))
+            if (string.IsNullOrWhiteSpace(old) || string.IsNullOrWhiteSpace(path))
                 return;
             foreach (var project in Solution.Projects)
             {

@@ -125,7 +125,7 @@ namespace Agebull.EntityModel.Designer
             int value = 0;
             foreach (var l in lines)
             {
-                if (string.IsNullOrEmpty(l))
+                if (string.IsNullOrWhiteSpace(l))
                     continue;
                 var line = l.Trim().TrimEnd(',');
                 if (barket > 0)
@@ -214,7 +214,7 @@ namespace Agebull.EntityModel.Designer
             bool error = false;
             foreach (string l in lines)
             {
-                if (string.IsNullOrEmpty(l))
+                if (string.IsNullOrWhiteSpace(l))
                     continue;
                 var line = l.Trim().Split('>')[0];
                 code.Append(line);

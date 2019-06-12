@@ -57,7 +57,7 @@ namespace Agebull.EntityModel.RobotCoder.Mobile
                 builder.CreateBaseCode(entityPath);
                 builder.CreateExtendCode(entityPath);
             }
-            if (!string.IsNullOrEmpty(project.CppCodePath))
+            if (!string.IsNullOrWhiteSpace(project.CppCodePath))
             {
                 var cppPath = GlobalConfig.CheckPath(project.CppCodePath);
                 var structCoder = new CppStructCoder

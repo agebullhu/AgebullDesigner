@@ -61,7 +61,7 @@ namespace Agebull.EntityModel.Designer.AssemblyAnalyzer
             }
             var members = from p in xElement.Elements("member")
                 let name = p.Attribute("name")
-                where !string.IsNullOrEmpty(name?.Value) && name.Value[0] != 'M'
+                where !string.IsNullOrWhiteSpace(name?.Value) && name.Value[0] != 'M'
                 let summary = p.Element("summary")
                 let remarks = p.Element("remarks")
                 let np = name.Value.Split(':', '(')
@@ -119,7 +119,7 @@ namespace Agebull.EntityModel.Designer.AssemblyAnalyzer
             get => _summary;
             set
             {
-                if (string.IsNullOrEmpty(value))
+                if (string.IsNullOrWhiteSpace(value))
                 {
                     _summary = null;
                     return;
@@ -136,7 +136,7 @@ namespace Agebull.EntityModel.Designer.AssemblyAnalyzer
             get => _remark;
             set
             {
-                if (string.IsNullOrEmpty(value))
+                if (string.IsNullOrWhiteSpace(value))
                 {
                     _remark = null;
                     return;

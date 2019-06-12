@@ -79,14 +79,7 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
                 CreateCode<SqlServerAccessBuilder>(project, schema, accessPath);
             }
             var blPath = IOHelper.CheckPath(root, "Business");
-            if (cls != null)
-            {
-                blPath = IOHelper.CheckPath(blPath,cls);
-            }
-            else
-            {
-                blPath = IOHelper.CheckPath(blPath, "Logical");
-            }
+            blPath = IOHelper.CheckPath(blPath, cls ?? "None");
             CreateCode<BusinessBuilder>(project, schema, blPath);
             Message = blPath;
         }

@@ -72,6 +72,8 @@
     <Compile Include="Business\PropertyBusinessModel.cs" />
     <Compile Include="Command\EntityEditCommands.cs" />
     <Compile Include="Command\EntityToolCommands.cs" />
+    <Compile Include="Command\SortCommonds.cs" />
+    <Compile Include="Command\RelationCommonds.cs" />
     <Compile Include="Command\EntityUpgradeCommonds.cs" />
     <Compile Include="Command\InterfaceCommand.cs" />
     <Compile Include="Command\PropertyModel.cs" />

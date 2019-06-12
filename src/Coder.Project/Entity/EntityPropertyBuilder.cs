@@ -300,6 +300,7 @@ using Agebull.EntityModel.Interfaces;
                 this.{FieldName(property)} = value;
                 On{property.Name}Seted();
                 this.OnPropertyChanged(_DataStruct_.Real_{property.Name});
+                this.OnPropertyChanged(nameof({property.Name}));
             }}
         }}");
 
@@ -441,6 +442,10 @@ using Agebull.EntityModel.Interfaces;
         public {property.LastCsType} {property.Name} => throw new Exception(""{ToRemString(property.Caption)}属性仅限用于查询的Lambda表达式使用"");");
         }
 
+        /// <summary>
+        /// 数据访问字段,有BUG小心
+        /// </summary>
+        /// <returns></returns>
         private string AccessProperties()
         {
             var code = new StringBuilder();
@@ -475,6 +480,8 @@ using Agebull.EntityModel.Interfaces;
                     ? null 
                     : Newtonsoft.Json.JsonConvert.DeserializeObject<{property.LastCsType}>(value);
                 On{property.StorageProperty}Seted();
+                this.OnPropertyChanged(_DataStruct_.Real_{property.StorageProperty});
+                this.OnPropertyChanged(nameof({property.StorageProperty}));
             }}
         }}");
             }

@@ -67,7 +67,7 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
             {
                 property.DbFieldName = property.Name;
             }
-            if (string.IsNullOrEmpty(Context.SelectEntity.SaveTableName))
+            if (string.IsNullOrWhiteSpace(Context.SelectEntity.SaveTableName))
                 Context.SelectEntity.SaveTableName = "tb_" + Context.SelectEntity.Name;
         }
         /// <summary>
@@ -80,7 +80,7 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
             {
                 property.DbFieldName = property.Name.ToLWord();
             }
-            if (string.IsNullOrEmpty(Context.SelectEntity.SaveTableName))
+            if (string.IsNullOrWhiteSpace(Context.SelectEntity.SaveTableName))
                 Context.SelectEntity.SaveTableName = "tb_" + Context.SelectEntity.Name.ToLWord();
         }
         /// <summary>
@@ -93,7 +93,7 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
             {
                 property.DbFieldName = NameHelper.ToLinkWordName(property.Name, "_", false);
             }
-            if (string.IsNullOrEmpty(Context.SelectEntity.SaveTableName))
+            if (string.IsNullOrWhiteSpace(Context.SelectEntity.SaveTableName))
                 Context.SelectEntity.SaveTableName = "tb_" + NameHelper.ToLinkWordName(Context.SelectEntity.Name, "_", false);
         }
         #endregion

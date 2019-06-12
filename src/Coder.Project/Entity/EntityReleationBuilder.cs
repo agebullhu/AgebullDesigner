@@ -199,7 +199,7 @@ namespace Agebull.EntityModel.RobotCoder
                 , releation.Name.ToPluralism()
                 , releation.PrimaryKey
                 , releation.ForeignKey
-                , string.IsNullOrEmpty(releation.Condition) ? "null" : $@"""{releation.Condition}"""
+                , string.IsNullOrWhiteSpace(releation.Condition) ? "null" : $@"""{releation.Condition}"""
                 , releation.Friend.ToPluralism()
                 , Project.DataBaseObjectName);
         }

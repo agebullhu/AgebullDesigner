@@ -26,7 +26,7 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        private const string fileType = "数据结构文件(*.json)|*.json";
+        private const string fileType = "数据结构文件(*.json)|*.json|旧版文件(*.xml)|*.xml";
         #region 文件读写
         /// <summary>
         /// 保存

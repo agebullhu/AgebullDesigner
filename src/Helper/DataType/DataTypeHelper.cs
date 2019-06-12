@@ -80,10 +80,9 @@ namespace Agebull.EntityModel.RobotCoder
         public static void ToStandard(PropertyConfig property)
         {
             var dataType = string.IsNullOrWhiteSpace(property.DataType) ? FindByCSharp(property.CsType) : FindByName(property.DataType);
-
-            property.DataType = dataType.Name;
             if (dataType.Name.ToLower() != "object")
             {
+                property.DataType = dataType.Name;
                 property.CsType = dataType.CSharp;
                 property.CppType = dataType.Cpp;
             }
@@ -114,6 +113,10 @@ namespace Agebull.EntityModel.RobotCoder
         public static void CsDataType(PropertyConfig arg)
         {
             DataTypeMapConfig dataType;
+            if (arg.CustomType != null)
+            {
+                arg.IsEnum = true;
+            }
             if (arg.IsEnum)
             {
                 dataType = GlobalConfig.CurrentSolution.DataTypeMap.FirstOrDefault(p => p.Name == "Enum");
@@ -124,33 +127,12 @@ namespace Agebull.EntityModel.RobotCoder
             }
             else
             {
-                string name = arg.IsEnum ? "Enum" : arg.CsType;
-                dataType = GlobalConfig.CurrentSolution.DataTypeMap.FirstOrDefault(p => string.Equals(p.CSharp, name, StringComparison.OrdinalIgnoreCase));
+                dataType = GlobalConfig.CurrentSolution.DataTypeMap.FirstOrDefault(p => string.Equals(p.CSharp, arg.CsType, StringComparison.OrdinalIgnoreCase));
             }
-            if (dataType != null)
+
+            if (dataType == null)
             {
-                arg.DataType = dataType.Name;
-                arg.CsType = dataType.CSharp;
-                arg.CppType = dataType.Cpp;
-                if (arg.Datalen <= 0)
-                    arg.Datalen = dataType.Datalen;
-                arg.Scale = dataType.Scale;
-                if (arg.Parent == null)
-                    arg.DbType = dataType.MySql;
-                else
-                    switch (arg.Parent.Parent.DbType)
-                    {
-                        case DataBaseType.SqlServer:
-                            arg.DbType = dataType.SqlServer;
-                            break;
-                        default:
-                            arg.DbType = dataType.MySql;
-                            break;
-                    }
-            }
-            else
-            {
-                GlobalConfig.CurrentSolution.DataTypeMap.Add(new DataTypeMapConfig
+                GlobalConfig.CurrentSolution.DataTypeMap.Add(dataType = new DataTypeMapConfig
                 {
                     Name = arg.DataType ?? arg.CsType,
                     CSharp = arg.CsType,
@@ -159,6 +141,35 @@ namespace Agebull.EntityModel.RobotCoder
                     Scale = arg.Scale,
                     MySql = arg.DbType
                 });
+            }
+            arg.DataType = dataType.Name;
+            arg.CsType = dataType.CSharp;
+            arg.CppType = dataType.Cpp;
+            if (arg.Datalen <= 0)
+                arg.Datalen = dataType.Datalen;
+            arg.Scale = dataType.Scale;
+            if (arg.Parent == null)
+                arg.DbType = dataType.MySql;
+            else
+                switch (arg.Parent.Parent.DbType)
+                {
+                    case DataBaseType.SqlServer:
+                        arg.DbType = dataType.SqlServer;
+                        break;
+                    default:
+                        arg.DbType = dataType.MySql;
+                        break;
+                }
+
+            if (arg.DbType.Contains('('))
+            {
+                var words = arg.DbType.Split(new []{ ',', '(', ')', ' ' },StringSplitOptions.RemoveEmptyEntries);
+                arg.DbType = words[0];
+                if (words.Length > 1 && int.TryParse(words[1], out var len))
+                    arg.Datalen = len;
+
+                if (words.Length > 2 && int.TryParse(words[2], out var scale))
+                    arg.Scale = scale;
             }
         }
         public static void StandardDataType(PropertyConfig arg)

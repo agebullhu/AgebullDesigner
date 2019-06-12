@@ -25,7 +25,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
             var folder = !string.IsNullOrWhiteSpace(Entity.PageFolder)
                 ? Entity.PageFolder
-                    : string.IsNullOrEmpty(Entity.Classify)
+                    : string.IsNullOrWhiteSpace(Entity.Classify)
                         ? Entity.Name
                         : $"{Entity.Classify}\\{Entity.Name}";
 
@@ -57,7 +57,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
             var folder = !string.IsNullOrWhiteSpace(Entity.PageFolder)
                 ? Entity.PageFolder
-                    : string.IsNullOrEmpty(Entity.Classify)
+                    : string.IsNullOrWhiteSpace(Entity.Classify)
                         ? Entity.Name
                         : $"{Entity.Classify}\\{Entity.Name}";
 

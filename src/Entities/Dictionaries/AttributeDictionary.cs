@@ -46,7 +46,7 @@ namespace Agebull.EntityModel
         {
             get
             {
-                if (string.IsNullOrEmpty(name))
+                if (string.IsNullOrWhiteSpace(name))
                 {
                     return null;
                 }
@@ -79,7 +79,7 @@ namespace Agebull.EntityModel
         /// <returns></returns>
         public T Get<T>(string name)
         {
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrWhiteSpace(name))
             {
                 return default( T );
             }

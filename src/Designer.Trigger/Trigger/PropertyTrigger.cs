@@ -11,7 +11,7 @@ namespace Agebull.EntityModel.Designer
     {
         protected override void OnLoad()
         {
-            if (!string.IsNullOrEmpty(TargetConfig?.LinkField))
+            if (!string.IsNullOrWhiteSpace(TargetConfig?.LinkField))
             {
                 TargetConfig.Option.IsLink = true;
             }
@@ -36,7 +36,7 @@ namespace Agebull.EntityModel.Designer
                         TargetConfig.IsRequired = true;
                     break;
                 case nameof(TargetConfig.LinkField):
-                    if (!string.IsNullOrEmpty(TargetConfig.LinkField))
+                    if (!string.IsNullOrWhiteSpace(TargetConfig.LinkField))
                     {
                         TargetConfig.Option.IsLink = true;
                     }

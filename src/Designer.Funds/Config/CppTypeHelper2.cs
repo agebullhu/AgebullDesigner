@@ -153,7 +153,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static object ToCppLastType(string cppType)
         {
-            if (string.IsNullOrEmpty(cppType))
+            if (string.IsNullOrWhiteSpace(cppType))
             {
                 return null;
             }

@@ -232,7 +232,7 @@ void CopyFromClr({Entity.EntityName}^ cs_field, {Entity.Name}& field)
         {
             if (field.IsIntDecimal)
             {
-                if (!string.IsNullOrEmpty(field.ArrayLen))
+                if (!string.IsNullOrWhiteSpace(field.ArrayLen))
                     code.AppendFormat(@"
     if(cs_field->{0} != nullptr)
     {{
@@ -271,7 +271,7 @@ void CopyFromClr({Entity.EntityName}^ cs_field, {Entity.Name}& field)
 	    field.{0} = c_{0}[0];
 	    Marshal::FreeHGlobal(IntPtr((void*)c_{0}));
     }}", field.Name, field.Caption);
-            else if (!string.IsNullOrEmpty(field.ArrayLen))
+            else if (!string.IsNullOrWhiteSpace(field.ArrayLen))
                 code.AppendFormat(@"
     if(cs_field->{0} != nullptr)
     {{
@@ -295,7 +295,7 @@ void CopyFromClr({Entity.EntityName}^ cs_field, {Entity.Name}& field)
         {
             if (field.IsIntDecimal)
             {
-                if (!string.IsNullOrEmpty(field.ArrayLen))
+                if (!string.IsNullOrWhiteSpace(field.ArrayLen))
                     code.AppendFormat(@"
     cs_field->{0} =  gcnew {1}();//{2}-{3}
     for(auto vl : field.{0})
@@ -321,7 +321,7 @@ void CopyFromClr({Entity.EntityName}^ cs_field, {Entity.Name}& field)
                     code.AppendFormat(@"
     if(strlen(field.{0}) > 0)//{1}-{2}
         cs_field->{0} =  marshal_as<String^>(field.{0});", field.Name, field.Caption, field.CsType);
-            else if (!string.IsNullOrEmpty(field.ArrayLen))
+            else if (!string.IsNullOrWhiteSpace(field.ArrayLen))
                 code.AppendFormat(@"
     cs_field->{0} =  gcnew {1}();//{2}-{3}
     for(auto vl : field.{0})

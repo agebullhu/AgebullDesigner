@@ -42,7 +42,7 @@ namespace Agebull.Common.Mvvm
             {
                 e.Cancel = true;
             }
-            else if (!string.IsNullOrEmpty(descriptor.DisplayName))
+            else if (!string.IsNullOrWhiteSpace(descriptor.DisplayName))
             {
                 e.Column.Header = descriptor.DisplayName;
             }

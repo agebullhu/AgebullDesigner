@@ -55,7 +55,7 @@
         <StackPanel Style="{StaticResource LayoutPanel}">
             <GroupBox Header="名称(设计时)" Margin="5">
                 <StackPanel Orientation="Vertical" Margin="0">
-                    <StackPanel Orientation="Horizontal" Margin="0">
+                    <WrapPanel Orientation="Horizontal" Margin="0">
                         <StackPanel>
                             <Label Content="名称" />
                             <TextBox
@@ -71,7 +71,15 @@
                             <TextBox IsReadOnly="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}"
                                      Text="{Binding Identity,Mode=TwoWay}"/>
                         </StackPanel>
-                    </StackPanel>
+                        <StackPanel>
+                            <Label Content="别名" />
+                            <TextBox Text="{Binding Alias,Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel>
+                            <Label Content="原始名称" />
+                            <TextBox Text="{Binding OldName,Mode=TwoWay}" />
+                        </StackPanel>
+                    </WrapPanel> 
                     <StackPanel>
                         <Label Content="说明" />
                         <TextBox Style="{StaticResource TrdTextBox}" Height="48"

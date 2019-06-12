@@ -209,7 +209,7 @@ namespace Agebull.EntityModel.RobotCoder.CodeTemplate.LuaTemplate
                             StringBuilder builder = new StringBuilder();
                             element.ToContent(builder);
                             var content = builder.ToString();
-                            if (string.IsNullOrEmpty(content))
+                            if (string.IsNullOrWhiteSpace(content))
                                 break;
                             AppendLine(elements, level);
                             Append(elements, new WordUnit

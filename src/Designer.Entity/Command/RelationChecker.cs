@@ -14,7 +14,7 @@ namespace Agebull.EntityModel.Designer
         ///     检查
         /// </summary>
         /// <returns></returns>
-        internal static void DoChecke(EntityConfig entity)
+        internal static void DoCheck(EntityConfig entity)
         {
             Trace.WriteLine($"**********{entity.Caption ?? entity.Name}**********");
             try
@@ -50,6 +50,52 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
+        /// <summary>
+        ///     检查
+        /// </summary>
+        /// <returns></returns>
+        internal static void CheckLinkType(EntityConfig entity)
+        {
+            foreach (var field in entity.Properties.Where(p => p.IsLink).ToArray())
+            {
+                var friend = GlobalConfig.GetEntity(field.LinkTable);
+                var link = friend?.Properties.FirstOrDefault(p =>
+                    (string.Equals(p.Name, field.LinkField, StringComparison.OrdinalIgnoreCase)));
+                if (link == null)
+                    continue;
+                field.LinkField = link.Name;
+                field.DataType = link.DataType;
+                field.CsType = link.CsType;
+                field.DbType = link.DbType;
+                field.Datalen = link.Datalen;
+            }
+        }
+        /// <summary>
+        ///     检查
+        /// </summary>
+        /// <returns></returns>
+        internal static void ClearLink(EntityConfig entity)
+        {
+            Trace.WriteLine($"**********{entity.Caption ?? entity.Name}**********");
+            try
+            {
+                foreach (var field in entity.Properties)
+                {
+                    field.LinkTable = null;
+                    field.LinkField = null;
+                    field.IsLinkKey = false;
+                    field.IsLinkCaption = false;
+                    field.IsLinkField = false;
+                    field.Option.ReferenceConfig = null;
+                    field.Option.IsLink = false;
+                    field.IsCompute = false;
+                }
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e);
+            }
+        }
         /// <summary>
         ///     检查
         /// </summary>

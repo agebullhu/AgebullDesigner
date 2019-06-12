@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.Mysql;
+using Agebull.EntityModel.Config.SqlServer;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -8,10 +10,18 @@ namespace Agebull.EntityModel.RobotCoder
     {
         #region 基础
 
+        /// <inheritdoc />
         public override string BaseCode => EntityStruct();
 
+        /// <inheritdoc />
         protected override string Folder => "Struct";
 
+        int DbType(PropertyConfig field)
+        {
+            if (Project.DbType == DataBaseType.SqlServer)
+                return (int)SqlServerHelper.ToSqlDbType(field);
+            return (int)MySqlHelper.ToSqlDbType(field);
+        }
         #endregion
 
         #region 数据结构
@@ -89,7 +99,7 @@ namespace Agebull.EntityModel.RobotCoder
         {
             if (table == null)
                 return;
-            if (!string.IsNullOrEmpty(table.ModelBase))
+            if (!string.IsNullOrWhiteSpace(table.ModelBase))
                 EntityStruct(Project.Entities.FirstOrDefault(p => p.Name == table.ModelBase), codeStruct, codeConst, ref isFirst);
 
             foreach (PropertyConfig property in table.PublishProperty)
@@ -113,6 +123,7 @@ namespace Agebull.EntityModel.RobotCoder
                             PropertyType = typeof({property.CustomType ?? property.CsType}),
                             CanNull      = {(property.Nullable ? "true" : "false")},
                             ValueType    = PropertyValueType.{CsharpHelper.PropertyValueType(property)},
+                            DbType       = {DbType(property)},
                             CanImport    = {(property.ExtendConfigListBool["easyui", "CanImport"] ? "true" : "false")},
                             CanExport    = {(property.ExtendConfigListBool["easyui", "CanExport"] ? "true" : "false")}
                         }}
@@ -126,7 +137,7 @@ namespace Agebull.EntityModel.RobotCoder
             /// <summary>
             /// {ToRemString(table.PrimaryColumn.Caption)}的数字标识
             /// </summary>
-            public const byte {table.PrimaryColumn.Name} = {table.PrimaryColumn.Identity};
+            public const int {table.PrimaryColumn.Name} = {table.PrimaryColumn.Identity};
             
             /// <summary>
             /// {ToRemString(table.PrimaryColumn.Caption)}的实时记录顺序
@@ -141,7 +152,7 @@ namespace Agebull.EntityModel.RobotCoder
             /// <summary>
             /// {ToRemString(property.Caption)}的数字标识
             /// </summary>
-            public const byte {property.Name} = {property.Identity};
+            public const int {property.Name} = {property.Identity};
             
             /// <summary>
             /// {ToRemString(property.Caption)}的实时记录顺序

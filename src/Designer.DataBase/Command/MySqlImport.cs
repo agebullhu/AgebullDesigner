@@ -48,6 +48,8 @@ namespace Agebull.EntityModel.Designer
                 Port = 3306
             };
             _connectionString = csb.ConnectionString;
+            //_connectionString = $"Database={project.DbSoruce};Data Source={project.DbHost};SslMode=none;User Id={project.DbUser};Password={project.DbPassWord};CharSet=utf8;port=3306;Compress=false;Pooling=true;Min Pool Size=0;Max Pool Size=100;Connection Lifetime=0;";
+
             DoImport();
         }
 
@@ -98,7 +100,7 @@ namespace Agebull.EntityModel.Designer
                             SaveTableName = table,
                             Name = NameHelper.ToWordName(table)
                         };
-                        if (!string.IsNullOrEmpty(t.Value))
+                        if (!string.IsNullOrWhiteSpace(t.Value))
                         {
                             var vl = t.Value.Split(NameHelper.NoneLanguageChar, 2);
                             entity.Caption = vl[0];
@@ -223,7 +225,7 @@ from information_schema.columns where table_schema='{db}' and table_name='{table
                             break;
                     }
                     column.Name = NameHelper.ToWordName(column.Name ?? column.DbFieldName);
-                    if (!string.IsNullOrEmpty(column.Caption))
+                    if (!string.IsNullOrWhiteSpace(column.Caption))
                     {
                         var vl = column.Caption;
                         var vls = vl.Split(NameHelper.NoneLanguageChar, 2);

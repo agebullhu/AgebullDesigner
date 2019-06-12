@@ -117,7 +117,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <returns>项目生成器</returns>
         public static ProjectBuilder CreateBuilder(string type)
         {
-            if (string.IsNullOrEmpty(type))
+            if (string.IsNullOrWhiteSpace(type))
                 throw new ArgumentException("空名称的项目生成器是不允许的");
             if (Builders.ContainsKey(type))
                 return Builders[type]();

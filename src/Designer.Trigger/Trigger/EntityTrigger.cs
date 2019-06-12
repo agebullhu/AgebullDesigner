@@ -92,7 +92,7 @@ namespace Agebull.EntityModel.Designer
         private void SyncLinkTable(object oldValue, object newValue)
         {
             string oldName = (string)oldValue;
-            if (!string.IsNullOrEmpty(oldName))
+            if (!string.IsNullOrWhiteSpace(oldName))
                 return;
             foreach (var entity in SolutionConfig.Current.Entities)
             {

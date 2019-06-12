@@ -42,7 +42,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public string GetFileName()
         {
-            if (string.IsNullOrEmpty(Name))
+            if (string.IsNullOrWhiteSpace(Name))
             {
                 return Name = Guid.NewGuid().ToString("N").ToUpper() + ".json";
             }

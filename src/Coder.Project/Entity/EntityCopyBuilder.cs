@@ -63,7 +63,7 @@ namespace Agebull.EntityModel.RobotCoder
             CopyExtendValue(sourceEntity);");
             if (!IsClient)
                 code.Append(@"
-            this.__EntityStatus.SetModified();");
+            this.__status.IsModified = true;");
             code.Append(@"
         }");
             //return code.ToString();

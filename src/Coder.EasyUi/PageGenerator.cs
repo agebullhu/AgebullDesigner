@@ -23,7 +23,7 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
                 return;
             var folder = !string.IsNullOrWhiteSpace(Entity.PageFolder)
                 ? Entity.PageFolder
-                    : string.IsNullOrEmpty(Entity.Classify)
+                    : string.IsNullOrWhiteSpace(Entity.Classify)
                         ? Entity.Name
                         : $"{Entity.Classify}\\{Entity.Name}";
             //file = ConfigPath(Entity, "File_Web_Action", path, folder, "Action.aspx");

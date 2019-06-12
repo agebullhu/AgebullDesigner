@@ -433,7 +433,7 @@ void Deserialize(Deserializer& reader, {Entity.Name}* field)
                 return $@"
             reader.Read(field->{field.Name});";
             }
-            return string.IsNullOrEmpty(field.ArrayLen)
+            return string.IsNullOrWhiteSpace(field.ArrayLen)
                 ? $@"
             size_t len;
 			reader.Read(len);
@@ -739,7 +739,7 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
         }
         public static string FriendFieldCopy_Tm_FromEs(PropertyConfig srcField, string src_field_name, string dest_field_name)
         {
-            if (!string.IsNullOrEmpty(srcField.ArrayLen))
+            if (!string.IsNullOrWhiteSpace(srcField.ArrayLen))
             {
                 return $@"
     for(int idx = 0;idx < {srcField.ArrayLen};idx++)//{srcField.Caption}
@@ -750,7 +750,7 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
         }
         public static string FriendFieldCopy_Tm_ToEs(PropertyConfig srcField, string src_field_name, string dest_field_name)
         {
-            if (!string.IsNullOrEmpty(srcField.ArrayLen))
+            if (!string.IsNullOrWhiteSpace(srcField.ArrayLen))
             {
                 return $@"
     for(int idx = 0;idx < {srcField.ArrayLen};idx++)//{srcField.Caption}
@@ -761,7 +761,7 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
         }
         public static string FriendFieldCopy_IntDecimal_FromEs(PropertyConfig srcField, string src_field_name, string dest_field_name)
         {
-            if (!string.IsNullOrEmpty(srcField.ArrayLen))
+            if (!string.IsNullOrWhiteSpace(srcField.ArrayLen))
             {
                 return $@"
     for(int idx = 0;idx < {srcField.ArrayLen};idx++)//{srcField.Caption}
@@ -772,7 +772,7 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
         }
         public static string FriendFieldCopy_IntDecimal_ToEs(PropertyConfig srcField, string src_field_name, string dest_field_name)
         {
-            if (!string.IsNullOrEmpty(srcField.ArrayLen))
+            if (!string.IsNullOrWhiteSpace(srcField.ArrayLen))
             {
                 return $@"
     for(int idx = 0;idx < {srcField.ArrayLen};idx++)//{srcField.Caption}
@@ -808,7 +808,7 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
             }
             if (!CppTypeHelper.IsCppBaseType(srcField.CppLastType))
             {
-                if (!string.IsNullOrEmpty(srcField.ArrayLen))
+                if (!string.IsNullOrWhiteSpace(srcField.ArrayLen))
                 {
                     return
                         $@"
@@ -825,7 +825,7 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
 	memcpy({dest_field_name},{src_field_name}, sizeof({srcField.CppLastType}));//{
                         srcField.Caption}";
             }
-            if (!string.IsNullOrEmpty(srcField.ArrayLen))
+            if (!string.IsNullOrWhiteSpace(srcField.ArrayLen))
             {
                 return
                     $@"
@@ -853,7 +853,7 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
                     return;
                 }
             }
-            else if (!string.IsNullOrEmpty(field.ArrayLen))
+            else if (!string.IsNullOrWhiteSpace(field.ArrayLen))
             {
                 code.Append(
                     $@"
@@ -931,7 +931,7 @@ const FIELD_INDEX FIELD_INDEX_{Entity.Name.ToUpper()}_{property.Name.ToUpper()} 
         return;
     }}");
             }
-            else if (!string.IsNullOrEmpty(field.ArrayLen))
+            else if (!string.IsNullOrWhiteSpace(field.ArrayLen))
             {
                 code.Append($@"
     {{

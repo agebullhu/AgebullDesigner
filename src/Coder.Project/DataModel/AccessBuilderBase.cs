@@ -11,12 +11,13 @@ namespace Agebull.EntityModel.RobotCoder
         protected string DataBaseExtend()
         {
             return $@"
+    /*
     partial class {Project.DataBaseObjectName}
     {{
 {TableSql()}
 {TableObject()}
 {TablesEnum()}
-    }}";
+    }}*/";
         }
 
         protected string TableObject()
@@ -54,6 +55,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         public const int Table_{Entity.Name} = 0x{Entity.Index:x};";
         }
+
         protected string TableSql()
         {
             return $@"
@@ -61,7 +63,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// {Entity.Description}的结构语句
         /// </summary>
-        private TableSql _{Entity.ReadTableName}Sql = new TableSql
+        private TableSql _{Entity.Name}Sql = new TableSql
         {{
             TableName = ""{Entity.ReadTableName}"",
             PimaryKey = ""{Entity.PrimaryColumn.Name}""
@@ -166,7 +168,7 @@ namespace Agebull.EntityModel.RobotCoder
             {
                 return;
             }
-            if (!string.IsNullOrEmpty(entity.ModelBase))
+            if (!string.IsNullOrWhiteSpace(entity.ModelBase))
             {
                 FieldMap(Project.Entities.FirstOrDefault(p => p.Name == entity.ModelBase), names);
             }

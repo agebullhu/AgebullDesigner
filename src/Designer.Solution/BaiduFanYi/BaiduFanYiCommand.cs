@@ -66,7 +66,7 @@ namespace Agebull.EntityModel.Designer
                 return;
             var name = item.Name;
             item.Name = BaiduFanYi.ToEnglishWord(item.Name);
-            if (string.IsNullOrEmpty(item.Caption))
+            if (string.IsNullOrWhiteSpace(item.Caption))
                 item.Caption = name;
         }
 

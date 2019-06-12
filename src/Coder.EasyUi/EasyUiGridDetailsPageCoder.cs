@@ -32,7 +32,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                 code.Append($@"
     <div class='details_block'>
         <label class='details_label'>{field.Caption}</label>");
-                if (string.IsNullOrEmpty(field.GridDetailsCode))
+                if (string.IsNullOrWhiteSpace(field.GridDetailsCode))
                     code.Append($@"
         <label class='details_value'><%=details.{field.Name}%></label>");
                 else

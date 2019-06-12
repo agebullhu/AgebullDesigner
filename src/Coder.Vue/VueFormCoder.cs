@@ -45,24 +45,30 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             {
                 if (Entity.Interfaces.Contains("IStateData"))
                 {
+                    exButton.Append(@"
+                <el-button-group>");
                     exButton.Append(stateButton);
+                    if (!Entity.Interfaces.Contains("IAuditData"))
+                        exButton.Append(@"
+                        <el-tooltip placement='top' effect='light'>
+                            <div slot='content'>使当前选中的一或多行数据的数据<b>还原</b>为草稿状态,使之可编辑</div>
+                            <el-button icon='el-icon-unlock' @click='doReset'></el-button>
+                        </el-tooltip>");
+                    exButton.Append(@"
+                </el-button-group>");
                 }
                 if (Entity.Interfaces.Contains("IAuditData"))
                 {
+                    exButton.Append(@"
+                <el-button-group>");
                     exButton.Append(auditButton);
+                    exButton.Append(@"
+                </el-button-group>");
                 }
             }
             exButton.Append(@"
             </div>");
-            StringBuilder quButton = new StringBuilder();
-            if (Entity.Interfaces.Contains("IStateData"))
-            {
-                quButton.Append(satateQuery);
-            }
-            if (Entity.Interfaces.Contains("IAuditData"))
-            {
-                quButton.Append(auditQuery);
-            }
+
             var cls = Entity.Parent.Classifies.FirstOrDefault(p => p.Name == Entity.Classify);
             var folder = cls == null
                ? $"{Entity.Parent.Caption} > {Entity.Caption}"
@@ -92,29 +98,30 @@ namespace Agebull.EntityModel.RobotCoder.VUE
     <meta charset='utf-8'/>
     <meta name='viewport' content='width=device-width'/>
     <meta http-equiv='Content-Type' content='text/html; charset=utf-8-bom'/>
-    <link rel='stylesheet' type='text/css' href='/styles/font-awesome/css/font-awesome.min.css'>
+    <!--font-awesome-->
+    <link rel='stylesheet' type='text/css' href='http://cdn.staticfile.org/font-awesome/5.8.2/css/all.min.css'>
     <!--JQuery-->
-    <script type='text/javascript' src='/scripts/jquery-3.3.1.min.js?v=201910001'></script>
+    <script type='text/javascript' src='http://cdn.staticfile.org/jquery/3.4.1/jquery.min.js'></script>
     <!--VUE-->
-    <link href='http://cdn.staticfile.org/element-ui/2.8.2/theme-chalk/index.css' rel='stylesheet'>
-    <script src='http://cdn.staticfile.org/vue/2.6.10/vue.js'></script>
-    <script src='http://cdn.staticfile.org/element-ui/2.8.2/index.js'></script>
-    <script src='http://cdn.staticfile.org/element-ui/2.8.2/locale/zh-CN.min.js'></script>
+    <link rel='stylesheet' type='text/css' href='http://cdn.staticfile.org/element-ui/2.8.2/theme-chalk/index.css'>
+    <script type='text/javascript' src='http://cdn.staticfile.org/vue/2.6.10/vue.js'></script>
+    <script type='text/javascript' src='http://cdn.staticfile.org/element-ui/2.8.2/index.js'></script>
+    <script type='text/javascript' src='http://cdn.staticfile.org/element-ui/2.8.2/locale/zh-CN.min.js'></script>
     <!--Extend-->
-    <script type='text/javascript' src='/scripts/extend/vue_ex.js?v=201910001'></script>
-    <script type='text/javascript' src='/scripts/extend/core.js?v=201910001'></script>
-    <script type='text/javascript' src='/scripts/extend/ajax.js?v=201910001'></script>
-    <script type='text/javascript' src='/scripts/extend/ajax_vue.js?v=201910001'></script>
-    <script type='text/javascript' src='/scripts/extend/extend.js?v=201910001'></script>
-    <script type='text/javascript' src='/scripts/extend/type.js?v=201910001'></script>
-    <link rel='stylesheet' type='text/css' href='/styles/vuePage.css?v=201910001'/>{style}
+    <script type='text/javascript' src='/scripts/extend/vue_ex.js'></script>
+    <script type='text/javascript' src='/scripts/extend/core.js'></script>
+    <script type='text/javascript' src='/scripts/extend/ajax.js'></script>
+    <script type='text/javascript' src='/scripts/extend/ajax_vue.js'></script>
+    <script type='text/javascript' src='/scripts/extend/extend.js'></script>
+    <script type='text/javascript' src='/scripts/extend/type.js'></script>
+    <link rel='stylesheet' type='text/css' href='/styles/vuePage.css' />{style}
 </head>
 <body>
 <div id='work_space' class='tiled' v-cloak>
     <el-container style='height: 100%; width: 100%'>
         <el-header style='height:54px'>{exButton}
             <div style='display: inline-block; float: right'>
-                <el-input placeholder='请输入搜索内容' v-model='list.keyWords' class='input-with-select' clearable>{quButton}
+                <el-input placeholder='请输入搜索内容' v-model='list.keyWords' class='input-with-select' clearable>{QueryList()}
                     <el-button slot='append' icon='el-icon-search' @click='doQuery'></el-button>
                 </el-input>
             </div>
@@ -143,21 +150,28 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 </html>";
         }
 
-        const string auditQuery = @"";
-        const string satateQuery = @"
-                    <el-select v-model='list.dataState' slot='prepend' placeholder='数据状态' style='width: 80px;'>
-                        <el-option :value='-1' label='-'></el-option>
-                        <el-option :value='0' label='草稿'></el-option>
-                        <el-option :value='1' label='启用'></el-option>
-                        <el-option :value='2' label='停用'></el-option>
-                        <el-option :value='14' label='查看'></el-option>
-                        <el-option :value='15' label='锁定'></el-option>
-                        <el-option :value='16' label='废弃'></el-option>
-                        <el-option :value='255' label='删除'></el-option>
-                    </el-select>";
-        const string auditButton = @"";
+        //const string auditQuery = @"";
+        //const string satateQuery = @"
+        //            <el-select v-model='list.dataState' slot='prepend' placeholder='数据状态' style='width: 80px;'>
+        //                <el-option :value='-1' label='-'></el-option>
+        //                <el-option :value='0' label='草稿'></el-option>
+        //                <el-option :value='1' label='启用'></el-option>
+        //                <el-option :value='2' label='停用'></el-option>
+        //                <el-option :value='14' label='查看'></el-option>
+        //                <el-option :value='15' label='锁定'></el-option>
+        //                <el-option :value='16' label='废弃'></el-option>
+        //                <el-option :value='255' label='删除'></el-option>
+        //            </el-select>";
+        const string auditButton = @"
+                        <el-tooltip placement='top' effect='light'>
+                            <div slot='content'>使当前选中的一或多行数据的数据<b>审核通过</b></div>
+                            <el-button icon='el-icon-finished' @click='doPass'></el-button>
+                        </el-tooltip>
+                        <el-tooltip placement='top' effect='light'>
+                            <div slot='content'>使当前选中的一或多行数据的数据<b>恢复到未审核状态</b></div>
+                            <el-button icon='el-icon-unlock' @click='doReDo'></el-button>
+                        </el-tooltip>";
         const string stateButton = @"
-                    <el-button-group>
                         <el-tooltip placement='top' effect='light'>
                             <div slot='content'>使当前选中的一或多行数据的数据成为<b>启用</b>状态</div>
                             <el-button icon='el-icon-circle-check' @click='doEnable'></el-button>
@@ -169,12 +183,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                         <el-tooltip placement='top' effect='light'>
                             <div slot='content'>使当前选中的一或多行数据的数据成为<b>废弃</b>状态</div>
                             <el-button icon='el-icon-delete' @click='doDiscard'></el-button>
-                        </el-tooltip>
-                        <el-tooltip placement='top' effect='light'>
-                            <div slot='content'>使当前选中的一或多行数据的数据<b>还原</b>为草稿状态,使之可编辑</div>
-                            <el-button icon='el-icon-unlock' @click='doReset'></el-button>
-                        </el-tooltip>
-                    </el-button-group>";
+                        </el-tooltip>";
         #endregion
         #region 表格
 
@@ -320,31 +329,41 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                                 <el-form-item label='{caption}' prop='{field.JsonName}'");
                 if (field.FormCloumnSapn > 1 || field.IsMemo || field.MulitLine)
                     code.Append(" size='large'");
-                code.Append($@">
-                                    <span>{{{{props.row.{field.JsonName}");
-                if (field.EnumConfig != null)
+
+                code.Append(@">
+                                    ");
+                if (field.IsImage)
                 {
-                    code.Append($@" | {field.EnumConfig.Name.ToLWord()}Formater");
+                    code.Append($@"<el-image :src='{field.JsonName}' lazy></el-image>");
                 }
-                else if (field.CsType == nameof(DateTime))
+                else
                 {
-                    var fmt = field.IsTime ? "formatTime" : "formatDate";
-                    code.Append($@" | {fmt}");
-                }
-                else if (field.CsType == "bool")
-                {
-                    code.Append(@" | boolFormater");
-                }
-                else if (field.IsMoney)
-                {
-                    code.Append(@" | formatMoney");
-                }
-                else if (field.CsType == "decimal")
-                {
-                    code.Append(@" | thousandsNumber");
+                    code.Append($@"<span>{{{{props.row.{field.JsonName}");
+                    if (field.EnumConfig != null)
+                    {
+                        code.Append($@" | {field.EnumConfig.Name.ToLWord()}Formater");
+                    }
+                    else if (field.CsType == nameof(DateTime))
+                    {
+                        var fmt = field.IsTime ? "formatTime" : "formatDate";
+                        code.Append($@" | {fmt}");
+                    }
+                    else if (field.CsType == "bool")
+                    {
+                        code.Append(@" | boolFormater");
+                    }
+                    else if (field.IsMoney)
+                    {
+                        code.Append(@" | formatMoney");
+                    }
+                    else if (field.CsType == "decimal")
+                    {
+                        code.Append(@" | thousandsNumber");
+                    }
+                    code.Append(@"}}</span>");
                 }
 
-                code.Append(@"}}</span>
+                code.Append(@"
                                 </el-form-item>");
             }
 
@@ -379,7 +398,17 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             if (Entity.IsUiReadOnly)
                 code.Append(@"
                      disabled");
+
             code.Append('>');
+            //string vif = null;
+            //if (Entity.Interfaces.Contains("IAuditData"))
+            //{
+            //    vif = "form.data.auditState <= 1";
+            //}
+            //else if (Entity.Interfaces.Contains("IStateData"))
+            //{
+            //    vif = "form.data.dataState <= 1";
+            //}
             foreach (var field in Entity.ClientProperty.Where(p => !p.NoneDetails && !p.ExtendConfigListBool["easyui_userFormHide"]).ToArray())
             {
                 var caption = field.Caption;
@@ -393,100 +422,128 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                     if (friend != null)
                         description = friend.Description;
                 }
-                FormField(code, field, caption, description ?? field.Caption);
+                FormField(code, field, caption, description ?? field.Caption/*,vif*/);
             }
             code.Append(@"
             </el-form>
         </div>");
             if (!Entity.IsUiReadOnly)
+            {
                 code.Append(@"
-        <div slot='footer'>
+        <div slot='footer' v-if='!form.readonly'>
             <el-button icon='el-icon-close' @click='form.visible = false'>取消</el-button>
             <el-button icon='el-icon-check' @click='save' type='primary'>保存</el-button>
         </div>");
+            }
             code.Append(@"
     </el-dialog>");
             return code.ToString();
         }
-        private void FormField(StringBuilder code, PropertyConfig field, string caption, string description)
+
+        void SetDisabled(bool disabled, StringBuilder code, PropertyConfig field)
+        {
+            if (disabled)
+            {
+                code.Append(field.IsUserReadOnly ? " disabled" : " :disabled='form.readonly'");
+            }
+            else
+            {
+                code.Append(field.IsUserReadOnly ? " readonly" : " :readonly='form.readonly'");
+            }
+        }
+        private void FormField(StringBuilder code, PropertyConfig field, string caption, string description/*,string vif*/)
         {
             code.Append($@"
             <el-form-item label='{caption}' prop='{field.JsonName}'");
             if (field.FormCloumnSapn > 1 || field.IsMemo || field.MulitLine)
                 code.Append(" size='large'");
             code.Append('>');
-            string ex = " clearable";
-            if (field.IsUserReadOnly)
+            if (field.EnumConfig != null || field.IsLinkKey)
             {
-                ex += " readonly";
-            }
-            if (field.EnumConfig != null)
-            {
-                if (field.IsUserReadOnly)
-                {
-                    ex = " disabled";
-                }
-                ex += " style='width:100%'";
                 code.Append($@"
-                <el-select v-model='form.data.{field.JsonName}'{ex}>");
+                <el-select v-model='form.data.{field.JsonName}'");
+                SetDisabled(true, code, field);
 
-                foreach (var item in field.EnumConfig.Items.OrderBy(p => p.Value))
+
+                code.Append(@" style='width:100%'>");
+                if (field.EnumConfig != null)
                 {
-                    code.Append($@"
+                    foreach (var item in field.EnumConfig.Items.OrderBy(p => p.Value))
+                    {
+                        code.Append($@"
                     <el-option :value='{item.Value}' label='{item.Caption}'></el-option>");
+                    }
+                }
+                else if(field.IsLinkKey)
+                {
+                    var name = GlobalConfig.GetEntity(field.LinkTable)?.Name.ToLWord();
+                    code.Append($@"
+                    <el-option :value='0' label='无'></el-option>
+                    <template v-for='item in {name}'>
+                        <el-option :value='item.id' :label='item.text'></el-option>
+                    </template>");
                 }
                 code.Append(@"
                 </el-select>");
             }
-            else if (field.IsLinkKey)
-            {
-                if (field.IsUserReadOnly)
-                {
-                    ex = " disabled";
-                }
-                ex += " style='width:100%'";
-                var entity = GlobalConfig.GetEntity(field.LinkTable);
-                var name = entity?.Name.ToLWord();
-                code.Append($@"
-                <el-select v-model='form.data.{field.JsonName}'{ex}>
-                    <el-option :value='0' label='无'></el-option>
-                    <template v-for='item in {name}'>
-                        <el-option :value='item.id' :label='item.text'></el-option>
-                    </template>
-                </el-select>");
-            }
             else if (field.CsType == "bool")
             {
-                if (field.IsUserReadOnly)
-                {
-                    ex = " disabled";
-                }
                 code.Append($@"
-                <el-switch v-model='form.data.{field.JsonName}'{ex}></el-switch>");
+                <el-switch v-model='form.data.{field.JsonName}'");
+                SetDisabled(true, code, field);
+                code.Append(@"></el-switch>");
             }
             else if (field.CsType == nameof(DateTime))
             {
-                if (field.IsTime)
-                    ex += "value-format='yyyy-MM-ddTHH:mm:ss' type='datetime'";
-                else
-                    ex += "value-format='yyyy-MM-dd' type='date'";
-                ex += " style='width:100%'";
                 code.Append($@"
-                <el-date-picker v-model='form.data.{field.JsonName}' placeholder='{description}'{ex}></el-date-picker>");
-            }
-            else if (field.IsMemo || field.MulitLine)
-            {
-                code.Append($@"
-                <el-input type='textarea' :rows='3' v-model='form.data.{field.JsonName}' placeholder='{description}' auto-complete='off' {ex}></el-input>");
+                <el-date-picker v-model='form.data.{field.JsonName}' placeholder='{description}' clearable");
+                SetDisabled(false, code, field);
+                code.Append(field.IsTime
+                    ? "value-format='yyyy-MM-ddTHH:mm:ss' type='datetime'"
+                    : "value-format='yyyy-MM-dd' type='date'");
+                code.Append(@" style='width:100%'></el-date-picker>");
             }
             else
             {
                 code.Append($@"
-                <el-input v-model='form.data.{field.JsonName}' placeholder='{description}' {ex}></el-input>");
+                <el-input v-model='form.data.{field.JsonName}' placeholder='{description}' auto-complete='off' clearable");
+                SetDisabled(false, code, field);
+                if (field.IsMemo || field.MulitLine)
+                {
+                    code.Append(" type='textarea' :rows='3'");
+                }
+                code.Append("></el-input>");
             }
-
             code.Append(@"
             </el-form-item>");
+        }
+
+        #endregion
+
+        #region 查询
+
+        string QueryList()
+        {
+            StringBuilder quButton = new StringBuilder();
+            //if (Entity.Interfaces.Contains("IStateData"))
+            //{
+            //    quButton.Append(satateQuery);
+            //}
+            //if (Entity.Interfaces.Contains("IAuditData"))
+            //{
+            //    quButton.Append(auditQuery);
+            //}
+            quButton.Append(@"
+                    <el-select v-model='list.field' slot='prepend' placeholder='选择字段' style='width: 160px;'>
+                        <el-option value='_any_' label='模糊查询'></el-option>");
+            foreach (var field in Entity.ClientProperty.Where(p => !p.NoStorage && !p.IsPrimaryKey && !p.IsLinkKey))
+            {
+                quButton.Append($@"
+                        <el-option value='{field.JsonName}' label='{field.Caption}'></el-option>");
+            }
+            quButton.Append(@"
+                    </el-select>");
+            return quButton.ToString();
         }
 
         #endregion
@@ -578,7 +635,7 @@ extend_methods({{
             if (array.Length == 0)
                 return null;
             StringBuilder code = new StringBuilder();
-            foreach (var entity in array.Where(p=>p.Properties.Any(a => a.IsLinkCaption)))
+            foreach (var entity in array.Where(p => p.Properties.Any(a => a.IsCaption)))
             {
                 code.Append($@"
 

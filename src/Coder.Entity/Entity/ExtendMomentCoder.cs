@@ -18,7 +18,8 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("其它","新增 CS代码","cs",  NewCsCode);
+            MomentCoder.RegisteCoder("其它", "新增 CS代码", "cs", NewCsCode);
+            MomentCoder.RegisteCoder("其它", "新增 CS代码(复制)", "cs", NewCopyCsCode);
             MomentCoder.RegisteCoder("其它","修改 CS代码","cs",  EditCsCode);
             MomentCoder.RegisteCoder("其它","数据库测试","cs",  DbTestCode);
             MomentCoder.RegisteCoder("其它","用户子级操作","cs",  UserChildProcessMothes);
@@ -141,6 +142,26 @@ namespace Agebull.EntityModel.RobotCoder
                 ExtendClassIsPredestinate = {property.ExtendClassIsPredestinate.ToString().ToLower()},
 
              */
+        }
+
+        public string NewCopyCsCode(EntityConfig entity)
+        {
+            var builder = new StringBuilder();
+            builder.Append($@"
+            var data = new {entity.EntityName}
+            {{");
+            bool first = true;
+            foreach (PropertyConfig field in entity.PublishProperty)
+            {
+                if (first)
+                    first = false;
+                else builder.Append(',');
+                builder.Append($@"
+                {field.Name} = p.{field.Name}");
+            }
+            builder.Append(@"
+            };");
+            return builder.ToString();
         }
 
         public string NewCsCode(EntityConfig entity)

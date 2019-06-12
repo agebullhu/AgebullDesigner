@@ -116,7 +116,7 @@ namespace Agebull.EntityModel.RobotCoder
                     return full;
             }
 
-            if (string.IsNullOrEmpty(defDir))
+            if (string.IsNullOrWhiteSpace(defDir))
             {
                 config.Option[key]= defName;
                 full = Path.Combine(path, defName);

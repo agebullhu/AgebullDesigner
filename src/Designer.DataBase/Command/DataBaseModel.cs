@@ -34,14 +34,24 @@ namespace Agebull.EntityModel.Designer
         {
             commands.Add(new CommandItemBuilder<EntityConfig>()
             {
-                Action= RepairByDb,
+                Action = StandardName,
+                Catalog = "数据库",
+                Caption = "标准化字段名称",
+                Editor = "DataBase",
+                WorkView = "database",
+                IconName = "tree_item",
+                ConfirmMessage = "是否执行【标准化字段名称】操作"
+            });
+            commands.Add(new CommandItemBuilder<EntityConfig>()
+            {
+                Action = RepairByDb,
                 Catalog = "数据库",
                 Caption = "重构数据库设计",
                 Editor = "DataBase",
                 WorkView = "database",
                 IconName = "tree_item",
                 ConfirmMessage = "是否执行【重构数据库设计】操作"
-            });
+            }); 
             commands.Add(new CommandItemBuilder<EntityConfig>()
             {
                 Action = CheckByDb,
@@ -86,6 +96,18 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 数据库设计检查
         /// </summary>
+        public void StandardName(EntityConfig entity)
+        {
+            var business = new EntityDatabaseBusiness
+            {
+                Entity = entity
+            };
+            business.StandardName();
+        }
+
+        /// <summary>
+        /// 数据库设计检查
+        /// </summary>
         public void CheckByDb(EntityConfig entity)
         {
             var business = new EntityDatabaseBusiness
@@ -94,7 +116,7 @@ namespace Agebull.EntityModel.Designer
             };
             business.CheckDbConfig(false);
         }
-
+        
         /// <summary>
         /// 数据库设计检查
         /// </summary>

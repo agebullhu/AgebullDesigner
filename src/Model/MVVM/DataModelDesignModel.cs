@@ -200,7 +200,7 @@ namespace Agebull.EntityModel.Designer
             if (!File.Exists(path))
                 return;
             var json = File.ReadAllText(path);
-            if (string.IsNullOrEmpty(json) || json[0] != '{')
+            if (string.IsNullOrWhiteSpace(json) || json[0] != '{')
             {
                 return;
             }

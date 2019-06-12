@@ -151,9 +151,9 @@ namespace Agebull.EntityModel
         {
             if (bindingInfo == null)
                 throw new ArgumentException("bindingInfo");
-            if (string.IsNullOrEmpty(bindingInfo.CommandName))
+            if (string.IsNullOrWhiteSpace(bindingInfo.CommandName))
                 throw new ArgumentException("bindingInfo.CommandName");
-            if (string.IsNullOrEmpty(bindingInfo.EventName))
+            if (string.IsNullOrWhiteSpace(bindingInfo.EventName))
                 throw new ArgumentException("bindingInfo.EventName");
         }
 

@@ -25,7 +25,11 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.MySql
         {
             MomentCoder.RegisteCoder<EntityConfig>("MySql", "生成表(SQL)", "sql", p => !p.NoDataBase, CreateTable);
             MomentCoder.RegisteCoder("MySql", "插入表字段(SQL)", "sql", p => !p.NoDataBase, AddColumnCode);
+            MomentCoder.RegisteCoder("MySql", "插入缺少字段(SQL)", "sql", p => !p.NoDataBase, ChangeColumnCode2);
             MomentCoder.RegisteCoder("MySql", "修改表字段(SQL)", "sql", p => !p.NoDataBase, ChangeColumnCode);
+            MomentCoder.RegisteCoder("MySql", "修改表名(SQL)", "sql", p => !p.NoDataBase, ReName);
+            MomentCoder.RegisteCoder("MySql", "修改字段名(SQL)", "sql", p => !p.NoDataBase, ChangeColumnName);
+            MomentCoder.RegisteCoder("MySql", "修改主键字段名(SQL)", "sql", p => !p.NoDataBase, ChangeColumnName2);
             MomentCoder.RegisteCoder("MySql", "修改BOOL字段(SQL)", "sql", p => !p.NoDataBase, ChangeBoolColumnCode);
             MomentCoder.RegisteCoder("MySql", "生成视图(SQL)", "sql", p => !p.NoDataBase, CreateView);
             MomentCoder.RegisteCoder<ProjectConfig>("MySql", "插入页面表(SQL)", "sql", PageInsertSql);
@@ -36,6 +40,23 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.MySql
             MomentCoder.RegisteCoder("MySql", "添加关键索引", "sql", p => !p.NoDataBase, AddRefIndex);
         }
         #endregion
+
+        #region 名称规范
+
+
+        public static string ReName(EntityConfig entity)
+        {
+            return IsNullOrWhiteSpace(entity.OldName)
+                ? null
+                : $@"
+ALTER TABLE `{entity.OldName}` RENAME TO `{entity.SaveTable}`;";
+        }
+
+        #endregion
+
+        #region 索引
+
+
         public static string AddIndex(EntityConfig entity)
         {
             var code = new StringBuilder();
@@ -125,9 +146,9 @@ ALTER TABLE  `{entity.SaveTable}`");
             code.Append(";");
             return code.ToString();
         }
-        #region 数据库
 
         #endregion
+
 
         #region 数据库
         public static string TruncateTable(EntityConfig entity)
@@ -185,7 +206,7 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
                     builder.Append(@",
         ");
 
-                if (field.IsLinkField && !field.IsLinkKey && !IsNullOrEmpty(field.LinkTable))
+                if (field.IsLinkField && !field.IsLinkKey && !IsNullOrWhiteSpace(field.LinkTable))
                 {
                     if (tables.TryGetValue(field.LinkTable, out EntityConfig friend))
                     {
@@ -263,15 +284,6 @@ VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Class
 
         #region 表结构
 
-        private static string ColumnDefault(PropertyConfig col)
-        {
-            if (col.Initialization == null)
-                return null;
-            if (col.CsType == "string")
-                return $"DEFAULT '{col.Initialization}'";
-            return $"DEFAULT {col.Initialization}";
-        }
-
 
         public static string CreateTableCode(EntityConfig entity, bool signle = false)
         {
@@ -285,17 +297,9 @@ VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Class
 CREATE TABLE `{0}`("
                 , entity.SaveTable
                 , entity.Caption);
-            if (entity.PrimaryColumn != null)
-            {
-                code.Append($@"
-    `{entity.PrimaryColumn.DbFieldName}` {MySqlHelper.ColumnType(entity.PrimaryColumn)} NOT NULL{
-                        (entity.PrimaryColumn.IsIdentity ? " AUTO_INCREMENT" : null)
-                    } COMMENT '{entity.PrimaryColumn.Caption}'");
-            }
+
             foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
             {
-                if (col.IsPrimaryKey)
-                    continue;
                 code.Append($@"
    ,{FieldDefault(col)}");
             }
@@ -333,6 +337,19 @@ ALTER TABLE `{entity.SaveTable}`");
     ADD COLUMN {FieldDefault(col)}");
             }
             code.Append(@";");
+            return code.ToString();
+        }
+
+        private static string AddColumnCode2(EntityConfig entity)
+        {
+            if (entity == null || entity.NoDataBase || !entity.Interfaces.Contains("IHistory"))
+                return "";
+            var code = new StringBuilder();
+            code.Append($@"
+/*{entity.Caption}*/
+ALTER TABLE `{entity.SaveTable}`
+    ADD COLUMN `author` varchar(255) NULL ,
+    ADD COLUMN `last_reviser` varchar(255) NULL;");
             return code.ToString();
         }
 
@@ -378,6 +395,46 @@ ALTER TABLE `{entity.SaveTable}`");
             code.Append(@";");
         }
 
+        private string ChangeColumnName2(EntityConfig entity)
+        {
+            if (entity == null)
+                return "";
+            if (entity.NoDataBase)
+                return $"/*{entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL*/";
+            var code = new StringBuilder();
+            if (entity.PrimaryColumn != null)
+            {
+                code.Append($@"
+/*{entity.Caption}*/
+ALTER TABLE `{entity.SaveTable}`
+    CHANGE COLUMN `{entity.PrimaryColumn.OldName}` {FieldDefault(entity.PrimaryColumn)};");
+            }
+            return code.ToString();
+        }
+        private string ChangeColumnName(EntityConfig entity)
+        {
+            if (entity == null)
+                return "";
+            if (entity.NoDataBase)
+                return $"/*{entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL*/";
+            var code = new StringBuilder();
+            code.Append($@"
+/*{entity.Caption}*/
+ALTER TABLE `{entity.SaveTable}`");
+            bool isFirst = true;
+            foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
+            {
+                if (isFirst)
+                    isFirst = false;
+                else
+                    code.Append(',');
+                code.Append($@"
+    CHANGE COLUMN `{col.OldName}` {FieldDefault(col)}");
+            }
+            code.Append(@";");
+            return code.ToString();
+        }
+
         private string ChangeColumnCode(EntityConfig entity)
         {
             if (entity == null)
@@ -391,8 +448,6 @@ ALTER TABLE `{entity.SaveTable}`");
             bool isFirst = true;
             foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
             {
-                if (col.IsPrimaryKey)
-                    continue;
                 if (isFirst)
                     isFirst = false;
                 else
@@ -401,6 +456,18 @@ ALTER TABLE `{entity.SaveTable}`");
     CHANGE COLUMN `{col.DbFieldName}` {FieldDefault(col)}");
             }
             code.Append(@";");
+            return code.ToString();
+        }
+        private static string ChangeColumnCode2(EntityConfig entity)
+        {
+            if (entity == null || entity.NoDataBase || !entity.Interfaces.Contains("IHistory"))
+                return "";
+            var code = new StringBuilder();
+            code.Append($@"
+/*{entity.Caption}*/
+ALTER TABLE `{entity.SaveTable}`
+    CHANGE COLUMN `last_reviser_id` `last_reviser_id` BIGINT NULL DEFAULT 0 COMMENT '最后修改者标识',
+    CHANGE COLUMN `author_id` `author_id` BIGINT NOT NULL DEFAULT 0 COMMENT '制作人标识';");
             return code.ToString();
         }
 
@@ -413,6 +480,23 @@ ALTER TABLE `{entity.SaveTable}`");
         {
             return col.CsType == "string" || col.DbNullable ? " NULL" : " NOT NULL";
         }
+
+        private static string ColumnDefault(PropertyConfig col)
+        {
+            if (col.IsIdentity)
+                return " AUTO_INCREMENT";
+            if (col.IsPrimaryKey)
+                return string.Empty;
+            if (col.Initialization == null)
+            {
+                if (col.DbNullable)
+                    return null;
+                if (col.CsType != "string")
+                    col.Initialization = "0";
+            }
+            return col.CsType == "string" ? $"DEFAULT '{col.Initialization}'" : $"DEFAULT {col.Initialization}";
+        }
+
         #endregion
 
         #region 数据读取
@@ -428,16 +512,13 @@ ALTER TABLE `{entity.SaveTable}`");
         /// <param name=""reader"">数据读取器</param>
         /// <param name=""entity"">读取数据的实体</param>
         public void LoadEntity(MySqlDataReader reader,{entity.EntityName} entity)
-        {{
-            using (new EditScope(entity.__EntityStatus, EditArrestMode.All, false))
-            {{");
+        {{");
             int idx = 0;
             foreach (var field in fields)
             {
                 FieldReadCode(entity, field, code, idx++);
             }
             code.Append(@"
-            }
         }");
             return code.ToString();
         }
@@ -475,8 +556,8 @@ ALTER TABLE `{entity.SaveTable}`");
             if (!IsNullOrWhiteSpace(field.CustomType))
             {
                 code.Append($@"
-                if (!reader.IsDBNull({idx}))
-                    entity._{field.Name.ToLWord()} = ({field.CustomType})reader.GetInt32({idx});");
+            if (!reader.IsDBNull({idx}))
+                entity._{field.Name.ToLWord()} = ({field.CustomType})reader.GetInt32({idx});");
                 return;
             }
             var type = field.CsType.ToLower();
@@ -484,14 +565,13 @@ ALTER TABLE `{entity.SaveTable}`");
             switch (type)
             {
                 case "byte[]":
-                    if (field.IsImage)
-                        code.Append($@"
-                if (GlobalContext.Current.Feature != 1 && !reader.IsDBNull({idx}))
-                    entity._{field.Name.ToLWord()} = (byte[])reader[{idx}];");
-                    else
-                        code.Append($@"
-                if (!reader.IsDBNull({idx}))
-                    entity._{field.Name.ToLWord()} = (byte[])reader[{idx}];");
+                    code.Append(field.IsImage
+                        ? $@"
+            if (GlobalContext.Current.Feature != 1 && !reader.IsDBNull({idx}))
+                entity._{field.Name.ToLWord()} = (byte[])reader[{idx}];"
+                        : $@"
+            if (!reader.IsDBNull({idx}))
+                entity._{field.Name.ToLWord()} = (byte[])reader[{idx}];");
                     return;
                 case "string":
                     switch (dbType)
@@ -499,13 +579,13 @@ ALTER TABLE `{entity.SaveTable}`");
                         case "varchar":
                         case "varstring":
                             code.Append($@"
-                if (!reader.IsDBNull({idx}))
-                    entity._{field.Name.ToLWord()} = {ReaderName(field.DbType)}({idx});");
+            if (!reader.IsDBNull({idx}))
+                entity._{field.Name.ToLWord()} = {ReaderName(field.DbType)}({idx});");
                             break;
                         default:
                             code.Append($@"
-                if (!reader.IsDBNull({idx}))
-                    entity._{field.Name.ToLWord()} = {ReaderName(field.DbType)}({idx}).ToString();");
+            if (!reader.IsDBNull({idx}))
+                entity._{field.Name.ToLWord()} = {ReaderName(field.DbType)}({idx}).ToString();");
                             break;
                     }
                     return;
@@ -513,8 +593,8 @@ ALTER TABLE `{entity.SaveTable}`");
 
             //if (field.DbNullable)
             code.Append($@"
-                if (!reader.IsDBNull({idx}))
-                    ");
+            if (!reader.IsDBNull({idx}))
+                ");
             //else
             //    code.Append(@"
             //    ");

@@ -14,6 +14,52 @@ namespace Agebull.EntityModel.Config
 
 
         /// <summary>
+        ///     规范名称
+        /// </summary>
+        public void StandardName()
+        {
+            if (Entity.IsFreeze || Entity.IsInterface)
+                return;
+            if (Entity.NoDataBase)
+            {
+                foreach (var col in Entity.Properties)
+                {
+                    col.DbFieldName = null;
+                    col.DbType = null;
+                }
+
+                Entity.IsModify = true;
+                Entity.NoDataBase = true;
+                Entity.ReadTableName = null;
+                Entity.SaveTableName = null;
+                return;
+            }
+            if (Entity.SaveTableName == Entity.ReadTableName)
+                Entity.ReadTableName = null;
+
+            if (string.IsNullOrWhiteSpace(Entity.OldName))
+                Entity.OldName = Entity.Alias ?? Entity.SaveTableName;
+
+            var name = DataBaseHelper.ToTableName(Entity);
+            if (Entity.SaveTableName == null || name != Entity.SaveTableName)
+            {
+                Entity.SaveTableName = name;
+            }
+            foreach (var col in Entity.Properties)
+            {
+                col.Parent = Entity;
+                if (col.IsDiscard)
+                {
+                    continue;
+                }
+                if(string.IsNullOrWhiteSpace(col.OldName))
+                col.OldName = col.DbFieldName;
+                col.DbFieldName = DataBaseHelper.ToDbFieldName(col.Name);
+            }
+        }
+
+
+        /// <summary>
         ///     自动修复(从模型修复数据存储)
         /// </summary>
         public void CheckDbConfig(bool repair)

@@ -88,7 +88,7 @@ namespace Agebull.EntityModel.RobotCoder
             }}
         }}
 
-        /// <summary>
+        /*// <summary>
         /// 取得仅更新的SQL语句
         /// </summary>
         public string GetModifiedSqlCode({Entity.EntityName} data)
@@ -97,7 +97,7 @@ namespace Agebull.EntityModel.RobotCoder
                 return "";"";
             StringBuilder sql = new StringBuilder();{UpdateSqlByModify()}
             return sql.ToString();
-        }}
+        }}*/
 
         #endregion
 ";
@@ -106,6 +106,8 @@ namespace Agebull.EntityModel.RobotCoder
         private string SimpleCode()
         {
             var fields = Entity.DbFields.Where(p => p.ExtendConfigListBool["easyui", "simple"]).ToArray();
+            if (fields.Length == 0)
+                return "";
             var code = new StringBuilder();
             code.Append($@"
         #region 简单读取
@@ -128,23 +130,34 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name=""reader"">数据读取器</param>
         /// <param name=""entity"">读取数据的实体</param>
         public override void SimpleLoad(MySqlDataReader reader,{Entity.EntityName} entity)
-        {{
-            using (new EditScope(entity.__EntityStatus, EditArrestMode.All, false))
-            {{");
+        {{");
             int idx = 0;
             foreach (var field in fields)
             {
                 SqlMomentCoder.FieldReadCode(Entity, field, code, idx++);
             }
             code.Append(@"
-            }
         }
+
         #endregion");
             return code.ToString();
         }
 
-        private string CreateCode()
-        {//{CreateScope()}
+        private string BaseCode()
+        {
+            StringBuilder alias = new StringBuilder();
+            if (!string.IsNullOrWhiteSpace(Entity.Alias))
+            {
+                alias.Append($@"
+    /// <summary>
+    /// {Entity.Description} 别名
+    /// </summary>
+    {(Entity.IsInternal ? "internal" : "public")} sealed class {Entity.Alias}DataAccess : {Entity.Name}DataAccess
+    {{
+    }}");
+            }
+
+            //{CreateScope()}
             var innerCode = $@"
 {SqlCode()}
 {FieldCode()}
@@ -183,6 +196,7 @@ using Agebull.Common.OAuth;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Interfaces;
 {Project.UsingNameSpaces}
+using {SolutionConfig.Current.NameSpace}.DataAccess;
 
 #endregion
 
@@ -203,7 +217,7 @@ namespace {NameSpace}.DataAccess
             Description = {Entity.EntityName}._DataStruct_.EntityDescription;
         }}
         {innerCode}
-    }}
+    }}{alias}
 {DataBaseExtend()}
 }}
 ";
@@ -215,15 +229,32 @@ namespace {NameSpace}.DataAccess
         protected override void CreateBaCode(string path)
         {
             var file = Path.Combine(path, Entity.Name + "DataAccess.Designer.cs");
+
             if (Entity.NoDataBase)
             {
                 if (File.Exists(file))
                 {
                     Directory.Move(file, file + ".bak");
                 }
+                else if (!string.IsNullOrWhiteSpace(Entity.Alias))
+                {
+                    var oldFile = Path.Combine(path, Entity.Alias + "DataAccess.Designer.cs");
+                    if (File.Exists(oldFile))
+                    {
+                        Directory.Move(oldFile, file + ".bak");
+                    }
+                }
                 return;
             }
-            SaveCode(file, CreateCode());
+            if (!string.IsNullOrWhiteSpace(Entity.Alias))
+            {
+                var oldFile = Path.Combine(path, Entity.Alias + "DataAccess.Designer.cs");
+                if (File.Exists(oldFile))
+                {
+                    Directory.Move(oldFile, file);
+                }
+            }
+            SaveCode(file, BaseCode());
         }
 
         /// <summary>
@@ -238,8 +269,30 @@ namespace {NameSpace}.DataAccess
                 {
                     Directory.Move(file, file + ".bak");
                 }
+                else if (!string.IsNullOrWhiteSpace(Entity.Alias))
+                {
+                    var oldFile = Path.Combine(path, Entity.Alias + "DataAccess.cs");
+                    if (File.Exists(oldFile))
+                    {
+                        Directory.Move(oldFile, file + ".bak");
+                    }
+                }
                 return;
             }
+            if (!string.IsNullOrWhiteSpace(Entity.Alias))
+            {
+                var oldFile = Path.Combine(path, Entity.Alias + "DataAccess.cs");
+                if (File.Exists(oldFile))
+                {
+                    Directory.Move(oldFile, file);
+                }
+            }
+            var code = CreateExtendCode();
+            SaveCode(file, code);
+        }
+
+        private string CreateExtendCode()
+        {
             string baseClass = "MySqlTable";
             if (Entity.Interfaces != null)
             {
@@ -247,10 +300,10 @@ namespace {NameSpace}.DataAccess
                     baseClass = "RowScopeDataAccess";
                 //else if (Entity.Interfaces.Contains("IHistoryData"))
                 //    baseClass = "HitoryTable";
-                else
-                if (Entity.Interfaces.Contains("IStateData"))
+                else if (Entity.Interfaces.Contains("IStateData"))
                     baseClass = "DataStateTable";
             }
+
             var code = $@"#region
 using System;
 using System.Collections.Generic;
@@ -275,6 +328,8 @@ using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Interfaces;
 
 {Project.UsingNameSpaces}
+using {SolutionConfig.Current.NameSpace}.DataAccess;
+
 #endregion
 
 namespace {NameSpace}.DataAccess
@@ -282,11 +337,11 @@ namespace {NameSpace}.DataAccess
     /// <summary>
     /// {Entity.Description}
     /// </summary>
-    sealed partial class {Entity.Name}DataAccess : {baseClass}<{Entity.EntityName},{Project.DataBaseObjectName}>
+    partial class {Entity.Name}DataAccess : {baseClass}<{Entity.EntityName},{Project.DataBaseObjectName}>
     {{
     }}
 }}";
-            SaveCode(file, code);
+            return code;
         }
 
         /// <summary>
@@ -632,7 +687,7 @@ UPDATE `{ContextWriteTable}` SET");
         /// <param name=""cmd"">命令</param>
         protected sealed override void SetUpdateCommand({Entity.EntityName} entity, MySqlCommand cmd)
         {{
-            cmd.CommandText = {(Entity.UpdateByModified ? "GetModifiedSqlCode(entity)" : "UpdateSqlCode")};
+            //cmd.CommandText = {(Entity.UpdateByModified ? "GetModifiedSqlCode(entity)" : "UpdateSqlCode")};
             CreateFullSqlParameter(entity,cmd);
         }}";
         }
@@ -642,6 +697,9 @@ UPDATE `{ContextWriteTable}` SET");
             var code = new StringBuilder();
             foreach (var field in PublishDbFields)
             {
+                if(field.DbFieldName != field.Name)
+                    code.Append($@"
+                case ""{field.DbFieldName}"":");
                 code.Append($@"
                 case ""{field.Name}"":
                     return MySqlDbType.{MySqlHelper.ToSqlDbType(field)};");
@@ -674,77 +732,16 @@ UPDATE `{ContextWriteTable}` SET");
         /// <param name=""reader"">数据读取器</param>
         /// <param name=""entity"">读取数据的实体</param>
         protected sealed override void LoadEntity(MySqlDataReader reader,{Entity.EntityName} entity)
-        {{
-            using (new EditScope(entity.__EntityStatus, EditArrestMode.All, false))
-            {{");
+        {{");
             int idx = 0;
             foreach (var field in PublishDbFields)
             {
                 SqlMomentCoder.FieldReadCode(Entity, field, code, idx++);
             }
             code.Append(@"
-            }
         }");
             return code.ToString();
         }
-
-        ///// <summary>
-        /////     从C#的类型转为DBType
-        ///// </summary>
-        ///// <param name="csharpType"> </param>
-        //public static MySqlDbType ToSqlDbType(string csharpType)
-        //{
-        //    switch (csharpType)
-        //    {
-        //        case "Boolean":
-        //        case "bool":
-        //            return MySqlDbType.Bit;
-        //        case "byte":
-        //        case "Byte":
-        //        case "sbyte":
-        //        case "SByte":
-        //            return MySqlDbType.Int16;
-        //        case "Char":
-        //        case "char":
-        //            return MySqlDbType.Byte;
-        //        case "short":
-        //        case "Int16":
-        //        case "ushort":
-        //        case "UInt16":
-        //            return MySqlDbType.Int16;
-        //        case "int":
-        //        case "Int32":
-        //        case "IntPtr":
-        //        case "uint":
-        //        case "UInt32":
-        //        case "UIntPtr":
-        //            return MySqlDbType.Int32;
-        //        case "long":
-        //        case "Int64":
-        //        case "ulong":
-        //        case "UInt64":
-        //            return MySqlDbType.Int64;
-        //        case "decimal":
-        //        case "Decimal":
-        //        case "float":
-        //        case "Float":
-        //        case "double":
-        //        case "Double":
-        //            return MySqlDbType.Decimal;
-        //        case "Guid":
-        //            return MySqlDbType.Guid;
-        //        case "DateTime":
-        //            return MySqlDbType.DateTime;
-        //        case "String":
-        //        case "string":
-        //            return MySqlDbType.VarString;
-        //        case "Binary":
-        //        case "byte[]":
-        //        case "Byte[]":
-        //            return MySqlDbType.Binary;
-        //        default:
-        //            return MySqlDbType.Binary;
-        //    }
-        //}
+        
     }
 }

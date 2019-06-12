@@ -22,17 +22,15 @@ namespace Agebull.EntityModel.Config
                 head.Append(entity.Parent.Abbreviation.ToLWord());
                 head.Append('_');
             }
-            if (entity.Classify != null)
+            if (entity.Classify != null && entity.Parent.Classifies.Count > 1)
             {
                 var cls = entity.Parent.Classifies.FirstOrDefault(p => p.Name == entity.Classify);
-                if (!string.IsNullOrEmpty(cls?.Abbreviation))
+                if (!string.IsNullOrWhiteSpace(cls?.Abbreviation))
                 {
                     head.Append(entity.Parent.Abbreviation.ToLWord());
                     head.Append('_');
                 }
             }
-            head.Append(entity.Parent.Abbreviation.ToLWord());
-            head.Append('_');
             return GlobalConfig.SplitWords(entity.Name).Select(p => p.ToLower()).LinkToString(head.ToString(), "_");
         }
 
@@ -50,7 +48,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static string ToDbFieldName(string name)
         {
-            return GlobalConfig.ToName(GlobalConfig.SplitWords(name).Select(p => p.ToLower()).ToList());
+            return GlobalConfig.ToLinkWordName(name, "_", false);
         }
 
         /// <summary>

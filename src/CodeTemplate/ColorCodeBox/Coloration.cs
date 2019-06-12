@@ -64,8 +64,8 @@ namespace Agebull.EntityModel.Designer
         public void AddMultiWords(IEnumerable<string> collection)
         {
             WordList.AddRange(IsIgnoreCase
-                ? collection.Where(p => !string.IsNullOrEmpty(p)).Select(p => p.ToUpper())
-                : collection.Where(p => !string.IsNullOrEmpty(p)));
+                ? collection.Where(p => !string.IsNullOrWhiteSpace(p)).Select(p => p.ToUpper())
+                : collection.Where(p => !string.IsNullOrWhiteSpace(p)));
         }
 
         /// <summary>

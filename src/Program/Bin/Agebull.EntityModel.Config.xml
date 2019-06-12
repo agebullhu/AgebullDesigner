@@ -43,6 +43,32 @@
                 当前实例
             </summary>
         </member>
+        <member name="F:Agebull.EntityModel.Config.ConfigBase._alias">
+            <summary>
+            别名
+            </summary>
+        </member>
+        <member name="P:Agebull.EntityModel.Config.ConfigBase.Alias">
+            <summary>
+            别名
+            </summary>
+            <remark>
+            属性别名
+            </remark>
+        </member>
+        <member name="F:Agebull.EntityModel.Config.ConfigBase._oldName">
+            <summary>
+            原始名称
+            </summary>
+        </member>
+        <member name="P:Agebull.EntityModel.Config.ConfigBase.OldName">
+            <summary>
+            别名
+            </summary>
+            <remark>
+            属性别名
+            </remark>
+        </member>
         <member name="P:Agebull.EntityModel.Config.ConfigBase.Item(System.String,System.String)">
             <summary>
             读写扩展配置
@@ -1977,19 +2003,6 @@
             </summary>
             <remark>
             代码访问范围,即面向对象的三大范围(public,private,protected)
-            </remark>
-        </member>
-        <member name="F:Agebull.EntityModel.Config.PropertyConfig._alias">
-            <summary>
-            别名
-            </summary>
-        </member>
-        <member name="P:Agebull.EntityModel.Config.PropertyConfig.Alias">
-            <summary>
-            别名
-            </summary>
-            <remark>
-            属性别名
             </remark>
         </member>
         <member name="F:Agebull.EntityModel.Config.PropertyConfig.Initialization_Description">

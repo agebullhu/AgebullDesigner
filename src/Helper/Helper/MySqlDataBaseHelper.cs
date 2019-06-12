@@ -454,7 +454,7 @@ namespace Agebull.EntityModel.Config.Mysql
                 case "nvarchar":
                     if (column.IsBlob)
                         return "LONGTEXT";
-                    if (column.Datalen < 0 || column.Datalen > 4000)
+                    if (column.Datalen < 0 || column.Datalen > 1000)
                         return "TEXT";
                     return $"{column.DbType.ToUpper()}({column.Datalen})";
                 default:

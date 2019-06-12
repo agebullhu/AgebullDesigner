@@ -28,9 +28,9 @@ namespace Agebull.EntityModel.Designer
             loader.LoadSolution(GlobalConfig.CheckPath(GlobalConfig.ProgramRoot, "Global"), "global.json", true);
             GlobalConfig.GlobalSolution = loader._solution;
 
-            GlobalConfig.GlobalSolution.Foreach<ConfigBase>(p => p.Option.IsNormal,p => GlobalConfig.AddConfig(p.Option));
+            GlobalConfig.GlobalSolution.Foreach<ConfigBase>(p => p.Option.IsNormal, p => GlobalConfig.AddConfig(p.Option));
             var re = GlobalConfig.GlobalSolution;
-            if (!string.IsNullOrEmpty(sluFile) && !string.Equals(sluFile, GlobalConfig.GlobalSolution.SaveFileName,StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrWhiteSpace(sluFile) && !string.Equals(sluFile, GlobalConfig.GlobalSolution.SaveFileName, StringComparison.OrdinalIgnoreCase))
             {
                 loader = new ConfigLoader();
                 loader.LoadSolution(Path.GetDirectoryName(sluFile), Path.GetFileName(sluFile), false);

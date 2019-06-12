@@ -44,7 +44,7 @@ namespace Agebull.EntityModel.Designer
         }
         public void ResetEnumParent(PropertyConfig property)
         {
-            if (string.IsNullOrEmpty(property.CustomType))
+            if (string.IsNullOrWhiteSpace(property.CustomType))
                 return;
             property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
             if (property.EnumConfig != null)

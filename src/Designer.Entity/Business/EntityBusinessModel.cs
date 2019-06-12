@@ -237,7 +237,7 @@ namespace Agebull.EntityModel.Config
 
             foreach (string line in lines)
             {
-                if (string.IsNullOrEmpty(line))
+                if (string.IsNullOrWhiteSpace(line))
                     continue;
                 string[] words = line.Trim().Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
                 var name = words[0].ToUWord();
