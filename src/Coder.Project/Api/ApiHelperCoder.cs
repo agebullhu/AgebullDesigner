@@ -18,11 +18,9 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         {
             if (entity.IsUiReadOnly)
                 return null;
-
+            var fields = entity.ClientProperty.Where(p => p.CanUserInput || p.ExtendConfigListBool["easyui", "userFormHide"]).ToArray();
             var code = new StringBuilder();
-            foreach (var group in entity.ClientProperty.Where(p =>
-                p.KeepStorageScreen != StorageScreenType.All &&
-               (p.ExtendConfigListBool["easyui", "userFormHide"] || p.CanUserInput)).GroupBy(p => p.Group))
+            foreach (var group in fields.GroupBy(p => p.Group))
             {
 
                 code.Append($@"
@@ -49,9 +47,11 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                     data.{field.Name}_Base64 = null;
                 else if(file != ""*"" && file.Length< 100 && file[0] == '/')
                 {{
-                    var call = new WebApiCaller(ConfigurationManager.AppSettings[""ManageAddress""]);
-                    var result = call.Get<string>(""api/v1/ueditor/action"", $""action=base64&url={{file}}"");
-                    data.{field.Name}_Base64 = result.Success ? result.ResultData : null;
+                    using(var call = new WebApiCaller(ConfigurationManager.AppSettings[""ManageAddress""]))
+                    {{
+                        var result = call.Get<string>(""api/v1/ueditor/action"", $""action=base64&url={{file}}"");
+                        data.{field.Name}_Base64 = result.Success ? result.ResultData : null;
+                    }}
                 }}
             }}");
                             continue;

@@ -171,28 +171,15 @@ using {NameSpace}.DataAccess;
 namespace {NameSpace}.WebApi.Entity
 {{
     partial class {Entity.Name}ApiController
-    {{
-        #region 设计器命令
-{CommandCsCode()}
-
-        #endregion
+    {{{CommandCsCode()}
 
         #region 基本扩展
-        /// <summary>
-        ///     取得列表数据
-        /// </summary>
-        protected ApiPageData<{Entity.EntityName}> DefaultGetListData()
-        {{
-            var filter = new LambdaItem<{Entity.EntityName}>();
-            ReadQueryFilter(filter);
-            return base.GetListData(filter);
-        }}
 
         /// <summary>
         ///     读取查询条件
         /// </summary>
         /// <param name=""filter"">筛选器</param>
-        public void ReadQueryFilter(LambdaItem<{Entity.EntityName}> filter)
+        public override void GetQueryFilter(LambdaItem<{Entity.EntityName}> filter)
         {{{QueryCode()}
         }}
 
@@ -219,7 +206,7 @@ namespace {NameSpace}.WebApi.Entity
             var code = new StringBuilder();
 
             code.Append(@"
-            if (TryGet(""_value_"", out string value))
+            if (TryGet(""_value_"", out string value) && value != null)
             {
                 var field = GetArg(""_field_"");
                 ");
@@ -252,8 +239,34 @@ namespace {NameSpace}.WebApi.Entity
                     code.Append($@"
             if(TryGetIDs(""{field.JsonName}"" , out var {field.JsonName}))
             {{
-                filter.AddAnd(p => {field.JsonName}.Contains(p.{field.Name}));
-            }}"); 
+                if ({field.JsonName}.Count == 1)
+                    filter.AddAnd(p => p.{field.Name} == {field.JsonName}[0]);
+                else
+                    filter.AddAnd(p => {field.JsonName}.Contains(p.{field.Name}));
+            }}");
+                }
+                else if(field.CsType.ToLower() == "datetime")
+                {
+                    code.Append($@"
+            if(TryGet(""{field.JsonName}"" , out DateTime {field.JsonName}))
+            {{
+                var day = {field.JsonName}.Date;
+                var nextDay = day.AddDays(1);
+                filter.AddAnd(p => (p.{field.Name} >= day && p.{field.Name} < nextDay));
+            }}
+            else 
+            {{
+                if(TryGet(""{field.JsonName}_begin"" , out DateTime {field.JsonName}_begin))
+                {{
+                    var day = {field.JsonName}_begin.Date;
+                    filter.AddAnd(p => p.{field.Name} >= day);
+                }}
+                if(TryGet(""{field.JsonName}_end"" , out DateTime {field.JsonName}_end))
+                {{
+                    var day = {field.JsonName}_end.Date.AddDays(1);
+                    filter.AddAnd(p => p.{field.Name} < day);
+                }}
+            }}");
                 }
                 else
                 {
@@ -263,12 +276,6 @@ namespace {NameSpace}.WebApi.Entity
 
                     switch (field.CsType.ToLower())
                     {
-                        case "datetime":
-                            code.Append($@"
-                var day = {field.JsonName}.Date;
-                var nextDay = day.AddDays(1);
-                filter.AddAnd(p => (p.{field.Name} >= day && p.{field.Name} < nextDay));");
-                            break;
                         case "string":
                             code.Append($@"
                 filter.AddAnd(p => p.{field.Name}.Contains({field.JsonName}));");
@@ -349,13 +356,15 @@ namespace {NameSpace}.WebApi.Entity
     {{
         #region 基本扩展
 
-        /// <summary>
+        /*// <summary>
         ///     取得列表数据
         /// </summary>
         protected override ApiPageData<{Entity.EntityName}> GetListData()
         {{
-            return DefaultGetListData();
-        }}
+            var filter = new LambdaItem<{Entity.EntityName}>();
+            ReadQueryFilter(filter);
+            return base.GetListData(filter);
+        }}*/
 
         /// <summary>
         /// 读取Form传过来的数据
@@ -366,6 +375,7 @@ namespace {NameSpace}.WebApi.Entity
         {{
             DefaultReadFormData(data,convert);
         }}
+
         #endregion
     }}
 }}";
@@ -397,6 +407,7 @@ namespace {NameSpace}.WebApi.Entity
             if (cap != null)
             {
                 code.Append(@"
+
         /// <summary>
         /// 载入下拉列表数据
         /// </summary>
@@ -430,8 +441,12 @@ namespace {NameSpace}.WebApi.Entity
                 : ApiResult.Succees();
         }");
             }
+            if (code.Length == 0)
+                return null;
+            return $@"
+        #region 设计器命令{code}
 
-            return code.ToString();
+        #endregion";
         }
 
         #endregion

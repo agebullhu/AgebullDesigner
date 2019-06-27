@@ -1,4 +1,4 @@
-﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/4/10 16:28:58*/
+﻿/*此标记表明此文件可被设计器更新,如果不允许此操作,请删除此行代码.design by:agebull designer date:2019/6/20 11:32:55*/
 #region
 using System;
 using System.Collections.Generic;
@@ -20,7 +20,7 @@ using Agebull.Common.Configuration;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Interfaces;
 using Agebull.EntityModel.Events;
-using Agebull.EntityModel.Redis;
+
 using Agebull.EntityModel.SqlServer;
 
 #endregion

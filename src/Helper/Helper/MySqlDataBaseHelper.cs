@@ -453,10 +453,10 @@ namespace Agebull.EntityModel.Config.Mysql
                 case "varchar":
                 case "nvarchar":
                     if (column.IsBlob)
-                        return "LONGTEXT";
+                        return "LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
                     if (column.Datalen < 0 || column.Datalen > 1000)
-                        return "TEXT";
-                    return $"{column.DbType.ToUpper()}({column.Datalen})";
+                        return "TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
+                    return $"{column.DbType.ToUpper()}({column.Datalen}) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
                 default:
                     return column.DbType.ToUpper();
             }

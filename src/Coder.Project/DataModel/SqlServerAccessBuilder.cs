@@ -24,7 +24,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 表的唯一标识
         /// </summary>
-        public override int TableId => {Project.DataBaseObjectName}.Table_{Entity.Name};
+        public override int TableId => 0x{Entity.Identity:X};//{Project.DataBaseObjectName}.Table_{Entity.Name};
 
         /// <summary>
         /// 读取表名
@@ -56,7 +56,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         protected sealed override string UpdateSqlCode => $@""{UpdateSql()}"";
 
-        /// <summary>
+        /*// <summary>
         /// 取得仅更新的SQL语句
         /// </summary>
         public string GetModifiedSqlCode({Entity.EntityName} data)
@@ -65,7 +65,7 @@ namespace Agebull.EntityModel.RobotCoder
                 return "";"";
             StringBuilder sql = new StringBuilder();{UpdateSqlByModify()}
             return sql.ToString();
-        }}
+        }}*/
 
         #endregion
 ";
@@ -76,7 +76,7 @@ namespace Agebull.EntityModel.RobotCoder
             StringBuilder alias = new StringBuilder();
             if (!string.IsNullOrWhiteSpace(Entity.Alias))
             {
-            alias.Append($@"
+                alias.Append($@"
     /// <summary>
     /// {Entity.Description} 别名
     /// </summary>
@@ -170,7 +170,7 @@ namespace {NameSpace}.DataAccess
             }
             SaveCode(file, CreateBaseCode());
         }
-        
+
 
         /// <summary>
         ///     生成扩展代码
@@ -302,7 +302,7 @@ SELECT @__myId = [{Entity.PrimaryColumn.DbFieldName}] FROM [{{ContextWriteTable}
             code.Append($@"
 IF @__myId IS NULL
 BEGIN{OnlyInsertSql(true)}
-    SET @__myId = {(Entity.PrimaryColumn.IsIdentity ? "SCOPE_IDENTITY()" : ("@"+ Entity.PrimaryColumn.DbFieldName))};
+    SET @__myId = {(Entity.PrimaryColumn.IsIdentity ? "SCOPE_IDENTITY()" : ("@" + Entity.PrimaryColumn.DbFieldName))};
 END
 ELSE
 BEGIN
@@ -524,7 +524,7 @@ UPDATE [{ContextWriteTable}] SET");
 
         private string InsertCode()
         {
-            return$@"
+            return $@"
 
         /// <summary>
         /// 设置插入数据的命令
@@ -542,7 +542,7 @@ UPDATE [{ContextWriteTable}] SET");
 
         private string UpdateCode()
         {
-            return$@"
+            return $@"
 
         /// <summary>
         /// 设置更新数据的命令
@@ -571,7 +571,7 @@ UPDATE [{ContextWriteTable}] SET");
                     , SqlServerHelper.ToSqlDbType(field));
             }
 
-            return$@"
+            return $@"
         /// <summary>
         /// 得到字段的DbType类型
         /// </summary>
@@ -597,9 +597,7 @@ UPDATE [{ContextWriteTable}] SET");
         /// <param name=""reader"">数据读取器</param>
         /// <param name=""entity"">读取数据的实体</param>
         protected sealed override void LoadEntity(SqlDataReader reader,{0} entity)
-        {{
-            using (new EditScope(entity.__EntityStatus, EditArrestMode.All, false))
-            {{"
+        {{"
                 , Entity.EntityName);
             var idx = 0;
             foreach (var field in Entity.DbFields)
@@ -608,8 +606,8 @@ UPDATE [{ContextWriteTable}] SET");
                 if (!string.IsNullOrWhiteSpace(field.CustomType))
                 {
                     code.AppendFormat(@"
-                if (!reader.IsDBNull({2}))
-                    entity._{0} = ({1})reader.GetInt32({2});"
+            if (!reader.IsDBNull({2}))
+                entity._{0} = ({1})reader.GetInt32({2});"
                         , fieldName
                         , field.CustomType
                         , idx++);
@@ -619,19 +617,19 @@ UPDATE [{ContextWriteTable}] SET");
                 {
                     case "byte[]":
                         code.AppendFormat(@"
-                if (!reader.IsDBNull({1}))
-                    entity._{0} = reader.GetSqlBinary({1}).Value;"
+            if (!reader.IsDBNull({1}))
+                entity._{0} = reader.GetSqlBinary({1}).Value;"
                             , fieldName
                             , idx++);
                         continue;
                     case "string":
                         code.AppendFormat(field.DbType?.ToLower() == "nvarchar"
                                 ? @"
-                if (!reader.IsDBNull({2}))
-                    entity._{0} = {1}({2});"
+            if (!reader.IsDBNull({2}))
+                entity._{0} = {1}({2});"
                                 : @"
-                if (!reader.IsDBNull({2}))
-                    entity._{0} = {1}({2}).ToString();"
+            if (!reader.IsDBNull({2}))
+                entity._{0} = {1}({2}).ToString();"
                             , fieldName
                             , GetDBReaderFunctionName(field.DbType)
                             , idx++);
@@ -639,10 +637,10 @@ UPDATE [{ContextWriteTable}] SET");
                     case "decimal":
                         code.AppendFormat(/*field.DbNullable? */
                                 @"
-                if (!reader.IsDBNull({2}))
-                    entity._{0} = (decimal){1}({2});"
-                                /*: @"
-                entity._{0} = (decimal){1}({2});"*/
+            if (!reader.IsDBNull({2}))
+                entity._{0} = (decimal){1}({2});"
+                            /*: @"
+            entity._{0} = (decimal){1}({2});"*/
                             , fieldName
                             , GetDBReaderFunctionName(field.DbType)
                             , idx++);
@@ -653,8 +651,8 @@ UPDATE [{ContextWriteTable}] SET");
                     if (string.Equals(field.CsType, field.DbType, StringComparison.OrdinalIgnoreCase))
                     {
                         code.AppendFormat(@"
-                if (!reader.IsDBNull({2}))
-                    entity._{0} = {1}({2});"
+            if (!reader.IsDBNull({2}))
+                entity._{0} = {1}({2});"
                             , fieldName
                             , GetDBReaderFunctionName(field.DbType)
                             , idx++);
@@ -662,8 +660,8 @@ UPDATE [{ContextWriteTable}] SET");
                     else if (field.CsType.ToLower() == "bool" && field.DbType.ToLower() == "int")
                     {
                         code.AppendFormat(@"
-                if (!reader.IsDBNull({2}))
-                    entity._{0} = {1}({2}) == 1;"
+            if (!reader.IsDBNull({2}))
+                entity._{0} = {1}({2}) == 1;"
                             , fieldName
                             , GetDBReaderFunctionName(field.DbType)
                             , idx++);
@@ -671,8 +669,8 @@ UPDATE [{ContextWriteTable}] SET");
                     else if (field.CsType.ToLower() == "decimal")
                     {
                         code.AppendFormat(@"
-                if (!reader.IsDBNull({2}))
-                    entity._{0} = new decimal({1}({2}));"
+            if (!reader.IsDBNull({2}))
+                entity._{0} = new decimal({1}({2}));"
                             , fieldName
                             , GetDBReaderFunctionName(field.DbType)
                             , idx++);
@@ -680,8 +678,8 @@ UPDATE [{ContextWriteTable}] SET");
                     else
                     {
                         code.AppendFormat(@"
-                if (!reader.IsDBNull({3}))
-                    entity._{0} = ({1}){2}({3});"
+            if (!reader.IsDBNull({3}))
+                entity._{0} = ({1}){2}({3});"
                             , fieldName
                             , field.CsType
                             , GetDBReaderFunctionName(field.DbType)
@@ -717,7 +715,6 @@ UPDATE [{ContextWriteTable}] SET");
                 }*/
             }
             code.Append(@"
-            }
         }");
             return code.ToString();
         }

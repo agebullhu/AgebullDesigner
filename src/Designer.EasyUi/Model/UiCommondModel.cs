@@ -175,9 +175,9 @@ namespace Agebull.EntityModel.Designer
         {
             foreach (var field in entity.Properties)
             {
-                if (field.IsPrimaryKey ||
-                    !field.IsDiscard && !field.IsLinkKey && !field.DbInnerField &&
-                    !field.InnerField && !field.IsSystemField && !field.DenyClient)
+                //if (field.IsPrimaryKey ||
+                //    !field.IsDiscard && !field.IsLinkKey && !field.DbInnerField &&
+                //    !field.InnerField && !field.IsSystemField && !field.DenyClient)
                 {
                     field.ExtendConfigListBool["easyui", "CanExport"] = true;
                     field.ExtendConfigListBool["easyui", "CanImport"] = true;

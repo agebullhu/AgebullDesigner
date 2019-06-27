@@ -22,6 +22,10 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                     <el-tooltip placement='top' effect='light'>
                         <div slot='content'>重新载入数据</div>
                         <el-button icon='el-icon-refresh' @click='loadList'></el-button>
+                    </el-tooltip>
+                    <el-tooltip placement='top' effect='light'>
+                        <div slot='content'>导出Excel</div>
+                        <el-button icon='fa fa-file-excel-o' @click='importExcel'></el-button>
                     </el-tooltip>");
             if (!Entity.IsUiReadOnly)
             {

@@ -4,12 +4,19 @@ namespace Agebull.EntityModel.RobotCoder
 {
     public sealed class EntityValidateBuilder : EntityBuilderBase
     {
+        /// <summary>
+        /// 基本代码
+        /// </summary>
         public override string BaseCode=> ValidateCode();
 
+        /// <summary>
+        /// 校验代码
+        /// </summary>
+        /// <returns></returns>
         public string ValidateCode()
         {
             var coder = new EntityValidateCoder {Entity = Entity};
-            var code = coder.Code(Columns.Where(p => !p.DbInnerField));
+            var code = coder.Code(Columns.Where(p => !p.DbInnerField && !p.IsSystemField && !p.CustomWrite));
             return $@"
 
         /// <summary>

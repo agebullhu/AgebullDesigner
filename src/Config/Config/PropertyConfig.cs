@@ -1868,7 +1868,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"用户是否可输入"), Description("用户是否可输入")]
-        public bool CanUserInput => !DenyClient && !IsUserReadOnly && !IsSystemField  && !(IsIdentity && IsIdentity) && (Parent != null && !Parent.IsUiReadOnly);
+        public bool CanUserInput => !IsCompute && !DenyClient && !IsUserReadOnly && !IsSystemField && !IsIdentity;
 
         /// <summary>
         /// 不可编辑

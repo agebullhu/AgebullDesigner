@@ -181,42 +181,20 @@ namespace Agebull.EntityModel.RobotCoder
                 code.Append("CanNull = true");
                 has = true;
             }
-
-            if (property.CsType == "DateTime")
+            if (!string.IsNullOrWhiteSpace(property.Min))
             {
-                if (!string.IsNullOrWhiteSpace(property.Min))
-                {
-                    if (has)
-                        code.Append(',');
-                    else has = true;
-                    code.Append($@"MinDate = DateTime.Parse(""{property.Min}"")");
-                }
-
-                if (!string.IsNullOrWhiteSpace(property.Max))
-                {
-                    if (has)
-                        code.Append(',');
-                    else has = true;
-                    code.Append($@"MaxDate = DateTime.Parse(""{property.Max}"")");
-                }
+                if (has)
+                    code.Append(',');
+                else has = true;
+                code.Append($@"Min = ""{ property.Min}""");
             }
-            else
-            {
-                if (!string.IsNullOrWhiteSpace(property.Min))
-                {
-                    if (has)
-                        code.Append(',');
-                    else has = true;
-                    code.Append($@"Min = {property.Min}");
-                }
 
-                if (!string.IsNullOrWhiteSpace(property.Max))
-                {
-                    if (has)
-                        code.Append(',');
-                    else has = true;
-                    code.Append($@"Max = {property.Max}");
-                }
+            if (!string.IsNullOrWhiteSpace(property.Max))
+            {
+                if (has)
+                    code.Append(',');
+                else has = true;
+                code.Append($@"Max = ""{ property.Max}""");
             }
             if (!has)
                 return re;

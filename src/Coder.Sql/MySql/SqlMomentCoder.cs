@@ -290,7 +290,7 @@ VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Class
             if (entity == null)
                 return "";
             if (entity.NoDataBase)
-                return $"{entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
+                return $"/*{entity.Caption} : 普通类(NoDataBase=true)无法生成SQL*/";
             var code = new StringBuilder();
             code.AppendFormat(@"
 /*{1}*/
@@ -309,7 +309,7 @@ CREATE TABLE `{0}`("
             //if (entity.PrimaryColumn.IsIdentity)
 
             code.Append($@"
-)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '{entity.Caption}'");
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci COMMENT '{entity.Caption}'");
             //if (entity.PrimaryColumn.IsIdentity)
             //    code.Append(@" AUTO_INCREMENT=1");
             code.Append(@";");
@@ -321,7 +321,7 @@ CREATE TABLE `{0}`("
             if (entity == null)
                 return "";
             if (entity.NoDataBase)
-                return $"{entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
+                return $"/*{entity.Caption} : 普通类(NoDataBase=true)无法生成SQL*/";
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
@@ -364,7 +364,7 @@ ALTER TABLE `{entity.SaveTable}`
             if (entity == null)
                 return "";
             if (entity.NoDataBase)
-                return $"{entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
+                return $"/*{entity.Caption} : 普通类(NoDataBase=true)无法生成SQL*/";
             var code = new StringBuilder();
             foreach (var ent in SolutionConfig.Current.Entities)
                 ChangeBoolColumnCode(code, ent);
@@ -400,7 +400,7 @@ ALTER TABLE `{entity.SaveTable}`");
             if (entity == null)
                 return "";
             if (entity.NoDataBase)
-                return $"/*{entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL*/";
+                return $"/*{entity.Caption} : 普通类(NoDataBase=true)无法生成SQL*/";
             var code = new StringBuilder();
             if (entity.PrimaryColumn != null)
             {
@@ -416,7 +416,7 @@ ALTER TABLE `{entity.SaveTable}`
             if (entity == null)
                 return "";
             if (entity.NoDataBase)
-                return $"/*{entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL*/";
+                return $"/*{entity.Caption} : 普通类(NoDataBase=true)无法生成SQL*/";
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
@@ -440,7 +440,7 @@ ALTER TABLE `{entity.SaveTable}`");
             if (entity == null)
                 return "";
             if (entity.NoDataBase)
-                return $"{entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
+                return $"/*{entity.Caption} : 普通类(NoDataBase=true)无法生成SQL*/";
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
