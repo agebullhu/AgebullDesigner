@@ -202,6 +202,12 @@ namespace {NameSpace}.DataAccess
                     Directory.Move(oldFile, file);
                 }
             }
+
+            var baseClass = "SqlServerTable";
+            if (Entity.Interfaces?.Contains("IStateData") ?? false)
+            {
+                baseClass = "DataStateTable";
+            }
             var code = $@"
 using System;
 using System.Collections.Generic;
@@ -221,7 +227,7 @@ namespace {NameSpace}.DataAccess
     /// <summary>
     /// {Entity.Caption}
     /// </summary>
-    partial class {Entity.Name}DataAccess : SqlServerTable<{Entity.EntityName},{Project.DataBaseObjectName}>
+    partial class {Entity.Name}DataAccess : {baseClass}<{Entity.EntityName},{Project.DataBaseObjectName}>
     {{
         /// <summary>
         /// 构造单个读取命令

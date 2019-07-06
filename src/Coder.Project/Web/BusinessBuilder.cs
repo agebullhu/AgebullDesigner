@@ -82,7 +82,7 @@ using Agebull.Common.OAuth;
 using Agebull.EntityModel.Common;
 
 using Agebull.EntityModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
-using Agebull.EntityModel.BusinessLogic.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
+using Agebull.EntityModel.BusinessLogic;
 
 {Project.UsingNameSpaces}
 
@@ -95,7 +95,7 @@ namespace {NameSpace}.BusinessLogic
     /// <summary>
     /// {Entity.Description}
     /// </summary>
-    public partial class {Entity.Name}BusinessLogic : {baseClass}<{Entity.EntityName},{Entity.Name}DataAccess,{Entity.Parent.DataBaseObjectName}>
+    public partial class {Entity.Name}BusinessLogic : {baseClass}<{Entity.EntityName},{Entity.Name}DataAccess>
     {{
 {CommandExCode()}
 
@@ -379,7 +379,7 @@ using Agebull.Common;
 using Agebull.Common.OAuth;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
-using Agebull.EntityModel.BusinessLogic.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
+using Agebull.EntityModel.BusinessLogic;
 
 {Project.UsingNameSpaces}
 

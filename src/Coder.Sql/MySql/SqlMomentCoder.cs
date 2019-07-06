@@ -213,15 +213,15 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
                         var linkField = friend.Properties.FirstOrDefault(p => p.DbFieldName == field.LinkField || p.Name == field.LinkField);
                         if (linkField != null)
                         {
-                            builder.AppendFormat(@"`{0}`.`{1}` as `{2}`", friend.Name, linkField.DbFieldName, field.DbFieldName);
+                            builder.Append($@"`{friend.Name}`.`{linkField.DbFieldName}` as `{field.DbFieldName}`");
                             continue;
                         }
                     }
                 }
-                builder.AppendFormat(@"`{0}`.`{1}` as `{1}`", entity.SaveTable, field.DbFieldName);
+                builder.Append($@"`{entity.Name}`.`{field.DbFieldName}` as `{field.DbFieldName}`");
             }
             builder.Append($@"
-    FROM `{entity.SaveTable}`");
+    FROM `{entity.SaveTable}` `{entity.Name}`");
             foreach (var table in tables.Values)
             {
                 var field = entity.DbFields.FirstOrDefault(p => p.IsLinkKey && (p.LinkTable == table.SaveTable || p.LinkTable == table.Name));
@@ -230,9 +230,8 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
                 var linkField = table.Properties.FirstOrDefault(p => p.Name == field.LinkField || p.DbFieldName == field.LinkField);
                 if (linkField == null)
                     continue;
-                builder.AppendFormat(@"
-    LEFT JOIN `{1}` `{4}` ON `{0}`.`{2}` = `{4}`.`{3}`"
-                    , entity.SaveTable, table.SaveTable, field.DbFieldName, linkField.DbFieldName, table.Name);
+                builder.Append($@"
+    LEFT JOIN `{table.SaveTable}` `{table.Name}` ON `{entity.Name}`.`{field.DbFieldName}` = `{table.Name}`.`{linkField.DbFieldName}`");
             }
             builder.Append(';');
             builder.AppendLine();
