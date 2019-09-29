@@ -6,7 +6,9 @@ using System.IO;
 namespace Agebull.EntityModel.RobotCoder
 {
 
-
+    /// <summary>
+    /// 实体代码生成器
+    /// </summary>
     public sealed class EntityBuilder : EntityCoderBase
     {
         /// <summary>
@@ -168,7 +170,7 @@ namespace {NameSpace}
                 list.AddRange(Entity.Interfaces.Split(NoneLanguageChar, StringSplitOptions.RemoveEmptyEntries));
             }
             //code.Append("IEntityPoolSetting");
-            if (!Entity.NoDataBase && Entity.PrimaryColumn?.CsType == "long")
+            if (!Entity.NoDataBase/* && Entity.PrimaryColumn?.CsType == "long"*/)
                 list.Add("IIdentityData");
             //if (!Entity.IsLog)
             //{

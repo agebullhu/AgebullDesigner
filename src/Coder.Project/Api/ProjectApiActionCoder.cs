@@ -30,7 +30,8 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
             var fileName = "ApiController.Designer.cs";
-            var file = Path.Combine(path, Project.Name, Entity.Name + fileName);
+
+            var file = Path.Combine(path, Entity.Name + fileName);
             if (!string.IsNullOrWhiteSpace(Entity.Alias))
             {
                 var oldFile = Path.Combine(path, Project.Name, Entity.Alias + fileName);
@@ -51,7 +52,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
             var fileName = "ApiController.cs";
-            var file = Path.Combine(path,Project.Name, Entity.Name + fileName);
+            var file = Path.Combine(path, Entity.Name + fileName);
             if (!string.IsNullOrWhiteSpace(Entity.Alias))
             {
                 var oldFile = Path.Combine(path, Project.Name, Entity.Alias + fileName);
@@ -245,7 +246,7 @@ namespace {NameSpace}.WebApi.Entity
                     filter.AddAnd(p => {field.JsonName}.Contains(p.{field.Name}));
             }}");
                 }
-                else if(field.CsType.ToLower() == "datetime")
+                else if (field.CsType.ToLower() == "datetime")
                 {
                     code.Append($@"
             if(TryGet(""{field.JsonName}"" , out DateTime {field.JsonName}))

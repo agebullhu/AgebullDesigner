@@ -3767,6 +3767,13 @@
                 全局配置
             </summary>
         </member>
+        <member name="M:Agebull.EntityModel.Config.GlobalConfig.GetEntity(System.Func{Agebull.EntityModel.Config.EntityConfig,System.Boolean})">
+            <summary>
+                查找实体对象
+            </summary>
+            <param name="func"></param>
+            <returns></returns>
+        </member>
         <member name="M:Agebull.EntityModel.Config.GlobalConfig.GetEntity(System.String)">
             <summary>
                 取得实体对象
@@ -3809,13 +3816,6 @@
             <param name="func"></param>
             <returns></returns>
         </member>
-        <member name="M:Agebull.EntityModel.Config.GlobalConfig.GetEntity(System.Func{Agebull.EntityModel.Config.EntityConfig,System.Boolean})">
-            <summary>
-                查找实体对象
-            </summary>
-            <param name="func"></param>
-            <returns></returns>
-        </member>
         <member name="M:Agebull.EntityModel.Config.GlobalConfig.GetEnum(System.Func{Agebull.EntityModel.Config.EnumConfig,System.Boolean})">
             <summary>
                 查找枚举对象
@@ -3840,6 +3840,11 @@
         <member name="F:Agebull.EntityModel.Config.GlobalConfig.ConfigDictionary">
             <summary>
                 配置查找表
+            </summary>
+        </member>
+        <member name="M:Agebull.EntityModel.Config.GlobalConfig.ClearConfigDictionary">
+            <summary>
+            清除
             </summary>
         </member>
         <member name="M:Agebull.EntityModel.Config.GlobalConfig.AddConfig(Agebull.EntityModel.Config.ConfigDesignOption)">
@@ -4050,14 +4055,6 @@
                 API集合
             </summary>
         </member>
-        <member name="M:Agebull.EntityModel.Config.GlobalConfig.TryAdd``1(Agebull.EntityModel.NotificationList{``0},System.Collections.Generic.IEnumerable{``0})">
-            <summary>
-            如果不存在就加入
-            </summary>
-            <param name="collection"></param>
-            <param name="values"></param>
-            <typeparam name="TConfig"></typeparam>
-        </member>
         <member name="M:Agebull.EntityModel.Config.GlobalConfig.CheckPath(System.String,System.String[])">
             <summary>
             检查路径
@@ -4114,6 +4111,27 @@
             删除
             </summary>
             <param name="api"></param>
+        </member>
+        <member name="M:Agebull.EntityModel.Config.GlobalConfig.Clear``1(Agebull.EntityModel.NotificationList{``0})">
+            <summary>
+            清除集合
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+        </member>
+        <member name="M:Agebull.EntityModel.Config.GlobalConfig.FirstOrDefault``1(Agebull.EntityModel.NotificationList{``0},System.Func{``0,System.Boolean})">
+            <summary>
+                查找实体对象
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Agebull.EntityModel.Config.GlobalConfig.TryAdd``1(Agebull.EntityModel.NotificationList{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            如果不存在就加入
+            </summary>
+            <param name="collection"></param>
+            <param name="values"></param>
+            <typeparam name="TConfig"></typeparam>
         </member>
         <member name="T:Agebull.EntityModel.Config.IDesignGlobal">
             <summary>

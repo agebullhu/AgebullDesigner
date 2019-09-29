@@ -4,6 +4,9 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
+    /// <summary>
+    /// 数据库对象生成器
+    /// </summary>
     public sealed class DataBaseBuilder : CoderWithProject
     {
         /// <summary>

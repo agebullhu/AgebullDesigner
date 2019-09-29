@@ -9,7 +9,6 @@ namespace Agebull.EntityModel.RobotCoder
     [ExportMetadata("Symbol", '%')]
     internal sealed class WebAppProjectBuilde : ProjectBuilder, IAutoRegister
     {
-
         /// <summary>
         /// Ãû³Æ
         /// </summary>
@@ -118,21 +117,6 @@ namespace Agebull.EntityModel.RobotCoder
                 builder.CreateBaseCode(accessPath);
                 builder.CreateExtendCode(accessPath);
             }
-            //if (!string.IsNullOrWhiteSpace(project.BusinessPath))
-            {
-                var businessPath =
-                    GlobalConfig.CheckPath(
-                        GlobalConfig.CheckPath(Solution.IsWeb ? project.ModelPath : project.BusinessPath,
-                            "Business"));
-                var builder = new BusinessBuilder
-                {
-                    Entity = schema,
-                    Project = project
-                };
-                builder.CreateBaseCode(businessPath);
-                builder.CreateExtendCode(businessPath);
-            }
-            
         }
     }
 }

@@ -13,6 +13,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// 基本代码
         /// </summary>
         public override string BaseCode => ComboCode();
+
         /// <summary>
         ///     生成代码
         /// </summary>

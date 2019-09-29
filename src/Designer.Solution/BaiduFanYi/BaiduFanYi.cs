@@ -8,6 +8,7 @@ using System.Net;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 
 namespace Agebull.Common
 {
@@ -62,6 +63,7 @@ namespace Agebull.Common
                     sb.Append(' ');
                 });
                 var txt = sb.ToString();
+                Console.WriteLine(txt);
                 foreach(var ch in txt)
                 {
                     if(ch != ' ' && ch < 'z')
@@ -142,6 +144,7 @@ namespace Agebull.Common
                 return null;
             }
 
+            Thread.Sleep(50);
             str = str.Trim();
             //var app = "CodeRefactor";
             //var appid = "20161104000031344";
@@ -151,9 +154,9 @@ namespace Agebull.Common
             var sign1 = $@"20161104000031344{str}{salt}E5JzhwEjhVWL9FWzjY74";
             byte[] buf = Encoding.UTF8.GetBytes(sign1); //tbPass为输入密码的文本框
             MD5 md5 = new MD5CryptoServiceProvider();
-            byte[] output = md5.ComputeHash(buf);
+            var output = md5.ComputeHash(buf);
             var sign = BitConverter.ToString(output).Replace("-", "").ToLower();
-            string url =
+            var url =
                 $@"http://api.fanyi.baidu.com/api/trans/vip/translate?appid=20161104000031344&from={(fromChiness ? "zh" : "auto")}&to={(!fromChiness ? "zh" : "en")}&q={str}&salt={salt}&sign={sign}";
             WebClient client = new WebClient(); //引用System.Net
             var buffer = client.DownloadData(url);

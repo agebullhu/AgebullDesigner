@@ -116,16 +116,16 @@ namespace Agebull.EntityModel.RobotCoder
                         {{
                             Index        = {property.Name},
                             Name         = ""{property.Name}"",
-                            Title        = ""{property.Caption}"",
                             Caption      = @""{property.Caption}"",
-                            Description  = @""{property.Description}"",
+                            JsonName     = ""{property.JsonName}"",
                             ColumnName   = ""{property.DbFieldName}"",
                             PropertyType = typeof({property.CustomType ?? property.CsType}),
                             CanNull      = {(property.Nullable ? "true" : "false")},
                             ValueType    = PropertyValueType.{CsharpHelper.PropertyValueType(property)},
                             DbType       = {DbType(property)},
                             CanImport    = {(property.ExtendConfigListBool["easyui", "CanImport"] ? "true" : "false")},
-                            CanExport    = {(property.ExtendConfigListBool["easyui", "CanExport"] ? "true" : "false")}
+                            CanExport    = {(property.ExtendConfigListBool["easyui", "CanExport"] ? "true" : "false")},
+                            Description  = @""{property.Description}""
                         }}
                     }}");
             }

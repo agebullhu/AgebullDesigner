@@ -242,13 +242,13 @@ namespace {NameSpace}.BusinessLogic
             List<{Entity.EntityName}> datas;
             using (DbReaderScope<{Entity.EntityName}>.CreateScope(Access, fields, (reader, data) =>
             {{
-                data.{Entity.PrimaryField} = reader.GetInt64(0);
+                data.{Entity.PrimaryField} = ({Entity.PrimaryColumn.LastCsType})reader.GetInt64(0);
                 data.{cap.Name} = reader.IsDBNull(1) ? null : reader.GetString(1);
             }}))
             {{
                 datas = Access.All(");
                 if (Entity.Interfaces.Contains("IStateData"))
-                    code.Append("p => p.DataState <= EntityModel.Common.DataStateType.Enable");
+                    code.Append("p => p.DataState <= DataStateType.Enable");
                 code.Append($@");
             }}
             return datas.Count == 0

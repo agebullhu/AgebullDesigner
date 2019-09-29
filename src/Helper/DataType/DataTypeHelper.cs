@@ -10,7 +10,7 @@ namespace Agebull.EntityModel.RobotCoder
     public class DataTypeHelper
     {
         static DataTypeMapConfig StringConfig => SolutionConfig.Current.DataTypeMap.First(p =>
-            !p.NoDbCheck && string.Equals(p.Name, "string",StringComparison.OrdinalIgnoreCase));
+            !p.NoDbCheck && string.Equals(p.Name, "string", StringComparison.OrdinalIgnoreCase));
 
         public static DataTypeMapConfig FindByCSharp(string cs) => SolutionConfig.Current.DataTypeMap.FirstOrDefault(p =>
                                                                        !p.NoDbCheck && string.Equals(p.CSharp, cs, StringComparison.OrdinalIgnoreCase)) ?? StringConfig;
@@ -20,23 +20,28 @@ namespace Agebull.EntityModel.RobotCoder
 
         public static DataTypeMapConfig FindByDb(DataBaseType db, string type)
         {
+            if (string.IsNullOrWhiteSpace(type))
+                return null;
+            type = type.Trim().Split(new char[] { '(', '[', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' }, StringSplitOptions.RemoveEmptyEntries)[0];
             switch (db)
             {
                 case DataBaseType.SqlServer:
-                    return  SolutionConfig.Current.DataTypeMap.FirstOrDefault(p =>
-                        !p.NoDbCheck && string.Equals(p.SqlServer, type, StringComparison.OrdinalIgnoreCase));
-                   
+                    if (type.Equals("varchar", StringComparison.OrdinalIgnoreCase))
+                        type = "nvarchar";
+                    return SolutionConfig.Current.DataTypeMap.FirstOrDefault(p =>
+                       !p.NoDbCheck && string.Equals(p.SqlServer, type, StringComparison.OrdinalIgnoreCase));
+
                 case DataBaseType.MySql:
-                    return  SolutionConfig.Current.DataTypeMap.FirstOrDefault(p =>
-                        !p.NoDbCheck && string.Equals(p.MySql, type, StringComparison.OrdinalIgnoreCase));
-                   
+                    return SolutionConfig.Current.DataTypeMap.FirstOrDefault(p =>
+                       !p.NoDbCheck && string.Equals(p.MySql, type, StringComparison.OrdinalIgnoreCase));
+
                 case DataBaseType.Oracle:
-                    return  SolutionConfig.Current.DataTypeMap.FirstOrDefault(p =>
-                        !p.NoDbCheck && string.Equals(p.Oracle, type, StringComparison.OrdinalIgnoreCase));
-                   
+                    return SolutionConfig.Current.DataTypeMap.FirstOrDefault(p =>
+                       !p.NoDbCheck && string.Equals(p.Oracle, type, StringComparison.OrdinalIgnoreCase));
+
                 case DataBaseType.Sqlite:
-                    return  SolutionConfig.Current.DataTypeMap.FirstOrDefault(p =>
-                        !p.NoDbCheck && string.Equals(p.Sqlite, type, StringComparison.OrdinalIgnoreCase));
+                    return SolutionConfig.Current.DataTypeMap.FirstOrDefault(p =>
+                       !p.NoDbCheck && string.Equals(p.Sqlite, type, StringComparison.OrdinalIgnoreCase));
             }
             return null;
         }
@@ -44,32 +49,48 @@ namespace Agebull.EntityModel.RobotCoder
 
         public static void ToStandard(EntityConfig entity)
         {
-            foreach (var property in entity.Properties)
-            {
-                if (property.CsType == "unit")
-                    property.CsType = "long";
-                if (!string.IsNullOrWhiteSpace(property.CustomType))
-                    property.DataType = "Enum";
-                else if (string.Equals(property.DataType, "Enum", StringComparison.OrdinalIgnoreCase))
-                    property.CsType = "int";
+            using (WorkModelScope.CreateScope(WorkModel.Repair))
+                foreach (var property in entity.Properties)
+                {
+                    if (property.CsType == "unit")
+                        property.CsType = "long";
+                    if (!string.IsNullOrWhiteSpace(property.CustomType))
+                        property.DataType = "Enum";
+                    if (string.Equals(property.DataType, "Enum", StringComparison.OrdinalIgnoreCase))
+                        property.CsType = "int";
 
-                DataTypeMapConfig dataType;
-                if (property.IsPrimaryKey || property.IsLinkField)
-                    dataType = FindByName(SolutionConfig.Current.IdDataType);
-                else if(property.IsUserId)
-                    dataType = FindByName(SolutionConfig.Current.IdDataType);
-                else 
-                    dataType = FindByCSharp(property.CsType);
+                    DataTypeMapConfig dataType;
+                    if (property.IsPrimaryKey || property.IsLinkField)
+                        dataType = FindByName(SolutionConfig.Current.IdDataType);
+                    else if (property.IsUserId)
+                        dataType = FindByName(SolutionConfig.Current.IdDataType);
+                    else
+                        dataType = FindByCSharp(property.CsType);
 
-                property.DataType = dataType.Name;
-                property.CsType = dataType.CSharp;
-                property.CppType = dataType.Cpp;
-            }
+                    property.DataType = dataType.Name;
+                    property.CsType = dataType.CSharp;
+                    property.CppType = dataType.Cpp;
+                }
         }
 
-        public static void ToStandardByDbType(PropertyConfig property)
+        public static void ToStandardByDbType(EntityConfig entity)
         {
-            DataTypeMapConfig dataType = FindByDb(property.Parent.Parent.DbType, property.DbType);
+            using (WorkModelScope.CreateScope(WorkModel.Repair))
+                foreach (var property in entity.Properties)
+                {
+                    ToStandardByDbType(property);
+                }
+        }
+
+        private static void ToStandardByDbType(PropertyConfig property)
+        {
+            ToStandardByDbType(property,property.DbType);
+        }
+        public static void ToStandardByDbType(PropertyConfig property,string dbType)
+        {
+            if (property.NoStorage || string.IsNullOrWhiteSpace(dbType))
+                return;
+            DataTypeMapConfig dataType = FindByDb(property.Parent.Parent.DbType, dbType);
             if (dataType == null)
                 return;
             property.DataType = dataType.Name;
@@ -163,7 +184,7 @@ namespace Agebull.EntityModel.RobotCoder
 
             if (arg.DbType.Contains('('))
             {
-                var words = arg.DbType.Split(new []{ ',', '(', ')', ' ' },StringSplitOptions.RemoveEmptyEntries);
+                var words = arg.DbType.Split(new[] { ',', '(', ')', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 arg.DbType = words[0];
                 if (words.Length > 1 && int.TryParse(words[1], out var len))
                     arg.Datalen = len;

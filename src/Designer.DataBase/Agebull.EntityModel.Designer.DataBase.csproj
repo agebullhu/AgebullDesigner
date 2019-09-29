@@ -172,7 +172,7 @@
   <PropertyGroup>
     <PostBuildEvent>COPY $(TargetPath) "..\..\..\Program\AddIn\Bin\" /Y
 COPY $(ProjectDir)$(OutDir)$(TargetName).xml "..\..\..\Program\AddIn\Bin\" /Y
-COPY $(ProjectDir)$(OutDir)$(TargetName).pdb "..\..\..\Program\AddIn\Bin\" /Y</PostBuildEvent>
+COPY $(ProjectDir)$(OutDir)$(TargetName).pdb "..\..\..\Program\AddIn\Runtime\" /Y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

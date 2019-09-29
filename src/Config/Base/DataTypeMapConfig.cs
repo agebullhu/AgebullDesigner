@@ -82,7 +82,7 @@ namespace Agebull.EntityModel.Config
                 Cpp = "unsigned char",
                 MySql = "VarBinary",
                 SqlServer = "VarBinary",
-                Oracle = "NUMBER(3)",
+                Oracle = "NUMBER",
                 JavaScript = "byte"
             },
 
@@ -109,7 +109,7 @@ namespace Agebull.EntityModel.Config
                 Cpp = "short",
                 MySql = "SMALLINT",
                 SqlServer = "smallint",
-                Oracle = "NUMBER(5)",
+                Oracle = "NUMBER",
                 JavaScript = "Number"
             },
             /* Int32*/
@@ -122,7 +122,7 @@ namespace Agebull.EntityModel.Config
                 Cpp = "int",
                 MySql = "INT",
                 SqlServer = "INT",
-                Oracle = "NUMBER(10)",
+                Oracle = "NUMBER",
                 JavaScript = "Number"
             },
             /* Int64*/
@@ -135,7 +135,7 @@ namespace Agebull.EntityModel.Config
                 Cpp = "long long",
                 MySql = "BIGINT",
                 SqlServer = "BIGINT",
-                Oracle = "NUMBER(19)",
+                Oracle = "NUMBER",
                 JavaScript = "Number"
             },
             /* Single */
@@ -172,10 +172,23 @@ namespace Agebull.EntityModel.Config
                 CSharp = "decimal",
                 Java = "decimal",
                 Cpp = "-",
-                MySql = "DECIMAL(18,8)",
-                SqlServer = "DECIMAL(18,8)",
+                MySql = "DECIMAL",
+                SqlServer = "DECIMAL",
                 JavaScript = "Number",
-                Oracle = "DECIMAL(33,3)"
+                Oracle = "DECIMAL"
+            },
+            /* Money*/
+            new DataTypeMapConfig
+            {
+                Name = "Money",
+                Caption = "货币",
+                CSharp = "decimal",
+                Java = "decimal",
+                Cpp = "-",
+                MySql = "Money",
+                SqlServer = "Money",
+                JavaScript = "Number",
+                Oracle = "DECIMAL"
             },
             /* Object*/
             new DataTypeMapConfig
@@ -201,7 +214,7 @@ namespace Agebull.EntityModel.Config
                 Cpp = "char",
                 MySql = "VarBinary",
                 SqlServer = "VarBinary",
-                Oracle = "NUMBER(3)",
+                Oracle = "NUMBER",
                 JavaScript = "byte",
                 NoDbCheck=true
             },
@@ -215,7 +228,7 @@ namespace Agebull.EntityModel.Config
                 Cpp = "unsigned int",
                 MySql = "INT UNSIGNED",
                 SqlServer = "BIGINT",
-                Oracle = "NUMBER(10)",
+                Oracle = "NUMBER",
                 JavaScript = "Number",
                 NoDbCheck=true
             },
@@ -229,7 +242,7 @@ namespace Agebull.EntityModel.Config
                 Cpp = "unsigned short",
                 MySql = "SMALLINT UNSIGNED",
                 SqlServer = "smallint",
-                Oracle = "NUMBER(5)",
+                Oracle = "NUMBER",
                 JavaScript = "Number",
                 NoDbCheck=true
             },
@@ -243,7 +256,7 @@ namespace Agebull.EntityModel.Config
                 Cpp = "int",
                 MySql = "int",
                 SqlServer = "int",
-                Oracle = "NUMBER(10)",
+                Oracle = "NUMBER",
                 JavaScript = "Number",
                 NoDbCheck=true
             },
@@ -257,7 +270,7 @@ namespace Agebull.EntityModel.Config
                 Cpp = "unsigned long long",
                 MySql = "BIGINT UNSIGNED",
                 SqlServer = "real",
-                Oracle = "NUMBER(19)",
+                Oracle = "NUMBER",
                 JavaScript = "Number",
                 NoDbCheck=true
             }
@@ -265,8 +278,8 @@ namespace Agebull.EntityModel.Config
 
         #endregion
 
-        #region 设计标识
-
+        #region 属性
+        
         /// <summary>
         /// 不参与数据库类型还原
         /// </summary>

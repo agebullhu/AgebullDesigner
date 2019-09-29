@@ -103,8 +103,10 @@ namespace Agebull.EntityModel.Designer
         public void AutoSnowFlakeId(EntityConfig entity)
         {
             if (entity.PrimaryColumn == null || entity.PrimaryColumn.IsIdentity)
-                return;
-            if (string.IsNullOrWhiteSpace(entity.Interfaces))
+            {
+                entity.Interfaces = entity.Interfaces?.Replace("ISnowFlakeId", "");
+            }
+            else if (string.IsNullOrWhiteSpace(entity.Interfaces))
                 entity.Interfaces = "ISnowFlakeId";
             else if (!entity.Interfaces.Contains("ISnowFlakeId"))
                 entity.Interfaces += ",ISnowFlakeId";

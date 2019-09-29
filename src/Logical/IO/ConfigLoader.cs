@@ -23,7 +23,7 @@ namespace Agebull.EntityModel.Designer
         /// <param name="sluFile"></param>
         public static SolutionConfig Load(string sluFile)
         {
-            GlobalConfig.ConfigDictionary.Clear();
+            GlobalConfig.ClearConfigDictionary();
             ConfigLoader loader = new ConfigLoader();
             loader.LoadSolution(GlobalConfig.CheckPath(GlobalConfig.ProgramRoot, "Global"), "global.json", true);
             GlobalConfig.GlobalSolution = loader._solution;

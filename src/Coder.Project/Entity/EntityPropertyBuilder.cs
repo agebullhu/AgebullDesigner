@@ -10,6 +10,9 @@ namespace Agebull.EntityModel.RobotCoder
     {
         #region 主体代码
 
+        /// <summary>
+        /// 扩展的Using
+        /// </summary>
         protected override string ExtendUsing => $@"
 using System;
 using System.Collections.Generic;
@@ -31,21 +34,39 @@ using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Interfaces;
 {Project.UsingNameSpaces}
 ";
+
+        /// <summary>
+        /// 类定义之前的代码
+        /// </summary>
         protected override string ClassHead => $@"/// <summary>
     /// {ToRemString(Entity.Description)}
     /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
     public ";
+
+        /// <summary>
+        /// 类继承的扩展
+        /// </summary>
         protected override string ClassExtend => ExtendInterface();
 
+        /// <summary>
+        /// 代码文件夹名称
+        /// </summary>
         protected override string Folder => "Base";
 
+
+        /// <summary>
+        /// 基本代码
+        /// </summary>
         public override string BaseCode => $@"
         #region 基本属性
 {Properties()}
 {FullCode()}
         #endregion";
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override string ExtendCode => $@"/// <summary>
         /// 初始化
         /// </summary>
@@ -59,7 +80,7 @@ using Agebull.EntityModel.Interfaces;
         /// </summary>
         private string FullCode()
         {
-            if (Entity.NoDataBase || Entity.PrimaryColumn?.CsType != "long")
+            if (Entity.NoDataBase/* || Entity.PrimaryColumn?.CsType != "long"*/)
                 return null;
             return $@"
         #region 接口属性
@@ -77,13 +98,13 @@ using Agebull.EntityModel.Interfaces;
 
         private string ExtendInterface()
         {
-            List<string> list = new List<string>();
+            var list = new List<string>();
             if (Entity.Interfaces != null)
             {
                 list.AddRange(Entity.Interfaces.Split(NoneLanguageChar, StringSplitOptions.RemoveEmptyEntries));
             }
             //code.Append("IEntityPoolSetting");
-            if (!Entity.NoDataBase && Entity.PrimaryColumn?.CsType == "long")
+            if (!Entity.NoDataBase /*&& Entity.PrimaryColumn?.CsType == "long"*/)
                 list.Add("IIdentityData");
             //if (!Entity.IsLog)
             //{
@@ -112,23 +133,23 @@ using Agebull.EntityModel.Interfaces;
             {
                 if (Entity.PrimaryColumn.Name != "Id" && Entity.LastProperties.All(p => p.Name != "Id"))
                 {
-                    code.AppendFormat(@"
+                    code.Append($@"
 
         /// <summary>
         /// 对象标识
         /// </summary>
         [IgnoreDataMember,Browsable(false)]
-        public {0} Id
+        public {Entity.PrimaryColumn.LastCsType} Id
         {{
             get
             {{
-                return this.{1};
+                return this.{Entity.PrimaryColumn.Name};
             }}
             set
             {{
-                this.{1} = value;
+                this.{Entity.PrimaryColumn.Name} = value;
             }}
-        }}", Entity.PrimaryColumn.LastCsType, Entity.PrimaryColumn.Name);
+        }}");
                 }
                 if (Entity.PrimaryColumn.CsType == "int")
                     code.Append($@"
@@ -138,14 +159,8 @@ using Agebull.EntityModel.Interfaces;
         /// </summary>
         long IIdentityData.Id
         {{
-            get
-            {{
-                return (long)this.{Entity.PrimaryColumn.Name};
-            }}
-            set
-            {{
-                this.{Entity.PrimaryColumn.Name} = value;
-            }}
+            get => this.{Entity.PrimaryColumn.Name};
+            set => this.{Entity.PrimaryColumn.Name} = ({Entity.PrimaryColumn.LastCsType})value;
         }}");
                 //        else
                 //            code.AppendFormat(@"
@@ -179,9 +194,9 @@ using Agebull.EntityModel.Interfaces;
         }}", Entity.PrimaryColumn.Name);
                 }
             }
-            IEnumerable<PropertyConfig> idp = Columns.Where(p => p.UniqueIndex > 0);
+            var idp = Columns.Where(p => p.UniqueIndex > 0);
             var columnSchemata = idp as PropertyConfig[] ?? idp.ToArray();
-            int cnt = columnSchemata.Length;
+            var cnt = columnSchemata.Length;
             if (cnt <= 1)
             {
                 return code.ToString();
@@ -197,14 +212,14 @@ using Agebull.EntityModel.Interfaces;
             {
                 return string.Format(""");
 
-            for (int idx = 0; idx < cnt; idx++)
+            for (var idx = 0; idx < cnt; idx++)
             {
                 if (idx > 0)
                     code.Append(':');
                 code.AppendFormat("{{{0}}}", idx);
             }
             code.AppendFormat("\" ");
-            foreach (PropertyConfig property in columnSchemata.OrderBy(p => p.UniqueIndex))
+            foreach (var property in columnSchemata.OrderBy(p => p.UniqueIndex))
             {
                 code.AppendFormat(" , {0}", property.Name);
             }
@@ -409,7 +424,7 @@ using Agebull.EntityModel.Interfaces;
             var code = new StringBuilder();
             code.Append(PrimaryKeyPropertyCode());
             ExistProperties.Add(Entity.PrimaryField, Entity.PrimaryField);
-            foreach (PropertyConfig property in Columns.Where(p => !p.DbInnerField && !p.IsPrimaryKey))
+            foreach (var property in Columns.Where(p => !p.DbInnerField && !p.IsPrimaryKey))
             {
                 if (property.IsCompute)
                     ComputePropertyCode(property, code);
@@ -417,12 +432,12 @@ using Agebull.EntityModel.Interfaces;
                     PropertyCode(property, code);
                 ExistProperties.Add(property.Name, property.Name);
             }
-            foreach (PropertyConfig property in Columns.Where(p => p.DbInnerField && !p.IsPrimaryKey))
+            foreach (var property in Columns.Where(p => p.DbInnerField && !p.IsPrimaryKey))
             {
                 DbInnerProperty(property, code);
                 ExistProperties.Add(property.Name, property.Name);
             }
-            foreach (PropertyConfig property in Columns)
+            foreach (var property in Columns)
             {
                 AliasPropertyCode(property, code);
             }
@@ -440,6 +455,7 @@ using Agebull.EntityModel.Interfaces;
         /// </remarks>
         [IgnoreDataMember , Browsable(false),JsonIgnore]
         public {property.LastCsType} {property.Name} => throw new Exception(""{ToRemString(property.Caption)}属性仅限用于查询的Lambda表达式使用"");");
+
         }
 
         /// <summary>
@@ -449,7 +465,7 @@ using Agebull.EntityModel.Interfaces;
         private string AccessProperties()
         {
             var code = new StringBuilder();
-            foreach (PropertyConfig property in Entity.DbFields.Where(p => !string.IsNullOrWhiteSpace(p.StorageProperty)))
+            foreach (var property in Entity.DbFields.Where(p => !string.IsNullOrWhiteSpace(p.StorageProperty)))
             {
                 code.Append($@"
 

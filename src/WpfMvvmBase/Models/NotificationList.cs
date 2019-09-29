@@ -248,7 +248,7 @@ namespace Agebull.EntityModel
 
         #region 集合动作通知
 
-        
+
 
         /// <summary>当添加、移除、变更、移动了某个项时，或当刷新了整个列表时发生。</summary>
         public virtual event NotifyCollectionChangedEventHandler CollectionChanged;

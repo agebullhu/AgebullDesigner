@@ -25,7 +25,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                     </el-tooltip>
                     <el-tooltip placement='top' effect='light'>
                         <div slot='content'>µ¼³öExcel</div>
-                        <el-button icon='fa fa-file-excel-o' @click='importExcel'></el-button>
+                        <el-button icon='fa fa-file-excel-o' @click='exportExcel'></el-button>
                     </el-tooltip>");
             if (!Entity.IsUiReadOnly)
             {
@@ -112,13 +112,14 @@ namespace Agebull.EntityModel.RobotCoder.VUE
     <script type='text/javascript' src='http://cdn.staticfile.org/element-ui/2.8.2/index.js'></script>
     <script type='text/javascript' src='http://cdn.staticfile.org/element-ui/2.8.2/locale/zh-CN.min.js'></script>
     <!--Extend-->
-    <script type='text/javascript' src='/scripts/extend/vue_ex.js'></script>
-    <script type='text/javascript' src='/scripts/extend/core.js'></script>
-    <script type='text/javascript' src='/scripts/extend/ajax.js'></script>
-    <script type='text/javascript' src='/scripts/extend/ajax_vue.js'></script>
-    <script type='text/javascript' src='/scripts/extend/extend.js'></script>
-    <script type='text/javascript' src='/scripts/extend/type.js'></script>
-    <link rel='stylesheet' type='text/css' href='/styles/vuePage.css' />{style}
+    <script type='text/javascript' src='../../js/newSystem/extend/vue_ex.js'></script>
+    <script type='text/javascript' src='../../js/newSystem/extend/core.js'></script>
+    <script type='text/javascript' src='../../js/newSystem/extend/ajax.js'></script>
+    <script type='text/javascript' src='../../js/newSystem/extend/ajax_vue.js'></script>
+    <script type='text/javascript' src='../../js/newSystem/extend/extend.js'></script>
+    <script type='text/javascript' src='../../js/newSystem/extend/type.js'></script>
+    <link rel='stylesheet' type='text/css' href='../../Css/styles/vuePage.css' />
+{style}
 </head>
 <body>
 <div id='work_space' class='tiled' v-cloak>

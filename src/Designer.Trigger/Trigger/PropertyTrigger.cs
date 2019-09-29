@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -59,15 +60,15 @@ namespace Agebull.EntityModel.Designer
             {
                 foreach (var field in entity.Properties)
                 {
-                    if ((field.LinkTable == saveTable || field.LinkTable == name) &&
-                        (field.IsLinkField || field.IsLinkKey || field.IsLinkCaption) &&
-                        (field.LinkField == TargetConfig.DbFieldName || field.LinkField == TargetConfig.Name))
-
+                    if ((field.IsLinkField || field.IsLinkKey || field.IsLinkCaption) &&//连接类型
+                        (field.LinkTable == saveTable || field.LinkTable == name) &&//表
+                        (field.LinkField == TargetConfig.DbFieldName || field.LinkField == TargetConfig.Name))//字段
+                        //field.Option.ReferenceKey = TargetConfig.Key;
                         action(field);
-
                 }
             }
         }
+
         /// <summary>
         ///     发出属性修改前事件
         /// </summary>
@@ -84,7 +85,8 @@ namespace Agebull.EntityModel.Designer
                     //if(string.IsNullOrWhiteSpace(newValue))
                     break;
                 case nameof(TargetConfig.DbType):
-                    SyncLinkField(field => field.DbType = TargetConfig.DbType);
+                    DataTypeHelper.ToStandardByDbType(TargetConfig, newValue?.ToString());
+                    //SyncLinkField(field => field.DbType = TargetConfig.DbType);
                     break;
                 case nameof(TargetConfig.DbNullable):
                     SyncLinkField(field => field.DbNullable = true);

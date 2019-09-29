@@ -11,9 +11,21 @@ namespace Agebull.EntityModel.Config
     /// <summary>
     ///     全局配置
     /// </summary>
-    public partial class GlobalConfig : NotificationObject
+    public class GlobalConfig : NotificationObject
     {
         #region 类型取得
+
+        /// <summary>
+        ///     查找实体对象
+        /// </summary>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        public static EntityConfig GetEntity(Func<EntityConfig, bool> func)
+        {
+            return FirstOrDefault(Entities, func);
+        }
+
+
 
         /// <summary>
         ///     取得实体对象
@@ -22,8 +34,8 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static EntityConfig GetEntity(string name)
         {
-            return name == null 
-                ? null 
+            return name == null
+                ? null
                 : GetEntity(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase))
                 ?? GetEntity(p => string.Equals(p.ReadTableName, name, StringComparison.OrdinalIgnoreCase));
         }
@@ -35,7 +47,9 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static EnumConfig GetEnum(string name)
         {
-            return name == null ? null : Enums.FirstOrDefault(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
+            return name == null
+                ? null :
+                FirstOrDefault(Enums, p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -45,7 +59,9 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static ProjectConfig GetProject(string name)
         {
-            return name == null ? null : Projects.FirstOrDefault(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
+            return name == null
+                ? null
+                : FirstOrDefault(Projects, p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -66,7 +82,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static EnumConfig Find(Func<EnumConfig, bool> func)
         {
-            return Enums.FirstOrDefault(func);
+            return FirstOrDefault(Enums, func);
         }
 
         /// <summary>
@@ -76,19 +92,8 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static ProjectConfig Find(Func<ProjectConfig, bool> func)
         {
-            return Projects.FirstOrDefault(func);
+            return FirstOrDefault(Projects, func);
         }
-
-        /// <summary>
-        ///     查找实体对象
-        /// </summary>
-        /// <param name="func"></param>
-        /// <returns></returns>
-        public static EntityConfig GetEntity(Func<EntityConfig, bool> func)
-        {
-            return Entities.FirstOrDefault(func);
-        }
-
 
         /// <summary>
         ///     查找枚举对象
@@ -97,7 +102,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static EnumConfig GetEnum(Func<EnumConfig, bool> func)
         {
-            return Enums.FirstOrDefault(func);
+            return FirstOrDefault(Enums, func);
         }
 
         /// <summary>
@@ -107,7 +112,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static ProjectConfig GetProject(Func<ProjectConfig, bool> func)
         {
-            return Projects.FirstOrDefault(func);
+            return FirstOrDefault(Projects, func);
         }
 
         /// <summary>
@@ -117,7 +122,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static ApiItem GetApi(Func<ApiItem, bool> func)
         {
-            return ApiItems.FirstOrDefault(func);
+            return FirstOrDefault(ApiItems, func);
         }
 
         #endregion
@@ -130,6 +135,14 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember]
         public static Dictionary<Guid, ConfigBase> ConfigDictionary = new Dictionary<Guid, ConfigBase>();
 
+        /// <summary>
+        /// 清除
+        /// </summary>
+        public static void ClearConfigDictionary()
+        {
+            lock (ConfigDictionary)
+                ConfigDictionary.Clear();
+        }
 
         /// <summary>
         ///     加入配置
@@ -137,14 +150,15 @@ namespace Agebull.EntityModel.Config
         /// <param name="option"></param>
         public static void AddConfig(ConfigDesignOption option)
         {
-            if (!ConfigDictionary.ContainsKey(option.Key))
-            {
-                ConfigDictionary.Add(option.Key, option.Config);
-            }
-            else
-            {
-                ConfigDictionary[option.Key] = option.Config;
-            }
+            lock (ConfigDictionary)
+                if (!ConfigDictionary.ContainsKey(option.Key))
+                {
+                    ConfigDictionary.Add(option.Key, option.Config);
+                }
+                else
+                {
+                    ConfigDictionary[option.Key] = option.Config;
+                }
         }
 
         /// <summary>
@@ -153,7 +167,8 @@ namespace Agebull.EntityModel.Config
         /// <param name="option"></param>
         public static void RemoveConfig(ConfigDesignOption option)
         {
-            ConfigDictionary.Remove(option.Key);
+            lock (ConfigDictionary)
+                ConfigDictionary.Remove(option.Key);
         }
 
         /// <summary>
@@ -170,8 +185,11 @@ namespace Agebull.EntityModel.Config
             var guid = new Guid(key);
             if (guid == Guid.Empty)
                 return null;
-            ConfigDictionary.TryGetValue(guid, out ConfigBase config);
-            return config as TConfig;
+            lock (ConfigDictionary)
+            {
+                ConfigDictionary.TryGetValue(guid, out ConfigBase config);
+                return config as TConfig;
+            }
         }
 
         /// <summary>
@@ -183,8 +201,11 @@ namespace Agebull.EntityModel.Config
         {
             if (key == Guid.Empty)
                 return null;
-            ConfigDictionary.TryGetValue(key, out ConfigBase config);
-            return config;
+            lock (ConfigDictionary)
+            {
+                ConfigDictionary.TryGetValue(key, out ConfigBase config);
+                return config;
+            }
         }
 
         /// <summary>
@@ -198,8 +219,11 @@ namespace Agebull.EntityModel.Config
         {
             if (key == Guid.Empty)
                 return null;
-            ConfigDictionary.TryGetValue(key, out ConfigBase config);
-            return config as TConfig;
+            lock (ConfigDictionary)
+            {
+                ConfigDictionary.TryGetValue(key, out ConfigBase config);
+                return config as TConfig;
+            }
         }
 
         #endregion
@@ -375,14 +399,14 @@ namespace Agebull.EntityModel.Config
                     {
                         nowType = 4;
                     }
-                    
-                    if(nowType != preType && preType > 0)
+
+                    if (nowType != preType && preType > 0)
                     {
                         if (preType == 2 && nowType == 1)
                         {
                             if (sb.Length > 1)
                             {
-                                var preChar = sb[sb.Length-1];
+                                var preChar = sb[sb.Length - 1];
                                 sb.Remove(sb.Length - 1, 1);
                                 words.Add(sb.ToString());
                                 sb.Clear();
@@ -641,21 +665,6 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public static NotificationList<ApiItem> ApiItems => Global.ApiItems;
 
-        /// <summary>
-        /// 如果不存在就加入
-        /// </summary>
-        /// <param name="collection"></param>
-        /// <param name="values"></param>
-        /// <typeparam name="TConfig"></typeparam>
-        public static void TryAdd<TConfig>(NotificationList<TConfig> collection, IEnumerable<TConfig> values)
-            where TConfig : ConfigBase
-        {
-            foreach (var vl in values)
-            {
-                if (collection.All(p => p.Key != vl.Key))
-                    collection.Add(vl);
-            }
-        }
 
         #endregion
 
@@ -708,7 +717,7 @@ namespace Agebull.EntityModel.Config
         {
             if (project == null)
                 return;
-            Projects.TryAdd(project);
+            TryAdd(Projects, project);
         }
 
         /// <summary>
@@ -719,7 +728,7 @@ namespace Agebull.EntityModel.Config
         {
             if (entity == null)
                 return;
-            Entities.TryAdd(entity);
+            TryAdd(Entities, entity);
         }
 
         /// <summary>
@@ -730,7 +739,7 @@ namespace Agebull.EntityModel.Config
         {
             if (enumConfig == null)
                 return;
-            Enums.TryAdd(enumConfig);
+            TryAdd(Enums,enumConfig);
         }
 
         /// <summary>
@@ -741,7 +750,7 @@ namespace Agebull.EntityModel.Config
         {
             if (api == null)
                 return;
-            ApiItems.TryAdd(api);
+            TryAdd(ApiItems,api);
         }
 
         /// <summary>
@@ -750,7 +759,7 @@ namespace Agebull.EntityModel.Config
         /// <param name="entity"></param>
         internal static void Remove(EntityConfig entity)
         {
-            Entities.Remove(entity);
+            Remove(Entities, entity);
         }
 
         /// <summary>
@@ -759,7 +768,7 @@ namespace Agebull.EntityModel.Config
         /// <param name="enumConfig"></param>
         internal static void Remove(EnumConfig enumConfig)
         {
-            Enums.Remove(enumConfig);
+            Remove(Enums, enumConfig);
         }
 
         /// <summary>
@@ -768,8 +777,70 @@ namespace Agebull.EntityModel.Config
         /// <param name="api"></param>
         internal static void Remove(ApiItem api)
         {
-            ApiItems.Remove(api);
+            Remove(ApiItems, api);
         }
+
+        #endregion
+
+        #region 集合操作
+
+
+        static void Remove<T>(NotificationList<T> list, T val)
+        {
+            lock (list)
+                list.Remove(val);
+        }
+
+        static void TryAdd<T>(NotificationList<T> list, T val)
+        {
+            lock (list)
+                list.TryAdd(val);
+        }
+
+        /// <summary>
+        /// 清除集合
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        protected static void Clear<T>(NotificationList<T> list)
+        {
+            lock (list)
+                list.Clear();
+        }
+
+        static T FirstOrDefault<T>(NotificationList<T> list)
+        {
+            lock (list)
+                return list.FirstOrDefault();
+        }
+
+        /// <summary>
+        ///     查找实体对象
+        /// </summary>
+        /// <returns></returns>
+        private static T FirstOrDefault<T>(NotificationList<T> list, Func<T, bool> func)
+        {
+            lock (list)
+                return list.FirstOrDefault(func);
+        }
+
+        /// <summary>
+        /// 如果不存在就加入
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="values"></param>
+        /// <typeparam name="TConfig"></typeparam>
+        protected static void TryAdd<TConfig>(NotificationList<TConfig> collection, IEnumerable<TConfig> values)
+            where TConfig : ConfigBase
+        {
+            lock (collection)
+                foreach (var vl in values)
+                {
+                    if (collection.All(p => p.Key != vl.Key))
+                        collection.Add(vl);
+                }
+        }
+
         #endregion
     }
 }

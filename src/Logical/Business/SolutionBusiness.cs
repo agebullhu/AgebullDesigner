@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 
@@ -95,7 +93,7 @@ namespace Agebull.EntityModel.Config
                 {
                     project.Classifies.Add(classify = new EntityClassify
                     {
-                        Project= project,
+                        Project = project,
                         Classify = name,
                         Name = name
                     });
@@ -106,7 +104,7 @@ namespace Agebull.EntityModel.Config
                     classify.Items.TryAdd(entity);
                 }
             }
-            foreach (var cl in project.Classifies.Where(p => p.Items.Count ==0).ToArray())
+            foreach (var cl in project.Classifies.Where(p => p.Items.Count == 0).ToArray())
             {
                 project.Classifies.Remove(cl);
             }
@@ -289,10 +287,10 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public static void ResetGloblaCollection()
         {
-            Entities.Clear();
-            Projects.Clear();
-            Enums.Clear();
-            ApiItems.Clear();
+            Clear(Entities);
+            Clear(Projects);
+            Clear(Enums);
+            Clear(ApiItems);
             foreach (var solution in Solutions)
             {
                 var model = new SolutionModel

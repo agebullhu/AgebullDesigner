@@ -1480,10 +1480,10 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"存储类型"), Description("存储类型")]
         public string DbType
         {
-            get => ReferenceOrThis._dbType;
+            get => ReferenceOrThis._dbType?.ToUpper();
             set
             {
-                if (_dbType == value)
+                if (string.Equals(_dbType, value, StringComparison.OrdinalIgnoreCase))
                     return;
                 BeforePropertyChanged(nameof(DbType), _dbType, value);
                 _dbType = string.IsNullOrWhiteSpace(value) ? null : value.Trim();

@@ -88,7 +88,16 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
                 Action = DataTypeHelper.ToStandard,
-                Caption = "按数据类型标准检查并修复",
+                Caption = "按C#类型标准检查并修复",
+                Catalog = "修复",
+                IconName = "tree_Type",
+                WorkView = "adv"
+            });
+
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                Action = DataTypeHelper.ToStandardByDbType,
+                Caption = "按数据库类型标准检查并修复",
                 Catalog = "修复",
                 IconName = "tree_Type",
                 WorkView = "adv"

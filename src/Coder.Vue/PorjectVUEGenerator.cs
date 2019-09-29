@@ -15,6 +15,13 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// </summary>
         protected override string FileSaveConfigName => "File_VUE_JS";
 
+
+        string PageFolder => !string.IsNullOrWhiteSpace(Entity.PageFolder)
+            ? Entity.PageFolder
+            : string.IsNullOrWhiteSpace(Entity.Classify) || Entity.Classify.Equals("None", StringComparison.InvariantCulture)
+                ? Entity.Name
+                : $"{Entity.Classify}\\{Entity.Name}";
+
         /// <summary>
         ///     生成基础代码
         /// </summary>
@@ -23,13 +30,8 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
 
-            var folder = !string.IsNullOrWhiteSpace(Entity.PageFolder)
-                ? Entity.PageFolder
-                    : string.IsNullOrWhiteSpace(Entity.Classify)
-                        ? Entity.Name
-                        : $"{Entity.Classify}\\{Entity.Name}";
 
-            var file = ConfigPath(Entity, "File_VUE_HTML", path, folder, "index.htm");
+            var file = ConfigPath(Entity, "File_VUE_HTML", path, PageFolder, "index.htm");
 
             var coder = new VueCoder
             {
@@ -55,13 +57,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
 
-            var folder = !string.IsNullOrWhiteSpace(Entity.PageFolder)
-                ? Entity.PageFolder
-                    : string.IsNullOrWhiteSpace(Entity.Classify)
-                        ? Entity.Name
-                        : $"{Entity.Classify}\\{Entity.Name}";
-
-            var file = ConfigPath(Entity, "File_VUE_JS", path, folder, "script.js");
+            var file = ConfigPath(Entity, "File_VUE_JS", path, PageFolder, "script.js");
 
             var coder = new VueCoder
             {

@@ -1,3 +1,4 @@
+using System;
 using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
@@ -34,6 +35,12 @@ namespace Agebull.EntityModel.RobotCoder
             }
         }
 
+        /// <summary>
+        /// 分类目录
+        /// </summary>
+        protected string Folder => string.IsNullOrWhiteSpace(Entity.Classify) || Entity.Classify.Equals("None", StringComparison.InvariantCulture)
+                ? Entity.Name
+                : $"{Entity.Classify}\\{Entity.Name}";
         /// <summary>
         /// 是否可写
         /// </summary>

@@ -207,7 +207,8 @@ namespace Agebull.EntityModel
         }
         private void WriteTrace(string message, bool time = false)
         {
-            BeginInvokeInUiThread(p =>
+            Console.WriteLine(message);
+            /*BeginInvokeInUiThread(p =>
             {
                 if (_threadIndex.ContainsKey(Thread.CurrentThread.ManagedThreadId))
                 {
@@ -230,7 +231,7 @@ namespace Agebull.EntityModel
                 }
                 RaisePropertyChanged(() => Track);
                 LastMessageIndex = _trace.Count - 1;
-            }, message);
+            }, message);*/
         }
 
         private int _lastMessageIndex;
