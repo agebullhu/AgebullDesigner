@@ -112,13 +112,13 @@ namespace Agebull.EntityModel.RobotCoder.VUE
     <script type='text/javascript' src='http://cdn.staticfile.org/element-ui/2.8.2/index.js'></script>
     <script type='text/javascript' src='http://cdn.staticfile.org/element-ui/2.8.2/locale/zh-CN.min.js'></script>
     <!--Extend-->
-    <script type='text/javascript' src='../../js/newSystem/extend/vue_ex.js'></script>
-    <script type='text/javascript' src='../../js/newSystem/extend/core.js'></script>
-    <script type='text/javascript' src='../../js/newSystem/extend/ajax.js'></script>
-    <script type='text/javascript' src='../../js/newSystem/extend/ajax_vue.js'></script>
-    <script type='text/javascript' src='../../js/newSystem/extend/extend.js'></script>
-    <script type='text/javascript' src='../../js/newSystem/extend/type.js'></script>
-    <link rel='stylesheet' type='text/css' href='../../Css/styles/vuePage.css' />
+    <script type='text/javascript' src='../../js/extend/vue_ex.js'></script>
+    <script type='text/javascript' src='../../js/extend/core.js'></script>
+    <script type='text/javascript' src='../../js/extend/ajax.js'></script>
+    <script type='text/javascript' src='../../js/extend/ajax_vue.js'></script>
+    <script type='text/javascript' src='../../js/extend/extend.js'></script>
+    <script type='text/javascript' src='../../js/extend/type.js'></script>
+    <link rel='stylesheet' type='text/css' href='../../styles/vuePage.css' />
 {style}
 </head>
 <body>
@@ -260,12 +260,14 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                                      label='{caption}'");
             if (field.UserOrder)
                 code.Append(" sortable='true'");
+            if (field.GridWidth > 0)
+                code.Append($" width={field.GridWidth}");
             code.Append(">");
             if (field.EnumConfig != null)
             {
                 code.Append($@"
                         <template slot-scope='scope'>
-                            <span style='margin-left: 10px'>
+                            <span style='margin-left: 3px'>
                                 {{{{scope.row.{field.JsonName} | {field.EnumConfig.Name.ToLWord()}Formater}}}}
                             </span>
                         </template>");
@@ -275,7 +277,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 var fmt = field.IsTime ? "formatTime" : "formatDate";
                 code.Append($@"
                         <template slot-scope='scope'>
-                            <span style='margin-left: 10px'>
+                            <span style='margin-left: 3px'>
                                 {{{{scope.row.{field.JsonName} | {fmt}}}}}
                             </span>
                         </template>");
@@ -284,7 +286,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             {
                 code.Append($@"
                         <template slot-scope='scope'>
-                            <span style='margin-left: 10px'>
+                            <span style='margin-left: 3px'>
                                 {{{{scope.row.{field.JsonName} | boolFormater}}}}
                             </span>
                         </template>");
@@ -293,7 +295,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             {
                 code.Append($@"
                         <template slot-scope='scope'>
-                            <span style='margin-left: 10px'>
+                            <span style='margin-left: 3px'>
                                 {{{{scope.row.{field.JsonName} | formatMoney}}}}
                             </span>
                         </template>");
@@ -302,7 +304,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             {
                 code.Append($@"
                         <template slot-scope='scope'>
-                            <span style='margin-left: 10px'>
+                            <span style='margin-left: 3px'>
                                 {{{{scope.row.{field.JsonName} | thousandsNumber}}}}
                             </span>
                         </template>");

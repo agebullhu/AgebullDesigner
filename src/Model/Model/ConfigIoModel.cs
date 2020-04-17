@@ -128,12 +128,13 @@ namespace Agebull.EntityModel.Designer
             {
                 return;
             }
-            Context.Solution = new SolutionConfig
-            {
-                Name = Path.GetFileNameWithoutExtension(sfd.FileName),
-                Caption = Path.GetFileNameWithoutExtension(sfd.FileName),
-                SaveFileName=sfd.FileName 
-            };
+            using (WorkModelScope.CreateScope(WorkModel.Loding))
+                Context.Solution = new SolutionConfig
+                {
+                    Name = Path.GetFileNameWithoutExtension(sfd.FileName),
+                    Caption = Path.GetFileNameWithoutExtension(sfd.FileName),
+                    SaveFileName = sfd.FileName
+                };
             DataModelDesignModel.Screen.LastFile = sfd.FileName;
             SaveSolution();
             Load(sfd.FileName);

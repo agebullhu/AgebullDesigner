@@ -192,7 +192,7 @@ using MySql.Data.MySqlClient;
 using Agebull.EntityModel.MySql;
 
 using Agebull.Common;
-using Agebull.Common.OAuth;
+
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Interfaces;
 {Project.UsingNameSpaces}
@@ -323,7 +323,7 @@ using MySql.Data.MySqlClient;
 using Agebull.EntityModel.MySql;
 
 using Agebull.Common;
-using Agebull.Common.OAuth;
+
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Interfaces;
 

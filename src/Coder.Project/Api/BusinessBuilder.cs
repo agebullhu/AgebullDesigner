@@ -78,7 +78,7 @@ using Newtonsoft.Json;
 using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
 
 using Agebull.Common;
-using Agebull.Common.OAuth;
+
 using Agebull.EntityModel.Common;
 
 using Agebull.EntityModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
@@ -376,7 +376,7 @@ using Newtonsoft.Json;
 using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
 
 using Agebull.Common;
-using Agebull.Common.OAuth;
+
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
 using Agebull.EntityModel.BusinessLogic;

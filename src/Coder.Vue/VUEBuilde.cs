@@ -1,7 +1,6 @@
 using System.ComponentModel.Composition;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Designer;
-using Agebull.EntityModel.RobotCoder.VUE;
 
 namespace Agebull.EntityModel.RobotCoder.VUE
 {

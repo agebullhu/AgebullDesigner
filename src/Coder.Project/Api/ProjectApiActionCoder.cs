@@ -154,12 +154,11 @@ using System.IO;
 using Newtonsoft.Json;
 
 using Agebull.Common;
-using Agebull.Common.Context;
 using Agebull.Common.Ioc;
-using Agebull.Common.OAuth;
+
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.EasyUI;
-using Agebull.MicroZero;
+using ZeroTeam.MessageMVC.ZeroApis;
 using Agebull.MicroZero.ZeroApis;
 
 {Project.UsingNameSpaces}
@@ -209,7 +208,7 @@ namespace {NameSpace}.WebApi.Entity
             code.Append(@"
             if (TryGet(""_value_"", out string value) && value != null)
             {
-                var field = GetArg(""_field_"");
+                var field = GetString(""_field_"");
                 ");
 
             var fields = Entity.ClientProperty.Where(p => !p.NoStorage && /*p.CanUserInput && */p.CsType == "string" && !p.IsBlob).ToArray();
@@ -330,12 +329,11 @@ using System.IO;
 using Newtonsoft.Json;
 
 using Agebull.Common;
-using Agebull.Common.Context;
 using Agebull.Common.Ioc;
-using Agebull.Common.OAuth;
+
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.EasyUI;
-using Agebull.MicroZero;
+using ZeroTeam.MessageMVC.ZeroApis;
 using Agebull.MicroZero.ZeroApis;
 
 {Project.UsingNameSpaces}
@@ -350,7 +348,8 @@ namespace {NameSpace}.WebApi.Entity
     /// <summary>
     ///  {ToRemString(Entity.Caption)}
     /// </summary>
-    [RoutePrefix(""{Project.Abbreviation}/{Entity.Abbreviation}/v1"")]
+    [Service(""{Project.Abbreviation}"")]
+    [Route(""{Entity.Abbreviation}/v1"")]
     [ApiPage(""{page}"")]
     public partial class {Entity.Name}ApiController 
          : {baseClass}<{Entity.EntityName},{Entity.Name}BusinessLogic>
