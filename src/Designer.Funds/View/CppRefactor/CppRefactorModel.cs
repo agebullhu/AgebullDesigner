@@ -148,7 +148,7 @@ namespace Agebull.EntityModel.Designer
                     item = new TypedefItem
                     {
                         Tag = SystemName,
-                        Description = line.Trim(CoderBase.NoneLanguageChar)
+                        Description = line.Trim(NameHelper.NoneLanguageChar)
                     };
                     item.Caption = item.Description;
                 }
@@ -212,10 +212,10 @@ namespace Agebull.EntityModel.Designer
                         tp.Items.Add(words[2], new EnumItem
                         {
                             ReferenceKey = item == null ? Guid.Empty : item.Key,
-                            Name = words[2].Trim(CoderBase.NoneLanguageChar),
+                            Name = words[2].Trim(NameHelper.NoneLanguageChar),
                             Value = words[3],
-                            Caption = words.Length > 4 ? words[4].Trim(CoderBase.NoneLanguageChar) : item?.Description.Trim(CoderBase.NoneLanguageChar),
-                            Description = words.Length > 4 ? words[4].Trim(CoderBase.NoneLanguageChar) : item?.Description.Trim(CoderBase.NoneLanguageChar)
+                            Caption = words.Length > 4 ? words[4].Trim(NameHelper.NoneLanguageChar) : item?.Description.Trim(NameHelper.NoneLanguageChar),
+                            Description = words.Length > 4 ? words[4].Trim(NameHelper.NoneLanguageChar) : item?.Description.Trim(NameHelper.NoneLanguageChar)
                         });
                     }
                     item = null;
@@ -255,12 +255,12 @@ namespace Agebull.EntityModel.Designer
                 {
                     if (isNewTable || line.Contains("//!"))
                     {
-                        entity.Caption = line.Trim(CoderBase.NoneLanguageChar);
+                        entity.Caption = line.Trim(NameHelper.NoneLanguageChar);
                         isNewTable = false;
                     }
                     else
                     {
-                        entity.Description = line.Trim(CoderBase.NoneLanguageChar);
+                        entity.Description = line.Trim(NameHelper.NoneLanguageChar);
                     }
                     continue;
                 }
@@ -284,7 +284,7 @@ namespace Agebull.EntityModel.Designer
                             words = ks[0].Split(new[] { '\t', ' ', ';', '=' }, StringSplitOptions.RemoveEmptyEntries);
                         }
                         item.Description = entity.Caption;
-                        item.Name = words[words.Length - 1].Trim(CoderBase.NoneLanguageChar);
+                        item.Name = words[words.Length - 1].Trim(NameHelper.NoneLanguageChar);
                         item.KeyWork = string.Empty;
                         for (int index = 1; index < words.Length - 1; index++)
                         {
@@ -295,7 +295,7 @@ namespace Agebull.EntityModel.Designer
                     case "struct":
                         entity.Name = words[1];
                         if (words.Length > 2)
-                            entity.Caption = words[2].Trim(CoderBase.NoneNameChar);
+                            entity.Caption = words[2].Trim(NameHelper.NoneNameChar);
                         tables.Add(entity);
                         isInStruct = false;
                         idx = 0;
@@ -326,7 +326,7 @@ namespace Agebull.EntityModel.Designer
                 }
                 words = words[0].Split(new[] { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 int nameIdx = words.Length - 1;
-                column.Name = column.DbFieldName = words[nameIdx].Trim(CoderBase.NoneLanguageChar);
+                column.Name = column.DbFieldName = words[nameIdx].Trim(NameHelper.NoneLanguageChar);
                 column.CppType = "";
                 for (int index = 0; index < nameIdx; index++)
                 {

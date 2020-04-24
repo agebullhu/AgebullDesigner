@@ -46,8 +46,13 @@ namespace Agebull.EntityModel.Designer
         /// </summary>  
         private void Prepare()
         {
-            var root = Path.GetDirectoryName(Path.GetDirectoryName(GetType().Assembly.Location));
+            var root = Path.GetDirectoryName(GetType().Assembly.Location);
             var path = Path.Combine(root, "AddIn");
+            if (!Directory.Exists(path))
+            {
+                root = Path.GetDirectoryName(root);
+                path = Path.Combine(root, "AddIn");
+            }
             var bin = Path.Combine(path, "Bin");
             var runtime = Path.Combine(path, "Runtime");
             IOHelper.DeleteDirectory(runtime);

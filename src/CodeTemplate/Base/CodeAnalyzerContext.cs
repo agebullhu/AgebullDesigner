@@ -10,7 +10,7 @@
 
 using System;
 using System.Collections.Generic;
-using Agebull.Common.DataModel;
+using Agebull.EntityModel;
 
 #endregion
 

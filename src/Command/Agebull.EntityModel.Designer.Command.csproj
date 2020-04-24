@@ -1,107 +1,25 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5B2850E3-C1AC-4D1E-BE96-5BE0F9F659B7}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Agebull.EntityModel.Designer</RootNamespace>
-    <AssemblyName>Agebull.EntityModel.Designer.Command</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
+    <UseWPF>true</UseWPF>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;CLIENT</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;CLIENT</DefineConstants>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Agebull.Common.Extend">
-      <HintPath>..\Lib\Agebull.Common.Extend.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Windows" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
+    
+    
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="ConfigCommandBase.cs" />
-    <Compile Include="EntityCommandBase.cs" />
-    <Compile Include="ProjectCodeCommand.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RuntimeArgument.cs" />
+    <ProjectReference Include="..\Coder\Agebull.EntityModel.RobotCoder.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Coder\Agebull.EntityModel.RobotCoder.csproj">
-      <Project>{80d6ecf6-10de-4b9e-9cd7-9b597610c482}</Project>
-      <Name>Agebull.EntityModel.RobotCoder</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Config\Agebull.EntityModel.Config.csproj">
-      <Project>{0af9f7a3-6aab-46a5-b3e8-45940ae26e5b}</Project>
-      <Name>Agebull.EntityModel.Config</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Entities\Agebull.Common.Entity.csproj">
-      <Project>{0d626dda-02c0-4bd8-b2fd-efee0971510f}</Project>
-      <Name>Agebull.Common.Entity</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Helper\Agebull.EntityModel.Config.Helper.csproj">
-      <Project>{a7888162-cfbd-4087-8c4a-978445bbe02a}</Project>
-      <Name>Agebull.EntityModel.Config.Helper</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Logical\Agebull.EntityModel.Designer.Logical.csproj">
-      <Project>{0c9fd8f0-2c65-49e7-86ec-f135e56ec846}</Project>
-      <Name>Agebull.EntityModel.Designer.Logical</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WpfMvvmBase\Agebull.Common.Mvvm.csproj">
-      <Project>{6f6dc5d2-85ef-4bb5-82fa-bd21f7aa3053}</Project>
-      <Name>Agebull.Common.Mvvm</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>11.0.2</Version>
-    </PackageReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

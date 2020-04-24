@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Web.UI.MobileControls.Adapters;
 
 #endregion
 
@@ -90,9 +89,8 @@ namespace Agebull.EntityModel
         {
             // ISSUE: reference to a compiler-generated field
             // ISSUE: reference to a compiler-generated field
-            if (_monitor.Busy && CollectionChanged != null &&
-                CollectionChanged.GetInvocationList().Length > 1)
-                throw new InvalidOperationException(SR.GetString("ObservableCollectionReentrancyNotAllowed"));
+            if (_monitor.Busy && CollectionChanged != null && CollectionChanged.GetInvocationList().Length > 1)
+                throw new InvalidOperationException("ObservableCollectionReentrancyNotAllowed");
         }
 
 

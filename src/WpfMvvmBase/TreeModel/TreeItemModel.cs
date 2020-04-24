@@ -382,7 +382,7 @@ namespace Agebull.EntityModel
 
         protected void OnStatePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(NotificationObject.IsModify))
+            if (e.PropertyName == nameof(IsModify))
             {
                 BackgroundColor = Source.IsModify ? Brushes.Silver : Brushes.Transparent;
             }

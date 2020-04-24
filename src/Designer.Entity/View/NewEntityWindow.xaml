@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Agebull.EntityModel.Designer.NewEntityWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
         xmlns:solutionManager="clr-namespace:Agebull.EntityModel.Designer"
         Title="{Binding Title}" Height="693.333" Width="1035.537" WindowState="Maximized">

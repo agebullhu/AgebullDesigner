@@ -40,26 +40,19 @@
                                            Width="16"
                                            Visibility="{Binding IsBusy,Converter={StaticResource ReversionVisibleConverter}}"
                                            Height="16" />
-                                    <ed:Arc ArcThicknessUnit="Pixel"
-                                            Visibility="{Binding IsBusy,Converter={StaticResource BoolToVisibleConverter}}"
-                                            EndAngle="360"
+                                    <Border Visibility="{Binding IsBusy,Converter={StaticResource BoolToVisibleConverter}}"
                                             Width="16"
                                             Height="16"
-                                            Stretch="None"
-                                            Stroke="Black"
-                                            StartAngle="0"
-                                            ArcThickness="4"
-                                            StrokeThickness="0"
                                             RenderTransformOrigin="0.5,0.5">
-                                        <ed:Arc.RenderTransform>
+                                        <Border.RenderTransform>
                                             <TransformGroup>
                                                 <ScaleTransform />
                                                 <SkewTransform />
                                                 <RotateTransform />
                                                 <TranslateTransform />
                                             </TransformGroup>
-                                        </ed:Arc.RenderTransform>
-                                        <ed:Arc.Fill>
+                                        </Border.RenderTransform>
+                                        <Border.Background>
                                             <LinearGradientBrush EndPoint="0.5,0"
                                                                  MappingMode="RelativeToBoundingBox"
                                                                  StartPoint="0.5,0.5">
@@ -68,8 +61,8 @@
                                                 <GradientStop Color="#FF1116EB"
                                                               Offset="1" />
                                             </LinearGradientBrush>
-                                        </ed:Arc.Fill>
-                                    </ed:Arc>
+                                        </Border.Background>
+                                    </Border>
                                 </StackPanel>
                             </Border>
                             <Border Grid.Column="0" BorderThickness="0,0,1,0" Background="#331116FE"

@@ -1,7 +1,6 @@
 ﻿using System.IO;
-using System.Text;
-using System.Windows.Forms;
 using Agebull.EntityModel.Config;
+using Microsoft.Win32;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace Agebull.EntityModel.Designer
@@ -40,7 +39,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     Filter = fileType
                 };
-                if (sfd.ShowDialog() == DialogResult.Cancel)
+                if (sfd.ShowDialog() != true)
                 {
                     return;
                 }
@@ -124,7 +123,7 @@ namespace Agebull.EntityModel.Designer
             {
                 Filter = fileType
             };
-            if (sfd.ShowDialog() == DialogResult.Cancel)
+            if (sfd.ShowDialog() != true)
             {
                 return;
             }

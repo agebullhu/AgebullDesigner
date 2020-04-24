@@ -1,4 +1,4 @@
-using Agebull.Common.DataModel;
+using Agebull.EntityModel;
 
 namespace Agebull.CodeRefactor
 {

@@ -8,7 +8,7 @@
         Title="实体模型编辑"
         d:DesignHeight="350"
         d:DesignWidth="525"
-        WindowState="Maximized" Icon="/Style/Images/bull.png">
+        WindowState="Maximized" Icon="/icon.ico" >
     <Border BorderThickness="1" Margin="0" Padding="0">
         <EfMove:MainPage VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
     </Border>

@@ -11,10 +11,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Agebull.Common.DataModel;
 using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.RobotCoder;
+using Agebull.EntityModel.Common;
 
 #endregion
 
@@ -129,29 +129,29 @@ namespace Agebull.EntityModel.Designer
                 var l = line.Trim();
                 if (l.IndexOf("//", StringComparison.Ordinal) == 0)//注释
                 {
-                    l = l.Trim(CoderBase.NoneLanguageChar);
+                    l = l.Trim(NameHelper.NoneLanguageChar);
                     if (string.IsNullOrWhiteSpace(l))
                         continue;
-                    var str = l.Split(CoderBase.EmptyChar, 2);
+                    var str = l.Split(NameHelper.EmptyChar, 2);
                     if (str.Length >= 2)
                     {
                         des.Add(new NameValue(str[0], str[1]));
                     }
                     else if (des.Count > 0)
                     {
-                        des.Last().value += l;
+                        des.Last().Value += l;
                     }
                     continue;
                 }
-                l = l.Trim(CoderBase.NoneNameChar);
+                l = l.Trim(NameHelper.NoneNameChar);
                 if (string.IsNullOrWhiteSpace(l))
                     continue;
                 var item = CheckNotifyItem(l);
                 if (des.Count > 1)
                 {
-                    var dess = des.FirstOrDefault(p => p.name == "brief");
-                    item.Caption = dess?.value.Split(CoderBase.NoneNameChar, 2)[0];
-                    item.Description = dess?.value;
+                    var dess = des.FirstOrDefault(p => p.Name == "brief");
+                    item.Caption = dess?.Value.Split(NameHelper.NoneNameChar, 2)[0];
+                    item.Description = dess?.Value;
                 }
                 item.Org = api_line.LinkToString("\n");
                 result.Add(item);
@@ -170,9 +170,9 @@ namespace Agebull.EntityModel.Designer
             NotifyItem item = new NotifyItem();
             var strs = line.Split(new[] { '(' }, 2, StringSplitOptions.RemoveEmptyEntries);
             //检查API名称
-            item.Name = strs[0].Split(CoderBase.EmptyChar, StringSplitOptions.RemoveEmptyEntries).Last();
+            item.Name = strs[0].Split(NameHelper.EmptyChar, StringSplitOptions.RemoveEmptyEntries).Last();
             //参数检查(第一个)
-            var words = strs[1].Split(CoderBase.NoneLanguageChar, StringSplitOptions.RemoveEmptyEntries);
+            var words = strs[1].Split(NameHelper.NoneLanguageChar, StringSplitOptions.RemoveEmptyEntries);
             foreach (var word in words)
             {
                 switch (word)

@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:reflection="clr-namespace:Agebull.EntityModel.Config;assembly=Agebull.Common.Config.Helper"
+             xmlns:reflection="clr-namespace:Agebull.EntityModel.Config;assembly=Agebull.EntityModel.Config.Helper"
              mc:Ignorable="d" 
              d:DesignHeight="1000" d:DesignWidth="1691.588" DataContext="{Binding Model.Context.SelectConfig}">
     <UserControl.Resources>

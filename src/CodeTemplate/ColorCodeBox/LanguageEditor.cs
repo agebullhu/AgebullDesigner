@@ -5,7 +5,7 @@
 
 using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
+using System.Windows.Controls;
 using Agebull.EntityModel.RobotCoder.CodeTemplate;
 using Agebull.EntityModel.RobotCoder.CodeTemplate.LuaTemplate;
 

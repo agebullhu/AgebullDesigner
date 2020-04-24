@@ -96,27 +96,20 @@
                                         <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
 
-                                    <ed:Arc x:Name="ctrBusy"
-                                                ArcThicknessUnit="Pixel"
-                                                EndAngle="360"
+                                    <Border x:Name="ctrBusy"
                                                 Width="16"
                                                 Height="16"
-                                                Stretch="None"
-                                                Stroke="Black"
-                                                StartAngle="0"
-                                                ArcThickness="4"
-                                                StrokeThickness="0"
                                                 RenderTransformOrigin="0.5,0.5"
                                                 Visibility="Collapsed">
-                                        <ed:Arc.RenderTransform>
+                                        <Border.RenderTransform>
                                             <TransformGroup>
                                                 <ScaleTransform />
                                                 <SkewTransform />
                                                 <RotateTransform />
                                                 <TranslateTransform />
                                             </TransformGroup>
-                                        </ed:Arc.RenderTransform>
-                                        <ed:Arc.Fill>
+                                        </Border.RenderTransform>
+                                        <Border.Background>
                                             <LinearGradientBrush EndPoint="0.5,0"
                                                                      MappingMode="RelativeToBoundingBox"
                                                                      StartPoint="0.5,0.5">
@@ -125,8 +118,8 @@
                                                 <GradientStop Color="#FF1116EB"
                                                                   Offset="1" />
                                             </LinearGradientBrush>
-                                        </ed:Arc.Fill>
-                                    </ed:Arc>
+                                        </Border.Background>
+                                    </Border>
                                     <Border Grid.Column="1" BorderThickness="0,0,0,1" BorderBrush="{Binding BackgroundColor}">
                                         <StackPanel Orientation="Horizontal ">
                                             <Image Source="{Binding SoruceTypeIcon}"

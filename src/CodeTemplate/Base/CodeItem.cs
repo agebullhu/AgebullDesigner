@@ -8,6 +8,7 @@
 
 #region 引用
 
+using Agebull.EntityModel.RobotCoder.CodeTemplate;
 using System;
 using System.Collections.Generic;
 using System.Linq;

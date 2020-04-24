@@ -42,28 +42,21 @@
                 <TextBlock Grid.Column="1"
                                Text="{Binding Caption}"
                                Margin="5,0" />
-                <ed:Arc Grid.Column="0"
+                <Border Grid.Column="0"
                             x:Name="ctrBusy"
-                            ArcThicknessUnit="Pixel"
-                            EndAngle="360"
                             Width="16"
                             Height="16"
-                            Stretch="None"
-                            Stroke="Black"
-                            StartAngle="0"
-                            ArcThickness="4"
-                            StrokeThickness="0"
                             RenderTransformOrigin="0.5,0.5"
                             Visibility="Collapsed">
-                    <ed:Arc.RenderTransform>
+                    <Border.RenderTransform>
                         <TransformGroup>
                             <ScaleTransform />
                             <SkewTransform />
                             <RotateTransform />
                             <TranslateTransform />
                         </TransformGroup>
-                    </ed:Arc.RenderTransform>
-                    <ed:Arc.Fill>
+                    </Border.RenderTransform>
+                    <Border.Background>
                         <LinearGradientBrush EndPoint="0.5,0"
                                                  MappingMode="RelativeToBoundingBox"
                                                  StartPoint="0.5,0.5">
@@ -72,8 +65,8 @@
                             <GradientStop Color="#FF1116EB"
                                               Offset="1" />
                         </LinearGradientBrush>
-                    </ed:Arc.Fill>
-                </ed:Arc>
+                    </Border.Background>
+                </Border>
             </Grid>
         </Border>
         <DataTemplate.Triggers>
@@ -307,28 +300,21 @@
                                                VerticalAlignment="Center" 
                                                    Text="{Binding Caption}"
                                                    Margin="5,0" />
-                                    <ed:Arc Grid.Column="0"
+                                    <Border Grid.Column="0"
                                                 x:Name="ctrBusy"
-                                                ArcThicknessUnit="Pixel"
-                                                EndAngle="360"
                                                 Width="16"
                                                 Height="16"
-                                                Stretch="None"
-                                                Stroke="Black"
-                                                StartAngle="0"
-                                                ArcThickness="4"
-                                                StrokeThickness="0"
                                                 RenderTransformOrigin="0.5,0.5"
                                                 Visibility="Collapsed">
-                                        <ed:Arc.RenderTransform>
+                                        <Border.RenderTransform>
                                             <TransformGroup>
                                                 <ScaleTransform />
                                                 <SkewTransform />
                                                 <RotateTransform />
                                                 <TranslateTransform />
                                             </TransformGroup>
-                                        </ed:Arc.RenderTransform>
-                                        <ed:Arc.Fill>
+                                        </Border.RenderTransform>
+                                        <Border.Background>
                                             <LinearGradientBrush EndPoint="0.5,0"
                                                                      MappingMode="RelativeToBoundingBox"
                                                                      StartPoint="0.5,0.5">
@@ -337,8 +323,8 @@
                                                 <GradientStop Color="#FF1116EB"
                                                                   Offset="1" />
                                             </LinearGradientBrush>
-                                        </ed:Arc.Fill>
-                                    </ed:Arc>
+                                        </Border.Background>
+                                    </Border>
                                 </Grid>
                             </Border>
                         </ContentPresenter.Content>
@@ -461,28 +447,21 @@
                                                VerticalAlignment="Center" 
                                                    Text="{Binding Caption}"
                                                    Margin="5,0" />
-                                    <ed:Arc Grid.Column="0"
+                                    <Border Grid.Column="0"
                                                 x:Name="ctrBusy"
-                                                ArcThicknessUnit="Pixel"
-                                                EndAngle="360"
                                                 Width="16"
                                                 Height="16"
-                                                Stretch="None"
-                                                Stroke="Black"
-                                                StartAngle="0"
-                                                ArcThickness="4"
-                                                StrokeThickness="0"
                                                 RenderTransformOrigin="0.5,0.5"
                                                 Visibility="Collapsed">
-                                        <ed:Arc.RenderTransform>
+                                        <Border.RenderTransform>
                                             <TransformGroup>
                                                 <ScaleTransform />
                                                 <SkewTransform />
                                                 <RotateTransform />
                                                 <TranslateTransform />
                                             </TransformGroup>
-                                        </ed:Arc.RenderTransform>
-                                        <ed:Arc.Fill>
+                                        </Border.RenderTransform>
+                                        <Border.Background>
                                             <LinearGradientBrush EndPoint="0.5,0"
                                                                      MappingMode="RelativeToBoundingBox"
                                                                      StartPoint="0.5,0.5">
@@ -491,8 +470,8 @@
                                                 <GradientStop Color="#FF1116EB"
                                                                   Offset="1" />
                                             </LinearGradientBrush>
-                                        </ed:Arc.Fill>
-                                    </ed:Arc>
+                                        </Border.Background>
+                                    </Border>
                                 </Grid>
                             </Border>
                         </ContentPresenter.Content>
@@ -623,28 +602,21 @@
                                                        FontStyle="{TemplateBinding FontStyle}"
                                                        Text="{Binding Caption}"
                                                        Margin="5,0" />
-                                        <ed:Arc Grid.Column="0"
+                                        <Border Grid.Column="0"
                                                     x:Name="ctrBusy"
-                                                    ArcThicknessUnit="Pixel"
-                                                    EndAngle="360"
                                                     Width="16"
                                                     Height="16"
-                                                    Stretch="None"
-                                                    Stroke="Black"
-                                                    StartAngle="0"
-                                                    ArcThickness="4"
-                                                    StrokeThickness="0"
                                                     RenderTransformOrigin="0.5,0.5"
                                                     Visibility="Collapsed">
-                                            <ed:Arc.RenderTransform>
+                                            <Border.RenderTransform>
                                                 <TransformGroup>
                                                     <ScaleTransform />
                                                     <SkewTransform />
                                                     <RotateTransform />
                                                     <TranslateTransform />
                                                 </TransformGroup>
-                                            </ed:Arc.RenderTransform>
-                                            <ed:Arc.Fill>
+                                            </Border.RenderTransform>
+                                            <Border.Background>
                                                 <LinearGradientBrush EndPoint="0.5,0"
                                                                          MappingMode="RelativeToBoundingBox"
                                                                          StartPoint="0.5,0.5">
@@ -653,8 +625,8 @@
                                                     <GradientStop Color="#FF1116EB"
                                                                       Offset="1" />
                                                 </LinearGradientBrush>
-                                            </ed:Arc.Fill>
-                                        </ed:Arc>
+                                            </Border.Background>
+                                        </Border>
                                     </Grid>
                                 </Border>
                             </Border>

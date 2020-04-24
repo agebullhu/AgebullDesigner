@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:b="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:cp="clr-namespace:Agebull.EntityModel.Designer"
              xmlns:simpleDesign="clr-namespace:Agebull.EntityModel.Designer;assembly=Agebull.EntityModel.Designer.Model"
              xmlns:view="clr-namespace:Agebull.EntityModel.Designer"

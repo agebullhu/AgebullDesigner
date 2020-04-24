@@ -1,11 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.Runtime.CompilerServices;
-using System.Security;
-using System.Windows;
-using System.Windows.Interactivity;
-using System.Windows.Markup;
+﻿using System.Diagnostics;
 
 namespace Agebull.EntityModel.Designer
 {

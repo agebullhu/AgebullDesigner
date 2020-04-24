@@ -9,7 +9,7 @@
 #region 引用
 
 using Agebull.Common.Base;
-using Agebull.Common.DataModel;
+using Agebull.EntityModel;
 
 #endregion
 

@@ -485,7 +485,7 @@ ALTER TABLE `{entity.SaveTable}`
             if (col.IsIdentity)
                 return " AUTO_INCREMENT";
             if (col.IsPrimaryKey)
-                return string.Empty;
+                return Empty;
             if (col.Initialization == null)
             {
                 if (col.DbNullable)

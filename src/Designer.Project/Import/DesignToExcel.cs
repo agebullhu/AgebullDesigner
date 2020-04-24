@@ -50,7 +50,14 @@ namespace Agebull.EntityModel.Designer
                 workbook.Write(fs);   //向打开的这个xls文件中写入mySheet表并保存。
                 MessageBox.Show("提示：创建成功！");
             }
-            Process.Start(file);
+            try
+            {
+                Process.Start(file);
+            }
+            catch
+            {
+                MessageBox.Show("提示：无法打开Excel！");
+            }
         }
 
         static void DoImport(HSSFWorkbook workbook, ProjectConfig project)

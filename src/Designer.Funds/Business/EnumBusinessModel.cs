@@ -82,7 +82,7 @@ namespace Agebull.EntityModel.Config
                     continue;
                 enumConfig.Add(oi = new EnumItem
                 {
-                    Name = CoderBase.ToWordName(item.Name),
+                    Name = NameHelper.ToWordName(item.Name),
                     Value = item.Value 
                 });
                 oi.Option.ReferenceKey = item.Key;
