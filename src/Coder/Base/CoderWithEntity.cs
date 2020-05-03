@@ -31,14 +31,13 @@ namespace Agebull.EntityModel.RobotCoder
             set
             {
                 _entity = value;
-                _entity?.CreateLast();
             }
         }
 
         /// <summary>
         /// ·ÖÀàÄ¿Â¼
         /// </summary>
-        protected string Folder => string.IsNullOrWhiteSpace(Entity.Classify) || Entity.Classify.Equals("None", StringComparison.InvariantCulture)
+        protected virtual string Folder => string.IsNullOrWhiteSpace(Entity.Classify) || Entity.Classify.Equals("None", StringComparison.InvariantCulture)
                 ? Entity.Name
                 : $"{Entity.Classify}\\{Entity.Name}";
         /// <summary>
@@ -51,8 +50,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         /// <typeparam name="TBuilder"></typeparam>
         /// <returns></returns>
-        public string GetBaseCode<TBuilder>()
-            where TBuilder : EntityBuilderBase, new()
+        public string GetBaseCode<TBuilder>() where TBuilder : EntityBuilderBase, new()
         {
             using (CodeGeneratorScope.CreateScope(Entity))
             {

@@ -28,30 +28,22 @@ namespace Agebull.EntityModel.Designer
                 Caption = "清理无效接口绑定",
                 IconName = "tree_sum"
             });
+            //commands.Add(new CommandItemBuilder<EntityConfig>
+            //{
+            //    Action = InterfaceHelper.CheckInterface,
+            //    Caption = "刷新接口引用",
+            //    SignleSoruce = false,
+            //    Catalog = "接口",
+            //    IconName = "img_link"
+            //});
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Action = InterfaceHelper.CheckInterface,
-                Caption = "刷新接口引用",
+                Action = InterfaceHelper.ClearInterface,
+                Caption = "清理接口引用字段",
                 SignleSoruce = false,
                 Catalog = "接口",
                 IconName = "img_link"
-            });
-            commands.Add(new CommandItemBuilder<EntityConfig>
-            {
-                Action = CheckISiteData,
-                Caption = "发现并绑定ISiteData接口",
-                SignleSoruce = false,
-                Catalog = "接口",
-                IconName = "img_link"
-            });
-            commands.Add(new CommandItemBuilder<EntityConfig>
-            {
-                Action = CheckISiteOrgData,
-                Caption = "发现并绑定ISiteOrgData接口",
-                SignleSoruce = false,
-                Catalog = "接口",
-                IconName = "img_link"
-            });
+            }); 
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
                 Action = ToIDataState,
@@ -144,13 +136,13 @@ namespace Agebull.EntityModel.Designer
                     entity.Remove(field);
             }
         }
+
         public void ToInterface(EntityConfig entity, string it)
         {
             if (string.IsNullOrWhiteSpace(entity.Interfaces))
                 entity.Interfaces = it;
             else if (!entity.Interfaces.Contains(it))
                 entity.Interfaces += "," + it;
-            InterfaceHelper.CheckInterface(entity);
         }
     }
 }

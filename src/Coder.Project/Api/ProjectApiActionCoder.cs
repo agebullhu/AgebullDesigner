@@ -171,7 +171,8 @@ using {NameSpace}.DataAccess;
 namespace {NameSpace}.WebApi.Entity
 {{
     partial class {Entity.Name}ApiController
-    {{{CommandCsCode()}
+    {{
+{CommandCsCode()}
 
         #region 基本扩展
 
@@ -206,9 +207,9 @@ namespace {NameSpace}.WebApi.Entity
             var code = new StringBuilder();
 
             code.Append(@"
-            if (TryGet(""_value_"", out string value) && value != null)
+            if (RequestArgumentConvert.TryGet(""_value_"", out string value) && value != null)
             {
-                var field = GetString(""_field_"");
+                var field = RequestArgumentConvert.GetString(""_field_"");
                 ");
 
             var fields = Entity.ClientProperty.Where(p => !p.NoStorage && /*p.CanUserInput && */p.CsType == "string" && !p.IsBlob).ToArray();
@@ -229,7 +230,7 @@ namespace {NameSpace}.WebApi.Entity
                 code.Append(@");
                 else ");
             }
-            code.Append(@"this[field] = value;
+            code.Append(@"RequestArgumentConvert.SetArgument(field,value);
             }");
             fields = Entity.ClientProperty.Where(p => !p.NoStorage).ToArray();
             foreach (var field in fields)
@@ -237,7 +238,7 @@ namespace {NameSpace}.WebApi.Entity
                 if (field.IsPrimaryKey || field.IsLinkKey)
                 {
                     code.Append($@"
-            if(TryGetIDs(""{field.JsonName}"" , out var {field.JsonName}))
+            if(RequestArgumentConvert.TryGetIDs(""{field.JsonName}"" , out var {field.JsonName}))
             {{
                 if ({field.JsonName}.Count == 1)
                     filter.AddAnd(p => p.{field.Name} == {field.JsonName}[0]);
@@ -248,7 +249,7 @@ namespace {NameSpace}.WebApi.Entity
                 else if (field.CsType.ToLower() == "datetime")
                 {
                     code.Append($@"
-            if(TryGet(""{field.JsonName}"" , out DateTime {field.JsonName}))
+            if(RequestArgumentConvert.TryGet(""{field.JsonName}"" , out DateTime {field.JsonName}))
             {{
                 var day = {field.JsonName}.Date;
                 var nextDay = day.AddDays(1);
@@ -256,22 +257,30 @@ namespace {NameSpace}.WebApi.Entity
             }}
             else 
             {{
-                if(TryGet(""{field.JsonName}_begin"" , out DateTime {field.JsonName}_begin))
+                if(RequestArgumentConvert.TryGet(""{field.JsonName}_begin"" , out DateTime {field.JsonName}_begin))
                 {{
                     var day = {field.JsonName}_begin.Date;
                     filter.AddAnd(p => p.{field.Name} >= day);
                 }}
-                if(TryGet(""{field.JsonName}_end"" , out DateTime {field.JsonName}_end))
+                if(RequestArgumentConvert.TryGet(""{field.JsonName}_end"" , out DateTime {field.JsonName}_end))
                 {{
                     var day = {field.JsonName}_end.Date.AddDays(1);
                     filter.AddAnd(p => p.{field.Name} < day);
                 }}
             }}");
                 }
+                else if(field.IsEnum)
+                {
+                    code.Append($@"
+            if(RequestArgumentConvert.TryGetEnum<{field.CustomType}>(""{field.JsonName}"" , out {field.CustomType} {field.JsonName}))
+            {{
+                filter.AddAnd(p => p.{field.Name} == {field.JsonName});
+            }}");
+                }
                 else
                 {
                     code.Append($@"
-            if(TryGet(""{field.JsonName}"" , out {field.CsType} {field.JsonName}))
+            if(RequestArgumentConvert.TryGet(""{field.JsonName}"" , out {field.CsType} {field.JsonName}))
             {{");
 
                     switch (field.CsType.ToLower())
@@ -348,8 +357,7 @@ namespace {NameSpace}.WebApi.Entity
     /// <summary>
     ///  {ToRemString(Entity.Caption)}
     /// </summary>
-    [Service(""{Project.Abbreviation}"")]
-    [Route(""{Entity.Abbreviation}/v1"")]
+    [Route(""{Entity.ApiName}/v1"")]
     [ApiPage(""{page}"")]
     public partial class {Entity.Name}ApiController 
          : {baseClass}<{Entity.EntityName},{Entity.Name}BusinessLogic>
@@ -393,14 +401,10 @@ namespace {NameSpace}.WebApi.Entity
         ///     载入树节点
         /// </summary>
         [Route(""edit/tree"")]
-        public ApiArrayResult<EasyUiTreeNode> OnLoadTree()
+        public IApiResult<List<EasyUiTreeNode>> OnLoadTree()
         {
             var nodes = Business.LoadTree(this.GetLongArg(""id""));
-            return new ApiArrayResult<EasyUiTreeNode>
-            {{
-               Success = true,
-               ResultData = nodes
-            }};
+            return ApiResultHelper.Succees(nodes);
         }");
             }
             var cap = Entity.Properties.FirstOrDefault(p => p.IsCaption);
@@ -412,9 +416,9 @@ namespace {NameSpace}.WebApi.Entity
         /// 载入下拉列表数据
         /// </summary>
         [Route(""edit/combo"")]
-        public ApiArrayResult<EasyComboValues> ComboValues()
+        public IApiResult<List<EasyComboValues>> ComboValues()
         {
-            return ApiArrayResult<EasyComboValues>.Succees(Business.ComboValues());
+            return ApiResultHelper.Succees(Business.ComboValues());
         }");
             }
             foreach (var cmd in Entity.Commands.Where(p => !p.IsLocalAction))
@@ -444,8 +448,10 @@ namespace {NameSpace}.WebApi.Entity
             if (code.Length == 0)
                 return null;
             return $@"
-        #region 设计器命令{code}
-
+        #region 设计器命令
+        /*
+        {code}
+        */
         #endregion";
         }
 

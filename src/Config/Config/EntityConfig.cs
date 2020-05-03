@@ -723,6 +723,35 @@ namespace Agebull.EntityModel.Config
         #region 用户界面
 
         /// <summary>
+        /// 接口名称
+        /// </summary>
+        [DataMember, JsonProperty("_apiName", NullValueHandling = NullValueHandling.Ignore)]
+        internal string _apiName;
+
+        /// <summary>
+        /// 接口名称
+        /// </summary>
+        /// <remark>
+        /// 接口名称
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"解决方案"), DisplayName(@"接口名称"), Description("接口名称")]
+        public string ApiName
+        {
+            get => WorkContext.InCoderGenerating ? _apiName ?? Abbreviation : _apiName;
+            set
+            {
+                if (_apiName == value)
+                    return;
+                if (value == Name)
+                    value = null;
+                BeforePropertyChanged(nameof(ApiName), _apiName, value);
+                _apiName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                OnPropertyChanged(nameof(ApiName));
+            }
+        }
+
+        /// <summary>
         /// 是否有界面
         /// </summary>
         [DataMember, JsonProperty("haseEasyUi", NullValueHandling = NullValueHandling.Ignore)]

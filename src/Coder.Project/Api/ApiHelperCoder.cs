@@ -27,6 +27,10 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             //{group.Key ?? "普通字段"}");
                 foreach (var field in group.OrderBy(p => p.Index))
                 {
+                    if (field.IsPrimaryKey)
+                    {
+                        continue;
+                    }
                     code.Append(@"
             if(");
                     if (field.IsPrimaryKey || field.KeepUpdate)
@@ -62,8 +66,8 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                     }
                     if (field.IsEnum && !string.IsNullOrWhiteSpace(field.CustomType))
                     {
-                        code.Append($@"convert.TryGetValue(""{field.JsonName}"" , out {field.CsType} {field.Name}))
-                data.{field.Name} = ({field.CustomType}){field.Name};");
+                        code.Append($@"convert.TryGetEnum(""{field.JsonName}"" , out {field.CustomType} {field.Name}))
+                data.{field.Name} = {field.Name};");
                     }
                     else if(!string.IsNullOrWhiteSpace(field.CustomType))
                     {

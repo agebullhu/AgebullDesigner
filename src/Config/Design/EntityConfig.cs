@@ -96,22 +96,6 @@ namespace Agebull.EntityModel.Config
         public List<PropertyConfig> LastProperties { get; set; }
 
         /// <summary>
-        /// 开始代码生成
-        /// </summary>
-        public void CreateLast()
-        {
-            LastProperties = new List<PropertyConfig>();
-            int idx = 0;
-            foreach (var pro in Properties.OrderBy(p => p.Index))
-            {
-                if (pro.IsDelete || pro.IsDiscard)
-                    continue;
-                pro.Option.Index = ++idx;
-                LastProperties.Add(pro);
-            }
-        }
-
-        /// <summary>
         /// 公开的属性
         /// </summary>
         /// <remark>

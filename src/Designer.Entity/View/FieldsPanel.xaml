@@ -20,7 +20,7 @@
         <DataGrid.Columns>
             <DataGridCheckBoxColumn Binding="{Binding Option.IsDiscard,Mode=TwoWay}" Header="废弃" />
             <DataGridCheckBoxColumn Binding="{Binding Option.IsDelete,Mode=TwoWay}" Header="删除" />
-            <DataGridTextColumn Binding="{Binding Option.Identity,Mode=OneWay}" Header="标识" />
+            <DataGridTextColumn Binding="{Binding Option.Identity,Mode=TwoWay}" Header="标识" />
             <DataGridTextColumn Binding="{Binding Option.Index,Mode=TwoWay}" Header="序号" /> 
             <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
             <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />

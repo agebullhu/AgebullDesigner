@@ -79,6 +79,10 @@
             <GroupBox Header="数据模型" Margin="5">
                 <WrapPanel>
                     <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="服务名称" />
+                        <TextBox Text="{Binding ApiName,Mode=TwoWay}" Tag="{Binding Abbreviation,Mode=OneWay}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="命名空间" />
                         <TextBox Style="{StaticResource MidTextBox}" Text="{Binding NameSpace,Mode=TwoWay}"
                                  Tag="{Binding Solution.NameSpace,Mode=OneWay}" />
@@ -171,12 +175,9 @@
                         <Label Content="实体名称" />
                         <TextBox Text="{Binding EntityName,Mode=TwoWay}" Tag="{Binding Name,Mode=OneWay}" />
                     </StackPanel>
-
-                    <StackPanel Style="{StaticResource FieldPanel}"
-                                Visibility="{Binding Solution.IsDataBaseWorkView,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
-                        <Label Content="无数据库支持" />
-                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding NoDataBase,Mode=TwoWay}"
-                                  ToolTip="选择后,此类不进行任何数据库操作" />
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="服务名称" />
+                        <TextBox Text="{Binding ApiName,Mode=TwoWay}" Tag="{Binding Abbreviation,Mode=OneWay}" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource AdvFieldPanel}"
                                 Visibility="{Binding Solution.IsEntityWorkView,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
@@ -260,6 +261,12 @@
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="RedisKey" />
                         <TextBox Text="{Binding RedisKey,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}"
+                                Visibility="{Binding Solution.IsDataBaseWorkView,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
+                        <Label Content="无数据库支持" />
+                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding NoDataBase,Mode=TwoWay}"
+                                  ToolTip="选择后,此类不进行任何数据库操作" />
                     </StackPanel>
                 </WrapPanel>
             </GroupBox>

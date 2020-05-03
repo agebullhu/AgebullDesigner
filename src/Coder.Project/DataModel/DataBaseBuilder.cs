@@ -56,18 +56,6 @@ namespace {Project.NameSpace}.DataAccess
         /// <summary>
         /// 构造
         /// </summary>
-        static {Project.DataBaseObjectName}()
-        {{
-            /*tableSql = new Dictionary<string, TableSql>(StringComparer.OrdinalIgnoreCase)
-            {{{Project.DataBaseObjectName}
-            }};
-            DataUpdateHandler.RegisterUpdateHandler(new RedisDataTrigger());*/
-            DataUpdateHandler.RegisterUpdateHandler(new {Project.DbType}DataTrigger());
-        }}
-
-        /// <summary>
-        /// 构造
-        /// </summary>
         public {Project.DataBaseObjectName}()
         {{
             Name = @""{Project.Name}"";

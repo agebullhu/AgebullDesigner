@@ -79,7 +79,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 代码文件夹名称
         /// </summary>
-        protected virtual string Folder => null;
+        protected override string Folder => null;
 
 
         /// <summary>

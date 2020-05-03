@@ -19,64 +19,50 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             exButton.Append(@"
             <div style='display: inline-block;'>
                 <el-button-group>
-                    <el-tooltip placement='top' effect='light'>
-                        <div slot='content'>重新载入数据</div>
-                        <el-button icon='el-icon-refresh' @click='loadList'></el-button>
-                    </el-tooltip>
-                    <el-tooltip placement='top' effect='light'>
-                        <div slot='content'>导出Excel</div>
-                        <el-button icon='fa fa-file-excel-o' @click='exportExcel'></el-button>
-                    </el-tooltip>");
+                   <el-button icon='el-icon-refresh' type='success' @click='loadList'>刷新</el-button>
+                   <!--el-button icon='fa fa-file-excel-o' type='success' @click='exportExcel'>导出</el-button-->");
             if (!Entity.IsUiReadOnly)
             {
                 exButton.Append(@"
-                    <el-tooltip placement='top' effect='light'>
-                        <div slot='content'>新增一条数据</div>
-                        <el-button icon='fa fa-plus' @click='doAddNew'></el-button>
-                    </el-tooltip>
-                    <el-tooltip placement='top' effect='light'>
-                        <div slot='content'>编辑当前选行的数据</div>
-                        <el-button icon='el-icon-edit' @click='doEdit'></el-button>
-                    </el-tooltip>
-                    <el-tooltip placement='top' effect='light'>
-                        <div slot='content'>删除当前选中的一或多行数据的数据</div>
-                        <el-button icon='fa fa-times' @click='doDelete'></el-button>
-                    </el-tooltip>");
+                        <el-button icon='el-icon-circle-plus-outline' type='primary' @click='doAddNew'>新增</el-button>
+                        <el-button icon='el-icon-edit' type='success' @click='doEdit'>编辑</el-button>
+                        <el-button icon='el-icon-circle-close' type='info' @click='doDelete'>删除</el-button>");
             }
             exButton.Append(@"
                 </el-button-group>");
             if (!Entity.IsUiReadOnly)
             {
-                if (Entity.Interfaces.Contains("IStateData"))
-                {
-                    exButton.Append(@"
-                <el-button-group>");
-                    exButton.Append(stateButton);
-                    if (!Entity.Interfaces.Contains("IAuditData"))
-                        exButton.Append(@"
-                        <el-tooltip placement='top' effect='light'>
-                            <div slot='content'>使当前选中的一或多行数据的数据<b>还原</b>为草稿状态,使之可编辑</div>
-                            <el-button icon='el-icon-unlock' @click='doReset'></el-button>
-                        </el-tooltip>");
-                    exButton.Append(@"
-                </el-button-group>");
-                }
                 if (Entity.Interfaces.Contains("IAuditData"))
                 {
                     exButton.Append(@"
-                <el-button-group>");
-                    exButton.Append(auditButton);
+                    <el-dropdown split-button type='primary' @click='doPass' @command='handleDataCommand'>
+                        <i class='el-icon-circle-check'></i>审核通过
+                        <el-dropdown-menu slot='dropdown'>
+                            <el-dropdown-item command='Enable'><i class='el-icon-circle-check'></i>启用</el-dropdown-item>
+                            <el-dropdown-item command='Disable'><i class='el-icon-remove-outline'></i>禁用</el-dropdown-item>
+                            <el-dropdown-item command='Deny'><i class='el-icon-remove-outline'></i>不通过</el-dropdown-item>
+                            <el-dropdown-item command='Back'><i class='el-icon-edit'></i>退回编辑</el-dropdown-item>
+                            <el-dropdown-item command='ReDo'><i class='el-icon-edit'></i>重新审核</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>");
+                }
+                else if (Entity.Interfaces.Contains("IStateData"))
+                {
                     exButton.Append(@"
-                </el-button-group>");
+                    <el-dropdown split-button type='primary' @click='doEnable' @command='handleDataCommand'>
+                        <i class='el-icon-circle-check'></i>启用
+                        <el-dropdown-menu slot='dropdown'>
+                            <el-dropdown-item command='Disable'><i class='el-icon-remove-outline'></i>禁用</el-dropdown-item>
+                            <el-dropdown-item command='Reset'><i class='el-icon-edit'></i>重置</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>");
                 }
             }
             exButton.Append(@"
             </div>");
 
             var cls = Entity.Parent.Classifies.FirstOrDefault(p => p.Name == Entity.Classify);
-            var folder = cls == null
-               ? $"{Entity.Parent.Caption} > {Entity.Caption}"
-               : $"{Entity.Parent.Caption} > {cls.Caption } > {Entity.Caption}";
+            
             string style = null;
             if (!Entity.IsUiReadOnly && Entity.FormCloumn <= 1)
                 style = @"
@@ -96,46 +82,44 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 <head>
     <meta name='renderer' content='webkit'/>
     <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=21'/>
-    <title>
-        {folder}
-    </title>
+    <title>{Entity.Parent.Caption} > {Entity.Caption}</title>
     <meta charset='utf-8'/>
     <meta name='viewport' content='width=device-width'/>
     <meta http-equiv='Content-Type' content='text/html; charset=utf-8-bom'/>
     <!--font-awesome-->
     <link rel='stylesheet' type='text/css' href='http://cdn.staticfile.org/font-awesome/5.8.2/css/all.min.css'>
-    <!--JQuery-->
-    <script type='text/javascript' src='http://cdn.staticfile.org/jquery/3.4.1/jquery.min.js'></script>
     <!--VUE-->
     <link rel='stylesheet' type='text/css' href='http://cdn.staticfile.org/element-ui/2.8.2/theme-chalk/index.css'>
     <script type='text/javascript' src='http://cdn.staticfile.org/vue/2.6.10/vue.js'></script>
+    <script type='text/javascript' src='https://cdn.staticfile.org/axios/0.19.2/axios.min.js'></script>
     <script type='text/javascript' src='http://cdn.staticfile.org/element-ui/2.8.2/index.js'></script>
     <script type='text/javascript' src='http://cdn.staticfile.org/element-ui/2.8.2/locale/zh-CN.min.js'></script>
     <!--Extend-->
-    <script type='text/javascript' src='../../js/extend/vue_ex.js'></script>
-    <script type='text/javascript' src='../../js/extend/core.js'></script>
-    <script type='text/javascript' src='../../js/extend/ajax.js'></script>
-    <script type='text/javascript' src='../../js/extend/ajax_vue.js'></script>
-    <script type='text/javascript' src='../../js/extend/extend.js'></script>
-    <script type='text/javascript' src='../../js/extend/type.js'></script>
-    <link rel='stylesheet' type='text/css' href='../../styles/vuePage.css' />
+    <link rel='stylesheet' type='text/css' href='/styles/vuePage.css' />
+    <script type='text/javascript' src='/scripts/extend/core.js'></script>
+    <script type='text/javascript' src='/scripts/extend/ajax.js'></script>
+    <script type='text/javascript' src='/scripts/extend/ajax_vue.js'></script>
+    <script type='text/javascript' src='/scripts/extend/type.js'></script>
+    <script type='text/javascript' src='/scripts/extend/vue_ex.js'></script>
 {style}
 </head>
 <body>
 <div id='work_space' class='tiled' v-cloak>
-    <el-container style='height: 100%; width: 100%'>
-        <el-header style='height:54px'>{exButton}
+    <el-container>
+            <el-header height='53px'>
+                <div style='display: inline-block;padding:6px'>
+                    <span>{Entity.Parent.Caption}</span>&nbsp;<i class='el-icon-arrow-right'></i>&nbsp;<span>{Entity.Caption}</span>
+                    &nbsp;&nbsp;&nbsp;
+                </div>{exButton}
             <div style='display: inline-block; float: right'>
                 <el-input placeholder='请输入搜索内容' v-model='list.keyWords' class='input-with-select' clearable>{QueryList()}
                     <el-button slot='append' icon='el-icon-search' @click='doQuery'></el-button>
                 </el-input>
             </div>
         </el-header>
-        <el-main style='margin: 0; padding: 0'>
-            <template>{GridCode()}
-            </template>
+        <el-main>{GridCode()}
         </el-main>
-        <el-footer style='border-top:1px solid #ebebeb;'>
+        <el-footer height='42px'>
             <el-pagination @size-change='sizeChange'
                            @current-change='pageChange'
                            background
@@ -147,8 +131,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             </el-pagination>
         </el-footer>
     </el-container>
-    <!-- Form -->
-    {FormCode()}
+    <!-- Form -->{FormCode()}
 </div>
 <script type='text/javascript' src='script.js'></script>
 </body>
@@ -167,28 +150,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         //                <el-option :value='16' label='废弃'></el-option>
         //                <el-option :value='255' label='删除'></el-option>
         //            </el-select>";
-        const string auditButton = @"
-                        <el-tooltip placement='top' effect='light'>
-                            <div slot='content'>使当前选中的一或多行数据的数据<b>审核通过</b></div>
-                            <el-button icon='el-icon-finished' @click='doPass'></el-button>
-                        </el-tooltip>
-                        <el-tooltip placement='top' effect='light'>
-                            <div slot='content'>使当前选中的一或多行数据的数据<b>恢复到未审核状态</b></div>
-                            <el-button icon='el-icon-unlock' @click='doReDo'></el-button>
-                        </el-tooltip>";
-        const string stateButton = @"
-                        <el-tooltip placement='top' effect='light'>
-                            <div slot='content'>使当前选中的一或多行数据的数据成为<b>启用</b>状态</div>
-                            <el-button icon='el-icon-circle-check' @click='doEnable'></el-button>
-                        </el-tooltip>
-                        <el-tooltip placement='top' effect='light'>
-                            <div slot='content'>使当前选中的一或多行数据的数据成为<b>禁用</b>状态</div>
-                            <el-button icon='el-icon-remove-outline' @click='doDisable'></el-button>
-                        </el-tooltip>
-                        <el-tooltip placement='top' effect='light'>
-                            <div slot='content'>使当前选中的一或多行数据的数据成为<b>废弃</b>状态</div>
-                            <el-button icon='el-icon-delete' @click='doDiscard'></el-button>
-                        </el-tooltip>";
+
         #endregion
         #region 表格
 
@@ -241,7 +203,8 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             return code.ToString();
         }
 
-        const string stateColumn = @"<el-table-column label='状态'
+        const string stateColumn = @"
+                    <el-table-column label='状态'
                                      align='center'
                                      header-align='center'
                                      width='50'>
@@ -470,18 +433,17 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 code.Append($@"
                 <el-select v-model='form.data.{field.JsonName}'");
                 SetDisabled(true, code, field);
-
-
                 code.Append(@" style='width:100%'>");
                 if (field.EnumConfig != null)
                 {
-                    foreach (var item in field.EnumConfig.Items.OrderBy(p => p.Value))
-                    {
-                        code.Append($@"
-                    <el-option :value='{item.Value}' label='{item.Caption}'></el-option>");
-                    }
+                    code.Append($@"
+                    <el-option v-for='item in types.{field.EnumConfig.Name.ToLWord()}'
+                               :key='item.value'
+                               :label='item.label'
+                               :value='item.value'>
+                    </el-option>");
                 }
-                else if(field.IsLinkKey)
+                else if (field.IsLinkKey)
                 {
                     var name = GlobalConfig.GetEntity(field.LinkTable)?.Name.ToLWord();
                     code.Append($@"
@@ -543,7 +505,11 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             quButton.Append(@"
                     <el-select v-model='list.field' slot='prepend' placeholder='选择字段' style='width: 160px;'>
                         <el-option value='_any_' label='模糊查询'></el-option>");
-            foreach (var field in Entity.ClientProperty.Where(p => !p.NoStorage && !p.IsPrimaryKey && !p.IsLinkKey))
+            foreach (var field in Entity.ClientProperty.Where(p => !p.NoStorage
+                                                                    && !p.NoneGrid
+                                                                    && !p.NoneDetails
+                                                                    && !p.IsLinkKey
+                                                                    && !p.IsLinkKey))
             {
                 quButton.Append($@"
                         <el-option value='{field.JsonName}' label='{field.Caption}'></el-option>");
@@ -574,17 +540,19 @@ extend_methods({{
     }}
 }});
 {form_rules}
-{Filter()}
 {LinkFunctions(fields)}
+{EnumScript()}
+{Filter()}
 {TreeScript()}
 function doReady() {{
     try {{
-        vue_option.data.apiPrefix = '{Project.ApiName}/{Entity.Abbreviation}/v1';
+        vue_option.data.apiPrefix = '/{Project.ApiName}/{Entity.ApiName}/v1';
         vue_option.data.idField = '{Entity.PrimaryColumn.JsonName}';
-        vue_option.data.form.def = createEntity();
-        vue_option.data.form.data = createEntity();
+        var data = createEntity();
+        vue_option.data.form.def = data
+        vue_option.data.form.data = data;
         {(form_rules == null ? null : "vue_option.data.form.rules = rules; ")}
-        globalOptions.api.customHost = globalOptions.api.{Project.ApiName}ApiHost;
+
         vueObject = new Vue(vue_option);
         vue_option.methods.loadList();
         
@@ -660,6 +628,55 @@ load{entity.Name}();");
         }
         #endregion
         #region 枚举
+
+        string EnumScript()
+        {
+            var array = Entity.Properties.Where(p => p.EnumConfig != null && !p.IsSystemField && p.IsEnum).Select(p => p.EnumConfig).Distinct().ToArray();
+            if (array.Length == 0)
+                return null;
+            var code = new StringBuilder();
+            code.AppendLine(@"
+/**
+*   枚举列表
+*/
+extend_data({
+    types : {");
+            bool enumFirst = true;
+            foreach (var enumConfig in array)
+            {
+                if (enumFirst)
+                    enumFirst = false;
+                else
+                    code.Append(",");
+
+                code.Append($@"
+        /**
+        *   {enumConfig.Caption}
+        */
+        {enumConfig.Name.ToLWord()} : [");
+                bool first = true;
+                foreach (var item in enumConfig.Items)
+                {
+                    if (first)
+                        first = false;
+                    else
+                        code.Append(",");
+                    code.Append($@"
+            {{
+                key: '{item.Value}',
+                value: '{item.Name}',
+                label: '{item.Caption}'
+            }}");
+                }
+                code.Append(@"
+        ]");
+            }
+            code.Append(@"
+    }
+});");
+            return code.ToString();
+        }
+
         string Filter()
         {
             var array = Entity.Properties.Where(p => p.EnumConfig != null && !p.IsSystemField && p.IsEnum).Select(p => p.EnumConfig).Distinct().ToArray();
@@ -684,18 +701,24 @@ load{entity.Name}();");
         {
             StringBuilder code = new StringBuilder();
             code.Append($@"
-    //{config.Caption}枚举转文本
+    /**
+    *   {config.Caption}枚举转文本
+    */
     {config.Name.ToLWord()}Formater(val) {{
         switch (val) {{");
+            string def = "错误";
             foreach (var item in config.Items)
             {
+                if (item.Value == "0")
+                    def = item.Caption;
                 code.Append($@"
-            case {item.Value}: return '{item.Caption}';");
+            case '{item.Name}': return '{item.Caption}';");
             }
-            code.Append(@"
-            default:return '错误';
-        }
-    }");
+            code.Append($@"
+            default:
+                return '{def}';
+        }}
+    }}");
             return code.ToString();
         }
         #endregion
@@ -708,7 +731,7 @@ load{entity.Name}();");
         {
             bool isInner = Entity.Interfaces.Contains("IInnerTree");
             var code = new StringBuilder();
-            foreach (var field in Entity.ClientProperty)
+            foreach (var field in Entity.ClientProperty.Where(p => !p.IsSystemField))
             {
                 if (isInner && field.Name == "ParentId")
                 {
@@ -719,6 +742,11 @@ load{entity.Name}();");
                 {
                     code.Append($@",
         {field.JsonName} : ''");
+                }
+                else if (field.IsEnum)
+                {
+                    code.Append($@",
+        {field.JsonName} : '{field.EnumConfig.Items.FirstOrDefault()?.Name}'");
                 }
                 else if (field.CsType == "bool")
                 {
@@ -752,6 +780,10 @@ load{entity.Name}();");
                 else if (field.CsType == "bool")
                 {
                     code.Append("false;");
+                }
+                else if (field.IsEnum)
+                {
+                    code.Append($"'{field.EnumConfig.Items.FirstOrDefault()?.Name}';");
                 }
                 else
                 {

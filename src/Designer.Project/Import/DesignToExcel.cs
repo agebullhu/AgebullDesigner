@@ -133,7 +133,6 @@ namespace Agebull.EntityModel.Designer
                 int rowIdx = 0;
                 foreach (var entity in cls.Items.Where(p => !p.NoDataBase))
                 {
-                    entity.CreateLast();
                     rowIdx = ImportTable(workbook, sheet, entity, rowIdx);
                 }
             }
@@ -291,11 +290,7 @@ namespace Agebull.EntityModel.Designer
             }
             font1.IsItalic = isItalic;
             font1.FontHeightInPoints = (short)fontsize;
-            if (body)
-            {
-                font1.Boldweight = (short)FontBoldWeight.Bold;
-            }
-
+            font1.IsBold = body;
             return font1;
         }
 

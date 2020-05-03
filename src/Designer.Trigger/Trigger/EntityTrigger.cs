@@ -36,9 +36,6 @@ namespace Agebull.EntityModel.Designer
                 case nameof(TargetConfig.Name):
                     TargetConfig.RaisePropertyChanged(nameof(TargetConfig.DisplayName));
                     break;
-                case nameof(TargetConfig.Interfaces):
-                    InterfaceHelper.CheckInterface(TargetConfig);
-                    break;
                 case nameof(TargetConfig.SaveTableName):
                     TargetConfig.RaisePropertyChanged(nameof(TargetConfig.ReadTableName));
                     TargetConfig.RaisePropertyChanged(nameof(TargetConfig.DisplayName));

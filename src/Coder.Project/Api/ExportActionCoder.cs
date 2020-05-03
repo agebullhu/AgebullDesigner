@@ -26,6 +26,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         public string BaseCode(EntityConfig entity)
         {
             Entity = entity;
+            using var scope= CodeGeneratorScope.CreateScope(entity);
             return BaseCode();
         }
 
