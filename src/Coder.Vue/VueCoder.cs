@@ -15,6 +15,84 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         #region HTML
         public string HtmlCode()
         {
+            return $@"<!DOCTYPE html>
+<html>
+<head>
+    <meta name='renderer' content='webkit'/>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=21'/>
+    <title>{Entity.Parent.Caption} > {Entity.Caption}</title>
+    <meta charset='utf-8'/>
+    <meta name='viewport' content='width=device-width'/>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8-bom'/>
+    <!--font-awesome-->
+    <link rel='stylesheet' type='text/css' href='http://cdn.staticfile.org/font-awesome/5.8.2/css/all.min.css'>
+    <!--VUE-->
+    <link rel='stylesheet' type='text/css' href='http://cdn.staticfile.org/element-ui/2.8.2/theme-chalk/index.css'>
+    <script type='text/javascript' src='http://cdn.staticfile.org/vue/2.6.10/vue.js'></script>
+    <script type='text/javascript' src='https://cdn.staticfile.org/axios/0.19.2/axios.min.js'></script>
+    <script type='text/javascript' src='http://cdn.staticfile.org/element-ui/2.8.2/index.js'></script>
+    <script type='text/javascript' src='http://cdn.staticfile.org/element-ui/2.8.2/locale/zh-CN.min.js'></script>
+    <!--Extend-->
+    <link rel='stylesheet' type='text/css' href='/styles/vuePage.css' />
+    <script type='text/javascript' src='/scripts/extend/core.js'></script>
+    <script type='text/javascript' src='/scripts/extend/ajax.js'></script>
+    <script type='text/javascript' src='/scripts/extend/ajax_vue.js'></script>
+    <script type='text/javascript' src='/scripts/extend/type.js'></script>
+    <script type='text/javascript' src='/scripts/extend/vue_ex.js'></script>{HtmlStyle()}
+</head>
+<body>
+<div id='work_space' class='tiled' v-cloak>
+    <el-container>
+        <el-header height='53px'>
+            <div style='display: inline-block;padding:6px'>
+                <span>{Entity.Parent.Caption}</span>&nbsp;<i class='el-icon-arrow-right'></i>&nbsp;<span>{Entity.Caption}</span>
+                &nbsp;&nbsp;&nbsp;
+            </div>{HtmlExButton()}
+            <div style='display: inline-block; float: right'>
+                <el-input placeholder='请输入搜索内容' v-model='list.keyWords' class='input-with-select' clearable>{QueryList()}
+                    <el-button slot='append' icon='el-icon-search' @click='doQuery'></el-button>
+                </el-input>
+            </div>
+        </el-header>
+        <el-main>{HtmlMainCode()}
+        </el-main>
+        <el-footer height='42px'>
+            <el-pagination @size-change='sizeChange'
+                           @current-change='pageChange'
+                           background
+                           layout='total, sizes, prev, pager, next, jumper'
+                           :current-page='list.page'
+                           :page-sizes='list.pageSizes'
+                           :page-size='list.pageSize'
+                           :total='list.total'>
+            </el-pagination>
+        </el-footer>
+    </el-container>{HtmlFormCode()}
+</div>
+<script type='text/javascript' src='script.js'></script>
+</body>
+</html>";
+        }
+
+        string HtmlStyle()
+        {
+            if (Entity.IsUiReadOnly || Entity.FormCloumn > 1)
+                return null;
+            return @"
+    <style>
+        .el-dialog {
+            width: 480px;
+        }
+        .el-dialog__body {
+            width: 440px;
+        }
+        .el-dialog__body_form {
+            width: 410px;
+        }
+    </style>";
+        }
+        string HtmlExButton()
+        {
             StringBuilder exButton = new StringBuilder();
             exButton.Append(@"
             <div style='display: inline-block;'>
@@ -49,112 +127,35 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 else if (Entity.Interfaces.Contains("IStateData"))
                 {
                     exButton.Append(@"
-                    <el-dropdown split-button type='primary' @click='doEnable' @command='handleDataCommand'>
+                    <el-dropdown split-button type='primary' @click='doEnable'>
                         <i class='el-icon-circle-check'></i>启用
-                        <el-dropdown-menu slot='dropdown'>
-                            <el-dropdown-item command='Disable'><i class='el-icon-remove-outline'></i>禁用</el-dropdown-item>
-                            <el-dropdown-item command='Reset'><i class='el-icon-edit'></i>重置</el-dropdown-item>
+                        <el-dropdown-menu slot='dropdown' style='padding:3px;background-color:#606266'>
+                            <el-dropdown-item style='padding:3px;background-color:#606266'>
+                                <el-button icon='el-icon-remove-outline' type='info' @click='doDisable'>禁用</el-button>
+                            </el-dropdown-item>
+                            <el-dropdown-item style='padding:3px;background-color:#606266'>
+                                <el-button icon='el-icon-remove-outline' type='success' @click='doReset'>重置</el-button>
+                            </el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>");
                 }
             }
             exButton.Append(@"
             </div>");
+            return exButton.ToString();
+        }
+        #endregion
+        #region 表格
+        public string HtmlMainCode()
+        {
+            return HtmlGridCode();
 
-            var cls = Entity.Parent.Classifies.FirstOrDefault(p => p.Name == Entity.Classify);
-            
-            string style = null;
-            if (!Entity.IsUiReadOnly && Entity.FormCloumn <= 1)
-                style = @"
-    <style>
-        .el-dialog {
-            width: 480px;
         }
-        .el-dialog__body {
-            width: 440px;
-        }
-        .el-dialog__body_form {
-            width: 410px;
-        }
-    </style>";
-            return $@"<!DOCTYPE html>
-<html>
-<head>
-    <meta name='renderer' content='webkit'/>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=21'/>
-    <title>{Entity.Parent.Caption} > {Entity.Caption}</title>
-    <meta charset='utf-8'/>
-    <meta name='viewport' content='width=device-width'/>
-    <meta http-equiv='Content-Type' content='text/html; charset=utf-8-bom'/>
-    <!--font-awesome-->
-    <link rel='stylesheet' type='text/css' href='http://cdn.staticfile.org/font-awesome/5.8.2/css/all.min.css'>
-    <!--VUE-->
-    <link rel='stylesheet' type='text/css' href='http://cdn.staticfile.org/element-ui/2.8.2/theme-chalk/index.css'>
-    <script type='text/javascript' src='http://cdn.staticfile.org/vue/2.6.10/vue.js'></script>
-    <script type='text/javascript' src='https://cdn.staticfile.org/axios/0.19.2/axios.min.js'></script>
-    <script type='text/javascript' src='http://cdn.staticfile.org/element-ui/2.8.2/index.js'></script>
-    <script type='text/javascript' src='http://cdn.staticfile.org/element-ui/2.8.2/locale/zh-CN.min.js'></script>
-    <!--Extend-->
-    <link rel='stylesheet' type='text/css' href='/styles/vuePage.css' />
-    <script type='text/javascript' src='/scripts/extend/core.js'></script>
-    <script type='text/javascript' src='/scripts/extend/ajax.js'></script>
-    <script type='text/javascript' src='/scripts/extend/ajax_vue.js'></script>
-    <script type='text/javascript' src='/scripts/extend/type.js'></script>
-    <script type='text/javascript' src='/scripts/extend/vue_ex.js'></script>
-{style}
-</head>
-<body>
-<div id='work_space' class='tiled' v-cloak>
-    <el-container>
-            <el-header height='53px'>
-                <div style='display: inline-block;padding:6px'>
-                    <span>{Entity.Parent.Caption}</span>&nbsp;<i class='el-icon-arrow-right'></i>&nbsp;<span>{Entity.Caption}</span>
-                    &nbsp;&nbsp;&nbsp;
-                </div>{exButton}
-            <div style='display: inline-block; float: right'>
-                <el-input placeholder='请输入搜索内容' v-model='list.keyWords' class='input-with-select' clearable>{QueryList()}
-                    <el-button slot='append' icon='el-icon-search' @click='doQuery'></el-button>
-                </el-input>
-            </div>
-        </el-header>
-        <el-main>{GridCode()}
-        </el-main>
-        <el-footer height='42px'>
-            <el-pagination @size-change='sizeChange'
-                           @current-change='pageChange'
-                           background
-                           layout='total, sizes, prev, pager, next, jumper'
-                           :current-page='list.page'
-                           :page-sizes='list.pageSizes'
-                           :page-size='list.pageSize'
-                           :total='list.total'>
-            </el-pagination>
-        </el-footer>
-    </el-container>
-    <!-- Form -->{FormCode()}
-</div>
-<script type='text/javascript' src='script.js'></script>
-</body>
-</html>";
-        }
-
-        //const string auditQuery = @"";
-        //const string satateQuery = @"
-        //            <el-select v-model='list.dataState' slot='prepend' placeholder='数据状态' style='width: 80px;'>
-        //                <el-option :value='-1' label='-'></el-option>
-        //                <el-option :value='0' label='草稿'></el-option>
-        //                <el-option :value='1' label='启用'></el-option>
-        //                <el-option :value='2' label='停用'></el-option>
-        //                <el-option :value='14' label='查看'></el-option>
-        //                <el-option :value='15' label='锁定'></el-option>
-        //                <el-option :value='16' label='废弃'></el-option>
-        //                <el-option :value='255' label='删除'></el-option>
-        //            </el-select>";
 
         #endregion
         #region 表格
 
-        public string GridCode()
+        public string HtmlGridCode()
         {
             var code = new StringBuilder();
             code.Append(@"
@@ -346,12 +347,13 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         #endregion
         #region 表单
 
-        public string FormCode()
+        public string HtmlFormCode()
         {
             if (Entity.IsUiReadOnly)
                 return null;
             var code = new StringBuilder();
             code.Append($@"
+     <!--Form-->
      <el-dialog title='{Entity.Caption}编辑'
                 :visible.sync='form.visible'
                 v-loading='form.loading'
@@ -488,7 +490,6 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         }
 
         #endregion
-
         #region 查询
 
         string QueryList()
@@ -532,11 +533,15 @@ function createEntity() {{
         selected: false{DefaultValue()}
     }};
 }}
+
+function checkEntity(row) {{{CheckValue()}
+}}
 extend_methods({{
     getDef() {{
         return createEntity();
     }},
-    checkListData(row) {{{CheckValue()}
+    checkListData(row) {{
+        checkEntity(row);
     }}
 }});
 {form_rules}
