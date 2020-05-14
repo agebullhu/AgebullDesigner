@@ -16,18 +16,15 @@
 
   <ItemGroup>
     <Compile Remove="Remove\**" />
-    <Compile Remove="Sqlite\**" />
     <EmbeddedResource Remove="Remove\**" />
-    <EmbeddedResource Remove="Sqlite\**" />
     <None Remove="Remove\**" />
-    <None Remove="Sqlite\**" />
     <Page Remove="Remove\**" />
-    <Page Remove="Sqlite\**" />
   </ItemGroup>
 
   <ItemGroup>
-    
-    
+    <Compile Remove="Sqlite\AccessBuilder.cs" />
+    <Compile Remove="Sqlite\DataBaseBuilder.cs" />
+    <Compile Remove="Sqlite\SQLiteDefault.cs" />
   </ItemGroup>
 
   <ItemGroup>

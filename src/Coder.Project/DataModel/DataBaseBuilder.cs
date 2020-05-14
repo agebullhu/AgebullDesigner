@@ -1,5 +1,4 @@
 using System.IO;
-using System.Text;
 using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
@@ -18,32 +17,39 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         protected override void CreateBaCode(string path)
         {
+            string file = Path.Combine(path, Project.DataBaseObjectName + ".Designer.cs");
+            if (File.Exists(file))
+                File.Delete(file);
+        }
 
+        /// <summary>
+        ///     生成扩展代码
+        /// </summary>
+        protected override void CreateExCode(string path)
+        {
+            string dbNameSpace;
+            switch (Project.DbType)
+            {
+                case DataBaseType.SqlServer:
+                    dbNameSpace = "System.Data.Sql";
+                    break;
+                case DataBaseType.Sqlite:
+                    dbNameSpace = "Microsoft.Data.Sqlite";
+                    break;
+                default:
+                    //case DataBaseType.MySql:
+                    dbNameSpace = "MySql.Data.MySqlClient";
+                    break;
+            }
+            string file = Path.Combine(path, Project.DataBaseObjectName + ".cs");
             string code = $@"#region
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Runtime.Serialization;
-using System.IO;
-using Newtonsoft.Json;
-
-using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
-
+using {dbNameSpace};
 using Agebull.Common;
 using Agebull.Common.Configuration;
-using Agebull.EntityModel.Common;
-using Agebull.EntityModel.Interfaces;
-using Agebull.EntityModel.Events;
-
-using Agebull.EntityModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
-
-{Project.UsingNameSpaces}
+using Agebull.EntityModel.{Project.DbType};
 #endregion
 
 namespace {Project.NameSpace}.DataAccess
@@ -51,7 +57,7 @@ namespace {Project.NameSpace}.DataAccess
     /// <summary>
     /// 本地数据库
     /// </summary>
-    public partial class {Project.DataBaseObjectName}
+    public sealed partial class {Project.DataBaseObjectName} : {Project.DbType}DataBase
     {{
         /// <summary>
         /// 构造
@@ -60,218 +66,36 @@ namespace {Project.NameSpace}.DataAccess
         {{
             Name = @""{Project.Name}"";
             Caption = @""{Project.Caption}"";
-            Description = @""{Project.Description.Replace("\"","\"\"")}"";
-            Initialize();
-            //RegistToEntityPool();
-        }}
-        
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        partial void Initialize();
-    }}
-}}
-";
-            string file = Path.Combine(path, Project.DataBaseObjectName + ".Designer.cs");
-            SaveCode(file, code);
-        }
+            Description = @""{Project.Description.Replace("\"", "\"\"")}"";
 
-        private string CreateDalCode()
-        {
-            StringBuilder code = new StringBuilder();
-            code.Append(@"
-
-namespace DALFactory
-{
-    /// <summary>
-    /// 数据访问器工厂
-    /// </summary>
-    public sealed class DataAccess
-    {");
-
-            foreach (var entity in SolutionConfig.Current.Entities)
-            {
-
-                string name = entity.EntityName.Substring(0, entity.EntityName.Length - 2);
-                code.Append($@"
-
-        /// <summary>
-        /// 创建{entity.EntityName}实例
-        /// </summary>
-        public static IDAL.I{name} CreatGet{name}()
-        {{
-            return new TAG.SQLserver.{entity.EntityName}();
-        }}");
-            }
-
-            code.Append(@"
-    }
-}");
-            return code.ToString();
-        }
-
-        /// <summary>
-        ///     生成扩展代码
-        /// </summary>
-        protected override void CreateExCode(string path)
-        {
-            string file = Path.Combine(path, Project.DataBaseObjectName + ".cs");
-            string code = $@"#region
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Runtime.Serialization;
-using System.IO;
-using Newtonsoft.Json;
-
-using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
-
-using Agebull.Common;
-using Agebull.Common.Configuration;
-using Agebull.EntityModel.Common;
-using Agebull.EntityModel.Interfaces;
-using Agebull.EntityModel.Events;
-
-using Agebull.EntityModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
-{Project.UsingNameSpaces}
-#endregion
-
-namespace {Project.NameSpace}.DataAccess
-{{
-    /// <summary>
-    /// 本地数据库
-    /// </summary>
-    sealed partial class {Project.DataBaseObjectName} : {(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")}DataBase
-    {{
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        partial void Initialize()
-        {{
             ConnectionStringName = ""{Project.DataBaseObjectName}"";
-        }}
+        }}{SqliteCode()}
     }}
 }}";
-            if (SolutionConfig.Current.ExtendConfigListBool["IsLinming"])
-                code += CreateDalCode();
             SaveCode(file, code);
+        }
+        string SqliteCode()
+        {
+            if (Project.DbType != DataBaseType.Sqlite)
+                return null;
+
+            return $@"
+        /// <summary>
+        /// 读取连接字符串
+        /// </summary>
+        /// <returns></returns>
+        protected override string LoadConnectionStringSetting()
+        {{
+            var b = new SqliteConnectionStringBuilder
+            {{
+                DataSource = ZeroAppOption.Instance.IsLinux
+                    ? $""{{ ZeroAppOption.Instance.DataFolder}}/{Project.DbSoruce}""
+                    : $""{{ZeroAppOption.Instance.DataFolder}}\\{Project.DbSoruce}"",
+                Mode = SqliteOpenMode.ReadWriteCreate,
+                Cache = SqliteCacheMode.Shared
+            }};
+            return b.ConnectionString;
+        }}";
         }
     }
 }
-//private string CtorCode()
-//{
-//    var sql = new StringBuilder();
-//    bool isFirst = true;
-//    foreach (TableSchema schema in DataBase.Schemas)
-//    {
-//        if (isFirst)
-//        {
-//            isFirst = false;
-//        }
-//        else
-//        {
-//            sql.Append(",");
-//        }
-//        sql.AppendFormat(@"
-//        {{""{0}"",_{1}Sql}}", schema.EntityName, schema.TableName);
-//    }
-//    return sql.ToString();
-//}
-
-//private string TableSqlCode()
-//{
-//    var sql = new StringBuilder();
-//    foreach (TableSchema schema in DataBase.Schemas)
-//    {
-//        sql.AppendLine(TableSql(schema));
-//    }
-//    return sql.ToString();
-//}
-
-//private string RegistCode()
-//{
-//    var sql = new StringBuilder();
-//    foreach (TableSchema schema in DataBase.Schemas)
-//    {
-//        sql.AppendFormat(@"
-//    EntityPool<{0}>.Table = this.{1};", schema.EntityName, schema.EntityName.ToPluralism());
-//    }
-//    return sql.ToString();
-//}
-
-//private string TablesCode()
-//{
-//    var code = new StringBuilder();
-//    foreach (TableSchema schema in DataBase.Schemas)
-//    {
-//        string name = schema.EntityName.ToPluralism();
-//        code.AppendFormat(@"
-
-///// <summary>
-///// {0}数据访问对象
-///// </summary>
-//private {2}BusinessEntity _{1};
-
-///// <summary>
-///// {0}数据访问对象
-///// </summary>
-//{4} {2}BusinessEntity {3}
-//{{
-//    get
-//    {{
-//        return this._{1} ?? ( this._{1} = new {2}BusinessEntity{{ DataBase = this}});
-//    }}
-//}}"
-//            , schema.Description
-//            , name.ToLWord()
-//            , schema.EntityName
-//            , name
-//            , schema.IsInternal ? "internal" : "public");
-//    }
-//    return code.ToString();
-//}
-
-
-//private string StoreToRedis()
-//{
-//    var code = new StringBuilder();
-//    foreach (TableSchema schema in DataBase.Schemas.Where(p => !p.IsInternal))
-//    {
-//        if (DataBase.ReadOnly)
-//            code.AppendFormat(@"
-//    Trace.WriteLine(@""{1}{2}"");
-//    ReadOnlyEntityPool<{1}Entity>.LoadCache({0});"
-//                , schema.EntityName.ToPluralism()
-//                , schema.EntityName
-//                , schema.Caption);
-//        else
-//            code.AppendFormat(@"
-//    Trace.WriteLine(@""{1}{2}"");
-//    EntityPool<{1}Entity>.Clear();
-//    {0}.FeachAll(EntityPool<{1}Entity>.Current.Save, EntityPool<{1}Entity>.Current.SyncEnd);"
-//                , schema.EntityName.ToPluralism()
-//                , schema.EntityName
-//                , schema.Caption);
-//    }
-//    return code.ToString();
-//}
-
-//private string TableSql(TableSchema schema)
-//{
-//    return string.Format(@"
-
-///// <summary>
-///// {0}的结构语句
-///// </summary>
-//private TableSql _{1}Sql = new TableSql
-//{{
-//    TableName = ""{1}"",
-//    PimaryKey = ""{2}""
-//}};", schema.Description, schema.TableName, schema.PrimaryColumn.Name);
-//}

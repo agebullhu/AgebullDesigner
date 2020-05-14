@@ -297,10 +297,12 @@ CREATE TABLE `{0}`("
                 , entity.SaveTable
                 , entity.Caption);
 
+            bool isFirst = true;
             foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
             {
                 code.Append($@"
-   ,{FieldDefault(col)}");
+   {(isFirst ? "" : ",")}{FieldDefault(col)}");
+                isFirst = false;
             }
             if (entity.PrimaryColumn != null)
                 code.Append($@"

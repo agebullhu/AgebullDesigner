@@ -35,10 +35,6 @@ namespace Agebull.EntityModel.RobotCoder
                     return SolutionConfig.Current.DataTypeMap.FirstOrDefault(p =>
                        !p.NoDbCheck && string.Equals(p.MySql, type, StringComparison.OrdinalIgnoreCase));
 
-                case DataBaseType.Oracle:
-                    return SolutionConfig.Current.DataTypeMap.FirstOrDefault(p =>
-                       !p.NoDbCheck && string.Equals(p.Oracle, type, StringComparison.OrdinalIgnoreCase));
-
                 case DataBaseType.Sqlite:
                     return SolutionConfig.Current.DataTypeMap.FirstOrDefault(p =>
                        !p.NoDbCheck && string.Equals(p.Sqlite, type, StringComparison.OrdinalIgnoreCase));
@@ -113,22 +109,12 @@ namespace Agebull.EntityModel.RobotCoder
         {
             if (property.Parent == null)
                 return;
-            switch (property.Parent.Parent.DbType)
+            property.DbType = property.Parent.Parent.DbType switch
             {
-                case DataBaseType.SqlServer:
-                    property.DbType = dataType.SqlServer;
-                    break;
-                default:
-                case DataBaseType.MySql:
-                    property.DbType = dataType.MySql;
-                    break;
-                case DataBaseType.Oracle:
-                    property.DbType = dataType.Oracle;
-                    break;
-                case DataBaseType.Sqlite:
-                    property.DbType = dataType.Sqlite;
-                    break;
-            }
+                DataBaseType.SqlServer => dataType.SqlServer,
+                DataBaseType.Sqlite => dataType.Sqlite,
+                _ => dataType.MySql,
+            };
         }
 
         public static void CsDataType(PropertyConfig arg)
@@ -172,16 +158,11 @@ namespace Agebull.EntityModel.RobotCoder
             if (arg.Parent == null)
                 arg.DbType = dataType.MySql;
             else
-                switch (arg.Parent.Parent.DbType)
+                arg.DbType = arg.Parent.Parent.DbType switch
                 {
-                    case DataBaseType.SqlServer:
-                        arg.DbType = dataType.SqlServer;
-                        break;
-                    default:
-                        arg.DbType = dataType.MySql;
-                        break;
-                }
-
+                    DataBaseType.SqlServer => dataType.SqlServer,
+                    _ => dataType.MySql,
+                };
             if (arg.DbType.Contains('('))
             {
                 var words = arg.DbType.Split(new[] { ',', '(', ')', ' ' }, StringSplitOptions.RemoveEmptyEntries);
@@ -220,15 +201,12 @@ namespace Agebull.EntityModel.RobotCoder
                 if (arg.Parent == null)
                     arg.DbType = dataType.MySql;
                 else
-                    switch (arg.Parent.Parent.DbType)
+                    arg.DbType = arg.Parent.Parent.DbType switch
                     {
-                        case DataBaseType.SqlServer:
-                            arg.DbType = dataType.SqlServer;
-                            break;
-                        default:
-                            arg.DbType = dataType.MySql;
-                            break;
-                    }
+                        DataBaseType.SqlServer => dataType.SqlServer,
+                        DataBaseType.Sqlite => dataType.Sqlite,
+                        _ => dataType.MySql,
+                    };
             }
         }
     }

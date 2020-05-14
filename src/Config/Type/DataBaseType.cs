@@ -18,16 +18,16 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         MySql,
         /// <summary>
+        /// Sqlite
+        /// </summary>
+        Sqlite/*,
+        /// <summary>
         /// Oracle
         /// </summary>
         Oracle,
         /// <summary>
-        /// Sqlite
-        /// </summary>
-        Sqlite,
-        /// <summary>
         /// Redis
         /// </summary>
-        Redis
+        Redis*/
     }
 }

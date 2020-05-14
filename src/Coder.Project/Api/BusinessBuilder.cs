@@ -52,6 +52,20 @@ namespace Agebull.EntityModel.RobotCoder
 
         private string CreateExtendCode()
         {
+            string dbNameSpace;
+            switch (Project.DbType)
+            {
+                case DataBaseType.SqlServer:
+                    dbNameSpace = "System.Data.Sql";
+                    break;
+                case DataBaseType.Sqlite:
+                    dbNameSpace = "Microsoft.Data.Sqlite";
+                    break;
+                default:
+                    //case DataBaseType.MySql:
+                    dbNameSpace = "MySql.Data.MySqlClient";
+                    break;
+            }
             string baseClass = "UiBusinessLogicBase";
             if (Entity.Interfaces != null)
             {
@@ -75,19 +89,18 @@ using System.Runtime.Serialization;
 using System.IO;
 using Newtonsoft.Json;
 
-using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
+using {dbNameSpace};
 
 using Agebull.Common;
 
 using Agebull.EntityModel.Common;
 
-using Agebull.EntityModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
+using Agebull.EntityModel.{Project.DbType};
 using Agebull.EntityModel.BusinessLogic;
 
 {Project.UsingNameSpaces}
 
 using {NameSpace}.DataAccess;
-using {SolutionConfig.Current.NameSpace}.DataAccess;
 #endregion
 
 namespace {NameSpace}.BusinessLogic
@@ -347,6 +360,20 @@ namespace {NameSpace}.BusinessLogic
 
         private string CreateBaseCode()
         {
+            string dbNameSpace;
+            switch (Project.DbType)
+            {
+                case DataBaseType.SqlServer:
+                    dbNameSpace = "System.Data.Sql";
+                    break;
+                case DataBaseType.Sqlite:
+                    dbNameSpace = "Microsoft.Data.Sqlite";
+                    break;
+                default:
+                    //case DataBaseType.MySql:
+                    dbNameSpace = "MySql.Data.MySqlClient";
+                    break;
+            }
             StringBuilder alias = new StringBuilder();
             if (!string.IsNullOrWhiteSpace(Entity.Alias))
             {
@@ -361,30 +388,19 @@ namespace {NameSpace}.BusinessLogic
             var code = $@"#region
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Configuration;
 using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Runtime.Serialization;
-using System.IO;
-using Newtonsoft.Json;
 
-using {(Project.DbType == DataBaseType.MySql ? "MySql.Data.MySqlClient" : "System.Data.Sql")};
+using {dbNameSpace};
 
 using Agebull.Common;
 
 using Agebull.EntityModel.Common;
-using Agebull.EntityModel.{(Project.DbType == DataBaseType.MySql ? "MySql" : "SqlServer")};
+using Agebull.EntityModel.{Project.DbType};
 using Agebull.EntityModel.BusinessLogic;
 
 {Project.UsingNameSpaces}
 
 using {NameSpace}.DataAccess;
-using {SolutionConfig.Current.NameSpace}.DataAccess;
 
 #endregion
 

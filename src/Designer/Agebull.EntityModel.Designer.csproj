@@ -14,7 +14,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;CLIENT</DefineConstants>
-    <OutputPath>C:\Projects\Agebull\AgebullDesigner\src\Program\</OutputPath>
+    <OutputPath>..\Program\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

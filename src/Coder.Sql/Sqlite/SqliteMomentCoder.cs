@@ -8,14 +8,14 @@ using Agebull.EntityModel.Config.SqlServer;
 using Agebull.EntityModel.Designer;
 using static System.String;
 
-namespace Agebull.EntityModel.RobotCoder.DataBase.Sqlerver
+namespace Agebull.EntityModel.RobotCoder.DataBase.Sqlite
 {
     /// <summary>
     /// SQL代码片断
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal class SqlMomentCoder : MomentCoderBase, IAutoRegister
+    internal class SqliteMomentCoder : MomentCoderBase, IAutoRegister
     {
         #region 注册
 
@@ -24,14 +24,11 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.Sqlerver
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("Sqlerver", "生成表(SQL)", "sql", p => !p.NoDataBase, CreateTable);
-            MomentCoder.RegisteCoder("Sqlerver", "插入表字段(SQL)", "sql", p => !p.NoDataBase, AddColumnCode);
-            MomentCoder.RegisteCoder("Sqlerver", "修改表字段(SQL)", "sql", p => !p.NoDataBase, ChangeColumnCode);
-            MomentCoder.RegisteCoder("Sqlerver", "生成视图(SQL)", "sql", p => !p.NoDataBase, CreateView);
-            MomentCoder.RegisteCoder<ProjectConfig>("Sqlerver", "插入页面表(SQL)", "sql", PageInsertSql);
-            MomentCoder.RegisteCoder("Sqlerver", "删除视图(SQL)", "sql", p => !p.NoDataBase, DropView);
-            MomentCoder.RegisteCoder("Sqlerver", "删除表(SQL)", "sql", p => !p.NoDataBase, DropTable);
-            MomentCoder.RegisteCoder("Sqlerver", "清除表(SQL)", "sql", p => !p.NoDataBase, TruncateTable);
+            MomentCoder.RegisteCoder("Sqlite", "生成表(SQL)", "sql", p => !p.NoDataBase, CreateTable);
+            MomentCoder.RegisteCoder("Sqlite", "生成视图(SQL)", "sql", p => !p.NoDataBase, CreateView);
+            MomentCoder.RegisteCoder("Sqlite", "删除视图(SQL)", "sql", p => !p.NoDataBase, DropView);
+            MomentCoder.RegisteCoder("Sqlite", "删除表(SQL)", "sql", p => !p.NoDataBase, DropTable);
+            MomentCoder.RegisteCoder("Sqlite", "清除表(SQL)", "sql", p => !p.NoDataBase, TruncateTable);
         }
 
         #endregion
@@ -43,7 +40,7 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.Sqlerver
             if (entity.NoDataBase)
                 return Empty;
             return $@"
-/*******************************{entity.Caption}*******************************/
+-- {entity.Caption}
 TRUNCATE TABLE [{entity.SaveTable}];
 ";
         }
@@ -53,9 +50,8 @@ TRUNCATE TABLE [{entity.SaveTable}];
             if (entity.NoDataBase || entity.SaveTable == entity.ReadTableName)
                 return Empty;
             return $@"
-/*******************************{entity.Caption}*******************************/
-DROP VIEW [{entity.ReadTableName}];
-GO";
+-- {entity.Caption}
+DROP VIEW [{entity.ReadTableName}];";
         }
         public static string CreateView(EntityConfig entity)
         {
@@ -63,13 +59,13 @@ GO";
             var array = entity.DbFields.Where(p => p.IsLinkField && !p.IsLinkKey).ToArray();
             if (array.Length == 0)
             {
-                return $"/**********{entity.Caption}**********没有字段引用其它表的无需视图**********/";
+                return $"-- {entity.Caption}没有字段引用其它表的无需视图";
             }
             var tables = entity.DbFields.Where(p => p.IsLinkField && !p.IsLinkKey).Select(p => p.LinkTable).Distinct().Select(GlobalConfig.GetEntity).ToDictionary(p => p.Name);
             if (tables.Count == 0)
             {
                 entity.ReadTableName = entity.SaveTable; ;
-                return $"/**********{entity.Caption}**********没有字段引用其它表的无需视图**********/";
+                return $"-- {entity.Caption}没有字段引用其它表的无需视图";
             }
             string viewName;
             if (IsNullOrWhiteSpace(entity.ReadTableName) || entity.ReadTableName == entity.SaveTable)
@@ -82,7 +78,7 @@ GO";
             }
             var builder = new StringBuilder();
             builder.Append($@"
-/*******************************{entity.Caption}*******************************/
+-- {entity.Caption}
 CREATE VIEW [{viewName}] AS 
     SELECT ");
             bool first = true;
@@ -136,52 +132,18 @@ CREATE VIEW [{viewName}] AS
             if (entity == null)
                 return "";
             if (entity.NoDataBase)
-                return $"{entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
+                return $"-- {entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
             return $@"
-/*******************************{entity.Caption}*******************************/
-DROP TABLE [{entity.SaveTable}];
-GO";
-            //            return string.Format(@"
-            //truncate TABLE dbo.{0};
-            //GO
-            //--INSERT INTO COC_NEW.dbo.{0} value({1})
-            //--SELECT {1} FROM coc.dbo.{0};
-            //--GO", Entity.TableName, Entity.PublishProperty.Select(p => p.ColumnName).LinkToString(','));
-        }
-        private string CreateTable(EntityConfig entity)
-        {
-            return CreateTableCode(entity);
-            //var builder = new StringBuilder();
-            //builder.AppendLine(DropTable());
-            //builder.AppendLine(SqlSchemaChecker.CreateTableCode(Entity));
-            //builder.AppendLine(DropView(Entity));
-            //builder.AppendLine(CreateView(Entity));
-
-            //return builder.ToString();
+--{entity.Caption}
+DROP TABLE [{entity.SaveTable}];";
         }
 
-
-        private static string PageInsertSql(ProjectConfig project)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(
-                $@"
-/*{project.Caption}*/
-INSERT INTO [tb_sys_page_item] ([ItemType],[Name],[Caption],[Url],[Memo],[ParentId])
-VALUES(0,'{project.Caption}','{project.Caption}',NULL,'{project.Description}',0);
-set @pid = @@IDENTITY;");
-            foreach (var entity in project.Entities.Where(p => !p.NoDataBase))
-                sb.Append($@"
-INSERT INTO [tb_sys_page_item[ ([ItemType],[Name],[Caption],[Url],[Memo],[ParentId])
-VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Name}/index','{entity.Description}',@pid);");
-            return sb.ToString();
-        }
         #endregion
 
         #region 表结构
 
 
-        public static string CreateTableCode(EntityConfig entity, bool signle = false)
+        public static string CreateTable(EntityConfig entity)
         {
             if (entity.NoDataBase)
                 return "";//这个设置为普通类，无法生成SQL
@@ -194,100 +156,22 @@ CREATE TABLE [{entity.SaveTable}](");
             {
                 code.Append($@"
    {(isFirst ? "" : ",")}{FieldDefault(col)}");
-
                 isFirst = false;
             }
             code.Append(@"
 );");
-            MemCode(entity, code);
-            return code.ToString();
-        }
-
-        private static void MemCode(EntityConfig entity, StringBuilder code)
-        {
-            code.Append($@"
-GO
----------------------------主键-------------------------------
-ALTER TABLE dbo.{entity.SaveTableName} ADD CONSTRAINT
-	PK_{entity.SaveTableName} PRIMARY KEY CLUSTERED 
-	(
-	    {entity.PrimaryField}
-	) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY];
-GO
----------------------------注释-------------------------------
-DECLARE @v sql_variant 
-SET @v = N'{entity.Caption?.Replace('\'', '‘')}:{entity.Description?.Replace('\'', '‘')}'
-EXECUTE sp_addextendedproperty N'MS_Description', @v, N'SCHEMA', N'dbo', N'TABLE', N'{
-                    entity.SaveTableName
-                }', NULL, NULL;");
-
-            foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
-            {
-                code.Append($@"
-SET @v = N'{col.Caption?.Replace('\'', '‘')}:{col.Description?.Replace('\'', '‘')}'
-EXECUTE sp_addextendedproperty N'MS_Description', @v, N'SCHEMA', N'dbo', N'TABLE', N'{entity.SaveTableName}', N'COLUMN', N'{col.DbFieldName}';");
-            }
-        }
-
-        private static string AddColumnCode(EntityConfig entity)
-        {
-            if (entity == null)
-                return "";
-            if (entity.NoDataBase)
-                return $"{entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
-            var code = new StringBuilder();
-            code.Append($@"
-/*{entity.Caption}*/
-ALTER TABLE [{entity.SaveTable}]");
-            bool isFirst = true;
-            foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
-            {
-                if (isFirst)
-                    isFirst = false;
-                else
-                    code.Append(',');
-                code.Append($@"
-    ADD {FieldDefault(col)}");
-            }
-            code.AppendLine(@";");
-
-            MemCode(entity, code);
-            return code.ToString();
-        }
-
-        private string ChangeColumnCode(EntityConfig entity)
-        {
-            if (entity == null)
-                return "";
-            if (entity.NoDataBase)
-                return $"{entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
-            var code = new StringBuilder();
-            code.Append($@"
-/*{entity.Caption}*/
-ALTER TABLE [{entity.SaveTable}]");
-            bool isFirst = true;
-            foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
-            {
-                if (isFirst)
-                    isFirst = false;
-                else
-                    code.Append(',');
-                code.Append($@"
-    ALTER COLUMN [{col.DbFieldName}] {FieldDefault(col)}");
-            }
-            code.Append(@";");
-            MemCode(entity, code);
             return code.ToString();
         }
 
         private static string FieldDefault(PropertyConfig col)
         {
+            if (col.IsIdentity)
+                return $"[{col.DbFieldName}] INTEGER PRIMARY KEY autoincrement -- '{col.Caption}'";
             var def = col.Initialization == null
                 ? null
                 : col.CsType == "string" ? $"DEFAULT '{col.Initialization}'" : $"DEFAULT {col.Initialization}";
             var nulldef = col.CsType == "string" || col.DbNullable ? " NULL" : " NOT NULL";
-            var identity = col.IsIdentity ? " IDENTITY(1,1)" : null;
-            return $"[{col.DbFieldName}] {SqlServerHelper.ColumnType(col)}{identity}{nulldef} {def} -- '{col.Caption}'";
+            return $"[{col.DbFieldName}] {SqlServerHelper.ColumnType(col)}{nulldef} {def} -- '{col.Caption}'";
         }
 
         #endregion

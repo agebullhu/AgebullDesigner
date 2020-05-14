@@ -116,12 +116,7 @@ namespace Agebull.EntityModel.Config
             {
                 name = "Sqlite",
                 value= DataBaseType.Sqlite
-            },
-            new ComboItem<DataBaseType>
-            {
-                name = "Redis",
-                value= DataBaseType.Redis
-            },
+            }
         };
         /// <summary>
         /// 配置状态类型类型的列表

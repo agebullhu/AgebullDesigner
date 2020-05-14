@@ -20,10 +20,10 @@
             <DataGridTextColumn Binding="{Binding Datalen,Mode=TwoWay}" Header="长度"  MinWidth="60"/>
             <DataGridTextColumn Binding="{Binding Scale,Mode=TwoWay}" Header="精度"  MinWidth="60"/>
             <DataGridTextColumn Binding="{Binding CSharp,Mode=TwoWay}" Header="C#" Foreground="Blue" MinWidth="80"/>
-            <DataGridTextColumn Binding="{Binding JavaScript,Mode=TwoWay}" Header="JavaScript"  Foreground="Blue" MinWidth="80"/>
             <DataGridTextColumn Binding="{Binding MySql,Mode=TwoWay}" Header="MySql"  Foreground="Blue" MinWidth="140"/>
             <DataGridTextColumn Binding="{Binding SqlServer,Mode=TwoWay}" Header="SqlServer" Foreground="Green" MinWidth="140"/>
-            <DataGridTextColumn Binding="{Binding Oracle,Mode=TwoWay}" Header="Oracle"  Foreground="Blue" MinWidth="140"/>
+            <DataGridTextColumn Binding="{Binding Sqlite,Mode=TwoWay}" Header="Sqlite"  Foreground="Blue" MinWidth="140"/>
+            <DataGridTextColumn Binding="{Binding JavaScript,Mode=TwoWay}" Header="JavaScript"  Foreground="Blue" MinWidth="80"/>
             <DataGridTextColumn Binding="{Binding Cpp,Mode=TwoWay}" Header="Cpp"  Foreground="Green" MinWidth="140"/>
             <!--<DataGridTextColumn Binding="{Binding Java,Mode=TwoWay}" Header="Java"  Foreground="Green" MinWidth="80"/>
             <DataGridTextColumn Binding="{Binding Golang,Mode=TwoWay}" Header="Golang"  Foreground="Green" MinWidth="80"/>-->

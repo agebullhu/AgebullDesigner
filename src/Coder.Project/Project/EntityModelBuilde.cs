@@ -70,13 +70,17 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
             accessPath = IOHelper.CheckPath(accessPath, cls ?? "DataAccess");
             Message = accessPath;
 
-            if (project.DbType == DataBaseType.MySql)
+            switch (project.DbType)
             {
-                CreateCode<MySqlAccessBuilder>(project, schema, accessPath);
-            }
-            else
-            {
-                CreateCode<SqlServerAccessBuilder>(project, schema, accessPath);
+                case DataBaseType.SqlServer:
+                    CreateCode<SqlServerAccessBuilder>(project, schema, accessPath);
+                    break;
+                case DataBaseType.Sqlite:
+                    CreateCode<SqliteAccessBuilder>(project, schema, accessPath);
+                    break;
+                default:
+                    CreateCode<MySqlAccessBuilder>(project, schema, accessPath);
+                    break;
             }
             var blPath = IOHelper.CheckPath(root, "Business");
             blPath = IOHelper.CheckPath(blPath, cls ?? "None");

@@ -1,7 +1,7 @@
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
 {
@@ -30,6 +30,7 @@ namespace Agebull.EntityModel.Config
                 MySql = "BOOL",
                 SqlServer = "bit",
                 Oracle = "CHAR(1)",
+                Sqlite = "Integer",
                 JavaScript = "bool"
             },
             /* String*/
@@ -44,6 +45,7 @@ namespace Agebull.EntityModel.Config
                 MySql = "VARCHAR",
                 SqlServer = "NVARCHAR",
                 Oracle = "VARCHAR",
+                Sqlite = "Text",
                 JavaScript = "String"
             },
             /* DateTime*/
@@ -57,6 +59,7 @@ namespace Agebull.EntityModel.Config
                 MySql = "DateTime",
                 SqlServer = "DateTime",
                 Oracle = "TIMESTAMP",
+                Sqlite = "Text",
                 JavaScript = "Date"
             },
             /* Guid*/
@@ -70,6 +73,7 @@ namespace Agebull.EntityModel.Config
                 MySql = "CHAR(36)",
                 SqlServer = "UNIQUEIDENTIFIER",
                 Oracle = "CHAR(36)",
+                Sqlite = "Text",
                 JavaScript = "Date"
             },
             /* Byte*/
@@ -83,6 +87,7 @@ namespace Agebull.EntityModel.Config
                 MySql = "VarBinary",
                 SqlServer = "VarBinary",
                 Oracle = "NUMBER",
+                Sqlite = "Integer",
                 JavaScript = "byte"
             },
 
@@ -96,7 +101,7 @@ namespace Agebull.EntityModel.Config
                 Cpp = "unsigned char",
                 MySql = "LONGBLOG",
                 SqlServer = "VarBinary",
-                Oracle = "NUMBER(3)",
+                Oracle = "NUMBER(3)",Sqlite = "Integer",
                 JavaScript = "byte"
             },
             /* Int16*/
@@ -109,7 +114,7 @@ namespace Agebull.EntityModel.Config
                 Cpp = "short",
                 MySql = "SMALLINT",
                 SqlServer = "smallint",
-                Oracle = "NUMBER",
+                Oracle = "NUMBER",Sqlite = "Integer",
                 JavaScript = "Number"
             },
             /* Int32*/
@@ -122,7 +127,7 @@ namespace Agebull.EntityModel.Config
                 Cpp = "int",
                 MySql = "INT",
                 SqlServer = "INT",
-                Oracle = "NUMBER",
+                Oracle = "NUMBER",Sqlite = "Integer",
                 JavaScript = "Number"
             },
             /* Int64*/
@@ -135,7 +140,7 @@ namespace Agebull.EntityModel.Config
                 Cpp = "long long",
                 MySql = "BIGINT",
                 SqlServer = "BIGINT",
-                Oracle = "NUMBER",
+                Oracle = "NUMBER",Sqlite = "Integer",
                 JavaScript = "Number"
             },
             /* Single */
@@ -148,7 +153,7 @@ namespace Agebull.EntityModel.Config
                 Cpp = "float",
                 MySql = "FLOAT",
                 SqlServer = "real",
-                JavaScript = "Number",
+                JavaScript = "Number",Sqlite = "Integer",
                 Oracle = "BINARY_FLOAT"
             },
             /* Double*/
@@ -161,7 +166,7 @@ namespace Agebull.EntityModel.Config
                 Cpp = "double",
                 MySql = "DOUBLE",
                 SqlServer = "float",
-                JavaScript = "Number",
+                JavaScript = "Number",Sqlite = "Integer",
                 Oracle = "BINARY_DOUBLE"
             },
             /* Decimal*/
@@ -174,7 +179,7 @@ namespace Agebull.EntityModel.Config
                 Cpp = "-",
                 MySql = "DECIMAL",
                 SqlServer = "DECIMAL",
-                JavaScript = "Number",
+                JavaScript = "Number",Sqlite = "Integer",
                 Oracle = "DECIMAL"
             },
             /* Money*/
@@ -187,7 +192,7 @@ namespace Agebull.EntityModel.Config
                 Cpp = "-",
                 MySql = "Money",
                 SqlServer = "Money",
-                JavaScript = "Number",
+                JavaScript = "Number",Sqlite = "Integer",
                 Oracle = "DECIMAL"
             },
             /* Object*/
@@ -201,6 +206,7 @@ namespace Agebull.EntityModel.Config
                 MySql = "-",
                 SqlServer = "-",
                 Oracle = "-",
+                Sqlite = "-",
                 JavaScript = "object",
                 NoDbCheck=true
             },
@@ -215,7 +221,7 @@ namespace Agebull.EntityModel.Config
                 MySql = "VarBinary",
                 SqlServer = "VarBinary",
                 Oracle = "NUMBER",
-                JavaScript = "byte",
+                JavaScript = "byte",Sqlite = "Integer",
                 NoDbCheck=true
             },
             /* UInt32*/
@@ -229,7 +235,7 @@ namespace Agebull.EntityModel.Config
                 MySql = "INT UNSIGNED",
                 SqlServer = "BIGINT",
                 Oracle = "NUMBER",
-                JavaScript = "Number",
+                JavaScript = "Number",Sqlite = "Integer",
                 NoDbCheck=true
             },
             /* UInt16*/
@@ -243,7 +249,7 @@ namespace Agebull.EntityModel.Config
                 MySql = "SMALLINT UNSIGNED",
                 SqlServer = "smallint",
                 Oracle = "NUMBER",
-                JavaScript = "Number",
+                JavaScript = "Number",Sqlite = "Integer",
                 NoDbCheck=true
             },
             /* Enum*/
@@ -257,7 +263,7 @@ namespace Agebull.EntityModel.Config
                 MySql = "int",
                 SqlServer = "int",
                 Oracle = "NUMBER",
-                JavaScript = "Number",
+                JavaScript = "Number",Sqlite = "Integer",
                 NoDbCheck=true
             },
             /* UInt64*/
@@ -271,7 +277,7 @@ namespace Agebull.EntityModel.Config
                 MySql = "BIGINT UNSIGNED",
                 SqlServer = "real",
                 Oracle = "NUMBER",
-                JavaScript = "Number",
+                JavaScript = "Number",Sqlite = "Integer",
                 NoDbCheck=true
             }
         };
@@ -279,7 +285,7 @@ namespace Agebull.EntityModel.Config
         #endregion
 
         #region 属性
-        
+
         /// <summary>
         /// 不参与数据库类型还原
         /// </summary>
