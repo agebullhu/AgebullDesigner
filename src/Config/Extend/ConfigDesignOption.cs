@@ -172,7 +172,7 @@ namespace Agebull.EntityModel.Config
                     _state &= ~ConfigStateType.Reference;
                     _state &= ~ConfigStateType.Link;
                 }
-                else if (!_state.HasSomeFlags(ConfigStateType.Reference, ConfigStateType.Link))
+                else if (!_state.AnyFlags(ConfigStateType.Reference, ConfigStateType.Link))
                 {
                     _state |= ConfigStateType.Reference;
                 }
@@ -236,7 +236,7 @@ namespace Agebull.EntityModel.Config
                     _state &= ~ConfigStateType.Reference;
                     _state &= ~ConfigStateType.Link;
                 }
-                else if (!_state.HasSomeFlags(ConfigStateType.Reference, ConfigStateType.Link))
+                else if (!_state.AnyFlags(ConfigStateType.Reference, ConfigStateType.Link))
                 {
                     _state |= ConfigStateType.Reference;
                 }
@@ -518,7 +518,7 @@ namespace Agebull.EntityModel.Config
         [Category("运行时"), DisplayName("曾用名"), Description("曾用名")]
         public List<string> OldNames
         {
-            get => _oldNames ?? (_oldNames = new List<string>());
+            get => _oldNames ??= new List<string>();
             set
             {
                 if (_oldNames == value)
@@ -620,7 +620,7 @@ namespace Agebull.EntityModel.Config
         /// 扩展配置
         /// </summary>
         [IgnoreDataMember, JsonIgnore, Browsable(false)]
-        public ConfigItemDictionary ExtendDictionary => _extendDictionary ?? (_extendDictionary = new ConfigItemDictionary(Extend));
+        public ConfigItemDictionary ExtendDictionary => _extendDictionary ??= new ConfigItemDictionary(Extend);
 
         [IgnoreDataMember, JsonIgnore]
         private ConfigItemListBool _extendBool;
@@ -629,7 +629,7 @@ namespace Agebull.EntityModel.Config
         /// 扩展配置
         /// </summary>
         [IgnoreDataMember, JsonIgnore, Browsable(false)]
-        public ConfigItemListBool ExtendConfigListBool => _extendBool ?? (_extendBool = new ConfigItemListBool(ExtendDictionary));
+        public ConfigItemListBool ExtendConfigListBool => _extendBool ??= new ConfigItemListBool(ExtendDictionary);
 
         /// <summary>
         /// 扩展配置
@@ -662,7 +662,7 @@ namespace Agebull.EntityModel.Config
         /// 扩展配置
         /// </summary>
         [IgnoreDataMember, JsonIgnore, Browsable(false)]
-        public ConfigItemList ExtendConfigList => _extendConfigList ?? (_extendConfigList = new ConfigItemList(ExtendConfig));
+        public ConfigItemList ExtendConfigList => _extendConfigList ??= new ConfigItemList(ExtendConfig);
 
         /// <summary>
         /// 读写扩展配置
@@ -721,7 +721,7 @@ namespace Agebull.EntityModel.Config
                 return def;
             var mv = ExtendConfig.FirstOrDefault(p => string.Equals(p.Name, key, StringComparison.OrdinalIgnoreCase));
             if (mv != null)
-                return mv.Value ?? (mv.Value = def);
+                return mv.Value ??= def;
             ExtendConfig.Add(new ConfigItem { Name = key, Value = def });
             return def;
         }

@@ -23,7 +23,7 @@ namespace Agebull.EntityModel.Designer
         private List<CommandItemBase> _exCommands;
         private string _systemName = "0";
 
-        public IEnumerable<CommandItemBase> ExCommands => _exCommands ?? (_exCommands = new List<CommandItemBase>
+        public IEnumerable<CommandItemBase> ExCommands => _exCommands ??= new List<CommandItemBase>
         {
             new AsyncCommandItem<string, List<TypedefItem>>(Model.CheckTypedefPrepare, Model.DoCheckTypedef,
                 Model.CheckTypedefEnd)
@@ -44,7 +44,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "接收到系统中",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             }
-        });
+        };
 
         /// <summary>
         ///     当前文件名

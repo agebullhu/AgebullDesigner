@@ -256,9 +256,9 @@ namespace Agebull.EntityModel.Designer
         <meta http-equiv='X-UA-Compatible' content='IE=edge'>
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <meta name='referrer' content='never' />
-        <script src='https://code.jquery.com/jquery-1.11.3.js'></script>
-        <link href='https://highlightjs.org/static/demo/styles/vs2015.css' rel='stylesheet'>  
-        <script src='http://cdn.bootcss.com/highlight.js/9.13.1/highlight.min.js'></script>  
+        <link href='https://cdn.staticfile.org/highlight.js/9.15.10/styles/vs.min.css' rel='stylesheet'>  
+        <script src='https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js'></script>
+        <script src='https://cdn.bootcss.com/highlight.js/9.13.1/highlight.min.js'></script>  
         <script>
             hljs.initHighlightingOnLoad();
             $(document).ready(function() {{
@@ -268,7 +268,7 @@ namespace Agebull.EntityModel.Designer
             }});
         </script>
     <head>
-    <body style='padding:0;margin:0;background-color:black'>
+    <body style='padding:0;margin:0'>
         <pre><code class='{_codeType}'>{code}</code></pre>
     </body>
 </html>

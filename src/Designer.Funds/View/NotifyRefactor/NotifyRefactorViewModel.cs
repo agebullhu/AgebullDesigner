@@ -22,7 +22,7 @@ namespace Agebull.EntityModel.Designer
     {
         private List<CommandItemBase> _exCommands;
 
-        public IEnumerable<CommandItemBase> ExCommands => _exCommands ?? (_exCommands = new List<CommandItemBase>
+        public IEnumerable<CommandItemBase> ExCommands => _exCommands ??= new List<CommandItemBase>
         {
             new AsyncCommandItem<string, List<NotifyItem>>
                     (Model.CheckNotifyPrepare, Model.DoCheckNotify, Model.CheckNotifyEnd)
@@ -36,6 +36,6 @@ namespace Agebull.EntityModel.Designer
                 Caption = "接收到系统中",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             }
-        });
+        };
     }
 }

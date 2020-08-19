@@ -89,17 +89,12 @@ using System.Runtime.Serialization;
 using System.IO;
 using Newtonsoft.Json;
 
-using {dbNameSpace};
-
 using Agebull.Common;
-
 using Agebull.EntityModel.Common;
-
 using Agebull.EntityModel.{Project.DbType};
 using Agebull.EntityModel.BusinessLogic;
-
+using {dbNameSpace};
 {Project.UsingNameSpaces}
-
 using {NameSpace}.DataAccess;
 #endregion
 
@@ -108,12 +103,16 @@ namespace {NameSpace}.BusinessLogic
     /// <summary>
     /// {Entity.Description}
     /// </summary>
-    public partial class {Entity.Name}BusinessLogic : {baseClass}<{Entity.EntityName},{Entity.Name}DataAccess>
+    public partial class {Entity.Name}BusinessLogic : {baseClass}<{Entity.EntityName},{Entity.PrimaryColumn.CsType},{Entity.Name}DataAccess>
     {{
-{CommandExCode()}
+{CommandExCode()}{InterfaceExtendCode()}
+        #region 基础继承
 
-{InterfaceExtendCode()}
-        #region CURD扩展
+        /// <summary>
+        ///     实体类型
+        /// </summary>
+        public override int EntityType => {Entity.EntityName}._DataStruct_.EntityIdentity;
+
         /*// <summary>
         ///     保存前的操作
         /// </summary>
@@ -135,6 +134,7 @@ namespace {NameSpace}.BusinessLogic
         {{
              return base.OnSaved(data, isAdd);
         }}
+
         /// <summary>
         ///     被用户编辑的数据的保存前操作
         /// </summary>
@@ -164,8 +164,11 @@ namespace {NameSpace}.BusinessLogic
 
         private string InterfaceExtendCode()
         {
+            if (!(Entity.Interfaces.Contains("IInnerTree")))
+                return null;
             var code = new StringBuilder();
             code.Append(@"
+
         #region 树形数据
     ");
             if (Entity.Interfaces.Contains("IInnerTree"))
@@ -225,20 +228,23 @@ namespace {NameSpace}.BusinessLogic
             }}
         }}");
             }
-
             code.Append(@"
-        #endregion");
+        #endregion
+");
             return code.ToString();
         }
         private string CommandExCode()
         {
             var code = new StringBuilder();
             code.Append(@"
+
         #region 设计器命令
     ");
+            bool hase = false;
             var cap = Entity.Properties.FirstOrDefault(p => p.IsCaption);
             if (cap != null)
             {
+                hase = true;
                 code.Append(@"
         /// <summary>
         /// 载入下拉列表数据
@@ -276,6 +282,7 @@ namespace {NameSpace}.BusinessLogic
 
             foreach (var cmd in Entity.Commands.Where(p => !p.IsLocalAction))
             {
+                hase = true;
                 code.Append($@"
 
         /// <summary>
@@ -290,36 +297,11 @@ namespace {NameSpace}.BusinessLogic
             return true;
         }}");
             }
-
+            if (!hase)
+                return null;
             code.Append(@"
-        #endregion");
-            return code.ToString();
-        }
-
-        private string CommandCode()
-        {
-            var code = new StringBuilder();
-            foreach (var cmd in Entity.Commands.Where(p => !p.IsLocalAction && !p.IsSingleObject))
-            {
-                code.Append($@"
-
-        /// <summary>
-        ///     {ToRemString(cmd.Caption)}
-        /// </summary>
-        /// <remark>
-        ///     {ToRemString(cmd.Description)}
-        /// </remark>
-        public bool Do{cmd.Name}(int[] ids)
-        {{
-            foreach (var id in ids)
-            {{
-                if(!{cmd.Name}(id))
-                    return false;
-            }}
-            return true;
-        }}");
-            }
-
+        #endregion
+");
             return code.ToString();
         }
 
@@ -328,6 +310,7 @@ namespace {NameSpace}.BusinessLogic
         /// </summary>
         protected override void CreateBaCode(string path)
         {
+            return;
             var fileName = "BusinessLogic.Designer.cs";
             var file = Path.Combine(path, Entity.Name + fileName);
             if (Entity.NoDataBase)
@@ -411,14 +394,7 @@ namespace {NameSpace}.BusinessLogic
     /// </summary>
     partial class {Entity.Name}BusinessLogic
     {{
-        
-        /// <summary>
-        ///     实体类型
-        /// </summary>
-        public override int EntityType => {Entity.EntityName}._DataStruct_.EntityIdentity;
-
-{SyncCode()}
-{CommandCode()}
+{SyncCode()}{CommandCode()}
     }}{alias}
 }}";
             return code;
@@ -444,5 +420,32 @@ namespace {NameSpace}.BusinessLogic
 #endif
         }}";
         }
+        private string CommandCode()
+        {
+            var code = new StringBuilder();
+            foreach (var cmd in Entity.Commands.Where(p => !p.IsLocalAction && !p.IsSingleObject))
+            {
+                code.Append($@"
+
+        /// <summary>
+        ///     {ToRemString(cmd.Caption)}
+        /// </summary>
+        /// <remark>
+        ///     {ToRemString(cmd.Description)}
+        /// </remark>
+        public bool Do{cmd.Name}(int[] ids)
+        {{
+            foreach (var id in ids)
+            {{
+                if(!{cmd.Name}(id))
+                    return false;
+            }}
+            return true;
+        }}");
+            }
+
+            return code.ToString();
+        }
+
     }
 }

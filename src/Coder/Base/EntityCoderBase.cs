@@ -31,13 +31,10 @@ namespace Agebull.EntityModel.RobotCoder
         protected abstract bool IsClient { get; }
 
         private PropertyConfig[] _columns;
-        protected PropertyConfig[] Columns => _columns ?? (_columns = Entity.PublishProperty.ToArray());
+        protected PropertyConfig[] Columns => _columns ??= Entity.PublishProperty.ToArray();
 
         private PropertyConfig[] _rwcolumns;
-        protected PropertyConfig[] ReadWriteColumns
-        {
-            get { return _rwcolumns ?? (_rwcolumns = Columns.Where(p => p.CanGet && p.CanSet).ToArray()); }
-        }
+        protected PropertyConfig[] ReadWriteColumns => _rwcolumns ??= Columns.Where(p => p.CanGet && p.CanSet).ToArray();
         /// <summary>
         /// 初始化实体默认值的代码
         /// </summary>
@@ -64,36 +61,48 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
 
-        protected static string PropertyHeader(PropertyConfig property, bool? json = null)
+        protected static string PropertyHeader(PropertyConfig property, bool isInterface=false, bool? json = null)
+        {
+            return FieldHeader(property,!isInterface,json);
+        }
+
+        protected static string FieldHeader(PropertyConfig property, bool isInterface, bool? json = null)
         {
             var code = new StringBuilder();
             code.Append(RemCode(property));
-            code.Append(DataRuleCode(property));
-            code.Append(@"
-        [DataMember");
-            if (json == null)
-                json = !property.NoneJson;
-            if (json.Value)
+            if (!isInterface)
             {
-                code.Append($@" , JsonProperty(""{property.JsonName}"", NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling= DefaultValueHandling.Ignore)");
-                if (property.CsType == "DateTime")
-                    code.Append(" , JsonConverter(typeof(MyDateTimeConverter))");
+                code.Append(@"
+        [IgnoreDataMember,JsonIgnore]");
             }
             else
             {
-                code.Append(" , JsonIgnore");
+                code.Append(DataRuleCode(property));
+                code.Append(@"
+        [DataMember");
+                if (json == null)
+                    json = !property.NoneJson;
+                if (json.Value)
+                {
+                    code.Append($@" , JsonProperty(""{property.JsonName}"", NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling= DefaultValueHandling.Ignore)");
+                    if (property.CsType == "DateTime")
+                        code.Append(" , JsonConverter(typeof(MyDateTimeConverter))");
+                }
+                else
+                {
+                    code.Append(" , JsonIgnore");
+                }
+                if (property.IsBlob || property.InnerField)
+                    code.Append(" , Browsable(false)");
+                if (property.ReadOnly)
+                    code.Append(" , ReadOnly(true)");
+                if (property.Caption != null)
+                    code.AppendFormat(@" , DisplayName(@""{0}"")", property.Caption);
+                code.Append("]");
             }
-            if (property.IsBlob || property.InnerField)
-                code.Append(" , Browsable(false)");
-            if (property.ReadOnly)
-                code.Append(" , ReadOnly(true)");
-            if (property.Caption != null)
-                code.AppendFormat(@" , DisplayName(@""{0}"")", property.Caption);
-            code.Append("]");
             return code.ToString();
         }
-
-        public static string RemCode(PropertyConfig property,bool simple=false, int space = 8)
+        public static string RemCode(PropertyConfig property, bool simple = false, int space = 8)
         {
             var code = new StringBuilder();
             code.AppendLine();
@@ -115,7 +124,7 @@ namespace Agebull.EntityModel.RobotCoder
                     code.Append(' ', space);
                     code.AppendLine($@"///  --{(!property.NoStorage && property.IsCompute ? "链接" : "冗余")}字段 : [{property.LinkTable}-{property.LinkField}]");
                 }
-                else if(property.NoStorage)
+                else if (property.NoStorage)
                 {
                     code.Append(' ', space);
                     code.AppendLine(@"///  -- 此字段不存储在数据库中");
@@ -125,7 +134,7 @@ namespace Agebull.EntityModel.RobotCoder
             code.Append("/// </summary>");
             if (simple)
                 return code.ToString();
-            if (!string.IsNullOrWhiteSpace(property.Description) 
+            if (!string.IsNullOrWhiteSpace(property.Description)
                 && property.Description != property.Name
                 && property.Description != property.Caption)
             {
@@ -242,17 +251,13 @@ namespace Agebull.EntityModel.RobotCoder
                     ? property.EnumConfig.Items.FirstOrDefault()?.Name ?? "None"
                     : property.EnumConfig.Items.FirstOrDefault()?.Value ?? "0";
             }
-            switch (property.DataType)
+            return property.DataType switch
             {
-                case "String":
-                    return null;
-                case "Boolean":
-                    return "true";
-                case "DateTime":
-                    return property.IsTime ? "2012-12-21 23:59:59" : "2012-12-21";
-                default:
-                    return "0";
-            }
+                "String" => null,
+                "Boolean" => "true",
+                "DateTime" => property.IsTime ? "2012-12-21 23:59:59" : "2012-12-21",
+                _ => "0",
+            };
         }
         public static string HelloCode(EntityConfig entity, string name)
         {
@@ -302,7 +307,7 @@ namespace Agebull.EntityModel.RobotCoder
             if (property.DataType == "ByteArray")
             {
                 code.Append($@"
-        {PropertyHeader(property, true)}
+        {PropertyHeader(property,false, true)}
         {property.AccessType} string {property.Name}_Base64
         {{
             get

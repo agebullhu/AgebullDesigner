@@ -548,7 +548,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public ExtendObject Extend
         {
-            get => _extend ?? (_extend = CreateExtend());
+            get => _extend ??= CreateExtend();
             set
             {
                 if (_extend == value)

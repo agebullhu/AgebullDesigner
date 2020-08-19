@@ -22,11 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    
-    
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Coder.Sql\Agebull.EntityModel.RobotCoder.DataBase.csproj" />
     <ProjectReference Include="..\Model\Agebull.EntityModel.Designer.Model.csproj" />
   </ItemGroup>

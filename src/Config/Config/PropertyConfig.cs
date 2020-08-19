@@ -24,13 +24,6 @@ namespace Agebull.EntityModel.Config
         #region 环境
 
         /// <summary>
-        /// 是否接口引用对象
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [Category("设计器支持"), DisplayName("是否参照对象"), Description("是否接口引用对象")]
-        public bool IsInterface => Option.IsReference;
-
-        /// <summary>
         /// 是否关联对象
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
@@ -525,7 +518,7 @@ namespace Agebull.EntityModel.Config
             }
         }
 
-        EnumConfig GetEnumConfig() => _enumConfig ?? (_enumConfig = GlobalConfig.GetEnum(_customType));
+        EnumConfig GetEnumConfig() => _enumConfig ??= GlobalConfig.GetEnum(_customType);
 
         /// <summary>
         /// 内部字段

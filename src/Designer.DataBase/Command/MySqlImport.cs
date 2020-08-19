@@ -45,7 +45,7 @@ namespace Agebull.EntityModel.Designer
                 Password = project.DbPassWord,
                 Database = project.DbSoruce,
                 SslMode = MySqlSslMode.None,
-                Port = 3306
+                Port = project.DbPort
             };
             _connectionString = csb.ConnectionString;
             //_connectionString = $"Database={project.DbSoruce};Data Source={project.DbHost};SslMode=none;User Id={project.DbUser};Password={project.DbPassWord};CharSet=utf8;port=3306;Compress=false;Pooling=true;Min Pool Size=0;Max Pool Size=100;Connection Lifetime=0;";

@@ -22,8 +22,8 @@ namespace Agebull.EntityModel.RobotCoder
                     continue;
                 foreach (var iField in ie.Properties.ToArray())
                 {
-                    var field = entity.Properties.FirstOrDefault(p => p.ReferenceKey == iField.Key || p.Name == iField.Name);
-                    properties.Add(iField);
+                    if (!entity.Properties.Any(p => p.PropertyName == iField.PropertyName))
+                        properties.Add(iField);
                 }
             }
         }

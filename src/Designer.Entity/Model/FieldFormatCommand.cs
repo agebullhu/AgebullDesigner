@@ -120,7 +120,7 @@ namespace Agebull.EntityModel.Designer
             var code = new StringBuilder();
             foreach (var line in lines)
             {
-                
+
                 if (string.IsNullOrWhiteSpace(line))
                     continue;
                 var words = line.Trim().Split(new[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
@@ -130,10 +130,10 @@ namespace Agebull.EntityModel.Designer
                     continue;
                 }
                 code.AppendLine();
-                var list = words.Select(p => p.Trim().Replace(',','，')).Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
+                var list = words.Select(p => p.Trim().Replace(',', '，')).Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
                 if (list.Count > 1)
                 {
-                    words = list[1].Split('(',')');
+                    words = list[1].Split('(', ')');
                     list[1] = words.LinkToString("-");
                 }
                 if (list.Count > 3)
@@ -180,6 +180,67 @@ namespace Agebull.EntityModel.Designer
             }
 
             return code.ToString();
+        }
+
+        public string DoFormatDocument3(string arg)
+        {
+            var lines = Fields.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            var code = new StringBuilder();
+            foreach (var line in lines)
+            {
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
+                var words = line.Trim().Split(new[] { '\t' });
+                var list = new List<string>();
+                Add(list, words[0]);
+                if (words.Length > 2)
+                {
+                    var type = words[2];
+                    if (!string.IsNullOrEmpty(words[2]))
+                    {
+                        var types = type.Split('(', ')');
+                        type = types.LinkToString("-");
+                    }
+                    Add(list, type);
+                    Add(list, string.IsNullOrEmpty(words[1]) ? words[0] : words[1]);
+                }
+                string desc = words.Length > 5 && !string.IsNullOrEmpty(words[5]) ? words[5] : null;
+
+                if (list[2].Contains("（"))
+                {
+                    if (desc == null)
+                    {
+                        desc = list[2];
+                        list[2] = list[2].Split('（')[0];
+                    }
+                    else if (desc == list[2])
+                    {
+                        list[2] = list[2].Split('（')[0];
+                    }
+                    else
+                    {
+                        desc = list[2] + "。" + desc;
+                        list[2] = list[2].Split('（')[0];
+                    }
+                }
+                Add(list, desc);
+                if (words.Length > 4 && string.IsNullOrEmpty(words[4]))
+                {
+                    list[1] += "#";
+                }
+                code.AppendLine(desc.LinkToString(","));
+            }
+
+            return code.ToString();
+        }
+
+        void Add(List<string> list, string word)
+        {
+            if (string.IsNullOrEmpty(word))
+                list.Add(string.Empty);
+            else
+                list.Add(word?.Replace(',', '，'));
         }
         #endregion
 
@@ -371,7 +432,7 @@ namespace Agebull.EntityModel.Designer
 
                 var name = GlobalConfig.ToLinkWordName(words[0], "", true);
 
-                var dbName = GlobalConfig.ToLinkWordName(words[0], "_",false);
+                var dbName = GlobalConfig.ToLinkWordName(words[0], "_", false);
 
                 /*
                 文本说明:
@@ -405,11 +466,14 @@ namespace Agebull.EntityModel.Designer
                 var old = columns.FirstOrDefault(p => p != null && p.Name == name);
                 if (old != null)
                 {
-                    columns.Remove(old);
+                    old.Caption = column.Caption;
+                    old.Description = column.Description;
                 }
-
-                DataTypeHelper.CsDataType(column);
-                columns.Add(column);
+                else
+                {
+                    DataTypeHelper.CsDataType(column);
+                    columns.Add(column);
+                }
             }
 
             return columns;

@@ -40,7 +40,7 @@ namespace Agebull.Common.Mvvm
         {
             get => IsRoot
                 ? null
-                : _image ?? (_image = Application.Current.Resources[IconName ?? "imgDefault"] as ImageSource);
+                : (_image ??= Application.Current.Resources[IconName ?? "imgDefault"] as ImageSource);
             set => _image = value;
         }
 

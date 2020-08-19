@@ -90,7 +90,7 @@ namespace Agebull.Common.Mvvm
         /// <summary>
         /// 空命令
         /// </summary>
-        public static ICommand EmptyCommand => _emptyCommand ?? (_emptyCommand = new DelegateCommand(EmptyAction));
+        public static ICommand EmptyCommand => _emptyCommand ??= new DelegateCommand(EmptyAction);
 
         /// <summary>
         ///     默认总是为真的检测executeAction能否执行状态的方法,目的是防止构建无数的相同无用的Action浪费内存

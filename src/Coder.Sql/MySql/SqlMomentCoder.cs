@@ -608,9 +608,9 @@ ALTER TABLE `{entity.SaveTable}`
                 case "datetime":
                     code.Append($"try{{entity._{field.Name.ToLWord()} = reader.GetMySqlDateTime({idx}).Value;}}catch{{}}");
                     return;
-                //case "bool":
-                //    code.Append($"entity._{field.Name.ToLWord()} = reader.GetInt16({idx}) == 1;");
-                //    break;
+                case "bool":
+                    code.Append(BoolReader(field,idx));
+                    break;
                 default:
                     code.Append(
                         $"entity._{field.Name.ToLWord()} = ({field.CustomType ?? field.CsType}){ReaderName(field.DbType)}({idx});");
@@ -626,13 +626,52 @@ ALTER TABLE `{entity.SaveTable}`
         /// <param name="csharpType">C#的类型</param>
         /// <param name="readerName">读取器的名称</param>
         /// <returns>读取方法名</returns>
-        public static string ReaderName(string csharpType, string readerName = "reader")
+        static string BoolReader(PropertyConfig field,int idx)
         {
-            switch (csharpType.ToLower())
+            switch (field.DbType.ToLower())
             {
                 case "bit":
                 case "bool":
                 case "boolean":
+                case "tinyint":
+                case "byte":
+                    return $"entity._{field.Name.ToLWord()} = reader.GetBoolean({idx});";
+                case "short":
+                case "int16":
+                    return $"entity._{field.Name.ToLWord()} = (int)reader.GetInt16({idx}) == 1;";
+                case "int":
+                case "int32":
+                    return $"entity._{field.Name.ToLWord()} = (int)reader.GetInt32({idx}) == 1;";
+                case "bigint":
+                case "long":
+                case "int64":
+                    return $"entity._{field.Name.ToLWord()} = (int)reader.GetInt64({idx}) == 1L;";
+                case "nchar":
+                case "varchar":
+                case "nvarchar":
+                case "string":
+                case "text":
+                    return @$"entity._{field.Name.ToLWord()} = (int)reader.GetString({idx}) == ""True"";";
+                default:
+                    return $"entity._{field.Name.ToLWord()} = (int)reader.GetInt32({idx}) == 1;";
+            }
+        }
+
+
+        /// <summary>
+        ///     取得对应类型的DBReader的方法名称
+        /// </summary>
+        /// <param name="csharpType">C#的类型</param>
+        /// <param name="readerName">读取器的名称</param>
+        /// <returns>读取方法名</returns>
+        static string ReaderName(string type, string readerName = "reader")
+        {
+            switch (type.ToLower())
+            {
+                case "bit":
+                case "bool":
+                case "boolean":
+                case "tinyint":
                     return readerName + ".GetBoolean";
 
                 case "byte":
@@ -683,7 +722,7 @@ ALTER TABLE `{entity.SaveTable}`
                     return readerName + ".GetString";
 
                 default:
-                    return $"/*({csharpType})*/{readerName}.GetValue";
+                    return $"/*({type})*/{readerName}.GetValue";
             }
         }
 

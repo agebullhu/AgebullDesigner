@@ -7,6 +7,7 @@
 修改:2017-07-12
 *****************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -78,6 +79,7 @@ namespace Agebull.EntityModel.Config
             }
         }
         #endregion
+
         #region 数据标识
 
         /// <summary>
@@ -101,6 +103,13 @@ namespace Agebull.EntityModel.Config
         public PropertyConfig PrimaryColumn => WorkContext.InCoderGenerating
             ? Properties.FirstOrDefault(p => p.IsPrimaryKey) ?? Properties.FirstOrDefault()
             : Properties.FirstOrDefault(p => p.IsPrimaryKey);
+
+        /// <summary>
+        /// 是否有主键
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"用户界面"), DisplayName(@"是否有主键"), Description("是否有主键")]
+        public bool HasePrimaryKey => Properties.Any(p => p.IsPrimaryKey);
 
         /// <summary>
         /// 主键字段
@@ -276,6 +285,34 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(ModelBase));
             }
         }
+
+        /// <summary>
+        /// 接口是否为显示实现
+        /// </summary>
+        [DataMember, JsonProperty("_interfaceInner", NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _interfaceInner;
+
+        /// <summary>
+        /// 接口是否为显示实现
+        /// </summary>
+        /// <remark>
+        /// 接口是否为显示实现
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据模型"), DisplayName(@"接口是否为显示实现"), Description("接口是否为显示实现")]
+        public bool InterfaceInner
+        {
+            get => _interfaceInner;
+            set
+            {
+                if (_interfaceInner == value)
+                    return;
+                BeforePropertyChanged(nameof(InterfaceInner), _interfaceInner, value);
+                _interfaceInner = value;
+                OnPropertyChanged(nameof(InterfaceInner));
+            }
+        }
+
 
         /// <summary>
         /// 数据版本
@@ -630,8 +667,8 @@ namespace Agebull.EntityModel.Config
                 if (_readTableName == value)
                     return;
                 BeforePropertyChanged(nameof(ReadTableName), _readTableName, value);
-                _readTableName = string.IsNullOrWhiteSpace(value) || value.Equals(_readTableName,System.StringComparison.OrdinalIgnoreCase) 
-                    ? null 
+                _readTableName = string.IsNullOrWhiteSpace(value) || value.Equals(_readTableName, System.StringComparison.OrdinalIgnoreCase)
+                    ? null
                     : value.Trim();
                 OnPropertyChanged(nameof(ReadTableName));
             }
@@ -823,6 +860,18 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(PageFolder));
             }
         }
+
+        /// <summary>
+        /// 页面代码路径
+        /// </summary>
+        /// <remark>
+        /// 页面代码路径
+        /// </remark>
+        public string PagePath(char sp = '\\') => !string.IsNullOrWhiteSpace(_pageFolder)
+                     ? _pageFolder
+                     : Parent.ClassifyPath && !string.IsNullOrWhiteSpace(Classify) && !Classify.Equals("None", StringComparison.InvariantCulture)
+                         ? Name
+                         : $"{Classify}{sp}{Name}";
 
         /// <summary>
         /// 树形界面

@@ -49,7 +49,7 @@ namespace Agebull.EntityModel.Designer
         internal TabControl ExtendEditorPanel { get; set; }
 
         private Action checkExtendAction;
-        private Action CheckWindowAction => checkExtendAction ?? (checkExtendAction = CheckWindow);
+        private Action CheckWindowAction => checkExtendAction ??= CheckWindow;
 
         private void Context_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {

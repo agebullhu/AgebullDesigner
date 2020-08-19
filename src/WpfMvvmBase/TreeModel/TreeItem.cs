@@ -182,7 +182,7 @@ namespace Agebull.EntityModel
         ///     载入子级的命令
         /// </summary>
         [IgnoreDataMember]
-        public CommandItemBase LoadCommand => _reloadCommand ?? (_reloadCommand = CreateCommand());
+        public CommandItemBase LoadCommand => _reloadCommand ??= CreateCommand();
 
         private CommandItemBase CreateCommand()
         {

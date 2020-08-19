@@ -359,7 +359,7 @@ namespace Agebull.EntityModel
         /// <summary>
         /// ·½·¨×Öµä
         /// </summary>
-        public virtual IFunctionDictionary ModelDelegates => _modelFunction ?? (_modelFunction = new ModelFunctionDictionary<object>());
+        public virtual IFunctionDictionary ModelDelegates => _modelFunction ??= new ModelFunctionDictionary<object>();
 
         private void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {

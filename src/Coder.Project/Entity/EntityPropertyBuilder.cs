@@ -104,7 +104,7 @@ using Agebull.EntityModel.Interfaces;
                 list.AddRange(Entity.Interfaces.Split(NoneLanguageChar, StringSplitOptions.RemoveEmptyEntries));
             }
             //code.Append("IEntityPoolSetting");
-            if (!Entity.NoDataBase /*&& Entity.PrimaryColumn?.CsType == "long"*/)
+            if (!Entity.NoDataBase && Entity.HasePrimaryKey && Entity.PrimaryColumn.CsType.IsNumberType())
                 list.Add("IIdentityData");
             //if (!Entity.IsLog)
             //{
@@ -286,11 +286,15 @@ using Agebull.EntityModel.Interfaces;
 
         private void PropertyCode(PropertyConfig property, StringBuilder code)
         {
+            bool isInterface = property.IsInterfaceField && Entity.InterfaceInner;
+
+            var access = isInterface ? "" : $"{property.AccessType} ";
+            var name = isInterface ? $"{property.Parent.EntityName}.{property.Name}" : property.Name;
+
+            
+
             code.Append($@"
-        /// <summary>
-        /// {ToRemString(property.Caption)}
-        /// </summary>
-        [IgnoreDataMember,JsonIgnore]
+        {FieldHeader(property, isInterface, property.DataType != "ByteArray")}
         public {property.LastCsType} {FieldName(property)};
 
         partial void On{property.Name}Get();
@@ -299,8 +303,8 @@ using Agebull.EntityModel.Interfaces;
 
         partial void On{property.Name}Seted();
 
-        {PropertyHeader(property, property.DataType != "ByteArray")}
-        {property.AccessType} {property.LastCsType} {property.Name}
+        {PropertyHeader(property,isInterface, property.DataType != "ByteArray")}
+        {access}{property.LastCsType} {name}
         {{
             get
             {{
@@ -331,63 +335,37 @@ using Agebull.EntityModel.Interfaces;
         {
             if (string.IsNullOrWhiteSpace(property.ComputeGetCode) && string.IsNullOrWhiteSpace(property.ComputeSetCode))
             {
-                code.Append($@"{RemCode(property,true)}
-        [IgnoreDataMember,JsonIgnore]
-        public {property.LastCsType} {FieldName(property)};
+                PropertyCode(property, code);
+                return;
+            }
+            //bool isInterface = property.IsInterfaceField && Entity.InterfaceInner;
 
+            var access = /*isInterface ? "" :*/ $"{property.AccessType} ";
+            var name = /*isInterface ? $"{property.Parent.EntityName}.{property.Name}" :*/ property.Name;
+
+            code.Append($@"
         {PropertyHeader(property)}
-        {property.AccessType} {property.LastCsType} {property.Name}
-        {{
-            get
-            {{
-                return this.{FieldName(property)};
-            }}
-            set
-            {{
-                this.{FieldName(property)} = value;
-            }}
-        }}");
-            }
-            else if (string.IsNullOrWhiteSpace(property.ComputeSetCode))
+        {access} {property.LastCsType} {name}
+        {{");
+
+            if (!string.IsNullOrWhiteSpace(property.ComputeGetCode))
             {
                 code.Append($@"
-        {PropertyHeader(property)}
-        {property.AccessType} {property.LastCsType} {property.Name}
-        {{
             get
             {{
                 {property.ComputeGetCode}
-            }}
-        }}");
+            }}");
             }
-            else if (string.IsNullOrWhiteSpace(property.ComputeGetCode))
+            if (!string.IsNullOrWhiteSpace(property.ComputeSetCode))
             {
                 code.Append($@"
-        {PropertyHeader(property)}
-        {property.AccessType} {property.LastCsType} {property.Name}
-        {{
             set
             {{
                 {property.ComputeSetCode}
-            }}
-        }}");
+            }}");
             }
-            else
-            {
-                code.Append($@"
-        {PropertyHeader(property)}
-        {property.AccessType} {property.LastCsType} {property.Name}
-        {{
-            get
-            {{
-                {property.ComputeGetCode}
-            }}
-            set
-            {{
-                {property.ComputeSetCode}
-            }}
-        }}");
-            }
+            code.Append(@"
+        }");
             ContentProperty(property, code);
         }
 

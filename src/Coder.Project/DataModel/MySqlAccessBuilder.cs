@@ -302,8 +302,10 @@ namespace {NameSpace}.DataAccess
                 //    baseClass = "HitoryTable";
                 else if (Entity.Interfaces.Contains("IStateData"))
                     baseClass = "DataStateTable";
+                else if (Entity.Interfaces.Contains("ILogicDeleteData"))
+                    baseClass = "LogicDeleteTable";
             }
-
+            
             var code = $@"#region
 using System;
 using System.Collections.Generic;

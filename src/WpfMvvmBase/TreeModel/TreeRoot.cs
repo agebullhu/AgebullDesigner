@@ -124,7 +124,7 @@ namespace Agebull.EntityModel
         [IgnoreDataMember]
         public ModelFunctionDictionary<TreeRoot> ModelFunction
         {
-            get => _modelFunction ?? (_modelFunction = new ModelFunctionDictionary<TreeRoot>() );
+            get => _modelFunction ??= new ModelFunctionDictionary<TreeRoot>() ;
             set => _modelFunction = value;
         }
 
@@ -133,7 +133,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public NotificationList<CommandItemBase> Commands
         {
-            get => _commands ?? (_commands = new NotificationList<CommandItemBase>() );
+            get => _commands ??= new NotificationList<CommandItemBase>() ;
             set
             {
                 if (_commands == value)

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -170,16 +171,19 @@ namespace {NameSpace}
                 list.AddRange(Entity.Interfaces.Split(NoneLanguageChar, StringSplitOptions.RemoveEmptyEntries));
             }
             //code.Append("IEntityPoolSetting");
-            if (!Entity.NoDataBase/* && Entity.PrimaryColumn?.CsType == "long"*/)
-                list.Add("IIdentityData");
+            if (Entity.HasePrimaryKey)
+            {
+                if(Entity.PrimaryColumn.IsType("long"))
+                    list.Add("IIdentityData");
+                else
+                    list.Add($"IIdentityData<{Entity.PrimaryColumn.CsType}>");
+                if (Entity.PrimaryColumn.IsGlobalKey)
+                    list.Add("IKey");
+            }
             //if (!Entity.IsLog)
             //{
             //    code.Append(" , IFieldJson , IPropertyJson");
             //}
-            if (Entity.PrimaryColumn != null && Entity.PrimaryColumn.IsGlobalKey)
-            {
-                list.Add("IKey");
-            }
             if (Entity.IsUniqueUnion)
             {
                 list.Add("IUnionUniqueEntity");

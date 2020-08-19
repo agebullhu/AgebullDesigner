@@ -31,7 +31,7 @@ namespace Agebull.EntityModel.Config
         [DataMember, JsonProperty("option", NullValueHandling = NullValueHandling.Ignore)]
         public ConfigDesignOption Option
         {
-            get => _option ?? (_option = new ConfigDesignOption { Config = this });
+            get => _option ??= new ConfigDesignOption { Config = this };
             set
             {
                 _option = value;

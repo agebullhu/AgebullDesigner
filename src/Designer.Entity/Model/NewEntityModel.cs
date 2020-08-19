@@ -67,7 +67,7 @@ namespace Agebull.EntityModel.Designer
 
         private List<CommandItemBase> _exCommands;
 
-        public List<CommandItemBase> ExCommands => _exCommands ?? (_exCommands = new List<CommandItemBase>
+        public List<CommandItemBase> ExCommands => _exCommands ??= new List<CommandItemBase>
         {
             new AsyncCommandItem<string, List<PropertyConfig>>
                 (FormatPrepare, Format.DoCheckFieldes, CheckFieldesEnd)
@@ -98,6 +98,14 @@ namespace Agebull.EntityModel.Designer
                     Image = Application.Current.Resources["tree_Assembly"] as ImageSource
                 },
             new AsyncCommandItem<string, string>
+                (FormatPrepare, Format.DoFormatDocument3, FormatEnd)
+                {
+                    IsButton=true,
+
+                    Caption = "规整文本(API文档2)",
+                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                },
+            new AsyncCommandItem<string, string>
                 (FormatPrepare, Format.DoFormat2,FormatEnd)
                 {
                     IsButton=true,
@@ -121,7 +129,7 @@ namespace Agebull.EntityModel.Designer
                     Caption = "规整文本(SqlServer数据库)",
                     Image = Application.Current.Resources["tree_Assembly"] as ImageSource
                 }
-        });
+        };
 
         internal bool FormatPrepare(string arg)
         {

@@ -366,7 +366,7 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore]
         public EntityConfig Argument
         {
-            get => CallArg == null ? null : _argument ?? (_argument = GlobalConfig.GetEntity(CallArg));
+            get => CallArg == null ? null : (_argument ??= GlobalConfig.GetEntity(CallArg));
             set => CallArg = value?.Name;
         }
         
@@ -382,7 +382,7 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore]
         public EntityConfig Result
         {
-            get => ResultArg == null ? null : _result ?? (_result = GlobalConfig.GetEntity(ResultArg));
+            get => ResultArg == null ? null : (_result ??= GlobalConfig.GetEntity(ResultArg));
             set => ResultArg = value?.Name;
         }
 

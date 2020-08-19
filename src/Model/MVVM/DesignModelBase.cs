@@ -17,7 +17,7 @@ namespace Agebull.EntityModel.Designer
         public string EditorName { get; set; }
 
         NotificationList<CommandItemBase> _commands;
-        public NotificationList<CommandItemBase> Commands => _commands ??  (_commands=CreateCommands());
+        public NotificationList<CommandItemBase> Commands => _commands??=CreateCommands();
 
         /// <summary>
         /// 生成命令对象

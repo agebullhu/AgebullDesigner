@@ -27,7 +27,7 @@ namespace Agebull.EntityModel.Config
         /// 易盛对象名称
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        public EntityConfig EsEntity => _esEntity ?? (_esEntity = GlobalConfig.GetEntity(NotifyEntity));
+        public EntityConfig EsEntity => _esEntity ??= GlobalConfig.GetEntity(NotifyEntity);
 
         /// <summary>
         /// 客户端调用对象名称
@@ -39,7 +39,7 @@ namespace Agebull.EntityModel.Config
         /// 本地对象名称
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        public EntityConfig LocalEntity => _localClientEntity ?? (_localClientEntity = GlobalConfig.GetEntity(ClientEntity));
+        public EntityConfig LocalEntity => _localClientEntity ??= GlobalConfig.GetEntity(ClientEntity);
 
 
         /// <summary>

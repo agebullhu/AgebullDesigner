@@ -446,6 +446,28 @@ namespace Agebull.EntityModel.Config
             return code.ToString();
         }
 
+        bool _classifyPath;
+        /// <summary>
+        /// 是否使用分类路径
+        /// </summary>
+        /// <remark>
+        /// 是否使用分类路径
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"解决方案"), DisplayName(@"使用分类路径"), Description("页面代码路径")]
+        public bool ClassifyPath
+        {
+            get => _classifyPath;
+            set
+            {
+                if (_classifyPath == value)
+                    return;
+                BeforePropertyChanged(nameof(ClassifyPath), _classifyPath, value);
+                _classifyPath = value;
+                OnPropertyChanged(nameof(ClassifyPath));
+            }
+        }
+
         /// <summary>
         /// WEB页面(C#)
         /// </summary>
@@ -640,7 +662,7 @@ namespace Agebull.EntityModel.Config
         /// 数据库名称
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"数据库密码"), Description("数据库名称")]
+        [Category(@"数据库"), DisplayName(@"数据库密码"), Description("数据库密码")]
         public string DbPassWord
         {
             get => _dbPassWord;
@@ -651,6 +673,34 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(DbPassWord), _dbPassWord, value);
                 _dbPassWord = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(DbPassWord));
+            }
+        }
+
+        /// <summary>
+        /// 数据库密码
+        /// </summary>
+        [DataMember, JsonProperty("_dbPort", NullValueHandling = NullValueHandling.Ignore)]
+        internal ushort _dbPort;
+
+        /// <summary>
+        /// 数据库密码
+        /// </summary>
+        /// <remark>
+        /// 数据库名称
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据库"), DisplayName(@"数据库密码"), Description("数据库密码")]
+        public ushort DbPort
+        {
+            get => _dbPort;
+            set
+            {
+                if (_dbPort == value)
+                    return;
+                ushort pt = (ushort)(value <= 0 || value > 65535 ? 3306 : value);
+                BeforePropertyChanged(nameof(DbPort), _dbPort, pt);
+                _dbPort = pt;
+                OnPropertyChanged(nameof(_dbPort));
             }
         }
 

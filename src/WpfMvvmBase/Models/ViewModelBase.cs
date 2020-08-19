@@ -66,7 +66,7 @@ namespace Agebull.EntityModel
         /// <summary>
         ///     对应的命令集合
         /// </summary>
-        public NotificationList<CommandItemBase> Commands => _commands ?? (_commands = CreateCommands());
+        public NotificationList<CommandItemBase> Commands => _commands ??= CreateCommands();
 
         /// <summary>
         /// 构造命令列表

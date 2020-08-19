@@ -159,26 +159,26 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         {
             var code = new StringBuilder();
             code.Append(@"
-                <!-- Grid -->
-                <el-table :data='list.rows'
-                          border
-                          ref='dataTable'
-                          highlight-current-row
-                          @sort-change='onSort'
-                          @row-dblclick='dblclick'
-                          @current-change='currentRowChange'
-                          @selection-change='selectionRowChange'
-                          style='width: 100%'");
+            <!-- Grid -->
+            <el-table  :data='list.rows'
+                        border
+                        ref='dataTable'
+                        highlight-current-row
+                        @sort-change='onSort'
+                        @row-dblclick='dblclick'
+                        @current-change='currentRowChange'
+                        @selection-change='selectionRowChange'
+                        style='width:99%'");
             if (Entity.Interfaces.Contains("IInnerTree") && Entity.Properties.Any(p => p.Name == "ParentId"))
             {
                 code.Append($@"
-                          lazy row-key='{Entity.PrimaryColumn.JsonName}' :load = 'load'");
+                        lazy row-key='{Entity.PrimaryColumn.JsonName}' :load = 'load'");
             }
             code.Append(@">
-                    <el-table-column type='selection'
-                                     align='center'
-                                     header-align='center'>
-                    </el-table-column>");
+                <el-table-column type='selection'
+                                 align='center'
+                                 header-align='center'>
+                </el-table-column>");
             if (Entity.Interfaces.Contains("IStateData"))
             {
                 code.Append(stateColumn);
@@ -200,28 +200,28 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             }
             GridDetailsField(code);
             code.Append(@"
-                </el-table>");
+            </el-table>");
             return code.ToString();
         }
 
         const string stateColumn = @"
-                    <el-table-column label='״̬'
-                                     align='center'
-                                     header-align='center'
-                                     width='50'>
-                        <template slot-scope='scope'>
-                            <i :class='scope.row.dataState | dataStateIcon'></i>
-                        </template>
-                    </el-table-column>";
+                <el-table-column label='״̬'
+                                 align='center'
+                                 header-align='center'
+                                 width='50'>
+                    <template slot-scope='scope'>
+                        <i :class='scope.row.dataState | dataStateIcon'></i>
+                    </template>
+                </el-table-column>";
 
 
         private void GridField(StringBuilder code, PropertyConfig field, string caption, string description)
         {
             var align = string.IsNullOrWhiteSpace(field.GridAlign) ? "left" : field.GridAlign;
             code.Append($@"
-                    <el-table-column prop='{field.JsonName}'
-                                     header-align='center' align='{align}'
-                                     label='{caption}'");
+                <el-table-column prop='{field.JsonName}'
+                                    header-align='center' align='{align}'
+                                    label='{caption}'");
             if (field.UserOrder)
                 code.Append(" sortable='true'");
             if (field.GridWidth > 0)
@@ -230,51 +230,43 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             if (field.EnumConfig != null)
             {
                 code.Append($@"
-                        <template slot-scope='scope'>
-                            <span style='margin-left: 3px'>
-                                {{{{scope.row.{field.JsonName} | {field.EnumConfig.Name.ToLWord()}Formater}}}}
-                            </span>
-                        </template>");
+                    <template slot-scope='scope'>
+                        <span style='margin-left: 3px'>
+                            {field.Prefix}{{{{scope.row.{field.JsonName} | {field.EnumConfig.Name.ToLWord()}Formater}}}}{field.Suffix}
+                        </span>
+                    </template>");
             }
             else if (field.CsType == nameof(DateTime))
             {
                 var fmt = field.IsTime ? "formatTime" : "formatDate";
                 code.Append($@"
-                        <template slot-scope='scope'>
-                            <span style='margin-left: 3px'>
-                                {{{{scope.row.{field.JsonName} | {fmt}}}}}
-                            </span>
-                        </template>");
+                    <template slot-scope='scope'>
+                        <span style='margin-left: 3px'>{field.Prefix}{{{{scope.row.{field.JsonName} | {fmt}}}}}{field.Suffix}</span>
+                    </template>");
             }
             else if (field.CsType == "bool")
             {
                 code.Append($@"
-                        <template slot-scope='scope'>
-                            <span style='margin-left: 3px'>
-                                {{{{scope.row.{field.JsonName} | boolFormater}}}}
-                            </span>
-                        </template>");
-            }
+                    <template slot-scope='scope'>
+                        <span style='margin-left: 3px'>{field.Prefix}{{{{scope.row.{field.JsonName} | boolFormater}}}}{field.Suffix}</span>
+                    </template>");
+        }
             else if (field.IsMoney)
             {
                 code.Append($@"
-                        <template slot-scope='scope'>
-                            <span style='margin-left: 3px'>
-                                {{{{scope.row.{field.JsonName} | formatMoney}}}}
-                            </span>
-                        </template>");
-            }
+                    <template slot-scope='scope'>
+                        <span style='margin-left: 3px'>{field.Prefix}{{{{scope.row.{field.JsonName} | formatMoney}}}}{field.Suffix}</span>
+                    </template>");
+        }
             else if (field.CsType == "decimal")
             {
                 code.Append($@"
-                        <template slot-scope='scope'>
-                            <span style='margin-left: 3px'>
-                                {{{{scope.row.{field.JsonName} | thousandsNumber}}}}
-                            </span>
-                        </template>");
-            }
-            code.Append(@"
-                    </el-table-column>");
+                    <template slot-scope='scope'>
+                        <span style='margin-left: 3px'>{field.Prefix}{{{{scope.row.{field.JsonName} | thousandsNumber}}}}{field.Suffix}</span>
+                    </template>");
+        }
+        code.Append(@"
+                </el-table-column>");
         }
 
         private void GridDetailsField(StringBuilder code)
@@ -297,19 +289,19 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                         caption = friend.Caption;
                 }
                 code.Append($@"
-                                <el-form-item label='{caption}' prop='{field.JsonName}'");
+                            <el-form-item label='{caption}' prop='{field.JsonName}'");
                 if (field.FormCloumnSapn > 1 || field.IsMemo || field.MulitLine)
                     code.Append(" size='large'");
 
                 code.Append(@">
-                                    ");
+                                ");
                 if (field.IsImage)
                 {
                     code.Append($@"<el-image :src='{field.JsonName}' lazy></el-image>");
                 }
                 else
                 {
-                    code.Append($@"<span>{{{{props.row.{field.JsonName}");
+                    code.Append($@"<span>{field.Prefix}{{{{props.row.{field.JsonName}");
                     if (field.EnumConfig != null)
                     {
                         code.Append($@" | {field.EnumConfig.Name.ToLWord()}Formater");
@@ -331,17 +323,17 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                     {
                         code.Append(@" | thousandsNumber");
                     }
-                    code.Append(@"}}</span>");
+                    code.Append($@"}}}}{field.Suffix}</span>");
                 }
 
                 code.Append(@"
-                                </el-form-item>");
+                            </el-form-item>");
             }
 
             code.Append(@"
-                            </el-form>
-                        </template>
-                    </el-table-column>");
+                        </el-form>
+                    </template>
+                </el-table-column>");
         }
 
         #endregion
@@ -426,7 +418,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         private void FormField(StringBuilder code, PropertyConfig field, string caption, string description/*,string vif*/)
         {
             code.Append($@"
-            <el-form-item label='{caption}' prop='{field.JsonName}'");
+            <el-form-item label='{caption}' prop='{field.JsonName}' label-suffix='{field.Suffix}'");
             if (field.FormCloumnSapn > 1 || field.IsMemo || field.MulitLine)
                 code.Append(" size='large'");
             code.Append('>');
@@ -580,13 +572,14 @@ doReady();";
 extend_methods({{
     getQueryArgs() {{
         return {{
-            keyWord: vue_option.data.list.keyWords,
-            _dataState_: vue_option.data.list.dataState,
+            _field_: vue_option.data.list.field,
+            _value_: vue_option.data.list.keyWords, 
+            _state_: vue_option.data.list.dataState,
             _audit_: vue_option.data.list.audit,
-            page: vue_option.data.list.page,
-            rows: vue_option.data.list.pageSize,
-            sort: vue_option.data.list.sort,
-            order: vue_option.data.list.order,
+            _page_: vue_option.data.list.page,
+            _size_: vue_option.data.list.pageSize,
+            _sort_: vue_option.data.list.sort,
+            _order_: vue_option.data.list.order
             {par.JsonName}: vue_option.data.list.{par.JsonName}
         }};
     }},

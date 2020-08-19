@@ -57,7 +57,7 @@ namespace Agebull.Common.Mvvm
         /// <summary>
         ///   枚举对应值
         /// </summary>
-        private static IEnumerable<EnumInfomation<TE>> EnumValues => _enumValues ?? (_enumValues = EnumHelper.KeyValue<TE>());
+        private static IEnumerable<EnumInfomation<TE>> EnumValues => _enumValues ??= EnumHelper.KeyValue<TE>();
 
         #region IValueConverter Members
 
@@ -238,7 +238,7 @@ namespace Agebull.Common.Mvvm
         /// <summary>
         ///   枚举对应值
         /// </summary>
-        public static IEnumerable<EnumInfomation<TE>> EnumValues => _enumValues ?? (_enumValues = EnumHelper.KeyValue<TE>());
+        public static IEnumerable<EnumInfomation<TE>> EnumValues => _enumValues ??= EnumHelper.KeyValue<TE>();
 
         #region IValueConverter Members
 

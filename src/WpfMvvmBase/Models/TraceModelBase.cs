@@ -13,6 +13,6 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 当前选中对象的消息跟踪器
         /// </summary>
-        public TraceModel CurrentTrace => _trace ?? (_trace = new TraceModel());
+        public TraceModel CurrentTrace => _trace ??= new TraceModel();
     }
 }

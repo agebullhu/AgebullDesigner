@@ -92,7 +92,7 @@ namespace Agebull.EntityModel.Designer
                     if (!File.Exists(file))
                         continue;
                     ProjectConfig project = DeSerializer<ProjectConfig>(file);
-                    if (project.IsDelete)
+                    if (project==null || project.IsDelete)
                         continue;
                     _solution.Add(project);
                     LoadEntity(project, path);

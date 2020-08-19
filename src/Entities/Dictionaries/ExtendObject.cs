@@ -99,7 +99,7 @@ namespace Agebull.EntityModel
         [DataMember]
         public AttributeDictionary Attribute
         {
-            get => _attribute ?? (_attribute = new AttributeDictionary() );
+            get => _attribute ??= new AttributeDictionary() ;
             set => _attribute = value;
         }
 
@@ -109,7 +109,7 @@ namespace Agebull.EntityModel
         [IgnoreDataMember]
         public DependencyDelegates DependencyDelegates
         {
-            get => _dependencyFunction ?? (_dependencyFunction = new DependencyDelegates() );
+            get => _dependencyFunction ??= new DependencyDelegates() ;
             set => _dependencyFunction = value;
         }
 
@@ -119,7 +119,7 @@ namespace Agebull.EntityModel
         [IgnoreDataMember]
         public DependencyObjects DependencyObjects
         {
-            get => _dependencyObject ?? (_dependencyObject = new DependencyObjects() );
+            get => _dependencyObject ??= new DependencyObjects() ;
             set => _dependencyObject = value;
         }
     }
@@ -139,7 +139,7 @@ namespace Agebull.EntityModel
         [IgnoreDataMember]
         public ModelFunctionDictionary<TModel> ModelFunction
         {
-            get => _modelFunction ?? (_modelFunction = new ModelFunctionDictionary<TModel>() );
+            get => _modelFunction ??= new ModelFunctionDictionary<TModel>() ;
             set => _modelFunction = value;
         }
     }

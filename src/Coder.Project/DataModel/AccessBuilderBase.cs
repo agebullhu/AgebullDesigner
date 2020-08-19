@@ -74,13 +74,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         ///     公开的数据库字段
         /// </summary>
-        protected  PropertyConfig[] PublishDbFields
-        {
-            get
-            {
-                return dbFields ?? (dbFields = Entity.DbFields.Where(p => !p.DbInnerField && !string.Equals(p.DbType, "EMPTY", StringComparison.OrdinalIgnoreCase)).ToArray());
-            }
-        }
+        protected PropertyConfig[] PublishDbFields => dbFields ??= Entity.DbFields.Where(p => !p.DbInnerField && !string.Equals(p.DbType, "EMPTY", StringComparison.OrdinalIgnoreCase)).ToArray();
 
         protected string FieldCode()
         {

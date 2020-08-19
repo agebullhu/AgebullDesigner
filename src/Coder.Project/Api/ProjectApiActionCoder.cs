@@ -172,9 +172,17 @@ namespace {NameSpace}.WebApi.Entity
 {{
     partial class {Entity.Name}ApiController
     {{
-{CommandCsCode()}
-
         #region 基本扩展
+
+        /// <summary>
+        /// 转换方法
+        /// </summary>
+        /// <param name=""value"">文本</param>
+        /// <returns></returns>
+        protected override (bool, {Entity.PrimaryColumn.CsType}) Convert(string value)
+        {{
+            return {ConvertCode()};
+        }}
 
         /// <summary>
         ///     读取查询条件
@@ -194,8 +202,20 @@ namespace {NameSpace}.WebApi.Entity
         }}
 
         #endregion
+{CommandCsCode()}
     }}
 }}";
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public string ConvertCode()
+        {
+            return Entity.PrimaryColumn.IsType("string")
+                ? "(true , value)" 
+                : $@"{Entity.PrimaryColumn.CsType}.TryParse(value,out var key) ? (true , key) : (false , key)";
         }
 
         /// <summary>
@@ -212,7 +232,7 @@ namespace {NameSpace}.WebApi.Entity
                 var field = RequestArgumentConvert.GetString(""_field_"");
                 ");
 
-            var fields = Entity.ClientProperty.Where(p => !p.NoStorage && /*p.CanUserInput && */p.CsType == "string" && !p.IsBlob).ToArray();
+            var fields = Entity.ClientProperty.Where(p => !p.NoStorage && /*p.CanUserInput && */p.CsType == "string" && !p.IsLinkKey && !p.IsBlob).ToArray();
             if (fields.Length > 0)
             {
                 code.Append(@"if (string.IsNullOrWhiteSpace(field) || field == ""_any_"")
@@ -237,6 +257,16 @@ namespace {NameSpace}.WebApi.Entity
             {
                 if (field.IsPrimaryKey || field.IsLinkKey)
                 {
+                    if(field.CsType == "string")
+                        code.Append($@"
+            if(RequestArgumentConvert.TryGetIDs<string>(""{field.JsonName}"" , p=>(true,p) , out var {field.JsonName}))
+            {{
+                if ({field.JsonName}.Count == 1)
+                    filter.AddAnd(p => p.{field.Name} == {field.JsonName}[0]);
+                else
+                    filter.AddAnd(p => {field.JsonName}.Contains(p.{field.Name}));
+            }}");
+                    else
                     code.Append($@"
             if(RequestArgumentConvert.TryGetIDs(""{field.JsonName}"" , out var {field.JsonName}))
             {{
@@ -306,13 +336,7 @@ namespace {NameSpace}.WebApi.Entity
 
         private string ExtendCode()
         {
-            var folder = !string.IsNullOrWhiteSpace(Entity.PageFolder)
-                ? Entity.PageFolder.Replace('\\', '/')
-                    : string.IsNullOrWhiteSpace(Entity.Classify)
-                        ? Entity.Name
-                        : $"{Entity.Classify}/{Entity.Name}";
-
-            var page = $"/{Project.PageRoot}/{folder}/index.htm";
+            var page = $"/{Entity.Parent.PageRoot}/{Entity.PagePath('/')}/index.htm";
 
             var baseClass = "ApiController";
             if (Entity.Interfaces != null)
@@ -360,7 +384,7 @@ namespace {NameSpace}.WebApi.Entity
     [Route(""{Entity.ApiName}/v1"")]
     [ApiPage(""{page}"")]
     public partial class {Entity.Name}ApiController 
-         : {baseClass}<{Entity.EntityName},{Entity.Name}BusinessLogic>
+         : {baseClass}<{Entity.EntityName},{Entity.PrimaryColumn.CsType},{Entity.Name}BusinessLogic>
     {{
         #region 基本扩展
 

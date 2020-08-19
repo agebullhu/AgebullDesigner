@@ -7,7 +7,7 @@ namespace Agebull.EntityModel.RobotCoder
     /// <summary>
     /// 数据类型辅助类
     /// </summary>
-    public class DataTypeHelper
+    public static class DataTypeHelper
     {
         static DataTypeMapConfig StringConfig => SolutionConfig.Current.DataTypeMap.First(p =>
             !p.NoDbCheck && string.Equals(p.Name, "string", StringComparison.OrdinalIgnoreCase));
@@ -80,9 +80,9 @@ namespace Agebull.EntityModel.RobotCoder
 
         private static void ToStandardByDbType(PropertyConfig property)
         {
-            ToStandardByDbType(property,property.DbType);
+            ToStandardByDbType(property, property.DbType);
         }
-        public static void ToStandardByDbType(PropertyConfig property,string dbType)
+        public static void ToStandardByDbType(PropertyConfig property, string dbType)
         {
             if (property.NoStorage || string.IsNullOrWhiteSpace(dbType))
                 return;
@@ -208,6 +208,10 @@ namespace Agebull.EntityModel.RobotCoder
                         _ => dataType.MySql,
                     };
             }
+        }
+        public static bool IsType(this PropertyConfig property, string type)
+        {
+            return property.CsType?.Equals(type, StringComparison.OrdinalIgnoreCase) ?? false;
         }
     }
 }

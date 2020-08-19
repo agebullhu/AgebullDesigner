@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Windows.Documents;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Config.Mysql;
 using Agebull.EntityModel.Config.SqlServer;
@@ -31,9 +33,10 @@ namespace Agebull.EntityModel.RobotCoder
             if (Entity.PrimaryColumn == null)
                 return null;
             bool isFirst = true;
+            int idx = 0;
             var codeConst = new StringBuilder();
             var codeStruct = new StringBuilder();
-            EntityStruct(Entity, codeStruct, codeConst, ref isFirst);
+            EntityStruct(Entity, codeStruct, codeConst, ref isFirst,ref idx);
             return $@"
         #region 数据结构
 
@@ -95,26 +98,84 @@ namespace Agebull.EntityModel.RobotCoder
 ";
         }
 
-        private void EntityStruct(EntityConfig table, StringBuilder codeStruct, StringBuilder codeConst, ref bool isFirst)
+        private void EntityStruct(EntityConfig table, StringBuilder codeStruct, StringBuilder codeConst, ref bool isFirst, ref int idx)
         {
             if (table == null)
                 return;
+
             if (!string.IsNullOrWhiteSpace(table.ModelBase))
-                EntityStruct(Project.Entities.FirstOrDefault(p => p.Name == table.ModelBase), codeStruct, codeConst, ref isFirst);
+                EntityStruct(Project.Entities.FirstOrDefault(p => p.Name == table.ModelBase), codeStruct, codeConst, ref isFirst, ref idx);
 
-            foreach (PropertyConfig property in table.PublishProperty)
+            if (table.PrimaryColumn != null)
             {
-                if (isFirst)
-                    isFirst = false;
-                else
-                    codeStruct.Append(',');
+                codeConst.Append(PropertyIndex(table.PrimaryColumn, ref idx));
+                PropertyStruct(codeStruct, table.PrimaryColumn, ref isFirst);
+            }
 
-                codeStruct.Append($@"
+            foreach (PropertyConfig property in table.PublishProperty.Where(p => p != table.PrimaryColumn).OrderBy(p => p.Index))
+            {
+                codeConst.Append(PropertyIndex(property, ref idx));
+                PropertyStruct(codeStruct, property, ref isFirst);
+            }
+
+            foreach (PropertyConfig property in table.LastProperties.Where(p => !table.PublishProperty.Any(pp => p == pp) && p != table.PrimaryColumn).OrderBy(p => p.Index))
+            {
+                codeConst.Append(PropertyIndex(property, ref idx));
+                PropertyStruct(codeStruct, property, ref isFirst);
+            }
+        }
+
+        private string PropertyIndex(PropertyConfig property, ref int idx)
+        {
+            return $@"
+
+            /// <summary>
+            /// {ToRemString(property.Caption)}的数字标识
+            /// </summary>
+            public const int {property.Name} = {property.Identity};
+            
+            /// <summary>
+            /// {ToRemString(property.Caption)}的实时记录顺序
+            /// </summary>
+            public const int Real_{property.Name} = {idx++};";
+        }
+
+        private void PropertyStruct(StringBuilder codeStruct, PropertyConfig property,ref bool isFirst)
+        {
+            if (isFirst)
+                isFirst = false;
+            else
+                codeStruct.Append(',');
+
+            var featrue = new List<string>();
+
+            if (!property.DbInnerField)
+            {
+                if (property.IsInterfaceField)
+                {
+                    featrue.Add("PropertyFeatrue.Interface");
+                    if (!Entity.InterfaceInner)
+                        featrue.Add("PropertyFeatrue.Property");
+                }
+                else
+                {
+                    featrue.Add("PropertyFeatrue.Property");
+                }
+            }
+
+            if (!property.NoStorage)
+            {
+                featrue.Add("PropertyFeatrue.DbCloumn");
+            }
+
+            codeStruct.Append($@"
                     {{
                         Real_{property.Name},
                         new PropertySturct
                         {{
                             Index        = {property.Name},
+                            Featrue      = {(featrue.Count == 0 ? "PropertyFeatrue.None" : string.Join(" | ", featrue))},
+                            Link         = ""{property.LinkField}"",
                             Name         = ""{property.Name}"",
                             Caption      = @""{property.Caption}"",
                             JsonName     = ""{property.JsonName}"",
@@ -128,38 +189,6 @@ namespace Agebull.EntityModel.RobotCoder
                             Description  = @""{property.Description}""
                         }}
                     }}");
-            }
-            codeConst.Clear();
-            int idx = 0;
-            if (table.PrimaryColumn != null)
-            {
-                codeConst.Append($@"
-            /// <summary>
-            /// {ToRemString(table.PrimaryColumn.Caption)}的数字标识
-            /// </summary>
-            public const int {table.PrimaryColumn.Name} = {table.PrimaryColumn.Identity};
-            
-            /// <summary>
-            /// {ToRemString(table.PrimaryColumn.Caption)}的实时记录顺序
-            /// </summary>
-            public const int Real_{table.PrimaryColumn.Name} = {idx++};");
-            }
-
-            foreach (PropertyConfig property in table.PublishProperty.Where(p => p != table.PrimaryColumn).OrderBy(p => p.Index))
-            {
-                codeConst.Append($@"
-
-            /// <summary>
-            /// {ToRemString(property.Caption)}的数字标识
-            /// </summary>
-            public const int {property.Name} = {property.Identity};
-            
-            /// <summary>
-            /// {ToRemString(property.Caption)}的实时记录顺序
-            /// </summary>
-            public const int Real_{property.Name} = {idx++};");
-            }
-
         }
 
         #endregion

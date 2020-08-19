@@ -45,7 +45,7 @@ namespace Agebull.EntityModel
         /// <summary>
         ///     缺省跟踪消息
         /// </summary>
-        public static TraceMessage DefaultTrace => _message ?? (_message = new TraceMessage());
+        public static TraceMessage DefaultTrace => _message ??= new TraceMessage();
 
         /// <summary>
         /// 消息是否写入跟踪信息中
@@ -207,8 +207,8 @@ namespace Agebull.EntityModel
         }
         private void WriteTrace(string message, bool time = false)
         {
-            Console.WriteLine(message);
-            /*BeginInvokeInUiThread(p =>
+            //Console.WriteLine(message);
+            BeginInvokeInUiThread(p =>
             {
                 if (_threadIndex.ContainsKey(Thread.CurrentThread.ManagedThreadId))
                 {
@@ -231,7 +231,7 @@ namespace Agebull.EntityModel
                 }
                 RaisePropertyChanged(() => Track);
                 LastMessageIndex = _trace.Count - 1;
-            }, message);*/
+            }, message);
         }
 
         private int _lastMessageIndex;

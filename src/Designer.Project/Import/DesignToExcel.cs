@@ -391,7 +391,7 @@ namespace Agebull.EntityModel.Designer
             font1.FontHeightInPoints = (short)fontsize;
             if (body)
             {
-                font1.Boldweight = 400;
+                font1.IsBold = true;
             }
 
             return font1;

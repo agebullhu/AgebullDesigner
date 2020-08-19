@@ -25,12 +25,12 @@ namespace Agebull.EntityModel.Config
             if (pk != null)
             {
                 pk.Option.Index = ++idx;
-                Entity.Add(pk);
+                Entity.Properties.Add(pk);
             }
             if (pc != null)
             {
                 pc.Option.Index = ++idx;
-                Entity.Add(pc);
+                Entity.Properties.Add(pc);
             }
             var groups = columns.Where(p => !string.IsNullOrWhiteSpace(p.Group)).Select(p => p.Group).Distinct();
             foreach (var group in groups)
@@ -38,13 +38,13 @@ namespace Agebull.EntityModel.Config
                 foreach (var column in columns.Where(p => p.Group == group).OrderBy(p => p.Index))
                 {
                     column.Option.Index = ++idx;
-                    Entity.Add(column);
+                    Entity.Properties.Add(column);
                 }
             }
             foreach (var column in columns.Where(p => string.IsNullOrWhiteSpace(p.Group)).OrderBy(p => p.Index))
             {
                 column.Option.Index = ++idx;
-                Entity.Add(column);
+                Entity.Properties.Add(column);
             }
         }
         
@@ -58,6 +58,7 @@ namespace Agebull.EntityModel.Config
                 field.Option.Identity  = field.Option.Index;
             }
         }
+
         /// <summary>
         ///     апеепР
         /// </summary>
@@ -73,21 +74,21 @@ namespace Agebull.EntityModel.Config
             {
                 if (reset)
                     pk.Option.Index = ++idx;
-                Entity.Add(pk);
+                Entity.Properties.Add(pk);
             }
 
-            foreach (var field in columns.OrderBy(p => p.Index))
+            foreach (var field in columns.OrderBy(p => p.Index).ToArray())
             {
                 if (reset)
                     field.Option.Index = ++idx;
-                Entity.Add(field);
+                Entity.Properties.Add(field);
             }
 
-            foreach (var field in dcs.OrderBy(p => p.Index))
+            foreach (var field in dcs.OrderBy(p => p.Index).ToArray())
             {
                 if (reset)
                     field.Option.Index = ++idx;
-                Entity.Add(field);
+                Entity.Properties.Add(field);
             }
         }
         /// <summary>
@@ -110,12 +111,12 @@ namespace Agebull.EntityModel.Config
             {
                 pk.Option.Index = ++idx;
 
-                Entity.Add(pk);
+                Entity.Properties.Add(pk);
             }
             if (pc != null)
             {
                 pc.Option.Index = ++idx;
-                Entity.Add(pc);
+                Entity.Properties.Add(pc);
             }
 
             foreach (var group in columns.GroupBy(f => f.LinkTable))
@@ -131,13 +132,13 @@ namespace Agebull.EntityModel.Config
             foreach (var field in columns.OrderBy(p => p.Index))
             {
                 field.Option.Index = ++idx;
-                Entity.Add(field);
+                Entity.Properties.Add(field);
             }
 
             foreach (var field in dcs.OrderBy(p => p.Index))
             {
                 field.Option.Index = ++idx;
-                Entity.Add(field);
+                Entity.Properties.Add(field);
             }
         }
 
@@ -158,7 +159,7 @@ namespace Agebull.EntityModel.Config
                 pk.Option.Index = ++idx;
                 if (reInsert)
                 {
-                    Entity.Add(pk);
+                    Entity.Properties.Add(pk);
                 }
             }
             var tColumns =
@@ -172,7 +173,7 @@ namespace Agebull.EntityModel.Config
                 field.Option.Index = ++idx;
                 if (reInsert)
                 {
-                    Entity.Add(field);
+                    Entity.Properties.Add(field);
                 }
             }
             foreach (
@@ -184,7 +185,7 @@ namespace Agebull.EntityModel.Config
                 field.Option.Index = ++idx;
                 if (reInsert)
                 {
-                    Entity.Add(field);
+                    Entity.Properties.Add(field);
                 }
             }
 
@@ -195,7 +196,7 @@ namespace Agebull.EntityModel.Config
                 field.Option.Index = ++idx;
                 if (reInsert)
                 {
-                    Entity.Add(field);
+                    Entity.Properties.Add(field);
                 }
             }
             foreach (var field in sysColumns.Where(p => !p.IsInterfaceField && p.CustomWrite).OrderBy(p => p.Index))
@@ -203,7 +204,7 @@ namespace Agebull.EntityModel.Config
                 field.Option.Index = ++idx;
                 if (reInsert)
                 {
-                    Entity.Add(field);
+                    Entity.Properties.Add(field);
                 }
             }
             foreach (var field in sysColumns.Where(p => p.IsInterfaceField))
@@ -211,7 +212,7 @@ namespace Agebull.EntityModel.Config
                 field.Option.Index = ++idx;
                 if (reInsert)
                 {
-                    Entity.Add(field);
+                    Entity.Properties.Add(field);
                 }
             }
             foreach (var field in columns.Where(p => p.IsDiscard).OrderBy(p => p.Index))
@@ -219,7 +220,7 @@ namespace Agebull.EntityModel.Config
                 field.Option.Index = ++idx;
                 if (reInsert)
                 {
-                    Entity.Add(field);
+                    Entity.Properties.Add(field);
                 }
             }
 
