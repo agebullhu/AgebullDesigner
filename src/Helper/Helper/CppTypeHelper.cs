@@ -75,9 +75,8 @@ namespace Agebull.EntityModel.Config
             var type = ToCppLastType(field.CppLastType ?? field.CppType);
             if (type == null)
                 return;
-            var stru = type as EntityConfig;
             int len;
-            if (stru != null)
+            if (type is EntityConfig stru)
             {
                 int.TryParse(field.ArrayLen, out len);
                 entityAction(field, stru, len);

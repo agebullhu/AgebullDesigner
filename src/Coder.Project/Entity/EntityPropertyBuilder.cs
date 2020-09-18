@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
@@ -60,6 +61,13 @@ using Agebull.EntityModel.Interfaces;
         /// </summary>
         public override string BaseCode => $@"
         #region 基本属性
+
+        /// <summary>
+        /// 发出标准属性修改事件
+        /// </summary>
+        [Conditional(""StandardPropertyChanged"")]
+        void OnSeted(string name) => OnPropertyChanged(name);
+
 {Properties()}
 {FullCode()}
         #endregion";
@@ -278,8 +286,9 @@ using Agebull.EntityModel.Interfaces;
                 //    throw new Exception(""主键一旦设置就不可以修改"");
                 On{property.Name}Set(ref value);
                 this.{FieldName(property)} = value;
-                this.OnPropertyChanged(_DataStruct_.Real_{property.Name});
                 On{property.Name}Seted();
+                this.OnPropertyChanged(_DataStruct_.Real_{property.Name});
+                this.OnSeted(nameof({property.Name}));
             }}
         }}";
         }
@@ -290,36 +299,36 @@ using Agebull.EntityModel.Interfaces;
 
             var access = isInterface ? "" : $"{property.AccessType} ";
             var name = isInterface ? $"{property.Parent.EntityName}.{property.Name}" : property.Name;
-
-            
+            var type = property.IsEnum && property.CsType == "string" ? "string" :  property.LastCsType;
+            var file = FieldName(property);
 
             code.Append($@"
         {FieldHeader(property, isInterface, property.DataType != "ByteArray")}
-        public {property.LastCsType} {FieldName(property)};
+        public {type} {file};
 
         partial void On{property.Name}Get();
 
-        partial void On{property.Name}Set(ref {property.LastCsType} value);
+        partial void On{property.Name}Set(ref {type} value);
 
         partial void On{property.Name}Seted();
 
         {PropertyHeader(property,isInterface, property.DataType != "ByteArray")}
-        {access}{property.LastCsType} {name}
+        {access}{type} {name}
         {{
             get
             {{
                 On{property.Name}Get();
-                return this.{FieldName(property)};
+                return this.{file};
             }}
             set
             {{
-                if(this.{FieldName(property)} == value)
+                if(this.{file} == value)
                     return;
                 On{property.Name}Set(ref value);
-                this.{FieldName(property)} = value;
+                this.{file} = value;
                 On{property.Name}Seted();
                 this.OnPropertyChanged(_DataStruct_.Real_{property.Name});
-                this.OnPropertyChanged(nameof({property.Name}));
+                this.OnSeted(nameof({property.Name}));
             }}
         }}");
 
@@ -396,6 +405,7 @@ using Agebull.EntityModel.Interfaces;
         }}");
             }
         }
+
         private string Properties()
         {
             ExistProperties = new Dictionary<string, string>();
@@ -421,6 +431,7 @@ using Agebull.EntityModel.Interfaces;
             }
             return code.ToString();
         }
+
         private void DbInnerProperty(PropertyConfig property, StringBuilder code)
         {
             code.Append($@"
@@ -475,7 +486,7 @@ using Agebull.EntityModel.Interfaces;
                     : Newtonsoft.Json.JsonConvert.DeserializeObject<{property.LastCsType}>(value);
                 On{property.StorageProperty}Seted();
                 this.OnPropertyChanged(_DataStruct_.Real_{property.StorageProperty});
-                this.OnPropertyChanged(nameof({property.StorageProperty}));
+                this.OnSeted(nameof({property.StorageProperty}));
             }}
         }}");
             }

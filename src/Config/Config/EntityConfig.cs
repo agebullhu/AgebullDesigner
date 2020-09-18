@@ -148,6 +148,7 @@ namespace Agebull.EntityModel.Config
             }
         }
         #endregion
+
         #region 数据模型
 
         /// <summary>
@@ -422,6 +423,7 @@ namespace Agebull.EntityModel.Config
             }
         }
         #endregion
+
         #region 设计器支持
 
 
@@ -515,7 +517,35 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(IsInterface));
             }
         }
+
+        /// <summary>
+        /// 生成校验代码
+        /// </summary>
+        [IgnoreDataMember, JsonProperty("haseValidateCode")]
+        internal bool _haseValidateCode;
+
+        /// <summary>
+        /// 生成校验代码
+        /// </summary>
+        /// <remark>
+        /// 可以任意修改任意配置的生成校验代码
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"设计器支持"), DisplayName(@"生成校验代码")]
+        public bool HaseValidateCode
+        {
+            get => _haseValidateCode;
+            set
+            {
+                if (_haseValidateCode == value)
+                    return;
+                BeforePropertyChanged(nameof(HaseValidateCode), _haseValidateCode, value);
+                _haseValidateCode = value;
+                OnPropertyChanged(nameof(HaseValidateCode));
+            }
+        }
         #endregion
+
         #region 子级
 
         /// <summary>
@@ -619,6 +649,7 @@ namespace Agebull.EntityModel.Config
             }
         }
         #endregion
+
         #region 数据库
 
         /// <summary>
@@ -757,6 +788,7 @@ namespace Agebull.EntityModel.Config
             }
         }
         #endregion
+
         #region 用户界面
 
         /// <summary>
@@ -1035,6 +1067,7 @@ namespace Agebull.EntityModel.Config
             }
         }
         #endregion 
+
         #region C++
 
         /// <summary>

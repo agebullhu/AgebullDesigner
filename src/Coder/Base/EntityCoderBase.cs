@@ -61,9 +61,9 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
 
-        protected static string PropertyHeader(PropertyConfig property, bool isInterface=false, bool? json = null)
+        protected static string PropertyHeader(PropertyConfig property, bool isInterface = false, bool? json = null)
         {
-            return FieldHeader(property,!isInterface,json);
+            return FieldHeader(property, !isInterface, json);
         }
 
         protected static string FieldHeader(PropertyConfig property, bool isInterface, bool? json = null)
@@ -282,8 +282,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         protected static void ContentProperty(PropertyConfig property, StringBuilder code)
         {
-            var enumc = GlobalConfig.GetEnum(property.CustomType);
-            if (enumc != null)
+            if (property.EnumConfig != null && property.CsType != "string")
             {
                 var type = property.CsType == "enum" ? "int" : property.CsType;
 
@@ -307,7 +306,7 @@ namespace Agebull.EntityModel.RobotCoder
             if (property.DataType == "ByteArray")
             {
                 code.Append($@"
-        {PropertyHeader(property,false, true)}
+        {PropertyHeader(property, false, true)}
         {property.AccessType} string {property.Name}_Base64
         {{
             get

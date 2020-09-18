@@ -62,15 +62,13 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
                 entityPath = IOHelper.CheckPath(entityPath, cls);
             }
             CreateCode<EntityBuilder>(project, schema, entityPath);
-            if (Solution.HaseValidateCode)
+            entityPath = IOHelper.CheckPath(root, "Validate");
+            if (cls != null)
             {
-                entityPath = IOHelper.CheckPath(root, "Validate");
-                if (cls != null)
-                {
-                    entityPath = IOHelper.CheckPath(entityPath, cls);
-                }
-                CreateCode<EntityValidateBuilder>(project, schema, entityPath);
+                entityPath = IOHelper.CheckPath(entityPath, cls);
             }
+            CreateCode<EntityValidateBuilder>(project, schema, entityPath);
+
             var accessPath = IOHelper.CheckPath(root, "DataAccess");
             if (cls != null)
                 accessPath = IOHelper.CheckPath(accessPath, cls);

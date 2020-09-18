@@ -13,8 +13,7 @@ namespace Agebull.EntityModel.Config
         protected override void CopyFrom(SimpleConfig dest)
         {
             base.CopyFrom(dest);
-            var cfg = dest as ConfigBase;
-            if (cfg == null)
+            if (!(dest is ConfigBase cfg))
                 return;
             Option.Copy(cfg.Option,false);//配置
         }
@@ -30,8 +29,7 @@ namespace Agebull.EntityModel.Config
         protected override void CopyFrom(SimpleConfig dest)
         {
             base.CopyFrom(dest);
-            var cfg = dest as ApiItem;
-            if (cfg == null)
+            if (!(dest is ApiItem cfg))
                 return;
 
             Method = cfg.Method;//Api调用方式（GET、POST）
@@ -55,8 +53,7 @@ namespace Agebull.EntityModel.Config
         protected override void CopyFrom(SimpleConfig dest)
         {
             base.CopyFrom(dest);
-            var cfg = dest as ClassifyConfig;
-            if (cfg == null)
+            if (!(dest is ClassifyConfig cfg))
                 return;
 
             Classify = cfg.Classify;//分类
@@ -74,8 +71,7 @@ namespace Agebull.EntityModel.Config
         protected override void CopyFrom(SimpleConfig dest)
         {
             base.CopyFrom(dest);
-            var cfg = dest as DataTypeMapConfig;
-            if (cfg == null)
+            if (!(dest is DataTypeMapConfig cfg))
                 return;
 
             Datalen = cfg.Datalen;//数据长度
@@ -189,8 +185,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         protected override void CopyFrom(SimpleConfig dest)
         {
-            var cfg = dest as EntityConfig;
-            if (cfg == null)
+            if (!(dest is EntityConfig cfg))
                 base.CopyFrom(dest);
             else
                 CopyFrom(cfg);
@@ -208,8 +203,7 @@ namespace Agebull.EntityModel.Config
         protected override void CopyFrom(SimpleConfig dest)
         {
             base.CopyFrom(dest);
-            var cfg = dest as EntityReleationConfig;
-            if (cfg == null)
+            if (!(dest is EntityReleationConfig cfg))
                 return;
 
             Parent = cfg.Parent;//上级
@@ -232,8 +226,7 @@ namespace Agebull.EntityModel.Config
         protected override void CopyFrom(SimpleConfig dest)
         {
             base.CopyFrom(dest);
-            var cfg = dest as EnumConfig;
-            if (cfg == null)
+            if (!(dest is EnumConfig cfg))
                 return;
 
             IsFlagEnum = cfg.IsFlagEnum;//是否位域
@@ -257,8 +250,7 @@ namespace Agebull.EntityModel.Config
         protected override void CopyFrom(SimpleConfig dest)
         {
             base.CopyFrom(dest);
-            var cfg = dest as EnumItem;
-            if (cfg == null)
+            if (!(dest is EnumItem cfg))
                 return;
 
             Value = cfg.Value;//值
@@ -276,8 +268,7 @@ namespace Agebull.EntityModel.Config
         protected override void CopyFrom(SimpleConfig dest)
         {
             base.CopyFrom(dest);
-            var cfg = dest as ProjectConfig;
-            if (cfg == null)
+            if (!(dest is ProjectConfig cfg))
                 return;
 
             //foreach (var item in cfg.Classifies)//实体分组
@@ -470,8 +461,7 @@ namespace Agebull.EntityModel.Config
         protected override void CopyFrom(SimpleConfig dest)
         {
             base.CopyFrom(dest);
-            var cfg = dest as PropertyConfig;
-            if (cfg == null)
+            if (!(dest is PropertyConfig cfg))
                 return;
             CopyFromProperty(cfg,true,true, true);
         }
@@ -488,8 +478,7 @@ namespace Agebull.EntityModel.Config
         protected override void CopyFrom(SimpleConfig dest)
         {
             base.CopyFrom(dest);
-            var cfg = dest as SolutionConfig;
-            if (cfg == null)
+            if (!(dest is SolutionConfig cfg))
                 return;
 
             DocFolder = cfg.DocFolder;//文档文件夹名称
@@ -521,8 +510,7 @@ namespace Agebull.EntityModel.Config
         protected override void CopyFrom(SimpleConfig dest)
         {
             base.CopyFrom(dest);
-            var cfg = dest as UserCommandConfig;
-            if (cfg == null)
+            if (!(dest is UserCommandConfig cfg))
                 return;
 
             Button = cfg.Button;//按钮名称

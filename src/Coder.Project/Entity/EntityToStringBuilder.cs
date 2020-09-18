@@ -40,23 +40,23 @@ namespace Agebull.EntityModel.RobotCoder
         private void ToStringCode(StringBuilder code, PropertyConfig field)
         {
             var caption = string.IsNullOrWhiteSpace(field.Caption) ? field.Name : field.Caption;
-            if (!string.IsNullOrWhiteSpace(field.ArrayLen))
+            if (string.IsNullOrWhiteSpace(field.ArrayLen))
             {
-                if (field.EnumConfig != null)
-                    code.Append($@"
-[{caption}]:{{string.Join("","", {field.Name}_Content)}}");
-                else
-                    code.Append($@"
-[{caption}]:{{string.Join("","", {field.Name})}}");
-            }
-            else
-            {
-                if (field.EnumConfig != null)
+                if (field.EnumConfig != null && field.CsType != "string")
                     code.Append($@"
 [{caption}]:{{{field.Name}_Content}}");
                 else
                     code.Append($@"
 [{caption}]:{{{field.Name}}}");
+            }
+            else
+            {
+                if (field.EnumConfig != null && field.CsType != "string")
+                    code.Append($@"
+[{caption}]:{{string.Join("","", {field.Name}_Content)}}");
+                else
+                    code.Append($@"
+[{caption}]:{{string.Join("","", {field.Name})}}");
             }
         }
 

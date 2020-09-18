@@ -30,14 +30,12 @@ namespace Agebull.EntityModel.RobotCoder.Funds
         public static string EntityUt(ConfigBase config)
         {
             var code = new StringBuilder();
-            var project = config as ProjectConfig;
-            if (project != null)
+            if (config is ProjectConfig project)
             {
                 ProjectUt(project, code);
                 return code.ToString();
             }
-            var entity = config as EntityConfig;
-            if (entity != null)
+            if (config is EntityConfig entity)
             {
                 EntityUt(code, entity);
                 return code.ToString();

@@ -349,8 +349,7 @@ void CopyFromClr({Entity.EntityName}^ cs_field, {Entity.Name}& field)
             var code = new StringBuilder();
             foreach (var pro in entity.CppProperty)
             {
-                var friend = CppTypeHelper.ToCppLastType(pro.CppLastType ?? pro.CppType) as EntityConfig;
-                if (friend != null)
+                if (CppTypeHelper.ToCppLastType(pro.CppLastType ?? pro.CppType) is EntityConfig friend)
                     code.Append($@"
 #include <{friend.Parent.Name}/{friend.Name}.h>
 #include <{friend.Parent.Name}/{friend.Name}_clr.h>");

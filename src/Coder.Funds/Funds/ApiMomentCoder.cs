@@ -438,8 +438,7 @@ void EsTradeCommand::Do{item.Name}(const PNetCommand cmd_arg)
 
         public static string CmdCallCodeByClrDef(ProjectConfig config)
         {
-            var project = config as ProjectConfig;
-            if (project == null)
+            if (!(config is ProjectConfig project))
                 return null;
             var code = new StringBuilder();
 
@@ -792,8 +791,7 @@ namespace GBS
         private static string TypedefDictionary(ConfigBase config)
         {
             var code = new StringBuilder();
-            var item = config as TypedefItem;
-            if (item != null)
+            if (config is TypedefItem item)
             {
                 TypedefToCombo(code, item);
             }
@@ -907,8 +905,7 @@ namespace GBS
         {
             var code = new StringBuilder();
 
-            var item = config as TypedefItem;
-            if (item == null)
+            if (!(config is TypedefItem item))
                 return code.ToString();
             foreach (var c in item.Items.Values)
             {
@@ -940,8 +937,7 @@ void {c2}(const PNetCommand cmd);");
         {
             var code = new StringBuilder();
 
-            var item = config as TypedefItem;
-            if (item == null)
+            if (!(config is TypedefItem item))
                 return code.ToString();
             foreach (var c in item.Items.Values)
             {
@@ -1001,8 +997,7 @@ void {c2}(const PNetCommand cmd)
         {
             var code = new StringBuilder();
 
-            var item = config as TypedefItem;
-            if (item == null)
+            if (!(config is TypedefItem item))
                 return code.ToString();
             foreach (var c in item.Items.Values)
             {
@@ -1055,8 +1050,7 @@ void On{c2}(COMMAND_STATE cmd_state);");
         {
             var code = new StringBuilder();
 
-            var item = config as TypedefItem;
-            if (item == null)
+            if (!(config is TypedefItem item))
                 return code.ToString();
             foreach (var c in item.Items.Values)
             {
@@ -1171,8 +1165,7 @@ void On{c2}(const PNetCommand cmd)
         {
             var code = new StringBuilder();
 
-            var item = config as TypedefItem;
-            if (item == null)
+            if (!(config is TypedefItem item))
                 return code.ToString();
             foreach (var c in item.Items.Values)
             {

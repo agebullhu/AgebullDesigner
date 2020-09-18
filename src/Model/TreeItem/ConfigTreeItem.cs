@@ -153,16 +153,15 @@ namespace Agebull.EntityModel.Designer
 
         private BitmapImage GetImage(TModel m)
         {
-            var par = m as ParentConfigBase;
-            return par == null
+            return !(m is ParentConfigBase par)
                    ? imgDefault
-                   : par.IsReference 
-                        ? imgRef 
-                        : m.IsDelete 
-                            ? imgDel 
-                            : m.IsDiscard 
-                                ? imgDiscard 
-                                : m.IsFreeze 
+                   : par.IsReference
+                        ? imgRef
+                        : m.IsDelete
+                            ? imgDel
+                            : m.IsDiscard
+                                ? imgDiscard
+                                : m.IsFreeze
                                     ? imgLock
                                     : m.IsModify
                                         ? imgModify

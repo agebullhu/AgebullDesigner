@@ -111,8 +111,7 @@ public:
         private static void SetValue(StringBuilder code, PropertyConfig field)
         {
             var type = CppTypeHelper.ToCppLastType(field.CppLastType);
-            var stru = type as EntityConfig;
-            if (stru != null)
+            if (type is EntityConfig stru)
             {
                 code.Append($@"
         memcpy(m_data.{field.Name},value,sizeof({stru.Name}));");

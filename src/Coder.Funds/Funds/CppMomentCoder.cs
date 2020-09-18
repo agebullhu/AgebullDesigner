@@ -148,8 +148,7 @@ namespace Agebull.EntityModel.RobotCoder.Funds
             var code = new StringBuilder();
             foreach (var field in entityConfig.LastProperties)
             {
-                var typedef = CppTypeHelper.ToCppLastType(field.CppLastType) as TypedefItem;
-                if (typedef != null && typedef.Items.Count > 0)
+                if (CppTypeHelper.ToCppLastType(field.CppLastType) is TypedefItem typedef && typedef.Items.Count > 0)
                 {
                     code.AppendFormat(@"
                             <StackPanel VerticalAlignment=""Center"" Orientation =""Horizontal"" Width=""200px"">
@@ -704,8 +703,7 @@ void CopyToCache({entityConfig.ReadTableName}* field)
     item->{field.Name} = CreateCsEntity(&field->{field.Name});//{field.Caption}");
                 return;
             }
-            var typedef = type as TypedefItem;
-            if (typedef == null)
+            if (!(type is TypedefItem typedef))
             {
                 if (type.ToString() == "char")
                 {
@@ -837,14 +835,12 @@ string toJson(const {entityConfig.Name}* value)
         private static void ToJsonCode(StringBuilder code, PropertyConfig field, bool isFirst)
         {
             var type = CppTypeHelper.ToCppLastType(field.CppLastType);
-            var stru = type as EntityConfig;
-            if (stru != null)
+            if (type is EntityConfig stru)
             {
                 FriendJson(code, field, isFirst);
                 return;
             }
-            var typedef = type as TypedefItem;
-            if (typedef == null)
+            if (!(type is TypedefItem typedef))
             {
                 if (type.ToString() == "char")
                 {
@@ -964,15 +960,13 @@ void print_screen(const {0}* value)
                 code.AppendFormat(@"
     cout << ""{0}:", field.Name);
             var type = CppTypeHelper.ToCppLastType(field.CppLastType);
-            var stru = type as EntityConfig;
-            if (stru != null)
+            if (type is EntityConfig stru)
             {
                 code.AppendFormat(@""" << endl;
     print_screen(&value->{0});", field.Name);
                 return;
             }
-            var typedef = type as TypedefItem;
-            if (typedef == null)
+            if (!(type is TypedefItem typedef))
             {
                 if (type.ToString() == "char")
                 {
@@ -1145,14 +1139,12 @@ string to_log_text(GBS::Futures::{em.Name}Classify& value)
 
         public static string ToCppLogDef(ConfigBase config)
         {
-            var entityConfig = config as EntityConfig;
-            if (entityConfig != null)
+            if (config is EntityConfig entityConfig)
             {
                 return ToCppLogDef(entityConfig);
             }
             var code = new StringBuilder();
-            var projectConfig = config as ProjectConfig;
-            if (projectConfig != null)
+            if (config is ProjectConfig projectConfig)
             {
                 if (projectConfig.IsReference)
                 {
@@ -1194,14 +1186,12 @@ string to_log_text(GBS::Futures::{em.Name}Classify& value)
 
         public static string ToCppLog(ConfigBase config)
         {
-            var entityConfig = config as EntityConfig;
-            if (entityConfig != null)
+            if (config is EntityConfig entityConfig)
             {
                 return ToCppLog(entityConfig);
             }
             var code = new StringBuilder();
-            var projectConfig = config as ProjectConfig;
-            if (projectConfig != null)
+            if (config is ProjectConfig projectConfig)
             {
 
                 if (projectConfig.IsReference)
@@ -1295,14 +1285,12 @@ void log(const {entityConfig.Name}* value,int type,int level)
             var type = CppTypeHelper.ToCppLastType(field.CppLastType ?? field.CppType);
             if (type == null)
                 return;
-            var stru = type as EntityConfig;
-            if (stru != null)
+            if (type is EntityConfig stru)
             {
                 FriendLog(code, field);
                 return;
             }
-            var typedef = type as TypedefItem;
-            if (typedef == null)
+            if (!(type is TypedefItem typedef))
             {
                 string tp = type.ToString();
                 if (tp == "char")

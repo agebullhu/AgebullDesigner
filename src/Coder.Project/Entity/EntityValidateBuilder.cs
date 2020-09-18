@@ -7,8 +7,13 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 基本代码
         /// </summary>
-        public override string BaseCode=> ValidateCode();
+        public override string BaseCode => Entity.HaseValidateCode ? ValidateCode() : null;
 
+        /// <summary>
+        /// 基本代码
+        /// </summary>
+        protected override bool CanWrite => Entity.HaseValidateCode;
+        
         /// <summary>
         /// 校验代码
         /// </summary>
@@ -31,7 +36,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name=""result"">结果存放处</param>
         public override void Validate(ValidateResult result)
         {{
-            {(Entity.NoDataBase || Entity.PrimaryColumn== null ? "" : "result.Id = " + Entity.PrimaryColumn.Name + ".ToString()") }; 
+            {(Entity.NoDataBase || Entity.PrimaryColumn== null ? "" : "result.Id = " + Entity.PrimaryColumn.Name + "?.ToString()") }; 
             base.Validate(result);{code}
             ValidateEx(result);
         }}";

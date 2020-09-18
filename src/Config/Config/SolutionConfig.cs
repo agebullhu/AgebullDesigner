@@ -76,32 +76,6 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(GodMode));
             }
         }
-        /// <summary>
-        /// 生成校验代码
-        /// </summary>
-        [IgnoreDataMember, JsonProperty("haseValidateCode")]
-        internal bool _haseValidateCode;
-
-        /// <summary>
-        /// 生成校验代码
-        /// </summary>
-        /// <remark>
-        /// 可以任意修改任意配置的生成校验代码
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"设计器支持"), DisplayName(@"生成校验代码")]
-        public bool HaseValidateCode
-        {
-            get => _haseValidateCode;
-            set
-            {
-                if (_haseValidateCode == value)
-                    return;
-                BeforePropertyChanged(nameof(HaseValidateCode), _haseValidateCode, value);
-                _haseValidateCode = value;
-                OnPropertyChanged(nameof(HaseValidateCode));
-            }
-        }
         #endregion
         #region 对象集合
 

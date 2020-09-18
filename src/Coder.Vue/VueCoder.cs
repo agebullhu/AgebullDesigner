@@ -38,7 +38,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
     <script type='text/javascript' src='/scripts/extend/ajax.js'></script>
     <script type='text/javascript' src='/scripts/extend/ajax_vue.js'></script>
     <script type='text/javascript' src='/scripts/extend/type.js'></script>
-    <script type='text/javascript' src='/scripts/extend/vue_ex.js'></script>{HtmlStyle()}
+    <script type='text/javascript' src='/scripts/extend/vue_ex.js'></script>
 </head>
 <body>
 <div id='work_space' class='tiled' v-cloak>
@@ -74,23 +74,6 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 </html>";
         }
 
-        string HtmlStyle()
-        {
-            if (Entity.IsUiReadOnly || Entity.FormCloumn > 1)
-                return null;
-            return @"
-    <style>
-        .el-dialog {
-            width: 480px;
-        }
-        .el-dialog__body {
-            width: 440px;
-        }
-        .el-dialog__body_form {
-            width: 410px;
-        }
-    </style>";
-        }
         string HtmlExButton()
         {
             StringBuilder exButton = new StringBuilder();
@@ -250,22 +233,22 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                     <template slot-scope='scope'>
                         <span style='margin-left: 3px'>{field.Prefix}{{{{scope.row.{field.JsonName} | boolFormater}}}}{field.Suffix}</span>
                     </template>");
-        }
+            }
             else if (field.IsMoney)
             {
                 code.Append($@"
                     <template slot-scope='scope'>
                         <span style='margin-left: 3px'>{field.Prefix}{{{{scope.row.{field.JsonName} | formatMoney}}}}{field.Suffix}</span>
                     </template>");
-        }
+            }
             else if (field.CsType == "decimal")
             {
                 code.Append($@"
                     <template slot-scope='scope'>
                         <span style='margin-left: 3px'>{field.Prefix}{{{{scope.row.{field.JsonName} | thousandsNumber}}}}{field.Suffix}</span>
                     </template>");
-        }
-        code.Append(@"
+            }
+            code.Append(@"
                 </el-table-column>");
         }
 
@@ -276,8 +259,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 return;
             code.Append(@"
                     <el-table-column type='expand'>
-                        <template slot-scope='props'>
-                            <el-form label-position='left' inline>");
+                        <template slot-scope='props'>");
             foreach (var field in details)
             {
                 var caption = field.Caption;
@@ -288,20 +270,32 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                     if (friend != null)
                         caption = friend.Caption;
                 }
-                code.Append($@"
-                            <el-form-item label='{caption}' prop='{field.JsonName}'");
-                if (field.FormCloumnSapn > 1 || field.IsMemo || field.MulitLine)
-                    code.Append(" size='large'");
+                if (field.IsMemo || field.MulitLine)
+                    code.Append($@"
+                            <div class='expand_line_block'>");
+                else
+                {
+                    var sp = field.FormCloumnSapn <= 0
+                        ? 1
+                        : field.FormCloumnSapn >= 4
+                            ? 4
+                            : field.FormCloumnSapn;
+                    code.Append($@"
+                            <div class='expand_block_{sp}'>");
 
-                code.Append(@">
-                                ");
+                }
+                code.Append($@"
+                                <label class='expand_label'>{caption}：</label>");
+
                 if (field.IsImage)
                 {
-                    code.Append($@"<el-image :src='{field.JsonName}' lazy></el-image>");
+                    code.Append($@"
+                                <el-image :src='{field.JsonName}' lazy></el-image>");
                 }
                 else
                 {
-                    code.Append($@"<span>{field.Prefix}{{{{props.row.{field.JsonName}");
+                    code.Append($@"
+                                <span class='expand_value'>{field.Prefix}{{{{props.row.{field.JsonName}");
                     if (field.EnumConfig != null)
                     {
                         code.Append($@" | {field.EnumConfig.Name.ToLWord()}Formater");
@@ -325,15 +319,13 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                     }
                     code.Append($@"}}}}{field.Suffix}</span>");
                 }
-
-                code.Append(@"
-                            </el-form-item>");
+                code.Append($@"
+                            </div>");
             }
 
             code.Append(@"
-                        </el-form>
-                    </template>
-                </el-table-column>");
+                        </template>
+                    </el-table-column>");
         }
 
         #endregion
@@ -343,21 +335,27 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         {
             if (Entity.IsUiReadOnly)
                 return null;
+            var col = Entity.FormCloumn <= 1 ? 1 : Entity.FormCloumn;
+
+            var wid = col * 422 + 50;
             var code = new StringBuilder();
             code.Append($@"
      <!--Form-->
-     <el-dialog title='{Entity.Caption}编辑'
+     <el-dialog title='【{Entity.Caption}】编辑'
                 :visible.sync='form.visible'
+                :show-close='false'
+                :close-on-click-modal='false'
+                width='{wid}px'
                 v-loading='form.loading'
                 element-loading-text='正在处理'
                 element-loading-spinner='el-icon-loading'
                 element-loading-background='rgba(0, 0, 0, 0.8)'>
-            <div class='el-dialog__body_form'>
-            <el-form :model='form.data'
+        <div class='el-dialog__body_form'>
+            <el-form ref='dataForm' 
                      :rules='form.rules'
-                     label-position='left'
+                     :model='form.data'
                      label-width='100px'
-                     ref='dataForm' 
+                     label-position='left'
                      @submit.native.prevent");
             if (Entity.IsUiReadOnly)
                 code.Append(@"
@@ -390,16 +388,16 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             }
             code.Append(@"
             </el-form>
-        </div>");
+        </div>
+        <div slot='footer'>");
             if (!Entity.IsUiReadOnly)
             {
                 code.Append(@"
-        <div slot='footer' v-if='!form.readonly'>
-            <el-button icon='el-icon-close' @click='form.visible = false'>取消</el-button>
-            <el-button icon='el-icon-check' @click='save' type='primary'>保存</el-button>
-        </div>");
+            <el-button icon='el-icon-check' @click='save' type='primary' v-if='!form.readonly'>保存</el-button>");
             }
             code.Append(@"
+            <el-button icon='el-icon-close' @click='form.visible = false'>取消</el-button>
+        </div>
     </el-dialog>");
             return code.ToString();
         }
@@ -419,7 +417,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         {
             code.Append($@"
             <el-form-item label='{caption}' prop='{field.JsonName}' label-suffix='{field.Suffix}'");
-            if (field.FormCloumnSapn > 1 || field.IsMemo || field.MulitLine)
+            if (field.Parent.FormCloumn > 1 && (field.FormCloumnSapn > 1 || field.IsMemo || field.MulitLine))
                 code.Append(" size='large'");
             code.Append('>');
             if (field.EnumConfig != null || field.IsLinkKey)
@@ -473,7 +471,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 SetDisabled(false, code, field);
                 if (field.IsMemo || field.MulitLine)
                 {
-                    code.Append(" type='textarea' :rows='3'");
+                    code.Append(" type='textarea' :rows='5'");
                 }
                 code.Append("></el-input>");
             }

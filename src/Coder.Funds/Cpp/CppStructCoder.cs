@@ -499,8 +499,7 @@ void {Entity.Name}::SetValue(const char* field, const char* value)
             var code = new StringBuilder();
             foreach (var pro in entity.CppProperty)
             {
-                var friend = CppTypeHelper.ToCppLastType(pro.CppLastType ?? pro.CppType) as EntityConfig;
-                if (friend != null)
+                if (CppTypeHelper.ToCppLastType(pro.CppLastType ?? pro.CppType) is EntityConfig friend)
                 {
                     code.Append($@"
 #include <{friend.Parent.Name}/{friend.Name}.h>");
@@ -786,8 +785,7 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
             string dest_field_name, string cpName)
         {
             var type = CppTypeHelper.ToCppLastType(srcField.CppLastType ?? srcField.CppType);
-            var stru = type as EntityConfig;
-            if (stru != null)
+            if (type is EntityConfig stru)
             {
                 if (srcField.CppLastType == destField.CppLastType)
                     return

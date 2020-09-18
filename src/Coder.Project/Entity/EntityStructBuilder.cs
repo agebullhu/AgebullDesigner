@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Documents;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Config.Mysql;
 using Agebull.EntityModel.Config.SqlServer;
