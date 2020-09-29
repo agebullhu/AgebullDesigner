@@ -99,12 +99,12 @@ namespace Agebull.EntityModel.Config
                          ?? entity.Properties.FirstOrDefault(p => p.Name == property.Name);
                 if (fp == null)
                 {
-                    fp = new PropertyConfig();
+                    fp = new FieldConfig();
                     fp.CopyFromProperty(property,false,true,false);
-                    fp.Parent = entity;
+                    fp.Entity = entity;
                     entity.Add(fp);
                 }
-                fp.Parent = entity;
+                fp.Entity = entity;
                 fp.Option.ReferenceKey = property.Option.Key;
                 fp.Caption = property.Caption;
                 fp.Tag = entity.Tag + "," + property.Name;
@@ -199,7 +199,7 @@ namespace Agebull.EntityModel.Config
             item.ClientEntity = entity.Name;
             if (entity.PrimaryColumn == null)
             {
-                entity.Add(new PropertyConfig
+                entity.Add(new FieldConfig
                 {
                     Name = entity.Name + "Id",
                     Caption = entity.Caption + "ID",
@@ -208,7 +208,7 @@ namespace Agebull.EntityModel.Config
                     IsIdentity = true,
                     CsType = "int",
                     CppType = "int",
-                    Parent = entity
+                    Entity = entity
                 });
             }
             foreach (var property in friend.Properties)
@@ -219,12 +219,12 @@ namespace Agebull.EntityModel.Config
                          ?? entity.Properties.FirstOrDefault(p => p.Name == property.Name);
                 if (fp == null)
                 {
-                    fp = new PropertyConfig();
+                    fp = new FieldConfig();
                     fp.CopyFromProperty(property,false,true,true);
-                    fp.Parent = entity;
+                    fp.Entity = entity;
                     entity.Add(fp);
                 }
-                fp.Parent = entity;
+                fp.Entity = entity;
                 fp.Tag = property.Tag;
                 fp.ReferenceKey = property.Key;
                 fp.Caption = property.Caption;

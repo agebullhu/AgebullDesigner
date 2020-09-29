@@ -10,7 +10,7 @@ namespace Agebull.EntityModel.Config
 
         public TraceMessage Trace { get; set; }
 
-        public PropertyConfig Property { get; set; }
+        public FieldConfig Property { get; set; }
         #endregion
         
         #region ÐÞ¸´

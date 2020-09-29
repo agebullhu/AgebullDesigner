@@ -47,7 +47,7 @@ namespace Agebull.EntityModel.Config
             }
             foreach (var col in Entity.Properties)
             {
-                col.Parent = Entity;
+                col.Entity = Entity;
                 if (col.IsDiscard)
                 {
                     continue;
@@ -88,7 +88,7 @@ namespace Agebull.EntityModel.Config
                 if (idf != null)
                     idf.IsPrimaryKey = true;
                 else
-                    Entity.Add(new PropertyConfig
+                    Entity.Add(new FieldConfig
                     {
                         Name = "Id",
                         Caption = Entity.Caption + "±àºÅ",
@@ -106,12 +106,12 @@ namespace Agebull.EntityModel.Config
             var model = new PropertyDatabaseBusiness();
             foreach (var col in Entity.Properties)
             {
-                col.Parent = Entity;
+                col.Entity = Entity;
                 if (col.IsDiscard)
                 {
                     continue;
                 }
-                model.Property = col;
+                model.Field = col;
                 model.CheckByDb(repair);
             }
         }
@@ -122,18 +122,18 @@ namespace Agebull.EntityModel.Config
         }
         public void CheckRelation(bool repair)
         {
-            DataBaseHelper.CheckFieldLink(Entity);
-            if (Entity.Properties.Any(p => p.IsLinkField && !p.IsLinkKey))
-            {
-                if (Entity.ReadTableName == Entity.SaveTableName || repair)
-                {
-                    Entity.ReadTableName = DataBaseHelper.ToViewName(Entity);
-                }
-            }
-            else
-            {
-                Entity.ReadTableName = null;
-            }
+            DataBaseHelper.CheckFieldLink(Entity.Properties);
+            //if (Entity.Fields.Any(p => p.IsLinkField && !p.IsLinkKey))
+            //{
+            //    if (Entity.ReadTableName == Entity.SaveTableName || repair)
+            //    {
+            //        Entity.ReadTableName = DataBaseHelper.ToViewName(Entity);
+            //    }
+            //}
+            //else
+            //{
+            //    Entity.ReadTableName = null;
+            //}
         }
     }
 }

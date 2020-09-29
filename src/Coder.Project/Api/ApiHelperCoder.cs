@@ -14,7 +14,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public static string InputConvert(EntityConfig entity)
+        public static string InputConvert(ModelConfig entity)
         {
             if (entity.IsUiReadOnly)
                 return null;
@@ -227,7 +227,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             code.AppendFormat(@"
         static void ReadFormValue(I{0} entity, FormConvert convert)
         {{", entity.Name);
-            foreach (PropertyConfig field in entity.PublishProperty.Where(p => !p.IsPrimaryKey))
+            foreach (var field in entity.PublishProperty.Where(p => !p.IsPrimaryKey))
             {
                 switch (field.CsType.ToLower())
                 {
@@ -319,7 +319,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         }
 
 
-        public static string InputConvert3(PropertyConfig column, string arg)
+        public static string InputConvert3(FieldConfig column, string arg)
         {
             switch (column.CsType)
             {

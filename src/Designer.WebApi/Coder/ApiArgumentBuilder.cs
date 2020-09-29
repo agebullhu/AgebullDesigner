@@ -38,24 +38,24 @@ namespace Agebull.EntityModel.Designer.WebApi
             {
                 Project = project
             };
-            eb.CreateBaseCode(path);
+            eb.WriteDesignerCode(path);
         }
         /// <summary>
         /// 生成实体代码
         /// </summary>
         /// <param name="project"></param>
         /// <param name="entity"></param>
-        public override void CreateEntityCode(ProjectConfig project, EntityConfig entity)
+        public override void CreateEntityCode(ProjectConfig project, ModelConfig entity)
         {
             Message = entity.Caption;
             var path = GlobalConfig.CheckPath(project.FormatPath("Contract"));
             var builder = new EntityBuilder
             {
                 Project = project,
-                Entity = entity
+                Model = entity
             };
-            builder.CreateBaseCode(path);
-            builder.CreateExtendCode(path);
+            builder.WriteDesignerCode(path);
+            builder.WriteCustomCode(path);
             
         }
     }

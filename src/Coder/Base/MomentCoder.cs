@@ -143,6 +143,57 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
 
+
+        public static void RegisteCoder(string type, string name, string lang, Func<ModelConfig, string> func)
+        {
+            NowType = type ?? "未分类";
+
+            if (!Coders.ContainsKey(NowType))
+                Coders.Add(NowType, new Dictionary<string, CoderDefine>());
+
+            string NewFunc(ConfigBase cfg) => MomentCoderBase.CreateCode(cfg, func);
+
+            if (Coders[NowType].ContainsKey(name))
+                Coders[NowType][name] = new CoderDefine
+                {
+                    Func = NewFunc,
+                    Name = name,
+                    Lang = lang
+                };
+            else
+                Coders[NowType].Add(name, new CoderDefine
+                {
+                    Func = NewFunc,
+                    Name = name,
+                    Lang = lang
+                });
+        }
+
+        public static void RegisteCoder(string type, string name, string lang, Func<ModelConfig, bool> condition, Func<ModelConfig, string> func)
+        {
+            NowType = type ?? "未分类";
+
+            if (!Coders.ContainsKey(NowType))
+                Coders.Add(NowType, new Dictionary<string, CoderDefine>());
+
+            string NewFunc(ConfigBase cfg) => MomentCoderBase.CreateCode(cfg, condition, func);
+
+            if (Coders[NowType].ContainsKey(name))
+                Coders[NowType][name] = new CoderDefine
+                {
+                    Func = NewFunc,
+                    Name = name,
+                    Lang = lang
+                };
+            else
+                Coders[NowType].Add(name, new CoderDefine
+                {
+                    Func = NewFunc,
+                    Name = name,
+                    Lang = lang
+                });
+        }
+
         public static void RegisteCoder(string type, string name, string lang, Func<ConfigBase, string> func)
         {
             NowType = type ?? "未分类";

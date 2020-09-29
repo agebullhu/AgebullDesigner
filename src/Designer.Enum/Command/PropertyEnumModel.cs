@@ -15,13 +15,13 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    public class PropertyEnumModel : DesignCommondBase<PropertyConfig>
+    public class PropertyEnumModel : DesignCommondBase<FieldConfig>
     {
 
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
-            var type = typeof(PropertyConfig);
-            commands.Add(new CommandItemBuilder<PropertyConfig>
+            var type = typeof(FieldConfig);
+            commands.Add(new CommandItemBuilder<FieldConfig>
             {
                 Catalog = "枚举",
                 Action = ReadEnum,
@@ -32,7 +32,7 @@ namespace Agebull.EntityModel.Designer
                 SignleSoruce = false,
                 IconName = "tree_item"
             });
-            commands.Add(new CommandItemBuilder<PropertyConfig>
+            commands.Add(new CommandItemBuilder<FieldConfig>
             {
                 Catalog = "枚举",
                 Action = CheckEnum,
@@ -64,7 +64,7 @@ namespace Agebull.EntityModel.Designer
 
         public void BindEnum(object arg)
         {
-            PropertyConfig property = Context.SelectProperty;
+            FieldConfig property = Context.SelectField;
             property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
             if (property.EnumConfig != null)
                 return;
@@ -75,11 +75,11 @@ namespace Agebull.EntityModel.Designer
                 Name = property.CustomType ?? (property.Name.Contains("Type") ? property.Name : property.Name + "Type"),
                 Caption = property.Caption + "类型"
             };
-            property.Parent.Parent.Add(enumConfig);
+            property.Entity.Parent.Add(enumConfig);
             property.EnumConfig = enumConfig;
         }
 
-        public void CheckEnum(PropertyConfig property)
+        public void CheckEnum(FieldConfig property)
         {
             property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
         }
@@ -88,13 +88,13 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void DeleteEnum(object arg)
         {
-            PropertyConfig property = Context.SelectProperty;
+            FieldConfig property = Context.SelectField;
             property.CustomType = null;
         }
 
         #region 识别枚举
 
-        public void ReadEnum(PropertyConfig column)
+        public void ReadEnum(FieldConfig column)
         {
             if (column.CsType == "bool")
                 return;
@@ -216,7 +216,7 @@ namespace Agebull.EntityModel.Designer
             if (ec.Items.Count > 1)
             {
                 if (isNew)
-                    column.Parent.Parent.Add(ec);
+                    column.Entity.Parent.Add(ec);
 
                 ec.Option.ReferenceKey = column.Option.Key;
                 column.EnumConfig = ec;

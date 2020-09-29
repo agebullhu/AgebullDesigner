@@ -18,7 +18,7 @@ namespace Agebull.Common.Config.Designer.EasyUi
         {
             GlobalTrigger.RegistTrigger<ConfigTrigger>();
             GlobalTrigger.RegistTrigger<OptionTrigger>();
-            GlobalTrigger.RegistTrigger<PropertyTrigger>();
+            GlobalTrigger.RegistTrigger<FieldTrigger>();
             GlobalTrigger.RegistTrigger<EntityTrigger>();
             GlobalTrigger.RegistTrigger<ClassifyTrigger>();
             GlobalTrigger.RegistTrigger<EntityChildTrigger>();

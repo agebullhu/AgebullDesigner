@@ -44,7 +44,7 @@
                 <TextBox IsReadOnly="True" Text="{Binding PrimaryField,Mode=OneWay}" />
             </StackPanel>
         </WrapPanel>
-        <TabControl DockPanel.Dock="Bottom" DataContext="{Binding Context.SelectProperty}">
+        <TabControl DockPanel.Dock="Bottom" DataContext="{Binding Context.SelectField}">
             <TabControl.Resources>
                 <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
             </TabControl.Resources>

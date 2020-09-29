@@ -419,9 +419,9 @@ namespace Agebull.EntityModel.Designer
 
         #region 分析文本
 
-        public List<PropertyConfig> DoCheckFieldes(string arg)
+        public List<FieldConfig> DoCheckFieldes(string arg)
         {
-            var columns = new List<PropertyConfig>();
+            var columns = new List<FieldConfig>();
             var lines = Fields.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             var idx = Entity?.MaxIdentity ?? 1;
             foreach (var line in lines)
@@ -440,7 +440,7 @@ namespace Agebull.EntityModel.Designer
                 * 2 每个单词用逗号分开
                 * 3 第一个单词 代码名称; 第二个单词 数据类型;第三个单词 说明文本
                 */
-                PropertyConfig column = new PropertyConfig
+                FieldConfig column = new FieldConfig
                 {
                     Name = name,
                     IsPrimaryKey = name.Equals("ID", StringComparison.OrdinalIgnoreCase),

@@ -24,7 +24,7 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// <summary>
         ///     生成实体代码
         /// </summary>
-        protected override void CreateBaCode(string path)
+        protected override void CreateDesignerCode(string path)
         {
 
             string code = $@"using System;
@@ -48,7 +48,7 @@ namespace {NameSpace}
     /// 身份验证单元测试
     /// </summary>
     [TestFixture]
-    public class {Entity.Name}UnitTest
+    public class {Model.Name}UnitTest
     {{
         [SetUp]
         public void Initialize()
@@ -66,17 +66,17 @@ namespace {NameSpace}
         ///     测试
         /// </summary>
         [Test]
-        public void {Entity.Name}Test()
+        public void {Model.Name}Test()
         {{
-            var logical = new {Entity.Name}ApiLogical()  as I{Entity.Name}Api;
+            var logical = new {Model.Name}ApiLogical()  as I{Model.Name}Api;
             // 新增
-            var arg = {HelloCode(Entity)};
+            var arg = {HelloCode(Model)};
             var iResult = logical.AddNew(arg);
-            Assert.IsTrue(iResult.Result, ""{Entity.Caption}新增成功"");
+            Assert.IsTrue(iResult.Result, ""{Model.Caption}新增成功"");
             // 修改
-            {HelloCode(Entity, "arg")}
+            {HelloCode(Model, "arg")}
             var uResult = logical.Update(arg);
-            Assert.IsTrue(uResult.Result, ""{Entity.Caption}修改成功"");
+            Assert.IsTrue(uResult.Result, ""{Model.Caption}修改成功"");
             // 分页
             var filter = new PageArgument
             {{
@@ -95,14 +95,14 @@ namespace {NameSpace}
         }}
     }}
 }}";
-            var file = ConfigPath(Entity, FileSaveConfigName, path, "Entity", $"{Entity.Name}UnitTest.cs");
+            var file = ConfigPath(Model, FileSaveConfigName, path, "Entity", $"{Model.Name}UnitTest.cs");
             SaveCode(file, code);
         }
 
         /// <summary>
         ///     生成实体代码
         /// </summary>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
             StringBuilder code = new StringBuilder();
             code.Append($@"using System;

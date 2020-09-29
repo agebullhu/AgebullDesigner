@@ -29,9 +29,9 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// <summary>
         ///     生成实体代码
         /// </summary>
-        protected override void CreateBaCode(string path)
+        protected override void CreateDesignerCode(string path)
         {
-            if (Entity.ExtendConfigListBool["NoApi"])
+            if (Model.ExtendConfigListBool["NoApi"])
                 return;
             string code = $@"
 using System;
@@ -60,9 +60,9 @@ using {NameSpace}.BusinessLogic;
 namespace {NameSpace}.WebApi.EntityApi
 {{
     /// <summary>
-    /// {Entity.Description}实体操作API实现
+    /// {Model.Description}实体操作API实现
     /// </summary>
-    public partial class {Entity.Name}ApiLogical : I{Entity.Name}Api
+    public partial class {Model.Name}ApiLogical : I{Model.Name}Api
     {{
         
         /// <summary>
@@ -70,9 +70,9 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""src"">参数</param>
         /// <returns>数据库对象</returns>
-        private {Entity.Name}Data ToData({Entity.Name} src)
+        private {Model.Name}Data ToData({Model.Name} src)
         {{
-            return new {Entity.Name}Data
+            return new {Model.Name}Data
             {{
 {CopyCode()}
             }};
@@ -83,9 +83,9 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""src"">数据库对象</param>
         /// <returns>参数</returns>
-        private {Entity.Name} FromData({Entity.Name}Data src)
+        private {Model.Name} FromData({Model.Name}Data src)
         {{
-            return new {Entity.Name}
+            return new {Model.Name}
             {{
 {CopyCode()}
             }};
@@ -95,7 +95,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <returns>如果为真并返回结果数据</returns>
-        ApiResultEx<{Entity.Name}> I{Entity.Name}Api.AddNew({Entity.Name} data)
+        ApiResultEx<{Model.Name}> I{Model.Name}Api.AddNew({Model.Name} data)
         {{
             return AddNew(data);
         }}
@@ -105,7 +105,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <returns>如果为真并返回结果数据</returns>
-        ApiResultEx<{Entity.Name}> I{Entity.Name}Api.Update({Entity.Name} data)
+        ApiResultEx<{Model.Name}> I{Model.Name}Api.Update({Model.Name} data)
         {{
             return Update(data);
         }}
@@ -115,7 +115,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""dataKey"">数据主键</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        ApiResultEx I{Entity.Name}Api.Delete(Argument<{Entity.PrimaryColumn?.LastCsType ?? "int"}> dataKey)
+        ApiResultEx I{Model.Name}Api.Delete(Argument<{Model.PrimaryColumn?.LastCsType ?? "int"}> dataKey)
         {{
             return Delete(dataKey);
         }}
@@ -123,7 +123,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// <summary>
         ///     分页
         /// </summary>
-        ApiResultEx<ApiPageData<{Entity.Name}>> I{Entity.Name}Api.Query(PageArgument arg)
+        ApiResultEx<ApiPageData<{Model.Name}>> I{Model.Name}Api.Query(PageArgument arg)
         {{
             return Query(arg);
         }}
@@ -133,26 +133,26 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""arg"">数据</param>
         /// <returns>如果为真并返回结果数据</returns>
-        private ApiResultEx<{Entity.Name}> AddNew({Entity.Name} arg)
+        private ApiResultEx<{Model.Name}> AddNew({Model.Name} arg)
         {{
             try
             {{
                 var data = ToData(arg);
                 var vr = data.Validate();
                 if(!vr.succeed)
-                    return ApiResultEx<{Entity.Name}>.ErrorResult(ErrorCode.ArgumentError, vr.Messages.LinkToString(""；""));
+                    return ApiResultEx<{Model.Name}>.ErrorResult(ErrorCode.ArgumentError, vr.Messages.LinkToString(""；""));
                 using (BusinessContextScope.CreateScope())
                 {{
-                    var bl = new {Entity.Name}BusinessLogic();
+                    var bl = new {Model.Name}BusinessLogic();
                     if (bl.AddNew(data))
-                        return ApiResultEx<{Entity.Name}>.ErrorResult(ErrorCode.InnerError, BusinessContext.Current.LastMessage);
-                    return ApiResultEx<{Entity.Name}>.Succees(FromData(data));
+                        return ApiResultEx<{Model.Name}>.ErrorResult(ErrorCode.InnerError, BusinessContext.Current.LastMessage);
+                    return ApiResultEx<{Model.Name}>.Succees(FromData(data));
                 }}
             }}
             catch (Exception e)
             {{
                 LogRecorder.Exception(e);
-                return ApiResultEx<{Entity.Name}>.ErrorResult(ErrorCode.InnerError,""内部错误"");
+                return ApiResultEx<{Model.Name}>.ErrorResult(ErrorCode.InnerError,""内部错误"");
             }}
         }}
 
@@ -161,26 +161,26 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""arg"">数据</param>
         /// <returns>如果为真并返回结果数据</returns>
-        private ApiResultEx<{Entity.Name}> Update({Entity.Name} arg)
+        private ApiResultEx<{Model.Name}> Update({Model.Name} arg)
         {{
             try
             {{
                 var data = ToData(arg);
                 var vr = data.Validate();
                 if(!vr.succeed)
-                    return ApiResultEx<{Entity.Name}>.ErrorResult(ErrorCode.ArgumentError, vr.Messages.LinkToString(""；""));
+                    return ApiResultEx<{Model.Name}>.ErrorResult(ErrorCode.ArgumentError, vr.Messages.LinkToString(""；""));
                 using (BusinessContextScope.CreateScope())
                 {{
-                    var bl = new {Entity.Name}BusinessLogic();
+                    var bl = new {Model.Name}BusinessLogic();
                     if (bl.Update(data))
-                        return ApiResultEx<{Entity.Name}>.ErrorResult(ErrorCode.InnerError, BusinessContext.Current.LastMessage);
-                    return ApiResultEx<{Entity.Name}>.Succees(FromData(data));
+                        return ApiResultEx<{Model.Name}>.ErrorResult(ErrorCode.InnerError, BusinessContext.Current.LastMessage);
+                    return ApiResultEx<{Model.Name}>.Succees(FromData(data));
                 }}
             }}
             catch (Exception e)
             {{
                 LogRecorder.Exception(e);
-                return ApiResultEx<{Entity.Name}>.ErrorResult(ErrorCode.InnerError,""内部错误"");
+                return ApiResultEx<{Model.Name}>.ErrorResult(ErrorCode.InnerError,""内部错误"");
             }}
         }}
 
@@ -189,13 +189,13 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""arg"">数据主键</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        private ApiResultEx Delete(Argument<{Entity.PrimaryColumn?.LastCsType ?? "int"}> arg)
+        private ApiResultEx Delete(Argument<{Model.PrimaryColumn?.LastCsType ?? "int"}> arg)
         {{
             try
             {{
                 using (BusinessContextScope.CreateScope())
                 {{
-                    var bl = new {Entity.Name}BusinessLogic();
+                    var bl = new {Model.Name}BusinessLogic();
                     if (bl.Delete(arg.Value))
                         return ApiResultEx.Error(ErrorCode.InnerError, BusinessContext.Current.LastMessage);
                     return ApiResultEx.Succees();
@@ -211,21 +211,21 @@ namespace {NameSpace}.WebApi.EntityApi
         /// <summary>
         ///     分页
         /// </summary>
-        private ApiResultEx<ApiPageData<{Entity.Name}>> Query(PageArgument arg)
+        private ApiResultEx<ApiPageData<{Model.Name}>> Query(PageArgument arg)
         {{
             try
             {{
                 string message;
                 if (!arg.Validate(out message))
-                    return ApiResultEx<ApiPageData<{Entity.Name}>>.ErrorResult(ErrorCode.ArgumentError, message);
+                    return ApiResultEx<ApiPageData<{Model.Name}>>.ErrorResult(ErrorCode.ArgumentError, message);
                 using (BusinessContextScope.CreateScope())
                 {{
-                    var bl = new {Entity.Name}BusinessLogic();
+                    var bl = new {Model.Name}BusinessLogic();
                     var data = bl.PageData(arg.Page, arg.PageSize, arg.Order, arg.Desc, null);
-                    return new ApiPageResult<{Entity.Name}>
+                    return new ApiPageResult<{Model.Name}>
                     {{
                         Result = true,
-                        ResultData = new ApiPageData<{Entity.Name}>
+                        ResultData = new ApiPageData<{Model.Name}>
                         {{
                             PageSize = arg.PageSize,
                             PageIndex = arg.Page,
@@ -238,12 +238,12 @@ namespace {NameSpace}.WebApi.EntityApi
             catch (Exception e)
             {{
                 LogRecorder.Exception(e);
-                return ApiResultEx<ApiPageData<{Entity.Name}>>.ErrorResult(ErrorCode.InnerError,""内部错误"");
+                return ApiResultEx<ApiPageData<{Model.Name}>>.ErrorResult(ErrorCode.InnerError,""内部错误"");
             }}
         }}
     }}
 }}";
-            var file = ConfigPath(Entity, FileSaveConfigName, path, "Logical", $"{Entity.Name}ApiLogical.cs");
+            var file = ConfigPath(Model, FileSaveConfigName, path, "Logical", $"{Model.Name}ApiLogical.cs");
 
             SaveCode(file, code);
         }
@@ -252,7 +252,7 @@ namespace {NameSpace}.WebApi.EntityApi
         {
             StringBuilder code = new StringBuilder();
             bool isFirst = true;
-            foreach (var property in Entity.Properties.Where(p => p.CanUserInput))
+            foreach (var property in Model.LastProperties.Where(p => p.CanUserInput))
             {
                 if (isFirst)
                     isFirst = false;
@@ -267,7 +267,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// <summary>
         ///     生成实体代码
         /// </summary>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
             ProjectApiBase(path);
             ProjectApiExtend(path);

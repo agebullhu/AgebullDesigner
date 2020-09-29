@@ -58,7 +58,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 对应的另一半
         /// </summary>
-        [DataMember, JsonProperty("Friend", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("Friend",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _friend;
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 对应的另一半
         /// </summary>
-        [DataMember, JsonProperty("FriendKey", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("FriendKey",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal Guid _friendKey;
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 本地命令
         /// </summary>
-        [DataMember, JsonProperty("LocalCommand", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("LocalCommand",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _localCommand;
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 通知的命令号
         /// </summary>
-        [DataMember, JsonProperty("CommandId", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("CommandId",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _commandId;
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 通知使用的数据结构
         /// </summary>
-        [DataMember, JsonProperty("NotifyEntity", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("NotifyEntity",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _notifyEntity;
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 客户使用的数据结构
         /// </summary>
-        [DataMember, JsonProperty("ClientEntity", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("ClientEntity",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _clientEntity;
 
         /// <summary>
@@ -222,7 +222,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 是否命令返回
         /// </summary>
-        [DataMember, JsonProperty("IsCommandResult", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("IsCommandResult",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _isCommandResult;
 
         /// <summary>
@@ -249,7 +249,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 是否多条通知
         /// </summary>
-        [DataMember, JsonProperty("IsMulit", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("IsMulit",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _isMulit;
 
         /// <summary>
@@ -276,7 +276,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 原始内容
         /// </summary>
-        [DataMember, JsonProperty("Org", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("Org",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _org;
 
         /// <summary>

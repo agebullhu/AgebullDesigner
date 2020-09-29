@@ -148,8 +148,10 @@ namespace Agebull.EntityModel.Designer
                     continue;
                 foreach (var field in entity.Properties)
                 {
-                    field.Parent = entity;
+                    field.Entity = entity;
+                    GlobalConfig.AddConfig(field);
                 }
+                GlobalConfig.AddConfig(entity);
                 project.Add(entity);
             }
         }

@@ -36,7 +36,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 是否位域
         /// </summary>
-        [DataMember,JsonProperty("IsFlagEnum", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember,JsonProperty("IsFlagEnum",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _isFlagEnum;
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 枚举节点
         /// </summary>
-        [DataMember,JsonProperty("_items", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember,JsonProperty("_items",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal NotificationList<EnumItem> _items;
 
         /// <summary>

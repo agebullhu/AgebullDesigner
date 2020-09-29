@@ -3,83 +3,83 @@ namespace Agebull.EntityModel.Config
 {
     internal class PropertyDatabaseBusiness
     {
-        public PropertyConfig Property { get; set; }
+        public FieldConfig Field { get; set; }
 
         internal void CheckByDb(bool repair = false)
         {
-            if (Property.Parent.NoDataBase)
+            if (Field.Entity.NoDataBase)
             {
-                Property.DbFieldName = null;
-                Property.DbType = null;
+                Field.DbFieldName = null;
+                Field.DbType = null;
                 return;
             }
             if (repair)
-                Property.DbFieldName = DataBaseHelper.ToDbFieldName(Property.Name);
-            if (repair || string.IsNullOrWhiteSpace(Property.DbType))
+                Field.DbFieldName = DataBaseHelper.ToDbFieldName(Field.Name);
+            if (repair || string.IsNullOrWhiteSpace(Field.DbType))
             {
                 RepairDbType();
             }
-            if (Property.IsPrimaryKey)
+            if (Field.IsPrimaryKey)
             {
-                Property.Nullable = false;
-                Property.DbNullable = false;
-                Property.CanEmpty = false;
+                Field.Nullable = false;
+                Field.DbNullable = false;
+                Field.CanEmpty = false;
             }
-            if (Property.DbType != null)
-                Property.DbType = Property.DbType.ToUpper();
+            if (Field.DbType != null)
+                Field.DbType = Field.DbType.ToUpper();
 
-            if (Property.Initialization == "getdate")
-                Property.Initialization = "now()";
+            if (Field.Initialization == "getdate")
+                Field.Initialization = "now()";
 
         }
 
         internal void RepairDbType()
         {
-            RobotCoder.DataTypeHelper.ToStandard(Property);
-            if (Property.DbType == null)
+            RobotCoder.DataTypeHelper.ToStandard(Field);
+            if (Field.DbType == null)
                 return;
             
-            switch (Property.DbType = Property.DbType.ToUpper())
+            switch (Field.DbType = Field.DbType.ToUpper())
             {
                 case "EMPTY":
-                    Property.NoStorage = true;
+                    Field.NoStorage = true;
                     break;
                 case "BINARY":
                 case "VARBINARY":
-                    if (Property.IsBlob)
+                    if (Field.IsBlob)
                     {
-                        Property.DbType = "LONGBLOB";
+                        Field.DbType = "LONGBLOB";
                     }
-                    else if (Property.Datalen >= 500)
+                    else if (Field.Datalen >= 500)
                     {
-                        Property.Datalen = 0;
-                        Property.DbType = "BLOB";
+                        Field.Datalen = 0;
+                        Field.DbType = "BLOB";
                     }
-                    else if (Property.Datalen <= 0)
+                    else if (Field.Datalen <= 0)
                     {
-                        Property.Datalen = 200;
+                        Field.Datalen = 200;
                     }
                     return;
                 case "CHAR":
                 case "VARCHAR":
                 case "NVARCHAR":
-                    if (Property.IsBlob)
+                    if (Field.IsBlob)
                     {
-                        Property.DbType = "LONGTEXT";
+                        Field.DbType = "LONGTEXT";
                     }
-                    else if (Property.IsMemo)
+                    else if (Field.IsMemo)
                     {
-                        Property.Datalen = 0;
-                        Property.DbType = "TEXT";
+                        Field.Datalen = 0;
+                        Field.DbType = "TEXT";
                     }
-                    else if (Property.Datalen >= 500)
+                    else if (Field.Datalen >= 500)
                     {
-                        Property.Datalen = 0;
-                        Property.DbType = "TEXT";
+                        Field.Datalen = 0;
+                        Field.DbType = "TEXT";
                     }
-                    else if (Property.Datalen <= 0)
+                    else if (Field.Datalen <= 0)
                     {
-                        Property.Datalen = 200;
+                        Field.Datalen = 200;
                     }
                     return;
             }

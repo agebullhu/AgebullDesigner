@@ -18,7 +18,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// ÏîÄ¿
         /// </summary>
-        [DataMember, JsonProperty("_project", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_project",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _project;
 
         /// <summary>

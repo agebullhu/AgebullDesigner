@@ -16,407 +16,91 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         protected override string FileSaveConfigName => "File_Model_MySqlAccess";
 
-        private string SqlCode()
+        private string Code()
         {
-            return $@"
-        #region 基本SQL语句
-
-        /// <summary>
-        /// 表的唯一标识
-        /// </summary>
-        public override int TableId => {Entity.EntityName}._DataStruct_.EntityIdentity;
-
-        /// <summary>
-        /// 读取表名
-        /// </summary>
-        protected sealed override string ReadTableName
-        {{
-            get
-            {{
-                return @""{Entity.ReadTableName}"";
-            }}
-        }}
-
-        /// <summary>
-        /// 写入表名
-        /// </summary>
-        protected sealed override string WriteTableName
-        {{
-            get
-            {{
-                return @""{Entity.SaveTable}"";
-            }}
-        }}
-
-        /// <summary>
-        /// 主键
-        /// </summary>
-        protected sealed override string PrimaryKey => {Entity.EntityName}._DataStruct_.EntityPrimaryKey;
-
-        /// <summary>
-        /// 全表读取的SQL语句
-        /// </summary>
-        protected sealed override string FullLoadFields
-        {{
-            get
-            {{
-                return @""{SqlMomentCoder.LoadSql(PublishDbFields)}"";
-            }}
-        }}
-
-        
-
-        /// <summary>
-        /// 插入的SQL语句
-        /// </summary>
-        protected sealed override string InsertSqlCode
-        {{
-            get
-            {{
-                return $@""{InsertSql()}"";
-            }}
-        }}
-
-        /// <summary>
-        /// 全部更新的SQL语句
-        /// </summary>
-        protected sealed override string UpdateSqlCode
-        {{
-            get
-            {{
-                return $@""{UpdateSql()}"";
-            }}
-        }}
-
-        /*// <summary>
-        /// 取得仅更新的SQL语句
-        /// </summary>
-        public string GetModifiedSqlCode({Entity.EntityName} data)
-        {{
-            if (data.__EntityStatusNull || !data.__EntityStatus.IsModified)
-                return "";"";
-            StringBuilder sql = new StringBuilder();{UpdateSqlByModify()}
-            return sql.ToString();
-        }}*/
-
-        #endregion
-";
-        }
-
-        private string SimpleCode()
-        {
-            var fields = Entity.DbFields.Where(p => p.ExtendConfigListBool["easyui", "simple"]).ToArray();
-            if (fields.Length == 0)
-                return "";
-            var code = new StringBuilder();
-            code.Append($@"
-        #region 简单读取
-
-        /// <summary>
-        /// SQL语句
-        /// </summary>
-        public override string SimpleFields
-        {{
-            get
-            {{
-                return @""{SqlMomentCoder.LoadSql(fields)}"";
-            }}
-        }}
-
-
-        /// <summary>
-        /// 载入数据
-        /// </summary>
-        /// <param name=""reader"">数据读取器</param>
-        /// <param name=""entity"">读取数据的实体</param>
-        public override void SimpleLoad(MySqlDataReader reader,{Entity.EntityName} entity)
-        {{");
-            int idx = 0;
-            foreach (var field in fields)
-            {
-                SqlMomentCoder.FieldReadCode(Entity, field, code, idx++);
-            }
-            code.Append(@"
-        }
-
-        #endregion");
-            return code.ToString();
-        }
-
-        private string BaseCode()
-        {
-            StringBuilder alias = new StringBuilder();
-            if (!string.IsNullOrWhiteSpace(Entity.Alias))
-            {
-                alias.Append($@"
-    /// <summary>
-    /// {Entity.Description} 别名
-    /// </summary>
-    {(Entity.IsInternal ? "internal" : "public")} sealed class {Entity.Alias}DataAccess : {Entity.Name}DataAccess
-    {{
-    }}");
-            }
-
-            //{CreateScope()}
-            var innerCode = $@"
-{SqlCode()}
-{FieldCode()}
-        #region 方法实现
-{LoadEntityCode()}
-{GetDbTypeCode()}
-{CreateFullSqlParameter()}
-{UpdateCode()}
-{InsertCode()}
-
-        #endregion
-{SimpleCode()}
-";
-
             return $@"#region
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Runtime.Serialization;
-using System.IO;
-using MySql.Data.MySqlClient;
-using Newtonsoft.Json;
-
-using MySql.Data.MySqlClient;
-using Agebull.EntityModel.MySql;
-
-using Agebull.Common;
+using System.Data.Common;
+using System.Threading.Tasks;
+using MySqlConnector;
 
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Interfaces;
 {Project.UsingNameSpaces}
-using {SolutionConfig.Current.NameSpace}.DataAccess;
 
 #endregion
-
-namespace {NameSpace}.DataAccess
+namespace {SolutionConfig.Current.NameSpace}.DataAccess;
 {{
     /// <summary>
-    /// {Entity.Description}
+    /// {Model.Description}
     /// </summary>
-    {(Entity.IsInternal ? "internal" : "public")} partial class {Entity.Name}DataAccess
+    public sealed class {Model.Name}DataOperator : IDataOperator<{Model.EntityName}> , IEntityOperator<{Model.EntityName}>
     {{
         /// <summary>
-        /// 构造
+        /// 驱动提供者信息
         /// </summary>
-        public {Entity.Name}DataAccess()
-        {{
-            Name = {Entity.EntityName}._DataStruct_.EntityName;
-            Caption = {Entity.EntityName}._DataStruct_.EntityCaption;
-            Description = {Entity.EntityName}._DataStruct_.EntityDescription;
-        }}
-        {innerCode}
-    }}{alias}
-{DataBaseExtend()}
-}}
-";
-        }
+        public DataAccessProvider<{Model.EntityName}> Provider {{ get; set; }}
 
         /// <summary>
-        ///     生成基础代码
+        /// 配置信息
         /// </summary>
-        protected override void CreateBaCode(string path)
-        {
-            var file = Path.Combine(path, Entity.Name + "DataAccess.Designer.cs");
+        internal static DataAccessOption Option = new DataAccessOption
+        {{
+            NoInjection = true,
+            UpdateByMidified = false,
+            LoadFields = LoadFields,
+            UpdateFields = UpdateFields,
+            InsertSqlCode = InsertSqlCode,
+            DataSturct = {Project.DataBaseObjectName}.{Model.Name}_Struct_.Struct
+        }};
 
-            if (Entity.NoDataBase)
-            {
-                if (File.Exists(file))
-                {
-                    Directory.Move(file, file + ".bak");
-                }
-                else if (!string.IsNullOrWhiteSpace(Entity.Alias))
-                {
-                    var oldFile = Path.Combine(path, Entity.Alias + "DataAccess.Designer.cs");
-                    if (File.Exists(oldFile))
-                    {
-                        Directory.Move(oldFile, file + ".bak");
-                    }
-                }
-                return;
-            }
-            if (!string.IsNullOrWhiteSpace(Entity.Alias))
-            {
-                var oldFile = Path.Combine(path, Entity.Alias + "DataAccess.Designer.cs");
-                if (File.Exists(oldFile))
-                {
-                    Directory.Move(oldFile, file);
-                }
-            }
-            SaveCode(file, BaseCode());
+        #region 基本SQL语句
+
+        /// <summary>
+        /// 读取的字段
+        /// </summary>
+        public const string LoadFields = @""{SqlMomentCoder.LoadSql(PublishDbFields)}"";
+
+        /// <summary>
+        /// 更新的字段
+        /// </summary>
+        public static string UpdateFields = $@""{UpdateFields()}"";
+
+        /// <summary>
+        /// 写入的Sql
+        /// </summary>
+        public static string InsertSqlCode => $@""{InsertSql()}"";
+
+        #endregion
+
+        #region 操作代码
+{GetDbTypeCode()}
+
+{LoadEntityCode()}
+
+{CreateFullSqlParameter()}
+
+{GetSetValues()}
+        #endregion
+    }}
+}}";
         }
 
         /// <summary>
         ///     生成扩展代码
         /// </summary>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
-            var file = Path.Combine(path, $"{Entity.Name}DataAccess.cs");
-            if (Entity.NoDataBase)
-            {
-                if (File.Exists(file))
-                {
-                    Directory.Move(file, file + ".bak");
-                }
-                else if (!string.IsNullOrWhiteSpace(Entity.Alias))
-                {
-                    var oldFile = Path.Combine(path, Entity.Alias + "DataAccess.cs");
-                    if (File.Exists(oldFile))
-                    {
-                        Directory.Move(oldFile, file + ".bak");
-                    }
-                }
-                return;
-            }
-            if (!string.IsNullOrWhiteSpace(Entity.Alias))
-            {
-                var oldFile = Path.Combine(path, Entity.Alias + "DataAccess.cs");
-                if (File.Exists(oldFile))
-                {
-                    Directory.Move(oldFile, file);
-                }
-            }
-            var code = CreateExtendCode();
-            SaveCode(file, code);
+            var file = Path.Combine(path, $"{Model.Name}DataAccess.cs");
+            SaveCode(file, Code());
         }
 
-        private string CreateExtendCode()
-        {
-            string baseClass = "MySqlTable";
-            if (Entity.Interfaces != null)
-            {
-                if (Entity.Interfaces.Contains("IRowScopeData"))
-                    baseClass = "RowScopeDataAccess";
-                //else if (Entity.Interfaces.Contains("IHistoryData"))
-                //    baseClass = "HitoryTable";
-                else if (Entity.Interfaces.Contains("IStateData"))
-                    baseClass = "DataStateTable";
-                else if (Entity.Interfaces.Contains("ILogicDeleteData"))
-                    baseClass = "LogicDeleteTable";
-            }
-            
-            var code = $@"#region
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Runtime.Serialization;
-using System.IO;
-using Newtonsoft.Json;
-
-using MySql.Data.MySqlClient;
-using Agebull.EntityModel.MySql;
-
-using Agebull.Common;
-
-using Agebull.EntityModel.Common;
-using Agebull.EntityModel.Interfaces;
-
-{Project.UsingNameSpaces}
-using {SolutionConfig.Current.NameSpace}.DataAccess;
-
-#endregion
-
-namespace {NameSpace}.DataAccess
-{{
-    /// <summary>
-    /// {Entity.Description}
-    /// </summary>
-    partial class {Entity.Name}DataAccess : {baseClass}<{Entity.EntityName},{Project.DataBaseObjectName}>
-    {{
-    }}
-}}";
-            return code;
-        }
-
-        /// <summary>
-        /// 字段唯一条件(主键或组合键)
-        /// </summary>
-        /// <returns></returns>
-        private string UniqueCondition()
-        {
-            var code = new StringBuilder();
-            if (!PublishDbFields.Any(p => p.UniqueIndex > 0))
-            {
-                code.Append($@"`{Entity.PrimaryColumn.DbFieldName}` = ?{Entity.PrimaryColumn.Name}");
-            }
-            else
-            {
-                var uniqueFields = PublishDbFields.Where(p => p.UniqueIndex > 0).OrderBy(p => p.UniqueIndex).ToArray();
-                var isFirst = true;
-                foreach (var col in uniqueFields)
-                {
-                    if (isFirst)
-                    {
-                        isFirst = false;
-                    }
-                    else
-                    {
-                        code.Append(" AND ");
-                    }
-
-                    code.Append($"`{col.DbFieldName}`=?{col.Name}");
-                }
-            }
-            if (Entity.Interfaces?.Contains("IStateData") == true)
-            {
-                var f = Entity.Properties.FirstOrDefault(p => p.Name == "IsFreeze");
-                if (f != null)
-                    code.Append($@" AND `{f.DbFieldName}` = 0");
-                var s = Entity.Properties.FirstOrDefault(p => p.Name == "DataState");
-                if (s != null)
-                    code.Append($@" AND `{s.DbFieldName}` < 255");
-            }
-            return code.ToString();
-        }
         private string InsertSql()
-        {
-            return OnlyInsertSql();
-            /*if (!PublishDbFields.Any(p => p.UniqueIndex > 0))
-            {
-                return OnlyInsertSql();
-            }
-            var code = new StringBuilder();
-            code.Append($@"
-DECLARE ?__myId INT(4);
-SELECT ?__myId = `{Entity.PrimaryColumn.DbFieldName}` FROM `{{ContextWriteTable}}` WHERE {UniqueCondition()}");
-
-            code.Append($@"
-IF ?__myId IS NULL
-BEGIN{}
-    SET ?__myId = {(Entity.PrimaryColumn.IsIdentity ? "@@IDENTITY" : Entity.PrimaryColumn.PropertyName)};
-END
-ELSE
-BEGIN
-    SET ?{Entity.PrimaryColumn.PropertyName}=?__myId;{UpdateSql(true)}
-END
-SELECT ?__myId;");
-            return code.ToString();*/
-        }
-
-        private string OnlyInsertSql(bool isInner = false)
         {
             var sql = new StringBuilder();
             var columns = PublishDbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
-            sql.Append(@"
-INSERT INTO `{ContextWriteTable}`
+            sql.Append($@"
+INSERT INTO `{Model.SaveTableName}`
 (");
             var isFirst = true;
             foreach (var field in columns)
@@ -452,25 +136,13 @@ VALUES
             }
             sql.Append(@"
 );");
-            if (isInner)
-            {
-                sql.Replace("\n", "\n    ");
-            }
-            else if (Entity.PrimaryColumn.IsIdentity)
-            {
-                sql.Append(@"
-SELECT @@IDENTITY;");
-            }
-
             return sql.ToString();
         }
 
-        private string UpdateSql(bool isInner = false)
+        private string UpdateFields()
         {
             var sql = new StringBuilder();
-            IEnumerable<PropertyConfig> columns = PublishDbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
-            sql.Append(@"
-UPDATE `{ContextWriteTable}` SET");
+            IEnumerable<FieldConfig> columns = PublishDbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
             var isFirst = true;
             foreach (var field in columns)
             {
@@ -485,67 +157,8 @@ UPDATE `{ContextWriteTable}` SET");
                 sql.Append($@"
        `{field.DbFieldName}` = ?{field.Name}");
             }
-            sql.Append($@"
- WHERE {UniqueCondition()};");
-            if (isInner)
-            {
-                sql.Replace("\n", "\n    ");
-            }
             return sql.ToString();
         }
-
-        private string UpdateSqlByModify()
-        {
-            var code = new StringBuilder();
-            IEnumerable<PropertyConfig> columns = PublishDbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
-            code.Append(@"
-            sql.AppendLine(""UPDATE `{ContextWriteTable}` SET"");");
-
-
-            foreach (var field in columns)
-            {
-                code.Append($@"
-            //{field.Caption}
-            if (data.__EntityStatus.ModifiedProperties[{Entity.EntityName}._DataStruct_.Real_{field.Name}] > 0)
-                sql.AppendLine(""       `{field.DbFieldName}` = ?{field.Name}"");");
-            }
-            code.Append($@"
-            sql.Append("" WHERE {UniqueCondition()};"");");
-            return code.ToString();
-        }
-
-        private static string CustomName(PropertyConfig col, string pre)
-        {
-            return col.CustomType == null ? $"{pre}{col.Name}" : $"({col.CustomType}){pre}{col.Name}";
-        }
-
-        private static string PropertyName(PropertyConfig col, string pre)
-        {
-            return col.CustomType == null ? $"{pre}{col.Name}" : $"({col.CsType}){pre}{col.Name}";
-        }
-
-        /*private string CreateScope()
-        {
-            return $@"
-
-        /// <summary>
-        /// 构造一个缺省可用的数据库对象
-        /// </summary>
-        /// <returns></returns>
-        protected override MySqlDataBase CreateDefaultDataBase()
-        {{
-            return {Project.DataBaseObjectName}.Default ?? new {Project.DataBaseObjectName}();
-        }}
-        
-        /// <summary>
-        /// 生成数据库访问范围
-        /// </summary>
-        public static MySqlDataTableScope<{Entity.EntityName}> CreateScope()
-        {{
-            var db = {Project.DataBaseObjectName}.Default ?? new {Project.DataBaseObjectName}();
-            return MySqlDataTableScope<{Entity.EntityName}>.CreateScope(db, db.{Entity.Name.ToPluralism()});
-        }}";
-        }*/
 
         private string CreateFullSqlParameter()
         {
@@ -558,100 +171,25 @@ UPDATE `{ContextWriteTable}` SET");
         /// <param name=""entity"">实体对象</param>
         /// <param name=""cmd"">命令</param>
         /// <returns>返回真说明要取主键</returns>
-        public void CreateFullSqlParameter({Entity.EntityName} entity, MySqlCommand cmd)
+        public void SetEntityParameter({Model.EntityName} entity, MySqlCommand cmd)
         {{");
 
-            var isFirstNull = true;
             foreach (var field in PublishDbFields.OrderBy(p => p.Index))
             {
-                code.Append($@"
-            //{field.Index + 1:D2}:{field.Caption}({field.Name})");
                 if (!string.IsNullOrWhiteSpace(field.CustomType))
                 {
                     code.Append($@"
-            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)}){{ Value = (int)entity.{field.Name}}});");
-                    continue;
+            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"", ({field.CsType})entity.{field.Name}));");
                 }
-                switch (field.CsType)
+                else if (field.CsType.Equals("bool", StringComparison.OrdinalIgnoreCase))
                 {
-                    case "String":
-                    case "string":
-                        code.Append($@"
-            {(isFirstNull ? "var " : "")}isNull = string.IsNullOrWhiteSpace({CustomName(field, "entity.")});
-            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)} , isNull ? 10 : ({CustomName(field, "entity.")}).Length);
-            if(isNull)
-                parameter.Value = DBNull.Value;
-            else
-                parameter.Value = {PropertyName(field, "entity.")};
-            cmd.Parameters.Add(parameter);");
-                        break;
-                    case "byte[]":
-                    case "Byte[]":
-                        code.Append($@"
-            {(isFirstNull ? "var " : "")}isNull = {CustomName(field, "entity.")} == null || {CustomName(field, "entity.")}.Length == 0;
-            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)} , isNull ? 10 : {CustomName(field, "entity.")}.Length);
-            if(isNull)
-                parameter.Value = DBNull.Value;
-            else
-                parameter.Value = {PropertyName(field, "entity.")};
-            cmd.Parameters.Add(parameter);");
-                        break;
-                    case "DateTime":
-                        field.DbNullable = true;
-                        code.Append(field.Nullable
-                            ? $@"
-            {(isFirstNull ? "var " : "")}isNull = entity.{field.Name} == null || entity.{field.Name}.Value.Year < 1900;
-            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)});
-            if(isNull)
-                parameter.Value = DBNull.Value;
-            else
-                parameter.Value = entity.{field.Name};
-            cmd.Parameters.Add(parameter);"
-                            : $@"
-            {(isFirstNull ? "var " : "")}isNull = entity.{field.Name}.Year < 1900;
-            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)});
-            if(isNull)
-                parameter.Value = DBNull.Value;
-            else
-                parameter.Value = entity.{field.Name};
-            cmd.Parameters.Add(parameter);");
-                        break;
-                    case "bool":
-                        if (!field.Nullable)
-                        {
-                            code.Append($@"
-            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"",MySqlDbType.Byte) {{ Value = entity.{field.Name} ? (byte)1 : (byte)0 }});");
-                            continue;
-                        }
-                        code.Append($@"
-            {(isFirstNull ? "var " : "")}isNull = entity.{field.Name} == null;
-            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)});
-            if(isNull)
-                parameter.Value = DBNull.Value;
-            else
-                parameter.Value = entity.{field.Name} ? (byte)1 : (byte)0;
-            cmd.Parameters.Add(parameter);");
-                        break;
-                    default:
-                        if (!field.Nullable)
-                        {
-                            code.Append($@"
-            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)}){{ Value = entity.{field.Name}}});");
-                            continue;
-                        }
-                        code.Append($@"
-            {(isFirstNull ? "var " : "")}isNull = entity.{field.Name} == null;
-            {(isFirstNull ? "var " : "")}parameter = new MySqlParameter(""{field.Name}"",MySqlDbType.{MySqlHelper.ToSqlDbType(field)});
-            if(isNull)
-                parameter.Value = DBNull.Value;
-            else
-                parameter.Value = {PropertyName(field, "entity.")};
-            cmd.Parameters.Add(parameter);");
-                        break;
+                    code.Append($@"
+            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"", entity.{field.Name} ? (byte)1 : (byte)0));");
                 }
-                if (isFirstNull)
+                else
                 {
-                    isFirstNull = false;
+                    code.Append($@"
+            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"", entity.{field.Name}));");
                 }
             }
             code.Append(@"
@@ -659,68 +197,38 @@ UPDATE `{ContextWriteTable}` SET");
             return code.ToString();
         }
 
-        private string InsertCode()
-        {
-            return $@"
-
-        /// <summary>
-        /// 设置插入数据的命令
-        /// </summary>
-        /// <param name=""entity"">实体对象</param>
-        /// <param name=""cmd"">命令</param>
-        /// <returns>返回真说明要取主键</returns>
-        protected sealed override bool SetInsertCommand({Entity.EntityName} entity, MySqlCommand cmd)
-        {{
-            cmd.CommandText = InsertSqlCode;
-            CreateFullSqlParameter(entity, cmd);
-            return {Entity.PrimaryColumn.IsIdentity.ToString().ToLower()};
-        }}";
-        }
-
-        private string UpdateCode()
-        {
-            return
-                $@"
-
-        /// <summary>
-        /// 设置更新数据的命令
-        /// </summary>
-        /// <param name=""entity"">实体对象</param>
-        /// <param name=""cmd"">命令</param>
-        protected sealed override void SetUpdateCommand({Entity.EntityName} entity, MySqlCommand cmd)
-        {{
-            //cmd.CommandText = {(Entity.UpdateByModified ? "GetModifiedSqlCode(entity)" : "UpdateSqlCode")};
-            CreateFullSqlParameter(entity,cmd);
-        }}";
-        }
-
         private string GetDbTypeCode()
         {
             var code = new StringBuilder();
-            foreach (var field in PublishDbFields)
-            {
-                if(field.DbFieldName != field.Name)
-                    code.Append($@"
-                case ""{field.DbFieldName}"":");
-                code.Append($@"
-                case ""{field.Name}"":
-                    return MySqlDbType.{MySqlHelper.ToSqlDbType(field)};");
-            }
-
-            return
-                $@"
+            code.Append(@"
         /// <summary>
         /// 得到字段的DbType类型
         /// </summary>
         /// <param name=""field"">字段名称</param>
         /// <returns>参数</returns>
-        protected sealed override MySqlDbType GetDbType(string field)
-        {{
+        public int GetDbType(string field)
+        {
+            if(field == null) 
+               return (int)MySqlDbType.VarChar;
             switch (field)
-            {{{code}
-            }}
-            return MySqlDbType.VarChar;
-        }}";
+            {");
+            foreach (var field in PublishDbFields)
+            {
+                if (field.DbFieldName.ToLower() != field.Name.ToLower())
+                    code.Append($@"
+                case ""{field.DbFieldName.ToLower()}"":");
+
+                code.Append($@"
+                case ""{field.Name.ToLower()}"":
+                    return (int)MySqlDbType.{MySqlHelper.ToSqlDbType(field)};");
+            }
+
+            code.Append(@"
+                default:
+                    return (int)MySqlDbType.VarChar;
+            }
+        }");
+            return code.ToString();
         }
 
         private string LoadEntityCode()
@@ -731,19 +239,201 @@ UPDATE `{ContextWriteTable}` SET");
         /// <summary>
         /// 载入数据
         /// </summary>
-        /// <param name=""reader"">数据读取器</param>
+        /// <param name=""r"">数据读取器</param>
         /// <param name=""entity"">读取数据的实体</param>
-        protected sealed override void LoadEntity(MySqlDataReader reader,{Entity.EntityName} entity)
-        {{");
+        public async Task LoadEntity(DbDataReader r,{Model.EntityName} entity)
+        {{
+            var reader = r as MySqlDataReader;");
             int idx = 0;
             foreach (var field in PublishDbFields)
             {
-                SqlMomentCoder.FieldReadCode(Entity, field, code, idx++);
+                SqlMomentCoder.FieldReadCode(field, code, idx++);
             }
             code.Append(@"
         }");
             return code.ToString();
         }
-        
+
+
+        #region 名称值取置
+
+        /// <summary>
+        /// </summary>
+        /// <remarks></remarks>
+        /// <returns></returns>
+        private string GetSetValues()
+        {
+            var code = new StringBuilder();
+
+            code.Append($@"
+
+        /// <summary>
+        ///     读取属性值
+        /// </summary>
+        /// <param name=""entity""></param>
+        /// <param name=""property""></param>
+        object IEntityOperator<{Model.EntityName}>.GetValue({Model.EntityName} entity, string property)
+        {{
+            if (property == null) return null;
+            return (property.Trim().ToLower()) switch
+            {{");
+
+            foreach (var field in Model.LastProperties.Where(p => p.CanGet))
+            {
+                var names = field.GetAliasPropertys().Select(p => p.ToLower()).ToList();
+                var name = field.Name.ToLower();
+                if (!names.Contains(name))
+                    names.Add(name);
+                foreach (var alias in names)
+                    code.Append($@"
+                ""{alias}"" => entity.{field.PropertyName},");
+
+            }
+            code.AppendLine(@"
+                _ => null
+            };
+        }");
+
+            code.Append($@"    
+
+        /// <summary>
+        ///     设置属性值
+        /// </summary>
+        /// <param name=""entity""></param>
+        /// <param name=""property""></param>
+        /// <param name=""value""></param>
+        void IEntityOperator<{Model.EntityName}>.SetValue({Model.EntityName} entity, string property, object value)
+        {{
+            if(property == null)
+                return;
+            switch(property.Trim().ToLower())
+            {{");
+
+            foreach (var field in Model.LastProperties.Where(p => p.CanSet))
+            {
+                var names = field.GetAliasPropertys().Select(p => p.ToLower()).ToList();
+                var name = field.Name.ToLower();
+                if (!names.Contains(name))
+                    names.Add(name);
+                foreach (var alia in names)
+                    code.Append($@"
+            case ""{alia}"":");
+
+                if (!string.IsNullOrWhiteSpace(field.CustomType))
+                {
+                    code.Append($@"
+                if (value != null)
+                {{
+                    if(value is int)
+                    {{
+                        entity.{field.Name} = ({field.CustomType})(int)value;
+                    }}
+                    else if(value is {field.CustomType})
+                    {{
+                        entity.{field.Name} = ({field.CustomType})value;
+                    }}
+                    else
+                    {{
+                        var str = value.ToString();
+                        {field.CustomType} val;
+                        if ({field.CustomType}.TryParse(str, out val))
+                        {{
+                            entity.{field.Name} = val;
+                        }}
+                        else
+                        {{
+                            int vl;
+                            if (int.TryParse(str, out vl))
+                            {{
+                                entity.{field.Name} = ({field.CustomType})vl;
+                            }}
+                        }}
+                    }}
+                }}
+                return;");
+                    continue;
+                }
+
+                switch (field.CsType)
+                {
+                    case "bool":
+                    case "Boolean":
+                        code.Append($@"
+                if (value != null)
+                {{
+                    int vl;
+                    if (int.TryParse(value.ToString(), out vl))
+                    {{
+                        entity.{field.Name} = vl != 0;
+                    }}
+                    else
+                    {{
+                        entity.{field.Name} = Convert.ToBoolean(value);
+                    }}
+                }}
+                return;");
+                        continue;
+                    case "int":
+                    case "long":
+                        code.Append($@"
+                entity.{field.Name} = ({field.CsType})Convert.ToDecimal(value);
+                return;");
+                        break;
+                    default:
+                        code.Append($@"
+                entity.{field.Name} = {ConvertCode(field, "value")};
+                return;");
+                        break;
+                }
+            }
+            code.AppendLine(@"
+            }
+        }");
+
+            return code.ToString();
+        }
+
+
+        private string ConvertCode(FieldConfig column, string arg)
+        {
+            switch (column.CsType)
+            {
+                case "string":
+                case "String":
+                    return $"{arg} == null ? null : {arg}.ToString()";
+                case "long":
+                case "Int64":
+                    if (column.Nullable)
+                        return $"{arg} == null ? null : (long?)Convert.ToInt64({arg})";
+                    return $"Convert.ToInt64({arg})";
+                case "int":
+                case "Int32":
+                    if (column.Nullable)
+                        return $"{arg} == null ? null : (int?)Convert.ToInt32({arg})";
+                    return $"Convert.ToInt32({arg})";
+                case "decimal":
+                case "Decimal":
+                    if (column.Nullable)
+                        return $"{arg} == null ? null : (decimal?)Convert.ToDecimal({arg})";
+                    return $"Convert.ToDecimal({arg})";
+                case "float":
+                case "Float":
+                    if (column.Nullable)
+                        return $"{arg} == null ? null : (float?)Convert.ToSingle({arg})";
+                    return $"Convert.ToSingle({arg})";
+                case "bool":
+                case "Boolean":
+                    if (column.Nullable)
+                        return $"{arg} == null ? null : (bool?)Convert.ToBoolean({arg})";
+                    return $"Convert.ToBoolean({arg})";
+                case "DateTime":
+                    if (column.Nullable)
+                        return $"{arg} == null ? null : (DateTime?)Convert.ToDateTime({arg})";
+                    return $"Convert.ToDateTime({arg})";
+            }
+            return $"({column.LastCsType}){arg}";
+        }
+
+        #endregion
     }
 }

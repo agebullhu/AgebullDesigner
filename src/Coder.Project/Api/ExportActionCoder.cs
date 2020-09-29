@@ -23,9 +23,9 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public string BaseCode(EntityConfig entity)
+        public string BaseCode(ModelConfig entity)
         {
-            Entity = entity;
+            Model = entity;
             using var scope= CodeGeneratorScope.CreateScope(entity);
             return BaseCode();
         }
@@ -41,18 +41,18 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// <summary>
         ///     生成基础代码
         /// </summary>
-        protected override void CreateBaCode(string path)
+        protected override void CreateDesignerCode(string path)
         {
-            if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
+            if (Model.IsInternal || Model.NoDataBase || Model.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
-            var file = ConfigPath(Entity, "File_Web_Api_cs", path, Entity.Name, Entity.Name);
+            var file = ConfigPath(Model, "File_Web_Api_cs", path, Model.Name, Model.Name);
             WriteFile(file + "Export.cs", BaseCode());
         }
 
         /// <summary>
         ///     生成扩展代码
         /// </summary>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
         }
 
@@ -86,32 +86,32 @@ using Gboxt.Common.DataModel;
 
 using {NameSpace}.DataAccess;
 
-namespace {NameSpace}.{Entity.Name}Page
+namespace {NameSpace}.{Model.Name}Page
 {{
     /// <summary>
-    /// {Entity.Caption}
+    /// {Model.Caption}
     /// </summary>
-    public class ExportAction : ExportPageBase<{Entity.EntityName}, {Entity.Name}DataAccess>
+    public class ExportAction : ExportPageBase<{Model.EntityName}, {Model.Name}DataAccess>
     {{
         /// <summary>
         /// 导出表名称
         /// </summary>
-        protected override string Name => ""{Entity.Caption}"";
+        protected override string Name => ""{Model.Caption}"";
 
         /// <summary>
         /// 当前数据筛选器
         /// </summary>
         /// <returns></returns>
-        protected override LambdaItem<{Entity.EntityName}> GetFilter()
+        protected override LambdaItem<{Model.EntityName}> GetFilter()
         {{
-            var filter = new LambdaItem<{Entity.EntityName}>
+            var filter = new LambdaItem<{Model.EntityName}>
             {{
                 {(
-                Entity.Interfaces?.Contains("IStateData") ?? false 
+                Model.Interfaces?.Contains("IStateData") ?? false 
                     ? "Root = p => p.DataState <= DataStateType.Discard" 
                     : null
                 )}
-            }};{new ProjectApiActionCoder { Entity = Entity }.QueryCode()}
+            }};{new ProjectApiActionCoder { Model = Model }.QueryCode()}
             return filter;
         }}
     }}

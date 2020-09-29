@@ -30,14 +30,14 @@ namespace Agebull.EntityModel.RobotCoder
         public override string ToString()
         {
             return $@""");
-            foreach (var field in Entity.CppProperty)
+            foreach (var field in Model.CppProperty)
                 ToStringCode(code, field);
             code.Append(@""";
         }");
             return code.ToString();
         }
 
-        private void ToStringCode(StringBuilder code, PropertyConfig field)
+        private void ToStringCode(StringBuilder code, FieldConfig field)
         {
             var caption = string.IsNullOrWhiteSpace(field.Caption) ? field.Name : field.Caption;
             if (string.IsNullOrWhiteSpace(field.ArrayLen))

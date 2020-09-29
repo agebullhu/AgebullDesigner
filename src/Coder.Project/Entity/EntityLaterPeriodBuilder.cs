@@ -36,14 +36,14 @@ namespace Agebull.EntityModel.RobotCoder
         /// </remarks>
         protected override void OnLaterPeriodBySignleModified(EntitySubsist subsist,byte[] modifieds)
         {");
-            if (!string.IsNullOrWhiteSpace(Entity.ModelBase))
+            if (!string.IsNullOrWhiteSpace(Model.ModelBase))
                 code.AppendLine(@"
             base.OnLaterPeriodBySignleModified(subsist,modifieds);");
 
             code.Append(@"
             if (subsist == EntitySubsist.Deleting)
             {");
-            foreach (PropertyConfig property in ReadWriteColumns)
+            foreach (var property in ReadWriteColumns)
             {
                 code.Append($@"
                 On{property.Name}Modified(subsist,false);");
@@ -62,7 +62,7 @@ namespace Agebull.EntityModel.RobotCoder
             }
             else if (subsist == EntitySubsist.Adding || subsist == EntitySubsist.Added)
             {");
-            foreach (PropertyConfig property in ReadWriteColumns)
+            foreach (var property in ReadWriteColumns)
             {
                 code.AppendFormat(@"
                 On{0}Modified(subsist,true);", property.Name);
@@ -84,7 +84,7 @@ namespace Agebull.EntityModel.RobotCoder
             else if(modifieds != null && modifieds[{Columns.Length}] > 0)
             {{");
 
-            foreach (PropertyConfig property in ReadWriteColumns)
+            foreach (var property in ReadWriteColumns)
             {
                 code.Append($@"
                 On{property.Name}Modified(subsist,modifieds[_DataStruct_.Real_{property.Name}] == 1);");
@@ -111,7 +111,7 @@ namespace Agebull.EntityModel.RobotCoder
             code.Append(@"
             }
         }");
-            foreach (PropertyConfig property in ReadWriteColumns)
+            foreach (var property in ReadWriteColumns)
             {
                 code.AppendFormat(@"
 

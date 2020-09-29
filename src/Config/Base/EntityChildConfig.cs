@@ -69,5 +69,6 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(Parent));
             }
         }
+
     }
 }

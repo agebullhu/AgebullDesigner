@@ -41,10 +41,10 @@ namespace Agebull.Common.Config.Designer
         /// <summary>
         /// 执行器
         /// </summary>
-        public override bool Execute(EntityConfig entity)
+        public override bool Execute(ModelConfig entity)
         {
             StateMessage = "正在检查:" + entity.Caption + "...";
-            bool re= DataBaseHelper.CheckFieldLink(entity);
+            bool re= DataBaseHelper.CheckFieldLink(entity.DbFields);
             StateMessage = "检查完成:" + entity.Caption;
             return re;
         }

@@ -29,7 +29,7 @@ namespace Agebull.EntityModel.RobotCoder
             var type = IsClient ? "EntityObjectBase" : "DataObjectBase";
             code.Append($@"
 
-        partial void CopyExtendValue({Entity.EntityName} source);
+        partial void CopyExtendValue({Model.EntityName} source);
 
         /// <summary>
         /// 复制值
@@ -38,16 +38,16 @@ namespace Agebull.EntityModel.RobotCoder
         protected override void CopyValueInner({type} source)
         {{");
 
-            if (!string.IsNullOrWhiteSpace(Entity.ModelBase))
+            if (!string.IsNullOrWhiteSpace(Model.ModelBase))
                 code.AppendLine(@"
             base.CopyValueInner(source);");
 
             code.Append($@"
-            var sourceEntity = source as {Entity.EntityName};
+            var sourceEntity = source as {Model.EntityName};
             if(sourceEntity == null)
                 return;");
 
-            foreach (PropertyConfig property in ReadWriteColumns)
+            foreach (var property in ReadWriteColumns)
             {
                 if (property.IsCustomCompute)
                 {
@@ -73,15 +73,15 @@ namespace Agebull.EntityModel.RobotCoder
         /// 复制
         /// </summary>
         /// <param name=""source"">复制的源字段</param>
-        public void Copy({Entity.EntityName} source)
+        public void Copy({Model.EntityName} source)
         {{");
 
-            if (!string.IsNullOrWhiteSpace(Entity.ModelBase))
+            if (!string.IsNullOrWhiteSpace(Model.ModelBase))
                 code.AppendLine(@"
             base.CopyValueInner(source);");
 
 
-            foreach (PropertyConfig property in ReadWriteColumns)
+            foreach (var property in ReadWriteColumns)
             {
                 code.Append($@"
                 this.{property.Name} = source.{property.Name};");

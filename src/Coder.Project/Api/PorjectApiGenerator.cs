@@ -17,25 +17,25 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
         /// <summary>
         ///     生成基础代码
         /// </summary>
-        protected override void CreateBaCode(string path)
+        protected override void CreateDesignerCode(string path)
         {
-            if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
+            if (Model.IsInternal || Model.NoDataBase || Model.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
-            var file = ConfigPath(Entity, "File_Web_Api_cs", path, Entity.Name, $"{Entity.Name}ApiController");
+            var file = ConfigPath(Model, "File_Web_Api_cs", path, Model.Name, $"{Model.Name}ApiController");
             var coder = new ProjectApiActionCoder();
-            WriteFile(file + ".Designer.cs", coder.BaseCode(Entity));
+            WriteFile(file + ".Designer.cs", coder.BaseCode(Model));
         }
 
         /// <summary>
         ///     生成扩展代码
         /// </summary>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
-            if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
+            if (Model.IsInternal || Model.NoDataBase || Model.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
-            var file = ConfigPath(Entity, "File_Web_Api_cs", path, Entity.Name, $"{Entity.Name}ApiController");
+            var file = ConfigPath(Model, "File_Web_Api_cs", path, Model.Name, $"{Model.Name}ApiController");
             var coder = new ProjectApiActionCoder();
-            WriteFile(file + ".cs", coder.ExtendCode(Entity));
+            WriteFile(file + ".cs", coder.ExtendCode(Model));
             //ExportCsCode(path);
         }
 

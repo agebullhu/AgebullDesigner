@@ -216,7 +216,7 @@ namespace Agebull.EntityModel.Designer
                 string t1 = row?.Cells[0].StringCellValue;
                 if (string.IsNullOrWhiteSpace(t1))
                     break;
-                PropertyConfig field = entity.Properties.FirstOrDefault(p => p.Name == t1);
+                var field = entity.Properties.FirstOrDefault(p => p.Name == t1);
                 if (field == null)
                     continue;
                 string c = row.Cells[1].StringCellValue;
@@ -468,7 +468,7 @@ namespace Agebull.EntityModel.Designer
                 else
                 {
                     Model.Context.CurrentTrace.TraceMessage.Track = "新增字段:" + field;
-                    entity.Add(new PropertyConfig
+                    entity.Add(new FieldConfig
                     {
                         Name = field,
                         Description = desc,

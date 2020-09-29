@@ -52,6 +52,11 @@
         /// <summary>
         ///     实体集合
         /// </summary>
+        NotificationList<ModelConfig> Models { get; }
+
+        /// <summary>
+        ///     实体集合
+        /// </summary>
         NotificationList<EntityConfig> Entities { get; }
 
         /// <summary>

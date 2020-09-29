@@ -15,7 +15,7 @@ namespace Agebull.EntityModel.Designer
         }
     }
 
-    internal class JsonModel : EntityDesignModel
+    internal class JsonModel : ModelDesignModel
     {
         #region ²Ù×÷ÃüÁî
 

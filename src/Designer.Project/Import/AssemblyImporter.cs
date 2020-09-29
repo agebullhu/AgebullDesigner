@@ -336,7 +336,7 @@ namespace Agebull.EntityModel.Designer
                 var col = entity.Properties.FirstOrDefault(p => string.Equals(name, p.Name, StringComparison.OrdinalIgnoreCase));
                 if (col == null)
                 {
-                    entity.Add(col = new PropertyConfig
+                    entity.Add(col = new FieldConfig
                     {
                         Name = name
                     });
@@ -362,7 +362,7 @@ namespace Agebull.EntityModel.Designer
                 var col = entity.Properties.FirstOrDefault(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
                 if (col == null)
                 {
-                    entity.Add(col = new PropertyConfig
+                    entity.Add(col = new FieldConfig
                     {
                         Name = field.Name
                     });
@@ -372,7 +372,7 @@ namespace Agebull.EntityModel.Designer
                 CheckPropertyType(type, entity, col, field, field.FieldType, jo != null, dc != null);
             }
         }
-        private static void CheckPropertyType(Type type,EntityConfig entity, PropertyConfig prperty, MemberInfo field, Type fieldType,bool json,bool dataMember)
+        private static void CheckPropertyType(Type type,EntityConfig entity, FieldConfig prperty, MemberInfo field, Type fieldType,bool json,bool dataMember)
         {
             try
             {
@@ -497,7 +497,7 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        private void GetInfo(PropertyConfig config, Type type, MemberInfo field)
+        private void GetInfo(FieldConfig config, Type type, MemberInfo field)
         {
             string name = $"{type.FullName}.{field.Name}";
             var member = XmlMember.Find(name);

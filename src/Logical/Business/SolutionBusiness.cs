@@ -63,6 +63,12 @@ namespace Agebull.EntityModel.Config
                     entity.Parent = project;
                     RepairEntityByLoad(entity, project);
                 }
+                foreach (var model in project.Models)
+                {
+                    model.Parent = project;
+                    RepairModelByLoad(model, project);
+                }
+
                 foreach (var cfg in project.ApiItems)
                 {
                     cfg.Parent = project;
@@ -168,11 +174,37 @@ namespace Agebull.EntityModel.Config
                 field.EnumConfig = Solution.Enums.FirstOrDefault(p => p.Name == field.CustomType);
 
             }
-            foreach (var cmd in entity.Commands)
+        }
+        private void RepairModelByLoad(ModelConfig model, ProjectConfig project)
+        {
+            foreach (var key in keys)
             {
-                cmd.Parent = entity;
+                if (model.Caption == null)
+                    model.Caption = model.Name;
+                if (model.Caption == null || model.Caption.Length < key.Length)
+                    continue;
+                var last = model.Caption.Substring(model.Caption.Length - key.Length, key.Length);
+                if (last == key)
+                {
+                    model.Caption = model.Caption.Substring(0, model.Caption.Length - key.Length) + "Êý¾Ý";
+                    break;
+                }
+            }
+            if (model.Tag == null)
+                model.Tag = project.Tag + "," + model.Name;
+
+            var array = model.Properties.OrderBy(p => p.Index).ToArray();
+
+            foreach (var property in model.Properties)
+            {
+                property.Model = model;
+            }
+            foreach (var cmd in model.Commands)
+            {
+                cmd.Parent = model;
             }
         }
+
         private void RepairIdentity(EntityConfig entity, ProjectConfig project, ref int typeid)
         {
             if (entity.Option.Index == 0)

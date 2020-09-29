@@ -69,7 +69,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         ///     生成扩展代码
         /// </summary>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
             var code = $@"#include <stdafx.h>
 #include ""ModelBase.h""
@@ -159,7 +159,7 @@ namespace GBS
         /// <summary>
         ///     生成扩展代码
         /// </summary>
-        protected override void CreateBaCode(string path)
+        protected override void CreateDesignerCode(string path)
         {
             var code = $@"#include <stdafx.h>
 #include ""ModelBase.h""

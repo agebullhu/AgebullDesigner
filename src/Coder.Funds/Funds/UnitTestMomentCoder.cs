@@ -267,9 +267,9 @@ bool api_ut_{api.Name}(EsTradeCommand& command)
             };
             return code.ToString();
         }
-        public static void GetCsRandomValue(StringBuilder code, PropertyConfig field, string entityName)
+        public static void GetCsRandomValue(StringBuilder code, FieldConfig field, string entityName)
         {
-            CppTypeHelper2.DoByCppType(field.Parent, field,
+            CppTypeHelper2.DoByCppType(field.Entity, field,
                 (pro, len) =>
                 {
                     int len2 = (len - 1) / 2;
@@ -345,9 +345,9 @@ bool api_ut_{api.Name}(EsTradeCommand& command)
         }
 
         private static readonly Random random = new Random((int)(DateTime.Now.Ticks % int.MaxValue));
-        public static void GetRandomValue(StringBuilder code, PropertyConfig field, string entityName)
+        public static void GetRandomValue(StringBuilder code, FieldConfig field, string entityName)
         {
-            CppTypeHelper2.DoByCppType(field.Parent, field,
+            CppTypeHelper2.DoByCppType(field.Entity, field,
                 (pro, len) =>
                 {
                     int len2 = (len - 1) / 2;
@@ -414,9 +414,9 @@ bool api_ut_{api.Name}(EsTradeCommand& command)
         }
 
 
-        public static void FieldCmp(StringBuilder code, PropertyConfig field)
+        public static void FieldCmp(StringBuilder code, FieldConfig field)
         {
-            CppTypeHelper2.DoByCppType(field.Parent, field,
+            CppTypeHelper2.DoByCppType(field.Entity, field,
                  (pro, len) =>
                  {
                      code.Append($@"

@@ -24,8 +24,31 @@ namespace Agebull.EntityModel.Config
         {
             return FirstOrDefault(Entities, func);
         }
+        
 
 
+        /// <summary>
+        ///     取得实体对象
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static ModelConfig GetModel(string name)
+        {
+            return name == null
+                ? null
+                : GetModel(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase))
+                ?? GetModel(p => string.Equals(p.ReadTableName, name, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>
+        ///     查找实体对象
+        /// </summary>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        public static ModelConfig GetModel(Func<ModelConfig, bool> func)
+        {
+            return FirstOrDefault(Models, func);
+        }
 
         /// <summary>
         ///     取得实体对象
@@ -158,6 +181,23 @@ namespace Agebull.EntityModel.Config
                 else
                 {
                     ConfigDictionary[option.Key] = option.Config;
+                }
+        }
+
+        /// <summary>
+        ///     加入配置
+        /// </summary>
+        /// <param name="option"></param>
+        public static void AddConfig(ConfigBase config)
+        {
+            lock (ConfigDictionary)
+                if (!ConfigDictionary.ContainsKey(config.Key))
+                {
+                    ConfigDictionary.Add(config.Key, config);
+                }
+                else
+                {
+                    ConfigDictionary[config.Key] = config;
                 }
         }
 
@@ -653,6 +693,11 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     实体集合
         /// </summary>
+        public static NotificationList<ModelConfig> Models => Global.Models;
+
+        /// <summary>
+        ///     实体集合
+        /// </summary>
         public static NotificationList<EntityConfig> Entities => Global.Entities;
 
         /// <summary>
@@ -734,12 +779,23 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 加入
         /// </summary>
+        /// <param name="entity"></param>
+        internal static void Add(ModelConfig entity)
+        {
+            if (entity == null)
+                return;
+            TryAdd(Models, entity);
+        }
+
+        /// <summary>
+        /// 加入
+        /// </summary>
         /// <param name="enumConfig"></param>
         internal static void Add(EnumConfig enumConfig)
         {
             if (enumConfig == null)
                 return;
-            TryAdd(Enums,enumConfig);
+            TryAdd(Enums, enumConfig);
         }
 
         /// <summary>
@@ -750,7 +806,7 @@ namespace Agebull.EntityModel.Config
         {
             if (api == null)
                 return;
-            TryAdd(ApiItems,api);
+            TryAdd(ApiItems, api);
         }
 
         /// <summary>
@@ -760,6 +816,14 @@ namespace Agebull.EntityModel.Config
         internal static void Remove(EntityConfig entity)
         {
             Remove(Entities, entity);
+        }
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="entity"></param>
+        internal static void Remove(ModelConfig entity)
+        {
+            Remove(Models, entity);
         }
 
         /// <summary>

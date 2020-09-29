@@ -17,10 +17,10 @@ namespace Agebull.EntityModel.Config
         /// <param name="entityAction">实体类型的动作(最后一个参数为是否数组)</param>
         /// <param name="stringAction">文本类型的动作(最后一个参数为是否数组)</param>
         /// <param name="generalAction">一般类型的动作(最后一个参数为是否数组)</param>
-        public static void DoByCppType(PropertyConfig field,
-            Action<PropertyConfig, EntityConfig, bool> entityAction,
-            Action<PropertyConfig> stringAction,
-            Action<PropertyConfig, string, bool> generalAction)
+        public static void DoByCppType(FieldConfig field,
+            Action<FieldConfig, EntityConfig, bool> entityAction,
+            Action<FieldConfig> stringAction,
+            Action<FieldConfig, string, bool> generalAction)
         {
             var type = ToCppLastType(field.CppLastType ?? field.CppType);
             if (type is EntityConfig stru)
@@ -66,11 +66,11 @@ namespace Agebull.EntityModel.Config
         ///	{
         ///	});
         /// </code>
-        public static void DoByCppType(EntityConfig entity, PropertyConfig field,
-            Action<PropertyConfig, int> stringAction,
-            Action<PropertyConfig, string, int> generalAction,
-            Action<PropertyConfig, EntityConfig, int> entityAction,
-            Action<PropertyConfig, EnumConfig, int> enumAction)
+        public static void DoByCppType(EntityConfig entity, FieldConfig field,
+            Action<FieldConfig, int> stringAction,
+            Action<FieldConfig, string, int> generalAction,
+            Action<FieldConfig, EntityConfig, int> entityAction,
+            Action<FieldConfig, EnumConfig, int> enumAction)
         {
             var type = ToCppLastType(field.CppLastType ?? field.CppType);
             if (type == null)
@@ -116,14 +116,14 @@ namespace Agebull.EntityModel.Config
                 return null;
             }
             cppType = cppType.Trim();
-            return GlobalConfig.GetEntity(cppType)?.CppName ?? cppType;
+            return GlobalConfig.GetModel(cppType)?.CppName ?? cppType;
         }
 
 
         public static string CppLastType(string cppType)
         {
             cppType = cppType.Trim();
-            var stru = GlobalConfig.GetEntity(cppType);
+            var stru = GlobalConfig.GetModel(cppType);
             if (stru != null)
             {
                 return stru.Name;
@@ -136,7 +136,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="property"></param>
         /// <returns></returns>
-        public static string CsTypeToCppType(PropertyConfig property)
+        public static string CsTypeToCppType(FieldConfig property)
         {
             switch (property.CsType.ToLower())
             {
@@ -155,7 +155,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="property"></param>
         /// <returns></returns>
-        public static string CppTypeToCsType(PropertyConfig property)
+        public static string CppTypeToCsType(FieldConfig property)
         {
             var type = property.CppTypeObject = ToCppLastType(property.CppLastType ?? property.CppType);
             switch (type)

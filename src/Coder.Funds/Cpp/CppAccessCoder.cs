@@ -16,7 +16,7 @@ namespace Agebull.EntityModel.RobotCoder
 
             sql.Append(@"SELECT ");
             var isFirst = true;
-            foreach (var field in Entity.CppProperty)
+            foreach (var field in Model.CppProperty)
             {
                 if (isFirst)
                 {
@@ -30,7 +30,7 @@ namespace Agebull.EntityModel.RobotCoder
     `{0}` AS `{1}`", field.DbFieldName, field.PropertyName);
             }
             sql.Append($@"
-    FROM `{Entity.ReadTableName}`
+    FROM `{Model.ReadTableName}`
     WHERE");
             sql.Replace("\r\n", "\"\\\r\n\"");
             return sql.ToString();
@@ -41,7 +41,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <returns></returns>
         private string DeleteSql()
         {
-            return $@"DELETE FROM `{Entity.ReadTableName}` WHERE %s;";
+            return $@"DELETE FROM `{Model.ReadTableName}` WHERE %s;";
         }
 
         #endregion
@@ -53,11 +53,11 @@ namespace Agebull.EntityModel.RobotCoder
         /// <returns></returns>
         private string UniqueCondition()
         {
-            if (!Entity.CppProperty.Any(p => p.UniqueIndex > 0))
-                return $@"`{Entity.PrimaryColumn.DbFieldName}` = %{Entity.PrimaryColumn.Index}%";
+            if (!Model.CppProperty.Any(p => p.UniqueIndex > 0))
+                return $@"`{Model.PrimaryColumn.DbFieldName}` = %{Model.PrimaryColumn.Index}%";
 
             var code = new StringBuilder();
-            var uniqueFields = Entity.CppProperty.Where(p => p.UniqueIndex > 0).OrderBy(p => p.UniqueIndex).ToArray();
+            var uniqueFields = Model.CppProperty.Where(p => p.UniqueIndex > 0).OrderBy(p => p.UniqueIndex).ToArray();
             var isFirst = true;
             foreach (var col in uniqueFields)
             {
@@ -78,7 +78,7 @@ namespace Agebull.EntityModel.RobotCoder
         {
             var sql = new StringBuilder();
             sql.AppendFormat(@"DECLARE ?__myId INT(4);
-SELECT ?__myId = `{0}` FROM `{1}` WHERE {2}", Entity.PrimaryColumn.DbFieldName, Entity.SaveTable, UniqueCondition());
+SELECT ?__myId = `{0}` FROM `{1}` WHERE {2}", Model.PrimaryColumn.DbFieldName, Model.SaveTable, UniqueCondition());
             sql.AppendFormat(@"
 IF ?__myId IS NULL
 BEGIN
@@ -93,8 +93,8 @@ END
 SELECT ?__myId;"
                 , IdInsertSql(true)
                 , UpdateSql(true)
-                , Entity.PrimaryColumn.PropertyName
-                , Entity.PrimaryColumn.IsIdentity ? "@@IDENTITY" : $"%{Entity.PrimaryColumn.Index}%");
+                , Model.PrimaryColumn.PropertyName
+                , Model.PrimaryColumn.IsIdentity ? "@@IDENTITY" : $"%{Model.PrimaryColumn.Index}%");
             sql.Replace("\r\n", "\"\\\r\n\"");
             return sql.ToString();
         }
@@ -102,9 +102,9 @@ SELECT ?__myId;"
         private string IdInsertSql(bool isInner = false)
         {
             var sql = new StringBuilder();
-            var columns = Entity.CppProperty.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
+            var columns = Model.CppProperty.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
             sql.AppendFormat(@"INSERT INTO `{0}`
-(", Entity.SaveTable);
+(", Model.SaveTable);
             var isFirst = true;
             foreach (var field in columns)
             {
@@ -145,7 +145,7 @@ VALUES
                 sql.Replace("\n", "\n    ");
                 return sql.ToString();
             }
-            if (Entity.PrimaryColumn.IsIdentity)
+            if (Model.PrimaryColumn.IsIdentity)
             {
                 sql.Append(@"
 SELECT @@IDENTITY;");
@@ -155,7 +155,7 @@ SELECT @@IDENTITY;");
         }
         private string InsertSql()
         {
-            return !Entity.CppProperty.Any(p => p.UniqueIndex > 0)
+            return !Model.CppProperty.Any(p => p.UniqueIndex > 0)
                 ? IdInsertSql()
                 : UniqueInsertSql();
         }
@@ -163,8 +163,8 @@ SELECT @@IDENTITY;");
         private string UpdateSql(bool isInner = false)
         {
             var sql = new StringBuilder();
-            IEnumerable<PropertyConfig> columns = Entity.CppProperty.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
-            sql.AppendFormat(@"UPDATE `{0}` SET", Entity.SaveTable);
+            IEnumerable<FieldConfig> columns = Model.CppProperty.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
+            sql.AppendFormat(@"UPDATE `{0}` SET", Model.SaveTable);
             var isFirst = true;
             foreach (var field in columns)
             {
@@ -193,7 +193,7 @@ SELECT @@IDENTITY;");
 
         private string SqlCode(string name)
         {
-            var columns = Entity.CppProperty.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
+            var columns = Model.CppProperty.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
 
             var code = new StringBuilder();
             code.Append($@"
@@ -224,22 +224,22 @@ SELECT @@IDENTITY;");
 
 /**
 * @brief 〖客户资金信息〗本机写入到REDIS
-* @param {{{Entity.Name}*}} field {Entity.Caption}对象指针
+* @param {{{Model.Name}*}} field {Model.Caption}对象指针
 * @return 无
 */
-void {Entity.Name}SqlAccess::WriteToRedis(const {Entity.Name}* field)
+void {Model.Name}SqlAccess::WriteToRedis(const {Model.Name}* field)
 {{
 
 }}
 
 /**
 * @brief 〖客户资金信息〗本机写入到REDIS
-* @param {{{Entity.PrimaryColumn.CppLastType}}} id 主键
-* @return {{{Entity.Name}*}} field {Entity.Caption}对象指针
+* @param {{{Model.PrimaryColumn.CppLastType}}} id 主键
+* @return {{{Model.Name}*}} field {Model.Caption}对象指针
 */
-std::shared_ptr<{Entity.Name}> {Entity.Name}SqlAccess::ReadFromRedis({Entity.PrimaryColumn.CppLastType} id)
+std::shared_ptr<{Model.Name}> {Model.Name}SqlAccess::ReadFromRedis({Model.PrimaryColumn.CppLastType} id)
 {{
-    return std::shared_ptr<{Entity.Name}>();
+    return std::shared_ptr<{Model.Name}>();
 }}
 /**
 * @brief 新增SQL语句格式代码
@@ -252,7 +252,7 @@ const boost::format sql_insert_fmt(
 * @param {{TData}} data 数据
 * @return {{string}} SQL语句
 */
-string {Entity.Name}SqlAccess::InsertSql({Entity.Name} data)
+string {Model.Name}SqlAccess::InsertSql({Model.Name} data)
 {{{SqlCode("sql_insert_fmt")}
 }}
 
@@ -267,7 +267,7 @@ const boost::format sql_update_fmt(
 * @param {{TData}} data 数据
 * @return {{string}} SQL语句
 */
-string {Entity.Name}SqlAccess::UpdateSql({Entity.Name} data)
+string {Model.Name}SqlAccess::UpdateSql({Model.Name} data)
 {{{SqlCode("sql_update_fmt")}
 }}
 
@@ -283,7 +283,7 @@ const boost::format sql_query_fmt(
 * @param {{string}} condition 查询条件
 * @return {{string}} SQL语句
 */
-string {Entity.Name}SqlAccess::QuerySql(string condition)
+string {Model.Name}SqlAccess::QuerySql(string condition)
 {{
     auto fmt(sql_query_fmt);
     fmt % condition;
@@ -299,7 +299,7 @@ const boost::format sql_delete_fmt(""{DeleteSql()}"");
 * @param {{string}} condition 删除条件
 * @return {{string}} SQL语句
 */
-string {Entity.Name}SqlAccess::DeleteSql(string condition)
+string {Model.Name}SqlAccess::DeleteSql(string condition)
 {{
     auto fmt(sql_delete_fmt);
     fmt % condition;
@@ -320,22 +320,22 @@ string {Entity.Name}SqlAccess::DeleteSql(string condition)
             var code = new StringBuilder();
             code.Append($@"
 /**
-* @brief {Entity.Name}数据模型封装类
+* @brief {Model.Name}数据模型封装类
 */
-class {Entity.Name}SqlAccess : public MySqlAccessBase<{Entity.Name}, 3>
+class {Model.Name}SqlAccess : public MySqlAccessBase<{Model.Name}, 3>
 {{
 public:
 	/**
 	* @brief 析构
 	*/
-	virtual ~{Entity.Name}SqlAccess()
+	virtual ~{Model.Name}SqlAccess()
 	{{
 	}}
 
 	/**
 	* @brief 默认构造
 	*/
-	{Entity.Name}SqlAccess()
+	{Model.Name}SqlAccess()
 	{{
 
     }}
@@ -343,23 +343,23 @@ public:
 
     /**
     * @brief 〖客户资金信息〗本机写入到REDIS
-    * @param {{{Entity.Name}*}} field {Entity.Caption}对象指针
+    * @param {{{Model.Name}*}} field {Model.Caption}对象指针
     * @return 无
     */
-    void WriteToRedis(const {Entity.Name}* field);
+    void WriteToRedis(const {Model.Name}* field);
 
     /**
     * @brief 〖客户资金信息〗本机写入到REDIS
-    * @param {{{Entity.PrimaryColumn.CppLastType}}} id 主键
-    * @return {{{Entity.Name}*}} field {Entity.Caption}对象指针
+    * @param {{{Model.PrimaryColumn.CppLastType}}} id 主键
+    * @return {{{Model.Name}*}} field {Model.Caption}对象指针
     */
-    std::shared_ptr<{Entity.Name}> ReadFromRedis({Entity.PrimaryColumn.CppLastType} id);
+    std::shared_ptr<{Model.Name}> ReadFromRedis({Model.PrimaryColumn.CppLastType} id);
 
 	/**
 	* @brief 复制构造
 	* @param {{shared_ptr<CDBMySQL>}} mysql 数据库对象
 	*/
-	{Entity.Name}SqlAccess(shared_ptr<CDBMySQL> mysql)
+	{Model.Name}SqlAccess(shared_ptr<CDBMySQL> mysql)
 		: MySqlAccessBase(mysql)
 	{{
 
@@ -367,17 +367,17 @@ public:
 
 	/**
 	* @brief 新增SQL语句生成
-	* @param {{{Entity.Name}}} data 数据
+	* @param {{{Model.Name}}} data 数据
 	* @return {{string}} SQL语句
 	*/
-	virtual string InsertSql({Entity.Name} data) override;
+	virtual string InsertSql({Model.Name} data) override;
 
 	/**
 	* @brief 更新SQL语句生成
-	* @param {{{Entity.Name}}} data 数据
+	* @param {{{Model.Name}}} data 数据
 	* @return {{string}} SQL语句
 	*/
-	virtual string UpdateSql({Entity.Name} data) override;
+	virtual string UpdateSql({Model.Name} data) override;
 
 	/**
 	* @brief 查询SQL语句生成
@@ -412,15 +412,15 @@ public:
         /// <summary>
         ///     生成实体代码
         /// </summary>
-        protected override void CreateBaCode(string path)
+        protected override void CreateDesignerCode(string path)
         {
             var code = new StringBuilder();
             code.Append($@"
-#ifndef _{Entity.Name.ToUpper()}_SQLACCESSL_H
-#define _{Entity.Name.ToUpper()}_SQLACCESSL_H
+#ifndef _{Model.Name.ToUpper()}_SQLACCESSL_H
+#define _{Model.Name.ToUpper()}_SQLACCESSL_H
 #pragma once
 
-#include ""{Entity.Name}.h""
+#include ""{Model.Name}.h""
 #include ""../mysql/MySqlAccessBase.h""
 using namespace GBS::Futures::DataModel;
 
@@ -452,20 +452,20 @@ using namespace GBS::Futures::DataModel;
 #endif");
 
 
-            SaveCode(Path.Combine(path, Entity.Name + "SqlAccess.h"), code.ToString());
+            SaveCode(Path.Combine(path, Model.Name + "SqlAccess.h"), code.ToString());
         }
 
 
         /// <summary>
         ///     生成扩展代码
         /// </summary>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
-            string file = Path.Combine(path, Entity.Name + "SqlAccess.cpp");
+            string file = Path.Combine(path, Model.Name + "SqlAccess.cpp");
 
             var code = new StringBuilder();
             code.Append($@"#include <stdafx.h>
-#include ""{Entity.Name}SqlAccess.h""
+#include ""{Model.Name}SqlAccess.h""
 using namespace GBS::Futures::DataModel;
 
 ");

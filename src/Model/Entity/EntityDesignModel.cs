@@ -12,11 +12,11 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// 实体配置相关模型
     /// </summary>
-    public class EntityDesignModel : DesignModelBase
+    public class ModelDesignModel : DesignModelBase
     {
         #region 操作命令
 
-        public EntityDesignModel()
+        public ModelDesignModel()
         {
             Model = DataModelDesignModel.Current;
             Context = DataModelDesignModel.Current?.Context;
@@ -73,7 +73,7 @@ namespace Agebull.EntityModel.Designer
                 commands.Add(new CommandItem
                 {
                     IsButton = true,
-                    Action = AddProperty,
+                    Action = AddField,
                     NoConfirm = true,
                     Caption = "新增字段",
                     Image = Application.Current.Resources["tree_Open"] as ImageSource
@@ -91,12 +91,13 @@ namespace Agebull.EntityModel.Designer
         }
 
         #endregion
+
         /// <summary>
         /// 复制字段
         /// </summary>
-        public void AddProperty(object arg)
+        public void AddField(object arg)
         {
-            var perperty = new PropertyConfig();
+            var perperty = new FieldConfig();
             if (CommandIoc.NewConfigCommand("新增字段", perperty))
                 Context.SelectEntity.Add(perperty);
         }
@@ -107,7 +108,7 @@ namespace Agebull.EntityModel.Designer
         public void CopyColumns(object arg)
         {
             Context.CopiedTable = Context.SelectEntity;
-            Context.CopyColumns = Context.SelectColumns.OfType<PropertyConfig>().ToList();
+            Context.CopyColumns = Context.SelectColumns.OfType<FieldConfig>().ToList();
             Context.StateMessage = $"复制了{Context.CopyColumns.Count}行";
         }
 
@@ -150,7 +151,7 @@ namespace Agebull.EntityModel.Designer
             {
                 return;
             }
-            foreach (var col in Context.SelectColumns.OfType<PropertyConfig>().ToArray())
+            foreach (var col in Context.SelectColumns.OfType<FieldConfig>().ToArray())
             {
                 Context.SelectEntity.Remove(col);
             }
@@ -159,18 +160,18 @@ namespace Agebull.EntityModel.Designer
 
         #region 复制
 
-        public void PateFields(bool toReference, EntityConfig source, EntityConfig Entity, List<PropertyConfig> columns)
+        public void PateFields(bool toReference, EntityConfig source, EntityConfig Entity, List<FieldConfig> columns)
         {
             foreach (var copyColumn in columns)
             {
-                var refe = toReference && !copyColumn.Parent.IsInterface;
-                PropertyConfig newColumn = null;
+                var refe = toReference && !copyColumn.Entity.IsInterface;
+                FieldConfig newColumn = null;
                 if (refe)
                 {
                     newColumn = Entity.Properties.FirstOrDefault(p => p.ReferenceKey == copyColumn.Key);
                     if (newColumn == null)
                     {
-                        string name = copyColumn.Parent.Name;
+                        string name = copyColumn.Entity.Name;
                         if (copyColumn.IsPrimaryKey)
                         {
                             newColumn = Entity.Properties.FirstOrDefault(p => p.LinkTable == name && p.IsLinkKey);
@@ -190,7 +191,7 @@ namespace Agebull.EntityModel.Designer
                 }
                 if (newColumn == null)
                 {
-                    newColumn = new PropertyConfig();
+                    newColumn = new FieldConfig();
                     newColumn.CopyFromProperty(copyColumn, false, true, true);
                     newColumn.Option.Index = newColumn.Option.Identity = 0;
                     
@@ -198,13 +199,13 @@ namespace Agebull.EntityModel.Designer
                     {
                         if (copyColumn.IsPrimaryKey)
                         {
-                            newColumn.Name = copyColumn.Parent.Name + "Id";
-                            newColumn.Caption = copyColumn.Parent.Caption + "外键";
+                            newColumn.Name = copyColumn.Entity.Name + "Id";
+                            newColumn.Caption = copyColumn.Entity.Caption + "外键";
                         }
                         else if (copyColumn.IsCaption)
                         {
-                            newColumn.Name = copyColumn.Parent.Name;
-                            newColumn.Caption = copyColumn.Parent.Caption;
+                            newColumn.Name = copyColumn.Entity.Name;
+                            newColumn.Caption = copyColumn.Entity.Caption;
                         }
                         newColumn.Option.IsLink = true;
                         newColumn.Option.ReferenceConfig = copyColumn;
@@ -236,7 +237,7 @@ namespace Agebull.EntityModel.Designer
                         }
                     }
                 }
-                newColumn.Parent = Entity;
+                newColumn.Entity = Entity;
                 newColumn.IsPrimaryKey = false;
                 newColumn.IsCaption = false;
                 if (newColumn.IsLinkKey)
@@ -247,5 +248,4 @@ namespace Agebull.EntityModel.Designer
 
         #endregion
     }
-
 }

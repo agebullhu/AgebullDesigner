@@ -23,8 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    
-    
+    <Compile Remove="Model\ModelDesignContext.cs" />
   </ItemGroup>
 
   <ItemGroup>

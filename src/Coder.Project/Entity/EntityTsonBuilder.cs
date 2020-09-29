@@ -37,12 +37,12 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 类型ID
         /// </summary>
-        public int TypeId => TYPE_INDEX_{Entity.Name.ToUpper()};
+        public int TypeId => TYPE_INDEX_{Model.Name.ToUpper()};
         
         /// <summary>
         /// 安全的缓存长度
         /// </summary>
-        public int SafeBufferLength => TSON_BUFFER_LEN_{Entity.Name.ToUpper()};
+        public int SafeBufferLength => TSON_BUFFER_LEN_{Model.Name.ToUpper()};
 
         /// <summary>
         /// 从TSON反序列化
@@ -54,7 +54,7 @@ namespace Agebull.EntityModel.RobotCoder
             {{
                 int idx = reader.ReadIndex();
                 switch (idx)
-                {{{DeserializeCode(Entity)}
+                {{{DeserializeCode(Model)}
                 }}
                 break;//错误发生时中止
             }}
@@ -66,8 +66,8 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         public void Serialize(TsonSerializer writer)
         {{
-            writer.Begin(TYPE_INDEX_{Entity.Name.ToUpper()}, 1);
-            {SerializeCode(Entity)}
+            writer.Begin(TYPE_INDEX_{Model.Name.ToUpper()}, 1);
+            {SerializeCode(Model)}
 
             writer.End();
         }}
@@ -87,36 +87,36 @@ namespace Agebull.EntityModel.RobotCoder
         #region 数据常量
 
         /// <summary>
-        /// {Entity.Name}类型代号
+        /// {Model.Name}类型代号
         /// </summary>
-        public const int TYPE_INDEX_{Entity.Name.ToUpper()} = 0x{Entity.Identity:X};
+        public const int TYPE_INDEX_{Model.Name.ToUpper()} = 0x{Model.Identity:X};
 
         /// <summary>
-        /// {Entity.Name}类型代号
+        /// {Model.Name}类型代号
         /// </summary>
-        public const int EntityId = 0x{Entity.Identity:X};");
-            foreach (PropertyConfig property in Entity.CppProperty)
+        public const int EntityId = 0x{Model.Identity:X};");
+            foreach (var property in Model.CppProperty)
             {
                 code.Append($@"
 
         /// <summary>
-        /// {Entity.Caption}-{property.Caption} 的字段索引
+        /// {Model.Caption}-{property.Caption} 的字段索引
         /// </summary>
-        public const byte FIELD_INDEX_{Entity.Name.ToUpper()}_{property.Name.ToUpper()} = 0x{property.Identity:X};");
+        public const byte FIELD_INDEX_{Model.Name.ToUpper()}_{property.Name.ToUpper()} = 0x{property.Identity:X};");
             }
             code.AppendLine($@"
 
         /// <summary>
-        /// {Entity.Caption}的合理序列化长度
+        /// {Model.Caption}的合理序列化长度
         /// </summary>
-        public const int TSON_BUFFER_LEN_{Entity.Name.ToUpper()} = {GetEntitySerializeLen(Entity)};
+        public const int TSON_BUFFER_LEN_{Model.Name.ToUpper()} = {GetEntitySerializeLen(Model)};
 
 
         #endregion 数据常量");
             return code.ToString();
         }
 
-        private static int GetEntitySerializeLen(EntityConfig entity)
+        private static int GetEntitySerializeLen(ModelConfig entity)
         {
             int len = entity.LastProperties.Count + 94;
             foreach (var property in entity.CppProperty)
@@ -126,7 +126,7 @@ namespace Agebull.EntityModel.RobotCoder
             return len;
         }
 
-        private static int GetFieldSerializeLen(PropertyConfig field)
+        private static int GetFieldSerializeLen(FieldConfig field)
         {
             int.TryParse(field.ArrayLen, out int len);
 
@@ -158,7 +158,7 @@ namespace Agebull.EntityModel.RobotCoder
                     return field.Datalen > 1 ? 1 + field.Datalen * 2 : 501;
 
             }
-            var entity = GlobalConfig.GetEntity(field.CsType);
+            var entity = GlobalConfig.GetModel(field.CsType);
             if (entity != null)
             {
                 return GetEntitySerializeLen(entity);
@@ -168,7 +168,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         #endregion
 
-        private string SerializeCode(EntityConfig entity)
+        private string SerializeCode(ModelConfig entity)
         {
             StringBuilder code = new StringBuilder();
             foreach (var field in entity.CppProperty)
@@ -181,7 +181,7 @@ namespace Agebull.EntityModel.RobotCoder
             //{field.Caption}
             if(this._{field.Name.ToLWord()} != {field.EnumConfig.Name}.{field.EnumConfig.Items[0].Name})
             {{
-                writer.WriteIndex(FIELD_INDEX_{Entity.Name.ToUpper()}_{field.Name.ToUpper()});
+                writer.WriteIndex(FIELD_INDEX_{Model.Name.ToUpper()}_{field.Name.ToUpper()});
                 writer.Write((int)this._{field.Name.ToLWord()});
             }}");
                 }
@@ -191,7 +191,7 @@ namespace Agebull.EntityModel.RobotCoder
             //{field.Caption}
             if(!writer.IsEmpty(this._{field.Name.ToLWord()}))
             {{
-                writer.WriteIndex(FIELD_INDEX_{Entity.Name.ToUpper()}_{field.Name.ToUpper()});
+                writer.WriteIndex(FIELD_INDEX_{Model.Name.ToUpper()}_{field.Name.ToUpper()});
                 writer.Write(this._{field.Name.ToLWord()});
             }}");
                 }
@@ -200,7 +200,7 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
 
-        private string DeserializeCode(EntityConfig entity)
+        private string DeserializeCode(ModelConfig entity)
         {
             StringBuilder code = new StringBuilder();
             foreach (var field in entity.CppProperty)
@@ -208,7 +208,7 @@ namespace Agebull.EntityModel.RobotCoder
                 if (!field.CanSet)
                     continue;
                 code.Append($@"
-                case FIELD_INDEX_{Entity.Name.ToUpper()}_{field.Name.ToUpper()}://{field.Caption}");
+                case FIELD_INDEX_{Model.Name.ToUpper()}_{field.Name.ToUpper()}://{field.Caption}");
                 if (field.EnumConfig != null)
                 {
                     code.Append($@"

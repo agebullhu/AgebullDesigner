@@ -28,7 +28,7 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// <summary>
         ///     生成实体代码
         /// </summary>
-        protected override void CreateBaCode(string path)
+        protected override void CreateDesignerCode(string path)
         {
             string code = $@"
 using System;
@@ -49,19 +49,19 @@ namespace {NameSpace}
 {{
     {EntityRemHeader}
     [DataContract,JsonObject(MemberSerialization.OptIn)]
-    public partial class {Entity.Name}
+    public partial class {Model.Name}
     {{
         {Properties()}
     }}
 }}";
-            var file = ConfigPath(Project, FileSaveConfigName, path, Entity.Classify, Entity.Name);
+            var file = ConfigPath(Project, FileSaveConfigName, path, Model.Classify, Model.Name);
             WriteFile(file + ".cs", code);
         }
 
         /// <summary>
         ///     生成扩展代码
         /// </summary>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
             string code = $@"using System;
 using System.Collections.Generic;
@@ -83,13 +83,13 @@ using Agebull.EntityModel.Common;
 
 namespace {NameSpace}
 {{
-    sealed partial class {Entity.Name} : IApiResultData , IApiArgument
+    sealed partial class {Model.Name} : IApiResultData , IApiArgument
     {{
         {ToData()}
         {ValidateCode()}
     }}
 }}";
-            var file = ConfigPath(Project, FileSaveConfigName, path, Entity.Classify, Entity.Name);
+            var file = ConfigPath(Project, FileSaveConfigName, path, Model.Classify, Model.Name);
             WriteFile(file + ".api.cs", code);
         }
 
@@ -102,7 +102,7 @@ namespace {NameSpace}
         private string Properties()
         {
             var code = new StringBuilder();
-            foreach (PropertyConfig property in Columns)//.Where(p => !p.NoneApiArgument)
+            foreach (var property in Columns)//.Where(p => !p.NoneApiArgument)
             {
                 string type = property.DataType == "ByteArray" ? "string" : property.LastCsType;
                 code.Append(PropertyHeader(property));
@@ -124,7 +124,7 @@ namespace {NameSpace}
 
         private string ToData()
         {
-            if (Entity.NoDataBase)
+            if (Model.NoDataBase)
                 return "";
             var code = new StringBuilder();
             int len = Columns.Max(p => p.Name.Length) + 2;
@@ -133,10 +133,10 @@ namespace {NameSpace}
 
         /// <summary>转为内部数据库对象</summary>
         /// <returns>内部数据库对象</returns>
-        public {Entity.EntityName} ToData => new {Entity.EntityName}
+        public {Model.EntityName} ToData => new {Model.EntityName}
         {{");
             bool isFirst = true;
-            foreach (PropertyConfig property in Columns.Where(p => !p.NoneApiArgument))
+            foreach (var property in Columns.Where(p => !p.NoneApiArgument))
             {
                 if (isFirst)
                     isFirst = false;
@@ -155,9 +155,9 @@ namespace {NameSpace}
 
         /// <summary>转为参数对象</summary>
         /// <returns>参数对象</returns>
-        public void FromData ({Entity.EntityName} data) 
+        public void FromData ({Model.EntityName} data) 
         {{");
-            foreach (PropertyConfig property in Columns.Where(p => !p.NoneApiArgument))
+            foreach (var property in Columns.Where(p => !p.NoneApiArgument))
             {
                 code.Append($@"
             {property.Name}");
@@ -173,10 +173,10 @@ namespace {NameSpace}
 
         /// <summary>转为参数对象</summary>
         /// <returns>参数对象</returns>
-        public static {Entity.Name} ToArgument ({Entity.EntityName} data) => new {Entity.Name}
+        public static {Model.Name} ToArgument ({Model.EntityName} data) => new {Model.Name}
         {{");
             isFirst = true;
-            foreach (PropertyConfig property in Columns.Where(p => !p.NoneApiArgument))
+            foreach (var property in Columns.Where(p => !p.NoneApiArgument))
             {
                 if (isFirst)
                     isFirst = false;
@@ -205,7 +205,7 @@ namespace {NameSpace}
 
         public string ValidateCode()
         {
-            var coder = new EntityValidateCoder { Entity = Entity };
+            var coder = new EntityValidateCoder { Model = Model };
             var code = coder.Code(Columns.Where(p => !p.NoneApiArgument));
             return $@"
         #region 数据校验

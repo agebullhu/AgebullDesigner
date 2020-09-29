@@ -15,7 +15,7 @@ namespace Agebull.EntityModel.RobotCoder
         private string Properties()
         {
             var code = new StringBuilder();
-            foreach (PropertyConfig field in Entity.PublishProperty)
+            foreach (var field in Model.PublishProperty)
             {
                 if (field.IsPrimaryKey)
                     continue;
@@ -47,9 +47,9 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         ///     生成实体代码
         /// </summary>
-        protected override void CreateBaCode(string path)
+        protected override void CreateDesignerCode(string path)
         {
-            string file = Path.Combine(path, Entity.Name + ".Interface.cs");
+            string file = Path.Combine(path, Model.Name + ".Interface.cs");
 
             string code = string.Format(@"using System;
 namespace {0}
@@ -67,8 +67,8 @@ namespace {0}
 
 }}"
                 , NameSpace
-                , Entity.Description
-                , Entity.Name
+                , Model.Description
+                , Model.Name
                 , Properties());
             SaveCode(file, code);
         }
@@ -76,7 +76,7 @@ namespace {0}
         /// <summary>
         ///     生成扩展代码
         /// </summary>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
         }
 

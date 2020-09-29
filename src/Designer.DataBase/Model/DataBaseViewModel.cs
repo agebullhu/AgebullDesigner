@@ -24,7 +24,7 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
         }
 
     }
-    internal class DataBaseModel : EntityDesignModel
+    internal class DataBaseModel : ModelDesignModel
     {
         #region ²Ù×÷ÃüÁî
 

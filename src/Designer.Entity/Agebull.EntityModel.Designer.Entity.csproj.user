@@ -4,4 +4,9 @@
     <ProjectView>ShowAllFiles</ProjectView>
     <ShowAllFiles>true</ShowAllFiles>
   </PropertyGroup>
+  <ItemGroup>
+    <Page Update="View\ModelFieldsPanel.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
 </Project>

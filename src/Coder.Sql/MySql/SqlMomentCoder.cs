@@ -169,36 +169,36 @@ TRUNCATE TABLE `{entity.SaveTable}`;
 DROP VIEW `{entity.ReadTableName}`;
 ";
         }
-        public static string CreateView(EntityConfig entity)
+        public static string CreateView(ModelConfig model)
         {
-            DataBaseHelper.CheckFieldLink(entity);
-            var array = entity.DbFields.Where(p => p.IsLinkField && !p.IsLinkKey).ToArray();
+            DataBaseHelper.CheckFieldLink(model.LastProperties);
+            var array = model.DbFields.Where(p => p.IsLinkField && !p.IsLinkKey).ToArray();
             if (array.Length == 0)
             {
-                return $"/**********{entity.Caption}**********没有字段引用其它表的无需视图**********/";
+                return $"/**********{model.Caption}**********没有字段引用其它表的无需视图**********/";
             }
-            var tables = entity.DbFields.Where(p => p.IsLinkField && !p.IsLinkKey).Select(p => p.LinkTable).Distinct().Select(GlobalConfig.GetEntity).ToDictionary(p => p.Name);
+            var tables = model.DbFields.Where(p => p.IsLinkField && !p.IsLinkKey).Select(p => p.LinkTable).Distinct().Select(GlobalConfig.GetEntity).ToDictionary(p => p.Name);
             if (tables.Count == 0)
             {
-                entity.ReadTableName = entity.SaveTable; ;
-                return $"/**********{entity.Caption}**********没有字段引用其它表的无需视图**********/";
+                model.ReadTableName = model.SaveTable; ;
+                return $"/**********{model.Caption}**********没有字段引用其它表的无需视图**********/";
             }
             string viewName;
-            if (IsNullOrWhiteSpace(entity.ReadTableName) || entity.ReadTableName == entity.SaveTable)
+            if (IsNullOrWhiteSpace(model.ReadTableName) || model.ReadTableName == model.SaveTable)
             {
-                viewName = DataBaseHelper.ToViewName(entity);
+                viewName = DataBaseHelper.ToViewName(model);
             }
             else
             {
-                viewName = entity.ReadTableName;
+                viewName = model.ReadTableName;
             }
             var builder = new StringBuilder();
             builder.Append($@"
-/*******************************{entity.Caption}*******************************/
+/*******************************{model.Caption}*******************************/
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS 
     SELECT ");
             bool first = true;
-            foreach (PropertyConfig field in entity.DbFields)
+            foreach (var field in model.DbFields)
             {
                 if (first)
                     first = false;
@@ -218,20 +218,20 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
                         }
                     }
                 }
-                builder.Append($@"`{entity.Name}`.`{field.DbFieldName}` as `{field.DbFieldName}`");
+                builder.Append($@"`{model.Name}`.`{field.DbFieldName}` as `{field.DbFieldName}`");
             }
             builder.Append($@"
-    FROM `{entity.SaveTable}` `{entity.Name}`");
+    FROM `{model.SaveTable}` `{model.Name}`");
             foreach (var table in tables.Values)
             {
-                var field = entity.DbFields.FirstOrDefault(p => p.IsLinkKey && (p.LinkTable == table.SaveTable || p.LinkTable == table.Name));
+                var field = model.DbFields.FirstOrDefault(p => p.IsLinkKey && (p.LinkTable == table.SaveTable || p.LinkTable == table.Name));
                 if (field == null)
                     continue;
                 var linkField = table.Properties.FirstOrDefault(p => p.Name == field.LinkField || p.DbFieldName == field.LinkField);
                 if (linkField == null)
                     continue;
                 builder.Append($@"
-    LEFT JOIN `{table.SaveTable}` `{table.Name}` ON `{entity.Name}`.`{field.DbFieldName}` = `{table.Name}`.`{linkField.DbFieldName}`");
+    LEFT JOIN `{table.SaveTable}` `{table.Name}` ON `{model.Name}`.`{field.DbFieldName}` = `{table.Name}`.`{linkField.DbFieldName}`");
             }
             builder.Append(';');
             builder.AppendLine();
@@ -298,7 +298,7 @@ CREATE TABLE `{0}`("
                 , entity.Caption);
 
             bool isFirst = true;
-            foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
+            foreach (var col in entity.DbFields.Where(p => !p.IsCompute))
             {
                 code.Append($@"
    {(isFirst ? "" : ",")}{FieldDefault(col)}");
@@ -328,7 +328,7 @@ CREATE TABLE `{0}`("
 /*{entity.Caption}*/
 ALTER TABLE `{entity.SaveTable}`");
             bool isFirst = true;
-            foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
+            foreach (var col in entity.DbFields.Where(p => !p.IsCompute))
             {
                 if (isFirst)
                     isFirst = false;
@@ -382,7 +382,7 @@ ALTER TABLE `{entity.SaveTable}`
 /*{entity.Caption}*/
 ALTER TABLE `{entity.SaveTable}`");
             bool isFirst = true;
-            foreach (PropertyConfig col in fields)
+            foreach (var col in fields)
             {
                 col.DbType = "BOOL";
                 col.Initialization = "0";
@@ -423,7 +423,7 @@ ALTER TABLE `{entity.SaveTable}`
 /*{entity.Caption}*/
 ALTER TABLE `{entity.SaveTable}`");
             bool isFirst = true;
-            foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
+            foreach (var col in entity.DbFields.Where(p => !p.IsCompute))
             {
                 if (isFirst)
                     isFirst = false;
@@ -447,7 +447,7 @@ ALTER TABLE `{entity.SaveTable}`");
 /*{entity.Caption}*/
 ALTER TABLE `{entity.SaveTable}`");
             bool isFirst = true;
-            foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
+            foreach (var col in entity.DbFields.Where(p => !p.IsCompute))
             {
                 if (isFirst)
                     isFirst = false;
@@ -472,17 +472,17 @@ ALTER TABLE `{entity.SaveTable}`
             return code.ToString();
         }
 
-        private static string FieldDefault(PropertyConfig col)
+        private static string FieldDefault(FieldConfig col)
         {
             return $"`{col.DbFieldName}` {MySqlHelper.ColumnType(col)}{NullKeyWord(col)} {ColumnDefault(col)} COMMENT '{col.Caption}'";
         }
 
-        private static string NullKeyWord(PropertyConfig col)
+        private static string NullKeyWord(FieldConfig col)
         {
             return col.CsType == "string" || col.DbNullable ? " NULL" : " NOT NULL";
         }
 
-        private static string ColumnDefault(PropertyConfig col)
+        private static string ColumnDefault(FieldConfig col)
         {
             if (col.IsIdentity)
                 return " AUTO_INCREMENT";
@@ -502,7 +502,7 @@ ALTER TABLE `{entity.SaveTable}`
 
         #region 数据读取
 
-        public static string LoadEntityCode(EntityConfig entity, IEnumerable<PropertyConfig> fields)
+        public static string LoadEntityCode(ModelConfig model, IEnumerable<FieldConfig> fields)
         {
             var code = new StringBuilder();
             code.Append($@"
@@ -512,19 +512,19 @@ ALTER TABLE `{entity.SaveTable}`
         /// </summary>
         /// <param name=""reader"">数据读取器</param>
         /// <param name=""entity"">读取数据的实体</param>
-        public void LoadEntity(MySqlDataReader reader,{entity.EntityName} entity)
+        public void LoadEntity(MySqlDataReader reader,{model.EntityName} entity)
         {{");
             int idx = 0;
             foreach (var field in fields)
             {
-                FieldReadCode(entity, field, code, idx++);
+                FieldReadCode(field, code, idx++);
             }
             code.Append(@"
         }");
             return code.ToString();
         }
 
-        public static string LoadSql(IEnumerable<PropertyConfig> fields)
+        public static string LoadSql(IEnumerable<FieldConfig> fields)
         {
             var sql = new StringBuilder();
 
@@ -540,7 +540,7 @@ ALTER TABLE `{entity.SaveTable}`
                     sql.Append(",");
                 }
                 sql.AppendFormat(@"
-    `{0}` AS `{1}`", field.DbFieldName, field.Name);
+    `{0}`", field.DbFieldName, field.Name);
             }
             return sql.ToString();
         }
@@ -552,178 +552,52 @@ ALTER TABLE `{entity.SaveTable}`
         /// <param name="field">字段</param>
         /// <param name="code">代码</param>
         /// <param name="idx"></param>
-        public static void FieldReadCode(EntityConfig entity, PropertyConfig field, StringBuilder code, int idx)
+        public static void FieldReadCode(FieldConfig field, StringBuilder code, int idx)
         {
+            if (field.CsType.ToLower() == "string")
+            {
+                switch (field.DbType.ToLower())
+                {
+                    case "char":
+                    case "varchar":
+                    case "text":
+                    case "longtext":
+                    case "varstring":
+                        code.Append($@"
+            if (reader.IsDBNull({idx}))
+                entity.{field.PropertyName} = null;
+            else
+                entity.{field.PropertyName} = await reader.GetFieldValueAsync<string>({idx});");
+                        break;
+                    default:
+                        code.Append($@"
+            if (reader.IsDBNull({idx}))
+                entity.{field.PropertyName} = null;
+            else
+                entity.{field.PropertyName} = (await reader.GetFieldValueAsync<{field.CsType}>({idx})).ToString();");
+                        break;
+                }
+                return;
+
+            }
+
             if (!IsNullOrWhiteSpace(field.CustomType))
             {
                 code.Append($@"
-            if (!reader.IsDBNull({idx}))
-                entity._{field.Name.ToLWord()} = ({field.CustomType})reader.GetInt32({idx});");
+            entity.{field.PropertyName} = ({field.CustomType})(await reader.GetFieldValueAsync<int>({idx}));");
                 return;
             }
-            var type = field.CsType.ToLower();
-            var dbType = field.DbType.ToLower();
-            switch (type)
-            {
-                case "byte[]":
-                    code.Append(field.IsImage
-                        ? $@"
-            if (GlobalContext.Current.Feature != 1 && !reader.IsDBNull({idx}))
-                entity._{field.Name.ToLWord()} = (byte[])reader[{idx}];"
-                        : $@"
-            if (!reader.IsDBNull({idx}))
-                entity._{field.Name.ToLWord()} = (byte[])reader[{idx}];");
-                    return;
-                case "string":
-                    switch (dbType)
-                    {
-                        case "varchar":
-                        case "varstring":
-                            code.Append($@"
-            if (!reader.IsDBNull({idx}))
-                entity._{field.Name.ToLWord()} = {ReaderName(field.DbType)}({idx});");
-                            break;
-                        default:
-                            code.Append($@"
-            if (!reader.IsDBNull({idx}))
-                entity._{field.Name.ToLWord()} = {ReaderName(field.DbType)}({idx}).ToString();");
-                            break;
-                    }
-                    return;
-            }
 
-            //if (field.DbNullable)
-            code.Append($@"
-            if (!reader.IsDBNull({idx}))
-                ");
-            //else
-            //    code.Append(@"
-            //    ");
+            if (field.DbNullable)
+                code.Append($@"
+            if (reader.IsDBNull({idx}))
+                entity.{field.PropertyName} = default;
+            else
+                entity.{field.PropertyName} = await reader.GetFieldValueAsync<{field.CsType}>({idx});");
+            else
+                code.Append($@"
+            entity.{field.PropertyName} = await reader.GetFieldValueAsync<{field.CsType}>({idx});");
 
-            switch (type)
-            {
-                case "decimal":
-                    code.Append($"entity._{field.Name.ToLWord()} ={ReaderName(field.DbType)}({idx});");
-                    return;
-                case "datetime":
-                    code.Append($"try{{entity._{field.Name.ToLWord()} = reader.GetMySqlDateTime({idx}).Value;}}catch{{}}");
-                    return;
-                case "bool":
-                    code.Append(BoolReader(field,idx));
-                    break;
-                default:
-                    code.Append(
-                        $"entity._{field.Name.ToLWord()} = ({field.CustomType ?? field.CsType}){ReaderName(field.DbType)}({idx});");
-                    break;
-            }
-
-        }
-
-
-        /// <summary>
-        ///     取得对应类型的DBReader的方法名称
-        /// </summary>
-        /// <param name="csharpType">C#的类型</param>
-        /// <param name="readerName">读取器的名称</param>
-        /// <returns>读取方法名</returns>
-        static string BoolReader(PropertyConfig field,int idx)
-        {
-            switch (field.DbType.ToLower())
-            {
-                case "bit":
-                case "bool":
-                case "boolean":
-                case "tinyint":
-                case "byte":
-                    return $"entity._{field.Name.ToLWord()} = reader.GetBoolean({idx});";
-                case "short":
-                case "int16":
-                    return $"entity._{field.Name.ToLWord()} = (int)reader.GetInt16({idx}) == 1;";
-                case "int":
-                case "int32":
-                    return $"entity._{field.Name.ToLWord()} = (int)reader.GetInt32({idx}) == 1;";
-                case "bigint":
-                case "long":
-                case "int64":
-                    return $"entity._{field.Name.ToLWord()} = (int)reader.GetInt64({idx}) == 1L;";
-                case "nchar":
-                case "varchar":
-                case "nvarchar":
-                case "string":
-                case "text":
-                    return @$"entity._{field.Name.ToLWord()} = (int)reader.GetString({idx}) == ""True"";";
-                default:
-                    return $"entity._{field.Name.ToLWord()} = (int)reader.GetInt32({idx}) == 1;";
-            }
-        }
-
-
-        /// <summary>
-        ///     取得对应类型的DBReader的方法名称
-        /// </summary>
-        /// <param name="csharpType">C#的类型</param>
-        /// <param name="readerName">读取器的名称</param>
-        /// <returns>读取方法名</returns>
-        static string ReaderName(string type, string readerName = "reader")
-        {
-            switch (type.ToLower())
-            {
-                case "bit":
-                case "bool":
-                case "boolean":
-                case "tinyint":
-                    return readerName + ".GetBoolean";
-
-                case "byte":
-                    return readerName + ".GetByte";
-
-                case "byte[]":
-                case "binary":
-                    return readerName + ".GetBytes";
-                case "char":
-                    return readerName + ".GetChar";
-
-                case "short":
-                case "int16":
-                    return readerName + ".GetInt16";
-
-                case "int":
-                case "int32":
-                    return readerName + ".GetInt32";
-
-                case "bigint":
-                case "long":
-                case "int64":
-                    return readerName + ".GetInt64";
-
-                case "datetime":
-                case "datetime2":
-                    return readerName + ".GetMySqlDateTime";
-
-                case "decimal":
-                case "numeric":
-                    return readerName + ".GetDecimal";
-
-                case "real":
-                case "double":
-                    return readerName + ".GetDouble";
-                case "float":
-                    return readerName + ".GetFloat";
-
-                case "guid":
-                case "uniqueidentifier":
-                    return readerName + ".GetGuid";
-
-                case "nchar":
-                case "varchar":
-                case "nvarchar":
-                case "string":
-                case "text":
-                    return readerName + ".GetString";
-
-                default:
-                    return $"/*({type})*/{readerName}.GetValue";
-            }
         }
 
         #endregion

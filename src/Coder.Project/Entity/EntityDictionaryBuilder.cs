@@ -52,7 +52,7 @@ namespace Agebull.EntityModel.RobotCoder
             switch(property)
             {");
 
-            foreach (PropertyConfig field in Columns)
+            foreach (var field in Columns)
             {
                 var names = field.GetAliasPropertys().Select(p => p.ToLower()).ToList();
                 var name = field.Name.ToLower();
@@ -69,7 +69,7 @@ namespace Agebull.EntityModel.RobotCoder
             }
             code.AppendLine(@"
             }");
-            code.AppendLine(!string.IsNullOrWhiteSpace(Entity.ModelBase)
+            code.AppendLine(!string.IsNullOrWhiteSpace(Model.ModelBase)
                 ? @"
             return base.GetValueInner(property);
         }"
@@ -89,7 +89,7 @@ namespace Agebull.EntityModel.RobotCoder
             switch(index)
             {");
 
-            foreach (PropertyConfig property in Entity.PublishProperty)
+            foreach (var property in Model.PublishProperty)
             {
                 code.AppendFormat(@"
                 case _DataStruct_.{0}:
@@ -97,7 +97,7 @@ namespace Agebull.EntityModel.RobotCoder
             }
             code.AppendLine(@"
             }");
-            code.Append(!string.IsNullOrWhiteSpace(Entity.ModelBase)
+            code.Append(!string.IsNullOrWhiteSpace(Model.ModelBase)
                 ? @"
             return base.GetValueInner(index);"
                 : @"
@@ -128,7 +128,7 @@ namespace Agebull.EntityModel.RobotCoder
             switch(property.Trim().ToLower())
             {");
 
-            foreach (PropertyConfig field in ReadWriteColumns)
+            foreach (var field in ReadWriteColumns)
             {
                 var names = field.GetAliasPropertys().Select(p => p.ToLower()).ToList();
                 var name = field.Name.ToLower();
@@ -208,7 +208,7 @@ namespace Agebull.EntityModel.RobotCoder
             code.AppendLine(@"
             }");
 
-            code.AppendLine(!string.IsNullOrWhiteSpace(Entity.ModelBase)
+            code.AppendLine(!string.IsNullOrWhiteSpace(Model.ModelBase)
                 ? @"
             base.SetValueInner(property,value);"
                 : @"
@@ -231,7 +231,7 @@ namespace Agebull.EntityModel.RobotCoder
             switch(index)
             {");
 
-            foreach (PropertyConfig field in ReadWriteColumns)
+            foreach (var field in ReadWriteColumns)
             {
                 if (!string.IsNullOrWhiteSpace(field.CustomType))
                 {
@@ -248,13 +248,13 @@ namespace Agebull.EntityModel.RobotCoder
             }
             code.Append(@"
             }");
-            if (!string.IsNullOrWhiteSpace(Entity.ModelBase))
+            if (!string.IsNullOrWhiteSpace(Model.ModelBase))
                 code.Append(@"
             base.SetValueInner(index,value);");
             code.AppendLine(@"
         }");
         }
-        private string ConvertCode(PropertyConfig column, string arg)
+        private string ConvertCode(FieldConfig column, string arg)
         {
             switch (column.CsType)
             {
@@ -316,7 +316,7 @@ namespace Agebull.EntityModel.RobotCoder
             switch(property.Trim().ToLower())
             {");
 
-            foreach (PropertyConfig field in ReadWriteColumns)
+            foreach (var field in ReadWriteColumns)
             {
                 var names = field.GetAliasPropertys().Select(p => p.ToLower()).ToList();
                 var name = field.Name.ToLower();

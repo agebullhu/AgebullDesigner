@@ -9,7 +9,7 @@ namespace Agebull.EntityModel.Config
     /// </summary>
     public static class CsharpHelper
     {
-        public static void CheckType(PropertyConfig column, string type)
+        public static void CheckType(FieldConfig column, string type)
         {
             column.Datalen = 0;
             column.IsDictionary = column.IsArray = false;
@@ -64,7 +64,7 @@ namespace Agebull.EntityModel.Config
             CheckValueType(column, ref valueType, code);
         }
 
-        private static void CheckValueType(PropertyConfig column, ref string valueType, StringBuilder code)
+        private static void CheckValueType(FieldConfig column, ref string valueType, StringBuilder code)
         {
             if (code.Length == 0)
                 return;
@@ -93,7 +93,7 @@ namespace Agebull.EntityModel.Config
             code.Clear();
         }
 
-        private static void CheckPropertyType(PropertyConfig column, string type)
+        private static void CheckPropertyType(FieldConfig column, string type)
         {
             switch (type.ToLower())
             {
@@ -227,8 +227,10 @@ namespace Agebull.EntityModel.Config
                     return csType;
             }
         }
-        public static string PropertyValueType(PropertyConfig col)
+        public static string PropertyValueType(FieldConfig col)
         {
+            if (col.IsEnum)
+                return "NumberEnum";
             switch (col.CsType.ToLower())
             {
                 case "bool":

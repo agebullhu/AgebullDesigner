@@ -8,7 +8,7 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// 属性配置触发器
     /// </summary>
-    public class PropertyTrigger : ConfigTriggerBase<PropertyConfig>
+    public class FieldTrigger : ConfigTriggerBase<FieldConfig>
     {
         protected override void OnLoad()
         {
@@ -24,7 +24,7 @@ namespace Agebull.EntityModel.Designer
         /// <param name="property"></param>
         protected override void OnPropertyChangedInner(string property)
         {
-            if (TargetConfig?.Parent == null)
+            if (TargetConfig?.Entity == null)
                 return;
             switch (property)
             {
@@ -52,11 +52,11 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        private void SyncLinkField(Action<PropertyConfig> action)
+        private void SyncLinkField(Action<FieldConfig> action)
         {
-            string saveTable = TargetConfig.Parent.SaveTable;
-            string name = TargetConfig.Parent.Name;
-            foreach (var entity in SolutionConfig.Current.Entities.Where(p => p != TargetConfig.Parent))
+            string saveTable = TargetConfig.Entity.SaveTable;
+            string name = TargetConfig.Entity.Name;
+            foreach (var entity in SolutionConfig.Current.Entities.Where(p => p != TargetConfig.Entity))
             {
                 foreach (var field in entity.Properties)
                 {
@@ -77,7 +77,7 @@ namespace Agebull.EntityModel.Designer
         /// <param name="newValue">新值</param>
         protected override void BeforePropertyChangedInner(string property, object oldValue, object newValue)
         {
-            if (TargetConfig?.Parent == null)
+            if (TargetConfig?.Entity == null)
                 return;
             switch (property)
             {

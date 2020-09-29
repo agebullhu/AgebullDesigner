@@ -12,18 +12,18 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 当前表对象
         /// </summary>
-        public EntityConfig Entity { get; set; }
+        public ModelConfig Model { get; set; }
 
-        public string Code(IEnumerable<PropertyConfig> fields)
+        public string Code(IEnumerable<FieldConfig> fields)
         {
             var code = new StringBuilder();
-            var configs = fields as PropertyConfig[] ?? fields.ToArray();
-            foreach (PropertyConfig field in configs.Where(p => !string.IsNullOrWhiteSpace(p.EmptyValue)))
+            var configs = fields as FieldConfig[] ?? fields.ToArray();
+            foreach (var field in configs.Where(p => !string.IsNullOrWhiteSpace(p.EmptyValue)))
             {
                 ConvertEmptyValue(code, field);
             }
 
-            foreach (PropertyConfig field in configs)
+            foreach (var field in configs)
             {
                 switch (field.CsType)
                 {
@@ -48,7 +48,7 @@ namespace Agebull.EntityModel.RobotCoder
             return code.ToString();
         }
 
-        static string EmptyCode(PropertyConfig field)
+        static string EmptyCode(FieldConfig field)
         {
             var msg = field["EmptyMessage"];
             return string.IsNullOrWhiteSpace(msg)
@@ -56,7 +56,7 @@ namespace Agebull.EntityModel.RobotCoder
                 : $"result.Add(\"{field.Caption}\",nameof({field.Name}),\"{msg}\");";
         }
 
-        private static void DateTimeCheck(StringBuilder code, PropertyConfig field)
+        private static void DateTimeCheck(StringBuilder code, FieldConfig field)
         {
             if (!field.CanEmpty || field.IsRequired)
             {
@@ -116,7 +116,7 @@ namespace Agebull.EntityModel.RobotCoder
             }");
         }
 
-        private static void NumberCheck(StringBuilder code, PropertyConfig field)
+        private static void NumberCheck(StringBuilder code, FieldConfig field)
         {
             if (field.Nullable && (!field.CanEmpty || field.IsRequired))
             {
@@ -176,7 +176,7 @@ namespace Agebull.EntityModel.RobotCoder
             }");
         }
 
-        private static void StringCheck(StringBuilder code, PropertyConfig field)
+        private static void StringCheck(StringBuilder code, FieldConfig field)
         {
             if (!field.CanEmpty || field.IsRequired)
             {
@@ -227,7 +227,7 @@ namespace Agebull.EntityModel.RobotCoder
             }
         }
 
-        private static void ConvertEmptyValue(StringBuilder code, PropertyConfig field)
+        private static void ConvertEmptyValue(StringBuilder code, FieldConfig field)
         {
             var ems = field.EmptyValue.Split(new[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
             code.Append(@"

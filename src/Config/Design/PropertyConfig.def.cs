@@ -24,7 +24,7 @@ namespace Agebull.EntityModel.Config
        /// <summary>
        /// 是否关系字段
        /// </summary>
-       [DataMember, JsonProperty("isRelationField", NullValueHandling = NullValueHandling.Ignore)]
+       [DataMember, JsonProperty("isRelationField",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
        internal bool _isRelationField;
 
        /// <summary>
@@ -51,7 +51,7 @@ namespace Agebull.EntityModel.Config
        /// <summary>
        /// 是否关系值
        /// </summary>
-       [DataMember, JsonProperty("isRelationValue", NullValueHandling = NullValueHandling.Ignore)]
+       [DataMember, JsonProperty("isRelationValue",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
        internal bool _isRelationValue;
 
        /// <summary>
@@ -78,7 +78,7 @@ namespace Agebull.EntityModel.Config
        /// <summary>
        /// 是否关系数组
        /// </summary>
-       [DataMember, JsonProperty("isRelationArray", NullValueHandling = NullValueHandling.Ignore)]
+       [DataMember, JsonProperty("isRelationArray",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
        internal bool _isRelationArray;
 
        /// <summary>
@@ -105,7 +105,7 @@ namespace Agebull.EntityModel.Config
        /// <summary>
        /// 是否扩展数组
        /// </summary>
-       [DataMember, JsonProperty("isExtendArray", NullValueHandling = NullValueHandling.Ignore)]
+       [DataMember, JsonProperty("isExtendArray",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
        internal bool _isExtendArray;
 
        /// <summary>
@@ -174,7 +174,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 扩展组合规划
         /// </summary>
-        [DataMember, JsonProperty("ExtendRole", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("ExtendRole",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _extendRole;
 
         /// <summary>
@@ -205,7 +205,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 值分隔符
         /// </summary>
-        [DataMember, JsonProperty("ValueSeparate", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("ValueSeparate",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _valueSeparate;
 
         /// <summary>
@@ -232,7 +232,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 数组分隔符
         /// </summary>
-        [DataMember, JsonProperty("ArraySeparate", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("ArraySeparate",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _arraySeparate;
 
         /// <summary>
@@ -264,7 +264,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 是否扩展数组
         /// </summary>
-        [DataMember, JsonProperty("ExtendArray", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("ExtendArray",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _extendArray;
 
         /// <summary>
@@ -300,7 +300,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 是否值对分隔方式
         /// </summary>
-        [DataMember, JsonProperty("IsKeyValueArray", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("IsKeyValueArray",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _isKeyValueArray;
 
         /// <summary>
@@ -336,7 +336,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 是否为关系表
         /// </summary>
-        [DataMember, JsonProperty("IsRelation", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("IsRelation",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _isRelation;
 
         /// <summary>
@@ -363,7 +363,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 扩展对象属性名称
         /// </summary>
-        [DataMember, JsonProperty("ExtendPropertyName", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("ExtendPropertyName",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _extendPropertyName;
 
         /// <summary>
@@ -390,7 +390,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 扩展对象对象名称
         /// </summary>
-        [DataMember, JsonProperty("ExtendClassName", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("ExtendClassName",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _extendClassName;
 
         /// <summary>
@@ -417,7 +417,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 扩展对象对象已定义
         /// </summary>
-        [DataMember, JsonProperty("ExtendClassIsPredestinate", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("ExtendClassIsPredestinate",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _extendClassIsPredestinate;
 
         /// <summary>

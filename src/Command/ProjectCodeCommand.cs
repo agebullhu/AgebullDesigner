@@ -63,7 +63,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public bool Validate(EntityConfig entity)
+        public bool Validate(ModelConfig entity)
         {
             return _builder.Validate(entity);
         }
@@ -71,7 +71,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 执行器
         /// </summary>
-        public bool ExecuteEntity(EntityConfig entity)
+        public bool ExecuteEntity(ModelConfig entity)
         {
             return Execute(entity);
         }
@@ -87,7 +87,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 执行器
         /// </summary>
-        public bool Execute(EntityConfig entity)
+        public bool Execute(ModelConfig entity)
         {
             StateMessage = "正在生成" + entity.Caption + "...";
             using (CodeGeneratorScope.CreateScope(entity))

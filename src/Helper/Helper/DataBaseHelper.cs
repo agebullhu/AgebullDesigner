@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -39,7 +40,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public static string ToViewName(EntityConfig entity) => "view_" + entity.Name.Replace("tb_", "");
+        public static string ToViewName(ModelConfig entity) => "view_" + entity.Name.Replace("tb_", "");
 
         /// <summary>
         /// 到标准数据表名称
@@ -54,11 +55,13 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 检查字段关联
         /// </summary>
-        public static bool CheckFieldLink(EntityConfig entity)
+        public static bool CheckFieldLink(IEnumerable<FieldConfig> fields)
         {
             bool hase = false;
-            foreach (var field in entity.Properties)
+            foreach (var field in fields)
             {
+                var entity = field.Entity;
+
                 if (entity.NoDataBase || string.IsNullOrWhiteSpace(field.LinkTable) ||
                     field.LinkTable == entity.Name || field.LinkTable == entity.ReadTableName ||
                     field.LinkTable == entity.SaveTableName)
@@ -67,14 +70,14 @@ namespace Agebull.EntityModel.Config
                     continue;
                 }
 
-                PropertyConfig pro = null;
+                FieldConfig pro = null;
                 if (field.Option.ReferenceKey != Guid.Empty)
                 {
-                    pro = GlobalConfig.GetConfig<PropertyConfig>(field.Option.ReferenceKey);
+                    pro = GlobalConfig.GetConfig<FieldConfig>(field.Option.ReferenceKey);
                 }
                 //if (pro != null && field.LinkField != null && field.LinkField != pro.Name)
                 //    pro = null;
-                if (pro == null || pro == field || pro.Parent == entity)
+                if (pro == null || pro == field || pro.Entity == entity)
                 {
                     var table = GlobalConfig.GetEntity(
                         p => string.Equals(p.Name, field.LinkTable, StringComparison.OrdinalIgnoreCase) ||
@@ -88,7 +91,7 @@ namespace Agebull.EntityModel.Config
                     }
                 }
 
-                if (pro?.Parent == null || pro == field || pro.Parent == entity || pro.Parent.IsInterface)
+                if (pro?.Entity == null || pro == field || pro.Entity == entity || pro.Entity.IsInterface)
                 {
                     SetNoLink(field);
                     continue;
@@ -100,7 +103,7 @@ namespace Agebull.EntityModel.Config
                 field.IsLinkKey = pro.IsPrimaryKey;
                 field.IsCompute = !field.IsLinkKey;
                 field.IsLinkCaption = pro.IsCaption;
-                field.LinkTable = pro.Parent.Name;
+                field.LinkTable = pro.Entity.Name;
                 field.LinkField = pro.Name;
                 field.NoStorage = false;
                 hase = true;
@@ -108,7 +111,7 @@ namespace Agebull.EntityModel.Config
             return hase;
         }
 
-        private static void SetNoLink(PropertyConfig field)
+        private static void SetNoLink(FieldConfig field)
         {
             field.LinkTable = field.LinkField = null;
             field.Option.ReferenceKey = Guid.Empty;

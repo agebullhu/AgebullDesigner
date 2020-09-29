@@ -106,7 +106,7 @@ namespace Agebull.EntityModel.Config.Sqlite
         ///     从C#的类型转为DBType
         /// </summary>
         /// <param name="field"> </param>
-        public static SqliteType ToSqlDbType(PropertyConfig field)
+        public static SqliteType ToSqlDbType(FieldConfig field)
         {
             switch (field.CsType)
             {
@@ -212,7 +212,7 @@ namespace Agebull.EntityModel.Config.Sqlite
         ///     从C#的类型转为SQLite的类型
         /// </summary>
         /// <param name="property">字段</param>
-        public static string ToDataBaseType(PropertyConfig property)
+        public static string ToDataBaseType(FieldConfig property)
         {
             if (string.IsNullOrWhiteSpace(property.CsType))
             {
@@ -362,7 +362,7 @@ namespace Agebull.EntityModel.Config.Sqlite
         ///     从C#的类型转为My sql的类型
         /// </summary>
         /// <param name="column"> C#的类型</param>
-        public static string ColumnType(PropertyConfig column)
+        public static string ColumnType(FieldConfig column)
         {
             switch (column.DbType.ToLower())
             {

@@ -76,7 +76,7 @@ namespace Agebull.EntityModel.Config
                 {
                     continue;
                 }
-                col.Parent = Entity;
+                col.Entity = Entity;
                 model.Property = col;
                 model.RepairCpp(repair, friend);
                 col.IsModify = true;

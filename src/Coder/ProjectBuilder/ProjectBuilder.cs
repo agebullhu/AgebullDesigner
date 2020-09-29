@@ -67,7 +67,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// 准备生成实体代码
         /// </summary>
         /// <param name="schema"></param>
-        public virtual bool Validate(EntityConfig schema)
+        public virtual bool Validate(ModelConfig schema)
         {
             return true;
         }
@@ -77,7 +77,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         /// <param name="project"></param>
         /// <param name="schema"></param>
-        public virtual void CreateEntityCode(ProjectConfig project, EntityConfig schema)
+        public virtual void CreateEntityCode(ProjectConfig project, ModelConfig schema)
         {
 
         }
@@ -123,6 +123,7 @@ namespace Agebull.EntityModel.RobotCoder
                 return Builders[type]();
             throw new ArgumentException("名称为" + type + "的项目生成器未注册");
         }
+
         /// <summary>
         /// 实体生成器的简单调用
         /// </summary>
@@ -130,16 +131,16 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="project"></param>
         /// <param name="schema"></param>
         /// <param name="path"></param>
-        protected static void CreateCode<TEntityCoder>(ProjectConfig project, EntityConfig schema, string path)
+        protected static void CreateCode<TEntityCoder>(ProjectConfig project, ModelConfig schema, string path)
             where TEntityCoder : CoderWithEntity, new()
         {
             var builder = new TEntityCoder
             {
-                Entity = schema,
+                Model = schema,
                 Project = project
             };
-            builder.CreateBaseCode(path);
-            builder.CreateExtendCode(path);
+            builder.WriteDesignerCode(path);
+            builder.WriteCustomCode(path);
         }
     }
 }

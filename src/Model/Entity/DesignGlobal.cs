@@ -103,6 +103,25 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     实体集合
         /// </summary>
+        private NotificationList<ModelConfig> _models;
+
+        /// <summary>
+        ///     实体集合
+        /// </summary>
+        NotificationList<ModelConfig> IDesignGlobal.Models
+        {
+            get
+            {
+                if (_models != null)
+                    return _models;
+                _models = new NotificationList<ModelConfig>();
+                return _models;
+            }
+        }
+
+        /// <summary>
+        ///     实体集合
+        /// </summary>
         private NotificationList<EntityConfig> _entities;
 
         /// <summary>

@@ -26,14 +26,32 @@ namespace Agebull.EntityModel.Config
             level = 0;
             switch (starting)
             {
+                case FieldConfig field:
+                    if (typeof(T) == typeof(EntityConfig))
+                    {
+                        DoAction(action, field.Entity);
+                    }
+                    if (typeof(T) == typeof(ProjectConfig))
+                    {
+                        DoAction(action, field?.Entity?.Parent);
+                    }
+                    else if (typeof(T) == typeof(FieldConfig))
+                    {
+                        DoAction(action, field.Entity?.Parent);
+                    }
+                    else
+                    {
+                        DoAction(action, field);
+                    }
+                    return;
                 case PropertyConfig property:
                     if (typeof(T) == typeof(EntityConfig))
                     {
-                        DoAction(action, property.Parent);
+                        DoAction(action, property.Field.Entity);
                     }
                     else if (typeof(T) == typeof(ProjectConfig))
                     {
-                        DoAction(action, property.Parent?.Parent);
+                        DoAction(action, property.Model?.Parent);
                     }
                     else
                     {
@@ -124,21 +142,39 @@ namespace Agebull.EntityModel.Config
             switch (starting)
             {
                 case PropertyConfig property:
+                    if (typeof(T) == typeof(ModelConfig))
+                    {
+                        DoAction(condition, action, property.Model);
+                    }
                     if (typeof(T) == typeof(EntityConfig))
                     {
-                        DoAction(condition, action, property.Parent);
+                        DoAction(condition, action, property.Field.Entity);
                     }
                     else if (typeof(T) == typeof(ProjectConfig))
                     {
-                        DoAction(condition, action, property.Parent?.Parent);
+                        DoAction(condition, action, property.Model?.Parent);
                     }
                     else
                     {
                         DoAction(condition, action, property);
                     }
                     return;
-                case UserCommandConfig cmd:
+                case FieldConfig field:
                     if (typeof(T) == typeof(EntityConfig))
+                    {
+                        DoAction(condition, action, field.Entity);
+                    }
+                    else if (typeof(T) == typeof(ProjectConfig))
+                    {
+                        DoAction(condition, action, field.Entity?.Parent);
+                    }
+                    else
+                    {
+                        DoAction(condition, action, field);
+                    }
+                    return;
+                case UserCommandConfig cmd:
+                    if (typeof(T) == typeof(ModelConfig))
                     {
                         DoAction(condition, action, cmd.Parent);
                     }
@@ -204,6 +240,21 @@ namespace Agebull.EntityModel.Config
             return builder.ToString();
         }*/
         private static void Foreach<T>(Action<T> action, EntityConfig entity)
+            where T : ConfigBase
+        {
+            if (entity.IsDiscard || entity.IsDelete)
+                return;
+            Trace.WriteLineIf(SolutionConfig.Current.DetailTrace, $"{entity.Caption}({entity.Name})", "配置遍历");
+            int lv = level;
+            DoAction(action, entity);
+            foreach (var property in entity.Properties)
+            {
+                level = lv + 1;
+                DoAction(action, property);
+            }
+            level = lv;
+        }
+        private static void Foreach<T>(Action<T> action, ModelConfig entity)
             where T : ConfigBase
         {
             if (entity.IsDiscard || entity.IsDelete)
@@ -315,6 +366,28 @@ namespace Agebull.EntityModel.Config
             level = lv;
         }
 
+        private static void Foreach<T>(Func<T, bool> condition, Action<T> action, ModelConfig entity)
+            where T : ConfigBase
+        {
+            if (entity.IsDiscard || entity.IsDelete)
+                return;
+            Trace.WriteLineIf(SolutionConfig.Current.DetailTrace, $"{entity.Caption}({entity.Name})", "配置遍历");
+            DoAction(condition, action, entity);
+            if (typeof(T) == typeof(ModelConfig))
+                return;
+            int lv = level;
+            foreach (var property in entity.Properties)
+            {
+                level = lv + 1;
+                DoAction(condition, action, property);
+            }
+            foreach (var cmd in entity.Commands)
+            {
+                level = lv + 1;
+                DoAction(action, cmd);
+            }
+            level = lv;
+        }
         private static void Foreach<T>(Func<T, bool> condition, Action<T> action, EntityConfig entity)
             where T : ConfigBase
         {
@@ -329,11 +402,6 @@ namespace Agebull.EntityModel.Config
             {
                 level = lv + 1;
                 DoAction(condition, action, property);
-            }
-            foreach (var cmd in entity.Commands)
-            {
-                level = lv + 1;
-                DoAction(action, cmd);
             }
             level = lv;
         }

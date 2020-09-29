@@ -34,7 +34,7 @@ namespace Agebull.EntityModel.RobotCoder.Cpp
             {
                 Project = project
             };
-            coder.CreateBaseCode(null);
+            coder.WriteDesignerCode(null);
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace Agebull.EntityModel.RobotCoder.Cpp
         /// </summary>
         /// <param name="project"></param>
         /// <param name="schema"></param>
-        public override void CreateEntityCode(ProjectConfig project, EntityConfig schema)
+        public override void CreateEntityCode(ProjectConfig project, ModelConfig schema)
         {
         }
     }

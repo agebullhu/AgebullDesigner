@@ -16,6 +16,7 @@ namespace Agebull.Common.Config.Designer.EasyUi
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
+            DesignerManager.Registe<ModelConfig, ModelFieldsPanel>("字段", "Model");
             DesignerManager.Registe<EntityConfig, FieldsPanel>("字段基本", "Entity");
             DesignerManager.Registe<EntityConfig, RegularPanel>("数据校验", "Entity");
             DesignerManager.Registe<EntityConfig, ModelCodePanel>("实体模型", "Entity");

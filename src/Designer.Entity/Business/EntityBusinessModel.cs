@@ -52,7 +52,7 @@ namespace Agebull.EntityModel.Config
                     DataBaseHelper.ToTableName(Entity);
                 if (Entity.PrimaryColumn == null)
                 {
-                    Entity.Add(new PropertyConfig
+                    Entity.Add(new FieldConfig
                     {
                         Name = Entity.Name + "Id",
                         Caption = Entity.Caption + "ID",
@@ -61,7 +61,7 @@ namespace Agebull.EntityModel.Config
                         IsIdentity = true,
                         CsType = "int",
                         CppType = "int",
-                        Parent = Entity
+                        Entity = Entity
                     });
                 }
             }
@@ -74,7 +74,7 @@ namespace Agebull.EntityModel.Config
                 {
                     continue;
                 }
-                col.Parent = Entity;
+                col.Entity = Entity;
                 model.Property = col;
                 model.RepairByModel(isReference, friend);
                 col.IsModify = true;
@@ -157,7 +157,7 @@ namespace Agebull.EntityModel.Config
         #endregion
         #region NewEdit
 
-        private void CheckType(PropertyConfig column, string type)
+        private void CheckType(FieldConfig column, string type)
         {
             if (type[type.Length - 1] == '?')
             {
@@ -229,9 +229,9 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public List<PropertyConfig> DoCheckFieldes(string text)
+        public List<FieldConfig> DoCheckFieldes(string text)
         {
-            var columns = new List<PropertyConfig>();
+            var columns = new List<FieldConfig>();
             string[] lines = text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             int idx = 0;
 
@@ -265,8 +265,8 @@ namespace Agebull.EntityModel.Config
                  * 2 每个单词用空格,逗号分开
                  * 3 第一个单词 代码名称; 第二个单词 数据类型;第三个单词 说明文本
                  */
-                PropertyConfig column;
-                columns.Add(column = new PropertyConfig
+                FieldConfig column;
+                columns.Add(column = new FieldConfig
                 {
                     IsPrimaryKey = name.Equals("ID", StringComparison.OrdinalIgnoreCase),
                     DbFieldName = name,

@@ -40,7 +40,7 @@ using Agebull.EntityModel.Interfaces;
         /// 类定义之前的代码
         /// </summary>
         protected override string ClassHead => $@"/// <summary>
-    /// {ToRemString(Entity.Description)}
+    /// {ToRemString(Model.Description)}
     /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
     public ";
@@ -61,16 +61,10 @@ using Agebull.EntityModel.Interfaces;
         /// </summary>
         public override string BaseCode => $@"
         #region 基本属性
-
-        /// <summary>
-        /// 发出标准属性修改事件
-        /// </summary>
-        [Conditional(""StandardPropertyChanged"")]
-        void OnSeted(string name) => OnPropertyChanged(name);
-
 {Properties()}
-{FullCode()}
-        #endregion";
+        #endregion
+{InterfaceProperty()}
+{EntityEditStatus()}";
 
         /// <summary>
         /// 
@@ -83,63 +77,30 @@ using Agebull.EntityModel.Interfaces;
             /*{ DefaultValueCode()}*/
         }}";
 
-        /// <summary>
-        ///     生成实体代码
-        /// </summary>
-        private string FullCode()
-        {
-            if (Entity.NoDataBase/* || Entity.PrimaryColumn?.CsType != "long"*/)
-                return null;
-            return $@"
-        #region 接口属性
-{ ExtendProperty()}
-        #endregion
-        #region 扩展属性
-{AccessProperties()}
-        #endregion";
-        }
-
         #endregion
 
 
         #region 扩展
 
-        private string ExtendInterface()
-        {
-            var list = new List<string>();
-            if (Entity.Interfaces != null)
-            {
-                list.AddRange(Entity.Interfaces.Split(NoneLanguageChar, StringSplitOptions.RemoveEmptyEntries));
-            }
-            //code.Append("IEntityPoolSetting");
-            if (!Entity.NoDataBase && Entity.HasePrimaryKey && Entity.PrimaryColumn.CsType.IsNumberType())
-                list.Add("IIdentityData");
-            //if (!Entity.IsLog)
-            //{
-            //    code.Append(" , IFieldJson , IPropertyJson");
-            //}
-            if (Entity.PrimaryColumn != null && Entity.PrimaryColumn.IsGlobalKey)
-            {
-                list.Add("IKey");
-            }
-            if (Entity.IsUniqueUnion)
-            {
-                list.Add("IUnionUniqueEntity");
-            }
-
-            //if (Entity.LastColumns.Any(p => p.IsUserId))
-            //{
-            //    code.Append(" , IUserChildEntity");
-            //}
-            return Entity.NoDataBase ? " : NotificationObject" : " : EditDataObject" + (list.Count == 0 ? null : list.DistinctBy().LinkToString(" , ", " , "));
-        }
-
-        private string ExtendProperty()
+        internal string InterfaceProperty()
         {
             var code = new StringBuilder();
-            if (Entity.PrimaryColumn != null)
+            if (Model.PrimaryColumn != null)
             {
-                if (Entity.PrimaryColumn.Name != "Id" && Entity.LastProperties.All(p => p.Name != "Id"))
+                if (Model.PrimaryColumn.IsGlobalKey)
+                {
+                    code.AppendFormat($@"
+
+        /// <summary>
+        /// Key键
+        /// </summary>
+        Guid IsGlobalKey.Key 
+        {{
+            get => this.{Model.PrimaryColumn.Name};
+            set => this.{Model.PrimaryColumn.Name} = value;
+        }}");
+                }
+                else
                 {
                     code.Append($@"
 
@@ -147,104 +108,112 @@ using Agebull.EntityModel.Interfaces;
         /// 对象标识
         /// </summary>
         [IgnoreDataMember,Browsable(false)]
-        public {Entity.PrimaryColumn.LastCsType} Id
+        {Model.PrimaryColumn.LastCsType} IIdentityData<{Model.PrimaryColumn.CsType}>.Id
         {{
-            get
-            {{
-                return this.{Entity.PrimaryColumn.Name};
-            }}
-            set
-            {{
-                this.{Entity.PrimaryColumn.Name} = value;
-            }}
+            get => this.{Model.PrimaryColumn.Name};
+            set => this.{Model.PrimaryColumn.Name} = value;
         }}");
-                }
-                if (Entity.PrimaryColumn.CsType == "int")
-                    code.Append($@"
-
-        /// <summary>
-        /// Id键
-        /// </summary>
-        long IIdentityData.Id
-        {{
-            get => this.{Entity.PrimaryColumn.Name};
-            set => this.{Entity.PrimaryColumn.Name} = ({Entity.PrimaryColumn.LastCsType})value;
-        }}");
-                //        else
-                //            code.AppendFormat(@"
-
-                ///// <summary>
-                ///// Id键
-                ///// </summary>
-                //int IIdentityData.Id
-                //{{
-                //    get
-                //    {{
-                //        throw new Exception(""不支持"");//B UG:ID不是INT类型
-                //    }}
-                //    set
-                //    {{
-                //    }}
-                //}}");
-                if (Entity.PrimaryColumn.IsGlobalKey)
-                {
-                    code.AppendFormat(@"
-
-        /// <summary>
-        /// Key键
-        /// </summary>
-        Guid IKey.Key
-        {{
-            get
-            {{
-                return this.{0};
-            }}
-        }}", Entity.PrimaryColumn.Name);
                 }
             }
-            var idp = Columns.Where(p => p.UniqueIndex > 0);
-            var columnSchemata = idp as PropertyConfig[] ?? idp.ToArray();
-            var cnt = columnSchemata.Length;
-            if (cnt <= 1)
+            var uniques = Columns.Where(p => p.UniqueIndex > 0).ToArray();
+            if (uniques.Length != 0)
             {
-                return code.ToString();
-            }
-            code.Append(@"
+                code.Append(@"
 
         /// <summary>
         /// 组合后的唯一值
         /// </summary>
-        public string UniqueValue
-        {
-            get
-            {
-                return string.Format(""");
+        string IUnionUniqueEntity.UniqueValue => $""");
+                bool first = true;
+                foreach (var property in uniques.OrderBy(p => p.UniqueIndex))
+                {
+                    if (first)
+                        first = false;
+                    else
+                        code.Append('|');
+                    code.Append($"{{{property.Name}}}");
+                }
+                code.Append(@""";");
+                return
 
-            for (var idx = 0; idx < cnt; idx++)
-            {
-                if (idx > 0)
-                    code.Append(':');
-                code.AppendFormat("{{{0}}}", idx);
+                    code.ToString();
             }
-            code.AppendFormat("\" ");
-            foreach (var property in columnSchemata.OrderBy(p => p.UniqueIndex))
-            {
-                code.AppendFormat(" , {0}", property.Name);
-            }
-            code.Append(@");
-            }
-        }");
-            return code.ToString();
+            return code.Length == 0
+                ? null
+                : $@"
+
+        #region 接口属性
+{code}
+        #endregion";
         }
 
+        internal string EntityEditStatus()
+        {
+            return Model.IsQuery
+                ? null
+                : @"
+
+        #region 修改记录
+
+        [DataMember, JsonProperty(""editStatusRedorder"",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        EntityEditStatus _editStatusRedorder;
+
+        /// <summary>
+        /// 修改状态
+        /// </summary>
+        EntityEditStatus IEditStatus.EditStatusRedorder { get => _editStatusRedorder; set=>_editStatusRedorder = value; }
+
+        /// <summary>
+        /// 发出标准属性修改事件
+        /// </summary>
+        [Conditional(""StandardPropertyChanged"")]
+        partial void InitEntityEditStatus()
+        {
+            _editStatusRedorder = new EntityEditStatus();
+        }
+
+        /// <summary>
+        /// 发出标准属性修改事件
+        /// </summary>
+        [Conditional(""StandardPropertyChanged"")]
+        void OnSeted(string name)
+        {
+            _editStatusRedorder.SetModified(name);
+        }
+        #endregion";
+        }
         #endregion
 
 
         #region 属性
 
+
+        private Dictionary<string, string> ExistProperties;
+
+        private string Properties()
+        {
+            ExistProperties = new Dictionary<string, string>();
+            var code = new StringBuilder();
+            code.Append(PrimaryKeyPropertyCode());
+            ExistProperties.Add(Model.PrimaryField, Model.PrimaryField);
+            foreach (var property in Columns.Where(p => !p.IsPrimaryKey).OrderBy(p => p.Index))
+            {
+                if (property.DbInnerField)
+                    DbInnerProperty(property, code);
+                else if (property.IsCompute)
+                    ComputePropertyCode(property, code);
+                else
+                    PropertyCode(property, code);
+                ExistProperties.Add(property.Name, property.Name);
+                AliasPropertyCode(property, code);
+                AccessProperties(property, code);
+            }
+            return code.ToString();
+        }
+
         private string PrimaryKeyPropertyCode()
         {
-            var property = Entity.PrimaryColumn;
+            var property = Model.PrimaryColumn;
             if (property == null)
                 return null;//"\n没有设置主键字段，生成的代码是错误的";
             return $@"
@@ -262,77 +231,57 @@ using Agebull.EntityModel.Interfaces;
         [IgnoreDataMember,JsonIgnore]
         public {property.LastCsType} {FieldName(property)};
 
-        partial void On{property.Name}Get();
-
-        partial void On{property.Name}Set(ref {property.LastCsType} value);
-
-        partial void On{property.Name}Load(ref {property.LastCsType} value);
-
-        partial void On{property.Name}Seted();
-
         {PropertyHeader(property)}
         public {property.LastCsType} {property.Name}
         {{
-            get
-            {{
-                On{property.Name}Get();
-                return this.{FieldName(property)};
-            }}
+            get => this.{FieldName(property)};
             set
             {{
                 if(this.{FieldName(property)} == value)
                     return;
-                //if(this.{FieldName(property)} > 0)
-                //    throw new Exception(""主键一旦设置就不可以修改"");
-                On{property.Name}Set(ref value);
                 this.{FieldName(property)} = value;
-                On{property.Name}Seted();
-                this.OnPropertyChanged(_DataStruct_.Real_{property.Name});
                 this.OnSeted(nameof({property.Name}));
             }}
         }}";
         }
 
-        private void PropertyCode(PropertyConfig property, StringBuilder code)
+        private void PropertyCode(FieldConfig property, StringBuilder code)
         {
-            bool isInterface = property.IsInterfaceField && Entity.InterfaceInner;
+            bool isInterface = property.IsInterfaceField && Model.InterfaceInner;
 
             var access = isInterface ? "" : $"{property.AccessType} ";
-            var name = isInterface ? $"{property.Parent.EntityName}.{property.Name}" : property.Name;
-            var type = property.IsEnum && property.CsType == "string" ? "string" :  property.LastCsType;
+            var name = isInterface ? $"{property.Entity.EntityName}.{property.Name}" : property.Name;
+            var type = property.IsEnum && property.CsType == "string" ? "string" : property.LastCsType;
             var file = FieldName(property);
+            if (Model.IsQuery)
 
-            code.Append($@"
+                code.Append($@"
+
+        {PropertyHeader(property, isInterface, property.DataType != "ByteArray")}
+        {access}{type} {name}
+        {{
+            get;
+            set;
+        }}");
+            else
+                code.Append($@"
         {FieldHeader(property, isInterface, property.DataType != "ByteArray")}
         public {type} {file};
 
-        partial void On{property.Name}Get();
-
-        partial void On{property.Name}Set(ref {type} value);
-
-        partial void On{property.Name}Seted();
-
-        {PropertyHeader(property,isInterface, property.DataType != "ByteArray")}
+        {PropertyHeader(property, isInterface, property.DataType != "ByteArray")}
         {access}{type} {name}
         {{
-            get
-            {{
-                On{property.Name}Get();
-                return this.{file};
-            }}
+            get => this.{file};
             set
             {{
                 if(this.{file} == value)
                     return;
-                On{property.Name}Set(ref value);
                 this.{file} = value;
-                On{property.Name}Seted();
-                this.OnPropertyChanged(_DataStruct_.Real_{property.Name});
                 this.OnSeted(nameof({property.Name}));
             }}
         }}");
 
-            ContentProperty(property, code);
+            //ContentProperty(property, code);
         }
 
         /// <summary>
@@ -340,15 +289,8 @@ using Agebull.EntityModel.Interfaces;
         /// </summary>
         /// <param name="property"></param>
         /// <param name="code"></param>
-        private void ComputePropertyCode(PropertyConfig property, StringBuilder code)
+        private void ComputePropertyCode(FieldConfig property, StringBuilder code)
         {
-            if (string.IsNullOrWhiteSpace(property.ComputeGetCode) && string.IsNullOrWhiteSpace(property.ComputeSetCode))
-            {
-                PropertyCode(property, code);
-                return;
-            }
-            //bool isInterface = property.IsInterfaceField && Entity.InterfaceInner;
-
             var access = /*isInterface ? "" :*/ $"{property.AccessType} ";
             var name = /*isInterface ? $"{property.Parent.EntityName}.{property.Name}" :*/ property.Name;
 
@@ -378,17 +320,13 @@ using Agebull.EntityModel.Interfaces;
             ContentProperty(property, code);
         }
 
-        private Dictionary<string, string> ExistProperties;
-
         /// <summary>
         /// 别名属性
         /// </summary>
         /// <param name="property"></param>
         /// <param name="code"></param>
-        private void AliasPropertyCode(PropertyConfig property, StringBuilder code)
+        private void AliasPropertyCode(FieldConfig property, StringBuilder code)
         {
-            if (property == null)
-                return;
             foreach (var alias in property.GetAliasPropertys())
             {
                 if (ExistProperties.ContainsKey(alias))
@@ -396,43 +334,13 @@ using Agebull.EntityModel.Interfaces;
                 ExistProperties.Add(alias, alias);
                 code.Append($@"
         /// <summary>
-        /// {ToRemString(property.Caption)}\n--{property.Name}的别名
+        /// {ToRemString(property.Caption)}的别名
         /// </summary>
-        public {property.LastCsType} {alias}
-        {{
-            get => this.{property.Name};
-            set => this.{property.Name} = value;
-        }}");
+        public {property.LastCsType} {alias} => this.{property.Name};");
             }
         }
 
-        private string Properties()
-        {
-            ExistProperties = new Dictionary<string, string>();
-            var code = new StringBuilder();
-            code.Append(PrimaryKeyPropertyCode());
-            ExistProperties.Add(Entity.PrimaryField, Entity.PrimaryField);
-            foreach (var property in Columns.Where(p => !p.DbInnerField && !p.IsPrimaryKey))
-            {
-                if (property.IsCompute)
-                    ComputePropertyCode(property, code);
-                else
-                    PropertyCode(property, code);
-                ExistProperties.Add(property.Name, property.Name);
-            }
-            foreach (var property in Columns.Where(p => p.DbInnerField && !p.IsPrimaryKey))
-            {
-                DbInnerProperty(property, code);
-                ExistProperties.Add(property.Name, property.Name);
-            }
-            foreach (var property in Columns)
-            {
-                AliasPropertyCode(property, code);
-            }
-            return code.ToString();
-        }
-
-        private void DbInnerProperty(PropertyConfig property, StringBuilder code)
+        private void DbInnerProperty(FieldConfig property, StringBuilder code)
         {
             code.Append($@"
 
@@ -451,19 +359,10 @@ using Agebull.EntityModel.Interfaces;
         /// 数据访问字段,有BUG小心
         /// </summary>
         /// <returns></returns>
-        private string AccessProperties()
+        private void AccessProperties(FieldConfig property, StringBuilder code)
         {
-            var code = new StringBuilder();
-            foreach (var property in Entity.DbFields.Where(p => !string.IsNullOrWhiteSpace(p.StorageProperty)))
-            {
+            if (!string.IsNullOrWhiteSpace(property.StorageProperty))
                 code.Append($@"
-
-        partial void On{property.StorageProperty}Get();
-
-        partial void On{property.StorageProperty}Set(ref string value);
-
-        partial void On{property.StorageProperty}Seted();
-
         /// <summary>
         /// {ToRemString(property.Caption)}的存储值读写字段
         /// </summary>
@@ -473,25 +372,15 @@ using Agebull.EntityModel.Interfaces;
         [IgnoreDataMember,Browsable(false),JsonIgnore]
         public string {property.StorageProperty}
         {{
-            get
-            {{
-                On{property.StorageProperty}Get();
-                return this.{property.Name} == null ? null : Newtonsoft.Json.JsonConvert.SerializeObject(this.{property.Name});
-            }}
+            get => this.{property.Name} == null ? null : Newtonsoft.Json.JsonConvert.SerializeObject(this.{property.Name});
             set
             {{
-                On{property.StorageProperty}Set(ref value);
                 this.{property.Name} = value == null 
                     ? null 
                     : Newtonsoft.Json.JsonConvert.DeserializeObject<{property.LastCsType}>(value);
-                On{property.StorageProperty}Seted();
-                this.OnPropertyChanged(_DataStruct_.Real_{property.StorageProperty});
                 this.OnSeted(nameof({property.StorageProperty}));
             }}
         }}");
-            }
-
-            return code.ToString();
         }
 
 

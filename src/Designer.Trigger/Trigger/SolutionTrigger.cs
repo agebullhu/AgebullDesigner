@@ -40,10 +40,10 @@ namespace Agebull.EntityModel.Designer
             switch (property)
             {
                 case nameof(TargetConfig.IdDataType):
-                    TargetConfig.Foreach<PropertyConfig>(p => p.IsPrimaryKey || p.IsLinkField, p => p.DataType = TargetConfig.IdDataType);
+                    TargetConfig.Foreach<FieldConfig>(p => p.IsPrimaryKey || p.IsLinkField, p => p.DataType = TargetConfig.IdDataType);
                     break;
                 case nameof(TargetConfig.UserIdDataType):
-                    TargetConfig.Foreach<PropertyConfig>(p => p.IsUserId, p => p.DataType = TargetConfig.UserIdDataType);
+                    TargetConfig.Foreach<FieldConfig>(p => p.IsUserId, p => p.DataType = TargetConfig.UserIdDataType);
                     break;
                 case nameof(TargetConfig.Entities):
                     TargetConfig.EntityList.CollectionChanged += EntitiesCollectionChanged;

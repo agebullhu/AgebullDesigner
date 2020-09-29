@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Designer;
 
@@ -21,17 +24,17 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
 
-        public string GetBaseCode(EntityConfig config)
+        public string GetBaseCode(ModelConfig config)
         {
-            Entity = config;
-            Project = Entity.Parent;
+            Model = config;
+            Project = Model.Parent;
             return CreateBaCode();
         }
 
-        public string GetExtendCode(EntityConfig config)
+        public string GetExtendCode(ModelConfig config)
         {
-            Entity = config;
-            Project = Entity.Parent;
+            Model = config;
+            Project = Model.Parent;
             return CreateExCode();
         }
         #endregion
@@ -85,22 +88,22 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         ///     生成基本代码
         /// </summary>
-        protected sealed override void CreateBaCode(string path)
+        protected sealed override void CreateDesignerCode(string path)
         {
             SaveCode(Folder == null
-                ? Path.Combine(path, Entity.Name + ".Designer.cs")
-                : Path.Combine(path, Folder, Entity.Name + ".Designer.cs"), CreateBaCode());
+                ? Path.Combine(path, Model.Name + ".Designer.cs")
+                : Path.Combine(path, Folder, Model.Name + ".Designer.cs"), CreateBaCode());
         }
 
         /// <summary>
         ///     生成扩展代码
         /// </summary>
-        protected sealed override void CreateExCode(string path)
+        protected sealed override void CreateCustomCode(string path)
         {
 
             SaveCode(Folder == null
-                ? Path.Combine(path, Entity.Name + ".cs")
-                : Path.Combine(path, Folder, Entity.Name + ".cs"), CreateExCode());
+                ? Path.Combine(path, Model.Name + ".cs")
+                : Path.Combine(path, Folder, Model.Name + ".cs"), CreateExCode());
         }
 
         /// <summary>
@@ -134,7 +137,7 @@ using Agebull.EntityModel.Interfaces;
 namespace {NameSpace}
 {{    
     {EntityRemHeader}
-    partial class {Entity.EntityName}
+    partial class {Model.EntityName}
     {{{BaseCode}
     }}
 }}";
@@ -168,10 +171,11 @@ using Agebull.EntityModel.Interfaces;
 namespace {NameSpace}
 {{
     {ClassHead}
-    partial class {Entity.EntityName}{ClassExtend}
+    partial class {Model.EntityName}{ClassExtend}
     {{{ExtendCode}
     }}
 }}";
         }
+
     }
 }

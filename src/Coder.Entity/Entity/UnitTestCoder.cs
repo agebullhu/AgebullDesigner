@@ -73,7 +73,7 @@ namespace Agebull.EntityModel.RobotCoder
             var data = new {config.EntityName}
             {{");
             bool first = true;
-            foreach (PropertyConfig field in config.LastProperties.Where(p => !p.DbInnerField && !p.InnerField))
+            foreach (var field in config.LastProperties.Where(p => !p.DbInnerField && !p.InnerField))
             {
                 if (first)
                     first = false;

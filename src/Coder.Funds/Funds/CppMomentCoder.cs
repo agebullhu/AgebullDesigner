@@ -447,7 +447,7 @@ void Deserialize(Deserializer& io, TEsAddressField* field)
 
 /*******************{0}字段序列化顺序定义(不可更改)*******************/"
                 , entityConfig.Caption);
-            foreach (PropertyConfig field in entityConfig.LastProperties)
+            foreach (var field in entityConfig.LastProperties)
             {
                 code.AppendFormat(@"
 const FIELD_INDEX IDX_{1}_{2} = {3};// {0}", field.Caption, entityConfig.ReadTableName, field.PropertyName, field.Index);
@@ -476,7 +476,7 @@ void Serialize(Serializer& wtiter, {1}* field)
         return;
     }}"
                 , entityConfig.Caption, entityConfig.ReadTableName);
-            foreach (PropertyConfig field in entityConfig.LastProperties)
+            foreach (var field in entityConfig.LastProperties)
             {
                 code.AppendFormat(@"
     wtiter.WriteIndex(IDX_{0}_{1});//{2}", entityConfig.ReadTableName, field.Name, field.Caption);
@@ -497,7 +497,7 @@ void Deserialize(Deserializer& reader, {1}* field)
         //OBJ_TYPE type = reader.ReadByte();
 		switch(idx)
 		{{", entityConfig.Caption, entityConfig.ReadTableName);
-            foreach (PropertyConfig t in entityConfig.LastProperties)
+            foreach (var t in entityConfig.LastProperties)
             {
                 ToCppReadCode(code, t);
             }
@@ -510,7 +510,7 @@ void Deserialize(Deserializer& reader, {1}* field)
             return code.ToString();
         }
 
-        private static void ToCppWriteCode(StringBuilder code, PropertyConfig field)
+        private static void ToCppWriteCode(StringBuilder code, FieldConfig field)
         {
             var type = CppTypeHelper.ToCppLastType(field.CppLastType);
             if (type is EntityConfig stru)
@@ -527,7 +527,7 @@ void Deserialize(Deserializer& reader, {1}* field)
                 else if (field.Datalen > 0)
                 {
                     code.Append($@"
-		case IDX_{field.Parent.Name.ToUpper()}_{field.Name.ToUpper()}://{field.Caption}
+		case IDX_{field.Entity.Name.ToUpper()}_{field.Name.ToUpper()}://{field.Caption}
         {{
             wtiter.WriteType(OBJ_TYPE_OBJECT_ARRAY);
             wtiter.Write({field.Datalen});
@@ -576,7 +576,7 @@ void Deserialize(Deserializer& reader, {1}* field)
             }
         }
 
-        private static void ToCppReadCode(StringBuilder code, PropertyConfig field)
+        private static void ToCppReadCode(StringBuilder code, FieldConfig field)
         {
             var type = CppTypeHelper.ToCppLastType(field.CppLastType);
             if (type is EntityConfig stru)
@@ -584,7 +584,7 @@ void Deserialize(Deserializer& reader, {1}* field)
                 if (field.Datalen == 1)
                 {
                     code.Append($@"
-		case IDX_{field.Parent.ReadTableName}_{field.Name}://{field.Caption}
+		case IDX_{field.Entity.ReadTableName}_{field.Name}://{field.Caption}
         {{
             int len = reader.ReadInt32();
             char* buffer = reader.ReadBinrary2(len);
@@ -596,7 +596,7 @@ void Deserialize(Deserializer& reader, {1}* field)
                 else if (field.Datalen > 0)
                 {
                     code.Append($@"
-		case IDX_{field.Parent.ReadTableName}_{field.Name}://{field.Caption}
+		case IDX_{field.Entity.ReadTableName}_{field.Name}://{field.Caption}
         {{
             int cnt = reader.ReadInt32();
             for(int idx = 0;i < cnt;i++)
@@ -611,7 +611,7 @@ void Deserialize(Deserializer& reader, {1}* field)
                 else
                 {
                     code.Append($@"
-		case IDX_{field.Parent.ReadTableName}_{field.Name}://{field.Caption}
+		case IDX_{field.Entity.ReadTableName}_{field.Name}://{field.Caption}
         {{
             int len = reader.ReadInt32();
             char* buffer = reader.ReadBinrary2(len);
@@ -628,21 +628,21 @@ void Deserialize(Deserializer& reader, {1}* field)
             if (keyword == "char" && isArray)
             {
                 code.Append($@"
-		case IDX_{field.Parent.ReadTableName}_{field.Name}://{field.Caption}
+		case IDX_{field.Entity.ReadTableName}_{field.Name}://{field.Caption}
             reader.ReadString(field->{field.Name});
             break;");
             }
             else if (isArray)
             {
                 code.Append($@"
-		case IDX_{field.Parent.ReadTableName}_{field.Name}://{field.Caption}
+		case IDX_{field.Entity.ReadTableName}_{field.Name}://{field.Caption}
             reader.ReadArray<{keyword}>(&field->{field.Name});
             break;");
             }
             else
             {
                 code.Append($@"
-		case IDX_{field.Parent.ReadTableName}_{field.Name}://{field.Caption}
+		case IDX_{field.Entity.ReadTableName}_{field.Name}://{field.Caption}
             reader.Read<{keyword}>(&field->{field.Name});
             break;");
             }
@@ -683,7 +683,7 @@ void CopyToCache({entityConfig.ReadTableName}* field)
 	char buf[2];
 	buf[1] = '\0';
     {entityConfig.Name}^ item = gcnew {entityConfig.Name}();");
-            foreach (PropertyConfig t in entityConfig.LastProperties)
+            foreach (var t in entityConfig.LastProperties)
             {
                 ToCppCopyCode(code, t);
             }
@@ -694,7 +694,7 @@ void CopyToCache({entityConfig.ReadTableName}* field)
             return code.ToString();
         }
 
-        private static void ToCppCopyCode(StringBuilder code, PropertyConfig field)
+        private static void ToCppCopyCode(StringBuilder code, FieldConfig field)
         {
             var type = CppTypeHelper.ToCppLastType(field.CppLastType);
             if (type is EntityConfig)
@@ -806,7 +806,7 @@ string toJson(const {entityConfig.Name}* value)
     int idx,len;
     ostringstream ostr;
     ostr << ""{{\""__i__\"":0"";");
-            foreach (PropertyConfig t in entityConfig.LastProperties)
+            foreach (var t in entityConfig.LastProperties)
             {
                 ToJsonCode(code, t, false);
             }
@@ -832,7 +832,7 @@ string toJson(const {entityConfig.Name}* value)
         }
 
 
-        private static void ToJsonCode(StringBuilder code, PropertyConfig field, bool isFirst)
+        private static void ToJsonCode(StringBuilder code, FieldConfig field, bool isFirst)
         {
             var type = CppTypeHelper.ToCppLastType(field.CppLastType);
             if (type is EntityConfig stru)
@@ -875,14 +875,14 @@ string toJson(const {entityConfig.Name}* value)
             }
         }
 
-        private static void FriendJson(StringBuilder code, PropertyConfig field, bool isFirst)
+        private static void FriendJson(StringBuilder code, FieldConfig field, bool isFirst)
         {
             code.AppendFormat(@"
     //{0}
     ostr << ""{2}\""{1}\"":"" << toJson(&value->{1});", field.Caption, field.Name, isFirst ? null : ",");
         }
 
-        private static void NumberJson(StringBuilder code, PropertyConfig field, bool isFirst)
+        private static void NumberJson(StringBuilder code, FieldConfig field, bool isFirst)
         {
             code.AppendFormat(@"
     //{0}
@@ -890,7 +890,7 @@ string toJson(const {entityConfig.Name}* value)
         ostr << ""{2}\""{1}\"":\"""" << value->{1} << '\""';", field.Caption, field.Name, isFirst ? null : ",");
         }
 
-        private static void StringJson(StringBuilder code, PropertyConfig field, string len, bool isFirst)
+        private static void StringJson(StringBuilder code, FieldConfig field, string len, bool isFirst)
         {
             if (!string.IsNullOrWhiteSpace(len))
                 code.AppendFormat(@"
@@ -903,7 +903,7 @@ string toJson(const {entityConfig.Name}* value)
     if(value->{1})
         ostr << ""{2}\""{1}\"":\"""" << value->{1} << '\""';", field.Caption, field.Name, isFirst ? null : ",");
         }
-        private static void ArrayJson(StringBuilder code, PropertyConfig field, string len, bool isFirst)
+        private static void ArrayJson(StringBuilder code, FieldConfig field, string len, bool isFirst)
         {
             code.AppendFormat(@"
     //{0}
@@ -941,7 +941,7 @@ void print_screen(const {0}* value)
     if(value == nullptr)
         return;
     int idx,len; ", entityConfig.Name, entityConfig.Caption);
-            foreach (PropertyConfig field in entityConfig.LastProperties)
+            foreach (var field in entityConfig.LastProperties)
             {
                 ToCppCoutCode(code, field);
             }
@@ -951,7 +951,7 @@ void print_screen(const {0}* value)
         }
 
 
-        private static void ToCppCoutCode(StringBuilder code, PropertyConfig field)
+        private static void ToCppCoutCode(StringBuilder code, FieldConfig field)
         {
             if (!string.IsNullOrWhiteSpace(field.Caption))
                 code.AppendFormat(@"
@@ -1004,7 +1004,7 @@ void print_screen(const {0}* value)
             }
         }
 
-        private static void EnumOut(StringBuilder code, PropertyConfig field, TypedefItem typedef)
+        private static void EnumOut(StringBuilder code, FieldConfig field, TypedefItem typedef)
         {
             code.AppendFormat(@""";");
             code.AppendFormat(@"
@@ -1021,7 +1021,7 @@ void print_screen(const {0}* value)
     }");
         }
 
-        private static void ArrayOut(StringBuilder code, PropertyConfig field, string len)
+        private static void ArrayOut(StringBuilder code, FieldConfig field, string len)
         {
             code.Append(@""";");
 
@@ -1253,7 +1253,7 @@ string to_log_text(const {entityConfig.Name}* value)
     int idx,len;
     ostringstream ostr;
     ostr << ""{{\""__i__\"":0"";");
-            foreach (PropertyConfig field in entityConfig.LastProperties)
+            foreach (var field in entityConfig.LastProperties)
             {
                 ToLogCode(code, field);
             }
@@ -1270,7 +1270,7 @@ void log(const {entityConfig.Name}* value,int type,int level)
         }
 
 
-        private static void ToLogCode(StringBuilder code, PropertyConfig field)
+        private static void ToLogCode(StringBuilder code, FieldConfig field)
         {
             if (field.IsIntDecimal)
             {
@@ -1334,7 +1334,7 @@ void log(const {entityConfig.Name}* value,int type,int level)
                 ArrayLog(code, field, typedef.ArrayLen);
             }
         }
-        private static void TypeDefLog(StringBuilder code, PropertyConfig field, TypedefItem typedef)
+        private static void TypeDefLog(StringBuilder code, FieldConfig field, TypedefItem typedef)
         {
             code.AppendFormat(@"
     ostr << "",\""{0}({1})\"":"";
@@ -1351,37 +1351,37 @@ void log(const {entityConfig.Name}* value,int type,int level)
     }");
         }
 
-        private static void CharLog(StringBuilder code, PropertyConfig field)
+        private static void CharLog(StringBuilder code, FieldConfig field)
         {
             code.AppendFormat(@"
     ostr << "",\""{0}({1})\"":"" << value->{1};", field.Caption, field.Name);
         }
-        private static void InlineLog(StringBuilder code, PropertyConfig field)
+        private static void InlineLog(StringBuilder code, FieldConfig field)
         {
             code.AppendFormat(@"
     ostr << "",\""{0}({1})\"":"" << to_log_text(value->{1});", field.Caption, field.Name);
         }
 
-        private static void FriendLog(StringBuilder code, PropertyConfig field)
+        private static void FriendLog(StringBuilder code, FieldConfig field)
         {
             code.AppendFormat(@"
     ostr << "",\""{0}({1})\"":"" << to_log_text(&value->{1});", field.Caption, field.Name);
         }
-        private static void IntDecimalLog(StringBuilder code, PropertyConfig field)
+        private static void IntDecimalLog(StringBuilder code, FieldConfig field)
         {
             code.AppendFormat(@"
     if(value->{1} != 0)
         ostr << "",\""{0}({1})\"":\"""" << Int64ToDouble(value->{1}) << '\""';", field.Caption, field.Name);
         }
 
-        private static void NumberLog(StringBuilder code, PropertyConfig field)
+        private static void NumberLog(StringBuilder code, FieldConfig field)
         {
             code.AppendFormat(@"
     if(value->{1} != 0)
         ostr << "",\""{0}({1})\"":\"""" << value->{1} << '\""';", field.Caption, field.Name);
         }
 
-        private static void StringLog(StringBuilder code, PropertyConfig field, string len)
+        private static void StringLog(StringBuilder code, FieldConfig field, string len)
         {
             if (!string.IsNullOrWhiteSpace(len))
                 code.AppendFormat(@"
@@ -1392,7 +1392,7 @@ void log(const {entityConfig.Name}* value,int type,int level)
     if(value->{1})
         ostr << "",\""{0}({1})\"":\"""" << value->{1} << '\""';", field.Caption, field.Name);
         }
-        private static void ArrayLog(StringBuilder code, PropertyConfig field, string len)
+        private static void ArrayLog(StringBuilder code, FieldConfig field, string len)
         {
             code.AppendFormat(@"
     ostr << "",\""{0}({1})\"":["";", field.Caption, field.Name);

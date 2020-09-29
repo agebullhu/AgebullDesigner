@@ -37,7 +37,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// Api调用方式
         /// </summary>
-        [DataMember, JsonProperty("Method", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("Method",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal HttpMethod _Method;
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 请求参数名称
         /// </summary>
-        [DataMember, JsonProperty("CallArg", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("CallArg",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _callArg;
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// API编码
         /// </summary>
-        [DataMember, JsonProperty("Code", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("Code",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _code;
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 返回参数名称
         /// </summary>
-        [DataMember, JsonProperty("ResultArg", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("ResultArg",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _resultArg;
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 路由路径
         /// </summary>
-        [DataMember, JsonProperty("RoutePath", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("RoutePath",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _routePath;
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 是否用户命令
         /// </summary>
-        [DataMember, JsonProperty("IsUserCommand", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("IsUserCommand",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _isUserCommand;
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace Agebull.EntityModel.Config
         /*// <summary>
         /// 原始内容
         /// </summary>
-        [DataMember, JsonProperty("Org", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("Org",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _org;
 
         /// <summary>
@@ -231,7 +231,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 是否用户命令
         /// </summary>
-        [DataMember, JsonProperty("IsUserCommand", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("IsUserCommand",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _isUserCommand;
 
         /// <summary>
@@ -263,7 +263,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 对应的另一半
         /// </summary>
-        [DataMember, JsonProperty("Friend", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("Friend",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _friend;
 
         /// <summary>
@@ -295,7 +295,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 对应的另一半
         /// </summary>
-        [DataMember, JsonProperty("FriendKey", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("FriendKey",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal Guid _friendKey;
 
         /// <summary>
@@ -325,7 +325,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 本地命令
         /// </summary>
-        [DataMember, JsonProperty("LocalCommand", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("LocalCommand",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _localCommand;
 
         /// <summary>

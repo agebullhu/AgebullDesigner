@@ -33,19 +33,9 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.Sqlite
 
         #endregion
 
-        #region 数据库
+        #region View
 
-        public static string TruncateTable(EntityConfig entity)
-        {
-            if (entity.NoDataBase)
-                return Empty;
-            return $@"
--- {entity.Caption}
-TRUNCATE TABLE [{entity.SaveTable}];
-";
-        }
-
-        public static string DropView(EntityConfig entity)
+        public static string DropView(ModelConfig entity)
         {
             if (entity.NoDataBase || entity.SaveTable == entity.ReadTableName)
                 return Empty;
@@ -53,36 +43,37 @@ TRUNCATE TABLE [{entity.SaveTable}];
 -- {entity.Caption}
 DROP VIEW [{entity.ReadTableName}];";
         }
-        public static string CreateView(EntityConfig entity)
+
+        public static string CreateView(ModelConfig model)
         {
-            DataBaseHelper.CheckFieldLink(entity);
-            var array = entity.DbFields.Where(p => p.IsLinkField && !p.IsLinkKey).ToArray();
+            DataBaseHelper.CheckFieldLink(model.DbFields);
+            var array = model.DbFields.Where(p => p.IsLinkField && !p.IsLinkKey).ToArray();
             if (array.Length == 0)
             {
-                return $"-- {entity.Caption}没有字段引用其它表的无需视图";
+                return $"-- {model.Caption}没有字段引用其它表的无需视图";
             }
-            var tables = entity.DbFields.Where(p => p.IsLinkField && !p.IsLinkKey).Select(p => p.LinkTable).Distinct().Select(GlobalConfig.GetEntity).ToDictionary(p => p.Name);
+            var tables = model.DbFields.Where(p => p.IsLinkField && !p.IsLinkKey).Select(p => p.LinkTable).Distinct().Select(GlobalConfig.GetEntity).ToDictionary(p => p.Name);
             if (tables.Count == 0)
             {
-                entity.ReadTableName = entity.SaveTable; ;
-                return $"-- {entity.Caption}没有字段引用其它表的无需视图";
+                model.ReadTableName = model.SaveTable; ;
+                return $"-- {model.Caption}没有字段引用其它表的无需视图";
             }
             string viewName;
-            if (IsNullOrWhiteSpace(entity.ReadTableName) || entity.ReadTableName == entity.SaveTable)
+            if (IsNullOrWhiteSpace(model.ReadTableName) || model.ReadTableName == model.SaveTable)
             {
-                viewName = DataBaseHelper.ToViewName(entity);
+                viewName = DataBaseHelper.ToViewName(model);
             }
             else
             {
-                viewName = entity.ReadTableName;
+                viewName = model.ReadTableName;
             }
             var builder = new StringBuilder();
             builder.Append($@"
--- {entity.Caption}
+-- {model.Caption}
 CREATE VIEW [{viewName}] AS 
     SELECT ");
             bool first = true;
-            foreach (PropertyConfig field in entity.DbFields)
+            foreach (var field in model.DbFields)
             {
                 if (first)
                     first = false;
@@ -104,13 +95,13 @@ CREATE VIEW [{viewName}] AS
                         }
                     }
                 }
-                builder.AppendFormat(@"[{0}].[{1}] as [{1}]", entity.SaveTable, field.DbFieldName);
+                builder.AppendFormat(@"[{0}].[{1}] as [{1}]", model.SaveTable, field.DbFieldName);
             }
             builder.Append($@"
-    FROM [{entity.SaveTable}]");
+    FROM [{model.SaveTable}]");
             foreach (var table in tables.Values)
             {
-                var field = entity.DbFields.FirstOrDefault(p => p.IsLinkKey && (p.LinkTable == table.Name || p.LinkTable == table.SaveTable));
+                var field = model.DbFields.FirstOrDefault(p => p.IsLinkKey && (p.LinkTable == table.Name || p.LinkTable == table.SaveTable));
                 if (field == null)
                     continue;
                 var linkField = table.Properties.FirstOrDefault(
@@ -119,23 +110,12 @@ CREATE VIEW [{viewName}] AS
                     continue;
                 builder.AppendFormat(@"
     LEFT JOIN [{1}] [{4}] ON [{0}].[{2}] = [{4}].[{3}]"
-                        , entity.SaveTable, table.SaveTable, field.DbFieldName, linkField.DbFieldName, table.Name);
+                        , model.SaveTable, table.SaveTable, field.DbFieldName, linkField.DbFieldName, table.Name);
             }
             builder.Append(';');
             builder.AppendLine("GO");
             builder.AppendLine();
             return builder.ToString();
-        }
-
-        private static string DropTable(EntityConfig entity)
-        {
-            if (entity == null)
-                return "";
-            if (entity.NoDataBase)
-                return $"-- {entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
-            return $@"
---{entity.Caption}
-DROP TABLE [{entity.SaveTable}];";
         }
 
         #endregion
@@ -152,7 +132,7 @@ DROP TABLE [{entity.SaveTable}];";
 /*{entity.Caption}*/
 CREATE TABLE [{entity.SaveTable}](");
             bool isFirst = true;
-            foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
+            foreach (var col in entity.DbFields.Where(p => !p.IsCompute))
             {
                 code.Append($@"
    {(isFirst ? "" : ",")}{FieldDefault(col)}");
@@ -163,7 +143,7 @@ CREATE TABLE [{entity.SaveTable}](");
             return code.ToString();
         }
 
-        private static string FieldDefault(PropertyConfig col)
+        private static string FieldDefault(FieldConfig col)
         {
             if (col.IsIdentity)
                 return $"[{col.DbFieldName}] INTEGER PRIMARY KEY autoincrement -- '{col.Caption}'";
@@ -172,6 +152,27 @@ CREATE TABLE [{entity.SaveTable}](");
                 : col.CsType == "string" ? $"DEFAULT '{col.Initialization}'" : $"DEFAULT {col.Initialization}";
             var nulldef = col.CsType == "string" || col.DbNullable ? " NULL" : " NOT NULL";
             return $"[{col.DbFieldName}] {SqlServerHelper.ColumnType(col)}{nulldef} {def} -- '{col.Caption}'";
+        }
+
+        public static string TruncateTable(EntityConfig entity)
+        {
+            if (entity.NoDataBase)
+                return Empty;
+            return $@"
+-- {entity.Caption}
+TRUNCATE TABLE [{entity.SaveTable}];
+";
+        }
+
+        private static string DropTable(EntityConfig entity)
+        {
+            if (entity == null)
+                return "";
+            if (entity.NoDataBase)
+                return $"-- {entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
+            return $@"
+--{entity.Caption}
+DROP TABLE [{entity.SaveTable}];";
         }
 
         #endregion
@@ -184,7 +185,7 @@ CREATE TABLE [{entity.SaveTable}](");
         /// <param name="field">字段</param>
         /// <param name="code">代码</param>
         /// <param name="idx">序号</param>
-        public static void FieldReadCode(PropertyConfig field, StringBuilder code, int idx)
+        public static void FieldReadCode(FieldConfig field, StringBuilder code, int idx)
         {
             if (!IsNullOrWhiteSpace(field.CustomType))
             {

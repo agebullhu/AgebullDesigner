@@ -52,7 +52,7 @@
             }
             foreach (var col in Entity.Properties)
             {
-                col.Parent = Entity;
+                col.Entity = Entity;
                 if (col.IsDiscard)
                 {
                     continue;
@@ -60,7 +60,7 @@
                 Message.Message3 = $"=>{col.Caption}:{col.Name}";
                 var model = new PropertyValidater
                 {
-                    Property = col,
+                    Field = col,
                     DataBaseType = Entity.Parent.DbType
                 };
                 if (!model.Validate(Message))

@@ -161,11 +161,11 @@ SELECT {0}", entity.PrimaryColumn.DbFieldName);
                     if (col == null)
                     {
                         Trace.WriteLine($" ++++ {field}");
-                        entity.Add(col = new PropertyConfig
+                        entity.Add(col = new FieldConfig
                         {
                             Name = field,
                             DbFieldName = field,
-                            Parent = Entity
+                            Entity = Entity
                         });
                         if (!reader.IsDBNull(7))
                             col.Caption = col.Description = reader.GetString(7);

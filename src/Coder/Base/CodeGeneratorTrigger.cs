@@ -27,7 +27,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void CreateLast(EntityConfig entity)
         {
-            entity.LastProperties = new List<PropertyConfig>();
+            entity.LastProperties = new List<FieldConfig>();
             int idx = 0;
             foreach (var pro in entity.Properties.OrderBy(p => p.Index))
             {

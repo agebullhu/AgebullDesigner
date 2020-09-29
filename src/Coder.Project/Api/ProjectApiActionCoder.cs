@@ -25,16 +25,16 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// <summary>
         ///     生成基础代码
         /// </summary>
-        protected override void CreateBaCode(string path)
+        protected override void CreateDesignerCode(string path)
         {
-            if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
+            if (Model.IsInternal || Model.NoDataBase || Model.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
             var fileName = "ApiController.Designer.cs";
 
-            var file = Path.Combine(path, Entity.Name + fileName);
-            if (!string.IsNullOrWhiteSpace(Entity.Alias))
+            var file = Path.Combine(path, Model.Name + fileName);
+            if (!string.IsNullOrWhiteSpace(Model.Alias))
             {
-                var oldFile = Path.Combine(path, Project.Name, Entity.Alias + fileName);
+                var oldFile = Path.Combine(path, Project.Name, Model.Alias + fileName);
                 if (File.Exists(oldFile))
                 {
                     Directory.Move(oldFile, file);
@@ -47,15 +47,15 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// <summary>
         ///     生成扩展代码
         /// </summary>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
-            if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
+            if (Model.IsInternal || Model.NoDataBase || Model.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
             var fileName = "ApiController.cs";
-            var file = Path.Combine(path, Entity.Name + fileName);
-            if (!string.IsNullOrWhiteSpace(Entity.Alias))
+            var file = Path.Combine(path, Model.Name + fileName);
+            if (!string.IsNullOrWhiteSpace(Model.Alias))
             {
-                var oldFile = Path.Combine(path, Project.Name, Entity.Alias + fileName);
+                var oldFile = Path.Combine(path, Project.Name, Model.Alias + fileName);
                 if (File.Exists(oldFile))
                 {
                     Directory.Move(oldFile, file);
@@ -104,9 +104,9 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public string ExtendCode(EntityConfig entity)
+        public string ExtendCode(ModelConfig entity)
         {
-            Entity = entity;
+            Model = entity;
             return ExtendCode();
         }
 
@@ -115,9 +115,9 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public string BaseCode(EntityConfig entity)
+        public string BaseCode(ModelConfig entity)
         {
-            Entity = entity;
+            Model = entity;
             return BaseCode();
         }
 
@@ -125,7 +125,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 
         #region 代码
 
-        static string ReadFormValue(EntityConfig entity)
+        static string ReadFormValue(ModelConfig entity)
         {
             var code = new StringBuilder();
             code.Append($@"
@@ -170,7 +170,7 @@ using {NameSpace}.DataAccess;
 
 namespace {NameSpace}.WebApi.Entity
 {{
-    partial class {Entity.Name}ApiController
+    partial class {Model.Name}ApiController
     {{
         #region 基本扩展
 
@@ -179,7 +179,7 @@ namespace {NameSpace}.WebApi.Entity
         /// </summary>
         /// <param name=""value"">文本</param>
         /// <returns></returns>
-        protected override (bool, {Entity.PrimaryColumn.CsType}) Convert(string value)
+        protected override (bool, {Model.PrimaryColumn.CsType}) Convert(string value)
         {{
             return {ConvertCode()};
         }}
@@ -188,7 +188,7 @@ namespace {NameSpace}.WebApi.Entity
         ///     读取查询条件
         /// </summary>
         /// <param name=""filter"">筛选器</param>
-        public override void GetQueryFilter(LambdaItem<{Entity.EntityName}> filter)
+        public override void GetQueryFilter(LambdaItem<{Model.EntityName}> filter)
         {{{QueryCode()}
         }}
 
@@ -197,8 +197,8 @@ namespace {NameSpace}.WebApi.Entity
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <param name=""convert"">转化器</param>
-        protected void DefaultReadFormData({Entity.EntityName} data, FormConvert convert)
-        {{{ApiHelperCoder.InputConvert(Entity)}
+        protected void DefaultReadFormData({Model.EntityName} data, FormConvert convert)
+        {{{ApiHelperCoder.InputConvert(Model)}
         }}
 
         #endregion
@@ -213,9 +213,9 @@ namespace {NameSpace}.WebApi.Entity
         /// <returns></returns>
         public string ConvertCode()
         {
-            return Entity.PrimaryColumn.IsType("string")
+            return Model.PrimaryColumn.IsType("string")
                 ? "(true , value)" 
-                : $@"{Entity.PrimaryColumn.CsType}.TryParse(value,out var key) ? (true , key) : (false , key)";
+                : $@"{Model.PrimaryColumn.CsType}.TryParse(value,out var key) ? (true , key) : (false , key)";
         }
 
         /// <summary>
@@ -232,7 +232,7 @@ namespace {NameSpace}.WebApi.Entity
                 var field = RequestArgumentConvert.GetString(""_field_"");
                 ");
 
-            var fields = Entity.ClientProperty.Where(p => !p.NoStorage && /*p.CanUserInput && */p.CsType == "string" && !p.IsLinkKey && !p.IsBlob).ToArray();
+            var fields = Model.ClientProperty.Where(p => !p.NoStorage && /*p.CanUserInput && */p.CsType == "string" && !p.IsLinkKey && !p.IsBlob).ToArray();
             if (fields.Length > 0)
             {
                 code.Append(@"if (string.IsNullOrWhiteSpace(field) || field == ""_any_"")
@@ -252,7 +252,7 @@ namespace {NameSpace}.WebApi.Entity
             }
             code.Append(@"RequestArgumentConvert.SetArgument(field,value);
             }");
-            fields = Entity.ClientProperty.Where(p => !p.NoStorage).ToArray();
+            fields = Model.ClientProperty.Where(p => !p.NoStorage).ToArray();
             foreach (var field in fields)
             {
                 if (field.IsPrimaryKey || field.IsLinkKey)
@@ -336,14 +336,14 @@ namespace {NameSpace}.WebApi.Entity
 
         private string ExtendCode()
         {
-            var page = $"/{Entity.Parent.PageRoot}/{Entity.PagePath('/')}/index.htm";
+            var page = $"/{Model.Parent.PageRoot}/{Model.PagePath('/')}/index.htm";
 
             var baseClass = "ApiController";
-            if (Entity.Interfaces != null)
+            if (Model.Interfaces != null)
             {
-                if (Entity.Interfaces.Contains("IStateData"))
+                if (Model.Interfaces.Contains("IStateData"))
                     baseClass = "ApiControllerForDataState";
-                if (Entity.Interfaces.Contains("IAuditData"))
+                if (Model.Interfaces.Contains("IAuditData"))
                     baseClass = "ApiControllerForAudit";
             }
             return $@"#region
@@ -379,21 +379,21 @@ using {NameSpace}.BusinessLogic;
 namespace {NameSpace}.WebApi.Entity
 {{
     /// <summary>
-    ///  {ToRemString(Entity.Caption)}
+    ///  {ToRemString(Model.Caption)}
     /// </summary>
-    [Route(""{Entity.ApiName}/v1"")]
+    [Route(""{Model.ApiName}/v1"")]
     [ApiPage(""{page}"")]
-    public partial class {Entity.Name}ApiController 
-         : {baseClass}<{Entity.EntityName},{Entity.PrimaryColumn.CsType},{Entity.Name}BusinessLogic>
+    public partial class {Model.Name}ApiController 
+         : {baseClass}<{Model.EntityName},{Model.PrimaryColumn.CsType},{Model.Name}BusinessLogic>
     {{
         #region 基本扩展
 
         /*// <summary>
         ///     取得列表数据
         /// </summary>
-        protected override ApiPageData<{Entity.EntityName}> GetListData()
+        protected override ApiPageData<{Model.EntityName}> GetListData()
         {{
-            var filter = new LambdaItem<{Entity.EntityName}>();
+            var filter = new LambdaItem<{Model.EntityName}>();
             ReadQueryFilter(filter);
             return base.GetListData(filter);
         }}*/
@@ -403,7 +403,7 @@ namespace {NameSpace}.WebApi.Entity
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <param name=""convert"">转化器</param>
-        protected override void ReadFormData({Entity.EntityName} data, FormConvert convert)
+        protected override void ReadFormData({Model.EntityName} data, FormConvert convert)
         {{
             DefaultReadFormData(data,convert);
         }}
@@ -417,7 +417,7 @@ namespace {NameSpace}.WebApi.Entity
         private string CommandCsCode()
         {
             var code = new StringBuilder();
-            if (Entity.TreeUi)
+            if (Model.TreeUi)
             {
                 code.Append(@"
 
@@ -431,7 +431,7 @@ namespace {NameSpace}.WebApi.Entity
             return ApiResultHelper.Succees(nodes);
         }");
             }
-            var cap = Entity.Properties.FirstOrDefault(p => p.IsCaption);
+            var cap = Model.LastProperties.FirstOrDefault(p => p.IsCaption);
             if (cap != null)
             {
                 code.Append(@"
@@ -445,7 +445,7 @@ namespace {NameSpace}.WebApi.Entity
             return ApiResultHelper.Succees(Business.ComboValues());
         }");
             }
-            foreach (var cmd in Entity.Commands.Where(p => !p.IsLocalAction))
+            foreach (var cmd in Model.Commands.Where(p => !p.IsLocalAction))
             {
                 code.Append($@"
         /// <summary>

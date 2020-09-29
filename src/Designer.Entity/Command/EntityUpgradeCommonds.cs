@@ -199,11 +199,11 @@ namespace Agebull.EntityModel.Designer
                 return;
             if (oldTable.PrimaryColumn != null)
             {
-                var kc = new PropertyConfig();
+                var kc = new FieldConfig();
                 kc.CopyFromProperty(oldTable.PrimaryColumn, true, true, true);
                 newTable.Add(kc);
             }
-            foreach (var col in Context.SelectColumns.OfType<PropertyConfig>().ToArray())
+            foreach (var col in Context.SelectColumns.OfType<FieldConfig>().ToArray())
             {
                 oldTable.Remove(col);
                 newTable.Add(col);

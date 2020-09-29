@@ -1,6 +1,6 @@
 ﻿using System.Data;
 using Agebull.EntityModel.Config;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -44,7 +44,7 @@ namespace Agebull.EntityModel.RobotCoder
                     return csType;
             }
         }
-        public static string PropertyValueType(PropertyConfig col)
+        public static string PropertyValueType(FieldConfig col)
         {
             switch (col.CsType.ToLower())
             {

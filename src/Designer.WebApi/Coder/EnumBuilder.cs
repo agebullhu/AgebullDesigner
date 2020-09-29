@@ -20,7 +20,7 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// <summary>
         ///     生成实体代码
         /// </summary>
-        protected override void CreateBaCode(string path)
+        protected override void CreateDesignerCode(string path)
         {
             string code = $@"
 using System;
@@ -42,7 +42,7 @@ namespace {NameSpace}
         /// <summary>
         ///     生成扩展代码
         /// </summary>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
             
         }

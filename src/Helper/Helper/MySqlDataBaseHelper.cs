@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Data;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 
 namespace Agebull.EntityModel.Config.Mysql
 {
@@ -106,7 +106,7 @@ namespace Agebull.EntityModel.Config.Mysql
         ///     从C#的类型转为DBType
         /// </summary>
         /// <param name="field"> </param>
-        public static MySqlDbType ToSqlDbType(PropertyConfig field)
+        public static MySqlDbType ToSqlDbType(FieldConfig field)
         {
             if (field.DbType != null)
                 switch (field.DbType.ToLower())
@@ -286,7 +286,7 @@ namespace Agebull.EntityModel.Config.Mysql
         ///     从C#的类型转为SQLite的类型
         /// </summary>
         /// <param name="property">字段</param>
-        public static string ToDataBaseType(PropertyConfig property)
+        public static string ToDataBaseType(FieldConfig property)
         {
             switch (property.CsType.ToLower())
             {
@@ -429,7 +429,7 @@ namespace Agebull.EntityModel.Config.Mysql
         ///     从C#的类型转为My sql的类型
         /// </summary>
         /// <param name="column"> C#的类型</param>
-        public static string ColumnType(PropertyConfig column)
+        public static string ColumnType(FieldConfig column)
         {
             switch (column.DbType.ToLower())
             {

@@ -50,17 +50,18 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         }
 
         #endregion
+
         #region Form
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public static string HtmlCode(EntityConfig entity)
+        public static string HtmlCode(ModelConfig entity)
         {
             var coder = new VueCoder
             {
-                Entity = entity,
+                Model = entity,
                 Project = entity.Parent
             };
             return coder.HtmlCode();
@@ -69,11 +70,11 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// 
         /// </summary>
         /// <returns></returns>
-        public static string ScriptCode(EntityConfig entity)
+        public static string ScriptCode(ModelConfig entity)
         {
             var coder = new VueCoder
             {
-                Entity = entity,
+                Model = entity,
                 Project = entity.Parent
             };
             return coder.ScriptCode();

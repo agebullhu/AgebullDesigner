@@ -10,7 +10,7 @@ namespace Agebull.EntityModel.RobotCoder
     /// </summary>
     public class InterfaceHelper
     {
-        public static void CheckInterface(EntityConfig entity, List<PropertyConfig> properties)
+        public static void CheckInterface(EntityConfig entity, IList<FieldConfig> properties)
         {
             if (string.IsNullOrWhiteSpace(entity.Interfaces))
                 return;
@@ -34,8 +34,8 @@ namespace Agebull.EntityModel.RobotCoder
             foreach (var iField in entity.Properties.ToArray())
             {
                 if (iField.IsInterfaceField ||
-                    iField.Option.ReferenceConfig is PropertyConfig refField &&
-                    (refField.Parent.IsInterface || interfaces.Contains(refField.Parent.Name)))
+                    iField.Option.ReferenceConfig is FieldConfig refField &&
+                    (refField.Entity.IsInterface || interfaces.Contains(refField.Entity.Name)))
                 {
                     entity.Remove(iField);
                 }

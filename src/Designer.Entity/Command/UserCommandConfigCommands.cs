@@ -36,7 +36,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "删除命令",
                 IconName = "img_del"
             });
-            commands.Add(new CommandItemBuilder<EntityConfig>
+            commands.Add(new CommandItemBuilder<ModelConfig>
             {
                 SignleSoruce = true,
                 Action = AddCommand,
@@ -46,7 +46,7 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "command",
                 WorkView = "Model"
             });
-            commands.Add(new CommandItemBuilder<EntityConfig>
+            commands.Add(new CommandItemBuilder<ModelConfig>
             {
                 SignleSoruce = true,
                 Action = AddAuditCommand,
@@ -62,7 +62,7 @@ namespace Agebull.EntityModel.Designer
         /// 新增命令
         /// </summary>
         /// <param name="entity"></param>
-        public void AddCommand(EntityConfig entity)
+        public void AddCommand(ModelConfig entity)
         {
             if (Model.CreateNew("新增命令", out UserCommandConfig config))
                 entity.Add(config);
@@ -71,7 +71,7 @@ namespace Agebull.EntityModel.Designer
         /// 新增审核命令
         /// </summary>
         /// <param name="entity"></param>
-        public void AddAuditCommand(EntityConfig entity)
+        public void AddAuditCommand(ModelConfig entity)
         {
             if (entity.Commands.Count != 0 && entity.Commands.Any(p => p.Name == "Pass"))
                 return;

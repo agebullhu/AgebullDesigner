@@ -10,7 +10,7 @@ namespace Agebull.EntityModel.Config
 
         public TraceMessage Trace { get; set; }
 
-        public PropertyConfig Property { get; set; }
+        public FieldConfig Property { get; set; }
         #endregion
 
         #region ÐÞ¸´
@@ -34,7 +34,7 @@ namespace Agebull.EntityModel.Config
                     }
                 }
             }
-            else if (!Property.Parent.IsReference && Property.CsType == "string" && Property.Datalen <= 0)
+            else if (!Property.Entity.IsReference && Property.CsType == "string" && Property.Datalen <= 0)
             {
                 Property.Datalen = 500;
             }
@@ -73,7 +73,7 @@ namespace Agebull.EntityModel.Config
         {
             if (friend != null)
             {
-                if (RepairTag(friend, Property.Parent.Option.ReferenceTag))
+                if (RepairTag(friend, Property.Entity.Option.ReferenceTag))
                 {
                     Property.CsType = CppTypeHelper2.CppTypeToCsType(Property);
                 }

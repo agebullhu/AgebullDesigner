@@ -101,6 +101,7 @@ namespace Agebull.EntityModel.Designer
                     project.Classifies.Remove(cls);
             }
             SavEntities(project, dir, checkState);
+            SavModels(project, dir, checkState); 
             SaveEnums(project, dir, checkState);
             SaveApies(project, dir, checkState);
             if (project.IsDelete)
@@ -118,6 +119,15 @@ namespace Agebull.EntityModel.Designer
                 SaveEntity(entity, path, checkState);
             }
         }
+        private void SavModels(ProjectConfig project, string dir, bool checkState)
+        {
+            var path = GlobalConfig.CheckPath(dir, "Model");
+            foreach (var model in project.Models.ToArray())
+            {
+                SaveModel(model, path, checkState);
+            }
+        }
+
         private void SaveEnums(ProjectConfig project, string dir, bool checkState)
         {
             var path = GlobalConfig.CheckPath(dir, "Enum");
@@ -173,15 +183,36 @@ namespace Agebull.EntityModel.Designer
                 {
                     entity.Remove(field);
                 }
-
-                //删除命令处理
-                foreach (var field in entity.Commands.Where(p => p.IsDelete).ToArray())
-                {
-                    entity.Remove(field);
-                }
             }
 
             SaveConfig(entity, dir, checkState);
+        }
+
+        /// <summary>
+        /// 保存实体
+        /// </summary>
+        public void SaveModel(ModelConfig model, string dir, bool checkState)
+        {
+            if (model.IsDelete)
+            {
+                model.Parent.Remove(model);
+            }
+            else
+            {
+                //删除字段处理
+                foreach (var property in model.Properties.Where(p => !p.IsDelete).ToArray())
+                {
+                    model.Remove(property);
+                }
+
+                //删除命令处理
+                foreach (var field in model.Commands.Where(p => p.IsDelete).ToArray())
+                {
+                    model.Remove(field);
+                }
+            }
+
+            SaveConfig(model, dir, checkState);
         }
         #endregion
 

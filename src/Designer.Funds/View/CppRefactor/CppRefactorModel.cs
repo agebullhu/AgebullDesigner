@@ -307,8 +307,8 @@ namespace Agebull.EntityModel.Designer
                 }
                 if (!isInStruct)
                     continue;
-                PropertyConfig column;
-                entity.Add(column = new PropertyConfig
+                FieldConfig column;
+                entity.Add(column = new FieldConfig
                 {
                     DbType = "nvarchar"
                 });
@@ -344,7 +344,7 @@ namespace Agebull.EntityModel.Designer
                 CoderBase.RepairConfigName(t, true);
                 foreach (var pro in t.Properties)
                 {
-                    pro.Parent = t;
+                    pro.Entity = t;
                     pro.CppName = pro.CppName;
                     CoderBase.RepairConfigName(pro, true);
                     pro.CppLastType = CppTypeHelper2.CppLastType(pro.CppType);

@@ -14,61 +14,27 @@ namespace Agebull.EntityModel.Config
         /// 加入子级
         /// </summary>
         /// <param name="propertyConfig"></param>
-        public void Add(PropertyConfig propertyConfig)
+        public void Add(FieldConfig propertyConfig)
         {
             if (Properties.Any(p=>p.Name== propertyConfig.Name) ||!Properties.TryAdd(propertyConfig))
                 return;
-            propertyConfig.Parent = this;
+            propertyConfig.Entity = this;
             if (WorkContext.InLoding || WorkContext.InSaving || WorkContext.InRepair)
                 return;
             propertyConfig.Identity = ++MaxIdentity;
             propertyConfig.Index = Properties.Count == 0 ? 1 : Properties.Max(p => p.Index) + 1;
             MaxIdentity = Properties.Max(p => p.Identity);
         }
-        /// <summary>
-        /// 加入子级
-        /// </summary>
-        /// <param name="propertyConfig"></param>
-        public void Add(EntityReleationConfig propertyConfig)
-        {
-            propertyConfig.Parent = this;
-            Releations.TryAdd(propertyConfig);
-        }
-        /// <summary>
-        /// 加入子级
-        /// </summary>
-        /// <param name="propertyConfig"></param>
-        public void Add(UserCommandConfig propertyConfig)
-        {
-            propertyConfig.Parent = this;
-            Commands.TryAdd(propertyConfig);
-        }
 
         /// <summary>
         /// 加入子级
         /// </summary>
         /// <param name="propertyConfig"></param>
-        public void Remove(PropertyConfig propertyConfig)
+        public void Remove(FieldConfig propertyConfig)
         {
             Properties.Remove(propertyConfig);
         }
-        /// <summary>
-        /// 加入子级
-        /// </summary>
-        /// <param name="propertyConfig"></param>
-        public void Remove(UserCommandConfig propertyConfig)
-        {
-            Commands.Remove(propertyConfig);
-        }
 
-        /// <summary>
-        /// 加入子级
-        /// </summary>
-        /// <param name="propertyConfig"></param>
-        public void Remove(EntityReleationConfig propertyConfig)
-        {
-            Releations.Remove(propertyConfig);
-        }
         #endregion
 
         #region 子级
@@ -93,7 +59,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 最终有效的属性
         /// </summary>
-        public List<PropertyConfig> LastProperties { get; set; }
+        public List<FieldConfig> LastProperties { get; set; }
 
         /// <summary>
         /// 公开的属性
@@ -103,7 +69,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"公开的属性"), Description("公开的属性")]
-        public IEnumerable<PropertyConfig> PublishProperty => LastProperties?.Where(p => !p.DbInnerField);
+        public IEnumerable<FieldConfig> PublishProperty => LastProperties?.Where(p => !p.DbInnerField);
 
         /// <summary>
         /// C++的属性
@@ -113,7 +79,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"C++的属性"), Description("C++的属性")]
-        public IEnumerable<PropertyConfig> CppProperty => LastProperties?.Where(p => !p.IsMiddleField && !p.DbInnerField && !p.IsSystemField);
+        public IEnumerable<FieldConfig> CppProperty => LastProperties?.Where(p => !p.IsMiddleField && !p.DbInnerField && !p.IsSystemField);
 
         /// <summary>
         /// 客户端可访问的属性
@@ -123,7 +89,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"客户端可访问的属性"), Description("客户端可访问的属性")]
-        public IEnumerable<PropertyConfig> ClientProperty => LastProperties?.Where(p => !p.DenyClient && !p.DbInnerField);
+        public IEnumerable<FieldConfig> ClientProperty => LastProperties?.Where(p => !p.DenyClient && !p.DbInnerField);
 
         /// <summary>
         /// 客户端可访问的属性
@@ -133,7 +99,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"客户端可访问的属性"), Description("客户端可访问的属性")]
-        public IEnumerable<PropertyConfig> UserProperty => LastProperties?.Where(p => !p.DenyClient && !p.DbInnerField && !p.IsSystemField);
+        public IEnumerable<FieldConfig> UserProperty => LastProperties?.Where(p => !p.DenyClient && !p.DbInnerField && !p.IsSystemField);
 
         /// <summary>
         /// 数据库字段
@@ -143,7 +109,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"数据库字段"), Description("数据库字段")]
-        public IEnumerable<PropertyConfig> DbFields => LastProperties?.Where(p => !p.NoStorage);
+        public IEnumerable<FieldConfig> DbFields => LastProperties?.Where(p => !p.NoStorage);
 
 
         #endregion

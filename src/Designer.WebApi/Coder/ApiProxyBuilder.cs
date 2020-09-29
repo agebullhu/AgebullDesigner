@@ -17,9 +17,9 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// <summary>
         ///     生成基础代码
         /// </summary>
-        protected override void CreateBaCode(string path)
+        protected override void CreateDesignerCode(string path)
         {
-            if (Entity.ExtendConfigListBool["NoApi"])
+            if (Model.ExtendConfigListBool["NoApi"])
                 return;
             var code = $@"
 using System;
@@ -46,9 +46,9 @@ using Agebull.Common.WebApi;
 namespace {NameSpace}.WebApi.EntityApi
 {{
     /// <summary>
-    /// {Entity.Description}的实体数据操作接口代理类
+    /// {Model.Description}的实体数据操作接口代理类
     /// </summary>
-    public class {Entity.Name}ApiProxy : I{Entity.Name}Api
+    public class {Model.Name}ApiProxy : I{Model.Name}Api
     {{
         
         /// <summary>
@@ -76,9 +76,9 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <returns>如果为真并返回结果数据</returns>
-        public ApiResultEx<{Entity.Name}> AddNew({Entity.Name} data)
+        public ApiResultEx<{Model.Name}> AddNew({Model.Name} data)
         {{
-            return Caller.Post<{Entity.Name}>(""entity/{Entity.Name}/AddNew"", data);
+            return Caller.Post<{Model.Name}>(""entity/{Model.Name}/AddNew"", data);
         }}
 
         /// <summary>
@@ -86,9 +86,9 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <returns>如果为真并返回结果数据</returns>
-        public ApiResultEx<{Entity.Name}> Update({Entity.Name} data)
+        public ApiResultEx<{Model.Name}> Update({Model.Name} data)
         {{
-            return Caller.Post<{Entity.Name}>(""entity/{Entity.Name}/Update"", data);
+            return Caller.Post<{Model.Name}>(""entity/{Model.Name}/Update"", data);
         }}
 
         /// <summary>
@@ -96,9 +96,9 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""dataKey"">数据主键</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        public ApiResultEx Delete(Argument<{Entity.PrimaryColumn?.LastCsType ?? "int"}> dataKey)
+        public ApiResultEx Delete(Argument<{Model.PrimaryColumn?.LastCsType ?? "int"}> dataKey)
         {{
-            return Caller.Post(""entity/{Entity.Name}/Delete"", dataKey);
+            return Caller.Post(""entity/{Model.Name}/Delete"", dataKey);
         }}
 
         /// <summary>
@@ -106,20 +106,20 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""arg"">分页参数</param>
         /// <returns>结果数据</returns>
-        public ApiResultEx<ApiPageData<{Entity.Name}>> Query(PageArgument arg)
+        public ApiResultEx<ApiPageData<{Model.Name}>> Query(PageArgument arg)
         {{
-            return Caller.Post<ApiPageData<{Entity.Name}>>(""entity/{Entity.Name}/Query"", arg);
+            return Caller.Post<ApiPageData<{Model.Name}>>(""entity/{Model.Name}/Query"", arg);
         }}
     }}
 }}";
-            var file = ConfigPath(Entity, FileSaveConfigName, path, "Proxy", $"{Entity.Name}EntityApi.cs");
+            var file = ConfigPath(Model, FileSaveConfigName, path, "Proxy", $"{Model.Name}EntityApi.cs");
             SaveCode(file, code);
         }
 
         /// <summary>
         ///     生成基础代码
         /// </summary>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
             StringBuilder code = new StringBuilder();
             code.Append($@"using System;

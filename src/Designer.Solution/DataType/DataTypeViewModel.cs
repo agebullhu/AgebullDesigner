@@ -60,14 +60,14 @@ namespace Agebull.EntityModel.Designer
                     Name="Sync",
                     Caption = "从C#语言解析字段数据类型",
                     IsButton=true,
-                    Action = arg =>Model.Context.Solution.Foreach<PropertyConfig>(DataTypeHelper.CsDataType)
+                    Action = arg =>Model.Context.Solution.Foreach<FieldConfig>(DataTypeHelper.CsDataType)
                 },
                 new CommandItem
                 {
                     Name="Sync",
                     Caption = "标准化字段数据类型",
                     IsButton=true,
-                    Action = arg=>Model.Context.Solution.Foreach<PropertyConfig>(DataTypeHelper.StandardDataType)
+                    Action = arg=>Model.Context.Solution.Foreach<FieldConfig>(DataTypeHelper.StandardDataType)
                 }
             };
         }

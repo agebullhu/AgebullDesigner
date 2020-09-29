@@ -78,15 +78,15 @@ namespace Agebull.EntityModel.RobotCoder
                 }
         }
 
-        private static void ToStandardByDbType(PropertyConfig property)
+        private static void ToStandardByDbType(FieldConfig property)
         {
             ToStandardByDbType(property, property.DbType);
         }
-        public static void ToStandardByDbType(PropertyConfig property, string dbType)
+        public static void ToStandardByDbType(FieldConfig property, string dbType)
         {
             if (property.NoStorage || string.IsNullOrWhiteSpace(dbType))
                 return;
-            DataTypeMapConfig dataType = FindByDb(property.Parent.Parent.DbType, dbType);
+            DataTypeMapConfig dataType = FindByDb(property.Entity.Parent.DbType, dbType);
             if (dataType == null)
                 return;
             property.DataType = dataType.Name;
@@ -94,7 +94,7 @@ namespace Agebull.EntityModel.RobotCoder
             property.CppType = dataType.Cpp;
         }
 
-        public static void ToStandard(PropertyConfig property)
+        public static void ToStandard(FieldConfig property)
         {
             var dataType = string.IsNullOrWhiteSpace(property.DataType) ? FindByCSharp(property.CsType) : FindByName(property.DataType);
             if (dataType.Name.ToLower() != "object")
@@ -105,11 +105,11 @@ namespace Agebull.EntityModel.RobotCoder
             }
             ToValueDataType(property, dataType);
         }
-        public static void ToValueDataType(PropertyConfig property, DataTypeMapConfig dataType)
+        public static void ToValueDataType(FieldConfig property, DataTypeMapConfig dataType)
         {
-            if (property.Parent == null)
+            if (property.Entity == null)
                 return;
-            property.DbType = property.Parent.Parent.DbType switch
+            property.DbType = property.Entity.Parent.DbType switch
             {
                 DataBaseType.SqlServer => dataType.SqlServer,
                 DataBaseType.Sqlite => dataType.Sqlite,
@@ -117,7 +117,7 @@ namespace Agebull.EntityModel.RobotCoder
             };
         }
 
-        public static void CsDataType(PropertyConfig arg)
+        public static void CsDataType(FieldConfig arg)
         {
             DataTypeMapConfig dataType;
             if (arg.CustomType != null)
@@ -155,10 +155,10 @@ namespace Agebull.EntityModel.RobotCoder
             if (arg.Datalen <= 0)
                 arg.Datalen = dataType.Datalen;
             arg.Scale = dataType.Scale;
-            if (arg.Parent == null)
+            if (arg.Entity == null)
                 arg.DbType = dataType.MySql;
             else
-                arg.DbType = arg.Parent.Parent.DbType switch
+                arg.DbType = arg.Entity.Parent.DbType switch
                 {
                     DataBaseType.SqlServer => dataType.SqlServer,
                     _ => dataType.MySql,
@@ -174,7 +174,7 @@ namespace Agebull.EntityModel.RobotCoder
                     arg.Scale = scale;
             }
         }
-        public static void StandardDataType(PropertyConfig arg)
+        public static void StandardDataType(FieldConfig arg)
         {
             string name = arg.IsEnum ? "Enum" : arg.DataType;
             var dataType = GlobalConfig.CurrentSolution.DataTypeMap.FirstOrDefault(p =>
@@ -198,10 +198,10 @@ namespace Agebull.EntityModel.RobotCoder
                 arg.CppType = dataType.Cpp;
                 arg.Datalen = dataType.Datalen;
                 arg.Scale = dataType.Scale;
-                if (arg.Parent == null)
+                if (arg.Entity == null)
                     arg.DbType = dataType.MySql;
                 else
-                    arg.DbType = arg.Parent.Parent.DbType switch
+                    arg.DbType = arg.Entity.Parent.DbType switch
                     {
                         DataBaseType.SqlServer => dataType.SqlServer,
                         DataBaseType.Sqlite => dataType.Sqlite,
@@ -209,7 +209,7 @@ namespace Agebull.EntityModel.RobotCoder
                     };
             }
         }
-        public static bool IsType(this PropertyConfig property, string type)
+        public static bool IsType(this FieldConfig property, string type)
         {
             return property.CsType?.Equals(type, StringComparison.OrdinalIgnoreCase) ?? false;
         }

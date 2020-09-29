@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -24,13 +20,13 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         ///     生成实体代码
         /// </summary>
-        protected override void CreateBaCode(string path)
+        protected override void CreateDesignerCode(string path)
         {
             var fileName = ".Designer.cs";
-            var file = Path.Combine(path, Entity.Name + fileName);
-            if (!string.IsNullOrWhiteSpace(Entity.Alias))
+            var file = Path.Combine(path, Model.Name + fileName);
+            if (!string.IsNullOrWhiteSpace(Model.Alias))
             {
-                var oldFile = Path.Combine(path, Entity.Alias + fileName);
+                var oldFile = Path.Combine(path, Model.Alias + fileName);
                 if (File.Exists(oldFile))
                 {
                     Directory.Move(oldFile, file);
@@ -43,17 +39,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Configuration;
-using System.Data;
 using System.Diagnostics;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
 using System.Runtime.Serialization;
-using System.IO;
 using Newtonsoft.Json;
 
-
-using Agebull.Common;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Interfaces;
 
@@ -63,28 +52,31 @@ using Agebull.EntityModel.Interfaces;
 namespace {NameSpace}
 {{
     /// <summary>
-    /// {Entity.Description}
+    /// {Model.Description}
     /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
-    public partial class {Entity.EntityName} {ExtendInterface()}
+    public partial class {Model.EntityName} {ExtendInterface()}
     {{
         #region 构造
         
         /// <summary>
         /// 构造
         /// </summary>
-        public {Entity.EntityName}()
+        public {Model.EntityName}()
         {{
             Initialize();
+            InitEntityEditStatus();
         }}
 
         /// <summary>
         /// 初始化
         /// </summary>
         partial void Initialize();
+        partial void InitEntityEditStatus();
+
         #endregion
 {GetBaseCode<EntityPropertyBuilder>()}
-{FullCode()}
+
     }}
 }}";
             SaveCode(file, code);
@@ -93,13 +85,13 @@ namespace {NameSpace}
         /// <summary>
         ///     生成扩展代码
         /// </summary>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
             var fileName = ".cs";
-            var file = Path.Combine(path, Entity.Name + fileName);
-            if (!string.IsNullOrWhiteSpace(Entity.Alias))
+            var file = Path.Combine(path, Model.Name + fileName);
+            if (!string.IsNullOrWhiteSpace(Model.Alias))
             {
-                var oldFile = Path.Combine(path, Entity.Alias + fileName);
+                var oldFile = Path.Combine(path, Model.Alias + fileName);
                 if (File.Exists(oldFile))
                 {
                     Directory.Move(oldFile, file);
@@ -129,10 +121,10 @@ using Agebull.EntityModel.Interfaces;
 namespace {NameSpace}
 {{
     /// <summary>
-    /// {Entity.Description}
+    /// {Model.Description}
     /// </summary>
     [DataContract]
-    sealed partial class {Entity.EntityName} : {(Entity.NoDataBase ? "NotificationObject" : "EditDataObject")}
+    sealed partial class {Model.EntityName} : {(Model.NoDataBase ? "NotificationObject" : "EditDataObject")}
     {{
         
         /// <summary>
@@ -145,56 +137,9 @@ namespace {NameSpace}
 
     }}
 }}";
-            SaveCode(Path.Combine(path, Entity.Name + ".cs"), code);
+            SaveCode(Path.Combine(path, Model.Name + ".cs"), code);
         }
 
-
-        /// <summary>
-        ///     生成实体代码
-        /// </summary>
-        private string FullCode()
-        {
-           if (Entity.NoDataBase)
-                return null;
-            return $@"
-{GetBaseCode<EntityDictionaryBuilder>()}
-{GetBaseCode<EntityCopyBuilder>()}
-{GetBaseCode<EntityLaterPeriodBuilder>()}
-{GetBaseCode<EntityStructBuilder>()}";
-        }
-
-        private string ExtendInterface()
-        {
-            List<string> list = new List<string>();
-            if (Entity.Interfaces != null)
-            {
-                list.AddRange(Entity.Interfaces.Split(NoneLanguageChar, StringSplitOptions.RemoveEmptyEntries));
-            }
-            //code.Append("IEntityPoolSetting");
-            if (Entity.HasePrimaryKey)
-            {
-                if(Entity.PrimaryColumn.IsType("long"))
-                    list.Add("IIdentityData");
-                else
-                    list.Add($"IIdentityData<{Entity.PrimaryColumn.CsType}>");
-                if (Entity.PrimaryColumn.IsGlobalKey)
-                    list.Add("IKey");
-            }
-            //if (!Entity.IsLog)
-            //{
-            //    code.Append(" , IFieldJson , IPropertyJson");
-            //}
-            if (Entity.IsUniqueUnion)
-            {
-                list.Add("IUnionUniqueEntity");
-            }
-
-            //if (Entity.LastColumns.Any(p => p.IsUserId))
-            //{
-            //    code.Append(" , IUserChildEntity");
-            //}
-            return list.Count == 0 ? null : list.DistinctBy().LinkToString(" : ", " , ");
-        }
     }
 
 }

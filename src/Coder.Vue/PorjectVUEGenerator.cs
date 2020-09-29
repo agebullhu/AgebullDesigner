@@ -19,17 +19,17 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// <summary>
         ///     生成基础代码
         /// </summary>
-        protected override void CreateBaCode(string path)
+        protected override void CreateDesignerCode(string path)
         {
-            if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
+            if (Model.IsInternal || Model.NoDataBase || Model.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
 
 
-            var file = ConfigPath(Entity, "File_VUE_HTML", path, Entity.PagePath(), "index.htm");
+            var file = ConfigPath(Model, "File_VUE_HTML", path, Model.PagePath(), "index.htm");
 
             var coder = new VueCoder
             {
-                Entity = Entity,
+                Model = Model,
                 Project = Project
             };
             try
@@ -46,16 +46,16 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// <summary>
         ///     生成扩展代码
         /// </summary>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
-            if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
+            if (Model.IsInternal || Model.NoDataBase || Model.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
 
-            var file = ConfigPath(Entity, "File_VUE_JS", path, Entity.PagePath(), "script.js");
+            var file = ConfigPath(Model, "File_VUE_JS", path, Model.PagePath(), "script.js");
 
             var coder = new VueCoder
             {
-                Entity = Entity,
+                Model = Model,
                 Project = Project
             };
             WriteFile(file, coder.ScriptCode());

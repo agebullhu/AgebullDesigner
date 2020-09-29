@@ -24,7 +24,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// ·ÖÀà
         /// </summary>
-        [DataMember, JsonProperty("_Classify", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_Classify",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _classify;
 
         /// <summary>

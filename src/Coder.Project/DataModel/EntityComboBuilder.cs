@@ -19,11 +19,11 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         string ComboCode()
         {
-            var title = Entity.LastProperties.FirstOrDefault(p => p.IsCaption);
+            var title = Model.LastProperties.FirstOrDefault(p => p.IsCaption);
             if (title == null)
                 return "";
             string filter = "";
-            if (Entity.Interfaces?.Contains("IStateData") ?? false)
+            if (Model.Interfaces?.Contains("IStateData") ?? false)
                 filter = "p => p.DataState == DataStateType.Enable";
             return  $@"
 using System;
@@ -53,16 +53,16 @@ using Agebull.EntityModel.EasyUI;
 
 namespace {NameSpace}.DataAccess
 {{
-    partial class {Entity.Name}DataAccess
+    partial class {Model.Name}DataAccess
     {{
         /// <summary>
         /// 下拉列表键
         /// </summary>
-        private const string comboKey = ""ui:combo:{Entity.Name}"";
+        private const string comboKey = ""ui:combo:{Model.Name}"";
         /// <summary>
         /// 下拉树键
         /// </summary>
-        private const string treeKey = ""ui:tree:{Entity.Name}"";
+        private const string treeKey = ""ui:tree:{Model.Name}"";
 
         /// <summary>
         /// 取得下拉列表值
@@ -75,10 +75,10 @@ namespace {NameSpace}.DataAccess
                 var result = proxy.Client.Get<List<EasyComboValues>>(comboKey);
                 if (result == null)
                 {{
-                    var access = new {Entity.Name}DataAccess();
+                    var access = new {Model.Name}DataAccess();
                     var datas = access.All({filter});
                     result = new List<EasyComboValues>{{EasyComboValues.Empty}};
-                    result.AddRange(datas.Select(p => new EasyComboValues(p.{Entity.PrimaryField}, p.{title.PropertyName})));
+                    result.AddRange(datas.Select(p => new EasyComboValues(p.{Model.PrimaryField}, p.{title.PropertyName})));
                     proxy.Client.Set(comboKey, result);
                 }}
                 return result;
@@ -96,12 +96,12 @@ namespace {NameSpace}.DataAccess
                 var result = proxy.Client.Get<List<EasyUiTreeNode>>(treeKey);
                 if (result == null)
                 {{
-                    var access = new {Entity.Name}DataAccess();
+                    var access = new {Model.Name}DataAccess();
                     var datas = access.All({filter});
                     result = new List<EasyUiTreeNode>{{EasyUiTreeNode.EmptyNode}};
                     result.AddRange(datas.Select(p => new EasyUiTreeNode
                     {{
-                        ID = p.{Entity.PrimaryField},
+                        ID = p.{Model.PrimaryField},
                         Text = p.{title.PropertyName},
                         Title = p.{title.PropertyName},
                         IsOpen = true
@@ -116,7 +116,7 @@ namespace {NameSpace}.DataAccess
         ///     保存完成后期处理(Insert或Update)
         /// </summary>
         /// <param name=""entity""></param>
-        protected sealed override void OnDataSaved(DataOperatorType operatorType,{Entity.EntityName} entity)
+        protected sealed override void OnDataSaved(DataOperatorType operatorType,{Model.EntityName} entity)
         {{
             using (var proxy = new RedisProxy(RedisProxy.DbComboCache))
             {{

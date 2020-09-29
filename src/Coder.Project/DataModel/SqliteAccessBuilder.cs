@@ -24,17 +24,17 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 读取表名
         /// </summary>
-        protected sealed override string ReadTableName => @""{Entity.ReadTableName}"";
+        protected sealed override string ReadTableName => @""{Model.ReadTableName}"";
 
         /// <summary>
         /// 写入表名
         /// </summary>
-        protected sealed override string WriteTableName => @""{Entity.SaveTable}"";
+        protected sealed override string WriteTableName => @""{Model.SaveTable}"";
 
         /// <summary>
         /// 主键
         /// </summary>
-        protected sealed override string PrimaryKey =>  @""{Entity.PrimaryColumn.PropertyName}"";
+        protected sealed override string PrimaryKey =>  @""{Model.PrimaryColumn.PropertyName}"";
 
         /// <summary>
         /// 全表读取的SQL语句
@@ -70,18 +70,18 @@ using {SolutionConfig.Current.NameSpace}.DataAccess;
 namespace {NameSpace}.DataAccess
 {{
     /// <summary>
-    /// {Entity.Caption}
+    /// {Model.Caption}
     /// </summary>
-    {(Entity.IsInternal ? "internal" : "public")} partial class {Entity.Name}DataAccess
+    {(Model.IsInternal ? "internal" : "public")} partial class {Model.Name}DataAccess
     {{
         /// <summary>
         /// 构造
         /// </summary>
-        public {Entity.Name}DataAccess()
+        public {Model.Name}DataAccess()
         {{
-            Name = {Entity.EntityName}._DataStruct_.EntityName;
-            Caption = {Entity.EntityName}._DataStruct_.EntityCaption;
-            Description = {Entity.EntityName}._DataStruct_.EntityDescription;
+            Name = {Model.EntityName}._DataStruct_.EntityName;
+            Caption = {Model.EntityName}._DataStruct_.EntityCaption;
+            Description = {Model.EntityName}._DataStruct_.EntityDescription;
         }}
 {SqlCode()}
 {FieldCode()}
@@ -100,18 +100,18 @@ namespace {NameSpace}.DataAccess
         /// <summary>
         ///     生成基础代码
         /// </summary>
-        protected override void CreateBaCode(string path)
+        protected override void CreateDesignerCode(string path)
         {
-            var file = Path.Combine(path, Entity.Name + "DataAccess.Designer.cs");
-            if (Entity.NoDataBase)
+            var file = Path.Combine(path, Model.Name + "DataAccess.Designer.cs");
+            if (Model.NoDataBase)
             {
                 if (File.Exists(file))
                 {
                     Directory.Move(file, file + ".bak");
                 }
-                else if (!string.IsNullOrWhiteSpace(Entity.Alias))
+                else if (!string.IsNullOrWhiteSpace(Model.Alias))
                 {
-                    var oldFile = Path.Combine(path, Entity.Alias + "DataAccess.Designer.cs");
+                    var oldFile = Path.Combine(path, Model.Alias + "DataAccess.Designer.cs");
                     if (File.Exists(oldFile))
                     {
                         Directory.Move(oldFile, file + ".bak");
@@ -119,9 +119,9 @@ namespace {NameSpace}.DataAccess
                 }
                 return;
             }
-            if (!string.IsNullOrWhiteSpace(Entity.Alias))
+            if (!string.IsNullOrWhiteSpace(Model.Alias))
             {
-                var oldFile = Path.Combine(path, Entity.Alias + "DataAccess.Designer.cs");
+                var oldFile = Path.Combine(path, Model.Alias + "DataAccess.Designer.cs");
                 if (File.Exists(oldFile))
                 {
                     Directory.Move(oldFile, file);
@@ -134,18 +134,18 @@ namespace {NameSpace}.DataAccess
         /// <summary>
         ///     生成扩展代码
         /// </summary>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
-            var file = Path.Combine(path, Entity.Name + "DataAccess.cs");
-            if (Entity.NoDataBase)
+            var file = Path.Combine(path, Model.Name + "DataAccess.cs");
+            if (Model.NoDataBase)
             {
                 if (File.Exists(file))
                 {
                     Directory.Move(file, file + ".bak");
                 }
-                else if (!string.IsNullOrWhiteSpace(Entity.Alias))
+                else if (!string.IsNullOrWhiteSpace(Model.Alias))
                 {
-                    var oldFile = Path.Combine(path, Entity.Alias + "DataAccess.cs");
+                    var oldFile = Path.Combine(path, Model.Alias + "DataAccess.cs");
                     if (File.Exists(oldFile))
                     {
                         Directory.Move(oldFile, file + ".bak");
@@ -153,9 +153,9 @@ namespace {NameSpace}.DataAccess
                 }
                 return;
             }
-            if (!string.IsNullOrWhiteSpace(Entity.Alias))
+            if (!string.IsNullOrWhiteSpace(Model.Alias))
             {
-                var oldFile = Path.Combine(path, Entity.Alias + "DataAccess.cs");
+                var oldFile = Path.Combine(path, Model.Alias + "DataAccess.cs");
                 if (File.Exists(oldFile))
                 {
                     Directory.Move(oldFile, file);
@@ -163,7 +163,7 @@ namespace {NameSpace}.DataAccess
             }
 
             var baseClass = "SqliteTable";
-            if (Entity.Interfaces?.Contains("IStateData") ?? false)
+            if (Model.Interfaces?.Contains("IStateData") ?? false)
             {
                 baseClass = "DataStateTable";
             }
@@ -183,9 +183,9 @@ using {SolutionConfig.Current.NameSpace}.DataAccess;
 namespace {NameSpace}.DataAccess
 {{
     /// <summary>
-    /// {Entity.Caption}
+    /// {Model.Caption}
     /// </summary>
-    partial class {Entity.Name}DataAccess : {baseClass}<{Entity.EntityName},{Project.DataBaseObjectName}>
+    partial class {Model.Name}DataAccess : {baseClass}<{Model.EntityName},{Project.DataBaseObjectName}>
     {{
     }}
 }}
@@ -199,7 +199,7 @@ namespace {NameSpace}.DataAccess
             var sql = new StringBuilder();
 
             var isFirst = true;
-            foreach (var field in Entity.DbFields)
+            foreach (var field in Model.DbFields)
             {
                 if (isFirst)
                 {
@@ -221,11 +221,11 @@ namespace {NameSpace}.DataAccess
         /// <returns></returns>
         private string UniqueCondition()
         {
-            if (!Entity.DbFields.Any(p => p.UniqueIndex > 0))
-                return $@"[{Entity.PrimaryColumn.DbFieldName}] = @{Entity.PrimaryColumn.PropertyName}";
+            if (!Model.DbFields.Any(p => p.UniqueIndex > 0))
+                return $@"[{Model.PrimaryColumn.DbFieldName}] = @{Model.PrimaryColumn.PropertyName}";
 
             var code = new StringBuilder();
-            var uniqueFields = Entity.DbFields.Where(p => p.UniqueIndex > 0).OrderBy(p => p.UniqueIndex).ToArray();
+            var uniqueFields = Model.DbFields.Where(p => p.UniqueIndex > 0).OrderBy(p => p.UniqueIndex).ToArray();
             var isFirst = true;
             foreach (var col in uniqueFields)
             {
@@ -244,7 +244,7 @@ namespace {NameSpace}.DataAccess
         private string InsertSql()
         {
             var sql = new StringBuilder();
-            var columns = Entity.DbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
+            var columns = Model.DbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
             sql.Append(@"
 INSERT INTO [{ContextWriteTable}]
 (");
@@ -282,7 +282,7 @@ VALUES
             }
             sql.Append(@"
 );");
-            if (Entity.PrimaryColumn.IsIdentity)
+            if (Model.PrimaryColumn.IsIdentity)
             {
                 sql.Append(@"
 SELECT last_insert_rowid();");
@@ -294,7 +294,7 @@ SELECT last_insert_rowid();");
         private string UpdateSql(bool isInner = false)
         {
             var sql = new StringBuilder();
-            IEnumerable<PropertyConfig> columns = Entity.DbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
+            IEnumerable<FieldConfig> columns = Model.DbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
             sql.Append(@"
 UPDATE [{ContextWriteTable}] SET");
             var isFirst = true;
@@ -331,10 +331,10 @@ UPDATE [{ContextWriteTable}] SET");
         /// <param name=""entity"">实体对象</param>
         /// <param name=""cmd"">命令</param>
         /// <returns>返回真说明要取主键</returns>
-        public void CreateFullSqlParameter({Entity.EntityName} entity, SqliteCommand cmd)
+        public void CreateFullSqlParameter({Model.EntityName} entity, SqliteCommand cmd)
         {{");
 
-            foreach (var field in Entity.DbFields.OrderBy(p => p.Index))
+            foreach (var field in Model.DbFields.OrderBy(p => p.Index))
             {
                 bool checkNull = field.Nullable;
                 string nullCondition = $"entity.{field.PropertyName} == null";
@@ -384,11 +384,11 @@ UPDATE [{ContextWriteTable}] SET");
         /// <param name=""entity"">实体对象</param>
         /// <param name=""cmd"">命令</param>
         /// <returns>返回真说明要取主键</returns>
-        protected sealed override bool SetInsertCommand({Entity.EntityName} entity, SqliteCommand cmd)
+        protected sealed override bool SetInsertCommand({Model.EntityName} entity, SqliteCommand cmd)
         {{
             cmd.CommandText = InsertSqlCode;
             CreateFullSqlParameter(entity, cmd);
-            return {Entity.PrimaryColumn.IsIdentity.ToString().ToLower()};
+            return {Model.PrimaryColumn.IsIdentity.ToString().ToLower()};
         }}";
         }
 
@@ -401,9 +401,9 @@ UPDATE [{ContextWriteTable}] SET");
         /// </summary>
         /// <param name=""entity"">实体对象</param>
         /// <param name=""cmd"">命令</param>
-        protected sealed override void SetUpdateCommand({Entity.EntityName} entity, SqliteCommand cmd)
+        protected sealed override void SetUpdateCommand({Model.EntityName} entity, SqliteCommand cmd)
         {{
-            cmd.CommandText = {(Entity.UpdateByModified ? "GetModifiedSqlCode(entity)" : "UpdateSqlCode")};
+            cmd.CommandText = {(Model.UpdateByModified ? "GetModifiedSqlCode(entity)" : "UpdateSqlCode")};
             CreateFullSqlParameter(entity,cmd);
         }}";
         }
@@ -411,7 +411,7 @@ UPDATE [{ContextWriteTable}] SET");
         private string GetDbTypeCode()
         {
             var code = new StringBuilder();
-            foreach (var field in Entity.DbFields)
+            foreach (var field in Model.DbFields)
             {
                 var type = SqliteHelper.ToSqlDbType(field);
                 if (type == Microsoft.Data.Sqlite.SqliteType.Text)
@@ -451,9 +451,9 @@ UPDATE [{ContextWriteTable}] SET");
         /// <param name=""entity"">读取数据的实体</param>
         protected sealed override void LoadEntity(SqliteDataReader reader,{0} entity)
         {{"
-                , Entity.EntityName);
+                , Model.EntityName);
             var idx = 0;
-            foreach (var field in Entity.DbFields)
+            foreach (var field in Model.DbFields)
             {
                 string fieldName = field.PropertyName.ToLWord();
                 if (!string.IsNullOrWhiteSpace(field.CustomType))

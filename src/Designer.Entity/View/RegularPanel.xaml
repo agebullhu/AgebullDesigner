@@ -12,7 +12,7 @@
         <designer:RegularViewModel/>
     </UserControl.DataContext>
     <DockPanel>
-        <GroupBox DockPanel.Dock="Bottom"  Header="数据规则" Margin="5"  DataContext="{Binding Model.Context.SelectProperty}">
+        <GroupBox DockPanel.Dock="Bottom"  Header="数据规则" Margin="5"  DataContext="{Binding Model.Context.SelectField}">
             <GroupBox.Resources>
                 <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
             </GroupBox.Resources>

@@ -131,8 +131,8 @@ namespace Agebull.EntityModel.Designer
         {
             foreach (var field in entity.Properties.ToArray())
             {
-                if (field.Option.ReferenceConfig is PropertyConfig refer && refer.Parent.Parent != null &&
-                    refer.Parent.IsInterface && !entity.Interfaces.Contains(refer.Parent.Name))
+                if (field.Option.ReferenceConfig is FieldConfig refer && refer.Entity.Parent != null &&
+                    refer.Entity.IsInterface && !entity.Interfaces.Contains(refer.Entity.Name))
                     entity.Remove(field);
             }
         }

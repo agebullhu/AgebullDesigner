@@ -18,14 +18,14 @@ namespace Agebull.EntityModel.RobotCoder
 /**
 * @brief 引发修改事件,进行逻辑处理
 */
-void {Entity.Name}Model::OnModify()
+void {Model.Name}Model::OnModify()
 {{
     /*");
 
-            foreach (PropertyConfig property in Entity.CppProperty)
+            foreach (var property in Model.CppProperty)
             {
                 code.Append($@"
-    if(is_modified[FIELD_INDEX_{Entity.Name.ToUpper()}_{property.Name.ToUpper()}])
+    if(is_modified[FIELD_INDEX_{Model.Name.ToUpper()}_{property.Name.ToUpper()}])
     {{
         //TO DO:{property.Caption}修改逻辑
     }}");
@@ -50,36 +50,36 @@ void {Entity.Name}Model::OnModify()
             var code = new StringBuilder();
             code.Append($@"
 /**
-* @brief {Entity.Name}数据模型封装类
+* @brief {Model.Name}数据模型封装类
 */
-class {Entity.Name}Model : public ModelBase<{Entity.Name},{Entity.CppProperty.Count()}>
+class {Model.Name}Model : public ModelBase<{Model.Name},{Model.CppProperty.Count()}>
 {{
 public:
 	/**
 	* @brief 默认构造
-	* @param {{{Entity.Name}}} state 数据状态,默认为新增
+	* @param {{{Model.Name}}} state 数据状态,默认为新增
 	*/
-	{Entity.Name}Model(DATA_STATE state = DATA_STATE_NEW)
+	{Model.Name}Model(DATA_STATE state = DATA_STATE_NEW)
 		: ModelBase(state)
 	{{
 	}}
 	/**
 	* @brief 复制构造
-	* @param {{{Entity.Name}}} data 数据对象
+	* @param {{{Model.Name}}} data 数据对象
 	* @param {{DATA_STATE}} state 数据状态,默认为已存在
 	*/
-	{Entity.Name}Model({Entity.Name} data, DATA_STATE state = DATA_STATE_EXIST)
+	{Model.Name}Model({Model.Name} data, DATA_STATE state = DATA_STATE_EXIST)
 		: ModelBase(data, state)
 	{{
 	}}");
 
-            foreach (PropertyConfig property in Entity.CppProperty)
+            foreach (var property in Model.CppProperty)
             {
                 var type = property.CppLastType == "char" && property.Datalen > 0 ? "const char*" : property.CppLastType;
                 code.Append($@"
     /**
     * @brief 取得{property.Caption}
-    * @return {{{type}}} {Entity.Caption}值
+    * @return {{{type}}} {Model.Caption}值
     */
     {type} get_{property.Name}() const
     {{
@@ -92,7 +92,7 @@ public:
     */
     void set_{property.Name}({type} value)
     {{
-		 set_modified(FIELD_INDEX_{Entity.Name.ToUpper()}_{property.Name.ToUpper()});");
+		 set_modified(FIELD_INDEX_{Model.Name.ToUpper()}_{property.Name.ToUpper()});");
                 SetValue(code, property);
                 code.Append(@"
     }");
@@ -108,7 +108,7 @@ public:
             return code.Replace("\n", "\n" + sb).ToString();
         }
 
-        private static void SetValue(StringBuilder code, PropertyConfig field)
+        private static void SetValue(StringBuilder code, FieldConfig field)
         {
             var type = CppTypeHelper.ToCppLastType(field.CppLastType);
             if (type is EntityConfig stru)
@@ -153,15 +153,15 @@ public:
         /// <summary>
         ///     生成实体代码
         /// </summary>
-        protected override void CreateBaCode(string path)
+        protected override void CreateDesignerCode(string path)
         {
             var code = new StringBuilder();
             code.Append($@"
-#ifndef _{Entity.Name.ToUpper()}_MODEL_H
-#define _{Entity.Name.ToUpper()}_MODEL_H
+#ifndef _{Model.Name.ToUpper()}_MODEL_H
+#define _{Model.Name.ToUpper()}_MODEL_H
 #pragma once
 
-#include ""{Entity.Name}.h""
+#include ""{Model.Name}.h""
 #include ""../DataModel/ModelBase.h""
 using namespace GBS::Futures::DataModel;
 ");
@@ -192,20 +192,20 @@ using namespace GBS::Futures::DataModel;
 #endif");
 
 
-            SaveCode(Path.Combine(path, Entity.Name + "Model.h"), code.ToString());
+            SaveCode(Path.Combine(path, Model.Name + "Model.h"), code.ToString());
         }
 
 
         /// <summary>
         ///     生成扩展代码
         /// </summary>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
-            string file = Path.Combine(path, Entity.Name + "Model.cpp");
+            string file = Path.Combine(path, Model.Name + "Model.cpp");
 
             var code = new StringBuilder();
             code.Append($@"#include <stdafx.h>
-#include ""{Entity.Name}Model.h""
+#include ""{Model.Name}Model.h""
 using namespace GBS::Futures::DataModel;
 
 ");

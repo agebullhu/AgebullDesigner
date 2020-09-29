@@ -59,7 +59,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     字段
         /// </summary>
-        public NotificationList<PropertyConfig> Columns { get; } = new ConfigCollection<PropertyConfig>();
+        public NotificationList<FieldConfig> Columns { get; } = new ConfigCollection<FieldConfig>();
 
         #endregion
 
@@ -69,7 +69,7 @@ namespace Agebull.EntityModel.Designer
 
         public List<CommandItemBase> ExCommands => _exCommands ??= new List<CommandItemBase>
         {
-            new AsyncCommandItem<string, List<PropertyConfig>>
+            new AsyncCommandItem<string, List<FieldConfig>>
                 (FormatPrepare, Format.DoCheckFieldes, CheckFieldesEnd)
                 {
                     IsButton=true,
@@ -143,7 +143,7 @@ namespace Agebull.EntityModel.Designer
             Fields = code;
         }
 
-        internal void CheckFieldesEnd(CommandStatus status, Exception ex, List<PropertyConfig> columns)
+        internal void CheckFieldesEnd(CommandStatus status, Exception ex, List<FieldConfig> columns)
         {
             if (status != CommandStatus.Succeed)
                 return;

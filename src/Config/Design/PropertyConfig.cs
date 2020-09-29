@@ -16,7 +16,7 @@ using System.Linq;
 
 namespace Agebull.EntityModel.Config
 {
-    partial class PropertyConfig
+    partial class FieldConfig
     {
         #region 运行时使用
         
@@ -31,8 +31,24 @@ namespace Agebull.EntityModel.Config
             var alias = Alias.Split(new[] { ' ', ',', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Distinct();
             return alias.Where(p => p != PropertyName).Select(p => p.Trim()).ToList();
         }
-        
+
         #endregion
-        
+
+    }
+    partial class PropertyConfig
+    {
+        #region 运行时使用
+
+        /// <summary>
+        ///     取别名属性
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetAliasPropertys()
+        {
+            return Field.GetAliasPropertys();
+        }
+
+        #endregion
+
     }
 }

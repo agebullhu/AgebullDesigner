@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Agebull.EntityModel.Config;
@@ -131,30 +130,30 @@ namespace Agebull.EntityModel.Designer
         #region Property
 
 
-        private void Foreach(Action<PropertyConfig> action, PropertyConfig property)
+        private void Foreach(Action<FieldConfig> action, FieldConfig property)
         {
             if (property != null)
                 action(property);
         }
-        private void Foreach(Action<PropertyConfig> action, EntityConfig entity)
+        private void Foreach(Action<FieldConfig> action, EntityConfig entity)
         {
             foreach (var property in entity.Properties)
                 Foreach(action, property);
         }
-        private void Foreach(Action<PropertyConfig> action, ProjectConfig project)
+        private void Foreach(Action<FieldConfig> action, ProjectConfig project)
         {
             foreach (var entity in project.Entities)
                 Foreach(action, entity);
         }
-        private void Foreach(Action<PropertyConfig> action, SolutionConfig solution)
+        private void Foreach(Action<FieldConfig> action, SolutionConfig solution)
         {
             foreach (var project in solution.Projects)
                 Foreach(action, project);
         }
 
-        protected void Foreach(Action<PropertyConfig> action)
+        protected void Foreach(Action<FieldConfig> action)
         {
-            if (Context.SelectConfig is PropertyConfig property)
+            if (Context.SelectConfig is FieldConfig property)
             {
                 Foreach(action, property);
                 return;
@@ -173,30 +172,30 @@ namespace Agebull.EntityModel.Designer
             Foreach(action, Context.Solution);
         }
 
-        private void Foreach(Func<PropertyConfig, bool> condition, Action<PropertyConfig> action, PropertyConfig property)
+        private void Foreach(Func<FieldConfig, bool> condition, Action<FieldConfig> action, FieldConfig property)
         {
             if (property != null && condition(property))
                 action(property);
         }
-        private void Foreach(Func<PropertyConfig, bool> condition, Action<PropertyConfig> action, EntityConfig entity)
+        private void Foreach(Func<FieldConfig, bool> condition, Action<FieldConfig> action, EntityConfig entity)
         {
             foreach (var property in entity.Properties)
                 Foreach(condition, action, property);
         }
-        private void Foreach(Func<PropertyConfig, bool> condition, Action<PropertyConfig> action, ProjectConfig project)
+        private void Foreach(Func<FieldConfig, bool> condition, Action<FieldConfig> action, ProjectConfig project)
         {
             foreach (var entity in project.Entities)
                 Foreach(condition, action, entity);
         }
-        private void Foreach(Func<PropertyConfig, bool> condition, Action<PropertyConfig> action, SolutionConfig solution)
+        private void Foreach(Func<FieldConfig, bool> condition, Action<FieldConfig> action, SolutionConfig solution)
         {
             foreach (var project in solution.Projects)
                 Foreach(condition, action, project);
         }
 
-        protected void Foreach(Func<PropertyConfig, bool> condition, Action<PropertyConfig> action)
+        protected void Foreach(Func<FieldConfig, bool> condition, Action<FieldConfig> action)
         {
-            if (Context.SelectConfig is PropertyConfig property)
+            if (Context.SelectConfig is FieldConfig property)
             {
                 Foreach(condition, action, property);
                 return;
@@ -244,7 +243,7 @@ namespace Agebull.EntityModel.Designer
 
         protected void Foreach(Action<EnumConfig> action)
         {
-            if (Context.SelectConfig is PropertyConfig col)
+            if (Context.SelectConfig is FieldConfig col)
             {
                 action(col.EnumConfig);
                 return;
@@ -288,7 +287,7 @@ namespace Agebull.EntityModel.Designer
 
         protected void Foreach(Func<EnumConfig, bool> condition, Action<EnumConfig> action)
         {
-            if (Context.SelectConfig is PropertyConfig col)
+            if (Context.SelectConfig is FieldConfig col)
             {
                 Foreach(condition, action, col.EnumConfig);
                 return;
@@ -329,9 +328,9 @@ namespace Agebull.EntityModel.Designer
 
         protected void Foreach(Action<EntityConfig> action)
         {
-            if (Context.SelectConfig is PropertyConfig col)
+            if (Context.SelectConfig is FieldConfig col)
             {
-                action(col.Parent);
+                action(col.Entity);
                 return;
             }
             if (Context.SelectConfig is EntityConfig entity)
@@ -366,9 +365,9 @@ namespace Agebull.EntityModel.Designer
 
         protected void Foreach(Func<EntityConfig, bool> condition, Action<EntityConfig> action)
         {
-            if (Context.SelectConfig is PropertyConfig col)
+            if (Context.SelectConfig is FieldConfig col)
             {
-                Foreach(condition, action, col.Parent);
+                Foreach(condition, action, col.Entity);
                 return;
             }
             if (Context.SelectConfig is EntityConfig entity)
@@ -406,9 +405,9 @@ namespace Agebull.EntityModel.Designer
 
         protected void Foreach(Action<ProjectConfig> action)
         {
-            if (Context.SelectConfig is PropertyConfig col)
+            if (Context.SelectConfig is FieldConfig col)
             {
-                Foreach(action, col.Parent);
+                Foreach(action, col.Entity);
                 return;
             }
             if (Context.SelectConfig is ProjectConfig entity)
@@ -442,9 +441,9 @@ namespace Agebull.EntityModel.Designer
 
         protected void Foreach(Func<ProjectConfig, bool> condition, Action<ProjectConfig> action)
         {
-            if (Context.SelectConfig is PropertyConfig col)
+            if (Context.SelectConfig is FieldConfig col)
             {
-                Foreach(condition, action, col.Parent);
+                Foreach(condition, action, col.Entity);
                 return;
             }
             if (Context.SelectConfig is ProjectConfig entity)

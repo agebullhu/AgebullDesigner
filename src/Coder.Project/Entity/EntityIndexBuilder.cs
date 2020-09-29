@@ -449,7 +449,7 @@ namespace Agebull.EntityModel.RobotCoder
         */
         #region SqlServer
 
-        private void SqlServerIndexsMethod(PropertyConfig property, StringBuilder code)
+        private void SqlServerIndexsMethod(FieldConfig property, StringBuilder code)
         {
             code.AppendFormat(@"
                 
@@ -561,7 +561,7 @@ namespace Agebull.EntityModel.RobotCoder
             {{
                 return scope.Entity.FirstOrDefault(p=>p.{2} == {4},lambda);
             }}
-        }}", Entity.Name, property.Name, property.Name.ToUWord()
+        }}", Model.Name, property.Name, property.Name.ToUWord()
                 , property.CsType, property.Name.ToLWord(), property.Caption);
         }
 

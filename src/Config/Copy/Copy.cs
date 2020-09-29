@@ -107,14 +107,12 @@ namespace Agebull.EntityModel.Config
             ReadTableName = source.ReadTableName;
             SaveTableName = source.SaveTableName;
             Classify = source.Classify;
-            CppName = source.CppName;
             ReferenceKey = source.ReferenceKey;
-            TreeUi = source.TreeUi;
             if (noChilds)
                 return;
             foreach (var field in source.Properties)
             {
-                var nf = new PropertyConfig();
+                var nf = new FieldConfig();
                 nf.CopyFromProperty(field,false,true, true);
                 if (field.IsPrimaryKey)
                     nf.IsPrimaryKey = true;
@@ -133,9 +131,144 @@ namespace Agebull.EntityModel.Config
 
             foreach (var item in cfg.Properties.Where(p => !p.IsDelete && !p.IsDiscard))//字段列表
             {
-                var child = new PropertyConfig();
+                var child = new FieldConfig();
                 child.Copy(item);
                 Add(child);
+            }
+            DenyScope = cfg.DenyScope;//阻止编辑
+            MaxIdentity = cfg.MaxIdentity;//最大字段标识号
+            RedisKey = cfg.RedisKey;//Redis唯一键模板
+            NoStandardDataType = cfg.NoStandardDataType;//非标准数据类型
+            EntityName = cfg.EntityName;//实体名称
+            ReferenceType = cfg.ReferenceType;//参考类型(C#)
+            ModelInclude = cfg.ModelInclude;//模型
+            ModelBase = cfg.ModelBase;//基类
+            DataVersion = cfg.DataVersion;//数据版本
+            IsInternal = cfg.IsInternal;//内部数据
+            NoDataBase = cfg.NoDataBase;//无数据库支持
+            Interfaces = cfg.Interfaces;//继承的接口集合
+            ColumnIndexStart = cfg.ColumnIndexStart;//列序号起始值
+            ReadCoreCodes = cfg.ReadCoreCodes;//不同版本读数据的代码
+            IsInterface = cfg.IsInterface;//接口定义
+            ReadTableName = cfg.ReadTableName;//存储表名(设计录入)
+            SaveTableName = cfg.SaveTableName;//存储表名
+            DbIndex = cfg.DbIndex;//数据库编号
+            UpdateByModified = cfg.UpdateByModified;//按修改更新
+        }
+
+        /// <summary>
+        /// 字段复制
+        /// </summary>
+        /// <param name="dest"></param>
+        /// <returns></returns>
+        protected override void CopyFrom(SimpleConfig dest)
+        {
+            if (!(dest is EntityConfig cfg))
+                base.CopyFrom(dest);
+            else
+                CopyFrom(cfg);
+        }
+
+    }
+
+    partial class ModelConfig
+    {
+        /// <summary>
+        ///     复制值
+        /// </summary>
+        /// <param name="source">复制的源字段</param>
+        /// <param name="noChilds">是否复制子级(默认为是)</param>
+        public void CopyValue(ModelConfig source, bool noChilds = false)
+        {
+            Caption = source.Caption + "(复制)";
+            Description = source.Description;
+            Name = source.Name + "Copy";
+            DataVersion = source.DataVersion;
+            DbIndex = source.DbIndex;
+            IsInternal = source.IsInternal;
+            NoDataBase = source.NoDataBase;
+            ReadTableName = source.ReadTableName;
+            SaveTableName = source.SaveTableName;
+            Classify = source.Classify;
+            CppName = source.CppName;
+            ReferenceKey = source.ReferenceKey;
+            TreeUi = source.TreeUi;
+            if (noChilds)
+                return;
+            foreach (var property in source.Properties)
+            {
+                Add(new PropertyConfig
+                {
+                    Field = property.Field
+                });
+            }
+        }
+        /// <summary>
+        /// 字段复制
+        /// </summary>
+        /// <param name="cfg"></param>
+        /// <returns></returns>
+        public void CopyFrom(EntityConfig cfg)
+        {
+            base.CopyFrom(cfg);
+
+            DenyScope = cfg.DenyScope;//阻止编辑
+            MaxIdentity = cfg.MaxIdentity;//最大字段标识号
+            RedisKey = cfg.RedisKey;//Redis唯一键模板
+            NoStandardDataType = cfg.NoStandardDataType;//非标准数据类型
+            EntityName = cfg.EntityName;//实体名称
+            ReferenceType = cfg.ReferenceType;//参考类型(C#)
+            ModelInclude = cfg.ModelInclude;//模型
+            ModelBase = cfg.ModelBase;//基类
+            DataVersion = cfg.DataVersion;//数据版本
+            IsInternal = cfg.IsInternal;//内部数据
+            NoDataBase = cfg.NoDataBase;//无数据库支持
+            Interfaces = cfg.Interfaces;//继承的接口集合
+            ColumnIndexStart = cfg.ColumnIndexStart;//列序号起始值
+            ReadCoreCodes = cfg.ReadCoreCodes;//不同版本读数据的代码
+            IsInterface = cfg.IsInterface;//接口定义
+            ReadTableName = cfg.ReadTableName;//存储表名(设计录入)
+            SaveTableName = cfg.SaveTableName;//存储表名
+            DbIndex = cfg.DbIndex;//数据库编号
+            UpdateByModified = cfg.UpdateByModified;//按修改更新
+            PageFolder = cfg.PageFolder;//页面文件夹名称
+            TreeUi = cfg.TreeUi;//树形界面
+            MaxForm = cfg.MaxForm;//编辑页面最大化
+            FormCloumn = cfg.FormCloumn;//编辑页面分几列
+            ListDetails = cfg.ListDetails;//列表详细页
+            NoSort = cfg.NoSort;//主键正序
+            PanelType = cfg.PanelType;//主页面类型
+            CppName = cfg.CppName;//C++名称
+
+
+            foreach (var field in cfg.Properties.Where(p => !p.IsDelete && !p.IsDiscard))//字段列表
+            {
+                Add(new PropertyConfig
+                {
+                    Name = field.Name,
+                    Caption = field.Caption,
+                    Description = field.Description,
+                    Field = field
+                });
+            }
+        }
+
+
+        /// <summary>
+        /// 字段复制
+        /// </summary>
+        /// <param name="cfg"></param>
+        /// <returns></returns>
+        public void CopyFrom(ModelConfig cfg)
+        {
+            base.CopyFrom(cfg);
+
+            foreach (var property in cfg.Properties.Where(p => !p.IsDelete && !p.IsDiscard))//字段列表
+            {
+                Add(new PropertyConfig
+                {
+                    Field = property.Field
+                });
             }
             DenyScope = cfg.DenyScope;//阻止编辑
             MaxIdentity = cfg.MaxIdentity;//最大字段标识号
@@ -192,7 +325,6 @@ namespace Agebull.EntityModel.Config
         }
 
     }
-
     partial class EntityReleationConfig
     {
         /// <summary>
@@ -316,7 +448,7 @@ namespace Agebull.EntityModel.Config
 
     }
 
-    partial class PropertyConfig
+    partial class FieldConfig
     {
         /// <summary>
         /// 复制值
@@ -325,7 +457,7 @@ namespace Agebull.EntityModel.Config
         /// <param name="full">全量</param>
         /// <param name="option">系统配置</param>
         /// <param name="primary">主键相关</param>
-        public void CopyFromProperty(PropertyConfig cfg, bool primary, bool full, bool option)
+        public void CopyFromProperty(FieldConfig cfg, bool primary, bool full, bool option)
         {
             Name = cfg.Name;
             Caption = cfg.Caption;
@@ -357,10 +489,10 @@ namespace Agebull.EntityModel.Config
             ComputeGetCode = cfg.ComputeGetCode;//自定义代码(get)
             ComputeSetCode = cfg.ComputeSetCode;//自定义代码(set)
             IsCustomCompute = cfg.IsCustomCompute;//自定义读写代码
-            
+
             HelloCode = cfg.HelloCode;//示例内容
-            
-            
+
+
             KeepUpdate = cfg.KeepUpdate;//不更新
             DbFieldName = cfg.DbFieldName;//数据库字段名称
             DbNullable = cfg.DbNullable;//能否存储空值
@@ -390,7 +522,7 @@ namespace Agebull.EntityModel.Config
             CanEmpty = cfg.CanEmpty;//能否为空
             Max = cfg.Max;//最大值
             Min = cfg.Min;//最大值
-            
+
             //ExtendRole = cfg.ExtendRole;//扩展组合规划
             //ValueSeparate = cfg.ValueSeparate;//值分隔符
             //ArraySeparate = cfg.ArraySeparate;//数组分隔符
@@ -408,7 +540,7 @@ namespace Agebull.EntityModel.Config
             NoneApiArgument = cfg.NoneApiArgument;//字段名称(json)
 
             if (option)
-                Option.Copy(cfg.Option,full);//配置
+                Option.Copy(cfg.Option, full);//配置
 
             if (full)
             {
@@ -461,11 +593,47 @@ namespace Agebull.EntityModel.Config
         protected override void CopyFrom(SimpleConfig dest)
         {
             base.CopyFrom(dest);
-            if (!(dest is PropertyConfig cfg))
+            if (!(dest is FieldConfig cfg))
                 return;
-            CopyFromProperty(cfg,true,true, true);
+            CopyFromProperty(cfg, true, true, true);
+        }
+    }
+
+    partial class PropertyConfig
+    {
+        /// <summary>
+        /// 复制值
+        /// </summary>
+        /// <param name="cfg">配置对象</param>
+        /// <param name="full">全量</param>
+        /// <param name="option">系统配置</param>
+        /// <param name="primary">主键相关</param>
+        public void CopyFromProperty(PropertyConfig cfg)
+        {
+            Field = cfg.Field;
         }
 
+        /// <summary>
+        /// 复制值
+        /// </summary>
+        /// <param name="field">配置对象</param>
+        public void CopyField(FieldConfig field)
+        {
+            Field = field;
+            base.CopyFrom(field);
+        }
+
+        /// <summary>
+        /// 字段复制
+        /// </summary>
+        /// <param name="dest"></param>
+        /// <returns></returns>
+        protected override void CopyFrom(SimpleConfig dest)
+        {
+            base.CopyFrom(dest);
+            if (dest is PropertyConfig cfg)
+                Field = cfg.Field;
+        }
     }
 
     partial class SolutionConfig

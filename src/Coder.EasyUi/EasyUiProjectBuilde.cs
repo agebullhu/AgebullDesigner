@@ -49,10 +49,10 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             }
             var pg = new PageGenerator
             {
-                Entity = schema,
+                Model = schema,
                 Project = schema.Parent,
             };
-            pg.CreateBaseCode(project.PagePath);
+            pg.WriteDesignerCode(project.PagePath);
         }
     }
 }

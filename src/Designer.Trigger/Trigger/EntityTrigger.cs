@@ -79,7 +79,7 @@ namespace Agebull.EntityModel.Designer
                     newoldCls?.Items.TryAdd(TargetConfig);
                     break;
                 case nameof(TargetConfig.Properties):
-                    if (oldValue is NotificationList<PropertyConfig> ops)
+                    if (oldValue is NotificationList<FieldConfig> ops)
                         ops.CollectionChanged -= OnPropertiesCollectionChanged;
                     break;
             }

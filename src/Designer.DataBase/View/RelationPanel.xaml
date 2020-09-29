@@ -13,7 +13,7 @@
         <mysql:DataRelationViewModel/>
     </UserControl.DataContext>
     <DockPanel Margin="0" Background="White">
-        <WrapPanel DockPanel.Dock="Bottom" DataContext="{Binding Context.SelectProperty}">
+        <WrapPanel DockPanel.Dock="Bottom" DataContext="{Binding Context.SelectField}">
             <WrapPanel.Resources>
                 <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
             </WrapPanel.Resources>

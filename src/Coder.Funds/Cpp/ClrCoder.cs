@@ -11,14 +11,14 @@ namespace Agebull.EntityModel.RobotCoder
 
         private string ClrHelperDef()
         {
-            if (Entity.IsInternal || Entity.IsReference)
+            if (Model.IsInternal || Model.IsReference)
                 return null;
             return $@"
 #ifndef CLIENT
 /**
-* @brief {Entity.Name}托管转本机缓存
+* @brief {Model.Name}托管转本机缓存
 */
-public ref class {Entity.Name}Helper
+public ref class {Model.Name}Helper
 {{
 
 public:
@@ -28,37 +28,37 @@ public:
 	size_t m_buffer_len;
 public:
 	/**
-	* @brief {Entity.Name}序列化到本机内存
-	* @param {{{Entity.EntityName}^}} cs_field {Entity.Caption}托管类
+	* @brief {Model.Name}序列化到本机内存
+	* @param {{{Model.EntityName}^}} cs_field {Model.Caption}托管类
 	*/
-	void WriteTo({Entity.EntityName}^ cs_field);
+	void WriteTo({Model.EntityName}^ cs_field);
 
 	/**
 	* @brief 构造本机内存用于接下来的内容复制
-	* @param {{size_t}} len {Entity.Caption}托管类
+	* @param {{size_t}} len {Model.Caption}托管类
 	* @return 无
 	*/
 	void CreateBuffer(size_t len);
 
 	/**
-	* @brief 从已准备好的本机数据指针构造{Entity.Name}托管对象
-	* @return {{{Entity.EntityName}^}} {Entity.Caption}托管类
+	* @brief 从已准备好的本机数据指针构造{Model.Name}托管对象
+	* @return {{{Model.EntityName}^}} {Model.Caption}托管类
 	*/
-	{Entity.EntityName}^ ReadFrom();
+	{Model.EntityName}^ ReadFrom();
 
 #ifdef WEB
 public:
 	/**
 	* @brief 将数据修改发送到交易服务器
-	* @param {{{Entity.EntityName}^}} cs_field {Entity.Caption}托管类
+	* @param {{{Model.EntityName}^}} cs_field {Model.Caption}托管类
 	*/
-	static void SendChanged(Manage::{Entity.EntityName}^ cs_field);
+	static void SendChanged(Manage::{Model.EntityName}^ cs_field);
 #endif
 
 	/**
 	* @brief  构造
 	*/
-	{Entity.Name}Helper()
+	{Model.Name}Helper()
 		: m_buffer(nullptr)
 		, m_buffer_len(0)
 	{{
@@ -78,7 +78,7 @@ public:
 	/**
 	* @brief  析构
 	*/
-	~{Entity.Name}Helper()
+	~{Model.Name}Helper()
 	{{
         Disponse();
 	}}
@@ -87,21 +87,21 @@ public:
 
         private string ClrHelper()
         {
-            if (Entity.IsInternal || Entity.IsReference)
+            if (Model.IsInternal || Model.IsReference)
                 return null;
             return $@"
 /**
-* @brief {Entity.Name}序列化到本机内存
-* @param {{{Entity.EntityName} ^}} cs_field {Entity.Caption}托管类
+* @brief {Model.Name}序列化到本机内存
+* @param {{{Model.EntityName} ^}} cs_field {Model.Caption}托管类
 */
-void {Entity.Name}Helper::WriteTo({Entity.EntityName}^ cs_field)
+void {Model.Name}Helper::WriteTo({Model.EntityName}^ cs_field)
 {{
 	if (m_buffer != nullptr)
 		delete[] m_buffer;
-	{Entity.Name} field;
+	{Model.Name} field;
 	CopyFromClr(cs_field, field);
 	Serializer writer;
-	writer.CreateBuffer(TSON_BUFFER_LEN_{Entity.Name.ToUpper()}, false);
+	writer.CreateBuffer(TSON_BUFFER_LEN_{Model.Name.ToUpper()}, false);
 	Serialize(writer, &field);
 	m_buffer = (unsigned char*)writer.GetBuffer();
 	m_buffer_len = writer.GetDataLen() + 2;
@@ -109,10 +109,10 @@ void {Entity.Name}Helper::WriteTo({Entity.EntityName}^ cs_field)
 
 /**
 * @brief 构造本机内存用于接下来的内容复制
-* @param {{size_t}} len {Entity.Caption}托管类
+* @param {{size_t}} len {Model.Caption}托管类
 * @return 无
 */
-void {Entity.Name}Helper::CreateBuffer(size_t len)
+void {Model.Name}Helper::CreateBuffer(size_t len)
 {{
 	if (m_buffer != nullptr)
 		delete[] m_buffer;
@@ -121,13 +121,13 @@ void {Entity.Name}Helper::CreateBuffer(size_t len)
 }}
 
 /**
-* @brief 从已准备好的本机数据指针构造{Entity.Name}托管对象
-* @return {{{Entity.EntityName} ^}} {Entity.Caption}托管类
+* @brief 从已准备好的本机数据指针构造{Model.Name}托管对象
+* @return {{{Model.EntityName} ^}} {Model.Caption}托管类
 */
-{Entity.EntityName}^ {Entity.Name}Helper::ReadFrom()
+{Model.EntityName}^ {Model.Name}Helper::ReadFrom()
 {{
     assert(m_buffer != nullptr);
-	{Entity.Name} field;
+	{Model.Name} field;
 	Deserialize((char*)m_buffer, m_buffer_len, &field);
 	return CopyToClr(field);
 }}
@@ -135,11 +135,11 @@ void {Entity.Name}Helper::CreateBuffer(size_t len)
 #ifdef WEB
 /**
 * @brief 将数据修改发送到交易服务器
-* @param {{{Entity.EntityName}^}} cs_field {Entity.Caption}托管类
+* @param {{{Model.EntityName}^}} cs_field {Model.Caption}托管类
 */
-void {Entity.Name}Helper::SendChanged({Entity.EntityName}^ cs_field)
+void {Model.Name}Helper::SendChanged({Model.EntityName}^ cs_field)
 {{
-    {Entity.Name} field;
+    {Model.Name} field;
 	CopyFromClr(cs_field, field);
 	auto cmd_arg = SerializeToCommand(&field);
 	cmd_arg->cmd_id = NET_COMMAND_DATA_CHANGED;
@@ -163,25 +163,25 @@ void {Entity.Name}Helper::SendChanged({Entity.EntityName}^ cs_field)
 {ns}
 
 /**
-* @brief {Entity.Name}从托管类复制
-* @param {{{Entity.EntityName}^}} cs_field {Entity.Caption}托管类
-* @param {{{Entity.Name}&}} field {Entity.Caption}本机类
+* @brief {Model.Name}从托管类复制
+* @param {{{Model.EntityName}^}} cs_field {Model.Caption}托管类
+* @param {{{Model.Name}&}} field {Model.Caption}本机类
 * @return 无
 */
-void CopyFromClr({Entity.EntityName}^ cs_field, {Entity.Name}& field);
+void CopyFromClr({Model.EntityName}^ cs_field, {Model.Name}& field);
 
 /**
-* @brief {Entity.Name}复制到托管类
-* @param {{{Entity.Name}&}} field {Entity.Caption}本机类
-* @return {{{Entity.EntityName}^}}{Entity.Caption}托管类
+* @brief {Model.Name}复制到托管类
+* @param {{{Model.Name}&}} field {Model.Caption}本机类
+* @return {{{Model.EntityName}^}}{Model.Caption}托管类
 */
-{Entity.EntityName}^ CopyToClr({Entity.Name}& field);");
+{Model.EntityName}^ CopyToClr({Model.Name}& field);");
             return code.ToString();
         }
 
         private string Clr()
         {
-            if (Entity.IsInternal || Entity.IsReference)
+            if (Model.IsInternal || Model.IsReference)
                 return "";
             var ns = "";
             if (!string.IsNullOrWhiteSpace(Project.NameSpace))
@@ -191,34 +191,34 @@ void CopyFromClr({Entity.EntityName}^ cs_field, {Entity.Name}& field);
 {ns}
 
 /**
-* @brief {Entity.Name}从托管类复制
-* @param {{{Entity.EntityName}^}} cs_field {Entity.Caption}托管类
-* @param {{{Entity.Name}&}} field {Entity.Caption}本机类
+* @brief {Model.Name}从托管类复制
+* @param {{{Model.EntityName}^}} cs_field {Model.Caption}托管类
+* @param {{{Model.Name}&}} field {Model.Caption}本机类
 * @return 无
 */
-void CopyFromClr({Entity.EntityName}^ cs_field, {Entity.Name}& field)
+void CopyFromClr({Model.EntityName}^ cs_field, {Model.Name}& field)
 {{
-    memset(&field, 0, sizeof({Entity.Name}));
+    memset(&field, 0, sizeof({Model.Name}));
     if(cs_field == nullptr)
         return;");
 
 
-            foreach (var property in Entity.CppProperty.Where(p => p.CanGet))
+            foreach (var property in Model.CppProperty.Where(p => p.CanGet))
                 CopyFromClr(code, property);
 
             code.Append($@"
 }}
 
 /**
-* @brief {Entity.Name}复制到托管类
-* @param {{{Entity.Name}&}} field {Entity.Caption}本机类
-* @return {{{Entity.EntityName}^}}{Entity.Caption}托管类
+* @brief {Model.Name}复制到托管类
+* @param {{{Model.Name}&}} field {Model.Caption}本机类
+* @return {{{Model.EntityName}^}}{Model.Caption}托管类
 */
-{Entity.EntityName}^ CopyToClr({Entity.Name}& field)
+{Model.EntityName}^ CopyToClr({Model.Name}& field)
 {{
-    {Entity.EntityName}^ cs_field = gcnew {Entity.EntityName}();");
+    {Model.EntityName}^ cs_field = gcnew {Model.EntityName}();");
 
-            foreach (var property in Entity.CppProperty.Where(p => p.CanSet))
+            foreach (var property in Model.CppProperty.Where(p => p.CanSet))
                 CopyToClrCode(code, property);
 
 
@@ -228,7 +228,7 @@ void CopyFromClr({Entity.EntityName}^ cs_field, {Entity.Name}& field)
             return code.ToString();
         }
 
-        private void CopyFromClr(StringBuilder code, PropertyConfig field)
+        private void CopyFromClr(StringBuilder code, FieldConfig field)
         {
             if (field.IsIntDecimal)
             {
@@ -291,7 +291,7 @@ void CopyFromClr({Entity.EntityName}^ cs_field, {Entity.Name}& field)
     field.{field.Name} = cs_field->{field.Name};//{field.Caption}");
         }
 
-        private void CopyToClrCode(StringBuilder code, PropertyConfig field)
+        private void CopyToClrCode(StringBuilder code, FieldConfig field)
         {
             if (field.IsIntDecimal)
             {
@@ -344,12 +344,12 @@ void CopyFromClr({Entity.EntityName}^ cs_field, {Entity.Name}& field)
 
         #region 辅助
 
-        private static string FriendInc(EntityConfig entity)
+        private static string FriendInc(ModelConfig entity)
         {
             var code = new StringBuilder();
             foreach (var pro in entity.CppProperty)
             {
-                if (CppTypeHelper.ToCppLastType(pro.CppLastType ?? pro.CppType) is EntityConfig friend)
+                if (CppTypeHelper.ToCppLastType(pro.CppLastType ?? pro.CppType) is ModelConfig friend)
                     code.Append($@"
 #include <{friend.Parent.Name}/{friend.Name}.h>
 #include <{friend.Parent.Name}/{friend.Name}_clr.h>");
@@ -357,9 +357,9 @@ void CopyFromClr({Entity.EntityName}^ cs_field, {Entity.Name}& field)
             return code.ToString();
         }
 
-        private static EntityConfig GetLcEntity(PropertyConfig field)
+        private static ModelConfig GetLcEntity(FieldConfig field)
         {
-            return CppTypeHelper.ToCppLastType(field.CppLastType ?? field.CppType) as EntityConfig;
+            return CppTypeHelper.ToCppLastType(field.CppLastType ?? field.CppType) as ModelConfig;
         }
 
         #endregion
@@ -375,26 +375,26 @@ void CopyFromClr({Entity.EntityName}^ cs_field, {Entity.Name}& field)
         /// <summary>
         ///     生成实体代码
         /// </summary>
-        protected override void CreateBaCode(string path)
+        protected override void CreateDesignerCode(string path)
         {
-            if (Entity.IsReference || Entity.IsInternal)
+            if (Model.IsReference || Model.IsInternal)
                 return;
             var h = Project.NameSpace?.Replace('.', '_').ToUpper() ?? "";
             var code = new StringBuilder();
             code.Append($@"#pragma once
 #ifdef CLR
-#ifndef _{h}_{Entity.Name.ToUpper()}_CLR_H
-#define _{h}_{Entity.Name.ToUpper()}_CLR_H
+#ifndef _{h}_{Model.Name.ToUpper()}_CLR_H
+#define _{h}_{Model.Name.ToUpper()}_CLR_H
 #pragma unmanaged
 #include <stdafx.h>
-#include ""{Entity.EntityName}.h""");
-            if (!Entity.NoDataBase)
+#include ""{Model.EntityName}.h""");
+            if (!Model.NoDataBase)
                 code.Append(@"
 #include <DataModel/ModelBase.h>
 #include <NetCommand/command_def.h>");
 
             code.Append($@"
-{FriendInc(Entity)}
+{FriendInc(Model)}
 using namespace std;
 using namespace Agebull::Tson;
 
@@ -410,7 +410,7 @@ using namespace Runtime::InteropServices;
             using (var scope = CppNameSpaceScope.CreateScope(code, Project.NameSpace))
             {
                 scope.Append($@"
-struct {Entity.Name};
+struct {Model.Name};
 #ifndef CLIENT
 {ClrHelperDef()}
 #endif");
@@ -421,22 +421,22 @@ struct {Entity.Name};
 /*-------------------------------CLR代码结束-----------------------------------*/
 #endif
 #endif");
-            SaveCode(Path.Combine(path, Entity.EntityName + "_clr.h"), code.ToString());
+            SaveCode(Path.Combine(path, Model.EntityName + "_clr.h"), code.ToString());
         }
 
 
         /// <summary>
         ///     生成扩展代码
         /// </summary>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
-            if (Entity.IsReference || Entity.IsInternal)
+            if (Model.IsReference || Model.IsInternal)
                 return;
             var code = new StringBuilder();
             code.Append($@"#ifdef CLR
 #include <stdafx.h>
-#include ""{Entity.EntityName}_clr.h""
-{FriendInc(Entity)}
+#include ""{Model.EntityName}_clr.h""
+{FriendInc(Model)}
 using namespace std;
 using namespace Agebull::Tson;
 
@@ -459,7 +459,7 @@ using namespace Runtime::InteropServices;");
 #pragma unmanaged
 /*-------------------------------CLR代码结束-----------------------------------*/
 #endif");
-            var file = Path.Combine(path, Entity.EntityName + "_clr.cpp");
+            var file = Path.Combine(path, Model.EntityName + "_clr.cpp");
             SaveCode(file, code.ToString());
         }
 

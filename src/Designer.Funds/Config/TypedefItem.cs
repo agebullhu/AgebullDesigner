@@ -25,7 +25,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 子级
         /// </summary>
-        [DataMember, JsonProperty("Items", NullValueHandling = NullValueHandling.Ignore), Category("no supper")]
+        [DataMember, JsonProperty("Items",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore), Category("no supper")]
         private Dictionary<string, EnumItem> _items;
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 类型名称对应的语言关键字
         /// </summary>
-        [DataMember, JsonProperty("KeyWork", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("KeyWork",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _keyWork;
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 数组名称
         /// </summary>
-        [DataMember, JsonProperty("ArrayLen", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("ArrayLen",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _arrayLen;
 
 

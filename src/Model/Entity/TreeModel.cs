@@ -90,6 +90,17 @@ namespace Agebull.EntityModel.Designer
                 SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
             };
             node.Items.Add(eitem);
+            var mitem = new ConfigTreeItem<ProjectConfig>(project)
+            {
+                IsAssist = true,
+                Header = "模型",
+                SoruceView = "model",
+                HeaderField = null,
+                CreateChildFunc = CreateModelTreeItem,
+                SoruceItemsExpression = () => project.Models,
+                SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
+            };
+            node.Items.Add(mitem);
             //Model.CppModel.AddCppApiNode(node);
             AddCustomTypeNode(node, project);
 
@@ -134,17 +145,16 @@ namespace Agebull.EntityModel.Designer
             if (!(arg is EntityConfig entity))
                 return null;
             foreach (var col in entity.Properties)
-                col.Parent = entity;
-            foreach (var relation in entity.Releations)
-                relation.Parent = entity;
+                col.Entity = entity;
             var tableItem = new ConfigTreeItem<EntityConfig>(entity)
             {
-                CreateChildFunc = CreatePropertyTreeItem,
+                CreateChildFunc = CreateFieldTreeItem,
                 SoruceItemsExpression = () => entity.Properties,
                 CustomPropertyChanged = Entity_PropertyChanged
             };
             return tableItem;
         }
+
         private void Entity_PropertyChanged(TreeItem item, NotificationObject arg, string name)
         {
             var entity = (EntityConfig)arg;
@@ -158,34 +168,33 @@ namespace Agebull.EntityModel.Designer
         }
 
 
-
-        private TreeItem CreatePropertyTreeItem(object arg)
+        private TreeItem CreateFieldTreeItem(object arg)
         {
-            var property = (PropertyConfig)arg;
-            return new ConfigTreeItem<PropertyConfig>(property)
+            var property = (FieldConfig)arg;
+            return new ConfigTreeItem<FieldConfig>(property)
             {
                 Color = property.IsSystemField ? Brushes.Blue : Brushes.Black,
                 FontWeight = property.IsCompute ? FontWeights.Thin : FontWeights.DemiBold,
-                CustomPropertyChanged = Property_PropertyChanged
+                CustomPropertyChanged = FieldPropertyChanged
             };
         }
 
-        private void Property_PropertyChanged(TreeItem item, NotificationObject arg, string name)
+        private void FieldPropertyChanged(TreeItem item, NotificationObject arg, string name)
         {
-            var property = (PropertyConfig)arg;
+            var property = (FieldConfig)arg;
             switch (name)
             {
                 case null:
-                case nameof(PropertyConfig.IsPrimaryKey):
-                case nameof(PropertyConfig.IsEnum):
-                case nameof(PropertyConfig.IsDiscard):
-                case nameof(PropertyConfig.DbInnerField):
-                case nameof(PropertyConfig.IsInterfaceField):
-                case nameof(PropertyConfig.CustomType):
-                case nameof(PropertyConfig.CustomWrite):
-                case nameof(PropertyConfig.IsCompute):
-                case nameof(PropertyConfig.ComputeGetCode):
-                case nameof(PropertyConfig.ComputeSetCode):
+                case nameof(FieldConfig.IsPrimaryKey):
+                case nameof(FieldConfig.IsEnum):
+                case nameof(FieldConfig.IsDiscard):
+                case nameof(FieldConfig.DbInnerField):
+                case nameof(FieldConfig.IsInterfaceField):
+                case nameof(FieldConfig.CustomType):
+                case nameof(FieldConfig.CustomWrite):
+                case nameof(FieldConfig.IsCompute):
+                case nameof(FieldConfig.ComputeGetCode):
+                case nameof(FieldConfig.ComputeSetCode):
                     if (property.IsPrimaryKey)
                         item.SoruceTypeIcon = Application.Current.Resources["tree_default"] as BitmapImage;
                     else if (property.IsDiscard)
@@ -211,8 +220,8 @@ namespace Agebull.EntityModel.Designer
             switch (name)
             {
                 case null:
-                case nameof(PropertyConfig.CustomType):
-                case nameof(PropertyConfig.ReferenceType):
+                case nameof(FieldConfig.CustomType):
+                case nameof(FieldConfig.ReferenceType):
                     item.Items.Clear();
                     if (property.CustomType == null)
                         break;
@@ -221,7 +230,7 @@ namespace Agebull.EntityModel.Designer
                         break;
                     item.Items.Add(CreateEnumTreeItem(property.EnumConfig));
                     return;
-                case nameof(PropertyConfig.EnumConfig):
+                case nameof(FieldConfig.EnumConfig):
                     item.Items.Clear();
                     if (property.EnumConfig == null)
                         return;
@@ -255,7 +264,107 @@ namespace Agebull.EntityModel.Designer
         }
 
         #endregion
+        #region 模型
 
+        internal TreeItem CreateModelTreeItem(object arg)
+        {
+            if (!(arg is ModelConfig entity))
+                return null;
+            foreach (var col in entity.Properties)
+                col.Model = entity;
+            var tableItem = new ConfigTreeItem<ModelConfig>(entity)
+            {
+                CreateChildFunc = CreatePropertyTreeItem,
+                SoruceItemsExpression = () => entity.Properties,
+                CustomPropertyChanged = ModelPropertyChanged
+            };
+            return tableItem;
+        }
+
+        private TreeItem CreatePropertyTreeItem(object arg)
+        {
+            var property = (PropertyConfig)arg;
+            return new ConfigTreeItem<PropertyConfig>(property)
+            {
+                Color = property.Field.IsSystemField ? Brushes.Blue : Brushes.Black,
+                FontWeight = property.Field.IsCompute ? FontWeights.Thin : FontWeights.DemiBold,
+                CustomPropertyChanged = Property_PropertyChanged
+            };
+        }
+
+        private void Property_PropertyChanged(TreeItem item, NotificationObject arg, string name)
+        {
+            var cfg = (PropertyConfig)arg;
+            var property = cfg.Field;
+            switch (name)
+            {
+                case null:
+                case nameof(FieldConfig.IsPrimaryKey):
+                case nameof(FieldConfig.IsEnum):
+                case nameof(FieldConfig.IsDiscard):
+                case nameof(FieldConfig.DbInnerField):
+                case nameof(FieldConfig.IsInterfaceField):
+                case nameof(FieldConfig.CustomType):
+                case nameof(FieldConfig.CustomWrite):
+                case nameof(FieldConfig.IsCompute):
+                case nameof(FieldConfig.ComputeGetCode):
+                case nameof(FieldConfig.ComputeSetCode):
+                    if (property.IsPrimaryKey)
+                        item.SoruceTypeIcon = Application.Current.Resources["tree_default"] as BitmapImage;
+                    else if (property.IsDiscard)
+                        item.SoruceTypeIcon = Application.Current.Resources["img_clear"] as BitmapImage;
+                    else if (property.DbInnerField)
+                        item.SoruceTypeIcon = Application.Current.Resources["img_lock"] as BitmapImage;
+                    else if (property.IsInterfaceField)
+                        item.SoruceTypeIcon = Application.Current.Resources["img_face"] as BitmapImage;
+                    else if (property.IsEnum)
+                        item.SoruceTypeIcon = Application.Current.Resources["tree_Child4"] as BitmapImage;
+                    else if (!string.IsNullOrWhiteSpace(property.CustomType))
+                        item.SoruceTypeIcon = Application.Current.Resources["img_man"] as BitmapImage;
+                    else if (property.CustomWrite)
+                        item.SoruceTypeIcon = Application.Current.Resources["tree_item"] as BitmapImage;
+                    else if (!string.IsNullOrWhiteSpace(property.ComputeGetCode) || !string.IsNullOrWhiteSpace(property.ComputeSetCode))
+                        item.SoruceTypeIcon = Application.Current.Resources["img_code"] as BitmapImage;
+                    else if (property.IsCompute)
+                        item.SoruceTypeIcon = Application.Current.Resources["img_sum"] as BitmapImage;
+                    else
+                        item.SoruceTypeIcon = Application.Current.Resources["tree_File"] as BitmapImage;
+                    break;
+            }
+            switch (name)
+            {
+                case null:
+                case nameof(FieldConfig.CustomType):
+                case nameof(FieldConfig.ReferenceType):
+                    item.Items.Clear();
+                    if (property.CustomType == null)
+                        break;
+                    property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
+                    if (property.EnumConfig == null)
+                        break;
+                    item.Items.Add(CreateEnumTreeItem(property.EnumConfig));
+                    return;
+                case nameof(FieldConfig.EnumConfig):
+                    item.Items.Clear();
+                    if (property.EnumConfig == null)
+                        return;
+                    item.Items.Add(CreateEnumTreeItem(property.EnumConfig));
+                    break;
+            }
+        }
+
+        private void ModelPropertyChanged(TreeItem item, NotificationObject arg, string name)
+        {
+            var entity = (ModelConfig)arg;
+            switch (name)
+            {
+                case null:
+                case nameof(ModelConfig.NoDataBase):
+                    item.SoruceTypeIcon = Application.Current.Resources[entity.NoDataBase ? "tree_Type" : "tree_Child4"] as BitmapImage;
+                    break;
+            }
+        }
+        #endregion
         #region 枚举
 
         private void AddCustomTypeNode(TreeItem node, ProjectConfig project)

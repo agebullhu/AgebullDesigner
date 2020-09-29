@@ -28,6 +28,15 @@ namespace Agebull.EntityModel.Designer
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
+                SignleSoruce = false,
+                IsButton = true,
+                Caption = "生成模型",
+                Catalog = "模型",
+                IconName = "tree_item",
+                Action = ToModel
+            });
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
                 Action = DateShowTime,
                 Caption = "日期字段精确到时间",
                 Catalog = "工具",
@@ -115,6 +124,18 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
+        /// <summary>
+        /// 数据对象名称检查
+        /// </summary>
+        public void ToModel(EntityConfig entity)
+        {
+            var model = GlobalConfig.GetModel(p=>p.Entity == entity);
+            if (model != null)
+                return;
+            model = new ModelConfig();
+            model.CopyFrom(entity);
+            entity.Parent.Add(model);
+        }
 
         #region 检查与修复
 

@@ -8,9 +8,9 @@ namespace Agebull.EntityModel.Config
         #region 定义
         public DataBaseType DataBaseType { get; set; }
 
-        public PropertyConfig Property { get; set; }
-        bool IsClass => Property.Parent.NoDataBase;
-        bool IsReference => Property.Parent.IsReference;
+        public FieldConfig Field { get; set; }
+        bool IsClass => Field.Entity.NoDataBase;
+        bool IsReference => Field.Entity.IsReference;
 
         #endregion
 
@@ -22,50 +22,50 @@ namespace Agebull.EntityModel.Config
         protected override bool Validate()
         {
             var result = true;
-            if (string.IsNullOrWhiteSpace(Property.Name))
+            if (string.IsNullOrWhiteSpace(Field.Name))
             {
                 result = false;
                 Message.Track = "====>属性名称不能为空";
             }
-            else if (Property.Name == "NewField" || Property.Name[0] >= '0' && Property.Name[0] <= '9')
+            else if (Field.Name == "NewField" || Field.Name[0] >= '0' && Field.Name[0] <= '9')
             {
                 result = false;
-                Message.Track = "====>属性名称不正确:" + Property.Name;
+                Message.Track = "====>属性名称不正确:" + Field.Name;
             }
             else
             {
-                Property.Name = Property.Name.Trim();
+                Field.Name = Field.Name.Trim();
             }
             if (IsReference)
                 return result;
-            string cstype = Property.CsType;
+            string cstype = Field.CsType;
             if (cstype.Length > 4 && cstype.Substring(cstype.Length - 4, 4) == "Data")
                 cstype = cstype.Substring(0, cstype.Length - 4);
             if (!CsharpHelper.IsCsType(cstype))
             {
                 result = false;
-                Message.Track = "====>字段类型不正确" + Property.CsType;
+                Message.Track = "====>字段类型不正确" + Field.CsType;
             }
 
             if (IsClass)
                 return result;
-            if (Property.IsPrimaryKey && Property.Nullable)
+            if (Field.IsPrimaryKey && Field.Nullable)
             {
                 result = false;
                 Message.Track = "====>主键被设置为可为空";
             }
-            if (Property.NoStorage)
+            if (Field.NoStorage)
                 return result;
-            if (string.IsNullOrWhiteSpace(Property.DbFieldName))
+            if (string.IsNullOrWhiteSpace(Field.DbFieldName))
             {
                 result = false;
                 Message.Track = "====>字段存储名称不能为空";
             }
-            else if (Property.DbFieldName == "NewField" ||
-                     Property.DbFieldName[0] >= '0' && Property.DbFieldName[0] <= '9')
+            else if (Field.DbFieldName == "NewField" ||
+                     Field.DbFieldName[0] >= '0' && Field.DbFieldName[0] <= '9')
             {
                 result = false;
-                Message.Track = "====>字段存储名称不正确:" + Property.DbFieldName;
+                Message.Track = "====>字段存储名称不正确:" + Field.DbFieldName;
             }
             //if (CreateIndex && IsPrimaryKey)
             //{
@@ -78,20 +78,20 @@ namespace Agebull.EntityModel.Config
             //    trace.Track = "====>字段为用户ID映射而字段类型不是Int型";
             //}
             bool ist = DataBaseType == DataBaseType.SqlServer
-                        ? SqlServerHelper.IsDataBaseType(Property.DbType)
-                        : MySqlHelper.IsDataBaseType(Property.DbType);
+                        ? SqlServerHelper.IsDataBaseType(Field.DbType)
+                        : MySqlHelper.IsDataBaseType(Field.DbType);
             if (!ist)
             {
                 result = false;
-                Message.Track = "====>字段存储类型不正确" + Property.DbType;
+                Message.Track = "====>字段存储类型不正确" + Field.DbType;
             }
 
-            if (Property.IsLinkKey)
-                Property.DbNullable = false;
-            if (Property.IsCompute)
-                Property.DbNullable = true;
-            if (Property.IsPrimaryKey)
-                Property.DbNullable = false;
+            if (Field.IsLinkKey)
+                Field.DbNullable = false;
+            if (Field.IsCompute)
+                Field.DbNullable = true;
+            if (Field.IsPrimaryKey)
+                Field.DbNullable = false;
             //if (Property.CreateIndex && Property.Nullable)
             //{
             //    result = false;

@@ -28,7 +28,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 配置
         /// </summary>
-        [DataMember, JsonProperty("option", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("option",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         public ConfigDesignOption Option
         {
             get => _option ??= new ConfigDesignOption { Config = this };
@@ -49,7 +49,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 别名
         /// </summary>
-        [DataMember, JsonProperty("Alias", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("Alias",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _alias;
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 原始名称
         /// </summary>
-        [DataMember, JsonProperty("oldName", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("oldName",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _oldName;
 
         /// <summary>

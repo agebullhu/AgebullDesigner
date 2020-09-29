@@ -18,9 +18,9 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// <summary>
         ///     生成基础代码
         /// </summary>
-        protected override void CreateBaCode(string path)
+        protected override void CreateDesignerCode(string path)
         {
-            if (Entity.ExtendConfigListBool["NoApi"])
+            if (Model.ExtendConfigListBool["NoApi"])
                 return;
             var code = $@"
 using System;
@@ -48,39 +48,39 @@ using Agebull.Common.WebApi;
 namespace {NameSpace}.WebApi.EntityApi
 {{
     /// <summary>
-    /// {Entity.Description}的实体数据操作接口
+    /// {Model.Description}的实体数据操作接口
     /// </summary>
-    public interface I{Entity.Name}Api
+    public interface I{Model.Name}Api
     {{
         /// <summary>
         ///     新增
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <returns>如果为真并返回结果数据</returns>
-        ApiResultEx<{Entity.Name}> AddNew({Entity.Name} data);
+        ApiResultEx<{Model.Name}> AddNew({Model.Name} data);
 
         /// <summary>
         ///     修改
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <returns>如果为真并返回结果数据</returns>
-        ApiResultEx<{Entity.Name}> Update({Entity.Name} data);
+        ApiResultEx<{Model.Name}> Update({Model.Name} data);
 
         /// <summary>
         ///     删除
         /// </summary>
         /// <param name=""dataKey"">数据主键</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        ApiResultEx Delete(Argument<{Entity.PrimaryColumn?.LastCsType ?? "int"}> dataKey);
+        ApiResultEx Delete(Argument<{Model.PrimaryColumn?.LastCsType ?? "int"}> dataKey);
 
         /// <summary>
         ///     分页
         /// </summary>
-        ApiResultEx<ApiPageData<{Entity.Name}>> Query(PageArgument arg);
+        ApiResultEx<ApiPageData<{Model.Name}>> Query(PageArgument arg);
 
     }}
 }}";
-            var file = ConfigPath(Entity, FileSaveConfigName, path, "Interface", $"I{Entity.Name}EntityApi.cs");
+            var file = ConfigPath(Model, FileSaveConfigName, path, "Interface", $"I{Model.Name}EntityApi.cs");
             SaveCode(file, code);
         }
 
@@ -88,7 +88,7 @@ namespace {NameSpace}.WebApi.EntityApi
         ///     生成基础代码
         /// </summary>
         /// <remarks></remarks>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
             StringBuilder code = new StringBuilder();
             code.Append($@"using System;

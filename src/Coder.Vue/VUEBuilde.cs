@@ -39,15 +39,15 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// </summary>
         /// <param name="project"></param>
         /// <param name="schema"></param>
-        public override void CreateEntityCode(ProjectConfig project, EntityConfig schema)
+        public override void CreateEntityCode(ProjectConfig project, ModelConfig schema)
         {
             var pg = new PorjectVUEGenerator
             {
-                Entity = schema,
+                Model = schema,
                 Project = schema.Parent,
             };
-            pg.CreateBaseCode(project.PagePath);
-            pg.CreateExtendCode(project.PagePath);
+            pg.WriteDesignerCode(project.PagePath);
+            pg.WriteCustomCode(project.PagePath);
         }
     }
 }

@@ -123,7 +123,7 @@ namespace Agebull.EntityModel.Designer
                     var cf = entity.Properties.FirstOrDefault(p => (p.LinkField == caption.Name&& p.LinkTable == re.Name) || (p.Name == caption.Name && p.NoStorage));
                     if (cf == null)
                     {
-                        entity.Add(cf = new PropertyConfig
+                        entity.Add(cf = new FieldConfig
                         {
                             Name = caption.Name
                         });
@@ -148,10 +148,10 @@ namespace Agebull.EntityModel.Designer
                     entity.ReadTableName = entity.SaveTable;
                     return;
                 }
-                if (string.IsNullOrWhiteSpace(entity.ReadTableName) || entity.ReadTableName == entity.SaveTable)
-                {
-                    entity.ReadTableName = DataBaseHelper.ToViewName(entity);
-                }
+                //if (string.IsNullOrWhiteSpace(entity.ReadTableName) || entity.ReadTableName == entity.SaveTable)
+                //{
+                //    entity.ReadTableName = DataBaseHelper.ToViewName(entity);
+                //}
             }
             catch (Exception e)
             {

@@ -37,7 +37,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 值
         /// </summary>
-        [DataMember,JsonProperty("Value", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember,JsonProperty("Value",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _value;
 
         /// <summary>

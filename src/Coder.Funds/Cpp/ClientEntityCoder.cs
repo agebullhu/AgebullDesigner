@@ -19,7 +19,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         ///     生成实体代码
         /// </summary>
-        protected override void CreateBaCode(string path)
+        protected override void CreateDesignerCode(string path)
         {
             //{(Entity.IsInternal ? "internal" : "public")}
             string code =
@@ -42,16 +42,16 @@ using Newtonsoft.Json;
 namespace {NameSpace}
 {{
     /// <summary>
-    /// {Entity.Description ?? Entity.Caption}
+    /// {Model.Description ?? Model.Caption}
     /// </summary>
-    public partial class {Entity.EntityName}
+    public partial class {Model.EntityName}
     {{
         #region 构造
         
         /// <summary>
         /// 构造
         /// </summary>
-        public {Entity.EntityName}()
+        public {Model.EntityName}()
         {{
             Initialize();
         }}
@@ -78,15 +78,15 @@ namespace {NameSpace}
     }}
 }}";
 
-            SaveCode(Path.Combine(path, $"{Entity.Name}.Designer.cs"), code);
+            SaveCode(Path.Combine(path, $"{Model.Name}.Designer.cs"), code);
         }
 
         /// <summary>
         ///     生成扩展代码
         /// </summary>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
-            var file = Path.Combine(path, Entity.EntityName + ".cs");
+            var file = Path.Combine(path, Model.EntityName + ".cs");
             string code =
                 $@"
 using System;
@@ -101,10 +101,10 @@ using Newtonsoft.Json;
 namespace {NameSpace}
 {{
     /// <summary>
-    /// {Entity.Description ?? Entity.Caption}
+    /// {Model.Description ?? Model.Caption}
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    sealed partial class {Entity.EntityName} : EntityObjectBase
+    sealed partial class {Model.EntityName} : EntityObjectBase
     {{
     }}
 }}";
@@ -137,18 +137,18 @@ namespace {NameSpace}
         /// <summary>
         /// 缓存数据
         /// </summary>
-        public static EntityList<{Entity.EntityName}> Caches{{get;}} = new EntityList<{Entity.EntityName}>();
+        public static EntityList<{Model.EntityName}> Caches{{get;}} = new EntityList<{Model.EntityName}>();
         
         /// <summary>
         /// 添加到缓存
         /// </summary>
-        public static void AddToCache({Entity.EntityName} value)
+        public static void AddToCache({Model.EntityName} value)
         {{
             Caches.AddOrSwitch(value);
         }}
 ");
 
-            if (Entity.PrimaryColumn != null)
+            if (Model.PrimaryColumn != null)
             {
                 code.Append(
                     $@"
@@ -163,8 +163,8 @@ namespace {NameSpace}
         /// <param name=""obj"">要与当前对象进行比较的对象。</param><filterpriority>2</filterpriority>
         public override bool Equals(object obj)
         {{
-            var data = obj as {Entity.EntityName};
-            return data!= null && data.{Entity.PrimaryColumn.Name} == {Entity.PrimaryColumn.Name};
+            var data = obj as {Model.EntityName};
+            return data!= null && data.{Model.PrimaryColumn.Name} == {Model.PrimaryColumn.Name};
         }}
 #pragma warning restore 659
 ");
@@ -194,7 +194,7 @@ namespace {NameSpace}
 
         private bool PrimaryKeyPropertyCode(StringBuilder builder)
         {
-            var property = Entity.PrimaryColumn;
+            var property = Model.PrimaryColumn;
             if (property == null)
                 return false;
             builder.Append($@"
@@ -249,7 +249,7 @@ namespace {NameSpace}
             return true;
         }
 
-        private void PropertyCode(PropertyConfig property, int index, StringBuilder code)
+        private void PropertyCode(FieldConfig property, int index, StringBuilder code)
         {
             code.Append($@"
         /// <summary>
@@ -299,7 +299,7 @@ namespace {NameSpace}
         /// <param name="property"></param>
         /// <param name="index"></param>
         /// <param name="code"></param>
-        private void ComputePropertyCode(PropertyConfig property, int index, StringBuilder code)
+        private void ComputePropertyCode(FieldConfig property, int index, StringBuilder code)
         {
             if (string.IsNullOrWhiteSpace(property.ComputeGetCode) && string.IsNullOrWhiteSpace(property.ComputeSetCode))
             {
@@ -321,7 +321,7 @@ namespace {NameSpace}
             {
                 code.Append($@"
         [{PropertyHeader(property)}]
-        [JsonProperty(""{property.PropertyName}"", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(""{property.PropertyName}"",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         {property.AccessType} {property.LastCsType} {property.PropertyName}
         {{
             set
@@ -334,7 +334,7 @@ namespace {NameSpace}
             {
                 code.Append($@"
         {PropertyHeader(property)}
-        [JsonProperty(""{property.PropertyName}"", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(""{property.PropertyName}"",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         {property.AccessType} {property.LastCsType} {property.PropertyName}
         {{
             set
@@ -363,7 +363,7 @@ namespace {NameSpace}
         public override string ToString()
         {
             return $@""");
-            foreach (var field in Entity.CppProperty)
+            foreach (var field in Model.CppProperty)
             {
                 ToStringCode(code, field);
             }
@@ -372,7 +372,7 @@ namespace {NameSpace}
             return code.ToString();
         }
 
-        private void ToStringCode(StringBuilder code, PropertyConfig field)
+        private void ToStringCode(StringBuilder code, FieldConfig field)
         {
             string caption = string.IsNullOrWhiteSpace(field.Caption) ? field.Name : field.Caption;
             if (!string.IsNullOrWhiteSpace(field.ArrayLen))
@@ -404,7 +404,7 @@ namespace {NameSpace}
             var type = IsClient ? "EntityObjectBase" : "DataObjectBase";
             code.Append($@"
 
-        partial void CopyExtendValue({Entity.EntityName} source);
+        partial void CopyExtendValue({Model.EntityName} source);
 
         /// <summary>
         /// 复制值
@@ -413,16 +413,16 @@ namespace {NameSpace}
         protected override void CopyValueInner({type} source)
         {{");
 
-            if (!string.IsNullOrWhiteSpace(Entity.ModelBase))
+            if (!string.IsNullOrWhiteSpace(Model.ModelBase))
                 code.AppendLine(@"
             base.CopyValueInner(source);");
 
             code.Append($@"
-            var sourceEntity = source as {Entity.EntityName};
+            var sourceEntity = source as {Model.EntityName};
             if(sourceEntity == null)
                 return;");
 
-            foreach (PropertyConfig property in Entity.CppProperty.Where(p=>p.CanGet && p.CanSet ))
+            foreach (var property in Model.CppProperty.Where(p=>p.CanGet && p.CanSet ))
             {
                 if (property.IsCompute && property.CanSet)
                 {
@@ -447,15 +447,15 @@ namespace {NameSpace}
         /// 复制
         /// </summary>
         /// <param name=""source"">复制的源字段</param>
-        public void Copy({Entity.EntityName} source)
+        public void Copy({Model.EntityName} source)
         {{");
 
-            if (!string.IsNullOrWhiteSpace(Entity.ModelBase))
+            if (!string.IsNullOrWhiteSpace(Model.ModelBase))
                 code.AppendLine(@"
             base.CopyValueInner(source);");
 
 
-            foreach (PropertyConfig property in Entity.CppProperty.Where(p => p.CanGet && p.CanSet))
+            foreach (var property in Model.CppProperty.Where(p => p.CanGet && p.CanSet))
             {
                 code.Append($@"
             this.{property.Name} = source.{property.Name};");

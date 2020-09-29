@@ -21,7 +21,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 简称
         /// </summary>
-        [DataMember, JsonProperty("_abbreviation", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_abbreviation",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private string _abbreviation;
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 全局项目
         /// </summary>
-        [DataMember, JsonProperty("IsGlobal", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("IsGlobal",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _isGlobal;
 
         /// <summary>

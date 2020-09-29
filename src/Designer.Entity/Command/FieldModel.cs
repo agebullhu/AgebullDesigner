@@ -12,7 +12,7 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal class PropertyModel : DesignCommondBase<PropertyConfig>
+    internal class FieldModel : DesignCommondBase<FieldConfig>
     {
         #region 操作命令
 
@@ -22,7 +22,7 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
-            commands.Add(new CommandItemBuilder<PropertyConfig>
+            commands.Add(new CommandItemBuilder<FieldConfig>
             {
                 SignleSoruce = false,
                 WorkView= "adv",
@@ -33,7 +33,7 @@ namespace Agebull.EntityModel.Designer
                 ConfirmMessage= "确认执行【字段名称规范】的操作吗?"
             });
 
-            commands.Add(new CommandItemBuilder<PropertyConfig>
+            commands.Add(new CommandItemBuilder<FieldConfig>
             {
                 SignleSoruce = false,
                 WorkView = "adv",
@@ -44,7 +44,7 @@ namespace Agebull.EntityModel.Designer
                 IconName = "tree_item",
                 ConfirmMessage = "确认执行【字段名称规范】的操作吗?"
             });
-            commands.Add(new CommandItemBuilder<PropertyConfig>
+            commands.Add(new CommandItemBuilder<FieldConfig>
             {
                 Catalog = "工具",
                 WorkView = "adv",
@@ -52,9 +52,9 @@ namespace Agebull.EntityModel.Designer
                 Caption = "修复用户类型",
                 IconName = "img_modify"
             });
-            commands.Add(new CommandItemBuilder<PropertyConfig>
+            commands.Add(new CommandItemBuilder<FieldConfig>
             {
-                Action = p => p.Parent.Remove(p),
+                Action = p => p.Entity.Remove(p),
                 Catalog = "编辑",
                 Caption = "删除字段",
                 SignleSoruce = true,
@@ -64,7 +64,7 @@ namespace Agebull.EntityModel.Designer
 
         #endregion
 
-        public void UpdateCustomType(PropertyConfig field)
+        public void UpdateCustomType(FieldConfig field)
         {
             if (string.IsNullOrWhiteSpace(field.CustomType))
             {
@@ -86,7 +86,7 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        public void CheckName(PropertyConfig property)
+        public void CheckName(FieldConfig property)
         {
             var bak = property.DbFieldName;
             if (string.IsNullOrWhiteSpace(bak))
@@ -94,7 +94,7 @@ namespace Agebull.EntityModel.Designer
             property.Name = GlobalConfig.ToLinkWordName(bak, null,true);
             property.DbFieldName = bak;
         }
-        public void CheckCaption(PropertyConfig property)
+        public void CheckCaption(FieldConfig property)
         {
             if (string.IsNullOrWhiteSpace(property.Caption))
                 return;

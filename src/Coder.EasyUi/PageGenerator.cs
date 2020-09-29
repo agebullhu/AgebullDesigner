@@ -17,15 +17,15 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
         /// <summary>
         ///     生成基础代码
         /// </summary>
-        protected override void CreateBaCode(string path)
+        protected override void CreateDesignerCode(string path)
         {
-            if (Entity.IsInternal || Entity.NoDataBase || Entity.DenyScope.HasFlag(AccessScopeType.Client))
+            if (Model.IsInternal || Model.NoDataBase || Model.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
-            var folder = !string.IsNullOrWhiteSpace(Entity.PageFolder)
-                ? Entity.PageFolder
-                    : string.IsNullOrWhiteSpace(Entity.Classify)
-                        ? Entity.Name
-                        : $"{Entity.Classify}\\{Entity.Name}";
+            var folder = !string.IsNullOrWhiteSpace(Model.PageFolder)
+                ? Model.PageFolder
+                    : string.IsNullOrWhiteSpace(Model.Classify)
+                        ? Model.Name
+                        : $"{Model.Classify}\\{Model.Name}";
             //file = ConfigPath(Entity, "File_Web_Action", path, folder, "Action.aspx");
             //{
             //    WriteFile(file, ActionAspxCode());
@@ -35,10 +35,10 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
             //    WriteFile(file, ExportAspxCode());
             //}
             {
-                var file = ConfigPath(Entity, "File_Web_Form", path, folder, "form.htm");
+                var file = ConfigPath(Model, "File_Web_Form", path, folder, "form.htm");
                 {
                     var coder = new EasyUiFormCoder();
-                    WriteFile(file, coder.BaseCode(Entity));
+                    WriteFile(file, coder.BaseCode(Model));
                 }
             }
             //file = ConfigPath(Entity, "File_Web_Item", path, folder, "Item.aspx");
@@ -61,8 +61,8 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
             //}
             {
                 var coder = new EasyUiScriptCoder();
-                var file = ConfigPath(Entity, "File_Web_Script_js", path, folder, "script.js");
-                WriteFile(file, coder.BaseCode(Entity));
+                var file = ConfigPath(Model, "File_Web_Script_js", path, folder, "script.js");
+                WriteFile(file, coder.BaseCode(Model));
                 //file = ConfigPath(Entity, "File_Web_Form_js", path, folder, "form.js");
                 //WriteFile(file, coder.FormJsCode());
                 //file = ConfigPath(Entity, "File_Web_Page_js", path, folder, "page.js");
@@ -70,10 +70,10 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
             }
             {
 
-                var file = ConfigPath(Entity, "File_Web_Index", path, folder, "index.htm");
+                var file = ConfigPath(Model, "File_Web_Index", path, folder, "index.htm");
                 {
                     var coder = new EasyUiIndexPageCoder();
-                    WriteFile(file, coder.BaseCode(Entity));
+                    WriteFile(file, coder.BaseCode(Model));
                 }
             }
         }
@@ -81,7 +81,7 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
         /// <summary>
         ///     生成扩展代码
         /// </summary>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
         }
 

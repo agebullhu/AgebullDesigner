@@ -24,7 +24,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "排序",
                 IconName = "tree_sum"
             });
-            commands.Add(new CommandItemBuilder<PropertyConfig>
+            commands.Add(new CommandItemBuilder<FieldConfig>
             {
                 Catalog = "工具",
                 Action = ResetEnumParent,
@@ -42,14 +42,14 @@ namespace Agebull.EntityModel.Designer
                 @enum.Add(item);
             @enum.IsModify = true;
         }
-        public void ResetEnumParent(PropertyConfig property)
+        public void ResetEnumParent(FieldConfig property)
         {
             if (string.IsNullOrWhiteSpace(property.CustomType))
                 return;
             property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
             if (property.EnumConfig != null)
             {
-                property.Parent.Parent.Add(property.EnumConfig);
+                property.Entity.Parent.Add(property.EnumConfig);
             }
         }
     }

@@ -39,7 +39,7 @@ namespace Agebull.EntityModel.RobotCoder
             return null;
         }}
         #endregion"
-                    , Entity.Name);
+                    , Model.Name);
             else
                 code.AppendFormat(@"
         #region IAutoAddEntity接口
@@ -122,10 +122,10 @@ namespace Agebull.EntityModel.RobotCoder
         }}
 
         #endregion"
-                    , Entity.Name
-                    , Entity.PrimaryColumn.Name
+                    , Model.Name
+                    , Model.PrimaryColumn.Name
                     , "DataBase"
-                    , Entity.DbIndex); ;
+                    , Model.DbIndex); ;
             code.Append(SqlServerQyeryCode());
             return code.ToString();
         }
@@ -324,7 +324,7 @@ namespace Agebull.EntityModel.RobotCoder
         }}
 
         #endregion
-", Entity.Name);
+", Model.Name);
         }
 
         #endregion

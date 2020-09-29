@@ -13,7 +13,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     名称
         /// </summary>
-        [DataMember, JsonProperty("_name", NullValueHandling = NullValueHandling.Ignore)] private string _name;
+        [DataMember, JsonProperty("_name",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)] private string _name;
 
         /// <summary>
         ///     名称
@@ -38,7 +38,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     标题
         /// </summary>
-        [DataMember, JsonProperty("_caption", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_caption",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         protected string _caption;
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     说明
         /// </summary>
-        [DataMember, JsonProperty("_description", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_description",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         protected string _description;
 
         /// <summary>

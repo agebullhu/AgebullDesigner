@@ -336,7 +336,7 @@ namespace Agebull.Common.LUA
         /// <param name="key"> 字段的KEY</param>
         public static string ToDataBaseType(string key)
         {
-            var column = GlobalConfig.GetConfig<PropertyConfig>(key);
+            var column = GlobalConfig.GetConfig<FieldConfig>(key);
             if (column == null)
                 return null;
             switch (column.DbType.ToLower())

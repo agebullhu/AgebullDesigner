@@ -18,19 +18,19 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         ///     生成基础代码
         /// </summary>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
             var fileName = "BusinessLogic.cs";
-            var file = Path.Combine(path, Entity.Name + fileName);
-            if (Entity.NoDataBase)
+            var file = Path.Combine(path, Model.Name + fileName);
+            if (Model.NoDataBase)
             {
                 if (File.Exists(file))
                 {
                     Directory.Move(file, file + ".bak");
                 }
-                else if (!string.IsNullOrWhiteSpace(Entity.Alias))
+                else if (!string.IsNullOrWhiteSpace(Model.Alias))
                 {
-                    var oldFile = Path.Combine(path, Entity.Alias + fileName);
+                    var oldFile = Path.Combine(path, Model.Alias + fileName);
                     if (File.Exists(oldFile))
                     {
                         Directory.Move(oldFile, file + ".bak");
@@ -38,9 +38,9 @@ namespace Agebull.EntityModel.RobotCoder
                 }
                 return;
             }
-            if (!string.IsNullOrWhiteSpace(Entity.Alias))
+            if (!string.IsNullOrWhiteSpace(Model.Alias))
             {
-                var oldFile = Path.Combine(path, Entity.Alias + fileName);
+                var oldFile = Path.Combine(path, Model.Alias + fileName);
                 if (File.Exists(oldFile))
                 {
                     Directory.Move(oldFile, file);
@@ -63,15 +63,15 @@ namespace Agebull.EntityModel.RobotCoder
                     break;
                 default:
                     //case DataBaseType.MySql:
-                    dbNameSpace = "MySql.Data.MySqlClient";
+                    dbNameSpace = "MySqlConnector";
                     break;
             }
             string baseClass = "UiBusinessLogicBase";
-            if (Entity.Interfaces != null)
+            if (Model.Interfaces != null)
             {
-                if (Entity.Interfaces.Contains("IStateData"))
+                if (Model.Interfaces.Contains("IStateData"))
                     baseClass = "BusinessLogicByStateData";
-                if (Entity.Interfaces.Contains("IAuditData"))
+                if (Model.Interfaces.Contains("IAuditData"))
                     baseClass = "BusinessLogicByAudit";
             }
             return $@"#region
@@ -101,9 +101,9 @@ using {NameSpace}.DataAccess;
 namespace {NameSpace}.BusinessLogic
 {{
     /// <summary>
-    /// {Entity.Description}
+    /// {Model.Description}
     /// </summary>
-    public partial class {Entity.Name}BusinessLogic : {baseClass}<{Entity.EntityName},{Entity.PrimaryColumn.CsType},{Entity.Name}DataAccess>
+    public partial class {Model.Name}BusinessLogic : {baseClass}<{Model.EntityName},{Model.PrimaryColumn.CsType},{Model.Name}DataAccess>
     {{
 {CommandExCode()}{InterfaceExtendCode()}
         #region 基础继承
@@ -111,7 +111,7 @@ namespace {NameSpace}.BusinessLogic
         /// <summary>
         ///     实体类型
         /// </summary>
-        public override int EntityType => {Entity.EntityName}._DataStruct_.EntityIdentity;
+        public override int EntityType => {Model.EntityName}._DataStruct_.EntityIdentity;
 
         /*// <summary>
         ///     保存前的操作
@@ -119,7 +119,7 @@ namespace {NameSpace}.BusinessLogic
         /// <param name=""data"">数据</param>
         /// <param name=""isAdd"">是否为新增</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        protected override bool OnSaving({Entity.EntityName} data, bool isAdd)
+        protected override bool OnSaving({Model.EntityName} data, bool isAdd)
         {{
              return base.OnSaving(data, isAdd);
         }}
@@ -130,7 +130,7 @@ namespace {NameSpace}.BusinessLogic
         /// <param name=""data"">数据</param>
         /// <param name=""isAdd"">是否为新增</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        protected override bool OnSaved({Entity.EntityName} data, bool isAdd)
+        protected override bool OnSaved({Model.EntityName} data, bool isAdd)
         {{
              return base.OnSaved(data, isAdd);
         }}
@@ -141,7 +141,7 @@ namespace {NameSpace}.BusinessLogic
         /// <param name=""data"">数据</param>
         /// <param name=""isAdd"">是否为新增</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        protected override bool LastSavedByUser({Entity.EntityName} data, bool isAdd)
+        protected override bool LastSavedByUser({Model.EntityName} data, bool isAdd)
         {{
             return base.LastSavedByUser(data, isAdd);
         }}
@@ -152,7 +152,7 @@ namespace {NameSpace}.BusinessLogic
         /// <param name=""data"">数据</param>
         /// <param name=""isAdd"">是否为新增</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        protected override bool PrepareSaveByUser({Entity.EntityName} data, bool isAdd)
+        protected override bool PrepareSaveByUser({Model.EntityName} data, bool isAdd)
         {{
             return base.PrepareSaveByUser(data, isAdd);
         }}*/
@@ -164,14 +164,14 @@ namespace {NameSpace}.BusinessLogic
 
         private string InterfaceExtendCode()
         {
-            if (!(Entity.Interfaces.Contains("IInnerTree")))
+            if (!(Model.Interfaces.Contains("IInnerTree")))
                 return null;
             var code = new StringBuilder();
             code.Append(@"
 
         #region 树形数据
     ");
-            if (Entity.Interfaces.Contains("IInnerTree"))
+            if (Model.Interfaces.Contains("IInnerTree"))
             {
                 code.Append(@"
 
@@ -218,8 +218,8 @@ namespace {NameSpace}.BusinessLogic
             {{
                 var cnode = new Agebull.EntityModel.EasyUI.EasyUiTreeNode
                 {{
-                    ID = ch.{Entity.PrimaryField},
-                    Text = ch.{Entity.Properties.FirstOrDefault()?.Name ?? Entity.Properties[1].Name}.ToString(),
+                    ID = ch.{Model.PrimaryField},
+                    Text = ch.{Model.Properties.FirstOrDefault()?.Name ?? Model.Properties[1].Name}.ToString(),
                     IsFolder = true,
                     Tag = pid.ToString()
                 }};
@@ -241,7 +241,7 @@ namespace {NameSpace}.BusinessLogic
         #region 设计器命令
     ");
             bool hase = false;
-            var cap = Entity.Properties.FirstOrDefault(p => p.IsCaption);
+            var cap = Model.LastProperties.FirstOrDefault(p => p.IsCaption);
             if (cap != null)
             {
                 hase = true;
@@ -253,20 +253,20 @@ namespace {NameSpace}.BusinessLogic
         {");
                 code.Append(Project.DbType == DataBaseType.MySql
                     ? $@"
-            var fields = $""`{{Access.FieldMap[nameof({Entity.EntityName}.{Entity.PrimaryField})]}}`,`{{Access.FieldMap[nameof({Entity.EntityName}.{cap.Name})]}}`"";"
+            var fields = $""`{{Access.FieldMap[nameof({Model.EntityName}.{Model.PrimaryField})]}}`,`{{Access.FieldMap[nameof({Model.EntityName}.{cap.Name})]}}`"";"
                     : $@"
-            var fields = $""[{{Access.FieldMap[nameof({Entity.EntityName}.{Entity.PrimaryField})]}}],[{{Access.FieldMap[nameof({Entity.EntityName}.{cap.Name})]}}]"";");
+            var fields = $""[{{Access.FieldMap[nameof({Model.EntityName}.{Model.PrimaryField})]}}],[{{Access.FieldMap[nameof({Model.EntityName}.{cap.Name})]}}]"";");
 
                 code.Append($@"
-            List<{Entity.EntityName}> datas;
-            using (DbReaderScope<{Entity.EntityName}>.CreateScope(Access, fields, (reader, data) =>
+            List<{Model.EntityName}> datas;
+            using (DbReaderScope<{Model.EntityName}>.CreateScope(Access, fields, (reader, data) =>
             {{
-                data.{Entity.PrimaryField} = ({Entity.PrimaryColumn.LastCsType})reader.GetInt64(0);
+                data.{Model.PrimaryField} = ({Model.PrimaryColumn.LastCsType})reader.GetInt64(0);
                 data.{cap.Name} = reader.IsDBNull(1) ? null : reader.GetString(1);
             }}))
             {{
                 datas = Access.All(");
-                if (Entity.Interfaces.Contains("IStateData"))
+                if (Model.Interfaces.Contains("IStateData"))
                     code.Append("p => p.DataState <= DataStateType.Enable");
                 code.Append($@");
             }}
@@ -274,13 +274,13 @@ namespace {NameSpace}.BusinessLogic
                 ? new System.Collections.Generic.List<Agebull.EntityModel.EasyUI.EasyComboValues>()
                 : datas.OrderBy(p => p.{cap.Name}).Select(p => new Agebull.EntityModel.EasyUI.EasyComboValues
                 {{
-                    Key = p.{Entity.PrimaryField},
+                    Key = p.{Model.PrimaryField},
                     Value = p.{cap.Name}
                 }}).ToList();
         }}");
             }
 
-            foreach (var cmd in Entity.Commands.Where(p => !p.IsLocalAction))
+            foreach (var cmd in Model.Commands.Where(p => !p.IsLocalAction))
             {
                 hase = true;
                 code.Append($@"
@@ -308,20 +308,20 @@ namespace {NameSpace}.BusinessLogic
         /// <summary>
         ///     生成基础代码
         /// </summary>
-        protected override void CreateBaCode(string path)
+        protected override void CreateDesignerCode(string path)
         {
             return;
             var fileName = "BusinessLogic.Designer.cs";
-            var file = Path.Combine(path, Entity.Name + fileName);
-            if (Entity.NoDataBase)
+            var file = Path.Combine(path, Model.Name + fileName);
+            if (Model.NoDataBase)
             {
                 if (File.Exists(file))
                 {
                     Directory.Move(file, file + ".bak");
                 }
-                else if (!string.IsNullOrWhiteSpace(Entity.Alias))
+                else if (!string.IsNullOrWhiteSpace(Model.Alias))
                 {
-                    var oldFile = Path.Combine(path, Entity.Alias + fileName);
+                    var oldFile = Path.Combine(path, Model.Alias + fileName);
                     if (File.Exists(oldFile))
                     {
                         Directory.Move(oldFile, file + ".bak");
@@ -329,9 +329,9 @@ namespace {NameSpace}.BusinessLogic
                 }
                 return;
             }
-            if (!string.IsNullOrWhiteSpace(Entity.Alias))
+            if (!string.IsNullOrWhiteSpace(Model.Alias))
             {
-                var oldFile = Path.Combine(path, Entity.Alias + fileName);
+                var oldFile = Path.Combine(path, Model.Alias + fileName);
                 if (File.Exists(oldFile))
                 {
                     Directory.Move(oldFile, file);
@@ -354,17 +354,17 @@ namespace {NameSpace}.BusinessLogic
                     break;
                 default:
                     //case DataBaseType.MySql:
-                    dbNameSpace = "MySql.Data.MySqlClient";
+                    dbNameSpace = "MySqlConnector";
                     break;
             }
             StringBuilder alias = new StringBuilder();
-            if (!string.IsNullOrWhiteSpace(Entity.Alias))
+            if (!string.IsNullOrWhiteSpace(Model.Alias))
             {
                 alias.Append($@"
         /// <summary>
-        /// {Entity.Description} 别名
+        /// {Model.Description} 别名
         /// </summary>
-        {(Entity.IsInternal ? "internal" : "public")} sealed class {Entity.Alias}BusinessLogic : {Entity.Name}BusinessLogic
+        {(Model.IsInternal ? "internal" : "public")} sealed class {Model.Alias}BusinessLogic : {Model.Name}BusinessLogic
         {{
         }}");
             }
@@ -390,9 +390,9 @@ using {NameSpace}.DataAccess;
 namespace {NameSpace}.BusinessLogic
 {{
     /// <summary>
-    /// {Entity.Description}
+    /// {Model.Description}
     /// </summary>
-    partial class {Entity.Name}BusinessLogic
+    partial class {Model.Name}BusinessLogic
     {{
 {SyncCode()}{CommandCode()}
     }}{alias}
@@ -407,14 +407,14 @@ namespace {NameSpace}.BusinessLogic
         /// 将修改发送到交易服务器
         /// </summary>
         /// <param name=""data"">修改的数据</param>
-        public void SendDataChanged({Entity.EntityName} data)
+        public void SendDataChanged({Model.EntityName} data)
         {{
 #if LinkServer
             using (var client = new DataNoticeServiceClient())
             {{
                 client.Endpoint.Behaviors.Add(new ProxyEndpointBehavior());
                 client.Open();
-                client.On{Entity.Name}Chanaged(data, data.Id);
+                client.On{Model.Name}Chanaged(data, data.Id);
                 client.Close();
             }}
 #endif
@@ -423,7 +423,7 @@ namespace {NameSpace}.BusinessLogic
         private string CommandCode()
         {
             var code = new StringBuilder();
-            foreach (var cmd in Entity.Commands.Where(p => !p.IsLocalAction && !p.IsSingleObject))
+            foreach (var cmd in Model.Commands.Where(p => !p.IsLocalAction && !p.IsSingleObject))
             {
                 code.Append($@"
 

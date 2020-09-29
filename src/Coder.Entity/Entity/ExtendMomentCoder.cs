@@ -87,9 +87,9 @@ namespace Agebull.EntityModel.RobotCoder
             return code.ToString();
         }
 
-        public string ToCSharpCode(PropertyConfig property)
+        public string ToCSharpCode(FieldConfig property)
         {
-            return $@"static PropertyConfig _{property.Name.ToLWord()} = new PropertyConfig
+            return $@"static FieldConfig _{property.Name.ToLWord()} = new FieldConfig
             {{
                 Caption = ""{property.Caption}"",
                 Description = ""{property.Description}"",
@@ -151,7 +151,7 @@ namespace Agebull.EntityModel.RobotCoder
             var data = new {entity.EntityName}
             {{");
             bool first = true;
-            foreach (PropertyConfig field in entity.PublishProperty)
+            foreach (var field in entity.PublishProperty)
             {
                 if (first)
                     first = false;
@@ -171,7 +171,7 @@ namespace Agebull.EntityModel.RobotCoder
             var data = new {entity.EntityName}
             {{");
             bool first = true;
-            foreach (PropertyConfig field in entity.PublishProperty)
+            foreach (var field in entity.PublishProperty)
             {
                 if (first)
                     first = false;
@@ -197,7 +197,7 @@ namespace Agebull.EntityModel.RobotCoder
         public string EditCsCode(EntityConfig entity)
         {
             var builder = new StringBuilder();
-            foreach (PropertyConfig field in entity.PublishProperty)
+            foreach (var field in entity.PublishProperty)
             {
                 builder.AppendFormat(@"
             data.{0} = default({1})", field.Name, field.LastCsType);
@@ -208,7 +208,7 @@ namespace Agebull.EntityModel.RobotCoder
         public string EasyUiInfo(EntityConfig entity)
         {
             var jsonBuilder = new StringBuilder();
-            foreach (PropertyConfig field in entity.PublishProperty)
+            foreach (var field in entity.PublishProperty)
             {
                 string ext = null;
                 if (field.CsType.ToLower() == "bool")
@@ -267,7 +267,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         private string UserChildSave(EntityConfig entity)
         {
-            PropertyConfig uf = entity.PublishProperty.FirstOrDefault(p => p.IsUserId);
+            FieldConfig uf = entity.PublishProperty.FirstOrDefault(p => p.IsUserId);
             if (uf == null)
                 return null;
             return ($@"

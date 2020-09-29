@@ -40,7 +40,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 {
                     Project = project
                 };
-                builder.CreateExtendCode(path);
+                builder.WriteCustomCode(path);
             }
             {
                 var path = project.GetApiPath("Contract");
@@ -48,7 +48,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 {
                     Project = project
                 };
-                builder.CreateExtendCode(path);
+                builder.WriteCustomCode(path);
             }
             {
                 var path = project.GetApiPath("WebApi");
@@ -56,7 +56,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 {
                     Project = project
                 };
-                builder.CreateExtendCode(path);
+                builder.WriteCustomCode(path);
             }
             {
                 var path = project.GetApiPath("Logical");
@@ -64,7 +64,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 {
                     Project = project
                 };
-                builder.CreateExtendCode(path);
+                builder.WriteCustomCode(path);
             }
             {
                 var path = GetDocumentPath(project);
@@ -72,8 +72,8 @@ namespace Agebull.EntityModel.Designer.WebApi
                 {
                     Project = project
                 };
-                builder.CreateBaseCode(path);
-                builder.CreateExtendCode(path);
+                builder.WriteDesignerCode(path);
+                builder.WriteCustomCode(path);
             }
             {
                 string path;
@@ -92,7 +92,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 {
                     Project = project
                 };
-                builder.CreateExtendCode(path);
+                builder.WriteCustomCode(path);
             }
         }
         /// <summary>
@@ -100,7 +100,7 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// </summary>
         /// <param name="project"></param>
         /// <param name="entity"></param>
-        public override void CreateEntityCode(ProjectConfig project, EntityConfig entity)
+        public override void CreateEntityCode(ProjectConfig project, ModelConfig entity)
         {
             if (entity.ExtendConfigListBool["NoApi"])
                 return;
@@ -110,10 +110,10 @@ namespace Agebull.EntityModel.Designer.WebApi
                 var builder = new EntityBuilder
                 {
                     Project = project,
-                    Entity = entity
+                    Model = entity
                 };
-                builder.CreateBaseCode(path);
-                builder.CreateExtendCode(path);
+                builder.WriteDesignerCode(path);
+                builder.WriteCustomCode(path);
             }
             if (entity.NoDataBase)
                 return;
@@ -122,18 +122,18 @@ namespace Agebull.EntityModel.Designer.WebApi
                 var builder = new ApiInterfaceBuilder
                 {
                     Project = project,
-                    Entity = entity
+                    Model = entity
                 };
-                builder.CreateBaseCode(path);
+                builder.WriteDesignerCode(path);
             }
             {
                 var path = project.GetApiPath("Contract");
                 var builder = new ApiProxyBuilder
                 {
                     Project = project,
-                    Entity = entity
+                    Model = entity
                 };
-                builder.CreateBaseCode(path);
+                builder.WriteDesignerCode(path);
             }
 
             {
@@ -141,18 +141,18 @@ namespace Agebull.EntityModel.Designer.WebApi
                 var builder = new ApiLogicalBuilder
                 {
                     Project = project,
-                    Entity = entity
+                    Model = entity
                 };
-                builder.CreateBaseCode(path);
+                builder.WriteDesignerCode(path);
             }
             {
                 var path = project.GetApiPath("WebApi");
                 var builder = new ApiControlerBuillder
                 {
                     Project = project,
-                    Entity = entity
+                    Model = entity
                 };
-                builder.CreateBaseCode(path);
+                builder.WriteDesignerCode(path);
             }
             {
 
@@ -176,9 +176,9 @@ namespace Agebull.EntityModel.Designer.WebApi
                 var builder = new UnitTestBuilder
                 {
                     Project = project,
-                    Entity = entity
+                    Model = entity
                 };
-                builder.CreateBaseCode(path);
+                builder.WriteDesignerCode(path);
             }
         }
     }

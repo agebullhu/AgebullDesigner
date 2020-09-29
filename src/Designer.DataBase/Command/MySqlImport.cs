@@ -18,7 +18,7 @@ using System.Windows.Threading;
 using Agebull.Common;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.RobotCoder;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 
 #endregion
 
@@ -168,12 +168,12 @@ from information_schema.columns where table_schema='{db}' and table_name='{table
                     {
                         //_trace.Track = @"新字段";
                         isNew = true;
-                        column = new PropertyConfig
+                        column = new FieldConfig
                         {
                             DbFieldName = field,
                             DbType = dbType,
                             CsType = ToCstringType(dbType),
-                            Parent = entity
+                            Entity = entity
                         };
 
                         InvokeInUiThread(() => entity.Add(column));

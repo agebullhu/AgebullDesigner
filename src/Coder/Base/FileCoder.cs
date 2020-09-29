@@ -40,7 +40,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         ///     生成扩展代码
         /// </summary>
-        public void CreateExtendCode(string path)
+        public void WriteCustomCode(string path)
         {
             using (CodeGeneratorScope.CreateScope(CurrentConfig as EntityConfig))
             {
@@ -49,7 +49,7 @@ namespace Agebull.EntityModel.RobotCoder
                     CurrentIsExtend = true;
                     CurrentPath = path;
                     if (CanWrite)
-                        CreateExCode(path);
+                        CreateCustomCode(path);
                 }
                 catch (Exception e)
                 {
@@ -61,7 +61,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         ///     生成基础代码
         /// </summary>
-        public void CreateBaseCode(string path)
+        public void WriteDesignerCode(string path)
         {
             using (CodeGeneratorScope.CreateScope(CurrentConfig as EntityConfig))
             {
@@ -70,7 +70,7 @@ namespace Agebull.EntityModel.RobotCoder
                     CurrentIsExtend = false;
                     CurrentPath = path;
                     if (CanWrite)
-                        CreateBaCode(path);
+                        CreateDesignerCode(path);
                 }
                 catch (Exception e)
                 {
@@ -78,17 +78,18 @@ namespace Agebull.EntityModel.RobotCoder
                 }
             }
         }
+
         /// <summary>
         ///     生成扩展代码
         /// </summary>
-        protected virtual void CreateExCode(string path)
+        protected virtual void CreateCustomCode(string path)
         {
         }
 
         /// <summary>
         ///     生成基础代码
         /// </summary>
-        protected virtual void CreateBaCode(string path)
+        protected virtual void CreateDesignerCode(string path)
         {
         }
 

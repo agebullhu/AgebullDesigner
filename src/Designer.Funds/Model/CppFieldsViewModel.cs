@@ -3,7 +3,7 @@ using System.Windows;
 
 namespace Agebull.EntityModel.Designer
 {
-    internal class CppFieldsViewModel : ExtendViewModelBase<EntityDesignModel>
+    internal class CppFieldsViewModel : ExtendViewModelBase<ModelDesignModel>
     {
         public CppFieldsViewModel()
         {

@@ -48,7 +48,7 @@ TRUNCATE TABLE [{entity.SaveTable}];
 ";
         }
 
-        public static string DropView(EntityConfig entity)
+        public static string DropView(ModelConfig entity)
         {
             if (entity.NoDataBase || entity.SaveTable == entity.ReadTableName)
                 return Empty;
@@ -57,9 +57,9 @@ TRUNCATE TABLE [{entity.SaveTable}];
 DROP VIEW [{entity.ReadTableName}];
 GO";
         }
-        public static string CreateView(EntityConfig entity)
+        public static string CreateView(ModelConfig entity)
         {
-            DataBaseHelper.CheckFieldLink(entity);
+            DataBaseHelper.CheckFieldLink(entity.DbFields);
             var array = entity.DbFields.Where(p => p.IsLinkField && !p.IsLinkKey).ToArray();
             if (array.Length == 0)
             {
@@ -86,7 +86,7 @@ GO";
 CREATE VIEW [{viewName}] AS 
     SELECT ");
             bool first = true;
-            foreach (PropertyConfig field in entity.DbFields)
+            foreach (var field in entity.DbFields)
             {
                 if (first)
                     first = false;
@@ -190,7 +190,7 @@ VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Name}
 /*{entity.Caption}*/
 CREATE TABLE [{entity.SaveTable}](");
             bool isFirst = true;
-            foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
+            foreach (var col in entity.DbFields.Where(p => !p.IsCompute))
             {
                 code.Append($@"
    {(isFirst ? "" : ",")}{FieldDefault(col)}");
@@ -221,7 +221,7 @@ EXECUTE sp_addextendedproperty N'MS_Description', @v, N'SCHEMA', N'dbo', N'TABLE
                     entity.SaveTableName
                 }', NULL, NULL;");
 
-            foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
+            foreach (var col in entity.DbFields.Where(p => !p.IsCompute))
             {
                 code.Append($@"
 SET @v = N'{col.Caption?.Replace('\'', '¡®')}:{col.Description?.Replace('\'', '¡®')}'
@@ -240,7 +240,7 @@ EXECUTE sp_addextendedproperty N'MS_Description', @v, N'SCHEMA', N'dbo', N'TABLE
 /*{entity.Caption}*/
 ALTER TABLE [{entity.SaveTable}]");
             bool isFirst = true;
-            foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
+            foreach (var col in entity.DbFields.Where(p => !p.IsCompute))
             {
                 if (isFirst)
                     isFirst = false;
@@ -266,7 +266,7 @@ ALTER TABLE [{entity.SaveTable}]");
 /*{entity.Caption}*/
 ALTER TABLE [{entity.SaveTable}]");
             bool isFirst = true;
-            foreach (PropertyConfig col in entity.DbFields.Where(p => !p.IsCompute))
+            foreach (var col in entity.DbFields.Where(p => !p.IsCompute))
             {
                 if (isFirst)
                     isFirst = false;
@@ -280,7 +280,7 @@ ALTER TABLE [{entity.SaveTable}]");
             return code.ToString();
         }
 
-        private static string FieldDefault(PropertyConfig col)
+        private static string FieldDefault(FieldConfig col)
         {
             var def = col.Initialization == null
                 ? null
@@ -300,7 +300,7 @@ ALTER TABLE [{entity.SaveTable}]");
         /// <param name="field">×Ö¶Î</param>
         /// <param name="code">´úÂë</param>
         /// <param name="idx">ÐòºÅ</param>
-        public static void FieldReadCode(PropertyConfig field, StringBuilder code, int idx)
+        public static void FieldReadCode(FieldConfig field, StringBuilder code, int idx)
         {
             if (!IsNullOrWhiteSpace(field.CustomType))
             {

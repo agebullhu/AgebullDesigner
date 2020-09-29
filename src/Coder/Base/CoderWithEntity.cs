@@ -11,39 +11,30 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 当前对象
         /// </summary>
-        public sealed override ConfigBase CurrentConfig => (ConfigBase)Entity ?? base.Project;
+        public sealed override ConfigBase CurrentConfig => (ConfigBase)Model ?? base.Project;
 
         /// <inheritdoc />
         public sealed override ProjectConfig Project
         {
-            get => Entity?.Parent ?? base.Project;
+            get => Model?.Parent ?? base.Project;
             set => base.Project = value;
         }
-
-        private EntityConfig _entity;
 
         /// <summary>
         /// 当前表对象
         /// </summary>
-        public EntityConfig Entity
-        {
-            get => _entity;
-            set
-            {
-                _entity = value;
-            }
-        }
+        public ModelConfig Model { get; set; }
 
         /// <summary>
         /// 分类目录
         /// </summary>
-        protected virtual string Folder => string.IsNullOrWhiteSpace(Entity.Classify) || Entity.Classify.Equals("None", StringComparison.InvariantCulture)
-                ? Entity.Name
-                : $"{Entity.Classify}\\{Entity.Name}";
+        protected virtual string Folder => string.IsNullOrWhiteSpace(Model.Classify) || Model.Classify.Equals("None", StringComparison.InvariantCulture)
+                ? Model.Name
+                : $"{Model.Classify}\\{Model.Name}";
         /// <summary>
         /// 是否可写
         /// </summary>
-        protected override bool CanWrite => base.CanWrite && Entity != null && !Entity.IsFreeze && !Entity.IsDiscard;
+        protected override bool CanWrite => base.CanWrite && Model != null && !Model.IsFreeze && !Model.IsDiscard;
 
         /// <summary>
         /// 取得其它生成器的能力
@@ -52,11 +43,11 @@ namespace Agebull.EntityModel.RobotCoder
         /// <returns></returns>
         public string GetBaseCode<TBuilder>() where TBuilder : EntityBuilderBase, new()
         {
-            using (CodeGeneratorScope.CreateScope(Entity))
+            using (CodeGeneratorScope.CreateScope(Model))
             {
                 var builder = new TBuilder
                 {
-                    Entity = Entity
+                    Model = Model
                 };
                 return builder.BaseCode;
             }
@@ -69,11 +60,11 @@ namespace Agebull.EntityModel.RobotCoder
         public string GetExtendCode<TBuilder>()
             where TBuilder : EntityBuilderBase, new()
         {
-            using (CodeGeneratorScope.CreateScope(Entity))
+            using (CodeGeneratorScope.CreateScope(Model))
             {
                 var builder = new TBuilder
                 {
-                    Entity = Entity
+                    Model = Model
                 };
                 return builder.ExtendCode;
             }

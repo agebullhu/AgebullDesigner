@@ -40,7 +40,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         /// <param name="project"></param>
         /// <param name="schema"></param>
-        public override void CreateEntityCode(ProjectConfig project, EntityConfig schema)
+        public override void CreateEntityCode(ProjectConfig project, ModelConfig schema)
         {
             var cls = schema.Classify.IsEmptyClassify() ? null : schema.Classify;
 
@@ -49,22 +49,22 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                 businessPath = IOHelper.CheckPath(businessPath, cls);
             var builder = new BusinessBuilder
             {
-                Entity = schema,
+                Model = schema,
                 Project = project
             };
-            builder.CreateBaseCode(businessPath);
-            builder.CreateExtendCode(businessPath);
+            builder.WriteDesignerCode(businessPath);
+            builder.WriteCustomCode(businessPath);
 
             var apiPath = project.ApiPath;
             if (cls != null)
                 apiPath = IOHelper.CheckPath(apiPath, cls);
             var pg = new ProjectApiActionCoder
             {
-                Entity = schema,
+                Model = schema,
                 Project = schema.Parent,
             };
-            pg.CreateBaseCode(apiPath);
-            pg.CreateExtendCode(apiPath);
+            pg.WriteDesignerCode(apiPath);
+            pg.WriteCustomCode(apiPath);
         }
     }
 }

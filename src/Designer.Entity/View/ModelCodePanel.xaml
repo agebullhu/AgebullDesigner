@@ -46,7 +46,7 @@
                 <TextBox Style="{StaticResource MidTextBox}" Text="{Binding Interfaces,Mode=TwoWay}" />
             </StackPanel>
         </WrapPanel>
-        <TabControl DataContext="{Binding Context.SelectProperty}" DockPanel.Dock="Bottom" Height="262">
+        <TabControl DataContext="{Binding Context.SelectField}" DockPanel.Dock="Bottom" Height="262">
             <TabControl.Resources>
                 <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
             </TabControl.Resources>

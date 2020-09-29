@@ -22,7 +22,7 @@ namespace Agebull.EntityModel.Config
         ///     上级
         /// </summary>
         [IgnoreDataMember,JsonIgnore, Browsable(false)]
-        public EntityConfig Parent { get; set; }
+        public ModelConfig Parent { get; set; }
 
 
         #region 
@@ -30,7 +30,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 关联表的外键名称
         /// </summary>
-        [DataMember, JsonProperty("ForeignKey", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("ForeignKey",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _foreignKey;
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 与关联表的外键对应的字段名称
         /// </summary>
-        [DataMember, JsonProperty("PrimaryKey", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("PrimaryKey",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _primaryKey;
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 关联表
         /// </summary>
-        [DataMember, JsonProperty("Friend", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("Friend",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _friend;
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 关系类型
         /// </summary>
-        [DataMember, JsonProperty("Releation", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("Releation",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal int _releation;
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 扩展条件
         /// </summary>
-        [DataMember, JsonProperty("Condition", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("Condition",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _condition;
 
         /// <summary>

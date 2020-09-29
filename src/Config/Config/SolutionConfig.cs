@@ -165,6 +165,52 @@ namespace Agebull.EntityModel.Config
                 RaisePropertyChanged(nameof(Entities));
             }
         }
+
+
+        /// <summary>
+        /// 模型集合
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        internal NotificationList<ModelConfig> _models;
+
+        /// <summary>
+        /// 模型集合
+        /// </summary>
+        /// <remark>
+        /// 所有表设置
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"对象集合"), DisplayName(@"模型集合"), Description("所有表设置")]
+        public IEnumerable<ModelConfig> Models => ModelList;
+
+        /// <summary>
+        /// 模型集合
+        /// </summary>
+        /// <remark>
+        /// 所有表设置
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"对象集合"), DisplayName(@"模型集合"), Description("所有表设置")]
+        public NotificationList<ModelConfig> ModelList
+        {
+            get
+            {
+                if (_models != null)
+                    return _models;
+                _models = new NotificationList<ModelConfig>();
+                RaisePropertyChanged(nameof(Models));
+                return _models;
+            }
+            set
+            {
+                if (_models == value)
+                    return;
+                BeforePropertyChanged(nameof(Models), _models, value);
+                _models = value;
+                RaisePropertyChanged(nameof(Models));
+            }
+        }
+
         /// <summary>
         /// 项目集合
         /// </summary>
@@ -257,7 +303,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 解决方案根路径
         /// </summary>
-        [DataMember, JsonProperty("_rootPath", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_rootPath",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _rootPath;
 
         /// <summary>
@@ -285,7 +331,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 代码文件夹名称
         /// </summary>
-        [DataMember, JsonProperty("pagePath", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("pagePath",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _pagePath;
 
         /// <summary>
@@ -314,7 +360,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 文档文件夹名称
         /// </summary>
-        [DataMember, JsonProperty("docFolder", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("docFolder",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _docFolder;
 
         /// <summary>
@@ -341,7 +387,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 代码文件夹名称
         /// </summary>
-        [DataMember, JsonProperty("_srcFolder", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_srcFolder",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _srcFolder;
 
         /// <summary>
@@ -368,7 +414,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 解决方案命名空间
         /// </summary>
-        [DataMember, JsonProperty("_nameSpace", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_nameSpace",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _nameSpace;
 
         /// <summary>
@@ -397,7 +443,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 数据类型映射
         /// </summary>
-        /*[DataMember, JsonProperty("dataTypeMap", NullValueHandling = NullValueHandling.Ignore)]*/
+        /*[DataMember, JsonProperty("dataTypeMap",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]*/
         NotificationList<DataTypeMapConfig> _dataTypeMap;
 
         /// <summary>
@@ -432,7 +478,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 解决方案类型
         /// </summary>
-        [DataMember, JsonProperty("SolutionType", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("SolutionType",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal SolutionType _solutionType;
 
         /// <summary>
@@ -467,7 +513,7 @@ namespace Agebull.EntityModel.Config
         public bool IsWeb => SolutionType == SolutionType.Web;
 
 
-        [DataMember, JsonProperty("idDataType", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("idDataType",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private string _idDataType = "long";
 
         /// <summary>
@@ -489,7 +535,7 @@ namespace Agebull.EntityModel.Config
         }
 
 
-        [DataMember, JsonProperty("userIdDataType", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("userIdDataType",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private string _userIdDataType = "long";
 
         /// <summary>

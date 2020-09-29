@@ -18,7 +18,7 @@ namespace Agebull.EntityModel.Config
     /// 用户命令配置
     /// </summary>
     [DataContract,JsonObject(MemberSerialization.OptIn)]
-    public partial class UserCommandConfig : EntityChildConfig
+    public partial class UserCommandConfig : ModelChildConfig
     {
         #region 构造
         
@@ -37,7 +37,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 按钮名称
         /// </summary>
-        [DataMember,JsonProperty("_button", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember,JsonProperty("_button",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _button;
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 按钮图标
         /// </summary>
-        [DataMember,JsonProperty("Icon", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember,JsonProperty("Icon",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _icon;
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 本地操作
         /// </summary>
-        [DataMember,JsonProperty("IsLocalAction", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember,JsonProperty("IsLocalAction",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _isLocalAction;
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 单对象操作
         /// </summary>
-        [DataMember,JsonProperty("IsSingleObject", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember,JsonProperty("IsSingleObject",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _isSingleObject;
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 打开链接
         /// </summary>
-        [DataMember,JsonProperty("Url", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember,JsonProperty("Url",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _url;
 
         /// <summary>

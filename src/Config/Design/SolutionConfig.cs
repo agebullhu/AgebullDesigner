@@ -84,6 +84,16 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 加入
         /// </summary>
+        /// <param name="model"></param>
+        internal void Add(ModelConfig model)
+        {
+            ModelList.TryAdd(model);
+            GlobalConfig.Add(model);
+        }
+
+        /// <summary>
+        /// 加入
+        /// </summary>
         /// <param name="enumConfig"></param>
         internal void Add(EnumConfig enumConfig)
         {
@@ -110,7 +120,16 @@ namespace Agebull.EntityModel.Config
             EntityList.Remove(entity);
             GlobalConfig.Remove(entity);
         }
-
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="entity"></param>
+        internal void Remove(ModelConfig model)
+        {
+            ModelList.Remove(model);
+            GlobalConfig.Remove(model);
+        }
+        
         /// <summary>
         /// 删除
         /// </summary>

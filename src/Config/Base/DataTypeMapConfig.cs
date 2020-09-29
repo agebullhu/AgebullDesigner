@@ -289,14 +289,14 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 不参与数据库类型还原
         /// </summary>
-        [DataMember, JsonProperty("noDbCheck", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("noDbCheck",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         public bool NoDbCheck;
 
 
         /// <summary>
         /// 数据长度
         /// </summary>
-        [DataMember, JsonProperty("datalen", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("datalen",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal int _datalen;
 
         /// <summary>
@@ -322,7 +322,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 存储精度
         /// </summary>
-        [DataMember, JsonProperty("scale", NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("scale",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal int _scale;
 
         /// <summary>
@@ -349,7 +349,7 @@ namespace Agebull.EntityModel.Config
         ///     C#
         /// </summary>
         [DataMember]
-        [JsonProperty("csharp", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("csharp",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private string _csharp;
 
         /// <summary>
@@ -379,7 +379,7 @@ namespace Agebull.EntityModel.Config
         ///     C++
         /// </summary>
         [DataMember]
-        [JsonProperty("cpp", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("cpp",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private string _cpp;
 
         /// <summary>
@@ -410,7 +410,7 @@ namespace Agebull.EntityModel.Config
         ///     Java
         /// </summary>
         [DataMember]
-        [JsonProperty("java", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("java",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private string _java;
 
         /// <summary>
@@ -440,7 +440,7 @@ namespace Agebull.EntityModel.Config
         ///     Golang
         /// </summary>
         [DataMember]
-        [JsonProperty("golang", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("golang",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private string _golang;
 
         /// <summary>
@@ -470,7 +470,7 @@ namespace Agebull.EntityModel.Config
         ///     MySql
         /// </summary>
         [DataMember]
-        [JsonProperty("mysql", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("mysql",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private string _mysql;
 
         /// <summary>
@@ -500,7 +500,7 @@ namespace Agebull.EntityModel.Config
         ///     SqlServer
         /// </summary>
         [DataMember]
-        [JsonProperty("sqlServer", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("sqlServer",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private string _sqlServer;
 
         /// <summary>
@@ -530,7 +530,7 @@ namespace Agebull.EntityModel.Config
         ///     Oracle
         /// </summary>
         [DataMember]
-        [JsonProperty("oracle", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("oracle",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private string _oracle;
 
         /// <summary>
@@ -559,7 +559,7 @@ namespace Agebull.EntityModel.Config
         ///     Oracle
         /// </summary>
         [DataMember]
-        [JsonProperty("sqlite", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("sqlite",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private string _sqlite;
 
         /// <summary>
@@ -590,7 +590,7 @@ namespace Agebull.EntityModel.Config
         ///     JavaScript
         /// </summary>
         [DataMember]
-        [JsonProperty("js", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("js",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private string _js;
 
         /// <summary>

@@ -17,7 +17,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <inheritdoc />
         protected override string Folder => "Struct";
 
-        int DbType(PropertyConfig field)
+        int DbType(FieldConfig field)
         {
             if (Project.DbType == DataBaseType.SqlServer)
                 return (int)SqlServerHelper.ToSqlDbType(field);
@@ -29,13 +29,13 @@ namespace Agebull.EntityModel.RobotCoder
 
         private string EntityStruct()
         {
-            if (Entity.PrimaryColumn == null)
+            if (Model.PrimaryColumn == null)
                 return null;
             bool isFirst = true;
             int idx = 0;
             var codeConst = new StringBuilder();
             var codeStruct = new StringBuilder();
-            EntityStruct(Entity, codeStruct, codeConst, ref isFirst,ref idx);
+            EntityStruct(Model, codeStruct, codeConst, ref isFirst,ref idx);
             return $@"
         #region 数据结构
 
@@ -58,23 +58,23 @@ namespace Agebull.EntityModel.RobotCoder
             /// <summary>
             /// 实体名称
             /// </summary>
-            public const string EntityName = @""{Entity.Name}"";
+            public const string EntityName = @""{Model.Name}"";
             /// <summary>
             /// 实体标题
             /// </summary>
-            public const string EntityCaption = @""{Entity.Caption}"";
+            public const string EntityCaption = @""{Model.Caption}"";
             /// <summary>
             /// 实体说明
             /// </summary>
-            public const string EntityDescription = @""{Entity.Description}"";
+            public const string EntityDescription = @""{Model.Description}"";
             /// <summary>
             /// 实体标识
             /// </summary>
-            public const int EntityIdentity = 0x{Entity.Identity:X};
+            public const int EntityIdentity = 0x{Model.Identity:X};
             /// <summary>
             /// 实体说明
             /// </summary>
-            public const string EntityPrimaryKey = ""{Entity.PrimaryColumn.Name}"";
+            public const string EntityPrimaryKey = ""{Model.PrimaryColumn.Name}"";
             
             {codeConst}
 
@@ -97,13 +97,13 @@ namespace Agebull.EntityModel.RobotCoder
 ";
         }
 
-        private void EntityStruct(EntityConfig table, StringBuilder codeStruct, StringBuilder codeConst, ref bool isFirst, ref int idx)
+        private void EntityStruct(ModelConfig table, StringBuilder codeStruct, StringBuilder codeConst, ref bool isFirst, ref int idx)
         {
             if (table == null)
                 return;
 
             if (!string.IsNullOrWhiteSpace(table.ModelBase))
-                EntityStruct(Project.Entities.FirstOrDefault(p => p.Name == table.ModelBase), codeStruct, codeConst, ref isFirst, ref idx);
+                EntityStruct(Project.Models.FirstOrDefault(p => p.Name == table.ModelBase), codeStruct, codeConst, ref isFirst, ref idx);
 
             if (table.PrimaryColumn != null)
             {
@@ -111,20 +111,20 @@ namespace Agebull.EntityModel.RobotCoder
                 PropertyStruct(codeStruct, table.PrimaryColumn, ref isFirst);
             }
 
-            foreach (PropertyConfig property in table.PublishProperty.Where(p => p != table.PrimaryColumn).OrderBy(p => p.Index))
+            foreach (var property in table.PublishProperty.Where(p => p != table.PrimaryColumn).OrderBy(p => p.Index))
             {
                 codeConst.Append(PropertyIndex(property, ref idx));
                 PropertyStruct(codeStruct, property, ref isFirst);
             }
 
-            foreach (PropertyConfig property in table.LastProperties.Where(p => !table.PublishProperty.Any(pp => p == pp) && p != table.PrimaryColumn).OrderBy(p => p.Index))
+            foreach (var property in table.LastProperties.Where(p => !table.PublishProperty.Any(pp => p == pp) && p != table.PrimaryColumn).OrderBy(p => p.Index))
             {
                 codeConst.Append(PropertyIndex(property, ref idx));
                 PropertyStruct(codeStruct, property, ref isFirst);
             }
         }
 
-        private string PropertyIndex(PropertyConfig property, ref int idx)
+        private string PropertyIndex(FieldConfig property, ref int idx)
         {
             return $@"
 
@@ -139,7 +139,7 @@ namespace Agebull.EntityModel.RobotCoder
             public const int Real_{property.Name} = {idx++};";
         }
 
-        private void PropertyStruct(StringBuilder codeStruct, PropertyConfig property,ref bool isFirst)
+        private void PropertyStruct(StringBuilder codeStruct, FieldConfig property,ref bool isFirst)
         {
             if (isFirst)
                 isFirst = false;
@@ -153,7 +153,7 @@ namespace Agebull.EntityModel.RobotCoder
                 if (property.IsInterfaceField)
                 {
                     featrue.Add("PropertyFeatrue.Interface");
-                    if (!Entity.InterfaceInner)
+                    if (!Model.InterfaceInner)
                         featrue.Add("PropertyFeatrue.Property");
                 }
                 else

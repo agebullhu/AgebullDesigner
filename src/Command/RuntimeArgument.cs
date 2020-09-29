@@ -27,7 +27,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 当前实体对象
         /// </summary>
-        public IList<EntityConfig> Entities { get; private set; }
+        public IList<ModelConfig> Entities { get; private set; }
 
         /// <summary>
         /// 当前关联项目
@@ -40,23 +40,17 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         private void GetEntities()
         {
-            var list = new NotificationList<EntityConfig>();
+            var list = new NotificationList<ModelConfig>();
             switch (_argument)
             {
-                case EntityConfig entityConfig:
+                case ModelConfig entityConfig:
                     list.Add(entityConfig);
                     break;
-                case EntityClassify classify:
-                    classify.Items.Foreach(p=>list.TryAdd(p));
-                    break;
-                case PropertyConfig propertyConfig:
-                    list.TryAdd(propertyConfig.Parent);
-                    break;
                 case ProjectConfig projectConfig:
-                    projectConfig.Entities.Foreach(p => list.TryAdd(p));
+                    projectConfig.Models.Foreach(p => list.TryAdd(p));
                     break;
                 default:
-                    SolutionConfig.Current.Entities.Foreach(p => list.TryAdd(p));
+                    SolutionConfig.Current.Models.Foreach(p => list.TryAdd(p));
                     break;
             }
             Entities = list;

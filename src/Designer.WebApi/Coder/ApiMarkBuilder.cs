@@ -32,7 +32,7 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// <summary>
         ///     生成实体代码
         /// </summary>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
             StringBuilder code = new StringBuilder();
             code.Append($@"# {Project.Caption} 接口文档
@@ -71,7 +71,7 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// <summary>
         ///     生成扩展代码
         /// </summary>
-        protected override void CreateBaCode(string path)
+        protected override void CreateDesignerCode(string path)
         {
             StringBuilder code = new StringBuilder();
             code.Append($@"# {Project.Caption} 接口文档
@@ -123,9 +123,9 @@ namespace Agebull.EntityModel.Designer.WebApi
                     {
                         Name = "Argument<int>",
                         Caption = "ID参数",
-                        Properties = new ConfigCollection<PropertyConfig>
+                        Properties = new ConfigCollection<FieldConfig>
                         {
-                            new PropertyConfig
+                            new FieldConfig
                             {
                                 Name = "Value",
                                 Caption="值",
@@ -143,29 +143,29 @@ namespace Agebull.EntityModel.Designer.WebApi
                     {
                         Name = "PageArgument",
                         Caption = "分页参数",
-                        Properties = new ConfigCollection<PropertyConfig>
+                        Properties = new ConfigCollection<FieldConfig>
                         {
-                            new PropertyConfig
+                            new FieldConfig
                             {
                                 Name = "Page",
                                 Caption="页号",
                                 Description= "从0开始的页号",
                                 CsType = "int"
                             },
-                            new PropertyConfig
+                            new FieldConfig
                             {
                                 Name = "PageSize",
                                 Caption="每页行数",
                                 CsType = "int"
                             },
-                            new PropertyConfig
+                            new FieldConfig
                             {
                                 Name = "Order",
                                 Caption="排序字段",
                                 CsType = "string",
                                 CanEmpty = true
                             },
-                            new PropertyConfig
+                            new FieldConfig
                             {
                                 Name = "Desc",
                                 Caption="是否反序排列",

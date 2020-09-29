@@ -26,7 +26,7 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// <summary>
         ///     生成实体代码
         /// </summary>
-        protected override void CreateBaCode(string path)
+        protected override void CreateDesignerCode(string path)
         {
 
             string code = $@"using System;
@@ -40,18 +40,18 @@ namespace {NameSpace}.WebApi.EntityApi
     /// <summary>
     /// 身份验证服务API
     /// </summary>
-    public class {Entity.Name}ApiController : ApiController
+    public class {Model.Name}ApiController : ApiController
     {{
         /// <summary>
         ///     新增
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <returns>如果为真并返回结果数据</returns>
-        [Route(""entity/{Entity.Name}/AddNew"")]
+        [Route(""entity/{Model.Name}/AddNew"")]
         [ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Anymouse)]
-        public <ApiResultEx<{Entity.Name}>> AddNew([FromBody]{Entity.Name} data)
+        public <ApiResultEx<{Model.Name}>> AddNew([FromBody]{Model.Name} data)
         {{
-            var lg = new {Entity.Name}ApiLogical() as I{Entity.Name}Api;
+            var lg = new {Model.Name}ApiLogical() as I{Model.Name}Api;
             var result = lg.AddNew(data);
             return Request.ToResponse(result);
         }}
@@ -61,11 +61,11 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <returns>如果为真并返回结果数据</returns>
-        [Route(""entity/{Entity.Name}/Update"")]
+        [Route(""entity/{Model.Name}/Update"")]
         [ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Anymouse)]
-        public <ApiResultEx<{Entity.Name}>> Update([FromBody]{Entity.Name} data)
+        public <ApiResultEx<{Model.Name}>> Update([FromBody]{Model.Name} data)
         {{
-            var lg = new {Entity.Name}ApiLogical() as I{Entity.Name}Api;
+            var lg = new {Model.Name}ApiLogical() as I{Model.Name}Api;
             var result = lg.Update(data);
             return Request.ToResponse(result);
         }}
@@ -75,11 +75,11 @@ namespace {NameSpace}.WebApi.EntityApi
         /// </summary>
         /// <param name=""dataKey"">数据主键</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        [Route(""entity/{Entity.Name}/Delete"")]
+        [Route(""entity/{Model.Name}/Delete"")]
         [ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Anymouse)]
         public  Delete([FromBody]Argument<int> dataKey)
         {{
-            var lg = new {Entity.Name}ApiLogical() as I{Entity.Name}Api;
+            var lg = new {Model.Name}ApiLogical() as I{Model.Name}Api;
             var result = lg.Delete(dataKey);
             return Request.ToResponse(result);
         }}
@@ -87,11 +87,11 @@ namespace {NameSpace}.WebApi.EntityApi
         /// <summary>
         ///     分页
         /// </summary>
-        [Route(""entity/{Entity.Name}/Query"")]
+        [Route(""entity/{Model.Name}/Query"")]
         [ApiAccessOptionFilter(ApiAccessOption.Internal | ApiAccessOption.Public | ApiAccessOption.Anymouse)]
-        public <ApiResultEx<ApiPageData<{Entity.Name}>>> Query([FromBody]PageArgument arg)
+        public <ApiResultEx<ApiPageData<{Model.Name}>>> Query([FromBody]PageArgument arg)
         {{
-            var lg = new {Entity.Name}ApiLogical() as I{Entity.Name}Api;
+            var lg = new {Model.Name}ApiLogical() as I{Model.Name}Api;
             var result = lg.Query(arg);
             return Request.ToResponse(result);
         }}
@@ -99,7 +99,7 @@ namespace {NameSpace}.WebApi.EntityApi
     }}
 }}
 ";
-            var file = ConfigPath(Entity, FileSaveConfigName, path, "Controllers", $"{Entity.Name}Controller.cs");
+            var file = ConfigPath(Model, FileSaveConfigName, path, "Controllers", $"{Model.Name}Controller.cs");
             SaveCode(file, code);
         }
 
@@ -107,7 +107,7 @@ namespace {NameSpace}.WebApi.EntityApi
         /// <summary>
         ///     生成实体代码
         /// </summary>
-        protected override void CreateExCode(string path)
+        protected override void CreateCustomCode(string path)
         {
             if (Project.ApiItems.Count == 0)
                 return;

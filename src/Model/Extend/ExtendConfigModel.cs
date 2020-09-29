@@ -12,7 +12,7 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     public class ExtendConfigModel : DesignModelBase
     {
-        public void DeleteEnum(ConfigTreeItem<PropertyConfig> p)
+        public void DeleteEnum(ConfigTreeItem<FieldConfig> p)
         {
             if (p.Model.EnumConfig != null)
             {

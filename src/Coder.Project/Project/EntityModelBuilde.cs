@@ -29,8 +29,8 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
             {
                 Project = project
             };
-            db.CreateBaseCode(dbPath);
-            db.CreateExtendCode(dbPath);
+            db.WriteDesignerCode(dbPath);
+            db.WriteCustomCode(dbPath);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
         /// </summary>
         /// <param name="project"></param>
         /// <param name="schema"></param>
-        public override void CreateEntityCode(ProjectConfig project, EntityConfig schema)
+        public override void CreateEntityCode(ProjectConfig project, ModelConfig schema)
         {
             if (schema.NoDataBase)
                 return;

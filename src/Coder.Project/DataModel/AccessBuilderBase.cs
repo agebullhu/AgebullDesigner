@@ -22,22 +22,22 @@ namespace Agebull.EntityModel.RobotCoder
 
         protected string TableObject()
         {
-            var name = Entity.Name.ToPluralism();
+            var name = Model.Name.ToPluralism();
             return $@"
 
         /// <summary>
-        /// {Entity.Description}数据访问对象
+        /// {Model.Description}数据访问对象
         /// </summary>
-        private {Entity.Name}DataAccess _{name.ToLWord()};
+        private {Model.Name}DataAccess _{name.ToLWord()};
 
         /// <summary>
-        /// {Entity.Description}数据访问对象
+        /// {Model.Description}数据访问对象
         /// </summary>
-        {(Entity.IsInternal ? "internal" : "public")} {Entity.Name}DataAccess {name}
+        {(Model.IsInternal ? "internal" : "public")} {Model.Name}DataAccess {name}
         {{
             get
             {{
-                return this._{name.ToLWord()} ?? ( this._{name.ToLWord()} = new {Entity.Name}DataAccess{{ DataBase = this}});
+                return this._{name.ToLWord()} ?? ( this._{name.ToLWord()} = new {Model.Name}DataAccess{{ DataBase = this}});
             }}
         }}";
         }
@@ -51,9 +51,9 @@ namespace Agebull.EntityModel.RobotCoder
             return $@"
 
         /// <summary>
-        /// {Entity.Caption}({Entity.ReadTableName}):{Entity.Caption}
+        /// {Model.Caption}({Model.ReadTableName}):{Model.Caption}
         /// </summary>
-        public const int Table_{Entity.Name} = 0x{Entity.Index:x};";
+        public const int Table_{Model.Name} = 0x{Model.Index:x};";
         }
 
         protected string TableSql()
@@ -61,20 +61,20 @@ namespace Agebull.EntityModel.RobotCoder
             return $@"
 
         /// <summary>
-        /// {Entity.Description}的结构语句
+        /// {Model.Description}的结构语句
         /// </summary>
-        private TableSql _{Entity.Name}Sql = new TableSql
+        private TableSql _{Model.Name}Sql = new TableSql
         {{
-            TableName = ""{Entity.ReadTableName}"",
-            PimaryKey = ""{Entity.PrimaryColumn.Name}""
+            TableName = ""{Model.ReadTableName}"",
+            PimaryKey = ""{Model.PrimaryColumn.Name}""
         }};";
         }
 
-        protected PropertyConfig[] dbFields;
+        protected FieldConfig[] dbFields;
         /// <summary>
         ///     公开的数据库字段
         /// </summary>
-        protected PropertyConfig[] PublishDbFields => dbFields ??= Entity.DbFields.Where(p => !p.DbInnerField && !string.Equals(p.DbType, "EMPTY", StringComparison.OrdinalIgnoreCase)).ToArray();
+        protected FieldConfig[] PublishDbFields => dbFields ??= Model.DbFields.Where(p => !p.DbInnerField && !string.Equals(p.DbType, "EMPTY", StringComparison.OrdinalIgnoreCase)).ToArray();
 
         protected string FieldCode()
         {
@@ -118,7 +118,7 @@ namespace Agebull.EntityModel.RobotCoder
         {
             var sql = new StringBuilder();
             var isFirst = true;
-            foreach (var field in Entity.DbFields)
+            foreach (var field in Model.DbFields)
             {
                 if (isFirst)
                 {
@@ -137,7 +137,7 @@ namespace Agebull.EntityModel.RobotCoder
         {
             var sql = new StringBuilder();
             var names = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            FieldMap(Entity, names);
+            FieldMap(Model, names);
             var isFirst = true;
             foreach (var field in names)
             {
@@ -156,7 +156,7 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
 
-        protected void FieldMap(EntityConfig entity, Dictionary<string, string> names)
+        protected void FieldMap(ModelConfig entity, Dictionary<string, string> names)
         {
             if (entity == null)
             {
@@ -164,7 +164,7 @@ namespace Agebull.EntityModel.RobotCoder
             }
             if (!string.IsNullOrWhiteSpace(entity.ModelBase))
             {
-                FieldMap(Project.Entities.FirstOrDefault(p => p.Name == entity.ModelBase), names);
+                FieldMap(Project.Models.FirstOrDefault(p => p.Name == entity.ModelBase), names);
             }
             foreach (var field in entity.DbFields)
             {
