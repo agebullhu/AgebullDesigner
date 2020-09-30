@@ -35,6 +35,12 @@
                     <DataTrigger Binding="{Binding Path=Option.Type}" Value="FieldConfig">
                         <Setter Property="ContentTemplate" Value="{DynamicResource FieldConfigTemplate}" />
                     </DataTrigger>
+                    <DataTrigger Binding="{Binding Path=Option.Type}" Value="ModelConfig">
+                        <Setter Property="ContentTemplate" Value="{DynamicResource ModelConfigTemplate}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Path=Option.Type}" Value="PropertyConfig">
+                        <Setter Property="ContentTemplate" Value="{DynamicResource PropertyConfigTemplate}" />
+                    </DataTrigger>
                     <DataTrigger Binding="{Binding Path=Option.Type}" Value="SolutionConfig">
                         <Setter Property="ContentTemplate" Value="{DynamicResource SolutionTemplate}" />
                     </DataTrigger>

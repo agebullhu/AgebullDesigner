@@ -1148,6 +1148,7 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(JsonName));
             }
         }
+
         /// <summary>
         /// 示例内容
         /// </summary>

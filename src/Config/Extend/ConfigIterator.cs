@@ -305,6 +305,12 @@ namespace Agebull.EntityModel.Config
                 Foreach(action, entity);
             }
 
+            foreach (var e in project.Models)
+            {
+                level = lv + 1;
+                Foreach(action, e);
+            }
+
             foreach (var e in project.Enums)
             {
                 level = lv + 1;

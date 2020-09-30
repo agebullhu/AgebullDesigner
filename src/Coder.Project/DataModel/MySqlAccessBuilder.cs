@@ -36,10 +36,34 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess;
     /// </summary>
     public sealed class {Model.Name}DataOperator : IDataOperator<{Model.EntityName}> , IEntityOperator<{Model.EntityName}>
     {{
+        #region 基本信息
+
         /// <summary>
         /// 驱动提供者信息
         /// </summary>
         public DataAccessProvider<{Model.EntityName}> Provider {{ get; set; }}
+
+        static EntitySturct _struct;
+
+        /// <summary>
+        /// 实体结构
+        /// </summary>
+        public static readonly EntitySturct Struct => _struct ??= new EntitySturct
+        {{
+            EntityName = EntityName,
+            Caption    = Caption,
+            Description= Description,
+            UpdateByMidified = {Model.UpdateByModified}
+            IsQuery = {Model.IsQuery}
+            PrimaryKey = PrimaryKey,
+            IsIdentity = {(Model.Entity.PrimaryColumn?.IsIdentity ?? false ? "true" : "false")},
+            ReadTableName = TableName,
+            WriteTableName = TableName,
+            Properties = new List<EntityProperty>
+            {{
+                {EntityStruct()}
+            }}
+        }};
 
         /// <summary>
         /// 配置信息
@@ -48,13 +72,22 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess;
         {{
             NoInjection = true,
             UpdateByMidified = false,
+            ReadTableName = FromSqlCode,
+            WriteTableName = ""{Model.Entity.SaveTableName}"",
             LoadFields = LoadFields,
             UpdateFields = UpdateFields,
             InsertSqlCode = InsertSqlCode,
-            DataSturct = {Project.DataBaseObjectName}.{Model.Name}_Struct_.Struct
+            DataSturct = Struct
         }};
 
-        #region 基本SQL语句
+        #endregion
+
+        #region SQL
+
+        /// <summary>
+        /// 读取的字段
+        /// </summary>
+        public const string FromSqlCode = ""{ReadTableName()}"";
 
         /// <summary>
         /// 读取的字段
@@ -73,18 +106,39 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess;
 
         #endregion
 
-        #region 操作代码
+        #region IDataOperator
 {GetDbTypeCode()}
 
 {LoadEntityCode()}
 
 {CreateFullSqlParameter()}
 
+        #endregion
+
+        #region IEntityOperator
 {GetSetValues()}
         #endregion
     }}
 }}";
         }
+
+        string ReadTableName()
+        {
+            var entities = Model.LastProperties.Select(p => p.Entity).Distinct().Where(p => p != Model.Entity).ToArray();
+            if (entities.Length <= 1)
+                return Model.Entity.ReadTableName;
+            var primary = Model.Entity.PrimaryColumn;
+            var table = Model.Entity.ReadTableName;
+            var code = new StringBuilder();
+            code.Append(Model.Entity.ReadTableName);
+            foreach(var en in entities)
+            {
+                var field = en.Properties.FirstOrDefault(p=>p.LinkField == primary.Name && p.LinkTable== Model.Entity.Name) ?? en.PrimaryColumn;
+                code.Append($"\nLEFT JOIN `{en.ReadTableName}` ON `{table}`.`{primary.DbFieldName}` = `{Model.Entity.ReadTableName}`.`{field.DbFieldName}`");
+            }
+            return code.ToString();
+        }
+
 
         /// <summary>
         ///     生成扩展代码
@@ -97,6 +151,8 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess;
 
         private string InsertSql()
         {
+            if (Model.IsQuery)
+                return null;
             var sql = new StringBuilder();
             var columns = PublishDbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
             sql.Append($@"
@@ -141,6 +197,8 @@ VALUES
 
         private string UpdateFields()
         {
+            if (Model.IsQuery)
+                return null;
             var sql = new StringBuilder();
             IEnumerable<FieldConfig> columns = PublishDbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
             var isFirst = true;
@@ -254,6 +312,63 @@ VALUES
             return code.ToString();
         }
 
+
+        #region 数据结构
+
+
+        private string EntityStruct()
+        {
+            var properties = new List<string>();
+            var idx = 0;
+            EntityStruct(Model, properties,ref idx);
+            return string.Join(@",
+                ", properties);
+        }
+
+        private void EntityStruct(ModelConfig model, List<string> properties, ref int idx)
+        {
+            if (!string.IsNullOrWhiteSpace(Model.ModelBase))
+            {
+                var modelBase = GlobalConfig.GetModel(p => p.Name == Model.ModelBase);
+                EntityStruct(modelBase, properties, ref idx);
+            }
+            var primary = model.Properties.FirstOrDefault(p=>p.Field.Entity == model.Entity && p.Field.IsPrimaryKey);
+
+            EntityStruct(properties, ref idx, primary);
+
+            foreach (var property in model.Properties.Where(p => p.Field != model.Entity.PrimaryColumn).OrderBy(p => p.Index))
+            {
+                EntityStruct( properties, ref idx, property);
+            }
+        }
+
+        private void EntityStruct(List<string> properties, ref int idx, PropertyConfig property)
+        {
+            if (property == null)
+                return;
+
+            var str = new StringBuilder("new EntityProperty(");
+            FieldConfig friend;
+            var field = property.Field;
+            if (field.IsInterfaceField || field.IsLinkField)
+            {
+                str.Append($"DataInterface.{field.LinkTable}.{field.LinkField}");
+                friend = GlobalConfig.GetEntity(field.LinkTable).Properties.FirstOrDefault(p => p.PropertyName == field.LinkField);
+            }
+            else if (field.IsLinkField)
+            {
+                str.Append($"{field.LinkTable}.{field.LinkField}");
+                friend = GlobalConfig.GetEntity(field.LinkTable).Properties.FirstOrDefault(p => p.PropertyName == field.LinkField);
+            }
+            else
+            {
+                str.Append(property.Name);
+                friend = field;
+            }
+            str.Append($",{++idx},\"{field.Name}\",\"{field.DbFieldName}\")");
+            properties.Add(str.ToString());
+        }
+        #endregion
 
         #region 名称值取置
 

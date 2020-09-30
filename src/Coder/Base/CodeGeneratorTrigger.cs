@@ -20,6 +20,7 @@ namespace Agebull.EntityModel.Designer
         {
             config = (ConfigBase)obj;
             config.Foreach<EntityConfig>(CreateLast);
+            config.Foreach<ModelConfig>(CreateLast);
         }
 
         /// <summary>
@@ -35,6 +36,23 @@ namespace Agebull.EntityModel.Designer
                     continue;
                 pro.Option.Index = ++idx;
                 entity.LastProperties.Add(pro);
+            }
+            InterfaceHelper.CheckInterface(entity, entity.LastProperties);
+        }
+
+        /// <summary>
+        /// 开始代码生成
+        /// </summary>
+        public void CreateLast(ModelConfig entity)
+        {
+            entity.LastProperties = new List<FieldConfig>();
+            int idx = 0;
+            foreach (var pro in entity.Properties.OrderBy(p => p.Index))
+            {
+                if (pro.IsDelete || pro.IsDiscard)
+                    continue;
+                pro.Option.Index = ++idx;
+                entity.LastProperties.Add(pro.Field);
             }
             InterfaceHelper.CheckInterface(entity, entity.LastProperties);
         }

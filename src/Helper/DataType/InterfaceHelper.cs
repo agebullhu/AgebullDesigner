@@ -41,5 +41,24 @@ namespace Agebull.EntityModel.RobotCoder
                 }
             }
         }
+
+        public static void CheckInterface(ModelConfig entity, IList<FieldConfig> properties)
+        {
+            if (string.IsNullOrWhiteSpace(entity.Interfaces))
+                return;
+            var interfaces = entity.Interfaces.Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var inf in interfaces)
+            {
+                var ie = GlobalConfig.GetEntity(inf);
+                if (ie == null)
+                    continue;
+                foreach (var iField in ie.Properties.ToArray())
+                {
+                    if (!entity.Properties.Any(p => p.Field.PropertyName == iField.PropertyName))
+                        properties.Add(iField);
+                }
+            }
+        }
+
     }
 }

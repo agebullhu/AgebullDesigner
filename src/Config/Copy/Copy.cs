@@ -210,12 +210,10 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public void CopyFrom(EntityConfig cfg)
         {
-            base.CopyFrom(cfg);
-
+            Entity = cfg;
             DenyScope = cfg.DenyScope;//阻止编辑
             MaxIdentity = cfg.MaxIdentity;//最大字段标识号
             RedisKey = cfg.RedisKey;//Redis唯一键模板
-            NoStandardDataType = cfg.NoStandardDataType;//非标准数据类型
             EntityName = cfg.EntityName;//实体名称
             ReferenceType = cfg.ReferenceType;//参考类型(C#)
             ModelInclude = cfg.ModelInclude;//模型
@@ -251,6 +249,8 @@ namespace Agebull.EntityModel.Config
                     Field = field
                 });
             }
+
+            base.CopyFrom(cfg);
         }
 
 
@@ -273,7 +273,6 @@ namespace Agebull.EntityModel.Config
             DenyScope = cfg.DenyScope;//阻止编辑
             MaxIdentity = cfg.MaxIdentity;//最大字段标识号
             RedisKey = cfg.RedisKey;//Redis唯一键模板
-            NoStandardDataType = cfg.NoStandardDataType;//非标准数据类型
             EntityName = cfg.EntityName;//实体名称
             ReferenceType = cfg.ReferenceType;//参考类型(C#)
             ModelInclude = cfg.ModelInclude;//模型

@@ -23,6 +23,8 @@
             <DataGridTextColumn Binding="{Binding Field.Entity.Name,Mode=OneWay}" Header="实体" />
             <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
             <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />
+            <DataGridTextColumn Binding="{Binding DbFieldName,Mode=TwoWay}" Header="字段" />
+            <DataGridTextColumn Binding="{Binding JsonName,Mode=TwoWay}" Header="Json" />
             <DataGridCheckBoxColumn Binding="{Binding Field.IsPrimaryKey,Mode=OneWay}" Header="主键" />
             <DataGridCheckBoxColumn Binding="{Binding Field.IsIdentity,Mode=OneWay}" Header="自增" />
             <DataGridCheckBoxColumn Binding="{Binding Field.IsCaption,Mode=OneWay}" Header="标题" />

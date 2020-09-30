@@ -96,6 +96,7 @@ namespace Agebull.EntityModel.Designer
                         continue;
                     _solution.Add(project);
                     LoadEntity(project, path);
+                    LoadModel(project, path);
                     LoadEnums(project, path);
                     LoadApi(project, path);
                 }
@@ -134,6 +135,29 @@ namespace Agebull.EntityModel.Designer
                 Description = _solution.Description,
             });
         }
+        private void LoadModel(ProjectConfig project, string directory)
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            string path = Path.Combine(directory, "Model");
+            var files = !Directory.Exists(path)
+                ? IOHelper.GetAllFiles(directory, "ent")
+                : IOHelper.GetAllFiles(path, "*.*");
+            foreach (var entFile in files)
+            {
+                var model = DeSerializer<ModelConfig>(entFile);
+                if (model == null || model.IsDelete)
+                    continue;
+                model.Entity = GlobalConfig.GetEntity(p=>p.Key == model._entityKey);
+                foreach (var field in model.Properties)
+                {
+                    field.Model = model;
+                    GlobalConfig.AddConfig(field);
+                }
+                GlobalConfig.AddConfig(model);
+                project.Add(model);
+            }
+        }
+
         private void LoadEntity(ProjectConfig project, string directory)
         {
             // ReSharper disable once AssignNullToNotNullAttribute

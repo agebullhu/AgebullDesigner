@@ -104,10 +104,16 @@ namespace {Project.NameSpace}.DataAccess
         public static DataAccess<TEntity> CreateDataAccess<TEntity>(this IServiceProvider serviceProvider)
             where TEntity : class, new()
         {{
+            var option = GetOption<TEntity>();
+            if (option == null)
+                throw new NotSupportedException($""{{typeof(TEntity).FullName}}
+            没有对应配置项，请通过设计器生成"");
+            if (option.IsQuery)
+                throw new NotSupportedException($""{{typeof(TEntity).FullName}}是一个查询，请使用CreateDataQuery方法"");
             var provider = new DataAccessProvider<TEntity>
             {{
                 ServiceProvider = serviceProvider,
-                Option = GetOption<TEntity>(),
+                Option = option,
                 SqlBuilder = new MySqlSqlBuilder<TEntity>(),
                 Injection = serviceProvider.GetService<IOperatorInjection<TEntity>>(),
                 CreateDataBase = () => serviceProvider.GetService<{Project.DataBaseObjectName}>(),
@@ -183,16 +189,16 @@ namespace {Project.NameSpace}.DataAccess
         {
             StringBuilder code = new StringBuilder();
 
-            foreach(var entity in Project.Entities)
+            foreach (var entity in Project.Entities)
             {
                 code.Append(EntityStruct(entity));
             }
             return code.ToString();
         }
 
-            private string EntityStruct(EntityConfig entity)
-            {
-                bool isFirst = true;
+        private string EntityStruct(EntityConfig entity)
+        {
+            bool isFirst = true;
             int idx = 0;
             var properties = new List<string>();
             var codeStruct = new StringBuilder();
@@ -277,18 +283,18 @@ namespace {Project.NameSpace}.DataAccess
 
             if (table.PrimaryColumn != null)
             {
-                EntityStruct(codeStruct, properties,ref idx, table.PrimaryColumn);
+                EntityStruct(codeStruct, properties, ref idx, table.PrimaryColumn);
             }
             foreach (var property in table.Properties.Where(p => p != table.PrimaryColumn).OrderBy(p => p.Index))
             {
-                EntityStruct(codeStruct, properties,ref idx, property);
+                EntityStruct(codeStruct, properties, ref idx, property);
             }
         }
 
-        private void EntityStruct(StringBuilder codeStruct, List<string> properties,ref int idx, FieldConfig property)
+        private void EntityStruct(StringBuilder codeStruct, List<string> properties, ref int idx, FieldConfig property)
         {
             var str = new StringBuilder("new EntityProperty(");
-            FieldConfig friend = property;
+            FieldConfig friend ;
             if (property.IsInterfaceField || property.IsLinkField)
             {
                 str.Append($"DataInterface.{property.LinkTable}.{property.LinkField}");
@@ -296,13 +302,14 @@ namespace {Project.NameSpace}.DataAccess
             }
             else if (property.IsLinkField)
             {
-                properties.Add($"{property.LinkTable}.{property.LinkField}");
-                friend = GlobalConfig.GetEntity(property.LinkTable).Properties.FirstOrDefault(p=>p.PropertyName == property.LinkField) ;
+                str.Append($"{property.LinkTable}.{property.LinkField}");
+                friend = GlobalConfig.GetEntity(property.LinkTable).Properties.FirstOrDefault(p => p.PropertyName == property.LinkField);
             }
             else
             {
-                str.Append(property.Name);
                 PropertyStruct(codeStruct, property);
+                str.Append(property.Name);
+                friend = property;
             }
             str.Append($",{++idx}");
             if (property.PropertyName != friend.PropertyName || property.DbFieldName != friend.DbFieldName)

@@ -200,7 +200,7 @@ namespace Agebull.EntityModel.Designer
             else
             {
                 //É¾³ý×Ö¶Î´¦Àí
-                foreach (var property in model.Properties.Where(p => !p.IsDelete).ToArray())
+                foreach (var property in model.Properties.Where(p => p.IsDelete).ToArray())
                 {
                     model.Remove(property);
                 }

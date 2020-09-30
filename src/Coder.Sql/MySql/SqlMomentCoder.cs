@@ -539,8 +539,7 @@ ALTER TABLE `{entity.SaveTable}`
                 {
                     sql.Append(",");
                 }
-                sql.AppendFormat(@"
-    `{0}`", field.DbFieldName, field.Name);
+                sql.AppendLine($"`{field.Entity.ReadTableName}`.`{field.DbFieldName}` AS `{field.Name}`");
             }
             return sql.ToString();
         }

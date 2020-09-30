@@ -23,13 +23,89 @@ namespace Agebull.EntityModel.Config
     [DataContract, JsonObject(MemberSerialization.OptIn)]
     public partial class ModelConfig : ProjectChildConfigBase
     {
+
         #region 系统
+
+        /// <summary>
+        /// 实体名称
+        /// </summary>
+        [DataMember, JsonProperty("entityKey", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        public Guid _entityKey;
+
+        /// <summary>
+        /// 实体名称
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        internal EntityConfig _entity;
+
+        /// <summary>
+        /// 实体名称
+        /// </summary>
+        /// <remark>
+        /// 实体名称
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据模型"), DisplayName(@"实体名称"), Description("实体名称")]
+        public EntityConfig Entity
+        {
+            get => _entity ??= GlobalConfig.GetEntity(p => p.Key == _entityKey);
+            set
+            {
+                if (value == _entity)
+                    return;
+                BeforePropertyChanged(nameof(Entity), _entity, value);
+                _entity = value;
+                _entityKey = value.Key;
+                OnPropertyChanged(nameof(Entity));
+            }
+        }
+
+        /// <summary>
+        ///     名称
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"名称")]
+        public override string Name
+        {
+            get => _name ?? Entity?.Name;
+            set => base.Name = value;
+        }
+
+        /// <summary>
+        ///     标题
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"标题")]
+        public override string Caption
+        {
+            get => _caption ?? Entity?.Caption;
+            set => base.Caption = value;
+        }
+
+        /// <summary>
+        ///     说明
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"说明")]
+        public override string Description
+        {
+            get => _description ?? Entity?.Description;
+            set => base.Description = value;
+        }
+
+        /// <summary>
+        /// 参见
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"参见")]
+        public override string Remark
+        {
+            get => _remark ?? Entity?.Remark;
+            set => base.Remark = value;
+        }
+
 
         /// <summary>
         /// 阻止编辑
         /// </summary>
         [DataMember, JsonProperty("DenyScope", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal AccessScopeType _denyScope;
+        internal AccessScopeType? _denyScope;
 
         /// <summary>
         /// 阻止编辑
@@ -41,7 +117,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"系统"), DisplayName(@"阻止编辑"), Description("阻止使用的范围")]
         public AccessScopeType DenyScope
         {
-            get => _denyScope;
+            get => _denyScope == null ? Entity.DenyScope : _denyScope.Value;
             set
             {
                 if (_denyScope == value)
@@ -100,16 +176,14 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"主键字段"), Description("主键字段")]
-        public FieldConfig PrimaryColumn => WorkContext.InCoderGenerating
-            ? (Properties.FirstOrDefault(p => p.Field.IsPrimaryKey) ?? Properties.FirstOrDefault())?.Field
-            : Properties.FirstOrDefault(p => p.Field.IsPrimaryKey)?.Field;
+        public FieldConfig PrimaryColumn => Entity.PrimaryColumn;
 
         /// <summary>
         /// 是否有主键
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"是否有主键"), Description("是否有主键")]
-        public bool HasePrimaryKey => Properties.Any(p => p.Field.IsPrimaryKey);
+        public bool HasePrimaryKey => Entity.HasePrimaryKey;
 
         /// <summary>
         /// 主键字段
@@ -137,7 +211,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据标识"), DisplayName(@"Redis唯一键模板"), Description("保存在Redis中使用的键模板")]
         public string RedisKey
         {
-            get => _redisKey;
+            get => _redisKey ?? Entity.RedisKey;
             set
             {
                 if (_redisKey == value)
@@ -150,67 +224,6 @@ namespace Agebull.EntityModel.Config
         #endregion
 
         #region 数据模型
-
-        /// <summary>
-        /// 实体名称
-        /// </summary>
-        [DataMember, JsonProperty("entityKey", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal Guid _entityKey;
-
-        /// <summary>
-        /// 实体名称
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        internal EntityConfig _entity;
-
-        /// <summary>
-        /// 实体名称
-        /// </summary>
-        /// <remark>
-        /// 实体名称
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据模型"), DisplayName(@"实体名称"), Description("实体名称")]
-        public EntityConfig Entity
-        {
-            get => _entity ??= GlobalConfig.GetEntity(p => p.Key == _entityKey);
-            set
-            {
-                if (value == _entity)
-                    return;
-                BeforePropertyChanged(nameof(Entity), _entity, value);
-                _entity = value;
-                _entityKey = value.Key;
-                OnPropertyChanged(nameof(Entity));
-            }
-        }
-
-        /// <summary>
-        /// 非标准数据类型
-        /// </summary>
-        [DataMember, JsonProperty("noStandardDataType", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _noStandardDataType;
-
-        /// <summary>
-        /// 非标准数据类型
-        /// </summary>
-        /// <remark>
-        /// 非标准数据类型
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据模型"), DisplayName(@"非标准数据类型"), Description("非标准数据类型")]
-        public bool NoStandardDataType
-        {
-            get => _noStandardDataType;
-            set
-            {
-                if (_noStandardDataType == value)
-                    return;
-                BeforePropertyChanged(nameof(NoStandardDataType), _noStandardDataType, value);
-                _noStandardDataType = value;
-                OnPropertyChanged(nameof(NoStandardDataType));
-            }
-        }
 
         /// <summary>
         /// 实体名称
@@ -228,7 +241,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据模型"), DisplayName(@"实体名称"), Description("实体名称")]
         public string EntityName
         {
-            get => WorkContext.InCoderGenerating ? (string.IsNullOrWhiteSpace(_entityName) ? $"{Name}Data" : _entityName) : _entityName;
+            get => _entityName ?? Entity.EntityName;
             set
             {
                 if (value == Name)
@@ -307,7 +320,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据模型"), DisplayName(@"模型"), Description("模型")]
         public string ModelInclude
         {
-            get => _modelInclude;
+            get => _modelInclude ?? Entity.ModelInclude;
             set
             {
                 if (_modelInclude == value)
@@ -334,7 +347,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据模型"), DisplayName(@"基类"), Description("模型")]
         public string ModelBase
         {
-            get => _modelBase;
+            get => _modelBase ?? Entity.ModelBase;
             set
             {
                 if (_modelBase == value)
@@ -344,34 +357,6 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(ModelBase));
             }
         }
-
-        /// <summary>
-        /// 接口是否为显示实现
-        /// </summary>
-        [DataMember, JsonProperty("_interfaceInner", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _interfaceInner;
-
-        /// <summary>
-        /// 接口是否为显示实现
-        /// </summary>
-        /// <remark>
-        /// 接口是否为显示实现
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据模型"), DisplayName(@"接口是否为显示实现"), Description("接口是否为显示实现")]
-        public bool InterfaceInner
-        {
-            get => _interfaceInner;
-            set
-            {
-                if (_interfaceInner == value)
-                    return;
-                BeforePropertyChanged(nameof(InterfaceInner), _interfaceInner, value);
-                _interfaceInner = value;
-                OnPropertyChanged(nameof(InterfaceInner));
-            }
-        }
-
 
         /// <summary>
         /// 数据版本
@@ -577,6 +562,34 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
+        /// 接口是否为显示实现
+        /// </summary>
+        [DataMember, JsonProperty("_interfaceInner", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _interfaceInner;
+
+        /// <summary>
+        /// 接口是否为显示实现
+        /// </summary>
+        /// <remark>
+        /// 接口是否为显示实现
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据模型"), DisplayName(@"接口是否为显示实现"), Description("接口是否为显示实现")]
+        public bool InterfaceInner
+        {
+            get => _interfaceInner;
+            set
+            {
+                if (_interfaceInner == value)
+                    return;
+                BeforePropertyChanged(nameof(InterfaceInner), _interfaceInner, value);
+                _interfaceInner = value;
+                OnPropertyChanged(nameof(InterfaceInner));
+            }
+        }
+
+
+        /// <summary>
         /// 生成校验代码
         /// </summary>
         [IgnoreDataMember, JsonProperty("haseValidateCode")]
@@ -680,9 +693,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"存储表名(设计录入)"), Description(ReadTableName_Description)]
         public string ReadTableName
         {
-            get => Parent != null && Parent.NoRelation || string.IsNullOrWhiteSpace(_readTableName)
-                ? SaveTableName
-                : _readTableName;
+            get => _readTableName ?? Entity.ReadTableName;
             set
             {
                 if (SaveTableName == value)
@@ -713,7 +724,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"存储表名"), Description("存储表名")]
         public string SaveTableName
         {
-            get => WorkContext.InCoderGenerating ? _saveTableName ?? Name : _saveTableName;
+            get => _saveTableName ?? Entity.SaveTableName;
             set
             {
                 if (Name == value)
@@ -1078,7 +1089,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"C++"), DisplayName(@"C++名称"), Description("C++字段名称")]
         public string CppName
         {
-            get => WorkContext.InCoderGenerating ? _cppName ?? Name : _cppName;
+            get => _cppName ?? Entity.CppName;
             set
             {
                 if (Name == value)
