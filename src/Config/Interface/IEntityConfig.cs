@@ -39,7 +39,7 @@ namespace Agebull.EntityModel.Config
         {
             get;
         }
-        
+
 
         /// <summary>
         /// 最大字段标识号
@@ -94,6 +94,7 @@ namespace Agebull.EntityModel.Config
             get;
             set;
         }
+
         /// <summary>
         /// 是否查询
         /// </summary>
@@ -222,6 +223,7 @@ namespace Agebull.EntityModel.Config
         #endregion
 
         #region 子级
+        IEnumerable<IFieldConfig> Properties { get; }
 
         /// <summary>
         /// 最终有效的属性

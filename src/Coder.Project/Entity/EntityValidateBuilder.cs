@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class EntityValidateBuilder<TModel> : EntityBuilderBase<TModel>
+    public sealed class EntityValidateBuilder<TModel> : ModelBuilderBase<TModel>
         where TModel : ProjectChildConfigBase, IEntityConfig
     {
         /// <summary>

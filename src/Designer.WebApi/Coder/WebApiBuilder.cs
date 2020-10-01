@@ -7,26 +7,32 @@ namespace Agebull.EntityModel.Designer.WebApi
 {
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal sealed class WebApiBuilder : ProjectBuilder, IAutoRegister
+    internal sealed class WebApiBuilder : IAutoRegister
+    {
+        /// <summary>
+        /// 执行自动注册
+        /// </summary>
+        void IAutoRegister.AutoRegist()
+        {
+            NormalCodeModel.RegistBuilder<WebApiBuilder<EntityConfig>, EntityConfig>();
+            NormalCodeModel.RegistBuilder<WebApiBuilder<ModelConfig>, ModelConfig>();
+        }
+
+    }
+    public sealed class WebApiBuilder<TModelConfig> : ProjectBuilder<TModelConfig>
+            where TModelConfig : ProjectChildConfigBase, IEntityConfig
     {
 
         /// <summary>
         /// 名称
         /// </summary>
-        protected override string Name => "Web Api";
+        public override string Name => "Web Api";
 
         /// <summary>
         /// 标题
         /// </summary>
         public override string Caption => Name;
 
-        /// <summary>
-        /// 执行自动注册
-        /// </summary>
-        void IAutoRegister.AutoRegist()
-        {
-            RegistBuilder<WebApiBuilder>();
-        }
 
         /// <summary>
         /// 生成项目代码
@@ -37,7 +43,7 @@ namespace Agebull.EntityModel.Designer.WebApi
             Message = project.Caption;
             {
                 var path = project.GetApiPath("Contract");
-                var builder = new ApiInterfaceBuilder<ModelConfig>
+                var builder = new ApiInterfaceBuilder<TModelConfig>
                 {
                     Project = project
                 };
@@ -45,7 +51,7 @@ namespace Agebull.EntityModel.Designer.WebApi
             }
             {
                 var path = project.GetApiPath("Contract");
-                var builder = new ApiProxyBuilder<ModelConfig>
+                var builder = new ApiProxyBuilder<TModelConfig>
                 {
                     Project = project
                 };
@@ -53,7 +59,7 @@ namespace Agebull.EntityModel.Designer.WebApi
             }
             {
                 var path = project.GetApiPath("Logical");
-                var builder = new ApiControlerBuillder<ModelConfig>
+                var builder = new ApiControlerBuillder<TModelConfig>
                 {
                     Project = project
                 };
@@ -61,7 +67,7 @@ namespace Agebull.EntityModel.Designer.WebApi
             }
             {
                 var path = project.GetApiPath("Logical");
-                var builder = new ApiLogicalBuilder<ModelConfig>
+                var builder = new ApiLogicalBuilder<TModelConfig>
                 {
                     Project = project
                 };
@@ -69,7 +75,7 @@ namespace Agebull.EntityModel.Designer.WebApi
             }
             {
                 var path = GetDocumentPath(project);
-                var builder = new ApiMarkBuilder<ModelConfig>
+                var builder = new ApiMarkBuilder<TModelConfig>
                 {
                     Project = project
                 };
@@ -100,14 +106,14 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// </summary>
         /// <param name="project"></param>
         /// <param name="entity"></param>
-        public override void CreateEntityCode(ProjectConfig project, ModelConfig entity)
+        public override void CreateModelCode(ProjectConfig project, TModelConfig entity)
         {
             if (entity.ExtendConfigListBool["NoApi"])
                 return;
             Message = entity.Caption;
             {
                 var path = project.GetApiPath("Contract");
-                var builder = new EntityBuilder<ModelConfig>
+                var builder = new EntityBuilder<TModelConfig>
                 {
                     Project = project,
                     Model = entity

@@ -15,8 +15,8 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public string EditorName { get; set; }
 
-        NotificationList<CommandItemBase> _commands;
-        public NotificationList<CommandItemBase> Commands => _commands??=CreateCommands();
+
+        public NotificationList<CommandItemBase> Commands => CreateCommands();
 
         /// <summary>
         /// 生成命令对象
@@ -121,6 +121,8 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         protected virtual void OnContextPropertyChanged(string name)
         {
+            if (name == nameof(DesignContext.SelectTag))
+                RaisePropertyChanged(nameof(Commands));
         }
 
         #endregion

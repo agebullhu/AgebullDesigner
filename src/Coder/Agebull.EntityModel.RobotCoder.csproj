@@ -26,11 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    
-    
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Logical\Agebull.EntityModel.Designer.Logical.csproj" />
   </ItemGroup>
 

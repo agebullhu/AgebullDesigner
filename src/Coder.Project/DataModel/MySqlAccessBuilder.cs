@@ -21,6 +21,7 @@ namespace Agebull.EntityModel.RobotCoder
         {
             return $@"#region
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading.Tasks;
 using MySqlConnector;
@@ -30,12 +31,12 @@ using Agebull.EntityModel.Interfaces;
 {Project.UsingNameSpaces}
 
 #endregion
-namespace {SolutionConfig.Current.NameSpace}.DataAccess;
+namespace {SolutionConfig.Current.NameSpace}.DataAccess
 {{
     /// <summary>
     /// {Model.Description}
     /// </summary>
-    public sealed class {Model.Name}DataOperator : IDataOperator<{Model.EntityName}> , IEntityOperator<{Model.EntityName}>
+    public sealed class {Model.EntityName}DataOperator : IDataOperator<{Model.EntityName}> , IEntityOperator<{Model.EntityName}>
     {{
         #region 基本信息
 
@@ -44,23 +45,21 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess;
         /// </summary>
         public DataAccessProvider<{Model.EntityName}> Provider {{ get; set; }}
 
-        static EntitySturct _struct;
+        static EntityStruct _struct;
 
         /// <summary>
         /// 实体结构
         /// </summary>
-        public static readonly EntitySturct Struct => _struct ??= new EntitySturct
+        public static EntityStruct Struct => _struct ??= new EntityStruct
         {{
-            EntityName = EntityName,
-            Caption    = Caption,
-            Description= Description,
-            UpdateByMidified = {Model.UpdateByModified}
-            IsQuery = {Model.IsQuery}
-            PrimaryKey = PrimaryKey,
-            IsIdentity = {(Model.PrimaryColumn?.IsIdentity ?? false ? "true" : "false")},
-            ReadTableName = TableName,
-            WriteTableName = TableName,
-            Properties = new List<EntityProperty>
+            IsIdentity       = {(Model.PrimaryColumn?.IsIdentity ?? false ? "true" : "false")},
+            EntityName       = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.EntityName,
+            Caption          = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.Caption,
+            Description      = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.Description,
+            PrimaryKey       = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.PrimaryKey,
+            ReadTableName    = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.TableName,
+            WriteTableName   = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.TableName,
+            Properties       = new List<EntityProperty>
             {{
                 {EntityStruct()}
             }}
@@ -71,14 +70,15 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess;
         /// </summary>
         internal static DataAccessOption Option = new DataAccessOption
         {{
-            NoInjection = true,
-            UpdateByMidified = false,
-            ReadTableName = FromSqlCode,
-            WriteTableName = ""{Model.SaveTableName}"",
-            LoadFields = LoadFields,
-            UpdateFields = UpdateFields,
-            InsertSqlCode = InsertSqlCode,
-            DataSturct = Struct
+            NoInjection      = true,
+            IsQuery          = {(Model.IsQuery ? "true" : "false")},
+            UpdateByMidified = {(Model.UpdateByModified ? "true" : "false")},
+            ReadTableName    = FromSqlCode,
+            WriteTableName   = ""{Model.SaveTableName}"",
+            LoadFields       = LoadFields,
+            UpdateFields     = UpdateFields,
+            InsertSqlCode    = InsertSqlCode,
+            DataSturct       = Struct
         }};
 
         #endregion
@@ -88,7 +88,7 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess;
         /// <summary>
         /// 读取的字段
         /// </summary>
-        public const string FromSqlCode = ""{ReadTableName()}"";
+        public const string FromSqlCode = @""{ReadTableName()}"";
 
         /// <summary>
         /// 读取的字段
@@ -98,12 +98,12 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess;
         /// <summary>
         /// 更新的字段
         /// </summary>
-        public static string UpdateFields = $@""{UpdateFields()}"";
+        public static string UpdateFields = @""{UpdateFields()}"";
 
         /// <summary>
         /// 写入的Sql
         /// </summary>
-        public static string InsertSqlCode => $@""{InsertSql()}"";
+        public static string InsertSqlCode => @""{InsertSql()}"";
 
         #endregion
 
@@ -129,15 +129,15 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess;
             var table = Model.ReadTableName;
             var code = new StringBuilder();
             code.Append(table);
-            if(Model is ModelConfig model)
-            foreach (var releation in model.Releations.Where(p=>p.ModelType == ReleationModelType.ExtensionProperty))
-            {
-                var entity = GlobalConfig.GetEntity(releation.ForeignTable);
-                var property = entity.Properties.FirstOrDefault(p => p.Name == releation.ForeignKey);
-                code.AppendLine();
-                code.Append(releation.JoinType == EntityJoinType.Inner ? "INNER JOIN" : "LEFT JOIN");
-                code.Append($"`{entity.ReadTableName}` ON `{table}`.`{primary.DbFieldName}` = `{entity.ReadTableName}`.`{property.DbFieldName}` {releation.Condition}");
-            }
+            if (Model is ModelConfig model)
+                foreach (var releation in model.Releations.Where(p => p.ModelType == ReleationModelType.ExtensionProperty))
+                {
+                    var entity = GlobalConfig.GetEntity(releation.ForeignTable);
+                    var property = entity.Properties.FirstOrDefault(p => p.Name == releation.ForeignKey);
+                    code.AppendLine();
+                    code.Append(releation.JoinType == EntityJoinType.Inner ? "INNER JOIN" : "LEFT JOIN");
+                    code.Append($"`{entity.ReadTableName}` ON `{table}`.`{primary.DbFieldName}` = `{entity.ReadTableName}`.`{property.DbFieldName}` {releation.Condition}");
+                }
             return code.ToString();
         }
 
@@ -147,7 +147,7 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess;
         /// </summary>
         protected override void CreateCustomCode(string path)
         {
-            var file = Path.Combine(path, $"{Model.Name}DataAccess.cs");
+            var file = Path.Combine(path, $"{Model.EntityName}DataOperator.cs");
             SaveCode(file, Code());
         }
 
@@ -202,10 +202,10 @@ VALUES
             if (Model.IsQuery)
                 return null;
             var sql = new StringBuilder();
-            var columns = PublishDbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
+            var columns = PublishDbFields.Where(p => p.Entity == Model.Entity && !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
             var isFirst = true;
 
-            foreach (var property in columns.Where(p=>p.Entity == Model.Entity))
+            foreach (var property in columns)
             {
                 if (isFirst)
                 {
@@ -354,13 +354,13 @@ VALUES
         /// <remarks>
         ///     对当前对象的属性的更改,请自行保存,否则将丢失
         /// </remarks>
-        public async Task AfterSave(EventSubscribeData entity, DataOperatorType operatorType)
+        public async Task AfterSave({Model.EntityName} entity, DataOperatorType operatorType)
         {{");
                 foreach (var re in model.Releations)
                 {
                     var entity = GlobalConfig.GetEntity(re.ForeignTable);
                     code.Append($@"
-            var access{re.Name} = Provider.ServiceProvider.CreateDataAccess<{entity.Name}>();");
+            var access{re.Name} = Provider.ServiceProvider.CreateDataAccess<{entity.EntityName}>();");
 
                     if (re.ModelType == ReleationModelType.EntityProperty)
                         code.Append($@"
@@ -401,7 +401,7 @@ VALUES
                     {
                         code.Append($@"
             {{  
-                var ch = new {entity.Name}
+                var ch = new {entity.EntityName}
                 {{");
                         bool first = true;
                         foreach (var pro in model.Properties.Where(p => p.Entity == entity))
@@ -416,7 +416,7 @@ VALUES
                         code.Append($@"
                 }};
                 ch.{re.ForeignKey} = entity.{re.PrimaryKey};
-                var (hase,id) = await access{re.Name}.LoadValueAsync(p=> p.{entity.PrimaryColumn.Name} , p=> {re.ForeignKey} == entity.{re.PrimaryKey});
+                var (hase,id) = await access{re.Name}.LoadValueAsync(p=> p.{entity.PrimaryColumn.Name} , p=>  p.{re.ForeignKey} == entity.{re.PrimaryKey});
                 ch.{entity.PrimaryColumn.Name} = id;
                 if (hase)
                     await access{re.Name}.UpdateAsync(ch);
@@ -466,14 +466,14 @@ VALUES
                 return;
 
             var str = new StringBuilder("new EntityProperty(");
-            
+
             if (property.IsInterfaceField)
             {
                 str.Append($"DataInterface.{property.LinkTable}.{property.LinkField}");
             }
             else
             {
-                str.Append($"{Project.DataBaseObjectName}.{property.Entity.Name}_Struct_.{property.Name}");
+                str.Append($"{Project.DataBaseObjectName}.{property.Entity.Name}_Struct_.{property.Field.Name}");
             }
             str.Append($",{++idx},\"{property.Name}\",\"{property.DbFieldName}\")");
             properties.Add(str.ToString());
@@ -536,7 +536,7 @@ VALUES
 
             foreach (var property in Model.LastProperties.Where(p => p.CanSet))
             {
-                
+
                 var names = property.GetAliasPropertys().Select(p => p.ToLower()).ToList();
                 var name = property.Name.ToLower();
                 if (!names.Contains(name))

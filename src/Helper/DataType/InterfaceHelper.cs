@@ -27,6 +27,8 @@ namespace Agebull.EntityModel.RobotCoder
                         continue;
                     var field = new FieldConfig();
                     field.Copy(iField);
+                    field.LinkField = iField.Name;
+                    field.LinkTable = ie.Name;
                     field.ReferenceKey = iField.Key;
                     field.Entity = entity;
                     properties.Add(field);

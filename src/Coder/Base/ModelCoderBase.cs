@@ -80,12 +80,14 @@ namespace Agebull.EntityModel.RobotCoder
             }
             else
             {
-                code.Add(DataRuleCode(property));
+                //var rule = DataRuleCode(property);
+                //if(rule != null)
+                //code.Add(rule);
                 if (json == null)
                     json = !property.NoneJson;
                 if (json.Value)
                 {
-                    code.Add($@"JsonProperty(""{property.JsonName}"",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling= DefaultValueHandling.Ignore)");
+                    code.Add($@"JsonProperty(""{property.JsonName}"",  NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling= DefaultValueHandling.Ignore)");
                     if (property.CsType == "DateTime")
                         code.Add("JsonConverter(typeof(MyDateTimeConverter))");
                 }
@@ -215,8 +217,7 @@ namespace Agebull.EntityModel.RobotCoder
                 return null;
             StringBuilder code = new StringBuilder();
             var re = code.ToString();
-            code.Append(@"
-        DataRule(");
+            code.Append("DataRule(");
             bool has = false;
             if (!property.IsRequired)
             {

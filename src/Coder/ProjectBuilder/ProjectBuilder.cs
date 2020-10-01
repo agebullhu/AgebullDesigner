@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Designer;
 
 namespace Agebull.EntityModel.RobotCoder
 {
     /// <summary>
     /// 项目代码生成基类
     /// </summary>
-    public abstract class ProjectBuilder : CoderBase
+    public abstract class ProjectBuilder<TModelConfig> : CoderBase
+            where TModelConfig : ProjectChildConfigBase, IEntityConfig
     {
         /// <summary>
         /// 得到当前的消息跟踪器
@@ -35,7 +39,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 名称
         /// </summary>
-        protected abstract string Name { get; }
+        public abstract string Name { get; }
 
         /// <summary>
         /// 图标
@@ -54,6 +58,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         protected SolutionConfig Solution => SolutionConfig.Current;
 
+
         /// <summary>
         /// 准备生成实体代码
         /// </summary>
@@ -67,19 +72,9 @@ namespace Agebull.EntityModel.RobotCoder
         /// 准备生成实体代码
         /// </summary>
         /// <param name="schema"></param>
-        public virtual bool Validate(ModelConfig schema)
+        public virtual bool Validate(TModelConfig schema)
         {
             return true;
-        }
-
-        /// <summary>
-        /// 生成实体代码
-        /// </summary>
-        /// <param name="project"></param>
-        /// <param name="schema"></param>
-        public virtual void CreateEntityCode(ProjectConfig project, ModelConfig schema)
-        {
-
         }
 
         /// <summary>
@@ -92,36 +87,13 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
         /// <summary>
-        /// 注册的项目代码生成器
+        /// 生成实体代码
         /// </summary>
-        public static readonly Dictionary<string, Func<ProjectBuilder>> Builders =
-            new Dictionary<string, Func<ProjectBuilder>>(StringComparer.OrdinalIgnoreCase);
-
-        /// <summary>
-        /// 注册的项目生成器
-        /// </summary>
-        /// <returns></returns>
-        public static void RegistBuilder<TBuilder>()
-            where TBuilder : ProjectBuilder, new()
+        /// <param name="project"></param>
+        /// <param name="schema"></param>
+        public virtual void CreateModelCode(ProjectConfig project, TModelConfig schema)
         {
-            var builder = new TBuilder();
-            if (Builders.ContainsKey(builder.Name))
-                throw new ArgumentException("已注册名称为" + builder.Name + "的项目生成器，不应该重复注册");
-            Builders.Add(builder.Name, () => new TBuilder());
-        }
 
-        /// <summary>
-        /// 生成合适的项目生成器
-        /// </summary>
-        /// <param name="type">项目类型</param>
-        /// <returns>项目生成器</returns>
-        public static ProjectBuilder CreateBuilder(string type)
-        {
-            if (string.IsNullOrWhiteSpace(type))
-                throw new ArgumentException("空名称的项目生成器是不允许的");
-            if (Builders.ContainsKey(type))
-                return Builders[type]();
-            throw new ArgumentException("名称为" + type + "的项目生成器未注册");
         }
 
         /// <summary>
@@ -131,9 +103,8 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="project"></param>
         /// <param name="schema"></param>
         /// <param name="path"></param>
-        protected static void CreateCode<TModelCoder, TModel>(ProjectConfig project, TModel schema, string path)
-            where TModelCoder : CoderWithModel<TModel>, new()
-            where TModel : ProjectChildConfigBase, IEntityConfig
+        protected static void CreateCode<TModelCoder>(ProjectConfig project, TModelConfig schema, string path)
+            where TModelCoder : CoderWithModel<TModelConfig>, new()
         {
             var builder = new TModelCoder
             {

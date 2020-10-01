@@ -7,7 +7,7 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class EntityPropertyBuilder<TModel> : EntityBuilderBase<TModel>
+    public sealed class EntityPropertyBuilder<TModel> : ModelBuilderBase<TModel>
         where TModel : ProjectChildConfigBase, IEntityConfig
     {
         #region 主体代码
@@ -156,7 +156,7 @@ using Agebull.EntityModel.Interfaces;
 
         #region 修改记录
 
-        [DataMember, JsonProperty(""editStatusRedorder"",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [DataMember, JsonProperty(""editStatusRedorder"",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         EntityEditStatus _editStatusRedorder;
 
         /// <summary>
@@ -197,7 +197,7 @@ using Agebull.EntityModel.Interfaces;
             var code = new StringBuilder();
             code.Append(PrimaryKeyPropertyCode());
             ExistProperties.TryAdd(Model.PrimaryField, Model.PrimaryField);
-            foreach (var property in Columns.Where(p => !p.IsPrimaryKey).OrderBy(p => p.Index))
+            foreach (var property in Columns.Where(p => p != PrimaryProperty).OrderBy(p => p.Index))
             {
                 if (property.DbInnerField)
                     DbInnerProperty(property, code);
@@ -209,11 +209,11 @@ using Agebull.EntityModel.Interfaces;
                 AliasPropertyCode(property, code);
                 AccessProperties(property, code);
             }
-            if(Model is ModelConfig model)
-            foreach (var relation in model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty).OrderBy(p => p.Index))
-            {
-                RelationPropertyCode(relation, code);
-            }
+            if (Model is ModelConfig model)
+                foreach (var relation in model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty).OrderBy(p => p.Index))
+                {
+                    RelationPropertyCode(relation, code);
+                }
             return code.ToString();
         }
 
@@ -356,7 +356,7 @@ using Agebull.EntityModel.Interfaces;
         /// <remarks>
         /// {ToRemString(property.Description)}
         /// </remarks>
-        [IgnoreDataMember , Browsable(false),JsonIgnore]
+        [IgnoreDataMember , JsonIgnore]
         public {property.LastCsType} {property.Name} => throw new Exception(""{ToRemString(property.Caption)}属性仅限用于查询的Lambda表达式使用"");");
 
         }
@@ -375,7 +375,7 @@ using Agebull.EntityModel.Interfaces;
         /// <remarks>
         /// 仅存储使用
         /// </remarks>
-        [IgnoreDataMember,Browsable(false),JsonIgnore]
+        [IgnoreDataMember,JsonIgnore]
         public string {property.StorageProperty}
         {{
             get => this.{property.Name} == null ? null : Newtonsoft.Json.JsonConvert.SerializeObject(this.{property.Name});
@@ -400,7 +400,7 @@ using Agebull.EntityModel.Interfaces;
 
                 code.Append($@"
 
-        [JsonProperty(""{cs}"",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling= DefaultValueHandling.Ignore)]
+        [JsonProperty(""{cs}"", NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling= DefaultValueHandling.Ignore)]
         private {type} _{cs};
 
         [JsonIgnore]

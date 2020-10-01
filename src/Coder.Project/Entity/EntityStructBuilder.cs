@@ -7,7 +7,7 @@ using Agebull.EntityModel.Config.SqlServer;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class EntityStructBuilder<TModel> : EntityBuilderBase<TModel>
+    public sealed class EntityStructBuilder<TModel> : ModelBuilderBase<TModel>
         where TModel : ProjectChildConfigBase, IEntityConfig
     {
         #region 基础
@@ -44,7 +44,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// 实体结构
         /// </summary>
         [IgnoreDataMember,Browsable (false)]
-        public override EntitySturct __Struct
+        public override EntityStruct __Struct
         {{
             get
             {{
@@ -82,7 +82,7 @@ namespace Agebull.EntityModel.RobotCoder
             /// <summary>
             /// 实体结构
             /// </summary>
-            public static readonly EntitySturct Struct = new EntitySturct
+            public static EntityStruct Struct = new EntityStruct
             {{
                 EntityName = EntityName,
                 Caption    = EntityCaption,

@@ -85,6 +85,7 @@ namespace Agebull.EntityModel.Designer
                 Header = "实体",
                 SoruceView = "entity",
                 HeaderField = null,
+                Tag = nameof(EntityConfig),
                 CreateChildFunc = CreateEntityClassifiesTreeItem,
                 SoruceItemsExpression = () => project.Classifies,
                 SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
@@ -94,6 +95,7 @@ namespace Agebull.EntityModel.Designer
             {
                 IsAssist = true,
                 Header = "模型",
+                Tag = nameof(ModelConfig),
                 SoruceView = "model",
                 HeaderField = null,
                 CreateChildFunc = CreateModelTreeItem,
@@ -132,7 +134,7 @@ namespace Agebull.EntityModel.Designer
                 Friend = child.Project,
                 FriendView = "entity",
                 IsExpanded = false,
-                Tag = "Entity",
+                Tag = nameof(EntityConfig),
                 CreateChildFunc = CreateEntityTreeItem,
                 FriendItems = child.Items,
                 SoruceItemsExpression = () => child.Items,
@@ -148,6 +150,7 @@ namespace Agebull.EntityModel.Designer
                 col.Entity = entity;
             var tableItem = new ConfigTreeItem<EntityConfig>(entity)
             {
+                Tag = nameof(EntityConfig),
                 CreateChildFunc = CreateFieldTreeItem,
                 SoruceItemsExpression = () => entity.Properties,
                 CustomPropertyChanged = Entity_PropertyChanged
@@ -173,6 +176,7 @@ namespace Agebull.EntityModel.Designer
             var property = (FieldConfig)arg;
             return new ConfigTreeItem<FieldConfig>(property)
             {
+                Tag = nameof(EntityConfig),
                 Color = property.IsSystemField ? Brushes.Blue : Brushes.Black,
                 FontWeight = property.IsCompute ? FontWeights.Thin : FontWeights.DemiBold,
                 CustomPropertyChanged = FieldPropertyChanged
@@ -274,6 +278,7 @@ namespace Agebull.EntityModel.Designer
                 col.Model = entity;
             var tableItem = new ConfigTreeItem<ModelConfig>(entity)
             {
+                Tag = nameof(ModelConfig),
                 CreateChildFunc = CreatePropertyTreeItem,
                 SoruceItemsExpression = () => entity.Properties,
                 CustomPropertyChanged = ModelPropertyChanged
@@ -286,6 +291,7 @@ namespace Agebull.EntityModel.Designer
             var property = (PropertyConfig)arg;
             return new ConfigTreeItem<PropertyConfig>(property)
             {
+                Tag = nameof(ModelConfig),
                 Color = property.IsSystemField ? Brushes.Blue : Brushes.Black,
                 FontWeight = property.IsCompute ? FontWeights.Thin : FontWeights.DemiBold,
                 CustomPropertyChanged = Property_PropertyChanged

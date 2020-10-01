@@ -44,7 +44,6 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder
             {
                 SignleSoruce = true,
-                IsButton = true,
                 SoruceView = "entity",
                 Catalog = "编辑",
                 Caption = "复制基础配置到其它项目",

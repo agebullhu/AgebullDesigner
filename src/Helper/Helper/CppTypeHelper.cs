@@ -158,13 +158,11 @@ namespace Agebull.EntityModel.Config
         public static string CppTypeToCsType(FieldConfig property)
         {
             var type = property.CppTypeObject = ToCppLastType(property.CppLastType ?? property.CppType);
-            switch (type)
+            return type switch
             {
-                default:
-                    return null;
-                case EntityConfig stru:
-                    return stru.Name;
-            }
+                EntityConfig stru => stru.Name,
+                _ => null,
+            };
         }
         #endregion
 

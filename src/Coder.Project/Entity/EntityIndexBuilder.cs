@@ -3,7 +3,7 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class EntityIndexBuilder<TModel> : EntityBuilderBase<TModel>
+    public sealed class EntityIndexBuilder<TModel> : ModelBuilderBase<TModel>
         where TModel : ProjectChildConfigBase, IEntityConfig
     {
         #region 基础

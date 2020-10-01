@@ -465,16 +465,11 @@ namespace Agebull.Common.Mvvm
         private void OnEnd(Task<TResult> task)
         {
             _task = null;
-            switch (task.Status)
+            Status = task.Status switch
             {
-                case TaskStatus.Faulted:
-                    //LogRecorder.Exception(task.Exception);
-                    Status = CommandStatus.Faulted;
-                    break;
-                default:
-                    Status = CommandStatus.Succeed;
-                    break;
-            }
+                TaskStatus.Faulted => CommandStatus.Faulted,//LogRecorder.Exception(task.Exception);
+                _ => CommandStatus.Succeed,
+            };
             try
             {
                 if (_endAction == null)

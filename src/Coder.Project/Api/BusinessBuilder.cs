@@ -22,7 +22,7 @@ namespace Agebull.EntityModel.RobotCoder
         protected override void CreateCustomCode(string path)
         {
             var fileName = "BusinessLogic.cs";
-            var file = Path.Combine(path, Model.Name + fileName);
+            var file = Path.Combine(path, Model.EntityName + fileName);
             if (Model.NoDataBase)
             {
                 if (File.Exists(file))
@@ -53,21 +53,13 @@ namespace Agebull.EntityModel.RobotCoder
 
         private string CreateExtendCode()
         {
-            string dbNameSpace;
-            switch (Project.DbType)
+            string dbNameSpace = Project.DbType switch
             {
-                case DataBaseType.SqlServer:
-                    dbNameSpace = "System.Data.Sql";
-                    break;
-                case DataBaseType.Sqlite:
-                    dbNameSpace = "Microsoft.Data.Sqlite";
-                    break;
-                default:
-                    //case DataBaseType.MySql:
-                    dbNameSpace = "MySqlConnector";
-                    break;
-            }
-            string baseClass = "UiBusinessLogicBase";
+                DataBaseType.SqlServer => "System.Data.Sql",
+                DataBaseType.Sqlite => "Microsoft.Data.Sqlite",
+                _ => "MySqlConnector",//case DataBaseType.MySql:
+            };
+            string baseClass = "BusinessLogicBase";
             if (Model.Interfaces != null)
             {
                 if (Model.Interfaces.Contains("IStateData"))
@@ -104,15 +96,21 @@ namespace {NameSpace}.BusinessLogic
     /// <summary>
     /// {Model.Description}
     /// </summary>
-    public partial class {Model.Name}BusinessLogic : {baseClass}<{Model.EntityName},{Model.PrimaryColumn.CsType},{Model.Name}DataAccess>
+    public partial class {Model.EntityName}BusinessLogic : {baseClass}<{Model.EntityName},{Model.PrimaryColumn.CsType}>
     {{
-{CommandExCode()}{InterfaceExtendCode()}
-        #region 基础继承
-
         /// <summary>
-        ///     实体类型
+        ///  构造
         /// </summary>
-        public override int EntityType => {Model.EntityName}._DataStruct_.EntityIdentity;
+        public {Model.EntityName}BusinessLogic(IServiceProvider provider)
+        {{
+            ServiceProvider = provider;
+        }}
+
+        protected sealed override DataAccess<{Model.EntityName}> CreateAccess()
+        {{
+            return ServiceProvider.CreateDataAccess<{Model.EntityName}>();
+        }}
+        #region 基础继承
 
         /*// <summary>
         ///     保存前的操作
@@ -158,6 +156,8 @@ namespace {NameSpace}.BusinessLogic
             return base.PrepareSaveByUser(data, isAdd);
         }}*/
         #endregion
+
+{CommandExCode()}{InterfaceExtendCode()}
     }}
 }}
 ";
@@ -306,6 +306,11 @@ namespace {NameSpace}.BusinessLogic
             return code.ToString();
         }
 
+
+    }
+}
+/*
+ 
         /// <summary>
         ///     生成基础代码
         /// </summary>
@@ -344,20 +349,12 @@ namespace {NameSpace}.BusinessLogic
 
         private string CreateBaseCode()
         {
-            string dbNameSpace;
-            switch (Project.DbType)
+            string dbNameSpace = Project.DbType switch
             {
-                case DataBaseType.SqlServer:
-                    dbNameSpace = "System.Data.Sql";
-                    break;
-                case DataBaseType.Sqlite:
-                    dbNameSpace = "Microsoft.Data.Sqlite";
-                    break;
-                default:
-                    //case DataBaseType.MySql:
-                    dbNameSpace = "MySqlConnector";
-                    break;
-            }
+                DataBaseType.SqlServer => "System.Data.Sql",
+                DataBaseType.Sqlite => "Microsoft.Data.Sqlite",
+                _ => "MySqlConnector",//case DataBaseType.MySql:
+            };
             StringBuilder alias = new StringBuilder();
             if (!string.IsNullOrWhiteSpace(Model.Alias))
             {
@@ -448,6 +445,4 @@ namespace {NameSpace}.BusinessLogic
 
             return code.ToString();
         }
-
-    }
-}
+ */

@@ -20,14 +20,13 @@ using System.Windows.Media.Imaging;
 using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.RobotCoder;
-
+using Cmd = System.Collections.Generic.Dictionary<string, System.Func<System.Action<System.Collections.Generic.Dictionary<string, string>>, Agebull.Common.Mvvm.CommandItemBase>>;
 #endregion
 
 namespace Agebull.EntityModel.Designer
 {
     public class NormalCodeModel : DesignModelBase
     {
-
         /// <summary>
         ///     分类
         /// </summary>
@@ -59,17 +58,43 @@ namespace Agebull.EntityModel.Designer
                 Caption = "复制代码",
                 Image = Application.Current.Resources["img_file"] as ImageSource
             });
-            foreach (var builder in ProjectBuilder.Builders.Values)
+            if (!Builders.TryGetValue(Context.SelectTag ?? "", out var cmd))
+                return;
+            foreach (var builder in cmd.Values)
             {
-                var b = builder();
-                commands.Add(new ProjectCodeCommand(builder)
-                {
-                    Caption = b.Caption,
-                    IconName = b.Icon,
-                    OnCodeSuccess = OnCodeSuccess
-                }.ToCommand(null));
+                commands.Add(builder(OnCodeSuccess));
             }
         }
+
+        /// <summary>
+        /// 注册的项目代码生成器
+        /// </summary>
+        static readonly Dictionary<string, Cmd> Builders =
+            new Dictionary<string, Cmd>(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// 注册的项目生成器
+        /// </summary>
+        /// <returns></returns>
+        public static void RegistBuilder<TBuilder, TModelConfig>()
+            where TBuilder : ProjectBuilder<TModelConfig>, new()
+            where TModelConfig : ProjectChildConfigBase, IEntityConfig
+        {
+            var builder = new TBuilder();
+            var type = typeof(TModelConfig).Name;
+            if (!Builders.TryGetValue(type, out var cmd))
+                Builders.Add(type, cmd = new Cmd());
+
+            if (cmd.ContainsKey(builder.Name))
+                throw new ArgumentException("已注册名称为" + builder.Name + "的项目生成器，不应该重复注册");
+            cmd.Add(builder.Name, OnCodeSuccess => new ProjectCodeCommand<TModelConfig>(() => new TBuilder())
+            {
+                Caption = builder.Caption,
+                IconName = builder.Icon,
+                OnCodeSuccess = OnCodeSuccess
+            }.ToCommand(null));
+        }
+
         #endregion
 
         #region 文件代码
@@ -93,9 +118,9 @@ namespace Agebull.EntityModel.Designer
             {
                 string name = Path.GetFileName(file.Key);
                 string path = Path.GetDirectoryName(file.Key);
-                var folder = path?.Substring(first,path.Length - first) ?? "未知目录";
-                folder= folder.Trim('\\', '/');
-                var item = FileTreeRoot.Items.FirstOrDefault(p=>p.Name == folder);
+                var folder = path?.Substring(first, path.Length - first) ?? "未知目录";
+                folder = folder.Trim('\\', '/');
+                var item = FileTreeRoot.Items.FirstOrDefault(p => p.Name == folder);
                 if (item == null)
                 {
                     FileTreeRoot.Items.Add(item = new TreeItem(file.Key)
@@ -114,8 +139,8 @@ namespace Agebull.EntityModel.Designer
                     SoruceTypeIcon = Application.Current.Resources["img_code"] as BitmapImage
                 });
             }
-            
-           ViewIndex = 1;
+
+            ViewIndex = 1;
             FileTreeRoot.SelectItemChanged += OnFileSelectItemChanged;
         }
 
@@ -230,7 +255,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 生成的代码片断
         /// </summary>
-        private string _codeType="cs";
+        private string _codeType = "cs";
 
         /// <summary>
         /// 生成的代码片断

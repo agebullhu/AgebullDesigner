@@ -6,26 +6,31 @@ namespace Agebull.EntityModel.Designer.WebApi
 {
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal sealed class ApiArgumentBuilder : ProjectBuilder, IAutoRegister
+    internal sealed class EntityModelBuilderRegister : IAutoRegister
     {
-
-        /// <summary>
-        /// 名称
-        /// </summary>
-        protected override string Name => "Api Argument";
-
-        /// <summary>
-        /// 标题
-        /// </summary>
-        public override string Caption => "API参数";
-
         /// <summary>
         /// 执行自动注册
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            RegistBuilder<ApiArgumentBuilder>();
+            NormalCodeModel.RegistBuilder<ApiArgumentBuilder<EntityConfig>, EntityConfig>();
+            NormalCodeModel.RegistBuilder<ApiArgumentBuilder<ModelConfig>, ModelConfig>();
         }
+
+    }
+    public sealed class ApiArgumentBuilder<TModelConfig> : ProjectBuilder<TModelConfig>
+            where TModelConfig : ProjectChildConfigBase, IEntityConfig
+    {
+
+        /// <summary>
+        /// 名称
+        /// </summary>
+        public override string Name => "Api Argument";
+
+        /// <summary>
+        /// 标题
+        /// </summary>
+        public override string Caption => "API参数";
 
         /// <summary>
         /// 生成项目代码
@@ -45,11 +50,11 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// </summary>
         /// <param name="project"></param>
         /// <param name="entity"></param>
-        public override void CreateEntityCode(ProjectConfig project, ModelConfig entity)
+        public override void CreateModelCode(ProjectConfig project, TModelConfig entity)
         {
             Message = entity.Caption;
             var path = GlobalConfig.CheckPath(project.FormatPath("Contract"));
-            var builder = new EntityBuilder<ModelConfig>
+            var builder = new EntityBuilder<TModelConfig>
             {
                 Project = project,
                 Model = entity

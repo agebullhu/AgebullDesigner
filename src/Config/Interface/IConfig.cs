@@ -135,6 +135,15 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
+        /// 别名
+        /// </summary>
+        string Alias
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// 扩展配置
         /// </summary>
         ConfigItemListBool ExtendConfigListBool { get; }

@@ -11,16 +11,20 @@ namespace Agebull.EntityModel.Config
     /// </summary>
     public interface IFieldConfig : IConfig
     {
-        bool IsDiscard { get; }
-        string Alias { get; }
+        /// <summary>
+        ///     原始字段
+        /// </summary>
+        FieldConfig Field
+        {
+            get;
+        }
 
+        #region 扩散信息
 
-    #region 扩散信息
-
-    /// <summary>
-    /// 数据库字段名称
-    /// </summary>
-    string DbFieldName
+        /// <summary>
+        /// 数据库字段名称
+        /// </summary>
+        string DbFieldName
         {
             get;
             set;

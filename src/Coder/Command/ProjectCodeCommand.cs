@@ -15,22 +15,23 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// 项目代码命令对象的抽象类
     /// </summary>
-    public class ProjectCodeCommand : ConfigCommandBase<ModelConfig>
+    public class ProjectCodeCommand<TModelConfig> : ConfigCommandBase<TModelConfig>
+        where TModelConfig: ProjectChildConfigBase, IEntityConfig
     {
-        private readonly Func<ProjectBuilder> _creater;
+        private readonly Func<ProjectBuilder<TModelConfig>> _creater;
 
-        private ProjectBuilder _builder;
+        private ProjectBuilder<TModelConfig> _builder;
 
-        public ProjectCodeCommand(Func<ProjectBuilder> creater)
+        public ProjectCodeCommand(Func<ProjectBuilder<TModelConfig>> creater)
         {
             _creater = creater;
-            TargetType = typeof(ModelConfig);
+            TargetType = typeof(TModelConfig);
         }
         bool noWriteFile;
         /// <summary>
         /// 能否执行的检查
         /// </summary>
-        public bool CanDo(ModelArgument argument)
+        public bool CanDo(ModelArgument<TModelConfig> argument)
         {
             noWriteFile = string.IsNullOrWhiteSpace(SolutionConfig.Current.RootPath) ||
                           !Directory.Exists(SolutionConfig.Current.RootPath);
@@ -47,6 +48,7 @@ namespace Agebull.EntityModel.Designer
             return true;
         }
 
+
         /// <summary>
         /// 单个检查
         /// </summary>
@@ -61,19 +63,19 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 单个检查
         /// </summary>
-        /// <param name="entity"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
-        public bool Validate(ModelConfig entity)
+        public bool Validate(TModelConfig model)
         {
-            return _builder.Validate(entity);
+            return _builder.Validate(model);
         }
 
         /// <summary>
         /// 执行器
         /// </summary>
-        public bool ExecuteEntity(ModelConfig entity)
+        public bool ExecuteEntity(TModelConfig model)
         {
-            return Execute(entity);
+            return Execute(model);
         }
 
         /// <summary>
@@ -87,14 +89,14 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 执行器
         /// </summary>
-        public bool Execute(ModelConfig entity)
+        public bool Execute(TModelConfig model)
         {
-            StateMessage = "正在生成" + entity.Caption + "...";
-            using (CodeGeneratorScope.CreateScope(entity))
+            StateMessage = "正在生成" + model.Caption + "...";
+            using (CodeGeneratorScope.CreateScope(model))
             {
-                _builder.CreateEntityCode(entity.Parent, entity);
+                _builder.CreateModelCode(model.Parent, model);
             }
-            StateMessage = entity.Caption + "已完成";
+            StateMessage = model.Caption + "已完成";
             return true;
         }
 
@@ -112,12 +114,6 @@ namespace Agebull.EntityModel.Designer
             return true;
         }
 
-        public bool Prepare(ModelArgument argument)
-        {
-            _builder = _creater();
-            _builder.MessageSetter = MessageSetter;
-            return true;
-        }
         public Action<Dictionary<string, string>> OnCodeSuccess;
         /// <summary>
         /// 最后的处理（成功）
@@ -133,7 +129,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         /// <param name="argument"></param>
         /// <returns></returns>
-        public bool BeginDo(ModelArgument argument)
+        public bool BeginDo(ModelArgument<TModelConfig> argument)
         {
             codeScope = FileCodeScope.CreateScope(noWriteFile);
             return true;
@@ -144,7 +140,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         /// <param name="argument"></param>
         /// <returns></returns>
-        public void EndDo(ModelArgument argument)
+        public void EndDo(ModelArgument<TModelConfig> argument)
         {
             _codes = WorkContext.FileCodes;
             codeScope.Dispose();
@@ -190,13 +186,16 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         private bool DoPrepare(object args, Action<object> setArgs)
         {
-            var argument = new ModelArgument
+            var argument = new ModelArgument<TModelConfig>
             {
                 Argument = args ?? GlobalConfig.CurrentConfig
             };
             if (!CanDo(argument))
                 return false;
-            Prepare(argument);
+
+            _builder = _creater();
+            _builder.MessageSetter = MessageSetter;
+
             bool success = true;
             foreach (var project in argument.Projects)
             {
@@ -205,9 +204,9 @@ namespace Agebull.EntityModel.Designer
                 success = false;
                 MessageBox.Show("有错误配置,请检查");
             }
-            foreach (var entity in argument.Models)
+            foreach (var model in argument.Models)
             {
-                if (Validate(entity))
+                if (Validate(model))
                     continue;
                 success = false;
                 MessageBox.Show("有错误配置,请检查");
@@ -221,14 +220,14 @@ namespace Agebull.EntityModel.Designer
         {
             using (CodeGeneratorScope.CreateScope(SolutionConfig.Current))
             {
-                var argument = (ModelArgument)args;
+                var argument = (ModelArgument<TModelConfig>)args;
                 if (!BeginDo(argument))
                     return false;
                 try
                 {
-                    foreach (var entity in argument.Models)
+                    foreach (var model in argument.Models)
                     {
-                        Execute(entity);
+                        Execute(model);
                     }
                     foreach (var project in argument.Projects)
                     {

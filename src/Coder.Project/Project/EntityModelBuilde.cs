@@ -8,16 +8,21 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
 {
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal sealed class EntityModelBuilde : ProjectBuilder, IAutoRegister
+    internal sealed class EntityModelBuilderRegister : IAutoRegister
     {
         /// <summary>
         /// 执行自动注册
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            RegistBuilder<EntityModelBuilde>();
+            NormalCodeModel.RegistBuilder<EntityModelBuilder<EntityConfig>, EntityConfig>();
+            NormalCodeModel.RegistBuilder<EntityModelBuilder<ModelConfig>, ModelConfig>();
         }
 
+    }
+    public sealed class EntityModelBuilder<TModelConfig> : ProjectBuilder<TModelConfig>
+            where TModelConfig : ProjectChildConfigBase, IEntityConfig
+    {
         /// <summary>
         /// 生成项目代码
         /// </summary>
@@ -36,7 +41,7 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
         /// <summary>
         /// 名称
         /// </summary>
-        protected override string Name => "Entity & Model";
+        public override string Name => "Entity & Model";
 
         /// <summary>
         /// 标题
@@ -48,7 +53,7 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
         /// </summary>
         /// <param name="project"></param>
         /// <param name="schema"></param>
-        public override void CreateEntityCode(ProjectConfig project, ModelConfig schema)
+        public override void CreateModelCode(ProjectConfig project, TModelConfig schema)
         {
             if (schema.NoDataBase)
                 return;
@@ -61,13 +66,13 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
             {
                 entityPath = IOHelper.CheckPath(entityPath, cls);
             }
-            CreateCode<EntityBuilder<ModelConfig>, ModelConfig>(project, schema, entityPath);
+            CreateCode<EntityBuilder<TModelConfig>>(project, schema, entityPath);
             entityPath = IOHelper.CheckPath(root, "Validate");
             if (cls != null)
             {
                 entityPath = IOHelper.CheckPath(entityPath, cls);
             }
-            CreateCode<EntityValidateBuilder<ModelConfig>, ModelConfig>(project, schema, entityPath);
+            CreateCode<EntityValidateBuilder<TModelConfig>>(project, schema, entityPath);
 
             var accessPath = IOHelper.CheckPath(root, "DataAccess");
             if (cls != null)
@@ -77,19 +82,19 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
             switch (project.DbType)
             {
                 case DataBaseType.SqlServer:
-                    CreateCode<SqlServerAccessBuilder<ModelConfig>, ModelConfig>(project, schema, accessPath);
+                    CreateCode<SqlServerAccessBuilder<TModelConfig>>(project, schema, accessPath);
                     break;
                 case DataBaseType.Sqlite:
-                    CreateCode<SqliteAccessBuilder<ModelConfig>, ModelConfig>(project, schema, accessPath);
+                    CreateCode<SqliteAccessBuilder<TModelConfig>>(project, schema, accessPath);
                     break;
                 default:
-                    CreateCode<MySqlAccessBuilder<ModelConfig>, ModelConfig>(project, schema, accessPath);
+                    CreateCode<MySqlAccessBuilder<TModelConfig>>(project, schema, accessPath);
                     break;
             }
             var blPath = IOHelper.CheckPath(root, "Business");
             if (cls != null)
                 blPath = IOHelper.CheckPath(blPath, cls);
-            CreateCode<BusinessBuilder<ModelConfig>, ModelConfig>(project, schema, blPath);
+            CreateCode<BusinessBuilder<TModelConfig>>(project, schema, blPath);
             Message = blPath;
         }
     }

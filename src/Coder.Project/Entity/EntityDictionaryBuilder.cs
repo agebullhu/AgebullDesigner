@@ -4,7 +4,7 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class EntityDictionaryBuilder<TModelConfig> : EntityBuilderBase<TModelConfig>
+    public sealed class EntityDictionaryBuilder<TModelConfig> : ModelBuilderBase<TModelConfig>
            where TModelConfig : ProjectChildConfigBase, IEntityConfig
     {
         #region 基础

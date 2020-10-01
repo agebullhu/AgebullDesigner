@@ -501,7 +501,7 @@ ALTER TABLE `{entity.SaveTable}`
 
         #region Êý¾Ý¶ÁÈ¡
 
-        public static string LoadEntityCode(ModelConfig model, IEnumerable<IFieldConfig> fields)
+        public static string LoadEntityCode(IEntityConfig model, IEnumerable<IFieldConfig> fields)
         {
             var code = new StringBuilder();
             code.Append($@"
@@ -538,27 +538,7 @@ ALTER TABLE `{entity.SaveTable}`
                 {
                     sql.Append(",");
                 }
-                sql.AppendLine($"`{property.Entity.ReadTableName}`.`{property.DbFieldName}` AS `{property.Name}`");
-            }
-            return sql.ToString();
-        }
-
-        public static string LoadSql(IEnumerable<PropertyConfig> fields)
-        {
-            var sql = new StringBuilder();
-
-            var isFirst = true;
-            foreach (var property in fields)
-            {
-                if (isFirst)
-                {
-                    isFirst = false;
-                }
-                else
-                {
-                    sql.Append(",");
-                }
-                sql.AppendLine($"`{property.Field.Entity.ReadTableName}`.`{property.Field.DbFieldName}` AS `{property.DbFieldName}`");
+                sql.AppendLine($"`{property.Entity.ReadTableName}`.`{property.Field.DbFieldName}` AS `{property.DbFieldName}`");
             }
             return sql.ToString();
         }

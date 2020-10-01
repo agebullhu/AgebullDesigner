@@ -96,7 +96,6 @@ namespace {Project.NameSpace}.DataAccess
     /// </summary>
     public static partial class DataAccessProviderHelper
     {{
-
         /// <summary>
         /// 构造数据访问对象
         /// </summary>
@@ -106,8 +105,7 @@ namespace {Project.NameSpace}.DataAccess
         {{
             var option = GetOption<TEntity>();
             if (option == null)
-                throw new NotSupportedException($""{{typeof(TEntity).FullName}}
-            没有对应配置项，请通过设计器生成"");
+                throw new NotSupportedException($""{{typeof(TEntity).FullName}}没有对应配置项，请通过设计器生成"");
             if (option.IsQuery)
                 throw new NotSupportedException($""{{typeof(TEntity).FullName}}是一个查询，请使用CreateDataQuery方法"");
             var provider = new DataAccessProvider<TEntity>
@@ -173,7 +171,7 @@ namespace {Project.NameSpace}.DataAccess
             var b = new SqliteConnectionStringBuilder
             {{
                 DataSource = ZeroAppOption.Instance.IsLinux
-                    ? $""{{ ZeroAppOption.Instance.DataFolder}}/{Project.DbSoruce}""
+                    ? $""{{ZeroAppOption.Instance.DataFolder}}/{Project.DbSoruce}""
                     : $""{{ZeroAppOption.Instance.DataFolder}}\\{Project.DbSoruce}"",
                 Mode = SqliteOpenMode.ReadWriteCreate,
                 Cache = SqliteCacheMode.Shared
@@ -212,12 +210,12 @@ namespace {Project.NameSpace}.DataAccess
         public static class {entity.Name}_Struct_
         {{
 
-            static EntitySturct _struct;
+            static EntityStruct _struct;
 
             /// <summary>
             /// 实体结构
             /// </summary>
-            public static readonly EntitySturct Struct => _struct ??= new EntitySturct
+            public static EntityStruct Struct => _struct ??= new EntityStruct
             {{
                 EntityName = EntityName,
                 Caption    = Caption,
@@ -264,8 +262,7 @@ namespace {Project.NameSpace}.DataAccess
             /// 实体说明
             /// </summary>
             public const string PrimaryKey = ""{entity.PrimaryColumn.Name}"";
-{codeStruct}                
-
+{codeStruct}
             #endregion
 
         }}
@@ -400,7 +397,12 @@ namespace {Project.NameSpace}.DataAccess
             foreach (var entity in Project.Entities)
             {
                 code.Append($@"
-                nameof({entity.EntityName}) => {entity.Name}DataOperator.Option,");
+                nameof({entity.EntityName}) => {entity.EntityName}DataOperator.Option,");
+            }
+            foreach (var entity in Project.Models)
+            {
+                code.Append($@"
+                nameof({entity.EntityName}) => {entity.EntityName}DataOperator.Option,");
             }
             code.Append(@"
                 _ => null,
@@ -415,7 +417,12 @@ namespace {Project.NameSpace}.DataAccess
             foreach (var entity in Project.Entities)
             {
                 code.Append($@"
-                nameof({entity.EntityName}) => new {entity.Name}DataOperator(),");
+                nameof({entity.EntityName}) => new {entity.EntityName}DataOperator(),");
+            }
+            foreach (var entity in Project.Models)
+            {
+                code.Append($@"
+                nameof({entity.EntityName}) => new {entity.EntityName}DataOperator(),");
             }
             code.Append(@"
                 _ => null,
@@ -430,7 +437,12 @@ namespace {Project.NameSpace}.DataAccess
             foreach (var entity in Project.Entities)
             {
                 code.Append($@"
-                nameof({entity.EntityName}) => new {entity.Name}DataOperator(),");
+                nameof({entity.EntityName}) => new {entity.EntityName}DataOperator(),");
+            }
+            foreach (var entity in Project.Models)
+            {
+                code.Append($@"
+                nameof({entity.EntityName}) => new {entity.EntityName}DataOperator(),");
             }
             code.Append(@"
                 _ => null,

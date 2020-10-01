@@ -49,7 +49,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         /// <typeparam name="TBuilder"></typeparam>
         /// <returns></returns>
-        public string GetBaseCode<TBuilder>() where TBuilder : EntityBuilderBase<TModel>, new()
+        public string GetBaseCode<TBuilder>() where TBuilder : ModelBuilderBase<TModel>, new()
         {
             using (CodeGeneratorScope.CreateScope(Model))
             {
@@ -66,7 +66,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <typeparam name="TBuilder"></typeparam>
         /// <returns></returns>
         public string GetExtendCode<TBuilder>()
-            where TBuilder : EntityBuilderBase<TModel>, new()
+            where TBuilder : ModelBuilderBase<TModel>, new()
         {
             using (CodeGeneratorScope.CreateScope(Model))
             {

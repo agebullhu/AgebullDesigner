@@ -4,28 +4,33 @@ using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer.WebApi
 {
-    //[Export(typeof(IAutoRegister))]
-    //[ExportMetadata("Symbol", '%')]
-    internal sealed class EntityApiBuilder : ProjectBuilder, IAutoRegister
+    [Export(typeof(IAutoRegister))]
+    [ExportMetadata("Symbol", '%')]
+    internal sealed class EntityApiBuilderAutoRegister : IAutoRegister
     {
-
-        /// <summary>
-        /// 名称
-        /// </summary>
-        protected override string Name => "Entity Api";
-
-        /// <summary>
-        /// 标题
-        /// </summary>
-        public override string Caption => Name;
-
         /// <summary>
         /// 执行自动注册
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            RegistBuilder<EntityApiBuilder>();
+            NormalCodeModel.RegistBuilder<EntityApiBuilder<EntityConfig>, EntityConfig>();
+            NormalCodeModel.RegistBuilder<EntityApiBuilder<ModelConfig>, ModelConfig>();
         }
+
+    }
+    public sealed class EntityApiBuilder<TModelConfig> : ProjectBuilder<TModelConfig>
+            where TModelConfig : ProjectChildConfigBase, IEntityConfig
+    {
+
+        /// <summary>
+        /// 名称
+        /// </summary>
+        public override string Name => "Entity Api";
+
+        /// <summary>
+        /// 标题
+        /// </summary>
+        public override string Caption => Name;
 
         /// <summary>
         /// 生成项目代码
@@ -100,14 +105,14 @@ namespace Agebull.EntityModel.Designer.WebApi
         /// </summary>
         /// <param name="project"></param>
         /// <param name="entity"></param>
-        public override void CreateEntityCode(ProjectConfig project, ModelConfig entity)
+        public override void CreateModelCode(ProjectConfig project, TModelConfig entity)
         {
             if (entity.ExtendConfigListBool["NoApi"])
                 return;
             Message = entity.Caption;
             {
                 var path = project.GetApiPath("Contract");
-                var builder = new EntityBuilder<ModelConfig>
+                var builder = new EntityBuilder<TModelConfig>
                 {
                     Project = project,
                     Model = entity
@@ -119,7 +124,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 return;
             {
                 var path = project.GetApiPath("Contract");
-                var builder = new ApiInterfaceBuilder<ModelConfig>
+                var builder = new ApiInterfaceBuilder<TModelConfig>
                 {
                     Project = project,
                     Model = entity
@@ -128,7 +133,7 @@ namespace Agebull.EntityModel.Designer.WebApi
             }
             {
                 var path = project.GetApiPath("Contract");
-                var builder = new ApiProxyBuilder<ModelConfig>
+                var builder = new ApiProxyBuilder<TModelConfig>
                 {
                     Project = project,
                     Model = entity
@@ -138,7 +143,7 @@ namespace Agebull.EntityModel.Designer.WebApi
 
             {
                 var path = project.GetApiPath("Logical");
-                var builder = new ApiLogicalBuilder<ModelConfig>
+                var builder = new ApiLogicalBuilder<TModelConfig>
                 {
                     Project = project,
                     Model = entity
@@ -147,7 +152,7 @@ namespace Agebull.EntityModel.Designer.WebApi
             }
             {
                 var path = project.GetApiPath("WebApi");
-                var builder = new ApiControlerBuillder<ModelConfig>
+                var builder = new ApiControlerBuillder<TModelConfig>
                 {
                     Project = project,
                     Model = entity
@@ -173,7 +178,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 {
                     path = project.GetPath("Test", "UnitTest");
                 }
-                var builder = new UnitTestBuilder<ModelConfig>
+                var builder = new UnitTestBuilder<TModelConfig>
                 {
                     Project = project,
                     Model = entity

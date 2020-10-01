@@ -63,7 +63,6 @@ namespace Agebull.EntityModel.Designer
         public TraceModel CurrentTrace => _trace ??= new TraceModel();
         #endregion
 
-
         #region 选中对象
 
         private IList _selectColumns2;
@@ -403,12 +402,13 @@ namespace Agebull.EntityModel.Designer
         internal void OnTreeSelectItemChanged(TreeItem item)
         {
             ConfigBase cfg = item?.Source as ConfigBase;
-            
+            SelectTag = item?.Tag;
             SetSelect(cfg);
             if (Editor.PropertyGrid != null)
                 Editor.PropertyGrid.SelectedObject = SelectConfig;
+            RaisePropertyChanged(() => SelectTag);
         }
-
+        public string SelectTag { get; set; }
 
         private FieldConfig _selectRelationColumn;
         private EntityConfig _selectRelationTable;
@@ -458,7 +458,6 @@ namespace Agebull.EntityModel.Designer
         }
 
         #endregion
-
 
         #region 对象查找
 

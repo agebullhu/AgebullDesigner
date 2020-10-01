@@ -21,6 +21,7 @@
               ItemsSource="{Binding SelectModel.Properties}">
         <DataGrid.Columns>
             <DataGridCheckBoxColumn Binding="{Binding Option.IsDiscard,Mode=TwoWay}" Header="废弃" />
+            <DataGridTextColumn Binding="{Binding Option.Index,Mode=TwoWay}" Header="序号" />
             <DataGridTextColumn Binding="{Binding Field.Entity.Name,Mode=OneWay}" Header="实体" />
             <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
             <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />

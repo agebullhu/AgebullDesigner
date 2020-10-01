@@ -12,7 +12,7 @@ namespace Agebull.Common.Config.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal sealed class LinkFieldCheck : EntityCommandBase, IAutoRegister
+    internal sealed class LinkFieldCheck : ModelCommandBase<EntityConfig>, IAutoRegister
     {
         #region зЂВс
 

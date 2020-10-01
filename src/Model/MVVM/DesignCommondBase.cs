@@ -136,12 +136,12 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 同步上下文
         /// </summary>
-        public override ISynchronousContext Synchronous => DataModelDesignModel.Current.Synchronous;
+        public override ISynchronousContext Synchronous => DataModelDesignModel.Current?.Synchronous;
         /// <inheritdoc />
         /// <summary>
         /// 线程调度器
         /// </summary>
-        public override Dispatcher Dispatcher => DataModelDesignModel.Current.Dispatcher;
+        public override Dispatcher Dispatcher => DataModelDesignModel.Current?.Dispatcher;
 
         /// <summary>
         /// 基本模型
@@ -150,7 +150,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 上下文
         /// </summary>
-        public DesignContext Context => DataModelDesignModel.Current.Context;
+        public DesignContext Context => DataModelDesignModel.Current?.Context;
 
         #endregion
 

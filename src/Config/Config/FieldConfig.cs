@@ -166,6 +166,11 @@ namespace Agebull.EntityModel.Config
         #region 模型设计(C#)
 
         /// <summary>
+        ///     原始字段名称
+        /// </summary>
+        FieldConfig IFieldConfig.Field => this;
+
+        /// <summary>
         /// 数据类型
         /// </summary>
         [DataMember, JsonProperty("DataType",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]

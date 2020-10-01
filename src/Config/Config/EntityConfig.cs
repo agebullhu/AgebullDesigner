@@ -213,7 +213,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据模型"), DisplayName(@"实体名称"), Description("实体名称")]
         public string EntityName
         {
-            get => WorkContext.InCoderGenerating ? (string.IsNullOrWhiteSpace(_entityName) ? $"{Name}Data" : _entityName) : _entityName;
+            get => WorkContext.InCoderGenerating ? (string.IsNullOrWhiteSpace(_entityName) ? $"{Name}Entity" : _entityName) : _entityName;
             set
             {
                 if (value == Name)
@@ -600,6 +600,8 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(Properties));
             }
         }
+
+        IEnumerable<IFieldConfig> IEntityConfig.Properties => Properties;
 
         #endregion
 

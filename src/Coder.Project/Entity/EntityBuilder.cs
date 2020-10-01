@@ -25,7 +25,7 @@ namespace Agebull.EntityModel.RobotCoder
         protected override void CreateDesignerCode(string path)
         {
             var fileName = ".Designer.cs";
-            var file = Path.Combine(path, Model.Name + fileName);
+            var file = Path.Combine(path, Model.EntityName + fileName);
             if (!string.IsNullOrWhiteSpace(Model.Alias))
             {
                 var oldFile = Path.Combine(path, Model.Alias + fileName);
@@ -90,7 +90,7 @@ namespace {NameSpace}
         protected override void CreateCustomCode(string path)
         {
             var fileName = ".cs";
-            var file = Path.Combine(path, $"{Model.Name}{fileName}");
+            var file = Path.Combine(path, $"{Model.EntityName}{fileName}");
             if (!string.IsNullOrWhiteSpace(Model.Alias))
             {
                 var oldFile = Path.Combine(path, Model.Alias + fileName);
@@ -126,7 +126,7 @@ namespace {NameSpace}
     /// {Model.Description}
     /// </summary>
     [DataContract]
-    sealed partial class {Model.EntityName} : {(Model.NoDataBase ? "NotificationObject" : "EditDataObject")}
+    sealed partial class {Model.EntityName}
     {{
         
         /// <summary>
@@ -139,7 +139,7 @@ namespace {NameSpace}
 
     }}
 }}";
-            SaveCode(Path.Combine(path, Model.Name + ".cs"), code);
+            SaveCode(file, code);
         }
 
     }
