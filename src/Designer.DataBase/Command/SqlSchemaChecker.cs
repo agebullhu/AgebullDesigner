@@ -60,29 +60,25 @@ SELECT {0}", entity.PrimaryColumn.DbFieldName);
             };
             try
             {
-                using (var connection = new SqlConnection(csb.ConnectionString))
+                using var connection = new SqlConnection(csb.ConnectionString);
+                connection.Open();
+                var tables = new Dictionary<string, string>();
+                using (var cmd = new SqlCommand(table_sql, connection))
                 {
-                    connection.Open();
-                    var tables = new Dictionary<string, string>();
-                    using (var cmd = new SqlCommand(table_sql, connection))
+                    using var reader = cmd.ExecuteReader();
+                    while (reader.Read())
                     {
-                        using (var reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                var name = reader.GetString(0);
-                                if (tables.ContainsKey(name))
-                                    continue;
-                                //var idx = reader.IsDBNull(2) ? 0 : reader.GetInt32(2);
-                                var des = reader.IsDBNull(1) ? null : reader.GetString(1);
-                                tables.Add(name, des);
-                            }
-                        }
+                        var name = reader.GetString(0);
+                        if (tables.ContainsKey(name))
+                            continue;
+                        //var idx = reader.IsDBNull(2) ? 0 : reader.GetInt32(2);
+                        var des = reader.IsDBNull(1) ? null : reader.GetString(1);
+                        tables.Add(name, des);
                     }
-                    foreach (var table in tables)
-                        CheckColumns(connection, table.Key, table.Value);
-                    connection.Close();
                 }
+                foreach (var table in tables)
+                    CheckColumns(connection, table.Key, table.Value);
+                connection.Close();
             }
             catch (Exception e)
             {
@@ -94,44 +90,42 @@ SELECT {0}", entity.PrimaryColumn.DbFieldName);
         private void CheckColumns(SqlConnection connection, string table, string description)
         {
             TraceMessage.DefaultTrace.Track = table;
-            using (var cmd = new SqlCommand(sql, connection))
+            using var cmd = new SqlCommand(sql, connection);
+            cmd.Parameters.Add(parameter = new SqlParameter("@entity", SqlDbType.NVarChar, 256) { Value = table });
+            var ch = GlobalConfig.SplitWords(table);
+            if (ch[0].Equals("tb", StringComparison.OrdinalIgnoreCase))
+                ch.RemoveAt(0);
+            var name = GlobalConfig.ToName(ch);
+            var entity = FindEntity(name);
+            var add = entity == null;
+            if (add)
             {
-                cmd.Parameters.Add(parameter = new SqlParameter("@entity", SqlDbType.NVarChar, 256) { Value = table });
-                var ch = GlobalConfig.SplitWords(table);
-                if (ch[0].Equals("tb", StringComparison.OrdinalIgnoreCase))
-                    ch.RemoveAt(0);
-                var name = GlobalConfig.ToName(ch);
-                var entity = FindEntity(name);
-                var add = entity == null;
-                if (add)
+                return;
+                entity = new EntityConfig
                 {
-                    return;
-                    entity = new EntityConfig
-                    {
-                        Name = name,
-                        Classify = ch[0],
-                        Caption = description,
-                        Description = description,
-                        ReadTableName = table,
-                        SaveTableName = table,
-                        Parent = Project
-                    };
-                }
-                else
-                {
-                    foreach (var col in entity.Properties)
-                    {
-                        col.DbIndex = 0;
-                        col.NoStorage = true;
-                    }
-
-                    entity.ReadTableName = entity.SaveTableName = table;
-                }
-
-                CheckColumns(cmd, entity);
-                if (add)
-                    Project.Add(entity);
+                    Name = name,
+                    Classify = ch[0],
+                    Caption = description,
+                    Description = description,
+                    ReadTableName = table,
+                    SaveTableName = table,
+                    Parent = Project
+                };
             }
+            else
+            {
+                foreach (var col in entity.Properties)
+                {
+                    col.DbIndex = 0;
+                    col.NoStorage = true;
+                }
+
+                entity.ReadTableName = entity.SaveTableName = table;
+            }
+
+            CheckColumns(cmd, entity);
+            if (add)
+                Project.Add(entity);
         }
 
         /// <summary>
@@ -149,53 +143,51 @@ SELECT {0}", entity.PrimaryColumn.DbFieldName);
 
         private void CheckColumns(SqlCommand cmd, EntityConfig entity)
         {
-            using (var reader = cmd.ExecuteReader())
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                while (reader.Read())
+                var field = reader.GetString(0);
+                var col = entity.Properties.FirstOrDefault(p =>
+                    string.Equals(p.Name, field, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(p.DbFieldName, field, StringComparison.OrdinalIgnoreCase));
+
+                if (col == null)
                 {
-                    var field = reader.GetString(0);
-                    var col = entity.Properties.FirstOrDefault(p =>
-                        string.Equals(p.Name, field, StringComparison.OrdinalIgnoreCase) ||
-                        string.Equals(p.DbFieldName, field, StringComparison.OrdinalIgnoreCase));
-
-                    if (col == null)
+                    Trace.WriteLine($" ++++ {field}");
+                    entity.Add(col = new FieldConfig
                     {
-                        Trace.WriteLine($" ++++ {field}");
-                        entity.Add(col = new FieldConfig
-                        {
-                            Name = field,
-                            DbFieldName = field,
-                            Entity = Entity
-                        });
-                        if (!reader.IsDBNull(7))
-                            col.Caption = col.Description = reader.GetString(7);
+                        Name = field,
+                        DbFieldName = field,
+                        Entity = Entity
+                    });
+                    if (!reader.IsDBNull(7))
+                        col.Caption = col.Description = reader.GetString(7);
 
-                    }
-                    else
-                    {
-                        Trace.WriteLine($" ==== {col.Name}");
-                        col.Option.ReferenceKey = Guid.Empty;
-                        col.Option.IsLink = false;
-                        col.DbFieldName = field;
+                }
+                else
+                {
+                    Trace.WriteLine($" ==== {col.Name}");
+                    col.Option.ReferenceKey = Guid.Empty;
+                    col.Option.IsLink = false;
+                    col.DbFieldName = field;
 
-                    }
-                    col.NoStorage = false;
-                    col.DbType = reader.GetString(1);
-                    col.DbNullable = reader.GetBoolean(5);
-                    col.Datalen = Convert.ToInt32(reader.GetValue(2));
-                    col.Scale = Convert.ToInt32(reader.GetValue(3));
-                    col.DbIndex = Convert.ToInt32(reader.GetValue(6));
-                    col.IsPrimaryKey = !reader.IsDBNull(8);
-                    col.IsIdentity = reader.GetBoolean(9);
-                    col.IsCompute = reader.GetBoolean(10);
-                    if (col.CsType == null)
-                        DataTypeHelper.ToStandardByDbType(col,col.DbType);
+                }
+                col.NoStorage = false;
+                col.DbType = reader.GetString(1);
+                col.DbNullable = reader.GetBoolean(5);
+                col.Datalen = Convert.ToInt32(reader.GetValue(2));
+                col.Scale = Convert.ToInt32(reader.GetValue(3));
+                col.DbIndex = Convert.ToInt32(reader.GetValue(6));
+                col.IsPrimaryKey = !reader.IsDBNull(8);
+                col.IsIdentity = reader.GetBoolean(9);
+                col.IsCompute = reader.GetBoolean(10);
+                if (col.CsType == null)
+                    DataTypeHelper.ToStandardByDbType(col, col.DbType);
 
-                    if (col.CsType != null && col.CsType.Equals("string", StringComparison.OrdinalIgnoreCase))
-                    {
-                        col.Datalen = Convert.ToInt32(reader.GetValue(4));
-                        col.Scale = 0;
-                    }
+                if (col.CsType != null && col.CsType.Equals("string", StringComparison.OrdinalIgnoreCase))
+                {
+                    col.Datalen = Convert.ToInt32(reader.GetValue(4));
+                    col.Scale = 0;
                 }
             }
         }
@@ -245,7 +237,7 @@ ORDER BY [Tables].object_id, [Columns].column_id";
         public void IntCheck()
         {
             foreach (var schema in Project.Entities)
-                foreach (var col in schema.PublishProperty)
+                foreach (var col in schema.Properties)
                 {
                     if (col.CsType == "string")
                         col.DbNullable = true;
@@ -259,75 +251,71 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                 Password = Project.DbPassWord,
                 DataSource = Project.DbSoruce
             };
-            using (var connection = new SqlConnection(csb.ConnectionString))
+            using var connection = new SqlConnection(csb.ConnectionString);
+            connection.Open();
+            foreach (var schema in Project.Entities)
             {
-                connection.Open();
-                foreach (var schema in Project.Entities)
+                TraceMessage.DefaultTrace.Message2 = schema.ReadTableName;
+                foreach (var col in schema.Properties)
                 {
-                    TraceMessage.DefaultTrace.Message2 = schema.ReadTableName;
-                    foreach (var col in schema.PublishProperty)
+                    TraceMessage.DefaultTrace.Message3 = col.DbFieldName;
+                    if (col.DbIndex <= 0)
                     {
-                        TraceMessage.DefaultTrace.Message3 = col.DbFieldName;
-                        if (col.DbIndex <= 0)
-                        {
-                            TraceMessage.DefaultTrace.Track = "字段不存在";
-                            continue;
-                        }
-
-                        var checkInt = true;
-                        var isInt = true;
-                        switch (col.CsType.ToLower())
-                        {
-                            case "guid":
-                            case "datetime":
-                            case "string":
-                            case "bool":
-                            case "boolean":
-                                isInt = false;
-                                checkInt = false;
-                                break;
-                        }
-
-                        var sql1 = $"SELECT [{col.DbFieldName}] FROM [{schema.ReadTableName}]";
-                        using (var cmd = new SqlCommand(sql1, connection))
-                        {
-                            using (var reader = cmd.ExecuteReader())
-                            {
-                                while (reader.Read())
-                                {
-                                    if (reader.IsDBNull(0)) col.DbNullable = true;
-                                    if (checkInt)
-                                    {
-                                        var obj = reader[0].ToString();
-                                        TraceMessage.DefaultTrace.Message4 = obj;
-                                        if (obj.Contains('.') && long.Parse(obj.Split('.')[1]) > 0) isInt = false;
-                                    }
-
-                                    if (!isInt) break;
-                                }
-                            }
-                        }
-
-                        if (checkInt && !isInt && (col.CsType != "decimal" || col.DbType != "decimal"))
-                        {
-                            TraceMessage.DefaultTrace.Track = "改变字段类型";
-                            col.CsType = "decimal";
-                            col.DbType = "decimal";
-                        }
-
-                        //if (!col.DbNullable)
-                        //{
-                        //    if (col.Nullable)
-                        //        TraceMessage.DefaultTrace.Track = "字段已改成不为空";
-                        //    col.Nullable = false;
-                        //}
-                        col.DbType = SqlServerHelper.ToDataBaseType(col);
+                        TraceMessage.DefaultTrace.Track = "字段不存在";
+                        continue;
                     }
-                }
 
-                CheckColumns(connection);
-                connection.Close();
+                    var checkInt = true;
+                    var isInt = true;
+                    switch (col.CsType.ToLower())
+                    {
+                        case "guid":
+                        case "datetime":
+                        case "string":
+                        case "bool":
+                        case "boolean":
+                            isInt = false;
+                            checkInt = false;
+                            break;
+                    }
+
+                    var sql1 = $"SELECT [{col.DbFieldName}] FROM [{schema.ReadTableName}]";
+                    using (var cmd = new SqlCommand(sql1, connection))
+                    {
+                        using var reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            if (reader.IsDBNull(0)) col.DbNullable = true;
+                            if (checkInt)
+                            {
+                                var obj = reader[0].ToString();
+                                TraceMessage.DefaultTrace.Message4 = obj;
+                                if (obj.Contains('.') && long.Parse(obj.Split('.')[1]) > 0) isInt = false;
+                            }
+
+                            if (!isInt) break;
+                        }
+                    }
+
+                    if (checkInt && !isInt && (col.CsType != "decimal" || col.DbType != "decimal"))
+                    {
+                        TraceMessage.DefaultTrace.Track = "改变字段类型";
+                        col.CsType = "decimal";
+                        col.DbType = "decimal";
+                    }
+
+                    //if (!col.DbNullable)
+                    //{
+                    //    if (col.Nullable)
+                    //        TraceMessage.DefaultTrace.Track = "字段已改成不为空";
+                    //    col.Nullable = false;
+                    //}
+                    col.DbType = SqlServerHelper.ToDataBaseType(col);
+                }
             }
+
+            CheckColumns(connection);
+            connection.Close();
         }
 
         public void CheckColumns()
@@ -339,21 +327,17 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                 Password = Project.DbPassWord,
                 DataSource = Project.DbSoruce
             };
-            using (var connection = new SqlConnection(csb.ConnectionString))
-            {
-                connection.Open();
-                CheckColumns(connection);
-                connection.Close();
-            }
+            using var connection = new SqlConnection(csb.ConnectionString);
+            connection.Open();
+            CheckColumns(connection);
+            connection.Close();
         }
 
         private void CheckColumns(SqlConnection connection)
         {
-            using (var cmd = new SqlCommand(sql, connection))
-            {
-                cmd.Parameters.Add(parameter = new SqlParameter("@entity", SqlDbType.NVarChar, 256));
-                foreach (var schema in Project.Entities) CheckColumns(cmd, schema);
-            }
+            using var cmd = new SqlCommand(sql, connection);
+            cmd.Parameters.Add(parameter = new SqlParameter("@entity", SqlDbType.NVarChar, 256));
+            foreach (var schema in Project.Entities) CheckColumns(cmd, schema);
         }
 
         public static string SetPrimary(EntityConfig entity)
@@ -387,30 +371,26 @@ PK_{0} PRIMARY KEY CLUSTERED
                 Password = pwd,
                 DataSource = host
             };
-            using (var connection = new SqlConnection(csb.ConnectionString))
+            using var connection = new SqlConnection(csb.ConnectionString);
+            connection.Open();
+            using (var cmd = new SqlCommand(sql, connection))
             {
-                connection.Open();
-                using (var cmd = new SqlCommand(sql, connection))
+                cmd.Parameters.Add(parameter = new SqlParameter("@entity", SqlDbType.NVarChar, 256));
+                foreach (var schema in Project.Entities)
                 {
-                    cmd.Parameters.Add(parameter = new SqlParameter("@entity", SqlDbType.NVarChar, 256));
-                    foreach (var schema in Project.Entities)
+                    TraceMessage.DefaultTrace.Message2 = schema.ReadTableName;
+                    parameter.Value = schema.ReadTableName;
+                    var sqls = AlertTable(cmd, schema);
+                    foreach (var sq in sqls)
                     {
-                        TraceMessage.DefaultTrace.Message2 = schema.ReadTableName;
-                        parameter.Value = schema.ReadTableName;
-                        var sqls = AlertTable(cmd, schema);
-                        foreach (var sq in sqls)
-                        {
-                            TraceMessage.DefaultTrace.Track = sq;
-                            using (var cmd2 = new SqlCommand(sq, connection))
-                            {
-                                cmd2.ExecuteNonQuery();
-                            }
-                        }
+                        TraceMessage.DefaultTrace.Track = sq;
+                        using var cmd2 = new SqlCommand(sq, connection);
+                        cmd2.ExecuteNonQuery();
                     }
                 }
-
-                connection.Close();
             }
+
+            connection.Close();
         }
 
 

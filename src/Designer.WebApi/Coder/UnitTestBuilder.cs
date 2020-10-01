@@ -1,10 +1,12 @@
 using System.IO;
 using System.Text;
+using Agebull.EntityModel.Config;
 using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer.WebApi
 {
-    public sealed class UnitTestBuilder : ModelCoderBase
+    public sealed class UnitTestBuilder<TModel> : ModelCoderBase<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         /// <summary>
         /// ÊÇ·ñ¿ÉÐ´

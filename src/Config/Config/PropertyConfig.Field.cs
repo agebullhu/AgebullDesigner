@@ -375,6 +375,15 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"能否存储空值")]
         public bool DbNullable => Field.DbNullable;
 
+        /// <summary>
+        /// 构建数据库索引
+        /// </summary>
+        /// <remark>
+        /// 构建数据库索引的优化选项
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据库"), DisplayName(@"构建数据库索引"), Description("构建数据库索引的优化选项")]
+        public bool CreateDbIndex => Field.CreateDbIndex;
 
         /// <summary>
         /// 数据长度
@@ -384,7 +393,11 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"数据长度"), Description("文本或二进制存储的最大长度")]
-        public int Datalen => Field.Datalen;
+        public int Datalen
+        {
+            get => Field.Datalen;
+            set => Field.Datalen = value;
+        }
 
         /// <summary>
         /// 数组长度
@@ -394,7 +407,11 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"数组长度"), Description("数组长度")]
-        public string ArrayLen => Field.ArrayLen;
+        public string ArrayLen
+        {
+            get => Field.ArrayLen;
+            set => Field.ArrayLen = value;
+        }
 
         /// <summary>
         /// 存储精度
@@ -404,7 +421,11 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"存储精度"), Description("存储精度")]
-        public int Scale => Field.Scale;
+        public int Scale
+        {
+            get => Field.Scale;
+            set => Field.Scale = value;
+        }
 
         /// <summary>
         /// 存储列ID

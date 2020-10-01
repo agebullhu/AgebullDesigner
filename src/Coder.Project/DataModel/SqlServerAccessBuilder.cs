@@ -9,7 +9,8 @@ using Agebull.EntityModel.Config.SqlServer;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class SqlServerAccessBuilder : AccessBuilderBase
+    public sealed class SqlServerAccessBuilder<TModel> : AccessBuilderBase<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         /// <summary>
         /// 名称
@@ -421,12 +422,12 @@ UPDATE [{ContextWriteTable}] SET");
             return code.ToString();
         }
 
-        private string Name(PropertyConfig col, string pre)
+        private string Name(IFieldConfig col, string pre)
         {
             return col.CustomType == null ? $"{pre}{col.Name}" : $"({col.CustomType}){pre}{col.Name}";
         }
 
-        private string PropertyName2(PropertyConfig col, string pre)
+        private string PropertyName2(IFieldConfig col, string pre)
         {
             return col.CustomType == null ? $"{pre}{col.Name}" : $"({col.CsType}){pre}{col.Name}";
         }
@@ -482,7 +483,6 @@ UPDATE [{ContextWriteTable}] SET");
             cmd.Parameters.Add(parameter);");
                         break;
                     case "DateTime":
-                        property.Field.DbNullable = true;
                         code.Append(property.Nullable
                                 ? $@"
             {(isFirstNull ? "var " : "")}isNull = entity.{property.Name} == null || entity.{property.Name}.Value.Year < 1900;

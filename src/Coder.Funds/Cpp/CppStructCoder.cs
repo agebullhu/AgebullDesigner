@@ -7,7 +7,8 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class CppStructCoder : CoderWithModel
+    public sealed class CppStructCoder<TModel> : CoderWithModel<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         #region 结构定义
 
@@ -94,25 +95,12 @@ const size_t TSON_BUFFER_LEN_{Model.Name.ToUpper()} = {GetEntitySerializeLen(Mod
 
         #endregion
         #region 方法定义
-        private static string GetEntitySerializeLen(ModelConfig entity)
+        private static string GetEntitySerializeLen(IEntityConfig entity)
         {
             var code = new StringBuilder();
             code.Append($"SERIALIZE_BASE_LEN + sizeof({entity.Name})");
             int len = entity.LastProperties.Count;
             foreach (var property in entity.UserProperty)
-            {
-                len += GetFieldSerializeLen(code, property.Field);
-            }
-            code.Append($" + {len}");
-            return code.ToString();
-        }
-
-        private static string GetEntitySerializeLen(EntityConfig entity)
-        {
-            var code = new StringBuilder();
-            code.Append($"SERIALIZE_BASE_LEN + sizeof({entity.Name})");
-            int len = entity.LastProperties.Count;
-            foreach (var property in entity.CppProperty)
             {
                 len += GetFieldSerializeLen(code, property);
             }
@@ -120,7 +108,8 @@ const size_t TSON_BUFFER_LEN_{Model.Name.ToUpper()} = {GetEntitySerializeLen(Mod
             return code.ToString();
         }
 
-        private static int GetFieldSerializeLen(StringBuilder code, FieldConfig field)
+
+        private static int GetFieldSerializeLen(StringBuilder code, IFieldConfig field)
         {
             int flen = 0;
 
@@ -383,7 +372,7 @@ void Deserialize(Deserializer& reader, {Model.Name}* field)
             return code.ToString();
         }
 
-        private string ToSerialize(PropertyConfig property)
+        private string ToSerialize(IFieldConfig property)
         {
             var field = property;
             EntityConfig stru = GetLcEntity(property);
@@ -435,7 +424,7 @@ void Deserialize(Deserializer& reader, {Model.Name}* field)
     }}";
         }
 
-        private string DeserializeCode(PropertyConfig property)
+        private string DeserializeCode(IFieldConfig property)
         {
             var field = property;
             EntityConfig stru = GetLcEntity(field);
@@ -512,15 +501,15 @@ void {Model.Name}::SetValue(const char* field, const char* value)
         {
 
             var code = new StringBuilder();
-            foreach (var property in entity.UserProperty)
-            {
-                var field = property;
-                if (CppTypeHelper.ToCppLastType(field.CppLastType ?? field.CppType) is EntityConfig friend)
-                {
-                    code.Append($@"
-#include <{friend.Parent.Name}/{friend.Name}.h>");
-                }
-            }
+//            foreach (var property in entity.UserProperty)
+//            {
+//                var field = property;
+//                if (CppTypeHelper.ToCppLastType(field.CppLastType ?? field.CppType) is IEntityConfig friend)
+//                {
+//                    code.Append($@"
+//#include <{friend.Parent.Name}/{friend.Name}.h>");
+//                }
+//            }
             if (!entity.IsReference)
                 return code.ToString();
             var lc_entity = GlobalConfig.GetEntity(p => !p.IsReference && p.Option.ReferenceTag != null && p.Option.ReferenceTag.Contains(entity.Option.ReferenceTag));
@@ -573,7 +562,7 @@ void CopyToEs(const {lc_entity.Name}* lc_field, {es_entity.Name}* es_field);");
             var lc_entity = GlobalConfig.GetEntity(p => !p.IsReference && p.Option.ReferenceTag != null && p.Option.ReferenceTag.Contains(es_entity.Option.ReferenceTag));
             if (lc_entity == null)
                 return null;
-            var maps = new Dictionary<FieldConfig, FieldConfig>();
+            var maps = new Dictionary<IFieldConfig, IFieldConfig>();
             foreach (var property in es_entity.UserProperty.Where(p => p.Option.ReferenceTag != null))
             {
                 var link = lc_entity.LastProperties.FirstOrDefault(p => p.Option.ReferenceTag != null && p.Option.ReferenceTag.Contains(property.Option.ReferenceTag));
@@ -588,7 +577,7 @@ void CopyToEs(const {lc_entity.Name}* lc_field, {es_entity.Name}* es_field);");
                 }
                 if (link != null)
                 {
-                    maps.Add(property.Field, link);
+                    maps.Add(property, link);
                 }
             }
 
@@ -664,14 +653,14 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
 
         #region 类型代码
 
-        private static bool IsEnumCode(FieldConfig srcField)
+        private static bool IsEnumCode(IFieldConfig srcField)
         {
             if (srcField.EnumConfig == null)
                 return false;
             var type = CppProject.Instance.GetTypedefByTag(srcField.EnumConfig.Option.ReferenceTag);
             return type != null;
         }
-        public static bool EnumFieldCopyToTypedef(StringBuilder code, FieldConfig srcField, string src_field_name,
+        public static bool EnumFieldCopyToTypedef(StringBuilder code, IFieldConfig srcField, string src_field_name,
             string dest_field_name)
         {
             var type = CppProject.Instance.GetTypedefByTag(srcField.EnumConfig.Option.ReferenceTag);
@@ -708,7 +697,7 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
             return true;
         }
 
-        public static bool EnumFieldCopyFromTypedef(StringBuilder code, FieldConfig srcField, string src_field_name,
+        public static bool EnumFieldCopyFromTypedef(StringBuilder code, IFieldConfig srcField, string src_field_name,
             string dest_field_name)
         {
             if (srcField.EnumConfig == null)
@@ -746,13 +735,13 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
             return true;
         }
 
-        public static void FriendFieldCopy(StringBuilder code, FieldConfig srcField, FieldConfig destField,
+        public static void FriendFieldCopy(StringBuilder code, IFieldConfig srcField, IFieldConfig destField,
             string src, string dest, string cpName)
         {
             code.Append(FriendFieldCopy(srcField, destField, $"{src}->{srcField.Name}", $"{dest}->{destField.Name}",
                 cpName));
         }
-        public static string FriendFieldCopy_Tm_FromEs(FieldConfig srcField, string src_field_name, string dest_field_name)
+        public static string FriendFieldCopy_Tm_FromEs(IFieldConfig srcField, string src_field_name, string dest_field_name)
         {
             if (!string.IsNullOrWhiteSpace(srcField.ArrayLen))
             {
@@ -763,7 +752,7 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
             return $@"
     {dest_field_name} = string2time({src_field_name});//{srcField.Caption}";
         }
-        public static string FriendFieldCopy_Tm_ToEs(FieldConfig srcField, string src_field_name, string dest_field_name)
+        public static string FriendFieldCopy_Tm_ToEs(IFieldConfig srcField, string src_field_name, string dest_field_name)
         {
             if (!string.IsNullOrWhiteSpace(srcField.ArrayLen))
             {
@@ -774,7 +763,7 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
             return $@"
     time2string({src_field_name},{dest_field_name});//{srcField.Caption}";
         }
-        public static string FriendFieldCopy_IntDecimal_FromEs(FieldConfig srcField, string src_field_name, string dest_field_name)
+        public static string FriendFieldCopy_IntDecimal_FromEs(IFieldConfig srcField, string src_field_name, string dest_field_name)
         {
             if (!string.IsNullOrWhiteSpace(srcField.ArrayLen))
             {
@@ -785,7 +774,7 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
             return $@"
     {dest_field_name} = DoubleToInt64({src_field_name});//{srcField.Caption}";
         }
-        public static string FriendFieldCopy_IntDecimal_ToEs(FieldConfig srcField, string src_field_name, string dest_field_name)
+        public static string FriendFieldCopy_IntDecimal_ToEs(IFieldConfig srcField, string src_field_name, string dest_field_name)
         {
             if (!string.IsNullOrWhiteSpace(srcField.ArrayLen))
             {
@@ -797,21 +786,21 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
     {dest_field_name} = Int64ToDouble({src_field_name});//{srcField.Caption}";
         }
 
-        public static string FriendFieldCopy(FieldConfig srcField, FieldConfig destField, string src_field_name,
+        public static string FriendFieldCopy(IFieldConfig srcField, IFieldConfig destField, string src_field_name,
             string dest_field_name, string cpName)
         {
             var type = CppTypeHelper.ToCppLastType(srcField.CppLastType ?? srcField.CppType);
-            if (type is EntityConfig stru)
-            {
-                if (srcField.CppLastType == destField.CppLastType)
-                    return
-                        $@"
-    memcpy(&{dest_field_name},&{src_field_name},sizeof({destField.CppLastType}));//{
-                            srcField.Caption}";
-                return $@"
-    {cpName}(&{src_field_name},&{dest_field_name});//{srcField.Caption}";
+    //        if (type is EntityConfig stru)
+    //        {
+    //            if (srcField.CppLastType == destField.CppLastType)
+    //                return
+    //                    $@"
+    //memcpy(&{dest_field_name},&{src_field_name},sizeof({destField.CppLastType}));//{
+    //                        srcField.Caption}";
+    //            return $@"
+    //{cpName}(&{src_field_name},&{dest_field_name});//{srcField.Caption}";
 
-            }
+    //        }
             if (srcField.CppLastType == "char")
             {
                 if (srcField.Datalen > 1)
@@ -855,7 +844,7 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
     {dest_field_name} = {src_field_name};//{srcField.Caption}";
         }
 
-        public static void FriendFieldCopyString(StringBuilder code, FieldConfig field,
+        public static void FriendFieldCopyString(StringBuilder code, IFieldConfig field,
             string src_field_name, string dest_field_name)
         {
             if (field.CppLastType == "char")
@@ -914,18 +903,15 @@ const FIELD_INDEX FIELD_INDEX_{Model.Name.ToUpper()}_{property.Name.ToUpper()} =
 
         #region 取得非引用对象
 
-        private EntityConfig GetLcEntity(FieldConfig field)
+        private string GetLcEntity(IFieldConfig field)
         {
-            return CppTypeHelper.ToCppLastType(field.CppLastType ?? field.CppType) as EntityConfig;
+            return CppTypeHelper.ToCppLastType(field.CppLastType ?? field.CppType);
         }
-        private EntityConfig GetLcEntity(PropertyConfig field)
-        {
-            return CppTypeHelper.ToCppLastType(field.CppLastType ?? field.CppType) as EntityConfig;
-        }
+
         #endregion
         #region 文本写值方法
 
-        private void SetValue2(StringBuilder code, PropertyConfig property)
+        private void SetValue2(StringBuilder code, IFieldConfig property)
         {
             var field = property;
             EntityConfig stru = GetLcEntity(field);

@@ -510,7 +510,7 @@ void Deserialize(Deserializer& reader, {1}* field)
             return code.ToString();
         }
 
-        private static void ToCppWriteCode(StringBuilder code, FieldConfig field)
+        private static void ToCppWriteCode(StringBuilder code, IFieldConfig field)
         {
             var type = CppTypeHelper.ToCppLastType(field.CppLastType);
             if (type is EntityConfig stru)
@@ -576,7 +576,7 @@ void Deserialize(Deserializer& reader, {1}* field)
             }
         }
 
-        private static void ToCppReadCode(StringBuilder code, FieldConfig field)
+        private static void ToCppReadCode(StringBuilder code, IFieldConfig field)
         {
             var type = CppTypeHelper.ToCppLastType(field.CppLastType);
             if (type is EntityConfig stru)
@@ -694,7 +694,7 @@ void CopyToCache({entityConfig.ReadTableName}* field)
             return code.ToString();
         }
 
-        private static void ToCppCopyCode(StringBuilder code, FieldConfig field)
+        private static void ToCppCopyCode(StringBuilder code, IFieldConfig field)
         {
             var type = CppTypeHelper.ToCppLastType(field.CppLastType);
             if (type is EntityConfig)
@@ -832,7 +832,7 @@ string toJson(const {entityConfig.Name}* value)
         }
 
 
-        private static void ToJsonCode(StringBuilder code, FieldConfig field, bool isFirst)
+        private static void ToJsonCode(StringBuilder code, IFieldConfig field, bool isFirst)
         {
             var type = CppTypeHelper.ToCppLastType(field.CppLastType);
             if (type is EntityConfig stru)
@@ -875,14 +875,14 @@ string toJson(const {entityConfig.Name}* value)
             }
         }
 
-        private static void FriendJson(StringBuilder code, FieldConfig field, bool isFirst)
+        private static void FriendJson(StringBuilder code, IFieldConfig field, bool isFirst)
         {
             code.AppendFormat(@"
     //{0}
     ostr << ""{2}\""{1}\"":"" << toJson(&value->{1});", field.Caption, field.Name, isFirst ? null : ",");
         }
 
-        private static void NumberJson(StringBuilder code, FieldConfig field, bool isFirst)
+        private static void NumberJson(StringBuilder code, IFieldConfig field, bool isFirst)
         {
             code.AppendFormat(@"
     //{0}
@@ -890,7 +890,7 @@ string toJson(const {entityConfig.Name}* value)
         ostr << ""{2}\""{1}\"":\"""" << value->{1} << '\""';", field.Caption, field.Name, isFirst ? null : ",");
         }
 
-        private static void StringJson(StringBuilder code, FieldConfig field, string len, bool isFirst)
+        private static void StringJson(StringBuilder code, IFieldConfig field, string len, bool isFirst)
         {
             if (!string.IsNullOrWhiteSpace(len))
                 code.AppendFormat(@"
@@ -903,7 +903,7 @@ string toJson(const {entityConfig.Name}* value)
     if(value->{1})
         ostr << ""{2}\""{1}\"":\"""" << value->{1} << '\""';", field.Caption, field.Name, isFirst ? null : ",");
         }
-        private static void ArrayJson(StringBuilder code, FieldConfig field, string len, bool isFirst)
+        private static void ArrayJson(StringBuilder code, IFieldConfig field, string len, bool isFirst)
         {
             code.AppendFormat(@"
     //{0}
@@ -951,7 +951,7 @@ void print_screen(const {0}* value)
         }
 
 
-        private static void ToCppCoutCode(StringBuilder code, FieldConfig field)
+        private static void ToCppCoutCode(StringBuilder code, IFieldConfig field)
         {
             if (!string.IsNullOrWhiteSpace(field.Caption))
                 code.AppendFormat(@"
@@ -1004,7 +1004,7 @@ void print_screen(const {0}* value)
             }
         }
 
-        private static void EnumOut(StringBuilder code, FieldConfig field, TypedefItem typedef)
+        private static void EnumOut(StringBuilder code, IFieldConfig field, TypedefItem typedef)
         {
             code.AppendFormat(@""";");
             code.AppendFormat(@"
@@ -1021,7 +1021,7 @@ void print_screen(const {0}* value)
     }");
         }
 
-        private static void ArrayOut(StringBuilder code, FieldConfig field, string len)
+        private static void ArrayOut(StringBuilder code, IFieldConfig field, string len)
         {
             code.Append(@""";");
 
@@ -1270,7 +1270,7 @@ void log(const {entityConfig.Name}* value,int type,int level)
         }
 
 
-        private static void ToLogCode(StringBuilder code, FieldConfig field)
+        private static void ToLogCode(StringBuilder code, IFieldConfig field)
         {
             if (field.IsIntDecimal)
             {
@@ -1334,7 +1334,7 @@ void log(const {entityConfig.Name}* value,int type,int level)
                 ArrayLog(code, field, typedef.ArrayLen);
             }
         }
-        private static void TypeDefLog(StringBuilder code, FieldConfig field, TypedefItem typedef)
+        private static void TypeDefLog(StringBuilder code, IFieldConfig field, TypedefItem typedef)
         {
             code.AppendFormat(@"
     ostr << "",\""{0}({1})\"":"";
@@ -1351,37 +1351,37 @@ void log(const {entityConfig.Name}* value,int type,int level)
     }");
         }
 
-        private static void CharLog(StringBuilder code, FieldConfig field)
+        private static void CharLog(StringBuilder code, IFieldConfig field)
         {
             code.AppendFormat(@"
     ostr << "",\""{0}({1})\"":"" << value->{1};", field.Caption, field.Name);
         }
-        private static void InlineLog(StringBuilder code, FieldConfig field)
+        private static void InlineLog(StringBuilder code, IFieldConfig field)
         {
             code.AppendFormat(@"
     ostr << "",\""{0}({1})\"":"" << to_log_text(value->{1});", field.Caption, field.Name);
         }
 
-        private static void FriendLog(StringBuilder code, FieldConfig field)
+        private static void FriendLog(StringBuilder code, IFieldConfig field)
         {
             code.AppendFormat(@"
     ostr << "",\""{0}({1})\"":"" << to_log_text(&value->{1});", field.Caption, field.Name);
         }
-        private static void IntDecimalLog(StringBuilder code, FieldConfig field)
+        private static void IntDecimalLog(StringBuilder code, IFieldConfig field)
         {
             code.AppendFormat(@"
     if(value->{1} != 0)
         ostr << "",\""{0}({1})\"":\"""" << Int64ToDouble(value->{1}) << '\""';", field.Caption, field.Name);
         }
 
-        private static void NumberLog(StringBuilder code, FieldConfig field)
+        private static void NumberLog(StringBuilder code, IFieldConfig field)
         {
             code.AppendFormat(@"
     if(value->{1} != 0)
         ostr << "",\""{0}({1})\"":\"""" << value->{1} << '\""';", field.Caption, field.Name);
         }
 
-        private static void StringLog(StringBuilder code, FieldConfig field, string len)
+        private static void StringLog(StringBuilder code, IFieldConfig field, string len)
         {
             if (!string.IsNullOrWhiteSpace(len))
                 code.AppendFormat(@"
@@ -1392,7 +1392,7 @@ void log(const {entityConfig.Name}* value,int type,int level)
     if(value->{1})
         ostr << "",\""{0}({1})\"":\"""" << value->{1} << '\""';", field.Caption, field.Name);
         }
-        private static void ArrayLog(StringBuilder code, FieldConfig field, string len)
+        private static void ArrayLog(StringBuilder code, IFieldConfig field, string len)
         {
             code.AppendFormat(@"
     ostr << "",\""{0}({1})\"":["";", field.Caption, field.Name);

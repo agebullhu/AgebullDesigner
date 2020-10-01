@@ -21,7 +21,7 @@ namespace Agebull.EntityModel.Config
     /// 实体配置
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public partial class ModelConfig : ProjectChildConfigBase
+    public partial class ModelConfig : ProjectChildConfigBase, IEntityConfig
     {
 
         #region 系统
@@ -177,6 +177,14 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"主键字段"), Description("主键字段")]
         public PropertyConfig PrimaryColumn => Properties.FirstOrDefault(p => Entity.PrimaryColumn == p.Field);
+        /// <summary>
+        /// 主键字段
+        /// </summary>
+        /// <remark>
+        /// 主键字段
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        IFieldConfig IEntityConfig.PrimaryColumn => PrimaryColumn;
 
         /// <summary>
         /// 是否有主键

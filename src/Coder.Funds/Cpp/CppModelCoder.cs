@@ -5,7 +5,8 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class CppModelCoder : CoderWithModel
+    public sealed class CppModelCoder<TModel> : CoderWithModel<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         #region 类实现代码
 
@@ -109,7 +110,7 @@ public:
             return code.Replace("\n", "\n" + sb).ToString();
         }
 
-        private static void SetValue(StringBuilder code, PropertyConfig property)
+        private static void SetValue(StringBuilder code, IFieldConfig property)
         {
             var field = property;
             var type = CppTypeHelper.ToCppLastType(field.CppLastType);

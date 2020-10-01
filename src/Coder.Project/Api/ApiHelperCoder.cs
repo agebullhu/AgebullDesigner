@@ -14,7 +14,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public static string InputConvert(ModelConfig model)
+        public static string InputConvert(IEntityConfig model)
         {
             if (model.IsUiReadOnly)
                 return null;
@@ -27,8 +27,8 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             //{group.Key ?? "普通字段"}");
                 foreach (var pro in group.OrderBy(p => p.Index))
                 {
-                    var field = pro.Field;
-                    if (field == model.Entity.PrimaryColumn)
+                    var field = pro;
+                    if (field == model.PrimaryColumn)
                     {
                         continue;
                     }

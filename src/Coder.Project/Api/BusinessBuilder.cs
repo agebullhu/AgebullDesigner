@@ -8,7 +8,8 @@ namespace Agebull.EntityModel.RobotCoder
     /// <summary>
     /// 业务逻辑对象生成器
     /// </summary>
-    public sealed class BusinessBuilder : CoderWithModel
+    public sealed class BusinessBuilder<TModel> : CoderWithModel<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
 
         /// <summary>
@@ -219,7 +220,7 @@ namespace {NameSpace}.BusinessLogic
                 var cnode = new Agebull.EntityModel.EasyUI.EasyUiTreeNode
                 {{
                     ID = ch.{Model.PrimaryField},
-                    Text = ch.{Model.Properties.FirstOrDefault()?.Name ?? Model.Properties[1].Name}.ToString(),
+                    Text = ch.{Model.LastProperties.FirstOrDefault()?.Name ?? Model.LastProperties[1].Name}.ToString(),
                     IsFolder = true,
                     Tag = pid.ToString()
                 }};
@@ -279,11 +280,11 @@ namespace {NameSpace}.BusinessLogic
                 }}).ToList();
         }}");
             }
-
-            foreach (var cmd in Model.Commands.Where(p => !p.IsLocalAction))
-            {
-                hase = true;
-                code.Append($@"
+            if (Model is ModelConfig model)
+                foreach (var cmd in model.Commands.Where(p => !p.IsLocalAction))
+                {
+                    hase = true;
+                    code.Append($@"
 
         /// <summary>
         ///     {ToRemString(cmd.Caption)}
@@ -296,7 +297,7 @@ namespace {NameSpace}.BusinessLogic
             //Access.SetValue(p => p.Id, 0, id);
             return true;
         }}");
-            }
+                }
             if (!hase)
                 return null;
             code.Append(@"
@@ -423,9 +424,10 @@ namespace {NameSpace}.BusinessLogic
         private string CommandCode()
         {
             var code = new StringBuilder();
-            foreach (var cmd in Model.Commands.Where(p => !p.IsLocalAction && !p.IsSingleObject))
-            {
-                code.Append($@"
+            if (Model is ModelConfig model)
+                foreach (var cmd in model.Commands.Where(p => !p.IsLocalAction && !p.IsSingleObject))
+                {
+                    code.Append($@"
 
         /// <summary>
         ///     {ToRemString(cmd.Caption)}
@@ -442,7 +444,7 @@ namespace {NameSpace}.BusinessLogic
             }}
             return true;
         }}");
-            }
+                }
 
             return code.ToString();
         }

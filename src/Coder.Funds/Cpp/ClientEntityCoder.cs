@@ -5,7 +5,8 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class ClientEntityCoder : ModelCoderBase
+    public sealed class ClientEntityCoder<TModel> : ModelCoderBase<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
 
         /// <summary>
@@ -249,7 +250,7 @@ namespace {NameSpace}
             return true;
         }
 
-        private void PropertyCode(PropertyConfig property, int index, StringBuilder code)
+        private void PropertyCode(IFieldConfig property, int index, StringBuilder code)
         {
             code.Append($@"
         /// <summary>
@@ -282,7 +283,7 @@ namespace {NameSpace}
         /// <param name="property"></param>
         /// <param name="index"></param>
         /// <param name="code"></param>
-        private void ComputePropertyCode(PropertyConfig property, int index, StringBuilder code)
+        private void ComputePropertyCode(IFieldConfig property, int index, StringBuilder code)
         {
             
             if (string.IsNullOrWhiteSpace(property.ComputeGetCode) && string.IsNullOrWhiteSpace(property.ComputeSetCode))
@@ -356,7 +357,7 @@ namespace {NameSpace}
             return code.ToString();
         }
 
-        private void ToStringCode(StringBuilder code, PropertyConfig property)
+        private void ToStringCode(StringBuilder code, IFieldConfig property)
         {
             string caption = string.IsNullOrWhiteSpace(property.Caption) ? property.Name : property.Caption;
             if (!string.IsNullOrWhiteSpace(property.ArrayLen))

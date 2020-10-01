@@ -23,11 +23,11 @@ namespace Agebull.EntityModel.Config
             Action<FieldConfig, string, bool> generalAction)
         {
             var type = ToCppLastType(field.CppLastType ?? field.CppType);
-            if (type is EntityConfig stru)
-            {
-                entityAction(field, stru, !string.IsNullOrWhiteSpace(field.ArrayLen));
-                return;
-            }
+            //if (type is EntityConfig stru)
+            //{
+            //    entityAction(field, stru, !string.IsNullOrWhiteSpace(field.ArrayLen));
+            //    return;
+            //}
             var tp = type.ToString();
             if (tp == "char" && field.Datalen > 1)
             {
@@ -76,12 +76,12 @@ namespace Agebull.EntityModel.Config
             if (type == null)
                 return;
             int len;
-            if (type is EntityConfig stru)
-            {
-                int.TryParse(field.ArrayLen, out len);
-                entityAction(field, stru, len);
-                return;
-            }
+            //if (type is EntityConfig stru)
+            //{
+            //    int.TryParse(field.ArrayLen, out len);
+            //    entityAction(field, stru, len);
+            //    return;
+            //}
             var tp = type.ToString();
             if (tp == "char" && field.Datalen > 1)
             {
@@ -109,21 +109,21 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="cppType">C++类型</param>
         /// <returns></returns>
-        public static object ToCppLastType(string cppType)
+        public static string ToCppLastType(string cppType)
         {
             if (string.IsNullOrWhiteSpace(cppType))
             {
                 return null;
             }
             cppType = cppType.Trim();
-            return GlobalConfig.GetModel(cppType)?.CppName ?? cppType;
+            return GlobalConfig.GetEntity(cppType)?.CppName ?? cppType;
         }
 
 
         public static string CppLastType(string cppType)
         {
             cppType = cppType.Trim();
-            var stru = GlobalConfig.GetModel(cppType);
+            var stru = GlobalConfig.GetEntity(cppType);
             if (stru != null)
             {
                 return stru.Name;

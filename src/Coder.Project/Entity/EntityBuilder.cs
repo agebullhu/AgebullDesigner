@@ -1,3 +1,4 @@
+using Agebull.EntityModel.Config;
 using System.IO;
 
 namespace Agebull.EntityModel.RobotCoder
@@ -6,7 +7,8 @@ namespace Agebull.EntityModel.RobotCoder
     /// <summary>
     /// 实体代码生成器
     /// </summary>
-    public sealed class EntityBuilder : ModelCoderBase
+    public sealed class EntityBuilder<TModel> : ModelCoderBase<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         /// <summary>
         /// 名称
@@ -75,7 +77,7 @@ namespace {NameSpace}
         partial void InitEntityEditStatus();
 
         #endregion
-{GetBaseCode<EntityPropertyBuilder>()}
+{GetBaseCode<EntityPropertyBuilder<TModel>>()}
 
     }}
 }}";
@@ -88,7 +90,7 @@ namespace {NameSpace}
         protected override void CreateCustomCode(string path)
         {
             var fileName = ".cs";
-            var file = Path.Combine(path, Model.Name + fileName);
+            var file = Path.Combine(path, $"{Model.Name}{fileName}");
             if (!string.IsNullOrWhiteSpace(Model.Alias))
             {
                 var oldFile = Path.Combine(path, Model.Alias + fileName);

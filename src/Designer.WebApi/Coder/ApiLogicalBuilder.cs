@@ -10,7 +10,8 @@ namespace Agebull.EntityModel.Designer.WebApi
 {
 
 
-    public sealed class ApiLogicalBuilder : ModelCoderBase
+    public sealed class ApiLogicalBuilder<TModel> : ModelCoderBase<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         /// <summary>
         /// ÊÇ·ñ¿ÉÐ´

@@ -59,7 +59,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// <returns></returns>
         public static string HtmlCode(ModelConfig entity)
         {
-            var coder = new VueCoder
+            var coder = new VueCoder<ModelConfig>
             {
                 Model = entity,
                 Project = entity.Parent
@@ -72,7 +72,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// <returns></returns>
         public static string ScriptCode(ModelConfig entity)
         {
-            var coder = new VueCoder
+            var coder = new VueCoder<ModelConfig>
             {
                 Model = entity,
                 Project = entity.Parent

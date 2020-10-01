@@ -6,7 +6,8 @@ using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer.WebApi
 {
-    public sealed class ApiProxyBuilder : CoderWithModel
+    public sealed class ApiProxyBuilder<TModel> : CoderWithModel<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         protected override bool CanWrite => true;
         /// <summary>

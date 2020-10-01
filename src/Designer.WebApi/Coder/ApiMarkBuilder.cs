@@ -11,7 +11,8 @@ namespace Agebull.EntityModel.Designer.WebApi
 {
 
 
-    public sealed class ApiMarkBuilder : ModelCoderBase
+    public sealed class ApiMarkBuilder<TModel> : ModelCoderBase<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
 
         #region Ö÷Ìå´úÂë
@@ -335,7 +336,7 @@ AccessToken
                 if (property.IsArray)
                     code.AppendLine("[");
                 var value = property.HelloCode;
-                if (property.IsReference)
+                if (property.Option.IsReference)
                 {
                     var en = GlobalConfig.GetEntity(property.CustomType);
                     if (en != null)

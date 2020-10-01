@@ -9,7 +9,8 @@ using Agebull.EntityModel.RobotCoder.DataBase.MySql;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class MySqlAccessBuilder : AccessBuilderBase
+    public sealed class MySqlAccessBuilder<TModel> : AccessBuilderBase<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         /// <summary>
         /// 名称
@@ -56,7 +57,7 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess;
             UpdateByMidified = {Model.UpdateByModified}
             IsQuery = {Model.IsQuery}
             PrimaryKey = PrimaryKey,
-            IsIdentity = {(Model.Entity.PrimaryColumn?.IsIdentity ?? false ? "true" : "false")},
+            IsIdentity = {(Model.PrimaryColumn?.IsIdentity ?? false ? "true" : "false")},
             ReadTableName = TableName,
             WriteTableName = TableName,
             Properties = new List<EntityProperty>
@@ -73,7 +74,7 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess;
             NoInjection = true,
             UpdateByMidified = false,
             ReadTableName = FromSqlCode,
-            WriteTableName = ""{Model.Entity.SaveTableName}"",
+            WriteTableName = ""{Model.SaveTableName}"",
             LoadFields = LoadFields,
             UpdateFields = UpdateFields,
             InsertSqlCode = InsertSqlCode,
@@ -124,11 +125,12 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess;
 
         string ReadTableName()
         {
-            var primary = Model.Entity.PrimaryColumn;
-            var table = Model.Entity.ReadTableName;
+            var primary = Model.PrimaryColumn;
+            var table = Model.ReadTableName;
             var code = new StringBuilder();
             code.Append(table);
-            foreach (var releation in Model.Releations.Where(p=>p.ModelType == ReleationModelType.ExtensionProperty))
+            if(Model is ModelConfig model)
+            foreach (var releation in model.Releations.Where(p=>p.ModelType == ReleationModelType.ExtensionProperty))
             {
                 var entity = GlobalConfig.GetEntity(releation.ForeignTable);
                 var property = entity.Properties.FirstOrDefault(p => p.Name == releation.ForeignKey);
@@ -154,7 +156,7 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess;
             if (Model.IsQuery)
                 return null;
             var sql = new StringBuilder();
-            var columns = Model.Entity.DbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
+            var columns = Model.DbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
             sql.Append($@"
 INSERT INTO `{Model.SaveTableName}`
 (");
@@ -202,7 +204,8 @@ VALUES
             var sql = new StringBuilder();
             var columns = PublishDbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
             var isFirst = true;
-            foreach (var property in columns)
+
+            foreach (var property in columns.Where(p=>p.Entity == Model.Entity))
             {
                 if (isFirst)
                 {
@@ -309,10 +312,12 @@ VALUES
             }
             code.Append(@"
         }");
-            var array = Model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty).ToArray();
-            if (array.Length != 0)
+            if (Model is ModelConfig model)
             {
-                code.Append($@"
+                var array = model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty).ToArray();
+                if (array.Length != 0)
+                {
+                    code.Append($@"
 
         /// <summary>
         /// 载入后
@@ -321,25 +326,25 @@ VALUES
         public async Task AfterLoad({Model.EntityName} entity)
         {{");
 
-                foreach (var re in array)
-                {
-                    var e = GlobalConfig.GetEntity(re.ForeignTable);
-                    code.Append($@"
+                    foreach (var re in array)
+                    {
+                        var e = GlobalConfig.GetEntity(re.ForeignTable);
+                        code.Append($@"
             var access{re.Name} = Provider.ServiceProvider.CreateDataQuery<{e.Name}>();");
-                    if (re.ModelType == ReleationModelType.Children)
-                        code.Append($@"
+                        if (re.ModelType == ReleationModelType.Children)
+                            code.Append($@"
             entity.{re.Name} = await access{re.Name}.LoadByForeignKeyAsync(nameof({e.Name}.{re.ForeignKey}), entity.{re.PrimaryKey});");
-                    else
-                        code.Append($@"
+                        else
+                            code.Append($@"
             entity.{re.Name} = await access{re.Name}.FirstAsync(p=>p.{re.ForeignKey} == entity.{re.PrimaryKey});");
-                }
-                code.Append(@"
+                    }
+                    code.Append(@"
         }");
-            }
-            if (Model.IsQuery || Model.Releations.Count == 0)
-                return code.ToString();
+                }
+                if (Model.IsQuery || model.Releations.Count == 0)
+                    return code.ToString();
 
-            code.Append($@"
+                code.Append($@"
 
         /// <summary>
         ///     实体保存完成后期处理(Insert/Update/Delete)
@@ -351,14 +356,14 @@ VALUES
         /// </remarks>
         public async Task AfterSave(EventSubscribeData entity, DataOperatorType operatorType)
         {{");
-            foreach (var re in Model.Releations)
-            {
-                var entity = GlobalConfig.GetEntity(re.ForeignTable);
-                code.Append($@"
+                foreach (var re in model.Releations)
+                {
+                    var entity = GlobalConfig.GetEntity(re.ForeignTable);
+                    code.Append($@"
             var access{re.Name} = Provider.ServiceProvider.CreateDataAccess<{entity.Name}>();");
 
-                if (re.ModelType == ReleationModelType.EntityProperty)
-                    code.Append($@"
+                    if (re.ModelType == ReleationModelType.EntityProperty)
+                        code.Append($@"
             if (entity.{entity.Name} == null || operatorType == DataOperatorType.Delete)
             {{
                 await access{re.Name}.DeleteAsync(p => p.{re.ForeignKey} == entity.{re.PrimaryKey});
@@ -375,8 +380,8 @@ VALUES
                     await access{re.Name}.InsertAsync(entity.entity.{entity.Name});
                 }}
             }}");
-                else if (re.ModelType == ReleationModelType.Children)
-                    code.Append($@"
+                    else if (re.ModelType == ReleationModelType.Children)
+                        code.Append($@"
             if (entity.{entity.Name} == null || operatorType == DataOperatorType.Delete)
             {{
                 await access{re.Name}.DeleteAsync(p => p.{re.ForeignKey} == entity.{re.PrimaryKey});
@@ -392,23 +397,23 @@ VALUES
                         await access{re.Name}.InsertAsync(ch);
                 }}
             }}");
-                else
-                {
-                    code.Append($@"
+                    else
+                    {
+                        code.Append($@"
             {{  
                 var ch = new {entity.Name}
                 {{");
-                    bool first = true;
-                    foreach (var pro in Model.Properties.Where(p=>p.Entity == entity))
-                    {
-                        if (first)
-                            first = false;
-                        else
-                            code.Append(',');
+                        bool first = true;
+                        foreach (var pro in model.Properties.Where(p => p.Entity == entity))
+                        {
+                            if (first)
+                                first = false;
+                            else
+                                code.Append(',');
+                            code.Append($@"
+                    {pro.Field.Name} = entity.{pro.Name}");
+                        }
                         code.Append($@"
-                    {pro.Name} = entity.{pro.Name}");
-                    }
-                    code.Append($@"
                 }};
                 ch.{re.ForeignKey} = entity.{re.PrimaryKey};
                 var (hase,id) = await access{re.Name}.LoadValueAsync(p=> p.{entity.PrimaryColumn.Name} , p=> {re.ForeignKey} == entity.{re.PrimaryKey});
@@ -418,11 +423,11 @@ VALUES
                 else
                     await access{re.Name}.InsertAsync(ch);
             }}");
+                    }
                 }
-            }
-            code.Append(@"
+                code.Append(@"
         }");
-
+            }
             return code.ToString();
         }
 
@@ -438,41 +443,37 @@ VALUES
                 ", properties);
         }
 
-        private void EntityStruct(ModelConfig model, List<string> properties, ref int idx)
+        private void EntityStruct(IEntityConfig model, List<string> properties, ref int idx)
         {
             if (!string.IsNullOrWhiteSpace(Model.ModelBase))
             {
                 var modelBase = GlobalConfig.GetModel(p => p.Name == Model.ModelBase);
                 EntityStruct(modelBase, properties, ref idx);
             }
-            var primary = model.Properties.FirstOrDefault(p => p.Entity == model.Entity && p.IsPrimaryKey);
+            var primary = model.LastProperties.FirstOrDefault(p => p.Entity == model.Entity && p.IsPrimaryKey);
 
             EntityStruct(properties, ref idx, primary);
 
-            foreach (var property in model.Properties.Where(p => p.Field != model.Entity.PrimaryColumn).OrderBy(p => p.Index))
+            foreach (var property in model.LastProperties.Where(p => p != model.PrimaryColumn).OrderBy(p => p.Index))
             {
                 EntityStruct(properties, ref idx, property);
             }
         }
 
-        private void EntityStruct(List<string> properties, ref int idx, PropertyConfig property)
+        private void EntityStruct(List<string> properties, ref int idx, IFieldConfig property)
         {
             if (property == null)
                 return;
 
             var str = new StringBuilder("new EntityProperty(");
             
-            if (property.IsInterfaceField || property.IsLinkField)
+            if (property.IsInterfaceField)
             {
                 str.Append($"DataInterface.{property.LinkTable}.{property.LinkField}");
             }
-            else if (property.IsLinkField)
-            {
-                str.Append($"{property.LinkTable}.{property.LinkField}");
-            }
             else
             {
-                str.Append(property.Name);
+                str.Append($"{Project.DataBaseObjectName}.{property.Entity.Name}_Struct_.{property.Name}");
             }
             str.Append($",{++idx},\"{property.Name}\",\"{property.DbFieldName}\")");
             properties.Add(str.ToString());
@@ -619,7 +620,7 @@ VALUES
         }
 
 
-        private string ConvertCode(PropertyConfig column, string arg)
+        private string ConvertCode(IFieldConfig column, string arg)
         {
             switch (column.CsType)
             {

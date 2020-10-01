@@ -4,7 +4,8 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class EntityDictionaryBuilder : EntityBuilderBase
+    public sealed class EntityDictionaryBuilder<TModelConfig> : EntityBuilderBase<TModelConfig>
+           where TModelConfig : ProjectChildConfigBase, IEntityConfig
     {
         #region 基础
 
@@ -254,7 +255,7 @@ namespace Agebull.EntityModel.RobotCoder
             code.AppendLine(@"
         }");
         }
-        private string ConvertCode(PropertyConfig column, string arg)
+        private string ConvertCode(IFieldConfig column, string arg)
         {
             switch (column.CsType)
             {

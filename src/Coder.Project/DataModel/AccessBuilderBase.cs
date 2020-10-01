@@ -6,7 +6,8 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public abstract class AccessBuilderBase : CoderWithModel
+    public abstract class AccessBuilderBase<TModel> : CoderWithModel<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         protected string DataBaseExtend()
         {
@@ -70,11 +71,11 @@ namespace Agebull.EntityModel.RobotCoder
         }};";
         }
 
-        protected PropertyConfig[] dbFields;
+        protected IFieldConfig[] dbFields;
         /// <summary>
         ///     公开的数据库字段
         /// </summary>
-        protected PropertyConfig[] PublishDbFields => dbFields ??= Model.DbFields.Where(p => !p.DbInnerField && !string.Equals(p.DbType, "EMPTY", StringComparison.OrdinalIgnoreCase)).ToArray();
+        protected IFieldConfig[] PublishDbFields => dbFields ??= Model.DbFields.Where(p => !p.DbInnerField && !string.Equals(p.DbType, "EMPTY", StringComparison.OrdinalIgnoreCase)).ToArray();
 
         protected string FieldCode()
         {
@@ -156,7 +157,7 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
 
-        protected void FieldMap(ModelConfig entity, Dictionary<string, string> names)
+        protected void FieldMap(TModel entity, Dictionary<string, string> names)
         {
             if (entity == null)
             {
@@ -164,7 +165,10 @@ namespace Agebull.EntityModel.RobotCoder
             }
             if (!string.IsNullOrWhiteSpace(entity.ModelBase))
             {
-                FieldMap(Project.Models.FirstOrDefault(p => p.Name == entity.ModelBase), names);
+                if (typeof(TModel) == typeof(ModelConfig))
+                    FieldMap(Project.Models.FirstOrDefault(p => p.Name == entity.ModelBase) as TModel, names);
+                else
+                    FieldMap(Project.Entities.FirstOrDefault(p => p.Name == entity.ModelBase) as TModel, names);
             }
             foreach (var field in entity.DbFields)
             {

@@ -10,28 +10,19 @@ namespace Agebull.EntityModel.RobotCoder
     /// <summary>
     /// 实体扩展代码生成基类
     /// </summary>
-    public abstract class EntityBuilderBase : ModelCoderBase, IAutoRegister
+    public abstract class EntityBuilderBase<TModelConfig> : ModelCoderBase<TModelConfig>
+           where TModelConfig : ProjectChildConfigBase, IEntityConfig
     {
         #region 注册
 
-        /// <summary>
-        /// 执行自动注册
-        /// </summary>
-        void IAutoRegister.AutoRegist()
-        {
-            MomentCoder.RegisteCoder(CodeType, "Action.cs", "cs", GetBaseCode);
-            MomentCoder.RegisteCoder(CodeType, "Action.Designer.cs", "cs", GetExtendCode);
-        }
-
-
-        public string GetBaseCode(ModelConfig config)
+        public string GetBaseCode(TModelConfig config)
         {
             Model = config;
             Project = Model.Parent;
             return CreateBaCode();
         }
 
-        public string GetExtendCode(ModelConfig config)
+        public string GetExtendCode(TModelConfig config)
         {
             Model = config;
             Project = Model.Parent;

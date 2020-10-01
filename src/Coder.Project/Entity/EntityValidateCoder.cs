@@ -12,12 +12,12 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 当前表对象
         /// </summary>
-        public ModelConfig Model { get; set; }
+        public IEntityConfig Model { get; set; }
 
-        public string Code(IEnumerable<PropertyConfig> fields)
+        public string Code(IEnumerable<IFieldConfig> fields)
         {
             var code = new StringBuilder();
-            var configs = fields as PropertyConfig[] ?? fields.ToArray();
+            var configs = fields as IFieldConfig[] ?? fields.ToArray();
             foreach (var field in configs.Where(p => !string.IsNullOrWhiteSpace(p.EmptyValue)))
             {
                 ConvertEmptyValue(code, field);
@@ -48,15 +48,15 @@ namespace Agebull.EntityModel.RobotCoder
             return code.ToString();
         }
 
-        static string EmptyCode(PropertyConfig field)
+        static string EmptyCode(IFieldConfig field)
         {
-            var msg = field["EmptyMessage"];
+            var msg = field.Option["EmptyMessage"];
             return string.IsNullOrWhiteSpace(msg)
                 ? $"result.AddNoEmpty(\"{field.Caption}\",nameof({field.Name}));"
                 : $"result.Add(\"{field.Caption}\",nameof({field.Name}),\"{msg}\");";
         }
 
-        private static void DateTimeCheck(StringBuilder code, PropertyConfig field)
+        private static void DateTimeCheck(StringBuilder code, IFieldConfig field)
         {
             if (!field.CanEmpty || field.IsRequired)
             {
@@ -80,7 +80,7 @@ namespace Agebull.EntityModel.RobotCoder
             {{"
                     : "");
 
-            var msg = field["ErrorMessage"];
+            var msg = field.Option["ErrorMessage"];
             if (field.Max != null && field.Min != null)
             {
                 code.Append($@"
@@ -116,7 +116,7 @@ namespace Agebull.EntityModel.RobotCoder
             }");
         }
 
-        private static void NumberCheck(StringBuilder code, PropertyConfig field)
+        private static void NumberCheck(StringBuilder code, IFieldConfig field)
         {
             if (field.Nullable && (!field.CanEmpty || field.IsRequired))
             {
@@ -140,7 +140,7 @@ namespace Agebull.EntityModel.RobotCoder
 
             string last = field.CsType == "decimal" ? "M" : "";
 
-            var msg = field["ErrorMessage"];
+            var msg = field.Option["ErrorMessage"];
             if (isMin && isMax)
             {
                 code.Append($@"
@@ -176,7 +176,7 @@ namespace Agebull.EntityModel.RobotCoder
             }");
         }
 
-        private static void StringCheck(StringBuilder code, PropertyConfig field)
+        private static void StringCheck(StringBuilder code, IFieldConfig field)
         {
             if (!field.CanEmpty || field.IsRequired)
             {
@@ -197,7 +197,7 @@ namespace Agebull.EntityModel.RobotCoder
 
             if(!string.IsNullOrWhiteSpace({field.Name}) && ");
 
-            var msg = field["ErrorMessage"];
+            var msg = field.Option["ErrorMessage"];
             if (field.Datalen > 0 && field.Min != null)
             {
                 code.Append($@"({field.Name}.Length > {field.Datalen} || {field.Name}.Length < {field.Min}))");
@@ -227,7 +227,7 @@ namespace Agebull.EntityModel.RobotCoder
             }
         }
 
-        private static void ConvertEmptyValue(StringBuilder code, PropertyConfig field)
+        private static void ConvertEmptyValue(StringBuilder code, IFieldConfig field)
         {
             var ems = field.EmptyValue.Split(new[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
             code.Append(@"

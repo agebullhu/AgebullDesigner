@@ -41,16 +41,14 @@ namespace Agebull.EntityModel.Designer
         /// <param name="file"></param>
         public void Open(string file)
         {
-            using (FileStream stream = File.OpenRead(file))
-            {
-                XElement root = XElement.Load(stream);
-                _nsEdmx = root.GetNamespaceOfPrefix("edmx");
-                _xRuntime = root.Element(_nsEdmx + "Runtime");
-                Tables = new List<EntityConfig>();
-                ReadMapping();
-                ReadTables();
-                ReadEntities();
-            }
+            using FileStream stream = File.OpenRead(file);
+            XElement root = XElement.Load(stream);
+            _nsEdmx = root.GetNamespaceOfPrefix("edmx");
+            _xRuntime = root.Element(_nsEdmx + "Runtime");
+            Tables = new List<EntityConfig>();
+            ReadMapping();
+            ReadTables();
+            ReadEntities();
         }
 
         /// <summary>

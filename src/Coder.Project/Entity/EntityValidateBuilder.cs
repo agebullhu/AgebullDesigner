@@ -4,7 +4,8 @@ using System.Text;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class EntityValidateBuilder : EntityBuilderBase
+    public sealed class EntityValidateBuilder<TModel> : EntityBuilderBase<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         /// <summary>
         /// 基本代码
@@ -25,7 +26,8 @@ namespace Agebull.EntityModel.RobotCoder
             var coder = new EntityValidateCoder {Model = Model};
             var code = coder.Code(Columns.Where(p => !p.DbInnerField && !p.IsSystemField && !p.CustomWrite));
             var rela = new StringBuilder();
-            foreach (var relation in Model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty).OrderBy(p => p.Index))
+            if(Model is ModelConfig model)
+            foreach (var relation in model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty).OrderBy(p => p.Index))
             {
                 if(relation.ModelType == ReleationModelType.Children)
                 {

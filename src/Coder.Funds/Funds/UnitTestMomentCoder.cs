@@ -267,7 +267,7 @@ bool api_ut_{api.Name}(EsTradeCommand& command)
             };
             return code.ToString();
         }
-        public static void GetCsRandomValue(StringBuilder code, FieldConfig field, string entityName)
+        public static void GetCsRandomValue(StringBuilder code, IFieldConfig field, string entityName)
         {
             CppTypeHelper2.DoByCppType(field.Entity, field,
                 (pro, len) =>
@@ -345,7 +345,7 @@ bool api_ut_{api.Name}(EsTradeCommand& command)
         }
 
         private static readonly Random random = new Random((int)(DateTime.Now.Ticks % int.MaxValue));
-        public static void GetRandomValue(StringBuilder code, FieldConfig field, string entityName)
+        public static void GetRandomValue(StringBuilder code, IFieldConfig field, string entityName)
         {
             CppTypeHelper2.DoByCppType(field.Entity, field,
                 (pro, len) =>
@@ -414,7 +414,7 @@ bool api_ut_{api.Name}(EsTradeCommand& command)
         }
 
 
-        public static void FieldCmp(StringBuilder code, FieldConfig field)
+        public static void FieldCmp(StringBuilder code, IFieldConfig field)
         {
             CppTypeHelper2.DoByCppType(field.Entity, field,
                  (pro, len) =>

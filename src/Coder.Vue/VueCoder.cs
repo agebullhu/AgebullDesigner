@@ -6,9 +6,10 @@ using Agebull.EntityModel.Config;
 namespace Agebull.EntityModel.RobotCoder.VUE
 {
 
-    public class VueCoder
+    public class VueCoder<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
-        public ModelConfig Model { get; set; }
+        public TModel Model { get; set; }
         public ProjectConfig Project { get; set; }
 
         #region 页面
@@ -166,14 +167,14 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             {
                 code.Append(stateColumn);
             }
-            foreach (var property in Model.ClientProperty.Where(p => !p.Field.NoneGrid && !p.Field.GridDetails).ToArray())
+            foreach (var property in Model.ClientProperty.Where(p => !p.NoneGrid && !p.GridDetails).ToArray())
             {
                 var caption = property.Caption;
                 var description = property.Description;
 
-                if (property.Field.IsLinkKey)
+                if (property.IsLinkKey)
                 {
-                    var friend = Model.LastProperties.FirstOrDefault(p => p.Field.LinkTable == property.Field.LinkTable && p.Field.IsLinkCaption);
+                    var friend = Model.LastProperties.FirstOrDefault(p => p.LinkTable == property.LinkTable && p.IsLinkCaption);
                     if (friend != null)
                         caption = friend.Caption;
                     if (friend != null)
@@ -198,7 +199,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 </el-table-column>";
 
 
-        private void GridField(StringBuilder code, PropertyConfig property, string caption, string description)
+        private void GridField(StringBuilder code, IFieldConfig property, string caption, string description)
         {
 
             var field = property;
@@ -256,7 +257,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
         private void GridDetailsField(StringBuilder code)
         {
-            var details = Model.ClientProperty.Where(p => p.Field.GridDetails).ToArray();
+            var details = Model.ClientProperty.Where(p => p.GridDetails).ToArray();
             if (details.Length <= 0)
                 return;
             code.Append(@"
@@ -269,7 +270,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 if (field.IsLinkKey)
                 {
                     var friend =
-                        Model.LastProperties.FirstOrDefault(p => p.Field.LinkTable == field.LinkTable && p.Field.IsLinkCaption);
+                        Model.LastProperties.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
                     if (friend != null)
                         caption = friend.Caption;
                 }
@@ -374,7 +375,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             //{
             //    vif = "form.data.dataState <= 1";
             //}
-            foreach (var property in Model.ClientProperty.Where(p => !p.Field.NoneDetails && !p.Field.ExtendConfigListBool["easyui_userFormHide"]).ToArray())
+            foreach (var property in Model.ClientProperty.Where(p => !p.NoneDetails && !p.ExtendConfigListBool["easyui_userFormHide"]).ToArray())
             {
                 var field = property;
                 var caption = property.Caption;
@@ -382,7 +383,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
                 if (field.IsLinkKey)
                 {
-                    var friend = Model.LastProperties.FirstOrDefault(p => p.Field.LinkTable == field.LinkTable && p.Field.IsLinkCaption);
+                    var friend = Model.LastProperties.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
                     if (friend != null)
                         caption = friend.Caption;
                     if (friend != null)
@@ -406,7 +407,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             return code.ToString();
         }
 
-        void SetDisabled(bool disabled, StringBuilder code, PropertyConfig field)
+        void SetDisabled(bool disabled, StringBuilder code, IFieldConfig field)
         {
             if (disabled)
             {
@@ -417,7 +418,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 code.Append(field.IsUserReadOnly ? " readonly" : " :readonly='form.readonly'");
             }
         }
-        private void FormField(StringBuilder code, PropertyConfig property, string caption, string description/*,string vif*/)
+        private void FormField(StringBuilder code, IFieldConfig property, string caption, string description/*,string vif*/)
         {
             var field = property;
             code.Append($@"
@@ -501,11 +502,11 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             quButton.Append(@"
                     <el-select v-model='list.field' slot='prepend' placeholder='选择字段' style='width: 160px;'>
                         <el-option value='_any_' label='模糊查询'></el-option>");
-            foreach (var property in Model.ClientProperty.Where(p => !p.Field.NoStorage
-                                                                    && !p.Field.NoneGrid
-                                                                    && !p.Field.NoneDetails
-                                                                    && !p.Field.IsLinkKey
-                                                                    && !p.Field.IsLinkKey))
+            foreach (var property in Model.ClientProperty.Where(p => !p.NoStorage
+                                                                    && !p.NoneGrid
+                                                                    && !p.NoneDetails
+                                                                    && !p.IsLinkKey
+                                                                    && !p.IsLinkKey))
             {
                 quButton.Append($@"
                         <el-option value='{property.JsonName}' label='{property.Caption}'></el-option>");
@@ -520,7 +521,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         #region 脚本
         public string ScriptCode()
         {
-            var properties = Model.ClientProperty.Where(p => p.Field.CanUserInput).ToArray();
+            var properties = Model.ClientProperty.Where(p => p.CanUserInput).ToArray();
             var form_rules = Rules(properties);
             return $@"
 function createEntity() {{
@@ -603,11 +604,11 @@ extend_methods({{
     }}
 }});";
         }
-        string LinkFunctions(PropertyConfig[] columns)
+        string LinkFunctions(IFieldConfig[] columns)
         {
             if (Model.IsUiReadOnly)
                 return null;
-            var array = columns.Select(p => p.Field).Where(p => p.IsLinkCaption).Select(p => GlobalConfig.GetEntity(p.LinkTable)).Distinct().ToArray();
+            var array = columns.Select(p => p).Where(p => p.IsLinkCaption).Select(p => GlobalConfig.GetEntity(p.LinkTable)).Distinct().ToArray();
             if (array.Length == 0)
                 return null;
             StringBuilder code = new StringBuilder();
@@ -632,7 +633,7 @@ load{entity.Name}();");
 
         string EnumScript()
         {
-            var array = Model.LastProperties.Where(p => p.Field.EnumConfig != null && !p.Field.IsSystemField && p.Field.IsEnum).Select(p => p.Field.EnumConfig).Distinct().ToArray();
+            var array = Model.LastProperties.Where(p => p.EnumConfig != null && !p.IsSystemField && p.IsEnum).Select(p => p.EnumConfig).Distinct().ToArray();
             if (array.Length == 0)
                 return null;
             var code = new StringBuilder();
@@ -680,7 +681,7 @@ extend_data({
 
         string Filter()
         {
-            var array = Model.LastProperties.Where(p => p.Field.EnumConfig != null && !p.Field.IsSystemField && p.Field.IsEnum).Select(p => p.Field.EnumConfig).Distinct().ToArray();
+            var array = Model.LastProperties.Where(p => p.EnumConfig != null && !p.IsSystemField && p.IsEnum).Select(p => p.EnumConfig).Distinct().ToArray();
             if (array.Length == 0)
                 return null;
             StringBuilder code = new StringBuilder();
@@ -732,7 +733,7 @@ extend_data({
         {
             bool isInner = Model.Interfaces.Contains("IInnerTree");
             var code = new StringBuilder();
-            foreach (var property in Model.ClientProperty.Where(p => !p.Field.IsSystemField))
+            foreach (var property in Model.ClientProperty.Where(p => !p.IsSystemField))
             {
                 var field = property;
                 if (isInner && field.Name == "ParentId")
@@ -802,7 +803,7 @@ extend_data({
         ///     生成Form录入字段界面
         /// </summary>
         /// <param name="columns"></param>
-        private string Rules(PropertyConfig[] columns)
+        private string Rules(IFieldConfig[] columns)
         {
             if (Model.IsUiReadOnly)
                 return null;
@@ -851,7 +852,7 @@ extend_data({
             return first ? null : $@"var rules = {{{code}
 }};";
         }
-        private static void DateTimeCheck(PropertyConfig field, StringBuilder code, ref string dot)
+        private static void DateTimeCheck(IFieldConfig field, StringBuilder code, ref string dot)
         {
             if (field.Max != null && field.Min != null)
                 code.Append($@"{dot}{{ min: {field.Min}, max: {field.Max}, message: '时间从 {field.Min} 到 {field.Max} 之间', trigger: 'blur' }}");
@@ -864,7 +865,7 @@ extend_data({
     ";
         }
 
-        private static void NumberCheck(PropertyConfig field, StringBuilder code, ref string dot)
+        private static void NumberCheck(IFieldConfig field, StringBuilder code, ref string dot)
         {
             if (field.Max != null && field.Min != null)
                 code.Append($@"{dot}{{ min: {field.Min}, max: {field.Max}, message: '数值从 {field.Min} 到 {field.Max} 之间', trigger: 'blur' }}");
@@ -877,7 +878,7 @@ extend_data({
     ";
         }
 
-        private static void StringCheck(PropertyConfig  field, StringBuilder code, ref string dot)
+        private static void StringCheck(IFieldConfig  field, StringBuilder code, ref string dot)
         {
             if (field.Max != null && field.Min != null)
                 code.Append($@"{dot}{{ min: {field.Min}, max: {field.Max}, message: '长度在 {field.Min} 到 {field.Max} 个字符', trigger: 'blur' }}");

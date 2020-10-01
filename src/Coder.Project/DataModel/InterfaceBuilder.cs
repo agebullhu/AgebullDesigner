@@ -4,7 +4,8 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class InterfaceBuilder : CoderWithModel
+    public sealed class InterfaceBuilder<TModel> : CoderWithModel<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         #region  Ù–‘
         /// <summary>

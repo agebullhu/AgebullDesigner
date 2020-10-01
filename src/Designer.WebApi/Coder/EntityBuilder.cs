@@ -7,9 +7,9 @@ namespace Agebull.EntityModel.Designer.WebApi
 {
 
 
-    public sealed class EntityBuilder : ModelCoderBase
-    {
-
+    public sealed class EntityBuilder<TModel> : ModelCoderBase<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
+    { 
         #region 主体代码
         /// <summary>
         /// 是否可写

@@ -19,7 +19,7 @@ namespace Agebull.EntityModel.Config
     /// 属性配置
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public partial class FieldConfig : ConfigBase
+    public partial class FieldConfig : ConfigBase, IFieldConfig
     {
         #region 环境
 

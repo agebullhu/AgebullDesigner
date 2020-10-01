@@ -6,7 +6,8 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
     /// <summary>
     ///     页面代码生成器
     /// </summary>
-    public class PorjectApiGenerator : CoderWithModel
+    public class PorjectApiGenerator<TModel> : CoderWithModel<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         #region 继承实现
         /// <summary>
@@ -22,7 +23,7 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
             if (Model.IsInternal || Model.NoDataBase || Model.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
             var file = ConfigPath(Model, "File_Web_Api_cs", path, Model.Name, $"{Model.Name}ApiController");
-            var coder = new ProjectApiActionCoder();
+            var coder = new ProjectApiActionCoder<TModel>();
             WriteFile(file + ".Designer.cs", coder.BaseCode(Model));
         }
 
@@ -34,7 +35,7 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
             if (Model.IsInternal || Model.NoDataBase || Model.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
             var file = ConfigPath(Model, "File_Web_Api_cs", path, Model.Name, $"{Model.Name}ApiController");
-            var coder = new ProjectApiActionCoder();
+            var coder = new ProjectApiActionCoder<TModel>();
             WriteFile(file + ".cs", coder.ExtendCode(Model));
             //ExportCsCode(path);
         }

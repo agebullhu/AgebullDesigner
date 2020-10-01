@@ -11,7 +11,7 @@ namespace Agebull.EntityModel.RobotCoder
     /// </summary>
     public class InterfaceHelper
     {
-        public static void CheckInterface(EntityConfig entity, IList<FieldConfig> properties)
+        public static void CheckInterface(EntityConfig entity, IList<IFieldConfig> properties)
         {
             if (string.IsNullOrWhiteSpace(entity.Interfaces))
                 return;

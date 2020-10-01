@@ -36,7 +36,7 @@ namespace Agebull.EntityModel.Designer.WebApi
             Message = project.Caption;
             {
                 var path = project.GetApiPath("Contract");
-                var builder = new ApiInterfaceBuilder
+                var builder = new ApiInterfaceBuilder<ModelConfig>
                 {
                     Project = project
                 };
@@ -44,7 +44,7 @@ namespace Agebull.EntityModel.Designer.WebApi
             }
             {
                 var path = project.GetApiPath("Contract");
-                var builder = new ApiProxyBuilder
+                var builder = new ApiProxyBuilder<ModelConfig>
                 {
                     Project = project
                 };
@@ -52,7 +52,7 @@ namespace Agebull.EntityModel.Designer.WebApi
             }
             {
                 var path = project.GetApiPath("WebApi");
-                var builder = new ApiControlerBuillder
+                var builder = new ApiControlerBuillder<ModelConfig>
                 {
                     Project = project
                 };
@@ -60,7 +60,7 @@ namespace Agebull.EntityModel.Designer.WebApi
             }
             {
                 var path = project.GetApiPath("Logical");
-                var builder = new ApiLogicalBuilder
+                var builder = new ApiLogicalBuilder<ModelConfig>
                 {
                     Project = project
                 };
@@ -68,7 +68,7 @@ namespace Agebull.EntityModel.Designer.WebApi
             }
             {
                 var path = GetDocumentPath(project);
-                var builder = new ApiMarkBuilder
+                var builder = new ApiMarkBuilder<ModelConfig>
                 {
                     Project = project
                 };
@@ -88,7 +88,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 {
                     path = project.GetPath("Test", "UnitTest");
                 }
-                var builder = new UnitTestBuilder
+                var builder = new UnitTestBuilder<ModelConfig>
                 {
                     Project = project
                 };
@@ -107,7 +107,7 @@ namespace Agebull.EntityModel.Designer.WebApi
             Message = entity.Caption;
             {
                 var path = project.GetApiPath("Contract");
-                var builder = new EntityBuilder
+                var builder = new EntityBuilder<ModelConfig>
                 {
                     Project = project,
                     Model = entity
@@ -119,7 +119,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 return;
             {
                 var path = project.GetApiPath("Contract");
-                var builder = new ApiInterfaceBuilder
+                var builder = new ApiInterfaceBuilder<ModelConfig>
                 {
                     Project = project,
                     Model = entity
@@ -128,7 +128,7 @@ namespace Agebull.EntityModel.Designer.WebApi
             }
             {
                 var path = project.GetApiPath("Contract");
-                var builder = new ApiProxyBuilder
+                var builder = new ApiProxyBuilder<ModelConfig>
                 {
                     Project = project,
                     Model = entity
@@ -138,7 +138,7 @@ namespace Agebull.EntityModel.Designer.WebApi
 
             {
                 var path = project.GetApiPath("Logical");
-                var builder = new ApiLogicalBuilder
+                var builder = new ApiLogicalBuilder<ModelConfig>
                 {
                     Project = project,
                     Model = entity
@@ -147,7 +147,7 @@ namespace Agebull.EntityModel.Designer.WebApi
             }
             {
                 var path = project.GetApiPath("WebApi");
-                var builder = new ApiControlerBuillder
+                var builder = new ApiControlerBuillder<ModelConfig>
                 {
                     Project = project,
                     Model = entity
@@ -173,7 +173,7 @@ namespace Agebull.EntityModel.Designer.WebApi
                 {
                     path = project.GetPath("Test", "UnitTest");
                 }
-                var builder = new UnitTestBuilder
+                var builder = new UnitTestBuilder<ModelConfig>
                 {
                     Project = project,
                     Model = entity

@@ -3,7 +3,8 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class EntityToStringBuilder : EntityBuilderBase
+    public sealed class EntityToStringBuilder<TModel> : EntityBuilderBase<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         #region »ù´¡
 
@@ -37,7 +38,7 @@ namespace Agebull.EntityModel.RobotCoder
             return code.ToString();
         }
 
-        private void ToStringCode(StringBuilder code, PropertyConfig field)
+        private void ToStringCode(StringBuilder code, IFieldConfig field)
         {
             var caption = string.IsNullOrWhiteSpace(field.Caption) ? field.Name : field.Caption;
             if (string.IsNullOrWhiteSpace(field.ArrayLen))

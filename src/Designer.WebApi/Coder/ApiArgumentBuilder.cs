@@ -49,7 +49,7 @@ namespace Agebull.EntityModel.Designer.WebApi
         {
             Message = entity.Caption;
             var path = GlobalConfig.CheckPath(project.FormatPath("Contract"));
-            var builder = new EntityBuilder
+            var builder = new EntityBuilder<ModelConfig>
             {
                 Project = project,
                 Model = entity

@@ -31,7 +31,7 @@ namespace Agebull.EntityModel.RobotCoder
             get => _traceMessage ?? TraceMessage.DefaultTrace;
             set => _traceMessage = value;
         }
-        
+
         /// <summary>
         /// Ãû³Æ
         /// </summary>
@@ -131,8 +131,9 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="project"></param>
         /// <param name="schema"></param>
         /// <param name="path"></param>
-        protected static void CreateCode<TModelCoder>(ProjectConfig project, ModelConfig schema, string path)
-            where TModelCoder : CoderWithModel, new()
+        protected static void CreateCode<TModelCoder, TModel>(ProjectConfig project, TModel schema, string path)
+            where TModelCoder : CoderWithModel<TModel>, new()
+            where TModel : ProjectChildConfigBase, IEntityConfig
         {
             var builder = new TModelCoder
             {

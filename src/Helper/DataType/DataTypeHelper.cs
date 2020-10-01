@@ -209,11 +209,7 @@ namespace Agebull.EntityModel.RobotCoder
                     };
             }
         }
-        public static bool IsType(this FieldConfig property, string type)
-        {
-            return property.CsType?.Equals(type, StringComparison.OrdinalIgnoreCase) ?? false;
-        }
-        public static bool IsType(this PropertyConfig property, string type)
+        public static bool IsType(this IFieldConfig property, string type)
         {
             return property.CsType?.Equals(type, StringComparison.OrdinalIgnoreCase) ?? false;
         }

@@ -7,7 +7,8 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class EntityPropertyBuilder : EntityBuilderBase
+    public sealed class EntityPropertyBuilder<TModel> : EntityBuilderBase<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         #region 主体代码
 
@@ -208,7 +209,8 @@ using Agebull.EntityModel.Interfaces;
                 AliasPropertyCode(property, code);
                 AccessProperties(property, code);
             }
-            foreach (var relation in Model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty).OrderBy(p => p.Index))
+            if(Model is ModelConfig model)
+            foreach (var relation in model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty).OrderBy(p => p.Index))
             {
                 RelationPropertyCode(relation, code);
             }
@@ -249,7 +251,7 @@ using Agebull.EntityModel.Interfaces;
         }}";
         }
 
-        private void PropertyCode(PropertyConfig property, StringBuilder code)
+        private void PropertyCode(IFieldConfig property, StringBuilder code)
         {
             bool isInterface = property.IsInterfaceField && Model.InterfaceInner;
 
@@ -293,7 +295,7 @@ using Agebull.EntityModel.Interfaces;
         /// </summary>
         /// <param name="property"></param>
         /// <param name="code"></param>
-        private void ComputePropertyCode(PropertyConfig property, StringBuilder code)
+        private void ComputePropertyCode(IFieldConfig property, StringBuilder code)
         {
             var access = /*isInterface ? "" :*/ $"{property.AccessType} ";
             var name = /*isInterface ? $"{property.Parent.EntityName}.{property.Name}" :*/ property.Name;
@@ -329,7 +331,7 @@ using Agebull.EntityModel.Interfaces;
         /// </summary>
         /// <param name="property"></param>
         /// <param name="code"></param>
-        private void AliasPropertyCode(PropertyConfig property, StringBuilder code)
+        private void AliasPropertyCode(IFieldConfig property, StringBuilder code)
         {
             foreach (var alias in property.GetAliasPropertys())
             {
@@ -344,7 +346,7 @@ using Agebull.EntityModel.Interfaces;
             }
         }
 
-        private void DbInnerProperty(PropertyConfig property, StringBuilder code)
+        private void DbInnerProperty(IFieldConfig property, StringBuilder code)
         {
             code.Append($@"
 
@@ -363,7 +365,7 @@ using Agebull.EntityModel.Interfaces;
         /// 数据访问字段,有BUG小心
         /// </summary>
         /// <returns></returns>
-        private void AccessProperties(PropertyConfig property, StringBuilder code)
+        private void AccessProperties(IFieldConfig property, StringBuilder code)
         {
             if (!string.IsNullOrWhiteSpace(property.StorageProperty))
                 code.Append($@"

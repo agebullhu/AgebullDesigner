@@ -165,16 +165,14 @@ namespace Agebull.EntityModel.RobotCoder
                     f.IsReadOnly = false;
                     f.Refresh();
                 }
-                using (var reader = File.OpenText(file))
+                using var reader = File.OpenText(file);
+                var mark = reader.ReadLine();
+                if (string.IsNullOrWhiteSpace(mark) || !mark.Contains("此标记表明此文件可被设计器更新"))
                 {
-                    var mark = reader.ReadLine();
-                    if (string.IsNullOrWhiteSpace(mark) || !mark.Contains("此标记表明此文件可被设计器更新"))
-                    {
-                        Trace.WriteLine(file, "无写入标识");
-                        return;
-                    }
-                    reader.Close();
+                    Trace.WriteLine(file, "无写入标识");
+                    return;
                 }
+                reader.Close();
             }
             else
             {

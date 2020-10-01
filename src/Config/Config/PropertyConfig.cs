@@ -18,7 +18,7 @@ namespace Agebull.EntityModel.Config
     /// 属性配置
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public partial class PropertyConfig : ConfigBase
+    public partial class PropertyConfig : ConfigBase, IFieldConfig
     {
         #region 模型引用
 
@@ -643,6 +643,11 @@ namespace Agebull.EntityModel.Config
         #endregion
 
         #region 设计器支持
+
+        /// <summary>
+        /// 是否数据库索引
+        /// </summary>
+        public bool IsDbIndex => Field.IsDbIndex;
 
         /// <summary>
         /// 分组

@@ -114,10 +114,8 @@ namespace Agebull.EntityModel.Designer
                     }
                     _trace.Message2 = entity.Caption ?? entity.Name;
                     //_trace.Message3 = "列分析";
-                    using (var cmd = connection.CreateCommand())
-                    {
-                        LoadColumn(_database, cmd, table, entity, isnew);
-                    }
+                    using var cmd = connection.CreateCommand();
+                    LoadColumn(_database, cmd, table, entity, isnew);
 
                 }
             }
@@ -151,99 +149,97 @@ namespace Agebull.EntityModel.Designer
             cmd.CommandText =
                 $@"select COLUMN_NAME,IS_Nullable,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,COLUMN_KEY,COLUMN_COMMENT,EXTRA
 from information_schema.columns where table_schema='{db}' and table_name='{table}'";
-            using (var reader = cmd.ExecuteReader())
+            using var reader = cmd.ExecuteReader();
+            if (!reader.HasRows)
+                return;
+            while (reader.Read())
             {
-                if (!reader.HasRows)
-                    return;
-                while (reader.Read())
+                var field = reader.GetString(0);
+                //_trace.Message4 = field;
+                if (field == null)
+                    continue;
+                var dbType = reader.GetString(2);
+                var column = entity.Properties.FirstOrDefault(p => string.Equals(p.DbFieldName, field, StringComparison.OrdinalIgnoreCase));
+                bool isNew = isNewEntity;
+                if (column == null)
                 {
-                    var field = reader.GetString(0);
-                    //_trace.Message4 = field;
-                    if (field == null)
-                        continue;
-                    var dbType = reader.GetString(2);
-                    var column = entity.Properties.FirstOrDefault(p => string.Equals(p.DbFieldName, field, StringComparison.OrdinalIgnoreCase));
-                    bool isNew = isNewEntity;
-                    if (column == null)
+                    //_trace.Track = @"新字段";
+                    isNew = true;
+                    column = new FieldConfig
                     {
-                        //_trace.Track = @"新字段";
-                        isNew = true;
-                        column = new FieldConfig
-                        {
-                            DbFieldName = field,
-                            DbType = dbType,
-                            CsType = ToCstringType(dbType),
-                            Entity = entity
-                        };
+                        DbFieldName = field,
+                        DbType = dbType,
+                        CsType = ToCstringType(dbType),
+                        Entity = entity
+                    };
 
-                        InvokeInUiThread(() => entity.Add(column));
-                        if (!reader.IsDBNull(5))
-                        {
-                            column.Caption = reader.GetString(5);
-                        }
-                        column.Description = column.Caption;
-                    }
-                    else if (column.DbType != dbType)
+                    InvokeInUiThread(() => entity.Add(column));
+                    if (!reader.IsDBNull(5))
                     {
-                        //_trace.Track = $@"字段类型变更:{column.DbType }->{dbType}";
-                        column.DbType = dbType;
-                        column.CsType = ToCstringType(column.DbType);
+                        column.Caption = reader.GetString(5);
                     }
-                    column.DbNullable = reader.GetString(1) == "YES";
-                    column.IsPrimaryKey = reader.GetString(4) == "PRI";
-
-                    if (!reader.IsDBNull(3))
-                    {
-                        column.Datalen = (int)reader.GetInt64(3);
-                    }
-
-                    if (!reader.IsDBNull(6))
-                    {
-                        var ext = reader.GetString(6);
-                        column.IsIdentity = ext.Contains("auto_increment");
-                        //if (column.IsIdentity)
-                        //_trace.Track = @"自增列";
-                    }
-                    if (!isNew)
-                        continue;
-                    //_trace.Track = @"分析属性名称";
-                    switch (column.DbType.ToLower())
-                    {
-                        case "varchar":
-                        case "longtext":
-                            column.Name = FirstBy(column.DbFieldName, "m_str", "M_str", "m_", "M_");
-                            break;
-                        case "int":
-                        case "tinyint":
-                            column.Name = FirstBy(column.DbFieldName, "m_b", "m_n", "m_", "M_");
-                            break;
-                        case "double":
-                            column.Name = FirstBy(column.DbFieldName, "m_d", "m_", "M_");
-                            break;
-                        default:
-                            column.Name = FirstBy(column.DbFieldName, "m_", "M_");
-                            break;
-                    }
-                    column.Name = NameHelper.ToWordName(column.Name ?? column.DbFieldName);
-                    if (!string.IsNullOrWhiteSpace(column.Caption))
-                    {
-                        var vl = column.Caption;
-                        var vls = vl.Split(NameHelper.NoneLanguageChar, 2);
-                        column.Caption = vls[0];
-                        column.Description = vl;
-                    }
-                    //_trace.Track = $@"属性名称:{column.Name}";
-                    //if (string.IsNullOrWhiteSpace(column.Caption))
-                    //{
-                    //    column.Caption = column.Name;
-                    //}
-                    //if (string.IsNullOrWhiteSpace(column.Description))
-                    //{
-                    //    column.Description = column.Caption;
-                    //}
-                    //if (!string.IsNullOrWhiteSpace(column.Caption))
-                    //    column.Caption = column.Caption.Split(NameHelper.NoneLanguageChar, 2)[0];
+                    column.Description = column.Caption;
                 }
+                else if (column.DbType != dbType)
+                {
+                    //_trace.Track = $@"字段类型变更:{column.DbType }->{dbType}";
+                    column.DbType = dbType;
+                    column.CsType = ToCstringType(column.DbType);
+                }
+                column.DbNullable = reader.GetString(1) == "YES";
+                column.IsPrimaryKey = reader.GetString(4) == "PRI";
+
+                if (!reader.IsDBNull(3))
+                {
+                    column.Datalen = (int)reader.GetInt64(3);
+                }
+
+                if (!reader.IsDBNull(6))
+                {
+                    var ext = reader.GetString(6);
+                    column.IsIdentity = ext.Contains("auto_increment");
+                    //if (column.IsIdentity)
+                    //_trace.Track = @"自增列";
+                }
+                if (!isNew)
+                    continue;
+                //_trace.Track = @"分析属性名称";
+                switch (column.DbType.ToLower())
+                {
+                    case "varchar":
+                    case "longtext":
+                        column.Name = FirstBy(column.DbFieldName, "m_str", "M_str", "m_", "M_");
+                        break;
+                    case "int":
+                    case "tinyint":
+                        column.Name = FirstBy(column.DbFieldName, "m_b", "m_n", "m_", "M_");
+                        break;
+                    case "double":
+                        column.Name = FirstBy(column.DbFieldName, "m_d", "m_", "M_");
+                        break;
+                    default:
+                        column.Name = FirstBy(column.DbFieldName, "m_", "M_");
+                        break;
+                }
+                column.Name = NameHelper.ToWordName(column.Name ?? column.DbFieldName);
+                if (!string.IsNullOrWhiteSpace(column.Caption))
+                {
+                    var vl = column.Caption;
+                    var vls = vl.Split(NameHelper.NoneLanguageChar, 2);
+                    column.Caption = vls[0];
+                    column.Description = vl;
+                }
+                //_trace.Track = $@"属性名称:{column.Name}";
+                //if (string.IsNullOrWhiteSpace(column.Caption))
+                //{
+                //    column.Caption = column.Name;
+                //}
+                //if (string.IsNullOrWhiteSpace(column.Description))
+                //{
+                //    column.Description = column.Caption;
+                //}
+                //if (!string.IsNullOrWhiteSpace(column.Caption))
+                //    column.Caption = column.Caption.Split(NameHelper.NoneLanguageChar, 2)[0];
             }
         }
 

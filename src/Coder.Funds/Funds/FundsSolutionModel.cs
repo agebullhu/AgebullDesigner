@@ -99,7 +99,7 @@ namespace Agebull.EntityModel.Config
                          ?? entity.Properties.FirstOrDefault(p => p.Name == property.Name);
                 if (fp == null)
                 {
-                    fp = new FieldConfig();
+                    fp = new IFieldConfig();
                     fp.CopyFromProperty(property,false,true,false);
                     fp.Entity = entity;
                     entity.Add(fp);
@@ -199,7 +199,7 @@ namespace Agebull.EntityModel.Config
             item.ClientEntity = entity.Name;
             if (entity.PrimaryColumn == null)
             {
-                entity.Add(new FieldConfig
+                entity.Add(new IFieldConfig
                 {
                     Name = entity.Name + "Id",
                     Caption = entity.Caption + "ID",
@@ -219,7 +219,7 @@ namespace Agebull.EntityModel.Config
                          ?? entity.Properties.FirstOrDefault(p => p.Name == property.Name);
                 if (fp == null)
                 {
-                    fp = new FieldConfig();
+                    fp = new IFieldConfig();
                     fp.CopyFromProperty(property,false,true,true);
                     fp.Entity = entity;
                     entity.Add(fp);

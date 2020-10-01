@@ -3,7 +3,8 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class EntityTsonBuilder : EntityBuilderBase
+    public sealed class EntityTsonBuilder<TModel> : EntityBuilderBase<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         #region »ù´¡
 
@@ -116,7 +117,7 @@ namespace Agebull.EntityModel.RobotCoder
             return code.ToString();
         }
 
-        private static int GetEntitySerializeLen(ModelConfig entity)
+        private static int GetEntitySerializeLen(IEntityConfig entity)
         {
             int len = entity.LastProperties.Count + 94;
             foreach (var property in entity.UserProperty)
@@ -126,7 +127,7 @@ namespace Agebull.EntityModel.RobotCoder
             return len;
         }
 
-        private static int GetFieldSerializeLen(PropertyConfig field)
+        private static int GetFieldSerializeLen(IFieldConfig field)
         {
             int.TryParse(field.ArrayLen, out int len);
 
@@ -168,7 +169,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         #endregion
 
-        private string SerializeCode(ModelConfig entity)
+        private string SerializeCode(IEntityConfig entity)
         {
             StringBuilder code = new StringBuilder();
             foreach (var field in entity.UserProperty)
@@ -200,7 +201,7 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
 
-        private string DeserializeCode(ModelConfig entity)
+        private string DeserializeCode(IEntityConfig entity)
         {
             StringBuilder code = new StringBuilder();
             foreach (var field in entity.UserProperty)

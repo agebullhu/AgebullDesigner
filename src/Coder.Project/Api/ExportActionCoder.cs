@@ -6,24 +6,17 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 {
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    public class ExportActionCoder : CoderWithModel, IAutoRegister
+    public class ExportActionCoder<TModel> : CoderWithModel<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         #region 代码片断
-
-        /// <summary>
-        /// 执行自动注册
-        /// </summary>
-        void IAutoRegister.AutoRegist()
-        {
-            MomentCoder.RegisteCoder("Web-Api", "Export.cs", "cs", BaseCode);
-        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public string BaseCode(ModelConfig entity)
+        public string BaseCode(TModel entity)
         {
             Model = entity;
             using var scope= CodeGeneratorScope.CreateScope(entity);
@@ -111,7 +104,7 @@ namespace {NameSpace}.{Model.Name}Page
                     ? "Root = p => p.DataState <= DataStateType.Discard" 
                     : null
                 )}
-            }};{new ProjectApiActionCoder { Model = Model }.QueryCode()}
+            }};{new ProjectApiActionCoder<TModel> { Model = Model }.QueryCode()}
             return filter;
         }}
     }}

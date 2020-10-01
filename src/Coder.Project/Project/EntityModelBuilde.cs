@@ -61,13 +61,13 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
             {
                 entityPath = IOHelper.CheckPath(entityPath, cls);
             }
-            CreateCode<EntityBuilder>(project, schema, entityPath);
+            CreateCode<EntityBuilder<ModelConfig>, ModelConfig>(project, schema, entityPath);
             entityPath = IOHelper.CheckPath(root, "Validate");
             if (cls != null)
             {
                 entityPath = IOHelper.CheckPath(entityPath, cls);
             }
-            CreateCode<EntityValidateBuilder>(project, schema, entityPath);
+            CreateCode<EntityValidateBuilder<ModelConfig>, ModelConfig>(project, schema, entityPath);
 
             var accessPath = IOHelper.CheckPath(root, "DataAccess");
             if (cls != null)
@@ -77,19 +77,19 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
             switch (project.DbType)
             {
                 case DataBaseType.SqlServer:
-                    CreateCode<SqlServerAccessBuilder>(project, schema, accessPath);
+                    CreateCode<SqlServerAccessBuilder<ModelConfig>, ModelConfig>(project, schema, accessPath);
                     break;
                 case DataBaseType.Sqlite:
-                    CreateCode<SqliteAccessBuilder>(project, schema, accessPath);
+                    CreateCode<SqliteAccessBuilder<ModelConfig>, ModelConfig>(project, schema, accessPath);
                     break;
                 default:
-                    CreateCode<MySqlAccessBuilder>(project, schema, accessPath);
+                    CreateCode<MySqlAccessBuilder<ModelConfig>, ModelConfig>(project, schema, accessPath);
                     break;
             }
             var blPath = IOHelper.CheckPath(root, "Business");
             if (cls != null)
                 blPath = IOHelper.CheckPath(blPath, cls);
-            CreateCode<BusinessBuilder>(project, schema, blPath);
+            CreateCode<BusinessBuilder<ModelConfig>, ModelConfig>(project, schema, blPath);
             Message = blPath;
         }
     }

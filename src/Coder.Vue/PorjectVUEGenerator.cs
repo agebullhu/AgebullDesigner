@@ -7,7 +7,8 @@ namespace Agebull.EntityModel.RobotCoder.VUE
     /// <summary>
     ///     页面代码生成器
     /// </summary>
-    public class PorjectVUEGenerator : CoderWithModel
+    public class PorjectVUEGenerator<TModel> : CoderWithModel<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         #region 继承实现
         /// <summary>
@@ -27,7 +28,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
             var file = ConfigPath(Model, "File_VUE_HTML", path, Model.PagePath(), "index.htm");
 
-            var coder = new VueCoder
+            var coder = new VueCoder<TModel>
             {
                 Model = Model,
                 Project = Project
@@ -53,7 +54,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
             var file = ConfigPath(Model, "File_VUE_JS", path, Model.PagePath(), "script.js");
 
-            var coder = new VueCoder
+            var coder = new VueCoder<TModel>
             {
                 Model = Model,
                 Project = Project

@@ -6,7 +6,8 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class ClrCoder : CoderWithModel
+    public sealed class ClrCoder<TModel> : CoderWithModel<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         #region ClrHelper
 
@@ -229,7 +230,7 @@ void CopyFromClr({Model.EntityName}^ cs_field, {Model.Name}& field)
             return code.ToString();
         }
 
-        private void CopyFromClr(StringBuilder code, PropertyConfig property)
+        private void CopyFromClr(StringBuilder code, IFieldConfig property)
         {
             var field = property;
             if (field.IsIntDecimal)
@@ -293,7 +294,7 @@ void CopyFromClr({Model.EntityName}^ cs_field, {Model.Name}& field)
     field.{property.Name} = cs_field->{property.Name};//{property.Caption}");
         }
 
-        private void CopyToClrCode(StringBuilder code, PropertyConfig property)
+        private void CopyToClrCode(StringBuilder code, IFieldConfig property)
         {
             var field = property;
             if (field.IsIntDecimal)
@@ -347,7 +348,7 @@ void CopyFromClr({Model.EntityName}^ cs_field, {Model.Name}& field)
 
         #region ¸¨Öú
 
-        private static string FriendInc(ModelConfig entity)
+        private static string FriendInc(TModel entity)
         {
             var code = new StringBuilder();
             foreach (var property in entity.UserProperty)
@@ -361,14 +362,11 @@ void CopyFromClr({Model.EntityName}^ cs_field, {Model.Name}& field)
             return code.ToString();
         }
 
-        private static ModelConfig GetLcEntity(FieldConfig field)
+        private static TModel GetLcEntity(IFieldConfig field)
         {
-            return CppTypeHelper.ToCppLastType(field.CppLastType ?? field.CppType) as ModelConfig;
-        }
-
-        private static ModelConfig GetLcEntity(PropertyConfig field)
-        {
-            return CppTypeHelper.ToCppLastType(field.CppLastType ?? field.CppType) as ModelConfig;
+            return 
+                
+                CppTypeHelper.ToCppLastType(field.CppLastType ?? field.CppType) as TModel;
         }
 
         #endregion

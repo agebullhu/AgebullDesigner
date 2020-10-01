@@ -7,7 +7,8 @@ using Agebull.EntityModel.Config.SqlServer;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class EntityStructBuilder : EntityBuilderBase
+    public sealed class EntityStructBuilder<TModel> : EntityBuilderBase<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         #region 基础
 
@@ -17,7 +18,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <inheritdoc />
         protected override string Folder => "Struct";
 
-        int DbType(PropertyConfig field)
+        int DbType(IFieldConfig field)
         {
             if (Project.DbType == DataBaseType.SqlServer)
                 return (int)SqlServerHelper.ToSqlDbType(field.DbType,field.CsType);
@@ -97,7 +98,7 @@ namespace Agebull.EntityModel.RobotCoder
 ";
         }
 
-        private void EntityStruct(ModelConfig table, StringBuilder codeStruct, StringBuilder codeConst, ref bool isFirst, ref int idx)
+        private void EntityStruct(IEntityConfig table, StringBuilder codeStruct, StringBuilder codeConst, ref bool isFirst, ref int idx)
         {
             if (table == null)
                 return;
@@ -124,7 +125,7 @@ namespace Agebull.EntityModel.RobotCoder
             }
         }
 
-        private string PropertyIndex(PropertyConfig property, ref int idx)
+        private string PropertyIndex(IFieldConfig property, ref int idx)
         {
             return $@"
 
@@ -139,7 +140,7 @@ namespace Agebull.EntityModel.RobotCoder
             public const int Real_{property.Name} = {idx++};";
         }
 
-        private void PropertyStruct(StringBuilder codeStruct, PropertyConfig property,ref bool isFirst)
+        private void PropertyStruct(StringBuilder codeStruct, IFieldConfig property,ref bool isFirst)
         {
             if (isFirst)
                 isFirst = false;

@@ -21,9 +21,14 @@ namespace Agebull.EntityModel.Config
     /// 实体配置
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public partial class EntityConfig : ProjectChildConfigBase
+    public partial class EntityConfig : ProjectChildConfigBase, IEntityConfig
     {
         #region 系统
+
+        /// <summary>
+        /// 阻止使用的范围
+        /// </summary>
+        EntityConfig IEntityConfig.Entity => this;
 
         /// <summary>
         /// 阻止编辑
@@ -110,6 +115,14 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"是否有主键"), Description("是否有主键")]
         public bool HasePrimaryKey => Properties.Any(p => p.IsPrimaryKey);
+        /// <summary>
+        /// 主键字段
+        /// </summary>
+        /// <remark>
+        /// 主键字段
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        IFieldConfig IEntityConfig.PrimaryColumn => PrimaryColumn;
 
         /// <summary>
         /// 主键字段

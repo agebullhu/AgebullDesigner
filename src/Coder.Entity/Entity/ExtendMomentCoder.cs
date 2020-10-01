@@ -87,9 +87,9 @@ namespace Agebull.EntityModel.RobotCoder
             return code.ToString();
         }
 
-        public string ToCSharpCode(FieldConfig property)
+        public string ToCSharpCode(IFieldConfig property)
         {
-            return $@"static FieldConfig _{property.Name.ToLWord()} = new FieldConfig
+            return $@"static IFieldConfig _{property.Name.ToLWord()} = new IFieldConfig
             {{
                 Caption = ""{property.Caption}"",
                 Description = ""{property.Description}"",
@@ -267,7 +267,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         private string UserChildSave(EntityConfig entity)
         {
-            FieldConfig uf = entity.PublishProperty.FirstOrDefault(p => p.IsUserId);
+            var uf = entity.PublishProperty.FirstOrDefault(p => p.IsUserId);
             if (uf == null)
                 return null;
             return ($@"

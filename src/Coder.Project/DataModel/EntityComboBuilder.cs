@@ -1,8 +1,10 @@
+using Agebull.EntityModel.Config;
 using System.Linq;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class EntityComboBuilder : EntityBuilderBase
+    public sealed class EntityComboBuilder<TModel> : EntityBuilderBase<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         /// <summary>
         /// 代码文件夹名称

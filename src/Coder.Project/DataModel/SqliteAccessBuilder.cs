@@ -9,7 +9,8 @@ using Agebull.EntityModel.Config.Sqlite;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class SqliteAccessBuilder : AccessBuilderBase
+    public sealed class SqliteAccessBuilder<TModel> : AccessBuilderBase<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         /// <summary>
         /// 名称

@@ -436,7 +436,7 @@ namespace Agebull.EntityModel.Config.Mysql
         ///     从C#的类型转为My sql的类型
         /// </summary>
         /// <param name="column"> C#的类型</param>
-        public static string ColumnType(FieldConfig column)
+        public static string ColumnType(IFieldConfig column)
         {
             switch (column.DbType.ToLower())
             {

@@ -239,10 +239,8 @@ namespace Agebull.EntityModel.Designer
                 }
                 else
                 {
-                    using (var pteam = File.OpenRead(file))
-                    {
-                        config = (TConfig)new DataContractSerializer(typeof(TConfig)).ReadObject(pteam);
-                    }
+                    using var pteam = File.OpenRead(file);
+                    config = (TConfig)new DataContractSerializer(typeof(TConfig)).ReadObject(pteam);
                 }
                 config.SaveFileName = file;
                 return config;

@@ -6,7 +6,8 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public class CppAccessCoder : CoderWithModel
+    public class CppAccessCoder<TModel> : CoderWithModel<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         #region sqlÉú³É
 

@@ -47,7 +47,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             var businessPath = IOHelper.CheckPath(project.ModelPath, "Business");
             if(cls != null)
                 businessPath = IOHelper.CheckPath(businessPath, cls);
-            var builder = new BusinessBuilder
+            var builder = new BusinessBuilder<ModelConfig>
             {
                 Model = schema,
                 Project = project
@@ -58,7 +58,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             var apiPath = project.ApiPath;
             if (cls != null)
                 apiPath = IOHelper.CheckPath(apiPath, cls);
-            var pg = new ProjectApiActionCoder
+            var pg = new ProjectApiActionCoder<ModelConfig>
             {
                 Model = schema,
                 Project = schema.Parent,

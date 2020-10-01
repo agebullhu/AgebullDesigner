@@ -471,17 +471,17 @@ ALTER TABLE `{entity.SaveTable}`
             return code.ToString();
         }
 
-        private static string FieldDefault(FieldConfig col)
+        private static string FieldDefault(IFieldConfig col)
         {
             return $"`{col.DbFieldName}` {MySqlHelper.ColumnType(col)}{NullKeyWord(col)} {ColumnDefault(col)} COMMENT '{col.Caption}'";
         }
 
-        private static string NullKeyWord(FieldConfig col)
+        private static string NullKeyWord(IFieldConfig col)
         {
             return col.CsType == "string" || col.DbNullable ? " NULL" : " NOT NULL";
         }
 
-        private static string ColumnDefault(FieldConfig col)
+        private static string ColumnDefault(IFieldConfig col)
         {
             if (col.IsIdentity)
                 return " AUTO_INCREMENT";
@@ -501,7 +501,7 @@ ALTER TABLE `{entity.SaveTable}`
 
         #region 数据读取
 
-        public static string LoadEntityCode(ModelConfig model, IEnumerable<FieldConfig> fields)
+        public static string LoadEntityCode(ModelConfig model, IEnumerable<IFieldConfig> fields)
         {
             var code = new StringBuilder();
             code.Append($@"
@@ -523,7 +523,7 @@ ALTER TABLE `{entity.SaveTable}`
             return code.ToString();
         }
 
-        public static string LoadSql(IEnumerable<FieldConfig> fields)
+        public static string LoadSql(IEnumerable<IFieldConfig> fields)
         {
             var sql = new StringBuilder();
 
@@ -558,7 +558,7 @@ ALTER TABLE `{entity.SaveTable}`
                 {
                     sql.Append(",");
                 }
-                sql.AppendLine($"`{property.Field.Entity.ReadTableName}`.`{property.DbFieldName}` AS `{property.Name}`");
+                sql.AppendLine($"`{property.Field.Entity.ReadTableName}`.`{property.Field.DbFieldName}` AS `{property.DbFieldName}`");
             }
             return sql.ToString();
         }
@@ -570,7 +570,7 @@ ALTER TABLE `{entity.SaveTable}`
         /// <param name="property">字段</param>
         /// <param name="code">代码</param>
         /// <param name="idx"></param>
-        public static void FieldReadCode(FieldConfig property, StringBuilder code, int idx)
+        public static void FieldReadCode(IFieldConfig property, StringBuilder code, int idx)
         {
             if (property.CsType.ToLower() == "string")
             {

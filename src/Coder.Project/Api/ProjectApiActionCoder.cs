@@ -13,7 +13,8 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    public class ProjectApiActionCoder : CoderWithModel, IAutoRegister
+    public class ProjectApiActionCoder<TModel> : CoderWithModel<TModel>, IAutoRegister
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
 
         #region 继承实现
@@ -95,16 +96,16 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("Web-Api", "表单保存", "cs", ReadFormValue);
-            MomentCoder.RegisteCoder("Web-Api", "ApiController.cs", "cs", BaseCode);
-            MomentCoder.RegisteCoder("Web-Api", "ApiController.Designer.cs", "cs", ExtendCode);
+            //MomentCoder.RegisteCoder("Web-Api", "表单保存", "cs", ReadFormValue);
+            //MomentCoder.RegisteCoder("Web-Api", "ApiController.cs", "cs", BaseCode);
+            //MomentCoder.RegisteCoder("Web-Api", "ApiController.Designer.cs", "cs", ExtendCode);
         }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public string ExtendCode(ModelConfig entity)
+        public string ExtendCode(TModel entity)
         {
             Model = entity;
             return ExtendCode();
@@ -115,7 +116,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public string BaseCode(ModelConfig entity)
+        public string BaseCode(TModel entity)
         {
             Model = entity;
             return BaseCode();
@@ -125,7 +126,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 
         #region 代码
 
-        static string ReadFormValue(ModelConfig entity)
+        static string ReadFormValue(TModel entity)
         {
             var code = new StringBuilder();
             code.Append($@"
@@ -214,7 +215,7 @@ namespace {NameSpace}.WebApi.Entity
         public string ConvertCode()
         {
             return Model.PrimaryColumn.IsType("string")
-                ? "(true , value)" 
+                ? "(true , value)"
                 : $@"{Model.PrimaryColumn.CsType}.TryParse(value,out var key) ? (true , key) : (false , key)";
         }
 
@@ -257,7 +258,7 @@ namespace {NameSpace}.WebApi.Entity
             {
                 if (pro.IsPrimaryKey || pro.IsLinkKey)
                 {
-                    if(pro.CsType == "string")
+                    if (pro.CsType == "string")
                         code.Append($@"
             if(RequestArgumentConvert.TryGetIDs<string>(""{pro.JsonName}"" , p=>(true,p) , out var {pro.JsonName}))
             {{
@@ -267,7 +268,7 @@ namespace {NameSpace}.WebApi.Entity
                     filter.AddAnd(p => {pro.JsonName}.Contains(p.{pro.Name}));
             }}");
                     else
-                    code.Append($@"
+                        code.Append($@"
             if(RequestArgumentConvert.TryGetIDs(""{pro.JsonName}"" , out var {pro.JsonName}))
             {{
                 if ({pro.JsonName}.Count == 1)
@@ -299,7 +300,7 @@ namespace {NameSpace}.WebApi.Entity
                 }}
             }}");
                 }
-                else if(pro.IsEnum)
+                else if (pro.IsEnum)
                 {
                     code.Append($@"
             if(RequestArgumentConvert.TryGetEnum<{pro.CustomType}>(""{pro.JsonName}"" , out {pro.CustomType} {pro.JsonName}))
@@ -445,9 +446,10 @@ namespace {NameSpace}.WebApi.Entity
             return ApiResultHelper.Succees(Business.ComboValues());
         }");
             }
-            foreach (var cmd in Model.Commands.Where(p => !p.IsLocalAction))
-            {
-                code.Append($@"
+            if (Model is ModelConfig model)
+                foreach (var cmd in model.Commands.Where(p => !p.IsLocalAction))
+                {
+                    code.Append($@"
         /// <summary>
         ///     {ToRemString(cmd.Caption)}
         /// </summary>
@@ -458,17 +460,17 @@ namespace {NameSpace}.WebApi.Entity
         public ApiResult On{cmd.Name}()
         {{
             InitForm();");
-                code.Append(cmd.IsSingleObject
-                    ? $@"
+                    code.Append(cmd.IsSingleObject
+                        ? $@"
             return !this.Business.{cmd.Name}(this.GetIntArg(""id""))"
-                    : $@"
+                        : $@"
             return !this.Business.Do{cmd.Name}(this.GetIntArrayArg(""selects""))");
-                code.Append(@"
+                    code.Append(@"
             return IsFailed
                 ? ApiResult.Error(State, Message)
                 : ApiResult.Succees();
         }");
-            }
+                }
             if (code.Length == 0)
                 return null;
             return $@"

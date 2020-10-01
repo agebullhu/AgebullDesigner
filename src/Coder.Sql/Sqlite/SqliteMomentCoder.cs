@@ -46,7 +46,7 @@ DROP VIEW [{entity.ReadTableName}];";
 
         public static string CreateView(EntityConfig model)
         {
-            DataBaseHelper.CheckFieldLink(model.DbFields);
+            DataBaseHelper.CheckFieldLink(model.Properties);
             var array = model.DbFields.Where(p => p.IsLinkField && !p.IsLinkKey).ToArray();
             if (array.Length == 0)
             {
@@ -143,7 +143,7 @@ CREATE TABLE [{entity.SaveTable}](");
             return code.ToString();
         }
 
-        private static string FieldDefault(FieldConfig col)
+        private static string FieldDefault(IFieldConfig col)
         {
             if (col.IsIdentity)
                 return $"[{col.DbFieldName}] INTEGER PRIMARY KEY autoincrement -- '{col.Caption}'";
@@ -185,7 +185,7 @@ DROP TABLE [{entity.SaveTable}];";
         /// <param name="field">×Ö¶Î</param>
         /// <param name="code">´úÂë</param>
         /// <param name="idx">ÐòºÅ</param>
-        public static void FieldReadCode(FieldConfig field, StringBuilder code, int idx)
+        public static void FieldReadCode(IFieldConfig field, StringBuilder code, int idx)
         {
             if (!IsNullOrWhiteSpace(field.CustomType))
             {

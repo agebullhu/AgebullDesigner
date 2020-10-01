@@ -18,10 +18,10 @@ namespace Agebull.EntityModel.Config
         /// <param name="entityAction">实体类型的动作(最后一个参数为是否数组)</param>
         /// <param name="stringAction">文本类型的动作(最后一个参数为是否数组)</param>
         /// <param name="generalAction">一般类型的动作(最后一个参数为是否数组)</param>
-        public static void DoByCppType(FieldConfig field,
-            Action<FieldConfig, EntityConfig, bool> entityAction,
-            Action<FieldConfig> stringAction,
-            Action<FieldConfig, string, bool> generalAction)
+        public static void DoByCppType(IFieldConfig field,
+            Action<IFieldConfig, IEntityConfig, bool> entityAction,
+            Action<IFieldConfig> stringAction,
+            Action<IFieldConfig, string, bool> generalAction)
         {
             var type = ToCppLastType(field.CppLastType ?? field.CppType);
             switch (type)

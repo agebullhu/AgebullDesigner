@@ -1,8 +1,10 @@
-﻿using System.Text;
+﻿using Agebull.EntityModel.Config;
+using System.Text;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class EntityQueryBuilder : EntityBuilderBase
+    public sealed class EntityQueryBuilder<TModel> : EntityBuilderBase<TModel>
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         #region 基础
 
