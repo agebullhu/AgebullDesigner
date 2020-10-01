@@ -57,7 +57,7 @@ TRUNCATE TABLE [{entity.SaveTable}];
 DROP VIEW [{entity.ReadTableName}];
 GO";
         }
-        public static string CreateView(ModelConfig entity)
+        public static string CreateView(EntityConfig entity)
         {
             DataBaseHelper.CheckFieldLink(entity.DbFields);
             var array = entity.DbFields.Where(p => p.IsLinkField && !p.IsLinkKey).ToArray();

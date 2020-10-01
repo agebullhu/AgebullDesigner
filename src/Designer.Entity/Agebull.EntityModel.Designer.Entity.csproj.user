@@ -5,6 +5,9 @@
     <ShowAllFiles>true</ShowAllFiles>
   </PropertyGroup>
   <ItemGroup>
+    <Page Update="View\ModelReleasePanel.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="View\ModelFieldsPanel.xaml">
       <SubType>Designer</SubType>
     </Page>

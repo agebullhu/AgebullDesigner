@@ -298,12 +298,12 @@ namespace {Project.NameSpace}.DataAccess
             if (property.IsInterfaceField || property.IsLinkField)
             {
                 str.Append($"DataInterface.{property.LinkTable}.{property.LinkField}");
-                friend = GlobalConfig.GetEntity(property.LinkTable).Properties.FirstOrDefault(p => p.PropertyName == property.LinkField);
+                friend = GlobalConfig.GetEntity(property.LinkTable).Properties.FirstOrDefault(p => p.Name == property.LinkField);
             }
             else if (property.IsLinkField)
             {
                 str.Append($"{property.LinkTable}.{property.LinkField}");
-                friend = GlobalConfig.GetEntity(property.LinkTable).Properties.FirstOrDefault(p => p.PropertyName == property.LinkField);
+                friend = GlobalConfig.GetEntity(property.LinkTable).Properties.FirstOrDefault(p => p.Name == property.LinkField);
             }
             else
             {
@@ -312,9 +312,9 @@ namespace {Project.NameSpace}.DataAccess
                 friend = property;
             }
             str.Append($",{++idx}");
-            if (property.PropertyName != friend.PropertyName || property.DbFieldName != friend.DbFieldName)
+            if (property.Name != friend.Name || property.DbFieldName != friend.DbFieldName)
             {
-                str.Append($",{++idx},\"{property.PropertyName}\",\"{property.DbFieldName}\"");
+                str.Append($",{++idx},\"{property.Name}\",\"{property.DbFieldName}\"");
             }
             str.Append(')');
             properties.Add(str.ToString());
@@ -381,8 +381,8 @@ namespace {Project.NameSpace}.DataAccess
         string DbType(FieldConfig field)
         {
             return Project.DbType == DataBaseType.SqlServer
-                ? $"(int)System.Data.SqlDbType.{SqlServerHelper.ToSqlDbType(field)}"
-                : $"(int)MySqlConnector.MySqlDbType.{MySqlHelper.ToSqlDbType(field)}";
+                ? $"(int)System.Data.SqlDbType.{SqlServerHelper.ToSqlDbType(field.DbType, field.CsType)}"
+                : $"(int)MySqlConnector.MySqlDbType.{MySqlHelper.ToSqlDbType(field.DbType,field.CsType)}";
         }
 
         #endregion

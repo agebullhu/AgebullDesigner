@@ -6,7 +6,7 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public class CppAccessCoder : CoderWithEntity
+    public class CppAccessCoder : CoderWithModel
     {
         #region sqlÉú³É
 
@@ -16,7 +16,7 @@ namespace Agebull.EntityModel.RobotCoder
 
             sql.Append(@"SELECT ");
             var isFirst = true;
-            foreach (var field in Model.CppProperty)
+            foreach (var field in Model.UserProperty)
             {
                 if (isFirst)
                 {
@@ -27,7 +27,7 @@ namespace Agebull.EntityModel.RobotCoder
                     sql.Append(",");
                 }
                 sql.AppendFormat(@"
-    `{0}` AS `{1}`", field.DbFieldName, field.PropertyName);
+    `{0}` AS `{1}`", field.DbFieldName, field.Name);
             }
             sql.Append($@"
     FROM `{Model.ReadTableName}`
@@ -53,11 +53,11 @@ namespace Agebull.EntityModel.RobotCoder
         /// <returns></returns>
         private string UniqueCondition()
         {
-            if (!Model.CppProperty.Any(p => p.UniqueIndex > 0))
+            if (!Model.UserProperty.Any(p => p.UniqueIndex > 0))
                 return $@"`{Model.PrimaryColumn.DbFieldName}` = %{Model.PrimaryColumn.Index}%";
 
             var code = new StringBuilder();
-            var uniqueFields = Model.CppProperty.Where(p => p.UniqueIndex > 0).OrderBy(p => p.UniqueIndex).ToArray();
+            var uniqueFields = Model.UserProperty.Where(p => p.UniqueIndex > 0).OrderBy(p => p.UniqueIndex).ToArray();
             var isFirst = true;
             foreach (var col in uniqueFields)
             {
@@ -93,7 +93,7 @@ END
 SELECT ?__myId;"
                 , IdInsertSql(true)
                 , UpdateSql(true)
-                , Model.PrimaryColumn.PropertyName
+                , Model.PrimaryColumn.Name
                 , Model.PrimaryColumn.IsIdentity ? "@@IDENTITY" : $"%{Model.PrimaryColumn.Index}%");
             sql.Replace("\r\n", "\"\\\r\n\"");
             return sql.ToString();
@@ -102,7 +102,7 @@ SELECT ?__myId;"
         private string IdInsertSql(bool isInner = false)
         {
             var sql = new StringBuilder();
-            var columns = Model.CppProperty.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
+            var columns = Model.UserProperty.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
             sql.AppendFormat(@"INSERT INTO `{0}`
 (", Model.SaveTable);
             var isFirst = true;
@@ -155,7 +155,7 @@ SELECT @@IDENTITY;");
         }
         private string InsertSql()
         {
-            return !Model.CppProperty.Any(p => p.UniqueIndex > 0)
+            return !Model.UserProperty.Any(p => p.UniqueIndex > 0)
                 ? IdInsertSql()
                 : UniqueInsertSql();
         }
@@ -163,7 +163,7 @@ SELECT @@IDENTITY;");
         private string UpdateSql(bool isInner = false)
         {
             var sql = new StringBuilder();
-            IEnumerable<FieldConfig> columns = Model.CppProperty.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
+            var columns = Model.UserProperty.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
             sql.AppendFormat(@"UPDATE `{0}` SET", Model.SaveTable);
             var isFirst = true;
             foreach (var field in columns)
@@ -193,7 +193,7 @@ SELECT @@IDENTITY;");
 
         private string SqlCode(string name)
         {
-            var columns = Model.CppProperty.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
+            var columns = Model.UserProperty.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
 
             var code = new StringBuilder();
             code.Append($@"

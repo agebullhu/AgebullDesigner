@@ -6,7 +6,7 @@ namespace Agebull.EntityModel.Designer.WebApi
 {
 
 
-    public sealed class ApiControlerBuillder : EntityCoderBase
+    public sealed class ApiControlerBuillder : ModelCoderBase
     {
         /// <summary>
         /// ÊÇ·ñ¿ÉÐ´

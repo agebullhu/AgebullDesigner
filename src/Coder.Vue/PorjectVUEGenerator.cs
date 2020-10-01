@@ -7,7 +7,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
     /// <summary>
     ///     页面代码生成器
     /// </summary>
-    public class PorjectVUEGenerator : CoderWithEntity
+    public class PorjectVUEGenerator : CoderWithModel
     {
         #region 继承实现
         /// <summary>

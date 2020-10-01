@@ -4,7 +4,7 @@ using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer.WebApi
 {
-    public sealed class UnitTestBuilder : EntityCoderBase
+    public sealed class UnitTestBuilder : ModelCoderBase
     {
         /// <summary>
         /// ÊÇ·ñ¿ÉÐ´

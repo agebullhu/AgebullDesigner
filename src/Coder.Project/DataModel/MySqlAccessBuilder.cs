@@ -124,17 +124,17 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess;
 
         string ReadTableName()
         {
-            var entities = Model.LastProperties.Select(p => p.Entity).Distinct().Where(p => p != Model.Entity).ToArray();
-            if (entities.Length <= 1)
-                return Model.Entity.ReadTableName;
             var primary = Model.Entity.PrimaryColumn;
             var table = Model.Entity.ReadTableName;
             var code = new StringBuilder();
-            code.Append(Model.Entity.ReadTableName);
-            foreach(var en in entities)
+            code.Append(table);
+            foreach (var releation in Model.Releations.Where(p=>p.ModelType == ReleationModelType.ExtensionProperty))
             {
-                var field = en.Properties.FirstOrDefault(p=>p.LinkField == primary.Name && p.LinkTable== Model.Entity.Name) ?? en.PrimaryColumn;
-                code.Append($"\nLEFT JOIN `{en.ReadTableName}` ON `{table}`.`{primary.DbFieldName}` = `{Model.Entity.ReadTableName}`.`{field.DbFieldName}`");
+                var entity = GlobalConfig.GetEntity(releation.ForeignTable);
+                var property = entity.Properties.FirstOrDefault(p => p.Name == releation.ForeignKey);
+                code.AppendLine();
+                code.Append(releation.JoinType == EntityJoinType.Inner ? "INNER JOIN" : "LEFT JOIN");
+                code.Append($"`{entity.ReadTableName}` ON `{table}`.`{primary.DbFieldName}` = `{entity.ReadTableName}`.`{property.DbFieldName}` {releation.Condition}");
             }
             return code.ToString();
         }
@@ -154,12 +154,12 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess;
             if (Model.IsQuery)
                 return null;
             var sql = new StringBuilder();
-            var columns = PublishDbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
+            var columns = Model.Entity.DbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
             sql.Append($@"
 INSERT INTO `{Model.SaveTableName}`
 (");
             var isFirst = true;
-            foreach (var field in columns)
+            foreach (var property in columns)
             {
                 if (isFirst)
                 {
@@ -170,14 +170,14 @@ INSERT INTO `{Model.SaveTableName}`
                     sql.Append(",");
                 }
                 sql.Append($@"
-    `{field.DbFieldName}`");
+    `{property.DbFieldName}`");
             }
             sql.Append(@"
 )
 VALUES
 (");
             isFirst = true;
-            foreach (var field in columns)
+            foreach (var property in columns)
             {
                 if (isFirst)
                 {
@@ -188,7 +188,7 @@ VALUES
                     sql.Append(",");
                 }
                 sql.Append($@"
-    ?{field.Name}");
+    ?{property.Name}");
             }
             sql.Append(@"
 );");
@@ -200,9 +200,9 @@ VALUES
             if (Model.IsQuery)
                 return null;
             var sql = new StringBuilder();
-            IEnumerable<FieldConfig> columns = PublishDbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
+            var columns = PublishDbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
             var isFirst = true;
-            foreach (var field in columns)
+            foreach (var property in columns)
             {
                 if (isFirst)
                 {
@@ -213,7 +213,7 @@ VALUES
                     sql.Append(",");
                 }
                 sql.Append($@"
-       `{field.DbFieldName}` = ?{field.Name}");
+       `{property.DbFieldName}` = ?{property.Name}");
             }
             return sql.ToString();
         }
@@ -232,22 +232,22 @@ VALUES
         public void SetEntityParameter({Model.EntityName} entity, MySqlCommand cmd)
         {{");
 
-            foreach (var field in PublishDbFields.OrderBy(p => p.Index))
+            foreach (var property in PublishDbFields.OrderBy(p => p.Index))
             {
-                if (!string.IsNullOrWhiteSpace(field.CustomType))
+                if (!string.IsNullOrWhiteSpace(property.CustomType))
                 {
                     code.Append($@"
-            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"", ({field.CsType})entity.{field.Name}));");
+            cmd.Parameters.Add(new MySqlParameter(""{property.Name}"", ({property.CsType})entity.{property.Name}));");
                 }
-                else if (field.CsType.Equals("bool", StringComparison.OrdinalIgnoreCase))
+                else if (property.CsType.Equals("bool", StringComparison.OrdinalIgnoreCase))
                 {
                     code.Append($@"
-            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"", entity.{field.Name} ? (byte)1 : (byte)0));");
+            cmd.Parameters.Add(new MySqlParameter(""{property.Name}"", entity.{property.Name} ? (byte)1 : (byte)0));");
                 }
                 else
                 {
                     code.Append($@"
-            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"", entity.{field.Name}));");
+            cmd.Parameters.Add(new MySqlParameter(""{property.Name}"", entity.{property.Name}));");
                 }
             }
             code.Append(@"
@@ -262,23 +262,23 @@ VALUES
         /// <summary>
         /// 得到字段的DbType类型
         /// </summary>
-        /// <param name=""field"">字段名称</param>
+        /// <param name=""property"">字段名称</param>
         /// <returns>参数</returns>
-        public int GetDbType(string field)
+        public int GetDbType(string property)
         {
-            if(field == null) 
+            if(property == null) 
                return (int)MySqlDbType.VarChar;
-            switch (field)
+            switch (property)
             {");
-            foreach (var field in PublishDbFields)
+            foreach (var property in PublishDbFields)
             {
-                if (field.DbFieldName.ToLower() != field.Name.ToLower())
+                if (property.DbFieldName.ToLower() != property.Name.ToLower())
                     code.Append($@"
-                case ""{field.DbFieldName.ToLower()}"":");
+                case ""{property.DbFieldName.ToLower()}"":");
 
                 code.Append($@"
-                case ""{field.Name.ToLower()}"":
-                    return (int)MySqlDbType.{MySqlHelper.ToSqlDbType(field)};");
+                case ""{property.Name.ToLower()}"":
+                    return (int)MySqlDbType.{MySqlHelper.ToSqlDbType(property.DbType, property.CsType)};");
             }
 
             code.Append(@"
@@ -303,15 +303,128 @@ VALUES
         {{
             var reader = r as MySqlDataReader;");
             int idx = 0;
-            foreach (var field in PublishDbFields)
+            foreach (var property in PublishDbFields)
             {
-                SqlMomentCoder.FieldReadCode(field, code, idx++);
+                SqlMomentCoder.FieldReadCode(property, code, idx++);
             }
             code.Append(@"
         }");
+            var array = Model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty).ToArray();
+            if (array.Length != 0)
+            {
+                code.Append($@"
+
+        /// <summary>
+        /// 载入后
+        /// </summary>
+        /// <param name=""entity"">读取数据的实体</param>
+        public async Task AfterLoad({Model.EntityName} entity)
+        {{");
+
+                foreach (var re in array)
+                {
+                    var e = GlobalConfig.GetEntity(re.ForeignTable);
+                    code.Append($@"
+            var access{re.Name} = Provider.ServiceProvider.CreateDataQuery<{e.Name}>();");
+                    if (re.ModelType == ReleationModelType.Children)
+                        code.Append($@"
+            entity.{re.Name} = await access{re.Name}.LoadByForeignKeyAsync(nameof({e.Name}.{re.ForeignKey}), entity.{re.PrimaryKey});");
+                    else
+                        code.Append($@"
+            entity.{re.Name} = await access{re.Name}.FirstAsync(p=>p.{re.ForeignKey} == entity.{re.PrimaryKey});");
+                }
+                code.Append(@"
+        }");
+            }
+            if (Model.IsQuery || Model.Releations.Count == 0)
+                return code.ToString();
+
+            code.Append($@"
+
+        /// <summary>
+        ///     实体保存完成后期处理(Insert/Update/Delete)
+        /// </summary>
+        /// <param name=""entity"">实体</param>
+        /// <param name=""operatorType"">操作类型</param>
+        /// <remarks>
+        ///     对当前对象的属性的更改,请自行保存,否则将丢失
+        /// </remarks>
+        public async Task AfterSave(EventSubscribeData entity, DataOperatorType operatorType)
+        {{");
+            foreach (var re in Model.Releations)
+            {
+                var entity = GlobalConfig.GetEntity(re.ForeignTable);
+                code.Append($@"
+            var access{re.Name} = Provider.ServiceProvider.CreateDataAccess<{entity.Name}>();");
+
+                if (re.ModelType == ReleationModelType.EntityProperty)
+                    code.Append($@"
+            if (entity.{entity.Name} == null || operatorType == DataOperatorType.Delete)
+            {{
+                await access{re.Name}.DeleteAsync(p => p.{re.ForeignKey} == entity.{re.PrimaryKey});
+            }}
+            else
+            {{
+                entity.{entity.Name}.{re.ForeignKey} = entity.{re.PrimaryKey};
+                if (await access{re.Name}.AnyAsync(p => p.{re.ForeignKey} == entity.{re.PrimaryKey}))
+                {{
+                    await access{re.Name}.UpdateAsync(entity.entity.{entity.Name});
+                }}
+                else
+                {{
+                    await access{re.Name}.InsertAsync(entity.entity.{entity.Name});
+                }}
+            }}");
+                else if (re.ModelType == ReleationModelType.Children)
+                    code.Append($@"
+            if (entity.{entity.Name} == null || operatorType == DataOperatorType.Delete)
+            {{
+                await access{re.Name}.DeleteAsync(p => p.{re.ForeignKey} == entity.{re.PrimaryKey});
+            }}
+            else
+            {{
+                foreach(var ch in entity.{entity.Name})
+                {{
+                    ch.{re.ForeignKey} = entity.{re.PrimaryKey};
+                    if (await access{re.Name}.ExistPrimaryKeyAsync(ch.{entity.PrimaryColumn.Name}))
+                        await access{re.Name}.UpdateAsync(ch);
+                    else
+                        await access{re.Name}.InsertAsync(ch);
+                }}
+            }}");
+                else
+                {
+                    code.Append($@"
+            {{  
+                var ch = new {entity.Name}
+                {{");
+                    bool first = true;
+                    foreach (var pro in Model.Properties.Where(p=>p.Entity == entity))
+                    {
+                        if (first)
+                            first = false;
+                        else
+                            code.Append(',');
+                        code.Append($@"
+                    {pro.Name} = entity.{pro.Name}");
+                    }
+                    code.Append($@"
+                }};
+                ch.{re.ForeignKey} = entity.{re.PrimaryKey};
+                var (hase,id) = await access{re.Name}.LoadValueAsync(p=> p.{entity.PrimaryColumn.Name} , p=> {re.ForeignKey} == entity.{re.PrimaryKey});
+                ch.{entity.PrimaryColumn.Name} = id;
+                if (hase)
+                    await access{re.Name}.UpdateAsync(ch);
+                else
+                    await access{re.Name}.InsertAsync(ch);
+            }}");
+                }
+            }
+            code.Append(@"
+        }");
+
             return code.ToString();
         }
-
 
         #region 数据结构
 
@@ -320,7 +433,7 @@ VALUES
         {
             var properties = new List<string>();
             var idx = 0;
-            EntityStruct(Model, properties,ref idx);
+            EntityStruct(Model, properties, ref idx);
             return string.Join(@",
                 ", properties);
         }
@@ -332,13 +445,13 @@ VALUES
                 var modelBase = GlobalConfig.GetModel(p => p.Name == Model.ModelBase);
                 EntityStruct(modelBase, properties, ref idx);
             }
-            var primary = model.Properties.FirstOrDefault(p=>p.Field.Entity == model.Entity && p.Field.IsPrimaryKey);
+            var primary = model.Properties.FirstOrDefault(p => p.Entity == model.Entity && p.IsPrimaryKey);
 
             EntityStruct(properties, ref idx, primary);
 
             foreach (var property in model.Properties.Where(p => p.Field != model.Entity.PrimaryColumn).OrderBy(p => p.Index))
             {
-                EntityStruct( properties, ref idx, property);
+                EntityStruct(properties, ref idx, property);
             }
         }
 
@@ -348,24 +461,20 @@ VALUES
                 return;
 
             var str = new StringBuilder("new EntityProperty(");
-            FieldConfig friend;
-            var field = property.Field;
-            if (field.IsInterfaceField || field.IsLinkField)
+            
+            if (property.IsInterfaceField || property.IsLinkField)
             {
-                str.Append($"DataInterface.{field.LinkTable}.{field.LinkField}");
-                friend = GlobalConfig.GetEntity(field.LinkTable).Properties.FirstOrDefault(p => p.PropertyName == field.LinkField);
+                str.Append($"DataInterface.{property.LinkTable}.{property.LinkField}");
             }
-            else if (field.IsLinkField)
+            else if (property.IsLinkField)
             {
-                str.Append($"{field.LinkTable}.{field.LinkField}");
-                friend = GlobalConfig.GetEntity(field.LinkTable).Properties.FirstOrDefault(p => p.PropertyName == field.LinkField);
+                str.Append($"{property.LinkTable}.{property.LinkField}");
             }
             else
             {
                 str.Append(property.Name);
-                friend = field;
             }
-            str.Append($",{++idx},\"{field.Name}\",\"{field.DbFieldName}\")");
+            str.Append($",{++idx},\"{property.Name}\",\"{property.DbFieldName}\")");
             properties.Add(str.ToString());
         }
         #endregion
@@ -393,15 +502,15 @@ VALUES
             return (property.Trim().ToLower()) switch
             {{");
 
-            foreach (var field in Model.LastProperties.Where(p => p.CanGet))
+            foreach (var property in Model.LastProperties.Where(p => p.CanGet))
             {
-                var names = field.GetAliasPropertys().Select(p => p.ToLower()).ToList();
-                var name = field.Name.ToLower();
+                var names = property.GetAliasPropertys().Select(p => p.ToLower()).ToList();
+                var name = property.Name.ToLower();
                 if (!names.Contains(name))
                     names.Add(name);
                 foreach (var alias in names)
                     code.Append($@"
-                ""{alias}"" => entity.{field.PropertyName},");
+                ""{alias}"" => entity.{property.Name},");
 
             }
             code.AppendLine(@"
@@ -424,43 +533,44 @@ VALUES
             switch(property.Trim().ToLower())
             {{");
 
-            foreach (var field in Model.LastProperties.Where(p => p.CanSet))
+            foreach (var property in Model.LastProperties.Where(p => p.CanSet))
             {
-                var names = field.GetAliasPropertys().Select(p => p.ToLower()).ToList();
-                var name = field.Name.ToLower();
+                
+                var names = property.GetAliasPropertys().Select(p => p.ToLower()).ToList();
+                var name = property.Name.ToLower();
                 if (!names.Contains(name))
                     names.Add(name);
                 foreach (var alia in names)
                     code.Append($@"
             case ""{alia}"":");
 
-                if (!string.IsNullOrWhiteSpace(field.CustomType))
+                if (!string.IsNullOrWhiteSpace(property.CustomType))
                 {
                     code.Append($@"
                 if (value != null)
                 {{
                     if(value is int)
                     {{
-                        entity.{field.Name} = ({field.CustomType})(int)value;
+                        entity.{property.Name} = ({property.CustomType})(int)value;
                     }}
-                    else if(value is {field.CustomType})
+                    else if(value is {property.CustomType})
                     {{
-                        entity.{field.Name} = ({field.CustomType})value;
+                        entity.{property.Name} = ({property.CustomType})value;
                     }}
                     else
                     {{
                         var str = value.ToString();
-                        {field.CustomType} val;
-                        if ({field.CustomType}.TryParse(str, out val))
+                        {property.CustomType} val;
+                        if ({property.CustomType}.TryParse(str, out val))
                         {{
-                            entity.{field.Name} = val;
+                            entity.{property.Name} = val;
                         }}
                         else
                         {{
                             int vl;
                             if (int.TryParse(str, out vl))
                             {{
-                                entity.{field.Name} = ({field.CustomType})vl;
+                                entity.{property.Name} = ({property.CustomType})vl;
                             }}
                         }}
                     }}
@@ -469,7 +579,7 @@ VALUES
                     continue;
                 }
 
-                switch (field.CsType)
+                switch (property.CsType)
                 {
                     case "bool":
                     case "Boolean":
@@ -479,11 +589,11 @@ VALUES
                     int vl;
                     if (int.TryParse(value.ToString(), out vl))
                     {{
-                        entity.{field.Name} = vl != 0;
+                        entity.{property.Name} = vl != 0;
                     }}
                     else
                     {{
-                        entity.{field.Name} = Convert.ToBoolean(value);
+                        entity.{property.Name} = Convert.ToBoolean(value);
                     }}
                 }}
                 return;");
@@ -491,12 +601,12 @@ VALUES
                     case "int":
                     case "long":
                         code.Append($@"
-                entity.{field.Name} = ({field.CsType})Convert.ToDecimal(value);
+                entity.{property.Name} = ({property.CsType})Convert.ToDecimal(value);
                 return;");
                         break;
                     default:
                         code.Append($@"
-                entity.{field.Name} = {ConvertCode(field, "value")};
+                entity.{property.Name} = {ConvertCode(property, "value")};
                 return;");
                         break;
                 }
@@ -509,7 +619,7 @@ VALUES
         }
 
 
-        private string ConvertCode(FieldConfig column, string arg)
+        private string ConvertCode(PropertyConfig column, string arg)
         {
             switch (column.CsType)
             {

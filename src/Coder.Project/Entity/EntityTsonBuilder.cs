@@ -95,7 +95,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// {Model.Name}ÀàÐÍ´úºÅ
         /// </summary>
         public const int EntityId = 0x{Model.Identity:X};");
-            foreach (var property in Model.CppProperty)
+            foreach (var property in Model.UserProperty)
             {
                 code.Append($@"
 
@@ -119,14 +119,14 @@ namespace Agebull.EntityModel.RobotCoder
         private static int GetEntitySerializeLen(ModelConfig entity)
         {
             int len = entity.LastProperties.Count + 94;
-            foreach (var property in entity.CppProperty)
+            foreach (var property in entity.UserProperty)
             {
                 len += GetFieldSerializeLen(property);
             }
             return len;
         }
 
-        private static int GetFieldSerializeLen(FieldConfig field)
+        private static int GetFieldSerializeLen(PropertyConfig field)
         {
             int.TryParse(field.ArrayLen, out int len);
 
@@ -171,7 +171,7 @@ namespace Agebull.EntityModel.RobotCoder
         private string SerializeCode(ModelConfig entity)
         {
             StringBuilder code = new StringBuilder();
-            foreach (var field in entity.CppProperty)
+            foreach (var field in entity.UserProperty)
             {
                 if (!field.CanGet)
                     continue;
@@ -203,7 +203,7 @@ namespace Agebull.EntityModel.RobotCoder
         private string DeserializeCode(ModelConfig entity)
         {
             StringBuilder code = new StringBuilder();
-            foreach (var field in entity.CppProperty)
+            foreach (var field in entity.UserProperty)
             {
                 if (!field.CanSet)
                     continue;

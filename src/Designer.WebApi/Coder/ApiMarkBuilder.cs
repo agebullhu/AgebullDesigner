@@ -11,7 +11,7 @@ namespace Agebull.EntityModel.Designer.WebApi
 {
 
 
-    public sealed class ApiMarkBuilder : EntityCoderBase
+    public sealed class ApiMarkBuilder : ModelCoderBase
     {
 
         #region Ö÷Ìå´úÂë

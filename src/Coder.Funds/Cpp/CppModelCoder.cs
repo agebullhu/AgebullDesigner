@@ -5,7 +5,7 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class CppModelCoder : CoderWithEntity
+    public sealed class CppModelCoder : CoderWithModel
     {
         #region 类实现代码
 
@@ -22,7 +22,7 @@ void {Model.Name}Model::OnModify()
 {{
     /*");
 
-            foreach (var property in Model.CppProperty)
+            foreach (var property in Model.UserProperty)
             {
                 code.Append($@"
     if(is_modified[FIELD_INDEX_{Model.Name.ToUpper()}_{property.Name.ToUpper()}])
@@ -52,7 +52,7 @@ void {Model.Name}Model::OnModify()
 /**
 * @brief {Model.Name}数据模型封装类
 */
-class {Model.Name}Model : public ModelBase<{Model.Name},{Model.CppProperty.Count()}>
+class {Model.Name}Model : public ModelBase<{Model.Name},{Model.UserProperty.Count()}>
 {{
 public:
 	/**
@@ -73,9 +73,10 @@ public:
 	{{
 	}}");
 
-            foreach (var property in Model.CppProperty)
+            foreach (var property in Model.UserProperty)
             {
-                var type = property.CppLastType == "char" && property.Datalen > 0 ? "const char*" : property.CppLastType;
+                var field = property;
+                var type = field.CppLastType == "char" && field.Datalen > 0 ? "const char*" : field.CppLastType;
                 code.Append($@"
     /**
     * @brief 取得{property.Caption}
@@ -108,13 +109,14 @@ public:
             return code.Replace("\n", "\n" + sb).ToString();
         }
 
-        private static void SetValue(StringBuilder code, FieldConfig field)
+        private static void SetValue(StringBuilder code, PropertyConfig property)
         {
+            var field = property;
             var type = CppTypeHelper.ToCppLastType(field.CppLastType);
             if (type is EntityConfig stru)
             {
                 code.Append($@"
-        memcpy(m_data.{field.Name},value,sizeof({stru.Name}));");
+        memcpy(m_data.{property.Name},value,sizeof({stru.Name}));");
                 return;
             }
             var typedef = type as TypedefItem;
@@ -124,20 +126,20 @@ public:
             {
                 if (field.Datalen == 1 || typedef?.ArrayLen == "1")
                     code.Append($@"
-        m_data.{field.Name} = value;");
+        m_data.{property.Name} = value;");
                 else
                     code.Append($@"
-        strcpy_s(m_data.{field.Name},value);");
+        strcpy_s(m_data.{property.Name},value);");
             }
             else if (isArray)
             {
                 code.Append($@"
-        memcpy(m_data.{field.Name},value,sizeof({field.Name}));");
+        memcpy(m_data.{property.Name},value,sizeof({property.Name}));");
             }
             else
             {
                 code.Append($@"
-        m_data.{field.Name} = value;");
+        m_data.{property.Name} = value;");
             }
         }
         #endregion

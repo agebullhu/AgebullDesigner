@@ -15,7 +15,7 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// 项目代码命令对象的抽象类
     /// </summary>
-    public class ProjectCodeCommand : ConfigCommandBase<EntityConfig>
+    public class ProjectCodeCommand : ConfigCommandBase<ModelConfig>
     {
         private readonly Func<ProjectBuilder> _creater;
 
@@ -24,13 +24,13 @@ namespace Agebull.EntityModel.Designer
         public ProjectCodeCommand(Func<ProjectBuilder> creater)
         {
             _creater = creater;
-            TargetType = typeof(EntityConfig);
+            TargetType = typeof(ModelConfig);
         }
         bool noWriteFile;
         /// <summary>
         /// 能否执行的检查
         /// </summary>
-        public bool CanDo(RuntimeArgument argument)
+        public bool CanDo(ModelArgument argument)
         {
             noWriteFile = string.IsNullOrWhiteSpace(SolutionConfig.Current.RootPath) ||
                           !Directory.Exists(SolutionConfig.Current.RootPath);
@@ -112,7 +112,7 @@ namespace Agebull.EntityModel.Designer
             return true;
         }
 
-        public bool Prepare(RuntimeArgument argument)
+        public bool Prepare(ModelArgument argument)
         {
             _builder = _creater();
             _builder.MessageSetter = MessageSetter;
@@ -133,7 +133,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         /// <param name="argument"></param>
         /// <returns></returns>
-        public bool BeginDo(RuntimeArgument argument)
+        public bool BeginDo(ModelArgument argument)
         {
             codeScope = FileCodeScope.CreateScope(noWriteFile);
             return true;
@@ -144,7 +144,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         /// <param name="argument"></param>
         /// <returns></returns>
-        public void EndDo(RuntimeArgument argument)
+        public void EndDo(ModelArgument argument)
         {
             _codes = WorkContext.FileCodes;
             codeScope.Dispose();
@@ -190,7 +190,7 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         private bool DoPrepare(object args, Action<object> setArgs)
         {
-            var argument = new RuntimeArgument
+            var argument = new ModelArgument
             {
                 Argument = args ?? GlobalConfig.CurrentConfig
             };
@@ -205,7 +205,7 @@ namespace Agebull.EntityModel.Designer
                 success = false;
                 MessageBox.Show("有错误配置,请检查");
             }
-            foreach (var entity in argument.Entities)
+            foreach (var entity in argument.Models)
             {
                 if (Validate(entity))
                     continue;
@@ -221,12 +221,12 @@ namespace Agebull.EntityModel.Designer
         {
             using (CodeGeneratorScope.CreateScope(SolutionConfig.Current))
             {
-                var argument = (RuntimeArgument)args;
+                var argument = (ModelArgument)args;
                 if (!BeginDo(argument))
                     return false;
                 try
                 {
-                    foreach (var entity in argument.Entities)
+                    foreach (var entity in argument.Models)
                     {
                         Execute(entity);
                     }

@@ -12,28 +12,24 @@
     <UserControl.DataContext>
         <designer:PropertyViewModel/>
     </UserControl.DataContext>
-    <DataGrid AutoGenerateColumns="False"
+
+    <DataGrid 
+            AutoGenerateColumns="False"
               CanUserAddRows="False"
               CanUserDeleteRows="False"
               DataContext="{Binding Context}"
               ItemsSource="{Binding SelectModel.Properties}">
         <DataGrid.Columns>
-            <DataGridCheckBoxColumn Binding="{Binding Field.Option.IsDiscard,Mode=TwoWay}" Header="废弃" />
-            <DataGridCheckBoxColumn Binding="{Binding Field.Option.IsDelete,Mode=TwoWay}" Header="删除" />
+            <DataGridCheckBoxColumn Binding="{Binding Option.IsDiscard,Mode=TwoWay}" Header="废弃" />
             <DataGridTextColumn Binding="{Binding Field.Entity.Name,Mode=OneWay}" Header="实体" />
             <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
             <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />
             <DataGridTextColumn Binding="{Binding DbFieldName,Mode=TwoWay}" Header="字段" />
+            <DataGridTextColumn Binding="{Binding Function,Mode=TwoWay}" Header="汇总方法" />
+            <DataGridTextColumn Binding="{Binding Having,Mode=TwoWay}" Header="汇总条件" />
             <DataGridTextColumn Binding="{Binding JsonName,Mode=TwoWay}" Header="Json" />
-            <DataGridCheckBoxColumn Binding="{Binding Field.IsPrimaryKey,Mode=OneWay}" Header="主键" />
-            <DataGridCheckBoxColumn Binding="{Binding Field.IsIdentity,Mode=OneWay}" Header="自增" />
-            <DataGridCheckBoxColumn Binding="{Binding Field.IsCaption,Mode=OneWay}" Header="标题" />
-            <DataGridTextColumn Binding="{Binding Field.DataType,Mode=OneWay}" Header="数据类型" />
-            <DataGridTextColumn Binding="{Binding Field.CsType,Mode=OneWay}" Header="C#类型" />
-            <DataGridTextColumn Binding="{Binding Field.CustomType,Mode=OneWay}" Header="自定义类型" />
-            <DataGridCheckBoxColumn Binding="{Binding Field.Nullable,Mode=OneWay}" Header="可空类型" />
-            <DataGridCheckBoxColumn Binding="{Binding Field.CanGet,Mode=OneWay}" Header="可读" />
-            <DataGridCheckBoxColumn Binding="{Binding Field.CanSet,Mode=OneWay}" Header="可写" />
+            <DataGridTextColumn Binding="{Binding DbType,Mode=TwoWay}" Header="Db类型" />
+            <DataGridTextColumn Binding="{Binding CsType,Mode=TwoWay}" Header="C#类型" />
         </DataGrid.Columns>
         <i:Interaction.Behaviors>
             <behaviors:DataGridGenertColumnsBehavior />

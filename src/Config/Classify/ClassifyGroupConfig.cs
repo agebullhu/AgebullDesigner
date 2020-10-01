@@ -140,7 +140,7 @@ namespace Agebull.EntityModel.Config
         private int needReGroup;
         private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName != _propertyName)
+            if (e.Name != _propertyName)
                 return;
             needReGroup++;
             Task.Factory.StartNew(DoReGroup);

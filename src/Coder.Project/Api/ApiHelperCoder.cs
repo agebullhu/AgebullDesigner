@@ -14,20 +14,21 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public static string InputConvert(ModelConfig entity)
+        public static string InputConvert(ModelConfig model)
         {
-            if (entity.IsUiReadOnly)
+            if (model.IsUiReadOnly)
                 return null;
-            var fields = entity.ClientProperty.Where(p => p.CanUserInput || p.ExtendConfigListBool["easyui", "userFormHide"]).ToArray();
+            var fields = model.ClientProperty.Where(p => p.CanUserInput || p.ExtendConfigListBool["easyui", "userFormHide"]).ToArray();
             var code = new StringBuilder();
             foreach (var group in fields.GroupBy(p => p.Group))
             {
 
                 code.Append($@"
             //{group.Key ?? "普通字段"}");
-                foreach (var field in group.OrderBy(p => p.Index))
+                foreach (var pro in group.OrderBy(p => p.Index))
                 {
-                    if (field.IsPrimaryKey)
+                    var field = pro.Field;
+                    if (field == model.Entity.PrimaryColumn)
                     {
                         continue;
                     }
@@ -48,36 +49,36 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
                             code.Append($@"convert.TryGetValue(""{field.JsonName}"" , out string file))
             {{
                 if (string.IsNullOrWhiteSpace(file))
-                    data.{field.Name}_Base64 = null;
+                    data.{pro.Name}_Base64 = null;
                 else if(file != ""*"" && file.Length< 100 && file[0] == '/')
                 {{
                     using(var call = new WebApiCaller(ConfigurationManager.AppSettings[""ManageAddress""]))
                     {{
                         var result = call.Get<string>(""api/v1/ueditor/action"", $""action=base64&url={{file}}"");
-                        data.{field.Name}_Base64 = result.Success ? result.ResultData : null;
+                        data.{pro.Name}_Base64 = result.Success ? result.ResultData : null;
                     }}
                 }}
             }}");
                             continue;
                         case "ByteArray":
-                            code.Append($@"convert.TryGetValue(""{field.JsonName}"" , out string {field.Name}))
-                data.{field.Name}_Base64 = {field.Name};");
+                            code.Append($@"convert.TryGetValue(""{field.JsonName}"" , out string {pro.Name}))
+                data.{pro.Name}_Base64 = {pro.Name};");
                             continue;
                     }
                     if (field.IsEnum && !string.IsNullOrWhiteSpace(field.CustomType))
                     {
-                        code.Append($@"convert.TryGetEnum(""{field.JsonName}"" , out {field.CustomType} {field.Name}))
-                data.{field.Name} = {field.Name};");
+                        code.Append($@"convert.TryGetEnum(""{field.JsonName}"" , out {field.CustomType} {pro.Name}))
+                data.{pro.Name} = {pro.Name};");
                     }
                     else if(!string.IsNullOrWhiteSpace(field.CustomType))
                     {
-                        code.Append($@"convert.TryGetValue(""{field.JsonName}"" , out {field.CsType} {field.Name}))
-                data.{field.Name} = ({field.CustomType}){field.Name};");
+                        code.Append($@"convert.TryGetValue(""{field.JsonName}"" , out {field.CsType} {pro.Name}))
+                data.{pro.Name} = ({field.CustomType}){pro.Name};");
                     }
                     else
                     {
-                        code.Append($@"convert.TryGetValue(""{field.JsonName}"" , out {field.CsType} {field.Name}))
-                data.{field.Name} = {field.Name};");
+                        code.Append($@"convert.TryGetValue(""{field.JsonName}"" , out {field.CsType} {pro.Name}))
+                data.{pro.Name} = {pro.Name};");
                     }
                 }
             }

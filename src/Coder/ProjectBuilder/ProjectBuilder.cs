@@ -131,10 +131,10 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="project"></param>
         /// <param name="schema"></param>
         /// <param name="path"></param>
-        protected static void CreateCode<TEntityCoder>(ProjectConfig project, ModelConfig schema, string path)
-            where TEntityCoder : CoderWithEntity, new()
+        protected static void CreateCode<TModelCoder>(ProjectConfig project, ModelConfig schema, string path)
+            where TModelCoder : CoderWithModel, new()
         {
-            var builder = new TEntityCoder
+            var builder = new TModelCoder
             {
                 Model = schema,
                 Project = project

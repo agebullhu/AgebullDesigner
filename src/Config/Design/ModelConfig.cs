@@ -40,7 +40,7 @@ namespace Agebull.EntityModel.Config
         /// 加入子级
         /// </summary>
         /// <param name="propertyConfig"></param>
-        public void Add(EntityReleationConfig propertyConfig)
+        public void Add(ReleationConfig propertyConfig)
         {
             propertyConfig.Parent = this;
             Releations.TryAdd(propertyConfig);
@@ -67,7 +67,7 @@ namespace Agebull.EntityModel.Config
         /// 加入子级
         /// </summary>
         /// <param name="propertyConfig"></param>
-        public void Remove(EntityReleationConfig propertyConfig)
+        public void Remove(ReleationConfig propertyConfig)
         {
             Releations.Remove(propertyConfig);
         }
@@ -95,26 +95,26 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 字段
+        /// 数据关联配置
         /// </summary>
-        [DataMember, JsonProperty("_tableReleations",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal NotificationList<EntityReleationConfig> _releations;
+        [DataMember, JsonProperty("releations",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal NotificationList<ReleationConfig> _releations;
 
         /// <summary>
-        /// 字段
+        /// 数据关联配置
         /// </summary>
         /// <remark>
-        /// 字段
+        /// 数据关联配置
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(@"设计器支持"), DisplayName(@"字段"), Description("字段")]
-        public NotificationList<EntityReleationConfig> Releations
+        [Category(@"设计器支持"), DisplayName(@"数据关联配置"), Description("数据关联配置")]
+        public NotificationList<ReleationConfig> Releations
         {
             get
             {
                 if (_releations != null)
                     return _releations;
-                _releations = new NotificationList<EntityReleationConfig>();
+                _releations = new NotificationList<ReleationConfig>();
                 OnPropertyChanged(nameof(Releations));
                 return _releations;
             }
@@ -163,7 +163,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 最终有效的属性
         /// </summary>
-        public List<FieldConfig> LastProperties { get; set; }
+        public List<PropertyConfig> LastProperties { get; set; }
 
         /// <summary>
         /// 公开的属性
@@ -173,27 +173,17 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"公开的属性"), Description("公开的属性")]
-        public IEnumerable<FieldConfig> PublishProperty => LastProperties?.Where(p => !p.DbInnerField);
+        public IEnumerable<PropertyConfig> PublishProperty => LastProperties?.Where(p => !p.DbInnerField);
 
         /// <summary>
-        /// C++的属性
+        /// 用户属性
         /// </summary>
         /// <remark>
-        /// C++的属性
+        /// 用户属性
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(@"设计器支持"), DisplayName(@"C++的属性"), Description("C++的属性")]
-        public IEnumerable<FieldConfig> CppProperty => LastProperties?.Where(p => !p.IsMiddleField && !p.DbInnerField && !p.IsSystemField);
-
-        /// <summary>
-        /// 客户端可访问的属性
-        /// </summary>
-        /// <remark>
-        /// 客户端可访问的属性
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"设计器支持"), DisplayName(@"客户端可访问的属性"), Description("客户端可访问的属性")]
-        public IEnumerable<FieldConfig> ClientProperty => LastProperties?.Where(p => !p.DenyClient && !p.DbInnerField);
+        [Category(@"设计器支持"), DisplayName(@"用户属性"), Description("用户属性")]
+        public IEnumerable<PropertyConfig> UserProperty => LastProperties?.Where(p => !p.IsMiddleField && !p.DbInnerField && !p.IsSystemField);
 
         /// <summary>
         /// 客户端可访问的属性
@@ -203,7 +193,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"客户端可访问的属性"), Description("客户端可访问的属性")]
-        public IEnumerable<FieldConfig> UserProperty => LastProperties?.Where(p => !p.DenyClient && !p.DbInnerField && !p.IsSystemField);
+        public IEnumerable<PropertyConfig> ClientProperty => LastProperties?.Where(p => !p.DenyClient && !p.DbInnerField);
 
         /// <summary>
         /// 数据库字段
@@ -213,7 +203,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"数据库字段"), Description("数据库字段")]
-        public IEnumerable<FieldConfig> DbFields => LastProperties?.Where(p => !p.NoStorage);
+        public IEnumerable<PropertyConfig> DbFields => LastProperties?.Where(p => !p.NoStorage);
 
 
         #endregion

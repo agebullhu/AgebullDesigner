@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Agebull.EntityModel.Config
 {
@@ -19,6 +20,21 @@ namespace Agebull.EntityModel.Config
         }
     }
 
+    partial class ModelChildConfig
+    {
+        /// <summary>
+        /// 字段复制
+        /// </summary>
+        /// <param name="dest"></param>
+        /// <returns></returns>
+        protected override void CopyFrom(SimpleConfig dest)
+        {
+            base.CopyFrom(dest);
+            if (!(dest is ModelChildConfig cfg))
+                return;
+            Parent = cfg.Parent;
+        }
+    }
     partial class ApiItem
     {
         /// <summary>
@@ -197,10 +213,12 @@ namespace Agebull.EntityModel.Config
                 return;
             foreach (var property in source.Properties)
             {
-                Add(new PropertyConfig
+                var pro = new PropertyConfig
                 {
                     Field = property.Field
-                });
+                };
+                pro.Copy(property);
+                Add(pro);
             }
         }
         /// <summary>
@@ -241,13 +259,12 @@ namespace Agebull.EntityModel.Config
 
             foreach (var field in cfg.Properties.Where(p => !p.IsDelete && !p.IsDiscard))//字段列表
             {
-                Add(new PropertyConfig
+                var pro = new PropertyConfig
                 {
-                    Name = field.Name,
-                    Caption = field.Caption,
-                    Description = field.Description,
                     Field = field
-                });
+                };
+                pro.CopyField(field);
+                Add(pro);
             }
 
             base.CopyFrom(cfg);
@@ -265,10 +282,9 @@ namespace Agebull.EntityModel.Config
 
             foreach (var property in cfg.Properties.Where(p => !p.IsDelete && !p.IsDiscard))//字段列表
             {
-                Add(new PropertyConfig
-                {
-                    Field = property.Field
-                });
+                var p = new PropertyConfig();
+                p.CopyFromProperty(property);
+                Add(p);
             }
             DenyScope = cfg.DenyScope;//阻止编辑
             MaxIdentity = cfg.MaxIdentity;//最大字段标识号
@@ -283,7 +299,7 @@ namespace Agebull.EntityModel.Config
             Interfaces = cfg.Interfaces;//继承的接口集合
             foreach (var item in cfg.Releations)//字段
             {
-                var child = new EntityReleationConfig();
+                var child = new ReleationConfig();
                 child.Copy(item);
                 Add(child);
             }
@@ -324,7 +340,7 @@ namespace Agebull.EntityModel.Config
         }
 
     }
-    partial class EntityReleationConfig
+    partial class ReleationConfig
     {
         /// <summary>
         /// 字段复制
@@ -334,15 +350,15 @@ namespace Agebull.EntityModel.Config
         protected override void CopyFrom(SimpleConfig dest)
         {
             base.CopyFrom(dest);
-            if (!(dest is EntityReleationConfig cfg))
+            if (!(dest is ReleationConfig cfg))
                 return;
 
             Parent = cfg.Parent;//上级
             ForeignKey = cfg.ForeignKey;//关联表的外键名称
             PrimaryKey = cfg.PrimaryKey;//与关联表的外键对应的字段名称
-            Friend = cfg.Friend;//关联表
-            Releation = cfg.Releation;//关系类型
-            Condition = cfg.Condition;//扩展条件
+            ForeignTable = cfg.ForeignTable;//关联表
+            PrimaryTable = cfg.PrimaryTable;//关系类型
+            ModelType = cfg.ModelType;//扩展条件
         }
 
     }
@@ -610,6 +626,52 @@ namespace Agebull.EntityModel.Config
         public void CopyFromProperty(PropertyConfig cfg)
         {
             Field = cfg.Field;
+            CsType = cfg.CsType;
+            DbType = cfg.DbType;
+            DbFieldName = cfg.DbFieldName;
+            JsonName = cfg.JsonName;
+
+            Name = cfg.Name;
+            Caption = cfg.Caption;
+            Description = cfg.Description;
+            Remark = cfg.Remark;
+
+            DataType = cfg.DataType;//数据类型
+            CsType = cfg.CsType;//语言类型(C#)
+            Initialization = cfg.Initialization;//初始值
+            CppType = cfg.CppType;//语言类型(C++)
+            CppName = cfg.CppName;//字段名称(C++)
+            CppLastType = cfg.CppLastType;//结果类型(C++)
+            CppTypeObject = cfg.CppTypeObject;//C++字段类型
+
+            ComputeGetCode = cfg.ComputeGetCode;//自定义代码(get)
+            ComputeSetCode = cfg.ComputeSetCode;//自定义代码(set)
+            IsCustomCompute = cfg.IsCustomCompute;//自定义读写代码
+
+            HelloCode = cfg.HelloCode;//示例内容
+
+            //ExtendRole = cfg.ExtendRole;//扩展组合规划
+            //ValueSeparate = cfg.ValueSeparate;//值分隔符
+            //ArraySeparate = cfg.ArraySeparate;//数组分隔符
+            //ExtendArray = cfg.ExtendArray;//是否扩展数组
+            //IsKeyValueArray = cfg.IsKeyValueArray;//是否值对分隔方式
+            //IsRelation = cfg.IsRelation;//是否为关系表
+            //ExtendPropertyName = cfg.ExtendPropertyName;//扩展对象属性名称
+            //ExtendClassName = cfg.ExtendClassName;//扩展对象对象名称
+            //ExtendClassIsPredestinate = cfg.ExtendClassIsPredestinate;//扩展对象对象已定义
+
+            JsonName = cfg.JsonName;//字段名称(json)
+            NoneJson = cfg.NoneJson;//字段名称(json)
+
+            ApiArgumentName = cfg.ApiArgumentName;//字段名称(json)
+            NoneApiArgument = cfg.NoneApiArgument;//字段名称(json)
+
+            Option.Copy(cfg.Option, true);//配置
+
+            Group = cfg.Group;//分组
+            Alias = cfg.Alias;//别名
+
+            NoneJson = cfg.NoneJson;//不参与Json序列化
         }
 
         /// <summary>
@@ -631,7 +693,7 @@ namespace Agebull.EntityModel.Config
         {
             base.CopyFrom(dest);
             if (dest is PropertyConfig cfg)
-                Field = cfg.Field;
+                CopyFrom(cfg);
         }
     }
 

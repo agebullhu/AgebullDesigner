@@ -16,12 +16,13 @@ namespace Agebull.Common.Config.Designer.EasyUi
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
+            DesignerManager.Registe<ModelConfig, ModelReleasePanel>("连接", "Model");
             DesignerManager.Registe<ModelConfig, ModelFieldsPanel>("字段", "Model");
+
             DesignerManager.Registe<EntityConfig, FieldsPanel>("字段基本", "Entity");
             DesignerManager.Registe<EntityConfig, RegularPanel>("数据校验", "Entity");
             DesignerManager.Registe<EntityConfig, ModelCodePanel>("实体模型", "Entity");
             DesignerManager.Registe<EntityConfig, JsonPanel>("序列化设置", "Entity", "Model");
-            DesignerManager.Registe<EntityConfig, AllFieldsPanel>("所有字段", short.MaxValue + 1);
 
 
             CommandIoc.EditEntityCommand = EditEntityCommand;

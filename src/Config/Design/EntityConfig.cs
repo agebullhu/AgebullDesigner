@@ -92,16 +92,6 @@ namespace Agebull.EntityModel.Config
         public IEnumerable<FieldConfig> ClientProperty => LastProperties?.Where(p => !p.DenyClient && !p.DbInnerField);
 
         /// <summary>
-        /// 客户端可访问的属性
-        /// </summary>
-        /// <remark>
-        /// 客户端可访问的属性
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"设计器支持"), DisplayName(@"客户端可访问的属性"), Description("客户端可访问的属性")]
-        public IEnumerable<FieldConfig> UserProperty => LastProperties?.Where(p => !p.DenyClient && !p.DbInnerField && !p.IsSystemField);
-
-        /// <summary>
         /// 数据库字段
         /// </summary>
         /// <remark>

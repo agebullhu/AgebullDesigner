@@ -37,6 +37,12 @@
   <ItemGroup>
     <ProjectReference Include="..\Model\Agebull.EntityModel.Designer.Model.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="View\ModelReleasePanel.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="COPY $(TargetPath) &quot;$(ProjectDir)\..\Program\AddIn\Bin\&quot; /Y&#xD;&#xA;COPY $(ProjectDir)$(OutDir)$(TargetName).xml &quot;$(ProjectDir)\..\Program\AddIn\Bin\&quot; /Y&#xD;&#xA;COPY $(ProjectDir)$(OutDir)$(TargetName).pdb &quot;$(ProjectDir)\..\Program\AddIn\Bin\&quot; /Y" />
   </Target>

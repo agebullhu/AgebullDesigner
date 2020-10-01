@@ -7,7 +7,7 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class CppStructCoder : CoderWithEntity
+    public sealed class CppStructCoder : CoderWithModel
     {
         #region 结构定义
 
@@ -29,18 +29,19 @@ struct {Model.Name}");
 #endif*/");
                 code.Append(@"
 {");
-                foreach (var property in Model.CppProperty)
+                foreach (var property in Model.UserProperty)
                 {
-                    string type = property.CppLastType;
+                    var field = property;
+                    string type = field.CppLastType;
                     if (!Model.IsReference)
                     {
-                        if (property.EnumConfig != null)
+                        if (field.EnumConfig != null)
                         {
-                            type = $"{property.EnumConfig.Name}Classify";
+                            type = $"{field.EnumConfig.Name}Classify";
                         }
                         else
                         {
-                            EntityConfig friend = GetLcEntity(property);
+                            EntityConfig friend = GetLcEntity(field);
                             if (friend != null)
                                 type = friend.Name;
                         }
@@ -49,13 +50,13 @@ struct {Model.Name}");
     //{property.Caption}
     {type}  {property.Name}");
 
-                    if (property.CppLastType == "char")
+                    if (field.CppLastType == "char")
                     {
-                        if (property.Datalen > 0)
-                            code.Append($@"[{property.Datalen}]");
+                        if (field.Datalen > 0)
+                            code.Append($@"[{field.Datalen}]");
                     }
-                    else if (!string.IsNullOrWhiteSpace(property.ArrayLen))
-                        code.Append($@"[{property.ArrayLen}]");
+                    else if (!string.IsNullOrWhiteSpace(field.ArrayLen))
+                        code.Append($@"[{field.ArrayLen}]");
 
                     code.Append(';');
                 }
@@ -98,9 +99,9 @@ const size_t TSON_BUFFER_LEN_{Model.Name.ToUpper()} = {GetEntitySerializeLen(Mod
             var code = new StringBuilder();
             code.Append($"SERIALIZE_BASE_LEN + sizeof({entity.Name})");
             int len = entity.LastProperties.Count;
-            foreach (var property in entity.CppProperty)
+            foreach (var property in entity.UserProperty)
             {
-                len += GetFieldSerializeLen(code, property);
+                len += GetFieldSerializeLen(code, property.Field);
             }
             code.Append($" + {len}");
             return code.ToString();
@@ -122,7 +123,7 @@ const size_t TSON_BUFFER_LEN_{Model.Name.ToUpper()} = {GetEntitySerializeLen(Mod
         private static int GetFieldSerializeLen(StringBuilder code, FieldConfig field)
         {
             int flen = 0;
-            Trace.WriteLine(field.Caption);
+
             CppTypeHelper2.DoByCppType(field.Entity, field,
                 (pro, len) =>
                 {
@@ -334,7 +335,7 @@ void Serialize(Serializer& writer,const {Model.Name}* field)
         writer.End();
         return;
     }}");
-            foreach (var field in Model.CppProperty)
+            foreach (var field in Model.UserProperty)
             {
                 code.Append(ToSerialize(field));
             }
@@ -362,11 +363,11 @@ void Deserialize(Deserializer& reader, {Model.Name}* field)
         //OBJ_TYPE type = reader.ReadByte();
 		switch(idx)
 		{");
-                foreach (var field in Model.CppProperty)
+                foreach (var property in Model.UserProperty)
                 {
                     code.Append($@"
-        case FIELD_INDEX_{Model.Name.ToUpper()}_{field.Name.ToUpper()}://{field.Caption}
-        {{{DeserializeCode(field)}
+        case FIELD_INDEX_{Model.Name.ToUpper()}_{property.Name.ToUpper()}://{property.Caption}
+        {{{DeserializeCode(property)}
             break;
         }}");
                 }
@@ -382,67 +383,69 @@ void Deserialize(Deserializer& reader, {Model.Name}* field)
             return code.ToString();
         }
 
-        private string ToSerialize(FieldConfig field)
+        private string ToSerialize(PropertyConfig property)
         {
-            EntityConfig stru = GetLcEntity(field);
+            var field = property;
+            EntityConfig stru = GetLcEntity(property);
             if (stru == null)
             {
                 if (field.EnumConfig != null)
                     return $@"
-    if(!writer.is_empty(field->{field.Name}))//{field.Caption}
+    if(!writer.is_empty(field->{property.Name}))//{property.Caption}
     {{
-        writer.WriteIndex(FIELD_INDEX_{Model.Name.ToUpper()}_{field.Name.ToUpper()});
-        writer.WriteValue(field->{field.Name});
+        writer.WriteIndex(FIELD_INDEX_{Model.Name.ToUpper()}_{property.Name.ToUpper()});
+        writer.WriteValue(field->{property.Name});
     }}";
                 if (field.CppLastType == "char" && field.Datalen > 1)
                 {
                     return $@"
-    if(!writer.str_is_empty(field->{field.Name}))//{field.Caption}
+    if(!writer.str_is_empty(field->{property.Name}))//{property.Caption}
     {{
-        writer.WriteIndex(FIELD_INDEX_{Model.Name.ToUpper()}_{field.Name.ToUpper()});
-        writer.WriteStr(field->{field.Name});
+        writer.WriteIndex(FIELD_INDEX_{Model.Name.ToUpper()}_{property.Name.ToUpper()});
+        writer.WriteStr(field->{property.Name});
     }}";
                 }
                 return $@"
-    if(!writer.is_empty(field->{field.Name}))//{field.Caption}
+    if(!writer.is_empty(field->{property.Name}))//{property.Caption}
     {{
-        writer.WriteIndex(FIELD_INDEX_{Model.Name.ToUpper()}_{field.Name.ToUpper()});
-        writer.Write(field->{field.Name});
+        writer.WriteIndex(FIELD_INDEX_{Model.Name.ToUpper()}_{property.Name.ToUpper()});
+        writer.Write(field->{property.Name});
     }}";
             }
             if (string.IsNullOrWhiteSpace(field.ArrayLen))
                 return $@"
     {{
-        writer.WriteIndex(FIELD_INDEX_{Model.Name.ToUpper()}_{field.Name.ToUpper()
+        writer.WriteIndex(FIELD_INDEX_{Model.Name.ToUpper()}_{property.Name.ToUpper()
                     });
         Serializer serializer;
 		serializer.CreateBuffer(TSON_BUFFER_LEN_{stru.Name.ToUpper()}, false);
-        Serialize(serializer,&field->{field.Name});
+        Serialize(serializer,&field->{property.Name});
         writer.WriteObject(serializer);
     }}";
             return $@"
     {{
-        writer.WriteIndex(FIELD_INDEX_{Model.Name.ToUpper()}_{field.Name.ToUpper()});
+        writer.WriteIndex(FIELD_INDEX_{Model.Name.ToUpper()}_{property.Name.ToUpper()});
         writer.Write({field.ArrayLen});
         for(size_t idx = 0;i < {field.ArrayLen};i++)
         {{
             Serializer serializer;
-            Serialize(serializer,&field->{field.Name}[idx]);
+            Serialize(serializer,&field->{property.Name}[idx]);
             writer.Write(serializer);
         }}
     }}";
         }
 
-        private string DeserializeCode(FieldConfig field)
+        private string DeserializeCode(PropertyConfig property)
         {
+            var field = property;
             EntityConfig stru = GetLcEntity(field);
             if (stru == null)
             {
                 if (field.CppLastType == "char" && field.Datalen > 1)
                     return $@"
-            reader.ReadStr(field->{field.Name});";
+            reader.ReadStr(field->{property.Name});";
                 return $@"
-            reader.Read(field->{field.Name});";
+            reader.Read(field->{property.Name});";
             }
             return string.IsNullOrWhiteSpace(field.ArrayLen)
                 ? $@"
@@ -450,7 +453,7 @@ void Deserialize(Deserializer& reader, {Model.Name}* field)
 			reader.Read(len);
             char* buffer = reader.ReadBinrary(len);
             Deserializer deserializer(buffer,len,true);
-            Deserialize(deserializer,&field->{field.Name});"
+            Deserialize(deserializer,&field->{property.Name});"
                 : $@"
             size_t cnt;
 			reader.Read(cnt);
@@ -460,7 +463,7 @@ void Deserialize(Deserializer& reader, {Model.Name}* field)
 			    reader.Read(len);
                 char* buffer = reader.ReadBinrary(len);
                 Deserializer deserializer(buffer,len,true);
-                Deserialize(deserializer,&field->{field.Name}[idx]);
+                Deserialize(deserializer,&field->{property.Name}[idx]);
             }}";
         }
 
@@ -484,15 +487,16 @@ void {Model.Name}::SetValue(const char* field, const char* value)
     if(value == nullptr || strlen(value) == 0)
         return;");
 
-            foreach (var field in Model.CppProperty)
+            foreach (var property in Model.UserProperty)
             {
+                var field = property;
                 if (field.IsPrimaryKey)
                     code.Append($@"
-    if(field == nullptr || strcmp(field,""{field.Name}"") == 0)//{field.Caption}-主键");
+    if(field == nullptr || strcmp(field,""{property.Name}"") == 0)//{property.Caption}-主键");
                 else
                     code.Append($@"
-    if(strcmp(field,""{field.Name}"") == 0)//{field.Caption}");
-                SetValue2(code, field);
+    if(strcmp(field,""{property.Name}"") == 0)//{property.Caption}");
+                SetValue2(code, property);
             }
             code.Append(@"
 }
@@ -508,9 +512,10 @@ void {Model.Name}::SetValue(const char* field, const char* value)
         {
 
             var code = new StringBuilder();
-            foreach (var pro in entity.CppProperty)
+            foreach (var property in entity.UserProperty)
             {
-                if (CppTypeHelper.ToCppLastType(pro.CppLastType ?? pro.CppType) is EntityConfig friend)
+                var field = property;
+                if (CppTypeHelper.ToCppLastType(field.CppLastType ?? field.CppType) is EntityConfig friend)
                 {
                     code.Append($@"
 #include <{friend.Parent.Name}/{friend.Name}.h>");
@@ -568,10 +573,10 @@ void CopyToEs(const {lc_entity.Name}* lc_field, {es_entity.Name}* es_field);");
             var lc_entity = GlobalConfig.GetEntity(p => !p.IsReference && p.Option.ReferenceTag != null && p.Option.ReferenceTag.Contains(es_entity.Option.ReferenceTag));
             if (lc_entity == null)
                 return null;
-            Dictionary<FieldConfig, FieldConfig> maps = new Dictionary<FieldConfig, FieldConfig>();
-            foreach (var property in es_entity.CppProperty.Where(p => p.Option.ReferenceTag != null))
+            var maps = new Dictionary<FieldConfig, FieldConfig>();
+            foreach (var property in es_entity.UserProperty.Where(p => p.Option.ReferenceTag != null))
             {
-                FieldConfig link = lc_entity.LastProperties.FirstOrDefault(p => p.Option.ReferenceTag != null && p.Option.ReferenceTag.Contains(property.Option.ReferenceTag));
+                var link = lc_entity.LastProperties.FirstOrDefault(p => p.Option.ReferenceTag != null && p.Option.ReferenceTag.Contains(property.Option.ReferenceTag));
                 if (link == null)
                 {
                     string tag = $"{es_entity.Option.ReferenceTag},{property.CppType},{property.Name}";
@@ -583,7 +588,7 @@ void CopyToEs(const {lc_entity.Name}* lc_field, {es_entity.Name}* es_field);");
                 }
                 if (link != null)
                 {
-                    maps.Add(property, link);
+                    maps.Add(property.Field, link);
                 }
             }
 
@@ -896,7 +901,7 @@ void CopyToEs(const {lc_entity.Name}* lc_field,{es_entity.Name}* es_field)
 
 // {Model.Name}类型代号
 const TYPE_INDEX TYPE_INDEX_{Model.Name.ToUpper()} = 0x{Model.Identity:X};");
-            foreach (var property in Model.CppProperty)
+            foreach (var property in Model.UserProperty)
             {
                 code.Append($@"
 //〖{Model.Caption}-{property.Caption}〗字段索引
@@ -913,16 +918,21 @@ const FIELD_INDEX FIELD_INDEX_{Model.Name.ToUpper()}_{property.Name.ToUpper()} =
         {
             return CppTypeHelper.ToCppLastType(field.CppLastType ?? field.CppType) as EntityConfig;
         }
+        private EntityConfig GetLcEntity(PropertyConfig field)
+        {
+            return CppTypeHelper.ToCppLastType(field.CppLastType ?? field.CppType) as EntityConfig;
+        }
         #endregion
         #region 文本写值方法
 
-        private void SetValue2(StringBuilder code, FieldConfig field)
+        private void SetValue2(StringBuilder code, PropertyConfig property)
         {
+            var field = property;
             EntityConfig stru = GetLcEntity(field);
             if (stru != null)
             {
                 code.Append($@"
-        /*memcpy({field.Name},value,sizeof({stru.Name}));无法处理*/");
+        /*memcpy({property.Name},value,sizeof({stru.Name}));无法处理*/");
                 return;
             }
             if (field.CppLastType == "char")
@@ -930,13 +940,13 @@ const FIELD_INDEX FIELD_INDEX_{Model.Name.ToUpper()}_{property.Name.ToUpper()} =
                 if (field.Datalen <= 1)
                     code.Append($@"
     {{
-        {field.Name} = value[0];
+        {property.Name} = value[0];
         return;
     }}");
                 else
                     code.Append($@"
     {{
-        strcpy_s({field.Name},value);
+        strcpy_s({property.Name},value);
         return;
     }}");
             }
@@ -948,7 +958,7 @@ const FIELD_INDEX FIELD_INDEX_{Model.Name.ToUpper()}_{property.Name.ToUpper()} =
         boost::split(vStr,value, boost::is_any_of("",/""), boost::token_compress_on);
         size_t idx=0;
         for (string vl : vStr)
-            {field.Name}[idx] = boost::lexical_cast<{field.CppLastType}>(vl);
+            {property.Name}[idx] = boost::lexical_cast<{field.CppLastType}>(vl);
         return;
     }}");
             }
@@ -956,7 +966,7 @@ const FIELD_INDEX FIELD_INDEX_{Model.Name.ToUpper()}_{property.Name.ToUpper()} =
             {
                 code.Append($@"
     {{
-        {field.Name} = boost::lexical_cast<{field.CppLastType}>(value);
+        {property.Name} = boost::lexical_cast<{field.CppLastType}>(value);
         return;
     }}");
             }

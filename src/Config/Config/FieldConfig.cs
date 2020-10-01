@@ -95,15 +95,6 @@ namespace Agebull.EntityModel.Config
             _canGet = true;
             _canSet = true;
         }
-        /// <summary>
-        /// 属性名称
-        /// </summary>
-        /// <remark>
-        /// 属性名称
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"设计器支持"), DisplayName(@"属性名称"), Description("属性名称")]
-        public string PropertyName => Name;
 
         /// <summary>
         /// 只读
@@ -406,7 +397,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计(C#)"), DisplayName(@"结果类型(C#)"), Description("最终生成C#代码时的属性类型")]
         public string LastCsType => ReferenceOrThis.ToLastCsType();
 
-        private string ToLastCsType()
+        internal string ToLastCsType()
         {
             if (!string.IsNullOrWhiteSpace(_referenceType))
                 return _referenceType;
@@ -1369,7 +1360,6 @@ namespace Agebull.EntityModel.Config
             }
         }
         #endregion
-
         #region 数据库
 
         /// <summary>

@@ -50,7 +50,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// Ö´ÐÐÆ÷
         /// </summary>
-        public abstract bool Execute(ModelConfig entity);
+        public abstract bool Execute(EntityConfig entity);
 
         /// <summary>
         /// Ö´ÐÐÆ÷
@@ -95,7 +95,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public virtual bool Validate(ModelConfig entity)
+        public virtual bool Validate(EntityConfig entity)
         {
             return true;
         }

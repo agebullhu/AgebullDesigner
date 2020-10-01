@@ -106,9 +106,18 @@ namespace Agebull.EntityModel.Config.Sqlite
         ///     从C#的类型转为DBType
         /// </summary>
         /// <param name="field"> </param>
-        public static SqliteType ToSqlDbType(FieldConfig field)
+        public static SqliteType ToSqlDbType(FieldConfig field) => ToSqlDbType(field.DbType, field.CsType);
+
+        /// <summary>
+        ///     从C#的类型转为DBType
+        /// </summary>
+        /// <param name="field"> </param>
+        public static SqliteType ToSqlDbType(string dbType, string csType)
         {
-            switch (field.CsType)
+            if (dbType == null)
+                return SqliteType.Real;
+
+            switch (dbType.ToLower())
             {
                 case "float":
                 case "Float":

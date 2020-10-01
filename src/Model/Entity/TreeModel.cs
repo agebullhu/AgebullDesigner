@@ -286,8 +286,8 @@ namespace Agebull.EntityModel.Designer
             var property = (PropertyConfig)arg;
             return new ConfigTreeItem<PropertyConfig>(property)
             {
-                Color = property.Field.IsSystemField ? Brushes.Blue : Brushes.Black,
-                FontWeight = property.Field.IsCompute ? FontWeights.Thin : FontWeights.DemiBold,
+                Color = property.IsSystemField ? Brushes.Blue : Brushes.Black,
+                FontWeight = property.IsCompute ? FontWeights.Thin : FontWeights.DemiBold,
                 CustomPropertyChanged = Property_PropertyChanged
             };
         }

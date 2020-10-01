@@ -157,7 +157,7 @@ namespace Agebull.EntityModel.RobotCoder.Funds
                                           SelectedValue = ""{{Binding Order.{1}}}""
                                           ItemsSource = ""{{Binding {2}Dictionary}}""
                                           DisplayMemberPath = ""name"" SelectedValuePath = ""value"" />
-                            </StackPanel>", field.Caption, field.PropertyName, typedef.Name);
+                            </StackPanel>", field.Caption, field.Name, typedef.Name);
                 }
                 else
                 {
@@ -165,7 +165,7 @@ namespace Agebull.EntityModel.RobotCoder.Funds
                             <StackPanel VerticalAlignment=""Center"" Orientation =""Horizontal"" Width=""200px"">
                                 <TextBlock VerticalAlignment = ""Center""  Width =""80px"">{0}:</TextBlock>
                                 <TextBox VerticalAlignment = ""Center""  Width =""120px"" Text=""{{Binding Order.{1}}}""/>
-                            </StackPanel>", field.Caption, field.PropertyName);
+                            </StackPanel>", field.Caption, field.Name);
                 }
             }
             return code.ToString();
@@ -181,22 +181,22 @@ namespace Agebull.EntityModel.RobotCoder.Funds
                 //if (typedef == null || (typedef.KeyWork == "char" && typedef.ArrayLen != null))
                 //    code.AppendFormat(@"
                 //++begin;
-                //strcpy_s(field.{0},begin->c_str());//{1}", field.PropertyName, field.Caption);
+                //strcpy_s(field.{0},begin->c_str());//{1}", field.Name, field.Caption);
                 //else if (typedef.KeyWork == "char")
                 //    code.AppendFormat(@"
                 //++begin;
-                //field.{0} = begin->c_str()[0];//{1}", field.PropertyName, field.Caption);
+                //field.{0} = begin->c_str()[0];//{1}", field.Name, field.Caption);
                 //else
                 //    code.AppendFormat(@"
                 //++begin;
-                //field.{0}= lexical_cast<{1}>(begin->c_str());//{1}", field.PropertyName, typedef.KeyWork);
+                //field.{0}= lexical_cast<{1}>(begin->c_str());//{1}", field.Name, typedef.KeyWork);
                 code.AppendFormat(@"
                             <StackPanel VerticalAlignment=""Center"" Orientation =""Horizontal"" Width=""200px"">
                                 <TextBlock VerticalAlignment = ""Center"" Width =""80px"">{0}:</TextBlock>
                                 <Border VerticalAlignment = ""Center""  BorderThickness=""0,0,0,1"">
                                     <TextBlock Text="" {{Binding {1}}}""></TextBlock>
                                 </Border>
-                            </StackPanel>", field.Caption, field.PropertyName);
+                            </StackPanel>", field.Caption, field.Name);
             }
 
             return code.ToString();
@@ -450,7 +450,7 @@ void Deserialize(Deserializer& io, TEsAddressField* field)
             foreach (var field in entityConfig.LastProperties)
             {
                 code.AppendFormat(@"
-const FIELD_INDEX IDX_{1}_{2} = {3};// {0}", field.Caption, entityConfig.ReadTableName, field.PropertyName, field.Index);
+const FIELD_INDEX IDX_{1}_{2} = {3};// {0}", field.Caption, entityConfig.ReadTableName, field.Name, field.Index);
             }
             code.AppendFormat(@"
 // {0} 保存到类型二进制

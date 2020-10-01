@@ -195,7 +195,7 @@ using Agebull.EntityModel.Interfaces;
             ExistProperties = new Dictionary<string, string>();
             var code = new StringBuilder();
             code.Append(PrimaryKeyPropertyCode());
-            ExistProperties.Add(Model.PrimaryField, Model.PrimaryField);
+            ExistProperties.TryAdd(Model.PrimaryField, Model.PrimaryField);
             foreach (var property in Columns.Where(p => !p.IsPrimaryKey).OrderBy(p => p.Index))
             {
                 if (property.DbInnerField)
@@ -204,16 +204,20 @@ using Agebull.EntityModel.Interfaces;
                     ComputePropertyCode(property, code);
                 else
                     PropertyCode(property, code);
-                ExistProperties.Add(property.Name, property.Name);
+                ExistProperties.TryAdd(property.Name, property.Name);
                 AliasPropertyCode(property, code);
                 AccessProperties(property, code);
+            }
+            foreach (var relation in Model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty).OrderBy(p => p.Index))
+            {
+                RelationPropertyCode(relation, code);
             }
             return code.ToString();
         }
 
         private string PrimaryKeyPropertyCode()
         {
-            var property = Model.PrimaryColumn;
+            var property = PrimaryProperty;
             if (property == null)
                 return null;//"\n没有设置主键字段，生成的代码是错误的";
             return $@"
@@ -223,36 +227,36 @@ using Agebull.EntityModel.Interfaces;
         /// </summary>
         public void ChangePrimaryKey({property.LastCsType} {property.Name.ToLWord()})
         {{
-            {FieldName(property)} = {property.Name.ToLWord()};
+            {PropertyName(property)} = {property.Name.ToLWord()};
         }}
         /// <summary>
         /// {ToRemString(property.Caption)}
         /// </summary>
         [IgnoreDataMember,JsonIgnore]
-        public {property.LastCsType} {FieldName(property)};
+        public {property.LastCsType} {PropertyName(property)};
 
         {PropertyHeader(property)}
         public {property.LastCsType} {property.Name}
         {{
-            get => this.{FieldName(property)};
+            get => this.{PropertyName(property)};
             set
             {{
-                if(this.{FieldName(property)} == value)
+                if(this.{PropertyName(property)} == value)
                     return;
-                this.{FieldName(property)} = value;
+                this.{PropertyName(property)} = value;
                 this.OnSeted(nameof({property.Name}));
             }}
         }}";
         }
 
-        private void PropertyCode(FieldConfig property, StringBuilder code)
+        private void PropertyCode(PropertyConfig property, StringBuilder code)
         {
             bool isInterface = property.IsInterfaceField && Model.InterfaceInner;
 
             var access = isInterface ? "" : $"{property.AccessType} ";
             var name = isInterface ? $"{property.Entity.EntityName}.{property.Name}" : property.Name;
             var type = property.IsEnum && property.CsType == "string" ? "string" : property.LastCsType;
-            var file = FieldName(property);
+            var file = PropertyName(property);
             if (Model.IsQuery)
 
                 code.Append($@"
@@ -289,7 +293,7 @@ using Agebull.EntityModel.Interfaces;
         /// </summary>
         /// <param name="property"></param>
         /// <param name="code"></param>
-        private void ComputePropertyCode(FieldConfig property, StringBuilder code)
+        private void ComputePropertyCode(PropertyConfig property, StringBuilder code)
         {
             var access = /*isInterface ? "" :*/ $"{property.AccessType} ";
             var name = /*isInterface ? $"{property.Parent.EntityName}.{property.Name}" :*/ property.Name;
@@ -325,7 +329,7 @@ using Agebull.EntityModel.Interfaces;
         /// </summary>
         /// <param name="property"></param>
         /// <param name="code"></param>
-        private void AliasPropertyCode(FieldConfig property, StringBuilder code)
+        private void AliasPropertyCode(PropertyConfig property, StringBuilder code)
         {
             foreach (var alias in property.GetAliasPropertys())
             {
@@ -340,7 +344,7 @@ using Agebull.EntityModel.Interfaces;
             }
         }
 
-        private void DbInnerProperty(FieldConfig property, StringBuilder code)
+        private void DbInnerProperty(PropertyConfig property, StringBuilder code)
         {
             code.Append($@"
 
@@ -359,7 +363,7 @@ using Agebull.EntityModel.Interfaces;
         /// 数据访问字段,有BUG小心
         /// </summary>
         /// <returns></returns>
-        private void AccessProperties(FieldConfig property, StringBuilder code)
+        private void AccessProperties(PropertyConfig property, StringBuilder code)
         {
             if (!string.IsNullOrWhiteSpace(property.StorageProperty))
                 code.Append($@"
@@ -379,6 +383,34 @@ using Agebull.EntityModel.Interfaces;
                     ? null 
                     : Newtonsoft.Json.JsonConvert.DeserializeObject<{property.LastCsType}>(value);
                 this.OnSeted(nameof({property.StorageProperty}));
+            }}
+        }}");
+        }
+
+        private void RelationPropertyCode(ReleationConfig releation, StringBuilder code)
+        {
+            var model = GlobalConfig.GetModel(releation.ForeignTable);
+            var type = releation.ModelType == ReleationModelType.Children
+                ? $"List<model.Name>"
+                : model.Name;
+            var cs = releation.Name.ToLWord();
+            if (Model.IsQuery)
+
+                code.Append($@"
+
+        [JsonProperty(""{cs}"",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling= DefaultValueHandling.Ignore)]
+        private {type} _{cs};
+
+        [JsonIgnore]
+        public {type} {releation.Name}
+        {{
+            get => _{cs};
+            set
+            {{
+                if(_{cs} == value)
+                    return;
+                _{cs} = value;
+                this.OnSeted(nameof({releation.Name}));
             }}
         }}");
         }

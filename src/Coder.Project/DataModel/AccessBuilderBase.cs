@@ -6,7 +6,7 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public abstract class AccessBuilderBase : CoderWithEntity
+    public abstract class AccessBuilderBase : CoderWithModel
     {
         protected string DataBaseExtend()
         {
@@ -70,11 +70,11 @@ namespace Agebull.EntityModel.RobotCoder
         }};";
         }
 
-        protected FieldConfig[] dbFields;
+        protected PropertyConfig[] dbFields;
         /// <summary>
         ///     公开的数据库字段
         /// </summary>
-        protected FieldConfig[] PublishDbFields => dbFields ??= Model.DbFields.Where(p => !p.DbInnerField && !string.Equals(p.DbType, "EMPTY", StringComparison.OrdinalIgnoreCase)).ToArray();
+        protected PropertyConfig[] PublishDbFields => dbFields ??= Model.DbFields.Where(p => !p.DbInnerField && !string.Equals(p.DbType, "EMPTY", StringComparison.OrdinalIgnoreCase)).ToArray();
 
         protected string FieldCode()
         {

@@ -10,7 +10,7 @@ namespace Agebull.EntityModel.RobotCoder
     /// <summary>
     /// 表操作基类
     /// </summary>
-    public abstract class EntityCoderBase : CoderWithEntity
+    public abstract class ModelCoderBase : CoderWithModel
     {
         /// <summary>
         /// 实体的注释头
@@ -27,15 +27,16 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         /// <param name="property"></param>
         /// <returns></returns>
-        public static string FieldName(FieldConfig property) => $"_{property.Name.ToLWord()}";
-
+        public static string PropertyName(PropertyConfig property) => $"_{property.Name.ToLWord()}";
+          
         protected abstract bool IsClient { get; }
 
-        private FieldConfig[] _columns;
-        protected FieldConfig[] Columns => _columns ??= Model.PublishProperty.ToArray();
+        private PropertyConfig[] _columns;
+        protected PropertyConfig[] Columns => _columns ??= Model.PublishProperty.ToArray();
 
-        private FieldConfig[] _rwcolumns;
-        protected FieldConfig[] ReadWriteColumns => _rwcolumns ??= Columns.Where(p => p.CanGet && p.CanSet).ToArray();
+        private PropertyConfig[] _rwcolumns;
+        protected PropertyConfig[] ReadWriteColumns => _rwcolumns ??= Columns.Where(p => p.CanGet && p.CanSet).ToArray();
+
         /// <summary>
         /// 初始化实体默认值的代码
         /// </summary>
@@ -43,7 +44,7 @@ namespace Agebull.EntityModel.RobotCoder
         protected string DefaultValueCode()
         {
             StringBuilder code = new StringBuilder();
-            foreach (FieldConfig property in ReadWriteColumns.Where(p => !string.IsNullOrWhiteSpace(p.Initialization)))
+            foreach (var property in ReadWriteColumns.Select(p=>p).Where(p => !string.IsNullOrWhiteSpace(p.Initialization)))
             {
                 if (IsClient && property.DenyClient)
                     continue;
@@ -62,13 +63,13 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
 
-        protected string PropertyHeader(FieldConfig property, bool isInterface = false, bool? json = null)
+        protected string PropertyHeader(PropertyConfig property, bool isInterface = false, bool? json = null)
         {
             return $@"{RemCode(property)}
         {FieldHeader(property, !isInterface, json)}";
         }
 
-        protected string FieldHeader(FieldConfig property, bool isInterface, bool? json = null)
+        protected string FieldHeader(PropertyConfig property, bool isInterface, bool? json = null)
         {
             var code = new List<string>();
             if (!isInterface)
@@ -96,7 +97,7 @@ namespace Agebull.EntityModel.RobotCoder
                 ? null
                 : $"[{string.Join(" , ", code)}]";
         }
-        public static string RemCode(FieldConfig property, bool simple = false, int space = 8)
+        public static string RemCode(PropertyConfig property, bool simple = false, int space = 8)
         {
             var code = new StringBuilder();
             code.AppendLine();
@@ -207,16 +208,51 @@ namespace Agebull.EntityModel.RobotCoder
             return code.ToString();
         }
 
+        public string DataRuleCode(PropertyConfig property)
+        {
+            if (Model.IsQuery)
+                return null;
+            StringBuilder code = new StringBuilder();
+            var re = code.ToString();
+            code.Append(@"
+        DataRule(");
+            bool has = false;
+            if (!property.IsRequired)
+            {
+                code.Append("CanNull = true");
+                has = true;
+            }
+            if (!string.IsNullOrWhiteSpace(property.Min))
+            {
+                if (has)
+                    code.Append(',');
+                else has = true;
+                code.Append($@"Min = ""{ property.Min}""");
+            }
+
+            if (!string.IsNullOrWhiteSpace(property.Max))
+            {
+                if (has)
+                    code.Append(',');
+                else has = true;
+                code.Append($@"Max = ""{ property.Max}""");
+            }
+            if (!has)
+                return re;
+            code.Append(")");
+            return code.ToString();
+        }
+
         public static string HelloCode(EntityConfig model)
         {
             StringBuilder code = new StringBuilder();
             bool first = true;
             code.Append($@"new {model.Name}
             {{");
-            foreach (var field in model.ClientProperty)
+            foreach (var property in model.ClientProperty)
             {
-                var value = HelloCode(field);
-                switch (field.CsType)
+                var value = HelloCode(property);
+                switch (property.CsType)
                 {
                     case "string":
                         value = value == null ? "null" : $"\"{value}\"";
@@ -231,7 +267,7 @@ namespace Agebull.EntityModel.RobotCoder
                 else
                     code.Append(',');
                 code.Append($@"
-                {field.Name} = {value}");
+                {property.Name} = {value}");
             }
             code.Append(@"
             }");
@@ -243,10 +279,10 @@ namespace Agebull.EntityModel.RobotCoder
             bool first = true;
             code.Append($@"new {model.Name}
             {{");
-            foreach (var field in model.ClientProperty)
+            foreach (var property in model.ClientProperty)
             {
-                var value = HelloCode(field);
-                switch (field.CsType)
+                var value = HelloCode(property);
+                switch (property.CsType)
                 {
                     case "string":
                         value = value == null ? "null" : $"\"{value}\"";
@@ -261,13 +297,31 @@ namespace Agebull.EntityModel.RobotCoder
                 else
                     code.Append(',');
                 code.Append($@"
-                {field.Name} = {value}");
+                {property.Name} = {value}");
             }
             code.Append(@"
             }");
             return code.ToString();
         }
 
+        static string HelloCode(PropertyConfig property, bool cs = true)
+        {
+            if (!string.IsNullOrWhiteSpace(property.HelloCode))
+                return property.HelloCode;
+            if (property.EnumConfig != null)
+            {
+                return cs
+                    ? property.EnumConfig.Items.FirstOrDefault()?.Name ?? "None"
+                    : property.EnumConfig.Items.FirstOrDefault()?.Value ?? "0";
+            }
+            return property.DataType switch
+            {
+                "String" => null,
+                "Boolean" => "true",
+                "DateTime" => property.IsTime ? "2012-12-21 23:59:59" : "2012-12-21",
+                _ => "0",
+            };
+        }
         static string HelloCode(FieldConfig property, bool cs = true)
         {
             if (!string.IsNullOrWhiteSpace(property.HelloCode))
@@ -286,10 +340,10 @@ namespace Agebull.EntityModel.RobotCoder
                 _ => "0",
             };
         }
-        public static string HelloCode(ModelConfig entity, string name)
+        public static string HelloCode(ModelConfig model, string name)
         {
             StringBuilder code = new StringBuilder();
-            foreach (var property in entity.ClientProperty)
+            foreach (var property in model.ClientProperty.Select(p => p))
             {
                 var value = HelloCode(property);
                 if (property.CsType == "string")
@@ -355,7 +409,7 @@ namespace Agebull.EntityModel.RobotCoder
             return " : " + string.Join(" , ", list);
         }
 
-        protected void ContentProperty(FieldConfig property, StringBuilder code)
+        protected void ContentProperty(PropertyConfig property, StringBuilder code)
         {
             if (property.EnumConfig != null && property.CsType != "string")
             {
@@ -372,10 +426,10 @@ namespace Agebull.EntityModel.RobotCoder
         /// {property.Caption}的数字属性
         /// </summary>
         [IgnoreDataMember,JsonIgnore]
-        {property.AccessType} {type} {property.PropertyName}_Number
+        {property.AccessType} {type} {property.Name}_Number
         {{
-            get => ({type})this.{property.PropertyName};
-            set => this.{property.PropertyName} = ({property.CustomType})value;
+            get => ({type})this.{property.Name};
+            set => this.{property.Name} = ({property.CustomType})value;
         }}");
             }
             if (property.DataType == "ByteArray")
@@ -386,7 +440,7 @@ namespace Agebull.EntityModel.RobotCoder
         {{
             get
             {{
-                return this.{FieldName(property)} == null
+                return this.{PropertyName(property)} == null
                        ? null
                        : Convert.ToBase64String({property.Name});
             }}

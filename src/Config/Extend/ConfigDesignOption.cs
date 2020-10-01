@@ -585,7 +585,6 @@ namespace Agebull.EntityModel.Config
 
         #endregion
 
-
         #region ¿©’π≈‰÷√
 
         /// <summary>

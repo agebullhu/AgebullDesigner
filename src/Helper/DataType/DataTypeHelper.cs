@@ -213,5 +213,9 @@ namespace Agebull.EntityModel.RobotCoder
         {
             return property.CsType?.Equals(type, StringComparison.OrdinalIgnoreCase) ?? false;
         }
+        public static bool IsType(this PropertyConfig property, string type)
+        {
+            return property.CsType?.Equals(type, StringComparison.OrdinalIgnoreCase) ?? false;
+        }
     }
 }

@@ -169,9 +169,8 @@ TRUNCATE TABLE `{entity.SaveTable}`;
 DROP VIEW `{entity.ReadTableName}`;
 ";
         }
-        public static string CreateView(ModelConfig model)
+        public static string CreateView(EntityConfig model)
         {
-            DataBaseHelper.CheckFieldLink(model.LastProperties);
             var array = model.DbFields.Where(p => p.IsLinkField && !p.IsLinkKey).ToArray();
             if (array.Length == 0)
             {
@@ -198,7 +197,7 @@ DROP VIEW `{entity.ReadTableName}`;
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS 
     SELECT ");
             bool first = true;
-            foreach (var field in model.DbFields)
+            foreach (var property in model.DbFields)
             {
                 if (first)
                     first = false;
@@ -206,32 +205,32 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
                     builder.Append(@",
         ");
 
-                if (field.IsLinkField && !field.IsLinkKey && !IsNullOrWhiteSpace(field.LinkTable))
+                if (property.IsLinkField && !property.IsLinkKey && !IsNullOrWhiteSpace(property.LinkTable))
                 {
-                    if (tables.TryGetValue(field.LinkTable, out EntityConfig friend))
+                    if (tables.TryGetValue(property.LinkTable, out EntityConfig friend))
                     {
-                        var linkField = friend.Properties.FirstOrDefault(p => p.DbFieldName == field.LinkField || p.Name == field.LinkField);
+                        var linkField = friend.Properties.FirstOrDefault(p => p.DbFieldName == property.LinkField || p.Name == property.LinkField);
                         if (linkField != null)
                         {
-                            builder.Append($@"`{friend.Name}`.`{linkField.DbFieldName}` as `{field.DbFieldName}`");
+                            builder.Append($@"`{friend.Name}`.`{linkField.DbFieldName}` as `{property.DbFieldName}`");
                             continue;
                         }
                     }
                 }
-                builder.Append($@"`{model.Name}`.`{field.DbFieldName}` as `{field.DbFieldName}`");
+                builder.Append($@"`{model.Name}`.`{property.DbFieldName}` as `{property.DbFieldName}`");
             }
             builder.Append($@"
     FROM `{model.SaveTable}` `{model.Name}`");
             foreach (var table in tables.Values)
             {
-                var field = model.DbFields.FirstOrDefault(p => p.IsLinkKey && (p.LinkTable == table.SaveTable || p.LinkTable == table.Name));
-                if (field == null)
+                var property = model.DbFields.FirstOrDefault(p => p.IsLinkKey && (p.LinkTable == table.SaveTable || p.LinkTable == table.Name));
+                if (property == null)
                     continue;
-                var linkField = table.Properties.FirstOrDefault(p => p.Name == field.LinkField || p.DbFieldName == field.LinkField);
+                var linkField = table.Properties.FirstOrDefault(p => p.Name == property.LinkField || p.DbFieldName == property.LinkField);
                 if (linkField == null)
                     continue;
                 builder.Append($@"
-    LEFT JOIN `{table.SaveTable}` `{table.Name}` ON `{model.Name}`.`{field.DbFieldName}` = `{table.Name}`.`{linkField.DbFieldName}`");
+    LEFT JOIN `{table.SaveTable}` `{table.Name}` ON `{model.Name}`.`{property.DbFieldName}` = `{table.Name}`.`{linkField.DbFieldName}`");
             }
             builder.Append(';');
             builder.AppendLine();
@@ -515,9 +514,9 @@ ALTER TABLE `{entity.SaveTable}`
         public void LoadEntity(MySqlDataReader reader,{model.EntityName} entity)
         {{");
             int idx = 0;
-            foreach (var field in fields)
+            foreach (var property in fields)
             {
-                FieldReadCode(field, code, idx++);
+                FieldReadCode(property, code, idx++);
             }
             code.Append(@"
         }");
@@ -529,7 +528,7 @@ ALTER TABLE `{entity.SaveTable}`
             var sql = new StringBuilder();
 
             var isFirst = true;
-            foreach (var field in fields)
+            foreach (var property in fields)
             {
                 if (isFirst)
                 {
@@ -539,7 +538,27 @@ ALTER TABLE `{entity.SaveTable}`
                 {
                     sql.Append(",");
                 }
-                sql.AppendLine($"`{field.Entity.ReadTableName}`.`{field.DbFieldName}` AS `{field.Name}`");
+                sql.AppendLine($"`{property.Entity.ReadTableName}`.`{property.DbFieldName}` AS `{property.Name}`");
+            }
+            return sql.ToString();
+        }
+
+        public static string LoadSql(IEnumerable<PropertyConfig> fields)
+        {
+            var sql = new StringBuilder();
+
+            var isFirst = true;
+            foreach (var property in fields)
+            {
+                if (isFirst)
+                {
+                    isFirst = false;
+                }
+                else
+                {
+                    sql.Append(",");
+                }
+                sql.AppendLine($"`{property.Field.Entity.ReadTableName}`.`{property.DbFieldName}` AS `{property.Name}`");
             }
             return sql.ToString();
         }
@@ -548,14 +567,14 @@ ALTER TABLE `{entity.SaveTable}`
         /// ×Ö¶ÎÊý¾Ý¿â¶ÁÈ¡´úÂë
         /// </summary>
         /// <param name="entity"></param>
-        /// <param name="field">×Ö¶Î</param>
+        /// <param name="property">×Ö¶Î</param>
         /// <param name="code">´úÂë</param>
         /// <param name="idx"></param>
-        public static void FieldReadCode(FieldConfig field, StringBuilder code, int idx)
+        public static void FieldReadCode(FieldConfig property, StringBuilder code, int idx)
         {
-            if (field.CsType.ToLower() == "string")
+            if (property.CsType.ToLower() == "string")
             {
-                switch (field.DbType.ToLower())
+                switch (property.DbType.ToLower())
                 {
                     case "char":
                     case "varchar":
@@ -564,38 +583,93 @@ ALTER TABLE `{entity.SaveTable}`
                     case "varstring":
                         code.Append($@"
             if (reader.IsDBNull({idx}))
-                entity.{field.PropertyName} = null;
+                entity.{property.Name} = null;
             else
-                entity.{field.PropertyName} = await reader.GetFieldValueAsync<string>({idx});");
+                entity.{property.Name} = await reader.GetFieldValueAsync<string>({idx});");
                         break;
                     default:
                         code.Append($@"
             if (reader.IsDBNull({idx}))
-                entity.{field.PropertyName} = null;
+                entity.{property.Name} = null;
             else
-                entity.{field.PropertyName} = (await reader.GetFieldValueAsync<{field.CsType}>({idx})).ToString();");
+                entity.{property.Name} = (await reader.GetFieldValueAsync<{property.CsType}>({idx})).ToString();");
                         break;
                 }
                 return;
 
             }
 
-            if (!IsNullOrWhiteSpace(field.CustomType))
+            if (!IsNullOrWhiteSpace(property.CustomType))
             {
                 code.Append($@"
-            entity.{field.PropertyName} = ({field.CustomType})(await reader.GetFieldValueAsync<int>({idx}));");
+            entity.{property.Name} = ({property.CustomType})(await reader.GetFieldValueAsync<int>({idx}));");
                 return;
             }
 
-            if (field.DbNullable)
+            if (property.DbNullable)
                 code.Append($@"
             if (reader.IsDBNull({idx}))
-                entity.{field.PropertyName} = default;
+                entity.{property.Name} = default;
             else
-                entity.{field.PropertyName} = await reader.GetFieldValueAsync<{field.CsType}>({idx});");
+                entity.{property.Name} = await reader.GetFieldValueAsync<{property.CsType}>({idx});");
             else
                 code.Append($@"
-            entity.{field.PropertyName} = await reader.GetFieldValueAsync<{field.CsType}>({idx});");
+            entity.{property.Name} = await reader.GetFieldValueAsync<{property.CsType}>({idx});");
+
+        }
+        /// <summary>
+        /// ×Ö¶ÎÊý¾Ý¿â¶ÁÈ¡´úÂë
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="property">×Ö¶Î</param>
+        /// <param name="code">´úÂë</param>
+        /// <param name="idx"></param>
+        public static void FieldReadCode(PropertyConfig property, StringBuilder code, int idx)
+        {
+            
+            if (property.CsType.ToLower() == "string")
+            {
+                switch (property.DbType.ToLower())
+                {
+                    case "char":
+                    case "varchar":
+                    case "text":
+                    case "longtext":
+                    case "varstring":
+                        code.Append($@"
+            if (reader.IsDBNull({idx}))
+                entity.{property.Name} = null;
+            else
+                entity.{property.Name} = await reader.GetFieldValueAsync<string>({idx});");
+                        break;
+                    default:
+                        code.Append($@"
+            if (reader.IsDBNull({idx}))
+                entity.{property.Name} = null;
+            else
+                entity.{property.Name} = (await reader.GetFieldValueAsync<{property.CsType}>({idx})).ToString();");
+                        break;
+                }
+                return;
+
+            }
+
+            if (!IsNullOrWhiteSpace(property.CustomType))
+            {
+                code.Append($@"
+            entity.{property.Name} = ({property.CustomType})(await reader.GetFieldValueAsync<int>({idx}));");
+                return;
+            }
+
+            if (property.DbNullable)
+                code.Append($@"
+            if (reader.IsDBNull({idx}))
+                entity.{property.Name} = default;
+            else
+                entity.{property.Name} = await reader.GetFieldValueAsync<{property.CsType}>({idx});");
+            else
+                code.Append($@"
+            entity.{property.Name} = await reader.GetFieldValueAsync<{property.CsType}>({idx});");
 
         }
 

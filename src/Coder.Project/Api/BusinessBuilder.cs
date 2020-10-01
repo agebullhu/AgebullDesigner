@@ -8,7 +8,7 @@ namespace Agebull.EntityModel.RobotCoder
     /// <summary>
     /// 业务逻辑对象生成器
     /// </summary>
-    public sealed class BusinessBuilder : CoderWithEntity
+    public sealed class BusinessBuilder : CoderWithModel
     {
 
         /// <summary>

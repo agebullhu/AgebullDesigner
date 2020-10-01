@@ -1023,12 +1023,30 @@
                       Visibility="{Binding Solution.IsModelWorkView,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
                 <WrapPanel>
                     <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="字段名称" />
+                        <TextBox Text="{Binding DbFieldName,Mode=TwoWay}" Tag="{Binding Name,Mode=OneWay}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="Json名称" />
                         <TextBox Text="{Binding JsonName,Mode=TwoWay}" Tag="{Binding Name,Mode=OneWay}" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource FieldPanel}">
-                        <Label Content="字段名称" />
-                        <TextBox Text="{Binding DbFieldName,Mode=TwoWay}" Tag="{Binding Name,Mode=OneWay}" />
+                        <Label Content="C#类型" />
+                        <TextBox Text="{Binding CsType,Mode=TwoWay}" Tag="string" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="存储类型" />
+                        <ComboBox ItemsSource="{x:Static mysql1:MySqlHelper.DataTypeList}"
+                                  SelectedValue="{Binding DbType,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="汇总方法" />
+                        <TextBox Text="{Binding Function,Mode=TwoWay}" Tag="string" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="汇总条件" />
+                        <ComboBox ItemsSource="{x:Static mysql1:MySqlHelper.DataTypeList}"
+                                  SelectedValue="{Binding Having,Mode=TwoWay}" />
                     </StackPanel>
                 </WrapPanel>
             </GroupBox>

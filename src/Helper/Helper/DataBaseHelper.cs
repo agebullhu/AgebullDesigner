@@ -40,7 +40,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public static string ToViewName(ModelConfig entity) => "view_" + entity.Name.Replace("tb_", "");
+        public static string ToViewName(EntityConfig entity) => "view_" + entity.Name.Replace("tb_", "");
 
         /// <summary>
         /// 到标准数据表名称

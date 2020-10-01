@@ -10,7 +10,7 @@ namespace Agebull.EntityModel.RobotCoder
     /// <summary>
     /// 实体扩展代码生成基类
     /// </summary>
-    public abstract class EntityBuilderBase : EntityCoderBase, IAutoRegister
+    public abstract class EntityBuilderBase : ModelCoderBase, IAutoRegister
     {
         #region 注册
 

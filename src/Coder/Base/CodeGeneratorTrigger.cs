@@ -45,16 +45,15 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void CreateLast(ModelConfig entity)
         {
-            entity.LastProperties = new List<FieldConfig>();
+            entity.LastProperties = new List<PropertyConfig>();
             int idx = 0;
             foreach (var pro in entity.Properties.OrderBy(p => p.Index))
             {
-                if (pro.IsDelete || pro.IsDiscard)
+                if (pro.IsDelete || pro.IsDiscard || pro.IsDelete || pro.IsDiscard)
                     continue;
                 pro.Option.Index = ++idx;
-                entity.LastProperties.Add(pro.Field);
+                entity.LastProperties.Add(pro);
             }
-            InterfaceHelper.CheckInterface(entity, entity.LastProperties);
         }
 
         /// <summary>

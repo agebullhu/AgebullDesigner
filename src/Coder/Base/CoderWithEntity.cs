@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
@@ -6,7 +7,7 @@ namespace Agebull.EntityModel.RobotCoder
     /// <summary>
     /// 表操作基类
     /// </summary>
-    public abstract class CoderWithEntity : CoderWithProject
+    public abstract class CoderWithModel : CoderWithProject
     {
         /// <summary>
         /// 当前对象
@@ -26,11 +27,17 @@ namespace Agebull.EntityModel.RobotCoder
         public ModelConfig Model { get; set; }
 
         /// <summary>
+        /// 当前表对象
+        /// </summary>
+        public PropertyConfig PrimaryProperty => Model.Properties.FirstOrDefault(p => p.IsPrimaryKey && p.Entity == Model.Entity);
+
+        /// <summary>
         /// 分类目录
         /// </summary>
         protected virtual string Folder => string.IsNullOrWhiteSpace(Model.Classify) || Model.Classify.Equals("None", StringComparison.InvariantCulture)
                 ? Model.Name
                 : $"{Model.Classify}\\{Model.Name}";
+
         /// <summary>
         /// 是否可写
         /// </summary>

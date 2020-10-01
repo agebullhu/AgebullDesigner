@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
@@ -22,8 +23,13 @@ namespace Agebull.EntityModel.RobotCoder
                     continue;
                 foreach (var iField in ie.Properties.ToArray())
                 {
-                    if (!entity.Properties.Any(p => p.PropertyName == iField.PropertyName))
-                        properties.Add(iField);
+                    if (entity.Properties.Any(p => p.Name == iField.Name))
+                        continue;
+                    var field = new FieldConfig();
+                    field.Copy(iField);
+                    field.ReferenceKey = iField.Key;
+                    field.Entity = entity;
+                    properties.Add(field);
                 }
             }
         }
@@ -41,24 +47,5 @@ namespace Agebull.EntityModel.RobotCoder
                 }
             }
         }
-
-        public static void CheckInterface(ModelConfig entity, IList<FieldConfig> properties)
-        {
-            if (string.IsNullOrWhiteSpace(entity.Interfaces))
-                return;
-            var interfaces = entity.Interfaces.Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (var inf in interfaces)
-            {
-                var ie = GlobalConfig.GetEntity(inf);
-                if (ie == null)
-                    continue;
-                foreach (var iField in ie.Properties.ToArray())
-                {
-                    if (!entity.Properties.Any(p => p.Field.PropertyName == iField.PropertyName))
-                        properties.Add(iField);
-                }
-            }
-        }
-
     }
 }

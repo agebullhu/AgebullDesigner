@@ -6,7 +6,7 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
     /// <summary>
     ///     页面代码生成器
     /// </summary>
-    public class PorjectApiGenerator : CoderWithEntity
+    public class PorjectApiGenerator : CoderWithModel
     {
         #region 继承实现
         /// <summary>

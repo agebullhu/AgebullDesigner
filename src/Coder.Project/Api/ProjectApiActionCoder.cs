@@ -13,7 +13,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    public class ProjectApiActionCoder : CoderWithEntity, IAutoRegister
+    public class ProjectApiActionCoder : CoderWithModel, IAutoRegister
     {
 
         #region ¼Ì³ÐÊµÏÖ
@@ -229,102 +229,102 @@ namespace {NameSpace}.WebApi.Entity
             code.Append(@"
             if (RequestArgumentConvert.TryGet(""_value_"", out string value) && value != null)
             {
-                var field = RequestArgumentConvert.GetString(""_field_"");
+                var pro. = RequestArgumentConvert.GetString(""_field_"");
                 ");
 
-            var fields = Model.ClientProperty.Where(p => !p.NoStorage && /*p.CanUserInput && */p.CsType == "string" && !p.IsLinkKey && !p.IsBlob).ToArray();
-            if (fields.Length > 0)
+            var properties = Model.ClientProperty.Where(p => !p.NoStorage && /*p.CanUserInput && */p.CsType == "string" && !p.IsLinkKey && !p.IsBlob).ToArray();
+            if (properties.Length > 0)
             {
-                code.Append(@"if (string.IsNullOrWhiteSpace(field) || field == ""_any_"")
+                code.Append(@"if (string.IsNullOrWhiteSpace(pro.) || pro. == ""_any_"")
                     filter.AddAnd(p => ");
                 bool first = true;
-                foreach (var field in fields)
+                foreach (var pro in properties)
                 {
                     if (first)
                         first = false;
                     else
                         code.Append(@"
                                     || ");
-                    code.Append($@"p.{field.Name}.Contains(value)");
+                    code.Append($@"p.{pro.Name}.Contains(value)");
                 }
                 code.Append(@");
                 else ");
             }
-            code.Append(@"RequestArgumentConvert.SetArgument(field,value);
+            code.Append(@"RequestArgumentConvert.SetArgument(pro.,value);
             }");
-            fields = Model.ClientProperty.Where(p => !p.NoStorage).ToArray();
-            foreach (var field in fields)
+            properties = Model.ClientProperty.Where(p => !p.NoStorage).ToArray();
+            foreach (var pro in properties)
             {
-                if (field.IsPrimaryKey || field.IsLinkKey)
+                if (pro.IsPrimaryKey || pro.IsLinkKey)
                 {
-                    if(field.CsType == "string")
+                    if(pro.CsType == "string")
                         code.Append($@"
-            if(RequestArgumentConvert.TryGetIDs<string>(""{field.JsonName}"" , p=>(true,p) , out var {field.JsonName}))
+            if(RequestArgumentConvert.TryGetIDs<string>(""{pro.JsonName}"" , p=>(true,p) , out var {pro.JsonName}))
             {{
-                if ({field.JsonName}.Count == 1)
-                    filter.AddAnd(p => p.{field.Name} == {field.JsonName}[0]);
+                if ({pro.JsonName}.Count == 1)
+                    filter.AddAnd(p => p.{pro.Name} == {pro.JsonName}[0]);
                 else
-                    filter.AddAnd(p => {field.JsonName}.Contains(p.{field.Name}));
+                    filter.AddAnd(p => {pro.JsonName}.Contains(p.{pro.Name}));
             }}");
                     else
                     code.Append($@"
-            if(RequestArgumentConvert.TryGetIDs(""{field.JsonName}"" , out var {field.JsonName}))
+            if(RequestArgumentConvert.TryGetIDs(""{pro.JsonName}"" , out var {pro.JsonName}))
             {{
-                if ({field.JsonName}.Count == 1)
-                    filter.AddAnd(p => p.{field.Name} == {field.JsonName}[0]);
+                if ({pro.JsonName}.Count == 1)
+                    filter.AddAnd(p => p.{pro.Name} == {pro.JsonName}[0]);
                 else
-                    filter.AddAnd(p => {field.JsonName}.Contains(p.{field.Name}));
+                    filter.AddAnd(p => {pro.JsonName}.Contains(p.{pro.Name}));
             }}");
                 }
-                else if (field.CsType.ToLower() == "datetime")
+                else if (pro.CsType.ToLower() == "datetime")
                 {
                     code.Append($@"
-            if(RequestArgumentConvert.TryGet(""{field.JsonName}"" , out DateTime {field.JsonName}))
+            if(RequestArgumentConvert.TryGet(""{pro.JsonName}"" , out DateTime {pro.JsonName}))
             {{
-                var day = {field.JsonName}.Date;
+                var day = {pro.JsonName}.Date;
                 var nextDay = day.AddDays(1);
-                filter.AddAnd(p => (p.{field.Name} >= day && p.{field.Name} < nextDay));
+                filter.AddAnd(p => (p.{pro.Name} >= day && p.{pro.Name} < nextDay));
             }}
             else 
             {{
-                if(RequestArgumentConvert.TryGet(""{field.JsonName}_begin"" , out DateTime {field.JsonName}_begin))
+                if(RequestArgumentConvert.TryGet(""{pro.JsonName}_begin"" , out DateTime {pro.JsonName}_begin))
                 {{
-                    var day = {field.JsonName}_begin.Date;
-                    filter.AddAnd(p => p.{field.Name} >= day);
+                    var day = {pro.JsonName}_begin.Date;
+                    filter.AddAnd(p => p.{pro.Name} >= day);
                 }}
-                if(RequestArgumentConvert.TryGet(""{field.JsonName}_end"" , out DateTime {field.JsonName}_end))
+                if(RequestArgumentConvert.TryGet(""{pro.JsonName}_end"" , out DateTime {pro.JsonName}_end))
                 {{
-                    var day = {field.JsonName}_end.Date.AddDays(1);
-                    filter.AddAnd(p => p.{field.Name} < day);
+                    var day = {pro.JsonName}_end.Date.AddDays(1);
+                    filter.AddAnd(p => p.{pro.Name} < day);
                 }}
             }}");
                 }
-                else if(field.IsEnum)
+                else if(pro.IsEnum)
                 {
                     code.Append($@"
-            if(RequestArgumentConvert.TryGetEnum<{field.CustomType}>(""{field.JsonName}"" , out {field.CustomType} {field.JsonName}))
+            if(RequestArgumentConvert.TryGetEnum<{pro.CustomType}>(""{pro.JsonName}"" , out {pro.CustomType} {pro.JsonName}))
             {{
-                filter.AddAnd(p => p.{field.Name} == {field.JsonName});
+                filter.AddAnd(p => p.{pro.Name} == {pro.JsonName});
             }}");
                 }
                 else
                 {
                     code.Append($@"
-            if(RequestArgumentConvert.TryGet(""{field.JsonName}"" , out {field.CsType} {field.JsonName}))
+            if(RequestArgumentConvert.TryGet(""{pro.JsonName}"" , out {pro.CsType} {pro.JsonName}))
             {{");
 
-                    switch (field.CsType.ToLower())
+                    switch (pro.CsType.ToLower())
                     {
                         case "string":
                             code.Append($@"
-                filter.AddAnd(p => p.{field.Name}.Contains({field.JsonName}));");
+                filter.AddAnd(p => p.{pro.Name}.Contains({pro.JsonName}));");
                             break;
                         default:
-                            code.Append(!string.IsNullOrWhiteSpace(field.CustomType)
+                            code.Append(!string.IsNullOrWhiteSpace(pro.CustomType)
                                 ? $@"
-                filter.AddAnd(p => p.{field.Name} == ({field.CustomType}){field.JsonName});"
+                filter.AddAnd(p => p.{pro.Name} == ({pro.CustomType}){pro.JsonName});"
                                 : $@"
-                filter.AddAnd(p => p.{field.Name} == {field.JsonName});");
+                filter.AddAnd(p => p.{pro.Name} == {pro.JsonName});");
                             break;
                     }
                     code.Append(@"

@@ -78,7 +78,7 @@ namespace {NameSpace}.DataAccess
                     var access = new {Model.Name}DataAccess();
                     var datas = access.All({filter});
                     result = new List<EasyComboValues>{{EasyComboValues.Empty}};
-                    result.AddRange(datas.Select(p => new EasyComboValues(p.{Model.PrimaryField}, p.{title.PropertyName})));
+                    result.AddRange(datas.Select(p => new EasyComboValues(p.{Model.PrimaryField}, p.{title.Name})));
                     proxy.Client.Set(comboKey, result);
                 }}
                 return result;
@@ -102,8 +102,8 @@ namespace {NameSpace}.DataAccess
                     result.AddRange(datas.Select(p => new EasyUiTreeNode
                     {{
                         ID = p.{Model.PrimaryField},
-                        Text = p.{title.PropertyName},
-                        Title = p.{title.PropertyName},
+                        Text = p.{title.Name},
+                        Title = p.{title.Name},
                         IsOpen = true
                     }}));
                     proxy.Client.Set(treeKey, result);

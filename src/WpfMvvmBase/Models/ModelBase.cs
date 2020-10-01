@@ -177,7 +177,7 @@ namespace Agebull.EntityModel
 
         private void DataContextPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == _bindingInfo.CommandName)
+            if (e.Name == _bindingInfo.CommandName)
                 SetCommand();
         }
 

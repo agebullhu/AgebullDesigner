@@ -17,11 +17,11 @@ namespace Agebull.EntityModel.RobotCoder
         /// <inheritdoc />
         protected override string Folder => "Struct";
 
-        int DbType(FieldConfig field)
+        int DbType(PropertyConfig field)
         {
             if (Project.DbType == DataBaseType.SqlServer)
-                return (int)SqlServerHelper.ToSqlDbType(field);
-            return (int)MySqlHelper.ToSqlDbType(field);
+                return (int)SqlServerHelper.ToSqlDbType(field.DbType,field.CsType);
+            return (int)MySqlHelper.ToSqlDbType(field.DbType, field.CsType);
         }
         #endregion
 
@@ -124,7 +124,7 @@ namespace Agebull.EntityModel.RobotCoder
             }
         }
 
-        private string PropertyIndex(FieldConfig property, ref int idx)
+        private string PropertyIndex(PropertyConfig property, ref int idx)
         {
             return $@"
 
@@ -139,7 +139,7 @@ namespace Agebull.EntityModel.RobotCoder
             public const int Real_{property.Name} = {idx++};";
         }
 
-        private void PropertyStruct(StringBuilder codeStruct, FieldConfig property,ref bool isFirst)
+        private void PropertyStruct(StringBuilder codeStruct, PropertyConfig property,ref bool isFirst)
         {
             if (isFirst)
                 isFirst = false;

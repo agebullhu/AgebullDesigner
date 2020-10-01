@@ -6,7 +6,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 {
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    public class ExportActionCoder : CoderWithEntity, IAutoRegister
+    public class ExportActionCoder : CoderWithModel, IAutoRegister
     {
         #region ´úÂëÆ¬¶Ï
 

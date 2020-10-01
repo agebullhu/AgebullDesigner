@@ -6,7 +6,7 @@ namespace Agebull.EntityModel.RobotCoder
     /// <summary>
     /// 实体代码生成器
     /// </summary>
-    public sealed class EntityBuilder : EntityCoderBase
+    public sealed class EntityBuilder : ModelCoderBase
     {
         /// <summary>
         /// 名称

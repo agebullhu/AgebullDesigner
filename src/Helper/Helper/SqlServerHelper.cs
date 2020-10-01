@@ -105,10 +105,16 @@ namespace Agebull.EntityModel.Config.SqlServer
         ///     从C#的类型转为DBType
         /// </summary>
         /// <param name="field"> </param>
-        public static SqlDbType ToSqlDbType(FieldConfig field)
+        public static SqlDbType ToSqlDbType(FieldConfig field) => ToSqlDbType(field.DbType, field.CsType);
+
+        /// <summary>
+        ///     从C#的类型转为DBType
+        /// </summary>
+        /// <param name="field"> </param>
+        public static SqlDbType ToSqlDbType(string dbType, string csType)
         {
-            if (field.DbType != null)
-                switch (field.DbType.ToLower())
+            if (dbType != null)
+                switch (dbType.ToLower())
                 {
                     case "boolean":
                     case "bool":
@@ -165,7 +171,7 @@ namespace Agebull.EntityModel.Config.SqlServer
                     default:
                         return SqlDbType.NVarChar;
                 }
-            switch (field.CsType)
+            switch (csType)
             {
                 case "float":
                 case "Float":

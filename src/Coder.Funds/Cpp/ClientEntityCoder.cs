@@ -5,7 +5,7 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class ClientEntityCoder : EntityCoderBase
+    public sealed class ClientEntityCoder : ModelCoderBase
     {
 
         /// <summary>
@@ -190,11 +190,11 @@ namespace {NameSpace}
             }
             return code.ToString();
         }
-        
+
 
         private bool PrimaryKeyPropertyCode(StringBuilder builder)
         {
-            var property = Model.PrimaryColumn;
+            var property = PrimaryProperty;
             if (property == null)
                 return false;
             builder.Append($@"
@@ -202,105 +202,89 @@ namespace {NameSpace}
         /// <summary>
         /// 修改主键
         /// </summary>
-        public void ChangePrimaryKey({property.LastCsType} {property.PropertyName.ToLower()})
+        public void ChangePrimaryKey({property.LastCsType} {property.Name.ToLower()})
         {{
-            {FieldName(property)} = {property.PropertyName.ToLower()};
+            {PropertyName(property)} = {property.Name.ToLower()};
         }}
         
         /// <summary>
         /// {ToRemString(property.Caption)}的实时记录顺序
         /// </summary>
-        public const int Real_{property.PropertyName} = 0;
+        public const int Real_{property.Name} = 0;
 
         /// <summary>
         /// {ToRemString(property.Caption)}
         /// </summary>
         [IgnoreDataMember,JsonIgnore]
-        public {property.LastCsType} {FieldName(property)};
+        public {property.LastCsType} {PropertyName(property)};
 
-        partial void On{property.PropertyName}Get();
+        partial void On{property.Name}Get();
 
-        partial void On{property.PropertyName}Set(ref {property.LastCsType} value);
+        partial void On{property.Name}Set(ref {property.LastCsType} value);
 
-        partial void On{property.PropertyName}Load(ref {property.LastCsType} value);
+        partial void On{property.Name}Load(ref {property.LastCsType} value);
 
-        partial void On{property.PropertyName}Seted();
+        partial void On{property.Name}Seted();
 
         {PropertyHeader(property)}
-        public {property.LastCsType} {property.PropertyName}
+        public {property.LastCsType} {property.Name}
         {{
             get
             {{
-                On{property.PropertyName}Get();
-                return this.{FieldName(property)};
+                On{property.Name}Get();
+                return this.{PropertyName(property)};
             }}
             set
             {{
-                if(this.{FieldName(property)} == value)
+                if(this.{PropertyName(property)} == value)
                     return;
-                //if(this.{FieldName(property)} > 0)
+                //if(this.{PropertyName(property)} > 0)
                 //    throw new Exception(""主键一旦设置就不可以修改"");
-                On{property.PropertyName}Set(ref value);
-                this.{FieldName(property)} = value;
-                this.OnPropertyChanged(nameof({property.PropertyName}));
-                On{property.PropertyName}Seted();
+                On{property.Name}Set(ref value);
+                this.{PropertyName(property)} = value;
+                this.OnPropertyChanged(nameof({property.Name}));
+                On{property.Name}Seted();
             }}
         }}");
             return true;
         }
 
-        private void PropertyCode(FieldConfig property, int index, StringBuilder code)
+        private void PropertyCode(PropertyConfig property, int index, StringBuilder code)
         {
             code.Append($@"
-        /// <summary>
-        /// {ToRemString(property.Caption)}的实时记录顺序
-        /// </summary>
-        public const int Real_{property.PropertyName} = {index};
-
         /// <summary>
         /// {ToRemString(property.Caption)}
         /// </summary>
         [IgnoreDataMember,JsonIgnore]
-        public {property.LastCsType} {FieldName(property)};
-
-        partial void On{property.PropertyName}Get();
-
-        partial void On{property.PropertyName}Set(ref {property.LastCsType} value);
-
-        partial void On{property.PropertyName}Seted();
+        public {property.LastCsType} {PropertyName(property)};
 
         {PropertyHeader(property)}
-        {property.AccessType} {property.LastCsType} {property.PropertyName}
+        {property.AccessType} {property.LastCsType} {property.Name}
         {{
             get
             {{
-                On{property.PropertyName}Get();
-                return this.{FieldName(property)};
+                return this.{PropertyName(property)};
             }}
             set
             {{
-                if(this.{FieldName(property)} == value)
+                if(this.{PropertyName(property)} == value)
                     return;
-                On{property.PropertyName}Set(ref value);
-                this.{FieldName(property)} = value;
-                On{property.PropertyName}Seted();
-                OnPropertyChanged(nameof({property.PropertyName}));
-                {(property.EnumConfig == null
-                    ? null
-                    : $@"OnPropertyChanged(""{property.PropertyName}_Content"");")}
+                this.{PropertyName(property)} = value;
+                OnPropertyChanged(nameof({property.Name}));
             }}
         }}");
             ContentProperty(property, code);
         }
-        
+
         /// <summary>
         ///     计算列属性
         /// </summary>
         /// <param name="property"></param>
         /// <param name="index"></param>
         /// <param name="code"></param>
-        private void ComputePropertyCode(FieldConfig property, int index, StringBuilder code)
+        private void ComputePropertyCode(PropertyConfig property, int index, StringBuilder code)
         {
+            
             if (string.IsNullOrWhiteSpace(property.ComputeGetCode) && string.IsNullOrWhiteSpace(property.ComputeSetCode))
             {
                 PropertyCode(property, index, code);
@@ -309,7 +293,7 @@ namespace {NameSpace}
             {
                 code.Append($@"
         {PropertyHeader(property)}
-        {property.AccessType} {property.LastCsType} {property.PropertyName}
+        {property.AccessType} {property.LastCsType} {property.Name}
         {{
             get
             {{
@@ -321,8 +305,8 @@ namespace {NameSpace}
             {
                 code.Append($@"
         [{PropertyHeader(property)}]
-        [JsonProperty(""{property.PropertyName}"",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        {property.AccessType} {property.LastCsType} {property.PropertyName}
+        [JsonProperty(""{property.Name}"",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        {property.AccessType} {property.LastCsType} {property.Name}
         {{
             set
             {{
@@ -334,8 +318,8 @@ namespace {NameSpace}
             {
                 code.Append($@"
         {PropertyHeader(property)}
-        [JsonProperty(""{property.PropertyName}"",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        {property.AccessType} {property.LastCsType} {property.PropertyName}
+        [JsonProperty(""{property.Name}"",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        {property.AccessType} {property.LastCsType} {property.Name}
         {{
             set
             {{
@@ -363,33 +347,33 @@ namespace {NameSpace}
         public override string ToString()
         {
             return $@""");
-            foreach (var field in Model.CppProperty)
+            foreach (var property in Model.UserProperty)
             {
-                ToStringCode(code, field);
+                ToStringCode(code, property);
             }
             code.Append(@""";
         }");
             return code.ToString();
         }
 
-        private void ToStringCode(StringBuilder code, FieldConfig field)
+        private void ToStringCode(StringBuilder code, PropertyConfig property)
         {
-            string caption = string.IsNullOrWhiteSpace(field.Caption) ? field.Name : field.Caption;
-            if (!string.IsNullOrWhiteSpace(field.ArrayLen))
+            string caption = string.IsNullOrWhiteSpace(property.Caption) ? property.Name : property.Caption;
+            if (!string.IsNullOrWhiteSpace(property.ArrayLen))
             {
-                code.Append(field.EnumConfig != null
+                code.Append(property.EnumConfig != null
                     ? $@"
-[{caption}]:{{string.Join("","", {field.Name}_Content)}}"
+[{caption}]:{{string.Join("","", {property.Name}_Content)}}"
                     : $@"
-[{caption}]:{{string.Join("","", {field.Name})}}");
+[{caption}]:{{string.Join("","", {property.Name})}}");
             }
             else
             {
-                code.Append(field.EnumConfig != null
+                code.Append(property.EnumConfig != null
                     ? $@"
-[{caption}]:{{{field.Name}_Content}}"
+[{caption}]:{{{property.Name}_Content}}"
                     : $@"
-[{caption}]:{{{field.Name}}}");
+[{caption}]:{{{property.Name}}}");
             }
         }
 
@@ -397,7 +381,7 @@ namespace {NameSpace}
         #endregion
 
         #region 复制
-        
+
         private string Copy()
         {
             var code = new StringBuilder();
@@ -422,7 +406,7 @@ namespace {NameSpace}
             if(sourceEntity == null)
                 return;");
 
-            foreach (var property in Model.CppProperty.Where(p=>p.CanGet && p.CanSet ))
+            foreach (var property in Model.UserProperty.Where(p => p.CanGet && p.CanSet))
             {
                 if (property.IsCompute && property.CanSet)
                 {
@@ -455,7 +439,7 @@ namespace {NameSpace}
             base.CopyValueInner(source);");
 
 
-            foreach (var property in Model.CppProperty.Where(p => p.CanGet && p.CanSet))
+            foreach (var property in Model.UserProperty.Where(p => p.CanGet && p.CanSet))
             {
                 code.Append($@"
             this.{property.Name} = source.{property.Name};");

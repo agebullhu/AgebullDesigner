@@ -47,7 +47,7 @@ namespace Agebull.EntityModel.Config
                 case PropertyConfig property:
                     if (typeof(T) == typeof(EntityConfig))
                     {
-                        DoAction(action, property.Field.Entity);
+                        DoAction(action, property.Entity);
                     }
                     else if (typeof(T) == typeof(ProjectConfig))
                     {
@@ -148,7 +148,7 @@ namespace Agebull.EntityModel.Config
                     }
                     if (typeof(T) == typeof(EntityConfig))
                     {
-                        DoAction(condition, action, property.Field.Entity);
+                        DoAction(condition, action, property.Entity);
                     }
                     else if (typeof(T) == typeof(ProjectConfig))
                     {

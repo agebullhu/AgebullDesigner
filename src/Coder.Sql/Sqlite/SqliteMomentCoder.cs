@@ -35,7 +35,7 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.Sqlite
 
         #region View
 
-        public static string DropView(ModelConfig entity)
+        public static string DropView(EntityConfig entity)
         {
             if (entity.NoDataBase || entity.SaveTable == entity.ReadTableName)
                 return Empty;
@@ -44,7 +44,7 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.Sqlite
 DROP VIEW [{entity.ReadTableName}];";
         }
 
-        public static string CreateView(ModelConfig model)
+        public static string CreateView(EntityConfig model)
         {
             DataBaseHelper.CheckFieldLink(model.DbFields);
             var array = model.DbFields.Where(p => p.IsLinkField && !p.IsLinkKey).ToArray();

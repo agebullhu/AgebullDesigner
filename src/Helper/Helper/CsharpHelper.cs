@@ -227,6 +227,44 @@ namespace Agebull.EntityModel.Config
                     return csType;
             }
         }
+        public static string PropertyValueType(PropertyConfig col)
+        {
+            if (col.IsEnum)
+                return "NumberEnum";
+            switch (col.CsType.ToLower())
+            {
+                case "bool":
+                case "boolean":
+                case "byte":
+                case "char":
+                case "short":
+                case "int16":
+                case "int":
+                case "int32":
+                case "bigint":
+                case "long":
+                case "int64":
+                case "datetime":
+                case "datetime2":
+                case "decimal":
+                case "numeric":
+                case "real":
+                case "double":
+                case "float":
+                case "guid":
+                case "uniqueidentifier":
+                    return col.Nullable ? "Nullable" : "Value";
+                case "longtext":
+                case "nchar":
+                case "varchar":
+                case "nvarchar":
+                case "string":
+                case "text":
+                    return "String";
+                default:
+                    return "Object";
+            }
+        }
         public static string PropertyValueType(FieldConfig col)
         {
             if (col.IsEnum)

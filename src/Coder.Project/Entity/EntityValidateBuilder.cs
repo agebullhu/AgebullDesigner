@@ -1,4 +1,6 @@
+using Agebull.EntityModel.Config;
 using System.Linq;
+using System.Text;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -22,6 +24,23 @@ namespace Agebull.EntityModel.RobotCoder
         {
             var coder = new EntityValidateCoder {Model = Model};
             var code = coder.Code(Columns.Where(p => !p.DbInnerField && !p.IsSystemField && !p.CustomWrite));
+            var rela = new StringBuilder();
+            foreach (var relation in Model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty).OrderBy(p => p.Index))
+            {
+                if(relation.ModelType == ReleationModelType.Children)
+                {
+                    rela.Append($@"
+            if({relation.Name} != null)
+                foreach(var ch in {relation.Name})
+                    ch?.Validate(result);");
+                }
+                else
+                {
+                    rela.Append($@"
+            {relation.Name}?.Validate(result);");
+                }
+            }
+
             return $@"
 
         /// <summary>
@@ -38,7 +57,7 @@ namespace Agebull.EntityModel.RobotCoder
         {{
             {(Model.NoDataBase || Model.PrimaryColumn== null ? "" : "result.Id = " + Model.PrimaryColumn.Name + "?.ToString()") }; 
             base.Validate(result);{code}
-            ValidateEx(result);
+            ValidateEx(result);{rela}
         }}";
         }
     }

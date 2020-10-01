@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -5,7 +6,7 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class ClrCoder : CoderWithEntity
+    public sealed class ClrCoder : CoderWithModel
     {
         #region ClrHelper
 
@@ -203,7 +204,7 @@ void CopyFromClr({Model.EntityName}^ cs_field, {Model.Name}& field)
         return;");
 
 
-            foreach (var property in Model.CppProperty.Where(p => p.CanGet))
+            foreach (var property in Model.UserProperty.Where(p => p.CanGet))
                 CopyFromClr(code, property);
 
             code.Append($@"
@@ -218,7 +219,7 @@ void CopyFromClr({Model.EntityName}^ cs_field, {Model.Name}& field)
 {{
     {Model.EntityName}^ cs_field = gcnew {Model.EntityName}();");
 
-            foreach (var property in Model.CppProperty.Where(p => p.CanSet))
+            foreach (var property in Model.UserProperty.Where(p => p.CanSet))
                 CopyToClrCode(code, property);
 
 
@@ -228,8 +229,9 @@ void CopyFromClr({Model.EntityName}^ cs_field, {Model.Name}& field)
             return code.ToString();
         }
 
-        private void CopyFromClr(StringBuilder code, FieldConfig field)
+        private void CopyFromClr(StringBuilder code, PropertyConfig property)
         {
+            var field = property;
             if (field.IsIntDecimal)
             {
                 if (!string.IsNullOrWhiteSpace(field.ArrayLen))
@@ -240,10 +242,10 @@ void CopyFromClr({Model.EntityName}^ cs_field, {Model.Name}& field)
         {{
             field.{0}[idx] = cs_field->FromDecimal(cs_field->{0}[idx]);
         }}
-    }}", field.Name, field.Caption);
+    }}", property.Name, property.Caption);
                 else
                     code.Append($@"
-    field.{field.Name} = cs_field->FromDecimal(cs_field->{field.Name});//{field.Caption}");
+    field.{property.Name} = cs_field->FromDecimal(cs_field->{property.Name});//{property.Caption}");
                 return;
             }
             var stru = GetLcEntity(field);
@@ -251,7 +253,7 @@ void CopyFromClr({Model.EntityName}^ cs_field, {Model.Name}& field)
             {
                 code.AppendFormat(@"
     
-    CopyFromClr(cs_field->{0},field.{0});//{1}-{2}", field.Name, field.Caption, field.CsType);
+    CopyFromClr(cs_field->{0},field.{0});//{1}-{2}", property.Name, property.Caption, field.CsType);
                 return;
             }
             if (field.CppLastType == "char")
@@ -262,7 +264,7 @@ void CopyFromClr({Model.EntityName}^ cs_field, {Model.Name}& field)
         const char* c_{0} = (const char*)(Marshal::StringToHGlobalAnsi(cs_field->{0})).ToPointer();//{1}
 	    strcpy_s(field.{0}, c_{0});
 	    Marshal::FreeHGlobal(IntPtr((void*)c_{0}));
-    }}", field.Name, field.Caption);
+    }}", property.Name, property.Caption);
                 else
                     code.AppendFormat(@"
     if(cs_field->{0} != nullptr)
@@ -270,7 +272,7 @@ void CopyFromClr({Model.EntityName}^ cs_field, {Model.Name}& field)
         const char* c_{0} = (const char*)(Marshal::StringToHGlobalAnsi(cs_field->{0})).ToPointer();//{1}
 	    field.{0} = c_{0}[0];
 	    Marshal::FreeHGlobal(IntPtr((void*)c_{0}));
-    }}", field.Name, field.Caption);
+    }}", property.Name, property.Caption);
             else if (!string.IsNullOrWhiteSpace(field.ArrayLen))
                 code.AppendFormat(@"
     if(cs_field->{0} != nullptr)
@@ -279,64 +281,65 @@ void CopyFromClr({Model.EntityName}^ cs_field, {Model.Name}& field)
         {{
             field.{0}[idx] = cs_field->{0}[idx];
         }}
-    }}", field.Name, field.Caption);
+    }}", property.Name, property.Caption);
             else if (field.CppLastType == "tm")
                 code.AppendFormat(@"
-    FromClr(field.{0},cs_field->{0});//{1}-{2}", field.Name, field.Caption, field.CsType);
+    FromClr(field.{0},cs_field->{0});//{1}-{2}", property.Name, property.Caption, field.CsType);
             else if (field.CustomType != null)
                 code.Append($@"
-    field.{field.Name} = ({field.CustomType}Classify)(int)cs_field->{field.Name};//{field.Caption}");
+    field.{property.Name} = ({field.CustomType}Classify)(int)cs_field->{property.Name};//{property.Caption}");
             else
                 code.Append($@"
-    field.{field.Name} = cs_field->{field.Name};//{field.Caption}");
+    field.{property.Name} = cs_field->{property.Name};//{property.Caption}");
         }
 
-        private void CopyToClrCode(StringBuilder code, FieldConfig field)
+        private void CopyToClrCode(StringBuilder code, PropertyConfig property)
         {
+            var field = property;
             if (field.IsIntDecimal)
             {
                 if (!string.IsNullOrWhiteSpace(field.ArrayLen))
                     code.AppendFormat(@"
     cs_field->{0} =  gcnew {1}();//{2}-{3}
     for(auto vl : field.{0})
-        cs_field->{0}->Add(cs_field->ToDecimal(vl));", field.Name, field.CppLastType, field.Caption, field.CsType);
+        cs_field->{0}->Add(cs_field->ToDecimal(vl));", property.Name, field.CppLastType, property.Caption, field.CsType);
                 else
                     code.Append($@"
-    cs_field->{field.Name} = cs_field->ToDecimal(field.{field.Name});//{field.Caption}-{field.CsType}");
+    cs_field->{property.Name} = cs_field->ToDecimal(field.{property.Name});//{property.Caption}-{field.CsType}");
                 return;
             }
             var stru = GetLcEntity(field);
             if (stru != null)
             {
                 code.AppendFormat(@"
-    cs_field->{0} = CopyToClr(field.{0});//{1}-{2}", field.Name, field.Caption, field.CsType);
+    cs_field->{0} = CopyToClr(field.{0});//{1}-{2}", property.Name, property.Caption, field.CsType);
                 return;
             }
             if (field.CppLastType == "char")
                 if (field.Datalen <= 1)
                     code.AppendFormat(@"
     buf[0] = field.{0};//{1}-{2}
-    cs_field->{0} =  marshal_as<String^>(buf);", field.Name, field.Caption, field.CsType);
+    cs_field->{0} =  marshal_as<String^>(buf);", property.Name, property.Caption, field.CsType);
                 else
                     code.AppendFormat(@"
     if(strlen(field.{0}) > 0)//{1}-{2}
-        cs_field->{0} =  marshal_as<String^>(field.{0});", field.Name, field.Caption, field.CsType);
+        cs_field->{0} =  marshal_as<String^>(field.{0});", property.Name, property.Caption, field.CsType);
             else if (!string.IsNullOrWhiteSpace(field.ArrayLen))
                 code.AppendFormat(@"
     cs_field->{0} =  gcnew {1}();//{2}-{3}
     for(auto vl : field.{0})
-        cs_field->{0}->Add(vl);", field.Name, field.CppLastType, field.Caption, field.CsType);
+        cs_field->{0}->Add(vl);", property.Name, field.CppLastType, property.Caption, field.CsType);
             else if (field.CppLastType == "tm")
                 code.AppendFormat(@"
-    cs_field->{0} = ToClr(field.{0});//{1}-{2}", field.Name, field.Caption, field.CsType);
+    cs_field->{0} = ToClr(field.{0});//{1}-{2}", property.Name, property.Caption, field.CsType);
             else if (field.CustomType != null)
                 code.Append($@"
-    cs_field->{field.Name} = (Manage::{field.CustomType})static_cast<int>(field.{field.Name});//{field.Caption}-{
+    cs_field->{property.Name} = (Manage::{field.CustomType})static_cast<int>(field.{property.Name});//{property.Caption}-{
                         field.CsType
                     }");
             else
                 code.Append($@"
-    cs_field->{field.Name} = field.{field.Name};//{field.Caption}-{field.CsType}");
+    cs_field->{property.Name} = field.{property.Name};//{property.Caption}-{field.CsType}");
         }
 
         #endregion
@@ -347,9 +350,10 @@ void CopyFromClr({Model.EntityName}^ cs_field, {Model.Name}& field)
         private static string FriendInc(ModelConfig entity)
         {
             var code = new StringBuilder();
-            foreach (var pro in entity.CppProperty)
+            foreach (var property in entity.UserProperty)
             {
-                if (CppTypeHelper.ToCppLastType(pro.CppLastType ?? pro.CppType) is ModelConfig friend)
+                var field = property;
+                if (CppTypeHelper.ToCppLastType(field.CppLastType ?? field.CppType) is ModelConfig friend)
                     code.Append($@"
 #include <{friend.Parent.Name}/{friend.Name}.h>
 #include <{friend.Parent.Name}/{friend.Name}_clr.h>");
@@ -358,6 +362,11 @@ void CopyFromClr({Model.EntityName}^ cs_field, {Model.Name}& field)
         }
 
         private static ModelConfig GetLcEntity(FieldConfig field)
+        {
+            return CppTypeHelper.ToCppLastType(field.CppLastType ?? field.CppType) as ModelConfig;
+        }
+
+        private static ModelConfig GetLcEntity(PropertyConfig field)
         {
             return CppTypeHelper.ToCppLastType(field.CppLastType ?? field.CppType) as ModelConfig;
         }

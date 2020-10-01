@@ -166,20 +166,20 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             {
                 code.Append(stateColumn);
             }
-            foreach (var field in Model.ClientProperty.Where(p => !p.NoneGrid && !p.GridDetails).ToArray())
+            foreach (var property in Model.ClientProperty.Where(p => !p.Field.NoneGrid && !p.Field.GridDetails).ToArray())
             {
-                var caption = field.Caption;
-                var description = field.Description;
+                var caption = property.Caption;
+                var description = property.Description;
 
-                if (field.IsLinkKey)
+                if (property.Field.IsLinkKey)
                 {
-                    var friend = Model.LastProperties.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
+                    var friend = Model.LastProperties.FirstOrDefault(p => p.Field.LinkTable == property.Field.LinkTable && p.Field.IsLinkCaption);
                     if (friend != null)
                         caption = friend.Caption;
                     if (friend != null)
                         description = friend.Description;
                 }
-                GridField(code, field, caption, description ?? field.Caption);
+                GridField(code, property, caption, description ?? property.Caption);
             }
             GridDetailsField(code);
             code.Append(@"
@@ -198,11 +198,13 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 </el-table-column>";
 
 
-        private void GridField(StringBuilder code, FieldConfig field, string caption, string description)
+        private void GridField(StringBuilder code, PropertyConfig property, string caption, string description)
         {
+
+            var field = property;
             var align = string.IsNullOrWhiteSpace(field.GridAlign) ? "left" : field.GridAlign;
             code.Append($@"
-                <el-table-column prop='{field.JsonName}'
+                <el-table-column prop='{property.JsonName}'
                                     header-align='center' align='{align}'
                                     label='{caption}'");
             if (field.UserOrder)
@@ -215,7 +217,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 code.Append($@"
                     <template slot-scope='scope'>
                         <span style='margin-left: 3px'>
-                            {field.Prefix}{{{{scope.row.{field.JsonName} | {field.EnumConfig.Name.ToLWord()}Formater}}}}{field.Suffix}
+                            {field.Prefix}{{{{scope.row.{property.JsonName} | {field.EnumConfig.Name.ToLWord()}Formater}}}}{field.Suffix}
                         </span>
                     </template>");
             }
@@ -224,28 +226,28 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 var fmt = field.IsTime ? "formatTime" : "formatDate";
                 code.Append($@"
                     <template slot-scope='scope'>
-                        <span style='margin-left: 3px'>{field.Prefix}{{{{scope.row.{field.JsonName} | {fmt}}}}}{field.Suffix}</span>
+                        <span style='margin-left: 3px'>{field.Prefix}{{{{scope.row.{property.JsonName} | {fmt}}}}}{field.Suffix}</span>
                     </template>");
             }
             else if (field.CsType == "bool")
             {
                 code.Append($@"
                     <template slot-scope='scope'>
-                        <span style='margin-left: 3px'>{field.Prefix}{{{{scope.row.{field.JsonName} | boolFormater}}}}{field.Suffix}</span>
+                        <span style='margin-left: 3px'>{field.Prefix}{{{{scope.row.{property.JsonName} | boolFormater}}}}{field.Suffix}</span>
                     </template>");
             }
             else if (field.IsMoney)
             {
                 code.Append($@"
                     <template slot-scope='scope'>
-                        <span style='margin-left: 3px'>{field.Prefix}{{{{scope.row.{field.JsonName} | formatMoney}}}}{field.Suffix}</span>
+                        <span style='margin-left: 3px'>{field.Prefix}{{{{scope.row.{property.JsonName} | formatMoney}}}}{field.Suffix}</span>
                     </template>");
             }
             else if (field.CsType == "decimal")
             {
                 code.Append($@"
                     <template slot-scope='scope'>
-                        <span style='margin-left: 3px'>{field.Prefix}{{{{scope.row.{field.JsonName} | thousandsNumber}}}}{field.Suffix}</span>
+                        <span style='margin-left: 3px'>{field.Prefix}{{{{scope.row.{property.JsonName} | thousandsNumber}}}}{field.Suffix}</span>
                     </template>");
             }
             code.Append(@"
@@ -254,19 +256,20 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
         private void GridDetailsField(StringBuilder code)
         {
-            var details = Model.ClientProperty.Where(p => p.GridDetails).ToArray();
+            var details = Model.ClientProperty.Where(p => p.Field.GridDetails).ToArray();
             if (details.Length <= 0)
                 return;
             code.Append(@"
                     <el-table-column type='expand'>
                         <template slot-scope='props'>");
-            foreach (var field in details)
+            foreach (var property in details)
             {
-                var caption = field.Caption;
+                var field = property;
+                var caption = property.Caption;
                 if (field.IsLinkKey)
                 {
                     var friend =
-                        Model.LastProperties.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
+                        Model.LastProperties.FirstOrDefault(p => p.Field.LinkTable == field.LinkTable && p.Field.IsLinkCaption);
                     if (friend != null)
                         caption = friend.Caption;
                 }
@@ -290,12 +293,12 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 if (field.IsImage)
                 {
                     code.Append($@"
-                                <el-image :src='{field.JsonName}' lazy></el-image>");
+                                <el-image :src='{property.JsonName}' lazy></el-image>");
                 }
                 else
                 {
                     code.Append($@"
-                                <span class='expand_value'>{field.Prefix}{{{{props.row.{field.JsonName}");
+                                <span class='expand_value'>{field.Prefix}{{{{props.row.{property.JsonName}");
                     if (field.EnumConfig != null)
                     {
                         code.Append($@" | {field.EnumConfig.Name.ToLWord()}Formater");
@@ -371,20 +374,21 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             //{
             //    vif = "form.data.dataState <= 1";
             //}
-            foreach (var field in Model.ClientProperty.Where(p => !p.NoneDetails && !p.ExtendConfigListBool["easyui_userFormHide"]).ToArray())
+            foreach (var property in Model.ClientProperty.Where(p => !p.Field.NoneDetails && !p.Field.ExtendConfigListBool["easyui_userFormHide"]).ToArray())
             {
-                var caption = field.Caption;
+                var field = property;
+                var caption = property.Caption;
                 var description = field.Description;
 
                 if (field.IsLinkKey)
                 {
-                    var friend = Model.LastProperties.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
+                    var friend = Model.LastProperties.FirstOrDefault(p => p.Field.LinkTable == field.LinkTable && p.Field.IsLinkCaption);
                     if (friend != null)
                         caption = friend.Caption;
                     if (friend != null)
                         description = friend.Description;
                 }
-                FormField(code, field, caption, description ?? field.Caption/*,vif*/);
+                FormField(code, property, caption, description ?? property.Caption/*,vif*/);
             }
             code.Append(@"
             </el-form>
@@ -402,7 +406,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             return code.ToString();
         }
 
-        void SetDisabled(bool disabled, StringBuilder code, FieldConfig field)
+        void SetDisabled(bool disabled, StringBuilder code, PropertyConfig field)
         {
             if (disabled)
             {
@@ -413,18 +417,19 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 code.Append(field.IsUserReadOnly ? " readonly" : " :readonly='form.readonly'");
             }
         }
-        private void FormField(StringBuilder code, FieldConfig field, string caption, string description/*,string vif*/)
+        private void FormField(StringBuilder code, PropertyConfig property, string caption, string description/*,string vif*/)
         {
+            var field = property;
             code.Append($@"
-            <el-form-item label='{caption}' prop='{field.JsonName}' label-suffix='{field.Suffix}'");
+            <el-form-item label='{caption}' prop='{property.JsonName}' label-suffix='{field.Suffix}'");
             if (field.Entity.FormCloumn > 1 && (field.FormCloumnSapn > 1 || field.IsMemo || field.MulitLine))
                 code.Append(" size='large'");
             code.Append('>');
             if (field.EnumConfig != null || field.IsLinkKey)
             {
                 code.Append($@"
-                <el-select v-model='form.data.{field.JsonName}'");
-                SetDisabled(true, code, field);
+                <el-select v-model='form.data.{property.JsonName}'");
+                SetDisabled(true, code, property);
                 code.Append(@" style='width:100%'>");
                 if (field.EnumConfig != null)
                 {
@@ -450,14 +455,14 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             else if (field.CsType == "bool")
             {
                 code.Append($@"
-                <el-switch v-model='form.data.{field.JsonName}'");
+                <el-switch v-model='form.data.{property.JsonName}'");
                 SetDisabled(true, code, field);
                 code.Append(@"></el-switch>");
             }
             else if (field.CsType == nameof(DateTime))
             {
                 code.Append($@"
-                <el-date-picker v-model='form.data.{field.JsonName}' placeholder='{description}' clearable");
+                <el-date-picker v-model='form.data.{property.JsonName}' placeholder='{description}' clearable");
                 SetDisabled(false, code, field);
                 code.Append(field.IsTime
                     ? "value-format='yyyy-MM-ddTHH:mm:ss' type='datetime'"
@@ -467,7 +472,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             else
             {
                 code.Append($@"
-                <el-input v-model='form.data.{field.JsonName}' placeholder='{description}' auto-complete='off' clearable");
+                <el-input v-model='form.data.{property.JsonName}' placeholder='{description}' auto-complete='off' clearable");
                 SetDisabled(false, code, field);
                 if (field.IsMemo || field.MulitLine)
                 {
@@ -496,14 +501,14 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             quButton.Append(@"
                     <el-select v-model='list.field' slot='prepend' placeholder='选择字段' style='width: 160px;'>
                         <el-option value='_any_' label='模糊查询'></el-option>");
-            foreach (var field in Model.ClientProperty.Where(p => !p.NoStorage
-                                                                    && !p.NoneGrid
-                                                                    && !p.NoneDetails
-                                                                    && !p.IsLinkKey
-                                                                    && !p.IsLinkKey))
+            foreach (var property in Model.ClientProperty.Where(p => !p.Field.NoStorage
+                                                                    && !p.Field.NoneGrid
+                                                                    && !p.Field.NoneDetails
+                                                                    && !p.Field.IsLinkKey
+                                                                    && !p.Field.IsLinkKey))
             {
                 quButton.Append($@"
-                        <el-option value='{field.JsonName}' label='{field.Caption}'></el-option>");
+                        <el-option value='{property.JsonName}' label='{property.Caption}'></el-option>");
             }
             quButton.Append(@"
                     </el-select>");
@@ -515,8 +520,8 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         #region 脚本
         public string ScriptCode()
         {
-            var fields = Model.ClientProperty.Where(p => p.CanUserInput).ToArray();
-            var form_rules = Rules(fields);
+            var properties = Model.ClientProperty.Where(p => p.Field.CanUserInput).ToArray();
+            var form_rules = Rules(properties);
             return $@"
 function createEntity() {{
     return {{
@@ -535,7 +540,7 @@ extend_methods({{
     }}
 }});
 {form_rules}
-{LinkFunctions(fields)}
+{LinkFunctions(properties)}
 {EnumScript()}
 {Filter()}
 {TreeScript()}
@@ -598,11 +603,11 @@ extend_methods({{
     }}
 }});";
         }
-        string LinkFunctions(FieldConfig[] columns)
+        string LinkFunctions(PropertyConfig[] columns)
         {
             if (Model.IsUiReadOnly)
                 return null;
-            var array = columns.Where(p => p.IsLinkCaption).Select(p => GlobalConfig.GetEntity(p.LinkTable)).Distinct().ToArray();
+            var array = columns.Select(p => p.Field).Where(p => p.IsLinkCaption).Select(p => GlobalConfig.GetEntity(p.LinkTable)).Distinct().ToArray();
             if (array.Length == 0)
                 return null;
             StringBuilder code = new StringBuilder();
@@ -627,7 +632,7 @@ load{entity.Name}();");
 
         string EnumScript()
         {
-            var array = Model.LastProperties.Where(p => p.EnumConfig != null && !p.IsSystemField && p.IsEnum).Select(p => p.EnumConfig).Distinct().ToArray();
+            var array = Model.LastProperties.Where(p => p.Field.EnumConfig != null && !p.Field.IsSystemField && p.Field.IsEnum).Select(p => p.Field.EnumConfig).Distinct().ToArray();
             if (array.Length == 0)
                 return null;
             var code = new StringBuilder();
@@ -675,7 +680,7 @@ extend_data({
 
         string Filter()
         {
-            var array = Model.LastProperties.Where(p => p.EnumConfig != null && !p.IsSystemField && p.IsEnum).Select(p => p.EnumConfig).Distinct().ToArray();
+            var array = Model.LastProperties.Where(p => p.Field.EnumConfig != null && !p.Field.IsSystemField && p.Field.IsEnum).Select(p => p.Field.EnumConfig).Distinct().ToArray();
             if (array.Length == 0)
                 return null;
             StringBuilder code = new StringBuilder();
@@ -727,32 +732,33 @@ extend_data({
         {
             bool isInner = Model.Interfaces.Contains("IInnerTree");
             var code = new StringBuilder();
-            foreach (var field in Model.ClientProperty.Where(p => !p.IsSystemField))
+            foreach (var property in Model.ClientProperty.Where(p => !p.Field.IsSystemField))
             {
+                var field = property;
                 if (isInner && field.Name == "ParentId")
                 {
                     code.Append($@",
-        {field.JsonName} : !this.currentRow ? 0 : this.currentRow.{Model.PrimaryColumn.JsonName}");
+        {property.JsonName} : !this.currentRow ? 0 : this.currentRow.{Model.PrimaryColumn.JsonName}");
                 }
                 else if (field.CsType == "string" || field.CsType == nameof(DateTime) || field.Nullable)
                 {
                     code.Append($@",
-        {field.JsonName} : ''");
+        {property.JsonName} : ''");
                 }
                 else if (field.IsEnum)
                 {
                     code.Append($@",
-        {field.JsonName} : '{field.EnumConfig.Items.FirstOrDefault()?.Name}'");
+        {property.JsonName} : '{field.EnumConfig.Items.FirstOrDefault()?.Name}'");
                 }
                 else if (field.CsType == "bool")
                 {
                     code.Append($@",
-        {field.JsonName} : false");
+        {property.JsonName} : false");
                 }
                 else
                 {
                     code.Append($@",
-        {field.JsonName} : 0");
+        {property.JsonName} : 0");
                 }
             }
             return code.ToString();
@@ -764,11 +770,12 @@ extend_data({
         private string CheckValue()
         {
             var code = new StringBuilder();
-            foreach (var field in Model.ClientProperty)
+            foreach (var property in Model.ClientProperty)
             {
+                var field = property;
                 code.Append($@"
-        if (typeof row.{field.JsonName} === 'undefined')
-            row.{field.JsonName} = ");
+        if (typeof row.{property.JsonName} === 'undefined')
+            row.{property.JsonName} = ");
                 if (field.CsType == "string" || field.CsType == nameof(DateTime) || field.Nullable)
                 {
                     code.Append("'';");
@@ -795,19 +802,20 @@ extend_data({
         ///     生成Form录入字段界面
         /// </summary>
         /// <param name="columns"></param>
-        private string Rules(FieldConfig[] columns)
+        private string Rules(PropertyConfig[] columns)
         {
             if (Model.IsUiReadOnly)
                 return null;
             bool first = true;
             var code = new StringBuilder();
-            foreach (var field in columns)
+            foreach (var property in columns)
             {
+                var field = property;
                 var sub = new StringBuilder();
                 var dot = "";
                 if (field.IsRequired && field.CanUserInput)
                 {
-                    sub.Append($@"{dot}{{ required: true, message: '请输入{field.Caption}', trigger: 'blur' }}");
+                    sub.Append($@"{dot}{{ required: true, message: '请输入{property.Caption}', trigger: 'blur' }}");
                     dot = @",
     ";
                 }
@@ -838,12 +846,12 @@ extend_data({
                 else
                     code.Append(',');
                 code.Append($@"
-    '{field.JsonName}':[{sub}]");
+    '{property.JsonName}':[{sub}]");
             }
             return first ? null : $@"var rules = {{{code}
 }};";
         }
-        private static void DateTimeCheck(FieldConfig field, StringBuilder code, ref string dot)
+        private static void DateTimeCheck(PropertyConfig field, StringBuilder code, ref string dot)
         {
             if (field.Max != null && field.Min != null)
                 code.Append($@"{dot}{{ min: {field.Min}, max: {field.Max}, message: '时间从 {field.Min} 到 {field.Max} 之间', trigger: 'blur' }}");
@@ -856,7 +864,7 @@ extend_data({
     ";
         }
 
-        private static void NumberCheck(FieldConfig field, StringBuilder code, ref string dot)
+        private static void NumberCheck(PropertyConfig field, StringBuilder code, ref string dot)
         {
             if (field.Max != null && field.Min != null)
                 code.Append($@"{dot}{{ min: {field.Min}, max: {field.Max}, message: '数值从 {field.Min} 到 {field.Max} 之间', trigger: 'blur' }}");
@@ -869,7 +877,7 @@ extend_data({
     ";
         }
 
-        private static void StringCheck(FieldConfig field, StringBuilder code, ref string dot)
+        private static void StringCheck(PropertyConfig  field, StringBuilder code, ref string dot)
         {
             if (field.Max != null && field.Min != null)
                 code.Append($@"{dot}{{ min: {field.Min}, max: {field.Max}, message: '长度在 {field.Min} 到 {field.Max} 个字符', trigger: 'blur' }}");

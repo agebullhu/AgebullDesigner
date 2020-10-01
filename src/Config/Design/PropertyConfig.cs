@@ -29,7 +29,7 @@ namespace Agebull.EntityModel.Config
             if (string.IsNullOrWhiteSpace(Alias))
                 return new List<string>();
             var alias = Alias.Split(new[] { ' ', ',', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Distinct();
-            return alias.Where(p => p != PropertyName).Select(p => p.Trim()).ToList();
+            return alias.Where(p => p != Name).Select(p => p.Trim()).ToList();
         }
 
         #endregion
@@ -45,9 +45,11 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public List<string> GetAliasPropertys()
         {
-            return Field.GetAliasPropertys();
+            if (string.IsNullOrWhiteSpace(Alias))
+                return new List<string>();
+            var alias = Alias.Split(new[] { ' ', ',', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Distinct();
+            return alias.Where(p => p != Name).Select(p => p.Trim()).ToList();
         }
-
         #endregion
 
     }
