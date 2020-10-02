@@ -47,18 +47,18 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 无
         /// </summary>
-        None=0x0,
+        None = 0x0,
         /// <summary>
         /// 新增
         /// </summary>
-        Insert=0x1,
+        Insert = 0x1,
         /// <summary>
         /// 更新
         /// </summary>
-        Update=0x2,
+        Update = 0x2,
         /// <summary>
-        /// 全部
+        /// 读
         /// </summary>
-        All= Insert| Update
+        Read = 0x4
     }
 }

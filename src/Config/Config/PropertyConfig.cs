@@ -248,6 +248,34 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(DbType));
             }
         }
+
+        /// <summary>
+        /// *跳过保存的场景
+        /// </summary>
+        [DataMember, JsonProperty("KeepStorageScreen", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal StorageScreenType? _keepStorageScreen;
+
+        /// <summary>
+        /// *跳过保存的场景
+        /// </summary>
+        /// <remark>
+        /// 跳过保存的场景
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据库"), DisplayName(@"*跳过保存的场景"), Description("跳过保存的场景")]
+        public StorageScreenType KeepStorageScreen
+        {
+            get => _keepStorageScreen == null ? Field.KeepStorageScreen : _keepStorageScreen.Value;
+            set
+            {
+                if (_keepStorageScreen == value)
+                    return;
+                BeforePropertyChanged(nameof(KeepStorageScreen), _keepStorageScreen, value);
+                _keepStorageScreen = value;
+                OnPropertyChanged(nameof(KeepStorageScreen));
+            }
+        }
+
         /// <summary>
         /// 初始值的说明文字
         /// </summary>

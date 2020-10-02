@@ -201,6 +201,25 @@ namespace {Project.NameSpace}.DataAccess
             var properties = new List<string>();
             var codeStruct = new StringBuilder();
             EntityStruct(entity, codeStruct, properties, ref isFirst, ref idx);
+            if (entity.IsInterface)
+                return $@"
+        /// <summary>
+        /// 接口{entity.Name}的数据结构
+        /// </summary>
+        public static class {entity.Name}
+        {{
+{codeStruct}
+        }}
+";
+            var it = new StringBuilder();
+            bool first = true;
+            foreach (var i in entity.Interfaces?.Split(',', System.StringSplitOptions.RemoveEmptyEntries))
+            {
+                if (first)
+                    first = false;
+                else it.Append(',');
+                it.Append($"nameof(GlobalDataInterfaces.{i})");
+            }
             return $@"
         #region {entity.Name}({entity.Caption})
 
@@ -217,14 +236,15 @@ namespace {Project.NameSpace}.DataAccess
             /// </summary>
             public static EntityStruct Struct => _struct ??= new EntityStruct
             {{
-                EntityName = EntityName,
-                Caption    = Caption,
-                Description= Description,
-                PrimaryKey = PrimaryKey,
-                IsIdentity = {(entity.PrimaryColumn?.IsIdentity ?? false ? "true" : "false")},
-                ReadTableName = TableName,
-                WriteTableName = TableName,
-                Properties = new List<EntityProperty>
+                EntityName      = EntityName,
+                Caption         = Caption,
+                Description     = Description,
+                PrimaryKey      = PrimaryKey,
+                IsIdentity      = {(entity.PrimaryColumn?.IsIdentity ?? false ? "true" : "false")},
+                ReadTableName   = TableName,
+                WriteTableName  = ""{entity.SaveTableName}"",
+                InterfaceFeature= new[] {{{  it}}},
+                Properties      = new List<EntityProperty>
                 {{
                     {string.Join(@",
                     ", properties)}
@@ -262,6 +282,8 @@ namespace {Project.NameSpace}.DataAccess
             /// 实体说明
             /// </summary>
             public const string PrimaryKey = ""{entity.PrimaryColumn.Name}"";
+            #endregion
+            #region 字段
 {codeStruct}
             #endregion
 
@@ -291,15 +313,15 @@ namespace {Project.NameSpace}.DataAccess
         private void EntityStruct(StringBuilder codeStruct, List<string> properties, ref int idx, FieldConfig property)
         {
             var str = new StringBuilder("new EntityProperty(");
-            FieldConfig friend ;
-            if (property.IsInterfaceField || property.IsLinkField)
+            FieldConfig friend;
+            if (!property.Entity.IsInterface && property.IsInterfaceField)
             {
-                str.Append($"DataInterface.{property.LinkTable}.{property.LinkField}");
+                str.Append($"GlobalDataInterfaces.{property.LinkTable}.{property.LinkField}");
                 friend = GlobalConfig.GetEntity(property.LinkTable).Properties.FirstOrDefault(p => p.Name == property.LinkField);
             }
-            else if (property.IsLinkField)
+            else if (!property.Entity.IsInterface && property.IsLinkField)
             {
-                str.Append($"{property.LinkTable}.{property.LinkField}");
+                str.Append($"{property.Entity.Name}_Struct_.{property.LinkField}");
                 friend = GlobalConfig.GetEntity(property.LinkTable).Properties.FirstOrDefault(p => p.Name == property.LinkField);
             }
             else
@@ -308,20 +330,34 @@ namespace {Project.NameSpace}.DataAccess
                 str.Append(property.Name);
                 friend = property;
             }
-            str.Append($",{++idx}");
-            if (property.Name != friend.Name || property.DbFieldName != friend.DbFieldName)
-            {
-                str.Append($",{++idx},\"{property.Name}\",\"{property.DbFieldName}\"");
-            }
-            str.Append(')');
+            str.Append($",{idx++},\"{property.Name}\",\"{property.Entity.SaveTableName}\",\"{property.DbFieldName}\",{ReadWrite( property)})");
             properties.Add(str.ToString());
+        }
+
+        public static string ReadWrite(IFieldConfig property)
+        {
+            var dbReadWrite = new List<string>();
+            if (property.NoStorage)
+            {
+                return "ReadWriteFeatrue.None";
+            }
+            else
+            {
+                if (!property.KeepStorageScreen.HasFlag(StorageScreenType.Read))
+                    dbReadWrite.Add("ReadWriteFeatrue.Read");
+                if (!property.IsIdentity && !property.KeepStorageScreen.HasFlag(StorageScreenType.Insert))
+                    dbReadWrite.Add("ReadWriteFeatrue.Insert");
+                if (!property.KeepStorageScreen.HasFlag(StorageScreenType.Update))
+                    dbReadWrite.Add("ReadWriteFeatrue.Update");
+            }
+            return string.Join(" | ", dbReadWrite);
         }
 
         private void PropertyStruct(StringBuilder codeStruct, FieldConfig property)
         {
-            if (property.IsInterfaceField || property.IsLinkField)
+            if (property.IsLinkField)
                 return;
-            var featrue = new List<string>();
+                var featrue = new List<string>();
             if (!property.DbInnerField)
 
                 if (!property.DbInnerField)
@@ -329,10 +365,8 @@ namespace {Project.NameSpace}.DataAccess
                     featrue.Add("PropertyFeatrue.Property");
                 }
 
-            var dbReadWrite = new List<string>();
             if (property.NoStorage)
             {
-                dbReadWrite.Add("ReadWriteFeatrue.None");
                 featrue.Add("PropertyFeatrue.Property");
             }
             else
@@ -342,16 +376,8 @@ namespace {Project.NameSpace}.DataAccess
                     featrue.Add("PropertyFeatrue.Property");
                 else
                     featrue.Add("PropertyFeatrue.None");
-
-
-                dbReadWrite.Add("ReadWriteFeatrue.Read");
-                if (!property.KeepStorageScreen.HasFlag(StorageScreenType.Insert))
-                    dbReadWrite.Add("ReadWriteFeatrue.Insert");
-                if (!property.KeepStorageScreen.HasFlag(StorageScreenType.Update))
-                    dbReadWrite.Add("ReadWriteFeatrue.Update");
             }
-
-            codeStruct.Append($@"
+                codeStruct.Append($@"
 
             /// <summary>
             /// {ToRemString(property.Caption)}
@@ -365,7 +391,8 @@ namespace {Project.NameSpace}.DataAccess
                 PropertyFeatrue= {string.Join(" | ", featrue)},
                 DbType         = {DbType(property)},
                 FieldName      = ""{property.DbFieldName}"",
-                DbReadWrite    = {string.Join(" | ", dbReadWrite)},
+                TableName      = ""{property.Entity.SaveTableName}"",
+                DbReadWrite    = {ReadWrite(property)},
                 JsonName       = ""{property.JsonName}"",
                 CanImport      = {(property.ExtendConfigListBool["easyui", "CanImport"] ? "true" : "false")},
                 CanExport      = {(property.ExtendConfigListBool["easyui", "CanExport"] ? "true" : "false")},
@@ -379,7 +406,7 @@ namespace {Project.NameSpace}.DataAccess
         {
             return Project.DbType == DataBaseType.SqlServer
                 ? $"(int)System.Data.SqlDbType.{SqlServerHelper.ToSqlDbType(field.DbType, field.CsType)}"
-                : $"(int)MySqlConnector.MySqlDbType.{MySqlHelper.ToSqlDbType(field.DbType,field.CsType)}";
+                : $"(int)MySqlConnector.MySqlDbType.{MySqlHelper.ToSqlDbType(field.DbType, field.CsType)}";
         }
 
         #endregion

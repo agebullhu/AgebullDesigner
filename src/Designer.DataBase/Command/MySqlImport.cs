@@ -90,7 +90,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     string table = t.Key;
                     bool isnew = false;
-                    var entity = GlobalConfig.GetEntity(p => string.Equals(p.SaveTable, table, StringComparison.OrdinalIgnoreCase));
+                    var entity = GlobalConfig.GetEntity(p => string.Equals(p.SaveTableName, table, StringComparison.OrdinalIgnoreCase));
                     if (entity == null)
                     {
                         isnew = true;

@@ -49,7 +49,7 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.MySql
             return IsNullOrWhiteSpace(entity.OldName)
                 ? null
                 : $@"
-ALTER TABLE `{entity.OldName}` RENAME TO `{entity.SaveTable}`;";
+ALTER TABLE `{entity.OldName}` RENAME TO `{entity.SaveTableName}`;";
         }
 
         #endregion
@@ -61,7 +61,7 @@ ALTER TABLE `{entity.OldName}` RENAME TO `{entity.SaveTable}`;";
         {
             var code = new StringBuilder();
             code.Append($@"
-ALTER TABLE  `{entity.SaveTable}`");
+ALTER TABLE  `{entity.SaveTableName}`");
             bool isFirst = true;
             foreach (var property in entity.DbFields.Where(p => p.CreateDbIndex))
             {
@@ -106,7 +106,7 @@ ALTER TABLE  `{entity.SaveTable}`");
         {
             var code = new StringBuilder();
             code.Append($@"
-ALTER TABLE  `{entity.SaveTable}`");
+ALTER TABLE  `{entity.SaveTableName}`");
             bool isFirst = true;
             foreach (var property in entity.DbFields.Where(p => p.CreateDbIndex && p.IsSystemField))
             {
@@ -155,14 +155,14 @@ ALTER TABLE  `{entity.SaveTable}`");
         {
             return $@"
 /*******************************{entity.Caption}*******************************/
-TRUNCATE TABLE `{entity.SaveTable}`;
+TRUNCATE TABLE `{entity.SaveTableName}`;
 ";
         }
 
 
         public static string DropView(EntityConfig entity)
         {
-            if (entity.SaveTable == entity.ReadTableName)
+            if (entity.SaveTableName == entity.ReadTableName)
                 return Empty;
             return $@"
 /*******************************{entity.Caption}*******************************/
@@ -179,11 +179,11 @@ DROP VIEW `{entity.ReadTableName}`;
             var tables = model.DbFields.Where(p => p.IsLinkField && !p.IsLinkKey).Select(p => p.LinkTable).Distinct().Select(GlobalConfig.GetEntity).ToDictionary(p => p.Name);
             if (tables.Count == 0)
             {
-                model.ReadTableName = model.SaveTable; ;
+                model.ReadTableName = model.SaveTableName; ;
                 return $"/**********{model.Caption}**********没有字段引用其它表的无需视图**********/";
             }
             string viewName;
-            if (IsNullOrWhiteSpace(model.ReadTableName) || model.ReadTableName == model.SaveTable)
+            if (IsNullOrWhiteSpace(model.ReadTableName) || model.ReadTableName == model.SaveTableName)
             {
                 viewName = DataBaseHelper.ToViewName(model);
             }
@@ -220,17 +220,17 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
                 builder.Append($@"`{model.Name}`.`{property.DbFieldName}` as `{property.DbFieldName}`");
             }
             builder.Append($@"
-    FROM `{model.SaveTable}` `{model.Name}`");
+    FROM `{model.SaveTableName}` `{model.Name}`");
             foreach (var table in tables.Values)
             {
-                var property = model.DbFields.FirstOrDefault(p => p.IsLinkKey && (p.LinkTable == table.SaveTable || p.LinkTable == table.Name));
+                var property = model.DbFields.FirstOrDefault(p => p.IsLinkKey && (p.LinkTable == table.SaveTableName || p.LinkTable == table.Name));
                 if (property == null)
                     continue;
                 var linkField = table.Properties.FirstOrDefault(p => p.Name == property.LinkField || p.DbFieldName == property.LinkField);
                 if (linkField == null)
                     continue;
                 builder.Append($@"
-    LEFT JOIN `{table.SaveTable}` `{table.Name}` ON `{model.Name}`.`{property.DbFieldName}` = `{table.Name}`.`{linkField.DbFieldName}`");
+    LEFT JOIN `{table.SaveTableName}` `{table.Name}` ON `{model.Name}`.`{property.DbFieldName}` = `{table.Name}`.`{linkField.DbFieldName}`");
             }
             builder.Append(';');
             builder.AppendLine();
@@ -242,7 +242,7 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
                 return Empty;
             return $@"
 /*******************************{entity.Caption}*******************************/
-DROP TABLE `{entity.SaveTable}`;";
+DROP TABLE `{entity.SaveTableName}`;";
             //            return string.Format(@"
             //truncate TABLE dbo.{0};
             //GO
@@ -293,7 +293,7 @@ VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Class
             code.AppendFormat(@"
 /*{1}*/
 CREATE TABLE `{0}`("
-                , entity.SaveTable
+                , entity.SaveTableName
                 , entity.Caption);
 
             bool isFirst = true;
@@ -325,7 +325,7 @@ CREATE TABLE `{0}`("
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
-ALTER TABLE `{entity.SaveTable}`");
+ALTER TABLE `{entity.SaveTableName}`");
             bool isFirst = true;
             foreach (var col in entity.DbFields.Where(p => !p.IsCompute))
             {
@@ -347,7 +347,7 @@ ALTER TABLE `{entity.SaveTable}`");
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
-ALTER TABLE `{entity.SaveTable}`
+ALTER TABLE `{entity.SaveTableName}`
     ADD COLUMN `author` varchar(255) NULL ,
     ADD COLUMN `last_reviser` varchar(255) NULL;");
             return code.ToString();
@@ -379,7 +379,7 @@ ALTER TABLE `{entity.SaveTable}`
 
             code.Append($@"
 /*{entity.Caption}*/
-ALTER TABLE `{entity.SaveTable}`");
+ALTER TABLE `{entity.SaveTableName}`");
             bool isFirst = true;
             foreach (var col in fields)
             {
@@ -406,7 +406,7 @@ ALTER TABLE `{entity.SaveTable}`");
             {
                 code.Append($@"
 /*{entity.Caption}*/
-ALTER TABLE `{entity.SaveTable}`
+ALTER TABLE `{entity.SaveTableName}`
     CHANGE COLUMN `{entity.PrimaryColumn.OldName}` {FieldDefault(entity.PrimaryColumn)};");
             }
             return code.ToString();
@@ -420,7 +420,7 @@ ALTER TABLE `{entity.SaveTable}`
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
-ALTER TABLE `{entity.SaveTable}`");
+ALTER TABLE `{entity.SaveTableName}`");
             bool isFirst = true;
             foreach (var col in entity.DbFields.Where(p => !p.IsCompute))
             {
@@ -444,7 +444,7 @@ ALTER TABLE `{entity.SaveTable}`");
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
-ALTER TABLE `{entity.SaveTable}`");
+ALTER TABLE `{entity.SaveTableName}`");
             bool isFirst = true;
             foreach (var col in entity.DbFields.Where(p => !p.IsCompute))
             {
@@ -465,7 +465,7 @@ ALTER TABLE `{entity.SaveTable}`");
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
-ALTER TABLE `{entity.SaveTable}`
+ALTER TABLE `{entity.SaveTableName}`
     CHANGE COLUMN `last_reviser_id` `last_reviser_id` BIGINT NULL DEFAULT 0 COMMENT '最后修改者标识',
     CHANGE COLUMN `author_id` `author_id` BIGINT NOT NULL DEFAULT 0 COMMENT '制作人标识';");
             return code.ToString();
@@ -528,7 +528,7 @@ ALTER TABLE `{entity.SaveTable}`
             var sql = new StringBuilder();
 
             var isFirst = true;
-            foreach (var property in fields)
+            foreach (var property in fields.Where(p => !p.DbInnerField && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)))
             {
                 if (isFirst)
                 {
@@ -606,7 +606,7 @@ ALTER TABLE `{entity.SaveTable}`
         /// <param name="idx"></param>
         public static void FieldReadCode(PropertyConfig property, StringBuilder code, int idx)
         {
-            
+
             if (property.CsType.ToLower() == "string")
             {
                 switch (property.DbType.ToLower())

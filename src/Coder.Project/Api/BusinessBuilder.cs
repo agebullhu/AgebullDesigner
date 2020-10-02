@@ -21,6 +21,8 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         protected override void CreateCustomCode(string path)
         {
+            if (Model.IsInterface)
+                return;
             var fileName = "BusinessLogic.cs";
             var file = Path.Combine(path, Model.EntityName + fileName);
             if (Model.NoDataBase)

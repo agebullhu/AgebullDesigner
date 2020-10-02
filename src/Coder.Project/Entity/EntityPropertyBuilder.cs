@@ -391,14 +391,12 @@ using Agebull.EntityModel.Interfaces;
 
         private void RelationPropertyCode(ReleationConfig releation, StringBuilder code)
         {
-            var model = GlobalConfig.GetModel(releation.ForeignTable);
+            var model = GlobalConfig.GetEntity(releation.ForeignTable);
             var type = releation.ModelType == ReleationModelType.Children
-                ? $"List<model.Name>"
-                : model.Name;
+                ? $"List<{model.EntityName}>"
+                : model.EntityName;
             var cs = releation.Name.ToLWord();
-            if (Model.IsQuery)
-
-                code.Append($@"
+            code.Append($@"
 
         [JsonProperty(""{cs}"", NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling= DefaultValueHandling.Ignore)]
         private {type} _{cs};

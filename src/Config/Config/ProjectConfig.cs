@@ -765,23 +765,7 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(DbUser));
             }
         }
-        /// <summary>
-        /// 不使用数据关系
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"不使用数据关系"), Description("不使用数据关系")]
-        public bool NoRelation
-        {
-            get => _noRelation;
-            set
-            {
-                if (_noRelation == value)
-                    return;
-                BeforePropertyChanged(nameof(NoRelation), _noRelation, value);
-                _noRelation = value;
-                OnPropertyChanged(nameof(NoRelation));
-            }
-        }
+
         #endregion
 
         #region 数据模型

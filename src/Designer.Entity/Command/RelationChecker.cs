@@ -145,7 +145,7 @@ namespace Agebull.EntityModel.Designer
 
                 if (!hase)
                 {
-                    entity.ReadTableName = entity.SaveTable;
+                    entity.ReadTableName = entity.SaveTableName;
                     return;
                 }
                 //if (string.IsNullOrWhiteSpace(entity.ReadTableName) || entity.ReadTableName == entity.SaveTable)

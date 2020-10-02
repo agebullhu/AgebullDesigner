@@ -20,6 +20,8 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
         /// </summary>
         protected override void CreateDesignerCode(string path)
         {
+            if (Model.IsInterface)
+                return;
             if (Model.IsInternal || Model.NoDataBase || Model.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
             var file = ConfigPath(Model, "File_Web_Api_cs", path, Model.Name, $"{Model.Name}ApiController");
@@ -32,6 +34,8 @@ namespace Agebull.EntityModel.RobotCoder.AspNet
         /// </summary>
         protected override void CreateCustomCode(string path)
         {
+            if (Model.IsInterface)
+                return;
             if (Model.IsInternal || Model.NoDataBase || Model.DenyScope.HasFlag(AccessScopeType.Client))
                 return;
             var file = ConfigPath(Model, "File_Web_Api_cs", path, Model.Name, $"{Model.Name}ApiController");

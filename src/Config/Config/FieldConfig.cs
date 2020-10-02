@@ -96,16 +96,6 @@ namespace Agebull.EntityModel.Config
             _canSet = true;
         }
 
-        /// <summary>
-        /// 只读
-        /// </summary>
-        /// <remark>
-        /// 是否只读
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"设计器支持"), DisplayName(@"只读"), Description("是否只读")]
-        public bool ReadOnly => IsCompute || IsIdentity || UniqueIndex > 0 || IsPrimaryKey;
-
 
         /// <summary>
         /// 分组
@@ -1743,7 +1733,7 @@ namespace Agebull.EntityModel.Config
         internal bool _noStorage;
 
         /// <summary>
-        /// 非数据库字段
+        /// 数据库的读写忽略这个字段
         /// </summary>
         /// <remark>
         /// 是否非数据库字段,如果为真,数据库的读写均忽略这个字段
@@ -1752,7 +1742,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"非数据库字段"), Description(NoStorage_Description)]
         public bool NoStorage
         {
-            get => (Entity?.Parent != null && Entity.Parent.NoRelation && IsCompute && IsLinkField) || InterfaceOrThis._noStorage;
+            get => InterfaceOrThis._noStorage;
             set
             {
                 if (_noStorage == value)
@@ -1779,7 +1769,13 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"*跳过保存的场景"), Description("跳过保存的场景")]
         public StorageScreenType KeepStorageScreen
         {
-            get => IsCompute && IsLinkField ? StorageScreenType.All : InterfaceOrThis._keepStorageScreen;
+            get => DbInnerField || NoStorage
+                ? StorageScreenType.Read | StorageScreenType.Insert| StorageScreenType.Update 
+                : CustomWrite || IsIdentity || IsCompute
+                    ? StorageScreenType.Insert | StorageScreenType.Update
+                    : UniqueIndex > 0 || IsPrimaryKey || IsLinkKey
+                    ? StorageScreenType.Update
+                    : InterfaceOrThis._keepStorageScreen;
             set
             {
                 if (_keepStorageScreen == value)

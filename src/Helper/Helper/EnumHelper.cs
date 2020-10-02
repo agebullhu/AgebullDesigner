@@ -93,8 +93,28 @@ namespace Agebull.EntityModel.Config
             },
             new ComboItem<StorageScreenType>
             {
+                name = "读取",
+                value= StorageScreenType.Read
+            },
+            new ComboItem<StorageScreenType>
+            {
                 name = "全部",
-                value= StorageScreenType.All
+                value= StorageScreenType.Read|StorageScreenType.Update|StorageScreenType.Insert
+            },
+            new ComboItem<StorageScreenType>
+            {
+                name = "保存",
+                value= StorageScreenType.Update|StorageScreenType.Insert
+            },
+            new ComboItem<StorageScreenType>
+            {
+                name = "读/插入",
+                value= StorageScreenType.Read|StorageScreenType.Insert
+            },
+            new ComboItem<StorageScreenType>
+            {
+                name = "读/更新",
+                value= StorageScreenType.Read|StorageScreenType.Update
             },
         };
         /// <summary>

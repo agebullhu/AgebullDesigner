@@ -39,12 +39,12 @@ namespace Agebull.EntityModel.Designer
                 case nameof(TargetConfig.SaveTableName):
                     TargetConfig.RaisePropertyChanged(nameof(TargetConfig.ReadTableName));
                     TargetConfig.RaisePropertyChanged(nameof(TargetConfig.DisplayName));
-                    TargetConfig.RaisePropertyChanged(nameof(TargetConfig.SaveTable));
+                    TargetConfig.RaisePropertyChanged(nameof(TargetConfig.SaveTableName));
                     break;
                 case nameof(TargetConfig.ReadTableName):
                     TargetConfig.RaisePropertyChanged(nameof(TargetConfig.SaveTableName));
                     TargetConfig.RaisePropertyChanged(nameof(TargetConfig.DisplayName));
-                    TargetConfig.RaisePropertyChanged(nameof(TargetConfig.SaveTable));
+                    TargetConfig.RaisePropertyChanged(nameof(TargetConfig.SaveTableName));
                     break;
                 case nameof(TargetConfig.Classify):
                     OnClassifyChanged();

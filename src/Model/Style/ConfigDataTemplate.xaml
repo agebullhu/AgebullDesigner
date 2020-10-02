@@ -467,10 +467,6 @@
                         <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding NoStorage,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
-                        <Label Content="不更新" />
-                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding KeepUpdate,Mode=TwoWay}" />
-                    </StackPanel>
-                    <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="仅数据库字段" />
                         <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DbInnerField,Mode=TwoWay}" />
                     </StackPanel>

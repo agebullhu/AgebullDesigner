@@ -19,6 +19,15 @@ namespace Agebull.EntityModel.RobotCoder
 
         private string Code()
         {
+            var it = new StringBuilder();
+            bool first = true;
+            foreach (var i in Model.Entity.Interfaces?.Split(',', System.StringSplitOptions.RemoveEmptyEntries))
+            {
+                if (first)
+                    first = false;
+                else it.Append(',');
+                it.Append($"nameof(GlobalDataInterfaces.{i})");
+            }
             return $@"#region
 using System;
 using System.Collections.Generic;
@@ -28,6 +37,7 @@ using MySqlConnector;
 
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Interfaces;
+using Agebull.EntityModel.{Project.DbType};
 {Project.UsingNameSpaces}
 
 #endregion
@@ -59,6 +69,7 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess
             PrimaryKey       = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.PrimaryKey,
             ReadTableName    = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.TableName,
             WriteTableName   = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.TableName,
+            InterfaceFeature = new[] {{{  it}}},
             Properties       = new List<EntityProperty>
             {{
                 {EntityStruct()}
@@ -70,15 +81,15 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess
         /// </summary>
         internal static DataAccessOption Option = new DataAccessOption
         {{
-            NoInjection      = true,
+            NoInjection      = false,
             IsQuery          = {(Model.IsQuery ? "true" : "false")},
             UpdateByMidified = {(Model.UpdateByModified ? "true" : "false")},
             ReadTableName    = FromSqlCode,
-            WriteTableName   = ""{Model.SaveTableName}"",
+            WriteTableName   = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.TableName,
             LoadFields       = LoadFields,
             UpdateFields     = UpdateFields,
             InsertSqlCode    = InsertSqlCode,
-            DataSturct       = Struct
+            DataStruct       = Struct
         }};
 
         #endregion
@@ -147,6 +158,8 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess
         /// </summary>
         protected override void CreateCustomCode(string path)
         {
+            if (Model.IsInterface || Model.NoDataBase)
+                return;
             var file = Path.Combine(path, $"{Model.EntityName}DataOperator.cs");
             SaveCode(file, Code());
         }
@@ -156,7 +169,7 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess
             if (Model.IsQuery)
                 return null;
             var sql = new StringBuilder();
-            var columns = Model.DbFields.Where(p => !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
+            var columns = Model.DbFields.Where(p => p.Entity == Model.Entity && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
             sql.Append($@"
 INSERT INTO `{Model.SaveTableName}`
 (");
@@ -306,18 +319,20 @@ VALUES
         {{
             var reader = r as MySqlDataReader;");
             int idx = 0;
-            foreach (var property in PublishDbFields)
+            foreach (var property in PublishDbFields.Where(p=>!p.DbInnerField && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)))
             {
                 SqlMomentCoder.FieldReadCode(property, code, idx++);
             }
             code.Append(@"
         }");
-            if (Model is ModelConfig model)
+            if (!(Model is ModelConfig model))
             {
-                var array = model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty).ToArray();
-                if (array.Length != 0)
-                {
-                    code.Append($@"
+                return code.ToString();
+            }
+            var array = model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty).ToArray();
+            if (array.Length != 0)
+            {
+                code.Append($@"
 
         /// <summary>
         /// 载入后
@@ -326,25 +341,25 @@ VALUES
         public async Task AfterLoad({Model.EntityName} entity)
         {{");
 
-                    foreach (var re in array)
-                    {
-                        var e = GlobalConfig.GetEntity(re.ForeignTable);
+                foreach (var re in array)
+                {
+                    var e = GlobalConfig.GetEntity(re.ForeignTable);
+                    code.Append($@"
+            var access{re.Name} = Provider.ServiceProvider.CreateDataQuery<{e.EntityName}>();");
+                    if (re.ModelType == ReleationModelType.Children)
                         code.Append($@"
-            var access{re.Name} = Provider.ServiceProvider.CreateDataQuery<{e.Name}>();");
-                        if (re.ModelType == ReleationModelType.Children)
-                            code.Append($@"
-            entity.{re.Name} = await access{re.Name}.LoadByForeignKeyAsync(nameof({e.Name}.{re.ForeignKey}), entity.{re.PrimaryKey});");
-                        else
-                            code.Append($@"
+            entity.{re.Name} = await access{re.Name}.AllAsync(p=>p.{re.ForeignKey} == entity.{re.PrimaryKey});");
+                    else
+                        code.Append($@"
             entity.{re.Name} = await access{re.Name}.FirstAsync(p=>p.{re.ForeignKey} == entity.{re.PrimaryKey});");
-                    }
-                    code.Append(@"
-        }");
                 }
-                if (Model.IsQuery || model.Releations.Count == 0)
-                    return code.ToString();
+                code.Append(@"
+        }");
+            }
+            if (Model.IsQuery || model.Releations.Count == 0)
+                return code.ToString();
 
-                code.Append($@"
+            code.Append($@"
 
         /// <summary>
         ///     实体保存完成后期处理(Insert/Update/Delete)
@@ -356,14 +371,14 @@ VALUES
         /// </remarks>
         public async Task AfterSave({Model.EntityName} entity, DataOperatorType operatorType)
         {{");
-                foreach (var re in model.Releations)
-                {
-                    var entity = GlobalConfig.GetEntity(re.ForeignTable);
-                    code.Append($@"
+            foreach (var re in model.Releations)
+            {
+                var entity = GlobalConfig.GetEntity(re.ForeignTable);
+                code.Append($@"
             var access{re.Name} = Provider.ServiceProvider.CreateDataAccess<{entity.EntityName}>();");
 
-                    if (re.ModelType == ReleationModelType.EntityProperty)
-                        code.Append($@"
+                if (re.ModelType == ReleationModelType.EntityProperty)
+                    code.Append($@"
             if (entity.{entity.Name} == null || operatorType == DataOperatorType.Delete)
             {{
                 await access{re.Name}.DeleteAsync(p => p.{re.ForeignKey} == entity.{re.PrimaryKey});
@@ -380,8 +395,8 @@ VALUES
                     await access{re.Name}.InsertAsync(entity.entity.{entity.Name});
                 }}
             }}");
-                    else if (re.ModelType == ReleationModelType.Children)
-                        code.Append($@"
+                else if (re.ModelType == ReleationModelType.Children)
+                    code.Append($@"
             if (entity.{entity.Name} == null || operatorType == DataOperatorType.Delete)
             {{
                 await access{re.Name}.DeleteAsync(p => p.{re.ForeignKey} == entity.{re.PrimaryKey});
@@ -397,23 +412,23 @@ VALUES
                         await access{re.Name}.InsertAsync(ch);
                 }}
             }}");
-                    else
-                    {
-                        code.Append($@"
+                else
+                {
+                    code.Append($@"
             {{  
                 var ch = new {entity.EntityName}
                 {{");
-                        bool first = true;
-                        foreach (var pro in model.Properties.Where(p => p.Entity == entity))
-                        {
-                            if (first)
-                                first = false;
-                            else
-                                code.Append(',');
-                            code.Append($@"
-                    {pro.Field.Name} = entity.{pro.Name}");
-                        }
+                    bool first = true;
+                    foreach (var pro in model.LastProperties.Where(p => p.Entity == entity))
+                    {
+                        if (first)
+                            first = false;
+                        else
+                            code.Append(',');
                         code.Append($@"
+                    {pro.Field.Name} = entity.{pro.Name}");
+                    }
+                    code.Append($@"
                 }};
                 ch.{re.ForeignKey} = entity.{re.PrimaryKey};
                 var (hase,id) = await access{re.Name}.LoadValueAsync(p=> p.{entity.PrimaryColumn.Name} , p=>  p.{re.ForeignKey} == entity.{re.PrimaryKey});
@@ -423,11 +438,10 @@ VALUES
                 else
                     await access{re.Name}.InsertAsync(ch);
             }}");
-                    }
                 }
-                code.Append(@"
-        }");
             }
+            code.Append(@"
+        }");
             return code.ToString();
         }
 
@@ -469,13 +483,13 @@ VALUES
 
             if (property.IsInterfaceField)
             {
-                str.Append($"DataInterface.{property.LinkTable}.{property.LinkField}");
+                str.Append($"GlobalDataInterfaces.{property.LinkTable}.{property.LinkField}");
             }
             else
             {
                 str.Append($"{Project.DataBaseObjectName}.{property.Entity.Name}_Struct_.{property.Field.Name}");
             }
-            str.Append($",{++idx},\"{property.Name}\",\"{property.DbFieldName}\")");
+            str.Append($",{idx++},\"{property.Name}\",\"{property.Entity.SaveTableName}\",\"{property.DbFieldName}\",{DataBaseBuilder.ReadWrite(property)})");
             properties.Add(str.ToString());
         }
         #endregion

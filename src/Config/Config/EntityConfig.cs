@@ -608,21 +608,6 @@ namespace Agebull.EntityModel.Config
         #region 数据库
 
         /// <summary>
-        /// 存储表名(结果确定)的说明文字
-        /// </summary>
-        const string SaveTable_Description = @"存储表名,即实体对应的数据库表.因为模型可能直接使用视图,但增删改还在基础的表中时行,而不在视图中时行";
-
-        /// <summary>
-        /// 存储表名(结果确定)
-        /// </summary>
-        /// <remark>
-        /// 存储表名,即实体对应的数据库表.因为模型可能直接使用视图,但增删改还在基础的表中时行,而不在视图中时行
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"存储表名(结果确定)"), Description(SaveTable_Description)]
-        public string SaveTable => string.IsNullOrWhiteSpace(_saveTableName) ? _readTableName : _saveTableName;
-
-        /// <summary>
         /// 存储表名(设计录入)的说明文字
         /// </summary>
         const string ReadTableName_Description = @"存储表名,即实体对应的数据库表.因为模型可能直接使用视图,但增删改还在基础的表中时行,而不在视图中时行";
@@ -643,7 +628,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"存储表名(设计录入)"), Description(ReadTableName_Description)]
         public string ReadTableName
         {
-            get => Parent != null && Parent.NoRelation || string.IsNullOrWhiteSpace(_readTableName)
+            get => string.IsNullOrWhiteSpace(_readTableName)
                 ? SaveTableName
                 : _readTableName;
             set

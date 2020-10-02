@@ -211,11 +211,6 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         EntityConfig Entity { get; }// Field.Entity;
 
-        /// <summary>
-        /// 只读
-        /// </summary>
-        bool ReadOnly { get; }// Field.IsCompute || Field.IsIdentity || Field.UniqueIndex > 0 || Field.IsPrimaryKey;
-
 
         #endregion
         #region 系统

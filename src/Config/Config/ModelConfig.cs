@@ -668,21 +668,6 @@ namespace Agebull.EntityModel.Config
         #region 数据库
 
         /// <summary>
-        /// 存储表名(结果确定)的说明文字
-        /// </summary>
-        const string SaveTable_Description = @"存储表名,即实体对应的数据库表.因为模型可能直接使用视图,但增删改还在基础的表中时行,而不在视图中时行";
-
-        /// <summary>
-        /// 存储表名(结果确定)
-        /// </summary>
-        /// <remark>
-        /// 存储表名,即实体对应的数据库表.因为模型可能直接使用视图,但增删改还在基础的表中时行,而不在视图中时行
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"存储表名(结果确定)"), Description(SaveTable_Description)]
-        public string SaveTable => string.IsNullOrWhiteSpace(_saveTableName) ? _readTableName : _saveTableName;
-
-        /// <summary>
         /// 存储表名(设计录入)的说明文字
         /// </summary>
         const string ReadTableName_Description = @"存储表名,即实体对应的数据库表.因为模型可能直接使用视图,但增删改还在基础的表中时行,而不在视图中时行";
@@ -706,8 +691,6 @@ namespace Agebull.EntityModel.Config
             get => _readTableName ?? Entity.ReadTableName;
             set
             {
-                if (SaveTableName == value)
-                    value = null;
                 if (_readTableName == value)
                     return;
                 BeforePropertyChanged(nameof(ReadTableName), _readTableName, value);
@@ -737,8 +720,6 @@ namespace Agebull.EntityModel.Config
             get => _saveTableName ?? Entity.SaveTableName;
             set
             {
-                if (Name == value)
-                    value = null;
                 if (_saveTableName == value)
                     return;
                 BeforePropertyChanged(nameof(SaveTableName), _saveTableName, value);

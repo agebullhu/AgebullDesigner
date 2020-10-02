@@ -31,17 +31,6 @@ namespace Agebull.EntityModel.Config
         [Category(@"设计器支持"), DisplayName(@"上级"), Description("上级")]
         public EntityConfig Entity => Field.Entity;
 
-        /// <summary>
-        /// 只读
-        /// </summary>
-        /// <remark>
-        /// 是否只读
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"设计器支持"), DisplayName(@"只读"), Description("是否只读")]
-        public bool ReadOnly => Field.IsCompute || Field.IsIdentity || Field.UniqueIndex > 0 || Field.IsPrimaryKey;
-
-
         #endregion
         #region 系统
 
@@ -485,15 +474,6 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"非数据库字段")]
         public bool NoStorage => Field.NoStorage;
-        /// <summary>
-        /// *跳过保存的场景
-        /// </summary>
-        /// <remark>
-        /// 跳过保存的场景
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"*跳过保存的场景"), Description("跳过保存的场景")]
-        public StorageScreenType KeepStorageScreen => Field.KeepStorageScreen;
 
         /// <summary>
         /// 自定义保存

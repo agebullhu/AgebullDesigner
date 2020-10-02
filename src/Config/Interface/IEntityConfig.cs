@@ -253,15 +253,6 @@ namespace Agebull.EntityModel.Config
         #region 数据库
 
         /// <summary>
-        /// 存储表名(结果确定)
-        /// </summary>
-        /// <remark>
-        /// 存储表名,即实体对应的数据库表.因为模型可能直接使用视图,但增删改还在基础的表中时行,而不在视图中时行
-        /// </remark>
-        string SaveTable { get; }// string.IsNullOrWhiteSpace(_saveTableName) ? _readTableName : _saveTableName;
-
-
-        /// <summary>
         /// 存储表名(设计录入)
         /// </summary>
         /// <remark>
@@ -270,7 +261,6 @@ namespace Agebull.EntityModel.Config
         string ReadTableName
         {
             get;
-            set;
         }
         /// <summary>
         /// 存储表名
@@ -278,7 +268,6 @@ namespace Agebull.EntityModel.Config
         string SaveTableName
         {
             get;
-            set;
         }
         /// <summary>
         /// 数据库编号
@@ -286,7 +275,6 @@ namespace Agebull.EntityModel.Config
         int DbIndex
         {
             get;
-            set;
         }
         /// <summary>
         /// 按修改更新

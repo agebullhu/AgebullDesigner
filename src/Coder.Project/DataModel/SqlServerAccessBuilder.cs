@@ -35,7 +35,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 写入表名
         /// </summary>
-        protected sealed override string WriteTableName => @""{Model.SaveTable}"";
+        protected sealed override string WriteTableName => @""{Model.SaveTableName}"";
 
         /// <summary>
         /// 主键

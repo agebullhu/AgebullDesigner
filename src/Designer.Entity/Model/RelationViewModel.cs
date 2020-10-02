@@ -2,6 +2,7 @@
 using Agebull.EntityModel.Config;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Media;
 
@@ -146,21 +147,29 @@ namespace Agebull.EntityModel.Designer
             if (releation.ModelType == ReleationModelType.ExtensionProperty)
                 foreach (var field in releation.ForeignEntity.Properties)
                 {
-                    if (model.Properties.Any(p => p.Field == field) ||
-                        field.LinkTable == model.Entity.Name &&
-                        field.LinkField == model.Entity.PrimaryField)
+                    var pro = model.Properties.FirstOrDefault(p => p.Field == field);
+                    if (field.LinkTable == model.Entity.Name)
+                    {
+                        if (pro != null)
+                            pro.Option.IsDiscard = true;
                         continue;
+                    }
 
-                    var pro = new PropertyConfig { Field = field };
-                    pro.Option.IsDiscard = true;
-                    model.Properties.Add(pro);
+                    if (pro == null)
+                    {
+                        pro = new PropertyConfig { Field = field };
+                        pro.Option.IsDiscard = true;
+                        model.Properties.Add(pro);
+                    }
                     if (field.IsPrimaryKey || model.Properties.Any(p => p != pro && p.Name == pro.Name))
                     {
                         pro.Name = $"{field.Entity.Name}{field.Name}";
+                        pro.JsonName = pro.Name.ToLWord();
                     }
                     if (model.Properties.Any(p => p != pro && p.Name == pro.Name))
                     {
                         pro.Name = $"{field.Entity.Name}{field.Name}_{model.Properties.Count}";
+                        pro.JsonName = pro.Name.ToLWord();
                     }
 
                     if (field.IsPrimaryKey || model.Properties.Any(p => p != pro && p.DbFieldName == pro.DbFieldName))

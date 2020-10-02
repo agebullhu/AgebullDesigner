@@ -24,6 +24,8 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         protected override void CreateDesignerCode(string path)
         {
+            if (Model.IsInterface)
+                return;
             var fileName = ".Designer.cs";
             var file = Path.Combine(path, Model.EntityName + fileName);
             if (!string.IsNullOrWhiteSpace(Model.Alias))
@@ -89,6 +91,8 @@ namespace {NameSpace}
         /// </summary>
         protected override void CreateCustomCode(string path)
         {
+            if (Model.IsInterface)
+                return;
             var fileName = ".cs";
             var file = Path.Combine(path, $"{Model.EntityName}{fileName}");
             if (!string.IsNullOrWhiteSpace(Model.Alias))

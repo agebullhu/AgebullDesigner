@@ -37,7 +37,7 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.Sqlite
 
         public static string DropView(EntityConfig entity)
         {
-            if (entity.NoDataBase || entity.SaveTable == entity.ReadTableName)
+            if (entity.NoDataBase || entity.SaveTableName == entity.ReadTableName)
                 return Empty;
             return $@"
 -- {entity.Caption}
@@ -55,11 +55,11 @@ DROP VIEW [{entity.ReadTableName}];";
             var tables = model.DbFields.Where(p => p.IsLinkField && !p.IsLinkKey).Select(p => p.LinkTable).Distinct().Select(GlobalConfig.GetEntity).ToDictionary(p => p.Name);
             if (tables.Count == 0)
             {
-                model.ReadTableName = model.SaveTable; ;
+                model.ReadTableName = model.SaveTableName; ;
                 return $"-- {model.Caption}没有字段引用其它表的无需视图";
             }
             string viewName;
-            if (IsNullOrWhiteSpace(model.ReadTableName) || model.ReadTableName == model.SaveTable)
+            if (IsNullOrWhiteSpace(model.ReadTableName) || model.ReadTableName == model.SaveTableName)
             {
                 viewName = DataBaseHelper.ToViewName(model);
             }
@@ -95,13 +95,13 @@ CREATE VIEW [{viewName}] AS
                         }
                     }
                 }
-                builder.AppendFormat(@"[{0}].[{1}] as [{1}]", model.SaveTable, field.DbFieldName);
+                builder.AppendFormat(@"[{0}].[{1}] as [{1}]", model.SaveTableName, field.DbFieldName);
             }
             builder.Append($@"
-    FROM [{model.SaveTable}]");
+    FROM [{model.SaveTableName}]");
             foreach (var table in tables.Values)
             {
-                var field = model.DbFields.FirstOrDefault(p => p.IsLinkKey && (p.LinkTable == table.Name || p.LinkTable == table.SaveTable));
+                var field = model.DbFields.FirstOrDefault(p => p.IsLinkKey && (p.LinkTable == table.Name || p.LinkTable == table.SaveTableName));
                 if (field == null)
                     continue;
                 var linkField = table.Properties.FirstOrDefault(
@@ -110,7 +110,7 @@ CREATE VIEW [{viewName}] AS
                     continue;
                 builder.AppendFormat(@"
     LEFT JOIN [{1}] [{4}] ON [{0}].[{2}] = [{4}].[{3}]"
-                        , model.SaveTable, table.SaveTable, field.DbFieldName, linkField.DbFieldName, table.Name);
+                        , model.SaveTableName, table.SaveTableName, field.DbFieldName, linkField.DbFieldName, table.Name);
             }
             builder.Append(';');
             builder.AppendLine("GO");
@@ -130,7 +130,7 @@ CREATE VIEW [{viewName}] AS
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
-CREATE TABLE [{entity.SaveTable}](");
+CREATE TABLE [{entity.SaveTableName}](");
             bool isFirst = true;
             foreach (var col in entity.DbFields.Where(p => !p.IsCompute))
             {
@@ -160,7 +160,7 @@ CREATE TABLE [{entity.SaveTable}](");
                 return Empty;
             return $@"
 -- {entity.Caption}
-TRUNCATE TABLE [{entity.SaveTable}];
+TRUNCATE TABLE [{entity.SaveTableName}];
 ";
         }
 
@@ -172,7 +172,7 @@ TRUNCATE TABLE [{entity.SaveTable}];
                 return $"-- {entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
             return $@"
 --{entity.Caption}
-DROP TABLE [{entity.SaveTable}];";
+DROP TABLE [{entity.SaveTableName}];";
         }
 
         #endregion

@@ -54,7 +54,7 @@ namespace Agebull.EntityModel.Designer
 
         private void SyncLinkField(Action<FieldConfig> action)
         {
-            string saveTable = TargetConfig.Entity.SaveTable;
+            string saveTable = TargetConfig.Entity.SaveTableName;
             string name = TargetConfig.Entity.Name;
             foreach (var entity in SolutionConfig.Current.Entities.Where(p => p != TargetConfig.Entity))
             {

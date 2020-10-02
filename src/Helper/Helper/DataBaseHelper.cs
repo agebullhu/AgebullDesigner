@@ -81,7 +81,7 @@ namespace Agebull.EntityModel.Config
                 {
                     var table = GlobalConfig.GetEntity(
                         p => string.Equals(p.Name, field.LinkTable, StringComparison.OrdinalIgnoreCase) ||
-                             string.Equals(p.SaveTable, field.LinkTable, StringComparison.OrdinalIgnoreCase) ||
+                             string.Equals(p.SaveTableName, field.LinkTable, StringComparison.OrdinalIgnoreCase) ||
                              string.Equals(p.ReadTableName, field.LinkTable, StringComparison.OrdinalIgnoreCase));
                     if (table != null && table != entity)
                     {
