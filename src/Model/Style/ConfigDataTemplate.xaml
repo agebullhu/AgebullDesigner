@@ -179,6 +179,11 @@
                         <Label Content="实体名称" />
                         <TextBox Text="{Binding EntityName,Mode=TwoWay}" Tag="{Binding Name,Mode=OneWay}" />
                     </StackPanel>
+                    <StackPanel Style="{StaticResource AdvFieldPanel}">
+                        <Label Content="是否查询" />
+                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsQuery,Mode=TwoWay}"
+                                  ToolTip="选择后,此类仅查询" />
+                    </StackPanel> 
                     <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="接口继承" />
                         <TextBox Style="{StaticResource MidTextBox}" Text="{Binding Interfaces,Mode=TwoWay}" />
@@ -879,6 +884,11 @@
                     <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="接口继承" />
                         <TextBox Style="{StaticResource MidTextBox}" Text="{Binding Interfaces,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource AdvFieldPanel}">
+                        <Label Content="是否查询" />
+                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsQuery,Mode=TwoWay}"
+                                  ToolTip="选择后,此类仅查询" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="显示接口实现" />

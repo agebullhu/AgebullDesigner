@@ -87,7 +87,7 @@ namespace Agebull.EntityModel.RobotCoder
                     json = !property.NoneJson;
                 if (json.Value)
                 {
-                    code.Add($@"JsonProperty(""{property.JsonName}"",  NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling= DefaultValueHandling.Ignore)");
+                    code.Add($@"JsonProperty(""{property.JsonName}"",  NullValueHandling = NullValueHandling.Ignore)");
                     if (property.CsType == "DateTime")
                         code.Add("JsonConverter(typeof(MyDateTimeConverter))");
                 }
@@ -320,10 +320,12 @@ namespace Agebull.EntityModel.RobotCoder
 
         protected string ExtendInterface()
         {
-            var list = new List<string>();
-
-            if (!Model.IsQuery)
-                list.Add("IEditStatus");
+            if (Model.IsQuery)
+                return null;
+            var list = new List<string>
+            {
+                "IEditStatus"
+            };
 
             if (Model.PrimaryColumn != null)
             {

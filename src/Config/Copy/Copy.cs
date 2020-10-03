@@ -239,7 +239,7 @@ namespace Agebull.EntityModel.Config
             DataVersion = cfg.DataVersion;//数据版本
             IsInternal = cfg.IsInternal;//内部数据
             NoDataBase = cfg.NoDataBase;//无数据库支持
-            Interfaces = cfg.Interfaces;//继承的接口集合
+            //Interfaces = cfg.Interfaces;//继承的接口集合
             ColumnIndexStart = cfg.ColumnIndexStart;//列序号起始值
             ReadCoreCodes = cfg.ReadCoreCodes;//不同版本读数据的代码
             IsInterface = cfg.IsInterface;//接口定义

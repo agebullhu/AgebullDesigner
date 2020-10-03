@@ -114,7 +114,18 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计(C#)"), DisplayName(@"结果类型(C#)"), Description("最终生成C#代码时的属性类型")]
-        public string LastCsType => Field.ToLastCsType();
+        public string LastCsType => ToLastCsType();
+
+        string ToLastCsType()
+        {
+            if (_csType == null)
+                return Field.ToLastCsType();
+            if (IsArray)
+                return $"{_csType}[]";
+            if (string.Equals(_csType, "string", StringComparison.OrdinalIgnoreCase))
+                return _csType;
+            return Nullable ? $"{_csType}?" : _csType;
+        }
 
         /// <summary>
         /// 可空类型(C#)

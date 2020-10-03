@@ -122,7 +122,7 @@ namespace Agebull.EntityModel.Config
         /// 主键字段
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        IFieldConfig IEntityConfig.PrimaryColumn => PrimaryColumn;
+        IFieldConfig IEntityConfig.PrimaryColumn => PrimaryColumn== null || PrimaryColumn.IsDiscard ? null : PrimaryColumn;
 
         /// <summary>
         /// 主键字段

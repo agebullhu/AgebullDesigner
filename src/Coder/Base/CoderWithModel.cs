@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Resources;
 using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
@@ -8,7 +9,7 @@ namespace Agebull.EntityModel.RobotCoder
     /// 表操作基类
     /// </summary>
     public abstract class CoderWithModel<TModel> : CoderWithProject
-        where TModel:ProjectChildConfigBase,IEntityConfig
+        where TModel : ProjectChildConfigBase, IEntityConfig
     {
         /// <summary>
         /// 当前对象
@@ -30,7 +31,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 当前表对象
         /// </summary>
-        public IFieldConfig PrimaryProperty => Model.PrimaryColumn;
+        public IFieldConfig PrimaryProperty => Model.IsQuery ? null : Model.PrimaryColumn;
 
         /// <summary>
         /// 分类目录

@@ -85,6 +85,8 @@ using Agebull.EntityModel.Interfaces;
 
         internal string InterfaceProperty()
         {
+            if (Model.IsInterface || Model.IsQuery)
+                return "";
             var code = new StringBuilder();
             if (Model.PrimaryColumn != null)
             {
@@ -150,6 +152,8 @@ using Agebull.EntityModel.Interfaces;
 
         internal string EntityEditStatus()
         {
+            if (Model.IsInterface || Model.IsQuery)
+                return "";
             return Model.IsQuery
                 ? null
                 : @"
@@ -220,7 +224,7 @@ using Agebull.EntityModel.Interfaces;
         private string PrimaryKeyPropertyCode()
         {
             var property = PrimaryProperty;
-            if (property == null)
+            if (property == null || property.IsDiscard)
                 return null;//"\n没有设置主键字段，生成的代码是错误的";
             return $@"
 
@@ -398,7 +402,7 @@ using Agebull.EntityModel.Interfaces;
             var cs = releation.Name.ToLWord();
             code.Append($@"
 
-        [JsonProperty(""{cs}"", NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling= DefaultValueHandling.Ignore)]
+        [JsonProperty(""{cs}"", NullValueHandling = NullValueHandling.Ignore)]
         private {type} _{cs};
 
         [JsonIgnore]

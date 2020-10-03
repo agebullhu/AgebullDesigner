@@ -87,6 +87,8 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess
             ReadTableName    = FromSqlCode,
             WriteTableName   = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.TableName,
             LoadFields       = LoadFields,
+            Having           = Having,
+            GroupFields      = GroupFields,
             UpdateFields     = UpdateFields,
             InsertSqlCode    = InsertSqlCode,
             DataStruct       = Struct
@@ -99,22 +101,32 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess
         /// <summary>
         /// 读取的字段
         /// </summary>
-        public const string FromSqlCode = @""{ReadTableName()}"";
+        public const string LoadFields = @""{SqlMomentCoder.LoadSql(PublishDbFields)}"";
+
+        /// <summary>
+        /// 汇总条件
+        /// </summary>
+        public const string Having = {SqlMomentCoder.HavingSql(PublishDbFields)};
+
+        /// <summary>
+        /// 分组字段
+        /// </summary>
+        public const string GroupFields = {SqlMomentCoder.GroupSql(PublishDbFields)};
 
         /// <summary>
         /// 读取的字段
         /// </summary>
-        public const string LoadFields = @""{SqlMomentCoder.LoadSql(PublishDbFields)}"";
+        public const string FromSqlCode = @""{ReadTableName()}"";
 
         /// <summary>
         /// 更新的字段
         /// </summary>
-        public static string UpdateFields = @""{UpdateFields()}"";
+        public const string UpdateFields = @""{UpdateFields()}"";
 
         /// <summary>
         /// 写入的Sql
         /// </summary>
-        public static string InsertSqlCode => @""{InsertSql()}"";
+        public const string InsertSqlCode = @""{InsertSql()}"";
 
         #endregion
 

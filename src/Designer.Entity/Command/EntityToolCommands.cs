@@ -28,8 +28,8 @@ namespace Agebull.EntityModel.Designer
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                SignleSoruce = false,
                 IsButton = true,
+                SignleSoruce = true,
                 Caption = "生成模型",
                 Catalog = "模型",
                 IconName = "tree_item",
@@ -129,10 +129,10 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void ToModel(EntityConfig entity)
         {
-            var model = GlobalConfig.GetModel(p=>p.Entity == entity);
-            if (model != null)
-                return;
-            model = new ModelConfig();
+            //var model = GlobalConfig.GetModel(p=>p.Entity == entity);
+            //if (model != null)
+            //    return;
+            var model = new ModelConfig();
             model.CopyFrom(entity);
             entity.Parent.Add(model);
         }

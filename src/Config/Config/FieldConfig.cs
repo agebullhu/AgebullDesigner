@@ -1355,6 +1355,58 @@ namespace Agebull.EntityModel.Config
             }
         }
         #endregion
+
+        #region 汇总支持
+
+        /// <summary>
+        /// 汇总方法
+        /// </summary>
+        [DataMember, JsonProperty("function", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal string _function;
+
+        /// <summary>
+        /// 汇总方法
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据库"), DisplayName(@"汇总方法"), Description("汇总方法")]
+        public string Function
+        {
+            get => _function;
+            set
+            {
+                if (string.Equals(_function, value, StringComparison.OrdinalIgnoreCase))
+                    return;
+                BeforePropertyChanged(nameof(Function), _function, value);
+                _function = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                OnPropertyChanged(nameof(Function));
+            }
+        }
+
+        /// <summary>
+        /// 汇总条件
+        /// </summary>
+        [DataMember, JsonProperty("having", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal string _having;
+
+        /// <summary>
+        /// 汇总条件
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据库"), DisplayName(@"汇总条件"), Description("汇总条件")]
+        public string Having
+        {
+            get => _having;
+            set
+            {
+                if (string.Equals(_having, value, StringComparison.OrdinalIgnoreCase))
+                    return;
+                BeforePropertyChanged(nameof(Having), _having, value);
+                _having = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                OnPropertyChanged(nameof(Having));
+            }
+        }
+
+        #endregion
         #region 数据库
 
         /// <summary>

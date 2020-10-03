@@ -176,7 +176,8 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"主键字段"), Description("主键字段")]
-        public PropertyConfig PrimaryColumn => Properties.FirstOrDefault(p => Entity.PrimaryColumn == p.Field);
+        public PropertyConfig PrimaryColumn => Properties.FirstOrDefault(p =>  Entity.PrimaryColumn == p.Field);
+        
         /// <summary>
         /// 主键字段
         /// </summary>
@@ -184,7 +185,7 @@ namespace Agebull.EntityModel.Config
         /// 主键字段
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        IFieldConfig IEntityConfig.PrimaryColumn => PrimaryColumn;
+        IFieldConfig IEntityConfig.PrimaryColumn => PrimaryColumn == null || PrimaryColumn.IsDiscard ? null : PrimaryColumn;
 
         /// <summary>
         /// 是否有主键
