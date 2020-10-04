@@ -9,10 +9,16 @@ namespace Agebull.EntityModel.Designer
 {
     public class FieldFormatCommand
     {
+        private string fields = @"Id,l,主键
+Name,s,名称
+
+
+Memo,s,备注";
+
         /// <summary>
         /// 字段文本内容
         /// </summary>
-        public string Fields { get; set; }
+        public string Fields { get => fields; set => fields = value; }
 
         /// <summary>
         /// 生成的表格对象
@@ -463,6 +469,13 @@ namespace Agebull.EntityModel.Designer
                     column.Caption = words[2];
                 if (words.Length > 3 && words[3] != "@" && words[3] != "#")
                     column.Description = words.Length < 4 ? null : words.Skip(3).LinkToString(",").TrimEnd('@', '#');
+
+                if (name == "Memo")
+                {
+                    column.Datalen = 0;
+                    column.IsMemo = true;
+                    column.DbType = "TEXT";
+                }
                 var old = columns.FirstOrDefault(p => p != null && p.Name == name);
                 if (old != null)
                 {

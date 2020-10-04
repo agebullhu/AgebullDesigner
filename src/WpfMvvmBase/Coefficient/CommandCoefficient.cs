@@ -28,9 +28,9 @@ namespace Agebull.Common.Mvvm
         public static void RegisterCommand(ICommandItemBuilder builder)
         {
             var type = builder.TargetType ?? typeof(object);
-            if (CommandBuilders.ContainsKey(type))
+            if (CommandBuilders.TryGetValue(type,out var cmds))
             {
-                CommandBuilders[type].Add(builder);
+                cmds.Add(builder);
             }
             else
             {
@@ -83,66 +83,29 @@ namespace Agebull.Common.Mvvm
             string key = $"{binding.GetType().FullName}:{view}";
             var dictionary = new Dictionary<ICommandItemBuilder, bool>();
             var type = binding.GetType();
-            if (!Commands.TryGetValue(key, out var result))
-            {
-
-                Commands.Add(key, result = new List<CommandItemBase>());
-
-                foreach (var item in CommandBuilders)
-                {
-                    if (item.Key != type && !type.IsSubclassOf(item.Key))
-                        continue;
-                    foreach (var action in item.Value.Where(p => p.Editor == null || !p.SignleSoruce))
-                    {
-                        if (action.SoruceView != null && view != null && !action.SoruceView.Contains(view))
-                            continue;
-                        if (dictionary.ContainsKey(action))
-                            continue;
-                        result.Add(action.ToCommand(binding, null));
-                        dictionary.Add(action, true);
-                    }
-                }
-            }
-            else
+            if (Commands.TryGetValue(key, out var result))
             {
                 foreach (var action in result)
                     action.Source = binding;
+                return result;
+            }
+            Commands.Add(key, result = new List<CommandItemBase>());
+
+            foreach (var item in CommandBuilders)
+            {
+                if (item.Key != type && !type.IsSubclassOf(item.Key))
+                    continue;
+                foreach (var action in item.Value.Where(p => p.Editor == null || !p.SignleSoruce))
+                {
+                    if (action.SoruceView != null && view != null && !action.SoruceView.Contains(view))
+                        continue;
+                    if (dictionary.ContainsKey(action))
+                        continue;
+                    result.Add(action.ToCommand(binding, null));
+                    dictionary.Add(action, true);
+                }
             }
             return result;
-
-            //foreach (var item in SourceTypeMap)
-            //{
-            //    if (item.Key != type && !type.IsSubclassOf(item.Key))
-            //        continue;
-            //    foreach (var convert in item.Value)
-            //    {
-            //        foreach (var cmd in CommandBuilders)
-            //        {
-            //            result.Add(CommandItemBase.Line);
-            //            foreach (var action in cmd.Value.Where(p => p.Editor == null))
-            //            {
-            //                if (dictionary.ContainsKey(action))
-            //                    continue;
-            //                if (cmd.Key == convert.Key || convert.Key.IsSubclassOf(cmd.Key))
-            //                {
-            //                    dictionary.Add(action, true);
-            //                    result.Add(action.ToCommand(arg, convert.Value));
-            //                }
-            //                else if (action.TargetType == convert.Key)
-            //                {
-            //                    dictionary.Add(action, true);
-            //                    result.Add(action.ToCommand(arg, convert.Value));
-            //                }
-            //                else if (action.TargetType != null && action.TargetType.IsSubclassOf(convert.Key))
-            //                {
-            //                    dictionary.Add(action, true);
-            //                    result.Add(action.ToCommand(arg, convert.Value));
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
-            //return result;
         }
 
 
