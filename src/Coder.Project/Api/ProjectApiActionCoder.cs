@@ -13,7 +13,26 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    public class ProjectApiActionCoder<TModel> : CoderWithModel<TModel>, IAutoRegister
+    public class ProjectApiActionCoderRegister : IAutoRegister
+    {
+        /// <summary>
+        /// 执行自动注册
+        /// </summary>
+        void IAutoRegister.AutoRegist()
+        {
+            MomentCoder.RegisteCoder("Web-Api", "表单读取", "cs", ProjectApiActionCoder<EntityConfig>.ReadFormValue);
+            MomentCoder.RegisteCoder("Web-Api", "ApiController.cs", "cs", new ProjectApiActionCoder<EntityConfig>().BaseCode);
+            MomentCoder.RegisteCoder("Web-Api", "ApiController.Designer.cs", "cs", new ProjectApiActionCoder<EntityConfig>().ExtendCode);
+            
+            MomentCoder.RegisteCoder("Web-Api", "表单读取", "cs", ProjectApiActionCoder<ModelConfig>.ReadFormValue);
+            MomentCoder.RegisteCoder("Web-Api", "ApiController.cs", "cs", new ProjectApiActionCoder<ModelConfig>().BaseCode);
+            MomentCoder.RegisteCoder("Web-Api", "ApiController.Designer.cs", "cs",new ProjectApiActionCoder<ModelConfig>().ExtendCode);
+        }
+    }
+    /// <summary>
+    /// API代码生成
+    /// </summary>
+    public class ProjectApiActionCoder<TModel> : CoderWithModel<TModel>
         where TModel : ProjectChildConfigBase, IEntityConfig
     {
 
@@ -94,15 +113,6 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         #region 代码片断
 
         /// <summary>
-        /// 执行自动注册
-        /// </summary>
-        void IAutoRegister.AutoRegist()
-        {
-            //MomentCoder.RegisteCoder("Web-Api", "表单保存", "cs", ReadFormValue);
-            //MomentCoder.RegisteCoder("Web-Api", "ApiController.cs", "cs", BaseCode);
-            //MomentCoder.RegisteCoder("Web-Api", "ApiController.Designer.cs", "cs", ExtendCode);
-        }
-        /// <summary>
         /// 
         /// </summary>
         /// <param name="entity"></param>
@@ -128,7 +138,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 
         #region 代码
 
-        static string ReadFormValue(TModel entity)
+        internal static string ReadFormValue(TModel entity)
         {
             var code = new StringBuilder();
             code.Append($@"
@@ -168,7 +178,6 @@ using Agebull.MicroZero.ZeroApis;
 
 using {NameSpace};
 using {NameSpace}.BusinessLogic;
-using {NameSpace}.DataAccess;
 #endregion
 
 namespace {NameSpace}.WebApi.Entity
@@ -390,16 +399,6 @@ namespace {NameSpace}.WebApi.Entity
          : {baseClass}<{Model.EntityName},{Model.PrimaryColumn.CsType},{Model.Name}BusinessLogic>
     {{
         #region 基本扩展
-
-        /*// <summary>
-        ///     取得列表数据
-        /// </summary>
-        protected override ApiPageData<{Model.EntityName}> GetListData()
-        {{
-            var filter = new LambdaItem<{Model.EntityName}>();
-            ReadQueryFilter(filter);
-            return base.GetListData(filter);
-        }}*/
 
         /// <summary>
         /// 读取Form传过来的数据

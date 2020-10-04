@@ -55,12 +55,12 @@ namespace Agebull.EntityModel.RobotCoder
 
         private string CreateExtendCode()
         {
-            string dbNameSpace = Project.DbType switch
-            {
-                DataBaseType.SqlServer => "System.Data.Sql",
-                DataBaseType.Sqlite => "Microsoft.Data.Sqlite",
-                _ => "MySqlConnector",//case DataBaseType.MySql:
-            };
+            //string dbNameSpace = Project.DbType switch
+            //{
+            //    DataBaseType.SqlServer => "System.Data.Sql",
+            //    DataBaseType.Sqlite => "Microsoft.Data.Sqlite",
+            //    _ => "MySqlConnector",//case DataBaseType.MySql:
+            //};
             string baseClass = "BusinessLogicBase";
             if (Model.Interfaces != null)
             {
@@ -88,7 +88,7 @@ using Agebull.Common;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.{Project.DbType};
 using Agebull.EntityModel.BusinessLogic;
-using {dbNameSpace};
+
 {Project.UsingNameSpaces}
 using {NameSpace}.DataAccess;
 #endregion
@@ -103,11 +103,6 @@ namespace {NameSpace}.BusinessLogic
         /// <summary>
         ///  构造
         /// </summary>
-        public {Model.EntityName}BusinessLogic(IServiceProvider provider)
-        {{
-            ServiceProvider = provider;
-        }}
-
         protected sealed override DataAccess<{Model.EntityName}> CreateAccess()
         {{
             return ServiceProvider.CreateDataAccess<{Model.EntityName}>();
