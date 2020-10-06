@@ -203,7 +203,7 @@ namespace Agebull.EntityModel.Config
                 if (value == Name)
                     value = null;
                 BeforePropertyChanged(nameof(ApiName), _apiName, value);
-                _apiName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _apiName = string.IsNullOrWhiteSpace(value) ? null : value.Trim('\\', '/').Trim();
                 OnPropertyChanged(nameof(ApiName));
             }
         }
@@ -266,7 +266,7 @@ namespace Agebull.EntityModel.Config
                 if (_apiFolder == value)
                     return;
                 BeforePropertyChanged(nameof(ApiFolder), _apiFolder, value);
-                _apiFolder = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _apiFolder = string.IsNullOrWhiteSpace(value) ? null : value.Trim('\\', '/').Trim();
                 OnPropertyChanged(nameof(ApiFolder));
                 OnPropertyChanged(nameof(ApiPath));
             }
@@ -294,7 +294,7 @@ namespace Agebull.EntityModel.Config
                 if (_modelFolder == value)
                     return;
                 BeforePropertyChanged(nameof(ModelFolder), _modelFolder, value);
-                _modelFolder = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _modelFolder = string.IsNullOrWhiteSpace(value) ? null : value.Trim('\\', '/').Trim();
                 OnPropertyChanged(nameof(ModelFolder));
                 OnPropertyChanged(nameof(ModelPath));
             }
@@ -320,7 +320,7 @@ namespace Agebull.EntityModel.Config
                 if (_pageFolder == value)
                     return;
                 BeforePropertyChanged(nameof(PageFolder), _pageFolder, value);
-                _pageFolder = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _pageFolder = string.IsNullOrWhiteSpace(value) ? null : value.Trim( '\\', '/').Trim();
                 OnPropertyChanged(nameof(PageFolder));
                 OnPropertyChanged(nameof(PagePath));
             }
@@ -353,7 +353,7 @@ namespace Agebull.EntityModel.Config
                 if (_branchFolder == value)
                     return;
                 BeforePropertyChanged(nameof(BranchFolder), _branchFolder, value);
-                _branchFolder = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _branchFolder = string.IsNullOrWhiteSpace(value) ? null : value.Trim('\\', '/').Trim();
                 OnPropertyChanged(nameof(BranchFolder));
                 OnPropertyChanged(nameof(ApiPath));
                 OnPropertyChanged(nameof(ModelPath));
@@ -535,7 +535,7 @@ namespace Agebull.EntityModel.Config
                 if (_mobileCsPath == value)
                     return;
                 BeforePropertyChanged(nameof(MobileCsPath), _mobileCsPath, value);
-                _mobileCsPath = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _mobileCsPath = string.IsNullOrWhiteSpace(value) ? null : value.Trim('\\', '/').Trim();
                 OnPropertyChanged(nameof(MobileCsPath));
             }
         }
@@ -562,7 +562,7 @@ namespace Agebull.EntityModel.Config
                 if (_cppCodePath == value)
                     return;
                 BeforePropertyChanged(nameof(CppCodePath), _cppCodePath, value);
-                _cppCodePath = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _cppCodePath = string.IsNullOrWhiteSpace(value) ? null : value.Trim('\\', '/').Trim();
                 OnPropertyChanged(nameof(CppCodePath));
             }
         }
@@ -594,7 +594,7 @@ namespace Agebull.EntityModel.Config
                 if (_businessPath == value)
                     return;
                 BeforePropertyChanged(nameof(BusinessPath), _businessPath, value);
-                _businessPath = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _businessPath = string.IsNullOrWhiteSpace(value) ? null : value.Trim('\\', '/').Trim();
                 OnPropertyChanged(nameof(BusinessPath));
             }
         }

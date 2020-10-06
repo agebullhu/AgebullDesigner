@@ -86,9 +86,8 @@ namespace {Project.NameSpace}.DataAccess
             Name = @""{Project.Name}"";
             Caption = @""{Project.Caption}"";
             Description = @""{Project.Description.Replace("\"", "\"\"")}"";
-
-            ConnectionStringName = ""{Project.DataBaseObjectName}"";
-        }}{SqliteCode()}
+            ConnectionString = {ConnectionString()}
+        }}
     }}
 
     /// <summary>
@@ -156,27 +155,19 @@ namespace {Project.NameSpace}.DataAccess
 }}";
             SaveCode(file, code);
         }
-        string SqliteCode()
+        string ConnectionString()
         {
             if (Project.DbType != DataBaseType.Sqlite)
-                return null;
+                return $@"ConfigurationHelper.GetConnectionString(""{Project.DataBaseObjectName}"");";
 
-            return $@"
-        /// <summary>
-        /// 读取连接字符串
-        /// </summary>
-        /// <returns></returns>
-        protected override string LoadConnectionStringSetting()
-        {{
-            var b = new SqliteConnectionStringBuilder
+            return $@"new SqliteConnectionStringBuilder
             {{
                 DataSource = ZeroAppOption.Instance.IsLinux
                     ? $""{{ZeroAppOption.Instance.DataFolder}}/{Project.DbSoruce}""
                     : $""{{ZeroAppOption.Instance.DataFolder}}\\{Project.DbSoruce}"",
                 Mode = SqliteOpenMode.ReadWriteCreate,
                 Cache = SqliteCacheMode.Shared
-            }};
-            return b.ConnectionString;
+            }}.ConnectionString;
         }}";
         }
         #endregion

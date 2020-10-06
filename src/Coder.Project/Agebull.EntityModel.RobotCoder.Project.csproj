@@ -22,6 +22,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Api\ApiHelperCoder.cs" />
+    <Compile Remove="Api\ExportActionCoder.cs" />
+    <Compile Remove="Api\PorjectApiGenerator.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Coder.Sql\Agebull.EntityModel.RobotCoder.DataBase.csproj" />
     <ProjectReference Include="..\Model\Agebull.EntityModel.Designer.Model.csproj" />
   </ItemGroup>

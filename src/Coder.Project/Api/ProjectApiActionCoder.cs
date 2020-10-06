@@ -1,34 +1,11 @@
 using System;
-using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Designer;
 
 namespace Agebull.EntityModel.RobotCoder.EasyUi
 {
-    /// <summary>
-    /// API代码生成
-    /// </summary>
-    [Export(typeof(IAutoRegister))]
-    [ExportMetadata("Symbol", '%')]
-    public class ProjectApiActionCoderRegister : IAutoRegister
-    {
-        /// <summary>
-        /// 执行自动注册
-        /// </summary>
-        void IAutoRegister.AutoRegist()
-        {
-            MomentCoder.RegisteCoder("Web-Api", "表单读取", "cs", ProjectApiActionCoder<EntityConfig>.ReadFormValue);
-            MomentCoder.RegisteCoder("Web-Api", "ApiController.cs", "cs", new ProjectApiActionCoder<EntityConfig>().BaseCode);
-            MomentCoder.RegisteCoder("Web-Api", "ApiController.Designer.cs", "cs", new ProjectApiActionCoder<EntityConfig>().ExtendCode);
-            
-            MomentCoder.RegisteCoder("Web-Api", "表单读取", "cs", ProjectApiActionCoder<ModelConfig>.ReadFormValue);
-            MomentCoder.RegisteCoder("Web-Api", "ApiController.cs", "cs", new ProjectApiActionCoder<ModelConfig>().BaseCode);
-            MomentCoder.RegisteCoder("Web-Api", "ApiController.Designer.cs", "cs",new ProjectApiActionCoder<ModelConfig>().ExtendCode);
-        }
-    }
     /// <summary>
     /// API代码生成
     /// </summary>
@@ -90,26 +67,6 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 
         #endregion
 
-        #region Export
-        /*
-        private void ExportCsCode(string path)
-        {
-            var file = ConfigPath(Entity, "File_Web_Export_cs", path, $"Page\\{Entity.Parent.Name}\\{Entity.Name}", "Export.cs");
-            var coder = new ExportActionCoder
-            {
-                Entity = Entity,
-                Project = Project
-            };
-            WriteFile(file, coder.Code());
-        }
-
-        private string ExportAspxCode()
-        {
-            return $@"<%@ Page Language='C#' AutoEventWireup='true'  Inherits='{NameSpace}.{Entity.Name}Page.ExportAction' %>";
-        }
-        */
-        #endregion
-
         #region 代码片断
 
         /// <summary>
@@ -143,7 +100,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             var code = new StringBuilder();
             code.Append($@"
         static void ReadFormValue(I{entity.Name} entity, FormConvert convert)
-        {{{ApiHelperCoder.InputConvert(entity)}
+        {{{InputConvert(entity)}
         }}");
             return code.ToString();
         }
@@ -170,17 +127,14 @@ using Agebull.Common;
 using Agebull.Common.Ioc;
 
 using Agebull.EntityModel.Common;
-using Agebull.EntityModel.EasyUI;
-using ZeroTeam.MessageMVC.ZeroApis;
-using Agebull.MicroZero.ZeroApis;
+using ZeroTeam.MessageMVC.ModelApi;
 
 {Project.UsingNameSpaces}
 
 using {NameSpace};
-using {NameSpace}.BusinessLogic;
 #endregion
 
-namespace {NameSpace}.WebApi.Entity
+namespace {NameSpace}.WebApi
 {{
     partial class {Model.Name}ApiController
     {{
@@ -209,8 +163,8 @@ namespace {NameSpace}.WebApi.Entity
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <param name=""convert"">转化器</param>
-        protected void DefaultReadFormData({Model.EntityName} data, FormConvert convert)
-        {{{ApiHelperCoder.InputConvert(Model)}
+        private void DefaultReadFormData({Model.EntityName} data, FormConvert convert)
+        {{{InputConvert(Model)}
         }}
 
         #endregion
@@ -241,13 +195,13 @@ namespace {NameSpace}.WebApi.Entity
             code.Append(@"
             if (RequestArgumentConvert.TryGet(""_value_"", out string value) && value != null)
             {
-                var pro. = RequestArgumentConvert.GetString(""_field_"");
+                var field = RequestArgumentConvert.GetString(""_field_"");
                 ");
 
             var properties = Model.ClientProperty.Where(p => !p.NoStorage && /*p.CanUserInput && */p.CsType == "string" && !p.IsLinkKey && !p.IsBlob).ToArray();
             if (properties.Length > 0)
             {
-                code.Append(@"if (string.IsNullOrWhiteSpace(pro.) || pro. == ""_any_"")
+                code.Append(@"if (string.IsNullOrWhiteSpace(field) || field == ""_any_"")
                     filter.AddAnd(p => ");
                 bool first = true;
                 foreach (var pro in properties)
@@ -259,10 +213,10 @@ namespace {NameSpace}.WebApi.Entity
                                     || ");
                     code.Append($@"p.{pro.Name}.Contains(value)");
                 }
-                code.Append(@");
-                else ");
+                code.AppendLine(@");
+                else");
             }
-            code.Append(@"RequestArgumentConvert.SetArgument(pro.,value);
+            code.Append(@"RequestArgumentConvert.SetArgument(field,value);
             }");
             properties = Model.ClientProperty.Where(p => !p.NoStorage).ToArray();
             foreach (var pro in properties)
@@ -377,26 +331,25 @@ using Agebull.Common;
 using Agebull.Common.Ioc;
 
 using Agebull.EntityModel.Common;
-using Agebull.EntityModel.EasyUI;
+using ZeroTeam.MessageMVC.ModelApi;
 using ZeroTeam.MessageMVC.ZeroApis;
-using Agebull.MicroZero.ZeroApis;
 
 {Project.UsingNameSpaces}
 
 using {NameSpace};
-using {NameSpace}.BusinessLogic;
 
 #endregion
 
-namespace {NameSpace}.WebApi.Entity
+namespace {NameSpace}.WebApi
 {{
     /// <summary>
     ///  {ToRemString(Model.Caption)}
     /// </summary>
+    [Service(""{Project.ApiName}"")]
     [Route(""{Model.ApiName}/v1"")]
     [ApiPage(""{page}"")]
-    public partial class {Model.Name}ApiController 
-         : {baseClass}<{Model.EntityName},{Model.PrimaryColumn.CsType},{Model.Name}BusinessLogic>
+    public sealed partial class {Model.Name}ApiController 
+         : {baseClass}<{Model.EntityName},{Model.PrimaryColumn.CsType},{Model.EntityName}BusinessLogic>
     {{
         #region 基本扩展
 
@@ -483,5 +436,81 @@ namespace {NameSpace}.WebApi.Entity
         }
 
         #endregion
+
+        /// <summary>
+        /// 输入值转换
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public static string InputConvert(IEntityConfig model)
+        {
+            if (model.IsUiReadOnly)
+                return null;
+            var fields = model.ClientProperty.Where(p => p.CanUserInput || p.ExtendConfigListBool["easyui", "userFormHide"]).ToArray();
+            var code = new StringBuilder();
+            foreach (var group in fields.GroupBy(p => p.Group))
+            {
+
+                code.Append($@"
+            //{group.Key ?? "普通字段"}");
+                foreach (var pro in group.OrderBy(p => p.Index))
+                {
+                    var field = pro;
+                    if (field == model.PrimaryColumn)
+                    {
+                        continue;
+                    }
+                    code.Append(@"
+            if(");
+                    if (field.IsPrimaryKey || field.KeepUpdate)
+                    {
+                        code.Append(@"!convert.IsUpdata && ");
+
+                    }
+                    if (field.KeepStorageScreen == StorageScreenType.Insert)
+                    {
+                        code.Append(@"convert.IsUpdata && ");
+                    }
+                    switch (field.DataType)
+                    {
+                        case "ByteArray" when field.IsImage:
+                            code.Append($@"convert.TryGetValue(""{field.JsonName}"" , out string file))
+            {{
+                if (string.IsNullOrWhiteSpace(file))
+                    data.{pro.Name}_Base64 = null;
+                else if(file != ""*"" && file.Length< 100 && file[0] == '/')
+                {{
+                    using(var call = new WebApiCaller(ConfigurationManager.AppSettings[""ManageAddress""]))
+                    {{
+                        var result = call.Get<string>(""api/v1/ueditor/action"", $""action=base64&url={{file}}"");
+                        data.{pro.Name}_Base64 = result.Success ? result.ResultData : null;
+                    }}
+                }}
+            }}");
+                            continue;
+                        case "ByteArray":
+                            code.Append($@"convert.TryGetValue(""{field.JsonName}"" , out string {pro.Name}))
+                data.{pro.Name}_Base64 = {pro.Name};");
+                            continue;
+                    }
+                    if (field.IsEnum && !string.IsNullOrWhiteSpace(field.CustomType))
+                    {
+                        code.Append($@"convert.TryGetEnum(""{field.JsonName}"" , out {field.CustomType} {pro.Name}))
+                data.{pro.Name} = {pro.Name};");
+                    }
+                    else if (!string.IsNullOrWhiteSpace(field.CustomType))
+                    {
+                        code.Append($@"convert.TryGetValue(""{field.JsonName}"" , out {field.CsType} {pro.Name}))
+                data.{pro.Name} = ({field.CustomType}){pro.Name};");
+                    }
+                    else
+                    {
+                        code.Append($@"convert.TryGetValue(""{field.JsonName}"" , out {field.CsType} {pro.Name}))
+                data.{pro.Name} = {pro.Name};");
+                    }
+                }
+            }
+            return code.ToString();
+        }
     }
 }

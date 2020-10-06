@@ -62,7 +62,7 @@ namespace Agebull.EntityModel.RobotCoder
             //    _ => "MySqlConnector",//case DataBaseType.MySql:
             //};
             string baseClass = "BusinessLogicBase";
-            if (Model.Interfaces != null)
+            if (!Model.IsQuery && Model.Interfaces != null)
             {
                 if (Model.Interfaces.Contains("IStateData"))
                     baseClass = "BusinessLogicByStateData";
@@ -93,7 +93,7 @@ using Agebull.EntityModel.BusinessLogic;
 using {NameSpace}.DataAccess;
 #endregion
 
-namespace {NameSpace}.BusinessLogic
+namespace {NameSpace}
 {{
     /// <summary>
     /// {Model.Description}
@@ -101,7 +101,7 @@ namespace {NameSpace}.BusinessLogic
     public partial class {Model.EntityName}BusinessLogic : {baseClass}<{Model.EntityName},{Model.PrimaryColumn.CsType}>
     {{
         /// <summary>
-        ///  构造
+        ///  生成数据访问对象
         /// </summary>
         protected sealed override DataAccess<{Model.EntityName}> CreateAccess()
         {{
