@@ -17,17 +17,17 @@ namespace Agebull.EntityModel.Config
         public static string ToTableName(EntityConfig entity)
         {
             var head = new StringBuilder("tb_");
-            if (!string.IsNullOrWhiteSpace(entity.Parent.Abbreviation))
-            {
-                head.Append(entity.Parent.Abbreviation.ToLWord());
-                head.Append('_');
-            }
-            if (entity.Classify != null && entity.Parent.Classifies.Count > 1)
+            //if (!string.IsNullOrWhiteSpace(entity.Parent.Abbreviation))
+            //{
+            //    head.Append(entity.Parent.Abbreviation.ToLWord());
+            //    head.Append('_');
+            //}
+            if (entity.Classify != null/* && entity.Parent.Classifies.Count > 1*/)
             {
                 var cls = entity.Parent.Classifies.FirstOrDefault(p => p.Name == entity.Classify);
-                if (!string.IsNullOrWhiteSpace(cls?.Abbreviation))
+                if (cls != null)
                 {
-                    head.Append(entity.Parent.Abbreviation.ToLWord());
+                    head.Append(cls.Abbreviation.ToLWord());
                     head.Append('_');
                 }
             }

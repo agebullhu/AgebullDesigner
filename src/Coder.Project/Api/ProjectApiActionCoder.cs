@@ -381,8 +381,9 @@ namespace {NameSpace}.WebApi.Entity
     /// <summary>
     ///  {ToRemString(Entity.Caption)}
     /// </summary>
-    [Route(""{Entity.ApiName}/v1"")]
+    [Service(""{Project.ApiName}"")]
     [ApiPage(""{page}"")]
+    [Route(""{Entity.ApiName}/v1"")]
     public partial class {Entity.Name}ApiController 
          : {baseClass}<{Entity.EntityName},{Entity.PrimaryColumn.CsType},{Entity.Name}BusinessLogic>
     {{
