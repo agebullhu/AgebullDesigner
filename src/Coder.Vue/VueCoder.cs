@@ -34,43 +34,40 @@ namespace Agebull.EntityModel.RobotCoder.VUE
     <script type='text/javascript' src='http://cdn.staticfile.org/element-ui/2.8.2/index.js'></script>
     <script type='text/javascript' src='http://cdn.staticfile.org/element-ui/2.8.2/locale/zh-CN.min.js'></script>
     <!--Extend-->
-    <link rel='stylesheet' type='text/css' href='/styles/vuePage.css' />
-    <script type='text/javascript' src='/scripts/extend/core.js'></script>
-    <script type='text/javascript' src='/scripts/extend/ajax.js'></script>
-    <script type='text/javascript' src='/scripts/extend/ajax_vue.js'></script>
-    <script type='text/javascript' src='/scripts/extend/type.js'></script>
-    <script type='text/javascript' src='/scripts/extend/vue_ex.js'></script>
+    <link rel='stylesheet' type='text/css' href='/styles/element-ui.css' />
+    <script type='text/javascript' src='/scripts/extend.js'></script>
+    <script type='text/javascript' src='/scripts/object.js'></script>
 </head>
 <body>
-<div id='work_space' class='tiled' v-cloak>
-    <el-container>
-        <el-header height='53px'>
-            <div style='display: inline-block;padding:6px'>
-                <span>{Model.Parent.Caption}</span>&nbsp;<i class='el-icon-arrow-right'></i>&nbsp;<span>{Model.Caption}</span>
-                &nbsp;&nbsp;&nbsp;
-            </div>{HtmlExButton()}
-            <div style='display: inline-block; float: right'>
-                <el-input placeholder='请输入搜索内容' v-model='list.keyWords' class='input-with-select' clearable>{QueryList()}
-                    <el-button slot='append' icon='el-icon-search' @click='doQuery'></el-button>
-                </el-input>
-            </div>
-        </el-header>
-        <el-main>{HtmlMainCode()}
-        </el-main>
-        <el-footer height='42px'>
-            <el-pagination @size-change='sizeChange'
-                           @current-change='pageChange'
-                           background
-                           layout='total, sizes, prev, pager, next, jumper'
-                           :current-page='list.page'
-                           :page-sizes='list.pageSizes'
-                           :page-size='list.pageSize'
-                           :total='list.total'>
-            </el-pagination>
-        </el-footer>
-    </el-container>{HtmlFormCode()}
-</div>
-<script type='text/javascript' src='script.js'></script>
+    <div id='work_space' class='tiled' v-cloak>
+        <el-container>
+            <el-header height='53px'>
+                <div style='display: inline-block;padding:6px'>
+                    <span>{Model.Parent.Caption}</span>&nbsp;<i class='el-icon-arrow-right'></i>&nbsp;<span>{Model.Caption}</span>
+                    &nbsp;&nbsp;&nbsp;
+                </div>
+                <div class='toolRange'>
+                    <el-input placeholder='请输入搜索内容' v-model='list.keyWords' class='input-with-select' clearable>{QueryList()}
+                        <el-button slot='append' icon='el-icon-search' @click='doQuery'></el-button>
+                    </el-input>
+                </div>{HtmlExButton()}
+            </el-header>
+            <el-main>{HtmlMainCode()}
+            </el-main>
+            <el-footer height='42px'>
+                <el-pagination @size-change='sizeChange'
+                               @current-change='pageChange'
+                               background
+                               layout='total, sizes, prev, pager, next, jumper'
+                               :current-page='list.page'
+                               :page-sizes='list.pageSizes'
+                               :page-size='list.pageSize'
+                               :total='list.total'>
+                </el-pagination>
+            </el-footer>
+        </el-container>{HtmlFormCode()}
+    </div>
+    <script type='text/javascript' src='script.js'></script>
 </body>
 </html>";
         }
@@ -79,19 +76,19 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         {
             StringBuilder exButton = new StringBuilder();
             exButton.Append(@"
-            <div style='display: inline-block;'>
-                <el-button-group>
-                   <el-button icon='el-icon-refresh' type='success' @click='loadList'>刷新</el-button>
-                   <!--el-button icon='fa fa-file-excel-o' type='success' @click='exportExcel'>导出</el-button-->");
+                <div class='toolRange'>
+                    <el-button-group>
+                        <el-button icon='el-icon-refresh' @click='loadList'>刷新</el-button>
+                        <!--el-button icon='fa fa-file-excel-o' type='success' @click='exportExcel'>导出</el-button-->");
             if (!Model.IsUiReadOnly)
             {
                 exButton.Append(@"
-                        <el-button icon='el-icon-circle-plus-outline' type='primary' @click='doAddNew'>新增</el-button>
-                        <el-button icon='el-icon-edit' type='success' @click='doEdit'>编辑</el-button>
-                        <el-button icon='el-icon-circle-close' type='info' @click='doDelete'>删除</el-button>");
+                        <el-button icon='el-icon-plus' @click='doAddNew'>新增</el-button>
+                        <el-button icon='el-icon-edit' @click='doEdit'>编辑</el-button>
+                        <el-button icon='el-icon-close' @click='doDelete'>删除</el-button>");
             }
             exButton.Append(@"
-                </el-button-group>");
+                    </el-button-group>");
             if (!Model.IsUiReadOnly)
             {
                 if (Model.Interfaces.Contains("IAuditData"))
@@ -100,26 +97,23 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                     <el-dropdown split-button type='primary' @click='doPass' @command='handleDataCommand'>
                         <i class='el-icon-circle-check'></i>审核通过
                         <el-dropdown-menu slot='dropdown'>
-                            <el-dropdown-item command='Enable'><i class='el-icon-circle-check'></i>启用</el-dropdown-item>
-                            <el-dropdown-item command='Disable'><i class='el-icon-remove-outline'></i>禁用</el-dropdown-item>
-                            <el-dropdown-item command='Deny'><i class='el-icon-remove-outline'></i>不通过</el-dropdown-item>
-                            <el-dropdown-item command='Back'><i class='el-icon-edit'></i>退回编辑</el-dropdown-item>
-                            <el-dropdown-item command='ReDo'><i class='el-icon-edit'></i>重新审核</el-dropdown-item>
+                            <el-dropdown-item command='Enable' icon='el-icon-video-play'>启用</el-dropdown-item>
+                            <el-dropdown-item command='Disable' icon='el-icon-video-pause'>禁用</el-dropdown-item>
+                            <el-dropdown-item command='Reset' icon='el-icon-edit'>重置</el-dropdown-item>
+                            <el-dropdown-item command='Deny' icon='el-icon-remove-outline'>不通过</el-dropdown-item>
+                            <el-dropdown-item command='Back' icon='el-icon-edit'>退回编辑</el-dropdown-item>
+                            <el-dropdown-item command='ReDo' icon='el-icon-edit'>重新审核</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>");
                 }
                 else if (Model.Interfaces.Contains("IStateData"))
                 {
                     exButton.Append(@"
-                    <el-dropdown split-button type='primary' @click='doEnable'>
-                        <i class='el-icon-circle-check'></i>启用
-                        <el-dropdown-menu slot='dropdown' style='padding:3px;background-color:#606266'>
-                            <el-dropdown-item style='padding:3px;background-color:#606266'>
-                                <el-button icon='el-icon-remove-outline' type='info' @click='doDisable'>禁用</el-button>
-                            </el-dropdown-item>
-                            <el-dropdown-item style='padding:3px;background-color:#606266'>
-                                <el-button icon='el-icon-remove-outline' type='success' @click='doReset'>重置</el-button>
-                            </el-dropdown-item>
+                    <el-dropdown split-button @click='doEnable'>
+                        <i class='el-icon-video-play'></i>启用
+                        <el-dropdown-menu slot='dropdown'>
+                            <el-dropdown-item command='Disable' icon='el-icon-video-pause'>禁用</el-dropdown-item>
+                            <el-dropdown-item command='Reset' icon='el-icon-edit'>重置</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>");
                 }

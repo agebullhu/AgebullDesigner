@@ -218,7 +218,12 @@ VALUES
     ?{property.Name}");
             }
             sql.Append(@"
-);");
+);"); 
+            if (Model.PrimaryColumn.IsIdentity)
+            {
+                sql.Append(@"
+SELECT @@IDENTITY;");
+            }
             return sql.ToString();
         }
 

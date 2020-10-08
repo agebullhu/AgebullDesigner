@@ -193,7 +193,7 @@ namespace {NameSpace}.WebApi
             var code = new StringBuilder();
 
             code.Append(@"
-            if (RequestArgumentConvert.TryGet(""_value_"", out string value) && value != null)
+            if (RequestArgumentConvert.TryGet(""_value_"", out string value)  && !string.IsNullOrEmpty(value))
             {
                 var field = RequestArgumentConvert.GetString(""_field_"");
                 ");
