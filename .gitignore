@@ -4,11 +4,12 @@ obj
 bin
 *.vspscc
 /src/MigrationBackup
-/demo/demo.rar
-/demo/src/Web/logs
-/demo/src/Demo
-/src/Program.rar
+demo/
 netcoreapp3.1
 *.vs
-src/Program/
+src/Program/Config
+src/Program/netcoreapp3.1
+src/Program/AddIn
+src/Program/AddIn/Bin
 release/
+*.exe
