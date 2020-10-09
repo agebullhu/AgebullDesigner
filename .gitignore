@@ -7,9 +7,9 @@ bin
 demo/
 netcoreapp3.1
 *.vs
-src/Program/Config
-src/Program/netcoreapp3.1
-src/Program/AddIn
-src/Program/AddIn/Bin
-release/
+/src/Program/Config
+/src/Program/netcoreapp3.1
+/src/Program/AddIn
+/src/Program/Bin
+/release
 *.exe
