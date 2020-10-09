@@ -33,7 +33,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 阻止编辑
         /// </summary>
-        [DataMember, JsonProperty("DenyScope",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("DenyScope", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal AccessScopeType _denyScope;
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 最大字段标识号
         /// </summary>
-        [DataMember, JsonProperty("MaxIdentity",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("MaxIdentity", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal int _maxIdentity;
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace Agebull.EntityModel.Config
         /// 主键字段
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        IFieldConfig IEntityConfig.PrimaryColumn => PrimaryColumn== null || PrimaryColumn.IsDiscard ? null : PrimaryColumn;
+        IFieldConfig IEntityConfig.PrimaryColumn => PrimaryColumn == null || PrimaryColumn.IsDiscard ? null : PrimaryColumn;
 
         /// <summary>
         /// 主键字段
@@ -137,7 +137,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// Redis唯一键模板
         /// </summary>
-        [DataMember, JsonProperty("RedisKey",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("RedisKey", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _redisKey;
 
         /// <summary>
@@ -167,13 +167,13 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 是否查询
         /// </summary>
-        [DataMember, JsonProperty("isQuery",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("isQuery", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         public bool IsQuery { get; set; }
 
         /// <summary>
         /// 非标准数据类型
         /// </summary>
-        [DataMember, JsonProperty("noStandardDataType",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("noStandardDataType", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _noStandardDataType;
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 实体名称
         /// </summary>
-        [DataMember, JsonProperty("EntityName",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("EntityName", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _entityName;
 
         /// <summary>
@@ -229,7 +229,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 参考类型
         /// </summary>
-        [DataMember, JsonProperty("ReferenceType",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("ReferenceType", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private string _referenceType;
         /// <summary>
         /// 参考类型
@@ -255,7 +255,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 模型
         /// </summary>
-        [DataMember, JsonProperty("ModelInclude",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("ModelInclude", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _modelInclude;
 
         /// <summary>
@@ -282,7 +282,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 基类
         /// </summary>
-        [DataMember, JsonProperty("ModelBase",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("ModelBase", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _modelBase;
 
         /// <summary>
@@ -309,7 +309,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 接口是否为显示实现
         /// </summary>
-        [DataMember, JsonProperty("_interfaceInner",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_interfaceInner", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _interfaceInner;
 
         /// <summary>
@@ -337,7 +337,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 数据版本
         /// </summary>
-        [DataMember, JsonProperty("_dataVersion",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_dataVersion", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal int _dataVersion;
 
         /// <summary>
@@ -364,7 +364,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 内部数据
         /// </summary>
-        [DataMember, JsonProperty("_isInternal",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_isInternal", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _isInternal;
 
         /// <summary>
@@ -391,7 +391,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 是否类
         /// </summary>
-        [DataMember, JsonProperty("noDataBase",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("noDataBase", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _noDataBase;
 
         /// <summary>
@@ -418,7 +418,39 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 继承的接口集合
         /// </summary>
-        [DataMember, JsonProperty("Interfaces",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("dataInterfaces", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal List<string> _dataInterfaces;
+
+        /// <summary>
+        /// 继承的接口集合
+        /// </summary>
+        /// <remark>
+        /// 说明
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据模型"), DisplayName(@"继承的接口集合"), Description("说明")]
+        public List<string> DataInterfaces
+        {
+            get
+            {
+                if (_dataInterfaces == null)
+                {
+                    _dataInterfaces = new List<string>();
+                    if (!string.IsNullOrWhiteSpace(_interfaces))
+                    {
+                        var array = _interfaces.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (array.Length > 0)
+                            _dataInterfaces.AddRange(array);
+                    }
+                }
+                return _dataInterfaces;
+            }
+        }
+
+        /// <summary>
+        /// 继承的接口集合
+        /// </summary>
+        [DataMember, JsonProperty("Interfaces", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _interfaces;
 
         /// <summary>
@@ -431,14 +463,22 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据模型"), DisplayName(@"继承的接口集合"), Description("说明")]
         public string Interfaces
         {
-            get => _interfaces ?? "";
+            get => _dataInterfaces == null ? "" : string.Join(',', _dataInterfaces);
             set
             {
                 if (_interfaces == value)
                     return;
                 BeforePropertyChanged(nameof(Interfaces), _interfaces, value);
                 _interfaces = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(Interfaces));
+
+                _dataInterfaces = new List<string>();
+                if (!string.IsNullOrWhiteSpace(_interfaces))
+                {
+                    var array = _interfaces.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (array.Length > 0)
+                        _dataInterfaces.AddRange(array);
+                }
+                OnPropertyChanged(nameof(DataInterfaces));
             }
         }
         #endregion
@@ -449,7 +489,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 列序号起始值
         /// </summary>
-        [DataMember, JsonProperty("ColumnIndexStart",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("ColumnIndexStart", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal int _columnIndexStart;
 
         /// <summary>
@@ -486,7 +526,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 不同版本读数据的代码
         /// </summary>
-        [DataMember, JsonProperty("_readCoreCodes",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_readCoreCodes", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal Dictionary<int, string> _readCoreCodes;
 
         /// <summary>
@@ -513,7 +553,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 接口定义
         /// </summary>
-        [DataMember, JsonProperty("IsInterface",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("IsInterface", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _isInterface;
 
         /// <summary>
@@ -570,7 +610,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 字段列表
         /// </summary>
-        [DataMember, JsonProperty("_properties",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_properties", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal ConfigCollection<FieldConfig> _properties;
 
         /// <summary>
@@ -615,7 +655,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 存储表名(设计录入)
         /// </summary>
-        [DataMember, JsonProperty("_tableName",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_tableName", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _readTableName;
 
         /// <summary>
@@ -648,7 +688,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 存储表名
         /// </summary>
-        [DataMember, JsonProperty("_saveTableName",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_saveTableName", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _saveTableName;
 
         /// <summary>
@@ -677,7 +717,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 数据库编号
         /// </summary>
-        [DataMember, JsonProperty("_dbIndex",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_dbIndex", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal int _dbIndex;
 
         /// <summary>
@@ -704,7 +744,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 按修改更新
         /// </summary>
-        [DataMember, JsonProperty("UpdateByModified",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("UpdateByModified", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _updateByModified;
 
         /// <summary>
@@ -734,7 +774,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 接口名称
         /// </summary>
-        [DataMember, JsonProperty("_apiName",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_apiName", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _apiName;
 
         /// <summary>
@@ -763,7 +803,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 是否有界面
         /// </summary>
-        [DataMember, JsonProperty("haseEasyUi",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("haseEasyUi", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _haseEasyUi;
 
         /// <summary>
@@ -786,7 +826,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 界面只读
         /// </summary>
-        [DataMember, JsonProperty("isUiReadOnly",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("isUiReadOnly", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _isUiReadOnly;
 
         /// <summary>
@@ -809,7 +849,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 页面文件夹名称
         /// </summary>
-        [DataMember, JsonProperty("PageFolder",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("PageFolder", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _pageFolder;
 
         /// <summary>
@@ -848,7 +888,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 树形界面
         /// </summary>
-        [DataMember, JsonProperty("TreeUi",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("TreeUi", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _treeUi;
 
         /// <summary>
@@ -875,7 +915,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 编辑页面最大化
         /// </summary>
-        [DataMember, JsonProperty("MaxForm",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("MaxForm", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _maxForm;
 
         /// <summary>
@@ -902,7 +942,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 编辑页面分几列
         /// </summary>
-        [DataMember, JsonProperty("FormCloumn",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("FormCloumn", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal int _formCloumn;
 
         /// <summary>
@@ -929,7 +969,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 列表详细页
         /// </summary>
-        [DataMember, JsonProperty("ListDetails",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("ListDetails", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _listDetails;
 
         /// <summary>
@@ -956,7 +996,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 主键正序
         /// </summary>
-        [DataMember, JsonProperty("NoSort",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("NoSort", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _noSort;
 
         /// <summary>
@@ -983,7 +1023,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 主页面类型
         /// </summary>
-        [DataMember, JsonProperty("PanelType",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("PanelType", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal PanelType _panelType;
 
         /// <summary>
@@ -1013,7 +1053,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// C++名称
         /// </summary>
-        [DataMember, JsonProperty("CppName",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("CppName", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _cppName;
 
         /// <summary>

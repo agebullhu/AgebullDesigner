@@ -478,7 +478,8 @@ ALTER TABLE `{entity.SaveTableName}`
 
         private static string NullKeyWord(IFieldConfig col)
         {
-            return col.CsType == "string" || col.DbNullable ? " NULL" : " NOT NULL";
+            return !col.IsPrimaryKey && col.UniqueIndex >= 0 && !col.IsGlobalKey && (col.CsType == "string" || col.DbNullable) 
+                ? " NULL" : " NOT NULL";
         }
 
         private static string ColumnDefault(IFieldConfig col)
@@ -555,7 +556,7 @@ ALTER TABLE `{entity.SaveTableName}`
             var sql = new StringBuilder();
             fields = fields.Where(p => !p.DbInnerField && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)).ToArray();
             var isFirst = true;
-            foreach (var property in fields.Where(p=> !IsNullOrEmpty(p.Having)&& !IsNullOrEmpty(p.Function)))
+            foreach (var property in fields.Where(p => !IsNullOrEmpty(p.Having) && !IsNullOrEmpty(p.Function)))
             {
                 if (isFirst)
                 {
@@ -575,7 +576,7 @@ ALTER TABLE `{entity.SaveTableName}`
             if (fields.All(p => IsNullOrEmpty(p.Function)))
                 return "null";
             var sql = new StringBuilder();
-            fields = fields.Where(p => IsNullOrEmpty(p.Function) &&!p.DbInnerField && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)).ToArray();
+            fields = fields.Where(p => IsNullOrEmpty(p.Function) && !p.DbInnerField && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)).ToArray();
             var isFirst = true;
             foreach (var property in fields)
             {

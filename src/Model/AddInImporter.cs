@@ -41,12 +41,17 @@ namespace Agebull.EntityModel.Designer
             importer.Prepare();
             importer.AutoRegist();
         }
+
         /// <summary>  
         ///构造 
         /// </summary>  
         private void Prepare()
         {
-            var root = Path.GetDirectoryName(GetType().Assembly.Location);
+#if DEBUG
+            var root = Path.GetDirectoryName(Environment.CurrentDirectory);
+#else
+            var root = Environment.CurrentDirectory;
+#endif
             var path = Path.Combine(root, "AddIn");
             if (!Directory.Exists(path))
             {

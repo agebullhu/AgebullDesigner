@@ -24,8 +24,18 @@ namespace Agebull.EntityModel.Config
         {
             return FirstOrDefault(Entities, func);
         }
-        
 
+
+        /// <summary>
+        ///     查找实体对象
+        /// </summary>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        public static IEnumerable<EntityConfig> GetEntities(Func<EntityConfig, bool> func)
+        {
+            lock (Entities)
+                return Entities.Where(func);
+        }
 
         /// <summary>
         ///     取得实体对象

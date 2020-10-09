@@ -66,6 +66,17 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "工具",
                 SignleSoruce = false,
                 IsButton = false,
+                Caption = "接口识别",
+                Action = AutoInterface,
+                SoruceView = "argument",
+                IconName = "tree_Open"
+            });
+
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                Catalog = "工具",
+                SignleSoruce = false,
+                IsButton = false,
                 Caption = "组织单元只读",
                 Action = SiteReadOnly,
                 SoruceView = "argument",
@@ -103,6 +114,35 @@ namespace Agebull.EntityModel.Designer
             entity.Classify = cls.Name;
             cls.Items.Add(entity);
         }
+
+        /// <summary>
+        ///     接口识别
+        /// </summary>
+        /// <param name="entity"></param>
+        public void AutoInterface(EntityConfig entity)
+        {
+            foreach (var i in GlobalConfig.GetEntities(p => p.IsInterface))
+            {
+                bool all = true;
+                foreach (var pro in i.Properties.Where(p => !p.IsDiscard && !p.IsDelete))
+                {
+                    if (entity.Properties.Any(p => p.ReferenceKey == pro.Key || string.Equals(p.DbFieldName , pro.DbFieldName,StringComparison.OrdinalIgnoreCase)))
+                        continue;
+                    all = false;
+                    break;
+                }
+                if (!all)
+                    continue;
+                if (!entity.DataInterfaces.Contains(i.Name))
+                    entity.DataInterfaces.Add(i.Name);
+                foreach (var pro in i.Properties.Where(p => !p.IsDiscard && !p.IsDelete))
+                {
+                    var link = entity.Properties.First(p => p.ReferenceKey == pro.Key || string.Equals(p.DbFieldName, pro.DbFieldName, StringComparison.OrdinalIgnoreCase));
+                    entity.Properties.Remove(link);
+                }
+            }
+        }
+
         /// <summary>
         /// 数据对象名称检查
         /// </summary>

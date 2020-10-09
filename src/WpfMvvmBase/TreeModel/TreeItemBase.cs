@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
@@ -73,19 +74,13 @@ namespace Agebull.EntityModel
             get;
             private set;
         }
-        /// <summary>
-        /// 刷新显示
-        /// </summary>
-        public void ReShow()
-        {
-            ReBuildItems();
-        }
+
         /// <summary>
         /// 找上级节点
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public TreeItem<T> FindParent<T>() where T : class
+        public TreeItem<T> FindParent<T>() where T : class, new()
         {
             if (Parent == null)
                 return null;
@@ -106,46 +101,17 @@ namespace Agebull.EntityModel
         /// 找对应节点
         /// </summary>
         /// <returns></returns>
-        public TreeItem Find(Func<TreeItem, bool?> func)
+        public void Foreach(Action<TreeItem> action, bool all)
         {
             foreach (var item in Items)
             {
-                var re = func(item);
-                if (re == true)
-                    return item;
-                if (re == null)
-                    continue;
-                var ch = item.Find(func);
-                if (ch != null)
-                    return ch;
-            }
-            return null;
-        }
-        /// <summary>
-        /// 找对应节点
-        /// </summary>
-        /// <returns></returns>
-        public void Find(Func<TreeItem, bool> func,Action<TreeItem> action)
-        {
-            foreach (var item in Items)
-            {
-                if (func(item))
-                    action(item);
-                item.Find(func, action);
-            }
-        }
-        /// <summary>
-        /// 找对应节点
-        /// </summary>
-        /// <returns></returns>
-        public void Foreach(Action<TreeItem> action)
-        {
-            foreach (var item in Items)
-            {
+                if (all)
+                    item.IsExpanded = true;
                 action(item);
-                item.Foreach(action);
+                item.Foreach(action, all);
             }
         }
+
         private Visibility _visibility = Visibility.Visible;
 
         /// <summary>
@@ -180,18 +146,10 @@ namespace Agebull.EntityModel
                     return;
                 }
                 _isExpend = value;
-                RaisePropertyChanged(() => IsExpanded);
                 OnIsExpandedChanged();
+                RaisePropertyChanged(() => IsExpanded);
             }
         }
-
-        /// <summary>
-        /// 展开状态变化的处理
-        /// </summary>
-        protected virtual void OnIsExpandedChanged()
-        {
-        }
-
         /// <summary>
         ///     是否被界面选中
         /// </summary>
@@ -209,7 +167,6 @@ namespace Agebull.EntityModel
                 RaisePropertyChanged(() => IsUiSelected);
             }
         }
-        
 
         /// <summary>
         ///     是否选中
@@ -242,13 +199,7 @@ namespace Agebull.EntityModel
                 RaisePropertyChanged(() => SelectPath);
             }
         }
-        /// <summary>
-        /// 载入时的处理
-        /// </summary>
-        protected virtual void OnLoading()
-        {
 
-        }
         /// <summary>
         ///     子级节点发生变化的处理
         /// </summary>
@@ -263,38 +214,13 @@ namespace Agebull.EntityModel
             foreach (TreeItem item in e.NewItems)
             {
                 item.Parent = this;
-                item.OnLoading();
-                OnItemsCollectionChanged(item);
+                item.ReBuildItems();
             }
         }
 
         protected virtual void OnSourceModify()
         {
         }
-
-        /// <summary>
-        ///     子级节点发生变化的处理
-        /// </summary>
-        /// <param name="item"></param>
-        protected virtual void OnItemsCollectionChanged(TreeItem item)
-        {
-
-        }
-
-        /// <summary>
-        ///     当前选择发生变化
-        /// </summary>
-        protected virtual void OnIsSelectChanged()
-        {
-        }
-
-        /// <summary>
-        ///     子级选择发生变化
-        /// </summary>
-        /// <param name="select">是否选中</param>
-        /// <param name="child">子级</param>
-        /// <param name="selectItem">选中的对象</param>
-        protected internal abstract void OnChildIsSelectChanged(bool select, TreeItemBase child, TreeItemBase selectItem);
 
         #region 自动同步子级
 
@@ -329,44 +255,7 @@ namespace Agebull.EntityModel
                 {
                     _notifyItems.CollectionChanged += OnFriendItemsCollectionChanged;
                 }
-
-                ReBuildItems();
             }
-        }
-
-        private void ReBuildItems()
-        {
-            Items.Clear();
-            if (!(_friendItems is IEnumerable values))
-            {
-                return;
-            }
-            foreach (var value in values)
-            {
-                Items.Add(CreateChild(value));
-            }
-        }
-        /// <summary>
-        ///     子级
-        /// </summary>
-        public Func<object, TreeItem> CreateChildFunc
-        {
-            get;
-            set;
-        }
-        /// <summary>
-        /// 生成子级
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public TreeItem CreateChild(object value)
-        {
-            TreeItem item = CreateChildFunc(value);
-
-            var extend = value as IExtendDependencyObjects;
-            extend?.Dependency.Annex(item);
-
-            return item;
         }
         /// <summary>
         ///     子级节点发生变化的处理
@@ -375,38 +264,24 @@ namespace Agebull.EntityModel
         /// <param name="e"></param>
         private void OnFriendItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            WorkContext.SynchronousContext.BeginInvokeInUiThread(OnFriendItemsCollectionChanged, e);
+            if (IsExpanded)
+                WorkContext.SynchronousContext.BeginInvokeInUiThread(OnFriendItemsCollectionChanged, e);
         }
 
-        private void OnFriendItemsCollectionChanged(NotifyCollectionChangedEventArgs e)
+        /// <summary>
+        ///     当前选择发生变化
+        /// </summary>
+        protected virtual void OnIsSelectChanged()
         {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Move:
-                    return;
-                case NotifyCollectionChangedAction.Reset:
-                    ReBuildItems();
-                    return;
-            }
-            if (e.NewItems != null)
-            {
-                foreach (var item in e.NewItems)
-                {
-                    Items.Add(CreateChild(item));
-                }
-            }
-            if (e.OldItems == null)
-                return;
-            foreach (var item in e.OldItems)
-            {
-                var ch = Items.FirstOrDefault(p => p.Source == item);
-                if (ch != null)
-                {
-                    Items.Remove(ch);
-                }
-            }
         }
 
+        /// <summary>
+        ///     子级选择发生变化
+        /// </summary>
+        /// <param name="select">是否选中</param>
+        /// <param name="child">子级</param>
+        /// <param name="selectItem">选中的对象</param>
+        protected internal abstract void OnChildIsSelectChanged(bool select, TreeItemBase child, TreeItemBase selectItem);
 
         #endregion
         #region 关联对象
@@ -489,7 +364,8 @@ namespace Agebull.EntityModel
         {
             if (e.PropertyName != _soruceItemsName)
                 return;
-            FriendItems = GetSoruceItems();
+            if (IsExpanded)
+                FriendItems = GetSoruceItems();
             if (e.PropertyName != "IsModify" || Source == null)
                 return;
             OnSourceModify();
@@ -534,7 +410,7 @@ namespace Agebull.EntityModel
                 GetSoruceItems = ReflectionHelper.GetFunc(value);
                 FriendItems = GetSoruceItems();
             }
-            
+
         }
 
         #endregion
@@ -571,5 +447,155 @@ namespace Agebull.EntityModel
 
         #endregion
 
+        #region 子级构造
+
+        protected object EmptyConfig = new SimpleConfig
+        {
+            Name = "...",
+            Caption = "..."
+        };
+
+        private void OnFriendItemsCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Move:
+                    return;
+                case NotifyCollectionChangedAction.Reset:
+                    ReBuildItems();
+                    return;
+            }
+            if (e.NewItems != null)
+            {
+                CreateItems(e.NewItems);
+            }
+            if (e.OldItems == null)
+                return;
+            foreach (var item in e.OldItems)
+            {
+                var ch = Items.FirstOrDefault(p => p.Source == item);
+                if (ch != null)
+                {
+                    Items.Remove(ch);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 子级显示状态：0 无状态 1 关闭 2 打开 3 静态树
+        /// </summary>
+        public int ItemsState { get; set; }
+
+        /// <summary>
+        /// 展开状态变化的处理
+        /// </summary>
+        void OnIsExpandedChanged()
+        {
+            if (ItemsState == 3)
+                return;
+            if (IsExpanded)
+            {
+                if (ItemsState != 2)
+                    ReBuildItems();
+            }
+            else if (ItemsState != 1)
+            {
+                ReBuildItems();
+            }
+        }
+
+        public void ReBuildItems()
+        {
+            Items.Clear();
+            if (ItemsState == 3)
+            {
+                CreateItems();
+            }
+            else if (IsExpanded)
+            {
+                ItemsState = 2;
+                CreateItems();
+            }
+            else
+            {
+                ItemsState = 1;
+                var items = CreateChild(EmptyConfig);
+                if (items != null && items.Count > 0)
+                    Items.AddRange(items);
+            }
+        }
+
+        /// <summary>
+        ///     子级
+        /// </summary>
+        public Func<object, TreeItem> CreateChildFunc
+        {
+            set
+            {
+                CreateChildrenFunc = obj => new List<TreeItem> { value(obj) };
+            }
+        }
+
+        /// <summary>
+        ///     子级
+        /// </summary>
+        public Func<object, List<TreeItem>> CreateChildrenFunc
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 清除节点
+        /// </summary>
+        public void ClearItems()
+        {
+            Items.Clear();
+        }
+
+        /// <summary>
+        /// 生成子级
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        protected virtual void CreateItems()
+        {
+            if (FriendItems is IEnumerable values)
+            {
+                CreateItems(values);
+            }
+        }
+
+        /// <summary>
+        /// 生成子级
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        protected void CreateItems(IEnumerable values)
+        {
+            foreach (var value in values)
+            {
+                var items = CreateChild(value);
+                if (items != null && items.Count > 0)
+                    Items.AddRange(items);
+            }
+        }
+
+        /// <summary>
+        /// 生成子级
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public List<TreeItem> CreateChild(object value)
+        {
+            var chd = CreateChildrenFunc?.Invoke(value) ?? new List<TreeItem>();
+            foreach (var item in chd)
+            {
+                var extend = value as IExtendDependencyObjects;
+                extend?.Dependency.Annex(item);
+            }
+            return chd;
+        }
+        #endregion
     }
 }

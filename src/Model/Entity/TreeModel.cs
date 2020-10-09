@@ -6,6 +6,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -42,92 +44,124 @@ namespace Agebull.EntityModel.Designer
             using (WorkModelScope.CreateScope(WorkModel.Show))
                 CreateTree();
         }
+        #endregion
+
+
+        #region 构建
+
+        #region 解决方案
+
         /// <summary>
         /// 
         /// </summary>
         public void CreateTree()
         {
             TreeRoot.SelectItemChanged -= OnTreeSelectItemChanged;
-            TreeRoot.Items.Clear();
-            var node = new ConfigTreeItem<SolutionConfig>(Context.Solution)
+            TreeRoot.ClearItems();
+
+            TreeRoot.Items.Add(new ConfigTreeItem<SolutionConfig>(Context.Solution)
             {
                 IsExpanded = true,
                 Header = Context.Solution.Caption,
                 HeaderField = "Caption,Name",
                 HeaderExtendExpression = p => p.Caption ?? p.Name,
-                CreateChildFunc = CreateProjectTreeItem,
+                CreateChildrenFunc = CreateProjectTreeItem,
                 SoruceItemsExpression = () => Context.Solution.ProjectList,
                 SoruceTypeIcon = Application.Current.Resources["tree_Solution"] as BitmapImage
-            };
-            TreeRoot.Items.Add(node);
+            });
             TreeRoot.SelectItemChanged += OnTreeSelectItemChanged;
         }
 
         #endregion
 
-
-        #region 构建
-
         #region 项目
 
-        private TreeItem CreateProjectTreeItem(object arg)
+        private List<TreeItem> CreateProjectTreeItem(object arg)
         {
-            var project = (ProjectConfig)arg;
-            TreeItem node = new ConfigTreeItem<ProjectConfig>(project)
+            var items = new List<TreeItem>();
+            if (arg is ProjectConfig project)
             {
-                IsAssist = true,
-                IsExpanded = true,
-                SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
-            };
-            var eitem = new ConfigTreeItem<ProjectConfig>(project)
+                items.Add(new ConfigTreeItem<ProjectConfig>(project)
+                {
+                    CreateChildrenFunc = CreateProjectClassifiesTreeItem,
+                    IsAssist = true,
+                    IsExpanded = false,
+                    SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
+                });
+            }
+            else
             {
-                IsAssist = true,
-                Header = "实体",
-                SoruceView = "entity",
-                HeaderField = null,
-                Tag = nameof(EntityConfig),
-                CreateChildFunc = CreateEntityClassifiesTreeItem,
-                SoruceItemsExpression = () => project.Classifies,
-                SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
-            };
-            node.Items.Add(eitem);
-            var mitem = new ConfigTreeItem<ProjectConfig>(project)
-            {
-                IsAssist = true,
-                Header = "模型",
-                Tag = nameof(ModelConfig),
-                SoruceView = "model",
-                HeaderField = null,
-                CreateChildFunc = CreateModelTreeItem,
-                SoruceItemsExpression = () => project.Models,
-                SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
-            };
-            node.Items.Add(mitem);
-            //Model.CppModel.AddCppApiNode(node);
-            AddCustomTypeNode(node, project);
-
-            var citem = new ConfigTreeItem<ProjectConfig>(project)
-            {
-                IsAssist = true,
-                Header = "API",
-                Tag = "API",
-                SoruceView = "api",
-                HeaderField = null,
-                CreateChildFunc = CreateApiItemTreeItem,
-                SoruceItemsExpression = () => project.ApiItems,
-                SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
-            };
-            node.Items.Add(citem);
-            return node;
+                items.Add(new TreeItem(arg));
+            }
+            return items;
         }
 
+        private List<TreeItem> CreateProjectClassifiesTreeItem(object arg)
+        {
+            var items = new List<TreeItem>();
+            if (arg is ProjectConfig project)
+            {
+                items.Add(new ConfigTreeItem<ProjectConfig>(project)
+                {
+                    IsAssist = true,
+                    Header = "实体",
+                    SoruceView = "entity",
+                    HeaderField = null,
+                    Tag = nameof(EntityConfig),
+                    CreateChildFunc = CreateEntityClassifiesTreeItem,
+                    SoruceItemsExpression = () => project.Classifies,
+                    SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
+                });
+                items.Add(new ConfigTreeItem<ProjectConfig>(project)
+                {
+                    IsAssist = true,
+                    Header = "模型",
+                    Tag = nameof(ModelConfig),
+                    SoruceView = "model",
+                    HeaderField = null,
+                    CreateChildFunc = CreateModelTreeItem,
+                    SoruceItemsExpression = () => project.Models,
+                    SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
+                });
+                //Model.CppModel.AddCppApiNode(node);
+                items.Add(new ConfigTreeItem<ProjectConfig>(project)
+                {
+                    IsAssist = true,
+                    //IsExpanded = true,
+                    Header = "枚举",
+                    SoruceView = "enum",
+                    HeaderField = null,
+                    CreateChildFunc = CreateEnumTreeItem,
+                    SoruceItemsExpression = () => project.Enums,
+                    SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
+                });
+
+                //items.Add(new ConfigTreeItem<ProjectConfig>(project)
+                //{
+                //    IsAssist = true,
+                //    Header = "API",
+                //    Tag = "API",
+                //    SoruceView = "api",
+                //    HeaderField = null,
+                //    CreateChildFunc = CreateApiItemTreeItem,
+                //    SoruceItemsExpression = () => project.ApiItems,
+                //    SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
+                //});
+            }
+            else
+            {
+                items.Add(new TreeItem(arg));
+            }
+            return items;
+        }
         #endregion
 
         #region 实体
 
         private TreeItem CreateEntityClassifiesTreeItem(object charg)
         {
-            var child = (EntityClassify)charg;
+            if (!(charg is EntityClassify child))
+                return new TreeItem(charg);
             return new ConfigTreeItem<EntityClassify>(child)
             {
                 IsAssist = true,
@@ -145,7 +179,8 @@ namespace Agebull.EntityModel.Designer
         internal TreeItem CreateEntityTreeItem(object arg)
         {
             if (!(arg is EntityConfig entity))
-                return null;
+                return new TreeItem(arg);
+
             foreach (var col in entity.Properties)
                 col.Entity = entity;
             var tableItem = new ConfigTreeItem<EntityConfig>(entity)
@@ -173,7 +208,9 @@ namespace Agebull.EntityModel.Designer
 
         private TreeItem CreateFieldTreeItem(object arg)
         {
-            var property = (FieldConfig)arg;
+            if (!(arg is FieldConfig property))
+                return new TreeItem(arg);
+
             return new ConfigTreeItem<FieldConfig>(property)
             {
                 Tag = nameof(EntityConfig),
@@ -226,7 +263,7 @@ namespace Agebull.EntityModel.Designer
                 case null:
                 case nameof(FieldConfig.CustomType):
                 case nameof(FieldConfig.ReferenceType):
-                    item.Items.Clear();
+                    item.ClearItems();
                     if (property.CustomType == null)
                         break;
                     property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
@@ -235,7 +272,7 @@ namespace Agebull.EntityModel.Designer
                     item.Items.Add(CreateEnumTreeItem(property.EnumConfig));
                     return;
                 case nameof(FieldConfig.EnumConfig):
-                    item.Items.Clear();
+                    item.ClearItems();
                     if (property.EnumConfig == null)
                         return;
                     item.Items.Add(CreateEnumTreeItem(property.EnumConfig));
@@ -256,7 +293,9 @@ namespace Agebull.EntityModel.Designer
 
         private TreeItem CreateCommandTreeItem(object arg)
         {
-            var cmd = (UserCommandConfig)arg;
+            if (!(arg is UserCommandConfig cmd))
+                return new TreeItem(arg);
+
             var colItem = new ConfigTreeItem<UserCommandConfig>(cmd)
             {
                 IsExpanded = true,
@@ -268,12 +307,14 @@ namespace Agebull.EntityModel.Designer
         }
 
         #endregion
+
         #region 模型
 
         internal TreeItem CreateModelTreeItem(object arg)
         {
             if (!(arg is ModelConfig entity))
-                return null;
+                return new TreeItem(arg);
+
             foreach (var col in entity.Properties)
                 col.Model = entity;
             var tableItem = new ConfigTreeItem<ModelConfig>(entity)
@@ -288,7 +329,9 @@ namespace Agebull.EntityModel.Designer
 
         private TreeItem CreatePropertyTreeItem(object arg)
         {
-            var property = (PropertyConfig)arg;
+            if (!(arg is PropertyConfig property))
+                return new TreeItem(arg);
+
             return new ConfigTreeItem<PropertyConfig>(property)
             {
                 Tag = nameof(ModelConfig),
@@ -342,7 +385,7 @@ namespace Agebull.EntityModel.Designer
                 case null:
                 case nameof(FieldConfig.CustomType):
                 case nameof(FieldConfig.ReferenceType):
-                    item.Items.Clear();
+                    item.ClearItems();
                     if (property.CustomType == null)
                         break;
                     property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
@@ -351,7 +394,7 @@ namespace Agebull.EntityModel.Designer
                     item.Items.Add(CreateEnumTreeItem(property.EnumConfig));
                     return;
                 case nameof(FieldConfig.EnumConfig):
-                    item.Items.Clear();
+                    item.ClearItems();
                     if (property.EnumConfig == null)
                         return;
                     item.Items.Add(CreateEnumTreeItem(property.EnumConfig));
@@ -371,27 +414,14 @@ namespace Agebull.EntityModel.Designer
             }
         }
         #endregion
+
         #region 枚举
-
-        private void AddCustomTypeNode(TreeItem node, ProjectConfig project)
-        {
-            node.Items.Add(new ConfigTreeItem<ProjectConfig>(project)
-            {
-                IsAssist = true,
-                //IsExpanded = true,
-                Header = "枚举",
-                SoruceView = "enum",
-                HeaderField = null,
-                CreateChildFunc = CreateEnumTreeItem,
-                SoruceItemsExpression = () => project.Enums,
-                SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
-            });
-        }
-
 
         private TreeItem CreateEnumTreeItem(object arg)
         {
-            var enumConfig = (EnumConfig)arg;
+            if (!(arg is EnumConfig enumConfig))
+                return new TreeItem(arg);
+
             return new ConfigTreeItem<EnumConfig>(enumConfig)
             {
                 CreateChildFunc = CreateEnumItem,
@@ -401,7 +431,10 @@ namespace Agebull.EntityModel.Designer
         }
         private TreeItem CreateEnumItem(object arg)
         {
-            return new ConfigTreeItem<EnumItem>((EnumItem)arg)
+            if (!(arg is EnumItem enumConfig))
+                return new TreeItem(arg);
+
+            return new ConfigTreeItem<EnumItem>(enumConfig)
             {
                 HeaderField = "Name,Value,Caption",
                 HeaderExtendExpression = p => $"{p.Name}:{p.Value}〖{p.Caption}〗",
@@ -415,7 +448,9 @@ namespace Agebull.EntityModel.Designer
 
         public TreeItem CreateApiItemTreeItem(object arg)
         {
-            var child = (ApiItem)arg;
+            if (!(arg is ApiItem child))
+                return new TreeItem(arg);
+
             var item = new ConfigTreeItem<ApiItem>(child)
             {
                 Header = child.Name,
@@ -466,12 +501,12 @@ namespace Agebull.EntityModel.Designer
             switch (e.PropertyName)
             {
                 case "Argument":
-                    item.Items.Clear();
+                    item.ClearItems();
                     if (child.Argument != null)
                         item.Items.Add(Model.Tree.CreateEntityTreeItem(child.Argument));
                     break;
                 case "Result":
-                    item.Items.Clear();
+                    item.ClearItems();
                     if (child.Result != null)
                         item.Items.Add(Model.Tree.CreateEntityTreeItem(child.Result));
                     break;
@@ -554,20 +589,23 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void Find(object arg)
         {
-            if (string.IsNullOrWhiteSpace(Context.FindKey))
+            Task.Factory.StartNew(()=>
             {
-                TreeRoot.Foreach(p =>
+                if (string.IsNullOrWhiteSpace(Context.FindKey))
                 {
-                    if (p.Visibility != Visibility.Visible)
+                    TreeRoot.Foreach(p =>
+                    {
                         p.Visibility = Visibility.Visible;
-                    p.IsExpanded = false;
-                });
-                return;
-            }
-
-            var count = 0;
-            Find(TreeRoot, ref count);
-            Context.StateMessage = $"查找成功-{count}个";
+                        p.IsExpanded = false;
+                    }, false);
+                }
+                else
+                {
+                    var count = 0;
+                    Find(TreeRoot, ref count);
+                    Context.StateMessage = $"查找成功-{count}个";
+                }
+            });
         }
 
         /// <summary>
@@ -584,13 +622,18 @@ namespace Agebull.EntityModel.Designer
             }
             foreach (var item in par.Items)
             {
+                item.IsExpanded = true;
                 if (Find(item, ref count))
                 {
                     hase = true;
-                    item.IsExpanded = true;
+                    item.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    item.IsExpanded = false;
+                    item.Visibility = Visibility.Collapsed;
                 }
             }
-            par.Visibility = hase ? Visibility.Visible : Visibility.Collapsed;
 
             return hase;
         }

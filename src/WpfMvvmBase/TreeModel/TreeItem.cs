@@ -29,7 +29,7 @@ namespace Agebull.EntityModel
     ///     树节点模型
     /// </summary>
     public class TreeItem<TModel> : TreeItem
-            where TModel : class
+            where TModel : class, new()
     {
         #region 属性
 
@@ -144,16 +144,16 @@ namespace Agebull.EntityModel
 
         #region 子级同步处理
 
-        /// <summary>
-        /// 展开状态变化的处理
-        /// </summary>
-        protected override void OnIsExpandedChanged()
-        {
-            if (IsExpanded && ChildsStatus <= CommandStatus.Faulted)
-            {
-                Load();
-            }
-        }
+        ///// <summary>
+        ///// 展开状态变化的处理
+        ///// </summary>
+        //protected override void OnIsExpandedChanged()
+        //{
+        //    if (IsExpanded && ChildsStatus <= CommandStatus.Faulted)
+        //    {
+        //        Load();
+        //    }
+        //}
 
 
         #endregion
@@ -315,6 +315,25 @@ namespace Agebull.EntityModel
         #region 载入
 
         /// <summary>
+        /// 生成子级
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        protected override void CreateItems()
+        {
+            if (FriendItems is IEnumerable values)
+            {
+                CreateItems(values);
+            }
+            else if (CreateChildrenFunc != null)
+            {
+                var items = CreateChild(Model);
+                if (items != null && items.Count > 0)
+                    Items.AddRange(items);
+            }
+        }
+
+        /// <summary>
         ///     载入子级
         /// </summary>
         public void Load()
@@ -328,7 +347,7 @@ namespace Agebull.EntityModel
         private bool BeginLoad(TModel args)
         {
             ChildsStatus = CommandStatus.Executing;
-            Items.Clear();
+            ClearItems();
             return true;
         }
 
@@ -351,7 +370,7 @@ namespace Agebull.EntityModel
         }
 
         #endregion
-        
+
         public ICommand Command { get; set; }
     }
 

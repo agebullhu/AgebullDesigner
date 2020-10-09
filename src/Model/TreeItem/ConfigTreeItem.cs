@@ -15,8 +15,9 @@ namespace Agebull.EntityModel.Designer
     ///     树节点模型
     /// </summary>
     public class ConfigTreeItem<TModel> : TreeItem<TModel>
-        where TModel : ConfigBase
+        where TModel : ConfigBase, new()
     {
+
         /// <summary>
         ///     构造
         /// </summary>
@@ -106,12 +107,15 @@ namespace Agebull.EntityModel.Designer
             HeaderExtendExpression = FormatTitle;
             StatusField = "IsReference,IsDelete,IsFreeze,Discard";
             StatusExpression = p => GetImage(p);
-            Source.PropertyChanged += OnModelPropertyChanged;
+            if (Source != null)
+                Source.PropertyChanged += OnModelPropertyChanged;
         }
 
 
         private string FormatTitle(TModel m)
         {
+            if (m == null)
+                return "...";
             var pi = m as ParentConfigBase;
             return pi?.Abbreviation == null
                 ? $"{m.Caption}({m.Name})"
@@ -122,18 +126,18 @@ namespace Agebull.EntityModel.Designer
         {
             ModelPropertyChanged?.Invoke(this, e);
         }
+
         protected override void CreateCommandList(List<CommandItemBase> commands)
         {
             var treeItem = Parent as TreeItem;
-            if (treeItem?.CreateChildFunc != null)
-                commands.Add(new CommandItem
-                {
-                    Source = this,
-                    Caption = "刷新",
-                    Catalog = "视图",
-                    Action = arg => ReBuildChild(),
-                    Image = Application.Current.Resources["img_flush"] as ImageSource
-                });
+            commands.Add(new CommandItem
+            {
+                Source = this,
+                Caption = "刷新",
+                Catalog = "视图",
+                Action = arg => ReBuildChild(),
+                Image = Application.Current.Resources["img_flush"] as ImageSource
+            });
             base.CreateCommandList(commands);
         }
         public event EventHandler<PropertyChangedEventArgs> ModelPropertyChanged;
@@ -144,12 +148,15 @@ namespace Agebull.EntityModel.Designer
         private void ReBuildChild()
         {
             var treeItem = Parent as TreeItem;
-            if (treeItem?.CreateChildFunc == null)
-                return;
-            TreeItem item = treeItem.CreateChild(Source);
-            Items.Clear();
-            Items.AddRange(item.Items);
+
+            var items = treeItem.CreateChild(Source);
+            ClearItems();
+            foreach (var item in items)
+                Items.AddRange(item.Items);
         }
+
+        #endregion
+        #region 图标
 
         private BitmapImage GetImage(TModel m)
         {
@@ -167,9 +174,6 @@ namespace Agebull.EntityModel.Designer
                                         ? imgModify
                                         : imgDefault;
         }
-        #endregion
-        #region 默认方法
-
         private static readonly BitmapImage imgRef = Application.Current.Resources["img_ref"] as BitmapImage;
 
         private static readonly BitmapImage imgLock = Application.Current.Resources["img_lock"] as BitmapImage;

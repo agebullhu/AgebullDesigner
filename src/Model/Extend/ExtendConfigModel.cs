@@ -19,7 +19,7 @@ namespace Agebull.EntityModel.Designer
                 p.Model.EnumConfig.Option.IsDelete = true;
             }
             p.Model.CustomType = null;
-            p.ReShow();
+            p.ReBuildItems();
         }
         /// <summary>
         /// 扩展属性

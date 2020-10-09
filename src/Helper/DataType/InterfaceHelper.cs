@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
@@ -23,6 +22,8 @@ namespace Agebull.EntityModel.RobotCoder
                     continue;
                 foreach (var iField in ie.Properties.ToArray())
                 {
+                    if (iField.IsDelete || iField.IsDiscard)
+                        continue;
                     if (entity.Properties.Any(p => p.Name == iField.Name))
                         continue;
                     var field = new FieldConfig();

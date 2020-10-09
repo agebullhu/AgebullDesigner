@@ -110,7 +110,7 @@ namespace Agebull.EntityModel.Designer
         private void OnCodeSuccess(Dictionary<string, string> fields)
         {
             FileTreeRoot.SelectItemChanged -= OnFileSelectItemChanged;
-            FileTreeRoot.Items.Clear();
+            FileTreeRoot.ClearItems();
             if (fields == null)
                 return;
             int first = SolutionConfig.Current.RootPath == null ? 0 : SolutionConfig.Current.RootPath.Length;
@@ -131,7 +131,11 @@ namespace Agebull.EntityModel.Designer
                         SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
                     });
                 }
-                item.Items.Add(new TreeItem<string>(file.Value)
+                item.Items.Add(new TreeItem<SimpleConfig>(new SimpleConfig
+                {
+                    Name = name,
+                    Remark = file.Value,
+                })
                 {
                     Header = name,
                     Name = name,
@@ -146,7 +150,7 @@ namespace Agebull.EntityModel.Designer
 
         private void OnFileSelectItemChanged(object sender, EventArgs e)
         {
-            var value = sender as TreeItem<string>;
+            var value = sender as TreeItem<SimpleConfig>;
             _codeType = value?.Tag ?? ".cs";
             switch (_codeType.ToLower().Trim('.'))
             {
@@ -162,12 +166,13 @@ namespace Agebull.EntityModel.Designer
                     _codeType = "xml";
                     break;
             }
-            ExtendCode = value?.Model;
+            ExtendCode = value?.Model.Remark;
         }
 
         #endregion
 
         #region 树形菜单
+
         /// <summary>
         /// 代码命令树根
         /// </summary>
@@ -187,6 +192,7 @@ namespace Agebull.EntityModel.Designer
                 TreeItemBase parent = new TreeItem(clasf.Key)
                 {
                     IsExpanded = false,
+                    ItemsState = 3,
                     SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
                 };
                 MomentTreeRoot.Items.Add((TreeItem)parent);
@@ -195,12 +201,14 @@ namespace Agebull.EntityModel.Designer
                     parent.Items.Add(new TreeItem<CoderDefine>(item.Value)
                     {
                         Header = item.Key,
+                        ItemsState = 3,
                         SoruceTypeIcon = Application.Current.Resources["img_code"] as BitmapImage
                     });
                 }
             }
             MomentTreeRoot.SelectItemChanged += OnMomentSelectItemChanged;
         }
+
         private void OnMomentSelectItemChanged(object sender, EventArgs e)
         {
             if (!(sender is TreeItem<CoderDefine> value))

@@ -62,48 +62,6 @@ namespace Agebull.EntityModel.Designer
 
         static void DoImport(HSSFWorkbook workbook, ProjectConfig project)
         {
-            /*{
-                var sheet = workbook.CreateSheet("目录");
-                sheet.SetColumnWidth(0, 8000);
-                sheet.SetColumnWidth(1, 8000);
-                sheet.SetColumnWidth(2, 8000);
-                int line = 0, start = 0;
-                string type = null;
-                var typeCell = GetCellStyle(workbook, HorizontalAlignment.Left, VerticalAlignment.Center, true, CreateFontStyle(workbook, "黑体", 12, true));
-                var tableCell = GetCellStyle(workbook, HorizontalAlignment.Left, VerticalAlignment.Center, true, CreateFontStyle(workbook, "宋体"));
-
-                var row = sheet.CreateRow(line++);
-                foreach (var cls in project.Classifies)
-                {
-                    ICell cell;
-                    if (line > 1)
-                    {
-                        SetCellRangeAddress(sheet, typeCell, start, line - 2, 0, 0);
-                    }
-                    type = cls.Caption;
-                    cell = row.CreateCell(0);
-                    cell.SetCellValue(type);
-                    cell.CellStyle = typeCell;
-                    start = line - 1;
-                    foreach (var entity in cls.Items.Where(p => !p.NoDataBase))
-                    {
-                        row.HeightInPoints = 20;//行高
-
-                        cell = row.CreateCell(1);
-                        cell.SetCellValue(entity.Caption);
-                        cell.CellStyle = tableCell;
-                        cell = row.CreateCell(2);
-                        cell.SetCellValue(entity.ReadTableName);
-                        cell.CellStyle = tableCell;
-                        sheet.CreateRow(line++);
-                    }
-                }
-                if (start > 0 && start < line - 1)
-                {
-                    SetCellRangeAddress(sheet, typeCell, start, line - 1, 0, 0);
-                }
-            }*/
-
             foreach (var cls in project.Classifies)
             {
                 string name = cls.Caption ?? cls.Name;
@@ -131,70 +89,11 @@ namespace Agebull.EntityModel.Designer
                 sheet.SetColumnWidth(i, 4000);
 
                 int rowIdx = 0;
-                foreach (var entity in cls.Items.Where(p => !p.NoDataBase))
+                foreach (var entity in cls?.Items?.Where(p => p != null && !p.NoDataBase))
                 {
                     rowIdx = ImportTable(workbook, sheet, entity, rowIdx);
                 }
             }
-            /*
-            foreach (var entity in tables.Where(p => !p.NoDataBase).OrderBy(p => p.Classify))
-            {
-                var row = sheet.CreateRow(line++);
-                row.HeightInPoints = 20;//行高
-
-                ICell cell;
-                if (type == null || entity.Project != type)
-                {
-                    if (line > 1)
-                    {
-                        SetCellRangeAddress(sheet, typeCell, start, line - 2, 0, 0);
-                    }
-                    type = entity.Project;
-                    cell = row.CreateCell(0);
-                    cell.SetCellValue(type);
-                    cell.CellStyle = typeCell;
-                    start = line - 1;
-                }
-                cell = row.CreateCell(1);
-                cell.SetCellValue(entity.Caption);
-                cell.CellStyle = tableCell;
-                cell = row.CreateCell(2);
-                cell.SetCellValue(entity.ReadTableName);
-                cell.CellStyle = tableCell;
-
-                ImportTable(workbook, entity);
-            }
-            */
-        }
-        /// <summary>
-        ///     读取表与实体关联表,初始化表结构
-        /// </summary>
-        private static int ImportTable(HSSFWorkbook workbook, EntityConfig entity, int rowBase)
-        {
-            string name = string.IsNullOrWhiteSpace(entity.ReadTableName) ? entity.Name : entity.ReadTableName;
-            if (name.Length > 31)
-            {
-                name = name.Substring(0, 31);
-            }
-
-            if (workbook.GetSheet(name) != null)
-            {
-                return rowBase;
-            }
-
-            ISheet sheet = workbook.CreateSheet(name);
-            int i = 0;
-            sheet.SetColumnWidth(i++, 4000);
-            sheet.SetColumnWidth(i++, 4000);
-            sheet.SetColumnWidth(i++, 2000);
-            sheet.SetColumnWidth(i++, 2000);
-            sheet.SetColumnWidth(i++, 2000);
-            sheet.SetColumnWidth(i++, 2000);
-            sheet.SetColumnWidth(i++, 8000);
-            sheet.SetColumnWidth(i++, 4000);
-            sheet.SetColumnWidth(i++, 2000);
-            sheet.SetColumnWidth(i, 4000);
-            return ImportTable(workbook, sheet, entity, rowBase);
         }
 
         /// <summary>
@@ -202,12 +101,6 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         private static int ImportTable(HSSFWorkbook workbook, ISheet sheet, EntityConfig entity, int rowBase)
         {
-            //string name = string.IsNullOrWhiteSpace(entity.ReadTableName) ? entity.Name : entity.ReadTableName;
-            //if (name.Length > 31)
-            //{
-            //    name = name.Substring(0, 31);
-            //}
-
             var labelCell = GetCellStyle(workbook, HorizontalAlignment.Left, VerticalAlignment.Center, true, CreateFontStyle(workbook, "宋体", 9, true));
             var valueCell = GetCellStyle(workbook, HorizontalAlignment.Left, VerticalAlignment.Center, true, CreateFontStyle(workbook, "宋体"));
 
@@ -248,7 +141,7 @@ namespace Agebull.EntityModel.Designer
             row.CreateCell(i).SetCell("更新时间", labelCell);
 
 
-            var fields = entity.DbFields.Where(p => !p.IsCompute).ToArray();
+            var fields = entity.DbFields.Where(p =>p!= null && !p.IsCompute).ToArray();
             int line = 0;
             for (; line < fields.Length; line++)
             {
