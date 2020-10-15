@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;CLIENT</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;CLIENT</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Fakes\**" />
+    <Compile Remove="Remove\**" />
+    <EmbeddedResource Remove="Fakes\**" />
+    <EmbeddedResource Remove="Remove\**" />
+    <None Remove="Fakes\**" />
+    <None Remove="Remove\**" />
+    <Page Remove="Fakes\**" />
+    <Page Remove="Remove\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    
+    <None Remove="App.config" />
+    
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Designer.Config\Agebull.EntityModel.Designer.Config.csproj" />
+    <ProjectReference Include="..\..\Model\Model\Agebull.EntityModel.Designer.Model.csproj" />
+  </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="COPY $(TargetPath) &quot;$(SolutionDir)\Program\AddIn\Bin\&quot; /Y&#xD;&#xA;COPY $(ProjectDir)$(OutDir)$(TargetName).xml &quot;$(SolutionDir)\Program\AddIn\Bin\&quot; /Y&#xD;&#xA;COPY $(ProjectDir)$(OutDir)$(TargetName).pdb &quot;$(SolutionDir)\Program\AddIn\Bin\&quot; /Y" />
+  </Target>
+</Project>

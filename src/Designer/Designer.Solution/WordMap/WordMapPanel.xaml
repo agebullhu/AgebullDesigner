@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="Agebull.EntityModel.Designer.WordMapPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
+             xmlns:designer="clr-namespace:Agebull.EntityModel.Designer"
+             xmlns:mvvm="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
+             mc:Ignorable="d"
+             d:DesignHeight="1000" d:DesignWidth="1000">
+    <UserControl.DataContext>
+        <designer:WordMapViewModel/>
+    </UserControl.DataContext>
+    <DataGrid AutoGenerateColumns="False"
+              CanUserAddRows="False"
+              CanUserDeleteRows="False"
+              ItemsSource="{Binding Model.WordItems}">
+        <i:Interaction.Behaviors>
+            <mvvm:DataGridGenertColumnsBehavior />
+        </i:Interaction.Behaviors>
+        <DataGrid.Columns>
+            <DataGridTextColumn Binding="{Binding English,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                Width="160"
+                                Header="英文" />
+            <DataGridTextColumn Binding="{Binding Chiness,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                Width="160"
+                                Header="中文" />
+            <DataGridTextColumn Binding="{Binding Description,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                Width="360"
+                                Header="备注" />
+        </DataGrid.Columns>
+    </DataGrid>
+</UserControl>

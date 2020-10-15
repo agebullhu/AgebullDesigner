@@ -1,0 +1,344 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <OutputType>WinExe</OutputType>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;CLIENT</DefineConstants>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;CLIENT</DefineConstants>
+    <OutputPath>..\Program\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="icon.ico" />
+    <None Remove="logo\icon.png" />
+    <None Remove="Style\com.png" />
+    <None Remove="Style\Images\add.png" />
+    <None Remove="Style\Images\async_Executing.png" />
+    <None Remove="Style\Images\async_Faulted.png" />
+    <None Remove="Style\Images\async_None.png" />
+    <None Remove="Style\Images\async_Succeed.png" />
+    <None Remove="Style\Images\audit.png" />
+    <None Remove="Style\Images\a_again.png" />
+    <None Remove="Style\Images\a_deny.png" />
+    <None Remove="Style\Images\a_end.png" />
+    <None Remove="Style\Images\a_none.png" />
+    <None Remove="Style\Images\a_pass.png" />
+    <None Remove="Style\Images\a_submit.png" />
+    <None Remove="Style\Images\baidu.gif" />
+    <None Remove="Style\Images\baidu.png" />
+    <None Remove="Style\Images\bm.png" />
+    <None Remove="Style\Images\bull.png" />
+    <None Remove="Style\Images\cancel.png" />
+    <None Remove="Style\Images\check.png" />
+    <None Remove="Style\Images\clear.png" />
+    <None Remove="Style\Images\code.png" />
+    <None Remove="Style\Images\com.png" />
+    <None Remove="Style\Images\cpp.png" />
+    <None Remove="Style\Images\cpp2.png" />
+    <None Remove="Style\Images\cus.png" />
+    <None Remove="Style\Images\defBackup.jpg" />
+    <None Remove="Style\Images\del.png" />
+    <None Remove="Style\Images\disable.png" />
+    <None Remove="Style\Images\enable.png" />
+    <None Remove="Style\Images\end.png" />
+    <None Remove="Style\Images\excel.png" />
+    <None Remove="Style\Images\export.png" />
+    <None Remove="Style\Images\file.png" />
+    <None Remove="Style\Images\filter.png" />
+    <None Remove="Style\Images\find.png" />
+    <None Remove="Style\Images\finds.png" />
+    <None Remove="Style\Images\global.png" />
+    <None Remove="Style\Images\Icon.png" />
+    <None Remove="Style\Images\inte.png" />
+    <None Remove="Style\Images\join.png" />
+    <None Remove="Style\Images\left.png" />
+    <None Remove="Style\Images\link.png" />
+    <None Remove="Style\Images\lock.png" />
+    <None Remove="Style\Images\lua.jpg" />
+    <None Remove="Style\Images\man.png" />
+    <None Remove="Style\Images\ok.png" />
+    <None Remove="Style\Images\pause.png" />
+    <None Remove="Style\Images\Pay.png" />
+    <None Remove="Style\Images\reDo.png" />
+    <None Remove="Style\Images\root.png" />
+    <None Remove="Style\Images\save.png" />
+    <None Remove="Style\Images\self.png" />
+    <None Remove="Style\Images\self_left.png" />
+    <None Remove="Style\Images\SolutionManage.png" />
+    <None Remove="Style\Images\start.png" />
+    <None Remove="Style\Images\sum.png" />
+    <None Remove="Style\Images\switch.png" />
+    <None Remove="Style\Images\trans.png" />
+    <None Remove="Style\Images\tree_Assembly.png" />
+    <None Remove="Style\Images\tree_Child1.png" />
+    <None Remove="Style\Images\tree_Child2.png" />
+    <None Remove="Style\Images\tree_Child4.png" />
+    <None Remove="Style\Images\tree_Child5.png" />
+    <None Remove="Style\Images\tree_Close.png" />
+    <None Remove="Style\Images\tree_default.png" />
+    <None Remove="Style\Images\tree_File.png" />
+    <None Remove="Style\Images\tree_Folder.png" />
+    <None Remove="Style\Images\tree_item.png" />
+    <None Remove="Style\Images\tree_Open.png" />
+    <None Remove="Style\Images\tree_Para.png" />
+    <None Remove="Style\Images\tree_Project.png" />
+    <None Remove="Style\Images\tree_Solution.png" />
+    <None Remove="Style\Images\tree_Type.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="icon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NPOI" Version="2.5.1" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Model\Model\Agebull.EntityModel.Designer.Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="logo\icon.png" />
+    <Resource Include="Style\com.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\add.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\async_Executing.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\async_Faulted.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\async_None.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\async_Succeed.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\audit.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\a_again.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\a_deny.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\a_end.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\a_none.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\a_pass.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\a_submit.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\baidu.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\baidu.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\bm.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\bull.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\cancel.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\check.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\clear.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\code.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\com.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\cpp.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\cpp2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\cus.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\defBackup.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\del.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\disable.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\enable.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\end.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\excel.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\export.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\file.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\filter.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\find.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\finds.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\global.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\Icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\inte.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\join.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\left.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\link.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\lock.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\lua.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\man.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\ok.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\pause.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\Pay.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\reDo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\root.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\save.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\self.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\self_left.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\SolutionManage.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\start.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\sum.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\switch.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\trans.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\tree_Assembly.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\tree_Child1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\tree_Child2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\tree_Child4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\tree_Child5.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\tree_Close.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\tree_default.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\tree_File.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\tree_Folder.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\tree_item.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\tree_Open.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\tree_Para.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\tree_Project.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\tree_Solution.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Style\Images\tree_Type.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Card\ConfigForm.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <UseWPF>true</UseWPF>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;CLIENT</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;CLIENT</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="BaiduFanYi\**" />
+    <Compile Remove="Remove\**" />
+    <EmbeddedResource Remove="BaiduFanYi\**" />
+    <EmbeddedResource Remove="Remove\**" />
+    <None Remove="BaiduFanYi\**" />
+    <None Remove="Remove\**" />
+    <Page Remove="BaiduFanYi\**" />
+    <Page Remove="Remove\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="3.1.8" />
+    <PackageReference Include="MySqlConnector" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Config\Agebull.EntityModel.Config.csproj" />
+  </ItemGroup>
+
+</Project>
