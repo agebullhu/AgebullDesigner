@@ -17,9 +17,9 @@ Agebull.EntityModel.RobotCoder.DataBase.dll
 
 Agebull.EntityModel.RobotCoder.Vue.dll
 
-Agebull.EntityModel.RobotCoder.EasyUi.dll
+*Agebull.EntityModel.RobotCoder.EasyUi.dll
 Agebull.EntityModel.Designer.EasyUi.dll
 
-Agebull.EntityModel.Designer.WebApi.dll
+*Agebull.EntityModel.Designer.WebApi.dll
 
 Agebull.EntityModel.Designer.Trigger.dll
