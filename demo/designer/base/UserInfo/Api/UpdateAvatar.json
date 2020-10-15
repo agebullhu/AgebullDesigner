@@ -1,1 +1,0 @@
-﻿{"Method":1,"CallArg":"AvatarRequest","RoutePath":"v2/user/update/avatar","IsUserCommand":false,"_project":"UserInfo","IsGlobal":false,"_caption":"修改头像","_description":"修改头像","_name":"UpdateAvatar","option":{"_key":"860f287f-18f3-440c-88a2-f8aa97d7bf65","Identity":0,"Index":0,"referenceKey":"00000000-0000-0000-0000-000000000000","state":0}}
