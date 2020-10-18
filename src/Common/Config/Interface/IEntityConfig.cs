@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
-
+using System.Text;
 using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
@@ -348,7 +348,7 @@ namespace Agebull.EntityModel.Config
             var cls = Parent.Classifies.FirstOrDefault(p => p.Name == Classify);
             return cls == null
 ? $"{cls.Abbreviation ?? Classify}{sp}{Name}"
-: $"{Classify}{sp}{Name}";
+: $"{Classify.ToLWord()}{sp}{Name}";
         }
 
         /// <summary>

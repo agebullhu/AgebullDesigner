@@ -19,15 +19,6 @@ namespace Agebull.EntityModel.RobotCoder
 
         private string Code()
         {
-            var it = new StringBuilder();
-            bool first = true;
-            foreach (var i in Model.Entity.Interfaces?.Split(',', System.StringSplitOptions.RemoveEmptyEntries))
-            {
-                if (first)
-                    first = false;
-                else it.Append(',');
-                it.Append($"nameof(GlobalDataInterfaces.{i})");
-            }
             return $@"#region
 using System;
 using System.Collections.Generic;
@@ -39,6 +30,7 @@ using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Interfaces;
 using Agebull.EntityModel.{Project.DbType};
 {Project.UsingNameSpaces}
+using static {SolutionConfig.Current.NameSpace}.DataAccess.MonitorDb;
 
 #endregion
 namespace {SolutionConfig.Current.NameSpace}.DataAccess
@@ -63,13 +55,12 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess
         public static EntityStruct Struct => _struct ??= new EntityStruct
         {{
             IsIdentity       = {(Model.PrimaryColumn?.IsIdentity ?? false ? "true" : "false")},
-            EntityName       = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.EntityName,
-            Caption          = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.Caption,
-            Description      = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.Description,
-            PrimaryKey       = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.PrimaryKey,
-            ReadTableName    = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.TableName,
-            WriteTableName   = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.TableName,
-            InterfaceFeature = new[] {{{  it}}},
+            EntityName       = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.entityName,
+            Caption          = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.caption,
+            Description      = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.description,
+            PrimaryKey       = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.primaryKey,
+            ReadTableName    = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.tableName,
+            WriteTableName   = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.tableName,{DataBaseBuilder.Interfaces(Model)}
             Properties       = new List<EntityProperty>
             {{
                 {EntityStruct()}
@@ -85,7 +76,7 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess
             IsQuery          = {(Model.IsQuery ? "true" : "false")},
             UpdateByMidified = {(Model.UpdateByModified ? "true" : "false")},
             ReadTableName    = FromSqlCode,
-            WriteTableName   = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.TableName,
+            WriteTableName   = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.tableName,
             LoadFields       = LoadFields,
             Having           = Having,
             GroupFields      = GroupFields,
@@ -497,12 +488,25 @@ SELECT @@IDENTITY;");
                 return;
 
             var str = new StringBuilder("new EntityProperty(");
-
-            if (property.IsInterfaceField)
+            bool hase = false;
+            if (!property.Entity.IsInterface)
             {
-                str.Append($"GlobalDataInterfaces.{property.LinkTable}.{property.LinkField}");
+                if (property.IsInterfaceField)
+                {
+                    hase = true;
+                    str.Append($"GlobalDataInterfaces.{property.LinkTable}.{property.LinkField}");
+                }
+                else if (property.IsLinkField)
+                {
+                    var entity = GlobalConfig.GetEntity(property.LinkTable);
+                    if (entity != null)
+                    {
+                        hase = true;
+                        str.Append($"{property.Entity.Name}_Struct_.{property.LinkField}");
+                    }
+                }
             }
-            else
+            if (!hase)
             {
                 str.Append($"{Project.DataBaseObjectName}.{property.Entity.Name}_Struct_.{property.Field.Name}");
             }
@@ -567,128 +571,58 @@ SELECT @@IDENTITY;");
 
             foreach (var property in Model.LastProperties.Where(p => p.CanSet))
             {
-
                 var names = property.GetAliasPropertys().Select(p => p.ToLower()).ToList();
                 var name = property.Name.ToLower();
+                var varName = property.Name.ToLWord();
                 if (!names.Contains(name))
                     names.Add(name);
                 foreach (var alia in names)
                     code.Append($@"
-            case ""{alia}"":");
+            case ""{alia}"":
+                if (value == null)
+                     entity.{property.Name} =default;
+                else if(value is {property.LastCsType} {varName})
+                    entity.{property.Name} = {varName};");
+
+                switch (property.CsType)
+                {
+                    case "string":
+                    case "String":
+                        code.Append($@"
+                else
+                    entity.{property.Name} = value.ToString();
+                return;");
+                        continue;
+                    case "bool":
+                    case "Boolean":
+                        code.Append($@"
+                else if(value is int i{property.Name})
+                    entity.{property.Name} = i{property.Name} != 0;
+                else if (int.TryParse(value.ToString(), out var { name}_vl))
+                    entity.{ property.Name} = { name}_vl != 0; ");
+                        break;
+                }
 
                 if (!string.IsNullOrWhiteSpace(property.CustomType))
                 {
                     code.Append($@"
-                if (value != null)
-                {{
-                    if(value is int)
-                    {{
-                        entity.{property.Name} = ({property.CustomType})(int)value;
-                    }}
-                    else if(value is {property.CustomType})
-                    {{
-                        entity.{property.Name} = ({property.CustomType})value;
-                    }}
-                    else
-                    {{
-                        var str = value.ToString();
-                        {property.CustomType} val;
-                        if ({property.CustomType}.TryParse(str, out val))
-                        {{
-                            entity.{property.Name} = val;
-                        }}
-                        else
-                        {{
-                            int vl;
-                            if (int.TryParse(str, out vl))
-                            {{
-                                entity.{property.Name} = ({property.CustomType})vl;
-                            }}
-                        }}
-                    }}
-                }}
-                return;");
-                    continue;
+                else if(value is int i{property.Name})
+                    entity.{property.Name} = ({property.CustomType})i{property.Name};
+                else if (int.TryParse(value.ToString(), out i{property.Name}))
+                    entity.{property.Name} = ({property.CustomType})i{property.Name};");
                 }
-
-                switch (property.CsType)
-                {
-                    case "bool":
-                    case "Boolean":
-                        code.Append($@"
-                if (value != null)
-                {{
-                    int vl;
-                    if (int.TryParse(value.ToString(), out vl))
-                    {{
-                        entity.{property.Name} = vl != 0;
-                    }}
-                    else
-                    {{
-                        entity.{property.Name} = Convert.ToBoolean(value);
-                    }}
-                }}
+                code.AppendLine($@"
+                else if ({property.LastCsType}.TryParse(value.ToString(), out {varName}))
+                    entity.{property.Name} = {varName};
+                else
+                    entity.{property.Name} = default;
                 return;");
-                        continue;
-                    case "int":
-                    case "long":
-                        code.Append($@"
-                entity.{property.Name} = ({property.CsType})Convert.ToDecimal(value);
-                return;");
-                        break;
-                    default:
-                        code.Append($@"
-                entity.{property.Name} = {ConvertCode(property, "value")};
-                return;");
-                        break;
-                }
             }
             code.AppendLine(@"
             }
         }");
 
             return code.ToString();
-        }
-
-
-        private string ConvertCode(IFieldConfig column, string arg)
-        {
-            switch (column.CsType)
-            {
-                case "string":
-                case "String":
-                    return $"{arg} == null ? null : {arg}.ToString()";
-                case "long":
-                case "Int64":
-                    if (column.Nullable)
-                        return $"{arg} == null ? null : (long?)Convert.ToInt64({arg})";
-                    return $"Convert.ToInt64({arg})";
-                case "int":
-                case "Int32":
-                    if (column.Nullable)
-                        return $"{arg} == null ? null : (int?)Convert.ToInt32({arg})";
-                    return $"Convert.ToInt32({arg})";
-                case "decimal":
-                case "Decimal":
-                    if (column.Nullable)
-                        return $"{arg} == null ? null : (decimal?)Convert.ToDecimal({arg})";
-                    return $"Convert.ToDecimal({arg})";
-                case "float":
-                case "Float":
-                    if (column.Nullable)
-                        return $"{arg} == null ? null : (float?)Convert.ToSingle({arg})";
-                    return $"Convert.ToSingle({arg})";
-                case "bool":
-                case "Boolean":
-                    if (column.Nullable)
-                        return $"{arg} == null ? null : (bool?)Convert.ToBoolean({arg})";
-                    return $"Convert.ToBoolean({arg})";
-                case "DateTime":
-                    if (column.Nullable)
-                        return $"{arg} == null ? null : (DateTime?)Convert.ToDateTime({arg})";
-                    return $"Convert.ToDateTime({arg})";
-            }
-            return $"({column.LastCsType}){arg}";
         }
 
         #endregion

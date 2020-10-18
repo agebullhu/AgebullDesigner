@@ -128,6 +128,7 @@ using Agebull.Common.Ioc;
 
 using Agebull.EntityModel.Common;
 using ZeroTeam.MessageMVC.ModelApi;
+using ZeroTeam.MessageMVC.ZeroApis;
 
 {Project.UsingNameSpaces}
 
@@ -333,6 +334,7 @@ using Agebull.Common.Ioc;
 using Agebull.EntityModel.Common;
 using ZeroTeam.MessageMVC.ModelApi;
 using ZeroTeam.MessageMVC.ZeroApis;
+using System.Threading.Tasks;
 
 {Project.UsingNameSpaces}
 
