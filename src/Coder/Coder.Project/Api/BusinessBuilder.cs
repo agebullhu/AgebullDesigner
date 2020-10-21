@@ -229,7 +229,7 @@ namespace {NameSpace}
         /// </summary>
         public async Task<List<Agebull.EntityModel.Vue.DataItem>> ComboValues()
         {{
-            Access.Option.Select(nameof({Model.EntityName}.{Model.PrimaryField}),nameof({Model.EntityName}.{cap.Name}));
+            Access.SelectField(nameof({Model.EntityName}.{Model.PrimaryField}),nameof({Model.EntityName}.{cap.Name}));
             var datas =await Access.AllAsync();
             return datas.Count == 0
                 ? new List<Agebull.EntityModel.Vue.DataItem>()

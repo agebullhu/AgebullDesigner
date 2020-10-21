@@ -47,30 +47,10 @@ namespace {Project.NameSpace}.DataAccess
         /// </summary>
         public DataAccessProvider<{Model.EntityName}> Provider {{ get; set; }}
 
-        static EntityStruct _struct;
-
-        /// <summary>
-        /// 实体结构
-        /// </summary>
-        public static EntityStruct Struct => _struct ??= new EntityStruct
-        {{
-            IsIdentity       = {(Model.PrimaryColumn?.IsIdentity ?? false ? "true" : "false")},
-            EntityName       = {Model.Entity.Name}_Struct_.entityName,
-            Caption          = {Model.Entity.Name}_Struct_.caption,
-            Description      = {Model.Entity.Name}_Struct_.description,
-            PrimaryProperty  = {Model.Entity.Name}_Struct_.primaryProperty,
-            ReadTableName    = {Model.Entity.Name}_Struct_.tableName,
-            WriteTableName   = {Model.Entity.Name}_Struct_.tableName,{DataBaseBuilder.Interfaces(Model)}
-            Properties       = new List<EntityProperty>
-            {{
-                {EntityStruct()}
-            }}
-        }};
-
         /// <summary>
         /// 配置信息
         /// </summary>
-        internal static DataAccessOption Option = new DataAccessOption
+        internal static DataAccessOption GetOption() => new DataAccessOption
         {{
             NoInjection      = false,
             IsQuery          = {(Model.IsQuery ? "true" : "false")},
@@ -82,7 +62,20 @@ namespace {Project.NameSpace}.DataAccess
             GroupFields      = GroupFields,
             UpdateFields     = UpdateFields,
             InsertSqlCode    = InsertSqlCode,
-            DataStruct       = Struct
+            DataStruct       = new EntityStruct
+            {{
+                IsIdentity       = {(Model.PrimaryColumn?.IsIdentity ?? false ? "true" : "false")},
+                EntityName       = {Model.Entity.Name}_Struct_.entityName,
+                Caption          = {Model.Entity.Name}_Struct_.caption,
+                Description      = {Model.Entity.Name}_Struct_.description,
+                PrimaryProperty  = {Model.Entity.Name}_Struct_.primaryProperty,
+                ReadTableName    = {Model.Entity.Name}_Struct_.tableName,
+                WriteTableName   = {Model.Entity.Name}_Struct_.tableName,{DataBaseBuilder.Interfaces(Model)}
+                Properties       = new List<EntityProperty>
+                {{
+                    {EntityStruct()}
+                }}
+            }}
         }};
 
         #endregion

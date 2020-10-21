@@ -195,7 +195,7 @@ namespace {Project.NameSpace}.DataAccess
                 {
                     first = false;
                     it.Append(@"
-            InterfaceFeature = new[]{");
+                InterfaceFeature = new[]{");
                 }
                 else
                     it.Append(',');
@@ -233,7 +233,6 @@ namespace {Project.NameSpace}.DataAccess
 {codeStruct}
         }}
 ";
-            var it = Interfaces(entity);
             return $@"
         #region {entity.Name}({entity.Caption})
 
@@ -242,25 +241,6 @@ namespace {Project.NameSpace}.DataAccess
         /// </summary>
         public static class {entity.Name}_Struct_
         {{
-            /// <summary>
-            /// 实体结构
-            /// </summary>
-            public static EntityStruct Struct => new EntityStruct
-            {{
-                EntityName      = entityName,
-                Caption         = caption,
-                Description     = description,
-                PrimaryProperty = primaryProperty,
-                IsIdentity      = {(entity.PrimaryColumn?.IsIdentity ?? false ? "true" : "false")},
-                ReadTableName   = tableName,
-                WriteTableName  = ""{entity.SaveTableName}"",{it}
-                Properties      = new List<EntityProperty>
-                {{
-                    {string.Join(@",
-                    ", properties)}
-                }}
-            }};
-
             #region 常量
 
             /// <summary>
@@ -452,12 +432,12 @@ namespace {Project.NameSpace}.DataAccess
             foreach (var entity in Project.Entities)
             {
                 code.Append($@"
-                nameof({entity.EntityName}) => {entity.EntityName}DataOperator.Option,");
+                nameof({entity.EntityName}) => {entity.EntityName}DataOperator.GetOption(),");
             }
             foreach (var entity in Project.Models)
             {
                 code.Append($@"
-                nameof({entity.EntityName}) => {entity.EntityName}DataOperator.Option,");
+                nameof({entity.EntityName}) => {entity.EntityName}DataOperator.GetOption(),");
             }
             code.Append(@"
                 _ => null,
