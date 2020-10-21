@@ -66,7 +66,7 @@ using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Sqlite;
 
 {Project.UsingNameSpaces}
-using {SolutionConfig.Current.NameSpace}.DataAccess;
+using {Project.NameSpace}.DataAccess;
 
 namespace {NameSpace}.DataAccess
 {{
@@ -179,7 +179,7 @@ using System.Text;
 using Microsoft.Data.Sqlite;
 using Agebull.EntityModel.Sqlite;
 
-using {SolutionConfig.Current.NameSpace}.DataAccess;
+using {Project.NameSpace}.DataAccess;
 
 namespace {NameSpace}.DataAccess
 {{

@@ -72,22 +72,16 @@ namespace Agebull.EntityModel.RobotCoder
             return $@"#region
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Configuration;
 using System.Data;
-using System.Diagnostics;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 using Agebull.Common;
+using Agebull.Common.Ioc;
 using ZeroTeam.MessageMVC;
 using ZeroTeam.MessageMVC.ZeroApis;
 using Agebull.EntityModel.Common;
-using Agebull.EntityModel.{Project.DbType};
 using Agebull.EntityModel.BusinessLogic;
 
 {Project.UsingNameSpaces}
@@ -101,35 +95,42 @@ namespace {NameSpace}
     /// </summary>
     public partial class {Model.EntityName}BusinessLogic : {baseClass}<{Model.EntityName},{Model.PrimaryColumn.CsType}>
     {{
+        #region 基础继承
+
+        /// <summary>
+        /// 构造
+        /// </summary>
+        public {Model.EntityName}BusinessLogic()
+        {{
+            ServiceProvider = DependencyHelper.ServiceProvider;
+        }}
+
         /// <summary>
         ///  生成数据访问对象
         /// </summary>
         protected sealed override DataAccess<{Model.EntityName}> CreateAccess()
         {{
-            return ServiceProvider.CreateDataAccess<{Model.EntityName}>();
+            return {Project.DataBaseObjectName}Ex.CreateDataAccess<{Model.EntityName}>(ServiceProvider);
         }}
-        #region 基础继承
+
+        /// <summary>
+        /// 构造数据访问对象
+        /// </summary>
+       static DataAccess<TEntity> CreateDataAccess<TEntity>()
+            where TEntity : class, new()
+        {{
+            return {Project.DataBaseObjectName}Ex.CreateDataAccess<TEntity>(DependencyHelper.ServiceProvider);
+        }}
 
         /*// <summary>
-        ///     保存前的操作
+        ///     被用户编辑的数据的保存前操作
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <param name=""isAdd"">是否为新增</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        protected override bool OnSaving({Model.EntityName} data, bool isAdd)
+        protected override Task<bool> PrepareSave({Model.EntityName} data, bool isAdd)
         {{
-             return base.OnSaving(data, isAdd);
-        }}
-
-        /// <summary>
-        ///     保存完成后的操作
-        /// </summary>
-        /// <param name=""data"">数据</param>
-        /// <param name=""isAdd"">是否为新增</param>
-        /// <returns>如果为否将阻止后续操作</returns>
-        protected override bool OnSaved({Model.EntityName} data, bool isAdd)
-        {{
-             return base.OnSaved(data, isAdd);
+            return base.PrepareSave(data, isAdd);
         }}
 
         /// <summary>
@@ -138,23 +139,12 @@ namespace {NameSpace}
         /// <param name=""data"">数据</param>
         /// <param name=""isAdd"">是否为新增</param>
         /// <returns>如果为否将阻止后续操作</returns>
-        protected override bool LastSavedByUser({Model.EntityName} data, bool isAdd)
+        protected override Task<bool> LastSavedByUser({Model.EntityName} data, bool isAdd)
         {{
             return base.LastSavedByUser(data, isAdd);
-        }}
-
-        /// <summary>
-        ///     被用户编辑的数据的保存前操作
-        /// </summary>
-        /// <param name=""data"">数据</param>
-        /// <param name=""isAdd"">是否为新增</param>
-        /// <returns>如果为否将阻止后续操作</returns>
-        protected override bool PrepareSaveByUser({Model.EntityName} data, bool isAdd)
-        {{
-            return base.PrepareSaveByUser(data, isAdd);
         }}*/
-        #endregion
 
+        #endregion
 {CommandExCode()}{InterfaceExtendCode()}
     }}
 }}
@@ -165,78 +155,67 @@ namespace {NameSpace}
         {
             if (!(Model.Interfaces.Contains("IInnerTree")))
                 return null;
-            var code = new StringBuilder();
-            code.Append(@"
-
+            var cap = Model.LastProperties.FirstOrDefault(p => p.IsCaption);
+            return $@"
         #region 树形数据
-    ");
-            if (Model.Interfaces.Contains("IInnerTree"))
-            {
-                code.Append(@"
 
         /// <summary>删除对象操作</summary>
-        protected override bool DoDelete(long id)
-        {
-            DeleteChild(id);
-            return base.DoDelete(id);
-        }
+        protected override async Task<bool> DoDelete(long id)
+        {{
+            await DeleteChild(id);
+            return await base.DoDelete(id);
+        }}
 
         /// <summary>级联删除</summary>
-        void DeleteChild(long id)
-        {
-            var childs = Access.LoadValues(p => p.Id, Convert.ToInt64, p => p.ParentId == id);
+        async Task DeleteChild(long id)
+        {{
+            var childs = await Access.LoadValuesAsync(p => p.Id,p => p.ParentId == id);
             foreach (var ch in childs.Distinct())
-            {
+            {{
                 if (ch <= 0 || ch == id)
                     continue;
-                DeleteChild(ch);
-                Access.DeletePrimaryKey(ch);
-            }
-        }");
-                code.Append($@"
+                await DeleteChild(ch);
+                await Access.DeletePrimaryKeyAsync(ch);
+            }}
+        }}
 
         /// <summary>
         ///     载入树节点
         /// </summary>
-        public List<Agebull.EntityModel.EasyUI.EasyUiTreeNode> LoadTree(long pid)
+        public async Task<List<Agebull.EntityModel.Vue.TreeNode>> LoadTree(long pid)
         {{
             if (pid <= 0)
                 pid = 0;
-            var node = new List<Agebull.EntityModel.EasyUI.EasyUiTreeNode>();
-            LoadTree(pid, node);
+            var node = new List<Agebull.EntityModel.Vue.TreeNode>();
+            await LoadTree(pid, node);
             return node;
         }}
 
         /// <summary>
         ///     载入树节点
         /// </summary>
-        public void LoadTree(long pid, List<Agebull.EntityModel.EasyUI.EasyUiTreeNode> node)
+        public async Task LoadTree(long pid, List<Agebull.EntityModel.Vue.TreeNode> parent)
         {{
-            var childs = Access.All(p => p.ParentId == pid);
+            var childs = await Access.AllAsync(p => p.ParentId == pid);
             foreach (var ch in childs)
             {{
-                var cnode = new Agebull.EntityModel.EasyUI.EasyUiTreeNode
+                var node = new Agebull.EntityModel.Vue.TreeNode
                 {{
-                    ID = ch.{Model.PrimaryField},
-                    Text = ch.{Model.LastProperties.FirstOrDefault()?.Name ?? Model.LastProperties[1].Name}.ToString(),
-                    IsFolder = true,
-                    Tag = pid.ToString()
+                    Id = ch.{Model.PrimaryField}.ToString(),
+                    Label = ch.{cap.Name},
+                    Tag = pid.ToString(),
+                    Children = new List<Agebull.EntityModel.Vue.TreeNode>()
                 }};
-                LoadTree(ch.Id, cnode.Children);
-                node.Add(cnode);
+                await LoadTree(ch.Id, node.Children);
+                parent.Add(node);
             }}
-        }}");
-            }
-            code.Append(@"
-        #endregion
-");
-            return code.ToString();
+        }}
+        #endregion";
         }
         private string CommandExCode()
         {
             var code = new StringBuilder();
             code.Append(@"
-
         #region 设计器命令
     ");
             bool hase = false;
@@ -244,37 +223,20 @@ namespace {NameSpace}
             if (cap != null)
             {
                 hase = true;
-                code.Append(@"
+                code.Append($@"
         /// <summary>
         /// 载入下拉列表数据
         /// </summary>
-        public List<Agebull.EntityModel.EasyUI.EasyComboValues> ComboValues()
-        {");
-                code.Append(Project.DbType == DataBaseType.MySql
-                    ? $@"
-            var fields = $""`{{Access.FieldMap[nameof({Model.EntityName}.{Model.PrimaryField})]}}`,`{{Access.FieldMap[nameof({Model.EntityName}.{cap.Name})]}}`"";"
-                    : $@"
-            var fields = $""[{{Access.FieldMap[nameof({Model.EntityName}.{Model.PrimaryField})]}}],[{{Access.FieldMap[nameof({Model.EntityName}.{cap.Name})]}}]"";");
-
-                code.Append($@"
-            List<{Model.EntityName}> datas;
-            using (DbReaderScope<{Model.EntityName}>.CreateScope(Access, fields, (reader, data) =>
-            {{
-                data.{Model.PrimaryField} = ({Model.PrimaryColumn.LastCsType})reader.GetInt64(0);
-                data.{cap.Name} = reader.IsDBNull(1) ? null : reader.GetString(1);
-            }}))
-            {{
-                datas = Access.All(");
-                if (Model.Interfaces.Contains("IStateData"))
-                    code.Append("p => p.DataState <= DataStateType.Enable");
-                code.Append($@");
-            }}
+        public async Task<List<Agebull.EntityModel.Vue.DataItem>> ComboValues()
+        {{
+            Access.Option.Select(nameof({Model.EntityName}.{Model.PrimaryField}),nameof({Model.EntityName}.{cap.Name}));
+            var datas =await Access.AllAsync();
             return datas.Count == 0
-                ? new System.Collections.Generic.List<Agebull.EntityModel.EasyUI.EasyComboValues>()
-                : datas.OrderBy(p => p.{cap.Name}).Select(p => new Agebull.EntityModel.EasyUI.EasyComboValues
+                ? new List<Agebull.EntityModel.Vue.DataItem>()
+                : datas.OrderBy(p => p.{cap.Name}).Select(p => new Agebull.EntityModel.Vue.DataItem
                 {{
-                    Key = p.{Model.PrimaryField},
-                    Value = p.{cap.Name}
+                    Id = p.{Model.PrimaryField}.ToString(),
+                    Text = p.{cap.Name}
                 }}).ToList();
         }}");
             }

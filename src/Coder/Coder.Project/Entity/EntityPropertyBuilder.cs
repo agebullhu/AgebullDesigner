@@ -276,7 +276,7 @@ using Agebull.EntityModel.Interfaces;
             else
                 code.Append($@"
         {FieldHeader(property, isInterface, property.DataType != "ByteArray")}
-        public {type} {file};
+        internal {type} {file};
 
         {PropertyHeader(property, isInterface, property.DataType != "ByteArray")}
         {access}{type} {name}
@@ -309,21 +309,30 @@ using Agebull.EntityModel.Interfaces;
         {access} {property.LastCsType} {name}
         {{");
 
-            if (!string.IsNullOrWhiteSpace(property.ComputeGetCode))
+            if (string.IsNullOrWhiteSpace(property.ComputeGetCode) && string.IsNullOrWhiteSpace(property.ComputeSetCode))
             {
                 code.Append($@"
+            get;
+            set;");
+            }
+            else
+            {
+                if (!string.IsNullOrWhiteSpace(property.ComputeGetCode))
+                {
+                    code.Append($@"
             get
             {{
                 {property.ComputeGetCode}
             }}");
-            }
-            if (!string.IsNullOrWhiteSpace(property.ComputeSetCode))
-            {
-                code.Append($@"
+                }
+                if (!string.IsNullOrWhiteSpace(property.ComputeSetCode))
+                {
+                    code.Append($@"
             set
             {{
                 {property.ComputeSetCode}
             }}");
+                }
             }
             code.Append(@"
         }");

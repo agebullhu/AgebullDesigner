@@ -23,7 +23,7 @@
         <Setter Property="Padding" Value="3" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="MinWidth" Value="80" />
+        <Setter Property="MinWidth" Value="96" />
     </Style>
     <Style TargetType="StackPanel">
         <Setter Property="Margin" Value="5" />
@@ -107,19 +107,19 @@
     <Style TargetType="TextBox" x:Key="MaxTextBox">
         <Setter Property="Padding" Value="3" />
         <Setter Property="Template" Value="{StaticResource MyBox}" />
-        <Setter Property="Width" Value="910" />
+        <Setter Property="Width" Value="970" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
     <Style TargetType="TextBox" x:Key="MidTextBox">
         <Setter Property="Padding" Value="3" />
         <Setter Property="Template" Value="{StaticResource MyBox}" />
-        <Setter Property="Width" Value="410" />
+        <Setter Property="Width" Value="425" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
     <Style TargetType="TextBox" x:Key="TrdTextBox">
         <Setter Property="Padding" Value="3" />
         <Setter Property="Template" Value="{StaticResource MyBox}" />
-        <Setter Property="Width" Value="660" />
+        <Setter Property="Width" Value="692" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 

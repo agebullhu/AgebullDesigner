@@ -33,7 +33,9 @@ using System.Data;
 using Agebull.Common;
 using Agebull.Common.Configuration;
 using Agebull.EntityModel.Common;
+using ZeroTeam.MessageMVC.ZeroApis;
 using Agebull.EntityModel.{Project.DbType};
+{Project.UsingNameSpaces}
 #endregion
 
 namespace {Project.NameSpace}.DataAccess
@@ -41,11 +43,9 @@ namespace {Project.NameSpace}.DataAccess
     partial class {Project.DataBaseObjectName}
     {{
         {EntityStruct()}
-    }}
-
-    partial class DataAccessProviderHelper
-    {{
+        #region ProviderHelper
         {ProviderHelper()}
+        #endregion
     }}
 }}";
             SaveCode(file, code);
@@ -66,6 +66,7 @@ using System.Collections.Generic;
 using System.Data;
 using Agebull.Common;
 using Agebull.Common.Configuration;
+using Agebull.Common.Ioc;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.{Project.DbType};
 using Microsoft.Extensions.DependencyInjection;
@@ -74,7 +75,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace {Project.NameSpace}.DataAccess
 {{
     /// <summary>
-    /// 本地数据库
+    /// {Project.Caption}数据库对象
     /// </summary>
     public sealed partial class {Project.DataBaseObjectName} : {Project.DbType}DataBase
     {{
@@ -88,12 +89,22 @@ namespace {Project.NameSpace}.DataAccess
             Description = @""{Project.Description.Replace("\"", "\"\"")}"";
             ConnectionString = {ConnectionString()}
         }}
+
+        /// <summary>
+        /// 构造数据访问对象
+        /// </summary>
+        public static DataAccess<TEntity> CreateDataAccess<TEntity>()
+            where TEntity : class, new()
+        {{
+            return {Project.DataBaseObjectName}Ex.CreateDataAccess<TEntity>(DependencyHelper.ServiceProvider);
+        }}
+
     }}
 
     /// <summary>
-    /// 本地数据库
+    /// 数据库扩展
     /// </summary>
-    public static partial class DataAccessProviderHelper
+    public static class {Project.DataBaseObjectName}Ex
     {{
         /// <summary>
         /// 构造数据访问对象
@@ -102,7 +113,7 @@ namespace {Project.NameSpace}.DataAccess
         public static DataAccess<TEntity> CreateDataAccess<TEntity>(this IServiceProvider serviceProvider)
             where TEntity : class, new()
         {{
-            var option = GetOption<TEntity>();
+            var option = {Project.DataBaseObjectName}.GetOption<TEntity>();
             if (option == null)
                 throw new NotSupportedException($""{{typeof(TEntity).FullName}}没有对应配置项，请通过设计器生成"");
             if (option.IsQuery)
@@ -114,8 +125,8 @@ namespace {Project.NameSpace}.DataAccess
                 SqlBuilder = new MySqlSqlBuilder<TEntity>(),
                 Injection = serviceProvider.GetService<IOperatorInjection<TEntity>>(),
                 CreateDataBase = () => serviceProvider.GetService<{Project.DataBaseObjectName}>(),
-                EntityOperator = (IEntityOperator<TEntity>)GetEntityOperator<TEntity>(),
-                DataOperator = (IDataOperator<TEntity>)GetDataOperator<TEntity>()
+                EntityOperator = (IEntityOperator<TEntity>){Project.DataBaseObjectName}.GetEntityOperator<TEntity>(),
+                DataOperator = (IDataOperator<TEntity>){Project.DataBaseObjectName}.GetDataOperator<TEntity>()
             }};
             provider.DataOperator.Provider = provider;
             provider.SqlBuilder.Provider = provider;
@@ -136,12 +147,12 @@ namespace {Project.NameSpace}.DataAccess
             var provider = new DataAccessProvider<TEntity>
             {{
                 ServiceProvider = serviceProvider,
-                Option = GetOption<TEntity>(),
+                Option = {Project.DataBaseObjectName}.GetOption<TEntity>(),
                 SqlBuilder = new MySqlSqlBuilder<TEntity>(),
                 Injection = serviceProvider.GetService<IOperatorInjection<TEntity>>(),
                 CreateDataBase = () => serviceProvider.GetService<{Project.DataBaseObjectName}>(),
-                EntityOperator = (IEntityOperator<TEntity>)GetEntityOperator<TEntity>(),
-                DataOperator = (IDataOperator<TEntity>)GetDataOperator<TEntity>()
+                EntityOperator = (IEntityOperator<TEntity>){Project.DataBaseObjectName}.GetEntityOperator<TEntity>(),
+                DataOperator = (IDataOperator<TEntity>){Project.DataBaseObjectName}.GetDataOperator<TEntity>()
             }};
             provider.DataOperator.Provider = provider;
             provider.SqlBuilder.Provider = provider;
@@ -184,11 +195,11 @@ namespace {Project.NameSpace}.DataAccess
                 {
                     first = false;
                     it.Append(@"
-                InterfaceFeature = new[]{");
+            InterfaceFeature = new[]{");
                 }
                 else
                     it.Append(',');
-                it.Append($"nameof(GlobalDataInterfaces.{i})");
+                it.Append($"\"{i}\"");
             }
             if (first)
                 return null;
@@ -239,7 +250,7 @@ namespace {Project.NameSpace}.DataAccess
                 EntityName      = entityName,
                 Caption         = caption,
                 Description     = description,
-                PrimaryKey      = primaryKey,
+                PrimaryProperty = primaryProperty,
                 IsIdentity      = {(entity.PrimaryColumn?.IsIdentity ?? false ? "true" : "false")},
                 ReadTableName   = tableName,
                 WriteTableName  = ""{entity.SaveTableName}"",{it}
@@ -280,7 +291,7 @@ namespace {Project.NameSpace}.DataAccess
             /// <summary>
             /// 实体说明
             /// </summary>
-            public const string primaryKey = ""{entity.PrimaryColumn.Name}"";
+            public const string primaryProperty = ""{entity.PrimaryColumn.Name}"";
             #endregion
             #region 字段
 {codeStruct}
@@ -338,7 +349,7 @@ namespace {Project.NameSpace}.DataAccess
                     if (entity != null)
                     {
                         hase = true;
-                        str.Append($"{property.Entity.Name}_Struct_.{property.LinkField}");
+                        str.Append($"{entity.Name}_Struct_.{property.LinkField}");
                         friend = entity.Properties.FirstOrDefault(p => p.Name == property.LinkField);
                     }
                 }
@@ -433,7 +444,7 @@ namespace {Project.NameSpace}.DataAccess
         {
             StringBuilder code = new StringBuilder();
             code.Append(@"
-        static DataAccessOption GetOption<TEntity>()
+        internal static DataAccessOption GetOption<TEntity>()
         {
             return typeof(TEntity).Name switch
             {");
@@ -453,7 +464,7 @@ namespace {Project.NameSpace}.DataAccess
             };
         }
 
-        static object GetDataOperator<TEntity>()
+        internal static object GetDataOperator<TEntity>()
             where TEntity : class, new()
         {
             return typeof(TEntity).Name switch
@@ -473,7 +484,7 @@ namespace {Project.NameSpace}.DataAccess
             };
         }
 
-        static object GetEntityOperator<TEntity>()
+        internal static object GetEntityOperator<TEntity>()
             where TEntity : class, new()
         {
             return typeof(TEntity).Name switch

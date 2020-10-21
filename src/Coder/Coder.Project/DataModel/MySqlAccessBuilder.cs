@@ -30,10 +30,10 @@ using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Interfaces;
 using Agebull.EntityModel.{Project.DbType};
 {Project.UsingNameSpaces}
-using static {SolutionConfig.Current.NameSpace}.DataAccess.MonitorDb;
+using static {Project.NameSpace}.DataAccess.{Project.DataBaseObjectName};
 
 #endregion
-namespace {SolutionConfig.Current.NameSpace}.DataAccess
+namespace {Project.NameSpace}.DataAccess
 {{
     /// <summary>
     /// {Model.Description}
@@ -55,12 +55,12 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess
         public static EntityStruct Struct => _struct ??= new EntityStruct
         {{
             IsIdentity       = {(Model.PrimaryColumn?.IsIdentity ?? false ? "true" : "false")},
-            EntityName       = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.entityName,
-            Caption          = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.caption,
-            Description      = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.description,
-            PrimaryKey       = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.primaryKey,
-            ReadTableName    = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.tableName,
-            WriteTableName   = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.tableName,{DataBaseBuilder.Interfaces(Model)}
+            EntityName       = {Model.Entity.Name}_Struct_.entityName,
+            Caption          = {Model.Entity.Name}_Struct_.caption,
+            Description      = {Model.Entity.Name}_Struct_.description,
+            PrimaryProperty  = {Model.Entity.Name}_Struct_.primaryProperty,
+            ReadTableName    = {Model.Entity.Name}_Struct_.tableName,
+            WriteTableName   = {Model.Entity.Name}_Struct_.tableName,{DataBaseBuilder.Interfaces(Model)}
             Properties       = new List<EntityProperty>
             {{
                 {EntityStruct()}
@@ -76,7 +76,7 @@ namespace {SolutionConfig.Current.NameSpace}.DataAccess
             IsQuery          = {(Model.IsQuery ? "true" : "false")},
             UpdateByMidified = {(Model.UpdateByModified ? "true" : "false")},
             ReadTableName    = FromSqlCode,
-            WriteTableName   = {Project.DataBaseObjectName}.{Model.Entity.Name}_Struct_.tableName,
+            WriteTableName   = {Model.Entity.Name}_Struct_.tableName,
             LoadFields       = LoadFields,
             Having           = Having,
             GroupFields      = GroupFields,
@@ -502,13 +502,13 @@ SELECT @@IDENTITY;");
                     if (entity != null)
                     {
                         hase = true;
-                        str.Append($"{property.Entity.Name}_Struct_.{property.LinkField}");
+                        str.Append($"{entity.Name}_Struct_.{property.LinkField}");
                     }
                 }
             }
             if (!hase)
             {
-                str.Append($"{Project.DataBaseObjectName}.{property.Entity.Name}_Struct_.{property.Field.Name}");
+                str.Append($"{property.Entity.Name}_Struct_.{property.Field.Name}");
             }
             str.Append($",{idx++},\"{property.Name}\",\"{property.Entity.SaveTableName}\",\"{property.DbFieldName}\",{DataBaseBuilder.ReadWrite(property)})");
             properties.Add(str.ToString());
@@ -578,7 +578,8 @@ SELECT @@IDENTITY;");
                     names.Add(name);
                 foreach (var alia in names)
                     code.Append($@"
-            case ""{alia}"":
+            case ""{alia}"":");
+                code.Append($@"
                 if (value == null)
                      entity.{property.Name} =default;
                 else if(value is {property.LastCsType} {varName})

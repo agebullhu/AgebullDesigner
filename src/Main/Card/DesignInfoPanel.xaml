@@ -12,8 +12,11 @@
     <ScrollViewer>
         <StackPanel Style="{StaticResource LayoutPanel}">
             <GroupBox Header="名称(设计时)" Margin="5">
-                <StackPanel Orientation="Vertical"  Margin="0">
-                    <StackPanel Orientation="Horizontal" Margin="0">
+                <WrapPanel DataContext="{Binding Option}">
+                    <StackPanel>
+                        <Label Content = "唯一标识" />
+                        <TextBox IsReadOnly ="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}" Text="{Binding Identity,Mode=TwoWay,StringFormat=X}" />
+                    </StackPanel>
                         <StackPanel>
                             <Label Content = "名称" />
                             <TextBox IsReadOnly ="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}" Text="{Binding Name,Mode=TwoWay}" />
@@ -22,34 +25,21 @@
                             <Label Content = "标题" />
                             <TextBox Text="{Binding Caption,Mode=TwoWay}" />
                         </StackPanel>
-                    </StackPanel>
-                    <StackPanel>
-                        <Label Content = "说明" />
-                        <TextBox Style="{StaticResource MaxTextBox}" Height="48" Text="{Binding Description,Mode=TwoWay}" />
-                    </StackPanel>
-                </StackPanel>
-            </GroupBox>
-            <GroupBox Header="标识(设计时)" Margin="5">
-                <WrapPanel DataContext="{Binding Option}">
-                    <StackPanel>
-                        <Label Content = "全局标识" />
-                        <TextBox IsReadOnly ="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}" Style="{StaticResource MidTextBox}" Text="{Binding Key, Mode=TwoWay}" />
-                    </StackPanel>
-                    <StackPanel>
-                        <Label Content = "唯一标识" />
-                        <TextBox IsReadOnly ="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}" Text="{Binding Identity,Mode=TwoWay,StringFormat=X}" />
-                    </StackPanel>
                     <StackPanel>
                         <Label Content = "排序编号" />
                         <TextBox IsReadOnly ="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}" Text="{Binding Index,Mode=TwoWay,StringFormat=X}" />
                     </StackPanel>
                     <StackPanel>
-                        <Label Content = "引用标识" />
-                        <TextBox Style="{StaticResource MidTextBox}" IsReadOnly ="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}" Text="{Binding ReferenceKey,Mode=TwoWay}" />
+                        <Label Content = "全局标识" />
+                        <TextBox Style="{StaticResource MidTextBox}" IsReadOnly ="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}" Text="{Binding Key, Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content= "引用对象" />
                         <ComboBox ItemsSource="{x:Static reflection:EnumHelper.BoolList}" SelectedValue="{Binding IsReference,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content = "引用标识" />
+                        <TextBox Style="{StaticResource MidTextBox}" IsReadOnly ="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}" Text="{Binding ReferenceKey,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content= "关联对象" />

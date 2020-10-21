@@ -121,6 +121,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Runtime.Serialization;
 using System.IO;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 using Agebull.Common;
@@ -164,8 +165,9 @@ namespace {NameSpace}.WebApi
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <param name=""convert"">转化器</param>
-        private void DefaultReadFormData({Model.EntityName} data, FormConvert convert)
+        private Task DefaultReadFormData({Model.EntityName} data, FormConvert convert)
         {{{InputConvert(Model)}
+            return Task.CompletedTask;
         }}
 
         #endregion
@@ -360,9 +362,10 @@ namespace {NameSpace}.WebApi
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <param name=""convert"">转化器</param>
-        protected override void ReadFormData({Model.EntityName} data, FormConvert convert)
+        protected override Task ReadFormData({Model.EntityName} data, FormConvert convert)
         {{
             DefaultReadFormData(data,convert);
+            return Task.CompletedTask;
         }}
 
         #endregion
@@ -382,9 +385,9 @@ namespace {NameSpace}.WebApi
         ///     载入树节点
         /// </summary>
         [Route(""edit/tree"")]
-        public IApiResult<List<EasyUiTreeNode>> OnLoadTree()
+        public async Task<IApiResult> OnLoadTree(long id)
         {
-            var nodes = Business.LoadTree(this.GetLongArg(""id""));
+            var nodes = await Business.LoadTree(id);
             return ApiResultHelper.Succees(nodes);
         }");
             }
@@ -397,15 +400,17 @@ namespace {NameSpace}.WebApi
         /// 载入下拉列表数据
         /// </summary>
         [Route(""edit/combo"")]
-        public IApiResult<List<EasyComboValues>> ComboValues()
+        public async Task<IApiResult> ComboValues()
         {
-            return ApiResultHelper.Succees(Business.ComboValues());
+            var nodes = await Business.ComboValues();
+            return ApiResultHelper.Succees(nodes);
         }");
             }
             if (Model is ModelConfig model)
                 foreach (var cmd in model.Commands.Where(p => !p.IsLocalAction))
                 {
-                    code.Append($@"
+                    if(cmd.IsSingleObject)
+                         code.Append($@"
         /// <summary>
         ///     {ToRemString(cmd.Caption)}
         /// </summary>
@@ -413,27 +418,30 @@ namespace {NameSpace}.WebApi
         ///     {ToRemString(cmd.Description)}
         /// </remark>
         [Route(""edit/{cmd.Name.ToLWord()}"")]
-        public ApiResult On{cmd.Name}()
+        public Task<IApiResult> On{cmd.Name}(long id)
         {{
-            InitForm();");
-                    code.Append(cmd.IsSingleObject
-                        ? $@"
-            return !this.Business.{cmd.Name}(this.GetIntArg(""id""))"
-                        : $@"
-            return !this.Business.Do{cmd.Name}(this.GetIntArrayArg(""selects""))");
-                    code.Append(@"
-            return IsFailed
-                ? ApiResult.Error(State, Message)
-                : ApiResult.Succees();
-        }");
+            return this.Business.{cmd.Name}(id);
+        }}");
+                    else
+                        code.Append($@"
+        /// <summary>
+        ///     {ToRemString(cmd.Caption)}
+        /// </summary>
+        /// <remark>
+        ///     {ToRemString(cmd.Description)}
+        /// </remark>
+        [Route(""edit/{cmd.Name.ToLWord()}"")]
+        public Task<IApiResult> On{cmd.Name}(string selects)
+        {{
+            var ids = selects.Split(',',StringSplitOption.RemoveEmpty).Select(long.Parse).ToArray();
+            return this.Business.{cmd.Name}(ids);
+        }}");
                 }
             if (code.Length == 0)
                 return null;
             return $@"
         #region 设计器命令
-        /*
         {code}
-        */
         #endregion";
         }
 

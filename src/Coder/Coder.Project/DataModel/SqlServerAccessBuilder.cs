@@ -106,7 +106,7 @@ using Agebull.EntityModel.Common;
 using Agebull.EntityModel.SqlServer;
 
 {Project.UsingNameSpaces}
-using {SolutionConfig.Current.NameSpace}.DataAccess;
+using {Project.NameSpace}.DataAccess;
 
 namespace {NameSpace}.DataAccess
 {{
@@ -221,7 +221,7 @@ using System.Linq.Expressions;
 using System.Text;
 
 using Agebull.EntityModel.SqlServer;
-using {SolutionConfig.Current.NameSpace}.DataAccess;
+using {Project.NameSpace}.DataAccess;
 
 namespace {NameSpace}.DataAccess
 {{

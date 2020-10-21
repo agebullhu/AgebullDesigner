@@ -2880,7 +2880,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据关联"), DisplayName(@"关联字段名称"), Description("关联字段名称,即在关联表中的字段名称")]
         public string LinkField
         {
-            get => string.IsNullOrWhiteSpace(_linkField) ? null : _linkField;
+            get => string.IsNullOrWhiteSpace(_linkField) ? Name : _linkField;
             set
             {
                 if (_linkField == value)
