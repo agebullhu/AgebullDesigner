@@ -527,7 +527,7 @@ ALTER TABLE `{entity.SaveTableName}`
         public static string LoadSql(IEnumerable<IFieldConfig> fields)
         {
             var sql = new StringBuilder();
-            fields = fields.Where(p => !p.DbInnerField && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)).ToArray();
+            fields = fields.Where(p => !p.DbInnerField && !p.NoProperty && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)).ToArray();
             var isFirst = true;
             foreach (var property in fields)
             {
@@ -554,7 +554,7 @@ ALTER TABLE `{entity.SaveTableName}`
         public static string HavingSql(IEnumerable<IFieldConfig> fields)
         {
             var sql = new StringBuilder();
-            fields = fields.Where(p => !p.DbInnerField && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)).ToArray();
+            fields = fields.Where(p => !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)).ToArray();
             var isFirst = true;
             foreach (var property in fields.Where(p => !IsNullOrEmpty(p.Having) && !IsNullOrEmpty(p.Function)))
             {
@@ -576,7 +576,7 @@ ALTER TABLE `{entity.SaveTableName}`
             if (fields.All(p => IsNullOrEmpty(p.Function)))
                 return "null";
             var sql = new StringBuilder();
-            fields = fields.Where(p => IsNullOrEmpty(p.Function) && !p.DbInnerField && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)).ToArray();
+            fields = fields.Where(p => IsNullOrEmpty(p.Function)).ToArray();
             var isFirst = true;
             foreach (var property in fields)
             {

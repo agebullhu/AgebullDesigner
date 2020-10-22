@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
@@ -80,7 +78,6 @@ using Agebull.EntityModel.Interfaces;
 
         #endregion
 
-
         #region 扩展
 
         internal string InterfaceProperty()
@@ -92,8 +89,7 @@ using Agebull.EntityModel.Interfaces;
             {
                 if (Model.PrimaryColumn.IsGlobalKey)
                 {
-                    code.AppendFormat($@"
-
+                    code.AppendLine($@"
         /// <summary>
         /// Key键
         /// </summary>
@@ -105,8 +101,7 @@ using Agebull.EntityModel.Interfaces;
                 }
                 else
                 {
-                    code.Append($@"
-
+                    code.AppendLine($@"
         /// <summary>
         /// 对象标识
         /// </summary>
@@ -121,8 +116,7 @@ using Agebull.EntityModel.Interfaces;
             var uniques = Columns.Where(p => p.UniqueIndex > 0).ToArray();
             if (uniques.Length != 0)
             {
-                code.Append(@"
-
+                code.AppendLine(@"
         /// <summary>
         /// 组合后的唯一值
         /// </summary>
@@ -152,20 +146,20 @@ using Agebull.EntityModel.Interfaces;
 
         internal string EntityEditStatus()
         {
-            if (Model.IsInterface || Model.IsQuery)
+            if (Model.IsInterface || Model.IsQuery || !Model.UpdateByModified)
                 return "";
             return Model.IsQuery
                 ? null
                 : @"
-
         #region 修改记录
 
-        [DataMember, JsonProperty(""editStatusRedorder"",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [IgnoreDataMember]
         EntityEditStatus _editStatusRedorder;
 
         /// <summary>
         /// 修改状态
         /// </summary>
+        [IgnoreDataMember, System.Text.Json.Serialization.JsonIgnore]
         EntityEditStatus IEditStatus.EditStatusRedorder { get => _editStatusRedorder; set=>_editStatusRedorder = value; }
 
         /// <summary>
@@ -188,7 +182,6 @@ using Agebull.EntityModel.Interfaces;
         #endregion";
         }
         #endregion
-
 
         #region 属性
 
@@ -226,68 +219,66 @@ using Agebull.EntityModel.Interfaces;
             var property = PrimaryProperty;
             if (property == null || property.IsDiscard)
                 return null;//"\n没有设置主键字段，生成的代码是错误的";
+
+            var propertyName = property.Name;
+
+            if (Model.IsQuery || !Model.UpdateByModified)
+                return $@"
+        {PropertyHeader(property)}
+        {property.AccessType}{property.LastCsType} {property.Name} {{ get; set; }}";
+
+            var fieldName = FieldName(property);
+
             return $@"
 
-        /// <summary>
-        /// 修改主键
-        /// </summary>
-        public void ChangePrimaryKey({property.LastCsType} {property.Name.ToLWord()})
-        {{
-            {PropertyName(property)} = {property.Name.ToLWord()};
-        }}
         /// <summary>
         /// {ToRemString(property.Caption)}
         /// </summary>
         [IgnoreDataMember,JsonIgnore]
-        public {property.LastCsType} {PropertyName(property)};
+        private {property.LastCsType} {fieldName};
 
         {PropertyHeader(property)}
-        public {property.LastCsType} {property.Name}
+        {property.AccessType}{property.LastCsType} {propertyName}
         {{
-            get => this.{PropertyName(property)};
+            get => this.{fieldName};
             set
             {{
-                if(this.{PropertyName(property)} == value)
+                if(this.{fieldName} == value)
                     return;
-                this.{PropertyName(property)} = value;
-                this.OnSeted(nameof({property.Name}));
+                this.{fieldName} = value;
+                this.OnSeted(nameof({propertyName}));
             }}
         }}";
         }
 
         private void PropertyCode(IFieldConfig property, StringBuilder code)
         {
-            bool isInterface = property.IsInterfaceField && Model.InterfaceInner;
+            bool isInterface = property.IsInterfaceField && property.Entity.InterfaceInner;
 
-            var access = isInterface ? "" : $"{property.AccessType} ";
-            var name = isInterface ? $"{property.Entity.EntityName}.{property.Name}" : property.Name;
+            var fieldName = FieldName(property);
+            var propertyName = PropertyName(property);
+
             var type = property.IsEnum && property.CsType == "string" ? "string" : property.LastCsType;
-            var file = PropertyName(property);
-            if (Model.IsQuery)
+
+            if (Model.IsQuery || !Model.UpdateByModified)
 
                 code.Append($@"
-
         {PropertyHeader(property, isInterface, property.DataType != "ByteArray")}
-        {access}{type} {name}
-        {{
-            get;
-            set;
-        }}");
+        {property.AccessType}{type} {property.Name} {{ get; set; }}");
             else
                 code.Append($@"
         {FieldHeader(property, isInterface, property.DataType != "ByteArray")}
-        internal {type} {file};
-
+        private {type} {fieldName};
         {PropertyHeader(property, isInterface, property.DataType != "ByteArray")}
-        {access}{type} {name}
+        {property.AccessType}{type} {propertyName}
         {{
-            get => this.{file};
+            get => this.{fieldName};
             set
             {{
-                if(this.{file} == value)
+                if(this.{fieldName} == value)
                     return;
-                this.{file} = value;
-                this.OnSeted(nameof({property.Name}));
+                this.{fieldName} = value;
+                this.OnSeted(nameof({propertyName}));
             }}
         }}");
 
@@ -301,19 +292,16 @@ using Agebull.EntityModel.Interfaces;
         /// <param name="code"></param>
         private void ComputePropertyCode(IFieldConfig property, StringBuilder code)
         {
-            var access = /*isInterface ? "" :*/ $"{property.AccessType} ";
-            var name = /*isInterface ? $"{property.Parent.EntityName}.{property.Name}" :*/ property.Name;
+            var propertyName = PropertyName(property);
 
             code.Append($@"
         {PropertyHeader(property)}
-        {access} {property.LastCsType} {name}
+        {property.AccessType}{property.LastCsType} {propertyName}
         {{");
 
             if (string.IsNullOrWhiteSpace(property.ComputeGetCode) && string.IsNullOrWhiteSpace(property.ComputeSetCode))
             {
-                code.Append($@"
-            get;
-            set;");
+                code.Append($@"get;set;");
             }
             else
             {
@@ -346,16 +334,16 @@ using Agebull.EntityModel.Interfaces;
         /// <param name="code"></param>
         private void AliasPropertyCode(IFieldConfig property, StringBuilder code)
         {
-            foreach (var alias in property.GetAliasPropertys())
+            foreach (var name in property.GetAliasPropertys())
             {
-                if (ExistProperties.ContainsKey(alias))
+                if (ExistProperties.ContainsKey(name))
                     continue;
-                ExistProperties.Add(alias, alias);
+                ExistProperties.Add(name, name);
                 code.Append($@"
         /// <summary>
         /// {ToRemString(property.Caption)}的别名
         /// </summary>
-        public {property.LastCsType} {alias} => this.{property.Name};");
+        public {property.LastCsType} {name} => this.{property.Name};");
             }
         }
 
@@ -370,7 +358,7 @@ using Agebull.EntityModel.Interfaces;
         /// {ToRemString(property.Description)}
         /// </remarks>
         [IgnoreDataMember , JsonIgnore]
-        public {property.LastCsType} {property.Name} => throw new Exception(""{ToRemString(property.Caption)}属性仅限用于查询的Lambda表达式使用"");");
+        {property.AccessType}{property.LastCsType} {property.Name} => throw new Exception(""{ToRemString(property.Caption)}属性仅限用于查询的Lambda表达式使用"");");
 
         }
 
@@ -380,8 +368,10 @@ using Agebull.EntityModel.Interfaces;
         /// <returns></returns>
         private void AccessProperties(IFieldConfig property, StringBuilder code)
         {
-            if (!string.IsNullOrWhiteSpace(property.StorageProperty))
-                code.Append($@"
+            if (string.IsNullOrWhiteSpace(property.StorageProperty))
+                return;
+            code.Append($@"
+
         /// <summary>
         /// {ToRemString(property.Caption)}的存储值读写字段
         /// </summary>
@@ -391,15 +381,20 @@ using Agebull.EntityModel.Interfaces;
         [IgnoreDataMember,JsonIgnore]
         public string {property.StorageProperty}
         {{
-            get => this.{property.Name} == null ? null : Newtonsoft.Json.JsonConvert.SerializeObject(this.{property.Name});
+            get => this.{property.Name} == null ? null : Newtonsoft.Json.JsonConvert.SerializeObject(this.{property.Name});");
+            if (!Model.IsQuery  && Model.UpdateByModified)
+            {
+                code.Append($@"
             set
             {{
                 this.{property.Name} = value == null 
                     ? null 
                     : Newtonsoft.Json.JsonConvert.DeserializeObject<{property.LastCsType}>(value);
                 this.OnSeted(nameof({property.StorageProperty}));
-            }}
-        }}");
+            }}");
+            }
+            code.Append(@"
+        }");
         }
 
         private void RelationPropertyCode(ReleationConfig releation, StringBuilder code)
@@ -409,12 +404,25 @@ using Agebull.EntityModel.Interfaces;
                 ? $"List<{model.EntityName}>"
                 : model.EntityName;
             var cs = releation.Name.ToLWord();
+
+            if (Model.IsQuery || !Model.UpdateByModified)
+                code.Append($@"
+
+        /// <summary>
+        /// {ToRemString(releation.Caption)}
+        /// </summary>
+        [JsonProperty(""{cs}"", NullValueHandling = NullValueHandling.Ignore)]
+        public {type} {releation.Name} {{ get; set; }}");
+            else
             code.Append($@"
 
-        [JsonProperty(""{cs}"", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonIgnore]
         private {type} _{cs};
 
-        [JsonIgnore]
+        /// <summary>
+        /// {ToRemString(releation.Caption)}
+        /// </summary>
+        [JsonProperty(""{cs}"", NullValueHandling = NullValueHandling.Ignore)]
         public {type} {releation.Name}
         {{
             get => _{cs};
@@ -430,7 +438,6 @@ using Agebull.EntityModel.Interfaces;
 
 
         #endregion
-
 
     }
 }

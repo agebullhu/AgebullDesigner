@@ -28,7 +28,17 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         /// <param name="property"></param>
         /// <returns></returns>
-        public static string PropertyName(IFieldConfig property) => $"_{property.Name.ToLWord()}";
+        public static string FieldName(IFieldConfig property) => $"_{property.Name.ToLWord()}";
+
+        /// <summary>
+        /// 统一的字段名称
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public static string PropertyName(IFieldConfig property) =>
+            property.IsInterfaceField && property.Entity.InterfaceInner
+            ? $"{property.Entity.EntityName}.{property.Name}"
+            : property.Name;
 
         protected abstract bool IsClient { get; }
 
@@ -322,11 +332,9 @@ namespace Agebull.EntityModel.RobotCoder
         {
             if (Model.IsQuery)
                 return null;
-            var list = new List<string>
-            {
-                "IEditStatus"
-            };
-
+            var list = new List<string>();
+            if (Model.UpdateByModified)
+                list.Add("IEditStatus");
             if (Model.PrimaryColumn != null)
             {
                 if (Model.PrimaryColumn.IsGlobalKey)
@@ -341,7 +349,15 @@ namespace Agebull.EntityModel.RobotCoder
 
             if (Model.Interfaces != null)
             {
-                list.AddRange(Model.Interfaces.Split(NoneLanguageChar, StringSplitOptions.RemoveEmptyEntries));
+                var infs = Model.Interfaces.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                foreach (var inf in infs)
+                {
+                    var entity = GlobalConfig.GetEntity(inf);
+                    if (entity == null || !entity.ExtendConfigListBool["NoApi"])
+                    {
+                        list.Add(inf);
+                    }
+                }
             }
             if (list.Count == 0)
                 return null;
@@ -379,7 +395,7 @@ namespace Agebull.EntityModel.RobotCoder
         {{
             get
             {{
-                return this.{PropertyName(property)} == null
+                return this.{FieldName(property)} == null
                        ? null
                        : Convert.ToBase64String({property.Name});
             }}

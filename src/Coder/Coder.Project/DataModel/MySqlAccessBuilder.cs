@@ -47,12 +47,21 @@ namespace {Project.NameSpace}.DataAccess
         /// </summary>
         public DataAccessProvider<{Model.EntityName}> Provider {{ get; set; }}
 
+        #endregion
+
+        #region 配置信息
+
         /// <summary>
         /// 配置信息
         /// </summary>
-        internal static DataAccessOption GetOption() => new DataAccessOption
+        public static DataAccessOption GetOption() => Option.Copy();
+
+        /// <summary>
+        /// 配置信息
+        /// </summary>
+        static DataAccessOption Option = new DataAccessOption
         {{
-            NoInjection      = false,
+            InjectionLevel   = InjectionLevel.All,
             IsQuery          = {(Model.IsQuery ? "true" : "false")},
             UpdateByMidified = {(Model.UpdateByModified ? "true" : "false")},
             ReadTableName    = FromSqlCode,
@@ -62,6 +71,8 @@ namespace {Project.NameSpace}.DataAccess
             GroupFields      = GroupFields,
             UpdateFields     = UpdateFields,
             InsertSqlCode    = InsertSqlCode,
+            DeleteSqlCode    = DeleteSqlCode,
+            SqlBuilder       = new MySqlSqlBuilder<{Model.EntityName}>(),
             DataStruct       = new EntityStruct
             {{
                 IsIdentity       = {(Model.PrimaryColumn?.IsIdentity ?? false ? "true" : "false")},
@@ -70,7 +81,7 @@ namespace {Project.NameSpace}.DataAccess
                 Description      = {Model.Entity.Name}_Struct_.description,
                 PrimaryProperty  = {Model.Entity.Name}_Struct_.primaryProperty,
                 ReadTableName    = {Model.Entity.Name}_Struct_.tableName,
-                WriteTableName   = {Model.Entity.Name}_Struct_.tableName,{DataBaseBuilder.Interfaces(Model)}
+                WriteTableName   = {Model.Entity.Name}_Struct_.tableName,{Interfaces(Model)}
                 Properties       = new List<EntityProperty>
                 {{
                     {EntityStruct()}
@@ -85,17 +96,17 @@ namespace {Project.NameSpace}.DataAccess
         /// <summary>
         /// 读取的字段
         /// </summary>
-        public const string LoadFields = @""{SqlMomentCoder.LoadSql(PublishDbFields)}"";
+        public const string LoadFields = @""{SqlMomentCoder.LoadSql(Model.DbFields)}"";
 
         /// <summary>
         /// 汇总条件
         /// </summary>
-        public const string Having = {SqlMomentCoder.HavingSql(PublishDbFields)};
+        public const string Having = {SqlMomentCoder.HavingSql(Model.DbFields)};
 
         /// <summary>
         /// 分组字段
         /// </summary>
-        public const string GroupFields = {SqlMomentCoder.GroupSql(PublishDbFields)};
+        public const string GroupFields = {SqlMomentCoder.GroupSql(Model.DbFields)};
 
         /// <summary>
         /// 读取的字段
@@ -111,6 +122,11 @@ namespace {Project.NameSpace}.DataAccess
         /// 写入的Sql
         /// </summary>
         public const string InsertSqlCode = @""{InsertSql()}"";
+
+        /// <summary>
+        /// 删除的Sql
+        /// </summary>
+        public const string DeleteSqlCode = @""{DeleteSql()}"";
 
         #endregion
 
@@ -160,12 +176,36 @@ namespace {Project.NameSpace}.DataAccess
             SaveCode(file, Code());
         }
 
+        private string DeleteSql()
+        {
+            if (Model.Interfaces != null)
+            {
+                if (Model.Interfaces.Contains("ILogicDeleteData"))
+                {
+                    var entity = GlobalConfig.GetEntity("ILogicDeleteData");
+                    return $"UPDATE `{Model.SaveTableName}` SET `{entity.Properties[0].DbFieldName}`=1 ";
+                }
+                if (Model.Interfaces.Contains("IStateData"))
+                {
+                    var entity = GlobalConfig.GetEntity("IStateData");
+                    var field = entity.Properties.FirstOrDefault(p => p.Name == "DataState");
+                    return $"UPDATE `{Model.SaveTableName}` SET `{field.DbFieldName}`=255 ";
+                }
+            }
+            return $"DELETE FROM `{Model.SaveTableName}`";
+        }
+
         private string InsertSql()
         {
             if (Model.IsQuery)
                 return null;
             var sql = new StringBuilder();
-            var columns = Model.DbFields.Where(p => p.Entity == Model.Entity && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)).ToArray();
+
+            var columns = Model.PublishProperty.Where(p => p.Entity == Model.Entity &&
+                    !p.IsIdentity && !p.IsCompute && !p.CustomWrite &&
+                    !p.DbInnerField &&
+                    !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)
+                ).ToArray();
             sql.Append($@"
 INSERT INTO `{Model.SaveTableName}`
 (");
@@ -202,7 +242,7 @@ VALUES
     ?{property.Name}");
             }
             sql.Append(@"
-);"); 
+);");
             if (Model.PrimaryColumn.IsIdentity)
             {
                 sql.Append(@"
@@ -215,9 +255,13 @@ SELECT @@IDENTITY;");
         {
             if (Model.IsQuery)
                 return null;
-            var sql = new StringBuilder();
-            var columns = PublishDbFields.Where(p => p.Entity == Model.Entity && !p.IsIdentity && !p.IsCompute && !p.CustomWrite && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)).ToArray();
             var isFirst = true;
+            var sql = new StringBuilder();
+            var columns = Model.PublishProperty.Where(p => p.Entity == Model.Entity &&
+                    !p.IsIdentity && !p.IsCompute && !p.CustomWrite &&
+                    !p.DbInnerField &&
+                    !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)
+                ).ToArray();
 
             foreach (var property in columns)
             {
@@ -249,7 +293,7 @@ SELECT @@IDENTITY;");
         public void SetEntityParameter({Model.EntityName} entity, MySqlCommand cmd)
         {{");
 
-            foreach (var property in PublishDbFields.OrderBy(p => p.Index))
+            foreach (var property in Model.PublishProperty.Where(p => !p.DbInnerField).OrderBy(p => p.Index))
             {
                 if (!string.IsNullOrWhiteSpace(property.CustomType))
                 {
@@ -287,7 +331,8 @@ SELECT @@IDENTITY;");
                return (int)MySqlDbType.VarChar;
             switch (property)
             {");
-            foreach (var property in PublishDbFields)
+
+            foreach (var property in Model.DbFields)
             {
                 if (property.DbFieldName.ToLower() != property.Name.ToLower())
                     code.Append($@"
@@ -320,7 +365,7 @@ SELECT @@IDENTITY;");
         {{
             var reader = r as MySqlDataReader;");
             int idx = 0;
-            foreach (var property in PublishDbFields.Where(p=>!p.DbInnerField && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)))
+            foreach (var property in Model.DbFields.Where(p => !p.DbInnerField && !p.NoProperty && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)))
             {
                 SqlMomentCoder.FieldReadCode(property, code, idx++);
             }
@@ -420,7 +465,7 @@ SELECT @@IDENTITY;");
                 var ch = new {entity.EntityName}
                 {{");
                     bool first = true;
-                    foreach (var pro in model.LastProperties.Where(p => p.Entity == entity))
+                    foreach (var pro in model.PublishProperty.Where(p => p.Entity == entity))
                     {
                         if (first)
                             first = false;
@@ -448,6 +493,28 @@ SELECT @@IDENTITY;");
 
         #region 数据结构
 
+        static string Interfaces(IEntityConfig entity)
+        {
+            var it = new StringBuilder();
+            bool first = true;
+            foreach (var i in entity.Interfaces?.Split(',', System.StringSplitOptions.RemoveEmptyEntries))
+            {
+                if (first)
+                {
+                    first = false;
+                    it.Append(@"
+                InterfaceFeature = new HashSet<string>{");
+                }
+                else
+                    it.Append(',');
+                it.Append($"\"{i}\"");
+            }
+            if (first)
+                return null;
+            it.Append("},");
+            return it.ToString(); ;
+        }
+
 
         private string EntityStruct()
         {
@@ -455,7 +522,7 @@ SELECT @@IDENTITY;");
             var idx = 0;
             EntityStruct(Model, properties, ref idx);
             return string.Join(@",
-                ", properties);
+                    ", properties);
         }
 
         private void EntityStruct(IEntityConfig model, List<string> properties, ref int idx)
@@ -531,7 +598,7 @@ SELECT @@IDENTITY;");
             return (property.Trim().ToLower()) switch
             {{");
 
-            foreach (var property in Model.LastProperties.Where(p => p.CanGet))
+            foreach (var property in Model.PublishProperty.Where(p => p.CanGet))
             {
                 var names = property.GetAliasPropertys().Select(p => p.ToLower()).ToList();
                 var name = property.Name.ToLower();
@@ -562,7 +629,7 @@ SELECT @@IDENTITY;");
             switch(property.Trim().ToLower())
             {{");
 
-            foreach (var property in Model.LastProperties.Where(p => p.CanSet))
+            foreach (var property in Model.PublishProperty.Where(p => p.CanSet))
             {
                 var names = property.GetAliasPropertys().Select(p => p.ToLower()).ToList();
                 var name = property.Name.ToLower();

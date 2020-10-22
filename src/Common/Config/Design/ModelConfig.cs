@@ -174,7 +174,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"公开的属性"), Description("公开的属性")]
-        public IEnumerable<IFieldConfig> PublishProperty => LastProperties?.Where(p => !p.DbInnerField);
+        public IEnumerable<IFieldConfig> PublishProperty => LastProperties?.Where(p => !p.NoProperty && !p.DbInnerField);
 
         /// <summary>
         /// 用户属性
@@ -184,7 +184,17 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"用户属性"), Description("用户属性")]
-        public IEnumerable<IFieldConfig> UserProperty => LastProperties?.Where(p => !p.IsMiddleField && !p.DbInnerField && !p.IsSystemField);
+        public IEnumerable<IFieldConfig> UserProperty => LastProperties?.Where(p => !p.NoProperty && !p.IsMiddleField && !p.DbInnerField && !p.IsSystemField);
+
+        /// <summary>
+        /// C++的属性
+        /// </summary>
+        /// <remark>
+        /// C++的属性
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"设计器支持"), DisplayName(@"C++的属性"), Description("C++的属性")]
+        public IEnumerable<IFieldConfig> CppProperty => LastProperties?.Where(p => !p.NoProperty && !p.IsMiddleField && !p.DbInnerField && !p.IsSystemField);
 
         /// <summary>
         /// 客户端可访问的属性
@@ -194,7 +204,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"客户端可访问的属性"), Description("客户端可访问的属性")]
-        public IEnumerable<IFieldConfig> ClientProperty => LastProperties?.Where(p => !p.DenyClient && !p.DbInnerField);
+        public IEnumerable<IFieldConfig> ClientProperty => LastProperties?.Where(p => !p.NoProperty && !p.DenyClient && !p.DbInnerField);
 
         /// <summary>
         /// 数据库字段
@@ -205,7 +215,6 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"数据库字段"), Description("数据库字段")]
         public IEnumerable<IFieldConfig> DbFields => LastProperties?.Where(p => !p.NoStorage);
-
 
         #endregion
     }

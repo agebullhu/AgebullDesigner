@@ -122,7 +122,7 @@ namespace {Project.NameSpace}.DataAccess
             {{
                 ServiceProvider = serviceProvider,
                 Option = option,
-                SqlBuilder = new MySqlSqlBuilder<TEntity>(),
+                SqlBuilder = option.SqlBuilder,
                 Injection = serviceProvider.GetService<IOperatorInjection<TEntity>>(),
                 CreateDataBase = () => serviceProvider.GetService<{Project.DataBaseObjectName}>(),
                 EntityOperator = (IEntityOperator<TEntity>){Project.DataBaseObjectName}.GetEntityOperator<TEntity>(),
@@ -144,11 +144,14 @@ namespace {Project.NameSpace}.DataAccess
         public static DataQuery<TEntity> CreateDataQuery<TEntity>(this IServiceProvider serviceProvider)
             where TEntity : class, new()
         {{
+            var option = {Project.DataBaseObjectName}.GetOption<TEntity>();
+            if (option == null)
+                throw new NotSupportedException($""{{typeof(TEntity).FullName}}没有对应配置项，请通过设计器生成"");
             var provider = new DataAccessProvider<TEntity>
             {{
                 ServiceProvider = serviceProvider,
-                Option = {Project.DataBaseObjectName}.GetOption<TEntity>(),
-                SqlBuilder = new MySqlSqlBuilder<TEntity>(),
+                Option = option,
+                SqlBuilder = option.SqlBuilder,
                 Injection = serviceProvider.GetService<IOperatorInjection<TEntity>>(),
                 CreateDataBase = () => serviceProvider.GetService<{Project.DataBaseObjectName}>(),
                 EntityOperator = (IEntityOperator<TEntity>){Project.DataBaseObjectName}.GetEntityOperator<TEntity>(),
@@ -184,28 +187,6 @@ namespace {Project.NameSpace}.DataAccess
         #endregion
 
         #region 数据结构
-
-        public static string Interfaces(IEntityConfig entity)
-        {
-            var it = new StringBuilder();
-            bool first = true;
-            foreach (var i in entity.Interfaces?.Split(',', System.StringSplitOptions.RemoveEmptyEntries))
-            {
-                if (first)
-                {
-                    first = false;
-                    it.Append(@"
-                InterfaceFeature = new[]{");
-                }
-                else
-                    it.Append(',');
-                it.Append($"\"{i}\"");
-            }
-            if (first)
-                return null;
-            it.Append("},");
-            return it.ToString(); ;
-        }
 
         private string EntityStruct()
         {

@@ -330,10 +330,15 @@
             <GroupBox Header="*设计" Margin="5" Style="{StaticResource AdvGroupBox}">
                 <WrapPanel>
                     <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="非属性字段" />
+                        <ComboBox Style="{StaticResource BoolCombo}"
+                                  SelectedValue="{Binding NoProperty,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="系统字段" />
                         <ComboBox Style="{StaticResource BoolCombo}"
                                   SelectedValue="{Binding IsSystemField,Mode=TwoWay}" />
-                    </StackPanel>
+                    </StackPanel> 
                     <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="计算列" />
                         <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsCompute,Mode=TwoWay}" />

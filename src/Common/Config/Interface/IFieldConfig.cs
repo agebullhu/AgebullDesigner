@@ -528,6 +528,12 @@ namespace Agebull.EntityModel.Config
         /// 数据库内部字段,如果为真,仅支持在SQL的语句中出现此字段，不支持外部的读写
         /// </remark>
         bool DbInnerField { get; }// Field.DbInnerField;
+
+        /// <summary>
+        /// 不生成属性
+        /// </summary>
+        bool NoProperty { get; }
+
         /// <summary>
         /// 非数据库字段
         /// </summary>
@@ -535,6 +541,7 @@ namespace Agebull.EntityModel.Config
         /// 是否非数据库字段,如果为真,数据库的读写均忽略这个字段
         /// </remark>
         bool NoStorage { get; }// Field.NoStorage;
+
         /// <summary>
         /// 跳过保存的场景
         /// </summary>

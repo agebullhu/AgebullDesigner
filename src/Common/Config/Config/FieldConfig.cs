@@ -449,6 +449,31 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(Nullable));
             }
         }
+
+        /// <summary>
+        /// 不生成属性
+        /// </summary>
+        [DataMember, JsonProperty("noProperty", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _noProperty;
+
+        /// <summary>
+        /// 不生成属性
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据库"), DisplayName(@"不生成属性")]
+        public bool NoProperty
+        {
+            get => InterfaceOrThis._noProperty;
+            set
+            {
+                if (_noProperty == value)
+                    return;
+                BeforePropertyChanged(nameof(NoProperty), _noProperty, value);
+                _noProperty = value;
+                OnPropertyChanged(nameof(NoProperty));
+            }
+        }
+
         #endregion
         #region 模型设计
 
@@ -634,11 +659,11 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"代码访问范围"), Description(AccessType_Description)]
-        public string AccessType => InnerField || DenyScope.HasFlag(AccessScopeType.Server)
-            //||!IsRelation && !string.IsNullOrWhiteSpace(ExtendRole) &&
-            //ExtendRole.Contains(",")
-            ? "internal"
-            : "public ";
+        public string AccessType => IsInterfaceField && Entity.InterfaceInner
+            ? ""
+            : InnerField || DenyScope.HasFlag(AccessScopeType.Server)
+                ? "internal "
+                : "public ";
 
 
         /// <summary>
@@ -1165,6 +1190,7 @@ namespace Agebull.EntityModel.Config
             }
         }
         #endregion
+
         #region 数据标识
 
         /// <summary>
@@ -1413,6 +1439,7 @@ namespace Agebull.EntityModel.Config
         }
 
         #endregion
+
         #region 数据库
 
         /// <summary>

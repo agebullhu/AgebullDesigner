@@ -70,6 +70,30 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(Field));
             }
         }
+
+        /// <summary>
+        /// 不生成属性
+        /// </summary>
+        [DataMember, JsonProperty("noProperty", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _noProperty;
+
+        /// <summary>
+        /// 不生成属性
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据库"), DisplayName(@"不生成属性")]
+        public bool NoProperty
+        {
+            get => _noProperty;
+            set
+            {
+                if (_noProperty == value)
+                    return;
+                BeforePropertyChanged(nameof(NoProperty), _noProperty, value);
+                _noProperty = value;
+                OnPropertyChanged(nameof(NoProperty));
+            }
+        }
         #endregion
 
         #region 扩散信息
