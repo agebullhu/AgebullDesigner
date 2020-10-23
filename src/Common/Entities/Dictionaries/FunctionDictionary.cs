@@ -8,10 +8,10 @@
 
 #region 引用
 
+using Newtonsoft.Json;
 using System;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 #endregion
 
@@ -598,7 +598,7 @@ namespace Agebull.EntityModel
             {
                 Task.Factory.StartNew(() =>
                 {
-                    var result = func( arg1);
+                    var result = func(arg1);
                     asyncAction(result);
                 });
             }
@@ -618,7 +618,7 @@ namespace Agebull.EntityModel
             {
                 Task.Factory.StartNew(() =>
                 {
-                    var result = func( arg1, arg2);
+                    var result = func(arg1, arg2);
                     asyncAction(result);
                 });
             }
@@ -638,7 +638,7 @@ namespace Agebull.EntityModel
             {
                 Task.Factory.StartNew(() =>
                 {
-                    var result = func( arg1, arg2, arg3);
+                    var result = func(arg1, arg2, arg3);
                     asyncAction(result);
                 });
             }
@@ -660,7 +660,7 @@ namespace Agebull.EntityModel
             {
                 Task.Factory.StartNew(() =>
                 {
-                    var result = func( arg1, arg2, arg3, arg4);
+                    var result = func(arg1, arg2, arg3, arg4);
                     asyncAction(result);
                 });
             }
@@ -701,7 +701,7 @@ namespace Agebull.EntityModel
             {
                 Task.Factory.StartNew(() =>
                 {
-                    action( arg1);
+                    action(arg1);
                     if (asyncAction != null)
                         asyncAction();
                 });
@@ -720,7 +720,7 @@ namespace Agebull.EntityModel
             var action = GetDelegate<Action<TArg1, TArg2>>(name);
             if (action != null)
             {
-                Task.Factory.StartNew(() => action( arg1, arg2));
+                Task.Factory.StartNew(() => action(arg1, arg2));
             }
             throw new ArgumentException("不存在对应名称的方法");
         }
@@ -738,7 +738,7 @@ namespace Agebull.EntityModel
             {
                 Task.Factory.StartNew(() =>
                 {
-                    action( arg1, arg2, arg3);
+                    action(arg1, arg2, arg3);
                     if (asyncAction != null)
                         asyncAction();
                 });
@@ -760,7 +760,7 @@ namespace Agebull.EntityModel
             {
                 Task.Factory.StartNew(() =>
                 {
-                    action( arg1, arg2, arg3, arg4);
+                    action(arg1, arg2, arg3, arg4);
                     if (asyncAction != null)
                         asyncAction();
                 });
@@ -808,7 +808,7 @@ namespace Agebull.EntityModel
             {
                 Task.Factory.StartNew(() =>
                 {
-                    var result = func( arg1);
+                    var result = func(arg1);
                     asyncAction(result);
                 });
             }
@@ -831,7 +831,7 @@ namespace Agebull.EntityModel
             {
                 Task.Factory.StartNew(() =>
                 {
-                    var result = func( arg1, arg2);
+                    var result = func(arg1, arg2);
                     asyncAction(result);
                 });
             }
@@ -854,7 +854,7 @@ namespace Agebull.EntityModel
             {
                 Task.Factory.StartNew(() =>
                 {
-                    var result = func( arg1, arg2, arg3);
+                    var result = func(arg1, arg2, arg3);
                     asyncAction(result);
                 });
             }
@@ -879,7 +879,7 @@ namespace Agebull.EntityModel
             {
                 Task.Factory.StartNew(() =>
                 {
-                    var result = func( arg1, arg2, arg3, arg4);
+                    var result = func(arg1, arg2, arg3, arg4);
                     asyncAction(result);
                 });
             }
@@ -926,7 +926,7 @@ namespace Agebull.EntityModel
             {
                 Task.Factory.StartNew(() =>
                 {
-                    action( arg1);
+                    action(arg1);
                     if (asyncAction != null)
                         asyncAction();
                 });
@@ -948,7 +948,7 @@ namespace Agebull.EntityModel
             var action = GetDelegate<Action<TArg1, TArg2>>(name);
             if (action != null)
             {
-                Task.Factory.StartNew(() => action( arg1, arg2));
+                Task.Factory.StartNew(() => action(arg1, arg2));
             }
             else if (asyncAction != null)
             {
@@ -969,7 +969,7 @@ namespace Agebull.EntityModel
             {
                 Task.Factory.StartNew(() =>
                 {
-                    action( arg1, arg2, arg3);
+                    action(arg1, arg2, arg3);
                     if (asyncAction != null)
                         asyncAction();
                 });
@@ -994,7 +994,7 @@ namespace Agebull.EntityModel
             {
                 Task.Factory.StartNew(() =>
                 {
-                    action( arg1, arg2, arg3, arg4);
+                    action(arg1, arg2, arg3, arg4);
                     if (asyncAction != null)
                         asyncAction();
                 });

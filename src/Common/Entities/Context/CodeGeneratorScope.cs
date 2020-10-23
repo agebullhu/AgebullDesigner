@@ -1,5 +1,5 @@
-using System;
 using Agebull.Common.Base;
+using System;
 
 namespace Agebull.EntityModel
 {

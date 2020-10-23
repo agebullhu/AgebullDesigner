@@ -10,8 +10,12 @@
              mc:Ignorable="d"
              d:DesignHeight="900" d:DesignWidth="1051">
     <UserControl.DataContext>
-        <designer:EasyUiViewModel/>
+        <designer:VueViewModel/>
     </UserControl.DataContext>
+    <UserControl.Resources>
+        <behaviors:BoolToVisibleConverter x:Key="BoolToVisibleConverter" />
+        <behaviors:BoolReversalConverter x:Key="BoolReversalConverter" />
+    </UserControl.Resources>
     <DockPanel>
         <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal" DataContext="{Binding Model.Context.SelectEntity}">
             <WrapPanel.Resources>
@@ -53,7 +57,7 @@
         </WrapPanel>
 
         <TabControl DockPanel.Dock="Bottom" Height="152"
-                    DataContext="{Binding Model.Context.SelectProperty}"
+                    DataContext="{Binding Model.Context.SelectField}"
                     IsEnabled="{Binding DenyClient,Converter={StaticResource BoolReversalConverter},Mode=OneWay}">
             <TabControl.Resources>
                 <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>

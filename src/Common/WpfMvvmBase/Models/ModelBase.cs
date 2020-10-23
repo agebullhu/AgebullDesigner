@@ -31,7 +31,7 @@ namespace Agebull.EntityModel
         /// </summary>
         protected virtual void DoInitialize()
         {
-            
+
         }
     }
 

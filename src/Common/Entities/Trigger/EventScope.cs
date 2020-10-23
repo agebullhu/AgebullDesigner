@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using Agebull.Common.Base;
+using System.Collections.Generic;
 
 namespace Agebull.EntityModel
 {
@@ -28,7 +28,7 @@ namespace Agebull.EntityModel
         /// <param name="category">分类</param>
         /// <param name="property">属性</param>
         /// <returns>为空表示已重入,应该放弃处理,不为空则使用这个范围</returns>
-        public static NameEventScope CreateScope(object config,string category, string property)
+        public static NameEventScope CreateScope(object config, string category, string property)
         {
             lock (Events)
             {

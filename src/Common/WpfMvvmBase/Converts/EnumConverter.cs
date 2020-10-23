@@ -3,6 +3,7 @@
 
 #region
 
+using Agebull.Common.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,7 +11,6 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Data;
-using Agebull.Common.Reflection;
 
 #if !CLIENT
 #endif
@@ -267,16 +267,16 @@ namespace Agebull.Common.Mvvm
         {
             if (value == null)
             {
-                return default( TE );
+                return default(TE);
             }
             long l = (long)value;
             if (l <= 0)
-                return default( TE );
+                return default(TE);
 
             StringBuilder sb = new StringBuilder();
             foreach (var ev in EnumValues)
             {
-                if(( l & ev.LValue) != ev.LValue)
+                if ((l & ev.LValue) != ev.LValue)
                     continue;
                 if (sb.Length > 0)
                 {
@@ -308,5 +308,5 @@ namespace Agebull.Common.Mvvm
     {
     }
 
-    
+
 }

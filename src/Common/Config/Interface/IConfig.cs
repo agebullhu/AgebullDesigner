@@ -106,7 +106,7 @@ namespace Agebull.EntityModel.Config
         {
             get;
         }
-        
+
         /// <summary>
         ///     标题
         /// </summary>
@@ -156,7 +156,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 配置
         /// </summary>
-         ConfigDesignOption Option { get; }
+        ConfigDesignOption Option { get; }
         #endregion
     }
 }

@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
 {
@@ -97,7 +97,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 数据关联配置
         /// </summary>
-        [DataMember, JsonProperty("releations",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("releations", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal NotificationList<ReleationConfig> _releations;
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 命令集合
         /// </summary>
-        [DataMember, JsonProperty("_commands",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_commands", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal NotificationList<UserCommandConfig> _commands;
 
         /// <summary>

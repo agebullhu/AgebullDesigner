@@ -8,7 +8,7 @@ namespace Agebull.EntityModel
     /// <summary>
     ///     表示一个自动存储的列表对象
     /// </summary>
-    public class ConfigCollection<TConfig> : NotificationList<TConfig> 
+    public class ConfigCollection<TConfig> : NotificationList<TConfig>
         where TConfig : NotificationObject, new()
     {
         #region 属性修改
@@ -150,7 +150,7 @@ namespace Agebull.EntityModel
         /// <param name="action"></param>
         public void BeginInvokeInUiThread(Action action)
         {
-            if (WorkContext.SynchronousContext==null)
+            if (WorkContext.SynchronousContext == null)
             {
                 action();
             }
@@ -167,7 +167,7 @@ namespace Agebull.EntityModel
         /// <param name="args"></param>
         public void BeginInvokeInUiThread<T>(Action<T> action, T args)
         {
-            if (WorkContext.SynchronousContext==null)
+            if (WorkContext.SynchronousContext == null)
             {
                 action(args);
             }
@@ -184,7 +184,7 @@ namespace Agebull.EntityModel
         /// <param name="args"></param>
         public void InvokeInUiThread<T>(Action<T> action, T args)
         {
-            if (WorkContext.SynchronousContext==null)
+            if (WorkContext.SynchronousContext == null)
             {
                 action(args);
             }

@@ -1,8 +1,7 @@
 using System.ComponentModel.Composition;
-using Agebull.EntityModel.Designer;
 using Agebull.EntityModel.Config;
 
-namespace Agebull.Common.Config.Designer.EasyUi
+namespace Agebull.EntityModel.Designer.Vue
 {
     /// <summary>
     /// 命令注册器
@@ -18,7 +17,7 @@ namespace Agebull.Common.Config.Designer.EasyUi
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            DesignerManager.Registe<EntityConfig, UiPanel>("用户界面","Model");
+            DesignerManager.Registe<EntityConfig, UiPanel>("用户界面", "Model");
         }
 
 

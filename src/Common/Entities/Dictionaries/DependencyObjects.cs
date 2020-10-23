@@ -8,10 +8,10 @@
 
 #region ÒýÓÃ
 
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 #endregion
 
@@ -37,10 +37,10 @@ namespace Agebull.EntityModel
         /// </remarks>
         public void Annex<T>(T value)
         {
-            Type type = typeof (T);
+            Type type = typeof(T);
             if (_dictionary.ContainsKey(type))
             {
-                if (Equals(value, default( T )))
+                if (Equals(value, default(T)))
                 {
                     _dictionary.Remove(type);
                 }
@@ -49,7 +49,7 @@ namespace Agebull.EntityModel
                     _dictionary[type] = value;
                 }
             }
-            else if (!Equals(value, default( T )))
+            else if (!Equals(value, default(T)))
             {
                 _dictionary.Add(type, value);
             }
@@ -66,7 +66,7 @@ namespace Agebull.EntityModel
                 return value1 as T;
             }
             T value = new T();
-            _dictionary.Add(typeof (T), value);
+            _dictionary.Add(typeof(T), value);
             return value;
         }
         /// <summary>

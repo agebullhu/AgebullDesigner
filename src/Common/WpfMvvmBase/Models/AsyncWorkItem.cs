@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Agebull.Common.Mvvm;
+using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using Agebull.Common.Logging;
-using Agebull.Common.Mvvm;
 
 namespace Agebull.EntityModel
 {
@@ -152,7 +151,7 @@ namespace Agebull.EntityModel
             {
                 if (PerpareInner(setParameter))
                 {
-                    Status = CommandStatus.Executing; 
+                    Status = CommandStatus.Executing;
                     return true;
                 }
             }

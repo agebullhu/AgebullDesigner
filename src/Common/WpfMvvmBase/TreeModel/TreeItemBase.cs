@@ -8,6 +8,8 @@
 
 #region ÒýÓÃ
 
+using Agebull.Common.Reflection;
+using Agebull.EntityModel.Config;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,8 +18,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Windows;
-using Agebull.Common.Reflection;
-using Agebull.EntityModel.Config;
 
 #endregion
 

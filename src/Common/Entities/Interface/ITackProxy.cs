@@ -1,5 +1,5 @@
-using System;
 using Agebull.Common.Mvvm;
+using System;
 
 namespace Agebull.EntityModel
 {

@@ -1,7 +1,7 @@
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel;
 using System.Windows;
 using System.Windows.Media;
-using Agebull.EntityModel;
-using Agebull.Common.Mvvm;
 
 namespace Agebull.CodeRefactor.CodeRefactor
 {
@@ -57,7 +57,7 @@ namespace Agebull.CodeRefactor.CodeRefactor
 
         public CommandItem ClearTraceCommand => _clearTraceCommand ??= new CommandItem
         {
-            NoConfirm=true,
+            NoConfirm = true,
             Action = ClearTrace,
             Caption = "Çå³ý¸ú×ÙÐÅÏ¢",
             Image = Application.Current.Resources["tree_Close"] as ImageSource

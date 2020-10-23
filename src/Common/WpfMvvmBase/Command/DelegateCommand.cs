@@ -13,7 +13,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
-using Agebull.Common.Logging;
 
 #endregion
 
@@ -382,9 +381,9 @@ namespace Agebull.Common.Mvvm
             {
                 if (_parameter == value)
                     return;
-                
+
                 _parameter = value;
-                Detect= value as INotifyPropertyChanged;
+                Detect = value as INotifyPropertyChanged;
                 RaisePropertyChanged(nameof(Parameter));
             }
         }

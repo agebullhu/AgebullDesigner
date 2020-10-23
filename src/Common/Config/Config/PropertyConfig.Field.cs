@@ -7,10 +7,10 @@
 修改:2017-07-12
 *****************************************************/
 
+using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
 {
@@ -455,7 +455,11 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"备注字段"), Description("是否备注字段")]
-        public bool IsMemo => Field.IsMemo;
+        public bool IsMemo
+        {
+            get => Field.IsMemo;
+            set => Field.IsMemo = value;
+        }
 
         /// <summary>
         /// 大数据
@@ -516,7 +520,11 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"客户端不可见"), Description("客户端不可见")]
-        public bool DenyClient => Field.DenyClient;
+        public bool DenyClient
+        {
+            get => Field.DenyClient;
+            set => Field.DenyClient = value;
+        }
 
         /// <summary>
         /// 用户是否可输入
@@ -536,7 +544,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"不可编辑"), Description("是否用户可编辑")]
-        public bool IsUserReadOnly => Field.IsUserReadOnly;
+        public bool IsUserReadOnly
+        {
+            get => Field.IsUserReadOnly; set => Field.IsUserReadOnly = value;
+        }
 
         /// <summary>
         /// 多行文本
@@ -546,7 +557,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"多行文本"), Description("多行文本")]
-        public bool MulitLine => Field.MulitLine;
+        public bool MulitLine
+        {
+            get => Field.MulitLine; set => Field.MulitLine = value;
+        }
 
         /// <summary>
         /// 前缀
@@ -556,7 +570,11 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"前缀"), Description("前缀")]
-        public string Prefix => Field.Prefix;
+        public string Prefix
+        {
+            get => Field.Prefix;
+            set => Field.Prefix = value;
+        }
 
         /// <summary>
         /// 后缀
@@ -566,7 +584,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"后缀"), Description("后缀")]
-        public string Suffix => Field.Suffix;
+        public string Suffix
+        {
+            get => Field.Suffix; set => Field.Suffix = value;
+        }
 
         /// <summary>
         /// 等同于空值的文本
@@ -576,7 +597,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"等同于空值的文本"), Description("等同于空值的文本,多个用#号分开")]
-        public string EmptyValue => Field.EmptyValue;
+        public string EmptyValue
+        {
+            get => Field.EmptyValue; set => Field.EmptyValue = value;
+        }
 
 
         /// <summary>
@@ -587,7 +611,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"界面必填字段"), Description("界面必填字段")]
-        public bool UiRequired => Field.UiRequired;
+        public bool UiRequired
+        {
+            get => Field.UiRequired; set => Field.UiRequired = value;
+        }
 
         /// <summary>
         /// 输入类型
@@ -597,7 +624,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"输入类型"), Description("输入类型")]
-        public string InputType => Field.InputType;
+        public string InputType
+        {
+            get => Field.InputType; set => Field.InputType = value;
+        }
 
         /// <summary>
         /// Form中占几列宽度
@@ -607,7 +637,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"Form中占几列宽度"), Description("Form中占几列宽度")]
-        public int FormCloumnSapn => Field.FormCloumnSapn;
+        public int FormCloumnSapn
+        {
+            get => Field.FormCloumnSapn; set => Field.FormCloumnSapn = value;
+        }
 
         /// <summary>
         /// Form中的EasyUi设置
@@ -617,14 +650,20 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"Form中的EasyUi设置"), Description("Form中的EasyUi设置")]
-        public string FormOption => Field.FormOption;
+        public string FormOption
+        {
+            get => Field.FormOption; set => Field.FormOption = value;
+        }
 
         /// <summary>
         /// 用户排序
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"用户排序"), Description("用户排序")]
-        public bool UserOrder => Field.UserOrder;
+        public bool UserOrder
+        {
+            get => Field.UserOrder; set => Field.UserOrder = value;
+        }
 
         /// <summary>
         /// 下拉列表的地址
@@ -634,7 +673,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"下拉列表的地址"), Description("下拉列表的地址")]
-        public string ComboBoxUrl => Field.ComboBoxUrl;
+        public string ComboBoxUrl
+        {
+            get => Field.ComboBoxUrl; set => Field.ComboBoxUrl = value;
+        }
 
         /// <summary>
         /// 是否图片
@@ -644,7 +686,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"是否图片"), Description("是否图片")]
-        public bool IsImage => Field.IsImage;
+        public bool IsImage
+        {
+            get => Field.IsImage; set => Field.IsImage = value;
+        }
 
         /// <summary>
         /// 货币类型
@@ -654,7 +699,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"货币类型"), Description("是否货币")]
-        public bool IsMoney => Field.IsMoney;
+        public bool IsMoney
+        {
+            get => Field.IsMoney; set => Field.IsMoney = value;
+        }
 
         /// <summary>
         /// 表格对齐
@@ -664,7 +712,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"表格对齐"), Description("对齐")]
-        public string GridAlign => Field.GridAlign;
+        public string GridAlign
+        {
+            get => Field.GridAlign; set => Field.GridAlign = value;
+        }
 
         /// <summary>
         /// 占表格宽度比例
@@ -674,7 +725,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"占表格宽度比例"), Description("数据格式器")]
-        public int GridWidth => Field.GridWidth;
+        public int GridWidth
+        {
+            get => Field.GridWidth; set => Field.GridWidth = value;
+        }
 
         /// <summary>
         /// 数据格式器
@@ -684,7 +738,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"数据格式器"), Description("数据格式器")]
-        public string DataFormater => Field.DataFormater;
+        public string DataFormater
+        {
+            get => Field.DataFormater; set => Field.DataFormater = value;
+        }
 
         /// <summary>
         /// 显示在列表详细页中
@@ -694,7 +751,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"显示在列表详细页中"), Description("显示在列表详细页中")]
-        public bool GridDetails => Field.GridDetails;
+        public bool GridDetails
+        {
+            get => Field.GridDetails; set => Field.GridDetails = value;
+        }
 
         /// <summary>
         /// 列表不显示
@@ -704,7 +764,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"列表不显示"), Description("列表不显示")]
-        public bool NoneGrid => Field.NoneGrid;
+        public bool NoneGrid
+        {
+            get => Field.NoneGrid; set => Field.NoneGrid = value;
+        }
 
         /// <summary>
         /// 详细不显示
@@ -714,7 +777,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"详细不显示"), Description("详细不显示")]
-        public bool NoneDetails => Field.NoneDetails;
+        public bool NoneDetails
+        {
+            get => Field.NoneDetails; set => Field.NoneDetails = value;
+        }
 
         /// <summary>
         /// 列表详细页代码
@@ -724,7 +790,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"列表详细页代码"), Description("详细界面代码")]
-        public string GridDetailsCode => Field.GridDetailsCode;
+        public string GridDetailsCode
+        {
+            get => Field.GridDetailsCode; set => Field.GridDetailsCode = value;
+        }
         #endregion
         #region 数据规则
 

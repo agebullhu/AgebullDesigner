@@ -18,7 +18,7 @@ namespace Agebull.Common.Mvvm
     /// <summary>
     ///     事件行为的附加方法
     /// </summary>
-    public class BehaviorAction<TDependency> 
+    public class BehaviorAction<TDependency>
             where TDependency : DependencyObject
     {
         /// <summary>
@@ -42,7 +42,7 @@ namespace Agebull.Common.Mvvm
     /// <summary>
     ///     事件行为的附加方法
     /// </summary>
-    public sealed class DependencyAction : BehaviorAction<DependencyObject> 
+    public sealed class DependencyAction : BehaviorAction<DependencyObject>
     {
     }
 }

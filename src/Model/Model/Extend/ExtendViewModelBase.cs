@@ -27,13 +27,13 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     对应的命令集合
         /// </summary>
-        public CommandItem Menus =>
-            new CommandItem
-            {
-                IsRoot = true,
-                Caption = "扩展操作",
-                Items = Commands.Where(p => p.NoButton).ToNotificationList<CommandItemBase>()
-            };
+        public CommandItem Menus => new CommandItem
+        {
+            IsRoot = true,
+            Caption = "〓",
+            Items = Commands.Where(p => p.NoButton).ToNotificationList<CommandItemBase>()
+        };
+
         /// <summary>
         ///     分类
         /// </summary>

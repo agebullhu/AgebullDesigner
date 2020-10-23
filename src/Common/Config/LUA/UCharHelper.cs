@@ -97,9 +97,9 @@ namespace Agebull.Common.LUA
                     ubuilder.Append(ch);
                     if (ubuilder.Length < 6)
                         continue;
-                    if (int.TryParse(ubuilder.ToString().Substring(2),NumberStyles.AllowHexSpecifier , null, out var nch))
+                    if (int.TryParse(ubuilder.ToString().Substring(2), NumberStyles.AllowHexSpecifier, null, out var nch))
                     {
-                        builder.Append((char) nch);
+                        builder.Append((char)nch);
                     }
                     else
                     {

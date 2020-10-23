@@ -1,5 +1,5 @@
-﻿using System.Text;
-using Agebull.Common.LUA;
+﻿using Agebull.Common.LUA;
+using System.Text;
 
 namespace Agebull.EntityModel.Config
 {

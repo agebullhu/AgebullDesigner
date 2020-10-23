@@ -10,7 +10,7 @@ namespace Agebull.EntityModel.Config
         Auto,
         ByLen
     }
-    public class PropertyEasyUiModel : ConfigModelBase
+    public class PropertyVueModel : ConfigModelBase
     {
         /// <summary>
         ///     取字段录入类型（EasyUi）
@@ -18,7 +18,7 @@ namespace Agebull.EntityModel.Config
         /// <param name="field"></param>
         /// <param name="repair">是否修复</param>
         /// <returns></returns>
-        public void CheckField(PropertyConfig field, bool repair = false)
+        public void CheckField(IFieldConfig field, bool repair = false)
         {
             if (field.IsPrimaryKey && field.IsIdentity)
             {
@@ -40,7 +40,7 @@ namespace Agebull.EntityModel.Config
             }
             if (repair)
             {
-                if (field.Parent.Interfaces?.Contains("IAuditData") ?? false)
+                if (field.Entity.Interfaces?.Contains("IAuditData") ?? false)
                 {
                     field.UiRequired = !field.CanEmpty;
                 }
@@ -71,7 +71,7 @@ namespace Agebull.EntityModel.Config
             }
         }
 
-        public void CheckSize(PropertyConfig field, SizeOption option)
+        public void CheckSize(IFieldConfig field, SizeOption option)
         {
             switch (option)
             {
@@ -114,7 +114,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="field"></param>
         /// <returns></returns>
-        private static void CheckInputConfig(PropertyConfig field)
+        private static void CheckInputConfig(IFieldConfig field)
         {
             if (field.NoneDetails)
                 return;
@@ -127,7 +127,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="field"></param>
         /// <returns></returns>
-        public void CheckFieldShow(PropertyConfig field)
+        public void CheckFieldShow(IFieldConfig field)
         {
             if (field.IsPrimaryKey || field.IsLinkKey)
             {
@@ -176,7 +176,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="field"></param>
         /// <returns></returns>
-        public void CheckKeyShow(PropertyConfig field)
+        public void CheckKeyShow(IFieldConfig field)
         {
             if (field.IsPrimaryKey)
             {
@@ -204,7 +204,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="field"></param>
         /// <returns></returns>
-        private static void RepairInputConfig(PropertyConfig field)
+        private static void RepairInputConfig(IFieldConfig field)
         {
             if (field.DenyClient || field.IsSystemField || field.IsCompute || field.IsIdentity && field.IsIdentity)
             {
@@ -216,15 +216,15 @@ namespace Agebull.EntityModel.Config
             ResetInputType(field);
         }
 
-        private static void ResetInputType(PropertyConfig field)
+        private static void ResetInputType(IFieldConfig field)
         {
             if (field.MulitLine || field.InputType == "editor")
-                field.FormCloumnSapn = field.Parent.FormCloumn;
+                field.FormCloumnSapn = field.Entity.FormCloumn;
             else
                 field.FormCloumnSapn = 1;
             if (field.MulitLine)
             {
-                field.FormCloumnSapn = field.Parent.FormCloumn;
+                field.FormCloumnSapn = field.Entity.FormCloumn;
                 field.InputType = "easyui-textbox";
                 field.FormOption = null;
                 field.ComboBoxUrl = null;
@@ -233,7 +233,7 @@ namespace Agebull.EntityModel.Config
             if (field.IsBlob && field.CsType == "string")
             {
                 field.MulitLine = true;
-                field.FormCloumnSapn = field.Parent.FormCloumn;
+                field.FormCloumnSapn = field.Entity.FormCloumn;
                 field.InputType = "editor";
                 field.FormOption = null;
                 field.ComboBoxUrl = null;
@@ -250,13 +250,13 @@ namespace Agebull.EntityModel.Config
             field.FormOption = null;
             if (field.IsLinkKey)
             {
-                var entity = Find(p => p.SaveTable == field.LinkTable);
+                var entity = Find(p => p.SaveTableName == field.LinkTable);
                 if (entity != null)
                 {
                     field.InputType = "easyui-combobox";
                     field.ComboBoxUrl = null;
                     field.FormOption = "valueField:'id', textField:'text'";
-                    var title = field.Parent.ClientProperty.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
+                    var title = field.Entity.ClientProperty.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
                     if (title != null)
                     {
                         field.NoneDetails = false;
@@ -292,7 +292,7 @@ namespace Agebull.EntityModel.Config
             }
         }
 
-        private static void RepairListConfig(PropertyConfig field)
+        private static void RepairListConfig(IFieldConfig field)
         {
             if (field.IsSystemField || field.IsIdentity)
             {
@@ -312,7 +312,7 @@ namespace Agebull.EntityModel.Config
                 return;
             }
 
-            var title = field.Parent.Properties.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
+            var title = field.Entity.Properties.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
             if (title != null)
             {
                 field.NoneGrid = true;

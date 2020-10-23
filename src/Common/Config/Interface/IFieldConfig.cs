@@ -1,8 +1,5 @@
-﻿
-using Microsoft.Xaml.Behaviors.Media;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Windows.Documents;
 
 namespace Agebull.EntityModel.Config
 {
@@ -514,7 +511,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 备注字段
         /// </summary>
-        bool IsMemo { get; }// Field.IsMemo;
+        bool IsMemo { get; set; }// Field.IsMemo;
 
         /// <summary>
         /// 大数据
@@ -568,7 +565,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 客户端不可见
         /// </summary>
-        bool DenyClient { get; }// Field.DenyClient;
+        bool DenyClient { get; set; }// Field.DenyClient;
 
         /// <summary>
         /// 用户是否可输入
@@ -581,22 +578,22 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否用户可编辑
         /// </remark>
-        bool IsUserReadOnly { get; }// Field.IsUserReadOnly;
+        bool IsUserReadOnly { get; set; }// Field.IsUserReadOnly;
 
         /// <summary>
         /// 多行文本
         /// </summary>
-        bool MulitLine { get; }// Field.MulitLine;
+        bool MulitLine { get; set; }// Field.MulitLine;
 
         /// <summary>
         /// 前缀
         /// </summary>
-        string Prefix { get; }// Field.Prefix;
+        string Prefix { get; set; }// Field.Prefix;
 
         /// <summary>
         /// 后缀
         /// </summary>
-        string Suffix { get; }// Field.Suffix;
+        string Suffix { get; set; }// Field.Suffix;
 
         /// <summary>
         /// 等同于空值的文本
@@ -604,78 +601,78 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 等同于空值的文本,多个用#号分开
         /// </remark>
-        string EmptyValue { get; }// Field.EmptyValue;
+        string EmptyValue { get; set; }// Field.EmptyValue;
 
 
         /// <summary>
         /// 界面必填字段
         /// </summary>
-        bool UiRequired { get; }// Field.UiRequired;
+        bool UiRequired { get; set; }// Field.UiRequired;
 
         /// <summary>
         /// 输入类型
         /// </summary>
-        string InputType { get; }// Field.InputType;
+        string InputType { get; set; }// Field.InputType;
 
         /// <summary>
         /// Form中占几列宽度
         /// </summary>
-        int FormCloumnSapn { get; }// Field.FormCloumnSapn;
+        int FormCloumnSapn { get; set; }// Field.FormCloumnSapn;
 
         /// <summary>
         /// Form中的设置
         /// </summary>
-        string FormOption { get; }// Field.FormOption;
+        string FormOption { get; set; }// Field.FormOption;
 
         /// <summary>
         /// 用户排序
         /// </summary>
-        bool UserOrder { get; }// Field.UserOrder;
+        bool UserOrder { get; set; }// Field.UserOrder;
 
         /// <summary>
         /// 下拉列表的地址
         /// </summary>
-        string ComboBoxUrl { get; }// Field.ComboBoxUrl;
+        string ComboBoxUrl { get; set; }// Field.ComboBoxUrl;
 
         /// <summary>
         /// 是否图片
         /// </summary>
-        bool IsImage { get; }// Field.IsImage;
+        bool IsImage { get; set; }// Field.IsImage;
 
         /// <summary>
         /// 货币类型
         /// </summary>
-        bool IsMoney { get; }// Field.IsMoney;
+        bool IsMoney { get; set; }// Field.IsMoney;
 
         /// <summary>
         /// 表格对齐
         /// </summary>
-        string GridAlign { get; }// Field.GridAlign;
+        string GridAlign { get; set; }// Field.GridAlign;
 
         /// <summary>
         /// 占表格宽度比例
         /// </summary>
-        int GridWidth { get; }// Field.GridWidth;
+        int GridWidth { get; set; }// Field.GridWidth;
 
         /// <summary>
         /// 数据格式器
         /// </summary>
-        string DataFormater { get; }// Field.DataFormater;
+        string DataFormater { get; set; }// Field.DataFormater;
 
         /// <summary>
         /// 显示在列表详细页中
         /// </summary>
-        bool GridDetails { get; }// Field.GridDetails;
+        bool GridDetails { get; set; }// Field.GridDetails;
 
         /// <summary>
         /// 列表不显示
         /// </summary>
-        bool NoneGrid { get; }// Field.NoneGrid;
+        bool NoneGrid { get; set; }// Field.NoneGrid;
 
         /// <summary>
         /// 详细不显示
         /// </summary>
-        bool NoneDetails { get; }// Field.NoneDetails;
+        bool NoneDetails { get; set; }// Field.NoneDetails;
 
         /// <summary>
         /// 列表详细页代码

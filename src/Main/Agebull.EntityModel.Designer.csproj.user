@@ -3,6 +3,7 @@
   <PropertyGroup>
     <ProjectView>ShowAllFiles</ProjectView>
     <_LastSelectedProfileId>C:\Projects\ZeroTeam\AgebullDesigner\src\Main\Properties\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
+    <ShowAllFiles>true</ShowAllFiles>
   </PropertyGroup>
   <ItemGroup>
     <Page Update="Card\ConfigForm.xaml">

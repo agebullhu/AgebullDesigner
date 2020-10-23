@@ -8,12 +8,12 @@
 
 #region 引用
 
+using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 #endregion
 
@@ -278,7 +278,7 @@ namespace Agebull.EntityModel
                     WorkContext.SynchronousContext.InvokeInUiThread(action, args);
                 }
             }
-            catch 
+            catch
             {
             }
         }

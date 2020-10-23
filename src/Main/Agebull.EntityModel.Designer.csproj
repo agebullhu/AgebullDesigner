@@ -96,6 +96,7 @@
     <None Remove="Style\Images\tree_Project.png" />
     <None Remove="Style\Images\tree_Solution.png" />
     <None Remove="Style\Images\tree_Type.png" />
+    <None Remove="Style\menu.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -334,6 +335,9 @@
     <Resource Include="Style\Images\tree_Type.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <EmbeddedResource Include="Style\menu.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

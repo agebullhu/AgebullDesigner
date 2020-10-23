@@ -1,8 +1,3 @@
-using System;
-using System.Collections;
-using System.Windows;
-using Agebull.EntityModel;
-
 namespace Agebull.Common.Mvvm
 {
     ///// <summary>

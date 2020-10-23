@@ -66,7 +66,7 @@ namespace Agebull.EntityModel.Config
         ///     Êý¾Ý¿âÃû³Æ
         /// </summary>
         string DbUser { get; }
-        
+
     }
-    
+
 }

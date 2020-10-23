@@ -7,13 +7,12 @@
 修改:2017-07-12
 *****************************************************/
 
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
-
-using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
 {
@@ -176,8 +175,8 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"主键字段"), Description("主键字段")]
-        public PropertyConfig PrimaryColumn => Properties.FirstOrDefault(p =>  Entity.PrimaryColumn == p.Field);
-        
+        public PropertyConfig PrimaryColumn => Properties.FirstOrDefault(p => Entity.PrimaryColumn == p.Field);
+
         /// <summary>
         /// 主键字段
         /// </summary>

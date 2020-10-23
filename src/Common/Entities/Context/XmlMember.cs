@@ -49,29 +49,29 @@ namespace Agebull.EntityModel.Designer.AssemblyAnalyzer
         /// <returns></returns>
         private static void Load(Assembly assembly)
         {
-            var file = Path.Combine(Path.GetDirectoryName(assembly.Location),Path.GetFileNameWithoutExtension(assembly.Location) + ".xml");
+            var file = Path.Combine(Path.GetDirectoryName(assembly.Location), Path.GetFileNameWithoutExtension(assembly.Location) + ".xml");
             Assemblys.Add(assembly, "");
             if (!File.Exists(file))
-                return ;
+                return;
             XElement xRoot = XElement.Load(file);
             var xElement = xRoot.Element("members");
             if (xElement == null)
             {
-                return ;
+                return;
             }
             var members = from p in xElement.Elements("member")
-                let name = p.Attribute("name")
-                where !string.IsNullOrWhiteSpace(name?.Value) && name.Value[0] != 'M'
-                let summary = p.Element("summary")
-                let remarks = p.Element("remarks")
-                let np = name.Value.Split(':', '(')
-                select new XmlMember
-                {
-                    Type = np[0],
-                    Name = np[1],
-                    Remark = remarks?.Value,
-                    Summary = summary?.Value.Trim()
-                };
+                          let name = p.Attribute("name")
+                          where !string.IsNullOrWhiteSpace(name?.Value) && name.Value[0] != 'M'
+                          let summary = p.Element("summary")
+                          let remarks = p.Element("remarks")
+                          let np = name.Value.Split(':', '(')
+                          select new XmlMember
+                          {
+                              Type = np[0],
+                              Name = np[1],
+                              Remark = remarks?.Value,
+                              Summary = summary?.Value.Trim()
+                          };
             HelpXml.AddRange(members);
         }
 

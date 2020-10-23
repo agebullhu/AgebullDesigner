@@ -1,6 +1,6 @@
-﻿using System.ComponentModel;
+﻿using Newtonsoft.Json;
+using System.ComponentModel;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
 {

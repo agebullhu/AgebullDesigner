@@ -6,10 +6,6 @@
 // // 修改:2016-09-18
 // // *****************************************************/
 
-using System.ComponentModel;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
-
 namespace Agebull.EntityModel.Config
 {
     partial class PropertyConfig
@@ -161,285 +157,285 @@ namespace Agebull.EntityModel.Config
         #endregion
 
         #region 扩展配置(过时)
-            /*
-        /// <summary>
-        /// 扩展组合规划的说明文字
-        /// </summary>
-        const string ExtendRole_Description = @"扩展组合规划,
+        /*
+    /// <summary>
+    /// 扩展组合规划的说明文字
+    /// </summary>
+    const string ExtendRole_Description = @"扩展组合规划,
 类JSON方式即[名称:类型]多个用逗号分开,
 类型说明:#表名,%小数,*整数,@日期,!文本(默认,可不填)
 例  ID:*,颜色,EID:#Equipments 解析结果: 两个属性的对象,ID为整数,颜色为文本,EID为关联到Equipments表的主键字段
 特殊说明:如果是否为关系表为真,只按 表名 解析成表间一对多关系";
 
-        /// <summary>
-        /// 扩展组合规划
-        /// </summary>
-        [DataMember, JsonProperty("ExtendRole",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _extendRole;
+    /// <summary>
+    /// 扩展组合规划
+    /// </summary>
+    [DataMember, JsonProperty("ExtendRole",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+    internal string _extendRole;
 
-        /// <summary>
-        /// 扩展组合规划
-        /// </summary>
-        /// <remark>
-        /// 扩展组合规划,
-        /// 类JSON方式即[名称:类型]多个用逗号分开,
-        /// 类型说明:#表名,%小数,*整数,@日期,!文本(默认,可不填)
-        /// 例  ID:*,颜色,EID:#Equipments 解析结果: 两个属性的对象,ID为整数,颜色为文本,EID为关联到Equipments表的主键字段
-        /// 特殊说明:如果是否为关系表为真,只按 表名 解析成表间一对多关系
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"扩展配置(过时)"), DisplayName(@"扩展组合规划"), Description(ExtendRole_Description)]
-        public string ExtendRole
+    /// <summary>
+    /// 扩展组合规划
+    /// </summary>
+    /// <remark>
+    /// 扩展组合规划,
+    /// 类JSON方式即[名称:类型]多个用逗号分开,
+    /// 类型说明:#表名,%小数,*整数,@日期,!文本(默认,可不填)
+    /// 例  ID:*,颜色,EID:#Equipments 解析结果: 两个属性的对象,ID为整数,颜色为文本,EID为关联到Equipments表的主键字段
+    /// 特殊说明:如果是否为关系表为真,只按 表名 解析成表间一对多关系
+    /// </remark>
+    [IgnoreDataMember, JsonIgnore]
+    [Category(@"扩展配置(过时)"), DisplayName(@"扩展组合规划"), Description(ExtendRole_Description)]
+    public string ExtendRole
+    {
+        get => _extendRole;
+        set
         {
-            get => _extendRole;
-            set
-            {
-                if (_extendRole == value)
-                    return;
-                BeforePropertyChanged(nameof(ExtendRole), _extendRole, value);
-                _extendRole = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(ExtendRole));
-            }
+            if (_extendRole == value)
+                return;
+            BeforePropertyChanged(nameof(ExtendRole), _extendRole, value);
+            _extendRole = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+            OnPropertyChanged(nameof(ExtendRole));
         }
+    }
 
-        /// <summary>
-        /// 值分隔符
-        /// </summary>
-        [DataMember, JsonProperty("ValueSeparate",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _valueSeparate;
+    /// <summary>
+    /// 值分隔符
+    /// </summary>
+    [DataMember, JsonProperty("ValueSeparate",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+    internal string _valueSeparate;
 
-        /// <summary>
-        /// 值分隔符
-        /// </summary>
-        /// <remark>
-        /// 值分隔符
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"扩展配置(过时)"), DisplayName(@"值分隔符"), Description("值分隔符")]
-        public string ValueSeparate
+    /// <summary>
+    /// 值分隔符
+    /// </summary>
+    /// <remark>
+    /// 值分隔符
+    /// </remark>
+    [IgnoreDataMember, JsonIgnore]
+    [Category(@"扩展配置(过时)"), DisplayName(@"值分隔符"), Description("值分隔符")]
+    public string ValueSeparate
+    {
+        get => _valueSeparate;
+        set
         {
-            get => _valueSeparate;
-            set
-            {
-                if (_valueSeparate == value)
-                    return;
-                BeforePropertyChanged(nameof(ValueSeparate), _valueSeparate, value);
-                _valueSeparate = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(ValueSeparate));
-            }
+            if (_valueSeparate == value)
+                return;
+            BeforePropertyChanged(nameof(ValueSeparate), _valueSeparate, value);
+            _valueSeparate = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+            OnPropertyChanged(nameof(ValueSeparate));
         }
+    }
 
-        /// <summary>
-        /// 数组分隔符
-        /// </summary>
-        [DataMember, JsonProperty("ArraySeparate",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _arraySeparate;
+    /// <summary>
+    /// 数组分隔符
+    /// </summary>
+    [DataMember, JsonProperty("ArraySeparate",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+    internal string _arraySeparate;
 
-        /// <summary>
-        /// 数组分隔符
-        /// </summary>
-        /// <remark>
-        /// 数组分隔符
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"扩展配置(过时)"), DisplayName(@"数组分隔符"), Description("数组分隔符")]
-        public string ArraySeparate
+    /// <summary>
+    /// 数组分隔符
+    /// </summary>
+    /// <remark>
+    /// 数组分隔符
+    /// </remark>
+    [IgnoreDataMember, JsonIgnore]
+    [Category(@"扩展配置(过时)"), DisplayName(@"数组分隔符"), Description("数组分隔符")]
+    public string ArraySeparate
+    {
+        get => _arraySeparate;
+        set
         {
-            get => _arraySeparate;
-            set
-            {
-                if (_arraySeparate == value)
-                    return;
-                BeforePropertyChanged(nameof(ArraySeparate), _arraySeparate, value);
-                _arraySeparate = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(ArraySeparate));
-            }
+            if (_arraySeparate == value)
+                return;
+            BeforePropertyChanged(nameof(ArraySeparate), _arraySeparate, value);
+            _arraySeparate = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+            OnPropertyChanged(nameof(ArraySeparate));
         }
+    }
 
-        /// <summary>
-        /// 是否扩展数组的说明文字
-        /// </summary>
-        const string ExtendArray_Description = @"是否扩展数组,是则解析为二维数组,否解析为一维数组";
+    /// <summary>
+    /// 是否扩展数组的说明文字
+    /// </summary>
+    const string ExtendArray_Description = @"是否扩展数组,是则解析为二维数组,否解析为一维数组";
 
-        /// <summary>
-        /// 是否扩展数组
-        /// </summary>
-        [DataMember, JsonProperty("ExtendArray",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _extendArray;
+    /// <summary>
+    /// 是否扩展数组
+    /// </summary>
+    [DataMember, JsonProperty("ExtendArray",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+    internal bool _extendArray;
 
-        /// <summary>
-        /// 是否扩展数组
-        /// </summary>
-        /// <remark>
-        /// 是否扩展数组,是则解析为二维数组,否解析为一维数组
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"扩展配置(过时)"), DisplayName(@"是否扩展数组"), Description(ExtendArray_Description)]
-        public bool ExtendArray
+    /// <summary>
+    /// 是否扩展数组
+    /// </summary>
+    /// <remark>
+    /// 是否扩展数组,是则解析为二维数组,否解析为一维数组
+    /// </remark>
+    [IgnoreDataMember, JsonIgnore]
+    [Category(@"扩展配置(过时)"), DisplayName(@"是否扩展数组"), Description(ExtendArray_Description)]
+    public bool ExtendArray
+    {
+        get => _extendArray;
+        set
         {
-            get => _extendArray;
-            set
-            {
-                if (_extendArray == value)
-                    return;
-                BeforePropertyChanged(nameof(ExtendArray), _extendArray, value);
-                _extendArray = value;
-                OnPropertyChanged(nameof(ExtendArray));
-            }
+            if (_extendArray == value)
+                return;
+            BeforePropertyChanged(nameof(ExtendArray), _extendArray, value);
+            _extendArray = value;
+            OnPropertyChanged(nameof(ExtendArray));
         }
+    }
 
-        /// <summary>
-        /// 是否值对分隔方式的说明文字
-        /// </summary>
-        const string IsKeyValueArray_Description = @"是否值对分隔方式,
+    /// <summary>
+    /// 是否值对分隔方式的说明文字
+    /// </summary>
+    const string IsKeyValueArray_Description = @"是否值对分隔方式,
 如果是每组为一种类型的对象,否则一组是单个对象,举例如下:
 对象实际JSON表示方式为[{ID:1,颜色:黄},{ID:2,颜色:红},{ID:3,颜色:绿}]
 是的情况:1,2,3#红,黄,绿,第一组是ID属性,第二组是颜色属性,解析后为
 否的情况:1,红#2,黄#3,绿,分别对应三组";
 
-        /// <summary>
-        /// 是否值对分隔方式
-        /// </summary>
-        [DataMember, JsonProperty("IsKeyValueArray",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isKeyValueArray;
+    /// <summary>
+    /// 是否值对分隔方式
+    /// </summary>
+    [DataMember, JsonProperty("IsKeyValueArray",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+    internal bool _isKeyValueArray;
 
-        /// <summary>
-        /// 是否值对分隔方式
-        /// </summary>
-        /// <remark>
-        /// 是否值对分隔方式,
-        /// 如果是每组为一种类型的对象,否则一组是单个对象,举例如下:
-        /// 对象实际JSON表示方式为[{ID:1,颜色:黄},{ID:2,颜色:红},{ID:3,颜色:绿}]
-        /// 是的情况:1,2,3#红,黄,绿,第一组是ID属性,第二组是颜色属性,解析后为
-        /// 否的情况:1,红#2,黄#3,绿,分别对应三组
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"扩展配置(过时)"), DisplayName(@"是否值对分隔方式"), Description(IsKeyValueArray_Description)]
-        public bool IsKeyValueArray
+    /// <summary>
+    /// 是否值对分隔方式
+    /// </summary>
+    /// <remark>
+    /// 是否值对分隔方式,
+    /// 如果是每组为一种类型的对象,否则一组是单个对象,举例如下:
+    /// 对象实际JSON表示方式为[{ID:1,颜色:黄},{ID:2,颜色:红},{ID:3,颜色:绿}]
+    /// 是的情况:1,2,3#红,黄,绿,第一组是ID属性,第二组是颜色属性,解析后为
+    /// 否的情况:1,红#2,黄#3,绿,分别对应三组
+    /// </remark>
+    [IgnoreDataMember, JsonIgnore]
+    [Category(@"扩展配置(过时)"), DisplayName(@"是否值对分隔方式"), Description(IsKeyValueArray_Description)]
+    public bool IsKeyValueArray
+    {
+        get => _isKeyValueArray;
+        set
         {
-            get => _isKeyValueArray;
-            set
-            {
-                if (_isKeyValueArray == value)
-                    return;
-                BeforePropertyChanged(nameof(IsKeyValueArray), _isKeyValueArray, value);
-                _isKeyValueArray = value;
-                OnPropertyChanged(nameof(IsKeyValueArray));
-            }
+            if (_isKeyValueArray == value)
+                return;
+            BeforePropertyChanged(nameof(IsKeyValueArray), _isKeyValueArray, value);
+            _isKeyValueArray = value;
+            OnPropertyChanged(nameof(IsKeyValueArray));
         }
+    }
 
-        /// <summary>
-        /// 是否为关系表的说明文字
-        /// </summary>
-        const string IsRelation_Description = @"是否为关系表,是则扩展组合规划 按 表名 解析成表间一对多关系";
+    /// <summary>
+    /// 是否为关系表的说明文字
+    /// </summary>
+    const string IsRelation_Description = @"是否为关系表,是则扩展组合规划 按 表名 解析成表间一对多关系";
 
-        /// <summary>
-        /// 是否为关系表
-        /// </summary>
-        [DataMember, JsonProperty("IsRelation",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isRelation;
+    /// <summary>
+    /// 是否为关系表
+    /// </summary>
+    [DataMember, JsonProperty("IsRelation",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+    internal bool _isRelation;
 
-        /// <summary>
-        /// 是否为关系表
-        /// </summary>
-        /// <remark>
-        /// 是否为关系表,是则扩展组合规划 按 表名 解析成表间一对多关系
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"扩展配置(过时)"), DisplayName(@"是否为关系表"), Description(IsRelation_Description)]
-        public bool IsRelation
+    /// <summary>
+    /// 是否为关系表
+    /// </summary>
+    /// <remark>
+    /// 是否为关系表,是则扩展组合规划 按 表名 解析成表间一对多关系
+    /// </remark>
+    [IgnoreDataMember, JsonIgnore]
+    [Category(@"扩展配置(过时)"), DisplayName(@"是否为关系表"), Description(IsRelation_Description)]
+    public bool IsRelation
+    {
+        get => _isRelation;
+        set
         {
-            get => _isRelation;
-            set
-            {
-                if (_isRelation == value)
-                    return;
-                BeforePropertyChanged(nameof(IsRelation), _isRelation, value);
-                _isRelation = value;
-                OnPropertyChanged(nameof(IsRelation));
-            }
+            if (_isRelation == value)
+                return;
+            BeforePropertyChanged(nameof(IsRelation), _isRelation, value);
+            _isRelation = value;
+            OnPropertyChanged(nameof(IsRelation));
         }
+    }
 
-        /// <summary>
-        /// 扩展对象属性名称
-        /// </summary>
-        [DataMember, JsonProperty("ExtendPropertyName",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _extendPropertyName;
+    /// <summary>
+    /// 扩展对象属性名称
+    /// </summary>
+    [DataMember, JsonProperty("ExtendPropertyName",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+    internal string _extendPropertyName;
 
-        /// <summary>
-        /// 扩展对象属性名称
-        /// </summary>
-        /// <remark>
-        /// 扩展对象属性名称
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"扩展配置(过时)"), DisplayName(@"扩展对象属性名称"), Description("扩展对象属性名称")]
-        public string ExtendPropertyName
+    /// <summary>
+    /// 扩展对象属性名称
+    /// </summary>
+    /// <remark>
+    /// 扩展对象属性名称
+    /// </remark>
+    [IgnoreDataMember, JsonIgnore]
+    [Category(@"扩展配置(过时)"), DisplayName(@"扩展对象属性名称"), Description("扩展对象属性名称")]
+    public string ExtendPropertyName
+    {
+        get => _extendPropertyName;
+        set
         {
-            get => _extendPropertyName;
-            set
-            {
-                if (_extendPropertyName == value)
-                    return;
-                BeforePropertyChanged(nameof(ExtendPropertyName), _extendPropertyName, value);
-                _extendPropertyName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(ExtendPropertyName));
-            }
+            if (_extendPropertyName == value)
+                return;
+            BeforePropertyChanged(nameof(ExtendPropertyName), _extendPropertyName, value);
+            _extendPropertyName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+            OnPropertyChanged(nameof(ExtendPropertyName));
         }
+    }
 
-        /// <summary>
-        /// 扩展对象对象名称
-        /// </summary>
-        [DataMember, JsonProperty("ExtendClassName",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _extendClassName;
+    /// <summary>
+    /// 扩展对象对象名称
+    /// </summary>
+    [DataMember, JsonProperty("ExtendClassName",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+    internal string _extendClassName;
 
-        /// <summary>
-        /// 扩展对象对象名称
-        /// </summary>
-        /// <remark>
-        /// 扩展对象对象名称
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"扩展配置(过时)"), DisplayName(@"扩展对象对象名称"), Description("扩展对象对象名称")]
-        public string ExtendClassName
+    /// <summary>
+    /// 扩展对象对象名称
+    /// </summary>
+    /// <remark>
+    /// 扩展对象对象名称
+    /// </remark>
+    [IgnoreDataMember, JsonIgnore]
+    [Category(@"扩展配置(过时)"), DisplayName(@"扩展对象对象名称"), Description("扩展对象对象名称")]
+    public string ExtendClassName
+    {
+        get => _extendClassName;
+        set
         {
-            get => _extendClassName;
-            set
-            {
-                if (_extendClassName == value)
-                    return;
-                BeforePropertyChanged(nameof(ExtendClassName), _extendClassName, value);
-                _extendClassName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(ExtendClassName));
-            }
+            if (_extendClassName == value)
+                return;
+            BeforePropertyChanged(nameof(ExtendClassName), _extendClassName, value);
+            _extendClassName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+            OnPropertyChanged(nameof(ExtendClassName));
         }
+    }
 
-        /// <summary>
-        /// 扩展对象对象已定义
-        /// </summary>
-        [DataMember, JsonProperty("ExtendClassIsPredestinate",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _extendClassIsPredestinate;
+    /// <summary>
+    /// 扩展对象对象已定义
+    /// </summary>
+    [DataMember, JsonProperty("ExtendClassIsPredestinate",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+    internal bool _extendClassIsPredestinate;
 
-        /// <summary>
-        /// 扩展对象对象已定义
-        /// </summary>
-        /// <remark>
-        /// 扩展对象对象已定义
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"扩展配置(过时)"), DisplayName(@"扩展对象对象已定义"), Description("扩展对象对象已定义")]
-        public bool ExtendClassIsPredestinate
+    /// <summary>
+    /// 扩展对象对象已定义
+    /// </summary>
+    /// <remark>
+    /// 扩展对象对象已定义
+    /// </remark>
+    [IgnoreDataMember, JsonIgnore]
+    [Category(@"扩展配置(过时)"), DisplayName(@"扩展对象对象已定义"), Description("扩展对象对象已定义")]
+    public bool ExtendClassIsPredestinate
+    {
+        get => _extendClassIsPredestinate;
+        set
         {
-            get => _extendClassIsPredestinate;
-            set
-            {
-                if (_extendClassIsPredestinate == value)
-                    return;
-                BeforePropertyChanged(nameof(ExtendClassIsPredestinate), _extendClassIsPredestinate, value);
-                _extendClassIsPredestinate = value;
-                OnPropertyChanged(nameof(ExtendClassIsPredestinate));
-            }
-        }*/
+            if (_extendClassIsPredestinate == value)
+                return;
+            BeforePropertyChanged(nameof(ExtendClassIsPredestinate), _extendClassIsPredestinate, value);
+            _extendClassIsPredestinate = value;
+            OnPropertyChanged(nameof(ExtendClassIsPredestinate));
+        }
+    }*/
         #endregion
     }
 }

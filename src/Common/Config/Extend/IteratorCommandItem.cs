@@ -1,9 +1,9 @@
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
 using System;
 using System.Diagnostics;
-using System.Windows;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -11,7 +11,7 @@ namespace Agebull.EntityModel.Designer
     ///     表示一个命令节点
     /// </summary>
     public class IteratorCommandItem<TTargetType> : CommandItemBase
-        where TTargetType : ConfigBase
+        where TTargetType : class
     {
         /// <summary>
         /// 构造
@@ -67,20 +67,16 @@ namespace Agebull.EntityModel.Designer
             {
                 if (SignleSoruce)
                 {
-                    if (!(para is TTargetType config))
+                    if (para is TTargetType config)
                     {
-                        MessageBox.Show($"参数为空或不是目标类型{typeof(TTargetType)}");
-                        return false;
+                        Action(config);
+                        return true;
                     }
-                    Action(config);
+                    MessageBox.Show($"参数为空或不是目标类型{typeof(TTargetType)}");
+                    return false;
                 }
-                else
+                else if (para is ConfigBase config)
                 {
-                    if (!(para is ConfigBase config))
-                    {
-                        MessageBox.Show($"参数为空或不是目标类型{typeof(ConfigBase)}");
-                        return false;
-                    }
                     Task.Factory.StartNew(() => config.Foreach(Action));
                 }
                 return true;

@@ -1,7 +1,7 @@
+using Agebull.Common.Mvvm;
 using System;
 using System.Windows.Input;
 using System.Windows.Threading;
-using Agebull.Common.Mvvm;
 
 namespace Agebull.EntityModel
 {
@@ -41,11 +41,11 @@ namespace Agebull.EntityModel
         /// </summary>
         /// <param name="executeAction">命令执行的方法.</param>
         /// <param name="canExecuteAction">能否执行的方法.</param>
-        protected ICommand CreateAsyncCommand<TParameter, TResult>(Func<TParameter, TResult> executeAction, 
+        protected ICommand CreateAsyncCommand<TParameter, TResult>(Func<TParameter, TResult> executeAction,
             Func<TParameter, bool> canExecuteAction)
             where TParameter : class
         {
-            return new AsyncCommand<TParameter, TResult>(executeAction,canExecuteAction);
+            return new AsyncCommand<TParameter, TResult>(executeAction, canExecuteAction);
         }
         /// <summary>
         ///     构造
@@ -58,7 +58,7 @@ namespace Agebull.EntityModel
                 Func<TParameter, bool> canExecuteAction)
             where TParameter : class
         {
-            return new AsyncCommand<TParameter, TResult>(executeAction,endAction,canExecuteAction);
+            return new AsyncCommand<TParameter, TResult>(executeAction, endAction, canExecuteAction);
         }
         /// <summary>
         ///     构造
@@ -71,7 +71,7 @@ namespace Agebull.EntityModel
                 Action<CommandStatus, Exception, TResult> endAction)
             where TParameter : class
         {
-            return new AsyncCommand<TParameter, TResult>(prepare,executeAction,endAction);
+            return new AsyncCommand<TParameter, TResult>(prepare, executeAction, endAction);
         }
         /// <summary>
         ///     构造
@@ -100,7 +100,7 @@ namespace Agebull.EntityModel
                 Func<TParameter, bool> canExecuteAction)
             where TParameter : class
         {
-            return new AsyncCommand<TParameter, TResult>(prepare,executeAction,endAction,canExecuteAction);
+            return new AsyncCommand<TParameter, TResult>(prepare, executeAction, endAction, canExecuteAction);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace Agebull.EntityModel
                 Func<TParameter, bool> canExecuteAction)
             where TParameter : class
         {
-            return new AsyncCommand<TParameter, TResult>(prepare,executeAction,endAction,canExecuteAction);
+            return new AsyncCommand<TParameter, TResult>(prepare, executeAction, endAction, canExecuteAction);
         }
     }
 }

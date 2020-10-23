@@ -129,7 +129,7 @@ namespace Agebull.EntityModel.Config
             ModelList.Remove(model);
             GlobalConfig.Remove(model);
         }
-        
+
         /// <summary>
         /// É¾³ý
         /// </summary>

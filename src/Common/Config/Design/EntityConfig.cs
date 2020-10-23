@@ -1,9 +1,9 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
 {
@@ -16,7 +16,7 @@ namespace Agebull.EntityModel.Config
         /// <param name="propertyConfig"></param>
         public void Add(FieldConfig propertyConfig)
         {
-            if (Properties.Any(p=>p.Name== propertyConfig.Name) ||!Properties.TryAdd(propertyConfig))
+            if (Properties.Any(p => p.Name == propertyConfig.Name) || !Properties.TryAdd(propertyConfig))
                 return;
             propertyConfig.Entity = this;
             if (WorkContext.InLoding || WorkContext.InSaving || WorkContext.InRepair)
@@ -69,7 +69,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"公开的属性"), Description("公开的属性")]
-        public IEnumerable<IFieldConfig> PublishProperty => LastProperties?.Where(p =>!p.NoProperty && !p.DbInnerField);
+        public IEnumerable<IFieldConfig> PublishProperty => LastProperties?.Where(p => !p.NoProperty && !p.DbInnerField);
 
         /// <summary>
         /// 用户属性

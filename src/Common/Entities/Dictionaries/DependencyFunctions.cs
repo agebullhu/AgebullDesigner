@@ -8,11 +8,11 @@
 
 #region ÒýÓÃ
 
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 #endregion
 

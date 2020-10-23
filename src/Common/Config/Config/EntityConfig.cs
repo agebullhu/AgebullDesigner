@@ -7,13 +7,12 @@
 修改:2017-07-12
 *****************************************************/
 
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
-
-using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
 {

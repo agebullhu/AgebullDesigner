@@ -19,7 +19,7 @@ namespace Agebull.EntityModel.Config
     partial class FieldConfig
     {
         #region 运行时使用
-        
+
         /// <summary>
         ///     取别名属性
         /// </summary>

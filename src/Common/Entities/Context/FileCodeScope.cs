@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Agebull.Common.Base;
+using System;
 using System.Collections.Generic;
-using Agebull.Common.Base;
 
 namespace Agebull.EntityModel
 {

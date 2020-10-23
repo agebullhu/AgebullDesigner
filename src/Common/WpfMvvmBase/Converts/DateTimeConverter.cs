@@ -15,7 +15,7 @@ namespace Agebull.Common.Mvvm
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             decimal val;
-            if(value is decimal)
+            if (value is decimal)
                 val = (decimal)value;
             else if (value is int)
                 val = (int)value;
@@ -23,7 +23,7 @@ namespace Agebull.Common.Mvvm
                 val = (long)value;
             else
                 return value;
-            return val==0 ? "" : val.ToString("F2");
+            return val == 0 ? "" : val.ToString("F2");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -40,7 +40,7 @@ namespace Agebull.Common.Mvvm
         {
             if (!(value is DateTime))
                 return value;
-            var date = (DateTime) value;
+            var date = (DateTime)value;
             if (date.Year <= 2000)
             {
                 return "";

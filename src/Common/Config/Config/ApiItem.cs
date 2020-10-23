@@ -1,7 +1,7 @@
+using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
 {
@@ -37,7 +37,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// Api调用方式
         /// </summary>
-        [DataMember, JsonProperty("Method",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("Method", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal HttpMethod _Method;
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 请求参数名称
         /// </summary>
-        [DataMember, JsonProperty("CallArg",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("CallArg", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _callArg;
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// API编码
         /// </summary>
-        [DataMember, JsonProperty("Code",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("Code", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _code;
 
         /// <summary>
@@ -115,11 +115,11 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(Code));
             }
         }
-        
+
         /// <summary>
         /// 返回参数名称
         /// </summary>
-        [DataMember, JsonProperty("ResultArg",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("ResultArg", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _resultArg;
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 路由路径
         /// </summary>
-        [DataMember, JsonProperty("RoutePath",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("RoutePath", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _routePath;
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 是否用户命令
         /// </summary>
-        [DataMember, JsonProperty("IsUserCommand",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("IsUserCommand", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _isUserCommand;
 
         /// <summary>
@@ -369,7 +369,7 @@ namespace Agebull.EntityModel.Config
             get => CallArg == null ? null : (_argument ??= GlobalConfig.GetEntity(CallArg));
             set => CallArg = value?.Name;
         }
-        
+
         /// <summary>
         /// 返回值
         /// </summary>

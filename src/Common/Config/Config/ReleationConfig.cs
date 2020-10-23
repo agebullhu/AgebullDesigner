@@ -1,8 +1,7 @@
+using Newtonsoft.Json;
 using System.ComponentModel;
 using System.Linq;
-using System.Resources;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
 {
@@ -135,7 +134,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 关联表的外键名称
         /// </summary>
-        [DataMember, JsonProperty("ForeignKey",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("ForeignKey", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _foreignKey;
 
         /// <summary>
@@ -191,7 +190,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 表连接类型
         /// </summary>
-        [DataMember, JsonProperty("JoinType",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("JoinType", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal EntityJoinType _joinType;
 
         /// <summary>

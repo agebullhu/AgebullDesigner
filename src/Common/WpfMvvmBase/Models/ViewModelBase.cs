@@ -8,11 +8,10 @@
 
 #region 引用
 
+using Agebull.Common.Mvvm;
 using System;
-using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 using System.Windows;
-using Agebull.Common.Mvvm;
 
 #endregion
 

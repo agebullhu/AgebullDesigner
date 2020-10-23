@@ -8,9 +8,9 @@
 
 #region ÒýÓÃ
 
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 #endregion
 
@@ -33,7 +33,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public Dictionary<string, object> Dictionary
         {
-            get => _dictionary ??= new Dictionary<string, object>() ;
+            get => _dictionary ??= new Dictionary<string, object>();
             set => _dictionary = value;
         }
 
@@ -81,7 +81,7 @@ namespace Agebull.EntityModel
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                return default( T );
+                return default(T);
             }
             return Dictionary.TryGetValue(name, out object value) ? (T)value : default(T);
         }
@@ -108,7 +108,7 @@ namespace Agebull.EntityModel
                 Dictionary[name] = value;
                 return true;
             }
-            if (Equals(value, default( T )))
+            if (Equals(value, default(T)))
             {
                 return false;
             }

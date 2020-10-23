@@ -7,21 +7,20 @@
 修改:2017-07-12
 *****************************************************/
 
+using Newtonsoft.Json;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-
-using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
 {
     /// <summary>
     /// 用户命令配置
     /// </summary>
-    [DataContract,JsonObject(MemberSerialization.OptIn)]
+    [DataContract, JsonObject(MemberSerialization.OptIn)]
     public partial class UserCommandConfig : ModelChildConfig
     {
         #region 构造
-        
+
         /// <summary>
         /// 构造
         /// </summary>
@@ -31,13 +30,13 @@ namespace Agebull.EntityModel.Config
 
         #endregion
 
- 
+
         #region 数据模型
 
         /// <summary>
         /// 按钮名称
         /// </summary>
-        [DataMember,JsonProperty("_button",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_button", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _button;
 
         /// <summary>
@@ -46,16 +45,16 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 按钮名称
         /// </remark>
-        [IgnoreDataMember,JsonIgnore]
-        [Category(@"数据模型"),DisplayName(@"按钮名称"),Description("按钮名称")]
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据模型"), DisplayName(@"按钮名称"), Description("按钮名称")]
         public string Button
         {
             get => _button;
             set
             {
-                if(_button == value)
+                if (_button == value)
                     return;
-                BeforePropertyChanged(nameof(Button), _button,value);
+                BeforePropertyChanged(nameof(Button), _button, value);
                 _button = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Button));
             }
@@ -64,7 +63,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 按钮图标
         /// </summary>
-        [DataMember,JsonProperty("Icon",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("Icon", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _icon;
 
         /// <summary>
@@ -73,16 +72,16 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 按钮图标
         /// </remark>
-        [IgnoreDataMember,JsonIgnore]
-        [Category(@"数据模型"),DisplayName(@"按钮图标"),Description("按钮图标")]
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据模型"), DisplayName(@"按钮图标"), Description("按钮图标")]
         public string Icon
         {
             get => _icon;
             set
             {
-                if(_icon == value)
+                if (_icon == value)
                     return;
-                BeforePropertyChanged(nameof(Icon), _icon,value);
+                BeforePropertyChanged(nameof(Icon), _icon, value);
                 _icon = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Icon));
             }
@@ -96,7 +95,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 本地操作
         /// </summary>
-        [DataMember,JsonProperty("IsLocalAction",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("IsLocalAction", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _isLocalAction;
 
         /// <summary>
@@ -105,16 +104,16 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否本地操作,即在客户端的操作,服务器无接口
         /// </remark>
-        [IgnoreDataMember,JsonIgnore]
-        [Category(@"数据模型"),DisplayName(@"本地操作"),Description(IsLocalAction_Description)]
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据模型"), DisplayName(@"本地操作"), Description(IsLocalAction_Description)]
         public bool IsLocalAction
         {
             get => _isLocalAction;
             set
             {
-                if(_isLocalAction == value)
+                if (_isLocalAction == value)
                     return;
-                BeforePropertyChanged(nameof(IsLocalAction), _isLocalAction,value);
+                BeforePropertyChanged(nameof(IsLocalAction), _isLocalAction, value);
                 _isLocalAction = value;
                 OnPropertyChanged(nameof(IsLocalAction));
             }
@@ -123,7 +122,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 单对象操作
         /// </summary>
-        [DataMember,JsonProperty("IsSingleObject",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("IsSingleObject", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _isSingleObject;
 
         /// <summary>
@@ -132,16 +131,16 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否单对象操作,即操作对象只能是一行数据
         /// </remark>
-        [IgnoreDataMember,JsonIgnore]
-        [Category(@"数据模型"),DisplayName(@"单对象操作"),Description("是否单对象操作,即操作对象只能是一行数据")]
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据模型"), DisplayName(@"单对象操作"), Description("是否单对象操作,即操作对象只能是一行数据")]
         public bool IsSingleObject
         {
             get => _isSingleObject;
             set
             {
-                if(_isSingleObject == value)
+                if (_isSingleObject == value)
                     return;
-                BeforePropertyChanged(nameof(IsSingleObject), _isSingleObject,value);
+                BeforePropertyChanged(nameof(IsSingleObject), _isSingleObject, value);
                 _isSingleObject = value;
                 OnPropertyChanged(nameof(IsSingleObject));
             }
@@ -150,7 +149,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 打开链接
         /// </summary>
-        [DataMember,JsonProperty("Url",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("Url", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _url;
 
         /// <summary>
@@ -159,20 +158,20 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 在本地操作时打开的链接
         /// </remark>
-        [IgnoreDataMember,JsonIgnore]
-        [Category(@"数据模型"),DisplayName(@"打开链接"),Description("在本地操作时打开的链接")]
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据模型"), DisplayName(@"打开链接"), Description("在本地操作时打开的链接")]
         public string Url
         {
             get => _url;
             set
             {
-                if(_url == value)
+                if (_url == value)
                     return;
-                BeforePropertyChanged(nameof(Url), _url,value);
+                BeforePropertyChanged(nameof(Url), _url, value);
                 _url = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Url));
             }
-        } 
+        }
         #endregion
 
     }

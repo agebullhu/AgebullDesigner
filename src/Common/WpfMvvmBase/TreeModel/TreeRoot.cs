@@ -8,12 +8,11 @@
 
 #region ÒýÓÃ
 
+using Agebull.Common.Mvvm;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
-using Agebull.Common.Mvvm;
 
 #endregion
 
@@ -124,7 +123,7 @@ namespace Agebull.EntityModel
         [IgnoreDataMember]
         public ModelFunctionDictionary<TreeRoot> ModelFunction
         {
-            get => _modelFunction ??= new ModelFunctionDictionary<TreeRoot>() ;
+            get => _modelFunction ??= new ModelFunctionDictionary<TreeRoot>();
             set => _modelFunction = value;
         }
 
@@ -133,7 +132,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public NotificationList<CommandItemBase> Commands
         {
-            get => _commands ??= new NotificationList<CommandItemBase>() ;
+            get => _commands ??= new NotificationList<CommandItemBase>();
             set
             {
                 if (_commands == value)
@@ -146,6 +145,6 @@ namespace Agebull.EntityModel
         }
 
         #endregion
-        
+
     }
 }

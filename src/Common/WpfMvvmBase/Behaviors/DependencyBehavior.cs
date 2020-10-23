@@ -8,11 +8,10 @@
 
 #region ÒýÓÃ
 
-using System;
-using System.Windows;
 using Microsoft.Xaml.Behaviors;
-using Agebull.Common.Logging;
+using System;
 using System.Diagnostics;
+using System.Windows;
 
 #endregion
 
@@ -34,8 +33,8 @@ namespace Agebull.Common.Mvvm
         static DependencyBehavior()
         {
             BehaviorActionProperty = DependencyProperty.Register("BehaviorAction",
-                    typeof (BehaviorAction<TDependency>),
-                    typeof (DependencyBehavior<TDependency>),
+                    typeof(BehaviorAction<TDependency>),
+                    typeof(DependencyBehavior<TDependency>),
                     new UIPropertyMetadata(null, OnBehaviorActionPropertyChanged));
         }
 

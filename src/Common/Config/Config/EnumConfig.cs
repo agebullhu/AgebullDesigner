@@ -7,22 +7,21 @@
 修改:2017-07-12
 *****************************************************/
 
+using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-
-using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
 {
     /// <summary>
     /// 枚举配置
     /// </summary>
-    [DataContract,JsonObject(MemberSerialization.OptIn)]
+    [DataContract, JsonObject(MemberSerialization.OptIn)]
     public partial class EnumConfig : ProjectChildConfigBase
     {
         #region 构造
-        
+
         /// <summary>
         /// 构造
         /// </summary>
@@ -36,7 +35,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 是否位域
         /// </summary>
-        [DataMember,JsonProperty("IsFlagEnum",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("IsFlagEnum", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _isFlagEnum;
 
         /// <summary>
@@ -45,16 +44,16 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否位域
         /// </remark>
-        [IgnoreDataMember,JsonIgnore]
-        [Category(@"数据模型"),DisplayName(@"是否位域"),Description("是否位域")]
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据模型"), DisplayName(@"是否位域"), Description("是否位域")]
         public bool IsFlagEnum
         {
             get => _isFlagEnum;
             set
             {
-                if(_isFlagEnum == value)
+                if (_isFlagEnum == value)
                     return;
-                BeforePropertyChanged(nameof(IsFlagEnum), _isFlagEnum,value);
+                BeforePropertyChanged(nameof(IsFlagEnum), _isFlagEnum, value);
                 _isFlagEnum = value;
                 OnPropertyChanged(nameof(IsFlagEnum));
             }
@@ -75,7 +74,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 枚举节点
         /// </summary>
-        [DataMember,JsonProperty("_items",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_items", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal NotificationList<EnumItem> _items;
 
         /// <summary>
@@ -84,8 +83,8 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 枚举节点
         /// </remark>
-        [IgnoreDataMember,JsonIgnore]
-        [Category(@"设计器支持"),DisplayName(@"枚举节点"),Description("枚举节点")]
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"设计器支持"), DisplayName(@"枚举节点"), Description("枚举节点")]
         public NotificationList<EnumItem> Items
         {
             get
@@ -98,9 +97,9 @@ namespace Agebull.EntityModel.Config
             }
             set
             {
-                if(_items == value)
+                if (_items == value)
                     return;
-                BeforePropertyChanged(nameof(Items), _items,value);
+                BeforePropertyChanged(nameof(Items), _items, value);
                 _items = value;
                 OnPropertyChanged(nameof(Items));
             }

@@ -8,10 +8,10 @@
 
 #region 引用
 
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 #endregion
 
@@ -86,7 +86,7 @@ namespace Agebull.EntityModel
         /// <typeparam name="TAction">对象类型(理论上限定为Action或Func这两种类型的委托)</typeparam>
         /// <param name="name">方法名称</param>
         /// <returns>如果存在则返回方法,否则返回空</returns>
-        public TAction GetDelegate<TAction>(string name = null)where TAction : class
+        public TAction GetDelegate<TAction>(string name = null) where TAction : class
         {
             object value;
             if (string.IsNullOrWhiteSpace(name))
@@ -120,7 +120,7 @@ namespace Agebull.EntityModel
         public bool HaseDelegate<TAction>(string name = null) where TAction : class
         {
             return name == null
-                ? _dependencyDictionary.ContainsKey( typeof(TAction)) 
+                ? _dependencyDictionary.ContainsKey(typeof(TAction))
                 : _nameDictionary.ContainsKey(name);
         }
     }

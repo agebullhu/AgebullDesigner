@@ -1,5 +1,5 @@
-﻿using System.Runtime.Serialization;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace Agebull.EntityModel.Config
 {
@@ -9,13 +9,13 @@ namespace Agebull.EntityModel.Config
     [DataContract, JsonObject(MemberSerialization.OptIn)]
     public class ConfigItem : NotificationObject
     {
-        [DataMember, JsonProperty("name",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("name", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private string _name;
 
-        [DataMember, JsonProperty("value",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("value", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private string _value;
 
-        [DataMember, JsonProperty("type",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("type", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private string _type = "string";
 
         /// <summary>

@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace Agebull.EntityModel.Config
 {
@@ -16,7 +15,7 @@ namespace Agebull.EntityModel.Config
             base.CopyFrom(dest);
             if (!(dest is ConfigBase cfg))
                 return;
-            Option.Copy(cfg.Option,false);//配置
+            Option.Copy(cfg.Option, false);//配置
         }
     }
 
@@ -129,7 +128,7 @@ namespace Agebull.EntityModel.Config
             foreach (var field in source.Properties)
             {
                 var nf = new FieldConfig();
-                nf.CopyFromProperty(field,false,true, true);
+                nf.CopyFromProperty(field, false, true, true);
                 if (field.IsPrimaryKey)
                     nf.IsPrimaryKey = true;
                 Add(nf);

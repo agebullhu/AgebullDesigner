@@ -1,5 +1,5 @@
-using System;
 using Agebull.EntityModel;
+using System;
 
 namespace Agebull.Common.Mvvm
 {
@@ -134,6 +134,6 @@ namespace Agebull.Common.Mvvm
         public bool DoConfirm => !string.IsNullOrWhiteSpace(ConfirmMessage);
 
         Guid? _id;
-        public Guid Id { get => _id ??= Guid.NewGuid(); set => _id=value; }
+        public Guid Id { get => _id ??= Guid.NewGuid(); set => _id = value; }
     }
 }

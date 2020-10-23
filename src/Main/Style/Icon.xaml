@@ -28,6 +28,7 @@
     <BitmapImage x:Key="img_lua" UriSource="pack://application:,,,/Style/Images/lua.jpg" />
     <BitmapImage x:Key="imImgFindg_lua" UriSource="pack://application:,,,/Style/Images/Find.png" />
     <BitmapImage x:Key="imgBaidu" UriSource="pack://application:,,,/Style/Images/Baidu.png" />
+    <BitmapImage x:Key="menu_head" UriSource="/Style/menu.png" />
     
     <BitmapImage x:Key="tree_Folder" UriSource="pack://application:,,,/Style/Images/tree_Folder.png" />
     <BitmapImage x:Key="tree_item" UriSource="pack://application:,,,/Style/Images/tree_item.png" />

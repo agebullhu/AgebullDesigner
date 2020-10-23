@@ -1,6 +1,6 @@
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
 {
@@ -116,7 +116,7 @@ namespace Agebull.EntityModel.Config
     /// <summary>
     /// 扩展配置节点
     /// </summary>
-    public class ConfigItemListBool :NotificationObject
+    public class ConfigItemListBool : NotificationObject
     {
         /// <summary>
         /// 构造

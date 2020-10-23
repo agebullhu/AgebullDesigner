@@ -1,7 +1,7 @@
-using System;
-using System.Collections;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
+using System;
+using System.Collections;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -35,7 +35,7 @@ namespace Agebull.EntityModel.Designer
     /// 表示一个迭代命令生成器
     /// </summary>
     public class CommandItemBuilder<TParameter> : CommandConfig, ICommandItemBuilder
-        where TParameter : ConfigBase
+        where TParameter : class
     {
         /// <summary>
         /// 构造

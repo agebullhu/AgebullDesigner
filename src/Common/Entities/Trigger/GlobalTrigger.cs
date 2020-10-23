@@ -55,7 +55,7 @@ namespace Agebull.EntityModel
         /// <param name="property"></param>
         public static void OnPropertyChanged(NotificationObject config, string property)
         {
-            if (WorkContext.IsNoChangedNotify || config ==null)
+            if (WorkContext.IsNoChangedNotify || config == null)
                 return;
             var type = config.GetType();
             var scope = NameEventScope.CreateScope(config, "Global", property);
@@ -90,7 +90,7 @@ namespace Agebull.EntityModel
             {
                 foreach (var trigger in Triggers)
                 {
-                    if (trigger.TargetType==null || trigger.TargetType == type || type.IsSubclassOf(trigger.TargetType))
+                    if (trigger.TargetType == null || trigger.TargetType == type || type.IsSubclassOf(trigger.TargetType))
                         trigger.BeforePropertyChanged(config, property, oldValue, newValue);
                 }
             }

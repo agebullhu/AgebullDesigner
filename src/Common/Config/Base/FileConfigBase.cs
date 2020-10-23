@@ -1,7 +1,7 @@
+using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
 {
@@ -14,14 +14,14 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     保存地址
         /// </summary>
-        [IgnoreDataMember,JsonIgnore]
+        [IgnoreDataMember, JsonIgnore]
         private string _fileName;
 
 
         /// <summary>
         ///     保存地址
         /// </summary>
-        [IgnoreDataMember,JsonIgnore,Category("系统"), DisplayName("保存地址")]
+        [IgnoreDataMember, JsonIgnore, Category("系统"), DisplayName("保存地址")]
         public string SaveFileName
         {
             get => _fileName;

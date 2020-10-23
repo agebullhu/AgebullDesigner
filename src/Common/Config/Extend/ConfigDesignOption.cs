@@ -1,9 +1,9 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
 {
@@ -61,7 +61,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 标识
         /// </summary>
-        [DataMember, JsonProperty("_key",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_key", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private Guid _key;
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 唯一标识
         /// </summary>
-        [DataMember, JsonProperty("Identity",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)] private int _identity;
+        [DataMember, JsonProperty("Identity", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)] private int _identity;
 
         /// <summary>
         /// 唯一标识
@@ -114,7 +114,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 序号
         /// </summary>
-        [DataMember, JsonProperty("Index",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)] private int _index;
+        [DataMember, JsonProperty("Index", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)] private int _index;
 
         /// <summary>
         /// 序号
@@ -145,7 +145,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 引用对象键
         /// </summary>
-        [DataMember, JsonProperty("referenceKey",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("referenceKey", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private Guid _referenceKey;
 
         /// <summary>
@@ -254,7 +254,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
         public ConfigBase Reference => IsReference ? ReferenceConfig : null;
-        
+
         /// <summary>
         /// 链接对象(外连接)
         /// </summary>
@@ -264,7 +264,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 引用标签
         /// </summary>
-        [DataMember, JsonProperty("referenceTag",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("referenceTag", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private string _referenceTag;
 
         /// <summary>
@@ -294,7 +294,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     状态
         /// </summary>
-        [DataMember, JsonProperty("state",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("state", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private ConfigStateType _state;
 
         /// <summary>
@@ -506,7 +506,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 曾用名
         /// </summary>
-        [DataMember, JsonProperty("oldNames",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)] private List<string> _oldNames;
+        [DataMember, JsonProperty("oldNames", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)] private List<string> _oldNames;
 
         /// <summary>
         /// 曾用名
@@ -590,7 +590,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 扩展配置
         /// </summary>
-        [DataMember, JsonProperty("extend",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("extend", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, Dictionary<string, string>> _extend;
 
 
@@ -633,7 +633,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 扩展配置
         /// </summary>
-        [DataMember, JsonProperty( DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private NotificationList<ConfigItem> _extendConfig;
 
 

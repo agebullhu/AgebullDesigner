@@ -8,6 +8,8 @@
 
 #region 引用
 
+using Agebull.Common.Mvvm;
+using Agebull.Common.Reflection;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,8 +20,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Agebull.Common.Reflection;
-using Agebull.Common.Mvvm;
 
 #endregion
 

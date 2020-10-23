@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Agebull.EntityModel.Config;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.Common.LUA
 {

@@ -99,6 +99,14 @@ namespace {Project.NameSpace}.DataAccess
             return {Project.DataBaseObjectName}Ex.CreateDataAccess<TEntity>(DependencyHelper.ServiceProvider);
         }}
 
+        /// <summary>
+        /// 构造数据访问对象
+        /// </summary>
+        public static DataQuery<TEntity> CreateDataQuery<TEntity>()
+            where TEntity : class, new()
+        {{
+            return {Project.DataBaseObjectName}Ex.CreateDataQuery<TEntity>(DependencyHelper.ServiceProvider);
+        }}
     }}
 
     /// <summary>
@@ -122,7 +130,7 @@ namespace {Project.NameSpace}.DataAccess
             {{
                 ServiceProvider = serviceProvider,
                 Option = option,
-                SqlBuilder = option.SqlBuilder,
+                SqlBuilder = new MySqlSqlBuilder<TEntity>(),
                 Injection = serviceProvider.GetService<IOperatorInjection<TEntity>>(),
                 CreateDataBase = () => serviceProvider.GetService<{Project.DataBaseObjectName}>(),
                 EntityOperator = (IEntityOperator<TEntity>){Project.DataBaseObjectName}.GetEntityOperator<TEntity>(),
@@ -151,7 +159,7 @@ namespace {Project.NameSpace}.DataAccess
             {{
                 ServiceProvider = serviceProvider,
                 Option = option,
-                SqlBuilder = option.SqlBuilder,
+                SqlBuilder = new MySqlSqlBuilder<TEntity>(),
                 Injection = serviceProvider.GetService<IOperatorInjection<TEntity>>(),
                 CreateDataBase = () => serviceProvider.GetService<{Project.DataBaseObjectName}>(),
                 EntityOperator = (IEntityOperator<TEntity>){Project.DataBaseObjectName}.GetEntityOperator<TEntity>(),

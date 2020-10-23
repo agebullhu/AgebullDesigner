@@ -7,12 +7,11 @@
 修改:2017-07-12
 *****************************************************/
 
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.Serialization;
-
-using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
 {
@@ -303,7 +302,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 解决方案根路径
         /// </summary>
-        [DataMember, JsonProperty("_rootPath",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_rootPath", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _rootPath;
 
         /// <summary>
@@ -316,7 +315,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"代码生成"), DisplayName(@"解决方案根路径"), Description("解决方案根路径")]
         public string RootPath
         {
-            get => _rootPath ?? string.Empty ;
+            get => _rootPath ?? string.Empty;
             set
             {
                 if (_rootPath == value)
@@ -331,7 +330,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 代码文件夹名称
         /// </summary>
-        [DataMember, JsonProperty("pagePath",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("pagePath", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _pagePath;
 
         /// <summary>
@@ -360,7 +359,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 文档文件夹名称
         /// </summary>
-        [DataMember, JsonProperty("docFolder",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("docFolder", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _docFolder;
 
         /// <summary>
@@ -387,7 +386,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 代码文件夹名称
         /// </summary>
-        [DataMember, JsonProperty("_srcFolder",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_srcFolder", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _srcFolder;
 
         /// <summary>
@@ -414,7 +413,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 解决方案命名空间
         /// </summary>
-        [DataMember, JsonProperty("_nameSpace",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_nameSpace", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _nameSpace;
 
         /// <summary>
@@ -478,7 +477,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 解决方案类型
         /// </summary>
-        [DataMember, JsonProperty("SolutionType",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("SolutionType", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal SolutionType _solutionType;
 
         /// <summary>
@@ -513,7 +512,7 @@ namespace Agebull.EntityModel.Config
         public bool IsWeb => SolutionType == SolutionType.Web;
 
 
-        [DataMember, JsonProperty("idDataType",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("idDataType", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private string _idDataType = "long";
 
         /// <summary>
@@ -535,7 +534,7 @@ namespace Agebull.EntityModel.Config
         }
 
 
-        [DataMember, JsonProperty("userIdDataType",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("userIdDataType", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         private string _userIdDataType = "long";
 
         /// <summary>

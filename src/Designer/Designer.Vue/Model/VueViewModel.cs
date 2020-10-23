@@ -8,129 +8,123 @@
 
 #region 引用
 
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.RobotCoder;
-using Application = System.Windows.Application;
-using MessageBox = System.Windows.MessageBox;
 
 #endregion
 
 namespace Agebull.EntityModel.Designer
 {
-    [Export(typeof(IAutoRegister))]
-    [ExportMetadata("Symbol", '%')]
-    public class UiCommondModel : DesignCommondBase<EntityConfig>
+    internal class VueViewModel : ExtendViewModelBase<VueModel>
     {
+        public VueViewModel()
+        {
+            EditorName = "Vue";
+        }
+
+    }
+
+    internal class VueModel : DesignModelBase
+    {
+        #region 操作命令
+
+        public VueModel()
+        {
+            Model = DataModelDesignModel.Current;
+            Context = DataModelDesignModel.Current?.Context;
+        }
+
         /// <summary>
         /// 生成命令对象
         /// </summary>
-        /// <param name="commands"></param>
-        protected override void CreateCommands(List<ICommandItemBuilder> commands)
+        /// <returns></returns>
+        public override NotificationList<CommandItemBase> CreateCommands()
         {
-            commands.Add(new CommandItemBuilder<EntityConfig>
+            return new NotificationList<CommandItemBase>
             {
-                Catalog = "工具",
-                SignleSoruce = false,
-                IsButton = false,
-                Caption = "UI快速组建",
-                Action = CheckUi,
-                SoruceView = "argument",
-                IconName = "tree_Open"
-            });
-            commands.AddRange(new[]
-            {
-                new CommandItemBuilder<EntityConfig>
+                new CommandItem<EntityConfig>
                 {
                     Action = CheckUiType,
-                    //IsButton=true,
+                    IsButton=true,
                     Catalog="用户界面",
-                    Editor = "EasyUi",
-                    WorkView = "model",
+                    Editor = "Vue",
+                    WorkView = "entity",
                     Caption = "控件类型修复"
                 },
-                new CommandItemBuilder<EntityConfig>
+                new CommandItem<EntityConfig>
                 {
                     Action = CheckKeyShow,
+                    IsButton=true,
                     Catalog="用户界面",
-                    WorkView = "model",
+                    WorkView = "entity",
                     Caption = "隐藏主外键"
                 },
-                new CommandItemBuilder<EntityConfig>
+                new CommandItem<EntityConfig>
                 {
                     Action = CheckSizeByLen,
-                    //IsButton=true,
+                    IsButton=true,
                     Catalog="用户界面",
-                    Editor = "EasyUi",
-                    WorkView = "model",
+                    Editor = "Vue",
+                    WorkView = "entity",
                     Caption = "按文字计算宽度",
                     ConfirmMessage="是否继续?"
                 },
-                new CommandItemBuilder<EntityConfig>
+                new CommandItem<EntityConfig>
                 {
                     Action = CheckSizeAuto,
-                    //IsButton=true,
+                    IsButton=true,
                     Catalog="用户界面",
-                    Editor = "EasyUi",
-                    WorkView = "model",
+                    Editor = "Vue",
+                    WorkView = "entity",
                     Caption = "自适应宽度",
                     ConfirmMessage="是否继续?"
                 },
-                new CommandItemBuilder<EntityConfig>
+                new CommandItem<EntityConfig>
                 {
                     Action = CheckExport,
                     Caption = "导出导出初始化",
-                    //IsButton=true,
-                    WorkView = "model",
+                    IsButton=true,
+                    WorkView = "entity",
                     Catalog="用户界面",
-                    Editor = "EasyUi",
-                    ConfirmMessage="是否继续?"
-                },
-                new CommandItemBuilder<EntityConfig>
-                {
-                    Action = CheckSimple,
-                    Caption = "界面字段初始化",
-                    //IsButton=true,
-                    WorkView = "model",
-                    Catalog="用户界面",
-                    Editor = "EasyUi",
+                    Editor = "Vue",
                     ConfirmMessage="是否继续?"
                 }
-            });
+            };
         }
+
+        #endregion
+
 
         #region 代码
 
-        private void CheckUi(EntityConfig entity)
+        internal static void CheckUi(EntityConfig entity)
         {
             if (entity == null)
                 return;
             entity.HaseEasyUi = true;
-            var bl = new PropertyEasyUiModel();
+            var bl = new PropertyVueModel();
             foreach (var field in entity.Properties)
             {
                 bl.CheckFieldShow(field);
             }
         }
 
-        private void CheckKeyShow(EntityConfig entity)
+        internal static void CheckKeyShow(EntityConfig entity)
         {
             if (entity == null)
                 return;
-            var bl = new PropertyEasyUiModel();
+            var bl = new PropertyVueModel();
             foreach (var field in entity.Properties)
             {
                 bl.CheckKeyShow(field);
             }
         }
 
-        private void CheckUiType(EntityConfig entity)
+        internal static void CheckUiType(EntityConfig entity)
         {
             if (entity == null)
                 return;
@@ -143,35 +137,35 @@ namespace Agebull.EntityModel.Designer
                 repair = result == MessageBoxResult.Yes;
             }
             entity.HaseEasyUi = true;
-            var bl = new PropertyEasyUiModel();
+            var bl = new PropertyVueModel();
             foreach (var field in entity.Properties)
             {
                 bl.CheckField(field, repair);
             }
         }
-        private void CheckSizeByLen(EntityConfig entity)
+        internal static void CheckSizeByLen(EntityConfig entity)
         {
             if (entity == null)
                 return;
             entity.HaseEasyUi = true;
-            var bl = new PropertyEasyUiModel();
+            var bl = new PropertyVueModel();
             foreach (var field in entity.Properties)
             {
                 bl.CheckSize(field, SizeOption.ByLen);
             }
         }
 
-        private void CheckSizeAuto(EntityConfig entity)
+        internal static void CheckSizeAuto(EntityConfig entity)
         {
             entity.HaseEasyUi = true;
-            var bl = new PropertyEasyUiModel();
+            var bl = new PropertyVueModel();
             foreach (var field in entity.Properties)
             {
                 bl.CheckSize(field, SizeOption.Auto);
             }
         }
 
-        private void CheckExport(EntityConfig entity)
+        internal static void CheckExport(EntityConfig entity)
         {
             foreach (var field in entity.Properties)
             {
@@ -185,7 +179,7 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        private void CheckSimple(EntityConfig entity)
+        internal static void CheckSimple(EntityConfig entity)
         {
             foreach (var field in entity.Properties)
             {
@@ -239,7 +233,5 @@ namespace Agebull.EntityModel.Designer
         }
 
         #endregion
-
-        /*AuditDate AuditorId AuditState LastModifyDate LastReviserID AddDate AuthorID EntityType LinkId ParentId*/
     }
 }

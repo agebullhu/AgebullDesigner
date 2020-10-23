@@ -48,7 +48,7 @@ namespace Agebull.Common.Mvvm
 
         private bool DoPrepare(TParameter parameter, Action<TParameter> action)
         {
-            if (DoConfirm && 
+            if (DoConfirm &&
                 MessageBox.Show(ConfirmMessage ?? $"确认执行【{Caption}】操作吗?", "对象编辑", MessageBoxButton.YesNo) !=
                 MessageBoxResult.Yes)
             {
@@ -57,7 +57,7 @@ namespace Agebull.Common.Mvvm
             if (OnPrepare != null && !OnPrepare(this))
                 return false;
 
-            return DoPrepareInner( parameter, action);
+            return DoPrepareInner(parameter, action);
         }
 
 

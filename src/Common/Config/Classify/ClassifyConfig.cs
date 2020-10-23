@@ -1,6 +1,6 @@
+using Newtonsoft.Json;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Config
 {
@@ -24,7 +24,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// ·ÖÀà
         /// </summary>
-        [DataMember, JsonProperty("_Classify",  DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        [DataMember, JsonProperty("_Classify", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _classify;
 
         /// <summary>

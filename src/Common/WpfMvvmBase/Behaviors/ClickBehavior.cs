@@ -8,10 +8,10 @@
 
 #region ÒýÓÃ
 
+using Microsoft.Xaml.Behaviors;
 using System;
 using System.Windows;
 using System.Windows.Input;
-using Microsoft.Xaml.Behaviors;
 
 #endregion
 
@@ -40,17 +40,17 @@ namespace Agebull.Common.Mvvm
         static ClickBehavior()
         {
             CommandProperty = DependencyProperty.Register("Command",
-                    typeof (ICommand),
-                    typeof (ClickBehavior),
+                    typeof(ICommand),
+                    typeof(ClickBehavior),
                     new UIPropertyMetadata(null, OnCommandPropertyChanged));
 
             CommandParameterProperty = DependencyProperty.Register("CommandProperty",
-                    typeof (object),
-                    typeof (ClickBehavior));
+                    typeof(object),
+                    typeof(ClickBehavior));
 
             IsDoubleClickProperty = DependencyProperty.Register("IsDoubleClick",
-                    typeof (bool),
-                    typeof (ClickBehavior));
+                    typeof(bool),
+                    typeof(ClickBehavior));
         }
 
         /// <summary>

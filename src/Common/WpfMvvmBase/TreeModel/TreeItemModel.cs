@@ -1,3 +1,4 @@
+using Agebull.Common.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -5,7 +6,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Agebull.Common.Mvvm;
 
 namespace Agebull.EntityModel
 {
@@ -177,7 +177,7 @@ namespace Agebull.EntityModel
                 actions = CommandCoefficient.Coefficient(Friend, FriendView);
                 foreach (var action in actions)
                 {
-                    if (!commands.Any(p=>p.Id== action.Id))
+                    if (!commands.Any(p => p.Id == action.Id))
                         commands.Add(action);
                 }
             }

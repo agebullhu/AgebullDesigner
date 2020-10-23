@@ -1,10 +1,9 @@
+using Agebull.Common.Mvvm;
 using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using Agebull.Common.Logging;
-using Agebull.Common.Mvvm;
 
 namespace Agebull.EntityModel
 {
@@ -275,7 +274,7 @@ namespace Agebull.EntityModel
         /// Ö´ÐÐÍê³É
         /// </summary>
         /// <param name="result"></param>
-        public void Exist(TResult result = default(TResult ))
+        public void Exist(TResult result = default(TResult))
         {
             if (Action != null)
                 Action(result);

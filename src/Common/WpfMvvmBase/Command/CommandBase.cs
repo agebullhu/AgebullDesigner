@@ -1,9 +1,8 @@
+using Agebull.EntityModel;
 using System;
 using System.ComponentModel;
-using System.Windows;
-using Agebull.EntityModel;
-using Agebull.Common.Logging;
 using System.Diagnostics;
+using System.Windows;
 
 namespace Agebull.Common.Mvvm
 {
@@ -44,7 +43,7 @@ namespace Agebull.Common.Mvvm
         {
             OnCanExecuteChanged();
         }
-        
+
         /// <summary>
         ///     命令能否执行的事件
         /// </summary>
@@ -73,7 +72,7 @@ namespace Agebull.Common.Mvvm
         {
             try
             {
-                _canExecuteChanged(this, par as  EventArgs);
+                _canExecuteChanged(this, par as EventArgs);
             }
             catch (Exception ex)
             {

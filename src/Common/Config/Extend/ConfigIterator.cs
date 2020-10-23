@@ -18,11 +18,11 @@ namespace Agebull.EntityModel.Config
         /// <param name="starting"></param>
         /// <param name="action"></param>
         public static void Foreach<T>(this ConfigBase starting, Action<T> action)
-            where T : ConfigBase
+            where T : class
         {
             if (starting.IsDiscard || starting.IsDelete)
                 return;
-            Trace.WriteLineIf(SolutionConfig.Current.DetailTrace,$"{starting.Caption}({starting.Name})","配置遍历");
+            Trace.WriteLineIf(SolutionConfig.Current.DetailTrace, $"{starting.Caption}({starting.Name})", "配置遍历");
             level = 0;
             switch (starting)
             {
@@ -133,7 +133,7 @@ namespace Agebull.EntityModel.Config
         /// <param name="condition"></param>
         /// <param name="action"></param>
         public static void Foreach<T>(this ConfigBase starting, Func<T, bool> condition, Action<T> action)
-            where T : ConfigBase
+            where T : class
         {
             if (starting.IsDiscard || starting.IsDelete)
                 return;
@@ -218,7 +218,7 @@ namespace Agebull.EntityModel.Config
         }
 
         private static void DoAction<T>(Action<T> action, ConfigBase config)
-            where T : ConfigBase
+            where T : class
         {
             if (config.IsDiscard || config.IsDelete)
                 return;
@@ -228,7 +228,7 @@ namespace Agebull.EntityModel.Config
             }
         }
         private static void Foreach<T>(Action<T> action, EntityConfig item)
-            where T : ConfigBase
+            where T : class
         {
             if (item.IsDiscard || item.IsDelete)
                 return;
@@ -245,7 +245,7 @@ namespace Agebull.EntityModel.Config
             level = lv;
         }
         private static void Foreach<T>(Action<T> action, ModelConfig item)
-            where T : ConfigBase
+            where T : class
         {
             if (item.IsDiscard || item.IsDelete)
                 return;
@@ -269,7 +269,7 @@ namespace Agebull.EntityModel.Config
         }
 
         private static void Foreach<T>(Action<T> action, EntityClassify classify)
-            where T : ConfigBase
+            where T : class
         {
             if (classify.IsDiscard || classify.IsDelete)
                 return;
@@ -287,7 +287,7 @@ namespace Agebull.EntityModel.Config
         }
 
         private static void Foreach<T>(Action<T> action, ProjectConfig project)
-            where T : ConfigBase
+            where T : class
         {
             if (project.IsDiscard || project.IsDelete)
                 return;
@@ -327,7 +327,7 @@ namespace Agebull.EntityModel.Config
             level = lv;
         }
         private static void Foreach<T>(Action<T> action, EnumConfig @enum)
-            where T : ConfigBase
+            where T : class
         {
             if (@enum.IsDiscard || @enum.IsDelete)
                 return;
@@ -343,7 +343,7 @@ namespace Agebull.EntityModel.Config
         }
 
         private static void Foreach<T>(Action<T> action, SolutionConfig solution)
-            where T : ConfigBase
+            where T : class
         {
             if (solution.IsDiscard || solution.IsDelete)
                 return;
@@ -360,7 +360,7 @@ namespace Agebull.EntityModel.Config
 
 
         private static void DoAction<T>(Func<T, bool> condition, Action<T> action, ConfigBase config)
-            where T : ConfigBase
+            where T : class
         {
             if (config.IsDiscard || config.IsDelete)
                 return;
@@ -375,7 +375,7 @@ namespace Agebull.EntityModel.Config
 
 
         private static void Foreach<T>(Func<T, bool> condition, Action<T> action, EntityConfig item)
-            where T : ConfigBase
+            where T : class
         {
             if (item.IsDiscard || item.IsDelete)
                 return;
@@ -392,7 +392,7 @@ namespace Agebull.EntityModel.Config
             level = lv;
         }
         private static void Foreach<T>(Func<T, bool> condition, Action<T> action, EnumConfig @enum)
-            where T : ConfigBase
+            where T : class
         {
             if (@enum.IsDiscard || @enum.IsDelete)
                 return;
@@ -410,7 +410,7 @@ namespace Agebull.EntityModel.Config
         }
 
         private static void Foreach<T>(Func<T, bool> condition, Action<T> action, ProjectConfig project)
-            where T : ConfigBase
+            where T : class
         {
             if (project.IsDiscard || project.IsDelete)
                 return;
@@ -441,7 +441,7 @@ namespace Agebull.EntityModel.Config
         }
 
         private static void Foreach<T>(Func<T, bool> condition, Action<T> action, SolutionConfig solution)
-            where T : ConfigBase
+            where T : class
         {
             if (solution.IsDiscard || solution.IsDelete)
                 return;

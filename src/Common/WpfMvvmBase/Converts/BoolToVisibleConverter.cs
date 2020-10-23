@@ -46,7 +46,7 @@ namespace Agebull.Common.Mvvm
             return false;
         }
     }
-    
+
     /// <summary>
     ///   布尔到可视的转换
     /// </summary>
@@ -54,7 +54,7 @@ namespace Agebull.Common.Mvvm
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null || !(bool) value)
+            if (value == null || !(bool)value)
             {
                 return Visibility.Collapsed;
             }
@@ -63,7 +63,7 @@ namespace Agebull.Common.Mvvm
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value != null && (Visibility) value == Visibility.Visible;
+            return value != null && (Visibility)value == Visibility.Visible;
         }
     }
     /// <summary>
@@ -73,20 +73,20 @@ namespace Agebull.Common.Mvvm
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (targetType == typeof (Visibility))
+            if (targetType == typeof(Visibility))
             {
-                return value != null && (Visibility) value == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+                return value != null && (Visibility)value == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
             }
             return Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value != null && (Visibility) value == Visibility.Visible;
+            return value != null && (Visibility)value == Visibility.Visible;
         }
     }
 
-    
+
     /// <summary>
     ///   布尔到可视的转换
     /// </summary>
@@ -114,12 +114,12 @@ namespace Agebull.Common.Mvvm
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value == null || !(bool) value;
+            return value == null || !(bool)value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value == null || !(bool) value;
+            return value == null || !(bool)value;
         }
     }
 }

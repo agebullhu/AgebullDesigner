@@ -8,6 +8,7 @@
 
 #region ÒýÓÃ
 
+using Agebull.EntityModel;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -15,8 +16,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Agebull.EntityModel;
-using Agebull.Common.Logging;
 
 #endregion
 

@@ -27,7 +27,7 @@ namespace Agebull.EntityModel
         public void BeforePropertyChanged(NotificationObject config, string property, object oldValue, object newValue)
         {
             Target = config;
-            var scope = NameEventScope.CreateScope(config,this.GetTypeName(), property);
+            var scope = NameEventScope.CreateScope(config, this.GetTypeName(), property);
             if (scope == null)
                 return;
             using (scope)
@@ -84,7 +84,7 @@ namespace Agebull.EntityModel
                 OnCreate();
             }
         }
-        
+
         /// <summary>
         /// 载入事件处理
         /// </summary>
@@ -167,7 +167,7 @@ namespace Agebull.EntityModel
         /// </summary>
         public virtual void OnCodeGeneratorBegin(NotificationObject config)
         {
-           
+
         }
         /// <summary>
         /// 完成代码生成
