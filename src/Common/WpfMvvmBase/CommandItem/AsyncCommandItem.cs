@@ -20,6 +20,7 @@ namespace Agebull.Common.Mvvm
             TargetType = typeof(TParameter);
             Command = new AsyncCommand<TParameter, TResult>(DoPrepare, Exceute, DoEnd);
         }
+
         /// <summary>
         /// 构造
         /// </summary>
@@ -131,17 +132,25 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         public override void Execute(object arg)
         {
+            Trace.WriteLine($"执行命令：{Caption ?? Name}");
             TParameter parameter = (TParameter)arg;
             if (!DoPrepareInner(parameter, p => parameter = p))
+            {
+                Trace.WriteLine($"无法执行：{Caption ?? Name}");
                 return;
+            }
+            Trace.WriteLine($"执行命令：{Caption ?? Name}");
             try
             {
                 var result = Exceute.Invoke(parameter);
                 End(CommandStatus.Succeed, null, result);
+                Trace.WriteLine("执行成功");
             }
             catch (Exception e)
             {
-                End(CommandStatus.Faulted, e, default(TResult));
+                Trace.WriteLine(e, GetType().FullName);
+                End(CommandStatus.Faulted, e, default);
+                Trace.WriteLine($"发生异常：{e.Message}");
             }
         }
     }

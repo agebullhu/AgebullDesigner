@@ -450,7 +450,14 @@ namespace Agebull.Common.Mvvm
         /// </remarks>
         public void Execute()
         {
-            _executeAction(Parameter);
+            try
+            {
+                _executeAction(Parameter);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex);
+            }
         }
 
         /// <summary>
@@ -468,10 +475,7 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         private void OnCanExecuteChanged()
         {
-            if (CanExecuteChanged != null)
-            {
-                CanExecuteChanged(this, EventArgs.Empty);
-            }
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>

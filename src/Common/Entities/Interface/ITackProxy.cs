@@ -37,6 +37,6 @@ namespace Agebull.EntityModel
     {
         void Run(Func<TResult> task);
 
-        void Exist(TResult result = default(TResult));
+        void Exist(TResult result = default);
     }
 }

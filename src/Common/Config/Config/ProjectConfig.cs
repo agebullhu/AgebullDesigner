@@ -113,6 +113,17 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(Models));
             }
         }
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public EntityConfig Find(string name)
+        {
+            return Entities.FirstOrDefault(p =>
+                string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(p.SaveTableName, name, StringComparison.OrdinalIgnoreCase));
+        }
 
         /// <summary>
         /// 实体集合

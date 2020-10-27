@@ -119,11 +119,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public override string ToString()
         {
-            return Name == null
-                ? Caption
-                : Caption == null
-                    ? Name
-                    : $"{Name}({Caption})";
+            return $"{Caption}({Name})[{GetType().Name}]";
         }
 
         /// <summary>

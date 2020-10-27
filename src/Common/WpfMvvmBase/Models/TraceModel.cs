@@ -11,9 +11,9 @@ namespace Agebull.CodeRefactor.CodeRefactor
     public sealed class TraceModel : ModelBase
     {
 
-        private CommandItem _clearTraceCommand;
+        private CommandItemBase _clearTraceCommand;
 
-        private CommandItem _copyTraceCommand;
+        private CommandItemBase _copyTraceCommand;
 
         private TraceMessage _traceMessage;
 
@@ -55,7 +55,7 @@ namespace Agebull.CodeRefactor.CodeRefactor
             }
         }
 
-        public CommandItem ClearTraceCommand => _clearTraceCommand ??= new CommandItem
+        public CommandItemBase ClearTraceCommand => _clearTraceCommand ??= new CommandItem
         {
             NoConfirm = true,
             Action = ClearTrace,
@@ -69,7 +69,7 @@ namespace Agebull.CodeRefactor.CodeRefactor
             TraceMessage.Clear();
         }
 
-        public CommandItem CopyTraceCommand => _copyTraceCommand ??= new CommandItem
+        public CommandItemBase CopyTraceCommand => _copyTraceCommand ??= new CommandItem
         {
             NoConfirm = true,
             Action = CopyTrace,
@@ -77,7 +77,7 @@ namespace Agebull.CodeRefactor.CodeRefactor
             Image = Application.Current.Resources["tree_Close"] as ImageSource
         };
 
-        public CommandItem ShowDefaultMessageCommand => new CommandItem
+        public CommandItemBase ShowDefaultMessageCommand => new CommandItem
         {
             Action = (arg) =>
             {

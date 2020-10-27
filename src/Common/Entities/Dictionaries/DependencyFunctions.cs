@@ -311,7 +311,7 @@ namespace Agebull.EntityModel
         public TResult TryExecute<TResult>()
         {
             var func = GetDelegate<Func<TResult>>();
-            return func != null ? func() : default(TResult);
+            return func != null ? func() : default;
         }
 
         /// <summary>
@@ -323,7 +323,7 @@ namespace Agebull.EntityModel
         public TResult TryExecute<TArg1, TResult>(TArg1 arg1)
         {
             var func = GetDelegate<Func<TArg1, TResult>>();
-            return func != null ? func(arg1) : default(TResult);
+            return func != null ? func(arg1) : default;
         }
 
         /// <summary>
@@ -335,7 +335,7 @@ namespace Agebull.EntityModel
         public TResult TryExecute<TArg1, TArg2, TResult>(TArg1 arg1, TArg2 arg2)
         {
             var func = GetDelegate<Func<TArg1, TArg2, TResult>>();
-            return func != null ? func(arg1, arg2) : default(TResult);
+            return func != null ? func(arg1, arg2) : default;
         }
 
         /// <summary>
@@ -347,7 +347,7 @@ namespace Agebull.EntityModel
         public TResult TryExecute<TArg1, TArg2, TArg3, TResult>(TArg1 arg1, TArg2 arg2, TArg3 arg3)
         {
             var func = GetDelegate<Func<TArg1, TArg2, TArg3, TResult>>();
-            return func != null ? func(arg1, arg2, arg3) : default(TResult);
+            return func != null ? func(arg1, arg2, arg3) : default;
         }
 
         /// <summary>
@@ -359,7 +359,7 @@ namespace Agebull.EntityModel
         public TResult TryExecute<TArg1, TArg2, TArg3, TArg4, TResult>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
         {
             var func = GetDelegate<Func<TArg1, TArg2, TArg3, TArg4, TResult>>();
-            return func != null ? func(arg1, arg2, arg3, arg4) : default(TResult);
+            return func != null ? func(arg1, arg2, arg3, arg4) : default;
         }
 
         /// <summary>
@@ -455,10 +455,7 @@ namespace Agebull.EntityModel
         public void TryRun()
         {
             var action = GetDelegate<Action>();
-            if (action != null)
-            {
-                action();
-            }
+            action?.Invoke();
         }
 
         /// <summary>
@@ -470,10 +467,7 @@ namespace Agebull.EntityModel
         public void TryRun<TArg1>(TArg1 arg1)
         {
             var action = GetDelegate<Action<TArg1>>();
-            if (action != null)
-            {
-                action(arg1);
-            }
+            action?.Invoke(arg1);
         }
 
         /// <summary>
@@ -485,10 +479,7 @@ namespace Agebull.EntityModel
         public void TryRun<TArg1, TArg2>(TArg1 arg1, TArg2 arg2)
         {
             var action = GetDelegate<Action<TArg1, TArg2>>();
-            if (action != null)
-            {
-                action(arg1, arg2);
-            }
+            action?.Invoke(arg1, arg2);
         }
 
         /// <summary>
@@ -500,10 +491,7 @@ namespace Agebull.EntityModel
         public void TryRun<TArg1, TArg2, TArg3>(TArg1 arg1, TArg2 arg2, TArg3 arg3)
         {
             var action = GetDelegate<Action<TArg1, TArg2, TArg3>>();
-            if (action != null)
-            {
-                action(arg1, arg2, arg3);
-            }
+            action?.Invoke(arg1, arg2, arg3);
         }
 
         /// <summary>
@@ -515,10 +503,7 @@ namespace Agebull.EntityModel
         public void TryRun<TArg1, TArg2, TArg3, TArg4>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
         {
             var action = GetDelegate<Action<TArg1, TArg2, TArg3, TArg4>>();
-            if (action != null)
-            {
-                action(arg1, arg2, arg3, arg4);
-            }
+            action?.Invoke(arg1, arg2, arg3, arg4);
         }
 
         /// <summary>
@@ -530,10 +515,7 @@ namespace Agebull.EntityModel
         public void Run()
         {
             var action = GetDelegate<Action>();
-            if (action != null)
-            {
-                action();
-            }
+            action?.Invoke();
             throw new ArgumentException("不存在对应的方法");
         }
 
@@ -546,10 +528,7 @@ namespace Agebull.EntityModel
         public void Run<TArg1>(TArg1 arg1)
         {
             var action = GetDelegate<Action<TArg1>>();
-            if (action != null)
-            {
-                action(arg1);
-            }
+            action?.Invoke(arg1);
         }
 
         /// <summary>
@@ -561,10 +540,7 @@ namespace Agebull.EntityModel
         public void Run<TArg1, TArg2>(TArg1 arg1, TArg2 arg2)
         {
             var action = GetDelegate<Action<TArg1, TArg2>>();
-            if (action != null)
-            {
-                action(arg1, arg2);
-            }
+            action?.Invoke(arg1, arg2);
             throw new ArgumentException("不存在对应的方法");
         }
 
@@ -577,10 +553,7 @@ namespace Agebull.EntityModel
         public void Run<TArg1, TArg2, TArg3>(TArg1 arg1, TArg2 arg2, TArg3 arg3)
         {
             var action = GetDelegate<Action<TArg1, TArg2, TArg3>>();
-            if (action != null)
-            {
-                action(arg1, arg2, arg3);
-            }
+            action?.Invoke(arg1, arg2, arg3);
             throw new ArgumentException("不存在对应的方法");
         }
 
@@ -593,10 +566,7 @@ namespace Agebull.EntityModel
         public void Run<TArg1, TArg2, TArg3, TArg4>(TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
         {
             var action = GetDelegate<Action<TArg1, TArg2, TArg3, TArg4>>();
-            if (action != null)
-            {
-                action(arg1, arg2, arg3, arg4);
-            }
+            action?.Invoke(arg1, arg2, arg3, arg4);
             throw new ArgumentException("不存在对应的方法");
         }
 
@@ -724,8 +694,7 @@ namespace Agebull.EntityModel
                 Task.Factory.StartNew(() =>
                 {
                     action();
-                    if (asyncAction != null)
-                        asyncAction();
+                    asyncAction?.Invoke();
                 });
             }
             throw new ArgumentException("不存在对应名称的方法");
@@ -745,8 +714,7 @@ namespace Agebull.EntityModel
                 Task.Factory.StartNew(() =>
                 {
                     action(arg1);
-                    if (asyncAction != null)
-                        asyncAction();
+                    asyncAction?.Invoke();
                 });
             }
             throw new ArgumentException("不存在对应名称的方法");
@@ -782,8 +750,7 @@ namespace Agebull.EntityModel
                 Task.Factory.StartNew(() =>
                 {
                     action(arg1, arg2, arg3);
-                    if (asyncAction != null)
-                        asyncAction();
+                    asyncAction?.Invoke();
                 });
             }
             throw new ArgumentException("不存在对应名称的方法");
@@ -804,8 +771,7 @@ namespace Agebull.EntityModel
                 Task.Factory.StartNew(() =>
                 {
                     action(arg1, arg2, arg3, arg4);
-                    if (asyncAction != null)
-                        asyncAction();
+                    asyncAction?.Invoke();
                 });
             }
             throw new ArgumentException("不存在对应名称的方法");
@@ -834,7 +800,7 @@ namespace Agebull.EntityModel
             }
             else
             {
-                asyncAction(default(TResult));
+                asyncAction(default);
             }
         }
 
@@ -857,7 +823,7 @@ namespace Agebull.EntityModel
             }
             else
             {
-                asyncAction(default(TResult));
+                asyncAction(default);
             }
         }
 
@@ -880,7 +846,7 @@ namespace Agebull.EntityModel
             }
             else
             {
-                asyncAction(default(TResult));
+                asyncAction(default);
             }
         }
 
@@ -903,7 +869,7 @@ namespace Agebull.EntityModel
             }
             else
             {
-                asyncAction(default(TResult));
+                asyncAction(default);
             }
         }
 
@@ -928,7 +894,7 @@ namespace Agebull.EntityModel
             }
             else
             {
-                asyncAction(default(TResult));
+                asyncAction(default);
             }
         }
 
@@ -946,13 +912,12 @@ namespace Agebull.EntityModel
                 Task.Factory.StartNew(() =>
                 {
                     action();
-                    if (asyncAction != null)
-                        asyncAction();
+                    asyncAction?.Invoke();
                 });
             }
-            else if (asyncAction != null)
+            else
             {
-                asyncAction();
+                asyncAction?.Invoke();
             }
         }
 
@@ -970,13 +935,12 @@ namespace Agebull.EntityModel
                 Task.Factory.StartNew(() =>
                 {
                     action(arg1);
-                    if (asyncAction != null)
-                        asyncAction();
+                    asyncAction?.Invoke();
                 });
             }
-            else if (asyncAction != null)
+            else
             {
-                asyncAction();
+                asyncAction?.Invoke();
             }
         }
 
@@ -993,9 +957,9 @@ namespace Agebull.EntityModel
             {
                 Task.Factory.StartNew(() => action(arg1, arg2));
             }
-            else if (asyncAction != null)
+            else
             {
-                asyncAction();
+                asyncAction?.Invoke();
             }
         }
 
@@ -1013,13 +977,12 @@ namespace Agebull.EntityModel
                 Task.Factory.StartNew(() =>
                 {
                     action(arg1, arg2, arg3);
-                    if (asyncAction != null)
-                        asyncAction();
+                    asyncAction?.Invoke();
                 });
             }
-            else if (asyncAction != null)
+            else
             {
-                asyncAction();
+                asyncAction?.Invoke();
             }
         }
 
@@ -1038,13 +1001,12 @@ namespace Agebull.EntityModel
                 Task.Factory.StartNew(() =>
                 {
                     action(arg1, arg2, arg3, arg4);
-                    if (asyncAction != null)
-                        asyncAction();
+                    asyncAction?.Invoke();
                 });
             }
-            else if (asyncAction != null)
+            else
             {
-                asyncAction();
+                asyncAction?.Invoke();
             }
         }
 

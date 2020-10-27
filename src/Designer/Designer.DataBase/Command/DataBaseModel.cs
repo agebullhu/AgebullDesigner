@@ -45,6 +45,16 @@ namespace Agebull.EntityModel.Designer
             });
             commands.Add(new CommandItemBuilder<EntityConfig>()
             {
+                Name = "Link Field Check",
+                Caption = "关系连接修复",
+                Catalog = "工具",
+                Action = DataBaseHelper.CheckFieldLink,
+                Editor = "DataRelation",
+                WorkView = "database,model"
+            });
+
+            commands.Add(new CommandItemBuilder<EntityConfig>()
+            {
                 Action = RepairByDb,
                 Catalog = "数据库",
                 SoruceView = "entity",
@@ -53,7 +63,7 @@ namespace Agebull.EntityModel.Designer
                 WorkView = "database",
                 IconName = "tree_item",
                 ConfirmMessage = "是否执行【重构数据库设计】操作"
-            }); 
+            });
             commands.Add(new CommandItemBuilder<EntityConfig>()
             {
                 Action = CheckByDb,
@@ -75,7 +85,19 @@ namespace Agebull.EntityModel.Designer
                 WorkView = "database",
                 IconName = "tree_item",
                 ConfirmMessage = "是否执行【修复数据库设计】操作"
-            }); 
+            });
+
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                Action = CheckIndex,
+                Catalog = "数据库",
+                SoruceView = "entity",
+                Caption = "索引构建",
+                Editor = "DataBase",
+                WorkView = "database",
+                IconName = "tree_item",
+                ConfirmMessage = "是否执行【修复数据库设计】操作"
+            });
         }
 
         #region 基础
@@ -95,6 +117,17 @@ namespace Agebull.EntityModel.Designer
                 Entity = entity
             };
             business.CheckRelation();
+        }
+        /// <summary>
+        /// 数据库设计检查
+        /// </summary>
+        public void CheckIndex(EntityConfig entity)
+        {
+            var business = new EntityDatabaseBusiness
+            {
+                Entity = entity
+            };
+            business.CheckIndex();
         }
 
         /// <summary>
@@ -120,7 +153,7 @@ namespace Agebull.EntityModel.Designer
             };
             business.CheckDbConfig(false);
         }
-        
+
         /// <summary>
         /// 数据库设计检查
         /// </summary>

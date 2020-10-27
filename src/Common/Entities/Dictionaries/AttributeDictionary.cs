@@ -81,9 +81,9 @@ namespace Agebull.EntityModel
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                return default(T);
+                return default;
             }
-            return Dictionary.TryGetValue(name, out object value) ? (T)value : default(T);
+            return Dictionary.TryGetValue(name, out object value) ? (T)value : default;
         }
 
         /// <summary>

@@ -1,190 +1,27 @@
-// /*****************************************************
+ï»¿// /*****************************************************
 // (c)2008-2013 Copy right www.Gboxt.com
-// ×÷Õß:bull2
-// ¹¤³Ì:CodeRefactor-Agebull.Common.WpfMvvmBase
-// ½¨Á¢:2014-11-26
-// ĞŞ¸Ä:2014-12-07
+// ä½œè€…:bull2
+// å·¥ç¨‹:CodeRefactor-Agebull.Common.WpfMvvmBase
+// å»ºç«‹:2014-11-26
+// ä¿®æ”¹:2014-12-07
 // *****************************************************/
 
-#region ÒıÓÃ
+#region å¼•ç”¨
 
-using Agebull.EntityModel;
 using System;
-using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media;
 
 #endregion
 
 namespace Agebull.Common.Mvvm
 {
     /// <summary>
-    ///     ±íÊ¾Ò»¸öÃüÁî½Úµã
-    /// </summary>
-    public abstract class CommandItemBase : CommandConfig
-    {
-
-        #region ×´Ì¬
-
-        /// <summary>
-        ///     Í¼±ê
-        /// </summary>
-        ImageSource _image;
-
-        /// <summary>
-        ///     Í¼±ê
-        /// </summary>
-        public ImageSource Image
-        {
-            get => IsRoot
-                ? null
-                : (_image ??= Application.Current.Resources[IconName ?? "imgDefault"] as ImageSource);
-            set => _image = value;
-        }
-
-        /// <summary>
-        ///     ÊÇ·ñ¸ù
-        /// </summary>
-        public bool IsRoot { get; set; }
-
-        /// <summary>
-        ///     ÊÇ·ñÏß
-        /// </summary>
-        public bool IsLine { get; set; }
-
-        /// <summary>
-        /// ±íÊ¾·Ö¸ôÏß
-        /// </summary>
-        public static CommandItem Line { get; } = new CommandItem
-        {
-            IsLine = true
-        };
-
-
-        private bool _isChecked;
-
-        /// <summary>
-        ///     ÊÇ·ñÑ¡ÖĞ
-        /// </summary>
-        public bool IsChecked
-        {
-            get => _isChecked;
-            set
-            {
-                _isChecked = value;
-                RaisePropertyChanged(nameof(IsChecked));
-            }
-        }
-        private bool _isBusy;
-
-        /// <summary>
-        ///     Í¼±ê
-        /// </summary>
-        public bool IsBusy
-        {
-            get => _isBusy;
-            set
-            {
-                if (_isBusy == value)
-                    return;
-                _isBusy = value;
-                RaisePropertyChanged(() => IsBusy);
-            }
-        }
-
-        private Visibility _visibility;
-
-        /// <summary>
-        ///     ¿É¼û
-        /// </summary>
-        public Visibility Visibility
-        {
-            get => _visibility;
-            set
-            {
-                if (_visibility == value)
-                    return;
-                _visibility = value;
-                RaisePropertyChanged(() => Visibility);
-            }
-        }
-        #endregion
-
-        #region ²ÎÊı
-        /// <summary>
-        /// ²ÎÊı
-        /// </summary>
-        public object Source { get; set; }
-
-        /// <summary>
-        /// ²ÎÊı
-        /// </summary>
-        public object Parameter => Source;
-        #endregion
-
-        #region ÃüÁî
-
-        private ICommand _command;
-
-
-        /// <summary>
-        ///     ¶ÔÓ¦µÄÃüÁî
-        /// </summary>
-        public ICommand Command
-        {
-            get => _command;
-            protected set
-            {
-                _command = value;
-                if (value is INotifyPropertyChanged pp)
-                    pp.PropertyChanged += OnCommandPropertyChanged;
-            }
-        }
-
-        protected void OnCommandPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (!(sender is IStatusCommand cmd))
-                return;
-            switch (e.PropertyName)
-            {
-                case "IsBusy":
-                    IsBusy = cmd.IsBusy;
-                    break;
-                case "Visibility":
-                    Visibility = cmd.Visibility;
-                    break;
-            }
-        }
-        /// <summary>
-        /// Ö´ĞĞ
-        /// </summary>
-        public abstract void Execute(object arg);
-        /// <summary>
-        /// ×¼±¸¶¯×÷
-        /// </summary>
-        public Func<CommandItemBase, bool> OnPrepare { get; set; }
-
-        #endregion
-
-        #region ×Ó¼¶
-
-        /// <summary>
-        /// ËùÓĞ°´Å¥
-        /// </summary>
-        public NotificationList<CommandItemBase> Items { get; set; } = new NotificationList<CommandItemBase>();
-
-        #endregion
-
-    }
-
-
-    /// <summary>
-    ///     ±íÊ¾Ò»¸öÃüÁî½Úµã
+    ///     è¡¨ç¤ºä¸€ä¸ªå‘½ä»¤èŠ‚ç‚¹
     /// </summary>
     public class CommandItem : CommandItemBase
     {
-        #region ÃüÁî
+        #region å‘½ä»¤
 
         public CommandItem()
         {
@@ -193,7 +30,7 @@ namespace Agebull.Common.Mvvm
         }
 
         /// <summary>
-        ///     ¶ÔÓ¦µÄÃüÁî
+        ///     å¯¹åº”çš„å‘½ä»¤
         /// </summary>
         public Action<object> Action
         {
@@ -204,15 +41,29 @@ namespace Agebull.Common.Mvvm
 
         void DoAction(object arg)
         {
-            if (DoConfirm && MessageBox.Show(ConfirmMessage ?? $"È·ÈÏÖ´ĞĞ¡¾{Caption ?? Name}¡¿²Ù×÷Âğ?", "¶ÔÏó±à¼­", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+            if (DoConfirm && MessageBox.Show(ConfirmMessage ?? $"ç¡®è®¤æ‰§è¡Œã€{Caption ?? Name}ã€‘æ“ä½œå—?", "å¯¹è±¡ç¼–è¾‘", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
             {
                 return;
             }
-            if (OnPrepare == null || OnPrepare(this))
+            if (OnPrepare != null && !OnPrepare(this))
+            {
+                Trace.WriteLine($"æ— æ³•æ‰§è¡Œï¼š{Caption ?? Name}");
+            }
+            Trace.WriteLine($"æ‰§è¡Œå‘½ä»¤ï¼š{Caption ?? Name}");
+            try
+            {
                 Action?.Invoke(arg);
+                Trace.WriteLine("æ‰§è¡ŒæˆåŠŸ");
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e, GetType().FullName);
+                Trace.WriteLine($"å‘ç”Ÿå¼‚å¸¸ï¼š{e.Message}");
+            }
         }
+
         /// <summary>
-        /// Ö´ĞĞ
+        /// æ‰§è¡Œ
         /// </summary>
         public override void Execute(object arg)
         {
@@ -222,12 +73,12 @@ namespace Agebull.Common.Mvvm
     }
 
     /// <summary>
-    ///     ±íÊ¾Ò»¸öÃüÁî½Úµã
+    ///     è¡¨ç¤ºä¸€ä¸ªå‘½ä»¤èŠ‚ç‚¹
     /// </summary>
     public class CommandItem<TArgument> : CommandItemBase
         where TArgument : class
     {
-        #region ÃüÁî
+        #region å‘½ä»¤
 
         public CommandItem()
         {
@@ -236,7 +87,7 @@ namespace Agebull.Common.Mvvm
         }
 
         /// <summary>
-        ///     ¶ÔÓ¦µÄÃüÁî
+        ///     å¯¹åº”çš„å‘½ä»¤
         /// </summary>
         public Action<TArgument> Action
         {
@@ -246,21 +97,22 @@ namespace Agebull.Common.Mvvm
 
 
         /// <summary>
-        ///     ¶ÔÓ¦µÄÃüÁî
+        ///     å¯¹åº”çš„å‘½ä»¤
         /// </summary>
         public TArgument Argument => Source as TArgument;
 
         void DoAction()
         {
-            if (!string.IsNullOrWhiteSpace(ConfirmMessage) && MessageBox.Show(ConfirmMessage, "¶ÔÏó±à¼­", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+            if (DoConfirm && MessageBox.Show(ConfirmMessage ?? $"ç¡®è®¤æ‰§è¡Œã€{Caption ?? Name}ã€‘æ“ä½œå—?", "å¯¹è±¡ç¼–è¾‘", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
             {
                 return;
             }
             if (OnPrepare == null || OnPrepare(this))
                 Action?.Invoke(Argument);
         }
+
         /// <summary>
-        /// Ö´ĞĞ
+        /// æ‰§è¡Œ
         /// </summary>
         public override void Execute(object arg)
         {

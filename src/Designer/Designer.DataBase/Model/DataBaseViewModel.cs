@@ -31,21 +31,21 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
         public override NotificationList<CommandItemBase> CreateCommands()
         {
             var items = CreateCommands(false, true, true);
-            items.Add(new CommandItem
+            items.Add((CommandItemBase)new CommandItem
             {
                 Action = UpperHump,
                 IsButton = true,
                 Caption = "大驼峰名称",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             });
-            items.Add(new CommandItem
+            items.Add((CommandItemBase)new CommandItem
             {
                 Action = LowerHump,
                 IsButton = true,
                 Caption = "小驼峰名称",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             });
-            items.Add(new CommandItem
+            items.Add((CommandItemBase)new CommandItem
             {
                 Action = Underlined,
                 IsButton = true,

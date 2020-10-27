@@ -26,7 +26,7 @@ namespace Agebull.EntityModel
         /// 转为命令
         /// </summary>
         /// <returns></returns>
-        public CommandItem ToCommandItem()
+        public CommandItemBase ToCommandItem()
         {
             return new CommandItem
             {

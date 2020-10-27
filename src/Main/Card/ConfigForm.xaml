@@ -75,21 +75,25 @@
                             <Label Content="标题" />
                             <TextBox Text="{Binding Caption,Mode=TwoWay}" Tag="{Binding Name}" />
                         </StackPanel>
-                        <StackPanel>
+                        <StackPanel Style="{StaticResource AdvFieldPanel}">
                             <Label Content="标识" />
                             <TextBox IsReadOnly="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}"
                                      Text="{Binding Identity,Mode=TwoWay}"/>
                         </StackPanel>
-                        <StackPanel>
+                        <StackPanel Style="{StaticResource AdvFieldPanel}">
                             <Label Content="别名" />
                             <TextBox Text="{Binding Alias,Mode=TwoWay}" />
                         </StackPanel>
-                        <StackPanel>
-                            <Label Content="原始名称" />
+                        <StackPanel Style="{StaticResource AdvFieldPanel}">
+                            <Label Content="分组" />
+                            <TextBox Text="{Binding Group,Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource AdvFieldPanel}">
+                            <Label Content="历史名称" />
                             <TextBox Text="{Binding OldName,Mode=TwoWay}" />
                         </StackPanel>
-                    </WrapPanel> 
-                    <StackPanel>
+                    </WrapPanel>
+                    <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="说明" />
                         <TextBox Style="{StaticResource TrdTextBox}" Height="48"
                                  Text="{Binding Description,Mode=TwoWay}" />

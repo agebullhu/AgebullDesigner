@@ -105,8 +105,8 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"主键字段"), Description("主键字段")]
         public FieldConfig PrimaryColumn => WorkContext.InCoderGenerating
-            ? Properties.FirstOrDefault(p => p.IsPrimaryKey) ?? Properties.FirstOrDefault()
-            : Properties.FirstOrDefault(p => p.IsPrimaryKey);
+            ? Properties.FirstOrDefault(p => p.IsPrimaryKey && p.Entity == this) ?? Properties.FirstOrDefault()
+            : Properties.FirstOrDefault(p => p.IsPrimaryKey && p.Entity == this);
 
         /// <summary>
         /// 是否有主键
@@ -114,6 +114,7 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"是否有主键"), Description("是否有主键")]
         public bool HasePrimaryKey => Properties.Any(p => p.IsPrimaryKey);
+
         /// <summary>
         /// 主键字段
         /// </summary>
@@ -121,7 +122,7 @@ namespace Agebull.EntityModel.Config
         /// 主键字段
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        IFieldConfig IEntityConfig.PrimaryColumn => PrimaryColumn == null || PrimaryColumn.IsDiscard ? null : PrimaryColumn;
+        IFieldConfig IEntityConfig.PrimaryColumn => PrimaryColumn;
 
         /// <summary>
         /// 主键字段
@@ -605,6 +606,18 @@ namespace Agebull.EntityModel.Config
         #endregion
 
         #region 子级
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public FieldConfig Find(string name)
+        {
+            return Properties.FirstOrDefault(p =>
+                string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(p.DbFieldName, name, StringComparison.OrdinalIgnoreCase));
+        }
 
         /// <summary>
         /// 字段列表

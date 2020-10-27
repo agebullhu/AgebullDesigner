@@ -27,7 +27,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     对应的命令集合
         /// </summary>
-        public CommandItem Menus => new CommandItem
+        public CommandItemBase Menus => new CommandItem
         {
             IsRoot = true,
             Caption = "〓",

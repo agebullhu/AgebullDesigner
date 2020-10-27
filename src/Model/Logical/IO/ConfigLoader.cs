@@ -231,7 +231,7 @@ namespace Agebull.EntityModel.Designer
             {
                 var args = File.ReadAllText(file, Encoding.UTF8);
                 if (string.IsNullOrWhiteSpace(args))
-                    return default(TConfig);
+                    return default;
                 TConfig config;
                 if (args[0] != '<')
                 {
@@ -248,7 +248,7 @@ namespace Agebull.EntityModel.Designer
             catch (Exception e)
             {
                 Trace.WriteLine(e.ToString());
-                return default(TConfig);
+                return default;
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -53,6 +54,14 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
+        /// 执行器
+        /// </summary>
+        public static void CheckFieldLink(EntityConfig entity)
+        {
+            CheckFieldLink(entity.Properties);
+        }
+
+        /// <summary>
         /// 检查字段关联
         /// </summary>
         public static bool CheckFieldLink(IEnumerable<FieldConfig> fields)
@@ -70,49 +79,57 @@ namespace Agebull.EntityModel.Config
                     continue;
                 }
 
-                FieldConfig pro = null;
-                if (field.Option.ReferenceKey != Guid.Empty)
-                {
-                    pro = GlobalConfig.GetConfig<FieldConfig>(field.Option.ReferenceKey);
-                }
-                //if (pro != null && field.LinkField != null && field.LinkField != pro.Name)
-                //    pro = null;
-                if (pro == null || pro == field || pro.Entity == entity)
-                {
-                    var table = GlobalConfig.GetEntity(
-                        p => string.Equals(p.Name, field.LinkTable, StringComparison.OrdinalIgnoreCase) ||
-                             string.Equals(p.SaveTableName, field.LinkTable, StringComparison.OrdinalIgnoreCase) ||
-                             string.Equals(p.ReadTableName, field.LinkTable, StringComparison.OrdinalIgnoreCase));
-                    if (table != null && table != entity)
-                    {
-                        pro = table.Properties.FirstOrDefault(p =>
-                            string.Equals(p.Name, field.LinkField, StringComparison.OrdinalIgnoreCase) ||
-                            string.Equals(p.DbFieldName, field.LinkField, StringComparison.OrdinalIgnoreCase));
-                    }
-                }
+                var table = entity.Parent.Find(field.LinkTable) ?? GlobalConfig.GetEntity(field.LinkTable);
 
-                if (pro?.Entity == null || pro == field || pro.Entity == entity || pro.Entity.IsInterface)
+                if(table == null || table == entity)
                 {
                     SetNoLink(field);
                     continue;
                 }
-                field.Option.IsLink = true;
+                FieldConfig pro = field.IsLinkKey ? table.PrimaryColumn : table.Find(field.LinkField); 
+                if(pro == null && field.Option.ReferenceKey != Guid.Empty)
+                {
+                    pro = GlobalConfig.GetConfig<FieldConfig>(field.Option.ReferenceKey);
+                }
+                if (pro == null || pro == field || pro.Entity == entity)
+                {
+                    SetNoLink(field);
+                    continue;
+                }
+                hase = true;
                 field.Option.ReferenceConfig = pro;
+                field.Option.IsLink = true;
 
                 field.IsLinkField = true;
+                field.IsLinkCaption = pro.IsCaption;
                 field.IsLinkKey = pro.IsPrimaryKey;
                 field.IsCompute = !field.IsLinkKey;
-                field.IsLinkCaption = pro.IsCaption;
-                field.LinkTable = pro.Entity.Name;
+                field.LinkTable = table.Name;
                 field.LinkField = pro.Name;
                 field.NoStorage = false;
-                hase = true;
+
+                field.DbType = pro.DbType;
+                field.ArrayLen = pro.ArrayLen;
+                field.Datalen = pro.Datalen;
+                field.Scale = pro.Scale;
+
+                if (field.IsLinkKey)
+                {
+                    field.DbNullable = false;
+                    field.IsDbIndex = true;
+                    field.Nullable = false;
+                }
+
+                Trace.WriteLine($"    {(field.IsLinkKey ? 'F' : 'L')}:{field.Caption}({field.Name})");
+
+
             }
             return hase;
         }
 
         private static void SetNoLink(FieldConfig field)
         {
+            Trace.WriteLine($"X    :{field.Caption}({field.Name})");
             field.LinkTable = field.LinkField = null;
             field.Option.ReferenceKey = Guid.Empty;
             field.IsLinkField = field.IsLinkKey = field.IsLinkCaption = false;

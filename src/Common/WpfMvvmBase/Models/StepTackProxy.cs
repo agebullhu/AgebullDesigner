@@ -146,8 +146,7 @@ namespace Agebull.EntityModel
 
         public void Exist()
         {
-            if (Action != null)
-                Action();
+            Action?.Invoke();
         }
     }
 
@@ -244,7 +243,7 @@ namespace Agebull.EntityModel
             {
                 var item = arg as TackStepItem;
                 // ReSharper disable PossibleNullReferenceException
-                return item.StepKey != StepKey ? default(TResult) : item.Action();
+                return item.StepKey != StepKey ? default : item.Action();
                 // ReSharper restore PossibleNullReferenceException
             }
         }
@@ -274,10 +273,9 @@ namespace Agebull.EntityModel
         /// Ö´ÐÐÍê³É
         /// </summary>
         /// <param name="result"></param>
-        public void Exist(TResult result = default(TResult))
+        public void Exist(TResult result = default)
         {
-            if (Action != null)
-                Action(result);
+            Action?.Invoke(result);
         }
     }
 }

@@ -448,7 +448,7 @@ namespace Agebull.Common.Mvvm
                 Trace.WriteLine(ex.Message);
                 Status = CommandStatus.Faulted;
                 OnCanExecuteChanged();
-                _endAction?.Invoke(Status, ex, default(TResult));
+                _endAction?.Invoke(Status, ex, default);
             }
         }
 
@@ -477,11 +477,11 @@ namespace Agebull.Common.Mvvm
                 }
                 if (Synchronous == null)
                 {
-                    _endAction(Status, task.IsFaulted ? task.Exception : null, !task.IsFaulted ? task.Result : default(TResult));
+                    _endAction(Status, task.IsFaulted ? task.Exception : null, !task.IsFaulted ? task.Result : default);
                 }
                 else
                 {
-                    Synchronous.BeginInvokeInUiThread(_endAction, Status, task.IsFaulted ? task.Exception : null, !task.IsFaulted ? task.Result : default(TResult));
+                    Synchronous.BeginInvokeInUiThread(_endAction, Status, task.IsFaulted ? task.Exception : null, !task.IsFaulted ? task.Result : default);
                 }
             }
             catch (Exception ex)

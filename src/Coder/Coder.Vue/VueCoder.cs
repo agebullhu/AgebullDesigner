@@ -512,11 +512,11 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
         #endregion
         #endregion
+
         #region 脚本
         public string ScriptCode()
         {
-            var properties = Model.ClientProperty.Where(p => p.CanUserInput).ToArray();
-            var form_rules = Rules(properties);
+            var form_rules = Rules();
             return $@"
 function createEntity() {{
     return {{
@@ -535,7 +535,7 @@ extend_methods({{
     }}
 }});
 {form_rules}
-{LinkFunctions(properties)}
+{LinkFunctions()}
 {EnumScript()}
 {Filter()}
 {TreeScript()}
@@ -598,11 +598,14 @@ extend_methods({{
     }}
 }});";
         }
-        string LinkFunctions(IFieldConfig[] columns)
+        string LinkFunctions()
         {
             if (Model.IsUiReadOnly)
                 return null;
-            var array = columns.Select(p => p).Where(p => p.IsLinkCaption).Select(p => GlobalConfig.GetEntity(p.LinkTable)).Distinct().ToArray();
+            var array = Model.ClientProperty
+                .Where(p => p.CanUserInput && p.IsLinkCaption)
+                .Select(p => GlobalConfig.GetEntity(p.LinkTable))
+                .Distinct().ToArray();
             if (array.Length == 0)
                 return null;
             StringBuilder code = new StringBuilder();
@@ -727,7 +730,8 @@ extend_data({
         {
             bool isInner = Model.Interfaces.Contains("IInnerTree");
             var code = new StringBuilder();
-            foreach (var property in Model.ClientProperty.Where(p => !p.IsSystemField))
+           
+            foreach (var property in Model.LastProperties.Where(p => !p.IsSystemField && !p.NoneJson))
             {
                 var field = property;
                 if (isInner && field.Name == "ParentId")
@@ -765,7 +769,7 @@ extend_data({
         private string CheckValue()
         {
             var code = new StringBuilder();
-            foreach (var property in Model.ClientProperty)
+            foreach (var property in Model.LastProperties.Where(p => !p.IsSystemField && !p.NoneJson))
             {
                 var field = property;
                 code.Append($@"
@@ -797,10 +801,11 @@ extend_data({
         ///     生成Form录入字段界面
         /// </summary>
         /// <param name="columns"></param>
-        private string Rules(IFieldConfig[] columns)
+        private string Rules()
         {
             if (Model.IsUiReadOnly)
                 return null;
+            var columns = Model.ClientProperty.Where(p => p.CanUserInput);
             bool first = true;
             var code = new StringBuilder();
             foreach (var property in columns)

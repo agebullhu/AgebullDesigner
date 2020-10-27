@@ -61,17 +61,8 @@ namespace {Project.NameSpace}.DataAccess
         /// </summary>
         static DataAccessOption Option = new DataAccessOption
         {{
-            InjectionLevel   = InjectionLevel.All,
             IsQuery          = {(Model.IsQuery ? "true" : "false")},
             UpdateByMidified = {(Model.UpdateByModified ? "true" : "false")},
-            ReadTableName    = FromSqlCode,
-            WriteTableName   = {Model.Entity.Name}_Struct_.tableName,
-            LoadFields       = LoadFields,
-            Having           = Having,
-            GroupFields      = GroupFields,
-            UpdateFields     = UpdateFields,
-            InsertSqlCode    = InsertSqlCode,
-            DeleteSqlCode    = DeleteSqlCode,
             SqlBuilder       = new MySqlSqlBuilder<{Model.EntityName}>(),
             DataStruct       = new EntityStruct
             {{
@@ -86,6 +77,18 @@ namespace {Project.NameSpace}.DataAccess
                 {{
                     {EntityStruct()}
                 }}
+            }},
+            BaseOption = new DynamicOption
+            {{
+                InjectionLevel   = InjectionLevel.All,
+                ReadTableName    = FromSqlCode,
+                WriteTableName   = {Model.Entity.Name}_Struct_.tableName,
+                LoadFields       = LoadFields,
+                Having           = Having,
+                GroupFields      = GroupFields,
+                UpdateFields     = UpdateFields,
+                InsertSqlCode    = InsertSqlCode,
+                DeleteSqlCode    = DeleteSqlCode
             }}
         }};
 
@@ -532,47 +535,20 @@ SELECT @@IDENTITY;");
                 var modelBase = GlobalConfig.GetModel(p => p.Name == Model.ModelBase);
                 EntityStruct(modelBase, properties, ref idx);
             }
-            var primary = model.LastProperties.FirstOrDefault(p => p.Entity == model.Entity && p.IsPrimaryKey);
-
-            EntityStruct(properties, ref idx, primary);
-
-            foreach (var property in model.LastProperties.Where(p => p != model.PrimaryColumn).OrderBy(p => p.Index))
+            var code = new StringBuilder();
+            var primary = model.PrimaryColumn;
+            var last = model.LastProperties.Where(p => p != primary);
+            properties.Add(DataBaseBuilder.EntityProperty(code, primary, ref idx, false));
+            foreach (var property in last.Where(p => !p.IsInterfaceField).OrderBy(p => p.Index))
             {
-                EntityStruct(properties, ref idx, property);
+                properties.Add(DataBaseBuilder.EntityProperty(code, property, ref idx, false));
+            }
+            foreach (var property in last.Where(p => p.IsInterfaceField))
+            {
+                properties.Add(DataBaseBuilder.EntityProperty(code, property, ref idx, false));
             }
         }
 
-        private void EntityStruct(List<string> properties, ref int idx, IFieldConfig property)
-        {
-            if (property == null)
-                return;
-
-            var str = new StringBuilder("new EntityProperty(");
-            bool hase = false;
-            if (!property.Entity.IsInterface)
-            {
-                if (property.IsInterfaceField)
-                {
-                    hase = true;
-                    str.Append($"GlobalDataInterfaces.{property.LinkTable}.{property.LinkField}");
-                }
-                else if (property.IsLinkField)
-                {
-                    var entity = GlobalConfig.GetEntity(property.LinkTable);
-                    if (entity != null)
-                    {
-                        hase = true;
-                        str.Append($"{entity.Name}_Struct_.{property.LinkField}");
-                    }
-                }
-            }
-            if (!hase)
-            {
-                str.Append($"{property.Entity.Name}_Struct_.{property.Field.Name}");
-            }
-            str.Append($",{idx++},\"{property.Name}\",\"{property.Entity.SaveTableName}\",\"{property.DbFieldName}\",{DataBaseBuilder.ReadWrite(property)})");
-            properties.Add(str.ToString());
-        }
         #endregion
 
         #region 名称值取置

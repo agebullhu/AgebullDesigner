@@ -38,6 +38,7 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.MySql
             MomentCoder.RegisteCoder("MySql", "清除表(SQL)", "sql", p => !p.NoDataBase, TruncateTable);
             MomentCoder.RegisteCoder("MySql", "添加全部索引", "sql", p => !p.NoDataBase, AddIndex);
             MomentCoder.RegisteCoder("MySql", "添加关键索引", "sql", p => !p.NoDataBase, AddRefIndex);
+            MomentCoder.RegisteCoder("MySql", "添加外键", "sql", p => !p.NoDataBase, AddRelation);
         }
         #endregion
 
@@ -148,8 +149,42 @@ ALTER TABLE  `{entity.SaveTableName}`");
         }
 
         #endregion
+        #region 外键
 
 
+        public static string AddRelation(EntityConfig entity)
+        {
+            var fields = entity.DbFields.Where(p => p.IsLinkKey).ToArray();
+            if (fields.Length == 0)
+                return "";
+            var code = new StringBuilder();
+            code.Append($@"
+/*{entity.Caption}*/
+ALTER TABLE  `{entity.SaveTableName}`");
+            bool isFirst = true;
+            foreach (var property in fields)
+            {
+                var rela = entity.Parent.Find(property.LinkTable)
+                    ?? GlobalConfig.GetEntity(property.LinkTable);
+                if (rela == null)
+                    continue;
+                if (isFirst)
+                    isFirst = false;
+                else
+                    code.Append(',');
+
+                code.Append($@"
+    /*{rela.Caption}: {property.DbFieldName} <=> {rela.PrimaryColumn.DbFieldName}*/
+    ADD CONSTRAINT `{rela.Name}` FOREIGN KEY (`{property.DbFieldName}`) 
+        REFERENCES `{rela.SaveTableName}` (`{rela.PrimaryColumn.DbFieldName}`)");
+
+            }
+            code.Append(";");
+            return code.ToString();
+        }
+
+
+        #endregion
         #region 数据库
         public static string TruncateTable(EntityConfig entity)
         {
@@ -458,6 +493,7 @@ ALTER TABLE `{entity.SaveTableName}`");
             code.Append(@";");
             return code.ToString();
         }
+
         private static string ChangeColumnCode2(EntityConfig entity)
         {
             if (entity == null || entity.NoDataBase || !entity.Interfaces.Contains("IHistory"))
@@ -478,7 +514,7 @@ ALTER TABLE `{entity.SaveTableName}`
 
         private static string NullKeyWord(IFieldConfig col)
         {
-            return !col.IsPrimaryKey && col.UniqueIndex >= 0 && !col.IsGlobalKey && (col.CsType == "string" || col.DbNullable) 
+            return !col.IsPrimaryKey && col.UniqueIndex >= 0 && !col.IsGlobalKey && (col.CsType == "string" || col.DbNullable)
                 ? " NULL" : " NOT NULL";
         }
 

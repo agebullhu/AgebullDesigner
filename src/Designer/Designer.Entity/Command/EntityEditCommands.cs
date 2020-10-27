@@ -90,6 +90,5 @@ namespace Agebull.EntityModel.Designer
         {
             CommandIoc.AddFieldsCommand(entity);
         }
-
     }
 }

@@ -28,7 +28,6 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public sealed override Type SuppertType => typeof(ConfigBase);
 
-
         /// <summary>
         /// 动作
         /// </summary>
@@ -45,10 +44,12 @@ namespace Agebull.EntityModel.Designer
             }
             if (OnPrepare != null && !OnPrepare(this))
             {
+                ShowMessageBox("准备失败");
                 return;
             }
             DoExecute(arg ?? GlobalConfig.CurrentConfig);
         }
+
         /// <summary>
         /// 执行
         /// </summary>
@@ -56,6 +57,7 @@ namespace Agebull.EntityModel.Designer
         {
             DoExecute(arg);
         }
+
         /// <summary>
         /// 执行
         /// </summary>
@@ -63,30 +65,57 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         private bool DoExecute(object para)
         {
-            try
+            if (SignleSoruce)
             {
-                if (SignleSoruce)
+                if (!(para is TTargetType config))
                 {
-                    if (para is TTargetType config)
-                    {
-                        Action(config);
-                        return true;
-                    }
-                    MessageBox.Show($"参数为空或不是目标类型{typeof(TTargetType)}");
+                    ShowMessageBox($"参数为空或不是目标类型{typeof(TTargetType)}");
                     return false;
                 }
-                else if (para is ConfigBase config)
+
+                try
                 {
-                    Task.Factory.StartNew(() => config.Foreach(Action));
+                    Trace.WriteLine($"执行命令：{Caption ?? Name}");
+                    Action(config);
+                    Trace.WriteLine($"执行完成：{Caption ?? Name}");
+                    ShowMessageBox("执行成功");
+                    return true;
                 }
-                return true;
+                catch (Exception e)
+                {
+                    Trace.WriteLine(e, GetType().FullName);
+                    ShowMessageBox($"发生异常：{e.Message}", Caption ?? Name);
+                    return false;
+                }
+            }
+            else if (para is ConfigBase config)
+            {
+                Task.Factory.StartNew(DoForeach, config);
+            }
+            return true;
+        }
+
+        void DoAction(TTargetType arg)
+        {
+            Trace.WriteLine($"=> {arg}");
+            Action(arg);
+        }
+
+        void DoForeach(object arg)
+        {
+            try
+            {
+                var config = (ConfigBase)arg;
+                Trace.WriteLine($"执行命令：{Caption ?? Name}");
+                config.Foreach<TTargetType>(DoAction);
+                Trace.WriteLine($"执行成功：{Caption ?? Name}");
+                ShowMessageBox("执行成功");
             }
             catch (Exception e)
             {
                 Trace.WriteLine(e, GetType().FullName);
-                return false;
+                ShowMessageBox($"发生异常：{e.Message}");
             }
         }
     }
-
 }

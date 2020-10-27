@@ -335,9 +335,9 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        public CommandItem WindowMenu { get; private set; }
+        public CommandItemBase WindowMenu { get; private set; }
 
-        private CommandItem viewMenu, fileMenu;
+        private CommandItemBase viewMenu, fileMenu;
         /// <summary>
         /// 同步菜单
         /// </summary>
@@ -371,7 +371,7 @@ namespace Agebull.EntityModel.Designer
             });
             if (item.Commands == null || item.Commands.Count == 0)
             {
-                Buttons = new CommandItemBase[0];
+                Buttons = new CommandItem[0];
                 return;
             }
 

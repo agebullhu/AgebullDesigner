@@ -148,7 +148,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"系统"), DisplayName(@"阻止编辑"), Description("阻止使用的范围")]
         public AccessScopeType DenyScope
         {
-            get => InterfaceOrThis._denyScope;
+            get => NoStorage ? AccessScopeType.Client : InterfaceOrThis._denyScope;
             set
             {
                 if (_denyScope == value)
@@ -156,6 +156,7 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(DenyScope), _denyScope, value);
                 _denyScope = value;
                 OnPropertyChanged(nameof(DenyScope));
+                OnPropertyChanged(nameof(DenyClient));
             }
         }
         #endregion
@@ -1935,6 +1936,7 @@ namespace Agebull.EntityModel.Config
             }
         }
         #endregion
+
         #region 用户界面
 
         /// <summary>
@@ -1947,7 +1949,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"), DisplayName(@"客户端不可见"), Description("客户端不可见")]
         public bool DenyClient
         {
-            get => DenyScope.HasFlag(AccessScopeType.Client);
+            get => NoProperty || DenyScope.HasFlag(AccessScopeType.Client);
             set
             {
                 if (value)

@@ -596,7 +596,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// ≤È’“
         /// </summary>
-        public CommandItem FindCommand => new CommandItem
+        public CommandItemBase FindCommand => new CommandItem
         {
             Action = Find,
             IconName = "img_find"

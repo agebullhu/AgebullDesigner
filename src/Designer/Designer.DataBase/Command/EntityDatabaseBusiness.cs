@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Linq;
 
 namespace Agebull.EntityModel.Config
@@ -134,6 +135,22 @@ namespace Agebull.EntityModel.Config
             //{
             //    Entity.ReadTableName = null;
             //}
+        }
+
+
+        public void CheckIndex()
+        {
+            
+            foreach(var field in Entity.Properties)
+            {
+                if (field.NoStorage)
+                    continue;
+                if (field.IsLinkKey ||field.IsCaption ||field.IsEnum)
+                {
+                    field.IsDbIndex = true;
+                    Trace.WriteLine($"--{field.Caption}:{field.DbFieldName}");
+                }
+            }
         }
     }
 }
