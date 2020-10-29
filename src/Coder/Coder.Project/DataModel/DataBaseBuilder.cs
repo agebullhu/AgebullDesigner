@@ -32,6 +32,7 @@ using System.Collections.Generic;
 using System.Data;
 using Agebull.Common;
 using Agebull.Common.Configuration;
+using Agebull.Common.Ioc;
 using Agebull.EntityModel.Common;
 using ZeroTeam.MessageMVC.ZeroApis;
 using Agebull.EntityModel.{Project.DbType};
@@ -42,9 +43,60 @@ namespace {Project.NameSpace}.DataAccess
 {{
     partial class {Project.DataBaseObjectName}
     {{
+        #region 数据结构
         {EntityStruct()}
-        #region ProviderHelper
+        #endregion
+        #region 数据访问对象
+
+        #region 基础
+
+        /// <summary>
+        /// 自动构建数据库对象
+        /// </summary>
+        internal static readonly Func<IDataBase> CreateDataBase = () => DependencyHelper.GetService<{Project.DataBaseObjectName}>();
+
+        /// <summary>
+        /// 提供器字典
+        /// </summary>
+        internal static readonly Dictionary<Type, object> providers = new Dictionary<Type, object>();
+
         {ProviderHelper()}
+
+        /// <summary>
+        /// 构造数据访问对象
+        /// </summary>
+        /// <returns></returns>
+        internal static DataAccessProvider<TEntity> GetProvider<TEntity>(IServiceProvider serviceProvider, bool isDynamic)
+              where TEntity : class, new()
+        {{
+            var type = typeof(TEntity);
+            if (!isDynamic && providers.TryGetValue(type, out var pro))
+                return (DataAccessProvider<TEntity>)pro;
+            var option = {Project.DataBaseObjectName}.GetOption(type.Name);
+#if DEBUG
+            if (option == null)
+                throw new NotSupportedException($""{{typeof(TEntity).FullName}}没有对应配置项，请通过设计器生成"");
+#endif
+            var opt = {Project.DataBaseObjectName}.GetOperator(type.Name);
+            var provider = new DataAccessProvider<TEntity>
+            {{
+                Option = option,
+                ServiceProvider = serviceProvider,
+                CreateDataBase = CreateDataBase,
+                SqlBuilder = new MySqlSqlBuilder<TEntity>(),
+                EntityOperator = (IEntityOperator<TEntity>)opt,
+                DataOperator = (IDataOperator<TEntity>)opt,
+                Injection = DependencyHelper.GetService<IOperatorInjection<TEntity>>(),
+            }};
+            provider.DataOperator.Provider = provider;
+            provider.SqlBuilder.Provider = provider;
+            provider.Injection.Provider = provider;
+            if (!isDynamic)
+                providers.TryAdd(type, provider);
+            return provider;
+        }}
+        #endregion
+{AccessCreate()}
         #endregion
     }}
 }}";
@@ -70,6 +122,7 @@ using Agebull.Common.Ioc;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.{Project.DbType};
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 #endregion
 
 namespace {Project.NameSpace}.DataAccess
@@ -92,24 +145,6 @@ namespace {Project.NameSpace}.DataAccess
             Logger = DependencyHelper.LoggerFactory.CreateLogger<{Project.DataBaseObjectName}>();
 #endif
         }}
-
-        /// <summary>
-        /// 构造数据访问对象
-        /// </summary>
-        public static DataAccess<TEntity> CreateDataAccess<TEntity>()
-            where TEntity : class, new()
-        {{
-            return {Project.DataBaseObjectName}Ex.CreateDataAccess<TEntity>(DependencyHelper.ServiceProvider);
-        }}
-
-        /// <summary>
-        /// 构造数据访问对象
-        /// </summary>
-        public static DataQuery<TEntity> CreateDataQuery<TEntity>()
-            where TEntity : class, new()
-        {{
-            return {Project.DataBaseObjectName}Ex.CreateDataQuery<TEntity>(DependencyHelper.ServiceProvider);
-        }}
     }}
 
     /// <summary>
@@ -121,60 +156,27 @@ namespace {Project.NameSpace}.DataAccess
         /// 构造数据访问对象
         /// </summary>
         /// <returns></returns>
-        public static DataAccess<TEntity> CreateDataAccess<TEntity>(this IServiceProvider serviceProvider)
+        public static DataAccess<TEntity> CreateDataAccess<TEntity>(this IServiceProvider serviceProvider, bool isDynamic = true)
             where TEntity : class, new()
         {{
-            var option = {Project.DataBaseObjectName}.GetOption<TEntity>();
-            if (option == null)
-                throw new NotSupportedException($""{{typeof(TEntity).FullName}}没有对应配置项，请通过设计器生成"");
-            if (option.IsQuery)
-                throw new NotSupportedException($""{{typeof(TEntity).FullName}}是一个查询，请使用CreateDataQuery方法"");
-            var provider = new DataAccessProvider<TEntity>
-            {{
-                ServiceProvider = serviceProvider,
-                Option = option,
-                SqlBuilder = new MySqlSqlBuilder<TEntity>(),
-                Injection = serviceProvider.GetService<IOperatorInjection<TEntity>>(),
-                CreateDataBase = () => serviceProvider.GetService<{Project.DataBaseObjectName}>(),
-                EntityOperator = (IEntityOperator<TEntity>){Project.DataBaseObjectName}.GetEntityOperator<TEntity>(),
-                DataOperator = (IDataOperator<TEntity>){Project.DataBaseObjectName}.GetDataOperator<TEntity>()
-            }};
-            provider.DataOperator.Provider = provider;
-            provider.SqlBuilder.Provider = provider;
-            if (provider.Injection != null)
-                provider.Injection.Provider = provider;
-            provider.Option.SqlBuilder = provider.SqlBuilder;
-            provider.Option.Initiate();
+#if DEBUG
+            var provider = {Project.DataBaseObjectName}.GetProvider<TEntity>(serviceProvider, isDynamic);
+            if (provider.Option.IsQuery)
+                throw new NotSupportedException($""{{ typeof(TEntity).FullName}}是一个查询，请使用CreateDataQuery方法"");
             return new DataAccess<TEntity>(provider);
+#else
+            return new DataAccess<TEntity>({Project.DataBaseObjectName}.GetProvider<TEntity>(serviceProvider, isDynamic));
+#endif
         }}
 
         /// <summary>
         /// 构造数据访问对象
         /// </summary>
         /// <returns></returns>
-        public static DataQuery<TEntity> CreateDataQuery<TEntity>(this IServiceProvider serviceProvider)
+        public static DataQuery<TEntity> CreateDataQuery<TEntity>(this IServiceProvider serviceProvider, bool isDynamic = true)
             where TEntity : class, new()
         {{
-            var option = {Project.DataBaseObjectName}.GetOption<TEntity>();
-            if (option == null)
-                throw new NotSupportedException($""{{typeof(TEntity).FullName}}没有对应配置项，请通过设计器生成"");
-            var provider = new DataAccessProvider<TEntity>
-            {{
-                ServiceProvider = serviceProvider,
-                Option = option,
-                SqlBuilder = new MySqlSqlBuilder<TEntity>(),
-                Injection = serviceProvider.GetService<IOperatorInjection<TEntity>>(),
-                CreateDataBase = () => serviceProvider.GetService<{Project.DataBaseObjectName}>(),
-                EntityOperator = (IEntityOperator<TEntity>){Project.DataBaseObjectName}.GetEntityOperator<TEntity>(),
-                DataOperator = (IDataOperator<TEntity>){Project.DataBaseObjectName}.GetDataOperator<TEntity>()
-            }};
-            provider.DataOperator.Provider = provider;
-            provider.SqlBuilder.Provider = provider;
-            if (provider.Injection != null)
-                provider.Injection.Provider = provider;
-            provider.Option.SqlBuilder = provider.SqlBuilder;
-            provider.Option.Initiate();
-            return new DataQuery<TEntity>(provider);
+            return new DataQuery<TEntity>({Project.DataBaseObjectName}.GetProvider<TEntity>(serviceProvider, isDynamic));
         }}
     }}
 }}";
@@ -198,6 +200,79 @@ namespace {Project.NameSpace}.DataAccess
         #endregion
 
         #region 数据结构
+        private string AccessCreate()
+        {
+            StringBuilder code = new StringBuilder();
+
+            code.Append(@"
+        /// <summary>
+        /// 实体
+        /// </summary>
+        public static class Entities
+        {");
+            foreach (var entity in Project.Entities)
+            {
+                CreateeAccess(code, entity);
+            }
+            code.Append(@"
+        }");
+            if (Project.Models.Count == 0)
+                return code.ToString();
+            code.Append(@"
+        
+        /// <summary>
+        /// 模型
+        /// </summary>
+        public static class Models
+        {");
+            foreach (var model in Project.Models)
+            {
+                CreateeAccess(code, model);
+            }
+            code.Append(@"
+        }");
+            return code.ToString();
+        }
+
+        private void CreateeAccess(StringBuilder code, IEntityConfig entity)
+        {
+            var name = entity.IsQuery ? "DataQuery" : "DataAccess";
+
+            code.Append($@"
+            /// <summary>
+            /// 构造数据访问对象
+            /// </summary>
+            /// <param name=""isDynamic"">是否支持动态字段与排序功能</param>
+            /// <returns></returns>
+            public static {name}<{entity.EntityName}> {entity.Name}{name}(bool isDynamic = true)
+            {{
+                if (!isDynamic)
+                {{
+                    if (providers.TryGetValue(typeof({entity.EntityName}), out var pro))
+                        return new {name}<{entity.EntityName}>((DataAccessProvider<{entity.EntityName}>)pro);
+                }}
+                var opt = {entity.EntityName}DataOperator.GetOption();
+                var ope = new {entity.EntityName}DataOperator();
+                var provider = new DataAccessProvider<{entity.EntityName}>
+                {{
+                    Option = opt,
+                    DataOperator = ope,
+                    EntityOperator = ope,
+                    CreateDataBase = CreateDataBase,
+                    ServiceProvider = DependencyHelper.ServiceProvider,
+                    Injection = DependencyHelper.GetService<IOperatorInjection<{entity.EntityName}>>(),
+                    SqlBuilder = new MySqlSqlBuilder<{entity.EntityName}> {{ Option = opt }}
+                }};
+                provider.SqlBuilder.Provider = provider;
+                provider.Injection.Provider = provider;
+                if (!isDynamic)
+                {{
+                    providers[typeof({entity.EntityName})] = provider;
+                }}
+                return new {name}<{entity.EntityName}>(provider);
+            }}
+");
+        }
 
         private string EntityStruct()
         {
@@ -463,9 +538,9 @@ namespace {Project.NameSpace}.DataAccess
         {
             StringBuilder code = new StringBuilder();
             code.Append(@"
-        internal static DataAccessOption GetOption<TEntity>()
+        internal static DataAccessOption GetOption(string name)
         {
-            return typeof(TEntity).Name switch
+            return name switch
             {");
 
             foreach (var entity in Project.Entities)
@@ -483,30 +558,9 @@ namespace {Project.NameSpace}.DataAccess
             };
         }
 
-        internal static object GetDataOperator<TEntity>()
-            where TEntity : class, new()
+        internal static object GetOperator(string name)
         {
-            return typeof(TEntity).Name switch
-            {");
-            foreach (var entity in Project.Entities)
-            {
-                code.Append($@"
-                nameof({entity.EntityName}) => new {entity.EntityName}DataOperator(),");
-            }
-            foreach (var entity in Project.Models)
-            {
-                code.Append($@"
-                nameof({entity.EntityName}) => new {entity.EntityName}DataOperator(),");
-            }
-            code.Append(@"
-                _ => null,
-            };
-        }
-
-        internal static object GetEntityOperator<TEntity>()
-            where TEntity : class, new()
-        {
-            return typeof(TEntity).Name switch
+            return name switch
             {");
             foreach (var entity in Project.Entities)
             {
@@ -524,37 +578,6 @@ namespace {Project.NameSpace}.DataAccess
         }");
             return code.ToString();
         }
-        /*
-         
-        static DataAccessOption GetOption<TEntity>()
-        {
-            return typeof(TEntity).Name switch
-            {
-                nameof(EventSubscribeData) => EventSubscribeDataOperator.Option,
-                _ => null,
-            };
-        }
-
-        static object GetDataOperator<TEntity>()
-            where TEntity : class, new()
-        {
-            return typeof(TEntity).Name switch
-            {
-                nameof(EventSubscribeData) => new EventSubscribeDataOperator(),
-                _ => new DataOperator<TEntity>(),
-            };
-        }
-
-        static object GetEntityOperator<TEntity>()
-            where TEntity : class, new()
-        {
-            return typeof(TEntity).Name switch
-            {
-                nameof(EventSubscribeData) => new EventSubscribeDataOperator(),
-                _ => new DataOperator<TEntity>(),
-            };
-        }
-         */
         #endregion
     }
 }

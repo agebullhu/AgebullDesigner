@@ -45,7 +45,7 @@ namespace {Project.NameSpace}.DataAccess
         /// <summary>
         /// 驱动提供者信息
         /// </summary>
-        public DataAccessProvider<{Model.EntityName}> Provider {{ get; set; }}
+        public IDataAccessProvider<{Model.EntityName}> Provider {{ get; set; }}
 
         #endregion
 
@@ -54,17 +54,21 @@ namespace {Project.NameSpace}.DataAccess
         /// <summary>
         /// 配置信息
         /// </summary>
-        public static DataAccessOption GetOption() => Option.Copy();
+        public static DataAccessOption GetOption() => new DataAccessOption(TableOption);
+
+        /// <summary>
+        /// 实体结构
+        /// </summary>
+        readonly static EntityStruct Struct;
 
         /// <summary>
         /// 配置信息
         /// </summary>
-        static DataAccessOption Option = new DataAccessOption
+        readonly static DataTableOption TableOption;
+
+        static {Model.EntityName}DataOperator()
         {{
-            IsQuery          = {(Model.IsQuery ? "true" : "false")},
-            UpdateByMidified = {(Model.UpdateByModified ? "true" : "false")},
-            SqlBuilder       = new MySqlSqlBuilder<{Model.EntityName}>(),
-            DataStruct       = new EntityStruct
+            Struct = new EntityStruct
             {{
                 IsIdentity       = {(Model.PrimaryColumn?.IsIdentity ?? false ? "true" : "false")},
                 EntityName       = {Model.Entity.Name}_Struct_.entityName,
@@ -77,20 +81,27 @@ namespace {Project.NameSpace}.DataAccess
                 {{
                     {EntityStruct()}
                 }}
-            }},
-            BaseOption = new DynamicOption
+            }};
+
+            TableOption = new DataTableOption
             {{
-                InjectionLevel   = InjectionLevel.All,
-                ReadTableName    = FromSqlCode,
+                IsQuery = false,
+                UpdateByMidified = false,
+                CanRaiseEvent=true,
+                InjectionLevel = InjectionLevel.All,
+                SqlBuilder = new MySqlSqlBuilder<{Model.EntityName}>(),
+                DataStruct = Struct,
+                ReadTableName = FromSqlCode,
                 WriteTableName   = {Model.Entity.Name}_Struct_.tableName,
-                LoadFields       = LoadFields,
-                Having           = Having,
-                GroupFields      = GroupFields,
-                UpdateFields     = UpdateFields,
-                InsertSqlCode    = InsertSqlCode,
+                LoadFields = LoadFields,
+                Having = Having,
+                GroupFields = GroupFields,
+                UpdateFields = UpdateFields,
+                InsertSqlCode = InsertSqlCode,
                 DeleteSqlCode    = DeleteSqlCode
-            }}
-        }};
+            }};
+            TableOption.Initiate();
+        }}
 
         #endregion
 
@@ -580,6 +591,9 @@ SELECT @@IDENTITY;");
                 var name = property.Name.ToLower();
                 if (!names.Contains(name))
                     names.Add(name);
+                name = property.DbFieldName.ToLower();
+                if (!names.Contains(name))
+                    names.Add(name);
                 foreach (var alias in names)
                     code.Append($@"
                 ""{alias}"" => entity.{property.Name},");
@@ -608,16 +622,22 @@ SELECT @@IDENTITY;");
             foreach (var property in Model.PublishProperty.Where(p => p.CanSet))
             {
                 var names = property.GetAliasPropertys().Select(p => p.ToLower()).ToList();
+
+                var varName = $"tmp{property.Name}_";
+
                 var name = property.Name.ToLower();
-                var varName = property.Name.ToLWord();
+                if (!names.Contains(name))
+                    names.Add(name);
+                name = property.DbFieldName.ToLower();
                 if (!names.Contains(name))
                     names.Add(name);
                 foreach (var alia in names)
                     code.Append($@"
             case ""{alia}"":");
+
                 code.Append($@"
                 if (value == null)
-                     entity.{property.Name} =default;
+                     entity.{property.Name} = default;
                 else if(value is {property.LastCsType} {varName})
                     entity.{property.Name} = {varName};");
 

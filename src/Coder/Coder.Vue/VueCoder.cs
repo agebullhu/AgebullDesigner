@@ -41,7 +41,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 <body>
     <div id='work_space' class='tiled' v-cloak>
         <el-container>
-            <el-header height='53px'>
+            <el-header height='48px'>
                 <div style='display: inline-block;padding:6px'>
                     <span>{Model.Parent.Caption}</span>&nbsp;<i class='el-icon-arrow-right'></i>&nbsp;<span>{Model.Caption}</span>
                     &nbsp;&nbsp;&nbsp;

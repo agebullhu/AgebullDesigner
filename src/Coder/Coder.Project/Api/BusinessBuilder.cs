@@ -116,33 +116,11 @@ namespace {NameSpace}
         /// <summary>
         /// 构造数据访问对象
         /// </summary>
-       static DataAccess<TEntity> CreateDataAccess<TEntity>()
+        static DataAccess<TEntity> CreateDataAccess<TEntity>()
             where TEntity : class, new()
         {{
             return {Project.DataBaseObjectName}Ex.CreateDataAccess<TEntity>(DependencyHelper.ServiceProvider);
         }}
-
-        /*// <summary>
-        ///     被用户编辑的数据的保存前操作
-        /// </summary>
-        /// <param name=""data"">数据</param>
-        /// <param name=""isAdd"">是否为新增</param>
-        /// <returns>如果为否将阻止后续操作</returns>
-        protected override Task<bool> PrepareSave({Model.EntityName} data, bool isAdd)
-        {{
-            return base.PrepareSave(data, isAdd);
-        }}
-
-        /// <summary>
-        ///     被用户编辑的数据的保存前操作
-        /// </summary>
-        /// <param name=""data"">数据</param>
-        /// <param name=""isAdd"">是否为新增</param>
-        /// <returns>如果为否将阻止后续操作</returns>
-        protected override Task<bool> LastSavedByUser({Model.EntityName} data, bool isAdd)
-        {{
-            return base.LastSavedByUser(data, isAdd);
-        }}*/
 
         #endregion
 {CommandExCode()}{InterfaceExtendCode()}
@@ -160,16 +138,18 @@ namespace {NameSpace}
         #region 树形数据
 
         /// <summary>删除对象操作</summary>
-        protected override async Task<bool> DoDelete(long id)
+        protected override async Task<bool> DoDelete({Model.PrimaryColumn.CsType} id)
         {{
+            using var scope = Access.DynamicOption();
+            Access.Option.DynamicOption.InjectionLevel = InjectionLevel.UpdateField;
             await DeleteChild(id);
             return await base.DoDelete(id);
         }}
 
         /// <summary>级联删除</summary>
-        async Task DeleteChild(long id)
+        async Task DeleteChild({Model.PrimaryColumn.CsType} id)
         {{
-            var childs = await Access.LoadValuesAsync(p => p.Id,p => p.ParentId == id);
+            var childs = await Access.LoadIdssAsync<{Model.PrimaryColumn.CsType}>(p => p.Id,p => p.ParentId == id);
             foreach (var ch in childs.Distinct())
             {{
                 if (ch <= 0 || ch == id)
@@ -187,6 +167,7 @@ namespace {NameSpace}
             if (pid <= 0)
                 pid = 0;
             var node = new List<Agebull.EntityModel.Vue.TreeNode>();
+            using var scope = Access.Select(nameof({Model.EntityName}.{Model.PrimaryField}),nameof({Model.EntityName}.{cap.Name}));
             await LoadTree(pid, node);
             return node;
         }}
@@ -229,7 +210,7 @@ namespace {NameSpace}
         /// </summary>
         public async Task<List<Agebull.EntityModel.Vue.DataItem>> ComboValues()
         {{
-            Access.SelectField(nameof({Model.EntityName}.{Model.PrimaryField}),nameof({Model.EntityName}.{cap.Name}));
+            using var scope = Access.Select(nameof({Model.EntityName}.{Model.PrimaryField}),nameof({Model.EntityName}.{cap.Name}));
             var datas =await Access.AllAsync();
             return datas.Count == 0
                 ? new List<Agebull.EntityModel.Vue.DataItem>()
