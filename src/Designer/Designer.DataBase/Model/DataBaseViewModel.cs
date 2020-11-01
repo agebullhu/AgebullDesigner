@@ -68,8 +68,9 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
                 property.DbFieldName = property.Name;
             }
             if (string.IsNullOrWhiteSpace(Context.SelectEntity.SaveTableName))
-                Context.SelectEntity.SaveTableName = "tb_" + Context.SelectEntity.Name;
+                Context.SelectEntity.Entity.SaveTableName = "tb_" + Context.SelectEntity.Name;
         }
+
         /// <summary>
         /// 小驼峰名称
         /// </summary>
@@ -80,8 +81,8 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
             {
                 property.DbFieldName = property.Name.ToLWord();
             }
-            if (string.IsNullOrWhiteSpace(Context.SelectEntity.SaveTableName))
-                Context.SelectEntity.SaveTableName = "tb_" + Context.SelectEntity.Name.ToLWord();
+            if (string.IsNullOrWhiteSpace(Context.SelectEntity.Entity.SaveTableName))
+                Context.SelectEntity.Entity.SaveTableName = "tb_" + Context.SelectEntity.Name.ToLWord();
         }
         /// <summary>
         /// 小写下划线名称
@@ -94,7 +95,7 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
                 property.DbFieldName = NameHelper.ToLinkWordName(property.Name, "_", false);
             }
             if (string.IsNullOrWhiteSpace(Context.SelectEntity.SaveTableName))
-                Context.SelectEntity.SaveTableName = "tb_" + NameHelper.ToLinkWordName(Context.SelectEntity.Name, "_", false);
+                Context.SelectEntity.Entity.SaveTableName = "tb_" + NameHelper.ToLinkWordName(Context.SelectEntity.Name, "_", false);
         }
         #endregion
     }

@@ -69,7 +69,7 @@ namespace Agebull.EntityModel.Designer
 
         public void BindEnum(object arg)
         {
-            FieldConfig property = Context.SelectField;
+            FieldConfig property = Context.SelectField.Field;
             property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
             if (property.EnumConfig != null)
                 return;
@@ -94,7 +94,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void DeleteEnum(object arg)
         {
-            FieldConfig property = Context.SelectField;
+            FieldConfig property = Context.SelectField.Field;
             property.CustomType = null;
         }
 

@@ -217,6 +217,22 @@ namespace Agebull.EntityModel.Config
             get;
             set;
         }
+
+        /// <summary>
+        /// 上级
+        /// </summary>
+        ProjectConfig Parent { get; }
+
+        /// <summary>
+        /// 简称
+        /// </summary>
+        string Abbreviation { get; }
+
+        /// <summary>
+        /// 分类
+        /// </summary>
+        string Classify { get; }
+
         #endregion
 
         #region 子级
@@ -319,34 +335,14 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 上级
+        /// 默认排序字段
         /// </summary>
-        ProjectConfig Parent { get; }
+        string OrderField { get; }
 
         /// <summary>
-        /// 简称
+        /// 默认反序
         /// </summary>
-        string Abbreviation { get; }
-
-        /// <summary>
-        /// 分类
-        /// </summary>
-        string Classify { get; }
-
-        /// <summary>
-        /// 页面代码路径
-        /// </summary>
-        string PagePath(char sp = '\\')
-        {
-            if (!string.IsNullOrWhiteSpace(PageFolder))
-                return PageFolder;
-            if (Parent.NoClassify || string.IsNullOrWhiteSpace(Classify) || Classify.Equals("None", StringComparison.InvariantCulture))
-                return Abbreviation ?? Name;
-            var cls = Parent.Classifies.FirstOrDefault(p => p.Name == Classify);
-            return cls == null
-? $"{cls.Abbreviation ?? Classify}{sp}{Name}"
-: $"{Classify.ToLWord()}{sp}{Name}";
-        }
+        bool OrderDesc { get; }
 
         /// <summary>
         /// 树形界面
@@ -358,9 +354,9 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 编辑页面最大化
+        /// 详细编辑页面
         /// </summary>
-        bool MaxForm
+        bool DetailsPage
         {
             get;
             set;
@@ -376,30 +372,18 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 列表详细页
+        /// 页面代码路径
         /// </summary>
-        bool ListDetails
+        string PagePath(char sp = '\\')
         {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// 主键正序
-        /// </summary>
-        bool NoSort
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// 主页面类型
-        /// </summary>
-        PanelType PanelType
-        {
-            get;
-            set;
+            if (!string.IsNullOrWhiteSpace(PageFolder))
+                return PageFolder;
+            if (Parent.NoClassify || string.IsNullOrWhiteSpace(Classify) || Classify.Equals("None", StringComparison.InvariantCulture))
+                return Abbreviation ?? Name;
+            var cls = Parent.Classifies.FirstOrDefault(p => p.Name == Classify);
+            return cls == null
+? $"{cls.Abbreviation ?? Classify}{sp}{Name}"
+: $"{Classify.ToLWord()}{sp}{Name}";
         }
 
         #endregion 

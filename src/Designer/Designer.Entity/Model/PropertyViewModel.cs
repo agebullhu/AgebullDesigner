@@ -88,10 +88,8 @@ namespace Agebull.EntityModel.Designer
         
         public void RelationColumns(object arg)
         {
-            foreach(var re in Context.SelectModel.Releations)
-            {
-                ModelRelationDesignModel.CheckReleation(re, Context.SelectModel);
-            }
+            ModelRelationDesignModel.CheckReleation(Context.SelectModel);
+            
         }
         public void DeleteColumns(object arg)
         {
@@ -112,7 +110,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void PasteColumns(object arg)
         {
-            if (Context.CopyColumns == null || Context.CopyColumns.Count == 0 || Context.SelectModel == null || Context.CopiedTable == null)
+            if (Context.CopyColumns == null || Context.CopyColumns.Count == 0 || Context.SelectEntity == null || Context.CopiedTable == null)
             {
                 Context.StateMessage = "没可粘贴的行";
                 return;

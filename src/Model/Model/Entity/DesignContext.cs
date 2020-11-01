@@ -107,33 +107,37 @@ namespace Agebull.EntityModel.Designer
             get => _selectColumns;
             set
             {
-                if (value != null && value.Count > 0)
-                {
-                    var array = new object[value.Count];
-                    var idx = 0;
-                    foreach (var item in value)
-                    {
-                        if (item is FieldConfig config)
-                            SelectField = config;
-                        if (item is PropertyConfig pro)
-                            SelectField = pro.Field;
-                        array[idx++] = item;
-                    }
-                    Editor.PropertyGrid.SelectedObjects = array;
-                }
-
                 if (Equals(_selectColumns, value))
                     return;
                 _selectColumns = value;
                 RaisePropertyChanged(() => SelectColumns);
+                /*try
+                {
+                    if (value != null && value.Count > 0)
+                    {
+                        var array = new object[value.Count];
+                        var idx = 0;
+                        foreach (var item in value)
+                        {
+                            if (item is FieldConfig config)
+                                SelectField = config;
+                            if (item is PropertyConfig pro)
+                                SelectField = pro.Field;
+                            array[idx++] = item;
+                        }
+                        Editor.PropertyGrid.SelectedObjects = array;
+                    }
+                }
+                catch
+                {
+                }*/
+
             }
         }
 
-        private EntityConfig _selectEntityConfig;
-        private ModelConfig _selectModelConfig;
+        private IEntityConfig _selectEntityConfig;
+        private IFieldConfig _selectFieldConfig;
         private ProjectConfig _selectProjectConfig;
-        private FieldConfig _selectFieldConfig;
-        private PropertyConfig _selectPropertyConfig;
         private IEnumerable _selectItemChildrens;
 
         public ConfigBase PreSelectConfig;
@@ -173,28 +177,12 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     当前配置
         /// </summary>
-        public ModelConfig SelectModel
-        {
-            get => _selectModelConfig;
-            set
-            {
-                if (_selectModelConfig == value)
-                    return;
-                _selectModelConfig = value;
-                if (value != null)
-                    SelectEntity = value.Entity;
-
-                RaisePropertyChanged(() => SelectModel);
-
-                RaisePropertyChanged(() => RelationVisibility);
-            }
-        }
-
+        public ModelConfig SelectModel => SelectEntity as ModelConfig;
 
         /// <summary>
         ///     当前配置
         /// </summary>
-        public EntityConfig SelectEntity
+        public IEntityConfig SelectEntity
         {
             get => _selectEntityConfig;
             set
@@ -214,7 +202,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     当前配置
         /// </summary>
-        public FieldConfig SelectField
+        public IFieldConfig SelectField
         {
             get => _selectFieldConfig;
             set
@@ -222,30 +210,9 @@ namespace Agebull.EntityModel.Designer
                 if (_selectFieldConfig == value)
                     return;
                 if (value != null)
-                    SelectEntity = value.Entity;
+                    SelectEntity = value.Parent;
                 _selectFieldConfig = value;
                 RaisePropertyChanged(() => SelectField);
-                RaisePropertyChanged(() => RelationVisibility);
-            }
-        }
-
-        /// <summary>
-        ///     当前配置
-        /// </summary>
-        public PropertyConfig SelectProperty
-        {
-            get => _selectPropertyConfig;
-            set
-            {
-                if (_selectPropertyConfig == value)
-                    return;
-                if (value != null)
-                {
-                    SelectModel = value.Model;
-                    SelectField = value.Field;
-                }
-                _selectPropertyConfig = value;
-                RaisePropertyChanged(() => SelectProperty);
                 RaisePropertyChanged(() => RelationVisibility);
             }
         }
@@ -344,46 +311,24 @@ namespace Agebull.EntityModel.Designer
                             SelectEntity = null;
                         }
                         SelectField = null;
-                        if (SelectModel != null && SelectModel.Parent != project)
-                        {
-                            SelectModel = null;
-                        }
-                        SelectProperty = null;
                         SelectChildrens = SelectProject?.Entities;
                         break;
-                    case EntityConfig entity:
+                    case IEntityConfig entity:
                         SelectEntity = entity;
-                        if (SelectField != null && SelectField.Entity != entity)
+                        if (SelectField != null && SelectField.Parent != entity)
                         {
                             SelectField = null;
                         }
-                        SelectProperty = null;
-                        SelectModel = null;
                         SelectItemChildrens = SelectEntity?.Properties;
                         SelectChildrens = SelectItemChildrens;
                         FindKey = SelectEntity.Option.ReferenceTag;
                         break;
-                    case FieldConfig field:
-                        SelectModel = null;
-                        SelectProperty = null;
+                    case IFieldConfig field:
+                        SelectEntity = field.Parent;
                         SelectField = field;
                         SelectItemChildrens = SelectEntity?.Properties;
                         SelectChildrens = SelectField?.EnumConfig?.Items;
                         FindKey = SelectField?.CppLastType;
-                        break;
-                    case ModelConfig model:
-                        SelectModel = model;
-                        SelectProperty = null;
-                        SelectField = null;
-                        SelectItemChildrens = SelectModel?.Properties;
-                        SelectChildrens = SelectItemChildrens;
-                        FindKey = SelectModel.Option.ReferenceTag;
-                        break;
-                    case PropertyConfig property:
-                        SelectProperty = property;
-                        SelectItemChildrens = SelectModel?.Properties;
-                        SelectChildrens = SelectField?.EnumConfig?.Items;
-                        FindKey = SelectProperty?.Field?.CppLastType;
                         break;
                     case ProjectChildConfigBase child:
                         SelectField = null;

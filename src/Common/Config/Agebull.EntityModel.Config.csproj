@@ -14,9 +14,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="IConfigIterator\**" />
     <Compile Remove="Remove\**" />
+    <EmbeddedResource Remove="IConfigIterator\**" />
     <EmbeddedResource Remove="Remove\**" />
+    <None Remove="IConfigIterator\**" />
     <None Remove="Remove\**" />
+    <Page Remove="IConfigIterator\**" />
     <Page Remove="Remove\**" />
   </ItemGroup>
 

@@ -21,7 +21,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         protected override void CreateCustomCode(string path)
         {
-            if (Model.IsInterface || Model.IsQuery)
+            if (Model.IsInterface)
                 return;
             var fileName = "BusinessLogic.cs";
             var file = Path.Combine(path, Model.EntityName + fileName);
@@ -200,6 +200,19 @@ namespace {NameSpace}
         #region 设计器命令
     ");
             bool hase = false;
+
+            if (Model.TreeUi)
+            {
+                hase = true;
+                code.Append(@"
+        /// <summary>
+        ///     载入树节点
+        /// </summary>
+        public Task<List<Agebull.EntityModel.Vue.TreeNode>> LoadTree()
+        {
+            return Task.FromResult(new List<Agebull.EntityModel.Vue.TreeNode>());
+        }");
+            }
             var cap = Model.LastProperties.FirstOrDefault(p => p.IsCaption);
             if (cap != null)
             {

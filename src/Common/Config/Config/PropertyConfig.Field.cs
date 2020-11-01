@@ -24,6 +24,16 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 上级
         /// </summary>
+        IEntityConfig IFieldConfig. Parent => Model;
+
+        /// <summary>
+        /// 上级
+        /// </summary>
+        public ModelConfig Parent => Model;
+
+        /// <summary>
+        /// 上级
+        /// </summary>
         /// <remark>
         /// 上级
         /// </remark>
@@ -47,13 +57,6 @@ namespace Agebull.EntityModel.Config
         #endregion
         #region 模型设计(C#)
 
-
-        /// <summary>
-        /// 是否时间
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"模型设计"), DisplayName(@"是否时间"), Description("是否时间")]
-        public bool IsTime => Field.IsTime;
 
         /// <summary>
         /// 是否扩展数组
@@ -678,6 +681,18 @@ namespace Agebull.EntityModel.Config
             get => Field.ComboBoxUrl; set => Field.ComboBoxUrl = value;
         }
 
+
+        /// <summary>
+        /// 是否时间
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"模型设计"), DisplayName(@"是否时间"), Description("是否时间")]
+        public bool IsTime
+        {
+            get => Field.IsTime;
+            set => Field.IsTime = value;
+        }
+
         /// <summary>
         /// 是否图片
         /// </summary>
@@ -792,7 +807,8 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"), DisplayName(@"列表详细页代码"), Description("详细界面代码")]
         public string GridDetailsCode
         {
-            get => Field.GridDetailsCode; set => Field.GridDetailsCode = value;
+            get => Field.GridDetailsCode;
+            set => Field.GridDetailsCode = value;
         }
         #endregion
         #region 数据规则
@@ -832,7 +848,11 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据规则"), DisplayName(@"能否为空"), Description(CanEmpty_Description)]
-        public bool CanEmpty => Field.CanEmpty;
+        public bool CanEmpty
+        {
+            get => Field.CanEmpty;
+            set => Field.CanEmpty = value;
+        }
 
         /// <summary>
         /// 必填字段
@@ -842,7 +862,11 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"必填字段"), Description("是否必填字段")]
-        public bool IsRequired => Field.IsRequired;
+        public bool IsRequired
+        {
+            get => Field.IsRequired;
+            set => Field.IsRequired = value;
+        }
 
         /// <summary>
         /// 最大值

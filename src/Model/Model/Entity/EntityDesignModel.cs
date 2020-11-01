@@ -70,14 +70,6 @@ namespace Agebull.EntityModel.Designer
                     Caption = "删除所选列",
                     Image = Application.Current.Resources["img_del"] as ImageSource
                 });
-                commands.Add(new CommandItem
-                {
-                    IsButton = true,
-                    Action = AddField,
-                    NoConfirm = true,
-                    Caption = "新增字段",
-                    Image = Application.Current.Resources["tree_Open"] as ImageSource
-                });
             }
             if (create)
                 CreateCommands(commands);
@@ -95,21 +87,14 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 复制字段
         /// </summary>
-        public void AddField(object arg)
-        {
-            var perperty = new FieldConfig();
-            if (CommandIoc.NewConfigCommand("新增字段", perperty))
-                Context.SelectEntity.Add(perperty);
-        }
-
-        /// <summary>
-        /// 复制字段
-        /// </summary>
         public void CopyColumns(object arg)
         {
-            Context.CopiedTable = Context.SelectEntity;
-            Context.CopyColumns = Context.SelectColumns.OfType<FieldConfig>().ToList();
-            Context.StateMessage = $"复制了{Context.CopyColumns.Count}行";
+            if(Context.SelectEntity is EntityConfig entity)
+            {
+                Context.CopiedTable = entity;
+                Context.CopyColumns = Context.SelectColumns.OfType<FieldConfig>().ToList();
+                Context.StateMessage = $"复制了{Context.CopyColumns.Count}行";
+            }
         }
 
         /// <summary>
@@ -117,8 +102,9 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void PasteColumns(object arg)
         {
-            if (Context.CopyColumns == null || Context.CopyColumns.Count == 0 || Context.CopiedTable == Context.SelectEntity ||
-                Context.SelectEntity == null || Context.CopiedTable == null)
+            if (Context.CopyColumns == null || Context.CopyColumns.Count == 0 ||
+                    Context.CopiedTable == null || Context.CopiedTable == Context.SelectEntity ||
+                    !(Context.SelectEntity is EntityConfig entity))
             {
                 Context.StateMessage = "没可粘贴的行";
                 return;
@@ -126,8 +112,7 @@ namespace Agebull.EntityModel.Designer
             var yes = MessageBox.Show("是否粘贴关系信息?", "粘贴行", MessageBoxButton.YesNo) ==
                       MessageBoxResult.Yes;
 
-            PateFields(yes, Context.CopiedTable, Context.SelectEntity, Context.CopyColumns);
-
+            PateFields(yes, Context.CopiedTable, entity, Context.CopyColumns);
             //this.Context.CopiedTable = null;
             //this.Context.CopiedTables.Clear();
             //Context.SelectColumns = null;
@@ -135,25 +120,25 @@ namespace Agebull.EntityModel.Designer
         }
         public void ClearColumns(object arg)
         {
-            if (Context.SelectEntity == null ||
+            if (!(Context.SelectEntity is EntityConfig entity) ||
                 MessageBox.Show("确认删除所有字段吗?", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
             {
                 return;
             }
             Context.SelectColumns = null;
-            Context.SelectEntity.Properties.Clear();
+            entity.Properties.Clear();
         }
 
         public void DeleteColumns(object arg)
         {
-            if (Context.SelectEntity == null || Context.SelectColumns == null ||
+            if (!(Context.SelectEntity is EntityConfig entity) || Context.SelectColumns == null ||
                 MessageBox.Show("确认删除所选字段吗?", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
             {
                 return;
             }
             foreach (var col in Context.SelectColumns.OfType<FieldConfig>().ToArray())
             {
-                Context.SelectEntity.Remove(col);
+                entity.Remove(col);
             }
             Context.SelectColumns = null;
         }

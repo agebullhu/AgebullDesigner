@@ -248,11 +248,10 @@ namespace Agebull.EntityModel.Config
             UpdateByModified = cfg.UpdateByModified;//按修改更新
             PageFolder = cfg.PageFolder;//页面文件夹名称
             TreeUi = cfg.TreeUi;//树形界面
-            MaxForm = cfg.MaxForm;//编辑页面最大化
+            DetailsPage = cfg.DetailsPage;//详细页面
             FormCloumn = cfg.FormCloumn;//编辑页面分几列
-            ListDetails = cfg.ListDetails;//列表详细页
-            NoSort = cfg.NoSort;//主键正序
-            PanelType = cfg.PanelType;//主页面类型
+            OrderField = cfg.OrderField;//主键正序
+            OrderDesc = cfg.OrderDesc;//主键正序
             CppName = cfg.CppName;//C++名称
 
 
@@ -317,11 +316,10 @@ namespace Agebull.EntityModel.Config
             UpdateByModified = cfg.UpdateByModified;//按修改更新
             PageFolder = cfg.PageFolder;//页面文件夹名称
             TreeUi = cfg.TreeUi;//树形界面
-            MaxForm = cfg.MaxForm;//编辑页面最大化
+            DetailsPage = cfg.DetailsPage;//详细页面
             FormCloumn = cfg.FormCloumn;//编辑页面分几列
-            ListDetails = cfg.ListDetails;//列表详细页
-            NoSort = cfg.NoSort;//主键正序
-            PanelType = cfg.PanelType;//主页面类型
+            OrderField = cfg.OrderField;//主键正序
+            OrderDesc = cfg.OrderDesc;//主键正序
             CppName = cfg.CppName;//C++名称
         }
 

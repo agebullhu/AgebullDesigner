@@ -165,7 +165,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"是否存在属性组合唯一值"), Description("是否存在属性组合唯一值")]
-        public bool IsUniqueUnion => Properties.Count > 0 && Properties.Count(p => p.UniqueIndex > 0) > 1;
+        public bool IsUniqueUnion => Entity.IsUniqueUnion;
 
         /// <summary>
         /// 主键字段
@@ -175,7 +175,9 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"主键字段"), Description("主键字段")]
-        public PropertyConfig PrimaryColumn => Properties.FirstOrDefault(p => Entity.PrimaryColumn == p.Field);
+        public PropertyConfig PrimaryColumn => WorkContext.InCoderGenerating
+            ? Properties.FirstOrDefault(p => p.Field.IsPrimaryKey && p.Field.Entity == Entity) ?? Properties.FirstOrDefault()
+            : Properties.FirstOrDefault(p => p.Field.IsPrimaryKey && p.Field.Entity == Entity);
 
         /// <summary>
         /// 主键字段
@@ -184,7 +186,7 @@ namespace Agebull.EntityModel.Config
         /// 主键字段
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        IFieldConfig IEntityConfig.PrimaryColumn => PrimaryColumn == null || PrimaryColumn.IsDiscard ? null : PrimaryColumn;
+        IFieldConfig IEntityConfig.PrimaryColumn => PrimaryColumn;
 
         /// <summary>
         /// 是否有主键
@@ -916,29 +918,25 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 编辑页面最大化
+        /// 详细编辑页面
         /// </summary>
-        [DataMember, JsonProperty("MaxForm", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _maxForm;
+        [DataMember, JsonProperty("detailsPage", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _detailsPage;
 
         /// <summary>
-        /// 编辑页面最大化
+        /// 详细编辑页面
         /// </summary>
-        /// <remark>
-        /// 编辑页面最大化
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"用户界面"), DisplayName(@"编辑页面最大化"), Description("编辑页面最大化")]
-        public bool MaxForm
+        [IgnoreDataMember, JsonIgnore, Category(@"用户界面")]
+        public bool DetailsPage
         {
-            get => _maxForm;
+            get => _detailsPage;
             set
             {
-                if (_maxForm == value)
+                if (_detailsPage == value)
                     return;
-                BeforePropertyChanged(nameof(MaxForm), _maxForm, value);
-                _maxForm = value;
-                OnPropertyChanged(nameof(MaxForm));
+                BeforePropertyChanged(nameof(DetailsPage), _detailsPage, value);
+                _detailsPage = value;
+                OnPropertyChanged(nameof(DetailsPage));
             }
         }
 
@@ -969,86 +967,48 @@ namespace Agebull.EntityModel.Config
             }
         }
 
-        /// <summary>
-        /// 列表详细页
-        /// </summary>
-        [DataMember, JsonProperty("ListDetails", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _listDetails;
+        [DataMember, JsonProperty("OrderField", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal string _orderField;
+
+        [DataMember, JsonProperty("OrderDesc", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _orderDesc;
 
         /// <summary>
-        /// 列表详细页
+        /// 默认排序字段
         /// </summary>
-        /// <remark>
-        /// 列表详细页
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"用户界面"), DisplayName(@"列表详细页"), Description("列表详细页")]
-        public bool ListDetails
-        {
-            get => _listDetails;
-            set
-            {
-                if (_listDetails == value)
-                    return;
-                BeforePropertyChanged(nameof(ListDetails), _listDetails, value);
-                _listDetails = value;
-                OnPropertyChanged(nameof(ListDetails));
-            }
-        }
-
-        /// <summary>
-        /// 主键正序
-        /// </summary>
-        [DataMember, JsonProperty("NoSort", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _noSort;
-
-        /// <summary>
-        /// 主键正序
-        /// </summary>
-        /// <remark>
-        /// 主键正序
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"用户界面"), DisplayName(@"主键正序"), Description("主键正序")]
-        public bool NoSort
-        {
-            get => _noSort;
-            set
-            {
-                if (_noSort == value)
-                    return;
-                BeforePropertyChanged(nameof(NoSort), _noSort, value);
-                _noSort = value;
-                OnPropertyChanged(nameof(NoSort));
-            }
-        }
-
-        /// <summary>
-        /// 主页面类型
-        /// </summary>
-        [DataMember, JsonProperty("PanelType", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal PanelType _panelType;
-
-        /// <summary>
-        /// 主页面类型
-        /// </summary>
-        /// <remark>
-        /// 主页面类型
-        /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"主页面类型"), Description("主页面类型")]
-        public PanelType PanelType
+        public string OrderField
         {
-            get => _panelType;
+            get => _orderField ?? PrimaryField;
             set
             {
-                if (_panelType == value)
+                if (_orderField == value)
                     return;
-                BeforePropertyChanged(nameof(PanelType), _panelType, value);
-                _panelType = value;
-                OnPropertyChanged(nameof(PanelType));
+                BeforePropertyChanged(nameof(OrderField), _orderField, value);
+                _orderField = value;
+                OnPropertyChanged(nameof(OrderField));
             }
         }
+
+        /// <summary>
+        /// 默认反序
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"用户界面"), DisplayName(@"主页面类型"), Description("主页面类型")]
+        public bool OrderDesc
+        {
+            get => _orderDesc;
+            set
+            {
+                if (_orderDesc == value)
+                    return;
+                BeforePropertyChanged(nameof(OrderDesc), _orderDesc, value);
+                _orderDesc = value;
+                OnPropertyChanged(nameof(OrderDesc));
+            }
+        }
+
         #endregion 
 
         #region C++

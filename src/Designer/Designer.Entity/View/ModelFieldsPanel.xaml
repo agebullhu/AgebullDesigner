@@ -18,7 +18,7 @@
               CanUserAddRows="False"
               CanUserDeleteRows="False"
               DataContext="{Binding Context}"
-              ItemsSource="{Binding SelectModel.Properties}">
+              ItemsSource="{Binding SelectEntity.Properties}">
         <DataGrid.Columns>
             <DataGridCheckBoxColumn Binding="{Binding Option.IsDiscard,Mode=TwoWay}" Header="废弃" />
             <DataGridTextColumn Binding="{Binding Option.Index,Mode=TwoWay}" Header="序号" />

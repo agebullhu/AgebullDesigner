@@ -18,6 +18,7 @@ namespace Agebull.EntityModel.Designer.Vue
         void IAutoRegister.AutoRegist()
         {
             DesignerManager.Registe<EntityConfig, UiPanel>("用户界面", "Model");
+            DesignerManager.Registe<ModelConfig, UiPanel>("用户界面", "Model");
         }
 
 

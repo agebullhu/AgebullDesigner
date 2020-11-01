@@ -165,9 +165,8 @@ namespace {NameSpace}.WebApi
         /// </summary>
         /// <param name=""data"">数据</param>
         /// <param name=""convert"">转化器</param>
-        private Task DefaultReadFormData({Model.EntityName} data, FormConvert convert)
+        private void DefaultReadFormData({Model.EntityName} data, FormConvert convert)
         {{{InputConvert(Model)}
-            return Task.CompletedTask;
         }}
 
         #endregion
@@ -216,8 +215,8 @@ namespace {NameSpace}.WebApi
                                     || ");
                     code.Append($@"p.{pro.Name}.Contains(value)");
                 }
-                code.AppendLine(@");
-                else");
+                code.Append(@");
+                else ");
             }
             code.Append(@"RequestArgumentConvert.SetArgument(field,value);
             }");
@@ -380,14 +379,13 @@ namespace {NameSpace}.WebApi
             if (Model.TreeUi)
             {
                 code.Append(@"
-
         /// <summary>
         ///     载入树节点
         /// </summary>
         [Route(""edit/tree"")]
-        public async Task<IApiResult> OnLoadTree(long id)
+        public async Task<IApiResult<List<Agebull.EntityModel.Vue.TreeNode>>> OnLoadTree()
         {
-            var nodes = await Business.LoadTree(id);
+            var nodes = await Business.LoadTree();
             return ApiResultHelper.Succees(nodes);
         }");
             }

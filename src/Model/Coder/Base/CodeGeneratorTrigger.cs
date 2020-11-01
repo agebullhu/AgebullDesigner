@@ -30,7 +30,7 @@ namespace Agebull.EntityModel.Designer
         {
             entity.LastProperties = new List<IFieldConfig>();
             int idx = 0;
-            foreach (var pro in entity.Properties.OrderBy(p => p.Index))
+            foreach (var pro in entity.Properties.Where(p=>!p.IsDelete && !p.IsDiscard).OrderBy(p => p.Index))
             {
                 if (pro.IsDelete || pro.IsDiscard)
                     continue;

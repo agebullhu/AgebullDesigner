@@ -19,6 +19,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             MomentCoder.RegisteCoder("Web-Vue", "Script", "js", ScriptCode);
             MomentCoder.RegisteCoder("Web-Vue", "²Ëµ¥£¨Js£©", "js", MenuScriptCode);
             MomentCoder.RegisteCoder("Web-Vue", "²Ëµ¥£¨Html£©", "html", MenuHtmlCode);
+            MomentCoder.RegisteCoder("Web-Vue", "ÏêÏ¸", "html", HtmlDetailsCode);
         }
         #endregion
 
@@ -59,7 +60,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// <returns></returns>
         public static string HtmlCode(ModelConfig entity)
         {
-            var coder = new VueCoder<ModelConfig>
+            var coder = new VueHtmlCoder<ModelConfig>
             {
                 Model = entity,
                 Project = entity.Parent
@@ -72,13 +73,29 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// <returns></returns>
         public static string ScriptCode(ModelConfig entity)
         {
-            var coder = new VueCoder<ModelConfig>
+            var coder = new VueScriptCoder<ModelConfig>
             {
                 Model = entity,
                 Project = entity.Parent
             };
             return coder.ScriptCode();
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static string HtmlDetailsCode(EntityConfig entity)
+        {
+            var coder = new VueHtmlCoder<EntityConfig>
+            {
+                Model = entity,
+                Project = entity.Parent
+            };
+            var code = new StringBuilder();
+            coder.HtmlDetailsCode(code);
+            return code.ToString();
+        }
+
         #endregion
     }
 }

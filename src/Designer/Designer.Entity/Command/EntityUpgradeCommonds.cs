@@ -194,11 +194,11 @@ namespace Agebull.EntityModel.Designer
         }
         public void SplitTable(object arg)
         {
-            if (Context.SelectEntity == null || Context.SelectColumns == null || Context.SelectColumns.Count == 0)
+            if (!(Context.SelectEntity is EntityConfig oldTable) ||
+                Context.SelectColumns == null || Context.SelectColumns.Count == 0)
             {
                 return;
             }
-            var oldTable = Context.SelectEntity;
             var newTable = new EntityConfig();
             newTable.CopyValue(oldTable, true);
             if (!CommandIoc.NewConfigCommand("拆分到新实体", newTable))

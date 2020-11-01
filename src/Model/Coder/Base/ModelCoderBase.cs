@@ -74,41 +74,37 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
 
-        protected string PropertyHeader(IFieldConfig property, bool isInterface = false, bool? json = null)
+        protected string PropertyHeader(IFieldConfig property)
         {
             return $@"{RemCode(property)}
-        {FieldHeader(property, !isInterface, json)}";
+        [JsonIgnore]";
         }
 
-        protected string FieldHeader(IFieldConfig property, bool isInterface, bool? json = null)
+        protected string FieldHeader(IFieldConfig property, bool isInterface,bool noneJson)
         {
-            var code = new List<string>();
-            if (!isInterface)
+            if (isInterface)
             {
-                code.Add("IgnoreDataMember");
+                return RemCode(property);
+            }
+
+            var code = new List<string>();
+            //var rule = DataRuleCode(property);
+            //if(rule != null)
+            //code.Add(rule);
+            if (noneJson || property.NoneJson)
+            {
                 code.Add("JsonIgnore");
             }
             else
             {
-                //var rule = DataRuleCode(property);
-                //if(rule != null)
-                //code.Add(rule);
-                if (json == null)
-                    json = !property.NoneJson;
-                if (json.Value)
-                {
-                    code.Add($@"JsonProperty(""{property.JsonName}"",  NullValueHandling = NullValueHandling.Ignore)");
-                    if (property.CsType == "DateTime")
-                        code.Add("JsonConverter(typeof(MyDateTimeConverter))");
-                }
-                else
-                {
-                    code.Add("JsonIgnore");
-                }
+                code.Add($@"JsonProperty(""{property.JsonName}"")");
+                if (property.CsType == "DateTime")
+                    code.Add("JsonConverter(typeof(MyDateTimeConverter))");
             }
             return code.Count == 0
-                ? null
-                : $"[{string.Join(" , ", code)}]";
+                ? RemCode(property)
+                : $@"{RemCode(property)}
+        [{ string.Join(" , ", code)}]";
         }
         public static string RemCode(IFieldConfig property, bool simple = false, int space = 8)
         {
@@ -390,7 +386,7 @@ namespace Agebull.EntityModel.RobotCoder
             if (property.DataType == "ByteArray")
             {
                 code.Append($@"
-        {PropertyHeader(property, false, true)}
+        {FieldHeader(property, false, false)}
         {property.AccessType} string {property.Name}_Base64
         {{
             get

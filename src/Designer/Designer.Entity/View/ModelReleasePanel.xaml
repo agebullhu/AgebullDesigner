@@ -29,15 +29,14 @@
         </ObjectDataProvider>
     </UserControl.Resources>
 
-    <DataGrid 
-            AutoGenerateColumns="False"
+    <DataGrid AutoGenerateColumns="False"
               CanUserAddRows="False"
               CanUserDeleteRows="False"
               DataContext="{Binding Context}"
               ItemsSource="{Binding SelectModel.Releations}">
         <DataGrid.Columns>
-            <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" MinWidth="100" Header="标题" />
             <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" MinWidth="100" Header="名称" />
+            <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" MinWidth="100" Header="标题" />
             <DataGridTextColumn Binding="{Binding PrimaryTable,Mode=TwoWay}" MinWidth="120" Header="主表" />
             <DataGridTextColumn Binding="{Binding PrimaryKey,Mode=TwoWay}" MinWidth="80" Header="主键" />
             <DataGridTextColumn Binding="{Binding ForeignTable,Mode=TwoWay}" MinWidth="120" Header="子表" />

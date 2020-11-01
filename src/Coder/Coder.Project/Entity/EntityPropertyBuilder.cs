@@ -93,6 +93,7 @@ using Agebull.EntityModel.Interfaces;
         /// <summary>
         /// Key键
         /// </summary>
+        [JsonIgnore]
         Guid IsGlobalKey.Key 
         {{
             get => this.{Model.PrimaryColumn.Name};
@@ -105,7 +106,7 @@ using Agebull.EntityModel.Interfaces;
         /// <summary>
         /// 对象标识
         /// </summary>
-        [IgnoreDataMember,Browsable(false)]
+        [JsonIgnore]
         {Model.PrimaryColumn.LastCsType} IIdentityData<{Model.PrimaryColumn.CsType}>.Id
         {{
             get => this.{Model.PrimaryColumn.Name};
@@ -120,6 +121,7 @@ using Agebull.EntityModel.Interfaces;
         /// <summary>
         /// 组合后的唯一值
         /// </summary>
+        [JsonIgnore]
         string IUnionUniqueEntity.UniqueValue => $""");
                 bool first = true;
                 foreach (var property in uniques.OrderBy(p => p.UniqueIndex))
@@ -153,13 +155,13 @@ using Agebull.EntityModel.Interfaces;
                 : @"
         #region 修改记录
 
-        [IgnoreDataMember]
+        [JsonIgnore]
         EntityEditStatus _editStatusRedorder;
 
         /// <summary>
         /// 修改状态
         /// </summary>
-        [IgnoreDataMember, System.Text.Json.Serialization.JsonIgnore]
+        [JsonIgnore]
         EntityEditStatus IEditStatus.EditStatusRedorder { get => _editStatusRedorder; set=>_editStatusRedorder = value; }
 
         /// <summary>
@@ -207,10 +209,14 @@ using Agebull.EntityModel.Interfaces;
                 AccessProperties(property, code);
             }
             if (Model is ModelConfig model)
-                foreach (var relation in model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty).OrderBy(p => p.Index))
+            {
+                var array = model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty
+                            && p.ModelType != ReleationModelType.Custom).OrderBy(p => p.Index).ToArray();
+                foreach (var relation in array)
                 {
                     RelationPropertyCode(relation, code);
                 }
+            }
             return code.ToString();
         }
 
@@ -224,19 +230,14 @@ using Agebull.EntityModel.Interfaces;
 
             if (Model.IsQuery || !Model.UpdateByModified)
                 return $@"
-        {PropertyHeader(property)}
+        {FieldHeader(property,false,false)}
         {property.AccessType}{property.LastCsType} {property.Name} {{ get; set; }}";
 
             var fieldName = FieldName(property);
 
             return $@"
-
-        /// <summary>
-        /// {ToRemString(property.Caption)}
-        /// </summary>
-        [IgnoreDataMember,JsonIgnore]
+        {FieldHeader(property, false, false)}
         private {property.LastCsType} {fieldName};
-
         {PropertyHeader(property)}
         {property.AccessType}{property.LastCsType} {propertyName}
         {{
@@ -263,13 +264,13 @@ using Agebull.EntityModel.Interfaces;
             if (Model.IsQuery || !Model.UpdateByModified)
 
                 code.Append($@"
-        {PropertyHeader(property, isInterface, property.DataType != "ByteArray")}
+        {FieldHeader(property, isInterface, property.DataType == "ByteArray")}
         {property.AccessType}{type} {property.Name} {{ get; set; }}");
             else
                 code.Append($@"
-        {FieldHeader(property, isInterface, property.DataType != "ByteArray")}
+        {FieldHeader(property, isInterface, property.DataType == "ByteArray")}
         private {type} {fieldName};
-        {PropertyHeader(property, isInterface, property.DataType != "ByteArray")}
+        {PropertyHeader(property)}
         {property.AccessType}{type} {propertyName}
         {{
             get => this.{fieldName};
@@ -294,8 +295,10 @@ using Agebull.EntityModel.Interfaces;
         {
             var propertyName = PropertyName(property);
 
+            bool isInterface = property.IsInterfaceField && property.Entity.InterfaceInner;
+
             code.Append($@"
-        {PropertyHeader(property)}
+        {FieldHeader(property, isInterface, property.DataType == "ByteArray")}
         {property.AccessType}{property.LastCsType} {propertyName}
         {{");
 
@@ -343,6 +346,7 @@ using Agebull.EntityModel.Interfaces;
         /// <summary>
         /// {ToRemString(property.Caption)}的别名
         /// </summary>
+        [JsonIgnore]
         public {property.LastCsType} {name} => this.{property.Name};");
             }
         }
@@ -350,14 +354,7 @@ using Agebull.EntityModel.Interfaces;
         private void DbInnerProperty(IFieldConfig property, StringBuilder code)
         {
             code.Append($@"
-
-        /// <summary>
-        /// {ToRemString(property.Caption)}(仅限用于查询的Lambda表达式使用)
-        /// </summary>
-        /// <remarks>
-        /// {ToRemString(property.Description)}
-        /// </remarks>
-        [IgnoreDataMember , JsonIgnore]
+        {PropertyHeader(property)}
         {property.AccessType}{property.LastCsType} {property.Name} => throw new Exception(""{ToRemString(property.Caption)}属性仅限用于查询的Lambda表达式使用"");");
 
         }
@@ -378,7 +375,7 @@ using Agebull.EntityModel.Interfaces;
         /// <remarks>
         /// 仅存储使用
         /// </remarks>
-        [IgnoreDataMember,JsonIgnore]
+        [JsonIgnore]
         public string {property.StorageProperty}
         {{
             get => this.{property.Name} == null ? null : Newtonsoft.Json.JsonConvert.SerializeObject(this.{property.Name});");
@@ -411,18 +408,18 @@ using Agebull.EntityModel.Interfaces;
         /// <summary>
         /// {ToRemString(releation.Caption)}
         /// </summary>
-        [JsonProperty(""{cs}"", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(""{cs}"")]
         public {type} {releation.Name} {{ get; set; }}");
             else
             code.Append($@"
 
-        [JsonIgnore]
+        [JsonProperty(""{cs}"")]
         private {type} _{cs};
 
         /// <summary>
         /// {ToRemString(releation.Caption)}
         /// </summary>
-        [JsonProperty(""{cs}"", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonIgnore]
         public {type} {releation.Name}
         {{
             get => _{cs};

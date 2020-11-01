@@ -28,7 +28,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
             var file = ConfigPath(Model, "File_VUE_HTML", path, Model.PagePath(), "index.htm");
 
-            var coder = new VueCoder<TModel>
+            var coder = new VueHtmlCoder<TModel>
             {
                 Model = Model,
                 Project = Project
@@ -54,7 +54,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
             var file = ConfigPath(Model, "File_VUE_JS", path, Model.PagePath(), "script.js");
 
-            var coder = new VueCoder<TModel>
+            var coder = new VueScriptCoder<TModel>
             {
                 Model = Model,
                 Project = Project

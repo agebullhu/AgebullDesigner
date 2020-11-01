@@ -32,6 +32,16 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 上级
         /// </summary>
+        public EntityConfig Parent => _entity;
+
+        /// <summary>
+        /// 上级
+        /// </summary>
+        IEntityConfig IFieldConfig.Parent => _entity;
+
+        /// <summary>
+        /// 上级
+        /// </summary>
         [IgnoreDataMember, JsonIgnore]
         internal EntityConfig _entity;
 
@@ -2528,7 +2538,8 @@ namespace Agebull.EntityModel.Config
                 _dataRuleDesc = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(DataRuleDesc));
             }
-        }/// <summary>
+        }
+        /// <summary>
          /// 值说明
          /// </summary>
         [IgnoreDataMember, JsonIgnore]

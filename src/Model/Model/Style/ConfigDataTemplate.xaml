@@ -176,7 +176,6 @@
     <DataTemplate x:Key="EntityConfigTemplate" DataType="config:EntityConfig">
         <StackPanel Style="{StaticResource LayoutPanel}"
                     DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type Border}},Path=DataContext}">
-
             <GroupBox Header="数据模型" Margin="5">
                 <WrapPanel>
                     <StackPanel Style="{StaticResource FieldPanel}">
@@ -904,9 +903,9 @@
                                   ToolTip="选择后,此类仅查询" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
-                        <Label Content="显示接口实现" />
-                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding InterfaceInner,Mode=TwoWay}"
-                                  ToolTip="选择后,所有接口显示实现" />
+                        <Label Content="按修改更新" />
+                        <ComboBox Style="{StaticResource BoolCombo}"
+                                  SelectedValue="{Binding UpdateByModified,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="服务名称" />

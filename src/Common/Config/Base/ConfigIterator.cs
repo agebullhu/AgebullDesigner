@@ -3,6 +3,7 @@ using System.Diagnostics;
 
 namespace Agebull.EntityModel.Config
 {
+
     /// <summary>
     ///     配置遍历器
     /// </summary>
@@ -26,58 +27,8 @@ namespace Agebull.EntityModel.Config
             level = 0;
             switch (starting)
             {
-                case FieldConfig field:
-                    if (typeof(T) == typeof(EntityConfig))
-                    {
-                        DoAction(action, field.Entity);
-                    }
-                    if (typeof(T) == typeof(ProjectConfig))
-                    {
-                        DoAction(action, field?.Entity?.Parent);
-                    }
-                    else if (typeof(T) == typeof(FieldConfig))
-                    {
-                        DoAction(action, field.Entity?.Parent);
-                    }
-                    else
-                    {
-                        DoAction(action, field);
-                    }
-                    return;
-                case PropertyConfig property:
-                    if (typeof(T) == typeof(EntityConfig))
-                    {
-                        DoAction(action, property.Entity);
-                    }
-                    else if (typeof(T) == typeof(ProjectConfig))
-                    {
-                        DoAction(action, property.Model?.Parent);
-                    }
-                    else
-                    {
-                        DoAction(action, property);
-                    }
-                    return;
-                case UserCommandConfig cmd:
-                    if (typeof(T) == typeof(EntityConfig))
-                    {
-                        DoAction(action, cmd.Parent);
-                    }
-                    else if (typeof(T) == typeof(ProjectConfig))
-                    {
-                        DoAction(action, cmd.Parent?.Parent);
-                    }
-                    else
-                    {
-                        DoAction(action, cmd);
-                    }
-                    return;
                 case EntityConfig item:
-                    if (typeof(T) == typeof(EntityConfig))
-                    {
-                        DoAction(action, item);
-                    }
-                    else if (typeof(T) == typeof(ProjectConfig))
+                    if (typeof(T) == typeof(ProjectConfig))
                     {
                         DoAction(action, item.Parent);
                     }
@@ -86,133 +37,57 @@ namespace Agebull.EntityModel.Config
                         Foreach(action, item);
                     }
                     return;
-                case EnumConfig enumConfig:
-                    if (typeof(T) == typeof(EnumConfig))
+                case FieldConfig field:
+                    if (typeof(T) == typeof(IEntityConfig) || typeof(T) == typeof(EntityConfig))
                     {
-                        DoAction(action, enumConfig);
-                    }
-                    else if (typeof(T) == typeof(ProjectConfig))
-                    {
-                        DoAction(action, enumConfig.Parent);
+                        DoAction(action, field.Parent);
                     }
                     else
                     {
-                        Foreach(action, enumConfig);
+                        DoAction(action, starting);
                     }
                     return;
-                case ProjectConfig project:
+                case ModelConfig item:
                     if (typeof(T) == typeof(ProjectConfig))
                     {
-                        DoAction(action, project);
+                        DoAction(action, item.Parent);
                     }
                     else
                     {
-                        Foreach(action, project);
+                        Foreach(action, item);
                     }
                     return;
-                case EntityClassify classify:
-                    if (typeof(T) == typeof(EntityClassify))
-                    {
-                        DoAction(action, classify);
-                    }
-                    else
-                    {
-                        Foreach(action, classify);
-                    }
-                    return;
-                case SolutionConfig solution:
-                    Foreach(action, solution);
-                    return;
-            }
-        }
-        /// <summary>
-        /// 遍历
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="starting"></param>
-        /// <param name="condition"></param>
-        /// <param name="action"></param>
-        public static void Foreach<T>(this ConfigBase starting, Func<T, bool> condition, Action<T> action)
-            where T : class
-        {
-            if (starting.IsDiscard || starting.IsDelete)
-                return;
-            Trace.WriteLineIf(SolutionConfig.Current.DetailTrace, $"{starting.Caption}({starting.Name})", "配置遍历");
-            level = 0;
-            switch (starting)
-            {
                 case PropertyConfig property:
-                    if (typeof(T) == typeof(ModelConfig))
+                    if (typeof(T) == typeof(IEntityConfig) || typeof(T) == typeof(ModelConfig))
                     {
-                        DoAction(condition, action, property.Model);
-                    }
-                    if (typeof(T) == typeof(EntityConfig))
-                    {
-                        DoAction(condition, action, property.Entity);
-                    }
-                    else if (typeof(T) == typeof(ProjectConfig))
-                    {
-                        DoAction(condition, action, property.Model?.Parent);
+                        DoAction(action, property.Parent);
                     }
                     else
                     {
-                        DoAction(condition, action, property);
-                    }
-                    return;
-                case FieldConfig field:
-                    if (typeof(T) == typeof(EntityConfig))
-                    {
-                        DoAction(condition, action, field.Entity);
-                    }
-                    else if (typeof(T) == typeof(ProjectConfig))
-                    {
-                        DoAction(condition, action, field.Entity?.Parent);
-                    }
-                    else
-                    {
-                        DoAction(condition, action, field);
+                        DoAction(action, starting);
                     }
                     return;
                 case UserCommandConfig cmd:
-                    if (typeof(T) == typeof(ModelConfig))
+                    if (typeof(T) == typeof(IEntityConfig) ||typeof(T) == typeof(ModelConfig))
                     {
-                        DoAction(condition, action, cmd.Parent);
-                    }
-                    else if (typeof(T) == typeof(ProjectConfig))
-                    {
-                        DoAction(condition, action, cmd.Parent?.Parent);
+                        DoAction(action, cmd.Parent);
                     }
                     else
                     {
-                        DoAction(condition, action, cmd);
+                        DoAction(action, starting);
                     }
                     return;
-                case EntityConfig item:
-                    if (typeof(T) == typeof(EntityConfig))
-                    {
-                        DoAction(condition, action, item);
-                    }
-                    else if (typeof(T) == typeof(ProjectConfig))
-                    {
-                        DoAction(condition, action, item.Parent);
-                    }
-                    else
-                    {
-                        Foreach(condition, action, item);
-                    }
+                case EnumConfig enumConfig:
+                    Foreach(action, enumConfig);
                     return;
                 case ProjectConfig project:
-                    if (typeof(T) == typeof(ProjectConfig))
-                    {
-                        DoAction(condition, action, project);
-                    }
-                    else
-                    {
-                        Foreach(condition, action, project);
-                    }
+                    Foreach(action, project);
+                    return;
+                case EntityClassify classify:
+                    Foreach(action, classify);
                     return;
                 case SolutionConfig solution:
-                    Foreach(condition, action, solution);
+                    Foreach(action, solution);
                     return;
             }
         }
@@ -359,6 +234,88 @@ namespace Agebull.EntityModel.Config
         }
 
 
+        /// <summary>
+        /// 遍历
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="starting"></param>
+        /// <param name="condition"></param>
+        /// <param name="action"></param>
+        public static void Foreach<T>(this ConfigBase starting, Func<T, bool> condition, Action<T> action)
+            where T : class
+        {
+            if (starting.IsDiscard || starting.IsDelete)
+                return;
+            Trace.WriteLineIf(SolutionConfig.Current.DetailTrace, $"{starting.Caption}({starting.Name})", "配置遍历");
+            level = 0;
+
+            switch (starting)
+            {
+                case EntityConfig item:
+                    if (typeof(T) == typeof(ProjectConfig))
+                    {
+                        DoAction(condition, action, item.Parent);
+                    }
+                    else
+                    {
+                        Foreach(condition, action, item);
+                    }
+                    return;
+                case FieldConfig field:
+                    if (typeof(T) == typeof(IEntityConfig) || typeof(T) == typeof(EntityConfig))
+                    {
+                        DoAction(condition, action, field.Parent);
+                    }
+                    else
+                    {
+                        DoAction(condition, action, starting);
+                    }
+                    return;
+                case ModelConfig item:
+                    if (typeof(T) == typeof(ProjectConfig))
+                    {
+                        DoAction(condition, action, item.Parent);
+                    }
+                    else
+                    {
+                        Foreach(condition, action, item);
+                    }
+                    return;
+                case PropertyConfig property:
+                    if (typeof(T) == typeof(IEntityConfig) || typeof(T) == typeof(ModelConfig))
+                    {
+                        DoAction(condition, action, property.Parent);
+                    }
+                    else
+                    {
+                        DoAction(condition, action, starting);
+                    }
+                    return;
+                case UserCommandConfig cmd:
+                    if (typeof(T) == typeof(IEntityConfig) || typeof(T) == typeof(ModelConfig))
+                    {
+                        DoAction(condition, action, cmd.Parent);
+                    }
+                    else
+                    {
+                        DoAction(condition, action, starting);
+                    }
+                    return;
+                case EnumConfig enumConfig:
+                    Foreach(condition, action, enumConfig);
+                    return;
+                case ProjectConfig project:
+                    Foreach(condition, action, project);
+                    return;
+                case EntityClassify classify:
+                    Foreach(condition, action, classify);
+                    return;
+                case SolutionConfig solution:
+                    Foreach(condition, action, solution);
+                    return;
+            }
+        }
+
         private static void DoAction<T>(Func<T, bool> condition, Action<T> action, ConfigBase config)
             where T : class
         {
@@ -373,8 +330,44 @@ namespace Agebull.EntityModel.Config
             level = lv;
         }
 
+        private static void Foreach<T>(Func<T, bool> condition, Action<T> action, EntityClassify classify)
+            where T : class
+        {
+            if (classify.IsDiscard || classify.IsDelete)
+                return;
+            Trace.WriteLineIf(SolutionConfig.Current.DetailTrace, $"{classify.Caption}({classify.Name})", "配置遍历");
+            int lv = level;
+            DoAction(condition, action, classify);
+            if (typeof(EntityClassify) == typeof(T))
+                return;
+            foreach (var item in classify.Items)
+            {
+                level = lv + 1;
+                Foreach(condition, action, item);
+            }
+            level = lv;
+        }
+
 
         private static void Foreach<T>(Func<T, bool> condition, Action<T> action, EntityConfig item)
+            where T : class
+        {
+            if (item.IsDiscard || item.IsDelete)
+                return;
+            Trace.WriteLineIf(SolutionConfig.Current.DetailTrace, $"{item.Caption}({item.Name})", "配置遍历");
+            DoAction(condition, action, item);
+            if (typeof(T) == typeof(EntityConfig))
+                return;
+            int lv = level;
+            foreach (var property in item.Properties)
+            {
+                level = lv + 1;
+                DoAction(condition, action, property);
+            }
+            level = lv;
+        }
+
+        private static void Foreach<T>(Func<T, bool> condition, Action<T> action, ModelConfig item)
             where T : class
         {
             if (item.IsDiscard || item.IsDelete)

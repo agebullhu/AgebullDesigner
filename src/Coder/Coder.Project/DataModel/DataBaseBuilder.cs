@@ -290,7 +290,7 @@ namespace {Project.NameSpace}.DataAccess
             var codeStruct = new StringBuilder();
             int idx = 0;
             var primary = entity.PrimaryColumn;
-            var last = entity.LastProperties.Where(p => p != primary);
+            var last = entity.LastProperties.Where(p => p != primary && !p.NoStorage);
             EntityProperty(codeStruct, primary, ref idx, false);
             foreach (var property in last.Where(p => !p.IsInterfaceField).OrderBy(p => p.Index))
             {
@@ -493,13 +493,6 @@ namespace {Project.NameSpace}.DataAccess
                 featrue = "PropertyFeatrue.Field";
             }
 
-
-            string interf = "";
-            if (property.IsLinkKey || property.IsLinkField)
-                interf = property.LinkTable;
-            else if (property.IsInterfaceField)
-                interf = property.Entity.Name;
-
             codeStruct.Append($@"
 
             /// <summary>
@@ -515,7 +508,7 @@ namespace {Project.NameSpace}.DataAccess
                 DbType         = {DbType(property)},
                 FieldName      = ""{property.DbFieldName}"",
                 JsonName       = ""{property.JsonName}"",
-                Entity         = ""{interf}"",
+                Entity         = entityName,
                 PropertyFeatrue= {featrue},
                 DbReadWrite    = {ReadWrite(property)},
                 CanImport      = {(property.ExtendConfigListBool["easyui", "CanImport"] ? "true" : "false")},

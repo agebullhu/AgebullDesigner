@@ -272,6 +272,10 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 子集列表（1：n）
         /// </summary>
-        Children
+        Children,
+        /// <summary>
+        /// 自定义
+        /// </summary>
+        Custom
     }
 }

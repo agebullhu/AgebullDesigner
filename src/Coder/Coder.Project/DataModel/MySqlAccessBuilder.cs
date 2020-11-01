@@ -70,13 +70,15 @@ namespace {Project.NameSpace}.DataAccess
         {{
             Struct = new EntityStruct
             {{
-                IsIdentity       = {(Model.PrimaryColumn?.IsIdentity ?? false ? "true" : "false")},
-                EntityName       = {Model.Entity.Name}_Struct_.entityName,
+                Name             = {Model.Entity.Name}_Struct_.name,
                 Caption          = {Model.Entity.Name}_Struct_.caption,
                 Description      = {Model.Entity.Name}_Struct_.description,
-                PrimaryProperty  = {Model.Entity.Name}_Struct_.primaryProperty,
+                ProjectName      = ""{Project.Name}"",
+                EntityName       = ""{Model.EntityName}"",
                 ReadTableName    = {Model.Entity.Name}_Struct_.tableName,
-                WriteTableName   = {Model.Entity.Name}_Struct_.tableName,{Interfaces(Model)}
+                WriteTableName   = {Model.Entity.Name}_Struct_.tableName,
+                PrimaryProperty  = {Model.Entity.Name}_Struct_.primaryProperty,
+                IsIdentity       = {(Model.PrimaryColumn?.IsIdentity ?? false ? "true" : "false")},{Interfaces(Model)}
                 Properties       = new List<EntityProperty>
                 {{
                     {EntityStruct()}
@@ -86,9 +88,8 @@ namespace {Project.NameSpace}.DataAccess
             TableOption = new DataTableOption
             {{
                 IsQuery = false,
-                UpdateByMidified = false,
+                UpdateByMidified = true,
                 CanRaiseEvent=true,
-                InjectionLevel = InjectionLevel.All,
                 SqlBuilder = new MySqlSqlBuilder<{Model.EntityName}>(),
                 DataStruct = Struct,
                 ReadTableName = FromSqlCode,
@@ -304,7 +305,7 @@ SELECT @@IDENTITY;");
         /// <param name=""entity"">实体对象</param>
         /// <param name=""cmd"">命令</param>
         /// <returns>返回真说明要取主键</returns>
-        public void SetEntityParameter({Model.EntityName} entity, MySqlCommand cmd)
+        public void SetEntityParameter(DbCommand cmd,{Model.EntityName} entity)
         {{");
 
             foreach (var property in Model.PublishProperty.Where(p => !p.DbInnerField).OrderBy(p => p.Index))
@@ -389,7 +390,8 @@ SELECT @@IDENTITY;");
             {
                 return code.ToString();
             }
-            var array = model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty).ToArray();
+            var array = model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty
+                        && p.ModelType != ReleationModelType.Custom).ToArray();
             if (array.Length != 0)
             {
                 code.Append($@"
@@ -541,14 +543,14 @@ SELECT @@IDENTITY;");
 
         private void EntityStruct(IEntityConfig model, List<string> properties, ref int idx)
         {
-            if (!string.IsNullOrWhiteSpace(Model.ModelBase))
-            {
-                var modelBase = GlobalConfig.GetModel(p => p.Name == Model.ModelBase);
-                EntityStruct(modelBase, properties, ref idx);
-            }
+            //if (!string.IsNullOrWhiteSpace(Model.ModelBase))
+            //{
+            //    var modelBase = GlobalConfig.GetModel(p => p.Name == Model.ModelBase);
+            //    EntityStruct(modelBase, properties, ref idx);
+            //}
             var code = new StringBuilder();
             var primary = model.PrimaryColumn;
-            var last = model.LastProperties.Where(p => p != primary);
+            var last = model.LastProperties.Where(p => p != primary && !p.NoStorage);
             properties.Add(DataBaseBuilder.EntityProperty(code, primary, ref idx, false));
             foreach (var property in last.Where(p => !p.IsInterfaceField).OrderBy(p => p.Index))
             {

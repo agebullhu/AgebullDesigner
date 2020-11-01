@@ -227,9 +227,13 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 上级
         /// </summary>
+        IEntityConfig Parent { get; }// Field.Entity;
+
+        /// <summary>
+        /// 实体
+        /// </summary>
         EntityConfig Entity { get; }// Field.Entity;
-
-
+        
         #endregion
         #region 系统
 
@@ -705,12 +709,12 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 这是数据相关的逻辑,表示在存储时必须写入数据,否则逻辑不正确
         /// </remark>
-        bool CanEmpty { get; }// Field.CanEmpty;
+        bool CanEmpty { get; set; }// Field.CanEmpty;
 
         /// <summary>
         /// 必填字段
         /// </summary>
-        bool IsRequired { get; }// Field.IsRequired;
+        bool IsRequired { get; set; }// Field.IsRequired;
 
         /// <summary>
         /// 最大值

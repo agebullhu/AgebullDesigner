@@ -141,6 +141,25 @@ namespace Agebull.EntityModel.Designer
                 CheckReleation(releation, Context.SelectModel);
             }
         }
+        public static void CheckReleation(ModelConfig model)
+        {
+            foreach (var field in model.Entity.Properties)
+            {
+                var pro = model.Properties.FirstOrDefault(p => p.Field == field);
+                if (pro != null)
+                {
+                    continue;
+                }
+
+                pro = new PropertyConfig { Field = field };
+                pro.Option.IsDiscard = true;
+                model.Properties.Add(pro);
+            }
+            foreach (var re in model.Releations)
+            {
+                CheckReleation(re, model);
+            }
+        }
         public static void CheckReleation(ReleationConfig releation, ModelConfig model)
         {
             var name = GlobalConfig.ToLinkWordName(releation.ForeignTable, "_", false);

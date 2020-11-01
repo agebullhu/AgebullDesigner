@@ -25,34 +25,29 @@
                 <Label Content="启用界面" />
                 <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding HaseEasyUi,Mode=TwoWay}" />
             </StackPanel>
-            <StackPanel>
-                <Label Content="页面文件夹名称" />
+            <!--<StackPanel>
+                <Label Content="页面文件夹" />
                 <TextBox Text="{Binding PageFolder,Mode=TwoWay}" />
-            </StackPanel>
+            </StackPanel>-->
             <StackPanel>
                 <Label Content="树形界面" />
                 <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding TreeUi,Mode=TwoWay}" />
             </StackPanel>
             <StackPanel>
-                <Label Content="主页面类型" />
-                <ComboBox ItemsSource="{x:Static defaults:EnumHelper.PanelTypeList}"
-                          SelectedValue="{Binding PanelType,Mode=TwoWay}" />
-            </StackPanel>
-            <StackPanel>
-                <Label Content="编辑页面最大化" />
-                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding MaxForm,Mode=TwoWay}" />
+                <Label Content="详细编辑页面" />
+                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DetailsPage,Mode=TwoWay}" />
             </StackPanel>
             <StackPanel>
                 <Label Content="编辑页面分几列" />
                 <TextBox Text="{Binding FormCloumn,Mode=TwoWay}" />
             </StackPanel>
             <StackPanel>
-                <Label Content="列表详细页" />
-                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding ListDetails,Mode=TwoWay}" />
+                <Label Content="排序字段" />
+                <TextBox Text="{Binding OrderField,Mode=TwoWay}" />
             </StackPanel>
             <StackPanel>
-                <Label Content="主键正序" />
-                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding NoSort,Mode=TwoWay}" />
+                <Label Content="是否反序" />
+                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding OrderDesc,Mode=TwoWay}" />
             </StackPanel>
         </WrapPanel>
 
@@ -75,6 +70,15 @@
                     <StackPanel>
                         <Label Content="后缀" />
                         <TextBox Text="{Binding Suffix,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="是否时间" />
+                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsTime,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="图像字段" />
+                        <ComboBox Style="{StaticResource BoolCombo}"
+                                  SelectedValue="{Binding IsImage,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="货币类型" />
@@ -118,14 +122,14 @@
                         <Label Content="宽度倍数" />
                         <TextBox Text="{Binding FormCloumnSapn,Mode=TwoWay}" />
                     </StackPanel>
-                    <StackPanel>
+                    <!--<StackPanel>
                         <Label Content="EasyUI ComboUrl" />
                         <TextBox Style="{StaticResource MidTextBox}" Text="{Binding ComboBoxUrl,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="EasyUI Options" />
                         <TextBox Style="{StaticResource MaxTextBox}" Text="{Binding FormOption,Mode=TwoWay}" />
-                    </StackPanel>
+                    </StackPanel>-->
                 </WrapPanel>
             </TabItem>
             <TabItem Header="列表表格"
@@ -145,13 +149,13 @@
                     </StackPanel>
                 </WrapPanel>
             </TabItem>
-            <TabItem Header="列表详细"
+            <!--<TabItem Header="列表详细"
                      IsEnabled="{Binding GridDetails,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
                 <StackPanel VerticalAlignment="Top">
                     <Label Content="自定义代码" />
                     <TextBox Style="{StaticResource MaxTextBox}" Text="{Binding GridDetailsCode,Mode=TwoWay}" />
                 </StackPanel>
-            </TabItem>
+            </TabItem>-->
         </TabControl>
         <DataGrid AutoGenerateColumns="False"
                   CanUserAddRows="False"
@@ -159,31 +163,36 @@
                   DataContext="{Binding Context}"
                   ItemsSource="{Binding SelectEntity.Properties}">
             <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                    Header="名称" IsReadOnly="True" />
                 <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                     Header="标题" IsReadOnly="True" />
-                <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                    Header="属性" IsReadOnly="True" />
+                <DataGridTextColumn Binding="{Binding JsonName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                    Header="Json" />
                 <DataGridCheckBoxColumn
                     Binding="{Binding DenyClient,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BoolReversalConverter}}"
-                    Header="需要" />
+                    Header="客户端" />
                 <DataGridCheckBoxColumn
                     Binding="{Binding CanEmpty,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BoolReversalConverter}}"
                     Header="非空" />
                 <DataGridCheckBoxColumn
-                    Binding="{Binding IsRequired,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="必要" />
-                <DataGridCheckBoxColumn
+                    Binding="{Binding IsRequired,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                    Header="必填" />
+                <!--<DataGridCheckBoxColumn
                     Binding="{Binding ExtendConfigListBool[easyui_userFormHide],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                    Header="隐藏" />
+                    Header="隐藏" />-->
                 <DataGridCheckBoxColumn
-                    Binding="{Binding IsUserReadOnly,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="只读" />
+                    Binding="{Binding IsUserReadOnly,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                    Header="只读" />
                 <DataGridCheckBoxColumn
                     Binding="{Binding NoneGrid,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BoolReversalConverter}}"
                     Header="列表" />
                 <DataGridCheckBoxColumn
-                    Binding="{Binding GridDetails,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="列表详细" />
-                <DataGridCheckBoxColumn
+                    Binding="{Binding GridDetails,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                    Header="列表详细" />
+                <!--<DataGridCheckBoxColumn
                     Binding="{Binding ExtendConfigListBool[easyui_simple],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                    Header="轻量数据" />
+                    Header="轻量数据" />-->
                 <DataGridCheckBoxColumn
                     Binding="{Binding UserOrder,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                     Header="排序" />
@@ -191,19 +200,23 @@
                     Binding="{Binding NoneDetails,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BoolReversalConverter}}"
                     Header="编辑" />
                 <DataGridCheckBoxColumn
+                    Binding="{Binding IsImage,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                    Header="图片" />
+                <DataGridCheckBoxColumn
+                    Binding="{Binding IsTime,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                    Header="时间" />
+                <DataGridCheckBoxColumn
+                    Binding="{Binding IsMoney,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                    Header="货币" />
+                <DataGridCheckBoxColumn
+                    Binding="{Binding MulitLine,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                    Header="多行" />
+                <DataGridCheckBoxColumn
                     Binding="{Binding ExtendConfigListBool[easyui_CanImport],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                     Header="导入" />
                 <DataGridCheckBoxColumn
                     Binding="{Binding ExtendConfigListBool[easyui_CanExport],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                     Header="导出" />
-                <DataGridCheckBoxColumn
-                    Binding="{Binding IsImage,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                    Header="图片" />
-                <DataGridCheckBoxColumn
-                    Binding="{Binding IsMoney,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                    Header="货币" />
-                <DataGridCheckBoxColumn
-                    Binding="{Binding MulitLine,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="多行" />
             </DataGrid.Columns>
             <i:Interaction.Behaviors>
                 <behaviors:DataGridGenertColumnsBehavior />
