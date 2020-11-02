@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
+using static  Agebull.EntityModel.RobotCoder.NameHelper;
 using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
@@ -17,10 +17,10 @@ namespace Agebull.EntityModel.RobotCoder
         /// 实体的注释头
         /// </summary>
         public string EntityRemHeader => $@"/// <summary>
-        /// {ToRemString(Model.Caption, 4)}
+        /// {Model.Caption.ToRemString(4)}
         /// </summary>
         /// <remark>
-        /// {ToRemString(Model.Description, 4)}
+        /// {Model.Description.ToRemString(4)}
         /// </remark>";
 
         /// <summary>
@@ -43,10 +43,10 @@ namespace Agebull.EntityModel.RobotCoder
         protected abstract bool IsClient { get; }
 
         private IFieldConfig[] _columns;
-        protected IFieldConfig[] Columns => _columns ??= Model.PublishProperty.ToArray();
+        protected IFieldConfig[] Columns => _columns ??= Model.PublishProperty.OrderBy(p => p.Index).ToArray();
 
         private IFieldConfig[] _rwcolumns;
-        protected IFieldConfig[] ReadWriteColumns => _rwcolumns ??= Columns.Where(p => p.CanGet && p.CanSet).ToArray();
+        protected IFieldConfig[] ReadWriteColumns => _rwcolumns ??= Columns.OrderBy(p => p.Index).Where(p => p.CanGet && p.CanSet).ToArray();
 
         /// <summary>
         /// 初始化实体默认值的代码
@@ -114,7 +114,7 @@ namespace Agebull.EntityModel.RobotCoder
             code.Append("/// <summary>");
             code.AppendLine();
             code.Append(' ', space);
-            code.Append($@"///  {ToRemString(property.Caption, space)}");
+            code.Append($@"///  {property.Caption.ToRemString(space)}");
             code.AppendLine();
             if (!simple && !property.Entity.NoDataBase)
             {
@@ -147,7 +147,7 @@ namespace Agebull.EntityModel.RobotCoder
                 code.Append("/// <remarks>");
                 code.AppendLine();
                 code.Append(' ', space);
-                code.Append($"///     {ToRemString(property.Description, space)}");
+                code.Append($"///     {property.Description.ToRemString(space)}");
                 code.AppendLine();
                 code.Append(' ', space);
                 code.Append("/// </remarks>");
@@ -161,7 +161,7 @@ namespace Agebull.EntityModel.RobotCoder
                 code.Append("/// <example>");
                 code.AppendLine();
                 code.Append(' ', space);
-                code.Append($"///     {ToRemString(helloCode, space)}");
+                code.Append($"///     {helloCode.ToRemString(space)}");
                 code.AppendLine();
                 code.Append(' ', space);
                 code.Append("/// </example>");
@@ -174,7 +174,7 @@ namespace Agebull.EntityModel.RobotCoder
                 code.Append("/// <value>");
                 code.AppendLine();
                 code.Append(' ', space);
-                code.Append($"///     {ToRemString(property.DataRuleDesc, space)}");
+                code.Append($"///     {property.DataRuleDesc.ToRemString(space)}");
                 code.AppendLine();
                 code.Append(' ', space);
                 code.Append("/// </value>");

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Text;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
 
@@ -25,12 +26,23 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder<FieldConfig>
             {
                 SignleSoruce = false,
+                WorkView = "adv",
+                Catalog = "字段",
+                Action = CheckJsonName,
+                Caption = "Json名称小驼峰",
+                IconName = "tree_item",
+                ConfirmMessage = "确认执行【Json名称小驼峰】的操作吗?"
+            });
+
+            commands.Add(new CommandItemBuilder<FieldConfig>
+            {
+                SignleSoruce = false,
                 WorkView= "adv",
                 Catalog = "字段",
                 Action = CheckName,
                 Caption = "属性名称大驼峰",
                 IconName = "tree_item",
-                ConfirmMessage= "确认执行【字段名称规范】的操作吗?"
+                ConfirmMessage= "确认执行【属性名称大驼峰】的操作吗?"
             });
 
             commands.Add(new CommandItemBuilder<FieldConfig>
@@ -46,7 +58,7 @@ namespace Agebull.EntityModel.Designer
             });
             commands.Add(new CommandItemBuilder<FieldConfig>
             {
-                Catalog = "工具",
+                Catalog = "字段",
                 WorkView = "adv",
                 Action = UpdateCustomType,
                 Caption = "修复用户类型",
@@ -84,6 +96,11 @@ namespace Agebull.EntityModel.Designer
             {
                 field.EnumConfig = SolutionConfig.Current.Enums.FirstOrDefault(p => p.Name == field.CustomType);
             }
+        }
+
+        public void CheckJsonName(FieldConfig property)
+        {
+            property.JsonName = property.Name.ToLWord();
         }
 
         public void CheckName(FieldConfig property)

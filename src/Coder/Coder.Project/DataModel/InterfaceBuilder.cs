@@ -32,10 +32,10 @@ namespace Agebull.EntityModel.RobotCoder
             get;
             set;
         }}"
-                        , ToRemString(field.Caption)
+                        , field.Caption.ToRemString()
                         , field.Name
                         , field.LastCsType
-                        , ToRemString(field.Description));
+                        , field.Description.ToRemString());
             }
             return code.ToString();
         }

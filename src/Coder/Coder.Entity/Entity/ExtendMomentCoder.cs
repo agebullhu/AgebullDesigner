@@ -28,7 +28,7 @@ namespace Agebull.EntityModel.RobotCoder
             MomentCoder.RegisteCoder("其它","用户子级保存","cs",  UserChildSave);
             MomentCoder.RegisteCoder("其它","用户子级模板","cs",  UserSwitchUid);
             MomentCoder.RegisteCoder("其它","保存Redis到数据库","cs",  SaveToDb);
-            MomentCoder.RegisteCoder("其它", "字段静态化","cs",  ToCSharpCode);
+            MomentCoder.RegisteCoder("其它", "字段静态化", "cs", ToCSharpCode);
         }
         #endregion
 

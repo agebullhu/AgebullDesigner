@@ -10,18 +10,17 @@ namespace Agebull.EntityModel.RobotCoder
     /// <summary>
     /// 代码生成基类
     /// </summary>
-    public class CoderBase : NameHelper
+    public class CoderBase 
     {
-        public static void RepairConfigName(ConfigBase config, bool includeName)
+        public static void RepairConfigName( ConfigBase config, bool includeName)
         {
             if (includeName)
-                config.Name = ToLanguageName(config.Name);
-            config.Caption = ToLanguageName(config.Caption);
-            config.Description = ToLanguageName(config.Description);
+                config.Name = config.Name.ToLanguageName();
+            config.Caption = config.Caption.ToLanguageName();
+            config.Description = config.Description.ToLanguageName();
 
         }
 
-        #region 目录扩展
         /// <summary>
         /// 检查并组成代码文件路径
         /// </summary>
@@ -29,7 +28,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="root"></param>
         /// <param name="names"></param>
         /// <returns></returns>
-        public static string CheckPath(ProjectConfig project, string root, params string[] names)
+        public static string CheckPath( ProjectConfig project, string root, params string[] names)
         {
             if (names.Length == 0)
             {
@@ -44,7 +43,7 @@ namespace Agebull.EntityModel.RobotCoder
             list.Add(project.BranchFolder);
             return GlobalConfig.CheckPath(root, list.ToArray());
         }
-        
+
 
         /// <summary>
         /// 检查并组成文档文件路径
@@ -56,6 +55,5 @@ namespace Agebull.EntityModel.RobotCoder
             return GlobalConfig.CheckPath(SolutionConfig.Current.RootPath, SolutionConfig.Current.DocFolder);
             
         }
-        #endregion
     }
 }

@@ -10,7 +10,7 @@ namespace Agebull.EntityModel.RobotCoder
     /// <summary>
     /// 名称辅助类
     /// </summary>
-    public class NameHelper
+    public static class NameHelper
     {
         #region 文本辅助
         /// <summary>
@@ -18,7 +18,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         /// <param name="str">旧名称</param>
         /// <returns>新名称</returns>
-        public static string ToWordName(string str)
+        public static string ToWordName(this string str)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="str">旧名称</param>
         /// <param name="head">名称头</param>
         /// <returns>新名称</returns>
-        public static string ToTfWordName(string str, string head = "")
+        public static string ToTfWordName(this string str, string head = "")
         {
             try
             {
@@ -70,7 +70,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="link">连接字符</param>
         /// <param name="uWord">是否大写</param>
         /// <returns>新名称</returns>
-        public static string ToLinkWordName(string str, string link, bool uWord)
+        public static string ToLinkWordName(this string str, string link, bool uWord)
         {
             try
             {
@@ -123,7 +123,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        public static List<string> SplitWords(string str)
+        public static List<string> SplitWords(this string str)
         {
             var words = new List<string>();
             if (string.IsNullOrWhiteSpace(str))
@@ -196,14 +196,14 @@ namespace Agebull.EntityModel.RobotCoder
             return result;
         }
 
-        public static List<string> ToWords(string str, bool uWord = false)
+        public static List<string> ToWords(this string str, bool uWord = false)
         {
             var words = SplitWords(str);
             if (!uWord || words.Count == 0)
                 return words;
             return words.Select(p => p.ToUWord()).ToList();
         }
-        public static string ToMyName(string str)
+        public static string ToMyName(this string str)
         {
             var words = SplitWords(str);
             if (words.Count == 0)
@@ -244,7 +244,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="space">空格数量</param>
         /// <remarks></remarks>
         /// <returns>正确表示为C#注释的文本</returns>
-        protected static string ToRemString(string str, int space = 8)
+        public static string ToRemString(this string str, int space = 8)
         {
             if (string.IsNullOrWhiteSpace(str))
                 return null;
@@ -280,7 +280,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         /// <param name="csharpType">C#的类型</param>
         /// <returns>读取方法名</returns>
-        public static string GetByteLen(string csharpType)
+        public static string GetByteLen(this string csharpType)
         {
             switch (csharpType.ToLower())
             {
@@ -366,7 +366,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <remarks>
         /// 任何非法字符都会替换为下划线(_),首字母为数字的,会加前导字符(m_)
         /// </remarks>
-        public static string ToLanguageName(string name)
+        public static string ToLanguageName(this string name)
         {
             if (name == null)
                 return name;

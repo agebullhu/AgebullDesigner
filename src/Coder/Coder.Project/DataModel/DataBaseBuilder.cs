@@ -496,7 +496,7 @@ namespace {Project.NameSpace}.DataAccess
             codeStruct.Append($@"
 
             /// <summary>
-            /// {ToRemString(property.Caption)}
+            /// {property.Caption.ToRemString()}
             /// </summary>
             public static PropertyDefault {property.Name} = new PropertyDefault
             {{

@@ -241,10 +241,10 @@ namespace {NameSpace}
                     code.Append($@"
 
         /// <summary>
-        ///     {ToRemString(cmd.Caption)}
+        ///     {cmd.Caption.ToRemString()}
         /// </summary>
         /// <remark>
-        ///     {ToRemString(cmd.Description)}
+        ///     {cmd.Description.ToRemString()}
         /// </remark>
         public bool {cmd.Name}(int id)
         {{

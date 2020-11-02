@@ -346,7 +346,7 @@ using {NameSpace};
 namespace {NameSpace}.WebApi
 {{
     /// <summary>
-    ///  {ToRemString(Model.Caption)}
+    ///  {Model.Caption.ToRemString()}
     /// </summary>
     [Service(""{Project.ApiName}"")]
     [Route(""{Model.ApiName}/v1"")]
@@ -410,10 +410,10 @@ namespace {NameSpace}.WebApi
                     if(cmd.IsSingleObject)
                          code.Append($@"
         /// <summary>
-        ///     {ToRemString(cmd.Caption)}
+        ///     {cmd.Caption.ToRemString()}
         /// </summary>
         /// <remark>
-        ///     {ToRemString(cmd.Description)}
+        ///     {cmd.Description.ToRemString()}
         /// </remark>
         [Route(""edit/{cmd.Name.ToLWord()}"")]
         public Task<IApiResult> On{cmd.Name}(long id)
@@ -423,10 +423,10 @@ namespace {NameSpace}.WebApi
                     else
                         code.Append($@"
         /// <summary>
-        ///     {ToRemString(cmd.Caption)}
+        ///     {cmd.Caption.ToRemString()}
         /// </summary>
         /// <remark>
-        ///     {ToRemString(cmd.Description)}
+        ///     {cmd.Description.ToRemString()}
         /// </remark>
         [Route(""edit/{cmd.Name.ToLWord()}"")]
         public Task<IApiResult> On{cmd.Name}(string selects)

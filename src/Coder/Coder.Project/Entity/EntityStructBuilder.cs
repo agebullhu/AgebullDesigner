@@ -130,12 +130,12 @@ namespace Agebull.EntityModel.RobotCoder
             return $@"
 
             /// <summary>
-            /// {ToRemString(property.Caption)}的数字标识
+            /// {property.Caption.ToRemString()}的数字标识
             /// </summary>
             public const int {property.Name} = {property.Identity};
             
             /// <summary>
-            /// {ToRemString(property.Caption)}的实时记录顺序
+            /// {property.Caption.ToRemString()}的实时记录顺序
             /// </summary>
             public const int Real_{property.Name} = {idx++};";
         }

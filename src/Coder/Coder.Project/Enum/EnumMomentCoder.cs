@@ -33,7 +33,7 @@ namespace Agebull.EntityModel.RobotCoder
             code.Append($@"
 
 /**
-* @brief {ToRemString(config.Caption)}枚举
+* @brief {config.Caption.ToRemString()}枚举
 */
     enum class {config.Name}Classify
 {{");
@@ -89,10 +89,10 @@ namespace Agebull.EntityModel.RobotCoder
             code.Append($@"
 
     /// <summary>
-    /// {ToRemString(config.Caption)}
+    /// {config.Caption.ToRemString()}
     /// </summary>
     /// <remark>
-    /// {ToRemString(config.Description)}
+    /// {config.Description.ToRemString()}
     /// </remark>");
             if (config.IsFlagEnum)
                 code.Append(@"
@@ -104,7 +104,7 @@ namespace Agebull.EntityModel.RobotCoder
             {
                 code.Append($@"
         /// <summary>
-        /// {ToRemString(item.Caption)}
+        /// {item.Caption.ToRemString()}
         /// </summary>");
                 code.Append(int.TryParse(item.Value, out int vl)
                     ? $@"

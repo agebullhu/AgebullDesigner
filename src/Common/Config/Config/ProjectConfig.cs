@@ -7,10 +7,13 @@
 修改:2017-07-12
 *****************************************************/
 
+using Agebull.Common;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -469,6 +472,13 @@ namespace Agebull.EntityModel.Config
         public string ModelPath => FormatPath(_modelFolder ?? "Model");
 
         /// <summary>
+        /// 源代码路径
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"解决方案"), DisplayName(@"源代码路径"), Description("源代码路径")]
+        public string SrcPath => Path.Combine(Solution.RootPath, Solution.SrcFolder ?? "src");
+
+        /// <summary>
         /// 格式化路径
         /// </summary>
         /// <param name="end">结束目录</param>
@@ -476,23 +486,22 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public string FormatPath(string end, bool isRoot = false)
         {
-            var code = new StringBuilder();
+            var folders = new List<string>();
             if (WorkContext.InCoderGenerating)
-                code.Append(Solution.RootPath);
+                folders.Add(Solution.RootPath);
             else
-                code.Append(Solution.RootPath ?? "解决方案根路径未设置");
+                folders.Add(Solution.RootPath ?? "解决方案根路径未设置");
 
-            code.Append('\\');
-            code.Append(Solution.SrcFolder ?? "src");
-            code.Append('\\');
+            folders.Add(Solution.SrcFolder ?? "src");
             if (!isRoot && !string.IsNullOrWhiteSpace(BranchFolder))
             {
-                code.Append(BranchFolder);
-                code.Append('\\');
+                folders.Add(BranchFolder);
             }
-            code.Append(end);
-
-            return code.ToString();
+            if(!end.IsEmpty())
+            {
+                folders.Add(end);
+            }
+            return Path.Combine(folders.ToArray());
         }
 
         /// <summary>

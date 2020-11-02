@@ -7,11 +7,11 @@ Agebull.EntityModel.Designer.Entity.dll
 Agebull.EntityModel.Designer.DataBase.dll
 Agebull.EntityModel.Designer.Vue.dll
 
-
 Agebull.EntityModel.RobotCoder.Entity.dll
 Agebull.EntityModel.RobotCoder.Project.dll
 Agebull.EntityModel.RobotCoder.DataBase.dll
 Agebull.EntityModel.RobotCoder.Vue.dll
+Agebull.EntityModel.RobotCoder.Byt31.dll
 
 *Agebull.EntityModel.Designer.Funds.dll
 *Agebull.EntityModel.Designer.EasyUi.dll

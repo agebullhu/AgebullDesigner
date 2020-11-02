@@ -39,7 +39,7 @@ using Agebull.EntityModel.Interfaces;
         /// 类定义之前的代码
         /// </summary>
         protected override string ClassHead => $@"/// <summary>
-    /// {ToRemString(Model.Description)}
+    /// {Model.Description.ToRemString()}
     /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
     public ";
@@ -190,7 +190,96 @@ using Agebull.EntityModel.Interfaces;
 
         private Dictionary<string, string> ExistProperties;
 
-        private string Properties()
+        /// <summary>
+        /// 属性代码
+        /// </summary>
+        /// <returns></returns>
+        public string InterfaceProperties()
+        {
+            var code = new StringBuilder();
+            code.Append($@"
+
+        #region 属性");
+            foreach (var property in Columns.Where(p => !p.IsInterfaceField).OrderBy(p => p.Index))
+            {
+                var type = property.IsEnum && property.CsType == "string" ? "string" : property.LastCsType;
+                code.Append($@"
+
+        /// <summary>
+        /// {property.Caption.ToRemString()}
+        /// </summary>
+        {type} {property.Name} {{ get; set; }}");
+            }
+
+            code.Append($@"
+        #endregion
+
+        #region 复制简化
+
+        /// <summary>
+        /// 克隆
+        /// </summary>
+        /// <returns>TModel对象</returns>
+        TModel Clone<TModel>() where TModel : class,I{Model.Name},new()
+        {{
+            var dest = new TModel();
+            CopyTo(dest);
+            return dest;
+        }}
+
+        /// <summary>
+        /// 复制到
+        /// </summary>
+        /// <param name=""dest"">复制的目标</param>
+        void CopyTo(I{Model.Name} dest)
+        {{");
+            foreach (var property in Columns.Where(p => !p.IsInterfaceField).OrderBy(p => p.Index))
+            {
+                var type = property.IsEnum && property.CsType == "string" ? "string" : property.LastCsType;
+                code.Append($@"
+            dest.{property.Name} = {property.Name};");
+            }
+            code.Append(@"
+        }
+        #endregion");
+            return code.ToString();
+        }
+
+        /// <summary>
+        /// 属性代码
+        /// </summary>
+        /// <returns></returns>
+        public string NoExtendProperties(bool filter)
+        {
+            var code = new StringBuilder();
+            foreach (var property in Columns)
+            {
+                string ov = "";
+                if(filter)
+                {
+                    switch (property.Name)
+                    {
+                        case "Id":
+                            continue;
+                        case "CreatedUserId":
+                        case "CreatedDate":
+                        case "LatestUpdatedUserId":
+                        case "LatestUpdatedDate":
+                        case "IsDeleted":
+                            ov = "override ";
+                            break;
+                    }
+                }
+                PropertyCode(property, code, ov);
+            }
+            return code.ToString();
+        }
+        
+        /// <summary>
+        /// 属性代码
+        /// </summary>
+        /// <returns></returns>
+        public string Properties()
         {
             ExistProperties = new Dictionary<string, string>();
             var code = new StringBuilder();
@@ -252,7 +341,7 @@ using Agebull.EntityModel.Interfaces;
         }}";
         }
 
-        private void PropertyCode(IFieldConfig property, StringBuilder code)
+        private void PropertyCode(IFieldConfig property, StringBuilder code,string ov="")
         {
             bool isInterface = property.IsInterfaceField && property.Entity.InterfaceInner;
 
@@ -271,7 +360,7 @@ using Agebull.EntityModel.Interfaces;
         {FieldHeader(property, isInterface, property.DataType == "ByteArray")}
         private {type} {fieldName};
         {PropertyHeader(property)}
-        {property.AccessType}{type} {propertyName}
+        {property.AccessType}{ov}{type} {propertyName}
         {{
             get => this.{fieldName};
             set
@@ -344,7 +433,7 @@ using Agebull.EntityModel.Interfaces;
                 ExistProperties.Add(name, name);
                 code.Append($@"
         /// <summary>
-        /// {ToRemString(property.Caption)}的别名
+        /// {property.Caption.ToRemString()}的别名
         /// </summary>
         [JsonIgnore]
         public {property.LastCsType} {name} => this.{property.Name};");
@@ -355,7 +444,7 @@ using Agebull.EntityModel.Interfaces;
         {
             code.Append($@"
         {PropertyHeader(property)}
-        {property.AccessType}{property.LastCsType} {property.Name} => throw new Exception(""{ToRemString(property.Caption)}属性仅限用于查询的Lambda表达式使用"");");
+        {property.AccessType}{property.LastCsType} {property.Name} => throw new Exception(@""{property.Caption}属性仅限用于查询的Lambda表达式使用"");");
 
         }
 
@@ -370,7 +459,7 @@ using Agebull.EntityModel.Interfaces;
             code.Append($@"
 
         /// <summary>
-        /// {ToRemString(property.Caption)}的存储值读写字段
+        /// {property.Caption.ToRemString()}的存储值读写字段
         /// </summary>
         /// <remarks>
         /// 仅存储使用
@@ -406,7 +495,7 @@ using Agebull.EntityModel.Interfaces;
                 code.Append($@"
 
         /// <summary>
-        /// {ToRemString(releation.Caption)}
+        /// {releation.Caption.ToRemString()}
         /// </summary>
         [JsonProperty(""{cs}"")]
         public {type} {releation.Name} {{ get; set; }}");
@@ -417,7 +506,7 @@ using Agebull.EntityModel.Interfaces;
         private {type} _{cs};
 
         /// <summary>
-        /// {ToRemString(releation.Caption)}
+        /// {releation.Caption.ToRemString()}
         /// </summary>
         [JsonIgnore]
         public {type} {releation.Name}
