@@ -27,7 +27,9 @@ namespace Agebull.EntityModel.Designer
             _creater = creater;
             TargetType = typeof(TModelConfig);
         }
+
         bool noWriteFile;
+
         /// <summary>
         /// 能否执行的检查
         /// </summary>

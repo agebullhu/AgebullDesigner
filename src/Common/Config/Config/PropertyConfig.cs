@@ -70,7 +70,7 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(Field));
             }
         }
-
+        
         /// <summary>
         /// 不生成属性
         /// </summary>

@@ -257,15 +257,15 @@ using Agebull.EntityModel.Interfaces;
                 string ov = "";
                 if(filter)
                 {
-                    switch (property.Name)
+                    switch (property.Name.ToLower())
                     {
-                        case "Id":
+                        case "id":
                             continue;
-                        case "CreatedUserId":
-                        case "CreatedDate":
-                        case "LatestUpdatedUserId":
-                        case "LatestUpdatedDate":
-                        case "IsDeleted":
+                        case "createduserid":
+                        case "createddate":
+                        case "latestupdateduserid":
+                        case "latestupdateddate":
+                        case "isdeleted":
                             ov = "override ";
                             break;
                     }
@@ -319,13 +319,13 @@ using Agebull.EntityModel.Interfaces;
 
             if (Model.IsQuery || !Model.UpdateByModified)
                 return $@"
-        {FieldHeader(property,false,false)}
+        {FieldHeader(property,false)}
         {property.AccessType}{property.LastCsType} {property.Name} {{ get; set; }}";
 
             var fieldName = FieldName(property);
 
             return $@"
-        {FieldHeader(property, false, false)}
+        {FieldHeader(property,  false)}
         private {property.LastCsType} {fieldName};
         {PropertyHeader(property)}
         {property.AccessType}{property.LastCsType} {propertyName}
@@ -343,8 +343,6 @@ using Agebull.EntityModel.Interfaces;
 
         private void PropertyCode(IFieldConfig property, StringBuilder code,string ov="")
         {
-            bool isInterface = property.IsInterfaceField && property.Entity.InterfaceInner;
-
             var fieldName = FieldName(property);
             var propertyName = PropertyName(property);
 
@@ -353,11 +351,11 @@ using Agebull.EntityModel.Interfaces;
             if (Model.IsQuery || !Model.UpdateByModified)
 
                 code.Append($@"
-        {FieldHeader(property, isInterface, property.DataType == "ByteArray")}
+        {FieldHeader(property, property.DataType == "ByteArray")}
         {property.AccessType}{type} {property.Name} {{ get; set; }}");
             else
                 code.Append($@"
-        {FieldHeader(property, isInterface, property.DataType == "ByteArray")}
+        {FieldHeader(property, property.DataType == "ByteArray")}
         private {type} {fieldName};
         {PropertyHeader(property)}
         {property.AccessType}{ov}{type} {propertyName}
@@ -384,10 +382,8 @@ using Agebull.EntityModel.Interfaces;
         {
             var propertyName = PropertyName(property);
 
-            bool isInterface = property.IsInterfaceField && property.Entity.InterfaceInner;
-
             code.Append($@"
-        {FieldHeader(property, isInterface, property.DataType == "ByteArray")}
+        {FieldHeader(property, property.DataType == "ByteArray")}
         {property.AccessType}{property.LastCsType} {propertyName}
         {{");
 

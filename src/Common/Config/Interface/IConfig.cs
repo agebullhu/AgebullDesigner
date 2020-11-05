@@ -5,23 +5,15 @@ namespace Agebull.EntityModel.Config
     /// <summary>
     /// 属性配置
     /// </summary>
-    public interface IConfig
+    public interface IConfig : IKey
     {
 
         #region 设计标识
 
         /// <summary>
-        /// 标识
-        /// </summary>
-        public Guid Key
-        {
-            get;
-        }
-
-        /// <summary>
         /// 唯一标识
         /// </summary>
-        public int Identity
+        int Identity
         {
             get;
             set;
@@ -30,7 +22,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 编号
         /// </summary>
-        public int Index
+        int Index
         {
             get;
             set;
@@ -42,7 +34,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 引用对象键
         /// </summary>
-        public Guid ReferenceKey
+        string ReferenceKey
         {
             get;
         }
@@ -53,7 +45,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否参照对象，是则永远只读
         /// </remark>
-        public bool IsReference
+        bool IsReference
         {
             get;
         }
@@ -61,7 +53,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 废弃
         /// </summary>
-        public bool IsDiscard
+        bool IsDiscard
         {
             get;
         }
@@ -72,7 +64,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 如为真,此配置的更改将不生成代码
         /// </remark>
-        public bool IsFreeze
+        bool IsFreeze
         {
             get;
         }
@@ -83,7 +75,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 如为真,保存时删除
         /// </remark>
-        public bool IsDelete
+        bool IsDelete
         {
             get;
         }

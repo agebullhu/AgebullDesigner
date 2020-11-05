@@ -201,12 +201,18 @@ namespace Agebull.EntityModel.Designer
             return new ConfigTreeItem<EntityConfig>(entity)
             {
                 Tag = nameof(EntityConfig),
+                
                 SoruceView = "entity",
                 CreateChildFunc = CreateFieldTreeItem,
+                SoruceTypeIcon = EntityIcon(entity),
                 SoruceItemsExpression = () => entity.Properties,
                 CustomPropertyChanged = Entity_PropertyChanged
             };
         }
+        BitmapImage EntityIcon(EntityConfig entity) =>
+           Application.Current.Resources[entity.IsLinkTable
+                ? "img_switch"
+                : entity.NoDataBase ? "tree_Type" : "tree_Child4"] as BitmapImage;
 
         private void Entity_PropertyChanged(TreeItem item, NotificationObject arg, string name)
         {
@@ -214,8 +220,9 @@ namespace Agebull.EntityModel.Designer
             switch (name)
             {
                 case null:
+                case nameof(EntityConfig.IsLinkTable):
                 case nameof(EntityConfig.NoDataBase):
-                    item.SoruceTypeIcon = Application.Current.Resources[entity.NoDataBase ? "tree_Type" : "tree_Child4"] as BitmapImage;
+                    item.SoruceTypeIcon = EntityIcon(entity);
                     break;
             }
         }

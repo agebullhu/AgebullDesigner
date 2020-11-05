@@ -67,14 +67,6 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 是否关联对象
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [Category("设计器支持"), DisplayName("是否关联对象"), Description("是否关联对象")]
-        public bool IsLink => Option.IsLink;
-
-
-        /// <summary>
         /// 是否正在生成代码
         /// </summary>
         private static bool InCoding => WorkContext.InCoderGenerating;
@@ -519,7 +511,7 @@ namespace Agebull.EntityModel.Config
         /// 对应枚举
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        internal Guid _enumKey;
+        internal string _enumKey;
 
         /// <summary>
         /// 对应枚举
@@ -529,7 +521,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"对应枚举"), Description("当使用自定义类型时的枚举对象")]
-        public Guid EnumKey
+        public string EnumKey
         {
             get => ReferenceOrThis._enumKey;
             set
@@ -565,7 +557,7 @@ namespace Agebull.EntityModel.Config
                     return;
                 BeforePropertyChanged(nameof(EnumConfig), _enumConfig, value);
                 _enumConfig = value;
-                EnumKey = value?.Key ?? Guid.Empty;
+                EnumKey = value?.Key;
                 IsEnum = value != null;
                 if (value != null)
                     CustomType = value.Name;
@@ -670,7 +662,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"代码访问范围"), Description(AccessType_Description)]
-        public string AccessType => IsInterfaceField && Entity.InterfaceInner
+        public string AccessType => IsInterfaceField && Entity.IsInterface
             ? ""
             : InnerField || DenyScope.HasFlag(AccessScopeType.Server)
                 ? "internal "

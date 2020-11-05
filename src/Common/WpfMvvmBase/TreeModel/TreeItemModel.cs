@@ -167,7 +167,7 @@ namespace Agebull.EntityModel
             var actions = CommandCoefficient.Coefficient(Source, SoruceView);
             foreach (var action in actions)
             {
-                if (commands.Any(p => p.Id == action.Id))
+                if (commands.Any(p => p.Key == action.Key))
                     continue;
                 action.Source = Source;
                 commands.Add(action);
@@ -177,7 +177,7 @@ namespace Agebull.EntityModel
                 actions = CommandCoefficient.Coefficient(Friend, FriendView);
                 foreach (var action in actions)
                 {
-                    if (!commands.Any(p => p.Id == action.Id))
+                    if (!commands.Any(p => p.Key == action.Key))
                         commands.Add(action);
                 }
             }

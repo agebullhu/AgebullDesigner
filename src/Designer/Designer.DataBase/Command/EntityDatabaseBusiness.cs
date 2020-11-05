@@ -53,9 +53,9 @@ namespace Agebull.EntityModel.Config
                 {
                     continue;
                 }
-                if(string.IsNullOrWhiteSpace(col.OldName))
-                col.OldName = col.DbFieldName;
-                col.DbFieldName = DataBaseHelper.ToDbFieldName(col.Name);
+                if (string.IsNullOrWhiteSpace(col.OldName))
+                    col.OldName = col.DbFieldName;
+                col.DbFieldName = DataBaseHelper.ToDbFieldName(col);
             }
         }
 
@@ -84,15 +84,16 @@ namespace Agebull.EntityModel.Config
 
             if (Entity.PrimaryColumn == null)
             {
-                var idf = Entity.Properties.FirstOrDefault(p =>
-                    string.Equals(p.Name, "Id", System.StringComparison.OrdinalIgnoreCase));
+                var idf = Entity.Find("Id");
                 if (idf != null)
                     idf.IsPrimaryKey = true;
                 else
                     Entity.Add(new FieldConfig
                     {
                         Name = "Id",
-                        Caption = Entity.Caption + "±àºÅ",
+                        Caption = Entity.Caption + "ID",
+                        JsonName = "id",
+                        DbFieldName = "id",
                         IsIdentity = true,
                         IsPrimaryKey = true,
                         DataType = SolutionConfig.Current.IdDataType
@@ -101,9 +102,10 @@ namespace Agebull.EntityModel.Config
 
             if (repair || string.IsNullOrWhiteSpace(Entity.SaveTableName))
             {
+                if (Entity.ReadTableName == Entity.SaveTableName)
+                    Entity.ReadTableName = null;
                 Entity.SaveTableName = DataBaseHelper.ToTableName(Entity);
             }
-            CheckRelation(repair);
             var model = new PropertyDatabaseBusiness();
             foreach (var col in Entity.Properties)
             {
@@ -115,37 +117,21 @@ namespace Agebull.EntityModel.Config
                 model.Field = col;
                 model.CheckByDb(repair);
             }
+            DataBaseHelper.CheckFieldLink(Entity.Properties);
+            CheckIndex();
         }
 
         public void CheckRelation()
         {
-            CheckRelation(false);
         }
-        public void CheckRelation(bool repair)
-        {
-            DataBaseHelper.CheckFieldLink(Entity.Properties);
-            //if (Entity.Fields.Any(p => p.IsLinkField && !p.IsLinkKey))
-            //{
-            //    if (Entity.ReadTableName == Entity.SaveTableName || repair)
-            //    {
-            //        Entity.ReadTableName = DataBaseHelper.ToViewName(Entity);
-            //    }
-            //}
-            //else
-            //{
-            //    Entity.ReadTableName = null;
-            //}
-        }
-
 
         public void CheckIndex()
         {
-            
-            foreach(var field in Entity.Properties)
+            foreach (var field in Entity.Properties)
             {
                 if (field.NoStorage)
                     continue;
-                if (field.IsLinkKey ||field.IsCaption ||field.IsEnum)
+                if (field.IsLinkKey || field.IsCaption || field.IsEnum)
                 {
                     field.IsDbIndex = true;
                     Trace.WriteLine($"--{field.Caption}:{field.DbFieldName}");

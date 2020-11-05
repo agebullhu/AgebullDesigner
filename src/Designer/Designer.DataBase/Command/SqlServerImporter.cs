@@ -21,7 +21,7 @@ namespace Agebull.Common.Config.Designer
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            CommandCoefficient.RegisterCommand(new CommandItemBuilder<ProjectConfig, int>(BeginImportSqlServer, DoImportSqlServer, EndImportSqlServer)
+            CommandCoefficient.RegisterItem<ProjectConfig>(new CommandItemBuilder<ProjectConfig, int>(BeginImportSqlServer, DoImportSqlServer, EndImportSqlServer)
             {
                 Caption = "导入SqlServer数据库",
                 Catalog = "数据库",

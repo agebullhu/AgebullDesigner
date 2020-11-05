@@ -114,6 +114,16 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="func"></param>
         /// <returns></returns>
+        public static EntityConfig Find(string name)
+        {
+            return GetEntity(p=>string.Equals(name,p.Name,StringComparison.OrdinalIgnoreCase)|| string.Equals(name, p.SaveTableName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>
+        ///     查找实体对象
+        /// </summary>
+        /// <param name="func"></param>
+        /// <returns></returns>
         public static EntityConfig Find(Func<EntityConfig, bool> func)
         {
             return GetEntity(func);
@@ -178,7 +188,7 @@ namespace Agebull.EntityModel.Config
         ///     配置查找表
         /// </summary>
         [IgnoreDataMember]
-        public static Dictionary<Guid, ConfigBase> ConfigDictionary = new Dictionary<Guid, ConfigBase>();
+        public static Dictionary<string, ConfigBase> ConfigDictionary = new Dictionary<string, ConfigBase>();
 
         /// <summary>
         /// 清除
@@ -239,17 +249,14 @@ namespace Agebull.EntityModel.Config
         /// <typeparam name="TConfig"></typeparam>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static TConfig GetConfig<TConfig>(string key)
+        public static TConfig GetConfigByKey<TConfig>(string key)
             where TConfig : ConfigBase
         {
-            if (key == null)
-                return null;
-            var guid = new Guid(key);
-            if (guid == Guid.Empty)
+            if (string.IsNullOrEmpty(key))
                 return null;
             lock (ConfigDictionary)
             {
-                ConfigDictionary.TryGetValue(guid, out ConfigBase config);
+                ConfigDictionary.TryGetValue(key, out ConfigBase config);
                 return config as TConfig;
             }
         }
@@ -259,9 +266,9 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static ConfigBase GetConfig(Guid key)
+        public static ConfigBase GetConfig(string key)
         {
-            if (key == Guid.Empty)
+            if (string.IsNullOrEmpty(key))
                 return null;
             lock (ConfigDictionary)
             {
@@ -276,10 +283,10 @@ namespace Agebull.EntityModel.Config
         /// <typeparam name="TConfig"></typeparam>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static TConfig GetConfig<TConfig>(Guid key)
+        public static TConfig GetConfig<TConfig>(string key)
             where TConfig : ConfigBase
         {
-            if (key == Guid.Empty)
+            if (string.IsNullOrEmpty(key))
                 return null;
             lock (ConfigDictionary)
             {

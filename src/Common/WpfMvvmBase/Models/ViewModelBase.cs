@@ -8,8 +8,10 @@
 
 #region 引用
 
+using Agebull.Common;
 using Agebull.Common.Mvvm;
 using System;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows;
 
@@ -65,7 +67,19 @@ namespace Agebull.EntityModel
         /// <summary>
         ///     对应的命令集合
         /// </summary>
-        public NotificationList<CommandItemBase> Commands => _commands ??= CreateCommands();
+        public NotificationList<CommandItemBase> Commands => _commands ??= GetCommands();
+
+        /// <summary>
+        /// 构造命令列表
+        /// </summary>
+        /// <returns></returns>
+        NotificationList<CommandItemBase> GetCommands()
+        {
+            var cmds = CreateCommands();
+            var result = new NotificationList<CommandItemBase>();
+            result.Append(cmds, p => p.Key);
+            return result;
+        }
 
         /// <summary>
         /// 构造命令列表

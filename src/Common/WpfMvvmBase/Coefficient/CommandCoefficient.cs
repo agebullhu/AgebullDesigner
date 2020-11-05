@@ -9,34 +9,42 @@ namespace Agebull.Common.Mvvm
     /// </summary>
     public class CommandCoefficient
     {
-        private static readonly Dictionary<Type, List<ICommandItemBuilder>> CommandBuilders = new Dictionary<Type, List<ICommandItemBuilder>>();
+        private static readonly Dictionary<Type, List<Func<IEnumerable<ICommandItemBuilder>>>> CommandBuilders = new Dictionary<Type, List<Func<IEnumerable<ICommandItemBuilder>>>>();
 
         /// <summary>
         /// 注册命令
         /// </summary>
         /// <typeparam name="TCommandItemBuilder"></typeparam>
-        public static void RegisterCommand<TCommandItemBuilder>()
-            where TCommandItemBuilder : ICommandItemBuilder, new()
+        public static void RegisterCommand<TDestConfig>(Func<IEnumerable<ICommandItemBuilder>> func)
         {
-            RegisterCommand(new TCommandItemBuilder());
+            var type = typeof(TDestConfig);
+            if (!CommandBuilders.TryGetValue(type, out var cmds))
+            {
+                CommandBuilders.Add(type, cmds = new List<Func<IEnumerable<ICommandItemBuilder>>>());
+            }
+            cmds.Add(func);
         }
 
         /// <summary>
         /// 注册命令
         /// </summary>
-        public static void RegisterCommand(ICommandItemBuilder builder)
+        /// <typeparam name="TDestConfig"></typeparam>
+        public static void RegisterItem<TDestConfig>(params ICommandItemBuilder[] items)
         {
-            var type = builder.TargetType ?? typeof(object);
-            if (CommandBuilders.TryGetValue(type, out var cmds))
+            var type = typeof(TDestConfig);
+            if (!CommandBuilders.TryGetValue(type, out var cmds))
             {
-                cmds.Add(builder);
+                CommandBuilders.Add(type, cmds = new List<Func<IEnumerable<ICommandItemBuilder>>>());
             }
-            else
-            {
-                CommandBuilders.Add(type, new List<ICommandItemBuilder> { builder });
-            }
+            cmds.Add(() => items);
         }
-
+        /// <summary>
+        /// 清除命令对象
+        /// </summary>
+        public static void ClearCommand()
+        {
+            Commands.Clear();
+        }
         private static readonly Dictionary<string, List<CommandItemBase>> Commands = new Dictionary<string, List<CommandItemBase>>();
 
         /// <summary>
@@ -51,8 +59,7 @@ namespace Agebull.Common.Mvvm
                 return new List<CommandItemBase>();
             var type = binding.GetType();
             string key = $"{type.FullName}:{view}";
-            List<CommandItemBase> result;
-            if (Commands.TryGetValue(key, out result))
+            if (Commands.TryGetValue(key, out List<CommandItemBase> result))
             {
                 foreach (var action in result)
                     action.Source = binding;
@@ -61,41 +68,48 @@ namespace Agebull.Common.Mvvm
             result = new List<CommandItemBase>();
             Commands.Add(key, result);
 
-            var dictionary = new Dictionary<ICommandItemBuilder, bool>();
+
+            var dictionary = new HashSet<string>();
             foreach (var item in CommandBuilders)
             {
-                foreach (var action in item.Value.Where(p => p.Editor == null || !p.SignleSoruce))
+                foreach (var func in item.Value)
                 {
-                    if (action.TargetType != null && CheckType != null && !CheckType.Invoke(type, action.TargetType, action.SignleSoruce))
+                    var cmds = func();
+                    foreach (var action in cmds.Where(p => p.Editor == null || !p.SignleSoruce))
                     {
-                        //System.Diagnostics.Debug.WriteLine($"No Type. caption:{action.Caption}|view:{action.SoruceView}|target:{action.TargetType.FullName} - {type.FullName}");
-                        continue;
+                        if (action.TargetType != null && CheckType != null &&
+                            !CheckType.Invoke(type, action.TargetType, action.SignleSoruce))
+                        {
+                            //System.Diagnostics.Debug.WriteLine($"No Type. caption:{action.Caption}|view:{action.SoruceView}|target:{action.TargetType.FullName} - {type.FullName}");
+                            continue;
+                        }
+                        key = $"{action.Catalog}_{action.Caption}";
+                        if (dictionary.Contains(key))
+                            continue;
+                        dictionary.Add(key);
+                        if (action.SoruceView == null || view == null || view.Contains(action.SoruceView))
+                        {
+                            result.Add(action.ToCommand(key, binding, null));
+                        }
+                        //System.Diagnostics.Debug.WriteLine($"No SoruceView. caption:{action.Caption}|view:{action.SoruceView}-{view}|target:{action.TargetType?.FullName}");
                     }
-
-                    if (action.SoruceView == null)
-                    {
-                        AddCommand(binding, dictionary, result, action);
-                        continue;
-                    }
-                    if (view != null && view.Contains(action.SoruceView))
-                        AddCommand(binding, dictionary, result, action);
-                    //else
-                    //    System.Diagnostics.Debug.WriteLine($"No SoruceView. caption:{action.Caption}|view:{action.SoruceView}-{view}|target:{action.TargetType.FullName}");
                 }
             }
             return result;
         }
         public static Func<Type, Type, bool, bool> CheckType { get; set; }
 
-
-        private static void AddCommand(object binding, Dictionary<ICommandItemBuilder, bool> dictionary, List<CommandItemBase> result, ICommandItemBuilder action)
+        /// <summary>
+        /// 编辑器命令对象匹配
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <param name="editor">编辑器</param>
+        /// <returns></returns>
+        public static void CoefficientEditor<TType>(IList<CommandItemBase> list, string editor = null)
         {
-            if (dictionary.ContainsKey(action))
-                return;
-            result.Add(action.ToCommand(binding, null));
-            dictionary.Add(action, true);
+            var type = typeof(TType);
+            CoefficientEditor(list, p => p != type && !type.IsSubclassOf(p), editor);
         }
-
 
         /// <summary>
         /// 编辑器命令对象匹配
@@ -105,18 +119,40 @@ namespace Agebull.Common.Mvvm
         /// <returns></returns>
         public static List<CommandItemBase> CoefficientEditor(Type type, string editor = null)
         {
-            var result = new Dictionary<ICommandItemBuilder, CommandItemBase>();
+            var result = new List<CommandItemBase>();
+            CoefficientEditor(result, p => p != type && !type.IsSubclassOf(p), editor);
+            return result;
+        }
+
+        /// <summary>
+        /// 编辑器命令对象匹配
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <param name="editor">编辑器</param>
+        /// <returns></returns>
+        public static void CoefficientEditor(IList<CommandItemBase> list, Func<Type, bool> filter, string editor = null)
+        {
+            var dictionary = new HashSet<string>();
+            foreach (var item in list)
+                dictionary.Add(item.Key);
+
             foreach (var item in CommandBuilders)
             {
-                if (item.Key != type && !type.IsSubclassOf(item.Key))
+                if (!filter(item.Key))
                     continue;
-                foreach (var action in item.Value.Where(p => editor == null || p.Editor != null && p.Editor.Contains(editor)))
+                foreach (var func in item.Value)
                 {
-                    if (!result.ContainsKey(action))
-                        result.Add(action, action.ToCommand(null, null));
+                    var cmds = func();
+                    foreach (var action in cmds.Where(p => editor == null || p.Editor != null && p.Editor.Contains(editor)))
+                    {
+                        var key = $"{action.Catalog}_{action.Caption}";
+                        if (dictionary.Contains(key))
+                            continue;
+                        dictionary.Add(key);
+                        list.Add(action.ToCommand(key, null, null));
+                    }
                 }
             }
-            return result.Values.ToList();
         }
     }
 }

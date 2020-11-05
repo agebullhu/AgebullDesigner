@@ -35,11 +35,7 @@ namespace Agebull.EntityModel.Designer
         {
             var commands = new NotificationList<CommandItemBase>();
             CreateCommands(commands);
-
-            var extends = CommandCoefficient.CoefficientEditor(typeof(EntityConfig), EditorName);
-            if (extends.Count > 0)
-                commands.AddRange(extends);
-
+            CommandCoefficient.CoefficientEditor<EntityConfig>(commands, EditorName);
             return commands;
         }
 

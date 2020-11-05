@@ -167,7 +167,7 @@ SELECT {0}", entity.PrimaryColumn.DbFieldName);
                 else
                 {
                     Trace.WriteLine($" ==== {col.Name}");
-                    col.Option.ReferenceKey = Guid.Empty;
+                    col.Option.ReferenceKey = null;
                     col.Option.IsLink = false;
                     col.DbFieldName = field;
 

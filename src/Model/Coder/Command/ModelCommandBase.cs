@@ -8,7 +8,7 @@ using Agebull.Common.Mvvm;
 
 namespace Agebull.EntityModel.Designer
 {
-    /// <summary>
+    /*// <summary>
     /// 实体命令基类
     /// </summary>
     public abstract class ModelCommandBase<TModelConfig> : ConfigCommandBase<TModelConfig>
@@ -18,6 +18,7 @@ namespace Agebull.EntityModel.Designer
         {
             TargetType = typeof(TModelConfig);
         }
+
         /// <summary>
         /// 转为命令对象
         /// </summary>
@@ -190,5 +191,5 @@ namespace Agebull.EntityModel.Designer
                 Trace.WriteLine(ex?.ToString(), Caption);
             }
         }
-    }
+    }*/
 }

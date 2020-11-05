@@ -277,7 +277,7 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
                 return Empty;
             return $@"
 /*******************************{entity.Caption}*******************************/
-DROP TABLE `{entity.SaveTableName}`;";
+DROP TABLE IF EXISTS `{entity.SaveTableName}`;";
             //            return string.Format(@"
             //truncate TABLE dbo.{0};
             //GO
@@ -509,7 +509,7 @@ ALTER TABLE `{entity.SaveTableName}`
 
         private static string FieldDefault(IFieldConfig col)
         {
-            return $"`{col.DbFieldName}` {MySqlHelper.ColumnType(col)}{NullKeyWord(col)} {ColumnDefault(col)} COMMENT '{col.Caption}'";
+            return $"`{col.DbFieldName}` {MySqlDataBaseHelper.ColumnType(col)}{NullKeyWord(col)} {ColumnDefault(col)} COMMENT '{col.Caption}'";
         }
 
         private static string NullKeyWord(IFieldConfig col)

@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Agebull.Common;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 
 namespace Agebull.EntityModel.Config
 {
@@ -18,22 +17,8 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static string ToTableName(EntityConfig entity)
         {
-            var head = new StringBuilder("tb_");
-            //if (!string.IsNullOrWhiteSpace(entity.Parent.Abbreviation))
-            //{
-            //    head.Append(entity.Parent.Abbreviation.ToLWord());
-            //    head.Append('_');
-            //}
-            if (entity.Classify != null/* && entity.Parent.Classifies.Count > 1*/)
-            {
-                var cls = entity.Parent.Classifies.FirstOrDefault(p => p.Name == entity.Classify);
-                if (cls != null)
-                {
-                    head.Append(cls.Abbreviation.ToLWord());
-                    head.Append('_');
-                }
-            }
-            return GlobalConfig.SplitWords(entity.Name).Select(p => p.ToLower()).LinkToString(head.ToString(), "_");
+            var style = CodeStyleManager.GetDatabaseStyle(entity.Parent.CodeStyle, entity.Parent.DbType);
+            return style.FormatTableName(entity); 
         }
 
         /// <summary>
@@ -41,16 +26,21 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public static string ToViewName(EntityConfig entity) => "view_" + entity.Name.Replace("tb_", "");
+        public static string ToViewName(EntityConfig entity)
+        {
+            var style = CodeStyleManager.GetDatabaseStyle(entity.Parent.CodeStyle, entity.Parent.DbType);
+            return style.FormatViewName(entity);
+        }
 
         /// <summary>
         /// 到标准数据表名称
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="field"></param>
         /// <returns></returns>
-        public static string ToDbFieldName(string name)
+        public static string ToDbFieldName(IFieldConfig field)
         {
-            return GlobalConfig.ToLinkWordName(name, "_", false);
+            var style = CodeStyleManager.GetDatabaseStyle(field.Parent.Parent.CodeStyle, field.Parent.Parent.DbType);
+            return style.FormatFieldName(field);
         }
 
         /// <summary>
@@ -87,7 +77,7 @@ namespace Agebull.EntityModel.Config
                     continue;
                 }
                 FieldConfig pro = field.IsLinkKey ? table.PrimaryColumn : table.Find(field.LinkField); 
-                if(pro == null && field.Option.ReferenceKey != Guid.Empty)
+                if(pro == null && !field.Option.ReferenceKey.IsEmpty())
                 {
                     pro = GlobalConfig.GetConfig<FieldConfig>(field.Option.ReferenceKey);
                 }
@@ -131,7 +121,7 @@ namespace Agebull.EntityModel.Config
         {
             Trace.WriteLine($"X    :{field.Caption}({field.Name})");
             field.LinkTable = field.LinkField = null;
-            field.Option.ReferenceKey = Guid.Empty;
+            field.Option.ReferenceKey = null;
             field.IsLinkField = field.IsLinkKey = field.IsLinkCaption = false;
         }
     }

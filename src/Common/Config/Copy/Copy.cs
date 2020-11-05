@@ -463,13 +463,22 @@ namespace Agebull.EntityModel.Config
     partial class FieldConfig
     {
         /// <summary>
+        /// 复制
+        /// </summary>
+        /// <param name="field"></param>
+        void IFieldConfig.Copy(IFieldConfig field)
+        {
+            CopyFrom(field as SimpleConfig);
+        }
+
+        /// <summary>
         /// 复制值
         /// </summary>
         /// <param name="cfg">配置对象</param>
         /// <param name="full">全量</param>
         /// <param name="option">系统配置</param>
         /// <param name="primary">主键相关</param>
-        public void CopyFromProperty(FieldConfig cfg, bool primary, bool full, bool option)
+        public void CopyFromProperty(IFieldConfig cfg, bool primary, bool full, bool option)
         {
             Name = cfg.Name;
             Caption = cfg.Caption;
@@ -613,6 +622,15 @@ namespace Agebull.EntityModel.Config
 
     partial class PropertyConfig
     {
+        /// <summary>
+        /// 复制
+        /// </summary>
+        /// <param name="field"></param>
+        void IFieldConfig.Copy(IFieldConfig field)
+        {
+            CopyFrom(field as SimpleConfig);
+        }
+
         /// <summary>
         /// 复制值
         /// </summary>

@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 
 namespace Agebull.EntityModel.Config
 {
@@ -165,10 +166,53 @@ namespace Agebull.EntityModel.Config
         #region 数据模型
 
         /// <summary>
+        /// Redis唯一键模板
+        /// </summary>
+        [DataMember, JsonProperty("isLinkTable", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isLinkTable;
+
+        /// <summary>
+        /// 是否关联表
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据标识"), DisplayName(@"是否关联表")]
+        public bool IsLinkTable
+        {
+            get => _isLinkTable;
+            set
+            {
+                if (_isLinkTable == value)
+                    return;
+                BeforePropertyChanged(nameof(IsLinkTable), _isLinkTable, value);
+                _isLinkTable = value;
+                IsInternal = value;
+                OnPropertyChanged(nameof(IsLinkTable));
+            }
+        }
+
+        /// <summary>
         /// 是否查询
         /// </summary>
         [DataMember, JsonProperty("isQuery", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        public bool IsQuery { get; set; }
+        internal bool _isQuery;
+
+        /// <summary>
+        /// 是否查询
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据标识"), DisplayName(@"是否查询")]
+        public bool IsQuery
+        {
+            get => _isQuery;
+            set
+            {
+                if (_isQuery == value)
+                    return;
+                BeforePropertyChanged(nameof(IsQuery), _isQuery, value);
+                _isQuery = value;
+                OnPropertyChanged(nameof(IsQuery));
+            }
+        }
 
         /// <summary>
         /// 非标准数据类型
@@ -305,34 +349,6 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(ModelBase));
             }
         }
-
-        /// <summary>
-        /// 接口是否为显示实现
-        /// </summary>
-        [DataMember, JsonProperty("_interfaceInner", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _interfaceInner;
-
-        /// <summary>
-        /// 接口是否为显示实现
-        /// </summary>
-        /// <remark>
-        /// 接口是否为显示实现
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据模型"), DisplayName(@"接口是否为显示实现"), Description("接口是否为显示实现")]
-        public bool InterfaceInner
-        {
-            get => _interfaceInner;
-            set
-            {
-                if (_interfaceInner == value)
-                    return;
-                BeforePropertyChanged(nameof(InterfaceInner), _interfaceInner, value);
-                _interfaceInner = value;
-                OnPropertyChanged(nameof(InterfaceInner));
-            }
-        }
-
 
         /// <summary>
         /// 数据版本
@@ -612,11 +628,30 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public FieldConfig Find(string name)
+        public FieldConfig Find(params string[] names)
         {
-            return Properties.FirstOrDefault(p =>
-                string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(p.DbFieldName, name, StringComparison.OrdinalIgnoreCase));
+            return Properties.FirstOrDefault(p => names.Exist(p.Name, p.DbFieldName));
+        }
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool TryGet(out FieldConfig field, params string[] names)
+        {
+            field = Properties.FirstOrDefault(p => names.Exist(p.Name, p.DbFieldName));
+            return field != null;
+        }
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool Exist(params string[] names)
+        {
+            return Properties.Any(p => names.Exist(p.Name, p.DbFieldName));
         }
 
         /// <summary>
@@ -921,7 +956,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 详细编辑页面
         /// </summary>
-        [IgnoreDataMember, JsonIgnore,Category(@"用户界面")]
+        [IgnoreDataMember, JsonIgnore, Category(@"用户界面")]
         public bool DetailsPage
         {
             get => _detailsPage;

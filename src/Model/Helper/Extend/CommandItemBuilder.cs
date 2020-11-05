@@ -19,8 +19,9 @@ namespace Agebull.EntityModel.Designer
         /// 转为命令对象
         /// </summary>
         /// <returns>命令对象</returns>
-        public CommandItemBase ToCommand(object arg, Func<object, IEnumerator> enumerator)
+        public CommandItemBase ToCommand(string key, object arg, Func<object, IEnumerator> enumerator)
         {
+            Key = key;
             var item = new CommandItem
             {
                 Source = arg,
@@ -60,8 +61,9 @@ namespace Agebull.EntityModel.Designer
         /// 转为命令对象
         /// </summary>
         /// <returns>命令对象</returns>
-        public CommandItemBase ToCommand(object arg, Func<object, IEnumerator> enumerator)
+        public CommandItemBase ToCommand(string key, object arg, Func<object, IEnumerator> enumerator)
         {
+            Key = key;
             var item = new IteratorCommandItem<TParameter>
             {
                 Source = arg,
@@ -138,10 +140,12 @@ namespace Agebull.EntityModel.Designer
         /// 转为命令对象
         /// </summary>
         /// <returns>命令对象</returns>
-        public CommandItemBase ToCommand(object arg, Func<object, IEnumerator> enumerator)
+        public CommandItemBase ToCommand(string key, object arg, Func<object, IEnumerator> enumerator)
         {
+            Key = key;
             var item = new AsyncCommandItem<TParameter, TResult>(Prepare, Exceute, End)
             {
+                Source = arg,
                 Prepare2 = Prepare2
             };
             item.CopyFrom(this);

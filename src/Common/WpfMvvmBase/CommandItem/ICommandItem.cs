@@ -1,3 +1,4 @@
+using Agebull.EntityModel.Config;
 using System;
 
 namespace Agebull.Common.Mvvm
@@ -5,17 +6,8 @@ namespace Agebull.Common.Mvvm
     /// <summary>
     /// 表示一个命令生成器
     /// </summary>
-    public interface ICommandItem
+    public interface ICommandItem : IKey
     {
-        /// <summary>
-        ///     标识
-        /// </summary>
-        Guid Id
-        {
-            get;
-            set;
-        }
-
         /// <summary>
         ///     名称
         /// </summary>
@@ -109,32 +101,29 @@ namespace Agebull.Common.Mvvm
         }
 
     }
-
-    /// <summary>
-    /// 表示一个命令生成器
-    /// </summary>
-    public static class ICommandItemExtend
+    public static class CommandItemHelper
     {
+
         /// <summary>
         /// 从源中复制
         /// </summary>
         /// <param name="dest">目标</param>
         /// <param name="sour">源</param>
-        public static void CopyFrom(this ICommandItem dest, ICommandItem sour)
+        public static void CopyFrom(this ICommandItem dist, ICommandItem sour)
         {
-            dest.Id = sour.Id;
-            dest.NoConfirm = sour.NoConfirm;
-            dest.Name = sour.Name;
-            dest.Caption = sour.Caption;
-            dest.Description = sour.Description;
-            dest.IsButton = sour.IsButton;
-            dest.SignleSoruce = sour.SignleSoruce;
-            dest.Catalog = sour.Catalog;
-            dest.WorkView = sour.WorkView;
-            dest.SoruceView = sour.SoruceView;
-            dest.TargetType = sour.TargetType;
-            dest.IconName = sour.IconName;
-            dest.ConfirmMessage = sour.ConfirmMessage;
+            dist. Key = sour.Key ?? sour.GetHashCode().ToString();
+            dist.NoConfirm = sour.NoConfirm;
+            dist.Name = sour.Name;
+            dist.Caption = sour.Caption;
+            dist.Description = sour.Description;
+            dist.IsButton = sour.IsButton;
+            dist.SignleSoruce = sour.SignleSoruce;
+            dist.Catalog = sour.Catalog;
+            dist.WorkView = sour.WorkView;
+            dist.SoruceView = sour.SoruceView;
+            dist.TargetType = sour.TargetType;
+            dist.IconName = sour.IconName;
+            dist.ConfirmMessage = sour.ConfirmMessage;
         }
     }
 }

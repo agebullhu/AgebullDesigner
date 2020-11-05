@@ -56,7 +56,7 @@
                     </StackPanel>
                     <StackPanel>
                         <Label Content="存储类型" />
-                        <ComboBox ItemsSource="{x:Static mysql1:MySqlHelper.DataTypeList}"
+                        <ComboBox ItemsSource="{x:Static mysql1:MySqlDataBaseHelper.DataTypeList}"
                                   SelectedValue="{Binding DbType,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel>

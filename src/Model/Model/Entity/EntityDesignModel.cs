@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Media;
 using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
+using Agebull.EntityModel.RobotCoder;
+using System.Text;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -75,9 +77,7 @@ namespace Agebull.EntityModel.Designer
                 CreateCommands(commands);
             if (ext)
             {
-                var extends = CommandCoefficient.CoefficientEditor(typeof(EntityConfig), EditorName);
-                if (extends.Count > 0)
-                    commands.AddRange(extends);
+                CommandCoefficient.CoefficientEditor<EntityConfig>(commands, EditorName);
             }
             return commands;
         }
@@ -92,7 +92,7 @@ namespace Agebull.EntityModel.Designer
             if(Context.SelectEntity is EntityConfig entity)
             {
                 Context.CopiedTable = entity;
-                Context.CopyColumns = Context.SelectColumns.OfType<FieldConfig>().ToList();
+                Context.CopyColumns = Context.SelectColumns.OfType<FieldConfig>().OrderBy(p=>p.Index).ToList();
                 Context.StateMessage = $"复制了{Context.CopyColumns.Count}行";
             }
         }
@@ -147,7 +147,7 @@ namespace Agebull.EntityModel.Designer
 
         public void PateFields(bool toReference, EntityConfig source, EntityConfig Entity, List<FieldConfig> columns)
         {
-            foreach (var copyColumn in columns)
+            foreach (var copyColumn in columns.OrderBy(p=>p.Index))
             {
                 var refe = toReference && !copyColumn.Entity.IsInterface;
                 FieldConfig newColumn = null;
@@ -177,6 +177,7 @@ namespace Agebull.EntityModel.Designer
                 if (newColumn == null)
                 {
                     newColumn = new FieldConfig();
+                    newColumn.Entity = Entity;
                     newColumn.CopyFromProperty(copyColumn, false, true, true);
                     newColumn.Option.Index = newColumn.Option.Identity = 0;
                     
@@ -185,7 +186,8 @@ namespace Agebull.EntityModel.Designer
                         if (copyColumn.IsPrimaryKey)
                         {
                             newColumn.Name = copyColumn.Entity.Name + "Id";
-                            newColumn.Caption = copyColumn.Entity.Caption + "外键";
+                            newColumn.Caption = copyColumn.Entity.Caption + "ID";
+                            newColumn.DbFieldName = copyColumn.Name.ToLinkWordName("_", false) + "_id";
                         }
                         else if (copyColumn.IsCaption)
                         {
@@ -194,7 +196,8 @@ namespace Agebull.EntityModel.Designer
                         }
                         newColumn.Option.IsLink = true;
                         newColumn.Option.ReferenceConfig = copyColumn;
-                        newColumn.DbFieldName = DataBaseHelper.ToDbFieldName(newColumn.Name);
+                        newColumn.DbFieldName = DataBaseHelper.ToDbFieldName(newColumn);
+                        newColumn.JsonName = newColumn.Name.ToLWord();
                     }
                     Entity.Add(newColumn);
                 }

@@ -9,12 +9,20 @@ namespace Agebull.Common.Mvvm
     public class CommandConfig : NotificationObject, ICommandItem
     {
         /// <summary>
+        /// 标识
+        /// </summary>
+        public string Key
+        {
+            get; 
+            set;
+        }
+
+        /// <summary>
         ///     名称
         /// </summary>
         public string Name
         {
-            get;
-            set;
+            get; set;
         }
 
         /// <summary>
@@ -22,8 +30,7 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         public string Caption
         {
-            get;
-            set;
+            get; set;
         }
 
         /// <summary>
@@ -31,9 +38,9 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         public string Description
         {
-            get;
-            set;
+            get; set;
         }
+
         /// <summary>
         ///     显示为按钮
         /// </summary>
@@ -132,8 +139,5 @@ namespace Agebull.Common.Mvvm
         /// 无需确认
         /// </summary>
         public bool DoConfirm => !string.IsNullOrWhiteSpace(ConfirmMessage);
-
-        Guid? _id;
-        public Guid Id { get => _id ??= Guid.NewGuid(); set => _id = value; }
     }
 }

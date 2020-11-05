@@ -185,7 +185,8 @@ namespace Agebull.EntityModel.Designer
         private static readonly BitmapImage imgModify = Application.Current.Resources["img_modify"] as BitmapImage;
 
         private static readonly BitmapImage imgDefault = Application.Current.Resources["img_no_modify"] as BitmapImage;
-
+        private static readonly BitmapImage imgLink = Application.Current.Resources["img_switch"] as BitmapImage;
+        
         #endregion
 
     }

@@ -355,7 +355,7 @@ SELECT @@IDENTITY;");
 
                 code.Append($@"
                 case ""{property.Name.ToLower()}"":
-                    return (int)MySqlDbType.{MySqlHelper.ToSqlDbType(property.DbType, property.CsType)};");
+                    return (int)MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(property.DbType, property.CsType)};");
             }
 
             code.Append(@"

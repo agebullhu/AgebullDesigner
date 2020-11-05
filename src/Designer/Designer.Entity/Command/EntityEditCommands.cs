@@ -35,7 +35,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "导入字段",
                 SignleSoruce = true,
                 IsButton = true,
-                Catalog = "编辑",
+                Catalog = "实体",
                 IconName = "tree_Open",
                 SoruceView = "entity"
             });
@@ -46,7 +46,7 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity",
                 IsButton = true,
                 SignleSoruce = true,
-                Catalog = "编辑",
+                Catalog = "实体",
                 IconName = "tree_Child1"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
@@ -56,7 +56,7 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity",
                 IsButton = false,
                 SignleSoruce = true,
-                Catalog = "编辑",
+                Catalog = "实体",
                 IconName = "img_del"
             });
         }

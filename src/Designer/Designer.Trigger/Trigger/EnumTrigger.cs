@@ -13,7 +13,7 @@ namespace Agebull.EntityModel.Designer
         {
             TargetConfig.Option.IsReference = false;
             TargetConfig.Option.IsLink = false;
-            TargetConfig.Option.ReferenceKey = Guid.Empty;
+            TargetConfig.Option.ReferenceKey = null;
             TargetConfig.Option.ReferenceConfig = null;
         }
 

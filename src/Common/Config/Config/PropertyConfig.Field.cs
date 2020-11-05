@@ -24,7 +24,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 上级
         /// </summary>
-        IEntityConfig IFieldConfig. Parent => Model;
+        IEntityConfig IFieldConfig.Parent => Model;
 
         /// <summary>
         /// 上级
@@ -39,7 +39,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"上级"), Description("上级")]
-        public EntityConfig Entity => Field.Entity;
+        public EntityConfig Entity
+        {
+            get => Field.Entity; set => Field.Entity = value;
+        }
 
         #endregion
         #region 系统
@@ -52,7 +55,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"系统"), DisplayName(@"阻止编辑"), Description("阻止使用的范围")]
-        public AccessScopeType DenyScope => Field.DenyScope;
+        public AccessScopeType DenyScope
+        {
+            get => Field.DenyScope; set => Field.DenyScope = value;
+        }
 
         #endregion
         #region 模型设计(C#)
@@ -66,7 +72,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"是否数组"), Description("是否数组")]
-        public bool IsArray => Field.IsArray;
+        public bool IsArray
+        {
+            get => Field.IsArray; set => Field.IsArray = value;
+        }
 
         /// <summary>
         /// 是否字典
@@ -76,7 +85,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"是否字典"), Description("是否字典")]
-        public bool IsDictionary => Field.IsDictionary;
+        public bool IsDictionary
+        {
+            get => Field.IsDictionary; set => Field.IsDictionary = value;
+        }
 
         /// <summary>
         /// 枚举类型(C#)
@@ -86,7 +98,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"是否枚举类型)"), Description("字段类型")]
-        public bool IsEnum => Field.IsEnum;
+        public bool IsEnum
+        {
+            get => Field.IsEnum; set => Field.IsEnum = value;
+        }
 
 
         /// <summary>
@@ -97,7 +112,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计(C#)"), DisplayName(@"非基本类型名称(C#)"), Description("字段类型")]
-        public string CustomType => Field.CustomType;
+        public string CustomType
+        {
+            get => Field.CustomType; set => Field.CustomType = value;
+        }
 
         /// <summary>
         /// 参考类型
@@ -107,7 +125,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计(C#)"), DisplayName(@"参考类型(C#)"), Description("字段类型")]
-        public string ReferenceType => Field.ReferenceType;
+        public string ReferenceType
+        {
+            get => Field.ReferenceType; set => Field.ReferenceType = value;
+        }
 
         /// <summary>
         /// 结果类型(C#)
@@ -138,7 +159,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计(C#)"), DisplayName(@"可空类型(C#)")]
-        public bool Nullable => Field.Nullable;
+        public bool Nullable
+        {
+            get => Field.Nullable; set => Field.Nullable = value;
+        }
         #endregion
         #region 模型设计
 
@@ -150,7 +174,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@""), DisplayName(@"是否扩展值"), Description("是否扩展值")]
-        public bool IsExtendValue => Field.Nullable;
+        public bool IsExtendValue
+        {
+            get => Field.Nullable; set => Field.Nullable = value;
+        }
 
         /// <summary>
         /// 对应枚举
@@ -160,7 +187,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"对应枚举"), Description("当使用自定义类型时的枚举对象")]
-        public Guid EnumKey => Field.EnumKey;
+        public string EnumKey
+        {
+            get => Field.EnumKey; set => Field.EnumKey = value;
+        }
 
         /// <summary>
         /// 对应枚举
@@ -170,7 +200,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"对应枚举"), Description("当使用自定义类型时的枚举对象")]
-        public EnumConfig EnumConfig => Field.EnumConfig;
+        public EnumConfig EnumConfig
+        {
+            get => Field.EnumConfig; set => Field.EnumConfig = value;
+        }
 
         /// <summary>
         /// 内部字段
@@ -180,7 +213,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"内部字段"), Description("是否内部字段,即非用户字段,不呈现给用户")]
-        public bool InnerField => Field.InnerField;
+        public bool InnerField
+        {
+            get => Field.InnerField; set => Field.InnerField = value;
+        }
 
         /// <summary>
         /// 系统字段
@@ -190,7 +226,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"系统字段"), Description("系统字段")]
-        public bool IsSystemField => Field.IsSystemField;
+        public bool IsSystemField
+        {
+            get => Field.IsSystemField; set => Field.IsSystemField = value;
+        }
 
         /// <summary>
         /// 接口字段
@@ -200,7 +239,11 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"接口字段"), Description("是否接口字段")]
-        public bool IsInterfaceField => Field.IsInterfaceField;
+        public bool IsInterfaceField
+        {
+            get => Field.IsInterfaceField;
+            set => Field.IsInterfaceField = value;
+        }
 
         /// <summary>
         /// 代码访问范围
@@ -223,7 +266,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计(C++)"), DisplayName(@"私有字段"), Description("私有字段,不应该复制")]
-        public bool IsPrivateField => Field.IsPrivateField;
+        public bool IsPrivateField
+        {
+            get => Field.IsPrivateField; set => Field.IsPrivateField = value;
+        }
 
         /// <summary>
         /// 设计时字段
@@ -233,7 +279,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计(C++)"), DisplayName(@"设计时字段")]
-        public bool IsMiddleField => Field.IsMiddleField;
+        public bool IsMiddleField
+        {
+            get => Field.IsMiddleField; set => Field.IsMiddleField = value;
+        }
 
         /// <summary>
         /// 6位小数的整数的说明文字
@@ -261,7 +310,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"可读"), Description("可读,可以生成Get代码")]
-        public bool CanGet => Field.CanGet;
+        public bool CanGet
+        {
+            get => Field.CanGet; set => Field.CanGet = value;
+        }
 
         /// <summary>
         /// 可写
@@ -271,7 +323,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"可写"), Description("可写,即生成SET代码")]
-        public bool CanSet => Field.CanSet;
+        public bool CanSet
+        {
+            get => Field.CanSet; set => Field.CanSet = value;
+        }
         /// <summary>
         /// 计算列
         /// </summary>
@@ -280,7 +335,11 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计(计算列)"), DisplayName(@"计算列")]
-        public bool IsCompute => Field.IsCompute;
+        public bool IsCompute
+        {
+            get => Field.IsCompute;
+            set => Field.IsCompute = value;
+        }
 
 
         #endregion
@@ -295,7 +354,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"标题字段"), Description("标题字段")]
-        public bool IsCaption => Field.IsCaption;
+        public bool IsCaption
+        {
+            get => Field.IsCaption; set => Field.IsCaption = value;
+        }
 
         /// <summary>
         /// 主键字段
@@ -305,7 +367,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"主键字段"), Description("主键")]
-        public bool IsPrimaryKey => Field.IsPrimaryKey;
+        public bool IsPrimaryKey
+        {
+            get => Field.IsPrimaryKey; set => Field.IsPrimaryKey = value;
+        }
 
         /// <summary>
         /// 唯一值字段
@@ -315,7 +380,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"唯一值字段"), Description("即它也是唯一标识符,如用户的身份证号")]
-        public bool IsExtendKey => Field.IsExtendKey;
+        public bool IsExtendKey
+        {
+            get => Field.IsExtendKey; set => Field.IsExtendKey = value;
+        }
 
         /// <summary>
         /// 自增字段
@@ -325,7 +393,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"自增字段")]
-        public bool IsIdentity => Field.IsIdentity;
+        public bool IsIdentity
+        {
+            get => Field.IsIdentity; set => Field.IsIdentity = value;
+        }
 
         /// <summary>
         /// 全局标识
@@ -335,7 +406,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"全局标识"), Description("是否使用GUID的全局KEY")]
-        public bool IsGlobalKey => Field.IsGlobalKey;
+        public bool IsGlobalKey
+        {
+            get => Field.IsGlobalKey; set => Field.IsGlobalKey = value;
+        }
 
         /// <summary>
         /// 唯一属性组合顺序
@@ -345,7 +419,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"唯一属性组合顺序"), Description("参与组合成唯一属性的顺序,大于0有效")]
-        public int UniqueIndex => Field.UniqueIndex;
+        public int UniqueIndex
+        {
+            get => Field.UniqueIndex; set => Field.UniqueIndex = value;
+        }
         /// <summary>
         /// 唯一文本
         /// </summary>
@@ -354,7 +431,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"唯一文本"), Description("5是否唯一文本")]
-        public bool UniqueString => Field.UniqueString;
+        public bool UniqueString
+        {
+            get => Field.UniqueString; set => Field.UniqueString = value;
+        }
         #endregion
         #region 数据库
 
@@ -366,7 +446,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"不更新"), Description("不更新")]
-        public bool KeepUpdate => Field.KeepUpdate;
+        public bool KeepUpdate
+        {
+            get => Field.KeepUpdate; set => Field.KeepUpdate = value;
+        }
 
         /// <summary>
         /// 能否存储空值
@@ -376,7 +459,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"能否存储空值")]
-        public bool DbNullable => Field.DbNullable;
+        public bool DbNullable
+        {
+            get => Field.DbNullable; set => Field.DbNullable = value;
+        }
 
         /// <summary>
         /// 构建数据库索引
@@ -438,7 +524,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"存储列ID"), Description("存储列ID,即在数据库内部对应的列ID")]
-        public int DbIndex => Field.DbIndex;
+        public int DbIndex
+        {
+            get => Field.DbIndex; set => Field.DbIndex = value;
+        }
 
         /// <summary>
         /// 固定长度
@@ -448,7 +537,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"固定长度"), Description("是否固定长度字符串")]
-        public bool FixedLength => Field.FixedLength;
+        public bool FixedLength
+        {
+            get => Field.FixedLength; set => Field.FixedLength = value;
+        }
 
         /// <summary>
         /// 备注字段
@@ -472,7 +564,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"大数据"), Description("是否大数据")]
-        public bool IsBlob => Field.IsBlob;
+        public bool IsBlob
+        {
+            get => Field.IsBlob; set => Field.IsBlob = value;
+        }
 
         /// <summary>
         /// 内部字段(数据库)
@@ -482,7 +577,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"内部字段(数据库)")]
-        public bool DbInnerField => Field.DbInnerField;
+        public bool DbInnerField
+        {
+            get => Field.DbInnerField; set => Field.DbInnerField = value;
+        }
         /// <summary>
         /// 非数据库字段
         /// </summary>
@@ -491,7 +589,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"非数据库字段")]
-        public bool NoStorage => Field.NoStorage;
+        public bool NoStorage
+        {
+            get => Field.NoStorage; set => Field.NoStorage = value;
+        }
 
         /// <summary>
         /// 自定义保存
@@ -501,7 +602,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"自定义保存")]
-        public bool CustomWrite => Field.CustomWrite;
+        public bool CustomWrite
+        {
+            get => Field.CustomWrite; set => Field.CustomWrite = value;
+        }
 
         /// <summary>
         /// 存储值读写字段
@@ -511,7 +615,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"存储值读写字段")]
-        public string StorageProperty => Field.StorageProperty;
+        public string StorageProperty
+        {
+            get => Field.StorageProperty; set => Field.StorageProperty = value;
+        }
         #endregion
         #region 用户界面
 
@@ -818,7 +925,10 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据规则"), DisplayName(@"数据说明"), Description("对于值数据规则的描述")]
-        public string DataRuleDesc => Field.DataRuleDesc;
+        public string DataRuleDesc
+        {
+            get => Field.DataRuleDesc; set => Field.DataRuleDesc = value;
+        }
 
         /// <summary>
         /// 值说明
@@ -833,7 +943,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据规则"), DisplayName(@"校验代码"), Description("校验代码,本字段用{0}代替")]
-        public string ValidateCode => Field.ValidateCode;
+        public string ValidateCode
+        {
+            get => Field.ValidateCode; set => Field.ValidateCode = value;
+        }
 
         /// <summary>
         /// 能否为空的说明文字
@@ -876,7 +989,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据规则"), DisplayName(@"最大值"), Description("最大")]
-        public string Max => Field.Max;
+        public string Max
+        {
+            get => Field.Max; set => Field.Max = value;
+        }
 
         /// <summary>
         /// 最大值
@@ -886,7 +1002,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据规则"), DisplayName(@"最大值"), Description("最小")]
-        public string Min => Field.Min;
+        public string Min
+        {
+            get => Field.Min; set => Field.Min = value;
+        }
         #endregion
         #region 数据关联
 
@@ -898,7 +1017,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据关联"), DisplayName(@"连接字段"), Description("连接字段")]
-        public bool IsLinkField => Field.IsLinkField;
+        public bool IsLinkField
+        {
+            get => Field.IsLinkField; set => Field.IsLinkField = value;
+        }
 
         /// <summary>
         /// 关联表名
@@ -908,7 +1030,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据关联"), DisplayName(@"关联表名"), Description("关联表名")]
-        public string LinkTable => Field.LinkTable;
+        public string LinkTable
+        {
+            get => Field.LinkTable; set => Field.LinkTable = value;
+        }
 
         /// <summary>
         /// 关联表主键
@@ -918,7 +1043,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据关联"), DisplayName(@"关联表主键"), Description("关联表主键,即与另一个实体关联的外键")]
-        public bool IsLinkKey => Field.IsLinkKey;
+        public bool IsLinkKey
+        {
+            get => Field.IsLinkKey; set => Field.IsLinkKey = value;
+        }
 
         /// <summary>
         /// 关联表标题
@@ -928,7 +1056,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据关联"), DisplayName(@"关联表标题"), Description("关联表标题,即此字段为关联表的标题内容")]
-        public bool IsLinkCaption => Field.IsLinkCaption;
+        public bool IsLinkCaption
+        {
+            get => Field.IsLinkCaption; set => Field.IsLinkCaption = value;
+        }
 
         /// <summary>
         /// 对应客户ID
@@ -938,7 +1069,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据关联"), DisplayName(@"对应客户ID"), Description("是对应的UID,已过时,原来用于龙之战鼓")]
-        public bool IsUserId => Field.IsUserId;
+        public bool IsUserId
+        {
+            get => Field.IsUserId; set => Field.IsUserId = value;
+        }
 
         /// <summary>
         /// 关联字段名称
@@ -948,7 +1082,10 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据关联"), DisplayName(@"关联字段名称"), Description("关联字段名称,即在关联表中的字段名称")]
-        public string LinkField => Field.LinkField;
+        public string LinkField
+        {
+            get => Field.LinkField; set => Field.LinkField = value;
+        }
         #endregion
     }
 }

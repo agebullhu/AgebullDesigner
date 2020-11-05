@@ -201,15 +201,6 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 接口是否为显示实现
-        /// </summary>
-        bool InterfaceInner
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
         /// 生成校验代码
         /// </summary>
         bool HaseValidateCode
@@ -236,6 +227,18 @@ namespace Agebull.EntityModel.Config
         #endregion
 
         #region 子级
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        bool TryGet(out IFieldConfig field, params string[] names)
+        {
+            field = LastProperties.FirstOrDefault(p => names.Exist(p.Name, p.DbFieldName));
+            return field != null;
+        }
+
         IEnumerable<IFieldConfig> Properties { get; }
 
         /// <summary>

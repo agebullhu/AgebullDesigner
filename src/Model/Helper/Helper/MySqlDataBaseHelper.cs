@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Data;
-using Microsoft.Xaml.Behaviors.Media;
 using MySqlConnector;
 
 namespace Agebull.EntityModel.Config.Mysql
@@ -8,9 +7,8 @@ namespace Agebull.EntityModel.Config.Mysql
     /// <summary>
     ///     实体实现接口的命令
     /// </summary>
-    public class MySqlHelper
+    public class MySqlDataBaseHelper
     {
-
         /// <summary>
         /// 主页面类型类型的列表
         /// </summary>
@@ -228,8 +226,6 @@ namespace Agebull.EntityModel.Config.Mysql
             }
         }
 
-
-
         /// <summary>
         ///     从C#的类型转为DBType
         /// </summary>
@@ -290,7 +286,7 @@ namespace Agebull.EntityModel.Config.Mysql
         }
 
         /// <summary>
-        ///     从C#的类型转为SQLite的类型
+        ///     从C#的类型转为Mysql的类型
         /// </summary>
         /// <param name="property">字段</param>
         public static string ToDataBaseType(FieldConfig property)
@@ -340,7 +336,7 @@ namespace Agebull.EntityModel.Config.Mysql
         }
 
         /// <summary>
-        ///     从C#的类型转为SQLite的类型
+        ///     从C#的类型转为Mysql的类型
         /// </summary>
         /// <param name="csharpType"> C#的类型</param>
         public static string ToDataBaseType(string csharpType)
@@ -467,6 +463,45 @@ namespace Agebull.EntityModel.Config.Mysql
                 default:
                     return column.DbType.ToUpper();
             }
+        }
+
+        /// <summary>
+        /// 从Mysql的字段类型映射到C#类型
+        /// </summary>
+        /// <param name="dbType"></param>
+        /// <returns></returns>
+        public static string ToCSharpType(string dbType)
+        {
+            switch (dbType)
+            {
+                case "binary":
+                case "image":
+                    return "byte[]";
+                case "int":
+                    return "int";
+                case "bigint":
+                    return "long";
+                case "smallint":
+                    return "short";
+                case "real":
+                case "float":
+                    return "float";
+                case "double":
+                    return "double";
+                case "decimal":
+                case "numberic":
+                    return "decimal";
+                case "tinyint":
+                case "bool":
+                    return "bool";
+                case "char":
+                    return "char";
+                case "datetime":
+                case "datetime2":
+                case "smalldatetime":
+                    return "DateTime";
+            }
+            return "string";
         }
     }
 }

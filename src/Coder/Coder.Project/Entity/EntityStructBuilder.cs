@@ -22,7 +22,7 @@ namespace Agebull.EntityModel.RobotCoder
         {
             if (Project.DbType == DataBaseType.SqlServer)
                 return (int)SqlServerHelper.ToSqlDbType(field.DbType,field.CsType);
-            return (int)MySqlHelper.ToSqlDbType(field.DbType, field.CsType);
+            return (int)MySqlDataBaseHelper.ToSqlDbType(field.DbType, field.CsType);
         }
         #endregion
 
@@ -154,7 +154,7 @@ namespace Agebull.EntityModel.RobotCoder
                 if (property.IsInterfaceField)
                 {
                     featrue.Add("PropertyFeatrue.Interface");
-                    if (!Model.InterfaceInner)
+                    if (!property.NoProperty)
                         featrue.Add("PropertyFeatrue.Property");
                 }
                 else

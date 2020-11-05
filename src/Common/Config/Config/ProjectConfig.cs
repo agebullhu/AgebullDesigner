@@ -117,15 +117,19 @@ namespace Agebull.EntityModel.Config
             }
         }
         /// <summary>
-        /// 查找实体
+        /// 查找实体(先本项目再全解决方案)
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
         public EntityConfig Find(string name)
         {
-            return Entities.FirstOrDefault(p =>
+            return string.IsNullOrEmpty(name)
+                ? null
+                : Entities.FirstOrDefault(p =>
                 string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(p.SaveTableName, name, StringComparison.OrdinalIgnoreCase));
+                string.Equals(p.ReadTableName, name, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(p.SaveTableName, name, StringComparison.OrdinalIgnoreCase))
+                ?? GlobalConfig.Find(name);
         }
 
         /// <summary>
@@ -261,6 +265,7 @@ namespace Agebull.EntityModel.Config
         #endregion
 
         #region 代码路径
+
         /// <summary>
         /// 接口代码主文件夹
         /// </summary>
@@ -497,7 +502,7 @@ namespace Agebull.EntityModel.Config
             {
                 folders.Add(BranchFolder);
             }
-            if(!end.IsEmpty())
+            if (!end.IsEmpty())
             {
                 folders.Add(end);
             }
@@ -796,13 +801,6 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 不使用数据关系
-        /// </summary>
-        [DataMember, JsonProperty("noRelation", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _noRelation;
-
-
-        /// <summary>
         /// 项目类型
         /// </summary>
         [DataMember, JsonProperty("_projectType", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
@@ -826,6 +824,30 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(ProjectType), _projectType, value);
                 _projectType = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(ProjectType));
+            }
+        }
+
+        /// <summary>
+        /// 代码风格
+        /// </summary>
+        [DataMember, JsonProperty("codeStyle", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal string _codeStyle = CodeStyleConst.Style.General;
+
+        /// <summary>
+        /// 代码风格
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"解决方案"), DisplayName(@"代码风格"), Description("支持不同的命名与编码风格")]
+        public string CodeStyle
+        {
+            get => _codeStyle;
+            set
+            {
+                if (_codeStyle == value)
+                    return;
+                BeforePropertyChanged(nameof(CodeStyle), _codeStyle, value);
+                _codeStyle = value;
+                OnPropertyChanged(nameof(CodeStyle));
             }
         }
 

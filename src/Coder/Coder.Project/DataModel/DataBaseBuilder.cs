@@ -521,7 +521,7 @@ namespace {Project.NameSpace}.DataAccess
         {
             return field.Entity.Parent.DbType == DataBaseType.SqlServer
                 ? $"(int)System.Data.SqlDbType.{SqlServerHelper.ToSqlDbType(field.DbType, field.CsType)}"
-                : $"(int)MySqlConnector.MySqlDbType.{MySqlHelper.ToSqlDbType(field.DbType, field.CsType)}";
+                : $"(int)MySqlConnector.MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field.DbType, field.CsType)}";
         }
 
         #endregion

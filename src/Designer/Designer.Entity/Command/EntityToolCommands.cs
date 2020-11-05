@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -29,17 +30,51 @@ namespace Agebull.EntityModel.Designer
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Action = KeyNoClient,
-                Caption = "主外键客户端不可见",
-                Catalog = "工具",
+                Action = PrimaryKeyName,
+                Caption = "主键标题为[表名]ID",
+                Catalog = "字段",
                 IconName = "tree_Open",
                 SoruceView = "entity"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
+                Action = ForeignKeyName,
+                Caption = "外键名称规范(Caption相同,Name为[主表]+Id)",
+                Catalog = "字段",
+                IconName = "tree_Open",
+                SoruceView = "entity"
+            });
+
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                Action = ForeignKeyDbTypeSync,
+                Caption = "外键数据类型一致",
+                Catalog = "字段",
+                IconName = "tree_Open",
+                SoruceView = "entity"
+            });
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                Action = ForeignKeyName,
+                Caption = "外键信息同主键",
+                Catalog = "字段",
+                IconName = "tree_Open",
+                SoruceView = "entity"
+            });
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                Action = KeyNoClient,
+                SignleSoruce = true,
+                Caption = "主外键客户端不可见",
+                Catalog = "字段",
+                IconName = "tree_Open",
+                SoruceView = "entity"
+            }); 
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
                 Action = DateShowTime,
                 Caption = "日期字段精确到时间",
-                Catalog = "工具",
+                Catalog = "字段",
                 SoruceView = "entity",
                 IconName = "tree_item"
             });
@@ -54,7 +89,7 @@ namespace Agebull.EntityModel.Designer
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Catalog = "工具",
+                Catalog = "实体",
                 SignleSoruce = false,
                 IsButton = false,
                 SoruceView = "entity",
@@ -65,7 +100,7 @@ namespace Agebull.EntityModel.Designer
 
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Catalog = "工具",
+                Catalog = "实体",
                 SignleSoruce = false,
                 IsButton = false,
                 SoruceView = "entity",
@@ -74,16 +109,6 @@ namespace Agebull.EntityModel.Designer
                 IconName = "tree_Open"
             });
 
-            commands.Add(new CommandItemBuilder<EntityConfig>
-            {
-                Catalog = "工具",
-                SignleSoruce = false,
-                IsButton = false,
-                Caption = "组织单元只读",
-                Action = SiteReadOnly,
-                SoruceView = "entity",
-                IconName = "tree_Open"
-            });
         }
 
         /// <summary>
@@ -128,7 +153,7 @@ namespace Agebull.EntityModel.Designer
                 bool all = true;
                 foreach (var pro in i.Properties.Where(p => !p.IsDiscard && !p.IsDelete))
                 {
-                    if (entity.Properties.Any(p => p.ReferenceKey == pro.Key || string.Equals(p.DbFieldName , pro.DbFieldName,StringComparison.OrdinalIgnoreCase)))
+                    if (entity.Properties.Any(p => p.ReferenceKey == pro.Key || string.Equals(p.DbFieldName, pro.DbFieldName, StringComparison.OrdinalIgnoreCase)))
                         continue;
                     all = false;
                     break;
@@ -155,14 +180,62 @@ namespace Agebull.EntityModel.Designer
         }
 
         /// <summary>
-        /// 新增属性
+        /// 主外键客户端不可见
         /// </summary>
         /// <param name="entity"></param>
         public void KeyNoClient(EntityConfig entity)
         {
-            entity.PrimaryColumn.DenyClient = true;
             foreach (var field in entity.Properties.Where(p => p.IsPrimaryKey || p.IsLinkKey))
                 field.DenyClient = true;
+        }
+
+        /// <summary>
+        /// 主键名称规范
+        /// </summary>
+        /// <param name="entity"></param>
+        public void PrimaryKeyName(EntityConfig entity)
+        {
+            entity.PrimaryColumn.Name = "Id";
+            entity.PrimaryColumn.DbFieldName = "id";
+            entity.PrimaryColumn.Caption = entity.Caption + "ID";
+            if(entity.PrimaryColumn.CsType == "string")
+            {
+                entity.PrimaryColumn.Datalen = 36;
+            }
+        }
+
+        /// <summary>
+        /// 外键名称规范
+        /// </summary>
+        /// <param name="entity"></param>
+        public void ForeignKeyName(EntityConfig entity)
+        {
+            foreach (var field in entity.Properties.Where(p => p.IsLinkKey))
+            {
+                var foreign = entity.Parent.Find(field.LinkTable);
+                field.Name = foreign.Name + "Id";
+                field.DbFieldName = foreign.Name.ToLinkWordName("_", false) + "_id";
+                field.JsonName = field.Name.ToLWord();
+                field.Caption = foreign.PrimaryColumn.Caption;
+                field.CsType = foreign.PrimaryColumn.CsType;
+                field.DbType = foreign.PrimaryColumn.DbType;
+                field.Datalen = foreign.PrimaryColumn.Datalen;
+            }
+        }
+
+        /// <summary>
+        /// 外键字段类型信息同步
+        /// </summary>
+        /// <param name="entity"></param>
+        public void ForeignKeyDbTypeSync(EntityConfig entity)
+        {
+            foreach (var field in entity.Properties.Where(p => p.IsLinkKey))
+            {
+                var foreign = entity.Parent.Find(field.LinkTable);
+                field.CsType = foreign.PrimaryColumn.CsType;
+                field.DbType = foreign.PrimaryColumn.DbType;
+                field.Datalen = foreign.PrimaryColumn.Datalen;
+            }
         }
 
         /// <summary>

@@ -1,15 +1,39 @@
 using Newtonsoft.Json;
+using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 
 namespace Agebull.EntityModel.Config
 {
     /// <summary>
+    /// 属性配置
+    /// </summary>
+    public interface IKey
+    {
+        /// <summary>
+        /// 标识
+        /// </summary>
+        string Key
+        {
+            get;
+            set;
+        }
+    }
+
+    /// <summary>
     ///     配置基础
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public class SimpleConfig : NotificationObject
+    public class SimpleConfig : NotificationObject, IKey
     {
+        /// <summary>
+        /// 标识
+        /// </summary>
+        public virtual string Key
+        {
+            get;set;
+        }
+
         /// <summary>
         ///     名称
         /// </summary>

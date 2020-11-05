@@ -11,7 +11,7 @@ namespace Agebull.EntityModel.Config
     ///     配置的设计节点
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public class ConfigDesignOption : NotificationObject
+    public class ConfigDesignOption : NotificationObject,IKey
     {
         #region 设计
 
@@ -62,7 +62,7 @@ namespace Agebull.EntityModel.Config
         /// 标识
         /// </summary>
         [DataMember, JsonProperty("_key", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        private Guid _key;
+        private string _key;
 
         /// <summary>
         /// 标识
@@ -72,9 +72,9 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category("设计标识"), DisplayName("标识"), Description("名称")]
-        public Guid Key
+        public string Key
         {
-            get => _key == Guid.Empty ? (_key = Guid.NewGuid()) : _key;
+            get => _key;
             set
             {
                 if (_key == value)
@@ -146,7 +146,7 @@ namespace Agebull.EntityModel.Config
         /// 引用对象键
         /// </summary>
         [DataMember, JsonProperty("referenceKey", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        private Guid _referenceKey;
+        private string _referenceKey;
 
         /// <summary>
         /// 引用对象键
@@ -156,18 +156,18 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category("引用"), DisplayName("引用对象键"), Description("引用对象键，指内部对象的引用")]
-        public Guid ReferenceKey
+        public string ReferenceKey
         {
-            get => _referenceKey == _key ? Guid.Empty : _referenceKey;
+            get => _referenceKey == _key ? null : _referenceKey;
             set
             {
                 if (_referenceKey == value)
                     return;
                 if (_referenceKey == _key)
-                    _referenceKey = Guid.Empty;
+                    _referenceKey = null;
                 BeforePropertyChanged(nameof(ReferenceKey), _referenceKey, value);
                 _referenceKey = value;
-                if (_referenceKey == Guid.Empty)
+                if (_referenceKey == null)
                 {
                     _state &= ~ConfigStateType.Reference;
                     _state &= ~ConfigStateType.Link;
@@ -203,11 +203,11 @@ namespace Agebull.EntityModel.Config
         {
             get
             {
-                if (_referenceKey == Guid.Empty)
+                if (_referenceKey == null)
                     return null;
                 if (_referenceKey == _key || Config == _referenceConfig)
                 {
-                    _referenceKey = Guid.Empty;
+                    _referenceKey = null;
                     _referenceConfig = null;
                     return null;
                 }
@@ -218,7 +218,7 @@ namespace Agebull.EntityModel.Config
 
                 if (_referenceConfig == null || Config == _referenceConfig)
                 {
-                    _referenceKey = Guid.Empty;
+                    _referenceKey = null;
                     _referenceConfig = null;
                 }
                 return _referenceConfig;
@@ -230,7 +230,7 @@ namespace Agebull.EntityModel.Config
                 if (value != null && (value == Config || value.Key == Key))
                     value = null;
                 _referenceConfig = value;
-                _referenceKey = value?.Option.Key ?? Guid.Empty;
+                _referenceKey = value?.Option.Key ?? null;
                 if (value == null)
                 {
                     _state &= ~ConfigStateType.Reference;

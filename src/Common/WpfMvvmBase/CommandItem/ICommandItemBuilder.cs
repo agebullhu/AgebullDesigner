@@ -12,6 +12,6 @@ namespace Agebull.Common.Mvvm
         /// 转为命令对象
         /// </summary>
         /// <returns>命令对象</returns>
-        CommandItemBase ToCommand(object arg, Func<object, IEnumerator> enumerator);
+        CommandItemBase ToCommand(string key, object arg, Func<object, IEnumerator> enumerator);
     }
 }

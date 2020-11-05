@@ -79,7 +79,7 @@ namespace Agebull.EntityModel.Config
             //}
             bool ist = DataBaseType == DataBaseType.SqlServer
                         ? SqlServerHelper.IsDataBaseType(Field.DbType)
-                        : MySqlHelper.IsDataBaseType(Field.DbType);
+                        : MySqlDataBaseHelper.IsDataBaseType(Field.DbType);
             if (!ist)
             {
                 result = false;

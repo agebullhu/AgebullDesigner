@@ -14,7 +14,7 @@ namespace Agebull.EntityModel.Config
                 return;
             }
             if (repair)
-                Field.DbFieldName = DataBaseHelper.ToDbFieldName(Field.Name);
+                Field.DbFieldName = DataBaseHelper.ToDbFieldName(Field);
             if (repair || string.IsNullOrWhiteSpace(Field.DbType))
             {
                 RepairDbType();

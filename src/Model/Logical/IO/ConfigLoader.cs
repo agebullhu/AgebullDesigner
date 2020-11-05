@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
 using Agebull.Common;
+using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
 using Newtonsoft.Json;
 
@@ -43,6 +44,7 @@ namespace Agebull.EntityModel.Designer
 
         private void LoadSolution(string directory, string file, bool isGlobal)
         {
+            CommandCoefficient.ClearCommand();
             var sluFile = Path.Combine(directory, file);
             using (WorkModelScope.CreateScope(WorkModel.Loding))
             {

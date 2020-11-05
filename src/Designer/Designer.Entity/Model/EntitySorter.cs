@@ -61,16 +61,23 @@ namespace Agebull.EntityModel.Config
             {
                 pc.Option.Index = ++idx;
             }
-
-            foreach (var column in columns.Where(p => string.IsNullOrWhiteSpace(p.Group)))
+            IEnumerable<IFieldConfig> fields = columns.Where(p => !string.IsNullOrWhiteSpace(p.Group));
+            if (!string.IsNullOrEmpty(pk.Group))
             {
-                column.Option.Index = ++idx;
+                foreach (var column in columns.Where(p => p.Group == pk.Group).OrderBy(p => p.Index))
+                {
+                    column.Option.Index = ++idx;
+                }
+                fields = fields.Where(p => p.Group != pk.Group);
             }
-            foreach (var column in columns.Where(p => !string.IsNullOrWhiteSpace(p.Group)).OrderBy(p=>p.LinkTable))
+            foreach (var group in fields.GroupBy(p=> p.Group))
             {
-                column.Option.Index = ++idx;
+                foreach (var column in group.OrderBy(p => p.Index))
+                {
+                    column.Option.Index = ++idx;
+                }
             }
-            foreach (var column in columns.Where(p => string.IsNullOrWhiteSpace(p.Group)).OrderBy(p => p.LinkTable))
+            foreach (var column in columns.Where(p => string.IsNullOrWhiteSpace(p.Group)).OrderBy(p => p.Index))
             {
                 column.Option.Index = ++idx;
             }

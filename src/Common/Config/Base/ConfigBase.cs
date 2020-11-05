@@ -206,7 +206,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category("设计标识"), DisplayName("标识"), Description("名称")]
-        public Guid Key => Option.Key;
+        public override string Key => Option.Key;
 
         /// <summary>
         /// 唯一标识
@@ -247,7 +247,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category("设计器支持"), DisplayName("引用对象键"), Description("引用对象键，指内部对象的引用")]
-        public Guid ReferenceKey
+        public string ReferenceKey
         {
             get => Option.ReferenceKey;
             set => Option.ReferenceKey = value;

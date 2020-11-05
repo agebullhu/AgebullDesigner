@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Agebull.Common;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.RobotCoder;
 
@@ -30,30 +31,33 @@ namespace Agebull.EntityModel.Designer
         {
             entity.LastProperties = new List<IFieldConfig>();
             int idx = 0;
-            foreach (var pro in entity.Properties.Where(p=>!p.IsDelete && !p.IsDiscard).OrderBy(p => p.Index))
+            foreach (var field in entity.Properties.OrderBy(p => p.Index))
             {
-                if (pro.IsDelete || pro.IsDiscard)
+                if (field.IsDelete || field.IsDiscard)
                     continue;
-                pro.Option.Index = ++idx;
-                entity.LastProperties.Add(pro);
+                field.Option.Index = ++idx;
+                entity.LastProperties.TryAdd(field,p=>p.Key);
+                InterfaceHelper.CheckLinkField(entity, field);
             }
-            InterfaceHelper.CheckInterface(entity, entity.LastProperties);
+            InterfaceHelper.CheckLastInterface(entity,idx);
         }
 
         /// <summary>
         /// 开始代码生成
         /// </summary>
-        public void CreateLast(ModelConfig entity)
+        public void CreateLast(ModelConfig model)
         {
-            entity.LastProperties = new List<IFieldConfig>();
+            model.LastProperties = new List<IFieldConfig>();
             int idx = 0;
-            foreach (var pro in entity.Properties.OrderBy(p => p.Index))
+            foreach (var property in model.Properties.OrderBy(p => p.Index))
             {
-                if (pro.IsDelete || pro.IsDiscard || pro.IsDelete || pro.IsDiscard)
+                if (property.IsDelete || property.IsDiscard )
                     continue;
-                pro.Option.Index = ++idx;
-                entity.LastProperties.Add(pro);
+                property.Option.Index = ++idx;
+                InterfaceHelper.CheckLinkField(model, property);
+                model.LastProperties.TryAdd(property, p => p.Key);
             }
+            InterfaceHelper.CheckLastInterface(model, idx);
         }
 
         /// <summary>

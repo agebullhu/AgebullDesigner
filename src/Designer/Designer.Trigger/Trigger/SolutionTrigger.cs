@@ -1,4 +1,5 @@
 using System.Collections.Specialized;
+using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.Designer
@@ -28,6 +29,8 @@ namespace Agebull.EntityModel.Designer
 
                 foreach (var project in TargetConfig.Projects)
                     GlobalTrigger.OnLoad(project);
+
+                CommandCoefficient.ClearCommand();
             }
         }
 

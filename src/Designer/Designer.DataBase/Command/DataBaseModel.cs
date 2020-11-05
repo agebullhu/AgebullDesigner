@@ -112,12 +112,9 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void CheckRelation(EntityConfig entity)
         {
-            var business = new EntityDatabaseBusiness
-            {
-                Entity = entity
-            };
-            business.CheckRelation();
+            DataBaseHelper.CheckFieldLink(entity.Properties);
         }
+
         /// <summary>
         /// 数据库设计检查
         /// </summary>

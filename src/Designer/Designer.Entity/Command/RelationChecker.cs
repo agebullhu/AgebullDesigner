@@ -56,7 +56,7 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         internal static void CheckLinkType(EntityConfig entity)
         {
-            foreach (var field in entity.Properties.Where(p => p.IsLink).ToArray())
+            foreach (var field in entity.Properties.Where(p => p.Option.IsLink).ToArray())
             {
                 var friend = GlobalConfig.GetEntity(field.LinkTable);
                 var link = friend?.Properties.FirstOrDefault(p =>

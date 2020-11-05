@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using static  Agebull.EntityModel.RobotCoder.NameHelper;
 using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
@@ -36,7 +35,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="property"></param>
         /// <returns></returns>
         public static string PropertyName(IFieldConfig property) =>
-            property.IsInterfaceField && property.Entity.InterfaceInner
+            property.IsInterfaceField && property.Entity.IsInterface
             ? $"{property.Entity.EntityName}.{property.Name}"
             : property.Name;
 
@@ -80,9 +79,9 @@ namespace Agebull.EntityModel.RobotCoder
         [JsonIgnore]";
         }
 
-        protected string FieldHeader(IFieldConfig property, bool isInterface,bool noneJson)
+        protected string FieldHeader(IFieldConfig property,bool noneJson)
         {
-            if (isInterface)
+            if (property.IsReference && property.Option is IFieldConfig iField && iField.Entity.IsInterface)
             {
                 return RemCode(property);
             }
@@ -98,7 +97,7 @@ namespace Agebull.EntityModel.RobotCoder
             else
             {
                 code.Add($@"JsonProperty(""{property.JsonName}"")");
-                if (property.CsType == "DateTime")
+                if (Project.CodeStyle != CodeStyleConst.Style.Succinct && property.CsType == "DateTime")
                     code.Add("JsonConverter(typeof(MyDateTimeConverter))");
             }
             return code.Count == 0
@@ -386,7 +385,7 @@ namespace Agebull.EntityModel.RobotCoder
             if (property.DataType == "ByteArray")
             {
                 code.Append($@"
-        {FieldHeader(property, false, false)}
+        {FieldHeader(property, false)}
         {property.AccessType} string {property.Name}_Base64
         {{
             get

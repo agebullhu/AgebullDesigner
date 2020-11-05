@@ -28,10 +28,12 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         public TModel Model { get; set; }
 
+        IFieldConfig _primaryProperty;
+
         /// <summary>
         /// 当前表对象
         /// </summary>
-        public IFieldConfig PrimaryProperty => Model.IsQuery ? null : Model.PrimaryColumn;
+        public IFieldConfig PrimaryProperty => Model.PrimaryColumn;
 
         /// <summary>
         /// 分类目录

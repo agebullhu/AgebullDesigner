@@ -15,6 +15,11 @@ namespace Agebull.EntityModel.Config
         {
             get;
         }
+        /// <summary>
+        /// 复制
+        /// </summary>
+        /// <param name="field"></param>
+        void Copy(IFieldConfig field);
 
         #region 汇总支持
 
@@ -227,13 +232,13 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 上级
         /// </summary>
-        IEntityConfig Parent { get; }// Field.Entity;
+        IEntityConfig Parent { get;  }// Field.Entity;
 
         /// <summary>
         /// 实体
         /// </summary>
-        EntityConfig Entity { get; }// Field.Entity;
-        
+        EntityConfig Entity { get; set; }// Field.Entity;
+
         #endregion
         #region 系统
 
@@ -243,7 +248,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 阻止使用的范围
         /// </remark>
-        AccessScopeType DenyScope { get; }// Field.DenyScope;
+        AccessScopeType DenyScope { get; set; }// Field.DenyScope;
 
         #endregion
         #region 模型设计(C#)
@@ -252,7 +257,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 是否时间
         /// </summary>
-        bool IsTime { get; }// Field.IsTime;
+        bool IsTime { get; set; }// Field.IsTime;
 
         /// <summary>
         /// 是否扩展数组
@@ -260,29 +265,29 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否扩展数组
         /// </remark>
-        bool IsArray { get; }// Field.IsArray;
+        bool IsArray { get; set; }// Field.IsArray;
 
         /// <summary>
         /// 是否字典
         /// </summary>
-        bool IsDictionary { get; }// Field.IsDictionary;
+        bool IsDictionary { get; set; }// Field.IsDictionary;
 
         /// <summary>
         /// 枚举类型(C#)
         /// </summary>
-        bool IsEnum { get; }// Field.IsEnum;
+        bool IsEnum { get; set; }// Field.IsEnum;
 
 
         /// <summary>
         /// 非基本类型名称(C#)
         /// </summary>
         /// <remark>
-        string CustomType { get; }// Field.CustomType;
+        string CustomType { get; set; }// Field.CustomType;
 
         /// <summary>
         /// 参考类型
         /// </summary>
-        string ReferenceType { get; }// Field.ReferenceType;
+        string ReferenceType { get; set; }// Field.ReferenceType;
 
         /// <summary>
         /// 结果类型(C#)
@@ -290,7 +295,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 最终生成C#代码时的属性类型
         /// </remark>
-        string LastCsType { get; }// Field.ToLastCsType();
+        string LastCsType { get;  }// Field.ToLastCsType();
 
         /// <summary>
         /// 可空类型(C#)
@@ -298,7 +303,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 即生成的C#代码,类型为空类型Nullable〈T〉 ,如int?
         /// </remark>
-        bool Nullable { get; }// Field.Nullable;
+        bool Nullable { get; set; }// Field.Nullable;
         #endregion
         #region 模型设计
 
@@ -308,7 +313,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否扩展值
         /// </remark>
-        bool IsExtendValue { get; }// Field.Nullable;
+        bool IsExtendValue { get; set; }// Field.Nullable;
 
         /// <summary>
         /// 对应枚举
@@ -316,7 +321,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 当使用自定义类型时的枚举对象
         /// </remark>
-        Guid EnumKey { get; }// Field.EnumKey;
+        string EnumKey { get; set; }// Field.EnumKey;
 
         /// <summary>
         /// 对应枚举
@@ -324,22 +329,22 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 当使用自定义类型时的枚举对象
         /// </remark>
-        EnumConfig EnumConfig { get; }// Field.EnumConfig;
+        EnumConfig EnumConfig { get; set; }// Field.EnumConfig;
 
         /// <summary>
         /// 内部字段
         /// </summary>
-        bool InnerField { get; }// Field.InnerField;
+        bool InnerField { get; set; }// Field.InnerField;
 
         /// <summary>
         /// 系统字段
         /// </summary>
-        bool IsSystemField { get; }// Field.IsSystemField;
+        bool IsSystemField { get; set; }// Field.IsSystemField;
 
         /// <summary>
         /// 接口字段
         /// </summary>
-        bool IsInterfaceField { get; }// Field.IsInterfaceField;
+        bool IsInterfaceField { get; set; }// Field.IsInterfaceField;
 
         /// <summary>
         /// 代码访问范围
@@ -358,7 +363,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 私有字段,不应该复制
         /// </remark>
-        bool IsPrivateField { get; }// Field.IsPrivateField;
+        bool IsPrivateField { get; set; }// Field.IsPrivateField;
 
         /// <summary>
         /// 设计时字段
@@ -366,7 +371,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 设计时使用的中间过程字段,即最终使用时不需要的字段
         /// </remark>
-        bool IsMiddleField { get; }// Field.IsMiddleField;
+        bool IsMiddleField { get; set; }// Field.IsMiddleField;
 
         /// <summary>
         /// 6位小数的整数
@@ -374,7 +379,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否转为整数的小数,即使用扩大100成倍的整数
         /// </remark>
-        bool IsIntDecimal { get; }// Field.IsIntDecimal;
+        bool IsIntDecimal { get;  }// Field.IsIntDecimal;
 
         #endregion
         #region 模型设计(计算列)
@@ -385,7 +390,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 可读,即可以生成Get代码
         /// </remark>
-        bool CanGet { get; }// Field.CanGet;
+        bool CanGet { get; set; }// Field.CanGet;
 
         /// <summary>
         /// 可写
@@ -393,14 +398,14 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 可写,即生成SET代码
         /// </remark>
-        bool CanSet { get; }// Field.CanSet;
+        bool CanSet { get; set; }// Field.CanSet;
         /// <summary>
         /// 计算列
         /// </summary>
         /// <remark>
         /// 是否计算列，即数据源于其它字段.如关系引用字段
         /// </remark>
-        bool IsCompute { get; }// Field.IsCompute;
+        bool IsCompute { get; set; }// Field.IsCompute;
 
 
         #endregion
@@ -410,12 +415,12 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 标题字段
         /// </summary>
-        bool IsCaption { get; }// Field.IsCaption;
+        bool IsCaption { get; set; }// Field.IsCaption;
 
         /// <summary>
         /// 主键字段
         /// </summary>
-        bool IsPrimaryKey { get; }// Field.IsPrimaryKey;
+        bool IsPrimaryKey { get; set; }// Field.IsPrimaryKey;
 
         /// <summary>
         /// 唯一值字段
@@ -423,7 +428,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 即它也是唯一标识符,如用户的身份证号
         /// </remark>
-        bool IsExtendKey { get; }// Field.IsExtendKey;
+        bool IsExtendKey { get; set; }// Field.IsExtendKey;
 
         /// <summary>
         /// 自增字段
@@ -431,7 +436,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 自增列,通过数据库(或REDIS)自动增加
         /// </remark>
-        bool IsIdentity { get; }// Field.IsIdentity;
+        bool IsIdentity { get; set; }// Field.IsIdentity;
 
         /// <summary>
         /// 全局标识
@@ -439,7 +444,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否使用GUID的全局KEY
         /// </remark>
-        bool IsGlobalKey { get; }// Field.IsGlobalKey;
+        bool IsGlobalKey { get; set; }// Field.IsGlobalKey;
 
         /// <summary>
         /// 唯一属性组合顺序
@@ -447,18 +452,18 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 参与组合成唯一属性的顺序,大于0有效
         /// </remark>
-        int UniqueIndex { get; }// Field.UniqueIndex;
+        int UniqueIndex { get; set; }// Field.UniqueIndex;
         /// <summary>
         /// 唯一文本
         /// </summary>
-        bool UniqueString { get; }// Field.UniqueString;
+        bool UniqueString { get; set; }// Field.UniqueString;
         #endregion
         #region 数据库
 
         /// <summary>
         /// 不更新
         /// </summary>
-        bool KeepUpdate { get; }// Field.KeepUpdate;
+        bool KeepUpdate { get; set; }// Field.KeepUpdate;
 
         /// <summary>
         /// 能否存储空值
@@ -466,7 +471,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 如为真,在存储空值读取时使用语言类型的默认值
         /// </remark>
-        bool DbNullable { get; }// Field.DbNullable;
+        bool DbNullable { get; set; }// Field.DbNullable;
 
         bool CreateDbIndex { get; }
 
@@ -494,7 +499,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 存储列ID,即在数据库内部对应的列ID
         /// </remark>
-        int DbIndex { get; }// Field.DbIndex;
+        int DbIndex { get; set; }// Field.DbIndex;
 
         /// <summary>
         /// 是否数据库索引
@@ -510,7 +515,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否固定长度字符串
         /// </remark>
-        bool FixedLength { get; }// Field.FixedLength;
+        bool FixedLength { get; set; }// Field.FixedLength;
 
         /// <summary>
         /// 备注字段
@@ -520,7 +525,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 大数据
         /// </summary>
-        bool IsBlob { get; }// Field.IsBlob;
+        bool IsBlob { get; set; }// Field.IsBlob;
 
         /// <summary>
         /// 内部字段(数据库)
@@ -528,12 +533,12 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 数据库内部字段,如果为真,仅支持在SQL的语句中出现此字段，不支持外部的读写
         /// </remark>
-        bool DbInnerField { get; }// Field.DbInnerField;
+        bool DbInnerField { get; set; }// Field.DbInnerField;
 
         /// <summary>
         /// 不生成属性
         /// </summary>
-        bool NoProperty { get; }
+        bool NoProperty { get; set; }
 
         /// <summary>
         /// 非数据库字段
@@ -541,12 +546,12 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否非数据库字段,如果为真,数据库的读写均忽略这个字段
         /// </remark>
-        bool NoStorage { get; }// Field.NoStorage;
+        bool NoStorage { get; set; }// Field.NoStorage;
 
         /// <summary>
         /// 跳过保存的场景
         /// </summary>
-        StorageScreenType KeepStorageScreen { get; }// Field.KeepStorageScreen;
+        StorageScreenType KeepStorageScreen { get; set; }// Field.KeepStorageScreen;
 
         /// <summary>
         /// 自定义保存
@@ -554,7 +559,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 自定义保存,如果为真,数据库的写入忽略这个字段,数据的写入由代码自行维护
         /// </remark>
-        bool CustomWrite { get; }// Field.CustomWrite;
+        bool CustomWrite { get; set; }// Field.CustomWrite;
 
         /// <summary>
         /// 存储值读写字段
@@ -562,7 +567,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 存储值读写字段(internal),即使用非基础类型时,当发生读写数据库操作时使用的字段,字段为文本(JSON或XML)类型,使用序列化方法读写
         /// </remark>
-        string StorageProperty { get; }// Field.StorageProperty;
+        string StorageProperty { get; set; }// Field.StorageProperty;
         #endregion
         #region 用户界面
 
@@ -574,7 +579,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 用户是否可输入
         /// </summary>
-        bool CanUserInput { get; }// !IsCompute && !DenyClient && !IsUserReadOnly && !IsSystemField && !IsIdentity;
+        bool CanUserInput { get;  }// !IsCompute && !DenyClient && !IsUserReadOnly && !IsSystemField && !IsIdentity;
 
         /// <summary>
         /// 不可编辑
@@ -681,14 +686,14 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 列表详细页代码
         /// </summary>
-        string GridDetailsCode { get; }// Field.GridDetailsCode;
+        string GridDetailsCode { get; set; }// Field.GridDetailsCode;
         #endregion
         #region 数据规则
 
         /// <summary>
         /// 规则说明
         /// </summary>
-        string DataRuleDesc { get; }// Field.DataRuleDesc;
+        string DataRuleDesc { get; set; }// Field.DataRuleDesc;
 
         /// <summary>
         /// 规则说明
@@ -701,7 +706,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 校验代码,本字段用{0}代替
         /// </remark>
-        string ValidateCode { get; }// Field.ValidateCode;
+        string ValidateCode { get; set; }// Field.ValidateCode;
 
         /// <summary>
         /// 能否为空
@@ -719,24 +724,24 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 最大值
         /// </summary>
-        string Max { get; }// Field.Max;
+        string Max { get; set; }// Field.Max;
 
         /// <summary>
         /// 最小值
         /// </summary>
-        string Min { get; }// Field.Min;
+        string Min { get; set; }// Field.Min;
         #endregion
         #region 数据关联
 
         /// <summary>
         /// 连接字段
         /// </summary>
-        bool IsLinkField { get; }// Field.IsLinkField;
+        bool IsLinkField { get; set; }// Field.IsLinkField;
 
         /// <summary>
         /// 关联表名
         /// </summary>
-        string LinkTable { get; }// Field.LinkTable;
+        string LinkTable { get; set; }// Field.LinkTable;
 
         /// <summary>
         /// 关联表主键
@@ -744,7 +749,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 关联表主键,即与另一个实体关联的外键
         /// </remark>
-        bool IsLinkKey { get; }// Field.IsLinkKey;
+        bool IsLinkKey { get; set; }// Field.IsLinkKey;
 
         /// <summary>
         /// 关联表标题
@@ -752,7 +757,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 关联表标题,即此字段为关联表的标题内容
         /// </remark>
-        bool IsLinkCaption { get; }// Field.IsLinkCaption;
+        bool IsLinkCaption { get; set; }// Field.IsLinkCaption;
 
         /// <summary>
         /// 对应客户ID
@@ -760,7 +765,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是对应的UID,已过时,原来用于龙之战鼓
         /// </remark>
-        bool IsUserId { get; }// Field.IsUserId;
+        bool IsUserId { get; set; }// Field.IsUserId;
 
         /// <summary>
         /// 关联字段名称
@@ -768,7 +773,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 关联字段名称,即在关联表中的字段名称
         /// </remark>
-        string LinkField { get; }// Field.LinkField;
+        string LinkField { get; set; }// Field.LinkField;
         #endregion
     }
 }

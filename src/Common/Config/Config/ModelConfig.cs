@@ -29,7 +29,7 @@ namespace Agebull.EntityModel.Config
         /// 实体名称
         /// </summary>
         [DataMember, JsonProperty("entityKey", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        public Guid _entityKey;
+        public string _entityKey;
 
         /// <summary>
         /// 实体名称
@@ -450,6 +450,17 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
+        /// 是否关联表
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据标识"), DisplayName(@"是否关联表")]
+        public bool IsLinkTable
+        {
+            get => Entity.IsLinkTable;
+            set => Entity.IsLinkTable = value;
+        }
+
+        /// <summary>
         /// 继承的接口集合
         /// </summary>
         [DataMember, JsonProperty("Interfaces", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
@@ -570,34 +581,6 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(IsInterface));
             }
         }
-
-        /// <summary>
-        /// 接口是否为显示实现
-        /// </summary>
-        [DataMember, JsonProperty("_interfaceInner", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _interfaceInner;
-
-        /// <summary>
-        /// 接口是否为显示实现
-        /// </summary>
-        /// <remark>
-        /// 接口是否为显示实现
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据模型"), DisplayName(@"接口是否为显示实现"), Description("接口是否为显示实现")]
-        public bool InterfaceInner
-        {
-            get => _interfaceInner;
-            set
-            {
-                if (_interfaceInner == value)
-                    return;
-                BeforePropertyChanged(nameof(InterfaceInner), _interfaceInner, value);
-                _interfaceInner = value;
-                OnPropertyChanged(nameof(InterfaceInner));
-            }
-        }
-
 
         /// <summary>
         /// 生成校验代码

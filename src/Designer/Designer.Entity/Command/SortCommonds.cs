@@ -49,7 +49,7 @@ namespace Agebull.EntityModel.Designer
             {
                 TargetType = typeof(ProjectChildConfigBase),
                 Action = SortByGroup,
-                Caption = "排序(按组)",
+                Caption = "按组排序",
                 Description = "主键-标题最前面，相同组的字段临近，其它按序号",
                 ConfirmMessage = "确认？",
                 Catalog = "排序",

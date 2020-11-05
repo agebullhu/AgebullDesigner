@@ -1,4 +1,5 @@
-﻿using Agebull.Common.Mvvm;
+﻿using Agebull.Common;
+using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,9 +76,7 @@ namespace Agebull.EntityModel.Designer
                 CreateCommands(commands);
             if (ext)
             {
-                var extends = CommandCoefficient.CoefficientEditor(typeof(EntityConfig), EditorName);
-                if (extends.Count > 0)
-                    commands.AddRange(extends);
+                CommandCoefficient.CoefficientEditor<EntityConfig>(commands, EditorName);
             }
             return commands;
         }

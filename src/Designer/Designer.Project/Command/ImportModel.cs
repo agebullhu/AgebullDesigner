@@ -32,7 +32,7 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    public class ImportModel : DesignCommondBase
+    public class ImportModel : DesignCommondBase<ProjectConfig>
     {
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {

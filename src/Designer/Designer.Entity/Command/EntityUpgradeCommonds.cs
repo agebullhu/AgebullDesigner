@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using Agebull.Common.Mvvm;
@@ -29,7 +30,7 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = ToClass,
                 Caption = "全部设置为普通类",
-                Catalog = "修复",
+                Catalog = "实体",
                 IconName = "tree_Type",
                 SoruceView = "entity",
                 WorkView = "adv"
@@ -38,7 +39,7 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = CheckName,
                 Caption = "名称中的[标识]统一替换为[编号]",
-                Catalog = "修复",
+                Catalog = "字段",
                 IconName = "tree_item"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
@@ -52,7 +53,7 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = EmptyFromDb,
                 Caption = "空值校验同数据库",
-                Catalog = "修复",
+                Catalog = "实体",
                 IconName = "tree_Type",
                 WorkView = "adv"
             });
@@ -60,7 +61,7 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = ToNoClass,
                 Caption = "全部设置为存储类",
-                Catalog = "修复",
+                Catalog = "实体",
                 SoruceView = "entity",
                 IconName = "tree_Type",
                 WorkView = "adv"
@@ -72,7 +73,7 @@ namespace Agebull.EntityModel.Designer
                 Action = SplitTable,
                 Caption = "拆分到新表",
                 SoruceView = "entity",
-                Catalog = "修复",
+                Catalog = "实体",
                 IconName = "img_add",
                 WorkView = "adv"
             });
@@ -80,7 +81,7 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = RepairRegular,
                 IsButton = false,
-                Catalog = "修复",
+                Catalog = "实体",
                 Caption = "规则修复",
                 SoruceView = "entity",
                 SignleSoruce = true,
@@ -94,7 +95,7 @@ namespace Agebull.EntityModel.Designer
                 Action = DataTypeHelper.ToStandard,
                 Caption = "按C#类型标准检查并修复",
                 SoruceView = "entity",
-                Catalog = "修复",
+                Catalog = "实体",
                 IconName = "tree_Type",
                 WorkView = "adv"
             });
@@ -104,13 +105,74 @@ namespace Agebull.EntityModel.Designer
                 Action = DataTypeHelper.ToStandardByDbType,
                 Caption = "按数据库类型标准检查并修复",
                 SoruceView = "entity",
-                Catalog = "修复",
+                Catalog = "实体",
+                IconName = "tree_Type",
+                WorkView = "adv"
+            });
+
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                Action = FindRelationTable,
+                Caption = "查找关联表",
+                SoruceView = "entity",
+                Catalog = "实体",
+                IconName = "tree_Type",
+                WorkView = "adv"
+            });
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                Action = LinkKeyFirst,
+                Caption = "外键排前",
+                SoruceView = "entity",
+                Catalog = "排序",
+                IconName = "tree_Type",
+                WorkView = "adv"
+            });
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                Action = LinkKeyLast,
+                Caption = "外键排后",
+                SoruceView = "entity",
+                Catalog = "排序",
                 IconName = "tree_Type",
                 WorkView = "adv"
             });
         }
 
         #endregion
+
+        /// <summary>
+        /// 查找关联表
+        /// </summary>
+        public void FindRelationTable(EntityConfig entity)
+        {
+            if (entity.Properties.All(p => p.IsPrimaryKey || p.IsLinkKey))
+            {
+                entity.IsLinkTable = true;
+                Trace.WriteLine(entity.Caption);
+            }
+        }
+        
+        /// <summary>
+        /// 外键排前面
+        /// </summary>
+        public void LinkKeyFirst(EntityConfig entity)
+        {
+            foreach (var property in entity.Properties.Where(p => p.IsLinkKey))
+            {
+                property.Index = 1;
+            }
+        }
+        /// <summary>
+        /// 外键排前面
+        /// </summary>
+        public void LinkKeyLast(EntityConfig entity)
+        {
+            foreach (var property in entity.Properties.Where(p => p.IsLinkKey))
+            {
+                property.Index = 256;
+            }
+        }
 
         /// <summary>
         /// 数据对象名称检查
@@ -122,7 +184,7 @@ namespace Agebull.EntityModel.Designer
                 if (string.IsNullOrWhiteSpace(property.Caption))
                     return;
                 if (property.IsPrimaryKey && property.Caption == "主键")
-                    property.Caption = $"{entity.Caption}编号(主键)";
+                    property.Caption = $"{entity.Caption}ID";
                 else
                     property.Caption = property.Caption.Replace("标识", "编号");
 
@@ -133,7 +195,7 @@ namespace Agebull.EntityModel.Designer
                 if (fi == null)
                     continue;
                 if (property.IsLinkKey)
-                    property.Caption = $"{link.Caption}编号(外键)";
+                    property.Caption = $"{link.Caption}ID";
                 else if (fi.Caption.Contains(link.Caption))
                     property.Caption = fi.Caption;
             }

@@ -26,9 +26,11 @@ namespace Agebull.EntityModel.Designer
         /// 转为命令对象
         /// </summary>
         /// <returns>命令对象</returns>
-        CommandItemBase ICommandItemBuilder.ToCommand(object arg, Func<object, IEnumerator> enumerator)
+        CommandItemBase ICommandItemBuilder.ToCommand(string key, object arg, Func<object, IEnumerator> enumerator)
         {
+            Key = key;
             var item= ToCommand(arg, enumerator);
+            item.Key = key;
             item.Source = arg;
             item.TargetType = TargetType;
             return item;
