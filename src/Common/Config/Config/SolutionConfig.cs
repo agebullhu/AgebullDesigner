@@ -554,6 +554,24 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(UserIdDataType));
             }
         }
+
+        [DataMember, JsonProperty("headerView", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        private HeaderVisiable _headerView = HeaderVisiable.General;
+
+        /// <summary>
+        /// 标题视角
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        public HeaderVisiable HeaderView
+        {
+            get => _headerView;
+            set
+            {
+                _headerView = value;
+                OnPropertyChanged(nameof(HeaderVisiable));
+            }
+        }
+
         [IgnoreDataMember, JsonIgnore]
         private string _workView;
 

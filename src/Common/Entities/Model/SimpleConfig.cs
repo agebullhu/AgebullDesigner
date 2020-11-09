@@ -151,6 +151,19 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="dest"></param>
         /// <returns></returns>
+        public void CopyConfig(SimpleConfig dest)
+        {
+            using (WorkModelScope.CreateScope(WorkModel.Loding))
+            {
+                CopyFrom(dest);
+            }
+        }
+
+        /// <summary>
+        /// ×Ö¶Î¸´ÖÆ
+        /// </summary>
+        /// <param name="dest"></param>
+        /// <returns></returns>
         public void Copy(SimpleConfig dest)
         {
             using (WorkModelScope.CreateScope(WorkModel.Loding))

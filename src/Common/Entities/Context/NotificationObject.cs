@@ -51,12 +51,13 @@ namespace Agebull.EntityModel
             get => _isModify;
             set
             {
-                if (WorkContext.IsNoChangedNotify)
-                    return;
                 if (_isModify == value)
                     return;
-                _isModify = value;
-                RaisePropertyChanged(nameof(IsModify));
+                if (!WorkContext.IsNoChangedNotify || !value)
+                {
+                    _isModify = value;
+                    RaisePropertyChanged(nameof(IsModify));
+                }
             }
         }
 

@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Media;
 using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
+using System.Collections.Generic;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -49,17 +50,14 @@ namespace Agebull.EntityModel.Designer
         /// 生成命令对象
         /// </summary>
         /// <returns></returns>
-        public override NotificationList<CommandItemBase> CreateCommands()
+        public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            return new NotificationList<CommandItemBase>
+            commands.Add(new CommandItem
             {
-                new CommandItem
-                {
-                    Action = Add,
-                    Caption = "增加",
-                    Image = Application.Current.Resources["tree_item"] as ImageSource
-                }
-            };
+                Action = Add,
+                Caption = "增加",
+                Image = Application.Current.Resources["tree_item"] as ImageSource
+            });
         }
         public string NewName { get; set; }
 
@@ -77,7 +75,7 @@ namespace Agebull.EntityModel.Designer
                 MessageBox.Show("添加", "新名称不能为空");
                 return;
             }
-            if (Context.SelectConfig.Option.ExtendConfigList.Items.Any(p=>
+            if (Context.SelectConfig.Option.ExtendConfigList.Items.Any(p =>
                 string.Equals(p.Name, NewName, StringComparison.OrdinalIgnoreCase)))
             {
                 MessageBox.Show("添加", "已存在同名内容");

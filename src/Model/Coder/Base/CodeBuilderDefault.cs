@@ -1,6 +1,6 @@
 ﻿using System.Data;
 using Agebull.EntityModel.Config;
-using MySqlConnector;
+using MySql.Data.MySqlClient;
 
 namespace Agebull.EntityModel.RobotCoder
 {

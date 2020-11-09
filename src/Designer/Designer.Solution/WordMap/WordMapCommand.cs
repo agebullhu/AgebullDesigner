@@ -63,7 +63,7 @@ namespace Agebull.EntityModel.Designer
                 Action = WordMapModel.ClearCaption
             },
 
-            new CommandItemBuilder
+            new CommandItemBuilder<ConfigBase>
             {
                 Catalog = "翻译",
                 Caption = "当前内容加入字典",

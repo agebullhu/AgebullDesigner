@@ -1,8 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:defaults="clr-namespace:Agebull.EntityModel.Config;assembly=Agebull.EntityModel.Config.Helper"
+                    xmlns:defaults="clr-namespace:Agebull.EntityModel.Config;assembly=Agebull.EntityModel.Designer.Logical"
                     xmlns:config="clr-namespace:Agebull.EntityModel.Config;assembly=Agebull.EntityModel.Config"
-                    xmlns:mysql1="clr-namespace:Agebull.EntityModel.Config.Mysql;assembly=Agebull.EntityModel.Config.Helper">
+                    xmlns:mysql1="clr-namespace:Agebull.EntityModel.Config.Mysql;assembly=Agebull.EntityModel.Designer.Logical">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml" />
     </ResourceDictionary.MergedDictionaries>
@@ -73,6 +73,7 @@
             </GroupBox>
         </StackPanel>
     </DataTemplate>
+    
     <DataTemplate x:Key="ProjectConfigTemplate" DataType="config:ProjectConfig">
         <StackPanel Style="{StaticResource LayoutPanel}"
                     DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type Border}},Path=DataContext}">
@@ -735,8 +736,8 @@
                         <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsExtendKey,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
-                        <Label Content="扩展主键顺序" />
-                        <TextBox Text="{Binding UniqueIndex,Mode=TwoWay}" />
+                        <Label Content="唯一索引" />
+                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding UniqueIndex,Mode=TwoWay}" />
                     </StackPanel>
                     <!--<StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="存储列ID" />

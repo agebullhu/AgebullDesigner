@@ -8,6 +8,7 @@
 
 #region 引用
 
+using Agebull.Common;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
 using System.Collections.Generic;
@@ -42,58 +43,55 @@ namespace Agebull.EntityModel.Designer
         /// 生成命令对象
         /// </summary>
         /// <returns></returns>
-        public override NotificationList<CommandItemBase> CreateCommands()
+        public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            return new NotificationList<CommandItemBase>
+            commands.Append(new CommandItem<EntityConfig>
             {
-                new CommandItem<EntityConfig>
-                {
-                    Action = CheckUiType,
-                    IsButton=true,
-                    Catalog="用户界面",
-                    Editor = "Vue",
-                    WorkView = "entity",
-                    Caption = "控件类型修复"
-                },
+                Action = CheckUiType,
+                IsButton = true,
+                Catalog = "用户界面",
+                Editor = "Vue",
+                WorkView = "entity",
+                Caption = "控件类型修复"
+            },
                 new CommandItem<EntityConfig>
                 {
                     Action = CheckKeyShow,
-                    IsButton=true,
-                    Catalog="用户界面",
+                    IsButton = true,
+                    Catalog = "用户界面",
                     WorkView = "entity",
                     Caption = "隐藏主外键"
                 },
                 new CommandItem<EntityConfig>
                 {
                     Action = CheckSizeByLen,
-                    IsButton=true,
-                    Catalog="用户界面",
+                    IsButton = true,
+                    Catalog = "用户界面",
                     Editor = "Vue",
                     WorkView = "entity",
                     Caption = "按文字计算宽度",
-                    ConfirmMessage="是否继续?"
+                    ConfirmMessage = "是否继续?"
                 },
                 new CommandItem<EntityConfig>
                 {
                     Action = CheckSizeAuto,
-                    IsButton=true,
-                    Catalog="用户界面",
+                    IsButton = true,
+                    Catalog = "用户界面",
                     Editor = "Vue",
                     WorkView = "entity",
                     Caption = "自适应宽度",
-                    ConfirmMessage="是否继续?"
+                    ConfirmMessage = "是否继续?"
                 },
                 new CommandItem<EntityConfig>
                 {
                     Action = CheckExport,
                     Caption = "导出导出初始化",
-                    IsButton=true,
+                    IsButton = true,
                     WorkView = "entity",
-                    Catalog="用户界面",
+                    Catalog = "用户界面",
                     Editor = "Vue",
-                    ConfirmMessage="是否继续?"
-                }
-            };
+                    ConfirmMessage = "是否继续?"
+                });
         }
 
         #endregion

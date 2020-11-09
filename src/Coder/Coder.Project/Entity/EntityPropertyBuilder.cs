@@ -114,7 +114,7 @@ using Agebull.EntityModel.Interfaces;
         }}");
                 }
             }
-            var uniques = Columns.Where(p => p.UniqueIndex > 0).ToArray();
+            var uniques = Columns.Where(p => p.UniqueIndex).ToArray();
             if (uniques.Length != 0)
             {
                 code.AppendLine(@"

@@ -38,10 +38,23 @@ namespace Agebull.EntityModel.Designer
         #region 操作命令
 
         /// <summary>
+        /// 命令
+        /// </summary>
+        public override NotificationList<CommandItemBase> Commands
+        {
+            get
+            {
+                var cmds = new NotificationList<CommandItemBase>();
+                CreateCommands(cmds);
+                return cmds;
+            }
+        }
+
+        /// <summary>
         /// 生成命令对象
         /// </summary>
         /// <param name="commands"></param>
-        protected override void CreateCommands(NotificationList<CommandItemBase> commands)
+        public override void CreateCommands(IList<CommandItemBase> commands)
         {
             commands.Add(new CommandItem
             {
@@ -306,6 +319,7 @@ namespace Agebull.EntityModel.Designer
     </body>
 </html>
 ";
+
                 Browser.NavigateToString(html);
                 Editor.ShowCode();
             }

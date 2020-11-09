@@ -20,7 +20,7 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<EntityClassify>
             {
                 Catalog = "编辑",
                 SignleSoruce = true,
@@ -30,7 +30,7 @@ namespace Agebull.EntityModel.Designer
                 Action = AddEntity,
                 IconName = "tree_Open"
             });
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<EntityClassify>
             {
                 Catalog = "编辑",
                 SignleSoruce = true,

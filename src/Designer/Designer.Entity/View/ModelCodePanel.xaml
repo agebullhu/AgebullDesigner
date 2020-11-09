@@ -155,21 +155,18 @@
                 <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
                 <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />
                 <DataGridCheckBoxColumn Binding="{Binding IsPrimaryKey,Mode=TwoWay}" Header="主键" />
-                <DataGridCheckBoxColumn Binding="{Binding IsIdentity,Mode=TwoWay}" Header="自增" />
-                <DataGridCheckBoxColumn Binding="{Binding IsCaption,Mode=TwoWay}" Header="标题" />
+                <DataGridTextColumn Binding="{Binding DataType,Mode=TwoWay}" Header="数据类型" />
                 <DataGridCheckBoxColumn Binding="{Binding DenyClient,Mode=TwoWay}" Header="非用户" />
-                <!--<DataGridCheckBoxColumn Binding="{Binding IsSystemField,Mode=TwoWay}" Header="系统" />-->
-                <!--<DataGridCheckBoxColumn Binding="{Binding DbInnerField,Mode=TwoWay}" Header="数据库字段" />-->
-                <!--<DataGridCheckBoxColumn Binding="{Binding IsMiddleField,Mode=TwoWay}" Header="中间字段" />-->
-                <DataGridTextColumn Binding="{Binding CsType,Mode=TwoWay}" Header="C#类型" />
-                <DataGridCheckBoxColumn Binding="{Binding Nullable,Mode=TwoWay}" Header="空类型" />
-                <DataGridTextColumn Binding="{Binding CustomType,Mode=TwoWay}" Header="C#自定义类型" />
+                <DataGridCheckBoxColumn Binding="{Binding IsUserContent,Mode=TwoWay}" Header="用户内容"/>
+                <DataGridCheckBoxColumn Binding="{Binding IsMiddleField,Mode=TwoWay}" Header="中间字段" />
+                <DataGridCheckBoxColumn Binding="{Binding CanGet,Mode=TwoWay}" Header="可读" />
+                <DataGridCheckBoxColumn Binding="{Binding CanSet,Mode=TwoWay}" Header="可写" />
                 <DataGridCheckBoxColumn Binding="{Binding IsCompute,Mode=TwoWay}" Header="计算列" />
                 <DataGridCheckBoxColumn Binding="{Binding IsCustomCompute,Mode=TwoWay}" Header="自定义代码" />
                 <!--<DataGridTextColumn Binding="{Binding CppName,Mode=TwoWay}" Header="C++别名" />
                 <DataGridTextColumn Binding="{Binding CppType,Mode=TwoWay}" Header="C++类型" />
                 <DataGridTextColumn Binding="{Binding CppLastType,Mode=TwoWay}" Header="C++最终" />
-                <DataGridTextColumn Binding="{Binding UniqueIndex,Mode=TwoWay}" Header="组合主键顺序" />-->
+                <DataGridCheckBoxColumn Binding="{Binding UniqueIndex,Mode=TwoWay}" Header="唯一索引" />-->
             </DataGrid.Columns>
             <i:Interaction.Behaviors>
                 <behaviors:DataGridGenertColumnsBehavior />

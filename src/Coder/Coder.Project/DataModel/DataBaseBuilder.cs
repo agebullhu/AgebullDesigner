@@ -264,7 +264,8 @@ namespace {Project.NameSpace}.DataAccess
                     SqlBuilder = new MySqlSqlBuilder<{entity.EntityName}> {{ Option = opt }}
                 }};
                 provider.SqlBuilder.Provider = provider;
-                provider.Injection.Provider = provider;
+                if(provider.Injection != null)
+                    provider.Injection.Provider = provider;
                 if (!isDynamic)
                 {{
                     providers[typeof({entity.EntityName})] = provider;
@@ -355,27 +356,24 @@ namespace {Project.NameSpace}.DataAccess
             var str = new StringBuilder("new EntityProperty(");
             IFieldConfig friend;
             bool hase = false;
-            if (!property.Entity.IsInterface)
+            if (property.IsReference && property.Option.Reference is IFieldConfig rf && rf.IsInterfaceField)
             {
-                if (property.IsInterfaceField)
+                if (pro)
+                    return null;
+                hase = true;
+                friend = property.Option.Reference as IFieldConfig;
+                str.Append($"GlobalDataInterfaces.{friend.Entity.Name}.{friend.Name}");
+            }
+            else if (property.IsLinkField)
+            {
+                var entity = GlobalConfig.GetEntity(property.LinkTable);
+                if (entity != null)
                 {
                     if (pro)
                         return null;
                     hase = true;
-                    str.Append($"GlobalDataInterfaces.{property.LinkTable}.{property.LinkField}");
-                    friend = GlobalConfig.GetEntity(property.LinkTable).Properties.FirstOrDefault(p => p.Name == property.LinkField);
-                }
-                else if (property.IsLinkField)
-                {
-                    var entity = GlobalConfig.GetEntity(property.LinkTable);
-                    if (entity != null)
-                    {
-                        if (pro)
-                            return null;
-                        hase = true;
-                        str.Append($"{entity.Name}_Struct_.{property.LinkField}");
-                        friend = entity.Properties.FirstOrDefault(p => p.Name == property.LinkField);
-                    }
+                    str.Append($"{entity.Name}_Struct_.{property.LinkField}");
+                    friend = entity.Properties.FirstOrDefault(p => p.Name == property.LinkField);
                 }
             }
             if (!hase)

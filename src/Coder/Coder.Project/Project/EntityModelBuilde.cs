@@ -91,11 +91,6 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
                     CreateCode<MySqlAccessBuilder<TModelConfig>>(project, schema, accessPath);
                     break;
             }
-            var blPath = IOHelper.CheckPath(root, "Business");
-            if (cls != null)
-                blPath = IOHelper.CheckPath(blPath, cls);
-            CreateCode<BusinessBuilder<TModelConfig>>(project, schema, blPath);
-            Message = blPath;
         }
     }
 }

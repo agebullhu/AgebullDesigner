@@ -1,7 +1,9 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
+using Agebull.Common;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.RobotCoder;
 
@@ -19,11 +21,13 @@ namespace Agebull.EntityModel.Designer
     {
         #region 操作命令
 
-        public override NotificationList<CommandItemBase> CreateCommands()
+        /// <summary>
+        /// 生成命令对象
+        /// </summary>
+        /// <returns></returns>
+        public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            return new NotificationList<CommandItemBase>
-            {
-                new CommandItem
+            commands.Append(  new CommandItem
                 {
                     Action = Format1,
                     IsButton=true,
@@ -71,9 +75,7 @@ namespace Agebull.EntityModel.Designer
                     IsButton=true,
                     Caption = "检查",
                     Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-                }
-                
-            };
+                });
         }
         #endregion
 

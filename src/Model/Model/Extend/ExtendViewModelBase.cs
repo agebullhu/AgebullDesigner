@@ -154,9 +154,9 @@ namespace Agebull.EntityModel.Designer
             //RaisePropertyChanged(nameof(DesignModel));
         }
 
-        protected override NotificationList<CommandItemBase> CreateCommands()
+        public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            return Model.CreateCommands();
+            Model.CreateCommands(commands);
         }
 
         /// <summary>

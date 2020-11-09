@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Entities\Agebull.Common.Entity.csproj" />
+    <ProjectReference Include="..\Config\Agebull.EntityModel.Config.csproj" />
   </ItemGroup>
 
 </Project>

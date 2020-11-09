@@ -77,7 +77,7 @@ namespace Agebull.EntityModel.Designer
         public void CopyTable(EntityConfig entity)
         {
             Context.CopiedTable = new EntityConfig();
-            Context.CopiedTable.CopyValue(entity);
+            Context.CopiedTable.Copy(entity);
             Context.CopiedTables.Add(Context.CopiedTable);
             RaisePropertyChanged(() => Context.CopiedTableCounts);
         }

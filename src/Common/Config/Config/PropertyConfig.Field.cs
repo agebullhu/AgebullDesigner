@@ -24,7 +24,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 上级
         /// </summary>
-        IEntityConfig IFieldConfig.Parent => Model;
+        IEntityConfig IDesignField.Parent => Model;
 
         /// <summary>
         /// 上级
@@ -419,7 +419,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"唯一属性组合顺序"), Description("参与组合成唯一属性的顺序,大于0有效")]
-        public int UniqueIndex
+        public bool UniqueIndex
         {
             get => Field.UniqueIndex; set => Field.UniqueIndex = value;
         }
@@ -472,7 +472,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"构建数据库索引"), Description("构建数据库索引的优化选项")]
-        public bool CreateDbIndex => Field.CreateDbIndex;
+        public bool NeedDbIndex => Field.NeedDbIndex;
 
         /// <summary>
         /// 数据长度
@@ -514,19 +514,6 @@ namespace Agebull.EntityModel.Config
         {
             get => Field.Scale;
             set => Field.Scale = value;
-        }
-
-        /// <summary>
-        /// 存储列ID
-        /// </summary>
-        /// <remark>
-        /// 存储列ID,即在数据库内部对应的列ID
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"存储列ID"), Description("存储列ID,即在数据库内部对应的列ID")]
-        public int DbIndex
-        {
-            get => Field.DbIndex; set => Field.DbIndex = value;
         }
 
         /// <summary>
@@ -863,6 +850,16 @@ namespace Agebull.EntityModel.Config
         public string DataFormater
         {
             get => Field.DataFormater; set => Field.DataFormater = value;
+        }
+
+        /// <summary>
+        /// 是否用户内容
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"用户界面"), DisplayName(@"用户内容"), Description("作为需要语言翻译的标记")]
+        public bool IsUserContent
+        {
+            get => Field.IsUserContent; set => Field.IsUserContent = value;
         }
 
         /// <summary>

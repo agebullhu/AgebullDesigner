@@ -16,16 +16,20 @@
   <ItemGroup>
     <Compile Remove="IConfigIterator\**" />
     <Compile Remove="Remove\**" />
+    <Compile Remove="V5\**" />
     <EmbeddedResource Remove="IConfigIterator\**" />
     <EmbeddedResource Remove="Remove\**" />
+    <EmbeddedResource Remove="V5\**" />
     <None Remove="IConfigIterator\**" />
     <None Remove="Remove\**" />
+    <None Remove="V5\**" />
     <Page Remove="IConfigIterator\**" />
     <Page Remove="Remove\**" />
+    <Page Remove="V5\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WpfMvvmBase\Agebull.Common.Mvvm.csproj" />
+    <ProjectReference Include="..\Entities\Agebull.Common.Entity.csproj" />
   </ItemGroup>
 
 </Project>

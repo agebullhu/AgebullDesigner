@@ -127,7 +127,7 @@ namespace Agebull.EntityModel.Designer
                         {
                             Name = caption.Name
                         });
-                        cf.CopyFromProperty(caption, false, true, false);
+                        cf.Copy(caption);
                         
                     }
                     cf.NoStorage = false;

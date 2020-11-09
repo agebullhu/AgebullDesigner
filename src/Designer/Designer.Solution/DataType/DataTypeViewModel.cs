@@ -8,9 +8,11 @@
 
 #region 引用
 
+using Agebull.Common;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.RobotCoder;
+using System.Collections.Generic;
 using System.Linq;
 
 #endregion
@@ -23,32 +25,29 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     public sealed class DataTypeViewModel : ExtendViewModelBase<DesignModelBase>
     {
-        protected override NotificationList<CommandItemBase> CreateCommands()
+        public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            return new NotificationList<CommandItemBase>
+            commands.Append(new CommandItem
             {
-                new CommandItem
-                {
-                    Name="New",
-                    Caption = "新增数据类型",
-                    IsButton=true,
-                    Action = arg => Model.Context.Solution.DataTypeMap.Add(new DataTypeMapConfig())
-                },
-                new CommandItem
-                {
-                    Name="Sync",
-                    Caption = "从C#语言解析字段数据类型",
-                    IsButton=true,
-                    Action = arg =>Model.Context.Solution.Foreach<FieldConfig>(DataTypeHelper.CsDataType)
-                },
-                new CommandItem
-                {
-                    Name="Sync",
-                    Caption = "标准化字段数据类型",
-                    IsButton=true,
-                    Action = arg=>Model.Context.Solution.Foreach<FieldConfig>(DataTypeHelper.StandardDataType)
-                }
-            };
+                Name = "New",
+                Caption = "新增数据类型",
+                IsButton = true,
+                Action = arg => Model.Context.Solution.DataTypeMap.Add(new DataTypeMapConfig())
+            },
+            new CommandItem
+            {
+                Name = "Sync",
+                Caption = "从C#语言解析字段数据类型",
+                IsButton = true,
+                Action = arg => Model.Context.Solution.Foreach<FieldConfig>(DataTypeHelper.CsDataType)
+            },
+            new CommandItem
+            {
+                Name = "Sync",
+                Caption = "标准化字段数据类型",
+                IsButton = true,
+                Action = arg => Model.Context.Solution.Foreach<FieldConfig>(DataTypeHelper.StandardDataType)
+            });
         }
 
     }

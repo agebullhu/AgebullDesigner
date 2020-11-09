@@ -19,7 +19,8 @@ using Agebull.Common;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Config.Mysql;
 using Agebull.EntityModel.RobotCoder;
-using MySqlConnector;
+using MySql.Data.MySqlClient;
+
 
 #endregion
 

@@ -146,7 +146,7 @@ namespace Agebull.EntityModel.RobotCoder
 
             code.Append(@"
         #region 字段索引");
-            foreach (ColumnSchema property in Entity.LastColumns.Where(p => !p.IsPrimaryKey && (p.CreateIndex || p.UniqueIndex > 0)))
+            foreach (ColumnSchema property in Entity.LastColumns.Where(p => !p.IsPrimaryKey && (p.CreateIndex || p.UniqueIndex)))
             {
                 property.CreateIndex = true;
                 code.AppendFormat(@"
@@ -392,7 +392,7 @@ namespace Agebull.EntityModel.RobotCoder
             code.Append(@"
         #region 字段索引");
             bool isUser = Entity.LastColumns.Any(p => p.IsUserId);
-            foreach (ColumnSchema property in Entity.LastColumns.Where(p => !p.IsPrimaryKey && (p.CreateIndex || p.UniqueIndex > 0)))
+            foreach (ColumnSchema property in Entity.LastColumns.Where(p => !p.IsPrimaryKey && (p.CreateIndex || p.UniqueIndex)))
             {
                 property.CreateIndex = true;
                 string type = null;

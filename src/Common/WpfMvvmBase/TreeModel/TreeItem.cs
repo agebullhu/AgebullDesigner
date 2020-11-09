@@ -25,6 +25,7 @@ using System.Windows.Media.Imaging;
 
 namespace Agebull.EntityModel
 {
+
     /// <summary>
     ///     树节点模型
     /// </summary>

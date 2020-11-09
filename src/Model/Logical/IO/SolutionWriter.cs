@@ -79,6 +79,5 @@ namespace Agebull.EntityModel.Designer
                 ProjectWriter.SaveProject(project, directory);
             }
         }
-
     }
 }

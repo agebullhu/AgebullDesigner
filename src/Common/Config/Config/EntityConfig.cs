@@ -95,7 +95,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"是否存在属性组合唯一值"), Description("是否存在属性组合唯一值")]
-        public bool IsUniqueUnion => Properties.Count > 0 && Properties.Count(p => p.UniqueIndex > 0) > 1;
+        public bool IsUniqueUnion => Properties.Count > 0 && Properties.Any(p => p.UniqueIndex);
 
         /// <summary>
         /// 主键字段
@@ -654,6 +654,12 @@ namespace Agebull.EntityModel.Config
             return Properties.Any(p => names.Exist(p.Name, p.DbFieldName));
         }
 
+        /*// <summary>
+        /// 字段列表
+        /// </summary>
+        [DataMember, JsonProperty("_properties", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal ConfigCollection<FieldConfigV5> _properties_v5;*/
+
         /// <summary>
         /// 字段列表
         /// </summary>
@@ -672,6 +678,17 @@ namespace Agebull.EntityModel.Config
         {
             get
             {
+                //if (_properties_v5 != null)
+                //{
+                //    _properties = new ConfigCollection<FieldConfig>();
+                //    foreach (var field in _properties_v5)
+                //    {
+                //        _properties.Add(field.Clone());
+                //    }
+                //    _properties_v5 = null;
+                //    RaisePropertyChanged(nameof(Properties));
+                //    return _properties;
+                //}
                 if (_properties != null)
                     return _properties;
                 _properties = new ConfigCollection<FieldConfig>();

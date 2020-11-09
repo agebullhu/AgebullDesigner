@@ -116,7 +116,6 @@ SELECT {0}", entity.PrimaryColumn.DbFieldName);
             {
                 foreach (var col in entity.Properties)
                 {
-                    col.DbIndex = 0;
                     col.NoStorage = true;
                 }
 
@@ -177,7 +176,6 @@ SELECT {0}", entity.PrimaryColumn.DbFieldName);
                 col.DbNullable = reader.GetBoolean(5);
                 col.Datalen = Convert.ToInt32(reader.GetValue(2));
                 col.Scale = Convert.ToInt32(reader.GetValue(3));
-                col.DbIndex = Convert.ToInt32(reader.GetValue(6));
                 col.IsPrimaryKey = !reader.IsDBNull(8);
                 col.IsIdentity = reader.GetBoolean(9);
                 col.IsCompute = reader.GetBoolean(10);
@@ -237,12 +235,13 @@ ORDER BY [Tables].object_id, [Columns].column_id";
         public void IntCheck()
         {
             foreach (var schema in Project.Entities)
+            {
                 foreach (var col in schema.Properties)
                 {
                     if (col.CsType == "string")
                         col.DbNullable = true;
-                    col.DbIndex = 0;
                 }
+            }
 
             var csb = new SqlConnectionStringBuilder
             {
@@ -259,11 +258,6 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                 foreach (var col in schema.Properties)
                 {
                     TraceMessage.DefaultTrace.Message3 = col.DbFieldName;
-                    if (col.DbIndex <= 0)
-                    {
-                        TraceMessage.DefaultTrace.Track = "字段不存在";
-                        continue;
-                    }
 
                     var checkInt = true;
                     var isInt = true;

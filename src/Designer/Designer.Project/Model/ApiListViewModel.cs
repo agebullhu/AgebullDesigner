@@ -22,11 +22,9 @@ namespace Agebull.EntityModel.Designer
 {
     public sealed class ApiListViewModel : ExtendViewModelBase<ApiListModel>
     {
-
-        protected override NotificationList<CommandItemBase> CreateCommands()
+        
+        public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            var commands = new NotificationList<CommandItemBase>();
-
             var extends = CommandCoefficient.CoefficientEditor(typeof(ApiItem));
             foreach (var cms in extends)
             {
@@ -36,7 +34,6 @@ namespace Agebull.EntityModel.Designer
                 cms.OnPrepare = Model.OnCommandExec;
                 commands.Add(cms);
             }
-            return commands;
         }
     }
 

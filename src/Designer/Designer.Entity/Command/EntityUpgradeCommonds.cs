@@ -37,13 +37,6 @@ namespace Agebull.EntityModel.Designer
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Action = CheckName,
-                Caption = "名称中的[标识]统一替换为[编号]",
-                Catalog = "字段",
-                IconName = "tree_item"
-            });
-            commands.Add(new CommandItemBuilder<EntityConfig>
-            {
                 Action = ToStandardName,
                 Caption = "规范名称",
                 Catalog = "修复",
@@ -66,7 +59,7 @@ namespace Agebull.EntityModel.Designer
                 IconName = "tree_Type",
                 WorkView = "adv"
             });
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<EntityConfig>
             {
                 SignleSoruce = true,
                 IsButton = false,
@@ -77,7 +70,7 @@ namespace Agebull.EntityModel.Designer
                 IconName = "img_add",
                 WorkView = "adv"
             });
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<EntityConfig>
             {
                 Action = RepairRegular,
                 IsButton = false,
@@ -112,15 +105,6 @@ namespace Agebull.EntityModel.Designer
 
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Action = FindRelationTable,
-                Caption = "查找关联表",
-                SoruceView = "entity",
-                Catalog = "实体",
-                IconName = "tree_Type",
-                WorkView = "adv"
-            });
-            commands.Add(new CommandItemBuilder<EntityConfig>
-            {
                 Action = LinkKeyFirst,
                 Caption = "外键排前",
                 SoruceView = "entity",
@@ -137,6 +121,30 @@ namespace Agebull.EntityModel.Designer
                 IconName = "tree_Type",
                 WorkView = "adv"
             });
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                Action = FindRelationTable,
+                Caption = "查找关联表",
+                SoruceView = "entity",
+                Catalog = "实体",
+                IconName = "tree_Type",
+                WorkView = "adv"
+            });
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                Action = CheckName,
+                Caption = "名称中的[标识]统一替换为[编号]",
+                Catalog = "字段",
+                IconName = "tree_item"
+            });
+
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                Action = IdentityToBigint,
+                Caption = "自增字段转为BIGINT类型",
+                Catalog = "字段",
+                IconName = "tree_item"
+            });
         }
 
         #endregion
@@ -152,7 +160,29 @@ namespace Agebull.EntityModel.Designer
                 Trace.WriteLine(entity.Caption);
             }
         }
+
+        /// <summary>
+        /// 查找关联表
+        /// </summary>
+        public void IdentityToBigint(EntityConfig entity)
+        {
+            foreach (var field in entity.Properties.Where(p => p.IsIdentity))
+            {
+                field.DbType = "BIGINT";
+                field.DataType = "Int64";
+                field.CsType = "long";
+            }
+            if (entity.IsLinkTable)
+            {
+                var field = entity.PrimaryColumn;
+
+                field.DbType = "BIGINT";
+                field.DataType = "Int64";
+                field.CsType = "long";
+            }
+        }
         
+
         /// <summary>
         /// 外键排前面
         /// </summary>
@@ -237,24 +267,21 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        public void RepairRegular(object arg)
+        public void RepairRegular(EntityConfig entity)
         {
             var result = MessageBox.Show("是重置规则,否仅检查并修改不正确的设置项", "规则检查", MessageBoxButton.YesNoCancel);
             if (result == MessageBoxResult.Cancel)
             {
                 return;
             }
-            var tables = Context.GetSelectEntities();
-            foreach (var entity in tables)
+
+            EntityBusinessModel business = new EntityBusinessModel
             {
-                EntityBusinessModel business = new EntityBusinessModel
-                {
-                    Entity = entity
-                };
-                business.RepairRegular(result == MessageBoxResult.Yes);
-            }
+                Entity = entity
+            };
+            business.RepairRegular(result == MessageBoxResult.Yes);
         }
-        public void SplitTable(object arg)
+        public void SplitTable(EntityConfig entity)
         {
             if (!(Context.SelectEntity is EntityConfig oldTable) ||
                 Context.SelectColumns == null || Context.SelectColumns.Count == 0)
@@ -262,13 +289,13 @@ namespace Agebull.EntityModel.Designer
                 return;
             }
             var newTable = new EntityConfig();
-            newTable.CopyValue(oldTable, true);
+            newTable.Copy(oldTable);
             if (!CommandIoc.NewConfigCommand("拆分到新实体", newTable))
                 return;
             if (oldTable.PrimaryColumn != null)
             {
                 var kc = new FieldConfig();
-                kc.CopyFromProperty(oldTable.PrimaryColumn, true, true, true);
+                kc.Copy(oldTable.PrimaryColumn);
                 newTable.Add(kc);
             }
             foreach (var col in Context.SelectColumns.OfType<FieldConfig>().ToArray())

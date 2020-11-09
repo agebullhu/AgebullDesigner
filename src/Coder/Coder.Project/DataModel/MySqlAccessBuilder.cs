@@ -24,7 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading.Tasks;
-using MySqlConnector;
+using MySql.Data.MySqlClient;
 
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Interfaces;
@@ -111,7 +111,7 @@ namespace {Project.NameSpace}.DataAccess
         /// <summary>
         /// 读取的字段
         /// </summary>
-        public const string LoadFields = @""{SqlMomentCoder.LoadSql(Model.DbFields)}"";
+        public const string LoadFields = @""{SqlMomentCoder.LoadSql(Model,Model.DbFields)}"";
 
         /// <summary>
         /// 汇总条件

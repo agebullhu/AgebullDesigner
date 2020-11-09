@@ -9,7 +9,7 @@ namespace Agebull.EntityModel.Config
     /// 分类配置
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public class EntityClassify : ParentConfigBase
+    public partial class EntityClassify : ParentConfigBase
     {
         /// <summary>
         /// 上级

@@ -117,7 +117,6 @@ namespace Agebull.EntityModel.RobotCoder
                 UniqueString = {property.UniqueString.ToString().ToLower()},
                 DbFieldName = ""{property.DbFieldName}"",
                 DbType = ""{property.DbType}"",
-                DbIndex = {property.DbIndex},
                 Precision = {property.Datalen},
                 Scale = {property.Scale},
                 FixedLength ={property.FixedLength.ToString().ToLower()},

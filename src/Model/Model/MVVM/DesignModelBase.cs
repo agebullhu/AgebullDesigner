@@ -3,10 +3,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
+using System.Collections.Generic;
 
 namespace Agebull.EntityModel.Designer
 {
-    public class DesignModelBase : ModelBase
+    public class DesignModelBase : ModelBase, ICommandModel
     {
         #region 操作命令
 
@@ -24,26 +25,16 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public string EditorName { get; set; }
 
-
-        public NotificationList<CommandItemBase> Commands => CreateCommands();
-
         /// <summary>
-        /// 生成命令对象
+        /// 命令
         /// </summary>
-        /// <returns></returns>
-        public virtual NotificationList<CommandItemBase> CreateCommands()
-        {
-            var commands = new NotificationList<CommandItemBase>();
-            CreateCommands(commands);
-            CommandCoefficient.CoefficientEditor<EntityConfig>(commands, EditorName);
-            return commands;
-        }
+        public virtual NotificationList<CommandItemBase> Commands => CommandCoefficient.GetFriendCommands(this);
 
         /// <summary>
         /// 生成命令对象
         /// </summary>
         /// <param name="commands"></param>
-        protected virtual void CreateCommands(NotificationList<CommandItemBase> commands)
+        public virtual void CreateCommands(IList<CommandItemBase> commands)
         {
         }
 

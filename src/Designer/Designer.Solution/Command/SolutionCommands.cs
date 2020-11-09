@@ -26,7 +26,7 @@ namespace Agebull.EntityModel.Designer
     {
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<SolutionConfig>
             {
                 Catalog = "编辑",
                 IsButton = true,

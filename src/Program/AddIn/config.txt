@@ -19,3 +19,5 @@ Agebull.EntityModel.RobotCoder.Byt31.dll
 *Agebull.EntityModel.RobotCoder.Upgrade.dll
 *Agebull.EntityModel.RobotCoder.Funds.dll
 *Agebull.EntityModel.RobotCoder.EasyUi.dll
+
+Agebull.EntityModel.RobotCoder.Upgrade.dll

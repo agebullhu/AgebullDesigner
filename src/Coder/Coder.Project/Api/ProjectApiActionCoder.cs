@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Agebull.Common;
 using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder.EasyUi
@@ -213,7 +214,7 @@ namespace {NameSpace}.WebApi
                     else
                         code.Append(@"
                                     || ");
-                    code.Append($@"p.{pro.Name}.Contains(value)");
+                    code.Append($@"p.{pro.Name}.Like(value)");
                 }
                 code.Append(@");
                 else ");
@@ -232,7 +233,7 @@ namespace {NameSpace}.WebApi
                 if ({pro.JsonName}.Count == 1)
                     filter.AddAnd(p => p.{pro.Name} == {pro.JsonName}[0]);
                 else
-                    filter.AddAnd(p => {pro.JsonName}.Contains(p.{pro.Name}));
+                    filter.AddAnd(p => p.{pro.Name}.In({pro.JsonName}));
             }}");
                     else
                         code.Append($@"
@@ -241,7 +242,7 @@ namespace {NameSpace}.WebApi
                 if ({pro.JsonName}.Count == 1)
                     filter.AddAnd(p => p.{pro.Name} == {pro.JsonName}[0]);
                 else
-                    filter.AddAnd(p => {pro.JsonName}.Contains(p.{pro.Name}));
+                    filter.AddAnd(p => p.{pro.Name}.In({pro.JsonName}));
             }}");
                 }
                 else if (pro.CsType.ToLower() == "datetime")
@@ -285,7 +286,7 @@ namespace {NameSpace}.WebApi
                     {
                         case "string":
                             code.Append($@"
-                filter.AddAnd(p => p.{pro.Name}.Contains({pro.JsonName}));");
+                filter.AddAnd(p => p.{pro.Name}.Like({pro.JsonName}));");
                             break;
                         default:
                             code.Append(!string.IsNullOrWhiteSpace(pro.CustomType)
@@ -304,7 +305,7 @@ namespace {NameSpace}.WebApi
 
         private string ExtendCode()
         {
-            var page = $"/{Model.Parent.PageRoot}/{Model.PagePath('/')}/index.htm";
+            var page = $"/{Model.Parent.PageRoot}/{Model.PagePath('/')}/index.htm".CheckUrlPath();
 
             var baseClass = "ApiController";
             if (Model.Interfaces != null)

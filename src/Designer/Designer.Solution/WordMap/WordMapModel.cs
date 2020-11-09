@@ -184,39 +184,36 @@ namespace Agebull.EntityModel.Designer
 
         public NotificationList<WordItem> WordItems => wordItems;
 
-        public override NotificationList<CommandItemBase> CreateCommands()
+        public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            return new NotificationList<CommandItemBase>
+            commands.Append(new CommandItem
             {
-                new CommandItem
-                {
-                    Name="Reload",
-                    IsButton=true,
-                    Caption = "重新载入",
-                    Action = p => Reload()
-                },
-                new CommandItem
-                {
-                    Name="New",
-                    Caption = "新增",
-                    IsButton=true,
-                    Action = arg => NewWord()
-                },
-                new CommandItem
-                {
-                    Name="Remove",
-                    Caption = "清理并保存",
-                    IsButton=true,
-                    Action =arg =>Clear(wordItems.Count == 0? null: wordItems.ToList(),true)
-                },
-                new CommandItem
-                {
-                    IsButton = true,
-                    Action = DeleteColumns,
-                    Caption = "删除选中",
-                    Image = Application.Current.Resources["img_del"] as ImageSource
-                }
-        };
+                Name = "Reload",
+                IsButton = true,
+                Caption = "重新载入",
+                Action = p => Reload()
+            },
+            new CommandItem
+            {
+                Name = "New",
+                Caption = "新增",
+                IsButton = true,
+                Action = arg => NewWord()
+            },
+            new CommandItem
+            {
+                Name = "Remove",
+                Caption = "清理并保存",
+                IsButton = true,
+                Action = arg => Clear(wordItems.Count == 0 ? null : wordItems.ToList(), true)
+            },
+            new CommandItem
+            {
+                IsButton = true,
+                Action = DeleteColumns,
+                Caption = "删除选中",
+                Image = Application.Current.Resources["img_del"] as ImageSource
+            });
         }
         internal static void NewWord()
         {

@@ -26,6 +26,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Base\CodeBuilderDefault.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Logical\Agebull.EntityModel.Designer.Logical.csproj" />
   </ItemGroup>
 

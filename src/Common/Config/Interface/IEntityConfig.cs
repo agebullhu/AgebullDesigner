@@ -7,6 +7,7 @@
 修改:2017-07-12
 *****************************************************/
 
+using Agebull.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,7 +55,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 是否存在属性组合唯一值
         /// </summary>
-        bool IsUniqueUnion { get; }// Properties.Count > 0 && Properties.Count(p {get;}// p.UniqueIndex > 0) > 1;
+        bool IsUniqueUnion { get; }// Properties.Count > 0 && Properties.Count(p {get;}// p.UniqueIndex) > 1;
 
         /// <summary>
         /// 主键字段
@@ -379,14 +380,12 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         string PagePath(char sp = '\\')
         {
-            if (!string.IsNullOrWhiteSpace(PageFolder))
+            if (!PageFolder.IsEmpty())
                 return PageFolder;
-            if (Parent.NoClassify || string.IsNullOrWhiteSpace(Classify) || Classify.Equals("None", StringComparison.InvariantCulture))
+            if (Parent.NoClassify || Classify.IsEmpty() || Classify.Equals("None", StringComparison.InvariantCulture))
                 return Abbreviation ?? Name;
             var cls = Parent.Classifies.FirstOrDefault(p => p.Name == Classify);
-            return cls == null
-? $"{cls.Abbreviation ?? Classify}{sp}{Name}"
-: $"{Classify.ToLWord()}{sp}{Name}";
+            return $"{cls?.Abbreviation ?? Classify.ToLWord()}{sp}{Abbreviation ?? Name}";
         }
 
         #endregion 
@@ -403,5 +402,42 @@ namespace Agebull.EntityModel.Config
         }
         #endregion
 
+
+        #region 复制
+
+        /// <summary>
+        /// 字段复制
+        /// </summary>
+        /// <param name="dest">复制源</param>
+        /// <returns></returns>
+        void Copy(IEntityConfig dest)
+        {
+            DenyScope = dest.DenyScope;
+            MaxIdentity = dest.MaxIdentity;
+            RedisKey = dest.RedisKey;
+            EntityName = dest.EntityName;
+            IsQuery = dest.IsQuery;
+            ReferenceType = dest.ReferenceType;
+            ModelInclude = dest.ModelInclude;
+            ModelBase = dest.ModelBase;
+            DataVersion = dest.DataVersion;
+            IsInternal = dest.IsInternal;
+            NoDataBase = dest.NoDataBase;
+            Interfaces = dest.Interfaces;
+            ColumnIndexStart = dest.ColumnIndexStart;
+            ReadCoreCodes = dest.ReadCoreCodes;
+            IsInterface = dest.IsInterface;
+            HaseValidateCode = dest.HaseValidateCode;
+            UpdateByModified = dest.UpdateByModified;
+            ApiName = dest.ApiName;
+            HaseEasyUi = dest.HaseEasyUi;
+            IsUiReadOnly = dest.IsUiReadOnly;
+            PageFolder = dest.PageFolder;
+            TreeUi = dest.TreeUi;
+            DetailsPage = dest.DetailsPage;
+            FormCloumn = dest.FormCloumn;
+            CppName = dest.CppName;
+        }
+        #endregion
     }
 }

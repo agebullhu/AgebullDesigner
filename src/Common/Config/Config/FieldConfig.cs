@@ -37,7 +37,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 上级
         /// </summary>
-        IEntityConfig IFieldConfig.Parent => _entity;
+        IEntityConfig IDesignField.Parent => _entity;
 
         /// <summary>
         /// 上级
@@ -104,7 +104,6 @@ namespace Agebull.EntityModel.Config
             _canSet = true;
         }
 
-
         /// <summary>
         /// 分组
         /// </summary>
@@ -167,7 +166,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     原始字段名称
         /// </summary>
-        FieldConfig IFieldConfig.Field => this;
+        IFieldConfig IDesignField.Field => this;
 
         /// <summary>
         /// 数据类型
@@ -662,9 +661,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"代码访问范围"), Description(AccessType_Description)]
-        public string AccessType => IsInterfaceField && Entity.IsInterface
-            ? ""
-            : InnerField || DenyScope.HasFlag(AccessScopeType.Server)
+        public string AccessType => InnerField || DenyScope.HasFlag(AccessScopeType.Server)
                 ? "internal "
                 : "public ";
 
@@ -1337,20 +1334,17 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 唯一属性组合顺序
+        /// 组合唯一索引
         /// </summary>
-        [DataMember, JsonProperty("UniqueIndex", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal int _uniqueIndex;
+        [DataMember, JsonProperty("uniqueIndex", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _uniqueIndex;
 
         /// <summary>
-        /// 唯一属性组合顺序
+        /// 组合主键
         /// </summary>
-        /// <remark>
-        /// 参与组合成唯一属性的顺序,大于0有效
-        /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据标识"), DisplayName(@"唯一属性组合顺序"), Description("参与组合成唯一属性的顺序,大于0有效")]
-        public int UniqueIndex
+        [Category(@"数据标识"), DisplayName(@"组合唯一索引"), Description("参与组合成唯一属性的顺序,大于0有效")]
+        public bool UniqueIndex
         {
             get => _uniqueIndex;
             set
@@ -1453,7 +1447,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"构建数据库索引"), Description("构建数据库索引的优化选项")]
-        public bool CreateDbIndex => _isDbIndex || (ReferenceProperty?.CreateDbIndex ?? IsPrimaryKey || IsIdentity || IsLinkKey || IsCaption);
+        public bool NeedDbIndex => _isDbIndex || (ReferenceProperty?.NeedDbIndex ?? IsPrimaryKey || IsIdentity || IsLinkKey || IsCaption);
 
 
         /// <summary>
@@ -1669,33 +1663,6 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 存储列ID
-        /// </summary>
-        [DataMember, JsonProperty("DbIndex", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal int _dbIndex;
-
-        /// <summary>
-        /// 存储列ID
-        /// </summary>
-        /// <remark>
-        /// 存储列ID,即在数据库内部对应的列ID
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"存储列ID"), Description("存储列ID,即在数据库内部对应的列ID")]
-        public int DbIndex
-        {
-            get => _dbIndex;
-            set
-            {
-                if (_dbIndex == value)
-                    return;
-                BeforePropertyChanged(nameof(DbIndex), _dbIndex, value);
-                _dbIndex = value;
-                OnPropertyChanged(nameof(DbIndex));
-            }
-        }
-
-        /// <summary>
         /// 固定长度
         /// </summary>
         [DataMember, JsonProperty("FixedLength", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
@@ -1861,7 +1828,7 @@ namespace Agebull.EntityModel.Config
                 ? StorageScreenType.Read | StorageScreenType.Insert | StorageScreenType.Update
                 : CustomWrite || IsIdentity || IsCompute
                     ? StorageScreenType.Insert | StorageScreenType.Update
-                    : UniqueIndex > 0 || IsPrimaryKey || IsLinkKey
+                    : UniqueIndex  || IsPrimaryKey || IsLinkKey
                     ? StorageScreenType.Update
                     : InterfaceOrThis._keepStorageScreen;
             set
@@ -1940,6 +1907,30 @@ namespace Agebull.EntityModel.Config
         #endregion
 
         #region 用户界面
+
+        /// <summary>
+        /// 是否用户内容
+        /// </summary>
+        [DataMember, JsonProperty("isUserContent", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isUserContent;
+
+        /// <summary>
+        /// 是否用户内容
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"用户界面"), DisplayName(@"用户内容"), Description("作为需要语言翻译的标记")]
+        public bool IsUserContent
+        {
+            get => _isUserContent;
+            set
+            {
+                if (_isUserContent == value)
+                    return;
+                BeforePropertyChanged(nameof(IsUserContent), _isUserContent, value);
+                _isUserContent = value;
+                OnPropertyChanged(nameof(IsUserContent));
+            }
+        }
 
         /// <summary>
         /// 客户端不可见

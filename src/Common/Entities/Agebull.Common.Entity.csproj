@@ -18,4 +18,8 @@
     <PackageReference Include="Agebull.Common.Extend" Version="4.0.0.48" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entity\" />
+  </ItemGroup>
+
 </Project>

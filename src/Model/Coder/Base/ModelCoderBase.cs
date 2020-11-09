@@ -41,11 +41,11 @@ namespace Agebull.EntityModel.RobotCoder
 
         protected abstract bool IsClient { get; }
 
-        private IFieldConfig[] _columns;
-        protected IFieldConfig[] Columns => _columns ??= Model.PublishProperty.OrderBy(p => p.Index).ToArray();
+
+        protected IFieldConfig[] Columns => Model.PublishProperty.OrderBy(p => p.Index).ToArray();
 
         private IFieldConfig[] _rwcolumns;
-        protected IFieldConfig[] ReadWriteColumns => _rwcolumns ??= Columns.OrderBy(p => p.Index).Where(p => p.CanGet && p.CanSet).ToArray();
+        protected IFieldConfig[] ReadWriteColumns => Model.PublishProperty.Where(p => p.CanGet && p.CanSet).OrderBy(p => p.Index).ToArray();
 
         /// <summary>
         /// 初始化实体默认值的代码

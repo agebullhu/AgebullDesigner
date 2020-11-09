@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Agebull.EntityModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -44,6 +45,7 @@ namespace Agebull.Common.Mvvm
         public static void ClearCommand()
         {
             Commands.Clear();
+            FriendCommands.Clear();
         }
         private static readonly Dictionary<string, List<CommandItemBase>> Commands = new Dictionary<string, List<CommandItemBase>>();
 
@@ -154,5 +156,37 @@ namespace Agebull.Common.Mvvm
                 }
             }
         }
+        /// <summary>
+        /// 对象今天托管获取
+        /// </summary>
+        /// <typeparam name="TCommandModel"></typeparam>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public static NotificationList<CommandItemBase> GetFriendCommands<TCommandModel>(TCommandModel model)
+            where TCommandModel : ICommandModel
+        {
+            if (!FriendCommands.TryGetValue(model, out var commands))
+            {
+                model.CreateCommands(commands = new NotificationList<CommandItemBase>());
+                FriendCommands[model] = commands;
+            }
+            return commands;
+        }
+
+        private static readonly Dictionary<object, NotificationList<CommandItemBase>> FriendCommands = new Dictionary<object, NotificationList<CommandItemBase>>();
+
     }
+
+    /// <summary>
+    /// 命令模型
+    /// </summary>
+    public interface ICommandModel
+    {
+        /// <summary>
+        /// 生成命令对象
+        /// </summary>
+        /// <param name="commands"></param>
+        void CreateCommands(IList<CommandItemBase> commands);
+    }
+
 }

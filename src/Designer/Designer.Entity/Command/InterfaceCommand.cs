@@ -39,8 +39,17 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "接口",
                 IconName = "img_link"
             });
+            commands.Add(new CommandItemBuilder<EntityConfig>
+            {
+                Action = InterfaceHelper.ClearInterface,
+                Caption = "自动识别",
+                SoruceView = "entity",
+                SignleSoruce = false,
+                Catalog = "接口",
+                IconName = "img_link"
+            });
 
-            foreach(var iEntity in GlobalConfig.Global.Entities.Where(p => p.IsInterface))
+            foreach (var iEntity in GlobalConfig.Global.Entities.Where(p => p.IsInterface))
             {
                 commands.Add(new CommandItemBuilder<EntityConfig>
                 {

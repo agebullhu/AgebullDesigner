@@ -24,23 +24,19 @@
             <DataGridTextColumn Binding="{Binding Option.Index,Mode=TwoWay}" Header="序号" /> 
             <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
             <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />
-            <DataGridTextColumn Binding="{Binding Group,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                Header="分组" />
+            <DataGridTextColumn Binding="{Binding Group,Mode=TwoWay}" Header="分组" />
             <DataGridCheckBoxColumn Binding="{Binding IsPrimaryKey,Mode=TwoWay}" Header="主键" />
+            <DataGridCheckBoxColumn Binding="{Binding UniqueIndex,Mode=TwoWay}" Header="唯一索引" /> 
             <DataGridCheckBoxColumn Binding="{Binding IsIdentity,Mode=TwoWay}" Header="自增" />
-            <DataGridCheckBoxColumn Binding="{Binding IsCaption,Mode=TwoWay}" Header="标题" />
+            <DataGridCheckBoxColumn Binding="{Binding IsCaption,Mode=TwoWay}" Header="标题字段" />
             <DataGridCheckBoxColumn Binding="{Binding IsSystemField,Mode=TwoWay}" Header="系统" />
-            <DataGridCheckBoxColumn Binding="{Binding IsMiddleField,Mode=TwoWay}" Header="中间字段" />
             <DataGridTextColumn Binding="{Binding DataType,Mode=TwoWay}" Header="数据类型" />
             <DataGridTextColumn Binding="{Binding CsType,Mode=TwoWay}" Header="C#类型" />
-            <DataGridTextColumn Binding="{Binding CustomType,Mode=TwoWay}" Header="自定义类型" />
-            <DataGridCheckBoxColumn Binding="{Binding Nullable,Mode=TwoWay}" Header="可空类型" />
-            <DataGridCheckBoxColumn Binding="{Binding CanGet,Mode=TwoWay}" Header="可读" />
-            <DataGridCheckBoxColumn Binding="{Binding CanSet,Mode=TwoWay}" Header="可写" />
-            <DataGridCheckBoxColumn Binding="{Binding IsArray,Mode=TwoWay}" Header="数组" />
             <DataGridCheckBoxColumn Binding="{Binding IsEnum,Mode=OneWay}" Header="枚举" />
+            <DataGridTextColumn Binding="{Binding CustomType,Mode=TwoWay}" Header="枚举名称" />
+            <DataGridCheckBoxColumn Binding="{Binding Nullable,Mode=TwoWay}" Header="可空类型" />
+            <DataGridCheckBoxColumn Binding="{Binding IsArray,Mode=TwoWay}" Header="数组" />
             <DataGridCheckBoxColumn Binding="{Binding IsDictionary,Mode=TwoWay}" Header="字典" />
-            <DataGridTextColumn Binding="{Binding HelloCode,Mode=TwoWay}" Header="示例内容" MinWidth="260"/>
         </DataGrid.Columns>
         <i:Interaction.Behaviors>
             <behaviors:DataGridGenertColumnsBehavior />

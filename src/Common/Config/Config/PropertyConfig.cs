@@ -54,6 +54,11 @@ namespace Agebull.EntityModel.Config
         private FieldConfig field;
 
         /// <summary>
+        ///     原始字段名称
+        /// </summary>
+        IFieldConfig IDesignField.Field => Field;
+
+        /// <summary>
         /// 字段
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
@@ -70,7 +75,7 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(Field));
             }
         }
-        
+
         /// <summary>
         /// 不生成属性
         /// </summary>
@@ -699,7 +704,11 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 是否数据库索引
         /// </summary>
-        public bool IsDbIndex => Field.IsDbIndex;
+        public bool IsDbIndex
+        {
+            get => Field.IsDbIndex;
+            set => Field.IsDbIndex = value;
+        }
 
         /// <summary>
         /// 分组

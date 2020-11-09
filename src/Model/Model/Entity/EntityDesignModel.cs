@@ -8,6 +8,7 @@ using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.RobotCoder;
 using System.Text;
+using Agebull.Common;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -28,58 +29,39 @@ namespace Agebull.EntityModel.Designer
         /// 生成命令对象
         /// </summary>
         /// <returns></returns>
-        public override NotificationList<CommandItemBase> CreateCommands()
+        public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            return CreateCommands(true, true, true);
-        }
-
-        /// <summary>
-        /// 生成命令对象
-        /// </summary>
-        /// <returns></returns>
-        protected NotificationList<CommandItemBase> CreateCommands(bool edit, bool create, bool ext)
-        {
-            NotificationList<CommandItemBase> commands = new NotificationList<CommandItemBase>();
-            if (edit)
+            commands.Add(new CommandItem
             {
-                commands.Add(new CommandItem
-                {
-                    IsButton = true,
-                    NoConfirm = true,
-                    Action = CopyColumns,
-                    Caption = "复制列",
-                    Image = Application.Current.Resources["tree_item"] as ImageSource
-                });
-                commands.Add(new CommandItem
-                {
-                    IsButton = true,
-                    Action = PasteColumns,
-                    NoConfirm = true,
-                    Caption = "粘贴列",
-                    Image = Application.Current.Resources["tree_item"] as ImageSource
-                });
-                commands.Add(new CommandItem
-                {
-                    IsButton = true,
-                    Action = ClearColumns,
-                    Caption = "清除列",
-                    Image = Application.Current.Resources["img_del"] as ImageSource
-                });
-                commands.Add(new CommandItem
-                {
-                    IsButton = true,
-                    Action = DeleteColumns,
-                    Caption = "删除所选列",
-                    Image = Application.Current.Resources["img_del"] as ImageSource
-                });
-            }
-            if (create)
-                CreateCommands(commands);
-            if (ext)
+                IsButton = true,
+                NoConfirm = true,
+                Action = CopyColumns,
+                Caption = "复制列",
+                Image = Application.Current.Resources["tree_item"] as ImageSource
+            });
+            commands.Add(new CommandItem
             {
-                CommandCoefficient.CoefficientEditor<EntityConfig>(commands, EditorName);
-            }
-            return commands;
+                IsButton = true,
+                Action = PasteColumns,
+                NoConfirm = true,
+                Caption = "粘贴列",
+                Image = Application.Current.Resources["tree_item"] as ImageSource
+            });
+            commands.Add(new CommandItem
+            {
+                IsButton = true,
+                Action = ClearColumns,
+                Caption = "清除列",
+                Image = Application.Current.Resources["img_del"] as ImageSource
+            });
+            commands.Add(new CommandItem
+            {
+                IsButton = true,
+                Action = DeleteColumns,
+                Caption = "删除所选列",
+                Image = Application.Current.Resources["img_del"] as ImageSource
+            });
+            CommandCoefficient.CoefficientEditor<EntityConfig>(commands, EditorName);
         }
 
         #endregion
@@ -178,7 +160,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     newColumn = new FieldConfig();
                     newColumn.Entity = Entity;
-                    newColumn.CopyFromProperty(copyColumn, false, true, true);
+                    newColumn.Copy(copyColumn) ;
                     newColumn.Option.Index = newColumn.Option.Identity = 0;
                     
                     if (refe && !copyColumn.IsLinkField)

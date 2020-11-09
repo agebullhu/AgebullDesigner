@@ -275,11 +275,11 @@ namespace {NameSpace}.DataAccess
         /// <returns></returns>
         private string UniqueCondition()
         {
-            if (!Model.DbFields.Any(p => p.UniqueIndex > 0))
+            if (!Model.DbFields.Any(p => p.UniqueIndex))
                 return $@"[{Model.PrimaryColumn.DbFieldName}] = @{Model.PrimaryColumn.Name}";
 
             var code = new StringBuilder();
-            var uniqueFields = Model.DbFields.Where(p => p.UniqueIndex > 0).OrderBy(p => p.UniqueIndex).ToArray();
+            var uniqueFields = Model.DbFields.Where(p => p.UniqueIndex).OrderBy(p => p.UniqueIndex).ToArray();
             var isFirst = true;
             foreach (var col in uniqueFields)
             {
@@ -297,7 +297,7 @@ namespace {NameSpace}.DataAccess
         }
         private string InsertSql()
         {
-            if (!Model.DbFields.Any(p => p.UniqueIndex > 0))
+            if (!Model.DbFields.Any(p => p.UniqueIndex))
             {
                 return OnlyInsertSql();
             }

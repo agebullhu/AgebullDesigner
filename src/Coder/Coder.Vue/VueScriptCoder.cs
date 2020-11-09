@@ -466,6 +466,45 @@ extend_filter({{
             }
             return code.ToString();
         }
+
+        /// <summary>
+        ///     ¸´ÖÆ×Ö¶Î
+        /// </summary>
+        private string CopyValue()
+        {
+            var code = new StringBuilder();
+            foreach (var property in Model.LastProperties.Where(p => !p.IsSystemField && !p.NoneJson))
+            {
+                var field = property;
+                code.Append($@"
+        if (typeof row.{property.JsonName} === 'undefined')
+            data.{property.JsonName} = ");
+                if (field.Nullable)
+                {
+                    code.Append("null;");
+                }
+                else if (field.CsType == "string" || field.CsType == nameof(DateTime))
+                {
+                    code.Append("'';");
+                }
+                else if (field.CsType == "bool")
+                {
+                    code.Append("false;");
+                }
+                else if (field.IsEnum)
+                {
+                    code.Append($"'{field.EnumConfig.Items.FirstOrDefault()?.Name}';");
+                }
+                else
+                {
+                    code.Append("0;");
+                }
+                code.Append($@"
+        else
+            data.{property.JsonName} = row.{property.JsonName};");
+            }
+            return code.ToString();
+        }
         #endregion
 
         #region Ê÷

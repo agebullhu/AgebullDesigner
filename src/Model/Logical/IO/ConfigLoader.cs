@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using Agebull.Common;
@@ -94,7 +95,7 @@ namespace Agebull.EntityModel.Designer
                     if (!File.Exists(file))
                         continue;
                     ProjectConfig project = DeSerializer<ProjectConfig>(file);
-                    if (project==null || project.IsDelete)
+                    if (project == null || project.IsDelete)
                         continue;
                     _solution.Add(project);
                     LoadEntity(project, path);
@@ -149,9 +150,14 @@ namespace Agebull.EntityModel.Designer
                 var model = DeSerializer<ModelConfig>(entFile);
                 if (model == null || model.IsDelete)
                     continue;
-                model.Entity = GlobalConfig.GetEntity(p=>p.Key == model._entityKey);
-                foreach (var field in model.Properties)
+                model.Entity = GlobalConfig.GetEntity(p => p.Key == model._entityKey);
+                foreach (var field in model.Properties.ToArray())
                 {
+                    if (field.Field == null)
+                    {
+                        model.Properties.Remove(field);
+                        continue;
+                    }
                     field.Model = model;
                     GlobalConfig.AddConfig(field);
                 }

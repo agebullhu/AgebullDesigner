@@ -5,6 +5,7 @@ using System.Windows;
 using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Designer.NewConfig;
+using System;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -30,7 +31,7 @@ namespace Agebull.EntityModel.Designer
                 IconName = "tree_Open",
                 Action = ToModel
             });
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<ProjectConfig>
             {
                 Catalog = "枚举",
                 Action = NewEnum,
@@ -41,7 +42,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "新增枚举",
                 IconName = "tree_Open"
             });
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<ProjectConfig>
             {
                 Catalog = "编辑",
                 SoruceView = "entity",
@@ -51,7 +52,7 @@ namespace Agebull.EntityModel.Designer
                 Action = AddEntity,
                 IconName = "tree_Open"
             });
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<ProjectConfig>
             {
                 Catalog = "编辑",
                 SignleSoruce = true,
@@ -62,7 +63,7 @@ namespace Agebull.EntityModel.Designer
                 IconName = "tree_item"
             });
 
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<ProjectConfig>
             {
                 SignleSoruce = true,
                 SoruceView = "entity",
@@ -91,9 +92,27 @@ namespace Agebull.EntityModel.Designer
             //var model = GlobalConfig.GetModel(p=>p.Entity == entity);
             //if (model != null)
             //    return;
-            var model = new ModelConfig();
-            model.CopyFrom(entity);
+            var model = new ModelConfig
+            {
+                Key = Guid.NewGuid().ToString("N"),
+                Entity = entity
+            };
+            model.CopyConfig(entity);
+            ((IEntityConfig)model).Copy(entity);
+            foreach(var field in entity.Properties)
+            {
+                var property = new PropertyConfig
+                {
+                    Key = Guid.NewGuid().ToString("N"),
+                    Field = field
+                };
+                property.CopyConfig(field);
+                ((IFieldConfig)property).Copy(field);
+                model.Add(property);
+                property.Field = field;
+            }
             entity.Parent.Add(model);
+            model.Entity = entity;
         }
 
         public void NewEnum(object arg)

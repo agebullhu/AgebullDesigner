@@ -44,7 +44,7 @@
                                     Binding="{Binding IsIdentity, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridCheckBoxColumn Header="3全局KEY"
                                     Binding="{Binding IsGlobalKey, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
-            <DataGridTextColumn Header="4唯一属性组合顺序"
+            <DataGridCheckBoxColumn Header="唯一索引"
                                 Binding="{Binding UniqueIndex, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
             <DataGridCheckBoxColumn Header="是否必填字段"
                                     Binding="{Binding IsRequired, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />

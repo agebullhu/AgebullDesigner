@@ -6,6 +6,7 @@
 // 修改:2014-11-29
 // *****************************************************/
 
+using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
@@ -28,31 +29,34 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
     {
         #region 操作命令
 
-        public override NotificationList<CommandItemBase> CreateCommands()
+        /// <summary>
+        /// 生成命令对象
+        /// </summary>
+        /// <returns></returns>
+        public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            var items = CreateCommands(false, true, true);
-            items.Add((CommandItemBase)new CommandItem
+            base.CreateCommands(commands);
+            commands.Add(new CommandItem
             {
                 Action = UpperHump,
                 IsButton = true,
                 Caption = "大驼峰名称",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             });
-            items.Add((CommandItemBase)new CommandItem
+            commands.Add(new CommandItem
             {
                 Action = LowerHump,
                 IsButton = true,
                 Caption = "小驼峰名称",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             });
-            items.Add((CommandItemBase)new CommandItem
+            commands.Add(new CommandItem
             {
                 Action = Underlined,
                 IsButton = true,
                 Caption = "小写下划线名称(C风格)",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             });
-            return items;
         }
         #endregion
 

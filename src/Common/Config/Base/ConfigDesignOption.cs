@@ -74,7 +74,7 @@ namespace Agebull.EntityModel.Config
         [Category("设计标识"), DisplayName("标识"), Description("名称")]
         public string Key
         {
-            get => _key;
+            get => _key ??= Guid.NewGuid().ToString("N");
             set
             {
                 if (_key == value)

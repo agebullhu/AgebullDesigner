@@ -44,7 +44,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "刷新枚举引用",
                 IconName = "tree_item"
             });
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<IFieldConfig>
             {
                 Catalog = "枚举",
                 NoConfirm = true,
@@ -55,7 +55,7 @@ namespace Agebull.EntityModel.Designer
                 SignleSoruce = true,
                 IconName = "tree_item"
             });
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<IFieldConfig>
             {
                 Catalog = "枚举",
                 SoruceView = "entity",
@@ -67,9 +67,8 @@ namespace Agebull.EntityModel.Designer
             });
         }
 
-        public void BindEnum(object arg)
+        public void BindEnum(IFieldConfig property)
         {
-            FieldConfig property = Context.SelectField.Field;
             property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
             if (property.EnumConfig != null)
                 return;
@@ -84,7 +83,7 @@ namespace Agebull.EntityModel.Designer
             property.EnumConfig = enumConfig;
         }
 
-        public void CheckEnum(FieldConfig property)
+        public void CheckEnum(IFieldConfig property)
         {
             property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
         }
@@ -92,9 +91,8 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 删除枚举
         /// </summary>
-        public void DeleteEnum(object arg)
+        public void DeleteEnum(IFieldConfig property)
         {
-            FieldConfig property = Context.SelectField.Field;
             property.CustomType = null;
         }
 

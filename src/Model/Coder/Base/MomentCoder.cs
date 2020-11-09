@@ -4,13 +4,34 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
+    /// <summary>
+    /// 代码片断定义
+    /// </summary>
     public class CoderDefine
     {
+        /// <summary>
+        /// 方法
+        /// </summary>
         public Func<ConfigBase, string> Func { get; set; }
-
+        /// <summary>
+        /// 名称
+        /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// 语言类型
+        /// </summary>
         public string Lang { get; set; }
+
+        /// <summary>
+        /// 自定义执行
+        /// </summary>
+        public bool CustomExecute { get; set; }
     }
+
+    /// <summary>
+    /// 代码片断生成器
+    /// </summary>
     public class MomentCoder
     {
         //private static readonly List<string> types = new List<string>();
@@ -38,6 +59,29 @@ namespace Agebull.EntityModel.RobotCoder
         //}
 
         public static string NowType { get; set; } = "未分类";
+
+
+        public static void RegisteCoder(string type, string name, string lang, Func<string> func)
+        {
+            NowType = type ?? "未分类";
+
+            if (!Coders.ContainsKey(NowType))
+                Coders.Add(NowType, new Dictionary<string, CoderDefine>());
+
+            var define = new CoderDefine
+            {
+                Func = p => func(),
+                CustomExecute = true,
+                Name = name,
+                Lang = lang
+            };
+
+            if (Coders[NowType].ContainsKey(name))
+                Coders[NowType][name] = define;
+            else
+                Coders[NowType].Add(name, define);
+        }
+
 
         public static void RegisteCoder<T>(string type, string name, string lang, Func<T, string> func)
             where T : ConfigBase

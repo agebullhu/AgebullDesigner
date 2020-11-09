@@ -1,6 +1,7 @@
 ﻿using Agebull.Common;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,51 +35,40 @@ namespace Agebull.EntityModel.Designer
         /// 生成命令对象
         /// </summary>
         /// <returns></returns>
-        public override NotificationList<CommandItemBase> CreateCommands()
+        public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            return CreateCommands(true, true, true);
-        }
-
-        /// <summary>
-        /// 生成命令对象
-        /// </summary>
-        /// <returns></returns>
-        protected NotificationList<CommandItemBase> CreateCommands(bool edit, bool create, bool ext)
-        {
-            NotificationList<CommandItemBase> commands = new NotificationList<CommandItemBase>();
-            if (edit)
+            commands.Add(new CommandItem
             {
-                commands.Add(new CommandItem
-                {
-                    IsButton = true,
-                    Action = AddColumns,
-                    NoConfirm = true,
-                    Caption = "增加行",
-                    Image = Application.Current.Resources["tree_add"] as ImageSource
-                });
-                commands.Add(new CommandItem
-                {
-                    IsButton = true,
-                    Action = PasteColumns,
-                    NoConfirm = true,
-                    Caption = "粘贴关系",
-                    Image = Application.Current.Resources["tree_item"] as ImageSource
-                });
-                commands.Add(new CommandItem
-                {
-                    IsButton = true,
-                    Action = DeleteColumns,
-                    Caption = "删除行",
-                    Image = Application.Current.Resources["img_del"] as ImageSource
-                });
-            }
-            if (create)
-                CreateCommands(commands);
-            if (ext)
+                IsButton = true,
+                Action = AddColumns,
+                NoConfirm = true,
+                Caption = "增加行",
+                Image = Application.Current.Resources["tree_add"] as ImageSource
+            });
+            commands.Add(new CommandItem
             {
-                CommandCoefficient.CoefficientEditor<EntityConfig>(commands, EditorName);
-            }
-            return commands;
+                IsButton = true,
+                Action = RelationDiscovery,
+                NoConfirm = true,
+                Caption = "关系发现",
+                Image = Application.Current.Resources["tree_item"] as ImageSource
+            });
+            commands.Add(new CommandItem
+            {
+                IsButton = true,
+                Action = PasteColumns,
+                NoConfirm = true,
+                Caption = "粘贴关系",
+                Image = Application.Current.Resources["tree_item"] as ImageSource
+            });
+            commands.Add(new CommandItem
+            {
+                IsButton = true,
+                Action = DeleteColumns,
+                Caption = "删除行",
+                Image = Application.Current.Resources["img_del"] as ImageSource
+            });
+            CommandCoefficient.CoefficientEditor<EntityConfig>(commands, EditorName);
         }
 
         #endregion
@@ -140,6 +130,29 @@ namespace Agebull.EntityModel.Designer
                 CheckReleation(releation, Context.SelectModel);
             }
         }
+        public void RelationDiscovery(object arg)
+        {
+            var model = Context.SelectModel;
+            SolutionConfig.Current.Foreach<FieldConfig>(field =>
+            {
+                if (field.IsLinkKey && model.Entity.Name.Equals(field.LinkTable, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!model.Releations.Any(p => p.ForeignTable == field.Parent.Name && p.ForeignKey == field.Name))
+                        model.Releations.Add(new ReleationConfig
+                        {
+                            Name = field.Parent.Name,
+                            Caption = field.Parent.Caption,
+                            PrimaryTable = model.Name,
+                            PrimaryKey = model.Entity.PrimaryColumn.Name,
+                            ForeignTable = field.Parent.Name,
+                            ForeignKey = field.Name,
+                            JoinType = EntityJoinType.none,
+                            ModelType = ReleationModelType.Custom
+                        });
+                }
+            });
+        }
+
         public static void CheckReleation(ModelConfig model)
         {
             foreach (var field in model.Entity.Properties)

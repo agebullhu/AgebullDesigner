@@ -47,20 +47,20 @@
                   ItemsSource="{Binding SelectEntity.Properties}">
             <DataGrid.Columns>
                 <DataGridCheckBoxColumn Binding="{Binding IsDiscard,Mode=OneWay}" IsReadOnly="True" Header="废" />
-                <DataGridTextColumn Binding="{Binding Index,Mode=OneWay}" Header="序号" />
+                <DataGridTextColumn Binding="{Binding Index,Mode=TwoWay}" Header="序号" />
                 <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
-                <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="属性" />
+                <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />
                 <DataGridTextColumn Binding="{Binding DbFieldName,Mode=TwoWay}" Header="字段" />
                 <DataGridCheckBoxColumn Binding="{Binding IsPrimaryKey,Mode=TwoWay}" Header="主键" />
+                <DataGridTextColumn Binding="{Binding DbType,Mode=TwoWay}" Header="类型" />
                 <DataGridCheckBoxColumn Binding="{Binding IsCaption,Mode=TwoWay}" Header="标题" />
                 <DataGridCheckBoxColumn Binding="{Binding IsCompute,Mode=TwoWay}" Header="计算列" />
-                <DataGridCheckBoxColumn Binding="{Binding IsLinkField,Mode=TwoWay}" Header="关联字段" /> 
-                <DataGridTextColumn Binding="{Binding LinkTable,Mode=TwoWay}" Header="关联表名" />
-                <DataGridTextColumn Binding="{Binding LinkField,Mode=TwoWay}" Header="关联字段" />
+                <DataGridCheckBoxColumn Binding="{Binding IsLinkField,Mode=TwoWay}" Header="关联" />
                 <DataGridCheckBoxColumn Binding="{Binding IsLinkKey,Mode=TwoWay}" Header="外键" />
-                <DataGridCheckBoxColumn Binding="{Binding IsLinkCaption,Mode=TwoWay}" Header="外表标题" />
+                <DataGridCheckBoxColumn Binding="{Binding IsLinkCaption,Mode=TwoWay}" Header="外部标题" />
+                <DataGridTextColumn Binding="{Binding LinkTable,Mode=TwoWay}" Header="关联实体" />
+                <DataGridTextColumn Binding="{Binding LinkField,Mode=TwoWay}" Header="关联字段" />
                 <!--<DataGridCheckBoxColumn Binding="{Binding IsUserId,Mode=TwoWay}" Header="用户关联" />-->
-                <DataGridTextColumn Binding="{Binding DbType,Mode=TwoWay}" Header="字段类型" />
             </DataGrid.Columns>
             <i:Interaction.Behaviors>
                 <behaviors:DataGridGenertColumnsBehavior />

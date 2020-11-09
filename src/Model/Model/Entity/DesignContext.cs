@@ -194,7 +194,7 @@ namespace Agebull.EntityModel.Designer
                     SelectProject = value.Parent;
 
                 RaisePropertyChanged(() => SelectEntity);
-
+                RaisePropertyChanged(() => SelectModel);
                 RaisePropertyChanged(() => RelationVisibility);
             }
         }

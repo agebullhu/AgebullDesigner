@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:defaults="clr-namespace:Agebull.EntityModel.Config;assembly=Agebull.EntityModel.Config.Helper"
+             xmlns:defaults="clr-namespace:Agebull.EntityModel.Config;assembly=Agebull.EntityModel.Designer.Logical"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
              xmlns:designer="clr-namespace:Agebull.EntityModel.Designer"
@@ -59,6 +59,10 @@
             </TabControl.Resources>
             <TabItem Header="显示内容">
                 <WrapPanel>
+                    <StackPanel>
+                        <Label Content="示例内容" />
+                        <TextBox Text="{Binding HelloCode,Mode=TwoWay}" />
+                    </StackPanel>
                     <StackPanel>
                         <Label Content="空值文本" />
                         <TextBox Text="{Binding EmptyValue,Mode=TwoWay}" />
@@ -163,10 +167,11 @@
                   DataContext="{Binding Context}"
                   ItemsSource="{Binding SelectEntity.Properties}">
             <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Index,Mode=TwoWay}" Header="序号" />
                 <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                     Header="名称" IsReadOnly="True" />
                 <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                    Header="标题" IsReadOnly="True" />
+                                    Header="标题" />
                 <DataGridTextColumn Binding="{Binding JsonName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                     Header="Json" />
                 <DataGridCheckBoxColumn

@@ -33,18 +33,17 @@ namespace Agebull.EntityModel.Designer
         /// 生成命令对象
         /// </summary>
         /// <returns></returns>
-        public override NotificationList<CommandItemBase> CreateCommands()
+        public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            return CreateCommands(true, true, true);
+             CreateCommands(commands,true, true);
         }
 
         /// <summary>
         /// 生成命令对象
         /// </summary>
         /// <returns></returns>
-        protected NotificationList<CommandItemBase> CreateCommands(bool edit, bool create, bool ext)
+        protected void CreateCommands(IList<CommandItemBase> commands,bool edit,bool ext)
         {
-            NotificationList<CommandItemBase> commands = new NotificationList<CommandItemBase>();
             if (edit)
             {
                 commands.Add(new CommandItem
@@ -71,14 +70,10 @@ namespace Agebull.EntityModel.Designer
                     Image = Application.Current.Resources["img_del"] as ImageSource
                 });
             }
-            
-            if (create)
-                CreateCommands(commands);
             if (ext)
             {
                 CommandCoefficient.CoefficientEditor<EntityConfig>(commands, EditorName);
             }
-            return commands;
         }
 
         #endregion
@@ -126,7 +121,7 @@ namespace Agebull.EntityModel.Designer
                 if (newColumn == null)
                 {
                     newColumn = new PropertyConfig();
-                    newColumn.CopyField(copyColumn);
+                    ((IFieldConfig)model).Copy(copyColumn);
                     newColumn.Option.Index = newColumn.Option.Identity = 0;
                     model.Add(newColumn);
                 }

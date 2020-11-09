@@ -99,7 +99,7 @@ namespace Agebull.EntityModel.Config
                 CSharp = "byte[]",
                 Java = "byte[]",
                 Cpp = "unsigned char",
-                MySql = "LONGBLOG",
+                MySql = "BLOB",
                 SqlServer = "VarBinary",
                 Oracle = "NUMBER(3)",Sqlite = "Integer",
                 JavaScript = "byte"

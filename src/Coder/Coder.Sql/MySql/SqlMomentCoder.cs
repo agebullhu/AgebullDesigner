@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
+using Agebull.Common;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Config.Mysql;
 using Agebull.EntityModel.Designer;
@@ -64,7 +65,7 @@ ALTER TABLE `{entity.OldName}` RENAME TO `{entity.SaveTableName}`;";
             code.Append($@"
 ALTER TABLE  `{entity.SaveTableName}`");
             bool isFirst = true;
-            foreach (var property in entity.DbFields.Where(p => p.CreateDbIndex))
+            foreach (var property in entity.DbFields.Where(p => p.NeedDbIndex))
             {
                 if (isFirst)
                     isFirst = false;
@@ -85,12 +86,12 @@ ALTER TABLE  `{entity.SaveTableName}`");
     ADD INDEX {property.Name}_Index (`{property.DbFieldName}`)");
             }
 
-            if (entity.DbFields.Any(p => p.UniqueIndex > 0))
+            if (entity.DbFields.Any(p => p.UniqueIndex))
             {
                 isFirst = true;
                 code.Append($@"
     ADD INDEX {entity.Name}_Unique_Index (");
-                foreach (var property in entity.DbFields.Where(p => p.UniqueIndex > 0))
+                foreach (var property in entity.DbFields.Where(p => p.UniqueIndex))
                 {
                     if (isFirst)
                         isFirst = false;
@@ -109,7 +110,7 @@ ALTER TABLE  `{entity.SaveTableName}`");
             code.Append($@"
 ALTER TABLE  `{entity.SaveTableName}`");
             bool isFirst = true;
-            foreach (var property in entity.DbFields.Where(p => p.CreateDbIndex && p.IsSystemField))
+            foreach (var property in entity.DbFields.Where(p => p.NeedDbIndex && p.IsSystemField))
             {
                 if (isFirst)
                     isFirst = false;
@@ -130,12 +131,12 @@ ALTER TABLE  `{entity.SaveTableName}`");
     ADD INDEX {property.Name}_Index (`{property.DbFieldName}`)");
             }
 
-            if (entity.DbFields.Any(p => p.UniqueIndex > 0))
+            if (entity.DbFields.Any(p => p.UniqueIndex))
             {
                 isFirst = true;
                 code.Append($@"
     ADD INDEX {entity.Name}_Unique_Index (");
-                foreach (var property in entity.DbFields.Where(p => p.UniqueIndex > 0))
+                foreach (var property in entity.DbFields.Where(p => p.UniqueIndex))
                 {
                     if (isFirst)
                         isFirst = false;
@@ -340,9 +341,22 @@ CREATE TABLE `{0}`("
             }
             if (entity.PrimaryColumn != null)
                 code.Append($@"
-    ,PRIMARY KEY (`{entity.PrimaryColumn.DbFieldName}`)");
+    , PRIMARY KEY (`{entity.PrimaryColumn.DbFieldName}`)");
             //if (entity.PrimaryColumn.IsIdentity)
-
+            var uns = entity.DbFields.Where(p=>p.UniqueIndex);
+            if (uns.Any())
+            {
+                code.Append($@"
+    , UNIQUE INDEX `{uns.Select (p=>p.DbFieldName).LinkToString('-')}`(");
+                bool first = true;
+                foreach (var un in uns)
+                {
+                    if (first) first = false;
+                    else code.Append(',');
+                    code.Append($"`{un.DbFieldName}`");
+                }
+                code.Append(@") USING BTREE");
+            }
             code.Append($@"
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci COMMENT '{entity.Caption}'");
             //if (entity.PrimaryColumn.IsIdentity)
@@ -514,7 +528,7 @@ ALTER TABLE `{entity.SaveTableName}`
 
         private static string NullKeyWord(IFieldConfig col)
         {
-            return !col.IsPrimaryKey && col.UniqueIndex >= 0 && !col.IsGlobalKey && (col.CsType == "string" || col.DbNullable)
+            return !col.IsPrimaryKey && col.UniqueIndex && !col.IsGlobalKey && (col.CsType == "string" || col.DbNullable)
                 ? " NULL" : " NOT NULL";
         }
 
@@ -524,12 +538,13 @@ ALTER TABLE `{entity.SaveTableName}`
                 return " AUTO_INCREMENT";
             if (col.IsPrimaryKey)
                 return Empty;
-            if (col.Initialization == null)
+            if (col.Initialization.IsEmpty())
             {
                 if (col.DbNullable)
                     return null;
-                if (col.CsType != "string")
-                    col.Initialization = "0";
+                return col.CsType == "string" 
+                    ? $"DEFAULT ''" 
+                    : $"DEFAULT 0";
             }
             return col.CsType == "string" ? $"DEFAULT '{col.Initialization}'" : $"DEFAULT {col.Initialization}";
         }
@@ -560,13 +575,17 @@ ALTER TABLE `{entity.SaveTableName}`
             return code.ToString();
         }
 
-        public static string LoadSql(IEnumerable<IFieldConfig> fields)
+        public static string LoadSql(IEntityConfig entity, IEnumerable<IFieldConfig> fields)
         {
             var sql = new StringBuilder();
             fields = fields.Where(p => !p.DbInnerField && !p.NoProperty && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)).ToArray();
             var isFirst = true;
+            var all = fields.All(p=>p.IsInterfaceField || p.Parent == entity);
             foreach (var property in fields)
             {
+                var table = all || property.Parent == entity
+                    ? ""
+                    : $"`{property.Entity.ReadTableName}`.";
                 if (isFirst)
                 {
                     isFirst = false;
@@ -577,11 +596,13 @@ ALTER TABLE `{entity.SaveTableName}`
                 }
                 if (!IsNullOrEmpty(property.Function))
                 {
-                    sql.AppendLine($"{property.Function}(`{property.Entity.ReadTableName}`.`{property.Field.DbFieldName}`) AS `{property.DbFieldName}`");
+                    sql.AppendLine($"{property.Function}({table}`{property.Field.DbFieldName}`) AS `{property.DbFieldName}`");
                 }
                 else
                 {
-                    sql.AppendLine($"`{property.Entity.ReadTableName}`.`{property.Field.DbFieldName}` AS `{property.DbFieldName}`");
+                    sql.Append($"{table}`{property.Field.DbFieldName}`");
+                    if(property.DbFieldName != property.Field.DbFieldName)
+                        sql.Append($" AS `{property.DbFieldName}`");
                 }
             }
             return sql.ToString();

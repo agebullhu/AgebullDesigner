@@ -11,6 +11,7 @@
 using Agebull.Common;
 using Agebull.Common.Mvvm;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows;
@@ -22,7 +23,7 @@ namespace Agebull.EntityModel
     /// <summary>
     ///     MVVM的ViewModel的基类
     /// </summary>
-    public abstract class ViewModelBase : MvvmBase
+    public abstract class ViewModelBase : MvvmBase, ICommandModel
     {
         /// <summary>
         /// 对应的视图
@@ -60,34 +61,18 @@ namespace Agebull.EntityModel
         {
 
         }
-
-
-        private NotificationList<CommandItemBase> _commands;
-
         /// <summary>
-        ///     对应的命令集合
+        /// 命令ICommandModel
         /// </summary>
-        public NotificationList<CommandItemBase> Commands => _commands ??= GetCommands();
+        public NotificationList<CommandItemBase> Commands => CommandCoefficient.GetFriendCommands(this);
 
         /// <summary>
         /// 构造命令列表
         /// </summary>
         /// <returns></returns>
-        NotificationList<CommandItemBase> GetCommands()
+        public virtual void CreateCommands(IList<CommandItemBase> commands)
         {
-            var cmds = CreateCommands();
-            var result = new NotificationList<CommandItemBase>();
-            result.Append(cmds, p => p.Key);
-            return result;
-        }
 
-        /// <summary>
-        /// 构造命令列表
-        /// </summary>
-        /// <returns></returns>
-        protected virtual NotificationList<CommandItemBase> CreateCommands()
-        {
-            return new NotificationList<CommandItemBase>();
         }
     }
 

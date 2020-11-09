@@ -34,10 +34,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Model\Model\Agebull.EntityModel.Designer.Model.csproj" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

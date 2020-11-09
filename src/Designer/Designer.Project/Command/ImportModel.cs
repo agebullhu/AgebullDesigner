@@ -61,7 +61,7 @@ namespace Agebull.EntityModel.Designer
                 TargetType = typeof(ProjectConfig),
                 IconName = "tree_Assembly"
             });
-            commands.Add(new CommandItemBuilder
+            commands.Add(new CommandItemBuilder<ProjectConfig>
             {
                 Catalog = "文件",
                 SoruceView = "entity",

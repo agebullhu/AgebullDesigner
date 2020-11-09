@@ -135,7 +135,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                         <el-dropdown-menu slot='dropdown'>
                             <el-dropdown-item command='Enable' icon='el-icon-video-play'>启用</el-dropdown-item>
                             <el-dropdown-item command='Disable' icon='el-icon-video-pause'>禁用</el-dropdown-item>
-                            <el-dropdown-item command='Reset' icon='el-icon-edit'>重置</el-dropdown-item>
+                            <el-dropdown-item command='Reset' icon='el-icon-edit'>解除锁定</el-dropdown-item>
                             <el-dropdown-item command='Deny' icon='el-icon-remove-outline'>不通过</el-dropdown-item>
                             <el-dropdown-item command='Back' icon='el-icon-edit'>退回编辑</el-dropdown-item>
                             <el-dropdown-item command='ReDo' icon='el-icon-edit'>重新审核</el-dropdown-item>
@@ -147,9 +147,13 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                     exButton.Append(@"
                     <el-dropdown split-button @click='doEnable'>
                         <i class='el-icon-video-play'></i>启用
-                        <el-dropdown-menu slot='dropdown'>
-                            <el-dropdown-item command='Disable' icon='el-icon-video-pause'>禁用</el-dropdown-item>
-                            <el-dropdown-item command='Reset' icon='el-icon-edit'>重置</el-dropdown-item>
+                        <el-dropdown-menu slot='dropdown' style='padding:3px;'>
+                            <el-dropdown-item style='padding:3px;'>
+                                <el-button icon='el-icon-remove'  @click='doDisable'>禁用</el-button>
+                            </el-dropdown-item>
+                            <el-dropdown-item style='padding:3px;'>
+                                <el-button icon='el-icon-unlock' @click='doReset'>解除锁定</el-button>
+                            </el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>");
                 }

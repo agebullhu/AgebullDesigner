@@ -42,6 +42,7 @@ namespace Agebull.EntityModel.Designer
             SaveConfig(Path.Combine(dir, "project.json"), project, checkState);
             return dir;
         }
+
         static void SavEntities(ProjectConfig project, string dir, bool checkState)
         {
             var path = GlobalConfig.CheckPath(dir, "Entity");
@@ -50,6 +51,7 @@ namespace Agebull.EntityModel.Designer
                 SaveEntity(entity, path, checkState);
             }
         }
+
         static void SavModels(ProjectConfig project, string dir, bool checkState)
         {
             var path = GlobalConfig.CheckPath(dir, "Model");

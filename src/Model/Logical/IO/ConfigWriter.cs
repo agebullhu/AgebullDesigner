@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
 using Newtonsoft.Json;
@@ -58,11 +59,14 @@ namespace Agebull.EntityModel.Designer
                 string json = JsonConvert.SerializeObject(config);
                 File.WriteAllText(filename, json, Encoding.UTF8);
                 config.SaveFileName = filename;
+                config.Foreach<ConfigBase>(p => p.IsModify = false);
             }
             catch (Exception e)
             {
                 Trace.WriteLine(e.ToString());
             }
         }
+
+
     }
 }
