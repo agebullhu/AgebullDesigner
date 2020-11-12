@@ -3,13 +3,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Agebull.Common
+namespace Agebull.EntityModel
 {
     /// <summary>
-    /// 文本扩展
+    /// 类型操作的便利方法
     /// </summary>
-    public static class Extenssions
+    public static class TypeExtenssions
     {
+        /// <summary>
+        /// 是否NULL或空字符串
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static bool IsEmpty(this string str) => string.IsNullOrWhiteSpace(str);
+
+
+        /// <summary>
+        /// 是否null或长度为0的数组
+        /// </summary>
+        /// <param name="array">数组</param>
+        /// <returns></returns>
+        public static bool IsEmptyOrNull<T>(this IEnumerable<T> array) => array == null || !array.Any();
+
+
         /// <summary>
         /// 页面代码路径
         /// </summary>
@@ -24,13 +40,6 @@ namespace Agebull.Common
         {
             return string.IsNullOrWhiteSpace(path) ? path : path.Replace('\\', '/');
         }
-
-        /// <summary>
-        /// 是否空或空白文本
-        /// </summary>
-        /// <param name="str">文本</param>
-        /// <returns></returns>
-        public static bool IsEmpty(this string str) => string.IsNullOrWhiteSpace(str);
 
         /// <summary>
         /// 非空或空白文本则进行格式化(格式化参数为此文本)
