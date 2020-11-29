@@ -17,8 +17,11 @@
     <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="3.1.9" />
     <PackageReference Include="MySql.Data" Version="8.0.22" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
+    <PackageReference Include="NPOI" Version="2.5.1" />
+    <PackageReference Include="System.Globalization" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.Extensions" Version="4.3.1" />
+    <PackageReference Include="System.Diagnostics.Debug" Version="4.3.0" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\Common\WpfMvvmBase\Agebull.Common.Mvvm.csproj" />
   </ItemGroup>

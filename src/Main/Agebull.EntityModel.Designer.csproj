@@ -105,9 +105,6 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="NPOI" Version="2.5.1" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Model\Model\Agebull.EntityModel.Designer.Model.csproj" />

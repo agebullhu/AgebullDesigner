@@ -24,7 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Interfaces;
@@ -89,12 +89,13 @@ namespace {Project.NameSpace}.DataAccess
             {{
                 IsQuery = false,
                 UpdateByMidified = true,
-                CanRaiseEvent=true,
+                EventLevel = EventEventLevel.Details,
                 SqlBuilder = new MySqlSqlBuilder<{Model.EntityName}>(),
                 DataStruct = Struct,
                 ReadTableName = FromSqlCode,
                 WriteTableName   = {Model.Entity.Name}_Struct_.tableName,
                 LoadFields = LoadFields,
+                OrderbyFields = {OrderbyFields()},
                 Having = Having,
                 GroupFields = GroupFields,
                 UpdateFields = UpdateFields,
@@ -160,7 +161,14 @@ namespace {Project.NameSpace}.DataAccess
     }}
 }}";
         }
-
+        
+        string OrderbyFields()
+        {
+            var field = Model.Properties.FirstOrDefault( p=>p.Name == Model.OrderField);
+            if (field == null)
+                return null;
+            return $"\"{field.DbFieldName} {(Model.OrderDesc ? " DESC" : "")}\"";
+        }
         string ReadTableName()
         {
             var primary = Model.PrimaryColumn;

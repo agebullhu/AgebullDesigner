@@ -30,6 +30,8 @@ namespace Agebull.EntityModel.RobotCoder
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
+using System.Linq.Expressions;
 using Agebull.Common;
 using Agebull.Common.Configuration;
 using Agebull.Common.Ioc;
@@ -97,7 +99,7 @@ namespace {Project.NameSpace}.DataAccess
         }}
         #endregion
 {AccessCreate()}
-        #endregion
+        #endregion{FastDo()}
     }}
 }}";
             SaveCode(file, code);
@@ -568,6 +570,126 @@ namespace {Project.NameSpace}.DataAccess
             };
         }");
             return code.ToString();
+        }
+        #endregion
+
+        #region 快捷访问
+
+        string FastDo()
+        {
+            var code = new StringBuilder();
+            code.Append($@"
+        #region 快捷访问");
+
+            List<IEntityConfig> noEntities = new List<IEntityConfig>();
+            foreach (var model in Project.Models)
+            {
+                FastDo(model, code);
+                noEntities.Add(model.Entity);
+            }
+            foreach (var entity in Project.Entities)
+            {
+                if (!noEntities.Contains(entity))
+                    FastDo(entity, code);
+            }
+            code.Append($@"
+        #endregion");
+            return code.ToString();
+        }
+
+        void FastDo(IEntityConfig entity, StringBuilder code)
+        {
+            var head = entity is ModelConfig ? "Models" : "Entities";
+            code.Append($@"
+        #region {entity.Caption}
+        /// <summary>
+        /// 插入{entity.Caption}
+        /// </summary>
+        /// <param name=""entity"">{entity.Caption}实体</param>
+        /// <param name=""reload"">是否读取最新数据</param>
+        /// <returns>插入状态</returns>
+        public static Task<bool> Insert({entity.EntityName} entity, bool reload = false)
+        {{
+            return {head}.{entity.Entity.Name}DataAccess().InsertAsync(entity, reload);
+        }}
+        /// <summary>
+        /// 更新{entity.Caption}
+        /// </summary>
+        /// <param name=""entity"">{entity.Caption}实体</param>
+        /// <param name=""reload"">是否读取最新数据</param>
+        /// <returns>更新状态</returns>
+        public static Task<bool> Update({entity.EntityName} entity, bool reload = false)
+        {{
+            return {head}.{entity.Entity.Name}DataAccess().UpdateAsync(entity, reload);
+        }}
+        /// <summary>
+        /// 按主键载入{entity.Caption}数据
+        /// </summary>
+        /// <param name=""id"">主键</param>
+        /// <returns>查询结果</returns>
+        public static Task<{entity.EntityName}> {entity.Entity.Name}First(long id)
+        {{
+            return {head}.{entity.Entity.Name}DataAccess().LoadByPrimaryKeyAsync(id);
+        }}
+        /// <summary>
+        /// 按条件查询首行{entity.Caption}数据
+        /// </summary>
+        /// <param name=""lambda""></param>
+        /// <returns>查询结果</returns>
+        public static Task<{entity.EntityName}> First{entity.Entity.Name}(LambdaItem<{entity.EntityName}> lambda)
+        {{
+            return {head}.{entity.Entity.Name}DataAccess().FirstAsync(lambda);
+        }}
+        /// <summary>
+        /// 按条件查询首行{entity.Caption}数据
+        /// </summary>
+        /// <param name=""lambda""></param>
+        /// <returns>查询结果</returns>
+        public static Task<{entity.EntityName}> First{entity.Entity.Name}(Expression<Func<{entity.EntityName}, bool>> lambda)
+        {{
+            return {head}.{entity.Entity.Name}DataAccess().FirstAsync(lambda);
+        }}
+        /// <summary>
+        /// 按条件查询所有{entity.Caption}数据
+        /// </summary>
+        /// <param name=""lambda"">查询条件</param>
+        /// <returns>{entity.Caption}数据列表</returns>
+        public static Task<List<{entity.EntityName}>> All{entity.Entity.Name}(LambdaItem<{entity.EntityName}> lambda)
+        {{
+            return {head}.{entity.Entity.Name}DataAccess().AllAsync(lambda);
+        }}
+        /// <summary>
+        /// 按条件查询所有{entity.Caption}数据
+        /// </summary>
+        /// <param name=""lambda"">查询条件</param>
+        /// <returns>{entity.Caption}数据列表</returns>
+        public static Task<List<{entity.EntityName}>> All{entity.Entity.Name}(Expression<Func<{entity.EntityName}, bool>> lambda)
+        {{
+            return {head}.{entity.Entity.Name}DataAccess().AllAsync(lambda);
+        }}
+        /// <summary>
+        /// 按条件读取分页{entity.Caption}数据
+        /// </summary>
+        /// <param name=""page""></param>
+        /// <param name=""limit""></param>
+        /// <param name=""lambda""></param>
+        /// <returns>{entity.Caption}分页数据</returns>
+        public static Task<ApiPageData<{entity.EntityName}>> Load{entity.Entity.Name}Page(int page,int limit, LambdaItem<{entity.EntityName}> lambda=null)
+        {{
+            return {head}.{entity.Entity.Name}DataAccess().PageAsync(page,limit,lambda);
+        }}
+        /// <summary>
+        /// 按条件读取分页{entity.Caption}数据
+        /// </summary>
+        /// <param name=""page""></param>
+        /// <param name=""limit""></param>
+        /// <param name=""lambda""></param>
+        /// <returns>{entity.Caption}分页数据</returns>
+        public static Task<ApiPageData<{entity.EntityName}>> Load{entity.Entity.Name}Page(int page,int limit, Expression<Func<{entity.EntityName}, bool>> lambda=null)
+        {{
+            return {head}.{entity.Entity.Name}DataAccess().PageAsync(page,limit,lambda);
+        }}
+        #endregion");
         }
         #endregion
     }

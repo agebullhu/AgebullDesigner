@@ -557,7 +557,7 @@ extend_filter({{
                     var name = ch.Name.ToLWord().ToPluralism();
                     forms.Add($"{name}:[]");
                     load.Append($@"
-        ajax_load('{ch.Caption}','/{Project.ApiName}/{ch.ForeignEntity.ApiName}/v1/edit/list',{{{ch.ForeignField.JsonName}:row.id}},data => that.form.{name} = data.rows);");
+        ajax_load('{ch.Caption}','/{Project.ApiName}/{ch.ForeignEntity.ApiName}/v1/edit/list',{{{ch.ForeignField.JsonName}:row.id,_size_ : 999}},data => that.form.{name} = data.rows);");
                 }
             }
             methods.Add($@"
@@ -565,10 +565,12 @@ extend_filter({{
         this.form.visible=false;
     }},
     handleClick(row){{
+        this.currentRow = row;
+        this.doEdit();
+    }},
+    onEdit() {{
         var that=this;
-        this.form.edit=true;
-        this.form.visible=true;
-        this.form.data=row;{load}
+        var row = this.currentRow;{load}
     }}");
 
         }

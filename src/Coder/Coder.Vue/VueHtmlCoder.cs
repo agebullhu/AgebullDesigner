@@ -130,29 +130,29 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 if (Model.Interfaces.Contains("IAuditData"))
                 {
                     exButton.Append(@"
-                    <el-dropdown split-button type='primary' @click='doPass' @command='handleDataCommand'>
+                    <el-dropdown v-if='!form.visible' split-button @click='doPass' @command='handleDataCommand'>
                         <i class='el-icon-circle-check'></i>审核通过
                         <el-dropdown-menu slot='dropdown'>
-                            <el-dropdown-item command='Enable' icon='el-icon-video-play'>启用</el-dropdown-item>
-                            <el-dropdown-item command='Disable' icon='el-icon-video-pause'>禁用</el-dropdown-item>
-                            <el-dropdown-item command='Reset' icon='el-icon-edit'>解除锁定</el-dropdown-item>
-                            <el-dropdown-item command='Deny' icon='el-icon-remove-outline'>不通过</el-dropdown-item>
-                            <el-dropdown-item command='Back' icon='el-icon-edit'>退回编辑</el-dropdown-item>
-                            <el-dropdown-item command='ReDo' icon='el-icon-edit'>重新审核</el-dropdown-item>
+                            <el-dropdown-item type='text' command='Enable' icon='el-icon-lock'>启用</el-dropdown-item>
+                            <el-dropdown-item type='text' command='Disable' icon='el-icon-remove'>禁用</el-dropdown-item>
+                            <el-dropdown-item type='text' command='Reset' icon='el-icon-unlock'>解除锁定</el-dropdown-item>
+                            <el-dropdown-item type='text' command='Deny' icon='el-icon-remove-outline'>不通过</el-dropdown-item>
+                            <el-dropdown-item type='text' command='Back' icon='el-icon-edit'>退回编辑</el-dropdown-item>
+                            <el-dropdown-item type='text' command='ReDo' icon='el-icon-edit'>重新审核</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>");
                 }
                 else if (Model.Interfaces.Contains("IStateData"))
                 {
                     exButton.Append(@"
-                    <el-dropdown split-button @click='doEnable'>
-                        <i class='el-icon-video-play'></i>启用
+                    <el-dropdown v-if='!form.visible' split-button @click='doEnable'>
+                        <i class='el-icon-lock'></i>启用
                         <el-dropdown-menu slot='dropdown' style='padding:3px;'>
                             <el-dropdown-item style='padding:3px;'>
-                                <el-button icon='el-icon-remove'  @click='doDisable'>禁用</el-button>
+                                <el-button type='text' icon='el-icon-remove'  @click='doDisable'>禁用</el-button>
                             </el-dropdown-item>
                             <el-dropdown-item style='padding:3px;'>
-                                <el-button icon='el-icon-unlock' @click='doReset'>解除锁定</el-button>
+                                <el-button type='text' icon='el-icon-unlock' @click='doReset'>解除锁定</el-button>
                             </el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>");
@@ -196,6 +196,10 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
         string Formater(IFieldConfig field)
         {
+            if (field.DataFormater != null)
+            {
+                return $" | {field.DataFormater}";
+            }
             if (field.EnumConfig != null)
             {
                 return $" | {field.EnumConfig.Name.ToLWord()}Formater";

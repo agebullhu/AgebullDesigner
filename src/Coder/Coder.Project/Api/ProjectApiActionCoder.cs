@@ -196,7 +196,7 @@ namespace {NameSpace}.WebApi
             var code = new StringBuilder();
 
             code.Append(@"
-            if (RequestArgumentConvert.TryGet(""_value_"", out string value)  && !string.IsNullOrEmpty(value))
+            if (RequestArgumentConvert.TryGet(""_value_"", out string _value_)  && !string.IsNullOrEmpty(_value_))
             {
                 var field = RequestArgumentConvert.GetString(""_field_"");
                 ");
@@ -214,12 +214,12 @@ namespace {NameSpace}.WebApi
                     else
                         code.Append(@"
                                     || ");
-                    code.Append($@"p.{pro.Name}.Like(value)");
+                    code.Append($@"p.{pro.Name}.Like(_value_)");
                 }
                 code.Append(@");
                 else ");
             }
-            code.Append(@"RequestArgumentConvert.SetArgument(field,value);
+            code.Append(@"RequestArgumentConvert.SetArgument(field,_value_);
             }");
             properties = Model.ClientProperty.Where(p => !p.NoStorage).ToArray();
             foreach (var pro in properties)

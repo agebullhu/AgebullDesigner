@@ -528,7 +528,7 @@ ALTER TABLE `{entity.SaveTableName}`
 
         private static string NullKeyWord(IFieldConfig col)
         {
-            return !col.IsPrimaryKey && col.UniqueIndex && !col.IsGlobalKey && (col.CsType == "string" || col.DbNullable)
+            return !col.IsPrimaryKey && !col.UniqueIndex && !col.IsGlobalKey && (col.CsType == "string" || col.DbNullable)
                 ? " NULL" : " NOT NULL";
         }
 

@@ -51,7 +51,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             var cls = schema.Classify.IsEmptyClassify() ? null : schema.Classify;
 
             var businessPath = IOHelper.CheckPath(project.ModelPath, "Business");
-            if (cls != null)
+            if (!project.NoClassify && cls != null)
                 businessPath = IOHelper.CheckPath(businessPath, cls);
             var builder = new BusinessBuilder<TModelConfig>
             {
@@ -62,7 +62,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             builder.WriteCustomCode(businessPath);
 
             var apiPath = project.ApiPath;
-            if (cls != null)
+            if (!project.NoClassify && cls != null)
                 apiPath = IOHelper.CheckPath(apiPath, cls);
             var pg = new ProjectApiActionCoder<TModelConfig>
             {

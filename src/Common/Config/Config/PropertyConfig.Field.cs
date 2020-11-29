@@ -144,6 +144,16 @@ namespace Agebull.EntityModel.Config
         {
             if (_csType == null)
                 return Field.ToLastCsType();
+            if (!string.IsNullOrWhiteSpace(ReferenceType))
+                return ReferenceType;
+            if (!string.IsNullOrWhiteSpace(CustomType))
+                return CustomType;
+
+            if (_csType.Contains("["))
+            {
+                CsType = _csType.Split('[')[0];
+                IsArray = true;
+            }
             if (IsArray)
                 return $"{_csType}[]";
             if (string.Equals(_csType, "string", StringComparison.OrdinalIgnoreCase))

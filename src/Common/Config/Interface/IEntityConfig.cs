@@ -383,9 +383,9 @@ namespace Agebull.EntityModel.Config
             if (!PageFolder.IsEmpty())
                 return PageFolder;
             if (Parent.NoClassify || Classify.IsEmpty() || Classify.Equals("None", StringComparison.InvariantCulture))
-                return Abbreviation ?? Name;
+                return Abbreviation;
             var cls = Parent.Classifies.FirstOrDefault(p => p.Name == Classify);
-            return $"{cls?.Abbreviation ?? Classify.ToLWord()}{sp}{Abbreviation ?? Name}";
+            return $"{cls?.Abbreviation ?? Classify.ToLWord()}{sp}{Abbreviation}";
         }
 
         #endregion 
