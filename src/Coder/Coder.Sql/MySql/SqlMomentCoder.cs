@@ -24,22 +24,22 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.MySql
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder<EntityConfig>("MySql", "生成表(SQL)", "sql", p => !p.NoDataBase, CreateTable);
-            MomentCoder.RegisteCoder("MySql", "插入表字段(SQL)", "sql", p => !p.NoDataBase, AddColumnCode);
-            MomentCoder.RegisteCoder("MySql", "插入缺少字段(SQL)", "sql", p => !p.NoDataBase, ChangeColumnCode2);
-            MomentCoder.RegisteCoder("MySql", "修改表字段(SQL)", "sql", p => !p.NoDataBase, ChangeColumnCode);
-            MomentCoder.RegisteCoder("MySql", "修改表名(SQL)", "sql", p => !p.NoDataBase, ReName);
-            MomentCoder.RegisteCoder("MySql", "修改字段名(SQL)", "sql", p => !p.NoDataBase, ChangeColumnName);
-            MomentCoder.RegisteCoder("MySql", "修改主键字段名(SQL)", "sql", p => !p.NoDataBase, ChangeColumnName2);
-            MomentCoder.RegisteCoder("MySql", "修改BOOL字段(SQL)", "sql", p => !p.NoDataBase, ChangeBoolColumnCode);
-            MomentCoder.RegisteCoder("MySql", "生成视图(SQL)", "sql", p => !p.NoDataBase, CreateView);
+            MomentCoder.RegisteCoder<EntityConfig>("MySql", "生成表(SQL)", "sql", p => p.EnableDataBase, CreateTable);
+            MomentCoder.RegisteCoder("MySql", "插入表字段(SQL)", "sql", p => p.EnableDataBase, AddColumnCode);
+            MomentCoder.RegisteCoder("MySql", "插入缺少字段(SQL)", "sql", p => p.EnableDataBase, ChangeColumnCode2);
+            MomentCoder.RegisteCoder("MySql", "修改表字段(SQL)", "sql", p => p.EnableDataBase, ChangeColumnCode);
+            MomentCoder.RegisteCoder("MySql", "修改表名(SQL)", "sql", p => p.EnableDataBase, ReName);
+            MomentCoder.RegisteCoder("MySql", "修改字段名(SQL)", "sql", p => p.EnableDataBase, ChangeColumnName);
+            MomentCoder.RegisteCoder("MySql", "修改主键字段名(SQL)", "sql", p => p.EnableDataBase, ChangeColumnName2);
+            MomentCoder.RegisteCoder("MySql", "修改BOOL字段(SQL)", "sql", p => p.EnableDataBase, ChangeBoolColumnCode);
+            MomentCoder.RegisteCoder("MySql", "生成视图(SQL)", "sql", p => p.EnableDataBase, CreateView);
             MomentCoder.RegisteCoder<ProjectConfig>("MySql", "插入页面表(SQL)", "sql", PageInsertSql);
-            MomentCoder.RegisteCoder("MySql", "删除视图(SQL)", "sql", p => !p.NoDataBase, DropView);
-            MomentCoder.RegisteCoder("MySql", "删除表(SQL)", "sql", p => !p.NoDataBase, DropTable);
-            MomentCoder.RegisteCoder("MySql", "清除表(SQL)", "sql", p => !p.NoDataBase, TruncateTable);
-            MomentCoder.RegisteCoder("MySql", "添加全部索引", "sql", p => !p.NoDataBase, AddIndex);
-            MomentCoder.RegisteCoder("MySql", "添加关键索引", "sql", p => !p.NoDataBase, AddRefIndex);
-            MomentCoder.RegisteCoder("MySql", "添加外键", "sql", p => !p.NoDataBase, AddRelation);
+            MomentCoder.RegisteCoder("MySql", "删除视图(SQL)", "sql", p => p.EnableDataBase, DropView);
+            MomentCoder.RegisteCoder("MySql", "删除表(SQL)", "sql", p => p.EnableDataBase, DropTable);
+            MomentCoder.RegisteCoder("MySql", "清除表(SQL)", "sql", p => p.EnableDataBase, TruncateTable);
+            MomentCoder.RegisteCoder("MySql", "添加全部索引", "sql", p => p.EnableDataBase, AddIndex);
+            MomentCoder.RegisteCoder("MySql", "添加关键索引", "sql", p => p.EnableDataBase, AddRefIndex);
+            MomentCoder.RegisteCoder("MySql", "添加外键", "sql", p => p.EnableDataBase, AddRelation);
         }
         #endregion
 
@@ -274,8 +274,6 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
         }
         private static string DropTable(EntityConfig entity)
         {
-            if (entity.NoDataBase)
-                return Empty;
             return $@"
 /*******************************{entity.Caption}*******************************/
 DROP TABLE IF EXISTS `{entity.SaveTableName}`;";
@@ -308,7 +306,7 @@ DROP TABLE IF EXISTS `{entity.SaveTableName}`;";
 INSERT INTO `tb_app_page_item` (`item_type`,`name`,`caption`,`url`,`memo`,`parent_id`)
 VALUES(0,'{project.Caption}','{project.Caption}',NULL,'{project.Description}',0);
 set @pid = @@IDENTITY;");
-            foreach (var entity in project.Entities.Where(p => !p.NoDataBase))
+            foreach (var entity in project.Entities.Where(p => p.EnableDataBase))
                 sb.Append($@"
 INSERT INTO `tb_app_page_item` (`item_type`,`name`,`caption`,`url`,`memo`,`parent_id`)
 VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Classify}/{entity.Name}/index','{entity.Description}',@pid);");
@@ -323,8 +321,7 @@ VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Class
         {
             if (entity == null)
                 return "";
-            if (entity.NoDataBase)
-                return $"/*{entity.Caption} : 普通类(NoDataBase=true)无法生成SQL*/";
+
             var code = new StringBuilder();
             code.AppendFormat(@"
 /*{1}*/
@@ -369,8 +366,6 @@ CREATE TABLE `{0}`("
         {
             if (entity == null)
                 return "";
-            if (entity.NoDataBase)
-                return $"/*{entity.Caption} : 普通类(NoDataBase=true)无法生成SQL*/";
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
@@ -389,31 +384,10 @@ ALTER TABLE `{entity.SaveTableName}`");
             return code.ToString();
         }
 
-        private static string AddColumnCode2(EntityConfig entity)
-        {
-            if (entity == null || entity.NoDataBase || !entity.Interfaces.Contains("IHistory"))
-                return "";
-            var code = new StringBuilder();
-            code.Append($@"
-/*{entity.Caption}*/
-ALTER TABLE `{entity.SaveTableName}`
-    ADD COLUMN `author` varchar(255) NULL ,
-    ADD COLUMN `last_reviser` varchar(255) NULL;");
-            return code.ToString();
-        }
-
-
-        //static string ChangeColumnCode(ConfigBase config)
-        //{
-        //    return ChangeColumnCode(config as EntityConfig);
-        //}
-
         private string ChangeBoolColumnCode(EntityConfig entity)
         {
             if (entity == null)
                 return "";
-            if (entity.NoDataBase)
-                return $"/*{entity.Caption} : 普通类(NoDataBase=true)无法生成SQL*/";
             var code = new StringBuilder();
             foreach (var ent in SolutionConfig.Current.Entities)
                 ChangeBoolColumnCode(code, ent);
@@ -422,7 +396,7 @@ ALTER TABLE `{entity.SaveTableName}`
 
         private void ChangeBoolColumnCode(StringBuilder code, EntityConfig entity)
         {
-            if (entity == null || entity.NoDataBase)
+            if (entity == null)
                 return;
             var fields = entity.DbFields.Where(p => !p.IsCompute && p.CsType == "bool").ToArray();
 
@@ -448,8 +422,6 @@ ALTER TABLE `{entity.SaveTableName}`");
         {
             if (entity == null)
                 return "";
-            if (entity.NoDataBase)
-                return $"/*{entity.Caption} : 普通类(NoDataBase=true)无法生成SQL*/";
             var code = new StringBuilder();
             if (entity.PrimaryColumn != null)
             {
@@ -464,8 +436,6 @@ ALTER TABLE `{entity.SaveTableName}`
         {
             if (entity == null)
                 return "";
-            if (entity.NoDataBase)
-                return $"/*{entity.Caption} : 普通类(NoDataBase=true)无法生成SQL*/";
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
@@ -488,8 +458,6 @@ ALTER TABLE `{entity.SaveTableName}`");
         {
             if (entity == null)
                 return "";
-            if (entity.NoDataBase)
-                return $"/*{entity.Caption} : 普通类(NoDataBase=true)无法生成SQL*/";
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
@@ -510,7 +478,7 @@ ALTER TABLE `{entity.SaveTableName}`");
 
         private static string ChangeColumnCode2(EntityConfig entity)
         {
-            if (entity == null || entity.NoDataBase || !entity.Interfaces.Contains("IHistory"))
+            if (entity == null || !entity.Interfaces.Contains("IHistory"))
                 return "";
             var code = new StringBuilder();
             code.Append($@"

@@ -9,8 +9,7 @@ using Agebull.EntityModel.RobotCoder.DataBase.MySql;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class MySqlAccessBuilder<TModel> : AccessBuilderBase<TModel>
-        where TModel : ProjectChildConfigBase, IEntityConfig
+    public sealed class MySqlAccessBuilder : AccessBuilderBase
     {
         /// <summary>
         /// 名称
@@ -89,7 +88,7 @@ namespace {Project.NameSpace}.DataAccess
             {{
                 IsQuery = false,
                 UpdateByMidified = true,
-                EventLevel = EventEventLevel.Details,
+                EventLevel = EventEventLevel.{(Model.EnableDataEvent ? "Details" : "None")},
                 SqlBuilder = new MySqlSqlBuilder<{Model.EntityName}>(),
                 DataStruct = Struct,
                 ReadTableName = FromSqlCode,
@@ -193,8 +192,6 @@ namespace {Project.NameSpace}.DataAccess
         /// </summary>
         protected override void CreateCustomCode(string path)
         {
-            if (Model.IsInterface || Model.NoDataBase)
-                return;
             var file = Path.Combine(path, $"{Model.EntityName}DataOperator.cs");
             SaveCode(file, Code());
         }

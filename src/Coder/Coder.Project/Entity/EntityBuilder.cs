@@ -7,8 +7,7 @@ namespace Agebull.EntityModel.RobotCoder
     /// <summary>
     /// 实体代码生成器
     /// </summary>
-    public sealed class EntityBuilder<TModel> : ModelCoderBase<TModel>
-        where TModel : ProjectChildConfigBase, IEntityConfig
+    public sealed class EntityBuilder: ModelCoderBase
     {
         /// <summary>
         /// 名称
@@ -79,7 +78,7 @@ namespace {NameSpace}
         partial void InitEntityEditStatus();
 
         #endregion
-{GetBaseCode<EntityPropertyBuilder<TModel>>()}
+{GetBaseCode<EntityPropertyBuilder>()}
 
     }}
 }}";

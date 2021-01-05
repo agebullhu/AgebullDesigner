@@ -25,7 +25,7 @@ namespace Agebull.EntityModel.Config
                 field.NoneDetails = true;
                 field.ExtendConfigListBool["easyui", "userFormHide"] = true;
             }
-            if (field.DenyClient)
+            if (field.InnerField)
             {
                 return;
             }
@@ -206,7 +206,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         private static void RepairInputConfig(IFieldConfig field)
         {
-            if (field.DenyClient || field.IsSystemField || field.IsCompute || field.IsIdentity && field.IsIdentity)
+            if (field.InnerField || field.IsSystemField || field.IsCompute || field.IsIdentity && field.IsIdentity)
             {
                 field.NoneDetails = true;
                 field.IsUserReadOnly = true;

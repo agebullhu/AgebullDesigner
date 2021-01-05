@@ -45,22 +45,6 @@ namespace Agebull.EntityModel.Config
         }
 
         #endregion
-        #region 系统
-
-        /// <summary>
-        /// 阻止编辑
-        /// </summary>
-        /// <remark>
-        /// 阻止使用的范围
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"系统"), DisplayName(@"阻止编辑"), Description("阻止使用的范围")]
-        public AccessScopeType DenyScope
-        {
-            get => Field.DenyScope; set => Field.DenyScope = value;
-        }
-
-        #endregion
         #region 模型设计(C#)
 
 
@@ -620,20 +604,6 @@ namespace Agebull.EntityModel.Config
         #region 用户界面
 
         /// <summary>
-        /// 客户端不可见
-        /// </summary>
-        /// <remark>
-        /// 客户端不可见
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"用户界面"), DisplayName(@"客户端不可见"), Description("客户端不可见")]
-        public bool DenyClient
-        {
-            get => Field.DenyClient;
-            set => Field.DenyClient = value;
-        }
-
-        /// <summary>
         /// 用户是否可输入
         /// </summary>
         /// <remark>
@@ -641,7 +611,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"用户是否可输入"), Description("用户是否可输入")]
-        public bool CanUserInput => !IsCompute && !DenyClient && !IsUserReadOnly && !IsSystemField && !IsIdentity;
+        public bool CanUserInput => !IsUserReadOnly && Field.CanUserInput;
 
         /// <summary>
         /// 不可编辑

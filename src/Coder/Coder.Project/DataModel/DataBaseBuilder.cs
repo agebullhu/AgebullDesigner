@@ -238,6 +238,8 @@ namespace {Project.NameSpace}.DataAccess
 
         private void CreateeAccess(StringBuilder code, IEntityConfig entity)
         {
+            if (!entity.EnableDataBase)
+                return;
             var name = entity.IsQuery ? "DataQuery" : "DataAccess";
 
             code.Append($@"
@@ -599,6 +601,8 @@ namespace {Project.NameSpace}.DataAccess
 
         void FastDo(IEntityConfig entity, StringBuilder code)
         {
+            if (!entity.EnableDataBase)
+                return;
             var head = entity is ModelConfig ? "Models" : "Entities";
             code.Append($@"
         #region {entity.Caption}

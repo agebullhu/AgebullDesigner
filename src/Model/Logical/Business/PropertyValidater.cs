@@ -9,7 +9,7 @@ namespace Agebull.EntityModel.Config
         public DataBaseType DataBaseType { get; set; }
 
         public FieldConfig Field { get; set; }
-        bool IsClass => Field.Entity.NoDataBase;
+        bool IsClass => Field.Entity.EnableDataBase;
         bool IsReference => Field.Entity.IsReference;
 
         #endregion

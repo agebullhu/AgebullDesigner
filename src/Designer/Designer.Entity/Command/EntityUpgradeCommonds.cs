@@ -28,17 +28,15 @@ namespace Agebull.EntityModel.Designer
         {
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Action = ToClass,
-                Caption = "全部设置为普通类",
-                Catalog = "实体",
-                IconName = "tree_Type",
-                SoruceView = "entity",
-                WorkView = "adv"
-            });
-            commands.Add(new CommandItemBuilder<EntityConfig>
-            {
                 Action = ToStandardName,
                 Caption = "规范名称",
+                Catalog = "修复",
+                IconName = "tree_Type"
+            });
+            commands.Add(new CommandItemBuilder<IEntityConfig>
+            {
+                Action = ResetView,
+                Caption = "重置视角",
                 Catalog = "修复",
                 IconName = "tree_Type"
             });
@@ -50,15 +48,7 @@ namespace Agebull.EntityModel.Designer
                 IconName = "tree_Type",
                 WorkView = "adv"
             });
-            commands.Add(new CommandItemBuilder<EntityConfig>
-            {
-                Action = ToNoClass,
-                Caption = "全部设置为存储类",
-                Catalog = "实体",
-                SoruceView = "entity",
-                IconName = "tree_Type",
-                WorkView = "adv"
-            });
+
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
                 SignleSoruce = true,
@@ -230,10 +220,15 @@ namespace Agebull.EntityModel.Designer
                     property.Caption = fi.Caption;
             }
         }
-        void ToClass(EntityConfig entity)
+        
+        void ResetView(IEntityConfig entity)
         {
-            entity.NoDataBase = true;
+            entity.EnableDataBase = true;
+            entity.EnableEditApi = true;
+            entity.EnableUI = true;
+            entity.EnableDataEvent = true;
         }
+        
         void ToStandardName(EntityConfig entity)
         {
             var name = entity.Name;
@@ -254,10 +249,7 @@ namespace Agebull.EntityModel.Designer
                 entity.OldName = name;
         }
 
-        void ToNoClass(EntityConfig entity)
-        {
-            entity.NoDataBase = false;
-        }
+
         void EmptyFromDb(EntityConfig entity)
         {
             foreach (var field in entity.Properties)

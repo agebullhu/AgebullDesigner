@@ -23,7 +23,7 @@
                 result = false;
                 Message.Track = "***实体名称不能为空";
             }
-            if (!Entity.NoDataBase && !Entity.IsReference)
+            if (!Entity.EnableDataBase && !Entity.IsReference)
             {
                 var pc = Entity.PrimaryColumn;
                 if (pc == null)

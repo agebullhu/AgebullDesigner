@@ -22,7 +22,13 @@ namespace Agebull.EntityModel.Config
     [DataContract, JsonObject(MemberSerialization.OptIn)]
     public partial class ModelConfig : ProjectChildConfigBase, IEntityConfig
     {
-
+        /// <summary>
+        /// 构造
+        /// </summary>
+        public ModelConfig()
+        {
+            _desingSwitch = 0xFFFF;
+        }
         #region 系统
 
         /// <summary>
@@ -97,34 +103,6 @@ namespace Agebull.EntityModel.Config
         {
             get => _remark ?? Entity?.Remark;
             set => base.Remark = value;
-        }
-
-
-        /// <summary>
-        /// 阻止编辑
-        /// </summary>
-        [DataMember, JsonProperty("DenyScope", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal AccessScopeType? _denyScope;
-
-        /// <summary>
-        /// 阻止编辑
-        /// </summary>
-        /// <remark>
-        /// 阻止使用的范围
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"系统"), DisplayName(@"阻止编辑"), Description("阻止使用的范围")]
-        public AccessScopeType DenyScope
-        {
-            get => _denyScope == null ? Entity.DenyScope : _denyScope.Value;
-            set
-            {
-                if (_denyScope == value)
-                    return;
-                BeforePropertyChanged(nameof(DenyScope), _denyScope, value);
-                _denyScope = value;
-                OnPropertyChanged(nameof(DenyScope));
-            }
         }
 
         /// <summary>
@@ -395,59 +373,6 @@ namespace Agebull.EntityModel.Config
             }
         }
 
-        /// <summary>
-        /// 内部数据
-        /// </summary>
-        [DataMember, JsonProperty("_isInternal", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isInternal;
-
-        /// <summary>
-        /// 内部数据
-        /// </summary>
-        /// <remark>
-        /// 服务器内部数据,即只在服务器内部使用
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据模型"), DisplayName(@"内部数据"), Description("服务器内部数据,即只在服务器内部使用")]
-        public bool IsInternal
-        {
-            get => _isInternal;
-            set
-            {
-                if (_isInternal == value)
-                    return;
-                BeforePropertyChanged(nameof(IsInternal), _isInternal, value);
-                _isInternal = value;
-                OnPropertyChanged(nameof(IsInternal));
-            }
-        }
-
-        /// <summary>
-        /// 是否类
-        /// </summary>
-        [DataMember, JsonProperty("noDataBase", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _noDataBase;
-
-        /// <summary>
-        /// 无数据库支持
-        /// </summary>
-        /// <remark>
-        /// 无数据库支持
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据模型"), DisplayName(@"无数据库支持"), Description("无数据库支持")]
-        public bool NoDataBase
-        {
-            get => _noDataBase;
-            set
-            {
-                if (_noDataBase == value)
-                    return;
-                BeforePropertyChanged(nameof(NoDataBase), _noDataBase, value);
-                _noDataBase = value;
-                OnPropertyChanged(nameof(NoDataBase));
-            }
-        }
 
         /// <summary>
         /// 是否关联表
@@ -582,32 +507,6 @@ namespace Agebull.EntityModel.Config
             }
         }
 
-        /// <summary>
-        /// 生成校验代码
-        /// </summary>
-        [IgnoreDataMember, JsonProperty("haseValidateCode")]
-        internal bool _haseValidateCode;
-
-        /// <summary>
-        /// 生成校验代码
-        /// </summary>
-        /// <remark>
-        /// 可以任意修改任意配置的生成校验代码
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"设计器支持"), DisplayName(@"生成校验代码")]
-        public bool HaseValidateCode
-        {
-            get => _haseValidateCode;
-            set
-            {
-                if (_haseValidateCode == value)
-                    return;
-                BeforePropertyChanged(nameof(HaseValidateCode), _haseValidateCode, value);
-                _haseValidateCode = value;
-                OnPropertyChanged(nameof(HaseValidateCode));
-            }
-        }
         #endregion
 
         #region 子级
@@ -799,29 +698,7 @@ namespace Agebull.EntityModel.Config
             }
         }
 
-        /// <summary>
-        /// 是否有界面
-        /// </summary>
-        [DataMember, JsonProperty("haseEasyUi", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _haseEasyUi;
 
-        /// <summary>
-        /// 界面只读
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"用户界面"), DisplayName(@"是否有界面"), Description("是否有界面")]
-        public bool HaseEasyUi
-        {
-            get => _haseEasyUi;
-            set
-            {
-                if (_haseEasyUi == value)
-                    return;
-                BeforePropertyChanged(nameof(HaseEasyUi), _haseEasyUi, value);
-                _haseEasyUi = value;
-                OnPropertyChanged(nameof(HaseEasyUi));
-            }
-        }
         /// <summary>
         /// 界面只读
         /// </summary>

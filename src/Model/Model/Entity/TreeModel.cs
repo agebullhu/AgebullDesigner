@@ -212,7 +212,7 @@ namespace Agebull.EntityModel.Designer
         BitmapImage EntityIcon(EntityConfig entity) =>
            Application.Current.Resources[entity.IsLinkTable
                 ? "img_switch"
-                : entity.NoDataBase ? "tree_Type" : "tree_Child4"] as BitmapImage;
+                : entity.EnableDataBase ? "tree_Child4" : "tree_Type"] as BitmapImage;
 
         private void Entity_PropertyChanged(TreeItem item, NotificationObject arg, string name)
         {
@@ -221,7 +221,7 @@ namespace Agebull.EntityModel.Designer
             {
                 case null:
                 case nameof(EntityConfig.IsLinkTable):
-                case nameof(EntityConfig.NoDataBase):
+                case nameof(EntityConfig.EnableDataBase):
                     item.SoruceTypeIcon = EntityIcon(entity);
                     break;
             }
@@ -436,8 +436,8 @@ namespace Agebull.EntityModel.Designer
             switch (name)
             {
                 case null:
-                case nameof(ModelConfig.NoDataBase):
-                    item.SoruceTypeIcon = Application.Current.Resources[entity.NoDataBase ? "tree_Type" : "tree_Child4"] as BitmapImage;
+                case nameof(ModelConfig.EnableDataBase):
+                    item.SoruceTypeIcon = Application.Current.Resources[entity.EnableDataBase ? "tree_Child4" : "tree_Type"] as BitmapImage;
                     break;
             }
         }

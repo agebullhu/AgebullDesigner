@@ -8,8 +8,7 @@ namespace Agebull.EntityModel.RobotCoder
     /// <summary>
     /// 表操作基类
     /// </summary>
-    public abstract class CoderWithModel<TModel> : CoderWithProject
-        where TModel : ProjectChildConfigBase, IEntityConfig
+    public abstract class CoderWithModel : CoderWithProject
     {
         /// <summary>
         /// 当前对象
@@ -26,9 +25,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 当前表对象
         /// </summary>
-        public TModel Model { get; set; }
-
-        IFieldConfig _primaryProperty;
+        public IEntityConfig Model { get; set; }
 
         /// <summary>
         /// 当前表对象
@@ -52,9 +49,9 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         /// <typeparam name="TBuilder"></typeparam>
         /// <returns></returns>
-        public string GetBaseCode<TBuilder>() where TBuilder : ModelBuilderBase<TModel>, new()
+        public string GetBaseCode<TBuilder>() where TBuilder : ModelBuilderBase, new()
         {
-            using (CodeGeneratorScope.CreateScope(Model))
+            using (CodeGeneratorScope.CreateScope(Model as NotificationObject))
             {
                 var builder = new TBuilder
                 {
@@ -69,9 +66,9 @@ namespace Agebull.EntityModel.RobotCoder
         /// <typeparam name="TBuilder"></typeparam>
         /// <returns></returns>
         public string GetExtendCode<TBuilder>()
-            where TBuilder : ModelBuilderBase<TModel>, new()
+            where TBuilder : ModelBuilderBase, new()
         {
-            using (CodeGeneratorScope.CreateScope(Model))
+            using (CodeGeneratorScope.CreateScope(Model as NotificationObject))
             {
                 var builder = new TBuilder
                 {

@@ -24,14 +24,14 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.Sqlerver
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("Sqlerver", "生成表(SQL)", "sql", p => !p.NoDataBase, CreateTable);
-            MomentCoder.RegisteCoder("Sqlerver", "插入表字段(SQL)", "sql", p => !p.NoDataBase, AddColumnCode);
-            MomentCoder.RegisteCoder("Sqlerver", "修改表字段(SQL)", "sql", p => !p.NoDataBase, ChangeColumnCode);
-            MomentCoder.RegisteCoder("Sqlerver", "生成视图(SQL)", "sql", p => !p.NoDataBase, CreateView);
+            MomentCoder.RegisteCoder("Sqlerver", "生成表(SQL)", "sql", p => !p.EnableDataBase, CreateTable);
+            MomentCoder.RegisteCoder("Sqlerver", "插入表字段(SQL)", "sql", p => !p.EnableDataBase, AddColumnCode);
+            MomentCoder.RegisteCoder("Sqlerver", "修改表字段(SQL)", "sql", p => !p.EnableDataBase, ChangeColumnCode);
+            MomentCoder.RegisteCoder("Sqlerver", "生成视图(SQL)", "sql", p => !p.EnableDataBase, CreateView);
             MomentCoder.RegisteCoder<ProjectConfig>("Sqlerver", "插入页面表(SQL)", "sql", PageInsertSql);
-            MomentCoder.RegisteCoder("Sqlerver", "删除视图(SQL)", "sql", p => !p.NoDataBase, DropView);
-            MomentCoder.RegisteCoder("Sqlerver", "删除表(SQL)", "sql", p => !p.NoDataBase, DropTable);
-            MomentCoder.RegisteCoder("Sqlerver", "清除表(SQL)", "sql", p => !p.NoDataBase, TruncateTable);
+            MomentCoder.RegisteCoder("Sqlerver", "删除视图(SQL)", "sql", p => !p.EnableDataBase, DropView);
+            MomentCoder.RegisteCoder("Sqlerver", "删除表(SQL)", "sql", p => !p.EnableDataBase, DropTable);
+            MomentCoder.RegisteCoder("Sqlerver", "清除表(SQL)", "sql", p => !p.EnableDataBase, TruncateTable);
         }
 
         #endregion
@@ -40,7 +40,7 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.Sqlerver
 
         public static string TruncateTable(EntityConfig entity)
         {
-            if (entity.NoDataBase)
+            if (entity.EnableDataBase)
                 return Empty;
             return $@"
 /*******************************{entity.Caption}*******************************/
@@ -50,7 +50,7 @@ TRUNCATE TABLE [{entity.SaveTableName}];
 
         public static string DropView(ModelConfig entity)
         {
-            if (entity.NoDataBase || entity.SaveTableName == entity.ReadTableName)
+            if (entity.EnableDataBase || entity.SaveTableName == entity.ReadTableName)
                 return Empty;
             return $@"
 /*******************************{entity.Caption}*******************************/
@@ -135,8 +135,8 @@ CREATE VIEW [{viewName}] AS
         {
             if (entity == null)
                 return "";
-            if (entity.NoDataBase)
-                return $"{entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
+            if (entity.EnableDataBase)
+                return $"{entity.Caption} : 设置为普通类(EnableDataBase=true)，无法生成SQL";
             return $@"
 /*******************************{entity.Caption}*******************************/
 DROP TABLE [{entity.SaveTableName}];
@@ -170,7 +170,7 @@ GO";
 INSERT INTO [tb_sys_page_item] ([ItemType],[Name],[Caption],[Url],[Memo],[ParentId])
 VALUES(0,'{project.Caption}','{project.Caption}',NULL,'{project.Description}',0);
 set @pid = @@IDENTITY;");
-            foreach (var entity in project.Entities.Where(p => !p.NoDataBase))
+            foreach (var entity in project.Entities.Where(p => !p.EnableDataBase))
                 sb.Append($@"
 INSERT INTO [tb_sys_page_item[ ([ItemType],[Name],[Caption],[Url],[Memo],[ParentId])
 VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Name}/index','{entity.Description}',@pid);");
@@ -183,7 +183,7 @@ VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Name}
 
         public static string CreateTableCode(EntityConfig entity, bool signle = false)
         {
-            if (entity.NoDataBase)
+            if (entity.EnableDataBase)
                 return "";//这个设置为普通类，无法生成SQL
             var code = new StringBuilder();
             code.Append($@"
@@ -233,8 +233,8 @@ EXECUTE sp_addextendedproperty N'MS_Description', @v, N'SCHEMA', N'dbo', N'TABLE
         {
             if (entity == null)
                 return "";
-            if (entity.NoDataBase)
-                return $"{entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
+            if (entity.EnableDataBase)
+                return $"{entity.Caption} : 设置为普通类(EnableDataBase=true)，无法生成SQL";
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
@@ -259,8 +259,8 @@ ALTER TABLE [{entity.SaveTableName}]");
         {
             if (entity == null)
                 return "";
-            if (entity.NoDataBase)
-                return $"{entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
+            if (entity.EnableDataBase)
+                return $"{entity.Caption} : 设置为普通类(EnableDataBase=true)，无法生成SQL";
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/

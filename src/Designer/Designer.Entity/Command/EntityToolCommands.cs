@@ -186,7 +186,7 @@ namespace Agebull.EntityModel.Designer
         public void KeyNoClient(EntityConfig entity)
         {
             foreach (var field in entity.Properties.Where(p => p.IsPrimaryKey || p.IsLinkKey))
-                field.DenyClient = true;
+                field.InnerField = true;
         }
 
         /// <summary>

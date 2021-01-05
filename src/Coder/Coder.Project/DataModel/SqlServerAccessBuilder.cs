@@ -9,8 +9,7 @@ using Agebull.EntityModel.Config.SqlServer;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class SqlServerAccessBuilder<TModel> : AccessBuilderBase<TModel>
-        where TModel : ProjectChildConfigBase, IEntityConfig
+    public sealed class SqlServerAccessBuilder: AccessBuilderBase
     {
         /// <summary>
         /// 名称
@@ -81,7 +80,7 @@ namespace Agebull.EntityModel.RobotCoder
     /// <summary>
     /// {Model.Description} 别名
     /// </summary>
-    {(Model.IsInternal ? "internal" : "public")} sealed class {Model.Alias}DataAccess : {Model.Name}DataAccess
+    public sealed class {Model.Alias}DataAccess : {Model.Name}DataAccess
     {{
     }}");
             }
@@ -113,7 +112,7 @@ namespace {NameSpace}.DataAccess
     /// <summary>
     /// {Model.Caption}
     /// </summary>
-    {(Model.IsInternal ? "internal" : "public")} partial class {Model.Name}DataAccess
+    public partial class {Model.Name}DataAccess
     {{
         /// <summary>
         /// 构造
@@ -145,7 +144,7 @@ namespace {NameSpace}.DataAccess
         protected override void CreateDesignerCode(string path)
         {
             var file = Path.Combine(path, Model.Name + "DataAccess.Designer.cs");
-            if (Model.NoDataBase)
+            if (!Model.EnableDataBase)
             {
                 if (File.Exists(file))
                 {
@@ -179,7 +178,7 @@ namespace {NameSpace}.DataAccess
         protected override void CreateCustomCode(string path)
         {
             var file = Path.Combine(path, Model.Name + "DataAccess.cs");
-            if (Model.NoDataBase)
+            if (!Model.EnableDataBase)
             {
                 if (File.Exists(file))
                 {

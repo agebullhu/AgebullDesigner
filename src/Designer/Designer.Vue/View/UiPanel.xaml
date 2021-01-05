@@ -23,12 +23,12 @@
             </WrapPanel.Resources> 
             <StackPanel>
                 <Label Content="启用界面" />
-                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding HaseEasyUi,Mode=TwoWay}" />
+                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding EnableUI,Mode=TwoWay}" />
             </StackPanel>
-            <!--<StackPanel>
+            <StackPanel>
                 <Label Content="页面文件夹" />
                 <TextBox Text="{Binding PageFolder,Mode=TwoWay}" />
-            </StackPanel>-->
+            </StackPanel>
             <StackPanel>
                 <Label Content="树形界面" />
                 <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding TreeUi,Mode=TwoWay}" />
@@ -52,21 +52,12 @@
         </WrapPanel>
 
         <TabControl DockPanel.Dock="Bottom" Height="152"
-                    DataContext="{Binding Model.Context.SelectField}"
-                    IsEnabled="{Binding DenyClient,Converter={StaticResource BoolReversalConverter},Mode=OneWay}">
+                    DataContext="{Binding Model.Context.SelectField}">
             <TabControl.Resources>
                 <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
             </TabControl.Resources>
             <TabItem Header="显示内容">
                 <WrapPanel>
-                    <StackPanel>
-                        <Label Content="示例内容" />
-                        <TextBox Text="{Binding HelloCode,Mode=TwoWay}" />
-                    </StackPanel>
-                    <StackPanel>
-                        <Label Content="空值文本" />
-                        <TextBox Text="{Binding EmptyValue,Mode=TwoWay}" />
-                    </StackPanel>
                     <StackPanel>
                         <Label Content="前缀" />
                         <TextBox Text="{Binding Prefix,Mode=TwoWay}" />
@@ -89,6 +80,10 @@
                         <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsMoney,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel>
+                        <StackPanel>
+                            <Label Content="空值文本" />
+                            <TextBox Text="{Binding EmptyValue,Mode=TwoWay}" />
+                        </StackPanel>
                         <Label Content="文字说明" />
                         <TextBox Style="{StaticResource MaxTextBox}"
                                  Text="{Binding ExtendConfigList[user_help],Mode=TwoWay}" />
@@ -114,10 +109,6 @@
                                   SelectedValue="{Binding IsRequired,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel>
-                        <Label Content="输入类型" />
-                        <TextBox Text="{Binding InputType,Mode=TwoWay}" />
-                    </StackPanel>
-                    <StackPanel>
                         <Label Content="多行文本" />
                         <ComboBox Style="{StaticResource BoolCombo}"
                                   SelectedValue="{Binding MulitLine,Mode=TwoWay}" />
@@ -141,7 +132,7 @@
                 <WrapPanel>
                     <StackPanel>
                         <Label Content="表格对齐" />
-                        <TextBox Text="{Binding GridAlign,Mode=TwoWay}" />
+                        <ComboBox Style="{StaticResource AlignCombo}" SelectedValue="{Binding GridAlign,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="宽度比例" />
@@ -174,9 +165,6 @@
                                     Header="标题" />
                 <DataGridTextColumn Binding="{Binding JsonName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                     Header="Json" />
-                <DataGridCheckBoxColumn
-                    Binding="{Binding DenyClient,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BoolReversalConverter}}"
-                    Header="客户端" />
                 <DataGridCheckBoxColumn
                     Binding="{Binding CanEmpty,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BoolReversalConverter}}"
                     Header="非空" />

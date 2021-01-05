@@ -7,10 +7,9 @@ using Agebull.EntityModel.Config;
 namespace Agebull.EntityModel.RobotCoder.VUE
 {
 
-    public partial class VueScriptCoder<TModel>
-        where TModel : ProjectChildConfigBase, IEntityConfig
+    public partial class VueScriptCoder
     {
-        public TModel Model { get; set; }
+        public IEntityConfig Model { get; set; }
         public ProjectConfig Project { get; set; }
 
         public string ScriptCode()
@@ -45,7 +44,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             DetailsPage();
             readyScript = $@"
 vue_option.ready(v =>{{
-    {string.Join(@",
+    {string.Join(@"
     ", readys)}
     v.loadList();
 }});";
@@ -98,23 +97,21 @@ extend_filter({{
             if (Model.IsUiReadOnly)
                 return;
             var array = Model.ClientProperty
-                .Where(p => p.CanUserInput && p.IsLinkCaption)
+                .Where(p => p.CanUserInput && p.IsLinkKey)
                 .Select(p => GlobalConfig.GetEntity(p.LinkTable))
                 .Distinct().ToArray();
             if (array.Length == 0)
                 return;
-            StringBuilder code = new StringBuilder();
-            code.AppendLine("combos:{");
-            bool first = true;
             foreach (var entity in array.Where(p => p.Properties.Any(a => a.IsCaption)))
             {
                 var comboName = entity.Name.ToLWord().ToPluralism();
-                if (first) first = false;
-                else code.Append(',');
-                code.Append($@"
-        {comboName}: []");
-                readys.Add($"ajax_load('ÔØÈë{entity.Caption}','{entity.Parent.Abbreviation}/{entity.Abbreviation}/v1/edit/combo',null, d => v.data.combos.{comboName} = d);");
-
+                datas.Add($"{comboName}:[]");
+                readys.Add($"ajax_load('ÔØÈë{entity.Caption}','/api/{entity.Parent.ApiName}/{entity.ApiName}/v1/edit/combo',null, d => v.combos.{comboName} = d);");
+                filters.Add($@"
+    {entity.Name.ToLWord()}Formater(val) {{
+        var obj = vue_option.data.combos.{comboName}.find((n) => n.id == val);
+        return obj ? obj.text : '-';
+    }}");
             }
         }
         #endregion
@@ -189,9 +186,6 @@ extend_filter({{
                     enums.AddRange(ch.ForeignEntity.LastProperties.Where(p => p.EnumConfig != null).Select(p => p.EnumConfig));
                 }
             }
-
-            if (enums.Count == 0)
-                return;
             foreach (var enu in enums.Distinct())
             {
                 filters.Add(Filter(enu));
@@ -327,7 +321,7 @@ extend_filter({{
         void SetData()
         {
             datas.Add($"idField : '{Model.PrimaryColumn.JsonName}'");
-            datas.Add($"apiPrefix : '/{Project.ApiName}/{Model.ApiName}/v1'");
+            datas.Add($"apiPrefix : '/api/{Project.ApiName}/{Model.ApiName}/v1'");
             Rules();
         }
 

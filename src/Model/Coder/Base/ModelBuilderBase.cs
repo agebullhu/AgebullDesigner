@@ -10,19 +10,18 @@ namespace Agebull.EntityModel.RobotCoder
     /// <summary>
     /// 实体扩展代码生成基类
     /// </summary>
-    public abstract class ModelBuilderBase<TModelConfig> : ModelCoderBase<TModelConfig>
-           where TModelConfig : ProjectChildConfigBase, IEntityConfig
+    public abstract class ModelBuilderBase : ModelCoderBase
     {
         #region 注册
 
-        public string GetBaseCode(TModelConfig config)
+        public string GetBaseCode(IEntityConfig config)
         {
             Model = config;
             Project = Model.Parent;
             return CreateBaCode();
         }
 
-        public string GetExtendCode(TModelConfig config)
+        public string GetExtendCode(IEntityConfig config)
         {
             Model = config;
             Project = Model.Parent;

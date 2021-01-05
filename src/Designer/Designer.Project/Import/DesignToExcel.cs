@@ -89,7 +89,7 @@ namespace Agebull.EntityModel.Designer
                 sheet.SetColumnWidth(i, 4000);
 
                 int rowIdx = 0;
-                foreach (var entity in cls?.Items?.Where(p => p != null && !p.NoDataBase))
+                foreach (var entity in cls?.Items?.Where(p => p != null && p.EnableDataBase))
                 {
                     rowIdx = ImportTable(workbook, sheet, entity, rowIdx);
                 }

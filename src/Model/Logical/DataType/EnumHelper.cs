@@ -10,6 +10,28 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 主页面类型类型的列表
         /// </summary>
+        public static List<ComboItem<string>> AlignList = new List<ComboItem<string>>
+        {
+            new ComboItem<string>
+            {
+                name = "左",
+                value= "left"
+            },
+            new ComboItem<string>
+            {
+                name = "中",
+                value= "middle"
+            },
+            new ComboItem<string>
+            {
+                name = "右",
+                value= "right"
+            }
+        };
+
+        /// <summary>
+        /// 主页面类型类型的列表
+        /// </summary>
         public static List<ComboItem<bool>> BoolList = new List<ComboItem<bool>>
         {
             new ComboItem<bool>

@@ -3,8 +3,7 @@ using System.Linq;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class EntityComboBuilder<TModel> : ModelBuilderBase<TModel>
-        where TModel : ProjectChildConfigBase, IEntityConfig
+    public sealed class EntityComboBuilder : ModelBuilderBase
     {
         /// <summary>
         /// 代码文件夹名称

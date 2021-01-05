@@ -60,7 +60,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// <returns></returns>
         public static string HtmlCode(ModelConfig entity)
         {
-            var coder = new VueHtmlCoder<ModelConfig>
+            var coder = new VueHtmlCoder
             {
                 Model = entity,
                 Project = entity.Parent
@@ -73,7 +73,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// <returns></returns>
         public static string ScriptCode(ModelConfig entity)
         {
-            var coder = new VueScriptCoder<ModelConfig>
+            var coder = new VueScriptCoder
             {
                 Model = entity,
                 Project = entity.Parent
@@ -86,14 +86,12 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// <returns></returns>
         public static string HtmlDetailsCode(EntityConfig entity)
         {
-            var coder = new VueHtmlCoder<EntityConfig>
+            var coder = new VueHtmlCoder
             {
                 Model = entity,
                 Project = entity.Parent
             };
-            var code = new StringBuilder();
-            coder.HtmlDetailsCode(code);
-            return code.ToString();
+            return coder.HtmlDetailsCode();
         }
 
         #endregion

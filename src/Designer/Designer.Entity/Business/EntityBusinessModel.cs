@@ -23,25 +23,10 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public void RepairByModel(bool isReference = false)
         {
-            if (Entity.IsFreeze)
-                return;
-            if (Entity.IsReference)
-            {
-                foreach (var col in Entity.Properties)
-                {
-                    col.DbFieldName = null;
-                    col.DbType = null;
-                }
-                Entity.IsModify = true;
-                Entity.NoDataBase = true;
-                Entity.ReadTableName = null;
-                Entity.SaveTableName = null;
-                return;
-            }
             if (Entity.IsFreeze || Entity.IsReference)
                 return;
             RepairCaption();
-            if (Entity.NoDataBase)
+            if (!Entity.EnableDataBase)
             {
                 Entity.ReadTableName = null;
                 Entity.SaveTableName = null;

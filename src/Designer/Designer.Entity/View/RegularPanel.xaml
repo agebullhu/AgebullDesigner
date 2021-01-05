@@ -99,9 +99,6 @@
                 <DataGridCheckBoxColumn
                     Binding="{Binding IsSystemField,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="系统" />
                 <DataGridCheckBoxColumn
-                    Binding="{Binding DenyClient,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BoolReversalConverter}}"
-                    Header="用户" />
-                <DataGridCheckBoxColumn
                     Binding="{Binding IsCompute,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="计算列" />
                 <DataGridCheckBoxColumn
                     Binding="{Binding DbNullable,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="可存储空" />

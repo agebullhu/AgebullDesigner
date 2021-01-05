@@ -231,7 +231,6 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public void CopyProperty(EntityConfig dest)
         {
-            DenyScope = dest.DenyScope;
             MaxIdentity = dest.MaxIdentity;
             RedisKey = dest.RedisKey;
             IsLinkTable = dest.IsLinkTable;
@@ -242,20 +241,20 @@ namespace Agebull.EntityModel.Config
             ModelInclude = dest.ModelInclude;
             ModelBase = dest.ModelBase;
             DataVersion = dest.DataVersion;
-            IsInternal = dest.IsInternal;
-            NoDataBase = dest.NoDataBase;
+
+            EnableDataBase = dest.EnableDataBase;
             Interfaces = dest.Interfaces;
             ColumnIndexStart = dest.ColumnIndexStart;
             ReadCoreCodes = dest.ReadCoreCodes;
             IsInterface = dest.IsInterface;
-            HaseValidateCode = dest.HaseValidateCode;
+            EnableValidate = dest.EnableValidate;
             Properties = dest.Properties;
             ReadTableName = dest.ReadTableName;
             SaveTableName = dest.SaveTableName;
             DbIndex = dest.DbIndex;
             UpdateByModified = dest.UpdateByModified;
             ApiName = dest.ApiName;
-            HaseEasyUi = dest.HaseEasyUi;
+            EnableUI = dest.EnableUI;
             IsUiReadOnly = dest.IsUiReadOnly;
             PageFolder = dest.PageFolder;
             TreeUi = dest.TreeUi;
@@ -362,11 +361,22 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="dest">复制源</param>
         /// <returns></returns>
-        public void CopyProperty(FieldConfig dest)
+        public void CopyProperty(FieldConfig dest,bool full=true)
         {
-            Entity = dest.Entity;
+            if (full)
+            {
+                Entity = dest.Entity;
+                IsCaption = dest.IsCaption;
+                IsPrimaryKey = dest.IsPrimaryKey;
+                IsExtendKey = dest.IsExtendKey;
+                IsIdentity = dest.IsIdentity;
+                IsGlobalKey = dest.IsGlobalKey;
+                UniqueIndex = dest.UniqueIndex;
+                UniqueString = dest.UniqueString;
+                StorageProperty = dest.StorageProperty;
+            }
             Group = dest.Group;
-            DenyScope = dest.DenyScope;
+
             DataType = dest.DataType;
             CsType = dest.CsType;
             IsTime = dest.IsTime;
@@ -401,13 +411,6 @@ namespace Agebull.EntityModel.Config
             NoneJson = dest.NoneJson;
             JsonName = dest.JsonName;
             HelloCode = dest.HelloCode;
-            IsCaption = dest.IsCaption;
-            IsPrimaryKey = dest.IsPrimaryKey;
-            IsExtendKey = dest.IsExtendKey;
-            IsIdentity = dest.IsIdentity;
-            IsGlobalKey = dest.IsGlobalKey;
-            UniqueIndex = dest.UniqueIndex;
-            UniqueString = dest.UniqueString;
             Function = dest.Function;
             Having = dest.Having;
             IsDbIndex = dest.IsDbIndex;
@@ -425,8 +428,6 @@ namespace Agebull.EntityModel.Config
             NoStorage = dest.NoStorage;
             KeepStorageScreen = dest.KeepStorageScreen;
             CustomWrite = dest.CustomWrite;
-            StorageProperty = dest.StorageProperty;
-            DenyClient = dest.DenyClient;
             IsUserReadOnly = dest.IsUserReadOnly;
             MulitLine = dest.MulitLine;
             Prefix = dest.Prefix;
@@ -460,6 +461,7 @@ namespace Agebull.EntityModel.Config
             IsUserId = dest.IsUserId;
             LinkField = dest.LinkField;
         }
+
     }
 
     partial class ModelConfig
@@ -496,7 +498,7 @@ namespace Agebull.EntityModel.Config
             Caption = dest.Caption;
             Description = dest.Description;
             Remark = dest.Remark;
-            DenyScope = dest.DenyScope;
+            
             MaxIdentity = dest.MaxIdentity;
             RedisKey = dest.RedisKey;
             EntityName = dest.EntityName;
@@ -505,21 +507,21 @@ namespace Agebull.EntityModel.Config
             ModelInclude = dest.ModelInclude;
             ModelBase = dest.ModelBase;
             DataVersion = dest.DataVersion;
-            IsInternal = dest.IsInternal;
-            NoDataBase = dest.NoDataBase;
+
+            EnableDataBase = dest.EnableDataBase;
             IsLinkTable = dest.IsLinkTable;
             Interfaces = dest.Interfaces;
             ColumnIndexStart = dest.ColumnIndexStart;
             ReadCoreCodes = dest.ReadCoreCodes;
             IsInterface = dest.IsInterface;
-            HaseValidateCode = dest.HaseValidateCode;
+            EnableValidate = dest.EnableValidate;
             Properties = dest.Properties;
             ReadTableName = dest.ReadTableName;
             SaveTableName = dest.SaveTableName;
             DbIndex = dest.DbIndex;
             UpdateByModified = dest.UpdateByModified;
             ApiName = dest.ApiName;
-            HaseEasyUi = dest.HaseEasyUi;
+            EnableUI = dest.EnableUI;
             IsUiReadOnly = dest.IsUiReadOnly;
             PageFolder = dest.PageFolder;
             TreeUi = dest.TreeUi;
@@ -651,7 +653,7 @@ namespace Agebull.EntityModel.Config
             HelloCode = dest.HelloCode;
             Group = dest.Group;
             Entity = dest.Entity;
-            DenyScope = dest.DenyScope;
+
             IsArray = dest.IsArray;
             IsDictionary = dest.IsDictionary;
             IsEnum = dest.IsEnum;
@@ -688,7 +690,7 @@ namespace Agebull.EntityModel.Config
             NoStorage = dest.NoStorage;
             CustomWrite = dest.CustomWrite;
             StorageProperty = dest.StorageProperty;
-            DenyClient = dest.DenyClient;
+            
             IsUserReadOnly = dest.IsUserReadOnly;
             MulitLine = dest.MulitLine;
             Prefix = dest.Prefix;

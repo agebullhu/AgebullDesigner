@@ -158,9 +158,13 @@ namespace Agebull.EntityModel.Designer
                 }
                 if (newColumn == null)
                 {
-                    newColumn = new FieldConfig();
-                    newColumn.Entity = Entity;
-                    newColumn.Copy(copyColumn) ;
+                    newColumn = new FieldConfig
+                    {
+                        Entity = Entity
+                    };
+                    newColumn.CopyProperty(copyColumn, false);
+                    newColumn.Entity = source;
+                    newColumn.Option.Copy(copyColumn.Option, false);
                     newColumn.Option.Index = newColumn.Option.Identity = 0;
                     
                     if (refe && !copyColumn.IsLinkField)
@@ -199,6 +203,7 @@ namespace Agebull.EntityModel.Designer
                         if (copyColumn.IsLinkKey || copyColumn.IsPrimaryKey)
                         {
                             newColumn.IsLinkKey = true;
+                            newColumn.KeepUpdate = true;
                         }
                         else if (copyColumn.IsCaption)
                         {

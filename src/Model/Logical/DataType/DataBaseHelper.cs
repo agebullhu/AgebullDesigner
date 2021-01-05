@@ -61,7 +61,7 @@ namespace Agebull.EntityModel.Config
             {
                 var entity = field.Entity;
 
-                if (entity.NoDataBase || string.IsNullOrWhiteSpace(field.LinkTable) ||
+                if (string.IsNullOrWhiteSpace(field.LinkTable) ||
                     field.LinkTable == entity.Name || field.LinkTable == entity.ReadTableName ||
                     field.LinkTable == entity.SaveTableName)
                 {

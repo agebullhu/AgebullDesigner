@@ -9,8 +9,7 @@ using Agebull.EntityModel.Config.Sqlite;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class SqliteAccessBuilder<TModel> : AccessBuilderBase<TModel>
-        where TModel : ProjectChildConfigBase, IEntityConfig
+    public sealed class SqliteAccessBuilder: AccessBuilderBase
     {
         /// <summary>
         /// 名称
@@ -73,7 +72,7 @@ namespace {NameSpace}.DataAccess
     /// <summary>
     /// {Model.Caption}
     /// </summary>
-    {(Model.IsInternal ? "internal" : "public")} partial class {Model.Name}DataAccess
+    public partial class {Model.Name}DataAccess
     {{
         /// <summary>
         /// 构造
@@ -104,7 +103,7 @@ namespace {NameSpace}.DataAccess
         protected override void CreateDesignerCode(string path)
         {
             var file = Path.Combine(path, Model.Name + "DataAccess.Designer.cs");
-            if (Model.NoDataBase)
+            if (!Model.EnableDataBase)
             {
                 if (File.Exists(file))
                 {
@@ -138,7 +137,7 @@ namespace {NameSpace}.DataAccess
         protected override void CreateCustomCode(string path)
         {
             var file = Path.Combine(path, Model.Name + "DataAccess.cs");
-            if (Model.NoDataBase)
+            if (!Model.EnableDataBase)
             {
                 if (File.Exists(file))
                 {

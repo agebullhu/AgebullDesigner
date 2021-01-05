@@ -10,8 +10,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
     /// <summary>
     /// API代码生成
     /// </summary>
-    public class ProjectApiActionCoder<TModel> : CoderWithModel<TModel>
-        where TModel : ProjectChildConfigBase, IEntityConfig
+    public class ProjectApiActionCoder : CoderWithModel
     {
 
         #region 继承实现
@@ -27,8 +26,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         {
             if (Model.IsInterface || Model.IsQuery)
                 return;
-            if (Model.IsInternal || Model.NoDataBase || Model.DenyScope.HasFlag(AccessScopeType.Client))
-                return;
+
             var fileName = "ApiController.Designer.cs";
 
             var file = Path.Combine(path, Model.Name + fileName);
@@ -49,8 +47,6 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         protected override void CreateCustomCode(string path)
         {
-            if (Model.IsInternal || Model.NoDataBase || Model.DenyScope.HasFlag(AccessScopeType.Client))
-                return;
             var fileName = "ApiController.cs";
             var file = Path.Combine(path, Model.Name + fileName);
             if (!string.IsNullOrWhiteSpace(Model.Alias))
@@ -75,7 +71,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public string ExtendCode(TModel entity)
+        public string ExtendCode(IEntityConfig entity)
         {
             Model = entity;
             return ExtendCode();
@@ -86,7 +82,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public string BaseCode(TModel entity)
+        public string BaseCode(IEntityConfig entity)
         {
             Model = entity;
             return BaseCode();
@@ -96,7 +92,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 
         #region 代码
 
-        internal static string ReadFormValue(TModel entity)
+        internal static string ReadFormValue(IEntityConfig entity)
         {
             var code = new StringBuilder();
             code.Append($@"

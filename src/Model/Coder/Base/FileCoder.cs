@@ -24,14 +24,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// 是否可写
         /// </summary>
         protected virtual bool CanWrite => false;
-        /// <summary>
-        /// 是否扩展代码
-        /// </summary>
-        private bool CurrentIsExtend { get; set; }
-        /// <summary>
-        /// 是否扩展代码
-        /// </summary>
-        private string CurrentPath { get; set; }
+
         /// <summary>
         /// 当前对象
         /// </summary>
@@ -46,8 +39,6 @@ namespace Agebull.EntityModel.RobotCoder
             {
                 try
                 {
-                    CurrentIsExtend = true;
-                    CurrentPath = path;
                     if (CanWrite)
                         CreateCustomCode(path);
                 }
@@ -67,8 +58,6 @@ namespace Agebull.EntityModel.RobotCoder
             {
                 try
                 {
-                    CurrentIsExtend = false;
-                    CurrentPath = path;
                     if (CanWrite)
                         CreateDesignerCode(path);
                 }
@@ -119,12 +108,12 @@ namespace Agebull.EntityModel.RobotCoder
 
             if (string.IsNullOrWhiteSpace(defDir))
             {
-                config.Option[key]= defName;
+                config.Option[key] = defName;
                 full = Path.Combine(path, defName);
             }
             else
             {
-                config.Option[key] =  Path.Combine(defDir, defName);
+                config.Option[key] = Path.Combine(defDir, defName);
                 full = Path.Combine(path, defDir, defName);
             }
             GlobalConfig.CheckPaths(Path.GetDirectoryName(full));
@@ -235,7 +224,7 @@ namespace Agebull.EntityModel.RobotCoder
             //    //helper.CheckOut();
             //    //helper.CheckIn(file);
             //}
-            Trace.WriteLine(file,"文件写入");
+            Trace.WriteLine(file, "文件写入");
         }
         #endregion
     }

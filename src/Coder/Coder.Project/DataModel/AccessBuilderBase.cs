@@ -6,8 +6,7 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public abstract class AccessBuilderBase<TModel> : CoderWithModel<TModel>
-        where TModel : ProjectChildConfigBase, IEntityConfig
+    public abstract class AccessBuilderBase : CoderWithModel
     {
         protected string DataBaseExtend()
         {
@@ -34,7 +33,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// {Model.Description}数据访问对象
         /// </summary>
-        {(Model.IsInternal ? "internal" : "public")} {Model.Name}DataAccess {name}
+       public {Model.Name}DataAccess {name}
         {{
             get
             {{
@@ -151,7 +150,7 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
 
-        protected void FieldMap(TModel entity, Dictionary<string, string> names)
+        protected void FieldMap(IEntityConfig entity, Dictionary<string, string> names)
         {
             if (entity == null)
             {
@@ -159,10 +158,10 @@ namespace Agebull.EntityModel.RobotCoder
             }
             if (!string.IsNullOrWhiteSpace(entity.ModelBase))
             {
-                if (typeof(TModel) == typeof(ModelConfig))
-                    FieldMap(Project.Models.FirstOrDefault(p => p.Name == entity.ModelBase) as TModel, names);
+                if (entity is ModelConfig)
+                    FieldMap(Project.Models.FirstOrDefault(p => p.Name == entity.ModelBase), names);
                 else
-                    FieldMap(Project.Entities.FirstOrDefault(p => p.Name == entity.ModelBase) as TModel, names);
+                    FieldMap(Project.Entities.FirstOrDefault(p => p.Name == entity.ModelBase), names);
             }
             foreach (var field in entity.DbFields)
             {

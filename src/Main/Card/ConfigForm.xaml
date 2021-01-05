@@ -20,6 +20,7 @@
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
+
             <Style x:Key="ConfigStyle" TargetType="{x:Type ContentControl}">
                 <Setter Property="ContentTemplate" Value="{StaticResource configTemplate}" />
                 <Style.Triggers>
@@ -29,17 +30,14 @@
                     <DataTrigger Binding="{Binding Path=Option.Type}" Value="EntityConfig">
                         <Setter Property="ContentTemplate" Value="{DynamicResource EntityConfigTemplate}" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Path=Option.Type}" Value="EntityConfig">
-                        <Setter Property="ContentTemplate" Value="{DynamicResource ModelConfigTemplate}" />
-                    </DataTrigger>
                     <DataTrigger Binding="{Binding Path=Option.Type}" Value="FieldConfig">
                         <Setter Property="ContentTemplate" Value="{DynamicResource FieldConfigTemplate}" />
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Path=Option.Type}" Value="ModelConfig">
-                        <Setter Property="ContentTemplate" Value="{DynamicResource ModelConfigTemplate}" />
+                        <Setter Property="ContentTemplate" Value="{DynamicResource EntityConfigTemplate}" />
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Path=Option.Type}" Value="PropertyConfig">
-                        <Setter Property="ContentTemplate" Value="{DynamicResource PropertyConfigTemplate}" />
+                        <Setter Property="ContentTemplate" Value="{DynamicResource FieldConfigTemplate}" />
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Path=Option.Type}" Value="SolutionConfig">
                         <Setter Property="ContentTemplate" Value="{DynamicResource SolutionTemplate}" />
@@ -83,14 +81,6 @@
                         <StackPanel Style="{StaticResource AdvFieldPanel}">
                             <Label Content="别名" />
                             <TextBox Text="{Binding Alias,Mode=TwoWay}" />
-                        </StackPanel>
-                        <StackPanel Style="{StaticResource AdvFieldPanel}">
-                            <Label Content="分组" />
-                            <TextBox Text="{Binding Group,Mode=TwoWay}" />
-                        </StackPanel>
-                        <StackPanel Style="{StaticResource AdvFieldPanel}">
-                            <Label Content="历史名称" />
-                            <TextBox Text="{Binding OldName,Mode=TwoWay}" />
                         </StackPanel>
                     </WrapPanel>
                     <StackPanel Style="{StaticResource AdvFieldPanel}">

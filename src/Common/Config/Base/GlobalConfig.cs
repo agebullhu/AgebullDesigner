@@ -114,9 +114,14 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="func"></param>
         /// <returns></returns>
-        public static EntityConfig Find(string name)
+        public static EntityConfig Find(params string[] names)
         {
-            return GetEntity(p=>string.Equals(name,p.Name,StringComparison.OrdinalIgnoreCase)|| string.Equals(name, p.SaveTableName, StringComparison.OrdinalIgnoreCase));
+            return names.Length == 0
+                ? null
+                : GetEntity(p => names.Any(name => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase) ||
+                                                                                 string.Equals(p.ReadTableName, name, StringComparison.OrdinalIgnoreCase) ||
+                                                                                 string.Equals(p.SaveTableName, name, StringComparison.OrdinalIgnoreCase)));
+
         }
 
         /// <summary>

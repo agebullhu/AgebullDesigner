@@ -8,11 +8,6 @@
         #region 用户界面
 
         /// <summary>
-        /// 客户端不可见
-        /// </summary>
-        bool DenyClient { get; set; }// Field.DenyClient;
-
-        /// <summary>
         /// 用户是否可输入
         /// </summary>
         bool CanUserInput { get; }// !IsCompute && !DenyClient && !IsUserReadOnly && !IsSystemField && !IsIdentity;

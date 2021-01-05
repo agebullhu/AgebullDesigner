@@ -10,9 +10,23 @@ namespace Agebull.EntityModel.RobotCoder
     /// <summary>
     /// 项目代码生成基类
     /// </summary>
-    public abstract class ProjectBuilder<TModelConfig> : CoderBase
-            where TModelConfig : ProjectChildConfigBase, IEntityConfig
+    public abstract class ProjectBuilder : FileCoder
     {
+        /// <summary>
+        /// 文件名所保存的配置名称（即这个配置名称的值是生成的文件名）
+        /// </summary>
+        protected override string FileSaveConfigName => "";
+
+        /// <summary>
+        /// 当前对象
+        /// </summary>
+        public  ProjectConfig Project { get; private set; }
+
+        /// <summary>
+        /// 当前对象
+        /// </summary>
+        public override ConfigBase CurrentConfig => Project;
+
         /// <summary>
         /// 得到当前的消息跟踪器
         /// </summary>
@@ -65,6 +79,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="project"></param>
         public virtual bool Validate(ProjectConfig project)
         {
+            Project = project;
             return true;
         }
 
@@ -72,7 +87,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// 准备生成实体代码
         /// </summary>
         /// <param name="schema"></param>
-        public virtual bool Validate(TModelConfig schema)
+        public virtual bool Validate(IEntityConfig schema)
         {
             return true;
         }
@@ -83,7 +98,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="project"></param>
         public virtual void CreateProjectCode(ProjectConfig project)
         {
-
+            Project = project;
         }
 
         /// <summary>
@@ -91,9 +106,9 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         /// <param name="project"></param>
         /// <param name="schema"></param>
-        public virtual void CreateModelCode(ProjectConfig project, TModelConfig schema)
+        public virtual void CreateModelCode(ProjectConfig project, IEntityConfig schema)
         {
-
+            Project = project;
         }
 
         /// <summary>
@@ -103,8 +118,8 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="project"></param>
         /// <param name="schema"></param>
         /// <param name="path"></param>
-        protected static void CreateCode<TModelCoder>(ProjectConfig project, TModelConfig schema, string path)
-            where TModelCoder : CoderWithModel<TModelConfig>, new()
+        protected static void CreateCode<TModelCoder>(ProjectConfig project, IEntityConfig schema, string path)
+            where TModelCoder : CoderWithModel, new()
         {
             var builder = new TModelCoder
             {

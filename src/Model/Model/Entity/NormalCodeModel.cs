@@ -71,12 +71,9 @@ namespace Agebull.EntityModel.Designer
                 Caption = "复制代码",
                 Image = Application.Current.Resources["img_file"] as ImageSource
             });
-            if (!Builders.TryGetValue(Context.SelectTag ?? "", out var cmd))
-                return;
-            foreach (var builder in cmd.Values)
-            {
-                commands.Add(builder(OnCodeSuccess));
-            }
+            foreach (var cmd in Builders.Values)
+                foreach (var builder in cmd.Values)
+                    commands.Add(builder(OnCodeSuccess));
         }
 
         /// <summary>
@@ -89,18 +86,17 @@ namespace Agebull.EntityModel.Designer
         /// 注册的项目生成器
         /// </summary>
         /// <returns></returns>
-        public static void RegistBuilder<TBuilder, TModelConfig>()
-            where TBuilder : ProjectBuilder<TModelConfig>, new()
-            where TModelConfig : ProjectChildConfigBase, IEntityConfig
+        public static void RegistBuilder<TBuilder>()
+            where TBuilder : ProjectBuilder, new()
         {
             var builder = new TBuilder();
-            var type = typeof(TModelConfig).Name;
+            var type = typeof(IEntityConfig).Name;
             if (!Builders.TryGetValue(type, out var cmd))
                 Builders.Add(type, cmd = new Cmd());
 
             if (cmd.ContainsKey(builder.Name))
                 throw new ArgumentException("已注册名称为" + builder.Name + "的项目生成器，不应该重复注册");
-            cmd.Add(builder.Name, OnCodeSuccess => new ProjectCodeCommand<TModelConfig>(() => new TBuilder())
+            cmd.Add(builder.Name, OnCodeSuccess => new ProjectCodeCommand(() => new TBuilder())
             {
                 Caption = builder.Caption,
                 IconName = builder.Icon,

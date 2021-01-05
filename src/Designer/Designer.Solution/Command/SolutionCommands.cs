@@ -10,6 +10,7 @@
 
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.RobotCoder;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
@@ -35,6 +36,16 @@ namespace Agebull.EntityModel.Designer
                 Action = AddProject,
                 IconName = "img_add"
             });
+
+            commands.Add(new CommandItemBuilder<SolutionConfig>
+            {
+                Catalog = "编辑",
+                IsButton = true,
+                SignleSoruce = true,
+                Caption = "生成解决方案",
+                Action = arg => new SolutionAnalysis().SyncSolutionFile(),
+                IconName = "img_add"
+            });
         }
 
         /// <summary>
@@ -45,5 +56,6 @@ namespace Agebull.EntityModel.Designer
             if (Model.CreateNew("新增项目", out ProjectConfig config))
                 Context.Solution.Add(config);
         }
+
     }
 }

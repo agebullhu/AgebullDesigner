@@ -271,7 +271,7 @@ namespace Agebull.EntityModel.Designer
                 return;
             }
             
-           var entity = _project.Entities.FirstOrDefault(p => p.Name == type.Name || p.Name == enName);
+           var entity = _project.Find(type.Name, enName);
             if (entity != null)
             {
                 entity.Name = enName;
@@ -285,7 +285,7 @@ namespace Agebull.EntityModel.Designer
                 };
                 _project.Add(entity);
             }
-            entity.NoDataBase = true;
+            entity.EnableDataBase = false;
             Trace.WriteLine(enName, "Entity");
             GetInfo(entity, type);
             ReadEntity(entity, type);

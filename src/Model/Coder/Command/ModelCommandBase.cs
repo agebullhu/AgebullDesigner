@@ -11,12 +11,12 @@ namespace Agebull.EntityModel.Designer
     /*// <summary>
     /// 实体命令基类
     /// </summary>
-    public abstract class ModelCommandBase<TModelConfig> : ConfigCommandBase<TModelConfig>
-        where TModelConfig : ProjectChildConfigBase, IEntityConfig
+    public abstract class ModelCommandBase<TEntityConfig> : ConfigCommandBase<TEntityConfig>
+        where TEntityConfig : ProjectChildConfigBase, IEntityConfig
     {
         protected ModelCommandBase()
         {
-            TargetType = typeof(TModelConfig);
+            TargetType = typeof(TEntityConfig);
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 执行器
         /// </summary>
-        public abstract bool Execute(TModelConfig entity);
+        public abstract bool Execute(TEntityConfig entity);
 
         /// <summary>
         /// 执行器
@@ -62,7 +62,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 能否执行的检查
         /// </summary>
-        public virtual bool Prepare(ModelArgument<TModelConfig> argument)
+        public virtual bool Prepare(ModelArgument<TEntityConfig> argument)
         {
             return true;
         }
@@ -70,7 +70,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 能否执行的检查
         /// </summary>
-        public virtual bool CanDo(ModelArgument<TModelConfig> argument)
+        public virtual bool CanDo(ModelArgument<TEntityConfig> argument)
         {
             return true;
         }
@@ -97,7 +97,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public virtual bool Validate(TModelConfig entity)
+        public virtual bool Validate(TEntityConfig entity)
         {
             return true;
         }
@@ -109,7 +109,7 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         private bool DoPrepare(object args, Action<object> setArgs)
         {
-            var argument = new ModelArgument<TModelConfig>
+            var argument = new ModelArgument<TEntityConfig>
             {
                 Argument = args ?? GlobalConfig.CurrentConfig
             };
@@ -141,7 +141,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         /// <param name="argument"></param>
         /// <returns></returns>
-        public virtual bool BeginDo(ModelArgument<TModelConfig> argument)
+        public virtual bool BeginDo(ModelArgument<TEntityConfig> argument)
         {
             return true;
         }
@@ -151,12 +151,12 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         /// <param name="argument"></param>
         /// <returns></returns>
-        public virtual void EndDo(ModelArgument<TModelConfig> argument)
+        public virtual void EndDo(ModelArgument<TEntityConfig> argument)
         {
         }
         private bool Doing(object args)
         {
-            if (!(args is ModelArgument<TModelConfig> argument) ||  !BeginDo(argument))
+            if (!(args is ModelArgument<TEntityConfig> argument) ||  !BeginDo(argument))
                 return false;
             try
             {

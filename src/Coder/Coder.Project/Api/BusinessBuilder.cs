@@ -8,8 +8,7 @@ namespace Agebull.EntityModel.RobotCoder
     /// <summary>
     /// 业务逻辑对象生成器
     /// </summary>
-    public sealed class BusinessBuilder<TModel> : CoderWithModel<TModel>
-        where TModel : ProjectChildConfigBase, IEntityConfig
+    public sealed class BusinessBuilder : CoderWithModel
     {
 
         /// <summary>
@@ -25,7 +24,7 @@ namespace Agebull.EntityModel.RobotCoder
                 return;
             var fileName = "BusinessLogic.cs";
             var file = Path.Combine(path, Model.EntityName + fileName);
-            if (Model.NoDataBase)
+            if (!Model.EnableDataBase)
             {
                 if (File.Exists(file))
                 {
@@ -273,7 +272,7 @@ namespace {NameSpace}
             return;
             var fileName = "BusinessLogic.Designer.cs";
             var file = Path.Combine(path, Model.Name + fileName);
-            if (Model.NoDataBase)
+            if (Model.EnableDataBase)
             {
                 if (File.Exists(file))
                 {

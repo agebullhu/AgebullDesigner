@@ -121,15 +121,14 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public EntityConfig Find(string name)
+        public EntityConfig Find(params string[] names)
         {
-            return string.IsNullOrEmpty(name)
+            return names.Length == 0
                 ? null
-                : Entities.FirstOrDefault(p =>
-                string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(p.ReadTableName, name, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(p.SaveTableName, name, StringComparison.OrdinalIgnoreCase))
-                ?? GlobalConfig.Find(name);
+                : Entities.FirstOrDefault(p=>names.Any(name => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase) ||
+                                                                                 string.Equals(p.ReadTableName, name, StringComparison.OrdinalIgnoreCase) ||
+                                                                                 string.Equals(p.SaveTableName, name, StringComparison.OrdinalIgnoreCase)))
+                ?? GlobalConfig.Find(names);
         }
 
         /// <summary>
@@ -336,7 +335,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"解决方案"), DisplayName(@"WEB页面主文件夹"), Description("WEB页面主文件夹")]
         public string PageFolder
         {
-            get => _pageFolder;
+            get => (_pageFolder ?? Name).ToLWord();
             set
             {
                 if (_pageFolder == value)
@@ -369,7 +368,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"解决方案"), DisplayName(@"子级文件夹"), Description("子级文件夹")]
         public string BranchFolder
         {
-            get => _branchFolder;
+            get => _branchFolder ?? Name;
             set
             {
                 if (_branchFolder == value)
@@ -492,13 +491,9 @@ namespace Agebull.EntityModel.Config
         public string FormatPath(string end, bool isRoot = false)
         {
             var folders = new List<string>();
-            if (WorkContext.InCoderGenerating)
-                folders.Add(Solution.RootPath);
-            else
-                folders.Add(Solution.RootPath ?? "解决方案根路径未设置");
 
             folders.Add(Solution.SrcFolder ?? "src");
-            if (!isRoot && !string.IsNullOrWhiteSpace(BranchFolder))
+            if (!isRoot)
             {
                 folders.Add(BranchFolder);
             }
@@ -506,7 +501,7 @@ namespace Agebull.EntityModel.Config
             {
                 folders.Add(end);
             }
-            return Path.Combine(folders.ToArray());
+            return IOHelper.CheckPath(Solution.RootPath, folders.ToArray());
         }
 
         /// <summary>
@@ -517,7 +512,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"解决方案"), DisplayName(@"WEB页面(C#)"), Description("页面代码路径")]
-        public string PagePath => $"{Solution.PagePath}\\{ _pageFolder ?? Name}";
+        public string PagePath => $"{Solution.PagePath}\\{ PageFolder}";
 
         /// <summary>
         /// 移动端(C#)
@@ -972,6 +967,7 @@ namespace Agebull.EntityModel.Config
         #region 设计器支持
 
 
+
         [DataMember, JsonProperty("noClassify", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         bool _noClassify;
         /// <summary>
@@ -1186,5 +1182,46 @@ namespace Agebull.EntityModel.Config
         }
         #endregion
 
+        #region 解决方案
+
+        [DataMember, JsonProperty("apiKey", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        Guid _apiKey;
+        /// <summary>
+        /// API的GUID
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        public Guid ApiKey
+        {
+            get
+            {
+                if (_apiKey == Guid.Empty)
+                {
+                    _apiKey = Guid.NewGuid();
+                    OnPropertyChanged(nameof(ApiKey));
+                }
+                return _apiKey;
+            }
+        }
+
+
+        [DataMember, JsonProperty("modelKey", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        Guid _modelKey;
+        /// <summary>
+        /// 模型的GUID
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        public Guid ModelKey
+        {
+            get
+            {
+                if (_modelKey == Guid.Empty)
+                {
+                    _modelKey = Guid.NewGuid();
+                    OnPropertyChanged(nameof(ModelKey));
+                }
+                return _modelKey;
+            }
+        }
+        #endregion
     }
 }

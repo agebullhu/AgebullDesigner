@@ -103,7 +103,7 @@ namespace Agebull.EntityModel.Designer
         {
             if (entity == null)
                 return;
-            entity.HaseEasyUi = true;
+            entity.EnableUI = true;
             var bl = new PropertyVueModel();
             foreach (var field in entity.Properties)
             {
@@ -122,19 +122,19 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        internal static void CheckUiType(EntityConfig entity)
+        internal static void CheckUiType(IEntityConfig entity)
         {
             if (entity == null)
                 return;
             bool repair = true;
-            if (entity.HaseEasyUi)
+            if (entity.EnableUI)
             {
                 var result = MessageBox.Show("点是执行重置,点否执行修复", "控件类型修复", MessageBoxButton.YesNoCancel);
                 if (result == MessageBoxResult.Cancel)
                     return;
                 repair = result == MessageBoxResult.Yes;
             }
-            entity.HaseEasyUi = true;
+            entity.EnableUI = true;
             var bl = new PropertyVueModel();
             foreach (var field in entity.Properties)
             {
@@ -145,7 +145,7 @@ namespace Agebull.EntityModel.Designer
         {
             if (entity == null)
                 return;
-            entity.HaseEasyUi = true;
+            entity.EnableUI = true;
             var bl = new PropertyVueModel();
             foreach (var field in entity.Properties)
             {
@@ -155,7 +155,7 @@ namespace Agebull.EntityModel.Designer
 
         internal static void CheckSizeAuto(EntityConfig entity)
         {
-            entity.HaseEasyUi = true;
+            entity.EnableUI = true;
             var bl = new PropertyVueModel();
             foreach (var field in entity.Properties)
             {
@@ -181,7 +181,7 @@ namespace Agebull.EntityModel.Designer
         {
             foreach (var field in entity.Properties)
             {
-                if (field.IsSystemField || field.IsDiscard || field.DbInnerField || field.InnerField || field.DenyClient)
+                if (field.IsSystemField || field.IsDiscard || field.DbInnerField || field.InnerField || field.InnerField)
                 {
                     field.IsRequired = false;
                     field.NoneGrid = true;

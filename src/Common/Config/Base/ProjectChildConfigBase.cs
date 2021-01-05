@@ -68,5 +68,95 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(Parent));
             }
         }
+        #region 视角开关
+
+        /// <summary>
+        /// 上级项目
+        /// </summary>
+        [DataMember, JsonProperty("desingSwitch")]
+        internal int _desingSwitch;
+
+        void SetDesingSwitch(int value, bool enable) => _desingSwitch = enable ? _desingSwitch | value : _desingSwitch & ~value;
+
+        /// <summary>
+        /// 启用数据校验
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"视角开关"), DisplayName(@"启用数据校验"), Description("启用数据校验")]
+        public bool EnableValidate
+        {
+            get => (_desingSwitch & 0x1) == 0x1;
+            set
+            {
+                BeforePropertyChanged(nameof(EnableValidate), _parent, value);
+                SetDesingSwitch(0x1, value);
+                OnPropertyChanged(nameof(EnableValidate));
+            }
+        }
+
+        /// <summary>
+        /// 启用数据事件
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"视角开关"), DisplayName(@"启用数据事件"), Description("启用数据事件")]
+        public bool EnableDataEvent
+        {
+            get => (_desingSwitch & 0x2) == 0x2;
+            set
+            {
+                BeforePropertyChanged(nameof(EnableDataEvent), _parent, value);
+                SetDesingSwitch(0x2, value);
+                OnPropertyChanged(nameof(EnableDataEvent));
+            }
+        }
+
+        /// <summary>
+        /// 启用数据库
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"视角开关"), DisplayName(@"启用数据库"), Description("启用数据库")]
+        public bool EnableDataBase
+        {
+            get => (_desingSwitch & 0x4) == 0x4;
+            set
+            {
+                BeforePropertyChanged(nameof(EnableDataBase), _parent, value);
+                SetDesingSwitch(0x4, value);
+                OnPropertyChanged(nameof(EnableDataBase));
+            }
+        }
+        /// <summary>
+        /// 启用编辑API
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"视角开关"), DisplayName(@"启用编辑接口"), Description("启用编辑接口")]
+        public bool EnableEditApi
+        {
+            get => (_desingSwitch & 0x8) == 0x8;
+            set
+            {
+                BeforePropertyChanged(nameof(EnableEditApi), _parent, value);
+                SetDesingSwitch(0x8, value);
+                OnPropertyChanged(nameof(EnableEditApi));
+            }
+        }
+
+        /// <summary>
+        /// 启用用户界面
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"视角开关"), DisplayName(@"启用用户界面"), Description("启用用户界面")]
+        public bool EnableUI
+        {
+            get => (_desingSwitch & 0x10) == 0x10;
+            set
+            {
+                BeforePropertyChanged(nameof(EnableUI), _parent, value);
+                SetDesingSwitch(0x10, value);
+                OnPropertyChanged(nameof(EnableUI));
+            }
+        }
+
+        #endregion
     }
 }

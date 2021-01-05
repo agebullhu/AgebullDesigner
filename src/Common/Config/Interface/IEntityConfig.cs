@@ -18,20 +18,60 @@ namespace Agebull.EntityModel.Config
     /// <summary>
     /// 实体配置
     /// </summary>
-    public interface IEntityConfig : IConfig
+    public interface IEntityConfig : IConfig, IEntityUi, IEntityCpp
     {
-        #region 系统
+        #region 视角开关
 
         /// <summary>
-        /// 阻止使用的范围
+        /// 启用数据库支持
         /// </summary>
-        AccessScopeType DenyScope
+        bool EnableDataBase
         {
             get;
             set;
         }
         /// <summary>
-        /// 阻止使用的范围
+        /// 启用数据校验
+        /// </summary>
+        bool EnableValidate
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 启用编辑接口
+        /// </summary>
+        bool EnableEditApi
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 启用用户界面
+        /// </summary>
+        bool EnableUI
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 启用数据事件
+        /// </summary>
+        bool EnableDataEvent
+        {
+            get;
+            set;
+        }
+
+        #endregion
+
+        #region 系统
+
+        /// <summary>
+        /// 对应实体
         /// </summary>
         EntityConfig Entity
         {
@@ -138,25 +178,6 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 内部数据
-        /// </summary>
-        /// <remark>
-        /// 服务器内部数据,即只在服务器内部使用
-        /// </remark>
-        bool IsInternal
-        {
-            get;
-            set;
-        }
-        /// <summary>
-        /// 无数据库支持
-        /// </summary>
-        bool NoDataBase
-        {
-            get;
-            set;
-        }
-        /// <summary>
         /// 继承的接口集合
         /// </summary>
         string Interfaces
@@ -165,6 +186,7 @@ namespace Agebull.EntityModel.Config
             set;
         }
         #endregion
+
 
         #region 设计器支持
 
@@ -201,14 +223,6 @@ namespace Agebull.EntityModel.Config
             set;
         }
 
-        /// <summary>
-        /// 生成校验代码
-        /// </summary>
-        bool HaseValidateCode
-        {
-            get;
-            set;
-        }
 
         /// <summary>
         /// 上级
@@ -303,6 +317,77 @@ namespace Agebull.EntityModel.Config
         }
         #endregion
 
+        #region 方法
+
+        /// <summary>
+        /// 页面代码路径
+        /// </summary>
+        string PagePath(char sp = '\\')
+        {
+            if (!PageFolder.IsEmpty())
+                return PageFolder;
+            if (Parent.NoClassify || Classify.IsEmpty() || Classify.Equals("None", StringComparison.InvariantCulture))
+                return Abbreviation;
+            var cls = Parent.Classifies.FirstOrDefault(p => p.Name == Classify);
+            return $"{cls?.Abbreviation ?? Classify.ToLWord()}{sp}{Abbreviation}";
+        }
+
+        /// <summary>
+        /// 字段复制
+        /// </summary>
+        /// <param name="dest">复制源</param>
+        /// <returns></returns>
+        void Copy(IEntityConfig dest)
+        {
+            MaxIdentity = dest.MaxIdentity;
+            RedisKey = dest.RedisKey;
+            EntityName = dest.EntityName;
+            IsQuery = dest.IsQuery;
+            ReferenceType = dest.ReferenceType;
+            ModelInclude = dest.ModelInclude;
+            ModelBase = dest.ModelBase;
+            DataVersion = dest.DataVersion;
+            EnableDataEvent = dest.EnableDataEvent;
+            EnableDataBase = dest.EnableDataBase;
+            EnableDataEvent = dest.EnableDataEvent;
+            EnableEditApi = dest.EnableEditApi;
+            EnableUI = dest.EnableUI;
+            EnableEditApi = dest.EnableEditApi;
+            Interfaces = dest.Interfaces;
+            ColumnIndexStart = dest.ColumnIndexStart;
+            ReadCoreCodes = dest.ReadCoreCodes;
+            IsInterface = dest.IsInterface;
+            EnableValidate = dest.EnableValidate;
+            UpdateByModified = dest.UpdateByModified;
+            ApiName = dest.ApiName;
+            
+            IsUiReadOnly = dest.IsUiReadOnly;
+            PageFolder = dest.PageFolder;
+            TreeUi = dest.TreeUi;
+            DetailsPage = dest.DetailsPage;
+            FormCloumn = dest.FormCloumn;
+            CppName = dest.CppName;
+        }
+        #endregion
+    }
+
+    public interface IEntityCpp
+    {
+        #region C++
+
+        /// <summary>
+        /// C++名称
+        /// </summary>
+        string CppName
+        {
+            get;
+            set;
+        }
+        #endregion
+    }
+
+    public interface IEntityUi
+    {
         #region 用户界面
 
         /// <summary>
@@ -313,14 +398,7 @@ namespace Agebull.EntityModel.Config
             get;
             set;
         }
-        /// <summary>
-        /// 是否有界面
-        /// </summary>
-        bool HaseEasyUi
-        {
-            get;
-            set;
-        }
+
         /// <summary>
         /// 界面只读
         /// </summary>
@@ -375,69 +453,8 @@ namespace Agebull.EntityModel.Config
             set;
         }
 
-        /// <summary>
-        /// 页面代码路径
-        /// </summary>
-        string PagePath(char sp = '\\')
-        {
-            if (!PageFolder.IsEmpty())
-                return PageFolder;
-            if (Parent.NoClassify || Classify.IsEmpty() || Classify.Equals("None", StringComparison.InvariantCulture))
-                return Abbreviation;
-            var cls = Parent.Classifies.FirstOrDefault(p => p.Name == Classify);
-            return $"{cls?.Abbreviation ?? Classify.ToLWord()}{sp}{Abbreviation}";
-        }
 
         #endregion 
-
-        #region C++
-
-        /// <summary>
-        /// C++名称
-        /// </summary>
-        string CppName
-        {
-            get;
-            set;
-        }
-        #endregion
-
-
-        #region 复制
-
-        /// <summary>
-        /// 字段复制
-        /// </summary>
-        /// <param name="dest">复制源</param>
-        /// <returns></returns>
-        void Copy(IEntityConfig dest)
-        {
-            DenyScope = dest.DenyScope;
-            MaxIdentity = dest.MaxIdentity;
-            RedisKey = dest.RedisKey;
-            EntityName = dest.EntityName;
-            IsQuery = dest.IsQuery;
-            ReferenceType = dest.ReferenceType;
-            ModelInclude = dest.ModelInclude;
-            ModelBase = dest.ModelBase;
-            DataVersion = dest.DataVersion;
-            IsInternal = dest.IsInternal;
-            NoDataBase = dest.NoDataBase;
-            Interfaces = dest.Interfaces;
-            ColumnIndexStart = dest.ColumnIndexStart;
-            ReadCoreCodes = dest.ReadCoreCodes;
-            IsInterface = dest.IsInterface;
-            HaseValidateCode = dest.HaseValidateCode;
-            UpdateByModified = dest.UpdateByModified;
-            ApiName = dest.ApiName;
-            HaseEasyUi = dest.HaseEasyUi;
-            IsUiReadOnly = dest.IsUiReadOnly;
-            PageFolder = dest.PageFolder;
-            TreeUi = dest.TreeUi;
-            DetailsPage = dest.DetailsPage;
-            FormCloumn = dest.FormCloumn;
-            CppName = dest.CppName;
-        }
-        #endregion
     }
+
 }

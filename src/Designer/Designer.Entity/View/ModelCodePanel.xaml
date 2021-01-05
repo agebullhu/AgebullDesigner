@@ -27,7 +27,7 @@
             </StackPanel>
             <StackPanel>
                 <Label Content="无数据库支持" />
-                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding NoDataBase,Mode=TwoWay}" />
+                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding EnableDataBase,Mode=TwoWay}" />
             </StackPanel>
             <!--<StackPanel>
                 <Label Content="模型" />
@@ -156,7 +156,6 @@
                 <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />
                 <DataGridCheckBoxColumn Binding="{Binding IsPrimaryKey,Mode=TwoWay}" Header="主键" />
                 <DataGridTextColumn Binding="{Binding DataType,Mode=TwoWay}" Header="数据类型" />
-                <DataGridCheckBoxColumn Binding="{Binding DenyClient,Mode=TwoWay}" Header="非用户" />
                 <DataGridCheckBoxColumn Binding="{Binding IsUserContent,Mode=TwoWay}" Header="用户内容"/>
                 <DataGridCheckBoxColumn Binding="{Binding IsMiddleField,Mode=TwoWay}" Header="中间字段" />
                 <DataGridCheckBoxColumn Binding="{Binding CanGet,Mode=TwoWay}" Header="可读" />

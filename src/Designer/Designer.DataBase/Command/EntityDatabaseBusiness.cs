@@ -21,7 +21,7 @@ namespace Agebull.EntityModel.Config
         {
             if (Entity.IsFreeze || Entity.IsInterface)
                 return;
-            if (Entity.NoDataBase)
+            if (!Entity.EnableDataBase)
             {
                 foreach (var col in Entity.Properties)
                 {
@@ -30,7 +30,6 @@ namespace Agebull.EntityModel.Config
                 }
 
                 Entity.IsModify = true;
-                Entity.NoDataBase = true;
                 Entity.ReadTableName = null;
                 Entity.SaveTableName = null;
                 return;
@@ -67,7 +66,7 @@ namespace Agebull.EntityModel.Config
         {
             if (Entity.IsFreeze || Entity.IsInterface)
                 return;
-            if (Entity.NoDataBase)
+            if (!Entity.EnableDataBase)
             {
                 foreach (var col in Entity.Properties)
                 {
@@ -76,7 +75,6 @@ namespace Agebull.EntityModel.Config
                 }
 
                 Entity.IsModify = true;
-                Entity.NoDataBase = true;
                 Entity.ReadTableName = null;
                 Entity.SaveTableName = null;
                 return;

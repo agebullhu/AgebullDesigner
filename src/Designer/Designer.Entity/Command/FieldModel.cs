@@ -13,7 +13,7 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal class FieldModel : DesignCommondBase<FieldConfig>
+    internal class FieldModel : DesignCommondBase<IFieldConfig>
     {
         #region 操作命令
 
@@ -23,7 +23,7 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
-            commands.Add(new CommandItemBuilder<FieldConfig>
+            commands.Add(new CommandItemBuilder<IFieldConfig>
             {
                 SignleSoruce = false,
                 WorkView = "adv",
@@ -34,7 +34,7 @@ namespace Agebull.EntityModel.Designer
                 ConfirmMessage = "确认执行【Json名称小驼峰】的操作吗?"
             });
 
-            commands.Add(new CommandItemBuilder<FieldConfig>
+            commands.Add(new CommandItemBuilder<IFieldConfig>
             {
                 SignleSoruce = false,
                 WorkView= "adv",
@@ -45,7 +45,7 @@ namespace Agebull.EntityModel.Designer
                 ConfirmMessage= "确认执行【属性名称大驼峰】的操作吗?"
             });
 
-            commands.Add(new CommandItemBuilder<FieldConfig>
+            commands.Add(new CommandItemBuilder<IFieldConfig>
             {
                 SignleSoruce = false,
                 WorkView = "adv",
@@ -56,7 +56,7 @@ namespace Agebull.EntityModel.Designer
                 IconName = "tree_item",
                 ConfirmMessage = "确认执行【字段名称规范】的操作吗?"
             });
-            commands.Add(new CommandItemBuilder<FieldConfig>
+            commands.Add(new CommandItemBuilder<IFieldConfig>
             {
                 Catalog = "字段",
                 WorkView = "adv",
@@ -76,7 +76,7 @@ namespace Agebull.EntityModel.Designer
 
         #endregion
 
-        public void UpdateCustomType(FieldConfig field)
+        public void UpdateCustomType(IFieldConfig field)
         {
             if (string.IsNullOrWhiteSpace(field.CustomType))
             {
@@ -98,12 +98,12 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        public void CheckJsonName(FieldConfig property)
+        public void CheckJsonName(IFieldConfig property)
         {
             property.JsonName = property.Name.ToLWord();
         }
 
-        public void CheckName(FieldConfig property)
+        public void CheckName(IFieldConfig property)
         {
             var bak = property.DbFieldName;
             if (string.IsNullOrWhiteSpace(bak))
@@ -111,7 +111,7 @@ namespace Agebull.EntityModel.Designer
             property.Name = GlobalConfig.ToLinkWordName(bak, null,true);
             property.DbFieldName = bak;
         }
-        public void CheckCaption(FieldConfig property)
+        public void CheckCaption(IFieldConfig property)
         {
             if (string.IsNullOrWhiteSpace(property.Caption))
                 return;

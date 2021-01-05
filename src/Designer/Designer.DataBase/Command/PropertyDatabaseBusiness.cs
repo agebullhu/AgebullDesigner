@@ -7,7 +7,7 @@ namespace Agebull.EntityModel.Config
 
         internal void CheckByDb(bool repair = false)
         {
-            if (Field.Entity.NoDataBase)
+            if (!Field.Entity.EnableDataBase)
             {
                 Field.DbFieldName = null;
                 Field.DbType = null;

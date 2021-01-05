@@ -58,8 +58,7 @@ namespace Agebull.EntityModel.Designer
                 Parent = project,
                 Name = cls.ResultArg,
                 Caption = $"{cls.Caption}返回值",
-                Classify = cls.Name,
-                NoDataBase = true
+                Classify = cls.Name
             };
             if (CommandIoc.EditEntityCommand(entity))
             {
@@ -86,8 +85,7 @@ namespace Agebull.EntityModel.Designer
                 Parent = project,
                 Name = cls.CallArg,
                 Caption = $"{cls.Caption}请求参数",
-                Classify = cls.Name,
-                NoDataBase = true
+                Classify = cls.Name
             };
             if (CommandIoc.EditEntityCommand(entity))
             {

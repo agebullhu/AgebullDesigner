@@ -9,8 +9,7 @@ namespace Agebull.EntityModel.RobotCoder
     /// <summary>
     /// 表操作基类
     /// </summary>
-    public abstract class ModelCoderBase<TModel> : CoderWithModel<TModel>
-        where TModel : ProjectChildConfigBase, IEntityConfig
+    public abstract class ModelCoderBase : CoderWithModel
     {
         /// <summary>
         /// 实体的注释头
@@ -44,7 +43,6 @@ namespace Agebull.EntityModel.RobotCoder
 
         protected IFieldConfig[] Columns => Model.PublishProperty.OrderBy(p => p.Index).ToArray();
 
-        private IFieldConfig[] _rwcolumns;
         protected IFieldConfig[] ReadWriteColumns => Model.PublishProperty.Where(p => p.CanGet && p.CanSet).OrderBy(p => p.Index).ToArray();
 
         /// <summary>
@@ -56,7 +54,7 @@ namespace Agebull.EntityModel.RobotCoder
             StringBuilder code = new StringBuilder();
             foreach (var property in ReadWriteColumns.Select(p => p).Where(p => !string.IsNullOrWhiteSpace(p.Initialization)))
             {
-                if (IsClient && property.DenyClient)
+                if (IsClient && property.InnerField)
                     continue;
                 if (property.CsType == "bool")
                     code.AppendFormat(@"
@@ -98,7 +96,7 @@ namespace Agebull.EntityModel.RobotCoder
             {
                 code.Add($@"JsonProperty(""{property.JsonName}"")");
                 if (Project.CodeStyle != CodeStyleConst.Style.Succinct && property.CsType == "DateTime")
-                    code.Add("JsonConverter(typeof(MyDateTimeConverter))");
+                    code.Add("JsonConverter(typeof(Newtonsoft.Json.Converters.IsoDateTimeConverter))");
             }
             return code.Count == 0
                 ? RemCode(property)
@@ -115,7 +113,7 @@ namespace Agebull.EntityModel.RobotCoder
             code.Append(' ', space);
             code.Append($@"///  {property.Caption.ToRemString(space)}");
             code.AppendLine();
-            if (!simple && !property.Entity.NoDataBase)
+            if (!simple && property.Entity.EnableDataBase)
             {
                 if (property.IsLinkKey)
                 {

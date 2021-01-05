@@ -4,18 +4,17 @@ using System.Text;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class EntityValidateBuilder<TModel> : ModelBuilderBase<TModel>
-        where TModel : ProjectChildConfigBase, IEntityConfig
+    public sealed class EntityValidateBuilder : ModelBuilderBase
     {
         /// <summary>
         /// 基本代码
         /// </summary>
-        public override string BaseCode => Model.HaseValidateCode ? ValidateCode() : null;
+        public override string BaseCode => ValidateCode();
 
         /// <summary>
         /// 基本代码
         /// </summary>
-        protected override bool CanWrite => Model.HaseValidateCode;
+        protected override bool CanWrite =>true;
         
         /// <summary>
         /// 校验代码
@@ -57,7 +56,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name=""result"">结果存放处</param>
         public override void Validate(ValidateResult result)
         {{
-            {(Model.NoDataBase || Model.PrimaryColumn== null ? "" : "result.Id = " + Model.PrimaryColumn.Name + "?.ToString()") }; 
+            {(Model.PrimaryColumn== null ? "" : "result.Id = " + Model.PrimaryColumn.Name + "?.ToString()") }; 
             base.Validate(result);{code}
             ValidateEx(result);{rela}
         }}";

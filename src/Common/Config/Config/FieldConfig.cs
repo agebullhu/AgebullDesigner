@@ -21,6 +21,29 @@ namespace Agebull.EntityModel.Config
     [DataContract, JsonObject(MemberSerialization.OptIn)]
     public partial class FieldConfig : ConfigBase, IFieldConfig
     {
+        #region 视角开关
+
+        /// <summary>
+        /// 启用数据库支持
+        /// </summary>
+        public bool EnableDataBase => Parent.EnableDataBase;
+
+        /// <summary>
+        /// 启用数据校验
+        /// </summary>
+        public bool EnableValidate => Parent.EnableValidate;
+
+        /// <summary>
+        /// 启用编辑接口
+        /// </summary>
+        public bool EnableEditApi => Parent.EnableEditApi;
+
+        /// <summary>
+        /// 启用用户界面
+        /// </summary>
+        public bool EnableUI => Parent.EnableUI;
+
+        #endregion
         #region 环境
 
         /// <summary>
@@ -131,36 +154,7 @@ namespace Agebull.EntityModel.Config
             }
         }
         #endregion
-        #region 系统
 
-        /// <summary>
-        /// 阻止编辑
-        /// </summary>
-        [DataMember, JsonProperty("DenyScope", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal AccessScopeType _denyScope;
-
-        /// <summary>
-        /// 阻止编辑
-        /// </summary>
-        /// <remark>
-        /// 阻止使用的范围
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"系统"), DisplayName(@"阻止编辑"), Description("阻止使用的范围")]
-        public AccessScopeType DenyScope
-        {
-            get => NoStorage ? AccessScopeType.Client : InterfaceOrThis._denyScope;
-            set
-            {
-                if (_denyScope == value)
-                    return;
-                BeforePropertyChanged(nameof(DenyScope), _denyScope, value);
-                _denyScope = value;
-                OnPropertyChanged(nameof(DenyScope));
-                OnPropertyChanged(nameof(DenyClient));
-            }
-        }
-        #endregion
         #region 模型设计(C#)
 
         /// <summary>
@@ -661,9 +655,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"代码访问范围"), Description(AccessType_Description)]
-        public string AccessType => InnerField || DenyScope.HasFlag(AccessScopeType.Server)
-                ? "internal "
-                : "public ";
+        public string AccessType => InnerField ? "internal " : "public ";
 
 
         /// <summary>
@@ -1797,7 +1789,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"非数据库字段"), Description(NoStorage_Description)]
         public bool NoStorage
         {
-            get => InterfaceOrThis._noStorage;
+            get => InterfaceOrThis._noStorage || !EnableDataBase;
             set
             {
                 if (_noStorage == value)
@@ -1828,9 +1820,9 @@ namespace Agebull.EntityModel.Config
                 ? StorageScreenType.Read | StorageScreenType.Insert | StorageScreenType.Update
                 : CustomWrite || IsIdentity || IsCompute
                     ? StorageScreenType.Insert | StorageScreenType.Update
-                    : UniqueIndex  || IsPrimaryKey || IsLinkKey
-                    ? StorageScreenType.Update
-                    : InterfaceOrThis._keepStorageScreen;
+                    : UniqueIndex  || IsPrimaryKey
+                        ? StorageScreenType.Update
+                        : InterfaceOrThis._keepStorageScreen;
             set
             {
                 if (_keepStorageScreen == value)
@@ -1933,26 +1925,6 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 客户端不可见
-        /// </summary>
-        /// <remark>
-        /// 客户端不可见
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"用户界面"), DisplayName(@"客户端不可见"), Description("客户端不可见")]
-        public bool DenyClient
-        {
-            get => NoProperty || DenyScope.HasFlag(AccessScopeType.Client);
-            set
-            {
-                if (value)
-                    DenyScope |= AccessScopeType.Client;
-                else
-                    DenyScope &= ~AccessScopeType.Client;
-            }
-        }
-
-        /// <summary>
         /// 用户是否可输入
         /// </summary>
         /// <remark>
@@ -1960,7 +1932,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"用户是否可输入"), Description("用户是否可输入")]
-        public bool CanUserInput => !IsCompute && !DenyClient && !IsUserReadOnly && !IsSystemField && !IsIdentity;
+        public bool CanUserInput => !IsCompute && !InnerField && !IsUserReadOnly && !IsSystemField && !IsIdentity;
 
         /// <summary>
         /// 不可编辑
@@ -2432,7 +2404,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"), DisplayName(@"列表不显示"), Description("列表不显示")]
         public bool NoneGrid
         {
-            get => DenyClient || _noneGrid;
+            get => _noneGrid;
             set
             {
                 if (_noneGrid == value)
@@ -2459,7 +2431,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"), DisplayName(@"详细不显示"), Description("详细不显示")]
         public bool NoneDetails
         {
-            get => DenyClient || _noneDetails;
+            get => _noneDetails;
             set
             {
                 if (_noneDetails == value)

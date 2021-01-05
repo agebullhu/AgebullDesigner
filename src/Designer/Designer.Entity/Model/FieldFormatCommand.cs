@@ -470,12 +470,7 @@ Memo,s,±¸×¢";
                 if (words.Length > 3 && words[3] != "@" && words[3] != "#")
                     column.Description = words.Length < 4 ? null : words.Skip(3).LinkToString(",").TrimEnd('@', '#');
 
-                if (name == "Memo")
-                {
-                    column.Datalen = 0;
-                    column.IsMemo = true;
-                    column.DbType = "TEXT";
-                }
+                
                 var old = columns.FirstOrDefault(p => p != null && p.Name == name);
                 if (old != null)
                 {
@@ -484,7 +479,16 @@ Memo,s,±¸×¢";
                 }
                 else
                 {
-                    DataTypeHelper.CsDataType(column);
+                    if (name == "Memo")
+                    {
+                        column.Datalen = 0;
+                        column.IsMemo = true;
+                        column.DbType = "TEXT";
+                    }
+                    else
+                    {
+                        DataTypeHelper.CsDataType(column);
+                    }
                     columns.Add(column);
                 }
             }

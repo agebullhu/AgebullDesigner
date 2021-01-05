@@ -7,8 +7,7 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// 运行参数
     /// </summary>
-    public class ModelArgument<TModelConfig>
-        where TModelConfig : ProjectChildConfigBase, IEntityConfig
+    public class ModelArgument
     {
         /// <summary>
         /// 参数
@@ -28,7 +27,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 当前实体对象
         /// </summary>
-        public IList<TModelConfig> Models { get; private set; }
+        public IList<IEntityConfig> Models { get; private set; }
 
         /// <summary>
         /// 当前关联项目
@@ -41,24 +40,21 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         private void GetModels()
         {
-            var list = new NotificationList<TModelConfig>();
+            var list = new NotificationList<IEntityConfig>();
             switch (_argument)
             {
-                case TModelConfig model:
+                case IEntityConfig model:
                     list.Add(model);
                     break;
+                case IFieldConfig field:
+                    list.Add(field.Parent);
+                    break;
                 case ProjectConfig projectConfig:
-                    if (typeof(TModelConfig) == typeof(ModelConfig))
-                        projectConfig.Models.Foreach(p => list.TryAdd((TModelConfig)p));
-                    else
-                        projectConfig.Entities.Foreach(p => list.TryAdd((TModelConfig)p));
+                    projectConfig.Models.Foreach(p => list.TryAdd(p));
+                    projectConfig.Entities.Foreach(p => list.TryAdd(p));
                     break;
                 default:
-                    if (typeof(TModelConfig) == typeof(ModelConfig))
-                        SolutionConfig.Current.Models.Foreach(p => list.TryAdd((TModelConfig)p));
-                    else
-                        SolutionConfig.Current.Entities.Foreach(p => list.TryAdd((TModelConfig)p));
-                    break;
+                    return;
             }
             Models = list;
 

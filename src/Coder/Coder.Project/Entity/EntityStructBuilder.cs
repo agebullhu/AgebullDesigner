@@ -7,8 +7,7 @@ using Agebull.EntityModel.Config.SqlServer;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class EntityStructBuilder<TModel> : ModelBuilderBase<TModel>
-        where TModel : ProjectChildConfigBase, IEntityConfig
+    public sealed class EntityStructBuilder : ModelBuilderBase
     {
         #region 基础
 

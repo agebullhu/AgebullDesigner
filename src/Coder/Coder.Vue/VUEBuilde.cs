@@ -14,13 +14,11 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            NormalCodeModel.RegistBuilder<VUEBuilder<EntityConfig>, EntityConfig>();
-            NormalCodeModel.RegistBuilder<VUEBuilder<ModelConfig>, ModelConfig>();
+            NormalCodeModel.RegistBuilder<VUEBuilder>();
         }
     }
 
-    public class VUEBuilder<TModelConfig> : ProjectBuilder<TModelConfig>
-        where TModelConfig : ProjectChildConfigBase, IEntityConfig
+    public class VUEBuilder : ProjectBuilder
     {
         /// <summary>
         /// Ãû³Æ
@@ -46,12 +44,14 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// </summary>
         /// <param name="project"></param>
         /// <param name="schema"></param>
-        public override void CreateModelCode(ProjectConfig project, TModelConfig schema)
+        public override void CreateModelCode(ProjectConfig project, IEntityConfig entity)
         {
-            var pg = new PorjectVUEGenerator<TModelConfig>
+            if (!entity.EnableUI)
+                return;
+            var pg = new PorjectVUEGenerator
             {
-                Model = schema,
-                Project = schema.Parent,
+                Model = entity,
+                Project = entity.Parent,
             };
             pg.WriteDesignerCode(project.PagePath);
             pg.WriteCustomCode(project.PagePath);

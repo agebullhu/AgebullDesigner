@@ -20,6 +20,29 @@ namespace Agebull.EntityModel.Config
     [DataContract, JsonObject(MemberSerialization.OptIn)]
     public partial class PropertyConfig : ConfigBase, IFieldConfig
     {
+        #region 视角开关
+
+        /// <summary>
+        /// 启用数据库支持
+        /// </summary>
+        public bool EnableDataBase => Parent.EnableDataBase;
+
+        /// <summary>
+        /// 启用数据校验
+        /// </summary>
+        public bool EnableValidate => Parent.EnableValidate;
+
+        /// <summary>
+        /// 启用编辑接口
+        /// </summary>
+        public bool EnableEditApi => Parent.EnableEditApi;
+
+        /// <summary>
+        /// 启用用户界面
+        /// </summary>
+        public bool EnableUI => Parent.EnableUI;
+
+        #endregion
         #region 模型引用
 
         /// <summary>

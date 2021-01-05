@@ -8,6 +8,41 @@
         IRelationFieldConfig, IFieldRuleConfig, ICustomCodeFieldConfig, IKeyFieldConfig, ICollectFieldConfig,
         IApiFieldConfig, ICsModelFieldConfig, IEnumFieldConfig
     {
+
+        #region 视角开关
+
+        /// <summary>
+        /// 启用数据库支持
+        /// </summary>
+        bool EnableDataBase
+        {
+            get;
+        }
+        /// <summary>
+        /// 启用数据校验
+        /// </summary>
+        bool EnableValidate
+        {
+            get;
+        }
+
+        /// <summary>
+        /// 启用编辑接口
+        /// </summary>
+        bool EnableEditApi
+        {
+            get;
+        }
+
+        /// <summary>
+        /// 启用用户界面
+        /// </summary>
+        bool EnableUI
+        {
+            get;
+        }
+
+        #endregion
         #region 复制
 
         /// <summary>
@@ -15,8 +50,19 @@
         /// </summary>
         /// <param name="dest">复制源</param>
         /// <returns></returns>
-        void Copy(IFieldConfig dest)
+        void Copy(IFieldConfig dest,bool full=true)
         {
+            if (full)
+            {
+                Entity = dest.Entity; 
+                IsCaption = dest.IsCaption;
+                IsPrimaryKey = dest.IsPrimaryKey;
+                IsExtendKey = dest.IsExtendKey;
+                IsIdentity = dest.IsIdentity;
+                IsGlobalKey = dest.IsGlobalKey;
+                UniqueIndex = dest.UniqueIndex;
+                UniqueString = dest.UniqueString;
+            }
             Group = dest.Group;
             Function = dest.Function;
             Having = dest.Having;
@@ -37,8 +83,7 @@
             ApiArgumentName = dest.ApiArgumentName;
             NoneJson = dest.NoneJson;
             HelloCode = dest.HelloCode;
-            Entity = dest.Entity;
-            DenyScope = dest.DenyScope;
+
             IsTime = dest.IsTime;
             IsArray = dest.IsArray;
             IsDictionary = dest.IsDictionary;
@@ -57,13 +102,7 @@
             CanGet = dest.CanGet;
             CanSet = dest.CanSet;
             IsCompute = dest.IsCompute;
-            IsCaption = dest.IsCaption;
-            IsPrimaryKey = dest.IsPrimaryKey;
-            IsExtendKey = dest.IsExtendKey;
-            IsIdentity = dest.IsIdentity;
-            IsGlobalKey = dest.IsGlobalKey;
-            UniqueIndex = dest.UniqueIndex;
-            UniqueString = dest.UniqueString;
+            
             KeepUpdate = dest.KeepUpdate;
             DbNullable = dest.DbNullable;
             Datalen = dest.Datalen;
@@ -78,7 +117,7 @@
             KeepStorageScreen = dest.KeepStorageScreen;
             CustomWrite = dest.CustomWrite;
             StorageProperty = dest.StorageProperty;
-            DenyClient = dest.DenyClient;
+            
             IsUserReadOnly = dest.IsUserReadOnly;
             MulitLine = dest.MulitLine;
             Prefix = dest.Prefix;

@@ -68,8 +68,7 @@
                                 Binding="{Binding GridAlign, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridTextColumn Header="数据格式器"
                                 Binding="{Binding DataFormater, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
-            <DataGridCheckBoxColumn Header="客户端不可见"
-                                    Binding="{Binding DenyClient, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
+            
             <DataGridCheckBoxColumn Header="显示在列表详细页中"
                                     Binding="{Binding GridDetails, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridCheckBoxColumn Header="列表不显示"
@@ -112,8 +111,7 @@
                                 Binding="{Binding Initialization, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridTextColumn Header="等同于空值的文本"
                                 Binding="{Binding EmptyValue, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
-            <DataGridTextColumn Header="阻止编辑"
-                                Binding="{Binding DenyScope, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+            
             <DataGridCheckBoxColumn Header="1能否为空"
                                     Binding="{Binding Nullable, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridTextColumn Header="最大" Binding="{Binding Max, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />

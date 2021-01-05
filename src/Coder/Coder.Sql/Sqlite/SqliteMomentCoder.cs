@@ -24,11 +24,11 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.Sqlite
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("Sqlite", "生成表(SQL)", "sql", p => !p.NoDataBase, CreateTable);
-            MomentCoder.RegisteCoder("Sqlite", "生成视图(SQL)", "sql", p => !p.NoDataBase, CreateView);
-            MomentCoder.RegisteCoder("Sqlite", "删除视图(SQL)", "sql", p => !p.NoDataBase, DropView);
-            MomentCoder.RegisteCoder("Sqlite", "删除表(SQL)", "sql", p => !p.NoDataBase, DropTable);
-            MomentCoder.RegisteCoder("Sqlite", "清除表(SQL)", "sql", p => !p.NoDataBase, TruncateTable);
+            MomentCoder.RegisteCoder("Sqlite", "生成表(SQL)", "sql", p => !p.EnableDataBase, CreateTable);
+            MomentCoder.RegisteCoder("Sqlite", "生成视图(SQL)", "sql", p => !p.EnableDataBase, CreateView);
+            MomentCoder.RegisteCoder("Sqlite", "删除视图(SQL)", "sql", p => !p.EnableDataBase, DropView);
+            MomentCoder.RegisteCoder("Sqlite", "删除表(SQL)", "sql", p => !p.EnableDataBase, DropTable);
+            MomentCoder.RegisteCoder("Sqlite", "清除表(SQL)", "sql", p => !p.EnableDataBase, TruncateTable);
         }
 
         #endregion
@@ -37,7 +37,7 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.Sqlite
 
         public static string DropView(EntityConfig entity)
         {
-            if (entity.NoDataBase || entity.SaveTableName == entity.ReadTableName)
+            if (entity.EnableDataBase || entity.SaveTableName == entity.ReadTableName)
                 return Empty;
             return $@"
 -- {entity.Caption}
@@ -125,7 +125,7 @@ CREATE VIEW [{viewName}] AS
 
         public static string CreateTable(EntityConfig entity)
         {
-            if (entity.NoDataBase)
+            if (entity.EnableDataBase)
                 return "";//这个设置为普通类，无法生成SQL
             var code = new StringBuilder();
             code.Append($@"
@@ -156,7 +156,7 @@ CREATE TABLE [{entity.SaveTableName}](");
 
         public static string TruncateTable(EntityConfig entity)
         {
-            if (entity.NoDataBase)
+            if (entity.EnableDataBase)
                 return Empty;
             return $@"
 -- {entity.Caption}
@@ -168,8 +168,8 @@ TRUNCATE TABLE [{entity.SaveTableName}];
         {
             if (entity == null)
                 return "";
-            if (entity.NoDataBase)
-                return $"-- {entity.Caption} : 设置为普通类(NoDataBase=true)，无法生成SQL";
+            if (entity.EnableDataBase)
+                return $"-- {entity.Caption} : 设置为普通类(EnableDataBase=true)，无法生成SQL";
             return $@"
 --{entity.Caption}
 DROP TABLE [{entity.SaveTableName}];";

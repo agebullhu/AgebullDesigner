@@ -15,14 +15,6 @@
         EntityConfig Entity { get; set; }// Field.Entity;
 
         /// <summary>
-        /// 阻止编辑
-        /// </summary>
-        /// <remark>
-        /// 阻止使用的范围
-        /// </remark>
-        AccessScopeType DenyScope { get; set; }// Field.DenyScope;
-
-        /// <summary>
         ///     原始字段
         /// </summary>
         IFieldConfig Field

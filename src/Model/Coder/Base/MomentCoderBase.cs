@@ -10,7 +10,28 @@ namespace Agebull.EntityModel.RobotCoder
     public class MomentCoderBase : CoderBase
     {
         #region 代码生成代理接口
-        
+
+        /// <summary>
+        /// 执行目标的动作
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="coder"></param>
+        /// <returns></returns>
+        public static string CreateCode(ConfigBase config, Func<IEntityConfig, string> coder)
+        {
+            StringBuilder code = new StringBuilder();
+
+            using (CodeGeneratorScope.CreateScope(GlobalConfig.CurrentSolution))
+            {
+                config.Foreach<IEntityConfig>(arg =>
+                {
+                    code.AppendLine(coder(arg));
+                });
+            }
+
+            return code.ToString();
+        }
+
         /// <summary>
         /// 执行目标的动作
         /// </summary>

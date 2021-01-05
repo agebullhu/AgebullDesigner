@@ -3,8 +3,7 @@ using System.Text;
 
 namespace Agebull.EntityModel.RobotCoder
 {
-    public sealed class EntityQueryBuilder<TModel> : ModelBuilderBase<TModel>
-        where TModel : ProjectChildConfigBase, IEntityConfig
+    public sealed class EntityQueryBuilder : ModelBuilderBase
     {
         #region 基础
 

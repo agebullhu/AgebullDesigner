@@ -8,10 +8,9 @@ using Agebull.EntityModel.Config;
 namespace Agebull.EntityModel.RobotCoder.VUE
 {
 
-    partial class VueHtmlCoder<TModel>
-        where TModel : ProjectChildConfigBase, IEntityConfig
+    partial class VueHtmlCoder
     {
-        public TModel Model { get; set; }
+        public IEntityConfig Model { get; set; }
         public ProjectConfig Project { get; set; }
 
         #region Ò³Ãæ
@@ -53,9 +52,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                         <el-button slot='append' icon='el-icon-search' @click='doQuery'></el-button>
                     </el-input>
                 </div>{HtmlExButton()}
-            </el-header>
-            <el-main>{HtmlMainCode()}
-            </el-main>
+            </el-header>{HtmlMainCode()}
         </el-container>{HtmlDialogCode()}
     </div>
     <script type='text/javascript' src='script.js'></script>
@@ -171,14 +168,29 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             var hide = Model.DetailsPage ? " v-if='!form.visible'" : null;
             var grid = HtmlGridCode(Model, "list.rows", Model.DetailsPage);
 
-            code.Append($@"
+            if (Model.TreeUi)
+            {
+                code.Append($@"
+        <el-main style='margin: 0; padding: 0;'>
             <el-container{hide}>{Tree}
+                <el-main style='margin: 0; padding: 0;'>
+                    <el-container>
+                        <el-main style='margin: 0; padding: 0;'>{grid}
+                        </el-main>{footer}
+                    </el-container>
+                </el-main>
+            </el-container>{DetailsCode()}
+        </el-main>");
+            }
+            else
+            {
+                code.Append($@"
+        <el-main style='margin: 0; padding: 0;'>
+            <el-container{hide}>
                 <el-main style='margin: 0; padding: 0;'>{grid}
                 </el-main>{footer}
-            </el-container>");
-            if (Model.DetailsPage)
-            {
-                HtmlDetailsCode(code);
+            </el-container>{DetailsCode()}
+        </el-main>");
             }
             return code.ToString();
         }
@@ -204,6 +216,10 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             {
                 return $" | {field.EnumConfig.Name.ToLWord()}Formater";
             }
+            else if (field.IsLinkKey)
+            {
+                return $" | {field.LinkTable.ToLWord()}Formater";
+            }
             else if (field.CsType == nameof(DateTime))
             {
                 return field.IsTime ? "| formatTime" : "| formatDate";
@@ -224,7 +240,8 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         }
         string Tree => !Model.TreeUi ? null : @"
                 <el-aside style='height: 100%; width: 200px'>
-                    <el-tree ref='tree' :props='tree.props' @current-change='onTreeNodeChanged' default-expand-all highlight-current highlight-current node-key='id'>
+                    <el-tree :data='tree.nodes' ref='tree' :props='tree.props' 
+                             @current-change='onTreeNodeChanged' default-expand-all highlight-current highlight-current node-key='id'>
                         <span slot-scope='{ node, data }'>
                             <i :class='data.type | typeIcon'></i><span>{{ node.label }}</span>
                         </span>
@@ -239,8 +256,8 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             var main = entity == Model ? "ref='dataTable' @sort-change='onSort' @row-dblclick='dblclick' @current-change='currentRowChange' @selection-change='selectionRowChange'" : null;
             var code = new StringBuilder();
             code.Append($@"
-                <!-- Grid -->
-                <el-table {main} :data='{data}' border highlight-current-row style='width:99%'>");
+                    <!-- Grid -->
+                    <el-table {main} :data='{data}' border highlight-current-row style='width:99%'>");
             //if (entity.Interfaces.Contains("IInnerTree") && entity.LastProperties.Any(p => p.Name == "ParentId"))
             //{
             //    code.Append($@"
@@ -248,49 +265,56 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             //}
             if (entity == Model)
                 code.Append(@"
-                <el-table-column type='selection'align='center'header-align='center'></el-table-column>");
+                    <el-table-column type='selection'align='center'header-align='center'></el-table-column>");
             if (entity.Interfaces.Contains("IStateData"))
             {
                 code.Append(stateColumn);
             }
             foreach (var property in entity.ClientProperty.Where(p => !p.NoneGrid && !p.GridDetails).ToArray())
             {
-                GridField(code, property, property.Caption);
+                var label = property.Caption;
+                if (property.IsLinkKey)
+                {
+                    var table = GlobalConfig.Find(property.LinkTable);
+                    if (table != null)
+                        label = table.Caption;
+                }
+                GridField(code, property, label);
             }
             GridDetailsField(code, entity);
 
             if (details)
                 code.Append(detailsColumn);
             code.Append(@"
-            </el-table>");
+                </el-table>");
             return code.ToString();
         }
         const string detailsColumn = @"
-                <el-table-column fixed='right' label='²Ù×÷' width='68'>
-                    <template slot-scope='scope'>
-                        <label class='labelButton' @click='handleClick(scope.row)'>ÏêÏ¸</label>
-                    </template>
-                </el-table-column>";
+                    <el-table-column fixed='right' label='²Ù×÷' width='68'>
+                        <template slot-scope='scope'>
+                            <label class='labelButton' @click='handleClick(scope.row)'>ÏêÏ¸</label>
+                        </template>
+                    </el-table-column>";
 
         const string stateColumn = @"
-                <el-table-column label='×´Ì¬' align='center' header-align='center' width='50'>
-                    <template slot-scope='scope'>
-                        <i :class='scope.row.dataState | dataStateIcon'></i>
-                    </template>
-                </el-table-column>";
+                    <el-table-column label='×´Ì¬' align='center' header-align='center' width='50'>
+                        <template slot-scope='scope'>
+                            <i :class='scope.row.dataState | dataStateIcon'></i>
+                        </template>
+                    </el-table-column>";
 
         const string footer = @"
-            <el-footer height='42px'>
-                <el-pagination @size-change='sizeChange'
-                               @current-change='pageChange'
-                               background
-                               layout='total, sizes, prev, pager, next, jumper'
-                               :current-page='list.page'
-                               :page-sizes='list.pageSizes'
-                               :page-size='list.pageSize'
-                               :total='list.total'>
-                </el-pagination>
-            </el-footer>";
+        <el-footer height='42px'>
+            <el-pagination @size-change='sizeChange'
+                            @current-change='pageChange'
+                            background
+                            layout='total, sizes, prev, pager, next, jumper'
+                            :current-page='list.page'
+                            :page-sizes='list.pageSizes'
+                            :page-size='list.pageSize'
+                            :total='list.total'>
+            </el-pagination>
+        </el-footer>";
 
         void GridField(StringBuilder code, IFieldConfig field, string caption)
         {
@@ -421,8 +445,11 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             return code.ToString();
         }
 
-        public void HtmlDetailsCode(StringBuilder code)
+        public string DetailsCode() => Model.DetailsPage ? HtmlDetailsCode() : null;
+
+        public string HtmlDetailsCode()
         {
+            var code = new StringBuilder();
             code.Append($@"
                 <div v-if='form.visible'>
                     <el-tabs value='details'>
@@ -450,9 +477,10 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             code.Append(@"
                     </el-tabs>
                 </div>");
+            return code.ToString();
         }
 
-        public string HtmlFormCode( bool dialog)
+        public string HtmlFormCode(bool dialog)
         {
             StringBuilder code = new StringBuilder();
             code.Append($@"
@@ -466,7 +494,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             //{
             //    vif = "form.data.dataState <= 1";
             //}
-            foreach (var property in Model.ClientProperty.Where(p => !p.NoneDetails && !p.ExtendConfigListBool["easyui_userFormHide"]).ToArray())
+            foreach (var property in Model.ClientProperty.Where(p => !p.NoneDetails).ToArray())
             {
                 var field = property;
                 var caption = property.Caption;
@@ -476,9 +504,19 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 {
                     var friend = Model.LastProperties.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
                     if (friend != null)
+                    {
                         caption = friend.Caption;
-                    if (friend != null)
                         description = friend.Description;
+                    }
+                    else
+                    {
+                        var table = GlobalConfig.Find(field.LinkTable);
+                        if (table != null)
+                        {
+                            caption = table.Caption;
+                            description = table.Description;
+                        }
+                    }
                 }
                 FormField(code, property, caption, description ?? property.Caption, dialog);
             }
@@ -487,19 +525,19 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             return code.ToString();
         }
 
-        private void FormField(StringBuilder code, IFieldConfig property, string caption, string description,bool dialog)
+        private void FormField(StringBuilder code, IFieldConfig property, string caption, string description, bool dialog)
         {
             var field = property;
             if (!dialog && !(Model.IsUiReadOnly || property.IsUserReadOnly) && (field.IsMemo || field.MulitLine))
             {
                 code.Append($@"<el-form-item label='{caption}' prop='{property.JsonName}' label-suffix='{field.Suffix}' style='width: 98%;'>
-                                <el-input v-model='form.data.disposalContent' placeholder='´¦ÖÃ·½·¨' auto-complete='off' clearable :readonly='form.readonly' type='textarea' :rows='5'></el-input>
+                                <el-input v-model='form.data.disposalContent' placeholder='{description}' auto-complete='off' clearable :readonly='form.readonly' type='textarea' :rows='5'></el-input>
                             </el-form-item>");
                 return;
             }
             code.Append($@"
             <el-form-item label='{caption}' prop='{property.JsonName}' label-suffix='{field.Suffix}'");
-            if (field.Entity.FormCloumn > 1 && (field.FormCloumnSapn > 1 || field.IsMemo || field.MulitLine))
+            if (Model.FormCloumn > 1 && (field.FormCloumnSapn > 1 || field.IsMemo || field.MulitLine))
                 code.Append(" size='large'");
             code.Append('>');
             if (Model.IsUiReadOnly || property.IsUserReadOnly)
@@ -527,31 +565,30 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                     code.Append(field.IsUserReadOnly ? " readonly" : " :readonly='form.readonly'");
                 }
             }
-            if (field.EnumConfig != null || field.IsLinkKey)
+            if (field.EnumConfig != null)
             {
                 code.Append($@"
                 <el-select v-model='form.data.{field.JsonName}'");
                 SetDisabled(true, code, field);
-                code.Append(@" style='width:100%'>");
-                if (field.EnumConfig != null)
-                {
-                    code.Append($@"
+                code.Append($@" style='width:100%'>
                     <el-option v-for='item in types.{field.EnumConfig.Name.ToLWord()}'
                                :key='item.value'
                                :label='item.label'
                                :value='item.value'>
-                    </el-option>");
-                }
-                else if (field.IsLinkKey)
-                {
-                    var name = GlobalConfig.GetEntity(field.LinkTable)?.Name.ToLWord();
-                    code.Append($@"
-                    <el-option :value='0' label='ÎÞ'></el-option>
-                    <template v-for='item in {name}'>
-                        <el-option :value='item.id' :label='item.text'></el-option>
-                    </template>");
-                }
-                code.Append(@"
+                    </el-option>
+                </el-select>");
+            }
+            else if (field.IsLinkKey)
+            {
+                var name = GlobalConfig.GetEntity(field.LinkTable)?.Name.ToLWord().ToPluralism();
+                code.Append($@"
+                <el-select v-model='form.data.{field.JsonName}'");
+                SetDisabled(true, code, field);
+                code.Append($@" style='width:100%'>
+                    <el-option key='0' value='0' label='-'></el-option>
+                    <template v-for='item in combos.{name}'>
+                        <el-option :key='item.id' :value='item.id' :label='item.text'></el-option>
+                    </template>
                 </el-select>");
             }
             else if (field.CsType == "bool")
@@ -571,12 +608,25 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                     : "value-format='yyyy-MM-dd' type='date'");
                 code.Append(@" style='width:100%'></el-date-picker>");
             }
+            else if (field.CsType == "string")
+            {
+                code.Append($@"
+                <el-input v-model='form.data.{field.JsonName}' placeholder='{description}' auto-complete='off' clearable");
+
+                if (field.MulitLine)
+                {
+                    code.Append(" type='textarea' :rows='3'");
+                }
+                SetDisabled(false, code, field);
+
+                code.Append("></el-input>");
+            }
             else
             {
                 code.Append($@"
                 <el-input v-model='form.data.{field.JsonName}' placeholder='{description}' auto-complete='off' clearable");
                 SetDisabled(false, code, field);
-                
+
                 code.Append("></el-input>");
             }
         }

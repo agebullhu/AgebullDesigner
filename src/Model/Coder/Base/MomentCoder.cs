@@ -135,6 +135,31 @@ namespace Agebull.EntityModel.RobotCoder
                 });
         }
 
+        public static void RegisteCoder(string type, string name, string lang, Func<IEntityConfig, string> func)
+        {
+            NowType = type ?? "Œ¥∑÷¿‡";
+
+            if (!Coders.ContainsKey(NowType))
+                Coders.Add(NowType, new Dictionary<string, CoderDefine>());
+
+            string NewFunc(ConfigBase cfg) => MomentCoderBase.CreateCode(cfg, func);
+
+            if (Coders[NowType].ContainsKey(name))
+                Coders[NowType][name] = new CoderDefine
+                {
+                    Func = NewFunc,
+                    Name = name,
+                    Lang = lang
+                };
+            else
+                Coders[NowType].Add(name, new CoderDefine
+                {
+                    Func = NewFunc,
+                    Name = name,
+                    Lang = lang
+                });
+        }
+
 
         public static void RegisteCoder(string type, string name, string lang, Func<EntityConfig, string> func)
         {

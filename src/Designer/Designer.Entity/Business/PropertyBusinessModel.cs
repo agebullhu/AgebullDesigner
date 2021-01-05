@@ -90,18 +90,6 @@ namespace Agebull.EntityModel.Config
             {
                 Property.NoneJson = true;
             }
-            if (Property.DbInnerField)
-            {
-                Property.DenyScope |= AccessScopeType.All;
-            }
-            if (Property.NoneJson || Property.IsSystemField)
-            {
-                Property.DenyScope |= AccessScopeType.Client;
-            }
-            if (Property.DenyClient)
-            {
-                Property.NoneJson = true;
-            }
         }
 
         private void CheckName()

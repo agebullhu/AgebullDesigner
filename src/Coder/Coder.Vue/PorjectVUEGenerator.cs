@@ -7,8 +7,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
     /// <summary>
     ///     页面代码生成器
     /// </summary>
-    public class PorjectVUEGenerator<TModel> : CoderWithModel<TModel>
-        where TModel : ProjectChildConfigBase, IEntityConfig
+    public class PorjectVUEGenerator : CoderWithModel
     {
         #region 继承实现
         /// <summary>
@@ -22,13 +21,9 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// </summary>
         protected override void CreateDesignerCode(string path)
         {
-            if (Model.IsInternal || Model.NoDataBase || Model.DenyScope.HasFlag(AccessScopeType.Client))
-                return;
+            var file = ConfigPath(Model as ConfigBase, "File_VUE_HTML", path, Model.PagePath(), "index.htm");
 
-
-            var file = ConfigPath(Model, "File_VUE_HTML", path, Model.PagePath(), "index.htm");
-
-            var coder = new VueHtmlCoder<TModel>
+            var coder = new VueHtmlCoder
             {
                 Model = Model,
                 Project = Project
@@ -49,12 +44,9 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// </summary>
         protected override void CreateCustomCode(string path)
         {
-            if (Model.IsInternal || Model.NoDataBase || Model.DenyScope.HasFlag(AccessScopeType.Client))
-                return;
+            var file = ConfigPath(Model as ConfigBase, "File_VUE_JS", path, Model.PagePath(), "script.js");
 
-            var file = ConfigPath(Model, "File_VUE_JS", path, Model.PagePath(), "script.js");
-
-            var coder = new VueScriptCoder<TModel>
+            var coder = new VueScriptCoder
             {
                 Model = Model,
                 Project = Project

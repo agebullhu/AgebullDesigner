@@ -32,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Coder\Coder.Project\Agebull.EntityModel.RobotCoder.Project.csproj" />
     <ProjectReference Include="..\Designer.Config\Agebull.EntityModel.Designer.Config.csproj" />
     <ProjectReference Include="..\..\Model\Model\Agebull.EntityModel.Designer.Model.csproj" />
   </ItemGroup>

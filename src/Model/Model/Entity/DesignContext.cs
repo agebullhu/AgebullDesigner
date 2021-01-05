@@ -107,9 +107,11 @@ namespace Agebull.EntityModel.Designer
             get => _selectColumns;
             set
             {
-                if (Equals(_selectColumns, value))
-                    return;
                 _selectColumns = value;
+                if(SelectColumns != null && SelectColumns.Count > 0 && SelectColumns[0] is IFieldConfig field)
+                {
+                    SelectField = field;
+                }
                 RaisePropertyChanged(() => SelectColumns);
                 /*try
                 {
