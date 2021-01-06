@@ -37,6 +37,17 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder<IFieldConfig>
             {
                 SignleSoruce = false,
+                WorkView = "adv",
+                Catalog = "字段",
+                Action = ChineseField,
+                Caption = "中文字段处理",
+                IconName = "tree_item",
+                ConfirmMessage = "确认执行【Json名称小驼峰】的操作吗?"
+            });
+
+            commands.Add(new CommandItemBuilder<IFieldConfig>
+            {
+                SignleSoruce = false,
                 WorkView= "adv",
                 Catalog = "字段",
                 Action = CheckName,
@@ -96,6 +107,16 @@ namespace Agebull.EntityModel.Designer
             {
                 field.EnumConfig = SolutionConfig.Current.Enums.FirstOrDefault(p => p.Name == field.CustomType);
             }
+        }
+
+        public void ChineseField(IFieldConfig property)
+        {
+            if (property.Name[0] < 255)
+                return;
+            var caption = property.Caption ?? property.Name;
+
+            property.JsonName = property.Name.ConvertToPinYin().ToLWord();
+            property.DbFieldName = NameHelper.ToName(property.Name.ConvertToPinYin().SplitWords());
         }
 
         public void CheckJsonName(IFieldConfig property)

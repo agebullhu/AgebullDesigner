@@ -531,7 +531,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             if (!dialog && !(Model.IsUiReadOnly || property.IsUserReadOnly) && (field.IsMemo || field.MulitLine))
             {
                 code.Append($@"<el-form-item label='{caption}' prop='{property.JsonName}' label-suffix='{field.Suffix}' style='width: 98%;'>
-                                <el-input v-model='form.data.disposalContent' placeholder='{description}' auto-complete='off' clearable :readonly='form.readonly' type='textarea' :rows='5'></el-input>
+                                <el-input v-model='{property.JsonName}' placeholder='{description}' auto-complete='off' clearable :readonly='form.readonly' type='textarea' :rows='5'></el-input>
                             </el-form-item>");
                 return;
             }

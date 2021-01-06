@@ -127,7 +127,7 @@ namespace System.Text
                 return string.Empty;
             StringBuilder sb = new StringBuilder();
             bool preEn = words[0][0] < 255;
-            sb.Append(words[0]);
+            sb.Append(uWord ? words[0].ToUWord() : words[0].ToLower());
             for (var index = 1; index < words.Count; index++)
             {
                 var word = words[index];

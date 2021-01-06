@@ -1,25 +1,10 @@
-﻿using System.ComponentModel.Composition;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using Agebull.Common;
 using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Designer;
 
 namespace Agebull.EntityModel.RobotCoder.EasyUi
 {
-    [Export(typeof(IAutoRegister))]
-    [ExportMetadata("Symbol", '%')]
-    internal sealed class ProjectApiBuildeRegister : IAutoRegister
-    {
-        /// <summary>
-        /// 执行自动注册
-        /// </summary>
-        void IAutoRegister.AutoRegist()
-        {
-            NormalCodeModel.RegistBuilder<ProjectApiBuilde>();
-        }
-
-    }
     public sealed class ProjectApiBuilde  : ProjectBuilder
     {
         /// <summary>
@@ -32,24 +17,13 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         public override string Caption => Name;
         string EventCode(IEntityConfig entity) => entity.EnableDataEvent
-            ?            $@"
+            ?            
+            $@"
         /// <summary>
-        /// 实时记录
+        /// {entity.Caption}
         /// </summary>
         [Route(""{entity.EntityName}"")]
-        public async Task {entity.EntityName}Event(EntityEventArgument argument)
-        {{
-            switch (argument.OperatorType)
-            {{
-                case DataOperatorType.Insert:
-                case DataOperatorType.Update:
-                    break;
-                default:
-                    return;
-            }}
-            var data = JsonConvert.DeserializeObject<{entity.EntityName }> (argument.Value);
-            //TODO:处理代码
-        }}"
+        public Task {entity.EntityName}Event(EntityEventArgument argument), [FromServices] IEntityEventHandler<{entity.EntityName}> handler) => handler.OnEvent(argument);"
             : null;
 
         /// <summary>
@@ -91,7 +65,8 @@ namespace {project.NameSpace}.Events
     */
     }}
 }}";
-            WriteFile(Path.Combine(project.ApiPath,$"{project.Name}EntityEventController.cs"),code);
+            var path = IOHelper.CheckPath(project.ApiPath, "Event");
+            WriteFile(Path.Combine(path,$"{project.Name}EntityEventController.cs"),code);
         }
 
         /// <summary>
@@ -119,6 +94,8 @@ namespace {project.NameSpace}.Events
             var apiPath = project.ApiPath;
             if (!project.NoClassify && cls != null)
                 apiPath = IOHelper.CheckPath(apiPath, cls);
+            else
+                apiPath = IOHelper.CheckPath(apiPath, "EditApi");
             var pg = new ProjectApiActionCoder
             {
                 Model = schema,
