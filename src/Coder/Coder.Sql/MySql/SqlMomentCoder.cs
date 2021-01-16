@@ -340,11 +340,11 @@ CREATE TABLE `{0}`("
                 code.Append($@"
     , PRIMARY KEY (`{entity.PrimaryColumn.DbFieldName}`)");
             //if (entity.PrimaryColumn.IsIdentity)
-            var uns = entity.DbFields.Where(p=>p.UniqueIndex);
+            var uns = entity.DbFields.Where(p => p.UniqueIndex);
             if (uns.Any())
             {
                 code.Append($@"
-    , UNIQUE INDEX `{uns.Select (p=>p.DbFieldName).LinkToString('-')}`(");
+    , UNIQUE INDEX `{uns.Select(p => p.DbFieldName).LinkToString('-')}`(");
                 bool first = true;
                 foreach (var un in uns)
                 {
@@ -510,8 +510,8 @@ ALTER TABLE `{entity.SaveTableName}`
             {
                 if (col.DbNullable)
                     return null;
-                return col.CsType == "string" 
-                    ? $"DEFAULT ''" 
+                return col.CsType == "string"
+                    ? $"DEFAULT ''"
                     : $"DEFAULT 0";
             }
             return col.CsType == "string" ? $"DEFAULT '{col.Initialization}'" : $"DEFAULT {col.Initialization}";
@@ -543,17 +543,15 @@ ALTER TABLE `{entity.SaveTableName}`
             return code.ToString();
         }
 
-        public static string LoadSql(IEntityConfig entity, IEnumerable<IFieldConfig> fields)
+        public static string LoadSql(IEntityConfig entity)
         {
-            var sql = new StringBuilder();
-            fields = fields.Where(p => !p.DbInnerField && !p.NoProperty && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)).ToArray();
+            var fields = entity.DbFields.Where(p => !p.DbInnerField && !p.NoProperty && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)).ToArray();
             var isFirst = true;
-            var all = fields.All(p=>p.IsInterfaceField || p.Parent == entity);
+            var all = fields.All(p => p.IsInterfaceField || p.Entity == entity.Entity);
+            var lines = new List<string>();
+            var sql = new StringBuilder();
             foreach (var property in fields)
             {
-                var table = all || property.Parent == entity
-                    ? ""
-                    : $"`{property.Entity.ReadTableName}`.";
                 if (isFirst)
                 {
                     isFirst = false;
@@ -562,26 +560,40 @@ ALTER TABLE `{entity.SaveTableName}`
                 {
                     sql.Append(",");
                 }
+                var head = all
+                    ? ""
+                    : $"`{property.Entity.ReadTableName}`.";
                 if (!IsNullOrEmpty(property.Function))
                 {
-                    sql.AppendLine($"{property.Function}({table}`{property.Field.DbFieldName}`) AS `{property.DbFieldName}`");
+                    sql.Append($"{property.Function}({head}`{property.Field.DbFieldName}`) AS `{property.DbFieldName}`");
                 }
                 else
                 {
-                    sql.Append($"{table}`{property.Field.DbFieldName}`");
-                    if(property.DbFieldName != property.Field.DbFieldName)
+                    sql.Append($"{head}`{property.Field.DbFieldName}`");
+                    if (property.DbFieldName != property.Field.DbFieldName)
                         sql.Append($" AS `{property.DbFieldName}`");
                 }
+                if (sql.Length > 100)
+                {
+                    lines.Add(sql.ToString());
+                    sql.Clear();
+                }
             }
-            return sql.ToString();
+            if (sql.Length > 0)
+                lines.Add(sql.ToString());
+            return Join("\r\n", lines);
         }
 
-        public static string HavingSql(IEnumerable<IFieldConfig> fields)
+        public static string HavingSql(IEntityConfig entity)
         {
+            var fields = entity.DbFields.Where(p => !IsNullOrEmpty(p.Having) && !IsNullOrEmpty(p.Function) && 
+            !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)).ToArray();
+            if (fields.Length == 0)
+                return "null";
+            var all = fields.All(p => p.IsInterfaceField || p.Entity == entity.Entity);
             var sql = new StringBuilder();
-            fields = fields.Where(p => !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)).ToArray();
             var isFirst = true;
-            foreach (var property in fields.Where(p => !IsNullOrEmpty(p.Having) && !IsNullOrEmpty(p.Function)))
+            foreach (var property in fields)
             {
                 if (isFirst)
                 {
@@ -591,17 +603,24 @@ ALTER TABLE `{entity.SaveTableName}`
                 {
                     sql.Append(",");
                 }
-                sql.Append($"`{property.Function}({property.Entity.ReadTableName}`.`{property.Field.DbFieldName}`) {property.Having}");
+                var head = all
+                    ? ""
+                    : $"`{property.Entity.ReadTableName}`.";
+                sql.Append($"`{property.Function}({head}`{property.Field.DbFieldName}`) {property.Having}");
             }
             return isFirst ? "null" : $"\"\\nHAVING {sql}\"";
         }
 
-        public static string GroupSql(IEnumerable<IFieldConfig> fields)
+        public static string GroupSql(IEntityConfig entity)
         {
-            if (fields.All(p => IsNullOrEmpty(p.Function)))
+            if (entity.DbFields.All(p => IsNullOrEmpty(p.Function)))
                 return "null";
+
+            var fields = entity.DbFields.Where(p => IsNullOrEmpty(p.Function)).ToArray();
+            if (fields.Length == 0)
+                return "null";
+            var all = fields.All(p => p.IsInterfaceField || p.Entity == entity.Entity);
             var sql = new StringBuilder();
-            fields = fields.Where(p => IsNullOrEmpty(p.Function)).ToArray();
             var isFirst = true;
             foreach (var property in fields)
             {
@@ -613,7 +632,10 @@ ALTER TABLE `{entity.SaveTableName}`
                 {
                     sql.Append(",");
                 }
-                sql.Append($"`{property.Entity.ReadTableName}`.`{property.Field.DbFieldName}`");
+                var head = all
+                    ? ""
+                    : $"`{property.Entity.ReadTableName}`.";
+                sql.Append($"{head}.`{property.Field.DbFieldName}`");
             }
             return isFirst ? "null" : $"\"\\nGROUP BY {sql}\"";
         }
@@ -656,7 +678,14 @@ ALTER TABLE `{entity.SaveTableName}`
 
             if (!IsNullOrWhiteSpace(property.CustomType))
             {
-                code.Append($@"
+                if (property.DbNullable)
+                    code.Append($@"
+            if (reader.IsDBNull({idx}))
+                entity.{property.Name} = default;
+            else 
+                entity.{property.Name} = ({property.CustomType})(await reader.GetFieldValueAsync<int>({idx}));");
+                else
+                    code.Append($@"
             entity.{property.Name} = ({property.CustomType})(await reader.GetFieldValueAsync<int>({idx}));");
                 return;
             }

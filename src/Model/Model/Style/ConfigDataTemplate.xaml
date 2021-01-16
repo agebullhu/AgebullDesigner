@@ -234,12 +234,12 @@
                         <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsLinkTable,Mode=TwoWay}"
                                   ToolTip="选择后,此类仅表示两个实体表之前的关系" />
                     </StackPanel>
-                    <StackPanel Style="{StaticResource AdvFieldPanel}">
+                    <!--<StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="非标准数据类型" />
                         <ComboBox Style="{StaticResource BoolCombo}"
                                   SelectedValue="{Binding NoStandardDataType,Mode=TwoWay}"
                                   ToolTip="选择后,此类不再使用解决方案的类型映射表进行自动数据类型匹配" />
-                    </StackPanel>
+                    </StackPanel>-->
 
                     <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="接口定义" />

@@ -50,7 +50,15 @@ namespace Agebull.EntityModel.Designer
                 IsButton = true,
                 Action = RelationDiscovery,
                 NoConfirm = true,
-                Caption = "关系发现",
+                Caption = "向下关系发现",
+                Image = Application.Current.Resources["tree_item"] as ImageSource
+            });
+            commands.Add(new CommandItem
+            {
+                IsButton = true,
+                Action = LinkDiscovery,
+                NoConfirm = true,
+                Caption = "向上关系发现",
                 Image = Application.Current.Resources["tree_item"] as ImageSource
             });
             commands.Add(new CommandItem
@@ -102,7 +110,7 @@ namespace Agebull.EntityModel.Designer
         }
 
         /// <summary>
-        /// 复制字段
+        /// 粘贴字段
         /// </summary>
         public void PasteColumns(object arg)
         {
@@ -130,31 +138,57 @@ namespace Agebull.EntityModel.Designer
                 CheckReleation(releation, Context.SelectModel);
             }
         }
+        public void LinkDiscovery(object arg)
+        {
+            var model = Context.SelectModel;
+            foreach (var field in model.Properties.Where(p => p.IsLinkKey))
+            {
+                if (model.Releations.Any(p => p.PrimaryTable == field.LinkTable))
+                    return;
+                var parent = GlobalConfig.GetEntity(field.LinkTable);
+                model.Releations.Add(new ReleationConfig
+                {
+                    Name = parent.Name,
+                    Caption = parent.Caption,
+                    PrimaryTable = parent.Name,
+                    PrimaryKey = parent.PrimaryColumn.Name,
+                    ForeignTable = model.Name,
+                    ForeignKey = field.Name,
+                    JoinType = EntityJoinType.Inner,
+                    ModelType = ReleationModelType.ExtensionProperty
+                });
+            }
+        }
+
         public void RelationDiscovery(object arg)
         {
             var model = Context.SelectModel;
             SolutionConfig.Current.Foreach<FieldConfig>(field =>
             {
-                if (field.IsLinkKey && model.Entity.Name.Equals(field.LinkTable, StringComparison.OrdinalIgnoreCase))
+                if (!field.IsLinkKey || !model.Entity.Name.Equals(field.LinkTable, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (!model.Releations.Any(p => p.ForeignTable == field.Parent.Name && p.ForeignKey == field.Name))
-                        model.Releations.Add(new ReleationConfig
-                        {
-                            Name = field.Parent.Name,
-                            Caption = field.Parent.Caption,
-                            PrimaryTable = model.Name,
-                            PrimaryKey = model.Entity.PrimaryColumn.Name,
-                            ForeignTable = field.Parent.Name,
-                            ForeignKey = field.Name,
-                            JoinType = EntityJoinType.none,
-                            ModelType = ReleationModelType.Custom
-                        });
+                    return;
                 }
+                if (model.Releations.Any(p => p.ForeignTable == field.Parent.Name && p.ForeignKey == field.Name))
+                    return;
+                model.Releations.Add(new ReleationConfig
+                {
+                    Name = field.Parent.Name,
+                    Caption = field.Parent.Caption,
+                    PrimaryTable = model.Name,
+                    PrimaryKey = model.Entity.PrimaryColumn.Name,
+                    ForeignTable = field.Parent.Name,
+                    ForeignKey = field.Name,
+                    JoinType = EntityJoinType.none,
+                    ModelType = ReleationModelType.Custom
+                });
             });
         }
 
         public static void CheckReleation(ModelConfig model)
         {
+            if (model == null)
+                return;
             foreach (var field in model.Entity.Properties)
             {
                 var pro = model.Properties.FirstOrDefault(p => p.Field == field);
@@ -172,53 +206,82 @@ namespace Agebull.EntityModel.Designer
                 CheckReleation(re, model);
             }
         }
-        public static void CheckReleation(ReleationConfig releation, ModelConfig model)
+        public static void CheckReleation(ReleationConfig r, ModelConfig model)
         {
-            var name = GlobalConfig.ToLinkWordName(releation.ForeignTable, "_", false);
-            if (releation.ModelType == ReleationModelType.ExtensionProperty)
-                foreach (var field in releation.ForeignEntity.Properties)
-                {
-                    var pro = model.Properties.FirstOrDefault(p => p.Field == field);
-                    if (field.LinkTable == model.Entity.Name)
-                    {
-                        if (pro != null)
-                            pro.Option.IsDiscard = true;
-                        continue;
-                    }
+            EntityConfig friend = r.PrimaryEntity == model.Entity
+                ? r.ForeignEntity
+                : r.PrimaryEntity;
+            SyncField(model, friend, r.ModelType == ReleationModelType.ExtensionProperty);
+        }
 
-                    if (pro == null)
-                    {
-                        pro = new PropertyConfig { Field = field };
-                        pro.Option.IsDiscard = true;
-                        model.Properties.Add(pro);
-                    }
-                    if (field.IsPrimaryKey || model.Properties.Any(p => p != pro && p.Name == pro.Name))
-                    {
-                        pro.Name = $"{field.Entity.Name}{field.Name}";
-                        pro.JsonName = pro.Name.ToLWord();
-                    }
-                    if (model.Properties.Any(p => p != pro && p.Name == pro.Name))
-                    {
-                        pro.Name = $"{field.Entity.Name}{field.Name}_{model.Properties.Count}";
-                        pro.JsonName = pro.Name.ToLWord();
-                    }
+        public static void SyncField(ModelConfig model, EntityConfig entity, bool join)
+        {
 
-                    if (field.IsPrimaryKey || model.Properties.Any(p => p != pro && p.DbFieldName == pro.DbFieldName))
-                    {
-                        pro.DbFieldName = $"{name}_{field.DbFieldName}";
-                    }
-                    if (model.Properties.Any(p => p != pro && p.DbFieldName == pro.DbFieldName))
-                    {
-                        pro.DbFieldName = $"{name}_{field.DbFieldName}_{model.Properties.Count}";
-                    }
-                }
-            else
-                foreach (var field in releation.ForeignEntity.Properties)
+            if (!join)
+            {
+                foreach (var pro in model.Properties.Where(p => p.Entity == entity).ToArray())
                 {
-                    var pro = model.Properties.FirstOrDefault(p => p.Field == field);
-                    if (pro != null)
-                        model.Properties.Remove(pro);
+                    model.Properties.Remove(pro);
                 }
+                return;
+            }
+            foreach (var field in entity.Properties)
+            {
+                if (field.IsPrimaryKey && model.Properties.Any(p => p.IsLinkKey && p.LinkTable == entity.Name))
+                    continue;
+
+                var pro = model.Properties.FirstOrDefault(p => p.Field == field);
+
+                if (pro != null)
+                    continue;
+                pro = new PropertyConfig
+                {
+                    Field = field
+                };
+                pro.Option.IsDiscard = true;
+                var name = field.Name;
+                if (field.IsPrimaryKey || model.Properties.Any(p => p.Name == name))
+                {
+                    name = $"{entity.Name}{field.Name}";
+                }
+                var count = model.Properties.Count(p => p.Name == name);
+                if (count > 0)
+                {
+                    name = $"{entity.Name}{field.Name}{count}";
+                }
+                if (pro.Name != name)
+                    pro.Name = name;
+
+                var prefix = GlobalConfig.ToLinkWordName(entity.Name, "_", false);
+                name = field.DbFieldName;
+                if (field.IsPrimaryKey || model.Properties.Any(p => p.DbFieldName == name))
+                {
+                    name = $"{prefix}_{name}";
+                }
+                count = model.Properties.Count(p => p.DbFieldName == name);
+                if (count > 0)
+                {
+                    name = $"{prefix}_{name}_{count}";
+                }
+                if (pro.DbFieldName != name)
+                    pro.DbFieldName = name;
+
+                prefix = entity.Name.ToLWord();
+                name = field.Name.ToLWord();
+                if (field.IsPrimaryKey || model.Properties.Any(p => p.JsonName == name))
+                {
+                    name = $"{prefix}{field.Name}";
+                }
+                count = model.Properties.Count(p => p.JsonName == name);
+                if (count > 0)
+                {
+                    name = $"{prefix}_{name}_{count}";
+                }
+                if (pro.JsonName != name)
+                    pro.JsonName = name;
+
+                model.Properties.Add(pro);
+            }
         }
         #endregion
     }

@@ -48,6 +48,30 @@ namespace Agebull.EntityModel.Config
         #region 
 
         /// <summary>
+        /// 同步写入
+        /// </summary>
+        [DataMember, JsonProperty("canWrite", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _canWrite;
+
+        /// <summary>
+        /// 同步写入
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category("数据库"), DisplayName("同步写入"), Description("同步写入")]
+        public bool CanWrite
+        {
+            get => _canWrite;
+            set
+            {
+                if (_canWrite == value)
+                    return;
+                BeforePropertyChanged(nameof(CanWrite), _canWrite, value);
+                _canWrite = value;
+                OnPropertyChanged(nameof(CanWrite));
+            }
+        }
+
+        /// <summary>
         /// 主表
         /// </summary>
         [DataMember, JsonProperty("PrimaryTable", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]

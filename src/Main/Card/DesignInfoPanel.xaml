@@ -10,21 +10,13 @@
         <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml" />
     </UserControl.Resources>
     <ScrollViewer>
-        <StackPanel Style="{StaticResource LayoutPanel}">
-            <GroupBox Header="名称(设计时)" Margin="5">
-                <WrapPanel DataContext="{Binding Option}">
+        <StackPanel Style="{StaticResource LayoutPanel}"  DataContext="{Binding Option}">
+            <GroupBox Header="设计时" Margin="5">
+                <WrapPanel>
                     <StackPanel>
                         <Label Content = "唯一标识" />
                         <TextBox IsReadOnly ="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}" Text="{Binding Identity,Mode=TwoWay,StringFormat=X}" />
                     </StackPanel>
-                        <StackPanel>
-                            <Label Content = "名称" />
-                            <TextBox IsReadOnly ="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}" Text="{Binding Name,Mode=TwoWay}" />
-                        </StackPanel>
-                        <StackPanel>
-                            <Label Content = "标题" />
-                            <TextBox Text="{Binding Caption,Mode=TwoWay}" />
-                        </StackPanel>
                     <StackPanel>
                         <Label Content = "排序编号" />
                         <TextBox IsReadOnly ="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}" Text="{Binding Index,Mode=TwoWay,StringFormat=X}" />
@@ -48,7 +40,7 @@
                 </WrapPanel>
             </GroupBox>
             <GroupBox Header="编辑标记(设计时)" Margin="5">
-                <WrapPanel DataContext="{Binding Option}">
+                <WrapPanel>
                     <StackPanel>
                         <Label Content= "标记废弃" />
                         <ComboBox Style="{StaticResource BoolCombo}"  SelectedValue="{Binding IsDiscard,Mode=TwoWay}" />

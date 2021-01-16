@@ -111,17 +111,17 @@ namespace {Project.NameSpace}.DataAccess
         /// <summary>
         /// 读取的字段
         /// </summary>
-        public const string LoadFields = @""{SqlMomentCoder.LoadSql(Model,Model.DbFields)}"";
+        public const string LoadFields = @""{SqlMomentCoder.LoadSql(Model)}"";
 
         /// <summary>
         /// 汇总条件
         /// </summary>
-        public const string Having = {SqlMomentCoder.HavingSql(Model.DbFields)};
+        public const string Having = {SqlMomentCoder.HavingSql(Model)};
 
         /// <summary>
         /// 分组字段
         /// </summary>
-        public const string GroupFields = {SqlMomentCoder.GroupSql(Model.DbFields)};
+        public const string GroupFields = {SqlMomentCoder.GroupSql(Model)};
 
         /// <summary>
         /// 读取的字段
@@ -160,29 +160,43 @@ namespace {Project.NameSpace}.DataAccess
     }}
 }}";
         }
-        
+
         string OrderbyFields()
         {
-            var field = Model.Properties.FirstOrDefault( p=>p.Name == Model.OrderField);
+            var field = Model.Properties.FirstOrDefault(p => p.Name == Model.OrderField);
             if (field == null)
                 return null;
-            return $"\"{field.DbFieldName} {(Model.OrderDesc ? " DESC" : "")}\"";
+            return Model is ModelConfig model
+                ? $"\"{model.ReadTableName}.{field.DbFieldName} {(Model.OrderDesc ? " DESC" : "")}\""
+                : $"\"{field.DbFieldName} {(Model.OrderDesc ? " DESC" : "")}\"";
         }
         string ReadTableName()
         {
-            var primary = Model.PrimaryColumn;
             var table = Model.ReadTableName;
             var code = new StringBuilder();
             code.Append(table);
             if (Model is ModelConfig model)
+            {
                 foreach (var releation in model.Releations.Where(p => p.ModelType == ReleationModelType.ExtensionProperty))
                 {
-                    var entity = GlobalConfig.GetEntity(releation.ForeignTable);
-                    var property = entity.Properties.FirstOrDefault(p => p.Name == releation.ForeignKey);
+                    var entity = releation.PrimaryEntity == model.Entity
+                        ? releation.ForeignEntity
+                        : releation.PrimaryEntity;
+
+                    var outField = releation.PrimaryEntity == model.Entity
+                        ? entity.Properties.FirstOrDefault(p => p.Name == releation.ForeignKey)
+                        : entity.PrimaryColumn;
+
+                    var inField = releation.PrimaryEntity == model.Entity
+                        ? Model.PrimaryColumn
+                        : Model.Properties.FirstOrDefault(p => p.IsLinkKey && p.LinkTable == entity.Name);
+
+
                     code.AppendLine();
                     code.Append(releation.JoinType == EntityJoinType.Inner ? "INNER JOIN" : "LEFT JOIN");
-                    code.Append($"`{entity.ReadTableName}` ON `{table}`.`{primary.DbFieldName}` = `{entity.ReadTableName}`.`{property.DbFieldName}` {releation.Condition}");
+                    code.Append($"`{entity.ReadTableName}` ON `{table}`.`{inField.DbFieldName}` = `{entity.ReadTableName}`.`{outField.DbFieldName}` {releation.Condition}");
                 }
+            }
             return code.ToString();
         }
 
@@ -412,81 +426,97 @@ SELECT @@IDENTITY;");
                 {
                     var e = GlobalConfig.GetEntity(re.ForeignTable);
                     code.Append($@"
-            var access{re.Name} = Provider.ServiceProvider.CreateDataQuery<{e.EntityName}>();");
+            var access = Provider.ServiceProvider.CreateDataQuery<{e.EntityName}>();");
                     if (re.ModelType == ReleationModelType.Children)
                         code.Append($@"
-            entity.{re.Name} = await access{re.Name}.AllAsync(p=>p.{re.ForeignKey} == entity.{re.PrimaryKey});");
+            entity.{re.Name} = await access.AllAsync(p=>p.{re.ForeignKey} == entity.{re.PrimaryKey});");
                     else
                         code.Append($@"
-            entity.{re.Name} = await access{re.Name}.FirstAsync(p=>p.{re.ForeignKey} == entity.{re.PrimaryKey});");
+            entity.{re.Name} = await access.FirstAsync(p=>p.{re.ForeignKey} == entity.{re.PrimaryKey});");
                 }
                 code.Append(@"
         }");
             }
             if (Model.IsQuery || model.Releations.Count == 0)
                 return code.ToString();
-
+            var releations = model.Releations.Where(p => p.CanWrite).ToArray();
+            if (releations.Length == 0)
+                return code.ToString();
             code.Append($@"
 
         /// <summary>
         ///     实体保存完成后期处理(Insert/Update/Delete)
         /// </summary>
+        /// <param name=""entityAccess"">当前数据访问对象</param>
         /// <param name=""entity"">实体</param>
         /// <param name=""operatorType"">操作类型</param>
         /// <remarks>
         ///     对当前对象的属性的更改,请自行保存,否则将丢失
         /// </remarks>
-        public async Task AfterSave({Model.EntityName} entity, DataOperatorType operatorType)
+        public async Task AfterSave(DataAccess<{Model.EntityName}> entityAccess, {Model.EntityName} entity, DataOperatorType operatorType)
         {{");
-            foreach (var re in model.Releations)
+            foreach (var re in releations)
             {
-                var entity = GlobalConfig.GetEntity(re.ForeignTable);
+                var friend = re.PrimaryEntity == model.Entity
+                    ? re.ForeignEntity
+                    : re.PrimaryEntity;
+
+                var outField = re.PrimaryEntity == model.Entity
+                    ? friend.Properties.FirstOrDefault(p => p.Name == re.ForeignKey)
+                    : friend.PrimaryColumn;
+
+                var inField = re.PrimaryEntity == model.Entity
+                    ? Model.PrimaryColumn
+                    : Model.Properties.FirstOrDefault(p => p.IsLinkKey && p.LinkTable == friend.Name);
+
                 code.Append($@"
-            var access{re.Name} = Provider.ServiceProvider.CreateDataAccess<{entity.EntityName}>();");
+            {{
+                var access = Provider.ServiceProvider.CreateDataAccess<{friend.EntityName}>();");
 
                 if (re.ModelType == ReleationModelType.EntityProperty)
                     code.Append($@"
-            if (entity.{entity.Name} == null || operatorType == DataOperatorType.Delete)
-            {{
-                await access{re.Name}.DeleteAsync(p => p.{re.ForeignKey} == entity.{re.PrimaryKey});
-            }}
-            else
-            {{
-                entity.{entity.Name}.{re.ForeignKey} = entity.{re.PrimaryKey};
-                if (await access{re.Name}.AnyAsync(p => p.{re.ForeignKey} == entity.{re.PrimaryKey}))
+                if (entity.{friend.Name} == null || operatorType == DataOperatorType.Delete)
                 {{
-                    await access{re.Name}.UpdateAsync(entity.entity.{entity.Name});
+                    await access.DeleteAsync(p => p.{outField.Name} == entity.{inField.Name});
                 }}
                 else
                 {{
-                    await access{re.Name}.InsertAsync(entity.entity.{entity.Name});
-                }}
-            }}");
+                    if (entity.{inField.Name} == 0 || await access.AnyAsync(p => p.{outField.Name} == entity.{inField.Name}))
+                    {{
+                        entity.{friend.Name}.{outField.Name} = entity.{inField.Name};
+                        await access.UpdateAsync(entity.entity.{friend.Name});
+                    }}
+                    else
+                    {{
+                        await access.InsertAsync(entity.entity.{friend.Name});
+                        entity.{inField.Name} = entity.{friend.Name}.{outField.Name};
+                        await entityAccess.SetValueAsync(p=>p.{inField.Name},entity.{inField.Name},entity.{model.PrimaryColumn.Name});
+                    }}
+                }}");
                 else if (re.ModelType == ReleationModelType.Children)
                     code.Append($@"
-            if (entity.{entity.Name} == null || operatorType == DataOperatorType.Delete)
-            {{
-                await access{re.Name}.DeleteAsync(p => p.{re.ForeignKey} == entity.{re.PrimaryKey});
-            }}
-            else
-            {{
-                foreach(var ch in entity.{entity.Name})
+                if (entity.{friend.Name} == null || entity.{friend.Name}.Count == 0 || operatorType == DataOperatorType.Delete)
                 {{
-                    ch.{re.ForeignKey} = entity.{re.PrimaryKey};
-                    if (await access{re.Name}.ExistPrimaryKeyAsync(ch.{entity.PrimaryColumn.Name}))
-                        await access{re.Name}.UpdateAsync(ch);
-                    else
-                        await access{re.Name}.InsertAsync(ch);
+                    await access.DeleteAsync(p => p.{re.ForeignKey} == entity.{re.PrimaryKey});
                 }}
-            }}");
+                else
+                {{
+                    foreach(var ch in entity.{friend.Name})
+                    {{
+                        ch.{outField.Name} = entity.{inField.Name};
+                        if (ch.{friend.PrimaryColumn.Name} == 0 || await access.ExistPrimaryKeyAsync(ch.{friend.PrimaryColumn.Name}))
+                            await access.UpdateAsync(ch);
+                        else
+                            await access.InsertAsync(ch);
+                    }}
+                }}");
                 else
                 {
                     code.Append($@"
-            {{  
-                var ch = new {entity.EntityName}
+                var ch = new {friend.EntityName}
                 {{");
                     bool first = true;
-                    foreach (var pro in model.PublishProperty.Where(p => p.Entity == entity))
+                    foreach (var pro in model.PublishProperty.Where(p => p.Entity == friend))
                     {
                         if (first)
                             first = false;
@@ -496,16 +526,32 @@ SELECT @@IDENTITY;");
                     {pro.Field.Name} = entity.{pro.Name}");
                     }
                     code.Append($@"
-                }};
-                ch.{re.ForeignKey} = entity.{re.PrimaryKey};
-                var (hase,id) = await access{re.Name}.LoadValueAsync(p=> p.{entity.PrimaryColumn.Name} , p=>  p.{re.ForeignKey} == entity.{re.PrimaryKey});
-                ch.{entity.PrimaryColumn.Name} = id;
+                }};");
+                    if (re.PrimaryEntity == model.Entity)
+                        code.Append($@"
+                ch.{outField.Name} = entity.{inField.Name};
+                var (hase,id) = await access.LoadValueAsync(p=> p.{friend.PrimaryColumn.Name} , p=>  p.{outField.Name} == entity.{inField.Name});
+                ch.{outField.Name} = id;
                 if (hase)
-                    await access{re.Name}.UpdateAsync(ch);
+                    await access.UpdateAsync(ch);
                 else
-                    await access{re.Name}.InsertAsync(ch);
-            }}");
+                    await access.InsertAsync(ch);");
+                    else
+                        code.Append($@"
+                if (entity.{inField.Name} > 0)
+                {{
+                    ch.{outField.Name} = entity.{inField.Name};
+                    await access.UpdateAsync(ch);
+                }}
+                else
+                {{
+                    await access.InsertAsync(ch);
+                    entity.{inField.Name} = ch.{outField.Name};
+                    await entityAccess.SetValueAsync(p=>p.{inField.Name},entity.{inField.Name},entity.{model.PrimaryColumn.Name});
+                }}");
                 }
+                code.Append(@"
+            }");
             }
             code.Append(@"
         }");
@@ -556,14 +602,14 @@ SELECT @@IDENTITY;");
             var code = new StringBuilder();
             var primary = model.PrimaryColumn;
             var last = model.LastProperties.Where(p => p != primary && !p.NoStorage);
-            properties.Add(DataBaseBuilder.EntityProperty(code, primary, ref idx, false));
+            properties.Add(DataBaseBuilder.EntityProperty(code, model, primary, ref idx, false));
             foreach (var property in last.Where(p => !p.IsInterfaceField).OrderBy(p => p.Index))
             {
-                properties.Add(DataBaseBuilder.EntityProperty(code, property, ref idx, false));
+                properties.Add(DataBaseBuilder.EntityProperty(code, model, property, ref idx, false));
             }
             foreach (var property in last.Where(p => p.IsInterfaceField))
             {
-                properties.Add(DataBaseBuilder.EntityProperty(code, property, ref idx, false));
+                properties.Add(DataBaseBuilder.EntityProperty(code, model, property, ref idx, false));
             }
         }
 

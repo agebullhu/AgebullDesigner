@@ -296,14 +296,14 @@ namespace {Project.NameSpace}.DataAccess
             int idx = 0;
             var primary = entity.PrimaryColumn;
             var last = entity.LastProperties.Where(p => p != primary && !p.NoStorage);
-            EntityProperty(codeStruct, primary, ref idx, false);
+            EntityProperty(codeStruct, entity, primary, ref idx, false);
             foreach (var property in last.Where(p => !p.IsInterfaceField).OrderBy(p => p.Index))
             {
-                EntityProperty(codeStruct, property, ref idx, true);
+                EntityProperty(codeStruct, entity, property, ref idx, true);
             }
             foreach (var property in last.Where(p => p.IsInterfaceField))
             {
-                EntityProperty(codeStruct, property, ref idx, true);
+                EntityProperty(codeStruct, entity, property, ref idx, true);
             }
 
             return $@"
@@ -355,17 +355,23 @@ namespace {Project.NameSpace}.DataAccess
 ";
         }
 
-        internal static string EntityProperty(StringBuilder codeStruct, IFieldConfig property, ref int idx, bool pro)
+        internal static string EntityProperty(StringBuilder codeStruct, IEntityConfig model, IFieldConfig property, ref int idx, bool pro)
         {
             var str = new StringBuilder("new EntityProperty(");
-            IFieldConfig friend;
-            bool hase = false;
-            if (property.IsReference && property.Option.Reference is IFieldConfig rf && rf.IsInterfaceField)
+            bool isOutField = false;
+            if (property.Entity != model.Entity)
             {
                 if (pro)
                     return null;
-                hase = true;
-                friend = property.Option.Reference as IFieldConfig;
+                isOutField = true;
+                str.Append($"{property.Entity.Name}_Struct_.{property.Field.Name}");
+            }
+            else if (property.IsReference && property.Option.Reference is IFieldConfig rf && rf.IsInterfaceField)
+            {
+                if (pro)
+                    return null;
+                isOutField = true;
+                var friend = property.Option.Reference as IFieldConfig;
                 str.Append($"GlobalDataInterfaces.{friend.Entity.Name}.{friend.Name}");
             }
             else if (property.IsLinkField)
@@ -375,21 +381,20 @@ namespace {Project.NameSpace}.DataAccess
                 {
                     if (pro)
                         return null;
-                    hase = true;
-                    str.Append($"{entity.Name}_Struct_.{property.LinkField}");
-                    friend = entity.Properties.FirstOrDefault(p => p.Name == property.LinkField);
+                    var friend = entity.Find(property.LinkField);
+                    isOutField = true;
+                    str.Append($"{entity.Name}_Struct_.{friend.Name}");
                 }
             }
-            if (!hase)
+            if (!isOutField)
             {
                 PropertyStruct(codeStruct, property);
                 if (pro)
                     return null;
-                str.Append($"{property.Entity.Name}_Struct_.{property.Name}");
-                friend = property;
+                str.Append($"{property.Entity.Name}_Struct_.{property.Field.Name}");
             }
             str.Append($", {idx++}");
-            if (hase)
+            if (isOutField)
                 str.Append($", \"{property.Name}\", \"{property.Entity.SaveTableName}\", \"{property.DbFieldName}\", {ReadWrite(property)}, {PropertyFeature(property)}");
             str.Append(")");
             return str.ToString();
@@ -579,6 +584,7 @@ namespace {Project.NameSpace}.DataAccess
 
         string FastDo()
         {
+            return null;
             var code = new StringBuilder();
             code.Append($@"
         #region 快捷访问");

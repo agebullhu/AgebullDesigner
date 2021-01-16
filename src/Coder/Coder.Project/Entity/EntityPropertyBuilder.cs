@@ -155,13 +155,13 @@ using Agebull.EntityModel.Interfaces;
         #region 修改记录
 
         [JsonIgnore]
-        EntityEditStatus _editStatusRedorder;
+        EntityEditStatus _editStatusRecorder;
 
         /// <summary>
         /// 修改状态
         /// </summary>
         [JsonIgnore]
-        EntityEditStatus IEditStatus.EditStatusRedorder { get => _editStatusRedorder; set=>_editStatusRedorder = value; }
+        EntityEditStatus IEditStatus.EditStatusRecorder { get => _editStatusRecorder; set=>_editStatusRecorder = value; }
 
         /// <summary>
         /// 发出标准属性修改事件
@@ -169,7 +169,7 @@ using Agebull.EntityModel.Interfaces;
         [Conditional(""StandardPropertyChanged"")]
         partial void InitEntityEditStatus()
         {
-            _editStatusRedorder = new EntityEditStatus();
+            _editStatusRecorder = new EntityEditStatus();
         }
 
         /// <summary>
@@ -178,7 +178,7 @@ using Agebull.EntityModel.Interfaces;
         [Conditional(""StandardPropertyChanged"")]
         void OnSeted(string name)
         {
-            _editStatusRedorder.SetModified(name);
+            _editStatusRecorder.SetModified(name);
         }
         #endregion";
         }

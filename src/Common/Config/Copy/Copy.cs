@@ -375,6 +375,10 @@ namespace Agebull.EntityModel.Config
                 UniqueString = dest.UniqueString;
                 StorageProperty = dest.StorageProperty;
             }
+            Name = dest.Name;
+            Caption = dest.Caption;
+            Description = dest.Description;
+            Remark = dest.Remark;
             Group = dest.Group;
 
             DataType = dest.DataType;

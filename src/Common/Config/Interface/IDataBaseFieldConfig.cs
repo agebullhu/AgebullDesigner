@@ -90,7 +90,7 @@
         bool DbInnerField { get; set; }// Field.DbInnerField;
 
         /// <summary>
-        /// 跳过保存的场景
+        /// 存储数据时跳过的场景
         /// </summary>
         StorageScreenType KeepStorageScreen { get; set; }// Field.KeepStorageScreen;
 

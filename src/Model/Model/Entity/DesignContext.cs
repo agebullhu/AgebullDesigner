@@ -211,8 +211,8 @@ namespace Agebull.EntityModel.Designer
             {
                 if (_selectFieldConfig == value)
                     return;
-                if (value != null)
-                    SelectEntity = value.Parent;
+                //if (value != null)
+                //    SelectEntity = value.Parent;
                 _selectFieldConfig = value;
                 RaisePropertyChanged(() => SelectField);
                 RaisePropertyChanged(() => RelationVisibility);

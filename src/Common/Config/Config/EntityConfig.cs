@@ -527,6 +527,18 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
+        public FieldConfig Find(string name)
+        {
+            return Properties.FirstOrDefault(p => 
+                name.Equals(p.Name,StringComparison.OrdinalIgnoreCase) ||
+                name.Equals(p.DbFieldName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public FieldConfig Find(params string[] names)
         {
             return Properties.FirstOrDefault(p => names.Exist(p.Name, p.DbFieldName));
