@@ -130,14 +130,6 @@
         #region 基本模型
 
         /// <summary>
-        /// 代码访问范围
-        /// </summary>
-        /// <remark>
-        /// 代码访问范围,即面向对象的三大范围(,private,protected)
-        /// </remark>
-        string AccessType { get; }// Field.AccessType;
-
-        /// <summary>
         /// 可读
         /// </summary>
         /// <remark>

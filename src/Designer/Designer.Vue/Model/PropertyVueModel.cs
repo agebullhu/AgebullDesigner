@@ -20,14 +20,16 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public void CheckField(IFieldConfig field, bool repair = false)
         {
+            if (!field.UserSee)
+            {
+                field.InputType = null;
+                field.UiRequired = false;
+                return;
+            }
             if (field.IsPrimaryKey && field.IsIdentity)
             {
                 field.NoneDetails = true;
                 field.ExtendConfigListBool["easyui", "userFormHide"] = true;
-            }
-            if (field.InnerField)
-            {
-                return;
             }
             if (field.InputType == "editor")
             {
@@ -206,7 +208,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         private static void RepairInputConfig(IFieldConfig field)
         {
-            if (field.InnerField || field.IsSystemField || field.IsCompute || field.IsIdentity && field.IsIdentity)
+            if (field.IsSystemField || field.IsCompute || field.IsIdentity)
             {
                 field.NoneDetails = true;
                 field.IsUserReadOnly = true;

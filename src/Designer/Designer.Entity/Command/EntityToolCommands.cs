@@ -63,15 +63,6 @@ namespace Agebull.EntityModel.Designer
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                Action = KeyNoClient,
-                SignleSoruce = true,
-                Caption = "主外键客户端不可见",
-                Catalog = "字段",
-                IconName = "tree_Open",
-                SoruceView = "entity"
-            }); 
-            commands.Add(new CommandItemBuilder<EntityConfig>
-            {
                 Action = DateShowTime,
                 Caption = "日期字段精确到时间",
                 Catalog = "字段",
@@ -177,16 +168,6 @@ namespace Agebull.EntityModel.Designer
         {
             if (string.IsNullOrWhiteSpace(entity.EntityName))
                 entity.EntityName = entity.Name + "Data";
-        }
-
-        /// <summary>
-        /// 主外键客户端不可见
-        /// </summary>
-        /// <param name="entity"></param>
-        public void KeyNoClient(EntityConfig entity)
-        {
-            foreach (var field in entity.Properties.Where(p => p.IsPrimaryKey || p.IsLinkKey))
-                field.InnerField = true;
         }
 
         /// <summary>

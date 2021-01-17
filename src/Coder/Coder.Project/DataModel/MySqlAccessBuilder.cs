@@ -86,19 +86,21 @@ namespace {Project.NameSpace}.DataAccess
 
             TableOption = new DataTableOption
             {{
-                IsQuery = false,
+                IsQuery          = false,
                 UpdateByMidified = true,
-                EventLevel = EventEventLevel.{(Model.EnableDataEvent ? "Details" : "None")},
-                SqlBuilder = new MySqlSqlBuilder<{Model.EntityName}>(),
-                DataStruct = Struct,
-                ReadTableName = FromSqlCode,
+                EventLevel       = EventEventLevel.{(Model.EnableDataEvent ? "Details" : "None")},
+                InjectionLevel   = InjectionLevel.All,
+                SqlBuilder       = new MySqlSqlBuilder<{Model.EntityName}>(),
+                DataStruct       = Struct,
+                ReadTableName    = FromSqlCode,
                 WriteTableName   = {Model.Entity.Name}_Struct_.tableName,
-                LoadFields = LoadFields,
-                OrderbyFields = {OrderbyFields()},
-                Having = Having,
-                GroupFields = GroupFields,
-                UpdateFields = UpdateFields,
-                InsertSqlCode = InsertSqlCode,
+                LoadFields       = LoadFields,
+                OrderbyFields    = OrderbyFields,
+                Having           = Having,
+                GroupFields      = GroupFields,
+                UpdateFields     = UpdateFields,
+                InsertFieldCode  = InsertFieldCode,
+                InsertValueCode  = InsertValueCode,
                 DeleteSqlCode    = DeleteSqlCode
             }};
             TableOption.Initiate();
@@ -112,6 +114,12 @@ namespace {Project.NameSpace}.DataAccess
         /// 读取的字段
         /// </summary>
         public const string LoadFields = @""{SqlMomentCoder.LoadSql(Model)}"";
+
+
+        /// <summary>
+        /// 排序的字段
+        /// </summary>
+        public const string OrderbyFields = @""{OrderbyFields()}"";
 
         /// <summary>
         /// 汇总条件
@@ -136,7 +144,12 @@ namespace {Project.NameSpace}.DataAccess
         /// <summary>
         /// 写入的Sql
         /// </summary>
-        public const string InsertSqlCode = @""{InsertSql()}"";
+        public const string InsertFieldCode = @""{InsertFieldCode()}"";
+
+        /// <summary>
+        /// 写入的Sql
+        /// </summary>
+        public const string InsertValueCode = @""{InsertValuesCode()}"";
 
         /// <summary>
         /// 删除的Sql
@@ -167,8 +180,8 @@ namespace {Project.NameSpace}.DataAccess
             if (field == null)
                 return null;
             return Model is ModelConfig model
-                ? $"\"{model.ReadTableName}.{field.DbFieldName} {(Model.OrderDesc ? " DESC" : "")}\""
-                : $"\"{field.DbFieldName} {(Model.OrderDesc ? " DESC" : "")}\"";
+                ? $"{model.ReadTableName}.{field.DbFieldName} {(Model.OrderDesc ? " DESC" : "")}"
+                : $"{field.DbFieldName} {(Model.OrderDesc ? " DESC" : "")}";
         }
         string ReadTableName()
         {
@@ -229,20 +242,18 @@ namespace {Project.NameSpace}.DataAccess
             return $"DELETE FROM `{Model.SaveTableName}`";
         }
 
-        private string InsertSql()
+        private string InsertFieldCode()
         {
             if (Model.IsQuery)
                 return null;
-            var sql = new StringBuilder();
-
             var columns = Model.PublishProperty.Where(p => p.Entity == Model.Entity &&
                     !p.IsIdentity && !p.IsCompute && !p.CustomWrite &&
                     !p.DbInnerField &&
                     !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)
                 ).ToArray();
-            sql.Append($@"
-INSERT INTO `{Model.SaveTableName}`
-(");
+
+            var fields = new StringBuilder();
+
             var isFirst = true;
             foreach (var property in columns)
             {
@@ -252,16 +263,23 @@ INSERT INTO `{Model.SaveTableName}`
                 }
                 else
                 {
-                    sql.Append(",");
+                    fields.Append(" , ");
                 }
-                sql.Append($@"
-    `{property.DbFieldName}`");
+                fields.Append($@"`{property.DbFieldName}`");
             }
-            sql.Append(@"
-)
-VALUES
-(");
-            isFirst = true;
+            return fields.ToString();
+        }
+        private string InsertValuesCode()
+        {
+            if (Model.IsQuery)
+                return null;
+            var columns = Model.PublishProperty.Where(p => p.Entity == Model.Entity &&
+                    !p.IsIdentity && !p.IsCompute && !p.CustomWrite &&
+                    !p.DbInnerField &&
+                    !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)
+                ).ToArray();
+            var values = new StringBuilder();
+            var isFirst = true;
             foreach (var property in columns)
             {
                 if (isFirst)
@@ -270,19 +288,11 @@ VALUES
                 }
                 else
                 {
-                    sql.Append(",");
+                    values.Append(" , ");
                 }
-                sql.Append($@"
-    ?{property.Name}");
+                values.Append($@"?{property.Name}");
             }
-            sql.Append(@"
-);");
-            if (Model.PrimaryColumn.IsIdentity)
-            {
-                sql.Append(@"
-SELECT @@IDENTITY;");
-            }
-            return sql.ToString();
+            return values.ToString();
         }
 
         private string UpdateFields()

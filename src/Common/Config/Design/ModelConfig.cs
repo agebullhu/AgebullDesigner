@@ -204,7 +204,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"客户端可访问的属性"), Description("客户端可访问的属性")]
-        public IEnumerable<IFieldConfig> ClientProperty => LastProperties?.Where(p => !p.NoProperty && !p.DbInnerField);
+        public IEnumerable<IFieldConfig> ClientProperty => LastProperties?.Where(p => p.UserSee);
 
         /// <summary>
         /// 数据库字段

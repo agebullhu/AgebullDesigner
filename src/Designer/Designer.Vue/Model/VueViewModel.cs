@@ -45,53 +45,7 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            commands.Append(new CommandItem<EntityConfig>
-            {
-                Action = CheckUiType,
-                IsButton = true,
-                Catalog = "用户界面",
-                Editor = "Vue",
-                WorkView = "entity",
-                Caption = "控件类型修复"
-            },
-                new CommandItem<EntityConfig>
-                {
-                    Action = CheckKeyShow,
-                    IsButton = true,
-                    Catalog = "用户界面",
-                    WorkView = "entity",
-                    Caption = "隐藏主外键"
-                },
-                new CommandItem<EntityConfig>
-                {
-                    Action = CheckSizeByLen,
-                    IsButton = true,
-                    Catalog = "用户界面",
-                    Editor = "Vue",
-                    WorkView = "entity",
-                    Caption = "按文字计算宽度",
-                    ConfirmMessage = "是否继续?"
-                },
-                new CommandItem<EntityConfig>
-                {
-                    Action = CheckSizeAuto,
-                    IsButton = true,
-                    Catalog = "用户界面",
-                    Editor = "Vue",
-                    WorkView = "entity",
-                    Caption = "自适应宽度",
-                    ConfirmMessage = "是否继续?"
-                },
-                new CommandItem<EntityConfig>
-                {
-                    Action = CheckExport,
-                    Caption = "导出导出初始化",
-                    IsButton = true,
-                    WorkView = "entity",
-                    Catalog = "用户界面",
-                    Editor = "Vue",
-                    ConfirmMessage = "是否继续?"
-                });
+            commands.Append();
         }
 
         #endregion
@@ -99,7 +53,7 @@ namespace Agebull.EntityModel.Designer
 
         #region 代码
 
-        internal static void CheckUi(EntityConfig entity)
+        internal static void CheckUi(IEntityConfig entity)
         {
             if (entity == null)
                 return;
@@ -111,7 +65,7 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        internal static void CheckKeyShow(EntityConfig entity)
+        internal static void CheckKeyShow(IEntityConfig entity)
         {
             if (entity == null)
                 return;
@@ -121,6 +75,14 @@ namespace Agebull.EntityModel.Designer
                 bl.CheckKeyShow(field);
             }
         }
+        internal static void CheckQuery(IEntityConfig entity)
+        {
+            foreach (var field in entity.Properties)
+            {
+                field.CanUserQuery = field.UserSee;
+            }
+        }
+        
 
         internal static void CheckUiType(IEntityConfig entity)
         {
@@ -141,7 +103,7 @@ namespace Agebull.EntityModel.Designer
                 bl.CheckField(field, repair);
             }
         }
-        internal static void CheckSizeByLen(EntityConfig entity)
+        internal static void CheckSizeByLen(IEntityConfig entity)
         {
             if (entity == null)
                 return;
@@ -153,7 +115,7 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        internal static void CheckSizeAuto(EntityConfig entity)
+        internal static void CheckSizeAuto(IEntityConfig entity)
         {
             entity.EnableUI = true;
             var bl = new PropertyVueModel();
@@ -163,25 +125,20 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        internal static void CheckExport(EntityConfig entity)
+        internal static void CheckExport(IEntityConfig entity)
         {
             foreach (var field in entity.Properties)
             {
-                //if (field.IsPrimaryKey ||
-                //    !field.IsDiscard && !field.IsLinkKey && !field.DbInnerField &&
-                //    !field.InnerField && !field.IsSystemField && !field.DenyClient)
-                {
-                    field.ExtendConfigListBool["easyui", "CanExport"] = true;
-                    field.ExtendConfigListBool["easyui", "CanImport"] = true;
-                }
+                field.ExtendConfigListBool["easyui", "CanExport"] = field.UserSee;
+                field.ExtendConfigListBool["easyui", "CanImport"] = field.UserSee;
             }
         }
 
-        internal static void CheckSimple(EntityConfig entity)
+        internal static void CheckSimple(IEntityConfig entity)
         {
             foreach (var field in entity.Properties)
             {
-                if (field.IsSystemField || field.IsDiscard || field.DbInnerField || field.InnerField || field.InnerField)
+                if (field.IsSystemField || field.IsDiscard || !field.UserSee)
                 {
                     field.IsRequired = false;
                     field.NoneGrid = true;

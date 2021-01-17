@@ -54,7 +54,7 @@ namespace Agebull.EntityModel.RobotCoder
             StringBuilder code = new StringBuilder();
             foreach (var property in ReadWriteColumns.Select(p => p).Where(p => !string.IsNullOrWhiteSpace(p.Initialization)))
             {
-                if (IsClient && property.InnerField)
+                if (property.NoProperty)
                     continue;
                 if (property.CsType == "bool")
                     code.AppendFormat(@"
@@ -346,7 +346,7 @@ namespace Agebull.EntityModel.RobotCoder
                 foreach (var inf in infs)
                 {
                     var entity = GlobalConfig.GetEntity(inf);
-                    if (entity == null || !entity.ExtendConfigListBool["NoApi"])
+                    if (entity != null && !entity.ExtendConfigListBool["CustomField"])
                     {
                         list.Add(inf);
                     }
@@ -374,7 +374,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// {property.Caption}µÄÊý×ÖÊôÐÔ
         /// </summary>
         [IgnoreDataMember,JsonIgnore]
-        {property.AccessType} {type} {property.Name}_Number
+        public {type} {property.Name}_Number
         {{
             get => ({type})this.{property.Name};
             set => this.{property.Name} = ({property.CustomType})value;
@@ -384,7 +384,7 @@ namespace Agebull.EntityModel.RobotCoder
             {
                 code.Append($@"
         {FieldHeader(property, false)}
-        {property.AccessType} string {property.Name}_Base64
+        public string {property.Name}_Base64
         {{
             get
             {{

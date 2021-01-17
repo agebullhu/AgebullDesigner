@@ -655,7 +655,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"代码访问范围"), Description(AccessType_Description)]
-        public string AccessType => InnerField ? "internal " : "public ";
+        public string AccessType => "public ";
 
 
         /// <summary>
@@ -1820,7 +1820,7 @@ namespace Agebull.EntityModel.Config
                 ? StorageScreenType.Read | StorageScreenType.Insert | StorageScreenType.Update
                 : CustomWrite || IsIdentity || IsCompute
                     ? StorageScreenType.Insert | StorageScreenType.Update
-                    : UniqueIndex  || IsPrimaryKey
+                    : UniqueIndex || IsPrimaryKey
                         ? StorageScreenType.Update
                         : InterfaceOrThis._keepStorageScreen;
             set
@@ -1925,14 +1925,37 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 用户是否可输入
+        /// 用户可见
         /// </summary>
         /// <remark>
-        /// 用户是否可输入
+        /// 用户可见
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(@"用户界面"), DisplayName(@"用户是否可输入"), Description("用户是否可输入")]
-        public bool CanUserInput => !IsCompute && !InnerField && !IsUserReadOnly && !IsSystemField && !IsIdentity;
+        [Category(@"用户界面"), DisplayName(@"用户可见"), Description("用户可见")]
+        public bool UserSee => !InnerField && !DbInnerField && !NoProperty;
+
+
+        /// <summary>
+        /// 用户是否可查询
+        /// </summary>
+        [DataMember, JsonProperty("canUserQuery", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _canUserQuery;
+
+        /// <summary>
+        /// 用户是否可查询
+        /// </summary>
+        public bool CanUserQuery
+        {
+            get => _canUserQuery;
+            set
+            {
+                if (_canUserQuery == value)
+                    return;
+                BeforePropertyChanged(nameof(CanUserQuery), _canUserQuery, value);
+                _canUserQuery = value;
+                OnPropertyChanged(nameof(CanUserQuery));
+            }
+        }
 
         /// <summary>
         /// 不可编辑
@@ -1950,7 +1973,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"), DisplayName(@"不可编辑"), Description("是否用户可编辑")]
         public bool IsUserReadOnly
         {
-            get => _isUserReadOnly;
+            get => _isUserReadOnly || !UserSee || IsCompute || InnerField || IsSystemField || IsIdentity;
             set
             {
                 if (_isUserReadOnly == value)
@@ -2495,8 +2518,8 @@ namespace Agebull.EntityModel.Config
             }
         }
         /// <summary>
-         /// 值说明
-         /// </summary>
+        /// 值说明
+        /// </summary>
         [IgnoreDataMember, JsonIgnore]
         public string AutoDataRuleDesc
         {

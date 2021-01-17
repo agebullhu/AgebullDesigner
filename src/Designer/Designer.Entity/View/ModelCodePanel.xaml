@@ -22,10 +22,6 @@
                 <TextBox Text="{Binding EntityName,Mode=TwoWay}" />
             </StackPanel>
             <StackPanel>
-                <Label Content="内部数据" />
-                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsInternal,Mode=TwoWay}" />
-            </StackPanel>
-            <StackPanel>
                 <Label Content="无数据库支持" />
                 <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding EnableDataBase,Mode=TwoWay}" />
             </StackPanel>

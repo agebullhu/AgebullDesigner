@@ -166,20 +166,17 @@
                 <DataGridTextColumn Binding="{Binding JsonName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                     Header="Json" />
                 <DataGridCheckBoxColumn
-                    Binding="{Binding CanEmpty,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BoolReversalConverter}}"
-                    Header="非空" />
+                    Binding="{Binding InnerField,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BoolReversalConverter}}"
+                    Header="可见" />
                 <DataGridCheckBoxColumn
-                    Binding="{Binding IsRequired,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
-                    Header="必填" />
+                    Binding="{Binding CanUserQuery,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                    Header="查询" />
                 <!--<DataGridCheckBoxColumn
                     Binding="{Binding ExtendConfigListBool[easyui_userFormHide],Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                     Header="隐藏" />-->
                 <DataGridCheckBoxColumn
-                    Binding="{Binding IsUserReadOnly,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
-                    Header="只读" />
-                <DataGridCheckBoxColumn
                     Binding="{Binding NoneGrid,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BoolReversalConverter}}"
-                    Header="列表" />
+                    Header="列表" /> 
                 <DataGridCheckBoxColumn
                     Binding="{Binding GridDetails,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
                     Header="列表详细" />
@@ -192,6 +189,15 @@
                 <DataGridCheckBoxColumn
                     Binding="{Binding NoneDetails,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BoolReversalConverter}}"
                     Header="编辑" />
+                <DataGridCheckBoxColumn
+                    Binding="{Binding IsUserReadOnly,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                    Header="只读" />
+                <DataGridCheckBoxColumn
+                    Binding="{Binding CanEmpty,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BoolReversalConverter}}"
+                    Header="非空" />
+                <DataGridCheckBoxColumn
+                    Binding="{Binding IsRequired,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                    Header="必填" />
                 <DataGridCheckBoxColumn
                     Binding="{Binding IsImage,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                     Header="图片" />

@@ -99,7 +99,7 @@ namespace {Project.NameSpace}.DataAccess
         }}
         #endregion
 {AccessCreate()}
-        #endregion{FastDo()}
+        #endregion
     }}
 }}";
             SaveCode(file, code);
@@ -290,7 +290,7 @@ namespace {Project.NameSpace}.DataAccess
             return code.ToString();
         }
 
-        static string EntityStruct(IEntityConfig entity)
+        public static string EntityStruct(IEntityConfig entity)
         {
             var codeStruct = new StringBuilder();
             int idx = 0;
@@ -584,7 +584,6 @@ namespace {Project.NameSpace}.DataAccess
 
         string FastDo()
         {
-            return null;
             var code = new StringBuilder();
             code.Append($@"
         #region 快捷访问");

@@ -636,6 +636,8 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         string QueryList()
         {
             StringBuilder quButton = new StringBuilder();
+            var properties = Model.ClientProperty.Where(p => p.CanUserQuery && p.UserSee &&
+                !p.NoStorage && !p.NoneDetails && !p.IsLinkKey && !p.IsPrimaryKey);
             //if (Entity.Interfaces.Contains("IStateData"))
             //{
             //    quButton.Append(satateQuery);
@@ -647,12 +649,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             quButton.Append(@"
                     <el-select v-model='list.field' slot='prepend' placeholder='Ñ¡Ôñ×Ö¶Î' style='width: 160px;'>
                         <el-option value='_any_' label='Ä£ºý²éÑ¯'></el-option>");
-            foreach (var property in Model.ClientProperty.Where(p => !p.NoStorage
-                                                                    && !p.NoneGrid
-                                                                    && !p.NoneGrid
-                                                                    && !p.NoneDetails
-                                                                    && !p.IsLinkKey
-                                                                    && !p.IsPrimaryKey))
+            foreach (var property in properties)
             {
                 quButton.Append($@"
                         <el-option value='{property.JsonName}' label='{property.Caption}'></el-option>");

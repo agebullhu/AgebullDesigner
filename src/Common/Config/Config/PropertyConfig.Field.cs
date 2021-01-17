@@ -239,16 +239,6 @@ namespace Agebull.EntityModel.Config
             set => Field.IsInterfaceField = value;
         }
 
-        /// <summary>
-        /// 代码访问范围
-        /// </summary>
-        /// <remark>
-        /// 代码访问范围,即面向对象的三大范围(public,private,protected)
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"模型设计"), DisplayName(@"代码访问范围")]
-        public string AccessType => Field.AccessType;
-
         #endregion
         #region 模型设计(C++)
 
@@ -604,14 +594,14 @@ namespace Agebull.EntityModel.Config
         #region 用户界面
 
         /// <summary>
-        /// 用户是否可输入
+        /// 用户可见
         /// </summary>
         /// <remark>
-        /// 用户是否可输入
+        /// 用户可见
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(@"用户界面"), DisplayName(@"用户是否可输入"), Description("用户是否可输入")]
-        public bool CanUserInput => !IsUserReadOnly && Field.CanUserInput;
+        [Category(@"用户界面"), DisplayName(@"用户可见"), Description("用户可见")]
+        public bool UserSee => !InnerField && !DbInnerField && !NoProperty;
 
         /// <summary>
         /// 不可编辑
@@ -623,9 +613,18 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"), DisplayName(@"不可编辑"), Description("是否用户可编辑")]
         public bool IsUserReadOnly
         {
-            get => Field.IsUserReadOnly; set => Field.IsUserReadOnly = value;
+            get => Field.IsUserReadOnly;
+            set => Field.IsUserReadOnly = value;
         }
 
+        /// <summary>
+        /// 用户是否可查询
+        /// </summary>
+        public bool CanUserQuery
+        {
+            get => Field.CanUserQuery; 
+            set => Field.CanUserQuery = value;
+        }
         /// <summary>
         /// 多行文本
         /// </summary>

@@ -8,9 +8,14 @@
         #region 用户界面
 
         /// <summary>
-        /// 用户是否可输入
+        /// 用户可见
         /// </summary>
-        bool CanUserInput { get; }// !IsCompute && !DenyClient && !IsUserReadOnly && !IsSystemField && !IsIdentity;
+        bool UserSee { get; }
+
+        /// <summary>
+        /// 用户是否可查询
+        /// </summary>
+        bool CanUserQuery { get; set; }// !IsCompute && !DenyClient && !IsUserReadOnly && !IsSystemField && !IsIdentity;
 
         /// <summary>
         /// 不可编辑

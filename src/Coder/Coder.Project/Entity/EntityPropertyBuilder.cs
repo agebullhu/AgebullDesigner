@@ -319,7 +319,7 @@ using Agebull.EntityModel.Interfaces;
             if (Model.IsQuery || !Model.UpdateByModified)
                 return $@"
         {FieldHeader(property,false)}
-        {property.AccessType}{property.LastCsType} {property.Name} {{ get; set; }}";
+        public {property.LastCsType} {property.Name} {{ get; set; }}";
 
             var fieldName = FieldName(property);
 
@@ -327,7 +327,7 @@ using Agebull.EntityModel.Interfaces;
         {FieldHeader(property,  false)}
         private {property.LastCsType} {fieldName};
         {PropertyHeader(property)}
-        {property.AccessType}{property.LastCsType} {propertyName}
+        public {property.LastCsType} {propertyName}
         {{
             get => this.{fieldName};
             set
@@ -351,13 +351,13 @@ using Agebull.EntityModel.Interfaces;
 
                 code.Append($@"
         {FieldHeader(property, property.DataType == "ByteArray")}
-        {property.AccessType}{type} {property.Name} {{ get; set; }}");
+        public {type} {property.Name} {{ get; set; }}");
             else
                 code.Append($@"
         {FieldHeader(property, property.DataType == "ByteArray")}
         private {type} {fieldName};
         {PropertyHeader(property)}
-        {property.AccessType}{ov}{type} {propertyName}
+        public {ov}{type} {propertyName}
         {{
             get => this.{fieldName};
             set
@@ -383,7 +383,7 @@ using Agebull.EntityModel.Interfaces;
 
             code.Append($@"
         {FieldHeader(property, property.DataType == "ByteArray")}
-        {property.AccessType}{property.LastCsType} {propertyName}
+        public {property.LastCsType} {propertyName}
         {{");
 
             if (string.IsNullOrWhiteSpace(property.ComputeGetCode) && string.IsNullOrWhiteSpace(property.ComputeSetCode))
@@ -439,7 +439,7 @@ using Agebull.EntityModel.Interfaces;
         {
             code.Append($@"
         {PropertyHeader(property)}
-        {property.AccessType}{property.LastCsType} {property.Name} => throw new Exception(@""{property.Caption}属性仅限用于查询的Lambda表达式使用"");");
+        public {property.LastCsType} {property.Name} => throw new Exception(@""{property.Caption}属性仅限用于查询的Lambda表达式使用"");");
 
         }
 

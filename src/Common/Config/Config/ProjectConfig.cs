@@ -501,7 +501,9 @@ namespace Agebull.EntityModel.Config
             {
                 folders.Add(end);
             }
-            return IOHelper.CheckPath(Solution.RootPath, folders.ToArray());
+            if (!string.IsNullOrWhiteSpace(Solution.RootPath))
+                return IOHelper.CheckPath(Solution.RootPath, folders.ToArray());
+            return folders.LinkToString("\\");
         }
 
         /// <summary>

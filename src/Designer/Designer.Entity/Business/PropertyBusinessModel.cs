@@ -85,11 +85,7 @@ namespace Agebull.EntityModel.Config
             }
             Property.Scale = 0;
             Property.CanEmpty = Property.DbNullable;
-
-            if (Property.InnerField)
-            {
-                Property.NoneJson = true;
-            }
+            //Property.NoneJson = Property.UserSee;
         }
 
         private void CheckName()

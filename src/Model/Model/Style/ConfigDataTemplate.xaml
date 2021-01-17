@@ -247,10 +247,10 @@
                                   ToolTip="选择后,生成的是一个接口(interface)而不是一个类(class)" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
-                        <Label Content="无接口契约" />
+                        <Label Content="不拼接字段" />
                         <ComboBox Style="{StaticResource  BoolCombo}"
-                                  SelectedValue="{Binding ExtendConfigListBool[NoApi],Mode=TwoWay}"
-                                  ToolTip="选择后,此类不会在Api中时行暴露,也不能成为接口使用的参数或被参数类使用,也不会自动生成操作接口" />
+                                  SelectedValue="{Binding ExtendConfigListBool[CustomField],Mode=TwoWay}"
+                                  ToolTip="选择后,此数据接口仅作为标识，字符不注入到实体中" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="泛型参数" />
@@ -391,10 +391,6 @@
                         <Label Content="中间字段" />
                         <ComboBox Style="{StaticResource BoolCombo}"
                                   SelectedValue="{Binding IsMiddleField,Mode=TwoWay}" />
-                    </StackPanel>
-                    <StackPanel Style="{StaticResource AdvFieldPanel}">
-                        <Label Content="内部字段" />
-                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding InnerField,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="自定义代码" />
@@ -651,10 +647,14 @@
                     <GroupBox Header="数据编辑" Margin="5"
                       Visibility="{Binding Solution.IsModelWorkView,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
                         <WrapPanel>
+                            <StackPanel Style="{StaticResource AdvFieldPanel}">
+                                <Label Content="用户不可见" />
+                                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding InnerField,Mode=TwoWay}" />
+                            </StackPanel>
                             <StackPanel Style="{StaticResource FieldPanel}">
-                                <Label Content="能否编辑" />
+                                <Label Content="用户查询" />
                                 <ComboBox IsReadOnly="True" Style="{StaticResource BoolCombo}"
-                                  SelectedValue="{Binding CanUserInput,Mode=OneWay}" />
+                                  SelectedValue="{Binding CanUserQuery,Mode=TwoWay}" />
                             </StackPanel>
                             <StackPanel Style="{StaticResource FieldPanel}">
                                 <Label Content="用户只读" />

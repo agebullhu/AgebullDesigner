@@ -97,7 +97,7 @@ extend_filter({{
             if (Model.IsUiReadOnly)
                 return;
             var array = Model.ClientProperty
-                .Where(p => p.CanUserInput && p.IsLinkKey)
+                .Where(p => p.UserSee && p.IsLinkKey)
                 .Select(p => GlobalConfig.GetEntity(p.LinkTable))
                 .Distinct().ToArray();
             if (array.Length == 0)
@@ -227,7 +227,7 @@ extend_filter({{
         {
             if (Model.IsUiReadOnly)
                 return;
-            var columns = Model.ClientProperty.Where(p => p.CanUserInput);
+            var columns = Model.ClientProperty.Where(p => p.UserSee);
             bool first = true;
             var code = new StringBuilder();
             foreach (var property in columns)
@@ -235,7 +235,7 @@ extend_filter({{
                 var field = property;
                 var sub = new StringBuilder();
                 var dot = "";
-                if (field.IsRequired && field.CanUserInput)
+                if (field.IsRequired && !field.IsUserReadOnly)
                 {
                     sub.Append($@"{dot}{{ required: true, message: '«Î ‰»Î{property.Caption}', trigger: 'blur' }}");
                     dot = @",

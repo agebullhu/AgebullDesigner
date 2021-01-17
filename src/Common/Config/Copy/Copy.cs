@@ -394,6 +394,7 @@ namespace Agebull.EntityModel.Config
             IsExtendValue = dest.IsExtendValue;
             EnumKey = dest.EnumKey;
             EnumConfig = dest.EnumConfig;
+            CanUserQuery = dest.CanUserQuery;
             InnerField = dest.InnerField;
             IsSystemField = dest.IsSystemField;
             IsInterfaceField = dest.IsInterfaceField;

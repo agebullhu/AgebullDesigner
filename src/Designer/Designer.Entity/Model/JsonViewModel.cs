@@ -132,7 +132,7 @@ namespace Agebull.EntityModel.Designer
         {
             foreach (var property in Context.SelectEntity.Properties)
             {
-                property.NoneApiArgument = property.IsSystemField || property.IsPrimaryKey || property.InnerField || property.DbInnerField;
+                property.NoneApiArgument = !property.UserSee;
 
                 if (property.NoneJson)
                     property.JsonName = null;

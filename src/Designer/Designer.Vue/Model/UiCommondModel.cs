@@ -34,9 +34,9 @@ namespace Agebull.EntityModel.Designer
         /// <param name="commands"></param>
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
-            commands.AddRange(new[]
+            commands.AddRange(new ICommandItemBuilder[]
             {
-                new CommandItemBuilder<EntityConfig>
+                new CommandItemBuilder<IEntityConfig>
                 {
                     Catalog = "用户界面",
                     Caption = "UI快速组建",
@@ -44,12 +44,67 @@ namespace Agebull.EntityModel.Designer
                     WorkView = "entity",
                     ConfirmMessage = "是否继续?"
                 },
-                new CommandItemBuilder<EntityConfig>
+                new CommandItemBuilder<IEntityConfig>
                 {
                     Action =VueModel.CheckSimple,
                     Caption = "界面字段初始化",
                     WorkView = "entity",
                     Catalog = "用户界面",
+                    ConfirmMessage = "是否继续?"
+                },
+                new CommandItemBuilder<IEntityConfig>
+                {
+                    Action = VueModel.CheckUiType,
+                    
+                    Catalog = "用户界面",
+                    Editor = "Vue",
+                    WorkView = "entity",
+                    Caption = "控件类型修复"
+                },
+                new CommandItemBuilder<IEntityConfig>
+                {
+                    Action = VueModel.CheckQuery,
+                    
+                    Catalog = "用户界面",
+                    WorkView = "entity",
+                    Caption = "初始化查询字段"
+                },
+                new CommandItemBuilder<IEntityConfig>
+                {
+                    Action = VueModel.CheckKeyShow,
+                    
+                    Catalog = "用户界面",
+                    WorkView = "entity",
+                    Caption = "隐藏主外键"
+                },
+                new CommandItemBuilder<IEntityConfig>
+                {
+                    Action = VueModel.CheckSizeByLen,
+                    
+                    Catalog = "用户界面",
+                    Editor = "Vue",
+                    WorkView = "entity",
+                    Caption = "按文字计算宽度",
+                    ConfirmMessage = "是否继续?"
+                },
+                new CommandItemBuilder<IEntityConfig>
+                {
+                    Action = VueModel.CheckSizeAuto,
+                    
+                    Catalog = "用户界面",
+                    Editor = "Vue",
+                    WorkView = "entity",
+                    Caption = "自适应宽度",
+                    ConfirmMessage = "是否继续?"
+                },
+                new CommandItemBuilder<IEntityConfig>
+                {
+                    Action = VueModel.CheckExport,
+                    Caption = "导出导出初始化",
+                    
+                    WorkView = "entity",
+                    Catalog = "用户界面",
+                    Editor = "Vue",
                     ConfirmMessage = "是否继续?"
                 }
             });

@@ -190,20 +190,20 @@ namespace {NameSpace}.WebApi
         public string QueryCode()
         {
             var code = new StringBuilder();
-
+            var properties = Model.ClientProperty.Where(p => !p.NoStorage && p.CanUserQuery && p.UserSee);
             code.Append(@"
             if (RequestArgumentConvert.TryGet(""_value_"", out string _value_)  && !string.IsNullOrEmpty(_value_))
             {
                 var field = RequestArgumentConvert.GetString(""_field_"");
                 ");
 
-            var properties = Model.ClientProperty.Where(p => !p.NoStorage && /*p.CanUserInput && */p.CsType == "string" && !p.IsLinkKey && !p.IsBlob).ToArray();
-            if (properties.Length > 0)
+            var querys = properties.Where(p => p.CsType == "string" && !p.IsLinkKey && !p.IsBlob).ToArray();
+            if (querys.Length > 0)
             {
                 code.Append(@"if (string.IsNullOrWhiteSpace(field) || field == ""_any_"")
                     filter.AddAnd(p => ");
                 bool first = true;
-                foreach (var pro in properties)
+                foreach (var pro in querys)
                 {
                     if (first)
                         first = false;
@@ -217,7 +217,7 @@ namespace {NameSpace}.WebApi
             }
             code.Append(@"RequestArgumentConvert.SetArgument(field,_value_);
             }");
-            properties = Model.ClientProperty.Where(p => !p.NoStorage).ToArray();
+
             foreach (var pro in properties)
             {
                 if (pro.IsPrimaryKey || pro.IsLinkKey)
@@ -451,11 +451,10 @@ namespace {NameSpace}.WebApi
         {
             if (model.IsUiReadOnly)
                 return null;
-            var fields = model.ClientProperty.Where(p => p.CanUserInput || p.ExtendConfigListBool["easyui", "userFormHide"]).ToArray();
+            var fields = model.ClientProperty.Where(p => p.IsUserReadOnly).ToArray();
             var code = new StringBuilder();
             foreach (var group in fields.GroupBy(p => p.Group))
             {
-
                 code.Append($@"
             //{group.Key ?? "ÆÕÍ¨×Ö¶Î"}");
                 foreach (var pro in group.OrderBy(p => p.Index))
