@@ -550,7 +550,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         void ReadonlyField(StringBuilder code, IFieldConfig field)
         {
             code.Append($@"
-                    <span>{field.Prefix}{{{{form.data.{field.JsonName}{Formater(field)}}}}}{field.Suffix}</span>");
+                    <span>{field.Prefix}{{{{form.data.{field.JsonName}{Formater(field)}}}}}{field.Suffix}&nbsp;</span>");
         }
         void EditField(StringBuilder code, IFieldConfig field, string description)
         {

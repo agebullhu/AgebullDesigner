@@ -20,7 +20,7 @@ namespace Agebull.EntityModel.Designer
         public override void OnCodeGeneratorBegin(NotificationObject config)
         {
             var cfg = config as ConfigBase;
-            
+
 
             base.OnCodeGeneratorBegin(config);
         }
@@ -36,26 +36,50 @@ namespace Agebull.EntityModel.Designer
             {
                 case nameof(TargetConfig.Name):
                 case nameof(TargetConfig.DbFieldName):
-                    SyncLinkField(field => field.LinkField = TargetConfig.DbFieldName);
+                    SyncLinkField(field => field.LinkField = TargetConfig.Name);
                     break;
                 case nameof(TargetConfig.CanEmpty):
                     if (!TargetConfig.CanEmpty)
                         TargetConfig.IsRequired = true;
                     break;
                 case nameof(TargetConfig.LinkField):
-                    if (!string.IsNullOrWhiteSpace(TargetConfig.LinkField))
-                    {
-                        TargetConfig.Option.IsLink = true;
-                    }
-                    else if(!TargetConfig.Option.IsReference)
-                    {
-                        TargetConfig.Option.ReferenceConfig = null;
-                    }
+                case nameof(TargetConfig.IsLinkKey):
+                case nameof(TargetConfig.IsLinkCaption):
+                case nameof(TargetConfig.IsLinkField):
+                    CheckLinkField();
                     break;
                 case nameof(TargetConfig.Nullable):
                     TargetConfig.RaisePropertyChanged(nameof(TargetConfig.DbNullable));
                     break;
             }
+        }
+
+        private void CheckLinkField()
+        {
+            if (TargetConfig.IsLinkField && !string.IsNullOrWhiteSpace(TargetConfig.LinkTable))
+            {
+                var table = GlobalConfig.GetEntity(TargetConfig.LinkTable);
+                if (table != null)
+                {
+                    if (TargetConfig.IsLinkKey)
+                    {
+                        TargetConfig.LinkField = table.PrimaryField;
+                        TargetConfig.Option.IsLink = true;
+                        TargetConfig.Option.ReferenceConfig = table.PrimaryColumn;
+                        return;
+                    }
+                    var field = table.Find(TargetConfig.LinkField);
+                    if (field != null)
+                    {
+                        TargetConfig.Option.IsLink = true;
+                        TargetConfig.Option.ReferenceConfig = field;
+                        return;
+                    }
+                }
+            }
+
+            TargetConfig.Option.IsLink = false;
+            TargetConfig.Option.ReferenceConfig = null;
         }
 
         private void SyncLinkField(Action<FieldConfig> action)
@@ -64,13 +88,11 @@ namespace Agebull.EntityModel.Designer
             string name = TargetConfig.Entity.Name;
             foreach (var entity in SolutionConfig.Current.Entities.Where(p => p != TargetConfig.Entity))
             {
-                foreach (var field in entity.Properties)
+                foreach (var field in entity.Properties.Where(p => p.IsLinkField &&
+                    (p.LinkTable == saveTable || p.LinkTable == name) &&
+                    (p.LinkField == TargetConfig.DbFieldName || p.LinkField == TargetConfig.Name)))
                 {
-                    if ((field.IsLinkField || field.IsLinkKey || field.IsLinkCaption) &&//连接类型
-                        (field.LinkTable == saveTable || field.LinkTable == name) &&//表
-                        (field.LinkField == TargetConfig.DbFieldName || field.LinkField == TargetConfig.Name))//字段
-                        //field.Option.ReferenceKey = TargetConfig.Key;
-                        action(field);
+                    action(field);
                 }
             }
         }

@@ -1973,7 +1973,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"用户界面"), DisplayName(@"不可编辑"), Description("是否用户可编辑")]
         public bool IsUserReadOnly
         {
-            get => _isUserReadOnly || !UserSee || IsCompute || InnerField || IsSystemField || IsIdentity;
+            get => _isUserReadOnly || !UserSee || !CanSet;
             set
             {
                 if (_isUserReadOnly == value)

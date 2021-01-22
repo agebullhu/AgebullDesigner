@@ -190,7 +190,7 @@ namespace {NameSpace}.WebApi
         public string QueryCode()
         {
             var code = new StringBuilder();
-            var properties = Model.ClientProperty.Where(p => !p.NoStorage && p.CanUserQuery && p.UserSee);
+            var properties = Model.LastProperties.Where(p => !p.NoStorage && p.CanUserQuery);
             code.Append(@"
             if (RequestArgumentConvert.TryGet(""_value_"", out string _value_)  && !string.IsNullOrEmpty(_value_))
             {
@@ -451,7 +451,7 @@ namespace {NameSpace}.WebApi
         {
             if (model.IsUiReadOnly)
                 return null;
-            var fields = model.ClientProperty.Where(p => p.IsUserReadOnly).ToArray();
+            var fields = model.ClientProperty.Where(p => !p.IsUserReadOnly).ToArray();
             var code = new StringBuilder();
             foreach (var group in fields.GroupBy(p => p.Group))
             {

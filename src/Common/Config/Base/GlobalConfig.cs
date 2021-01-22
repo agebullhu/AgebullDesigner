@@ -78,7 +78,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static EntityConfig GetEntity(string name)
         {
-            return name == null
+            return string.IsNullOrWhiteSpace(name)
                 ? null
                 : GetEntity(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase))
                 ?? GetEntity(p => string.Equals(p.ReadTableName, name, StringComparison.OrdinalIgnoreCase))

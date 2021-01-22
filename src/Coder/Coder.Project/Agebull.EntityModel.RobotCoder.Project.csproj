@@ -25,6 +25,10 @@
     <Compile Remove="Api\ApiHelperCoder.cs" />
     <Compile Remove="Api\ExportActionCoder.cs" />
     <Compile Remove="Api\PorjectApiGenerator.cs" />
+    <Compile Remove="DataModel\EntityComboBuilder.cs" />
+    <Compile Remove="DataModel\InterfaceBuilder.cs" />
+    <Compile Remove="DataModel\SqliteAccessBuilder.cs" />
+    <Compile Remove="DataModel\SqlServerAccessBuilder.cs" />
   </ItemGroup>
 
   <ItemGroup>

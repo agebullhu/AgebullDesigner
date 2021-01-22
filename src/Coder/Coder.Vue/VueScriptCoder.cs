@@ -227,7 +227,7 @@ extend_filter({{
         {
             if (Model.IsUiReadOnly)
                 return;
-            var columns = Model.ClientProperty.Where(p => p.UserSee);
+            var columns = Model.ClientProperty.Where(p => !p.IsUserReadOnly);
             bool first = true;
             var code = new StringBuilder();
             foreach (var property in columns)

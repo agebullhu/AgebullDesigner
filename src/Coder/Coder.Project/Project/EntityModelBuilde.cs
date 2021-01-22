@@ -88,12 +88,12 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
 
             switch (project.DbType)
             {
-                case DataBaseType.SqlServer:
-                    CreateCode<SqlServerAccessBuilder>(project, schema, accessPath);
-                    break;
-                case DataBaseType.Sqlite:
-                    CreateCode<SqliteAccessBuilder>(project, schema, accessPath);
-                    break;
+                //case DataBaseType.SqlServer:
+                //    CreateCode<SqlServerAccessBuilder>(project, schema, accessPath);
+                //    break;
+                //case DataBaseType.Sqlite:
+                //    CreateCode<SqliteAccessBuilder>(project, schema, accessPath);
+                //    break;
                 default:
                     CreateCode<MySqlAccessBuilder>(project, schema, accessPath);
                     break;

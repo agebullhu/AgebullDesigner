@@ -116,7 +116,7 @@ using Agebull.EntityModel.Interfaces;
             var uniques = Columns.Where(p => p.UniqueIndex).ToArray();
             if (uniques.Length != 0)
             {
-                code.AppendLine(@"
+                code.Append(@"
         /// <summary>
         /// 组合后的唯一值
         /// </summary>
@@ -131,7 +131,7 @@ using Agebull.EntityModel.Interfaces;
                         code.Append('|');
                     code.Append($"{{{property.Name}}}");
                 }
-                code.Append(@""";");
+                code.AppendLine(@""";");
                 return
 
                     code.ToString();

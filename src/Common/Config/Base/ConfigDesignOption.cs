@@ -167,8 +167,10 @@ namespace Agebull.EntityModel.Config
                     _referenceKey = null;
                 BeforePropertyChanged(nameof(ReferenceKey), _referenceKey, value);
                 _referenceKey = value;
-                if (_referenceKey == null)
+                if (string.IsNullOrWhiteSpace(_referenceKey))
                 {
+                    _referenceKey = null;
+                    _referenceConfig = null;
                     _state &= ~ConfigStateType.Reference;
                     _state &= ~ConfigStateType.Link;
                 }
@@ -334,6 +336,11 @@ namespace Agebull.EntityModel.Config
                 else
                 {
                     _state &= ~ConfigStateType.Link;
+                    if (!IsLink && !IsReference)
+                    {
+                        _referenceKey = null;
+                        _referenceConfig = null;
+                    }
                 }
                 OnPropertyChanged(nameof(IsReference));
                 OnPropertyChanged(nameof(IsLink));
@@ -362,6 +369,11 @@ namespace Agebull.EntityModel.Config
                 else
                 {
                     _state &= ~ConfigStateType.Reference;
+                    if (!IsLink && !IsReference)
+                    {
+                        _referenceKey = null;
+                        _referenceConfig = null;
+                    }
                 }
                 OnPropertyChanged(nameof(IsReference));
                 OnPropertyChanged(nameof(IsLink));

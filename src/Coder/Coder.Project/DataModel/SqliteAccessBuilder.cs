@@ -320,7 +320,7 @@ UPDATE [{ContextWriteTable}] SET");
             return sql.ToString();
         }
 
-        private string CreateFullSqlParameter()
+        protected override string CreateFullSqlParameter()
         {
             var code = new StringBuilder();
             code.Append($@"
@@ -408,7 +408,7 @@ UPDATE [{ContextWriteTable}] SET");
         }}";
         }
 
-        private string GetDbTypeCode()
+        protected override string GetDbTypeCode()
         {
             var code = new StringBuilder();
             foreach (var property in Model.DbFields)
@@ -439,7 +439,7 @@ UPDATE [{ContextWriteTable}] SET");
         }}";
         }
 
-        private string LoadEntityCode()
+        protected override string LoadEntityCode()
         {
             var code = new StringBuilder();
             code.AppendFormat(@"
