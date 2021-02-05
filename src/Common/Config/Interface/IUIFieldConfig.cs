@@ -31,6 +31,11 @@
         bool MulitLine { get; set; }// Field.MulitLine;
 
         /// <summary>
+        /// 多行文本的行数，默认为3行
+        /// </summary>
+        int Rows { get; set; }// Field.MulitLine;
+
+        /// <summary>
         /// 前缀
         /// </summary>
         string Prefix { get; set; }// Field.Prefix;

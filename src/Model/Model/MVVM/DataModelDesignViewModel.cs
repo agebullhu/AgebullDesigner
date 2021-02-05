@@ -39,11 +39,6 @@ namespace Agebull.EntityModel.Designer
             base.OnViewSeted();
         }
 
-        //public DataModelDesignViewModel()
-        //{
-        //    TypeConvert.Register();
-        //}
-
         #endregion
 
         #region 属性表格

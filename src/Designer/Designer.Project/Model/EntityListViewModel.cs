@@ -22,18 +22,6 @@ namespace Agebull.EntityModel.Designer
 {
     public sealed class EntityListViewModel : ExtendViewModelBase<EntityListModel>
     {
-        public override void CreateCommands(IList<CommandItemBase> commands)
-        {
-            var extends = CommandCoefficient.CoefficientEditor(typeof(EntityConfig));
-            foreach (var cms in extends)
-            {
-                cms.SignleSoruce = true;
-                if (cms.TargetType != typeof(EntityConfig))
-                    continue;
-                cms.OnPrepare = Model.OnCommandExec;
-                commands.Add(cms);
-            }
-        }
     }
 
     public sealed class EntityListModel : DesignModelBase
@@ -58,6 +46,28 @@ namespace Agebull.EntityModel.Designer
         }
 
         #endregion
+
+        public EntityListModel()
+        {
+            CommondFilter = cmd => true;
+        }
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        protected override void DoInitialize()
+        {
+            DesignModelType = typeof(EntityConfig);
+        }
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        protected override bool FilterCommand(CommandItemBase command)
+        {
+            command.OnPrepare = OnCommandExec;
+            return base.FilterCommand(command);
+        }
 
         internal bool OnCommandExec(CommandItemBase cmd)
         {

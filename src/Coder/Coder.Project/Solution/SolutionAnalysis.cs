@@ -369,7 +369,7 @@ EndGlobal";
                     if (first)
                     {
                         first = false;
-                        code.Replace("@ApiServiceName", prj.ApiName);
+                        code.Replace("@ApiServiceName", prj.ServiceName);
                         code.Replace("@DbNameSpace", $"{prj.NameSpace}.DataAccess.{prj.DataBaseObjectName}");
                     }
                     else connections.Append(',');

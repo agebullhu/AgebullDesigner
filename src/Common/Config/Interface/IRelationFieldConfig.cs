@@ -8,6 +8,11 @@
         #region 数据关联
 
         /// <summary>
+        /// 上级外键
+        /// </summary>
+        bool IsParent { get; set; }// Field.IsLinkField;
+
+        /// <summary>
         /// 连接字段
         /// </summary>
         bool IsLinkField { get; set; }// Field.IsLinkField;

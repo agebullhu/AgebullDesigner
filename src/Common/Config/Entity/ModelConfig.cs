@@ -158,6 +158,20 @@ namespace Agebull.EntityModel.Config
             : Properties.FirstOrDefault(p => p.Field.IsPrimaryKey && p.Field.Entity == Entity);
 
         /// <summary>
+        /// 标题字段
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据标识"), DisplayName(@"标题字段"), Description("标题字段")]
+        public IFieldConfig CaptionColumn => Properties.FirstOrDefault(p => p.IsCaption && p.Entity == Entity);
+
+        /// <summary>
+        /// 标题字段
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据标识"), DisplayName(@"标题字段"), Description("标题字段")]
+        public IFieldConfig ParentColumn => Properties.FirstOrDefault(p => p.IsParent && p.Entity == Entity);
+
+        /// <summary>
         /// 主键字段
         /// </summary>
         /// <remark>

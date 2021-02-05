@@ -214,6 +214,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "删除选中",
                 Image = Application.Current.Resources["img_del"] as ImageSource
             });
+            base.CreateCommands(commands);
         }
         internal static void NewWord()
         {

@@ -103,6 +103,16 @@ namespace Agebull.EntityModel.Config
         IFieldConfig PrimaryColumn { get; }// Properties.FirstOrDefault(p {get;}// Entity.PrimaryColumn == p.Field);
 
         /// <summary>
+        /// 标题字段
+        /// </summary>
+        IFieldConfig CaptionColumn { get; }// Properties.FirstOrDefault(p {get;}// Entity.PrimaryColumn == p.Field);
+
+        /// <summary>
+        /// 上级字段
+        /// </summary>
+        IFieldConfig ParentColumn { get; }
+
+        /// <summary>
         /// 是否有主键
         /// </summary>
         bool HasePrimaryKey { get; }// Entity.HasePrimaryKey;
@@ -186,7 +196,6 @@ namespace Agebull.EntityModel.Config
             set;
         }
         #endregion
-
 
         #region 设计器支持
 
@@ -278,6 +287,10 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         IEnumerable<IFieldConfig> DbFields { get; }
 
+        /// <summary>
+        /// 命令集合
+        /// </summary>
+        NotificationList<UserCommandConfig> Commands { get; }
 
         #endregion
 

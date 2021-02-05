@@ -125,6 +125,7 @@ using Agebull.Common;
 using Agebull.Common.Ioc;
 
 using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Vue;
 using ZeroTeam.MessageMVC.ModelApi;
 using ZeroTeam.MessageMVC.ZeroApis;
 
@@ -328,8 +329,8 @@ using Newtonsoft.Json;
 
 using Agebull.Common;
 using Agebull.Common.Ioc;
-
 using Agebull.EntityModel.Common;
+using Agebull.EntityModel.Vue;
 using ZeroTeam.MessageMVC.ModelApi;
 using ZeroTeam.MessageMVC.ZeroApis;
 using System.Threading.Tasks;
@@ -345,7 +346,7 @@ namespace {NameSpace}.WebApi
     /// <summary>
     ///  {Model.Caption.ToRemString()}
     /// </summary>
-    [Service(""{Project.ApiName}"")]
+    [Service(""{Project.ServiceName}"")]
     [Route(""{Model.ApiName}/v1"")]
     [ApiPage(""{page}"")]
     public sealed partial class {Model.Name}ApiController 
@@ -375,63 +376,94 @@ namespace {NameSpace}.WebApi
             var code = new StringBuilder();
             if (Model.TreeUi)
             {
-                code.Append(@"
+                code.Append($@"
         /// <summary>
         ///     载入树节点
         /// </summary>
         [Route(""edit/tree"")]
-        public async Task<IApiResult<List<Agebull.EntityModel.Vue.TreeNode>>> OnLoadTree()
-        {
+        public async Task<IApiResult<List<TreeNode>>> OnLoadTree()
+        {{
             var nodes = await Business.LoadTree();
             return ApiResultHelper.Succees(nodes);
-        }");
+        }}");
             }
-            var cap = Model.LastProperties.FirstOrDefault(p => p.IsCaption);
-            if (cap != null)
+            if (Model.CaptionColumn != null)
             {
-                code.Append(@"
+                code.Append($@"
 
         /// <summary>
         /// 载入下拉列表数据
         /// </summary>
         [Route(""edit/combo"")]
-        public async Task<IApiResult> ComboValues()
-        {
+        public async Task<IApiResult<List<DataItem<{Model.PrimaryColumn.LastCsType}>>>> ComboValues()
+        {{
             var nodes = await Business.ComboValues();
             return ApiResultHelper.Succees(nodes);
-        }");
+        }}");
             }
-            if (Model is ModelConfig model)
-                foreach (var cmd in model.Commands.Where(p => !p.IsLocalAction))
+            foreach (var cmd in Model.Commands.Where(p => !p.IsLocalAction))
+            {
+                if (cmd.IsSingleObject)
                 {
-                    if(cmd.IsSingleObject)
-                         code.Append($@"
+                    code.Append($@"
         /// <summary>
         ///     {cmd.Caption.ToRemString()}
         /// </summary>
         /// <remark>
         ///     {cmd.Description.ToRemString()}
         /// </remark>
-        [Route(""edit/{cmd.Name.ToLWord()}"")]
-        public Task<IApiResult> On{cmd.Name}(long id)
+        /// <param name=""id"">选择的ID</param>
+        [Route(""{cmd.Api}"")]
+        public async Task<IApiResult> On{cmd.Name}(long id) => await");
+                    if (cmd.ServiceCommand.IsEmpty())
+                        code.Append($@" this.Business.{cmd.Name}(id)  ? ApiResultHelper.Succees() : ApiResultHelper.Helper.ArgumentError;");
+                    else
+                        code.Append($@" {cmd.ServiceCommand}(id);");
+                }
+                else if (cmd.IsMulitOperator)
+                {
+                    code.Append($@"
+        /// <summary>
+        ///     {cmd.Caption.ToRemString()}
+        /// </summary>
+        /// <remark>
+        ///     {cmd.Description.ToRemString()}
+        /// </remark>
+        /// <param name=""selects"">选择的ID列表</param>
+        [Route(""{cmd.Api}""),ApiOption(ApiOption.DictionaryArgument)]
+        public async Task<IApiResult> On{cmd.Name}(string selects)
         {{
-            return this.Business.{cmd.Name}(id);
+            if (!RequestArgumentConvert.TryGetIDs(""selects"",out var ids))
+                return ApiResultHelper.Helper.ArgumentError;");
+
+                    if (cmd.ServiceCommand.IsEmpty())
+                        code.Append($@"
+            return await this.Business.{cmd.Name}(ids) 
+                   ? ApiResultHelper.Succees()
+                   : ApiResultHelper.Helper.ArgumentError;
         }}");
                     else
                         code.Append($@"
+            return await {cmd.ServiceCommand}(ids);
+            }}");
+                }
+                else
+                {
+                    code.Append($@"
         /// <summary>
         ///     {cmd.Caption.ToRemString()}
         /// </summary>
         /// <remark>
         ///     {cmd.Description.ToRemString()}
         /// </remark>
-        [Route(""edit/{cmd.Name.ToLWord()}"")]
-        public Task<IApiResult> On{cmd.Name}(string selects)
-        {{
-            var ids = selects.Split(',',StringSplitOption.RemoveEmpty).Select(long.Parse).ToArray();
-            return this.Business.{cmd.Name}(ids);
-        }}");
+        [Route(""{cmd.Api}"")]
+        public async Task<IApiResult> On{cmd.Name}() => await");
+                    if (cmd.ServiceCommand.IsEmpty())
+                        code.Append($@" this.Business.{cmd.Name}()  ? ApiResultHelper.Succees() : ApiResultHelper.Helper.ArgumentError;");
+                    else
+                        code.Append($@" {cmd.ServiceCommand}();");
                 }
+            }
             if (code.Length == 0)
                 return null;
             return $@"

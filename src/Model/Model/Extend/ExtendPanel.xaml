@@ -21,8 +21,7 @@
                     </ItemsControl.ItemTemplate>
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel VerticalAlignment="Stretch"
-                                   HorizontalAlignment="Stretch" />
+                            <WrapPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>

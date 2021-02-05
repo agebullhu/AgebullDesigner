@@ -57,7 +57,7 @@ namespace {NameSpace}
     /// <summary>
     /// {Model.Description}
     /// </summary>
-    [JsonObject(MemberSerialization.OptIn)]
+    [JsonObject(MemberSerialization.OptIn, ItemNullValueHandling = NullValueHandling.Ignore)]
     public partial class {Model.EntityName} {ExtendInterface()}
     {{
         #region 构造

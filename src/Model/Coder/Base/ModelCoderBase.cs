@@ -94,7 +94,10 @@ namespace Agebull.EntityModel.RobotCoder
             }
             else
             {
-                code.Add($@"JsonProperty(""{property.JsonName}"")");
+                if(property.IsRequired || property.IsCaption || property.IsPrimaryKey|| property.IsLinkCaption || property.IsLinkCaption)
+                    code.Add($@"JsonProperty(""{property.JsonName}"", NullValueHandling = NullValueHandling.Include)");
+                else
+                    code.Add($@"JsonProperty(""{property.JsonName}"", DefaultValueHandling = DefaultValueHandling.Ignore)");
                 if (Project.CodeStyle != CodeStyleConst.Style.Succinct && property.CsType == "DateTime")
                     code.Add("JsonConverter(typeof(Newtonsoft.Json.Converters.IsoDateTimeConverter))");
             }

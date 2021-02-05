@@ -22,19 +22,6 @@ namespace Agebull.EntityModel.Designer
 {
     public sealed class ApiListViewModel : ExtendViewModelBase<ApiListModel>
     {
-        
-        public override void CreateCommands(IList<CommandItemBase> commands)
-        {
-            var extends = CommandCoefficient.CoefficientEditor(typeof(ApiItem));
-            foreach (var cms in extends)
-            {
-                cms.SignleSoruce = true;
-                if (cms.TargetType != typeof(ApiItem))
-                    continue;
-                cms.OnPrepare = Model.OnCommandExec;
-                commands.Add(cms);
-            }
-        }
     }
 
     public sealed class ApiListModel : DesignModelBase
@@ -60,6 +47,27 @@ namespace Agebull.EntityModel.Designer
 
         #endregion
 
+        public ApiListModel()
+        {
+            CommondFilter = cmd => true;
+        }
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        protected override void DoInitialize()
+        {
+            DesignModelType = typeof(ApiItem);
+        }
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        protected override bool FilterCommand(CommandItemBase command)
+        {
+            command.OnPrepare = OnCommandExec;
+            return base.FilterCommand(command);
+        }
         internal bool OnCommandExec(CommandItemBase cmd)
         {
             if (Context.SelectProject == null)

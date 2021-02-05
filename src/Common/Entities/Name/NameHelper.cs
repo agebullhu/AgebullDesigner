@@ -117,6 +117,18 @@ namespace System.Text
         /// <summary>
         /// 到名称格式
         /// </summary>
+        /// <param name="text">单词</param>
+        /// <param name="link">连接字符</param>
+        /// <param name="uWord">是否大写</param>
+        /// <returns>名称</returns>
+        public static string ToName(this string text, char link = '_', bool uWord = false)
+        {
+            return ToName(SplitWords(text),  link ,  uWord);
+        }
+
+        /// <summary>
+        /// 到名称格式
+        /// </summary>
         /// <param name="words">单词组</param>
         /// <param name="link">连接字符</param>
         /// <param name="uWord">是否大写</param>

@@ -23,6 +23,14 @@
                     <TextBox Text="{Binding Caption,Mode=TwoWay}" />
                 </StackPanel>
                 <StackPanel>
+                    <Label Content="位域" />
+                    <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsFlagEnum,Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="外部定义" />
+                    <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsOut,Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel>
                     <Label Content = "说明" />
                     <TextBox Style="{StaticResource MaxTextBox}" Height="64" Text="{Binding Description,Mode=TwoWay}" />
                 </StackPanel>

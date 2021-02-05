@@ -1,5 +1,4 @@
 using System;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
@@ -7,18 +6,45 @@ using System.Collections.Generic;
 
 namespace Agebull.EntityModel.Designer
 {
-    public class DesignModelBase : ModelBase, ICommandModel
+    public class DesignModelBase : ModelBase
     {
         #region 操作命令
 
-        /// <summary>
-        ///     分类
-        /// </summary>
-        public virtual void SetContextConfig(object cfg)
+        public DesignModelBase()
         {
-
+            CommondFilter = cmd =>
+            {
+                if (cmd.Editor.IsEmpty() || !cmd.Editor.Contains(EditorName, StringComparison.OrdinalIgnoreCase))
+                    return false;
+                return true;
+            };
         }
 
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        protected override void DoInitialize()
+        {
+            DesignModelType = DesignModel?.GetType();
+        }
+
+        /// <summary>
+        /// 当前编辑的对象
+        /// </summary>
+        public ConfigBase DesignModel
+        {
+            get => designModel;
+            set
+            {
+                designModel = value;
+                RaisePropertyChanged(nameof(DesignModel));
+            }
+        }
+
+        /// <summary>
+        /// 当前的命令过滤器
+        /// </summary>
+        public Func<ICommandItemBuilder, bool> CommondFilter { get; set; }
 
         /// <summary>
         ///     分类
@@ -26,9 +52,28 @@ namespace Agebull.EntityModel.Designer
         public string EditorName { get; set; }
 
         /// <summary>
-        /// 命令
+        ///     分类
         /// </summary>
-        public virtual NotificationList<CommandItemBase> Commands => CommandCoefficient.GetFriendCommands(this);
+        public Type DesignModelType { get; set; }
+
+        /// <summary>
+        /// 生成命令对象
+        /// </summary>
+        /// <param name="commands"></param>
+        public NotificationList<CommandItemBase> CreateCommands()
+        {
+            var commands = new List<CommandItemBase>();
+            CreateCommands(commands);
+
+            if (DesignModelType != null && CommondFilter != null)
+                CommandCoefficient.EditorToolbar(commands, CommondFilter, DesignModelType);
+            return commands.Where(FilterCommand).ToNotificationList<CommandItemBase>();
+        }
+
+        /// <summary>
+        /// 命令ICommandModel
+        /// </summary>
+        public NotificationList<CommandItemBase> Commands => CreateCommands();
 
         /// <summary>
         /// 生成命令对象
@@ -38,6 +83,17 @@ namespace Agebull.EntityModel.Designer
         {
         }
 
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        protected virtual bool FilterCommand(CommandItemBase command)
+        {
+            if (command.CanButton)
+                command.IsButton = true;
+            command.Source = DesignModel;
+            command.SignleSoruce = true;
+            return true;
+        }
         #endregion
 
         #region 基本设置
@@ -56,6 +112,7 @@ namespace Agebull.EntityModel.Designer
 
         private DataModelDesignModel _model;
         private EditorModel _editor;
+        private ConfigBase designModel;
 
         /// <summary>
         /// 基本模型
@@ -117,8 +174,6 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         protected virtual void OnContextPropertyChanged(string name)
         {
-            if (name == nameof(DesignContext.SelectTag))
-                RaisePropertyChanged(nameof(Commands));
         }
 
         #endregion

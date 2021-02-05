@@ -22,18 +22,7 @@ namespace Agebull.EntityModel.Designer
 {
     public sealed class EnumListViewModel : ExtendViewModelBase<EnumListModel>
     {
-        public override void CreateCommands(IList<CommandItemBase> commands)
-        {
-            var extends = CommandCoefficient.CoefficientEditor(typeof(EnumConfig));
-            foreach (var cms in extends)
-            {
-                cms.SignleSoruce = true;
-                if (cms.TargetType != typeof(EnumConfig))
-                    continue;
-                cms.OnPrepare = Model.OnCommandExec;
-                commands.Add(cms);
-            }
-        }
+
     }
 
     public sealed class EnumListModel : DesignModelBase
@@ -56,8 +45,28 @@ namespace Agebull.EntityModel.Designer
                 Context.SelectProject?.Enums.Foreach(p => p.Option.IsSelect = value);
             }
         }
-
         #endregion
+        public EnumListModel()
+        {
+            CommondFilter = cmd => true;
+        }
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        protected override void DoInitialize()
+        {
+            DesignModelType = typeof(EnumConfig);
+        }
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        protected override bool FilterCommand(CommandItemBase command)
+        {
+            command.OnPrepare = OnCommandExec;
+            return base.FilterCommand(command);
+        }
 
         internal bool OnCommandExec(CommandItemBase cmd)
         {

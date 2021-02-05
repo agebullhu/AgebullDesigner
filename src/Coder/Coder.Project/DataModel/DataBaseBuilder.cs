@@ -92,7 +92,8 @@ namespace {Project.NameSpace}.DataAccess
             }};
             provider.DataOperator.Provider = provider;
             provider.SqlBuilder.Provider = provider;
-            provider.Injection.Provider = provider;
+            if(provider.Injection != null)
+                provider.Injection.Provider = provider;
             if (!isDynamic)
                 providers.TryAdd(type, provider);
             return provider;
@@ -582,7 +583,7 @@ namespace {Project.NameSpace}.DataAccess
 
         #region 快捷访问
 
-        string FastDo()
+        string QuickDo()
         {
             var code = new StringBuilder();
             code.Append($@"

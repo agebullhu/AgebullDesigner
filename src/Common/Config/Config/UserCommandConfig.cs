@@ -10,6 +10,7 @@
 using Newtonsoft.Json;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using System.Text;
 
 namespace Agebull.EntityModel.Config
 {
@@ -29,7 +30,6 @@ namespace Agebull.EntityModel.Config
         }
 
         #endregion
-
 
         #region 数据模型
 
@@ -120,19 +120,42 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 单对象操作
+        /// 多选操作
+        /// </summary>
+        [DataMember, JsonProperty("isMulitOperator", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool isMulitOperator;
+
+        /// <summary>
+        /// 多选操作
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据模型"), DisplayName(@"多选")]
+        public bool IsMulitOperator
+        {
+            get => isMulitOperator;
+            set
+            {
+                if (isMulitOperator == value)
+                    return;
+                BeforePropertyChanged(nameof(IsMulitOperator), isMulitOperator, value);
+                isMulitOperator = value;
+                OnPropertyChanged(nameof(IsMulitOperator));
+            }
+        }
+        /// <summary>
+        /// 单选
         /// </summary>
         [DataMember, JsonProperty("IsSingleObject", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal bool _isSingleObject;
 
         /// <summary>
-        /// 单对象操作
+        /// 单选
         /// </summary>
         /// <remark>
         /// 是否单对象操作,即操作对象只能是一行数据
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据模型"), DisplayName(@"单对象操作"), Description("是否单对象操作,即操作对象只能是一行数据")]
+        [Category(@"数据模型"), DisplayName(@"单选"), Description("是否单对象操作,即操作对象只能是一行数据")]
         public bool IsSingleObject
         {
             get => _isSingleObject;
@@ -147,31 +170,81 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 打开链接
+        /// Js方法
         /// </summary>
-        [DataMember, JsonProperty("Url", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _url;
+        [DataMember, JsonProperty("jsMethod", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal string jsMethod;
 
         /// <summary>
-        /// 打开链接
+        /// Js方法
         /// </summary>
         /// <remark>
-        /// 在本地操作时打开的链接
-        /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据模型"), DisplayName(@"打开链接"), Description("在本地操作时打开的链接")]
-        public string Url
+        [Category(@"数据模型"), DisplayName(@"Js方法"), Description("Js方法")]
+        public string JsMethod
         {
-            get => _url;
+            get => jsMethod ?? Name.ToLWord();
             set
             {
-                if (_url == value)
+                if (jsMethod == value)
                     return;
-                BeforePropertyChanged(nameof(Url), _url, value);
-                _url = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(Url));
+                BeforePropertyChanged(nameof(JsMethod), jsMethod, value);
+                jsMethod = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                OnPropertyChanged(nameof(JsMethod));
             }
         }
+
+
+        /// <summary>
+        /// 接口名称
+        /// </summary>
+        [DataMember, JsonProperty("api", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal string api;
+
+        /// <summary>
+        /// 接口名称
+        /// </summary>
+        /// <remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据模型"), DisplayName(@"接口名称"), Description("接口名称")]
+        public string Api
+        {
+            get => api ?? $"edit/{Name.ToLWord()}";
+            set
+            {
+                if (api == value)
+                    return;
+                BeforePropertyChanged(nameof(Api), api, value);
+                api = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                OnPropertyChanged(nameof(Api));
+            }
+        }
+
+        /// <summary>
+        /// 服务器调用代码
+        /// </summary>
+        [DataMember, JsonProperty("serviceCommand", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal string serviceCommand;
+
+        /// <summary>
+        /// 服务器调用代码
+        /// </summary>
+        /// <remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据模型"), DisplayName(@"服务器调用代码"), Description("服务器调用代码")]
+        public string ServiceCommand
+        {
+            get => serviceCommand;
+            set
+            {
+                if (serviceCommand == value)
+                    return;
+                BeforePropertyChanged(nameof(ServiceCommand), serviceCommand, value);
+                serviceCommand = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                OnPropertyChanged(nameof(ServiceCommand));
+            }
+        }
+
         #endregion
 
     }

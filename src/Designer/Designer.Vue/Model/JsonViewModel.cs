@@ -27,55 +27,56 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            commands.Append(  new CommandItem
-                {
-                    Action = Format1,
-                    IsButton=true,
-                    Caption = "大驼峰(Json)",
-                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-                },
-                new CommandItem
-                {
-                    Action = Format2,
-                    IsButton=true,
-                    Caption = "小驼峰(Json)",
-                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-                },
-                new CommandItem
-                {
-                    Action = Format3,
-                    IsButton=true,
-                    Caption = "小写下划线(Json)",
-                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-                },
-                new CommandItem
-                {
-                    Action = Format4,
-                    IsButton=true,
-                    Caption = "大驼峰(API)",
-                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-                },
-                new CommandItem
-                {
-                    Action = Format5,
-                    IsButton=true,
-                    Caption = "小驼峰(API)",
-                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-                },
-                new CommandItem
-                {
-                    Action = Format6,
-                    IsButton=true,
-                    Caption = "小写下划线(API)",
-                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-                },
-                new CommandItem
-                {
-                    Action = Check,
-                    IsButton=true,
-                    Caption = "检查",
-                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
-                });
+            commands.Append(new CommandItem
+            {
+                Action = Format1,
+                IsButton = true,
+                Caption = "大驼峰(Json)",
+                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+            },
+            new CommandItem
+            {
+                Action = Format2,
+                IsButton = true,
+                Caption = "小驼峰(Json)",
+                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+            },
+            new CommandItem
+            {
+                Action = Format3,
+                IsButton = true,
+                Caption = "小写下划线(Json)",
+                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+            }
+            //new CommandItem
+            //{
+            //    Action = Format4,
+            //    IsButton = true,
+            //    Caption = "大驼峰(API)",
+            //    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+            //},
+            //new CommandItem
+            //{
+            //    Action = Format5,
+            //    IsButton = true,
+            //    Caption = "小驼峰(API)",
+            //    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+            //},
+            //new CommandItem
+            //{
+            //    Action = Format6,
+            //    IsButton = true,
+            //    Caption = "小写下划线(API)",
+            //    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+            //},
+            //new CommandItem
+            //{
+            //    Action = Check,
+            //    IsButton = true,
+            //    Caption = "检查",
+            //    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+            );
+            base.CreateCommands(commands);
         }
         #endregion
 
@@ -141,7 +142,7 @@ namespace Agebull.EntityModel.Designer
 
                 if (property.NoneApiArgument)
                     property.ApiArgumentName = null;
-                else if(string.IsNullOrWhiteSpace(property.ApiArgumentName))
+                else if (string.IsNullOrWhiteSpace(property.ApiArgumentName))
                     property.ApiArgumentName = property.JsonName;
             }
         }

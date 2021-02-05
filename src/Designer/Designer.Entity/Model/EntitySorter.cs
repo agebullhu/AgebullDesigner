@@ -8,8 +8,8 @@ namespace Agebull.EntityModel.Config
     /// </summary>
     public class EntitySorter : ConfigModelBase
     {
-        System.Collections.Generic.List<IFieldConfig> columns;
-        System.Collections.Generic.List<IFieldConfig> dcs;
+        List<IFieldConfig> columns;
+        List<IFieldConfig> dcs;
         private IEntityConfig entity;
         IFieldConfig pk, pc;
         /// <summary>
@@ -22,9 +22,9 @@ namespace Agebull.EntityModel.Config
             {
                 entity = value;
                 pk = Entity.Entity.PrimaryColumn;
-                pc = Entity.Properties.FirstOrDefault(p => p.IsCaption);
-                columns = entity.Properties.Where(p => !p.IsDiscard && !p.IsPrimaryKey && !p.IsCaption).OrderBy(p => p.Index).ToList();
-                dcs = entity.Properties.Where(p => p.IsDiscard).OrderBy(p => p.Index).ToList();
+                pc = Entity.Entity.CaptionColumn;
+                columns = entity.Properties.Where(p => !p.IsDiscard && p!=pc && p!=pk).OrderBy(p => p.Index).ToList();
+                dcs = entity.Properties.Where(p => p.IsDiscard && p != pc && p != pk).OrderBy(p => p.Index).ToList();
             }
         }
 

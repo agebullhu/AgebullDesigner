@@ -39,15 +39,6 @@ namespace Agebull.EntityModel.Designer
             Context = DataModelDesignModel.Current?.Context;
         }
 
-        /// <summary>
-        /// 生成命令对象
-        /// </summary>
-        /// <returns></returns>
-        public override void CreateCommands(IList<CommandItemBase> commands)
-        {
-            commands.Append();
-        }
-
         #endregion
 
 
@@ -136,6 +127,7 @@ namespace Agebull.EntityModel.Designer
 
         internal static void CheckSimple(IEntityConfig entity)
         {
+            var cap = entity.CaptionColumn;
             foreach (var field in entity.Properties)
             {
                 if (field.IsSystemField || field.IsDiscard || !field.UserSee)
@@ -145,9 +137,11 @@ namespace Agebull.EntityModel.Designer
                     field.NoneDetails = true;
                     continue;
                 }
-                field.CanEmpty = !field.IsCaption;
-                field.IsRequired = field.IsCaption;
-
+                if(field == cap)
+                {
+                    field.CanEmpty = false;
+                    field.IsRequired = true;
+                }
                 if (field.IsLinkKey)
                 {
                     field.NoneGrid = true;

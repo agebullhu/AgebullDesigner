@@ -35,45 +35,30 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         public override void CreateCommands(IList<CommandItemBase> commands)
         {
-             CreateCommands(commands,true, true);
-        }
-
-        /// <summary>
-        /// 生成命令对象
-        /// </summary>
-        /// <returns></returns>
-        protected void CreateCommands(IList<CommandItemBase> commands,bool edit,bool ext)
-        {
-            if (edit)
+            commands.Add(new CommandItem
             {
-                commands.Add(new CommandItem
-                {
-                    IsButton = true,
-                    Action = RelationColumns,
-                    NoConfirm = true,
-                    Caption = "更新关系列",
-                    Image = Application.Current.Resources["tree_item"] as ImageSource
-                });
-                commands.Add(new CommandItem
-                {
-                    IsButton = true,
-                    Action = PasteColumns,
-                    NoConfirm = true,
-                    Caption = "粘贴列",
-                    Image = Application.Current.Resources["tree_item"] as ImageSource
-                });
-                commands.Add(new CommandItem
-                {
-                    IsButton = true,
-                    Action = DeleteColumns,
-                    Caption = "删除所选列",
-                    Image = Application.Current.Resources["img_del"] as ImageSource
-                });
-            }
-            if (ext)
+                IsButton = true,
+                Action = RelationColumns,
+                NoConfirm = true,
+                Caption = "更新关系列",
+                Image = Application.Current.Resources["tree_item"] as ImageSource
+            });
+            commands.Add(new CommandItem
             {
-                CommandCoefficient.CoefficientEditor<EntityConfig>(commands, EditorName);
-            }
+                IsButton = true,
+                Action = PasteColumns,
+                NoConfirm = true,
+                Caption = "粘贴列",
+                Image = Application.Current.Resources["tree_item"] as ImageSource
+            });
+            commands.Add(new CommandItem
+            {
+                IsButton = true,
+                Action = DeleteColumns,
+                Caption = "删除所选列",
+                Image = Application.Current.Resources["img_del"] as ImageSource
+            });
+            base.CreateCommands(commands);
         }
 
         #endregion

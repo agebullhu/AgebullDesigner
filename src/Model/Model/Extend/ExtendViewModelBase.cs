@@ -1,10 +1,7 @@
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Windows;
-using System.Windows.Controls;
 using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -13,9 +10,9 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     public abstract class ExtendViewModelBase : ViewModelBase
     {
-        private DataModelDesignModel _baseModel;
         private DesignContext _context;
         private EditorModel _editor;
+
 
         #region 基本设置
 
@@ -37,7 +34,11 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     分类
         /// </summary>
-        public string EditorName { get; set; }
+        public string EditorName
+        {
+            get => DesignModel.EditorName;
+            set => DesignModel.EditorName = value;
+        }
 
 
         /// <summary>
@@ -45,22 +46,9 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public DataModelDesignModel BaseModel
         {
-            get => _baseModel;
-            set
-            {
-                _baseModel = value;
-                Context = value.Context;
-                Editor = value.Editor;
-                Dispatcher = value.Dispatcher;
-                OnBaseModelBinding();
-            }
+            get;
+            set;
         }
-
-
-        /// <summary>
-        ///     模型
-        /// </summary>
-        public abstract void OnBaseModelBinding();
 
         /// <summary>
         /// 上下文
@@ -95,10 +83,16 @@ namespace Agebull.EntityModel.Designer
         #region 主面板
 
         /// <summary>
-        /// 主面板构造完成
+        ///     设置当前编辑的对象
         /// </summary>
-        /// <param name="body"></param>
-        protected abstract void OnBodyCreating(FrameworkElement body);
+        public virtual void SetContextConfig(DataModelDesignModel baseModel, ConfigBase cfg)
+        {
+            Context = baseModel.Context;
+            Editor = baseModel.Editor;
+            Dispatcher = baseModel.Dispatcher;
+            BaseModel = baseModel;
+            RaisePropertyChanged(nameof(BaseModel));
+        }
 
 
         /// <summary>
@@ -109,6 +103,26 @@ namespace Agebull.EntityModel.Designer
             get;
         }
 
+        /// <summary>
+        /// 构造命令列表
+        /// </summary>
+        /// <returns></returns>
+        public virtual void CreateCommands(IList<CommandItemBase> commands)
+        {
+        }
+        /// <summary>
+        /// 命令ICommandModel
+        /// </summary>
+        public virtual NotificationList<CommandItemBase> Commands
+        {
+            get
+            {
+                var cmds = new NotificationList<CommandItemBase>();
+                CreateCommands(cmds);
+                return cmds;
+            }
+        }
+
         #endregion
     }
 
@@ -117,9 +131,11 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     /// <typeparam name="TModel"></typeparam>
     public abstract class ExtendViewModelBase<TModel> : ExtendViewModelBase
-    where TModel : DesignModelBase, new()
+        where TModel : DesignModelBase, new()
     {
         public TModel Model { get; }
+
+
         /// <summary>
         /// 构造
         /// </summary>
@@ -132,44 +148,51 @@ namespace Agebull.EntityModel.Designer
         }
 
         /// <summary>
-        ///     模型
+        /// 命令ICommandModel
         /// </summary>
-        public override void OnBaseModelBinding()
+        public override NotificationList<CommandItemBase> Commands
         {
+            get
+            {
+                var cmds = new NotificationList<CommandItemBase>();
+                CreateCommands(cmds);
+                cmds.AddRange(Model.CreateCommands());
+                return cmds;
+            }
+        }
+
+        /// <summary>
+        ///     设置当前编辑的对象
+        /// </summary>
+        public override void SetContextConfig(DataModelDesignModel baseModel, ConfigBase cfg)
+        {
+            Context = baseModel.Context;
+            Editor = baseModel.Editor;
+            Dispatcher = baseModel.Dispatcher;
+            BaseModel = baseModel;
+            Model.DesignModel = cfg;
             Model.Model = BaseModel;
             Model.Context = BaseModel.Context;
             Model.Dispatcher = BaseModel.Dispatcher;
             Model.EditorName = EditorName;
             Model.Initialize();
+            RaisePropertyChanged(nameof(BaseModel));
+            RaisePropertyChanged(nameof(Commands));
+            RaisePropertyChanged(nameof(Menus));
+            RaisePropertyChanged(nameof(Buttons));
         }
 
         /// <summary>
-        /// 主面板构造完成
+        /// 构造命令列表
         /// </summary>
-        /// <param name="body"></param>
-        protected override void OnBodyCreating(FrameworkElement body)
+        /// <returns></returns>
+        public virtual void CreateCommands(IList<CommandItemBase> commands)
         {
-            //body.DataContext = Model;
-            //RaisePropertyChanged(nameof(Context));
-            //RaisePropertyChanged(nameof(DesignModel));
         }
-
-        public override void CreateCommands(IList<CommandItemBase> commands)
-        {
-            Model.CreateCommands(commands);
-        }
-
         /// <summary>
         ///     模型
         /// </summary>
         public sealed override DesignModelBase DesignModel => Model;
-
-
-        /// <summary>
-        ///     依赖对象字典
-        /// </summary>
-        [IgnoreDataMember]
-        public ModelFunctionDictionary<TModel> ModelFunction { get; }
 
     }
 }

@@ -1,6 +1,7 @@
 using Agebull.Common;
 using Agebull.EntityModel.Config;
 using System.IO;
+using System.Text;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -23,18 +24,24 @@ namespace Agebull.EntityModel.RobotCoder
         {
             var folder = IOHelper.CheckPath(path, "Common");
 
-            var dbFile =  Path.Combine(GlobalConfig.RootPath, "Templates", "GlobalDataInterfaces.cs");
-            dbFile.FileCopyTo(Path.Combine(folder, "GlobalDataInterfaces.cs"));
+            //var dbFile =  Path.Combine(GlobalConfig.RootPath, "Templates", "GlobalDataInterfaces.cs");
+            //dbFile.FileCopyTo(Path.Combine(folder, "GlobalDataInterfaces.cs"));
             var file = Path.Combine(folder,"Enums.cs");
-            string code = $@"using System;
+            var code = new StringBuilder();
+            
+            foreach(var enumConfig in Project.Enums)
+            {
+                if(!enumConfig.IsOut)
+                    EnumMomentCoder.EnumCode(code, enumConfig);
+            }
+            SaveCode(file, $@"using System;
 
 namespace {NameSpace}
 {{
-    {EnumMomentCoder.EnumFunc(Project)}
-}}";
-            SaveCode(file, code);
+    {code}
+}}");
         }
-
+        
     }
 
 }

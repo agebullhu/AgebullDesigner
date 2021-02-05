@@ -72,6 +72,30 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
+        /// 同步删除
+        /// </summary>
+        [DataMember, JsonProperty("canDelete", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool canDelete;
+
+        /// <summary>
+        /// 同步删除
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category("数据库"), DisplayName("同步删除"), Description("同步删除")]
+        public bool CanDelete
+        {
+            get => canDelete;
+            set
+            {
+                if (canDelete == value)
+                    return;
+                BeforePropertyChanged(nameof(CanDelete), canDelete, value);
+                canDelete = value;
+                OnPropertyChanged(nameof(CanDelete));
+            }
+        }
+
+        /// <summary>
         /// 主表
         /// </summary>
         [DataMember, JsonProperty("PrimaryTable", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]

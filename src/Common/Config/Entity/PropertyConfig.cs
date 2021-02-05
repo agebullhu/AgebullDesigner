@@ -77,11 +77,6 @@ namespace Agebull.EntityModel.Config
         private FieldConfig field;
 
         /// <summary>
-        ///     原始字段名称
-        /// </summary>
-        IFieldConfig IDesignField.Field => Field;
-
-        /// <summary>
         /// 字段
         /// </summary>
         [IgnoreDataMember, JsonIgnore]

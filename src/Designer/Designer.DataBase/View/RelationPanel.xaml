@@ -56,6 +56,7 @@
                 <DataGridCheckBoxColumn Binding="{Binding IsCaption,Mode=TwoWay}" Header="标题" />
                 <DataGridCheckBoxColumn Binding="{Binding IsCompute,Mode=TwoWay}" Header="计算列" />
                 <DataGridCheckBoxColumn Binding="{Binding IsLinkField,Mode=TwoWay}" Header="关联" />
+                <DataGridCheckBoxColumn Binding="{Binding IsParent,Mode=TwoWay}" Header="上级外键" />
                 <DataGridCheckBoxColumn Binding="{Binding IsLinkKey,Mode=TwoWay}" Header="外键" />
                 <DataGridCheckBoxColumn Binding="{Binding IsLinkCaption,Mode=TwoWay}" Header="外部标题" />
                 <DataGridTextColumn Binding="{Binding LinkTable,Mode=TwoWay}" Header="关联实体" />

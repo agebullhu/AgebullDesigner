@@ -133,7 +133,7 @@ namespace {Project.NameSpace}.DataAccess
             {{
                 IsQuery          = false,
                 UpdateByMidified = true,
-                EventLevel       = EventEventLevel.{(Model.EnableDataEvent ? "Details" : "None")},
+                EventLevel       = EventEventLevel.{(Model.EnableDataEvent ? "Simple" : "None")},
                 InjectionLevel   = InjectionLevel.All,
                 SqlBuilder       = new MySqlSqlBuilder<{Model.EntityName}>(),
                 DataStruct       = Struct,
@@ -352,10 +352,9 @@ namespace {Project.NameSpace}.DataAccess
                 if (!names.Contains(name))
                     names.Add(name);
                 foreach (var alias in names)
-                    code.AppendLine($@"
+                    code.Append($@"
                 case ""{alias}"" :");
-                foreach (var alias in names)
-                    code.AppendLine($@"
+                code.Append($@"
                     return entity.{property.Name};");
             }
             code.AppendLine(@"

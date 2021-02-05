@@ -38,19 +38,6 @@ namespace Agebull.EntityModel.Designer
         #region 操作命令
 
         /// <summary>
-        /// 命令
-        /// </summary>
-        public override NotificationList<CommandItemBase> Commands
-        {
-            get
-            {
-                var cmds = new NotificationList<CommandItemBase>();
-                CreateCommands(cmds);
-                return cmds;
-            }
-        }
-
-        /// <summary>
         /// 生成命令对象
         /// </summary>
         /// <param name="commands"></param>
@@ -74,6 +61,7 @@ namespace Agebull.EntityModel.Designer
             foreach (var cmd in Builders.Values)
                 foreach (var builder in cmd.Values)
                     commands.Add(builder(OnCodeSuccess));
+            base.CreateCommands(commands);
         }
 
         /// <summary>
@@ -252,6 +240,7 @@ namespace Agebull.EntityModel.Designer
             }
         }
         #endregion
+
         #region 代码片断
         /// <summary>
         /// 复制代码

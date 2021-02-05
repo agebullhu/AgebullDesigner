@@ -199,6 +199,36 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(ApiItems));
             }
         }
+
+        /// <summary>
+        /// 服务名称
+        /// </summary>
+        [DataMember, JsonProperty("serviceName", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal string serviceName;
+
+        /// <summary>
+        /// 服务名称
+        /// </summary>
+        /// <remark>
+        /// 接口名称
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"解决方案"), DisplayName(@"服务名称"), Description("服务名称")]
+        public string ServiceName
+        {
+            get => WorkContext.InCoderGenerating ? serviceName ?? Abbreviation : serviceName;
+            set
+            {
+                if (serviceName == value)
+                    return;
+                if (value == Name)
+                    value = null;
+                BeforePropertyChanged(nameof(ServiceName), serviceName, value);
+                serviceName = string.IsNullOrWhiteSpace(value) ? null : value.Trim('\\', '/').Trim();
+                OnPropertyChanged(nameof(ServiceName));
+            }
+        }
+
         /// <summary>
         /// 接口名称
         /// </summary>
@@ -215,7 +245,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"解决方案"), DisplayName(@"接口名称"), Description("接口名称")]
         public string ApiName
         {
-            get => WorkContext.InCoderGenerating ? _apiName ?? Abbreviation : _apiName;
+            get => WorkContext.InCoderGenerating ? _apiName ?? $"api/{Abbreviation}" : _apiName;
             set
             {
                 if (_apiName == value)

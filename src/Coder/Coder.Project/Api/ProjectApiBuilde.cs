@@ -42,8 +42,12 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             {
                 entityEvents.Append(EventCode(entity));
             }
+            //DataEventCode(project, entityEvents);
+        }
 
-            var code= $@"
+        private void DataEventCode(ProjectConfig project, StringBuilder entityEvents)
+        {
+            var code = $@"
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Agebull.EntityModel.Common;
@@ -66,7 +70,7 @@ namespace {project.NameSpace}.Events
     }}
 }}";
             var path = IOHelper.CheckPath(project.ApiPath, "Event");
-            WriteFile(Path.Combine(path,$"{project.Name}EntityEventController.cs"),code);
+            WriteFile(Path.Combine(path, $"{project.Name}EntityEventController.cs"), code);
         }
 
         /// <summary>

@@ -23,10 +23,14 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
         {
             EditorName = "DataBase";
         }
-
     }
     internal class DataBaseModel : ModelDesignModel
     {
+        public DataBaseModel()
+        {
+            //CommondFilter = cmd => true;
+        }
+
         #region 操作命令
 
         /// <summary>
@@ -35,7 +39,6 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
         /// <returns></returns>
         public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            base.CreateCommands(commands);
             commands.Add(new CommandItem
             {
                 Action = UpperHump,
@@ -57,6 +60,7 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
                 Caption = "小写下划线名称(C风格)",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             });
+            base.CreateCommands(commands);
         }
         #endregion
 

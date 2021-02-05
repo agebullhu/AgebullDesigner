@@ -32,51 +32,6 @@ namespace Agebull.EntityModel.RobotCoder
         }
         #endregion
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public string ApiSwitch(EntityConfig entity)
-        {
-            var isApi = entity.LastProperties.FirstOrDefault(p => p.IsCaption);
-            if (isApi != null)
-            {
-                return $@"
-                case ""{entity.ReadTableName.ToLower()}"":
-                    Get{entity.Name}();
-                    break;";
-            }
-            return null;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public string ApiCode(EntityConfig entity)
-        {
-            var isApi = entity.LastProperties.FirstOrDefault(p => p.IsCaption);
-            if (isApi != null)
-            {
-                return $@"
-
-        /// <summary>
-        /// 取{entity.Caption}的下拉列表数据
-        /// </summary>
-        private void Get{entity.Name}()
-        {{
-            var access = new {entity.Name}DataAccess();
-            var result = access.All().Select(p => new EasyComboValues(p.{entity.PrimaryColumn.Name}, p.{isApi.Name})).ToList();
-            result.Insert(0, new EasyComboValues
-            {{
-                Key = 0,
-                Value = ""-""
-            }});
-            SetCustomJsonResult(result);
-        }}";
-            }
-            return null;
-        }
-
         public string ToCSharpCode(EntityConfig entity)
         {
             var code = new StringBuilder();

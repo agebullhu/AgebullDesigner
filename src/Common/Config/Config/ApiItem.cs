@@ -23,6 +23,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         DELETE
     }
+
     /// <summary>
     /// 表示一个API节点
     /// </summary>
@@ -352,6 +353,7 @@ namespace Agebull.EntityModel.Config
             }
         }*/
         #endregion
+
         #region 接口
 
         /// <summary>

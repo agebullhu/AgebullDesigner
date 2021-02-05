@@ -44,167 +44,49 @@ namespace Agebull.EntityModel.RobotCoder.VUE
     <div id='work_space' class='tiled' v-cloak>
         <el-container>
             <el-header height='48px'>
-                <div style='display: inline-block;padding:6px'>
-                    {NavigateTitle()}
+                <div style='display: inline-block;padding:6px'>{NavigateTitle(5)}
                 </div>
                 <div class='toolRange'>
-                    <el-input placeholder='请输入搜索内容' v-model='list.keyWords' class='input-with-select' clearable>{QueryList()}
+                    <el-input placeholder='请输入搜索内容' v-model='list.keyWords' class='input-with-select' clearable>{QueryList(6)}
                         <el-button slot='append' icon='el-icon-search' @click='doQuery'></el-button>
                     </el-input>
-                </div>{HtmlExButton()}
-            </el-header>{HtmlMainCode()}
-        </el-container>{HtmlDialogCode()}
+                </div>{HtmlExButton(4)}
+            </el-header>{HtmlMainCode(3)}{Footer(3)}
+        </el-container>{HtmlDialogCode(2)}
     </div>
     <script type='text/javascript' src='script.js'></script>
 </body>
 </html>";
         }
 
-        private string NavigateTitle()
-        {
-            var code = new StringBuilder();
-            code.Append($"<span>{Model.Parent.Caption}</span>&nbsp;<i class='el-icon-arrow-right'></i>");
-            if (!Model.Parent.NoClassify)
-            {
-                var cls = Model.Parent.Classifies.FirstOrDefault(p => p.Name == Model.Classify);
-                if (cls != null)
-                    code.Append($"&nbsp;<span>{cls.Caption}</span>&nbsp;<i class='el-icon-arrow-right'></i>");
-            }
-            if (!Model.DetailsPage)
-                code.Append($"&nbsp;<span>{Model.Caption}</span>");
-            else
-            {
-                code.Append($"<label class='labelButton' @click='showList'>{Model.Caption}</label>");
-                code.Append($"<template v-if='form.visible'>&nbsp;<i class='el-icon-arrow-right'></i>&nbsp;<span>详细信息</span></template>");
-            }
-            return code.ToString();
-        }
-
-        string HtmlExButton()
-        {
-            StringBuilder exButton = new StringBuilder();
-            exButton.Append(@"
-                <div class='toolRange'>
-                    <el-button-group>
-                        <el-button v-if='!form.visible' icon='el-icon-refresh' @click='loadList'>刷新</el-button>
-                        <!--el-button icon='fa fa-file-excel-o' type='success' @click='exportExcel'>导出</el-button-->");
-
-            if (!Model.IsUiReadOnly)
-            {
-                exButton.Append(@"
-                        <el-button v-if='!form.visible' icon='el-icon-plus' @click='doAddNew'>新增</el-button>");
-            }
-            if (!Model.DetailsPage)
-            {
-                if (!Model.IsUiReadOnly)
-                {
-                    exButton.Append(@"
-                        <el-button v-if='!form.visible' icon='el-icon-edit' @click='doEdit'>编辑</el-button>");
-                }
-                else
-                {
-                    exButton.Append(@"
-                        <el-button v-if='!form.visible' icon='el-icon-edit' @click='doEdit'>详细</el-button>");
-                }
-            }
-            else
-            {
-                exButton.Append(@"
-                        <template v-if='form.visible'>
-                            <el-button icon='el-icon-back' @click='showList'>返回</el-button>
-                            <el-button icon='el-icon-check' @click='save' v-if='!form.readonly'>保存</el-button>
-                        </template>");
-            }
-            if (!Model.IsUiReadOnly)
-            {
-                exButton.Append(@"
-                        <el-button v-if='!form.visible' icon='el-icon-close' @click='doDelete'>删除</el-button>");
-            }
-            exButton.Append(@"
-                    </el-button-group>");
-            if (!Model.IsUiReadOnly)
-            {
-                if (Model.Interfaces.Contains("IAuditData"))
-                {
-                    exButton.Append(@"
-                    <el-dropdown v-if='!form.visible' split-button @click='doPass' @command='handleDataCommand'>
-                        <i class='el-icon-circle-check'></i>审核通过
-                        <el-dropdown-menu slot='dropdown'>
-                            <el-dropdown-item type='text' command='Enable' icon='el-icon-lock'>启用</el-dropdown-item>
-                            <el-dropdown-item type='text' command='Disable' icon='el-icon-remove'>禁用</el-dropdown-item>
-                            <el-dropdown-item type='text' command='Reset' icon='el-icon-unlock'>解除锁定</el-dropdown-item>
-                            <el-dropdown-item type='text' command='Deny' icon='el-icon-remove-outline'>不通过</el-dropdown-item>
-                            <el-dropdown-item type='text' command='Back' icon='el-icon-edit'>退回编辑</el-dropdown-item>
-                            <el-dropdown-item type='text' command='ReDo' icon='el-icon-edit'>重新审核</el-dropdown-item>
-                        </el-dropdown-menu>
-                    </el-dropdown>");
-                }
-                else if (Model.Interfaces.Contains("IStateData"))
-                {
-                    exButton.Append(@"
-                    <el-dropdown v-if='!form.visible' split-button @click='doEnable'>
-                        <i class='el-icon-lock'></i>启用
-                        <el-dropdown-menu slot='dropdown' style='padding:3px;'>
-                            <el-dropdown-item style='padding:3px;'>
-                                <el-button type='text' icon='el-icon-remove'  @click='doDisable'>禁用</el-button>
-                            </el-dropdown-item>
-                            <el-dropdown-item style='padding:3px;'>
-                                <el-button type='text' icon='el-icon-unlock' @click='doReset'>解除锁定</el-button>
-                            </el-dropdown-item>
-                        </el-dropdown-menu>
-                    </el-dropdown>");
-                }
-            }
-            exButton.Append(@"
-            </div>");
-            return exButton.ToString();
-        }
         #endregion
+        #region Helper
 
-        #region Main
-        public string HtmlMainCode()
+        static string HtmlAttribute(string attr, string value)
         {
-            var code = new StringBuilder();
-            var hide = Model.DetailsPage ? " v-if='!form.visible'" : null;
-            var grid = HtmlGridCode(Model, "list.rows", Model.DetailsPage);
-
-            if (Model.TreeUi)
-            {
-                code.Append($@"
-        <el-main style='margin: 0; padding: 0;'>
-            <el-container{hide}>{Tree}
-                <el-main style='margin: 0; padding: 0;'>
-                    <el-container>
-                        <el-main style='margin: 0; padding: 0;'>{grid}
-                        </el-main>{footer}
-                    </el-container>
-                </el-main>
-            </el-container>{DetailsCode()}
-        </el-main>");
-            }
-            else
-            {
-                code.Append($@"
-        <el-main style='margin: 0; padding: 0;'>
-            <el-container{hide}>
-                <el-main style='margin: 0; padding: 0;'>{grid}
-                </el-main>{footer}
-            </el-container>{DetailsCode()}
-        </el-main>");
-            }
-            return code.ToString();
+            return value.IsEmpty() ? "" : $" {attr}= '{value}'";
         }
-        string DetailsField(IFieldConfig field)
+        string ToNoFromSection(string html) => Model.DetailsPage
+            ? $@"
+<template v-if='!form.visible'>{FormatSpace(1, html)}
+</template>"
+            : html;
+
+        string ToFromSection(string html) => Model.DetailsPage
+            ? $@"
+<template v-if='form.visible'>{FormatSpace(1, html)}
+</template>"
+            : html;
+
+        string FormatSpace(int level, StringBuilder html)
         {
-            return $@"
-                            <div class='detailsField'>
-                                <div class='myLabel'>{field.Caption}</div>
-                                <div class='myValue'>{{{{details.data.{field.JsonName}{Formater(field)}}}}}</div>
-                            </div>";
+            return html.Length == 0 ? null : html.ToString().SpaceLine(level * 4);
         }
 
-        #endregion
-        #region Tree
+        string FormatSpace(int level, string html)
+        {
+            return html.IsEmpty() ? null : html.SpaceLine(level * 4);
+        }
 
         string Formater(IFieldConfig field)
         {
@@ -238,26 +120,64 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             }
             return null;
         }
-        string Tree => !Model.TreeUi ? null : @"
-                <el-aside style='height: 100%; width: 200px'>
-                    <el-tree :data='tree.nodes' ref='tree' :props='tree.props' 
-                             @current-change='onTreeNodeChanged' default-expand-all highlight-current highlight-current node-key='id'>
-                        <span slot-scope='{ node, data }'>
-                            <i :class='data.type | typeIcon'></i><span>{{ node.label }}</span>
-                        </span>
-                    </el-tree>
-                </el-aside>";
+        #endregion
+        #region Main
+        public string HtmlMainCode(int level)
+        {
+            var details = ToFromSection(HtmlDetailsCode(1));
+            string main;
+            if (Model.TreeUi)
+            {
+                main = ToNoFromSection($@"
+<el-container>
+    <el-aside style='height: 100%; width: 200px'>{Tree(2)}
+    </el-aside>
+    <el-main style='margin: 0; padding: 0;'>{FormatSpace(2, HtmlGridCode(0, Model, "list.rows", true))}
+    </el-main>
+</el-container>");
+            }
+            else
+            {
+                main = ToNoFromSection(HtmlGridCode(0, Model, "list.rows", true));
+            }
+            return FormatSpace(level, $@"
+<el-main style='margin: 0; padding: 0;'>{FormatSpace(1, main)}{FormatSpace(1, details)}
+</el-main>");
+        }
+
+        string DetailsField(IFieldConfig field)
+        {
+            return $@"
+                            <div class='detailsField'>
+                                <div class='myLabel'>{field.Caption}</div>
+                                <div class='myValue'>{{{{details.data.{field.JsonName}{Formater(field)}}}}}</div>
+                            </div>";
+        }
 
         #endregion
+        #region Tree
+
+        string Tree(int level) => FormatSpace(level, @"
+<el-tree :data='tree.nodes' ref='tree' :props='tree.props' node-key='id'
+         @current-change='onTreeNodeChanged' default-expand-all highlight-current :expand-on-click-node='false'>
+    <span slot-scope='{node, data}'>
+        <i :class='data.type | typeIcon'></i><span>{{node.label}}</span>
+    </span>
+</el-tree>");
+
+        #endregion
+
         #region 表格
 
-        string HtmlGridCode(IEntityConfig entity, string data, bool details)
+        string HtmlGridCode(int level, IEntityConfig entity, string data, bool details)
         {
-            var main = entity == Model ? "ref='dataTable' @sort-change='onSort' @row-dblclick='dblclick' @current-change='currentRowChange' @selection-change='selectionRowChange'" : null;
+            var main = entity == Model ? @"
+           ref='dataTable' @sort-change='onSort' @row-dblclick='dblclick' 
+           @current-change='currentRowChange' @selection-change='selectionRowChange'" : null;
             var code = new StringBuilder();
             code.Append($@"
-                    <!-- Grid -->
-                    <el-table {main} :data='{data}' border highlight-current-row style='width:99%'>");
+<!-- {entity.Caption}-->
+<el-table :data='{data}' border highlight-current-row style='width:99%'{main}>");
             //if (entity.Interfaces.Contains("IInnerTree") && entity.LastProperties.Any(p => p.Name == "ParentId"))
             //{
             //    code.Append($@"
@@ -265,7 +185,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             //}
             if (entity == Model)
                 code.Append(@"
-                    <el-table-column type='selection'align='center'header-align='center'></el-table-column>");
+    <el-table-column type='selection'align='center'header-align='center'></el-table-column>");
             if (entity.Interfaces.Contains("IStateData"))
             {
                 code.Append(stateColumn);
@@ -284,53 +204,64 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             GridDetailsField(code, entity);
 
             if (details)
-                code.Append(detailsColumn);
+            {
+                DetailsCommandsColumn(code);
+            }
             code.Append(@"
-                </el-table>");
-            return code.ToString();
+</el-table>");
+            return FormatSpace(level, code);
         }
-        const string detailsColumn = @"
-                    <el-table-column fixed='right' label='操作' width='68'>
-                        <template slot-scope='scope'>
-                            <label class='labelButton' @click='handleClick(scope.row)'>详细</label>
-                        </template>
-                    </el-table-column>";
+
+        void DetailsCommandsColumn(StringBuilder code)
+        {
+            var cmds = Model.Commands.Where(p => p.IsSingleObject);
+            if (!Model.DetailsPage && !cmds.Any())
+                return;
+            int cnt = 32 + (cmds.Count() * 1);
+            if (Model.DetailsPage) cnt += 32;
+            code.Append($@"
+    <el-table-column fixed='right' label='操作' width='{cnt}'>
+        <template slot-scope='scope'>");
+            bool first = Model.DetailsPage;
+            if (Model.DetailsPage)
+                code.Append(@"
+            <label class='labelButton' @click='handleClick(scope.row)'>详细</label>");
+
+            foreach (var cmd in cmds)
+            {
+                if (first) first = false;
+                else
+                    code.Append("&nbsp;&nbsp;");
+                code.Append($@"
+            <label class='labelButton' @click='{cmd.JsMethod}(scope.row.{Model.PrimaryColumn.JsonName})'>{cmd.Caption}</label>");
+            }
+            code.Append($@"
+        </template>
+    </el-table-column>");
+        }
 
         const string stateColumn = @"
-                    <el-table-column label='状态' align='center' header-align='center' width='50'>
-                        <template slot-scope='scope'>
-                            <i :class='scope.row.dataState | dataStateIcon'></i>
-                        </template>
-                    </el-table-column>";
-
-        const string footer = @"
-        <el-footer height='42px'>
-            <el-pagination @size-change='sizeChange'
-                            @current-change='pageChange'
-                            background
-                            layout='total, sizes, prev, pager, next, jumper'
-                            :current-page='list.page'
-                            :page-sizes='list.pageSizes'
-                            :page-size='list.pageSize'
-                            :total='list.total'>
-            </el-pagination>
-        </el-footer>";
+    <el-table-column label='状态' align='center' header-align='center' width='50'>
+        <template slot-scope='scope'>
+            <i :class='scope.row.dataState | dataStateIcon'></i>
+        </template>
+    </el-table-column>";
 
         void GridField(StringBuilder code, IFieldConfig field, string caption)
         {
             var align = string.IsNullOrWhiteSpace(field.GridAlign) ? "left" : field.GridAlign;
             var fmt = Formater(field);
             code.Append($@"
-                <el-table-column prop='{field.JsonName}' header-align='center' align='{align}' label='{caption}'");
+    <el-table-column prop='{field.JsonName}' header-align='center' align='{align}' label='{caption}'");
             if (field.UserOrder)
                 code.Append(" sortable='true'");
             if (field.GridWidth > 0)
                 code.Append($" width={field.GridWidth}");
             code.Append($@">
-                    <template slot-scope='scope'>
-                        <span style='margin-left: 3px'>{field.Prefix}{{{{scope.row.{field.JsonName}{fmt}}}}}{field.Suffix}</span>
-                    </template>
-                </el-table-column>");
+        <template slot-scope='scope'>
+            <span style='margin-left: 3px'>{field.Prefix}{{{{scope.row.{field.JsonName}{fmt}}}}}{field.Suffix}</span>
+        </template>
+    </el-table-column>");
         }
 
         static void GridDetailsField(StringBuilder code, IEntityConfig entity)
@@ -339,8 +270,8 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             if (details.Length <= 0)
                 return;
             code.Append(@"
-                    <el-table-column type='expand'>
-                        <template slot-scope='props'>");
+    <el-table-column type='expand'>
+        <template slot-scope='props'>");
             foreach (var property in details)
             {
                 var field = property;
@@ -354,7 +285,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 }
                 if (field.IsMemo || field.MulitLine)
                     code.Append($@"
-                            <div class='expand_line_block'>");
+            <div class='expand_line_block'>");
                 else
                 {
                     var sp = field.FormCloumnSapn <= 0
@@ -363,21 +294,21 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                             ? 4
                             : field.FormCloumnSapn;
                     code.Append($@"
-                            <div class='expand_block_{sp}'>");
+            <div class='expand_block_{sp}'>");
 
                 }
                 code.Append($@"
-                                <label class='expand_label'>{caption}：</label>");
+                <label class='expand_label'>{caption}：</label>");
 
                 if (field.IsImage)
                 {
                     code.Append($@"
-                                <el-image :src='{property.JsonName}' lazy></el-image>");
+                <el-image :src='{property.JsonName}' lazy></el-image>");
                 }
                 else
                 {
                     code.Append($@"
-                                <span class='expand_value'>{field.Prefix}{{{{props.row.{property.JsonName}");
+                <span class='expand_value'>{field.Prefix}{{{{props.row.{property.JsonName}");
                     if (field.EnumConfig != null)
                     {
                         code.Append($@" | {field.EnumConfig.Name.ToLWord()}Formater");
@@ -402,18 +333,18 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                     code.Append($@"}}}}{field.Suffix}</span>");
                 }
                 code.Append($@"
-                            </div>");
+            </div>");
             }
 
             code.Append(@"
-                        </template>
-                    </el-table-column>");
+        </template>
+    </el-table-column>");
         }
 
         #endregion
         #region 表单
 
-        public string HtmlDialogCode()
+        public string HtmlDialogCode(int level)
         {
             if (Model.DetailsPage)
                 return "";
@@ -421,40 +352,38 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             var wid = col * 422 + 50;
             var code = new StringBuilder();
             code.Append($@"
-     <el-dialog title='【{Model.Caption}】编辑'
-                :visible.sync='form.visible'
-                :show-close='false'
-                :close-on-click-modal='false'
-                width='{wid}px'
-                v-loading='form.loading'
-                element-loading-text='正在处理'
-                element-loading-spinner='el-icon-loading'
-                element-loading-background='rgba(0, 0, 0, 0.8)'>
-        <div class='el-dialog__body_form'>{HtmlFormCode(true)}
-        </div>
-        <div slot='footer'>");
+<el-dialog title='【{Model.Caption}】编辑'
+        :visible.sync='form.visible'
+        :show-close='false'
+        :close-on-click-modal='false'
+        width='{wid}px'
+        v-loading='form.loading'
+        element-loading-text='正在处理'
+        element-loading-spinner='el-icon-loading'
+        element-loading-background='rgba(0, 0, 0, 0.8)'>
+<div class='el-dialog__body_form'>{HtmlFormCode(1, true)}
+</div>
+<div slot='footer'>");
             if (!Model.IsUiReadOnly)
             {
                 code.Append(@"
-            <el-button icon='el-icon-check' @click='save' type='primary' v-if='!form.readonly'>保存</el-button>");
+    <el-button icon='el-icon-check' @click='save' type='primary' v-if='!form.readonly'>保存</el-button>");
             }
             code.Append(@"
-            <el-button icon='el-icon-close' @click='form.visible = false'>取消</el-button>
-        </div>
-    </el-dialog>");
-            return code.ToString();
+    <el-button icon='el-icon-close' @click='form.visible = false'>取消</el-button>
+</div>
+</el-dialog>");
+            return FormatSpace(level, code);
         }
 
-        public string DetailsCode() => Model.DetailsPage ? HtmlDetailsCode() : null;
 
-        public string HtmlDetailsCode()
+        public string HtmlDetailsCode(int level)
         {
             var code = new StringBuilder();
             code.Append($@"
-                <div v-if='form.visible'>
-                    <el-tabs value='details'>
-                        <el-tab-pane label='{Model.Caption}' name='details'>{HtmlFormCode(false)}
-                        </el-tab-pane>");
+<el-tabs value='details'>
+    <el-tab-pane label='{Model.Caption}' name='details'>{HtmlFormCode(2, false)}
+    </el-tab-pane>");
             if (Model is ModelConfig model && model.Releations.Count > 0)
             {
                 foreach (var ch in model.Releations)
@@ -470,21 +399,20 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                     }
                     var name = ch.Name.ToLWord().ToPluralism();
                     code.Append($@"
-                        <el-tab-pane label='{ch.Caption}' name='{name}'>{HtmlGridCode(ch.ForeignEntity, "form." + name, false)}
-                        </el-tab-pane>");
+    <el-tab-pane label='{ch.Caption}' name='{name}'>{HtmlGridCode(level + 2, ch.ForeignEntity, "form." + name, false)}
+    </el-tab-pane>");
                 }
             }
             code.Append(@"
-                    </el-tabs>
-                </div>");
+</el-tabs>");
             return code.ToString();
         }
 
-        public string HtmlFormCode(bool dialog)
+        public string HtmlFormCode(int level, bool dialog)
         {
             StringBuilder code = new StringBuilder();
             code.Append($@"
-            <el-form ref='dataForm' :rules='form.rules' :model='form.data' label-width='100px' label-position='left' @submit.native.prevent>");
+<el-form ref='dataForm' :rules='form.rules' :model='form.data' label-width='100px' label-position='left' @submit.native.prevent>");
             //string vif = null;
             //if (Entity.Interfaces.Contains("IAuditData"))
             //{
@@ -521,41 +449,55 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 FormField(code, property, caption, description ?? property.Caption, dialog);
             }
             code.Append(@"
-            </el-form>");
-            return code.ToString();
+</el-form>");
+            return FormatSpace(level, code);
         }
-
         private void FormField(StringBuilder code, IFieldConfig property, string caption, string description, bool dialog)
         {
             var field = property;
-            if (!dialog && !(Model.IsUiReadOnly || property.IsUserReadOnly) && (field.IsMemo || field.MulitLine))
+            string style;
+            var sapn = field.FormCloumnSapn > Model.FormCloumn ? Model.FormCloumn : field.FormCloumnSapn;
+            switch (sapn)
             {
-                code.Append($@"<el-form-item label='{caption}' prop='{property.JsonName}' label-suffix='{field.Suffix}' style='width: 98%;'>
-                                <el-input v-model='{property.JsonName}' placeholder='{description}' auto-complete='off' clearable :readonly='form.readonly' type='textarea' :rows='5'></el-input>
-                            </el-form-item>");
-                return;
+                case 2:
+                    style = HtmlAttribute("style", "width: 813px;");
+                    break;
+                case 3:
+                    style = HtmlAttribute("style", "width: 1228px;");
+                    break;
+                case 4:
+                    style = HtmlAttribute("style", "width: 1640px;");
+                    break;
+                default:
+                    style = null;
+                    break;
             }
             code.Append($@"
-            <el-form-item label='{caption}' prop='{property.JsonName}' label-suffix='{field.Suffix}'");
-            if (Model.FormCloumn > 1 && (field.FormCloumnSapn > 1 || field.IsMemo || field.MulitLine))
-                code.Append(" size='large'");
-            code.Append('>');
+    <el-form-item label='{caption}' prop='{property.JsonName}'{style}>");
+
+            if (field.Prefix.IsNotEmpty())
+                code.Append($@"
+        <span>{field.Prefix}&nbsp;</span>");
             if (Model.IsUiReadOnly || property.IsUserReadOnly)
                 ReadonlyField(code, field);
             else
                 EditField(code, field, description);
+            if (field.Suffix.IsNotEmpty())
+                code.Append($@"
+        <span>{field.Suffix}</span>");
             code.Append(@"
-            </el-form-item>");
+    </el-form-item>");
         }
         void ReadonlyField(StringBuilder code, IFieldConfig field)
         {
             code.Append($@"
-                    <span>{field.Prefix}{{{{form.data.{field.JsonName}{Formater(field)}}}}}{field.Suffix}&nbsp;</span>");
+        <span>&nbsp;{{{{form.data.{field.JsonName}{Formater(field)}}}}}</span>");
         }
         void EditField(StringBuilder code, IFieldConfig field, string description)
         {
             static void SetDisabled(bool disabled, StringBuilder code, IFieldConfig field)
             {
+                var placeholder = HtmlAttribute("placeholder", field.Description);
                 if (disabled)
                 {
                     code.Append(field.IsUserReadOnly ? " disabled" : " :disabled='form.readonly'");
@@ -564,44 +506,43 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 {
                     code.Append(field.IsUserReadOnly ? " readonly" : " :readonly='form.readonly'");
                 }
+                code.Append(placeholder);
+                code.Append(" clearable");
             }
             if (field.EnumConfig != null)
             {
                 code.Append($@"
-                <el-select v-model='form.data.{field.JsonName}'");
+        <el-select v-model='form.data.{field.JsonName}'");
                 SetDisabled(true, code, field);
                 code.Append($@" style='width:100%'>
-                    <el-option v-for='item in types.{field.EnumConfig.Name.ToLWord()}'
-                               :key='item.value'
-                               :label='item.label'
-                               :value='item.value'>
-                    </el-option>
-                </el-select>");
+            <el-option :key='0' :value='0' label='-'></el-option>
+            <el-option v-for='item in types.{field.EnumConfig.Name.ToLWord()}' :key='item.value' :label='item.label' :value='item.value'></el-option>
+        </el-select>");
             }
             else if (field.IsLinkKey)
             {
                 var name = GlobalConfig.GetEntity(field.LinkTable)?.Name.ToLWord().ToPluralism();
                 code.Append($@"
-                <el-select v-model='form.data.{field.JsonName}'");
+        <el-select v-model='form.data.{field.JsonName}'");
                 SetDisabled(true, code, field);
                 code.Append($@" style='width:100%'>
-                    <el-option key='0' value='0' label='-'></el-option>
-                    <template v-for='item in combos.{name}'>
-                        <el-option :key='item.id' :value='item.id' :label='item.text'></el-option>
-                    </template>
-                </el-select>");
+            <el-option :key='0' :value='0' label='-'></el-option>
+            <template v-for='item in combos.{name}'>
+                <el-option :key='item.id' :value='item.id' :label='item.text'></el-option>
+            </template>
+        </el-select>");
             }
             else if (field.CsType == "bool")
             {
                 code.Append($@"
-                <el-switch v-model='form.data.{field.JsonName}'");
+        <el-switch v-model='form.data.{field.JsonName}'");
                 SetDisabled(true, code, field);
                 code.Append(@"></el-switch>");
             }
             else if (field.CsType == nameof(DateTime))
             {
                 code.Append($@"
-                <el-date-picker v-model='form.data.{field.JsonName}' placeholder='{description}' clearable");
+        <el-date-picker v-model='form.data.{field.JsonName}'");
                 SetDisabled(false, code, field);
                 code.Append(field.IsTime
                     ? "value-format='yyyy-MM-ddTHH:mm:ss' type='datetime'"
@@ -611,11 +552,11 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             else if (field.CsType == "string")
             {
                 code.Append($@"
-                <el-input v-model='form.data.{field.JsonName}' placeholder='{description}' auto-complete='off' clearable");
+        <el-input v-model='form.data.{field.JsonName}'auto-complete='off'");
 
                 if (field.MulitLine)
                 {
-                    code.Append(" type='textarea' :rows='3'");
+                    code.Append($" type='textarea' rows='{field.Rows}'");
                 }
                 SetDisabled(false, code, field);
 
@@ -624,16 +565,162 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             else
             {
                 code.Append($@"
-                <el-input v-model='form.data.{field.JsonName}' placeholder='{description}' auto-complete='off' clearable");
+        <el-input v-model='form.data.{field.JsonName}' auto-complete='off'");
                 SetDisabled(false, code, field);
 
                 code.Append("></el-input>");
             }
         }
         #endregion
+
+        #region Header & Footer
+
+        string HtmlExButton(int level)
+        {
+            StringBuilder exButton = new StringBuilder();
+            exButton.Append(@"
+<div class='toolRange'>
+    <el-button-group v-if='!form.visible'>
+        <el-button icon='el-icon-refresh' @click='refresh'>刷新</el-button>");
+
+            if (!Model.IsUiReadOnly)
+            {
+                exButton.Append(@"
+        <el-button icon='el-icon-plus' @click='doAddNew'>新增</el-button>");
+            }
+            if (!Model.DetailsPage)
+            {
+                if (!Model.IsUiReadOnly)
+                {
+                    exButton.Append(@"
+        <el-button icon='el-icon-edit' @click='doEdit'>编辑</el-button>");
+                }
+                else
+                {
+                    exButton.Append(@"
+        <el-button icon='el-icon-edit' @click='doEdit'>详细</el-button>");
+                }
+            }
+            if (!Model.IsUiReadOnly)
+            {
+                exButton.Append(@"
+        <el-button icon='el-icon-close' @click='doDelete'>删除</el-button>");
+            }
+            exButton.Append(@"
+        <el-button icon='el-icon-document' @click='exportExcel'>导出</el-button>
+    </el-button-group>");
+
+            if (Model.DetailsPage)
+            {
+                exButton.Append(@"
+    <el-button-group v-if='form.visible'>
+        <el-button icon='el-icon-back' @click='showList'>返回</el-button>");
+                if (!Model.IsUiReadOnly)
+                    exButton.Append(@"
+        <el-button icon='el-icon-check' @click='save' v-if='!form.readonly'>保存</el-button>");
+                exButton.Append(@"
+    </el-button-group>");
+            }
+            CommandsButton(exButton);
+            if (!Model.IsUiReadOnly)
+            {
+                if (Model.Interfaces.Contains("IAuditData"))
+                {
+                    exButton.Append(@"
+    <el-dropdown v-if='!form.visible' split-button @click='doPass' @command='handleDataCommand'>
+        <i class='el-icon-circle-check'></i>审核通过
+        <el-dropdown-menu slot='dropdown'>
+            <el-dropdown-item type='text' command='Deny' icon='el-icon-remove-outline'>不通过</el-dropdown-item>
+            <el-dropdown-item type='text' command='Back' icon='el-icon-edit'>退回编辑</el-dropdown-item>
+            <el-dropdown-item type='text' command='ReDo' icon='el-icon-edit'>重新审核</el-dropdown-item>
+        </el-dropdown-menu>
+    </el-dropdown>");
+                }
+                if (Model.Interfaces.Contains("IStateData"))
+                {
+                    exButton.Append(@"
+    <el-dropdown v-if='!form.visible' split-button @click='doEnable'>
+        <i class='el-icon-lock'></i>启用
+        <el-dropdown-menu slot='dropdown' style='padding:3px;'>
+            <el-dropdown-item style='padding:3px;'>
+                <el-button type='text' icon='el-icon-remove'  @click='doDisable'>禁用</el-button>
+            </el-dropdown-item>
+            <el-dropdown-item style='padding:3px;'>
+                <el-button type='text' icon='el-icon-unlock' @click='doReset'>解锁</el-button>
+            </el-dropdown-item>
+        </el-dropdown-menu>
+    </el-dropdown>");
+                }
+            }
+            exButton.Append(@"
+</div>");
+            return FormatSpace(level, exButton);
+        }
+        private void CommandsButton(StringBuilder code)
+        {
+            var cmds = Model.Commands.Where(p => p.IsMulitOperator).ToArray();
+            if (cmds.Length == 0)
+                return;
+            code.Append(@"
+    <el-button-group v-if='!form.visible'>");
+            foreach (var cmd in cmds)
+            {
+                code.Append($@"
+        <el-button icon='{cmd.Icon}' @click='{cmd.JsMethod}'>{cmd.Caption}</el-button>");
+
+            }
+            code.Append(@"
+    </el-button-group>");
+        }
+
+        private string NavigateTitle(int level)
+        {
+            var code = new StringBuilder();
+            code.Append($@"
+<template>
+    <span>{Model.Parent.Caption}</span>&nbsp;<i class='el-icon-arrow-right'></i>");
+            if (!Model.Parent.NoClassify)
+            {
+                var cls = Model.Parent.Classifies.FirstOrDefault(p => p.Name == Model.Classify);
+                if (cls != null)
+                    code.Append($"&nbsp;<span>{cls.Caption}</span>&nbsp;<i class='el-icon-arrow-right'></i>");
+            }
+            if (!Model.DetailsPage)
+                code.Append($"&nbsp;<span>{Model.Caption}</span>");
+            else
+            {
+                code.Append($@"
+    <label class='labelButton' @click='showList'>{Model.Caption}</label>");
+                
+                if (Model.CaptionColumn != null)
+                    code.Append($@"
+    <template v-if='form.visible'>&nbsp;<i class='el-icon-arrow-right'></i>&nbsp;<span>{{{{form.data.{Model.CaptionColumn.JsonName}}}}}</span></template>");
+                else code.Append($@"
+    <template v-if='form.visible'>&nbsp;<i class='el-icon-arrow-right'></i>&nbsp;<span>详细内容</span></template>");
+            }
+            code.Append(@"
+</template>");
+            return FormatSpace(level, code);
+        }
+
+        string Footer(int level) => FormatSpace(level, ToNoFromSection(@"
+<el-footer height='42px'>
+    <el-pagination @size-change='sizeChange'
+                    @current-change='pageChange'
+                    background
+                    layout='total, sizes, prev, pager, next, jumper'
+                    :current-page='list.page'
+                    :page-sizes='list.pageSizes'
+                    :page-size='list.pageSize'
+                    :total='list.total'>
+    </el-pagination>
+</el-footer>"));
+
+        #endregion
+
         #region 查询
 
-        string QueryList()
+        string QueryList(int level)
         {
             StringBuilder quButton = new StringBuilder();
             var properties = Model.ClientProperty.Where(p => p.CanUserQuery && p.UserSee &&
@@ -647,16 +734,16 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             //    quButton.Append(auditQuery);
             //}
             quButton.Append(@"
-                    <el-select v-model='list.field' slot='prepend' placeholder='选择字段' style='width: 160px;'>
-                        <el-option value='_any_' label='模糊查询'></el-option>");
+<el-select v-model='list.field' slot='prepend' placeholder='选择字段' style='width: 160px;'>
+    <el-option value='_any_' label='模糊查询'></el-option>");
             foreach (var property in properties)
             {
                 quButton.Append($@"
-                        <el-option value='{property.JsonName}' label='{property.Caption}'></el-option>");
+    <el-option value='{property.JsonName}' label='{property.Caption}'></el-option>");
             }
             quButton.Append(@"
-                    </el-select>");
-            return quButton.ToString();
+</el-select>");
+            return FormatSpace(level, quButton);
         }
 
         #endregion

@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="Agebull.EntityModel.Designer.Vue.View.CommandPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
+             xmlns:designer="clr-namespace:Agebull.EntityModel.Designer"
+             mc:Ignorable="d"
+             d:DesignHeight="900" d:DesignWidth="1051">
+    <UserControl.DataContext>
+        <designer:CommandViewModel/>
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <behaviors:BoolToVisibleConverter x:Key="BoolToVisibleConverter" />
+        <behaviors:BoolReversalConverter x:Key="BoolReversalConverter" />
+    </UserControl.Resources>
+    <DataGrid AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  DataContext="{Binding Model.DesignModel}"
+                  ItemsSource="{Binding Commands}">
+        <DataGrid.Columns>
+            <DataGridTextColumn Binding="{Binding Index,Mode=TwoWay}" Header="序号" />
+            <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MinWidth=" 80" Header="名称" />
+            <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MinWidth=" 80"  Header="标题" />
+            <DataGridTextColumn Binding="{Binding Description,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MinWidth=" 120"  Header="说明" />
+            <DataGridTextColumn Binding="{Binding Icon,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MinWidth=" 80" Header="按钮图标" />
+            <DataGridTextColumn Binding="{Binding ServiceCommand,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MinWidth="120" Header="服务端方法" />
+            <DataGridTextColumn Binding="{Binding JsMethod,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MinWidth=" 80"  Header="Js方法" />
+            <DataGridTextColumn Binding="{Binding Api,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MinWidth=" 80" Header="接口名称" />
+            <DataGridCheckBoxColumn Binding="{Binding IsSingleObject,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Header="单选" />
+            <DataGridCheckBoxColumn  Binding="{Binding IsMulitOperator,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="多选" />
+        </DataGrid.Columns>
+        <i:Interaction.Behaviors>
+            <behaviors:DataGridGenertColumnsBehavior />
+        </i:Interaction.Behaviors>
+    </DataGrid>
+</UserControl>

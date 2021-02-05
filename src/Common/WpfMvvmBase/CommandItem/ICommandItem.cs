@@ -42,6 +42,16 @@ namespace Agebull.Common.Mvvm
             get;
             set;
         }
+
+        /// <summary>
+        ///     可以显示为按钮
+        /// </summary>
+        bool CanButton
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         ///     不显示为按钮
         /// </summary>
@@ -114,6 +124,7 @@ namespace Agebull.Common.Mvvm
             dist. Key = sour.Key ?? sour.GetHashCode().ToString();
             dist.NoConfirm = sour.NoConfirm;
             dist.Name = sour.Name;
+            dist.CanButton = sour.CanButton;
             dist.Caption = sour.Caption;
             dist.Description = sour.Description;
             dist.IsButton = sour.IsButton;

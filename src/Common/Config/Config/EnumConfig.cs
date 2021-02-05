@@ -33,6 +33,32 @@ namespace Agebull.EntityModel.Config
         #region 数据模型
 
         /// <summary>
+        /// 外部定义
+        /// </summary>
+        [DataMember, JsonProperty("isOut", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isOut;
+
+        /// <summary>
+        /// 外部定义
+        /// </summary>
+        /// <remark>
+        /// 外部定义
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据模型"), DisplayName(@"外部定义"), Description("外部定义")]
+        public bool IsOut
+        {
+            get => _isOut;
+            set
+            {
+                if (_isOut == value)
+                    return;
+                BeforePropertyChanged(nameof(IsOut), _isOut, value);
+                _isOut = value;
+                OnPropertyChanged(nameof(IsOut));
+            }
+        }
+        /// <summary>
         /// 是否位域
         /// </summary>
         [DataMember, JsonProperty("IsFlagEnum", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]

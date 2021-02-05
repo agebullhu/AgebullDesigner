@@ -17,6 +17,12 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Model\Model\Agebull.EntityModel.Designer.Model.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="View\JsonPanel.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+  </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="COPY $(TargetPath) &quot;$(SolutionDir)Program\AddIn\Bin\&quot; /Y&#xD;&#xA;COPY $(ProjectDir)$(OutDir)$(TargetName).xml &quot;$(SolutionDir)Program\AddIn\Bin\&quot; /Y&#xD;&#xA;COPY $(ProjectDir)$(OutDir)$(TargetName).pdb &quot;$(SolutionDir)Program\AddIn\Bin\&quot; /Y" />
   </Target>

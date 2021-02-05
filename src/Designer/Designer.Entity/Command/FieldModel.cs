@@ -28,21 +28,9 @@ namespace Agebull.EntityModel.Designer
                 SignleSoruce = false,
                 WorkView = "adv",
                 Catalog = "字段",
-                Action = CheckJsonName,
-                Caption = "Json名称小驼峰",
-                IconName = "tree_item",
-                ConfirmMessage = "确认执行【Json名称小驼峰】的操作吗?"
-            });
-
-            commands.Add(new CommandItemBuilder<IFieldConfig>
-            {
-                SignleSoruce = false,
-                WorkView = "adv",
-                Catalog = "字段",
                 Action = ChineseField,
                 Caption = "中文字段处理",
-                IconName = "tree_item",
-                ConfirmMessage = "确认执行【Json名称小驼峰】的操作吗?"
+                IconName = "tree_item"
             });
 
             commands.Add(new CommandItemBuilder<IFieldConfig>
@@ -52,8 +40,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "字段",
                 Action = CheckName,
                 Caption = "属性名称大驼峰",
-                IconName = "tree_item",
-                ConfirmMessage= "确认执行【属性名称大驼峰】的操作吗?"
+                IconName = "tree_item"
             });
 
             commands.Add(new CommandItemBuilder<IFieldConfig>
@@ -64,8 +51,7 @@ namespace Agebull.EntityModel.Designer
                 Action = CheckCaption,
                 Caption = "标题与注释拆解",
                 Description = "第一个[标点]后解析为说明",
-                IconName = "tree_item",
-                ConfirmMessage = "确认执行【字段名称规范】的操作吗?"
+                IconName = "tree_item"
             });
             commands.Add(new CommandItemBuilder<IFieldConfig>
             {
@@ -117,11 +103,6 @@ namespace Agebull.EntityModel.Designer
 
             property.JsonName = property.Name.ConvertToPinYin().ToLWord();
             property.DbFieldName = NameHelper.ToName(property.Name.ConvertToPinYin().SplitWords());
-        }
-
-        public void CheckJsonName(IFieldConfig property)
-        {
-            property.JsonName = property.Name.ToLWord();
         }
 
         public void CheckName(IFieldConfig property)

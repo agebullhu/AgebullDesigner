@@ -77,6 +77,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据标识"), DisplayName(@"是否存在属性组合唯一值"), Description("是否存在属性组合唯一值")]
         public bool IsUniqueUnion => Properties.Count > 0 && Properties.Any(p => p.UniqueIndex);
 
+
         /// <summary>
         /// 主键字段
         /// </summary>
@@ -90,11 +91,25 @@ namespace Agebull.EntityModel.Config
             : Properties.FirstOrDefault(p => p.IsPrimaryKey && p.Entity == this);
 
         /// <summary>
+        /// 标题字段
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据标识"), DisplayName(@"标题字段"), Description("标题字段")]
+        public IFieldConfig CaptionColumn => Properties.FirstOrDefault(p => p.IsCaption && p.Entity == this);
+
+        /// <summary>
+        /// 标题字段
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据标识"), DisplayName(@"标题字段"), Description("标题字段")]
+        public IFieldConfig ParentColumn => Properties.FirstOrDefault(p => p.IsParent && p.Entity == this);
+
+        /// <summary>
         /// 是否有主键
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"是否有主键"), Description("是否有主键")]
-        public bool HasePrimaryKey => Properties.Any(p => p.IsPrimaryKey);
+        public bool HasePrimaryKey => Properties.Any(p => p.IsPrimaryKey && p.Entity == this);
 
         /// <summary>
         /// 主键字段
@@ -942,6 +957,40 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(OrderDesc), _orderDesc, value);
                 _orderDesc = value;
                 OnPropertyChanged(nameof(OrderDesc));
+            }
+        }
+
+        /// <summary>
+        /// 命令集合
+        /// </summary>
+        [DataMember, JsonProperty("_commands", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal NotificationList<UserCommandConfig> _commands;
+
+        /// <summary>
+        /// 命令集合
+        /// </summary>
+        /// <remark>
+        /// 命令集合,数据模型中可调用的命令
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"业务模型"), DisplayName(@"命令集合"), Description("命令集合,数据模型中可调用的命令")]
+        public NotificationList<UserCommandConfig> Commands
+        {
+            get
+            {
+                if (_commands != null)
+                    return _commands;
+                _commands = new NotificationList<UserCommandConfig>();
+                RaisePropertyChanged(nameof(Commands));
+                return _commands;
+            }
+            set
+            {
+                if (_commands == value)
+                    return;
+                BeforePropertyChanged(nameof(Commands), _commands, value);
+                _commands = value;
+                OnPropertyChanged(nameof(Commands));
             }
         }
 

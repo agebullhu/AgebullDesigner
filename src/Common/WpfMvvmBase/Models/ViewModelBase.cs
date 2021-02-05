@@ -23,7 +23,7 @@ namespace Agebull.EntityModel
     /// <summary>
     ///     MVVM的ViewModel的基类
     /// </summary>
-    public abstract class ViewModelBase : MvvmBase, ICommandModel
+    public abstract class ViewModelBase : MvvmBase
     {
         /// <summary>
         /// 对应的视图
@@ -61,19 +61,7 @@ namespace Agebull.EntityModel
         {
 
         }
-        /// <summary>
-        /// 命令ICommandModel
-        /// </summary>
-        public NotificationList<CommandItemBase> Commands => CommandCoefficient.GetFriendCommands(this);
 
-        /// <summary>
-        /// 构造命令列表
-        /// </summary>
-        /// <returns></returns>
-        public virtual void CreateCommands(IList<CommandItemBase> commands)
-        {
-
-        }
     }
 
     /// <summary>

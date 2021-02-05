@@ -84,7 +84,7 @@ namespace Agebull.EntityModel.RobotCoder
             return code.ToString();
         }
 
-        private static void EnumCode(StringBuilder code, EnumConfig config)
+        public static void EnumCode(StringBuilder code, EnumConfig config)
         {
             code.Append($@"
 

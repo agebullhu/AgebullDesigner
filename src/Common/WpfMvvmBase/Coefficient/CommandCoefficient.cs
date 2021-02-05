@@ -39,6 +39,7 @@ namespace Agebull.Common.Mvvm
             }
             cmds.Add(() => items);
         }
+
         /// <summary>
         /// 清除命令对象
         /// </summary>
@@ -49,13 +50,77 @@ namespace Agebull.Common.Mvvm
         }
         private static readonly Dictionary<string, List<CommandItemBase>> Commands = new Dictionary<string, List<CommandItemBase>>();
 
+
         /// <summary>
-        /// 菜单命令对象匹配
+        /// 缓存获取
+        /// </summary>
+        /// <typeparam name="TCommandModel"></typeparam>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public static NotificationList<CommandItemBase> GetCacheCommands<TCommandModel>(TCommandModel model)
+            where TCommandModel : ICommandModel
+        {
+            if (!FriendCommands.TryGetValue(model, out var commands))
+            {
+                model.CreateCommands(commands = new NotificationList<CommandItemBase>());
+                FriendCommands[model] = commands;
+            }
+            return commands;
+        }
+
+        private static readonly Dictionary<object, NotificationList<CommandItemBase>> FriendCommands = new Dictionary<object, NotificationList<CommandItemBase>>();
+
+
+        #region 类型过滤
+
+        /// <summary>
+        /// 类型过滤
+        /// </summary>
+        /// <param name="editor">编辑器</param>
+        /// <returns></returns>
+        public static List<CommandItemBase> Filter<T>()
+        {
+            var list = new List<CommandItemBase>();
+
+            var dictionary = new HashSet<string>();
+            foreach (var item in list)
+                dictionary.Add(item.Key);
+            var type = typeof(T);
+            foreach (var item in CommandBuilders)
+            {
+                if (!IsType(item.Key, type))
+                    continue;
+                foreach (var func in item.Value)
+                {
+                    var cmds = func();
+                    foreach (var action in cmds)
+                    {
+                        var key = $"{action.Catalog}_{action.Caption}";
+                        if (dictionary.Contains(key))
+                            continue;
+                        dictionary.Add(key);
+                        list.Add(action.ToCommand(key, null, null));
+                    }
+                }
+            }
+            return list;
+        }
+        #endregion
+        #region 树节点菜单
+
+        /// <summary>
+        /// 树节点菜单类型判断
+        /// </summary>
+        public static Func<Type, Type, bool, bool> TreeItemCheckType { get; set; }
+
+
+        /// <summary>
+        /// 树节点菜单
         /// </summary>
         /// <param name="view">视角</param>
         /// <param name="binding">对象</param>
         /// <returns></returns>
-        public static List<CommandItemBase> Coefficient(object binding, string view)
+        public static List<CommandItemBase> TreeItem(object binding, string view)
         {
             if (binding == null)
                 return new List<CommandItemBase>();
@@ -79,8 +144,8 @@ namespace Agebull.Common.Mvvm
                     var cmds = func();
                     foreach (var action in cmds.Where(p => p.Editor == null || !p.SignleSoruce))
                     {
-                        if (action.TargetType != null && CheckType != null &&
-                            !CheckType.Invoke(type, action.TargetType, action.SignleSoruce))
+                        if (action.TargetType != null && TreeItemCheckType != null &&
+                            !TreeItemCheckType.Invoke(type, action.TargetType, action.SignleSoruce))
                         {
                             //System.Diagnostics.Debug.WriteLine($"No Type. caption:{action.Caption}|view:{action.SoruceView}|target:{action.TargetType.FullName} - {type.FullName}");
                             continue;
@@ -99,40 +164,25 @@ namespace Agebull.Common.Mvvm
             }
             return result;
         }
-        public static Func<Type, Type, bool, bool> CheckType { get; set; }
+        #endregion
 
-        /// <summary>
-        /// 编辑器命令对象匹配
-        /// </summary>
-        /// <param name="type">类型</param>
-        /// <param name="editor">编辑器</param>
-        /// <returns></returns>
-        public static void CoefficientEditor<TType>(IList<CommandItemBase> list, string editor = null)
+        #region 扩展编辑器
+
+
+        static bool IsType(Type p, Type type)
         {
-            var type = typeof(TType);
-            CoefficientEditor(list, p => p != type && !type.IsSubclassOf(p), editor);
+            return p == type || type.IsSubclassOf(p) || type.IsSupperInterface(p);
         }
 
         /// <summary>
         /// 编辑器命令对象匹配
         /// </summary>
-        /// <param name="type">类型</param>
-        /// <param name="editor">编辑器</param>
+        /// <param name="list">命令</param>
+        /// <param name="type">匹配类型</param>
+        /// <param name="cmdFilter">过滤器</param>
+        /// <param name="arg">当前对象</param>
         /// <returns></returns>
-        public static List<CommandItemBase> CoefficientEditor(Type type, string editor = null)
-        {
-            var result = new List<CommandItemBase>();
-            CoefficientEditor(result, p => p != type && !type.IsSubclassOf(p), editor);
-            return result;
-        }
-
-        /// <summary>
-        /// 编辑器命令对象匹配
-        /// </summary>
-        /// <param name="type">类型</param>
-        /// <param name="editor">编辑器</param>
-        /// <returns></returns>
-        public static void CoefficientEditor(IList<CommandItemBase> list, Func<Type, bool> filter, string editor = null)
+        public static void EditorToolbar(IList<CommandItemBase> list,Func<ICommandItemBuilder, bool> cmdFilter,Type type)
         {
             var dictionary = new HashSet<string>();
             foreach (var item in list)
@@ -140,12 +190,12 @@ namespace Agebull.Common.Mvvm
 
             foreach (var item in CommandBuilders)
             {
-                if (!filter(item.Key))
+                if (!IsType(item.Key,type))
                     continue;
                 foreach (var func in item.Value)
                 {
                     var cmds = func();
-                    foreach (var action in cmds.Where(p => editor == null || p.Editor != null && p.Editor.Contains(editor)))
+                    foreach (var action in cmds.Where(cmdFilter))
                     {
                         var key = $"{action.Catalog}_{action.Caption}";
                         if (dictionary.Contains(key))
@@ -156,25 +206,7 @@ namespace Agebull.Common.Mvvm
                 }
             }
         }
-        /// <summary>
-        /// 对象今天托管获取
-        /// </summary>
-        /// <typeparam name="TCommandModel"></typeparam>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        public static NotificationList<CommandItemBase> GetFriendCommands<TCommandModel>(TCommandModel model)
-            where TCommandModel : ICommandModel
-        {
-            if (!FriendCommands.TryGetValue(model, out var commands))
-            {
-                model.CreateCommands(commands = new NotificationList<CommandItemBase>());
-                FriendCommands[model] = commands;
-            }
-            return commands;
-        }
-
-        private static readonly Dictionary<object, NotificationList<CommandItemBase>> FriendCommands = new Dictionary<object, NotificationList<CommandItemBase>>();
-
+        #endregion
     }
 
     /// <summary>

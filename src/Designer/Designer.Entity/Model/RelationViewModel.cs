@@ -76,7 +76,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "删除行",
                 Image = Application.Current.Resources["img_del"] as ImageSource
             });
-            CommandCoefficient.CoefficientEditor<EntityConfig>(commands, EditorName);
+            base.CreateCommands(commands);
         }
 
         #endregion

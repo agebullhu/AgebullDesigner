@@ -136,7 +136,7 @@ namespace Agebull.EntityModel
             }
             else
             {
-                var actions = CommandCoefficient.Coefficient(Source, SoruceView);
+                var actions = CommandCoefficient.TreeItem(Source, SoruceView);
                 foreach (var action in actions)
                 {
                     if (!_commands.Contains(action))
@@ -145,7 +145,7 @@ namespace Agebull.EntityModel
 
                 if (Friend == null)
                     return;
-                actions = CommandCoefficient.Coefficient(Friend, SoruceView);
+                actions = CommandCoefficient.TreeItem(Friend, SoruceView);
                 foreach (var action in actions)
                 {
                     if (!_commands.Contains(action))
@@ -164,7 +164,7 @@ namespace Agebull.EntityModel
         public List<CommandItemBase> CreateCommandList()
         {
             var commands = new List<CommandItemBase>();
-            var actions = CommandCoefficient.Coefficient(Source, SoruceView);
+            var actions = CommandCoefficient.TreeItem(Source, SoruceView);
             foreach (var action in actions)
             {
                 if (commands.Any(p => p.Key == action.Key))
@@ -174,7 +174,7 @@ namespace Agebull.EntityModel
             }
             if (Friend != null)
             {
-                actions = CommandCoefficient.Coefficient(Friend, FriendView);
+                actions = CommandCoefficient.TreeItem(Friend, FriendView);
                 foreach (var action in actions)
                 {
                     if (!commands.Any(p => p.Key == action.Key))

@@ -27,10 +27,10 @@
                                     Binding="{Binding NoneJson, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridTextColumn Binding="{Binding JsonName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                 Header="Json名称" />
-            <DataGridCheckBoxColumn Header="非Api参数"
+            <!--DataGridCheckBoxColumn Header="非Api参数"
                                     Binding="{Binding NoneApiArgument, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
             <DataGridTextColumn Binding="{Binding ApiArgumentName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                Header="Api参数名称" />
+                                Header="Api参数名称" /-->
         </DataGrid.Columns>
         <i:Interaction.Behaviors>
             <behaviors:DataGridGenertColumnsBehavior />

@@ -17,7 +17,7 @@
         /// <summary>
         ///     原始字段
         /// </summary>
-        IFieldConfig Field
+        FieldConfig Field
         {
             get;
         }

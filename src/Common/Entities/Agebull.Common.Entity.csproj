@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Agebull.Common.Extend" Version="4.0.0.53" />
+    <PackageReference Include="Agebull.Common.Extend" Version="4.0.4.27" />
   </ItemGroup>
 
 </Project>

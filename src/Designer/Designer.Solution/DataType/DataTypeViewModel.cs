@@ -48,6 +48,7 @@ namespace Agebull.EntityModel.Designer
                 IsButton = true,
                 Action = arg => Model.Context.Solution.Foreach<FieldConfig>(DataTypeHelper.StandardDataType)
             });
+            base.CreateCommands(commands);
         }
 
     }

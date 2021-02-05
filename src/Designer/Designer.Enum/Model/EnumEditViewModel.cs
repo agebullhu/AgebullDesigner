@@ -24,6 +24,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "分析文本(C#代码)",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             });
+            base.CreateCommands(commands);
         }
     }
 }

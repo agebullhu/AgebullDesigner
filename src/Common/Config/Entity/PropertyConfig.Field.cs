@@ -344,6 +344,16 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
+        /// 上级外键
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据标识"), DisplayName(@"上级外键"), Description("上级外键")]
+        public bool IsParent
+        {
+            get => Field.IsParent; set => Field.IsParent = value;
+        }
+
+        /// <summary>
         /// 主键字段
         /// </summary>
         /// <remark>
@@ -639,6 +649,33 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
+        /// 多行文本的行数
+        /// </summary>
+        [DataMember, JsonProperty("rows", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal int rows;
+
+        /// <summary>
+        /// 多行文本的行数
+        /// </summary>
+        /// <remark>
+        /// 多行文本的行数，默认为3行
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"用户界面"), DisplayName(@"行数"), Description("行数")]
+        public int Rows
+        {
+            get => rows <= 0 ? 3 : rows;
+            set
+            {
+                if (rows == value)
+                    return;
+                BeforePropertyChanged(nameof(Rows), rows, value);
+                rows = value;
+                OnPropertyChanged(nameof(Rows));
+            }
+        }
+
+        /// <summary>
         /// 前缀
         /// </summary>
         /// <remark>
@@ -835,7 +872,7 @@ namespace Agebull.EntityModel.Config
         /// 是否用户内容
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(@"用户界面"), DisplayName(@"用户内容"), Description("作为需要语言翻译的标记")]
+        [Category(@"用户界面"), DisplayName(@"用户内容"), Description("用户内容")]
         public bool IsUserContent
         {
             get => Field.IsUserContent; set => Field.IsUserContent = value;

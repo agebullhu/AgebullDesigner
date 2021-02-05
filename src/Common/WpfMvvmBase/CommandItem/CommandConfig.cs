@@ -51,6 +51,15 @@ namespace Agebull.Common.Mvvm
         }
 
         /// <summary>
+        ///     可以显示为按钮
+        /// </summary>
+        public bool CanButton
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         ///     不显示为按钮
         /// </summary>
         public bool NoButton => !IsButton;
@@ -136,7 +145,7 @@ namespace Agebull.Common.Mvvm
         public bool NoConfirm { get; set; }
 
         /// <summary>
-        /// 无需确认
+        /// 需确认
         /// </summary>
         public bool DoConfirm => !string.IsNullOrWhiteSpace(ConfirmMessage);
     }

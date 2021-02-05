@@ -16,73 +16,70 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         {
             Init();
 
-            return $@"
-{mothodsScript}
-{filterScript}
-{dataScript}
-{readyScript}";
+            List<string> options = new List<string>();
 
+            void Join(List<string> codes, string fmt, bool canEmpty = true)
+            {
+                if (canEmpty && codes.Count == 0)
+                    return;
+                options.Add(string.Format(fmt, string.Join(',', codes)));
+            }
+
+            Join(readys, @"
+    onReady(v){{{0}
+        v.loadList();
+    }}", false);
+            Join(datas, @"
+    data:{{{0}
+    }}");
+            Join(commands, @"
+    commands:{{{0}
+    }}");
+            Join(forms, @"
+    form:{{{0}
+    }}");
+            Join(rules, @"
+    rules:{{{0}
+    }}");
+            Join(types, @"
+    types:{{{0}
+    }}");
+            Join(filters, @"
+    filters:{{{0}
+    }}");
+            Join(overrides, @"
+    overrides:{{{0}
+    }}");
+            return $@"extend_vue_option({{{options.LinkToString(',')}
+}});";
         }
 
 
-        #region 初始化
-        string mothodsScript, readyScript, dataScript, filterScript;
+        #region 构建节点
 
-        readonly List<string> methods = new List<string>();
+        readonly List<string> types = new List<string>();
+
+        readonly List<string> filters = new List<string>();
+
+        readonly List<string> datas = new List<string>();
+
+        readonly List<string> commands = new List<string>();
+        readonly List<string> overrides = new List<string>();
         readonly List<string> readys = new List<string>();
         readonly List<string> forms = new List<string>();
 
-        public void Init()
+        void Init()
         {
-            ArgumentMethod(methods);
-            DataCheckMethod(methods);
+            ArgumentMethod();
+            DataCheckMethod();
             SetData();
+            Rules();
             LinkFunctions();
             EnumScript();
             Filter();
-            TreeMethod(methods);
+            TreeMethod();
             DetailsPage();
-            readyScript = $@"
-vue_option.ready(v =>{{
-    {string.Join(@"
-    ", readys)}
-    v.loadList();
-}});";
-            mothodsScript = methods.Count == 0
-                ? null
-                : $@"
-extend_methods({{
-    {string.Join(@",
-    ", methods)}
-}});";
-            if(forms.Count > 0)
-            {
-                datas.Add($@"form : {{
-    {string.Join(@",
-        ", forms)}
-    }}");
-            }
-            dataScript = datas.Count == 0
-                ? null
-                : $@"
-extend_data({{
-    {string.Join(@",
-    ", datas)}
-}});";
-            filterScript = filters.Count == 0
-                ? null
-                : $@"
-extend_filter({{
-    {string.Join(@",
-    ", filters)}
-}});";
-        }
-        string Join(string fmt, string space, char letter, List<string> codes)
-        {
-            if (codes.Count == 0)
-                return null;
-            return string.Format(fmt, string.Join($@"{letter}
-{space}", codes));
+            Command();
         }
         #endregion
 
@@ -94,31 +91,30 @@ extend_filter({{
         /// <returns></returns>
         void LinkFunctions()
         {
-            if (Model.IsUiReadOnly)
-                return;
             var array = Model.ClientProperty
                 .Where(p => p.UserSee && p.IsLinkKey)
                 .Select(p => GlobalConfig.GetEntity(p.LinkTable))
                 .Distinct().ToArray();
             if (array.Length == 0)
                 return;
-            foreach (var entity in array.Where(p => p.Properties.Any(a => a.IsCaption)))
+            foreach (var entity in array.Where(p => p.CaptionColumn != null))
             {
                 var comboName = entity.Name.ToLWord().ToPluralism();
-                datas.Add($"{comboName}:[]");
-                readys.Add($"ajax_load('载入{entity.Caption}','/api/{entity.Parent.ApiName}/{entity.ApiName}/v1/edit/combo',null, d => v.combos.{comboName} = d);");
+                datas.Add($@"
+        {comboName}:[]");
+                readys.Add($@"
+        ajax_load('载入{entity.Caption}','/{entity.Parent.ApiName}/{entity.ApiName}/v1/edit/combo',null, d => v.combos.{comboName} = d);");
                 filters.Add($@"
-    {entity.Name.ToLWord()}Formater(val) {{
-        var obj = vue_option.data.combos.{comboName}.find((n) => n.id == val);
-        return obj ? obj.text : '-';
-    }}");
+        //{entity.Caption}:主键到标题
+        {entity.Name.ToLWord()}Formater(val) {{
+            var obj = vue_option.data.combos.{comboName}.find((n) => n.id == val);
+            return obj ? obj.text : '-';
+        }}");
             }
         }
         #endregion
 
         #region 枚举
-
-        readonly List<string> filters = new List<string>();
 
         void EnumScript()
         {
@@ -131,27 +127,14 @@ extend_filter({{
                     enums.AddRange(ch.ForeignEntity.LastProperties.Where(p => p.EnumConfig != null).Select(p => p.EnumConfig));
                 }
             }
-
             if (enums.Count == 0)
                 return;
-            var code = new StringBuilder();
-            code.AppendLine(@"
-    /**
-    *  枚举列表
-    */
-    types : {");
-            bool enumFirst = true;
+
             foreach (var enumConfig in enums.Distinct())
             {
-                if (enumFirst)
-                    enumFirst = false;
-                else
-                    code.Append(",");
-
+                var code = new StringBuilder();
                 code.Append($@"
-        /**
-        *   {enumConfig.Caption}
-        */
+        //{enumConfig.Caption}
         {enumConfig.Name.ToLWord()} : [");
                 bool first = true;
                 foreach (var item in enumConfig.Items)
@@ -160,19 +143,13 @@ extend_filter({{
                         first = false;
                     else
                         code.Append(",");
-                    code.Append($@"
-            {{
-                key: '{item.Value}',
-                value: '{item.Name}',
-                label: '{item.Caption}'
-            }}");
+                    code.Append($@"{{
+            key: '{item.Value}', value: '{item.Name}', label: '{item.Caption}'
+        }}");
                 }
-                code.Append(@"
-        ]");
+                code.Append(@"]");
+                types.Add(code.ToString());
             }
-            code.Append(@"
-    }");
-            datas.Add(code.ToString());
         }
 
         void Filter()
@@ -195,30 +172,28 @@ extend_filter({{
         {
             StringBuilder code = new StringBuilder();
             code.Append($@"
-    /**
-    *   {config.Caption}枚举转文本
-    */
-    {config.Name.ToLWord()}Formater(val) {{
-        switch (val) {{");
+        //{config.Caption}枚举转文本
+        {config.Name.ToLWord()}Formater(val) {{
+            if(!val)return '-';
+            switch (val) {{");
             string def = "错误";
             foreach (var item in config.Items)
             {
                 if (item.Value == "0")
                     def = item.Caption;
                 code.Append($@"
-            case '{item.Name}': return '{item.Caption}';");
+                case '{item.Name}': return '{item.Caption}';");
             }
             code.Append($@"
-            default:
-                return '{def}';
-        }}
-    }}");
+                default: return '{def}';
+            }}
+        }}");
             return code.ToString();
         }
         #endregion
 
         #region 规则
-
+        List<string> rules = new List<string>();
         /// <summary>
         ///     生成Form录入字段界面
         /// </summary>
@@ -228,8 +203,6 @@ extend_filter({{
             if (Model.IsUiReadOnly)
                 return;
             var columns = Model.ClientProperty.Where(p => !p.IsUserReadOnly);
-            bool first = true;
-            var code = new StringBuilder();
             foreach (var property in columns)
             {
                 var field = property;
@@ -238,8 +211,7 @@ extend_filter({{
                 if (field.IsRequired && !field.IsUserReadOnly)
                 {
                     sub.Append($@"{dot}{{ required: true, message: '请输入{property.Caption}', trigger: 'blur' }}");
-                    dot = @",
-                ";
+                    dot = @",";
                 }
                 switch (field.CsType)
                 {
@@ -263,66 +235,58 @@ extend_filter({{
                 }
                 if (sub.Length == 0)
                     continue;
-                if (first)
-                    first = false;
-                else
-                    code.Append(',');
-                code.Append($@"
+                rules.Add($@"
             '{property.JsonName}' : [{sub}]");
             }
-            if (!first)
-                forms.Add($@"rules : {{{code}
-        }}");
         }
         private static void DateTimeCheck(IFieldConfig field, StringBuilder code, ref string dot)
         {
-            if (field.Max != null && field.Min != null)
+            if (field.Max.IsNotEmpty() && field.Min.IsNotEmpty())
                 code.Append($@"{dot}{{ min: {field.Min}, max: {field.Max}, message: '时间从 {field.Min} 到 {field.Max} 之间', trigger: 'blur' }}");
-            else if (field.Max != null)
+            else if (field.Max.IsNotEmpty())
                 code.Append($@"{dot}{{ max: {field.Max}, message: '时间不大于 {field.Max}', trigger: 'blur' }}");
-            else if (field.Min != null)
+            else if (field.Min.IsNotEmpty())
                 code.Append($@"{dot}{{ min: {field.Min}, message: '时间不小于 {field.Min}', trigger: 'blur' }}");
             else return;
-            dot = @",
-    ";
+            dot = @",";
         }
 
         private static void NumberCheck(IFieldConfig field, StringBuilder code, ref string dot)
         {
-            if (field.Max != null && field.Min != null)
+            if (field.Max.IsNotEmpty() && field.Min.IsNotEmpty())
                 code.Append($@"{dot}{{ min: {field.Min}, max: {field.Max}, message: '数值从 {field.Min} 到 {field.Max} 之间', trigger: 'blur' }}");
-            else if (field.Max != null)
+            else if (field.Max.IsNotEmpty())
                 code.Append($@"{dot}{{ max: {field.Max}, message: '数值不大于 {field.Max}', trigger: 'blur' }}");
-            else if (field.Min != null)
+            else if (field.Min.IsNotEmpty())
                 code.Append($@"{dot}{{ min: {field.Min}, message: '数值不小于 {field.Min}', trigger: 'blur' }}");
             else return;
-            dot = @",
-    ";
+            dot = @",";
         }
 
         private static void StringCheck(IFieldConfig field, StringBuilder code, ref string dot)
         {
-            if (field.Max != null && field.Min != null)
+            if (field.Max.IsEmpty() && !field.IsBlob && !field.IsMemo)
+                field.Max = field.Datalen.ToString();
+
+            if (field.Max.IsNotEmpty() && field.Min.IsNotEmpty())
                 code.Append($@"{dot}{{ min: {field.Min}, max: {field.Max}, message: '长度在 {field.Min} 到 {field.Max} 个字符', trigger: 'blur' }}");
-            else if (field.Max != null)
+            else if (field.Max.IsNotEmpty())
                 code.Append($@"{dot}{{ max: {field.Max}, message: '长度不大于 {field.Max} 个字符', trigger: 'blur' }}");
-            else if (field.Min != null)
+            else if (field.Min.IsNotEmpty())
                 code.Append($@"{dot}{{ min: {field.Min}, message: '长度不小于 {field.Min} 个字符', trigger: 'blur' }}");
             else return;
-            dot = @",
-    ";
+            dot = @",";
         }
 
         #endregion
 
         #region 数据定义
-        readonly List<string> datas = new List<string>();
-
         void SetData()
         {
-            datas.Add($"idField : '{Model.PrimaryColumn.JsonName}'");
-            datas.Add($"apiPrefix : '/api/{Project.ApiName}/{Model.ApiName}/v1'");
-            Rules();
+            datas.Add($@"
+        idField : '{Model.PrimaryColumn.JsonName}'");
+            datas.Add($@"
+        apiPrefix : '/{Project.ApiName}/{Model.ApiName}/v1'");
         }
 
         #endregion
@@ -331,54 +295,74 @@ extend_filter({{
 
         #region 参数
 
-        void ArgumentMethod(List<string> methods)
+        void ArgumentMethod()
         {
             string ext = "";
             var order = Model.Properties.FirstOrDefault(p => p.Name == Model.OrderField);
             if (order != null)
                 ext += $@",
-            _sort_: '{order.JsonName}',
-            _order_: '{(Model.OrderDesc ? "desc" : "asc")}'";
+                _sort_: '{order.JsonName}',
+                _order_: '{(Model.OrderDesc ? "desc" : "asc")}'";
             if (Model.Interfaces != null)
             {
                 if (Model.Interfaces.Contains("IStateData"))
                     ext += $@",
-            _state_: this.list.dataState";
+                _state_: this.list.dataState";
                 if (Model.Interfaces.Contains("IAuditData"))
                     ext += $@",
-            _audit_: this.list.audit";
+                _audit_: this.list.audit";
             }
             if (Model.TreeUi)
-                ext = @",
-            pid: this.tree.pid,
-            type: this.tree.type";
-
-            methods.Add($@"getQueryArgs() {{
-        return {{
-            _field_: this.list.field,
-            _value_: this.list.keyWords,
-            _page_: this.list.page,
-            _size_: this.list.pageSize{ext}
-        }}; 
-    }}");
-            if (Model.TreeUi)
-                methods.Add($@"setArgument(arg) {{
-        arg.pid = this.tree.pid;
-        arg.type = this.tree.type;
-    }}");
+                if (Model.ParentColumn == null)
+                    ext = @",
+                pid: this.tree.pid,
+                type: this.tree.type";
+                else
+                    ext = $@",
+                {Model.ParentColumn.JsonName}: this.tree.pid,
+                type: this.tree.type";
+            overrides.Add($@"
+        getQueryArgs() {{
+            let args = {{
+                _field_: this.list.field,
+                _value_: this.list.keyWords,
+                _page_: this.list.page,
+                _size_: this.list.pageSize{ext}
+            }}; 
+            return args;
+        }}");
+            if (!Model.TreeUi)
+                return;
+            if (Model.ParentColumn==null)
+                overrides.Add($@"
+        setArgument(arg) {{
+            arg.pid = this.tree.pid;
+            arg.type = this.tree.type;
+        }}");
+            else 
+                overrides.Add($@"
+        setArgument(arg) {{
+            arg.{Model.ParentColumn.JsonName} = this.tree.pid;
+            arg.type = this.tree.type;
+        }}");
         }
         #endregion
         #region 数据
 
-        void DataCheckMethod(List<string> methods)
+        void DataCheckMethod()
         {
-            methods.Add($@"getDef() {{
-        return {{
-            selected: false{DefaultValue()}
-        }};
-    }},
-    checkListData(row) {{{CheckValue()}
-    }}");
+            overrides.Add($@"
+        createNew() {{
+            let newData= {{{DefaultValue()}
+            }};
+            return newData;
+        }},
+        copyData(row) {{
+            let data = {{}};{CopyValue()}
+            return data;
+        }},
+        toFullData(row) {{{CheckValue()}
+        }}");
         }
 
         /// <summary>
@@ -388,38 +372,40 @@ extend_filter({{
         {
             bool isInner = Model.Interfaces.Contains("IInnerTree");
             var code = new StringBuilder();
-
+            bool first = true;
             foreach (var property in Model.LastProperties.Where(p => !p.IsSystemField && !p.NoneJson))
             {
-                var field = property;
+                if (first) first = false;
+                else code.Append(',');
+                 var field = property;
                 if (isInner && field.Name == "ParentId")
                 {
                     if (!Model.TreeUi)
-                        code.Append($@",
-            {property.JsonName} : !this.currentRow ? 0 : this.currentRow.{Model.PrimaryColumn.JsonName}");
+                        code.Append($@"
+                {property.JsonName} : !this.currentRow ? 0 : this.currentRow.{Model.PrimaryColumn.JsonName}");
                     else
-                        code.Append($@",
-            {property.JsonName} : !this.tree.pid ? 0 : this.tree.pid");
+                        code.Append($@"
+                {property.JsonName} : !this.tree.pid ? 0 : this.tree.pid");
                 }
                 else if (field.CsType == "string" || field.CsType == nameof(DateTime) || field.Nullable)
                 {
-                    code.Append($@",
-            {property.JsonName} : ''");
+                    code.Append($@"
+                {property.JsonName} : ''");
                 }
                 else if (field.IsEnum)
                 {
-                    code.Append($@",
-            {property.JsonName} : '{field.EnumConfig.Items.FirstOrDefault()?.Name}'");
+                    code.Append($@"
+                {property.JsonName} : '{field.EnumConfig?.Items.FirstOrDefault()?.Name}'");
                 }
                 else if (field.CsType == "bool")
                 {
-                    code.Append($@",
-            {property.JsonName} : false");
+                    code.Append($@"
+                {property.JsonName} : false");
                 }
                 else
                 {
-                    code.Append($@",
-            {property.JsonName} : 0");
+                    code.Append($@"
+                {property.JsonName} : 0");
                 }
             }
             return code.ToString();
@@ -435,8 +421,7 @@ extend_filter({{
             {
                 var field = property;
                 code.Append($@"
-        if (typeof row.{property.JsonName} === 'undefined')
-            row.{property.JsonName} = ");
+            if (typeof row.{property.JsonName} === 'undefined') row.{property.JsonName} = ");
                 if (field.Nullable)
                 {
                     code.Append("null;");
@@ -471,8 +456,7 @@ extend_filter({{
             {
                 var field = property;
                 code.Append($@"
-        if (typeof row.{property.JsonName} === 'undefined')
-            data.{property.JsonName} = ");
+            if (typeof row.{property.JsonName} === 'undefined') data.{property.JsonName} = ");
                 if (field.Nullable)
                 {
                     code.Append("null;");
@@ -493,9 +477,7 @@ extend_filter({{
                 {
                     code.Append("0;");
                 }
-                code.Append($@"
-        else
-            data.{property.JsonName} = row.{property.JsonName};");
+                code.Append($@" else data.{property.JsonName} = row.{property.JsonName};");
             }
             return code.ToString();
         }
@@ -503,39 +485,70 @@ extend_filter({{
 
         #region 树
 
-        void TreeMethod(List<string> methods)
+        void TreeMethod()
         {
             if (!Model.TreeUi)
                 return;
-            methods.Add(@"onTreeNodeChanged(data, node) {
-        this.tree.pid = data.id;
-        this.tree.type = data.type;
-        this.tree.node = node;
-        this.tree.current = data;
-        this.loadList();
-    }");
-            datas.Add(@"tree: {
-        pid: 0,
-        type: 'root',
-        node: null,
-        current: null,
-        nodes: [],
-        props: {
-            label: 'label',
-            children: 'children',
-            isLeaf: 'isLeaf'
-        }
-    }");
-            readys.Add("ajax_load('导航数据', `${v.apiPrefix}/edit/tree`, { pid: 0, type: 'root' }, d => v.tree.nodes = d);");
+            commands.Add(@"
+        onTreeNodeChanged(data, node) {
+            this.tree.pid = data.id;
+            this.tree.type = data.type;
+            this.tree.node = node;
+            this.tree.current = data;
+            this.loadList();
+        }");
+            datas.Add(@"
+        tree: {
+            pid: 0,
+            type: 'root',
+            node: null,
+            current: null,
+            nodes: [],
+            props: {
+                label: 'label',
+                children: 'children',
+                isLeaf: 'isLeaf'
+            }
+        }");
+            readys.Add(@"
+        ajax_load('导航数据', `${v.apiPrefix}/edit/tree`, { pid: 0, type: 'root' }, d => v.tree.nodes = d);");
         }
 
         #endregion
+        #region 命令
+
+        void Command()
+        {
+            foreach (var cmd in Model.Commands)
+            {
+                if (cmd.IsSingleObject)
+                    commands.Add($@"
+        {cmd.JsMethod}(id) {{
+            confirmCall('{cmd.Caption}', `${{this.apiPrefix}}/{cmd.Api}`, {{id: id}}, res => true, '确认要执行【{cmd.Description}】操作吗？')
+        }}");
+                else if (cmd.IsMulitOperator)
+                    commands.Add($@"
+        {cmd.JsMethod}(id) {{
+            this.mulitSelectAction('{cmd.Caption}', '{cmd.Api}',`${{this.apiPrefix}}/{cmd.Api}`, row => true);
+        }}");
+                else
+                    commands.Add($@"
+        {cmd.JsMethod}() {{
+            confirmCall('{cmd.Caption}', `${{this.apiPrefix}}/{cmd.Api}`, {{}}, res => true, '确认要执行【{cmd.Description}】操作吗？')
+        }}");
+            }
+        }
+
+        #endregion
+
+        #region 详细页面
+
         void DetailsPage()
         {
             if (!Model.DetailsPage)
                 return;
-            var load =new StringBuilder();
-            if(Model is ModelConfig model)
+            var load = new StringBuilder();
+            if (Model is ModelConfig model)
             {
                 foreach (var ch in model.Releations)
                 {
@@ -549,25 +562,27 @@ extend_filter({{
                             continue;
                     }
                     var name = ch.Name.ToLWord().ToPluralism();
-                    forms.Add($"{name}:[]");
+                    forms.Add($@"
+            {name}:[]");
                     load.Append($@"
-        ajax_load('{ch.Caption}','/{Project.ApiName}/{ch.ForeignEntity.ApiName}/v1/edit/list',{{{ch.ForeignField.JsonName}:row.id,_size_ : 999}},data => that.form.{name} = data.rows);");
+            ajax_load('{ch.Caption}','/{Project.ApiName}/{ch.ForeignEntity.ApiName}/v1/edit/list',{{{ch.ForeignField.JsonName}:row.id,_size_ : 999}},data => that.form.{name} = data.rows);");
                 }
             }
-            methods.Add($@"
-    showList(){{
-        this.form.visible=false;
-    }},
-    handleClick(row){{
-        this.currentRow = row;
-        this.doEdit();
-    }},
-    onEdit() {{
-        var that=this;
-        var row = this.currentRow;{load}
-    }}");
+            commands.Add($@"
+        showList(){{
+            this.form.visible=false;
+        }},
+        handleClick(row){{
+            this.currentRow = row;
+            this.doEdit();
+        }},
+        onEdit() {{
+            var that=this;
+            var row = this.currentRow;{load}
+        }}");
 
         }
+        #endregion
         #endregion
     }
 }

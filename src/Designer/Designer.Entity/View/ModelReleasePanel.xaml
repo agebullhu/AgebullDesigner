@@ -45,7 +45,8 @@
                                     ItemsSource="{Binding Source={StaticResource xJoinType}}" />
             <DataGridComboBoxColumn SelectedItemBinding="{Binding ModelType}" Width="100" Header="模型类型" 
                                     ItemsSource="{Binding Source={StaticResource xModelType}}" />
-            <DataGridCheckBoxColumn  Binding="{Binding CanWrite}" Width="100" Header="同步写入" /> 
+            <DataGridCheckBoxColumn  Binding="{Binding CanWrite}" Header="同步写入" />
+            <DataGridCheckBoxColumn  Binding="{Binding CanDelete}" Header="同步删除" />
         </DataGrid.Columns>
         <i:Interaction.Behaviors>
             <behaviors:DataGridGenertColumnsBehavior />

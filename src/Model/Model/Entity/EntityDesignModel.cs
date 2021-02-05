@@ -24,7 +24,7 @@ namespace Agebull.EntityModel.Designer
             Model = DataModelDesignModel.Current;
             Context = DataModelDesignModel.Current?.Context;
         }
-
+        
         /// <summary>
         /// 生成命令对象
         /// </summary>
@@ -61,7 +61,8 @@ namespace Agebull.EntityModel.Designer
                 Caption = "删除所选列",
                 Image = Application.Current.Resources["img_del"] as ImageSource
             });
-            CommandCoefficient.CoefficientEditor<EntityConfig>(commands, EditorName);
+
+            base.CreateCommands(commands);
         }
 
         #endregion

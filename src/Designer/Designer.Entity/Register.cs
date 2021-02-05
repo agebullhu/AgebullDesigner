@@ -22,7 +22,6 @@ namespace Agebull.Common.Config.Designer.EasyUi
             DesignerManager.Registe<EntityConfig, FieldsPanel>("字段基本", "Entity");
             DesignerManager.Registe<EntityConfig, RegularPanel>("数据校验", "Entity");
             DesignerManager.Registe<EntityConfig, ModelCodePanel>("实体模型", "Entity");
-            DesignerManager.Registe<EntityConfig, JsonPanel>("序列化设置", "Entity", "Model");
 
 
             CommandIoc.EditEntityCommand = EditEntityCommand;

@@ -677,6 +677,7 @@ namespace Agebull.EntityModel.Config
             CanSet = dest.CanSet;
             IsCompute = dest.IsCompute;
             IsCaption = dest.IsCaption;
+            IsParent = dest.IsParent;
             IsPrimaryKey = dest.IsPrimaryKey;
             IsExtendKey = dest.IsExtendKey;
             IsIdentity = dest.IsIdentity;
@@ -854,7 +855,9 @@ namespace Agebull.EntityModel.Config
             Icon = dest.Icon;
             IsLocalAction = dest.IsLocalAction;
             IsSingleObject = dest.IsSingleObject;
-            Url = dest.Url;
+            IsMulitOperator = dest.IsMulitOperator;
+            JsMethod = dest.JsMethod;
+            Api = dest.Api;
         }
     }
 }

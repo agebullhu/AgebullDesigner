@@ -116,7 +116,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         protected override void DoInitialize()
         {
-            CommandCoefficient.CheckType = CheckType;
+            CommandCoefficient.TreeItemCheckType = CheckType;
             base.DoInitialize();
             ExtendConfig.ViewModel = ViewModel;
             Context.ViewModel = ViewModel;

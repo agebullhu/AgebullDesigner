@@ -82,6 +82,7 @@ using ZeroTeam.MessageMVC;
 using ZeroTeam.MessageMVC.ZeroApis;
 using Agebull.EntityModel.Common;
 using Agebull.EntityModel.BusinessLogic;
+using Agebull.EntityModel.Vue;
 
 {Project.UsingNameSpaces}
 using {NameSpace}.DataAccess;
@@ -115,24 +116,24 @@ namespace {NameSpace}
         /// <summary>
         /// 构造数据访问对象
         /// </summary>
-        static DataAccess<TEntity> CreateDataAccess<TEntity>()
-            where TEntity : class, new()
+        static DataAccess<TEntity> CreateDataAccess<TEntity>() where TEntity : class, new()
         {{
             return {Project.DataBaseObjectName}Ex.CreateDataAccess<TEntity>(DependencyHelper.ServiceProvider);
         }}
-
+{ModelDeleteCode()}
         #endregion
-{CommandExCode()}{InterfaceExtendCode()}
+{CommandExCode()}{IInnerTreeCode()}
     }}
 }}
 ";
         }
 
-        private string InterfaceExtendCode()
+        private string IInnerTreeCode()
         {
             if (!(Model.Interfaces.Contains("IInnerTree")))
                 return null;
-            var cap = Model.LastProperties.FirstOrDefault(p => p.IsCaption);
+            var cap = Model.CaptionColumn;
+
             return $@"
         #region 树形数据
 
@@ -148,7 +149,7 @@ namespace {NameSpace}
         /// <summary>级联删除</summary>
         async Task DeleteChild({Model.PrimaryColumn.CsType} id)
         {{
-            var childs = await Access.LoadIdssAsync<{Model.PrimaryColumn.CsType}>(p => p.Id,p => p.ParentId == id);
+            var childs = await Access.LoadIdsAsync<{Model.PrimaryColumn.CsType}>(p => p.ParentId == id);
             foreach (var ch in childs.Distinct())
             {{
                 if (ch <= 0 || ch == id)
@@ -161,11 +162,11 @@ namespace {NameSpace}
         /// <summary>
         ///     载入树节点
         /// </summary>
-        public async Task<List<Agebull.EntityModel.Vue.TreeNode>> LoadTree(long pid)
+        public async Task<List<TreeNode>> LoadTree(long pid)
         {{
             if (pid <= 0)
                 pid = 0;
-            var node = new List<Agebull.EntityModel.Vue.TreeNode>();
+            var node = new List<TreeNode>();
             using var scope = Access.Select(nameof({Model.EntityName}.{Model.PrimaryField}),nameof({Model.EntityName}.{cap.Name}));
             await LoadTree(pid, node);
             return node;
@@ -174,17 +175,17 @@ namespace {NameSpace}
         /// <summary>
         ///     载入树节点
         /// </summary>
-        public async Task LoadTree(long pid, List<Agebull.EntityModel.Vue.TreeNode> parent)
+        public async Task LoadTree(long pid, List<TreeNode> parent)
         {{
             var childs = await Access.AllAsync(p => p.ParentId == pid);
             foreach (var ch in childs)
             {{
-                var node = new Agebull.EntityModel.Vue.TreeNode
+                var node = new TreeNode
                 {{
                     Id = ch.{Model.PrimaryField}.ToString(),
                     Label = ch.{cap.Name},
                     Tag = pid.ToString(),
-                    Children = new List<Agebull.EntityModel.Vue.TreeNode>()
+                    Children = new List<TreeNode>()
                 }};
                 await LoadTree(ch.Id, node.Children);
                 parent.Add(node);
@@ -195,48 +196,61 @@ namespace {NameSpace}
         private string CommandExCode()
         {
             var code = new StringBuilder();
-            code.Append(@"
-        #region 设计器命令
-    ");
-            bool hase = false;
-
             if (Model.TreeUi)
             {
-                hase = true;
-                code.Append(@"
-        /// <summary>
-        ///     载入树节点
-        /// </summary>
-        public Task<List<Agebull.EntityModel.Vue.TreeNode>> LoadTree()
-        {
-            return Task.FromResult(new List<Agebull.EntityModel.Vue.TreeNode>());
-        }");
+                TreeCode(code);
             }
-            var cap = Model.LastProperties.FirstOrDefault(p => p.IsCaption);
+            var cap = Model.CaptionColumn;
             if (cap != null)
             {
-                hase = true;
-                code.Append($@"
-        /// <summary>
-        /// 载入下拉列表数据
-        /// </summary>
-        public async Task<List<Agebull.EntityModel.Vue.DataItem>> ComboValues()
-        {{
-            using var scope = Access.Select(nameof({Model.EntityName}.{Model.PrimaryField}),nameof({Model.EntityName}.{cap.Name}));
-            var datas =await Access.AllAsync();
-            return datas.Count == 0
-                ? new List<Agebull.EntityModel.Vue.DataItem>()
-                : datas.OrderBy(p => p.{cap.Name}).Select(p => new Agebull.EntityModel.Vue.DataItem
-                {{
-                    Id = p.{Model.PrimaryField}.ToString(),
-                    Text = p.{cap.Name}
-                }}).ToList();
-        }}");
+                ComboValues(code, cap);
             }
-            if (Model is ModelConfig model)
-                foreach (var cmd in model.Commands.Where(p => !p.IsLocalAction))
-                {
-                    hase = true;
+            CommandCode(code);
+            if (code.Length == 0)
+                return null;
+            code.Append(@"
+");
+            return $@"
+        #region 设计器命令{code}
+        #endregion";
+        }
+
+        private void CommandCode(StringBuilder code)
+        {
+            foreach (var cmd in Model.Commands.Where(p => !p.IsLocalAction))
+            {
+                if (cmd.IsSingleObject)
+                    code.Append($@"
+
+        /// <summary>
+        ///     {cmd.Caption.ToRemString()}
+        /// </summary>
+        /// <param name=""id"" >主键</param>
+        /// <remark>
+        ///     {cmd.Description.ToRemString()}
+        /// </remark>
+        public async Task<bool> {cmd.Name}({PrimaryProperty.CsType} id)
+        {{
+            var data = await Access.LoadByPrimaryKeyAsync(id);
+            if (data == null)
+                return false;
+            return true;
+        }}");
+                else if (cmd.IsMulitOperator)
+                    code.Append($@"
+
+        /// <summary>
+        ///     {cmd.Caption.ToRemString()}
+        /// </summary>
+        /// <param name=""ids"" >选择的主键</param>
+        /// <remark>
+        ///     {cmd.Description.ToRemString()}
+        /// </remark>
+        public async Task<bool> {cmd.Name}(List<{PrimaryProperty.CsType}> ids)
+        {{
+            return true;
+        }}");
+                else
                     code.Append($@"
 
         /// <summary>
@@ -245,20 +259,118 @@ namespace {NameSpace}
         /// <remark>
         ///     {cmd.Description.ToRemString()}
         /// </remark>
-        public bool {cmd.Name}(int id)
+        public async Task<bool> {cmd.Name}()
         {{
-            //Access.SetValue(p => p.Id, 0, id);
             return true;
         }}");
-                }
-            if (!hase)
-                return null;
-            code.Append(@"
-        #endregion
-");
-            return code.ToString();
+
+            }
         }
 
+        private void TreeCode(StringBuilder code)
+        {
+            if (Model.Interfaces.Contains("IInnerTree"))
+                code.Append($@"
+        /// <summary>
+        ///     载入树节点
+        /// </summary>
+        public async Task<List<TreeNode>> LoadTree()
+        {{
+            var nodes = await LoadTree(0);
+            return new List<TreeNode>
+            {{
+                new TreeNode
+                {{
+                    Id =""0"",
+                    Label = ""{Model.Caption}"",
+                    Tag = ""0"",
+                    Children = nodes
+                }}
+            }};
+        }}");
+            else
+                code.Append(@"
+        /// <summary>
+        ///     载入树节点
+        /// </summary>
+        public Task<List<TreeNode>> LoadTree()
+        {
+            return Task.FromResult(new List<TreeNode>());
+        }");
+        }
+
+        private void ComboValues(StringBuilder code, IFieldConfig cap)
+        {
+            var parent = Model.ParentColumn;
+            if (parent == null)
+            {
+                code.Append($@"
+        /// <summary>
+        /// 载入下拉列表数据
+        /// </summary>
+        public async Task<List<DataItem<{Model.PrimaryColumn.LastCsType}>>> ComboValues()
+        {{
+            using var scope = Access.Select(nameof({Model.EntityName}.{Model.PrimaryField}),nameof({Model.EntityName}.{cap.Name}));
+            var datas =await Access.AllAsync();
+            return datas.Count == 0
+                ? new List<DataItem<{Model.PrimaryColumn.LastCsType}>>()
+                : datas.OrderBy(p => p.{cap.Name}).Select(p => new DataItem<{Model.PrimaryColumn.LastCsType}>
+                {{
+                    Id = p.{Model.PrimaryField},
+                    Text = p.{cap.Name}
+                }}).ToList();
+        }}");
+            }
+            else
+            {
+                code.Append($@"
+        /// <summary>
+        /// 载入下拉列表数据
+        /// </summary>
+        public async Task<List<DataItem<{Model.PrimaryColumn.LastCsType}>>> ComboValues()
+        {{
+            using var scope = Access.Select(nameof({Model.EntityName}.{Model.PrimaryField}),nameof({Model.EntityName}.{parent.Name}),nameof({Model.EntityName}.{cap.Name}));
+            var datas =await Access.AllAsync();
+            return datas.Count == 0
+                ? new List<DataItem<{Model.PrimaryColumn.LastCsType}>>()
+                : datas.OrderBy(p => p.{cap.Name}).Select(p => new DataItem<{Model.PrimaryColumn.LastCsType}>
+                {{
+                    Id = p.{Model.PrimaryField},
+                    Text = p.{cap.Name},
+                    ParentId = p.{parent.Name}
+                }}).ToList();
+        }}");
+            }
+        }
+
+
+        private string ModelDeleteCode()
+        {
+            if (!(Model is ModelConfig model))
+                return null;
+            StringBuilder code = new StringBuilder();
+            code.Append(@"
+        ///<inheritdoc/>
+        protected override async Task<bool> DoDelete(long id)
+        {
+            if (!await base.DoDelete(id))
+                return false;");
+            var firends = model.Releations.Where(p => p.CanDelete).ToArray();
+            if (firends.Length == 0)
+                return null;
+            foreach (var firend in firends)
+            {
+                var entity = firend.ForeignEntity == model.Entity ? firend.PrimaryEntity : firend.ForeignEntity;
+                var field = firend.ForeignEntity == model.Entity ? firend.PrimaryField : firend.ForeignField;
+                code.Append($@"
+            //{entity.Caption}
+            await CreateDataAccess<{entity.EntityName}>().DeleteAsync(p => p.{field.Name} == id);");
+            }
+            code.Append(@"
+            return true;
+        }");
+            return code.ToString();
+        }
 
     }
 }

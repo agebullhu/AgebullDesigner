@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -13,15 +12,9 @@ namespace Agebull.EntityModel.Designer
 
         #region 设计对象
 
-        /// <summary>
-        ///     分类
-        /// </summary>
-        public override void SetContextConfig(object cfg)
-        {
-            Config = cfg as EnumConfig;
-        }
         protected override void DoInitialize()
         {
+            Config = DesignModel  as EnumConfig;
             Config = Context.SelectConfig as EnumConfig ?? Context.SelectConfig.Friend as EnumConfig;
             SyncSelect();
             base.DoInitialize();

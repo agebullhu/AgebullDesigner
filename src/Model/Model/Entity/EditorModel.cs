@@ -64,8 +64,11 @@ namespace Agebull.EntityModel.Designer
             CreateExtendEditor();
             CheckEditorVisibility();
         }
+
         Type extendType;
         string extendWorkView;
+        List<ExtendViewModelBase> currentViewModel = new List<ExtendViewModelBase>();
+        List<ExtendViewModelBase> friendViewModel = new List<ExtendViewModelBase>();
         private bool HaseExtend => ExtendEditorPanel.Items.Count > 0;
         internal void CreateExtendEditor()
         {
@@ -76,8 +79,15 @@ namespace Agebull.EntityModel.Designer
             var type = Context.SelectConfig.GetType();
             if (extendType == type && extendWorkView == WorkView)
             {
+                foreach (var vm in currentViewModel)
+                    vm.SetContextConfig(Model, Context.SelectConfig);
+                if (Context.SelectConfig.Friend != null)
+                    foreach (var vm in friendViewModel)
+                        vm.SetContextConfig(Model, Context.SelectConfig.Friend);
                 return;
             }
+            currentViewModel.Clear();
+            friendViewModel.Clear();
             extendType = type;
             extendWorkView = WorkView;
 
@@ -88,19 +98,20 @@ namespace Agebull.EntityModel.Designer
                 {
                     if (WorkView != null && ext.Value.Filter.Count > 0 && !ext.Value.Filter.Contains(WorkView))
                         continue;
-                    CreateExtendEditor(ext.Key, ext.Value);
+                    var vm = CreateExtendEditor(ext.Key, ext.Value, Context.SelectConfig);
+                    currentViewModel.Add(vm);
                 }
             }
             if (Context.SelectConfig.Friend != null)
-                if (DesignerManager.ExtendDictionary.TryGetValue(Context.SelectConfig.Friend.GetType(), out exts) &&
-                        exts.Count != 0)
+                if (DesignerManager.ExtendDictionary.TryGetValue(Context.SelectConfig.Friend.GetType(), out exts) && exts.Count != 0)
                 {
                     foreach (var ext in exts.OrderBy(p => p.Value.Index))
                     {
                         if (WorkView != null && ext.Value.Filter.Count > 0 && !ext.Value.Filter.Contains(WorkView))
                             continue;
-                        var vm = CreateExtendEditor(ext.Key, ext.Value);
-                        vm.DesignModel.SetContextConfig(Context.SelectConfig.Friend);
+                        var vm = CreateExtendEditor(ext.Key, ext.Value, Context.SelectConfig.Friend);
+
+                        friendViewModel.Add(vm);
                     }
                 }
             if (ExtendEditorPanel.Items.Count > 0)
@@ -113,11 +124,12 @@ namespace Agebull.EntityModel.Designer
                 });
             }
         }
-        private ExtendViewModelBase CreateExtendEditor(string title, ExtendViewOption option)
+        private ExtendViewModelBase CreateExtendEditor(string title, ExtendViewOption option, ConfigBase config)
         {
             var editor = option.Create();
             var vm = (ExtendViewModelBase)editor.DataContext;
-            vm.BaseModel = Model;
+
+            vm.SetContextConfig(Model, config);
             var item = new TabItem
             {
                 Header = title,

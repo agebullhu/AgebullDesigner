@@ -114,6 +114,10 @@
                                   SelectedValue="{Binding MulitLine,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel>
+                        <Label Content="文本行数" />
+                        <TextBox Text="{Binding Rows,Mode=TwoWay}" />
+                    </StackPanel> 
+                    <StackPanel>
                         <Label Content="宽度倍数" />
                         <TextBox Text="{Binding FormCloumnSapn,Mode=TwoWay}" />
                     </StackPanel>

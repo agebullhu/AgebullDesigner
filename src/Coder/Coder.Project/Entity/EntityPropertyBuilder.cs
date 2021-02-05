@@ -492,12 +492,12 @@ using Agebull.EntityModel.Interfaces;
         /// <summary>
         /// {releation.Caption.ToRemString()}
         /// </summary>
-        [JsonProperty(""{cs}"")]
+        [JsonProperty(""{cs}"" , NullValueHandling = NullValueHandling.Include)]
         public {type} {releation.Name} {{ get; set; }}");
             else
             code.Append($@"
 
-        [JsonProperty(""{cs}"")]
+        [JsonProperty(""{cs}"", NullValueHandling = NullValueHandling.Include)]
         private {type} _{cs};
 
         /// <summary>

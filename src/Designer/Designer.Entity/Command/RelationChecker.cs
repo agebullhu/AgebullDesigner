@@ -109,7 +109,7 @@ namespace Agebull.EntityModel.Designer
                 foreach (var field in entity.Properties.Where(p => p.IsLinkKey).ToArray())
                 {
                     var re = GlobalConfig.GetEntity(field.LinkTable);
-                    var caption = re?.Properties.FirstOrDefault(p => p.IsCaption);
+                    var caption = re?.CaptionColumn;
                     if (caption == null)
                         continue;
                     hase = true;
@@ -127,7 +127,7 @@ namespace Agebull.EntityModel.Designer
                         {
                             Name = caption.Name
                         });
-                        cf.Copy(caption);
+                        cf.Copy(caption.Field);
                         
                     }
                     cf.NoStorage = false;
@@ -138,7 +138,7 @@ namespace Agebull.EntityModel.Designer
                     cf.IsCompute = true;
                     cf.IsLinkCaption = true;
                     cf.IsLinkKey = false;
-                    cf.Option.ReferenceConfig = caption;
+                    cf.Option.ReferenceConfig = caption.Field;
                     cf.Option.IsLink = true;
                     Trace.WriteLine($"{entity.Caption ?? entity.Name}:{field.Name} => {re.Caption ?? re.Name}:{re.PrimaryField }");
                 }

@@ -42,6 +42,7 @@ namespace Agebull.EntityModel.Designer
                     Caption = "UI快速组建",
                     Action = VueModel.CheckUi,
                     WorkView = "entity",
+                    CanButton=true,
                     ConfirmMessage = "是否继续?"
                 },
                 new CommandItemBuilder<IEntityConfig>
@@ -50,12 +51,13 @@ namespace Agebull.EntityModel.Designer
                     Caption = "界面字段初始化",
                     WorkView = "entity",
                     Catalog = "用户界面",
+                    CanButton=true,
                     ConfirmMessage = "是否继续?"
                 },
                 new CommandItemBuilder<IEntityConfig>
                 {
                     Action = VueModel.CheckUiType,
-                    
+                    CanButton=true,
                     Catalog = "用户界面",
                     Editor = "Vue",
                     WorkView = "entity",
@@ -64,36 +66,38 @@ namespace Agebull.EntityModel.Designer
                 new CommandItemBuilder<IEntityConfig>
                 {
                     Action = VueModel.CheckQuery,
-                    
+                    CanButton=true,
                     Catalog = "用户界面",
                     WorkView = "entity",
+                    Editor = "Vue",
                     Caption = "初始化查询字段"
                 },
                 new CommandItemBuilder<IEntityConfig>
                 {
                     Action = VueModel.CheckKeyShow,
-                    
                     Catalog = "用户界面",
+                    Editor = "Vue",
                     WorkView = "entity",
                     Caption = "隐藏主外键"
                 },
                 new CommandItemBuilder<IEntityConfig>
                 {
                     Action = VueModel.CheckSizeByLen,
-                    
+
                     Catalog = "用户界面",
                     Editor = "Vue",
                     WorkView = "entity",
+                    CanButton=true,
                     Caption = "按文字计算宽度",
                     ConfirmMessage = "是否继续?"
                 },
                 new CommandItemBuilder<IEntityConfig>
                 {
                     Action = VueModel.CheckSizeAuto,
-                    
                     Catalog = "用户界面",
                     Editor = "Vue",
                     WorkView = "entity",
+                    CanButton=true,
                     Caption = "自适应宽度",
                     ConfirmMessage = "是否继续?"
                 },
@@ -101,7 +105,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     Action = VueModel.CheckExport,
                     Caption = "导出导出初始化",
-                    
+                    NoConfirm=true,
                     WorkView = "entity",
                     Catalog = "用户界面",
                     Editor = "Vue",

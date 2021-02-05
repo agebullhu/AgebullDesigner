@@ -438,7 +438,6 @@ Memo,s,备注";
 
                 var name = GlobalConfig.ToLinkWordName(words[0], "", true);
 
-                var dbName = GlobalConfig.ToLinkWordName(words[0], "_", false);
 
                 /*
                 文本说明:
@@ -449,9 +448,8 @@ Memo,s,备注";
                 FieldConfig column = new FieldConfig
                 {
                     Name = name,
+                    CanUserQuery = true,
                     IsPrimaryKey = name.Equals("ID", StringComparison.OrdinalIgnoreCase),
-                    DbFieldName = dbName,
-                    JsonName = words[0],
                     ApiArgumentName = words[0],
                     Datalen = 200,
                     DataType = "String",
@@ -470,7 +468,7 @@ Memo,s,备注";
                 if (words.Length > 3 && words[3] != "@" && words[3] != "#")
                     column.Description = words.Length < 4 ? null : words.Skip(3).LinkToString(",").TrimEnd('@', '#');
 
-                
+
                 var old = columns.FirstOrDefault(p => p != null && p.Name == name);
                 if (old != null)
                 {
@@ -491,6 +489,8 @@ Memo,s,备注";
                     }
                     columns.Add(column);
                 }
+                column.DbFieldName = column.Name.ToName('_', false);
+                column.JsonName = column.Name.ToLWord();
             }
 
             return columns;

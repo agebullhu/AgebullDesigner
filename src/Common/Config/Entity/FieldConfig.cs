@@ -160,7 +160,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     原始字段名称
         /// </summary>
-        IFieldConfig IDesignField.Field => this;
+        FieldConfig IDesignField.Field => this;
 
         /// <summary>
         /// 数据类型
@@ -1213,6 +1213,30 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
+        /// 标题字段
+        /// </summary>
+        [DataMember, JsonProperty("isParent", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isParent;
+
+        /// <summary>
+        /// 上级外键
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据标识"), DisplayName(@"上级外键"), Description("上级外键")]
+        public bool IsParent
+        {
+            get => _isParent;
+            set
+            {
+                if (_isParent == value)
+                    return;
+                BeforePropertyChanged(nameof(IsParent), _isParent, value);
+                _isParent = value;
+                OnPropertyChanged(nameof(IsParent));
+            }
+        }
+
+        /// <summary>
         /// 主键字段
         /// </summary>
         [DataMember, JsonProperty("IsPrimaryKey", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
@@ -2008,6 +2032,33 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(MulitLine), _mulitLine, value);
                 _mulitLine = value;
                 OnPropertyChanged(nameof(MulitLine));
+            }
+        }
+
+        /// <summary>
+        /// 多行文本的行数
+        /// </summary>
+        [DataMember, JsonProperty("rows", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal int rows;
+
+        /// <summary>
+        /// 多行文本的行数
+        /// </summary>
+        /// <remark>
+        /// 多行文本的行数，默认为3行
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"用户界面"), DisplayName(@"行数"), Description("行数")]
+        public int Rows
+        {
+            get => rows <= 0 ? 3 : rows;
+            set
+            {
+                if (rows == value)
+                    return;
+                BeforePropertyChanged(nameof(Rows), rows, value);
+                rows = value;
+                OnPropertyChanged(nameof(Rows));
             }
         }
 

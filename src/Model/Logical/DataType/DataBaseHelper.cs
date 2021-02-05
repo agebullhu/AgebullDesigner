@@ -1,6 +1,4 @@
-﻿using Agebull.Common;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Agebull.EntityModel.Config
@@ -15,7 +13,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public static string ToTableName(EntityConfig entity)
+        public static string ToTableName(IEntityConfig entity)
         {
             var style = CodeStyleManager.GetDatabaseStyle(entity.Parent.CodeStyle, entity.Parent.DbType);
             return style.FormatTableName(entity); 
@@ -26,7 +24,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public static string ToViewName(EntityConfig entity)
+        public static string ToViewName(IEntityConfig entity)
         {
             var style = CodeStyleManager.GetDatabaseStyle(entity.Parent.CodeStyle, entity.Parent.DbType);
             return style.FormatViewName(entity);
@@ -46,7 +44,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 执行器
         /// </summary>
-        public static void CheckFieldLink(EntityConfig entity)
+        public static void CheckFieldLink(IEntityConfig entity)
         {
             CheckFieldLink(entity.Properties);
         }
@@ -54,7 +52,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 检查字段关联
         /// </summary>
-        public static bool CheckFieldLink(IEnumerable<FieldConfig> fields)
+        public static bool CheckFieldLink(IEnumerable<IFieldConfig> fields)
         {
             bool hase = false;
             foreach (var field in fields)
@@ -117,7 +115,7 @@ namespace Agebull.EntityModel.Config
             return hase;
         }
 
-        private static void SetNoLink(FieldConfig field)
+        private static void SetNoLink(IFieldConfig field)
         {
             Trace.WriteLine($"X    :{field.Caption}({field.Name})");
             field.LinkTable = field.LinkField = null;
