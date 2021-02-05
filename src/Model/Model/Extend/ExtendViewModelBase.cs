@@ -183,13 +183,6 @@ namespace Agebull.EntityModel.Designer
         }
 
         /// <summary>
-        /// 构造命令列表
-        /// </summary>
-        /// <returns></returns>
-        public virtual void CreateCommands(IList<CommandItemBase> commands)
-        {
-        }
-        /// <summary>
         ///     模型
         /// </summary>
         public sealed override DesignModelBase DesignModel => Model;
