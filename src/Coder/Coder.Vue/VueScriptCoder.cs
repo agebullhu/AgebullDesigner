@@ -103,7 +103,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 datas.Add($@"
         {comboName}:[]");
                 readys.Add($@"
-        ajax_load('载入{entity.Caption}','/{entity.Parent.ApiName}/{entity.ApiName}/v1/edit/combo',null, d => v.combos.{comboName} = d);");
+        ajax_load('载入{entity.Caption}','/{entity.Project.ApiName}/{entity.ApiName}/v1/edit/combo',null, d => v.combos.{comboName} = d);");
                 filters.Add($@"
         //{entity.Caption}:主键到标题
         {entity.Name.ToLWord()}Formater(val) {{
@@ -193,7 +193,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         #endregion
 
         #region 规则
-        List<string> rules = new List<string>();
+        readonly List<string> rules = new List<string>();
         /// <summary>
         ///     生成Form录入字段界面
         /// </summary>

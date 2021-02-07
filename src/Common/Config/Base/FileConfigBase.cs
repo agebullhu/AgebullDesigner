@@ -40,7 +40,7 @@ namespace Agebull.EntityModel.Config
         /// 取文件名
         /// </summary>
         /// <returns></returns>
-        public string GetFileName()
+        public virtual string GetFileName()
         {
             if (string.IsNullOrWhiteSpace(Name))
             {
@@ -48,6 +48,5 @@ namespace Agebull.EntityModel.Config
             }
             return Name.Trim().Replace(' ', '_').Replace('>', '_').Replace('<', '_') + ".json";
         }
-
     }
 }

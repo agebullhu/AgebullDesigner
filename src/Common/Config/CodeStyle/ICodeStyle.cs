@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace Agebull.EntityModel.Config
+﻿namespace Agebull.EntityModel.Config
 {
 
     /// <summary>
@@ -11,11 +9,11 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 风格名称
         /// </summary>
-        string StyleName { get;  }
+        string StyleName { get; }
 
         /// <summary>
         /// 风格目标对象
         /// </summary>
-        string StyleTarget { get;  }
+        string StyleTarget { get; }
     }
 }

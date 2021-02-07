@@ -9,11 +9,19 @@ namespace Agebull.Common.Mvvm
     public class CommandConfig : NotificationObject, ICommandItem
     {
         /// <summary>
+        /// 序号
+        /// </summary>
+        public int Index
+        {
+            get;
+            set;
+        }
+        /// <summary>
         /// 标识
         /// </summary>
         public string Key
         {
-            get; 
+            get;
             set;
         }
 
@@ -95,6 +103,15 @@ namespace Agebull.Common.Mvvm
         ///     面对的编辑器
         /// </summary>
         public string Editor
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        ///     面对的编辑器
+        /// </summary>
+        public string Tag
         {
             get;
             set;

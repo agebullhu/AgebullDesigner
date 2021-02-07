@@ -9,6 +9,14 @@ namespace Agebull.Common.Mvvm
     public interface ICommandItem : IKey
     {
         /// <summary>
+        /// 序号
+        /// </summary>
+        int Index
+        {
+            get;
+            set;
+        }
+        /// <summary>
         ///     名称
         /// </summary>
         string Name
@@ -102,6 +110,11 @@ namespace Agebull.Common.Mvvm
         string ConfirmMessage { get; set; }
 
         /// <summary>
+        /// 标签
+        /// </summary>
+        string Tag { get; set; }
+        
+        /// <summary>
         ///     无需确认
         /// </summary>
         bool NoConfirm
@@ -124,6 +137,8 @@ namespace Agebull.Common.Mvvm
             dist. Key = sour.Key ?? sour.GetHashCode().ToString();
             dist.NoConfirm = sour.NoConfirm;
             dist.Name = sour.Name;
+            dist.Tag = sour.Tag;
+            dist.Index = sour.Index;
             dist.CanButton = sour.CanButton;
             dist.Caption = sour.Caption;
             dist.Description = sour.Description;

@@ -11,6 +11,8 @@
 using Agebull.Common;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -20,7 +22,7 @@ using System.Windows.Media;
 
 namespace Agebull.EntityModel.Designer
 {
-    internal class VueViewModel : ExtendViewModelBase<VueModel>
+    internal class VueViewModel : EditorViewModelBase<VueModel>
     {
         public VueViewModel()
         {
@@ -29,19 +31,18 @@ namespace Agebull.EntityModel.Designer
 
     }
 
-    internal class VueModel : DesignModelBase
+    internal class VueModel : EntityExtendModel<PageConfig,UserInterfaceField>
     {
-        #region 操作命令
 
-        public VueModel()
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        protected override void DoInitialize()
         {
-            Model = DataModelDesignModel.Current;
-            Context = DataModelDesignModel.Current?.Context;
+            base.DoInitialize();
+            Extend = Entity?.Page;
+
         }
-
-        #endregion
-
-
         #region 代码
 
         internal static void CheckUi(IEntityConfig entity)

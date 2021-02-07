@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Agebull.Common;
 using Agebull.EntityModel.Config;
 using Newtonsoft.Json;
 
@@ -13,8 +14,6 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     public class ProjectWriter : ConfigWriter
     {
-        #region 保存
-
         /// <summary>
         /// 保存解决方案
         /// </summary>
@@ -107,7 +106,7 @@ namespace Agebull.EntityModel.Designer
         {
             if (entity.IsDelete)
             {
-                entity.Parent.Remove(entity);
+                entity.Project.Remove(entity);
             }
             else
             {
@@ -117,7 +116,7 @@ namespace Agebull.EntityModel.Designer
                     entity.Remove(field);
                 }
             }
-
+            SaveModelExtend(entity, dir, checkState);
             SaveConfig(entity, dir, checkState);
         }
 
@@ -128,7 +127,7 @@ namespace Agebull.EntityModel.Designer
         {
             if (model.IsDelete)
             {
-                model.Parent.Remove(model);
+                model.Project.Remove(model);
             }
             else
             {
@@ -145,8 +144,21 @@ namespace Agebull.EntityModel.Designer
                 }
             }
 
+            SaveModelExtend(model, dir, checkState);
             SaveConfig(model, dir, checkState);
         }
-        #endregion
+
+
+        /// <summary>
+        /// 保存实体
+        /// </summary>
+        static void SaveModelExtend(IEntityConfig entity, string dir, bool checkState)
+        {
+            var path = IOHelper.CheckPath(dir, "Extend");
+            if (entity.Page != null)
+                SaveConfig(entity.Page, path, checkState);
+            if (entity.DataTable != null)
+                SaveConfig(entity.DataTable, path, checkState);
+        }
     }
 }

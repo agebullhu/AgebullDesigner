@@ -77,7 +77,7 @@ namespace Agebull.EntityModel.Designer
             var tables = Context.GetSelectEntities();
             foreach (var entity in tables)
             {
-                var dir = GlobalConfig.CheckPath(directory, entity.Parent.Name, "Entity");
+                var dir = GlobalConfig.CheckPath(directory, entity.Project.Name, "Entity");
                 ProjectWriter.SaveEntity(entity, dir, true);
             }
         }

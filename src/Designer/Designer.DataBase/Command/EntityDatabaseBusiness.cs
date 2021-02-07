@@ -1,3 +1,4 @@
+using Agebull.EntityModel.Config.V2021;
 using System.Diagnostics;
 using System.Linq;
 
@@ -11,7 +12,12 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 表结构对象
         /// </summary>
-        public EntityConfig Entity { get; set; }
+        public DataTableConfig DataTable { get; set; }
+
+        /// <summary>
+        /// 表结构对象
+        /// </summary>
+        public IEntityConfig Entity => DataTable.Entity;
 
 
         /// <summary>
@@ -19,42 +25,41 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public void StandardName()
         {
-            if (Entity.IsFreeze || Entity.IsInterface)
+            if (DataTable.IsFreeze || Entity.IsInterface)
                 return;
             if (!Entity.EnableDataBase)
             {
-                foreach (var col in Entity.Properties)
+                foreach (var col in DataTable.Properties)
                 {
                     col.DbFieldName = null;
                     col.DbType = null;
                 }
 
-                Entity.IsModify = true;
-                Entity.ReadTableName = null;
-                Entity.SaveTableName = null;
+                DataTable.IsModify = true;
+                DataTable.ReadTableName = null;
+                DataTable.SaveTableName = null;
                 return;
             }
-            if (Entity.SaveTableName == Entity.ReadTableName)
-                Entity.ReadTableName = null;
+            if (DataTable.SaveTableName == DataTable.ReadTableName)
+                DataTable.ReadTableName = null;
 
-            if (string.IsNullOrWhiteSpace(Entity.OldName))
-                Entity.OldName = Entity.Alias ?? Entity.SaveTableName;
+            if (string.IsNullOrWhiteSpace(DataTable.OldName))
+                DataTable.OldName = DataTable.Alias ?? DataTable.SaveTableName;
 
             var name = DataBaseHelper.ToTableName(Entity);
-            if (Entity.SaveTableName == null || name != Entity.SaveTableName)
+            if (DataTable.SaveTableName == null || name != DataTable.SaveTableName)
             {
-                Entity.SaveTableName = name;
+                DataTable.SaveTableName = name;
             }
-            foreach (var col in Entity.Properties)
+            foreach (var col in DataTable.Properties)
             {
-                col.Entity = Entity;
                 if (col.IsDiscard)
                 {
                     continue;
                 }
                 if (string.IsNullOrWhiteSpace(col.OldName))
                     col.OldName = col.DbFieldName;
-                col.DbFieldName = DataBaseHelper.ToDbFieldName(col);
+                col.DbFieldName = DataBaseHelper.ToDbFieldName(col.Field);
             }
         }
 
@@ -64,32 +69,32 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public void CheckDbConfig(bool repair)
         {
-            if (Entity.IsFreeze || Entity.IsInterface)
+            if (DataTable.IsFreeze || Entity.IsInterface)
                 return;
             if (!Entity.EnableDataBase)
             {
-                foreach (var col in Entity.Properties)
+                foreach (var col in DataTable.Properties)
                 {
                     col.DbFieldName = null;
                     col.DbType = null;
                 }
 
-                Entity.IsModify = true;
-                Entity.ReadTableName = null;
-                Entity.SaveTableName = null;
+                DataTable.IsModify = true;
+                DataTable.ReadTableName = null;
+                DataTable.SaveTableName = null;
                 return;
             }
 
             if (Entity.PrimaryColumn == null)
             {
-                var idf = Entity.Find("Id");
+                var idf = Entity.Entity.Find("Id");
                 if (idf != null)
                     idf.IsPrimaryKey = true;
                 else
-                    Entity.Add(new FieldConfig
+                    Entity.Entity.Add(new FieldConfig
                     {
                         Name = "Id",
-                        Caption = Entity.Caption + "ID",
+                        Caption = DataTable.Caption + "ID",
                         JsonName = "id",
                         DbFieldName = "id",
                         IsIdentity = true,
@@ -98,16 +103,18 @@ namespace Agebull.EntityModel.Config
                     });
             }
 
-            if (repair || string.IsNullOrWhiteSpace(Entity.SaveTableName))
+            if (repair || string.IsNullOrWhiteSpace(DataTable.SaveTableName))
             {
-                if (Entity.ReadTableName == Entity.SaveTableName)
-                    Entity.ReadTableName = null;
-                Entity.SaveTableName = DataBaseHelper.ToTableName(Entity);
+                if (DataTable.ReadTableName == DataTable.SaveTableName)
+                    DataTable.ReadTableName = null;
+                DataTable.SaveTableName = DataBaseHelper.ToTableName(Entity);
             }
-            var model = new PropertyDatabaseBusiness();
-            foreach (var col in Entity.Properties)
+            var model = new PropertyDatabaseBusiness
             {
-                col.Entity = Entity;
+                Entity = DataTable.Entity
+            };
+            foreach (var col in DataTable.Properties)
+            {
                 if (col.IsDiscard)
                 {
                     continue;
@@ -125,11 +132,11 @@ namespace Agebull.EntityModel.Config
 
         public void CheckIndex()
         {
-            foreach (var field in Entity.Properties)
+            foreach (var field in DataTable.Properties)
             {
                 if (field.NoStorage)
                     continue;
-                if (field.IsLinkKey || field.IsCaption || field.IsEnum)
+                if (field.Field.IsLinkKey || field.Field.IsCaption || field.Field.IsEnum)
                 {
                     field.IsDbIndex = true;
                     Trace.WriteLine($"--{field.Caption}:{field.DbFieldName}");

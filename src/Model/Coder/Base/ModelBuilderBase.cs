@@ -17,14 +17,14 @@ namespace Agebull.EntityModel.RobotCoder
         public string GetBaseCode(IEntityConfig config)
         {
             Model = config;
-            Project = Model.Parent;
+            Project = Model.Project;
             return CreateBaCode();
         }
 
         public string GetExtendCode(IEntityConfig config)
         {
             Model = config;
-            Project = Model.Parent;
+            Project = Model.Project;
             return CreateExCode();
         }
         #endregion

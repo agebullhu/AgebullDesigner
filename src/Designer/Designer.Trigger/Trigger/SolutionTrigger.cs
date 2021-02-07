@@ -14,24 +14,23 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         protected override void OnLoad()
         {
-            using (WorkModelScope.CreateScope(WorkModel.Repair))
+            SolutionModel model = new SolutionModel
             {
-                SolutionModel model = new SolutionModel
-                {
-                    Solution = TargetConfig
-                };
-                
-                model.RepairByLoaded();
-                model.ResetStatus();
-                model.OnSolutionLoad();
+                Solution = TargetConfig
+            };
 
-                TargetConfig.ProjectList.CollectionChanged += ConfigCollectionChanged;
+            model.RepairByLoaded();
+            model.ResetStatus();
+            model.OnSolutionLoad();
 
-                foreach (var project in TargetConfig.Projects)
-                    GlobalTrigger.OnLoad(project);
+            TargetConfig.ProjectList.CollectionChanged += ConfigCollectionChanged;
 
-                CommandCoefficient.ClearCommand();
+            foreach (var project in TargetConfig.Projects)
+            {
+                project.OnLoad();
             }
+
+            CommandCoefficient.ClearCommand();
         }
 
         /// <summary>
@@ -43,10 +42,18 @@ namespace Agebull.EntityModel.Designer
             switch (property)
             {
                 case nameof(TargetConfig.IdDataType):
-                    TargetConfig.Foreach<FieldConfig>(p => p.IsPrimaryKey || p.IsLinkField, p => p.DataType = TargetConfig.IdDataType);
+                    TargetConfig.Foreach<FieldConfig>(p =>
+                    {
+                        if (p.IsPrimaryKey || p.IsLinkField)
+                            p.DataType = TargetConfig.IdDataType;
+                    });
                     break;
                 case nameof(TargetConfig.UserIdDataType):
-                    TargetConfig.Foreach<FieldConfig>(p => p.IsUserId, p => p.DataType = TargetConfig.UserIdDataType);
+                    TargetConfig.Foreach<FieldConfig>(p =>
+                    {
+                        if (p.IsUserId)
+                            p.DataType = TargetConfig.UserIdDataType;
+                    });
                     break;
                 case nameof(TargetConfig.Entities):
                     TargetConfig.EntityList.CollectionChanged += EntitiesCollectionChanged;
@@ -123,7 +130,7 @@ namespace Agebull.EntityModel.Designer
             {
                 foreach (var item in TargetConfig.Entities)
                 {
-                    item.Parent.Remove(item);
+                    item.Project.Remove(item);
                     GlobalTrigger.OnRemoved(TargetConfig, item);
                 }
                 foreach (var item in TargetConfig.Entities)
@@ -141,7 +148,7 @@ namespace Agebull.EntityModel.Designer
                 return;
             foreach (EntityConfig item in e.OldItems)
             {
-                item.Parent.Remove(item);
+                item.Project.Remove(item);
                 GlobalTrigger.OnRemoved(TargetConfig, item);
             }
         }

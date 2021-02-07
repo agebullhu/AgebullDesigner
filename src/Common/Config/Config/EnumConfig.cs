@@ -8,7 +8,6 @@
 *****************************************************/
 
 using Newtonsoft.Json;
-using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 
@@ -87,16 +86,6 @@ namespace Agebull.EntityModel.Config
         #endregion
         #region 设计器支持
 
-        /// <summary>
-        /// 遍历子级
-        /// </summary>
-        public override void ForeachChild(Action<ConfigBase> action)
-        {
-            if (_items == null)
-                return;
-            foreach (var item in _items)
-                action(item);
-        }
         /// <summary>
         /// 枚举节点
         /// </summary>

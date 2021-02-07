@@ -17,7 +17,7 @@ namespace Agebull.EntityModel.Config
     /// 枚举值节点
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public partial class EnumItem : ChildConfig
+    public partial class EnumItem : ChildConfig<EnumConfig>
     {
         #region 构造
 

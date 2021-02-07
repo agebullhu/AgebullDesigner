@@ -229,7 +229,6 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public static UserScreen Screen { get; set; } = new UserScreen
         {
-            NowEditor = EditorModel.EditorConfig,
             WorkView = "entity"
         };
 

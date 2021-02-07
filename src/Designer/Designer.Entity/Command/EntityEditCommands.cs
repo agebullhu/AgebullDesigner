@@ -70,7 +70,7 @@ namespace Agebull.EntityModel.Designer
             {
                 return;
             }
-            entity.Parent.Remove(entity);
+            entity.Project.Remove(entity);
         }
 
 

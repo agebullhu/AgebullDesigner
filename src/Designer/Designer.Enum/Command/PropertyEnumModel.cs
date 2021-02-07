@@ -79,7 +79,7 @@ namespace Agebull.EntityModel.Designer
                 Name = property.CustomType ?? (property.Name.Contains("Type") ? property.Name : property.Name + "Type"),
                 Caption = property.Caption + "类型"
             };
-            property.Entity.Parent.Add(enumConfig);
+            property.Entity.Project.Add(enumConfig);
             property.EnumConfig = enumConfig;
         }
 
@@ -220,7 +220,7 @@ namespace Agebull.EntityModel.Designer
             if (ec.Items.Count > 1)
             {
                 if (isNew)
-                    column.Entity.Parent.Add(ec);
+                    column.Entity.Project.Add(ec);
 
                 ec.Option.ReferenceKey = column.Option.Key;
                 column.EnumConfig = ec;

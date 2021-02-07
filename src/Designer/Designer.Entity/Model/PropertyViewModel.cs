@@ -8,7 +8,7 @@ using System.Windows.Media;
 
 namespace Agebull.EntityModel.Designer
 {
-    internal class PropertyViewModel : ExtendViewModelBase<ModelFieldDesignModel>
+    internal class PropertyViewModel : EditorViewModelBase<ModelFieldDesignModel>
     {
         public PropertyViewModel()
         {

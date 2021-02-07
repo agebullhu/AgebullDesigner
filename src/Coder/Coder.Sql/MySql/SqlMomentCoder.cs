@@ -165,7 +165,7 @@ ALTER TABLE  `{entity.SaveTableName}`");
             bool isFirst = true;
             foreach (var property in fields)
             {
-                var rela = entity.Parent.Find(property.LinkTable)
+                var rela = entity.Project.Find(property.LinkTable)
                     ?? GlobalConfig.GetEntity(property.LinkTable);
                 if (rela == null)
                     continue;
@@ -309,7 +309,7 @@ set @pid = @@IDENTITY;");
             foreach (var entity in project.Entities.Where(p => p.EnableDataBase))
                 sb.Append($@"
 INSERT INTO `tb_app_page_item` (`item_type`,`name`,`caption`,`url`,`memo`,`parent_id`)
-VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Parent.Name}/{entity.Classify}/{entity.Name}/index','{entity.Description}',@pid);");
+VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Project.Name}/{entity.Classify}/{entity.Name}/index','{entity.Description}',@pid);");
             return sb.ToString();
         }
         #endregion

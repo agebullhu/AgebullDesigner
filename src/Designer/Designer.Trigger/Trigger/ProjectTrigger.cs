@@ -14,35 +14,9 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         protected override void OnLoad()
         {
-            using (WorkModelScope.CreateScope(WorkModel.Repair))
-            {
-                foreach (var cfg in TargetConfig.Classifies)
-                {
-                    cfg.Project = TargetConfig;
-                    GlobalTrigger.OnLoad(cfg);
-                }
-                foreach (var entityConfig in TargetConfig.Entities)
-                {
-                    entityConfig.Project = TargetConfig.Name;
-                    entityConfig.Parent = TargetConfig;
-                    GlobalTrigger.OnLoad(entityConfig);
-                }
-                foreach (var apiItem in TargetConfig.ApiItems)
-                {
-                    apiItem.Project = TargetConfig.Name;
-                    apiItem.Parent = TargetConfig;
-                    GlobalTrigger.OnLoad(apiItem);
-                }
-                foreach (var enumConfig in TargetConfig.Enums)
-                {
-                    enumConfig.Project = TargetConfig.Name;
-                    enumConfig.Parent = TargetConfig;
-                    GlobalTrigger.OnLoad(enumConfig);
-                }
-                TargetConfig.Entities.CollectionChanged += OnEntityCollectionChanged;
-                TargetConfig.Enums.CollectionChanged += OnEnumCollectionChanged;
-                TargetConfig.ApiItems.CollectionChanged += OnApiCollectionChanged;
-            }
+            TargetConfig.Entities.CollectionChanged += OnEntityCollectionChanged;
+            TargetConfig.Enums.CollectionChanged += OnEnumCollectionChanged;
+            TargetConfig.ApiItems.CollectionChanged += OnApiCollectionChanged;
         }
         
         /// <summary>

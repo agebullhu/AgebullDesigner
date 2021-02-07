@@ -6,7 +6,7 @@ using Agebull.Common.Mvvm;
 
 namespace Agebull.EntityModel.Designer
 {
-    public sealed class EnumEditViewModel : ExtendViewModelBase<EnumEditModel>
+    public sealed class EnumEditViewModel : EditorViewModelBase<EnumEditModel>
     {
         public override void CreateCommands(IList<CommandItemBase> commands)
         {

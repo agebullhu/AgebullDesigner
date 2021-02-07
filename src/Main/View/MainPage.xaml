@@ -24,50 +24,45 @@
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="400" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <cp:ConfigTreePanel Grid.Column="0" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+            <cp:ConfigTreePanel Grid.Column="0" Grid.Row="1"  Grid.RowSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
 
-            <GridSplitter Grid.Column="0" Grid.Row="1"
+            <GridSplitter Grid.Column="0" Grid.Row="1" Grid.RowSpan="2"
                           Width="5"
                           BorderThickness="1,0" />
-
-            <TabControl Margin="0" 
-                        Visibility="{Binding Model.Editor.ExtendPanelVisibility}"
-                        Grid.Column="1"
-                        Grid.Row="1" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" TabStripPlacement="Top">
-                <i:Interaction.Behaviors>
-                    <b:DependencyBehavior BehaviorAction="{Binding TabControlBehavior}" />
-                </i:Interaction.Behaviors>
-            </TabControl>
-            <Border
-                Visibility="{Binding Model.Editor.ConfigFormVisibility}"
-                Grid.Column="1"
-                Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Border Background="SkyBlue" BorderBrush="Silver" Height="28" Padding="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="1" BorderThickness="0,0,0,1">
+                <DockPanel>
+                    <ItemsControl DockPanel.Dock="Right" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ItemsSource="{Binding Model.Editor.ExtendEditors}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource CommandButton}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                    <Border BorderThickness="0,0,1,0" Padding="3">
+                        <TextBlock FontWeight="Bold" Foreground="Green" Text="{Binding  Model.Editor.ExtendEditorManager.CurrentEditorName}"/>
+                    </Border>
+                </DockPanel>
+            </Border>
+            
+            <Border Margin="0"  Grid.Column="1" Grid.Row="2" BorderThickness="1">
                 <card:ConfigForm  />
+                <i:Interaction.Behaviors>
+                    <b:DependencyBehavior BehaviorAction="{Binding ExtendEditorBehavior}" />
+                </i:Interaction.Behaviors>
             </Border>
-            <Border
-                Visibility="{Binding Model.Editor.CodePanelVisibility}"
-                Grid.Column="1"
-                Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <cp:CodePanel />
-            </Border>
-            <Border
-                Visibility="{Binding Model.Editor.TracePanelVisibility}"
-                Grid.Column="1"
-                Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <cp:TracePanel />
-            </Border>
-            <Border
-                Visibility="{Binding Model.Editor.PropertyPageVisibility}"
-                Grid.Column="1"
-                Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <view:PropertyPage />
-            </Border>
+            
         </Grid>
     </DockPanel>
 </UserControl>

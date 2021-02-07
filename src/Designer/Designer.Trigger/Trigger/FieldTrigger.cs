@@ -17,13 +17,7 @@ namespace Agebull.EntityModel.Designer
                 TargetConfig.Option.IsLink = true;
             }
         }
-        public override void OnCodeGeneratorBegin(NotificationObject config)
-        {
-            var cfg = config as ConfigBase;
 
-
-            base.OnCodeGeneratorBegin(config);
-        }
         /// <summary>
         /// 属性事件处理
         /// </summary>

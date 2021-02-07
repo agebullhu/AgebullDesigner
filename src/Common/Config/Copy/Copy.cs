@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace Agebull.EntityModel.Config
+﻿namespace Agebull.EntityModel.Config
 {
 
     partial class ConfigBase
@@ -62,7 +60,7 @@ namespace Agebull.EntityModel.Config
         }
     }
 
-    partial class ParentConfigBase
+    partial class IndependenceConfigBase
     {
         /// <summary>
         /// 字段复制
@@ -71,7 +69,7 @@ namespace Agebull.EntityModel.Config
         protected override void CopyFrom(SimpleConfig dest)
         {
             base.CopyFrom(dest);
-            if (dest is ParentConfigBase cfg)
+            if (dest is IndependenceConfigBase cfg)
                 CopyProperty(cfg);
         }
 
@@ -79,7 +77,7 @@ namespace Agebull.EntityModel.Config
         /// 字段复制
         /// </summary>
         /// <param name="dest">复制源</param>
-        public void Copy(ParentConfigBase dest)
+        public void Copy(IndependenceConfigBase dest)
         {
             CopyFrom(dest);
         }
@@ -89,7 +87,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="dest">复制源</param>
         /// <returns></returns>
-        public void CopyProperty(ParentConfigBase dest)
+        public void CopyProperty(IndependenceConfigBase dest)
         {
             Abbreviation = dest.Abbreviation;
         }
@@ -361,7 +359,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="dest">复制源</param>
         /// <returns></returns>
-        public void CopyProperty(FieldConfig dest,bool full=true)
+        public void CopyProperty(FieldConfig dest, bool full = true)
         {
             if (full)
             {
@@ -503,7 +501,7 @@ namespace Agebull.EntityModel.Config
             Caption = dest.Caption;
             Description = dest.Description;
             Remark = dest.Remark;
-            
+
             MaxIdentity = dest.MaxIdentity;
             RedisKey = dest.RedisKey;
             EntityName = dest.EntityName;
@@ -696,7 +694,7 @@ namespace Agebull.EntityModel.Config
             NoStorage = dest.NoStorage;
             CustomWrite = dest.CustomWrite;
             StorageProperty = dest.StorageProperty;
-            
+
             IsUserReadOnly = dest.IsUserReadOnly;
             MulitLine = dest.MulitLine;
             Prefix = dest.Prefix;

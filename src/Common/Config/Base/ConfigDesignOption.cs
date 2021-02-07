@@ -11,7 +11,7 @@ namespace Agebull.EntityModel.Config
     ///     配置的设计节点
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public class ConfigDesignOption : NotificationObject,IKey
+    public class ConfigDesignOption : NotificationObject, IKey
     {
         #region 设计
 
@@ -33,7 +33,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     是否基于ParentConfigBase
         /// </summary>
-        public bool IsParent => Config.GetType().IsSubclassOf(typeof(ParentConfigBase));
+        public bool IsParent => Config.GetType().IsSubclassOf(typeof(IndependenceConfigBase));
 
         private bool _isSelect;
 
@@ -140,7 +140,6 @@ namespace Agebull.EntityModel.Config
         #endregion
 
         #region 引用对象
-
 
         /// <summary>
         /// 引用对象键
@@ -251,6 +250,7 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(ReferenceConfig));
             }
         }
+
         /// <summary>
         /// 引用对象(接口)
         /// </summary>
@@ -289,6 +289,7 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(ReferenceTag));
             }
         }
+
         #endregion
 
         #region 状态

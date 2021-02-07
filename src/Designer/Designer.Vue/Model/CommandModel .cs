@@ -20,7 +20,7 @@ using System.Windows.Media;
 
 namespace Agebull.EntityModel.Designer
 {
-    internal class CommandViewModel : ExtendViewModelBase<CommandModel>
+    internal class CommandViewModel : EditorViewModelBase<CommandModel>
     {
         public CommandViewModel()
         {

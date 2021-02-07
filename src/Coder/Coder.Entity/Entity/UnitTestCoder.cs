@@ -196,7 +196,7 @@ namespace Agebull.EntityModel.RobotCoder
         private static void ApiUt(StringBuilder code, ApiItem config)
         {
             code.Append($@"
-        {{//{config.Project}.{config.Name}
+        {{//{config.Project.Name}.{config.Name}
                 var result = caller.{config.Method.ToString().ToLower().ToUWord()}<{config.Result?.Name}>(""{config.RoutePath}""");
             if (config.Argument != null)
             {

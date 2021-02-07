@@ -24,29 +24,9 @@ namespace Agebull.EntityModel.Config
     /// 项目设置
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public partial class ProjectConfig : ParentConfigBase
+    public partial class ProjectConfig : IndependenceConfigBase
     {
         #region 子级
-
-        /// <summary>
-        /// 遍历子级
-        /// </summary>
-        public override void ForeachChild(Action<ConfigBase> action)
-        {
-            if (_entities != null)
-                foreach (var item in _entities)
-                    action(item);
-            if (_enums != null)
-                foreach (var item in _enums)
-                    action(item);
-            if (_classifies != null)
-                foreach (var item in _classifies)
-                    action(item);
-            if (_apiItems == null)
-                return;
-            foreach (var item in _apiItems)
-                action(item);
-        }
 
         /// <summary>
         /// 实体分组
@@ -125,9 +105,9 @@ namespace Agebull.EntityModel.Config
         {
             return names.Length == 0
                 ? null
-                : Entities.FirstOrDefault(p=>names.Any(name => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase) ||
-                                                                                 string.Equals(p.ReadTableName, name, StringComparison.OrdinalIgnoreCase) ||
-                                                                                 string.Equals(p.SaveTableName, name, StringComparison.OrdinalIgnoreCase)))
+                : Entities.FirstOrDefault(p => names.Any(name => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase) ||
+                                                                                   string.Equals(p.ReadTableName, name, StringComparison.OrdinalIgnoreCase) ||
+                                                                                   string.Equals(p.SaveTableName, name, StringComparison.OrdinalIgnoreCase)))
                 ?? GlobalConfig.Find(names);
         }
 
@@ -1046,7 +1026,7 @@ namespace Agebull.EntityModel.Config
             try
             {
                 SolutionConfig.Current.Add(model);
-                model.Parent = this;
+                model.Project = this;
                 model.Option.IsDelete = false;
                 Models.TryAdd(model);
             }
@@ -1065,7 +1045,7 @@ namespace Agebull.EntityModel.Config
             try
             {
                 SolutionConfig.Current.Add(entity);
-                entity.Parent = this;
+                entity.Project = this;
                 entity.Option.IsDelete = false;
                 Entities.TryAdd(entity);
                 if (string.IsNullOrWhiteSpace(entity.Classify))
@@ -1097,8 +1077,8 @@ namespace Agebull.EntityModel.Config
             try
             {
                 SolutionConfig.Current.Add(enumConfig);
-                enumConfig.Parent?.Remove(enumConfig);
-                enumConfig.Parent = this;
+                enumConfig.Project?.Remove(enumConfig);
+                enumConfig.Project = this;
                 enumConfig.Option.IsDelete = false;
                 Enums.TryAdd(enumConfig);
             }
@@ -1115,7 +1095,7 @@ namespace Agebull.EntityModel.Config
         public void Add(ApiItem api)
         {
             SolutionConfig.Current.Add(api);
-            api.Parent = this;
+            api.Project = this;
             api.Option.IsDelete = false;
             ApiItems.TryAdd(api);
         }
@@ -1147,7 +1127,7 @@ namespace Agebull.EntityModel.Config
             {
                 model.Option.IsDelete = true;
                 SolutionConfig.Current.Remove(model);
-                model.Parent = this;
+                model.Project = this;
                 Models.Remove(model);
             }
             catch (Exception e)
@@ -1166,7 +1146,7 @@ namespace Agebull.EntityModel.Config
             {
                 entity.Option.IsDelete = true;
                 SolutionConfig.Current.Remove(entity);
-                entity.Parent = this;
+                entity.Project = this;
                 Entities.Remove(entity);
             }
             catch (Exception e)
@@ -1185,7 +1165,7 @@ namespace Agebull.EntityModel.Config
             {
                 enumConfig.Option.IsDelete = true;
                 SolutionConfig.Current.Remove(enumConfig);
-                enumConfig.Parent = this;
+                enumConfig.Project = this;
                 Enums.Remove(enumConfig);
             }
             catch (Exception e)
@@ -1204,7 +1184,7 @@ namespace Agebull.EntityModel.Config
             {
                 api.Option.IsDelete = true;
                 SolutionConfig.Current.Remove(api);
-                api.Parent = this;
+                api.Project = this;
                 ApiItems.Remove(api);
             }
             catch (Exception e)
@@ -1255,5 +1235,6 @@ namespace Agebull.EntityModel.Config
             }
         }
         #endregion
+
     }
 }

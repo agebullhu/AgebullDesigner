@@ -122,7 +122,7 @@ namespace Agebull.EntityModel.Designer
         {
             var business = new EntityDatabaseBusiness
             {
-                Entity = entity
+                DataTable = entity.DataTable
             };
             business.CheckIndex();
         }
@@ -134,7 +134,7 @@ namespace Agebull.EntityModel.Designer
         {
             var business = new EntityDatabaseBusiness
             {
-                Entity = entity
+                DataTable = entity.DataTable
             };
             business.StandardName();
         }
@@ -146,7 +146,7 @@ namespace Agebull.EntityModel.Designer
         {
             var business = new EntityDatabaseBusiness
             {
-                Entity = entity
+                DataTable = entity.DataTable
             };
             business.CheckDbConfig(false);
         }
@@ -160,7 +160,7 @@ namespace Agebull.EntityModel.Designer
             {
                 EntityDatabaseBusiness business = new EntityDatabaseBusiness
                 {
-                    Entity = entity
+                    DataTable = entity.DataTable
                 };
                 business.CheckDbConfig(true);
             }

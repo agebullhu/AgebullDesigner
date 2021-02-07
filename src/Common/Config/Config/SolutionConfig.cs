@@ -19,7 +19,7 @@ namespace Agebull.EntityModel.Config
     /// 解决方案配置
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public partial class SolutionConfig : ParentConfigBase
+    public partial class SolutionConfig : IndependenceConfigBase
     {
         #region 设计器支持
 

@@ -10,7 +10,7 @@ using System.Windows.Media;
 
 namespace Agebull.EntityModel.Designer
 {
-    internal class RelationViewModel : ExtendViewModelBase<ModelRelationDesignModel>
+    internal class RelationViewModel : EditorViewModelBase<ModelRelationDesignModel>
     {
         public RelationViewModel()
         {
@@ -169,15 +169,15 @@ namespace Agebull.EntityModel.Designer
                 {
                     return;
                 }
-                if (model.Releations.Any(p => p.ForeignTable == field.Parent.Name && p.ForeignKey == field.Name))
+                if (model.Releations.Any(p => p.ForeignTable == field.Entity.Name && p.ForeignKey == field.Name))
                     return;
                 model.Releations.Add(new ReleationConfig
                 {
-                    Name = field.Parent.Name,
-                    Caption = field.Parent.Caption,
+                    Name = field.Entity.Name,
+                    Caption = field.Entity.Caption,
                     PrimaryTable = model.Name,
                     PrimaryKey = model.Entity.PrimaryColumn.Name,
-                    ForeignTable = field.Parent.Name,
+                    ForeignTable = field.Entity.Name,
                     ForeignKey = field.Name,
                     JoinType = EntityJoinType.none,
                     ModelType = ReleationModelType.Custom

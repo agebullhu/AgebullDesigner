@@ -6,31 +6,38 @@
 // 修改:2014-11-29
 // *****************************************************/
 
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using Agebull.Common.Mvvm;
-using Agebull.EntityModel;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
 using Agebull.EntityModel.Designer;
-using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.Common.Config.Designer.DataBase.Mysql
 {
-    internal class DataBaseViewModel : ExtendViewModelBase<DataBaseModel>
+    internal class DataBaseViewModel : EditorViewModelBase<DataBaseModel>
     {
         public DataBaseViewModel()
         {
             EditorName = "DataBase";
         }
     }
-    internal class DataBaseModel : ModelDesignModel
-    {
-        public DataBaseModel()
-        {
-            //CommondFilter = cmd => true;
-        }
 
+    internal class DataBaseModel : EntityExtendModel<DataTableConfig, DataBaseFieldConfig>
+    {
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        protected override void DoInitialize()
+        {
+            base.DoInitialize();
+            Extend = Entity?.DataTable;
+
+        }
         #region 操作命令
 
         /// <summary>
@@ -39,21 +46,21 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
         /// <returns></returns>
         public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            commands.Add(new CommandItem
+            commands.Add(new CommandItem<DataTableConfig>
             {
                 Action = UpperHump,
                 IsButton = true,
                 Caption = "大驼峰名称",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             });
-            commands.Add(new CommandItem
+            commands.Add(new CommandItem<DataTableConfig>
             {
                 Action = LowerHump,
                 IsButton = true,
                 Caption = "小驼峰名称",
                 Image = Application.Current.Resources["tree_Assembly"] as ImageSource
             });
-            commands.Add(new CommandItem
+            commands.Add(new CommandItem<DataTableConfig>
             {
                 Action = Underlined,
                 IsButton = true,
@@ -69,41 +76,42 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
         /// 大驼峰
         /// </summary>
         /// <param name="arg"></param>
-        public void UpperHump(object arg)
+        public void UpperHump(DataTableConfig dataTable)
         {
-            foreach (var property in Context.SelectEntity.Properties)
+            foreach (var property in dataTable.Properties)
             {
                 property.DbFieldName = property.Name;
             }
-            if (string.IsNullOrWhiteSpace(Context.SelectEntity.SaveTableName))
-                Context.SelectEntity.Entity.SaveTableName = "tb_" + Context.SelectEntity.Name;
+            if (string.IsNullOrWhiteSpace(dataTable.SaveTableName))
+                dataTable.SaveTableName = "tb_" + dataTable.Name;
         }
 
         /// <summary>
         /// 小驼峰名称
         /// </summary>
         /// <param name="arg"></param>
-        internal void LowerHump(object arg)
+        internal void LowerHump(DataTableConfig dataTable)
         {
-            foreach (var property in Context.SelectEntity.Properties)
+            foreach (var property in dataTable.Properties)
             {
                 property.DbFieldName = property.Name.ToLWord();
             }
-            if (string.IsNullOrWhiteSpace(Context.SelectEntity.Entity.SaveTableName))
-                Context.SelectEntity.Entity.SaveTableName = "tb_" + Context.SelectEntity.Name.ToLWord();
+            if (string.IsNullOrWhiteSpace(dataTable.Entity.SaveTableName))
+                dataTable.SaveTableName = "tb_" + dataTable.Name.ToLWord();
         }
+
         /// <summary>
         /// 小写下划线名称
         /// </summary>
         /// <param name="arg"></param>
-        internal void Underlined(object arg)
+        internal void Underlined(DataTableConfig dataTable)
         {
-            foreach (var property in Context.SelectEntity.Properties)
+            foreach (var property in dataTable.Properties)
             {
                 property.DbFieldName = NameHelper.ToLinkWordName(property.Name, "_", false);
             }
-            if (string.IsNullOrWhiteSpace(Context.SelectEntity.SaveTableName))
-                Context.SelectEntity.Entity.SaveTableName = "tb_" + NameHelper.ToLinkWordName(Context.SelectEntity.Name, "_", false);
+            if (string.IsNullOrWhiteSpace(dataTable.SaveTableName))
+                dataTable.SaveTableName = "tb_" + NameHelper.ToLinkWordName(dataTable.Name, "_", false);
         }
         #endregion
     }

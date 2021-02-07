@@ -51,7 +51,7 @@ namespace Agebull.EntityModel.Designer
             property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
             if (property.EnumConfig != null)
             {
-                property.Entity.Parent.Add(property.EnumConfig);
+                property.Entity.Project.Add(property.EnumConfig);
             }
         }
     }

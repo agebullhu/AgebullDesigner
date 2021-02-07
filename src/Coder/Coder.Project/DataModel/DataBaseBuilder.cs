@@ -527,7 +527,7 @@ namespace {Project.NameSpace}.DataAccess
 
         static string DbType(IFieldConfig field)
         {
-            return field.Entity.Parent.DbType == DataBaseType.SqlServer
+            return field.Entity.Project.DbType == DataBaseType.SqlServer
                 ? $"(int)System.Data.SqlDbType.{SqlServerHelper.ToSqlDbType(field.DbType, field.CsType)}"
                 : $"(int)MySqlConnector.MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field.DbType, field.CsType)}";
         }

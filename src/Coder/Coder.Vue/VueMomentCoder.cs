@@ -32,7 +32,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         public static string MenuHtmlCode(EntityConfig entity)
         {
             return $@"
-        <el-menu-item index='menu_{entity.Parent.Name.ToName()}_{entity.Name.ToName()}'>
+        <el-menu-item index='menu_{entity.Project.Name.ToName()}_{entity.Name.ToName()}'>
             <i class='el-icon-reading'>&nbsp;</i>
             <span>{entity.Caption}</span>
         </el-menu-item>";
@@ -45,8 +45,8 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         public static string MenuScriptCode(EntityConfig entity)
         {
             return $@"
-                case 'menu_{entity.Parent.Name.ToName()}_{entity.Name.ToName()}':
-                    showIframe('/{entity.Parent.PageRoot}/{(entity as IEntityConfig).PagePath('/')}/index.htm');
+                case 'menu_{entity.Project.Name.ToName()}_{entity.Name.ToName()}':
+                    showIframe('/{entity.Project.PageRoot}/{(entity as IEntityConfig).PagePath('/')}/index.htm');
                     break;";
         }
 
@@ -63,7 +63,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             var coder = new VueHtmlCoder
             {
                 Model = entity,
-                Project = entity.Parent
+                Project = entity.Project
             };
             return coder.HtmlCode();
         }
@@ -76,7 +76,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             var coder = new VueScriptCoder
             {
                 Model = entity,
-                Project = entity.Parent
+                Project = entity.Project
             };
             return coder.ScriptCode();
         }
@@ -89,7 +89,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             var coder = new VueHtmlCoder
             {
                 Model = entity,
-                Project = entity.Parent
+                Project = entity.Project
             };
             return coder.HtmlDetailsCode(0);
         }

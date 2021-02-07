@@ -43,7 +43,7 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
 
-        public static void ToStandard(EntityConfig entity)
+        public static void ToStandard(IEntityConfig entity)
         {
             using (WorkModelScope.CreateScope(WorkModel.Repair))
                 foreach (var property in entity.Properties)
@@ -69,7 +69,7 @@ namespace Agebull.EntityModel.RobotCoder
                 }
         }
 
-        public static void ToStandardByDbType(EntityConfig entity)
+        public static void ToStandardByDbType(IEntityConfig entity)
         {
             using (WorkModelScope.CreateScope(WorkModel.Repair))
                 foreach (var property in entity.Properties)
@@ -78,15 +78,15 @@ namespace Agebull.EntityModel.RobotCoder
                 }
         }
 
-        private static void ToStandardByDbType(FieldConfig property)
+        private static void ToStandardByDbType(IFieldConfig property)
         {
             ToStandardByDbType(property, property.DbType);
         }
-        public static void ToStandardByDbType(FieldConfig property, string dbType)
+        public static void ToStandardByDbType(IFieldConfig property, string dbType)
         {
             if (property.NoStorage || string.IsNullOrWhiteSpace(dbType))
                 return;
-            DataTypeMapConfig dataType = FindByDb(property.Entity.Parent.DbType, dbType);
+            DataTypeMapConfig dataType = FindByDb(property.Entity.Project.DbType, dbType);
             if (dataType == null)
                 return;
             property.DataType = dataType.Name;
@@ -94,7 +94,7 @@ namespace Agebull.EntityModel.RobotCoder
             property.CppType = dataType.Cpp;
         }
 
-        public static void ToStandard(FieldConfig property)
+        public static void ToStandard(IFieldConfig property)
         {
             var dataType = string.IsNullOrWhiteSpace(property.DataType) ? FindByCSharp(property.CsType) : FindByName(property.DataType);
             if (dataType.Name.ToLower() != "object")
@@ -105,11 +105,11 @@ namespace Agebull.EntityModel.RobotCoder
             }
             ToValueDataType(property, dataType);
         }
-        public static void ToValueDataType(FieldConfig property, DataTypeMapConfig dataType)
+        public static void ToValueDataType(IFieldConfig property, DataTypeMapConfig dataType)
         {
             if (property.Entity == null)
                 return;
-            property.DbType = property.Entity.Parent.DbType switch
+            property.DbType = property.Entity.Project.DbType switch
             {
                 DataBaseType.SqlServer => dataType.SqlServer,
                 DataBaseType.Sqlite => dataType.Sqlite,
@@ -117,7 +117,7 @@ namespace Agebull.EntityModel.RobotCoder
             };
         }
 
-        public static void CsDataType(FieldConfig arg)
+        public static void CsDataType(IFieldConfig arg)
         {
             DataTypeMapConfig dataType;
             if (arg.CustomType != null)
@@ -158,7 +158,7 @@ namespace Agebull.EntityModel.RobotCoder
             if (arg.Entity == null)
                 arg.DbType = dataType.MySql;
             else
-                arg.DbType = arg.Entity.Parent.DbType switch
+                arg.DbType = arg.Entity.Project.DbType switch
                 {
                     DataBaseType.SqlServer => dataType.SqlServer,
                     _ => dataType.MySql,
@@ -174,7 +174,7 @@ namespace Agebull.EntityModel.RobotCoder
                     arg.Scale = scale;
             }
         }
-        public static void StandardDataType(FieldConfig arg)
+        public static void StandardDataType(IFieldConfig arg)
         {
             string name = arg.IsEnum ? "Enum" : arg.DataType;
             var dataType = GlobalConfig.CurrentSolution.DataTypeMap.FirstOrDefault(p =>
@@ -201,7 +201,7 @@ namespace Agebull.EntityModel.RobotCoder
                 if (arg.Entity == null)
                     arg.DbType = dataType.MySql;
                 else
-                    arg.DbType = arg.Entity.Parent.DbType switch
+                    arg.DbType = arg.Entity.Project.DbType switch
                     {
                         DataBaseType.SqlServer => dataType.SqlServer,
                         DataBaseType.Sqlite => dataType.Sqlite,

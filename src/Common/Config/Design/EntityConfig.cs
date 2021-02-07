@@ -40,23 +40,6 @@ namespace Agebull.EntityModel.Config
         #region 子级
 
         /// <summary>
-        /// 遍历子级
-        /// </summary>
-        public override void ForeachChild(Action<ConfigBase> action)
-        {
-            if (WorkContext.InCoderGenerating)
-            {
-                foreach (var item in LastProperties)
-                    action(item as ConfigBase);
-            }
-            else
-            {
-                foreach (var item in Properties)
-                    action(item);
-            }
-        }
-
-        /// <summary>
         /// 最终有效的属性
         /// </summary>
         public List<IFieldConfig> LastProperties { get; set; }

@@ -103,7 +103,7 @@ namespace {project.NameSpace}.Events
             var pg = new ProjectApiActionCoder
             {
                 Model = schema,
-                Project = schema.Parent,
+                Project = schema.Project,
             };
             pg.WriteDesignerCode(apiPath);
             pg.WriteCustomCode(apiPath);

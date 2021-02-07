@@ -58,18 +58,18 @@ namespace Agebull.EntityModel.Designer
 
         public void Import(TraceMessage trace, EntityConfig entity, Dispatcher dispatcher)
         {
-            _project = entity.Parent;
-            _database = entity.Parent.DbSoruce;
+            _project = entity.Project;
+            _database = entity.Project.DbSoruce;
             _trace = trace;
             _dispatcher = dispatcher;
             var csb = new MySqlConnectionStringBuilder
             {
-                Server = entity.Parent.DbHost,
-                UserID = entity.Parent.DbUser,
-                Password = entity.Parent.DbPassWord,
-                Database = entity.Parent.DbSoruce,
+                Server = entity.Project.DbHost,
+                UserID = entity.Project.DbUser,
+                Password = entity.Project.DbPassWord,
+                Database = entity.Project.DbSoruce,
                 SslMode = MySqlSslMode.None,
-                Port = entity.Parent.DbPort
+                Port = entity.Project.DbPort
             };
             _connectionString = csb.ConnectionString;
 

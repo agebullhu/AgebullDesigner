@@ -20,7 +20,7 @@ using Agebull.Common.Mvvm;
 
 namespace Agebull.EntityModel.Designer
 {
-    public sealed class EnumListViewModel : ExtendViewModelBase<EnumListModel>
+    public sealed class EnumListViewModel : EditorViewModelBase<EnumListModel>
     {
 
     }

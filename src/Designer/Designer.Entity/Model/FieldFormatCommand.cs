@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Agebull.EntityModel.Common;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.RobotCoder;
 
@@ -23,7 +24,7 @@ Memo,s,备注";
         /// <summary>
         /// 生成的表格对象
         /// </summary>
-        public EntityConfig Entity
+        private EntityConfig Entity
         {
             get;
             set;
@@ -31,6 +32,150 @@ Memo,s,备注";
 
 
         #region 规整文本(CSharp 类型 名称)
+        static readonly List<string> CSharpKeyWords = new List<string> { "public", "private", "protected", "internal", "readonly", "readonly" };
+        List<NameValue> ToCSharpWord(string code)
+        {
+            var words = new List<NameValue>();
+            var builder = new StringBuilder();
+
+            string type = "word";
+
+            void AddWord()
+            {
+                if (builder.Length > 0)
+                {
+                    words.Add(new NameValue(type, builder.ToString()));
+                    builder.Clear();
+                }
+            }
+
+            int inCodes = 0;
+            char pre = '\0';
+            int rem = 0;
+            foreach (var ch in code)
+            {
+                #region 注释
+                if (rem == 1 && ch == '\n')
+                {
+                    rem = 0;
+                    pre = '\0';
+                    type = "word";
+                    continue;
+                }
+                if (rem == 2 && pre == '*' && ch == '/')
+                {
+                    rem = 0;
+                    pre = '\0';
+                    type = "word";
+                    continue;
+                }
+                if (rem == 0 && pre == '/' && ch == '/')
+                {
+                    type = "rem";
+                    rem = 1;
+                    pre = '\0';
+                    continue;
+                }
+                if (rem == 0 && pre == '/' && ch == '*')
+                {
+                    type = "rem";
+                    rem = 2;
+                    pre = '\0';
+                    continue;
+                }
+                #endregion
+                #region 代码块
+                if (rem != 0)
+                {
+                    if (ch == '>')
+                    {
+                        AddWord();
+                        type = "rem";
+                        pre = ch;
+                        continue;
+                    }
+                    else if (ch == '<')
+                    {
+                        AddWord();
+                        type = "rem-start";
+                        pre = ch;
+                        continue;
+                    }
+                    else if (pre == '<' && ch == '/')
+                    {
+                        AddWord();
+                        type = "rem-end";
+                        pre = ch;
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (ch == '{')
+                    {
+                        AddWord();
+                        inCodes++;
+                        type = "code";
+                        pre = '\0';
+                        continue;
+                    }
+                    else if (ch == '}')
+                    {
+                        AddWord();
+                        inCodes--;
+                        if (inCodes == 0)
+                            type = "word";
+                        pre = '\0';
+                        continue;
+                    }
+                }
+                if (char.IsWhiteSpace(ch))
+                {
+                    AddWord();
+                    continue;
+                }
+                if (!char.IsPunctuation(ch))
+                {
+                    builder.Append(ch);
+                    pre = '\0';
+                    continue;
+                }
+                if (rem == 0 && inCodes == 0)
+                {
+                    if (ch == '=')
+                    {
+                        AddWord();
+                        type = "value";
+                        pre = '\0';
+                    }
+                    else if (ch == ';')
+                    {
+                        AddWord();
+                        type = "close";
+                        builder.Append(ch);
+                        AddWord();
+                        pre = '\0';
+                        continue;
+                    }
+                }
+                if (type == "word" && (ch == '.' || ch == '>' || ch == '>' || ch == '[' || ch == ']'))//类型
+                {
+                    builder.Append(ch);
+                }
+                else if (type == "rem" && ch != '/' && builder.Length > 0)//注释除开始的/其它都要
+                {
+                    builder.Append(ch);
+                }
+                else
+                {
+                    AddWord();
+                }
+                pre = ch;
+                #endregion
+            }
+            AddWord();
+            return words;
+        }
 
         /// <summary>
         /// 
@@ -42,77 +187,146 @@ Memo,s,备注";
         {
             if (string.IsNullOrWhiteSpace(Fields))
                 return null;
-
-            var lines = Fields.Replace("{", "\n{").Replace("}", "\n}")
-                .Split(new[] { '\r', '\n', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            string descript = null, caption = null;
-            int next = 0;
-            int barket = 0;
-            var code = new StringBuilder();
-            foreach (var l in lines)
+            var words = ToCSharpWord(Fields);
+            var fields = new List<FieldConfig>();
+            
+            FieldConfig field = null;
+            int inRem = 0;
+            int step = -1;
+            foreach (var word in words)
             {
-                if (string.IsNullOrWhiteSpace(l))
-                    continue;
-                var line = l.Trim().TrimEnd(';');
-                if (line[0] == '{')
+                if (word.Name == "code" || word.Name == "value")
                 {
-                    barket++;
+                    step = -1;
                     continue;
                 }
-                if (line[0] != '/' && line[line.Length - 1] == '}')
+                if (word.Name == "close")
                 {
-                    barket--;
+                    step = -1;//跳过字段定义
                     continue;
                 }
-                if (barket > 0)
-                    continue;
-                var baseLine = line.Split(new[] { '{', '=', ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
-                if (baseLine[0].Contains('('))
-                    continue;
-                var words = baseLine[0].Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-                if (words.Length == 1)
-                    continue;
-                if (words[0][0] == '/')
+                if (word.Name == "rem-end")
                 {
-                    if (words[1] == "<summary>")
-                    {
-                        caption = null;
-                        next = 1;
-                        continue;
-                    }
-                    if (words[1] == "<remark>")
-                    {
-                        descript = null;
-                        next = 2;
-                        continue;
-                    }
-                    if (words[1][0] == '<')
-                    {
-                        next = 0;
-                        continue;
-                    }
-                    if (next <= 1)
-                        caption = words.Skip(1).LinkToString();
-                    if (next == 2)
-                        descript = words.Skip(1).LinkToString();
+                    if (inRem > 1)
+                        inRem = 1;
                     continue;
                 }
-                if (!char.IsLetter(line[0]))
+                if (word.Name == "rem-start")
+                {
+                    if (word.Value == "summary")
+                    {
+                        inRem = 2;
+                    }
+                    else if (word.Value == "remark")
+                    {
+                        inRem = 3;
+                    }
+                    else
+                    {
+                        inRem = 1;
+                    }
                     continue;
-                var name = words[words.Length - 1];
-                var type = words[words.Length - 2];
-                code.Append($"{name},{type}");
-                if (caption != null)
-                    code.Append($",{caption}");
-                if (descript != null)
-                    code.Append($",{descript}");
-                code.AppendLine();
-                caption = null;
-                descript = null;
-                next = 0;
+                }
+                if (word.Name == "rem")
+                {
+                    
+                    if (inRem == 2)
+                    {
+                        if (step < 0)
+                        {
+                            fields.Add(field = new FieldConfig
+                            {
+                                Name = "",
+                                Caption = "",
+                                Description = "",
+                                CsType = ""
+                            });
+                            step = 0;
+                        }
+                        field.Caption += word.Value;
+                    }
+                    else if (inRem == 3)
+                    {
+                        if (step < 0)
+                        {
+                            fields.Add(field = new FieldConfig
+                            {
+                                Name = "",
+                                Caption = "",
+                                Description = "",
+                                CsType = ""
+                            });
+                            step = 0;
+                        }
+                        field.Description += word.Value;
+                    }
+                    else
+                    {
+                        inRem = 0;
+                    }
+                    continue;
+                }
+                if (word.Name != "word")
+                {
+                    continue;
+                }
+                if (CSharpKeyWords.Contains(word.Value))
+                    continue;
+                if (step < 0)
+                {
+                    fields.Add(field = new FieldConfig
+                    {
+                        Name = "",
+                        Caption = "",
+                        Description = "",
+                        CsType = ""
+                    });
+                    step = 0;
+                }
+                if (step == 0)
+                {
+                    field.CsType += word.Value;
+                    step = 1;
+                }
+                else if (step == 1)
+                {
+                    var ch = word.Value[0];
+                    if (ch == '.' || ch == '<')
+                    {
+                        field.CsType += word.Value;
+                        if (word.Value.Length == 1)
+                            step = 0;//还是类型逻辑
+                    }
+                    else if (ch == '>')
+                    {
+                        field.CsType += word.Value;
+                    }
+                    else
+                    {
+                        field.Name = word.Value;
+                        step = 2;
+                    }
+                }
+                else if (step == 2)
+                {
+                    var ch = word.Value[0];
+                    if (ch == '.' || ch == '<')
+                    {
+                        field.Name += word.Value;
+                        if (word.Value.Length == 1)
+                            step = 1;//还是名称逻辑
+                    }
+                    else if (ch == '>')
+                    {
+                        field.Name += word.Value;
+                    }
+                    else
+                    {
+                        step = 3;
+                    }
+                }
             }
-
-            return code.ToString();
+            return fields.Select(field => $"{field.Name},{field.CsType},{field.Caption},{field.Description}").LinkToString("\r\n");
         }
 
         #endregion

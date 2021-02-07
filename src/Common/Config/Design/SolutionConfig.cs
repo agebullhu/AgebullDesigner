@@ -52,15 +52,7 @@ namespace Agebull.EntityModel.Config
 
         #region 设计器支持
 
-        /// <summary>
-        /// 遍历子级
-        /// </summary>
-        public override void ForeachChild(Action<ConfigBase> action)
-        {
-            if (_projects == null) return;
-            foreach (var item in _projects)
-                action(item);
-        }
+
         /// <summary>
         /// 试图加入
         /// </summary>

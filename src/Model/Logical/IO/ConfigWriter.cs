@@ -9,25 +9,28 @@ using Newtonsoft.Json;
 namespace Agebull.EntityModel.Designer
 {
     /// <summary>
-    /// 配置读写器
+    /// 配置写入
     /// </summary>
     public class ConfigWriter
     {
         /// <summary>
-        /// 保存通知对象
+        /// 保存设计文件
         /// </summary>
         public static void SaveConfig<TConfig>(TConfig config, string dir, bool checkState)
             where TConfig : FileConfigBase
         {
-            SaveConfig(Path.Combine(dir, config.GetFileName()), config, checkState);
+            if (config != null)
+                SaveConfig(Path.Combine(dir, config.GetFileName()), config, checkState);
         }
 
         /// <summary>
-        /// 保存通知对象
+        /// 保存设计文件
         /// </summary>
         public static void SaveConfig<TConfig>(string filename, TConfig config, bool checkState)
             where TConfig : FileConfigBase
         {
+            if (config == null)
+                return;
             if (config.SaveFileName != null)
             {
                 if (File.Exists(config.SaveFileName) && checkState)
@@ -67,6 +70,23 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
+        /// <summary>
+        /// 删除设计文件
+        /// </summary>
+        public static void DeleteConfig<TConfig>(TConfig config)
+            where TConfig : FileConfigBase
+        {
+            try
+            {
+
+                if (config.SaveFileName.IsNotBlank() && File.Exists(config.SaveFileName))
+                    File.Delete(config.SaveFileName);
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e.ToString());
+            }
+        }
 
     }
 }

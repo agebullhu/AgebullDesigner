@@ -34,7 +34,7 @@ namespace Agebull.EntityModel.Designer
         /// <param name="tables"></param>
         public static void Import(string file, IEnumerable<EntityConfig> tables)
         {
-            var project = tables.FirstOrDefault()?.Parent;
+            var project = tables.FirstOrDefault()?.Project;
             if (project == null)
             {
                 MessageBox.Show("提示：没有选择！");

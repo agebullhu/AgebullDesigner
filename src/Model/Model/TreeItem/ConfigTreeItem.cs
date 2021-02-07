@@ -116,7 +116,7 @@ namespace Agebull.EntityModel.Designer
         {
             if (m == null)
                 return "...";
-            var pi = m as ParentConfigBase;
+            var pi = m as IndependenceConfigBase;
             return pi?.Abbreviation == null
                 ? $"{m.Caption}({m.Name})"
                 : $"{m.Caption}({m.Name})[{pi.Abbreviation}]";
@@ -160,7 +160,7 @@ namespace Agebull.EntityModel.Designer
 
         private BitmapImage GetImage(TModel m)
         {
-            return !(m is ParentConfigBase par)
+            return !(m is IndependenceConfigBase par)
                    ? imgDefault
                    : par.IsReference
                         ? imgRef

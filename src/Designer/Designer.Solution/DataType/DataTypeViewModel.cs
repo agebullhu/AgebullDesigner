@@ -23,7 +23,7 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// 命令注册器
     /// </summary>
-    public sealed class DataTypeViewModel : ExtendViewModelBase<DesignModelBase>
+    public sealed class DataTypeViewModel : EditorViewModelBase<DesignModelBase>
     {
         public override void CreateCommands(IList<CommandItemBase> commands)
         {

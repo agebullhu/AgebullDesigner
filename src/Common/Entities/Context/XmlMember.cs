@@ -16,7 +16,7 @@ namespace Agebull.EntityModel.Designer.AssemblyAnalyzer
         /// <summary>
         /// 读取的帮助XML
         /// </summary>
-        private static List<XmlMember> HelpXml = new List<XmlMember>();
+        private static readonly List<XmlMember> HelpXml = new List<XmlMember>();
 
         /// <summary>
         /// 查找
@@ -42,7 +42,7 @@ namespace Agebull.EntityModel.Designer.AssemblyAnalyzer
             return HelpXml.Find(p => p.Name == type.FullName);
         }
 
-        private static Dictionary<Assembly, string> Assemblys = new Dictionary<Assembly, string>();
+        private static readonly Dictionary<Assembly, string> Assemblys = new Dictionary<Assembly, string>();
         /// <summary>
         /// 载入
         /// </summary>

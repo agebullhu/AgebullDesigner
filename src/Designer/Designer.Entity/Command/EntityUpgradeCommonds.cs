@@ -237,7 +237,7 @@ namespace Agebull.EntityModel.Designer
             {
                 words.RemoveAt(0);
             }
-            if (words[0].Equals(entity.Parent.Name, StringComparison.OrdinalIgnoreCase))
+            if (words[0].Equals(entity.Project.Name, StringComparison.OrdinalIgnoreCase))
             {
                 words.RemoveAt(0);
             }

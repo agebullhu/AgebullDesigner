@@ -1,5 +1,4 @@
 using Newtonsoft.Json;
-using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 
@@ -395,19 +394,6 @@ namespace Agebull.EntityModel.Config
         string ICommandItem.OrgArg => CallArg;
 
         string ICommandItem.CurArg => ResultArg;
-
-        /// <summary>
-        /// 遍历子级
-        /// </summary>
-        public override void ForeachChild(Action<ConfigBase> action)
-        {
-
-        }
-
-        /*// <summary>
-        /// 原始定义内容
-        /// </summary>
-        string ICommandItem.DefaultCode => Org;*/
 
         #endregion
     }

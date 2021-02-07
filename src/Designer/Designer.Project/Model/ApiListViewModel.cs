@@ -20,7 +20,7 @@ using Agebull.Common.Mvvm;
 
 namespace Agebull.EntityModel.Designer
 {
-    public sealed class ApiListViewModel : ExtendViewModelBase<ApiListModel>
+    public sealed class ApiListViewModel : EditorViewModelBase<ApiListModel>
     {
     }
 

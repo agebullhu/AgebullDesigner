@@ -7,7 +7,7 @@ namespace Agebull.EntityModel.Designer
     /// ParentConfigBase´¥·¢Æ÷
     /// </summary>
     public abstract class ParentConfigTrigger<TConfig> : ConfigTriggerBase<TConfig>
-        where TConfig : ParentConfigBase
+        where TConfig : IndependenceConfigBase
     {
     }
 }

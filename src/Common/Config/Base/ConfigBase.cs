@@ -1,10 +1,10 @@
 using Newtonsoft.Json;
-using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 
 namespace Agebull.EntityModel.Config
 {
+
     /// <summary>
     ///     ≈‰÷√ª˘¥°
     /// </summary>

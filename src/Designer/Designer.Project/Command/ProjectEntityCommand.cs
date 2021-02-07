@@ -111,7 +111,7 @@ namespace Agebull.EntityModel.Designer
                 model.Add(property);
                 property.Field = field;
             }
-            entity.Parent.Add(model);
+            entity.Project.Add(model);
             model.Entity = entity;
         }
 
@@ -148,8 +148,7 @@ namespace Agebull.EntityModel.Designer
 
             foreach (var entity in Context.CopiedTables)
             {
-                entity.Parent = Context.SelectProject;
-                entity.Project = Context.SelectProject.Name;
+                entity.Project = Context.SelectProject;
                 foreach (var pro in entity.Properties)
                 {
                     pro.Tag = $"{entity.Tag},{pro.CppType},{pro.Name}";
@@ -173,7 +172,7 @@ namespace Agebull.EntityModel.Designer
             }
 
             var project = Context.SelectProject;
-            var entity = new EntityConfig { Parent = project };
+            var entity = new EntityConfig { Project = project };
             if (CommandIoc.EditEntityCommand(entity))
             {
                 project.Add(entity);

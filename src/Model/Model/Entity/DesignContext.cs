@@ -13,12 +13,13 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     public class DesignContext : DesignModelBase, IGridSelectionBinding
     {
+        #region 设计对象
+
         public static DesignContext Instance { get; set; }
         public DesignContext()
         {
             Instance = this;
         }
-        #region 设计对象
 
         /// <summary>
         ///     当前文件名
@@ -88,7 +89,6 @@ namespace Agebull.EntityModel.Designer
                         var idx = 0;
                         foreach (var item in value)
                             array[idx++] = item;
-                        Editor.PropertyGrid.SelectedObjects = array;
                     }
                     return;
                 }
@@ -193,7 +193,7 @@ namespace Agebull.EntityModel.Designer
                     return;
                 _selectEntityConfig = value;
                 if (value != null)
-                    SelectProject = value.Parent;
+                    SelectProject = value.Project;
 
                 RaisePropertyChanged(() => SelectEntity);
                 RaisePropertyChanged(() => SelectModel);
@@ -308,7 +308,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     case ProjectConfig project:
                         SelectProject = project;
-                        if (SelectEntity != null && SelectEntity.Parent != project)
+                        if (SelectEntity != null && SelectEntity.Project != project)
                         {
                             SelectEntity = null;
                         }
@@ -335,7 +335,7 @@ namespace Agebull.EntityModel.Designer
                     case ProjectChildConfigBase child:
                         SelectField = null;
                         SelectEntity = null;
-                        SelectProject = child.Parent;
+                        SelectProject = child.Project;
                         break;
                     case SolutionConfig _:
                         SelectChildrens = Solution.Projects;
@@ -356,8 +356,6 @@ namespace Agebull.EntityModel.Designer
             ConfigBase cfg = item?.Source as ConfigBase;
             SelectTag = item?.Tag;
             SetSelect(cfg);
-            if (Editor.PropertyGrid != null)
-                Editor.PropertyGrid.SelectedObject = SelectConfig;
             RaisePropertyChanged(() => SelectTag);
         }
         public string SelectTag { get; set; }

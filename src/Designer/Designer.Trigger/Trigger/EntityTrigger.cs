@@ -15,14 +15,11 @@ namespace Agebull.EntityModel.Designer
     {
         protected override void OnLoad()
         {
-            using (WorkModelScope.CreateScope(WorkModel.Repair))
+            foreach (var field in TargetConfig.Properties)
             {
-                foreach (var field in TargetConfig.Properties)
-                {
-                    GlobalTrigger.OnLoad(field);
-                }
-                TargetConfig.MaxIdentity = TargetConfig.Properties.Count == 0 ? 0 : TargetConfig.Properties.Max(p => p.Identity);
+                GlobalTrigger.OnLoad(field);
             }
+            TargetConfig.MaxIdentity = TargetConfig.Properties.Count == 0 ? 0 : TargetConfig.Properties.Max(p => p.Identity);
         }
 
         /// <summary>
@@ -49,9 +46,6 @@ namespace Agebull.EntityModel.Designer
                 case nameof(TargetConfig.Classify):
                     OnClassifyChanged();
                     break;
-                case nameof(TargetConfig.Project):
-                    CheckEntityProject();
-                    break;
             }
         }
 
@@ -71,11 +65,11 @@ namespace Agebull.EntityModel.Designer
                 //    SyncLinkTable(oldValue, newValue);
                 //    break;
                 case nameof(TargetConfig.Classify):
-                    if (TargetConfig.Parent == null || WorkContext.WorkModel == WorkModel.Repair)
+                    if (TargetConfig.Project == null || WorkContext.WorkModel == WorkModel.Repair)
                         return;
-                    var oldCls = TargetConfig.Parent.Classifies.FirstOrDefault(p => p.Name == (string)oldValue);
+                    var oldCls = TargetConfig.Project.Classifies.FirstOrDefault(p => p.Name == (string)oldValue);
                     oldCls?.Items.Remove(TargetConfig);
-                    var newoldCls = TargetConfig.Parent.Classifies.FirstOrDefault(p => p.Name == (string)newValue);
+                    var newoldCls = TargetConfig.Project.Classifies.FirstOrDefault(p => p.Name == (string)newValue);
                     newoldCls?.Items.TryAdd(TargetConfig);
                     break;
                 case nameof(TargetConfig.Properties):
@@ -116,37 +110,6 @@ namespace Agebull.EntityModel.Designer
 
             //TargetConfig["File_Model_Business"] = $"{TargetConfig.Classify}\\{TargetConfig.PageFolder}BusinessLogic";
             //TargetConfig["File_Model_Action"] = $"Page\\{TargetConfig.Classify}\\{TargetConfig.PageFolder}\\{TargetConfig.Name}PageAction";
-        }
-        private void CheckEntityProject()
-        {
-            if (WorkContext.IsNoChangedNotify)
-            {
-                return;
-            }
-            EntityConfig entity = TargetConfig;
-            entity.Parent?.Remove(entity);
-            if (string.IsNullOrWhiteSpace(entity.Project))
-            {
-                entity.Project = "默认";
-            }
-            var project = SolutionConfig.Current.Projects.FirstOrDefault(
-                p => string.Equals(p.Name, entity.Project, StringComparison.OrdinalIgnoreCase));
-            if (project == null)
-            {
-                var friend = SolutionConfig.Current.ProjectList[0];
-                SolutionConfig.Current.Add(project = new ProjectConfig
-                {
-                    Name = entity.Project,
-                    Caption = entity.Project,
-                    ApiFolder = friend.ApiFolder,
-                    BranchFolder = friend.BranchFolder,
-                    ModelFolder = friend.ModelFolder,
-                    PageFolder = friend.PageFolder,
-                    DataBaseObjectName = friend.DataBaseObjectName
-                });
-            }
-
-            project.Add(entity);
         }
 
         #region 字段同步

@@ -68,9 +68,10 @@ namespace Agebull.EntityModel.RobotCoder
 
             using (CodeGeneratorScope.CreateScope(GlobalConfig.CurrentSolution))
             {
-                config.Foreach(condition, arg =>
+                config.Foreach<TConfig>(arg =>
                 {
-                    code.AppendLine(coder(arg));
+                    if (condition(arg))
+                        code.AppendLine(coder(arg));
                 });
             }
 

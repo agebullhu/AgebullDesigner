@@ -84,7 +84,7 @@ namespace Agebull.EntityModel.Designer
             var project = cls.Project;
             var entity = new EntityConfig
             {
-                Parent = project,
+                Project = project,
                 Classify = cls.Name
             };
             if (CommandIoc.EditEntityCommand(entity))

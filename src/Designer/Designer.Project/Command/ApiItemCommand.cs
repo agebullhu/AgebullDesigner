@@ -48,14 +48,14 @@ namespace Agebull.EntityModel.Designer
                 MessageBox.Show("返回值已存在");
                 return;
             }
-            var project = cls.Parent;
+            var project = cls.Project;
             EntityConfig entity;
 
             if (string.IsNullOrWhiteSpace(cls.ResultArg))
                 cls.ResultArg = $"{cls.Name}Response";
             entity = new EntityConfig
             {
-                Parent = project,
+                Project = project,
                 Name = cls.ResultArg,
                 Caption = $"{cls.Caption}返回值",
                 Classify = cls.Name
@@ -76,13 +76,13 @@ namespace Agebull.EntityModel.Designer
                 MessageBox.Show("参数已存在");
                 return;
             }
-            var project = cls.Parent;
+            var project = cls.Project;
             EntityConfig entity;
             if (string.IsNullOrWhiteSpace(cls.CallArg))
                 cls.CallArg = $"{cls.Name}Argument";
             entity = new EntityConfig
             {
-                Parent = project,
+                Project = project,
                 Name = cls.CallArg,
                 Caption = $"{cls.Caption}请求参数",
                 Classify = cls.Name

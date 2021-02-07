@@ -61,7 +61,7 @@
                 var model = new PropertyValidater
                 {
                     Field = col,
-                    DataBaseType = Entity.Parent.DbType
+                    DataBaseType = Entity.Project.DbType
                 };
                 if (!model.Validate(Message))
                 {

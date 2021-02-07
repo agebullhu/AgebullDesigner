@@ -104,7 +104,8 @@ namespace Agebull.EntityModel
                 return;
             using (scope)
             {
-                OnLoad();
+                using (WorkModelScope.CreateScope(WorkModel.Repair))
+                    OnLoad();
             }
         }
         /// <summary>

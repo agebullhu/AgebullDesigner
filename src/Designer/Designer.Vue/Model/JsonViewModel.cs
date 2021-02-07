@@ -9,7 +9,7 @@ using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer
 {
-    internal class JsonViewModel : ExtendViewModelBase<JsonModel>
+    internal class JsonViewModel : EditorViewModelBase<JsonModel>
     {
         public JsonViewModel()
         {

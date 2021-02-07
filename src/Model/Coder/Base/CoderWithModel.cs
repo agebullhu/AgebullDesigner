@@ -18,7 +18,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <inheritdoc />
         public sealed override ProjectConfig Project
         {
-            get => Model?.Parent ?? base.Project;
+            get => Model?.Project ?? base.Project;
             set => base.Project = value;
         }
 

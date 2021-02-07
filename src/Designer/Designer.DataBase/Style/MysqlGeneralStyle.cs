@@ -22,9 +22,9 @@ namespace Agebull.EntityModel.Config
             //    head.Append(entity.Parent.Abbreviation.ToLWord());
             //    head.Append('_');
             //}
-            if (!entity.Parent.NoClassify && entity.Classify != null && entity.Classify != "None")
+            if (!entity.Project.NoClassify && entity.Classify != null && entity.Classify != "None")
             {
-                var cls = entity.Parent.Classifies.FirstOrDefault(p => p.Name == entity.Classify);
+                var cls = entity.Project.Classifies.FirstOrDefault(p => p.Name == entity.Classify);
                 if (cls != null)
                 {
                     head.Append(cls.Abbreviation.ToLWord());

@@ -9,12 +9,6 @@ namespace Agebull.EntityModel.Designer
     public class ClassifyTrigger : ParentConfigTrigger<EntityClassify>
     {
         /// <summary>
-        /// 载入事件处理
-        /// </summary>
-        protected override void OnLoad()
-        {
-        }
-        /// <summary>
         /// 属性事件处理
         /// </summary>
         /// <param name="property"></param>

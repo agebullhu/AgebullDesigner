@@ -29,6 +29,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Base\ConfigList.cs" />
+    <Compile Remove="Base\NotificationList.cs" />
+    <Compile Remove="Base\ConfigListHelper.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Entities\Agebull.Common.Entity.csproj" />
   </ItemGroup>
 

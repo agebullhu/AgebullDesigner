@@ -22,7 +22,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 <head>
     <meta name='renderer' content='webkit'/>
     <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=21'/>
-    <title>{Model.Parent.Caption} > {Model.Caption}</title>
+    <title>{Model.Project.Caption} > {Model.Caption}</title>
     <meta charset='utf-8'/>
     <meta name='viewport' content='width=device-width'/>
     <meta http-equiv='Content-Type' content='text/html; charset=utf-8-bom'/>
@@ -678,10 +678,10 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             var code = new StringBuilder();
             code.Append($@"
 <template>
-    <span>{Model.Parent.Caption}</span>&nbsp;<i class='el-icon-arrow-right'></i>");
-            if (!Model.Parent.NoClassify)
+    <span>{Model.Project.Caption}</span>&nbsp;<i class='el-icon-arrow-right'></i>");
+            if (!Model.Project.NoClassify)
             {
-                var cls = Model.Parent.Classifies.FirstOrDefault(p => p.Name == Model.Classify);
+                var cls = Model.Project.Classifies.FirstOrDefault(p => p.Name == Model.Classify);
                 if (cls != null)
                     code.Append($"&nbsp;<span>{cls.Caption}</span>&nbsp;<i class='el-icon-arrow-right'></i>");
             }

@@ -76,25 +76,6 @@ namespace Agebull.EntityModel.Config
         #region 子级
 
         /// <summary>
-        /// 遍历子级
-        /// </summary>
-        public override void ForeachChild(Action<ConfigBase> action)
-        {
-            if (WorkContext.InCoderGenerating)
-            {
-                foreach (var item in LastProperties)
-                    action(item as ConfigBase);
-            }
-            else
-            {
-                foreach (var item in Properties)
-                    action(item);
-            }
-            foreach (var item in Commands)
-                action(item);
-        }
-
-        /// <summary>
         /// 数据关联配置
         /// </summary>
         [DataMember, JsonProperty("releations", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
@@ -125,39 +106,6 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(Releations), _releations, value);
                 _releations = value;
                 OnPropertyChanged(nameof(Releations));
-            }
-        }
-        /// <summary>
-        /// 命令集合
-        /// </summary>
-        [DataMember, JsonProperty("_commands", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal NotificationList<UserCommandConfig> _commands;
-
-        /// <summary>
-        /// 命令集合
-        /// </summary>
-        /// <remark>
-        /// 命令集合,数据模型中可调用的命令
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"业务模型"), DisplayName(@"命令集合"), Description("命令集合,数据模型中可调用的命令")]
-        public NotificationList<UserCommandConfig> Commands
-        {
-            get
-            {
-                if (_commands != null)
-                    return _commands;
-                _commands = new NotificationList<UserCommandConfig>();
-                RaisePropertyChanged(nameof(Commands));
-                return _commands;
-            }
-            set
-            {
-                if (_commands == value)
-                    return;
-                BeforePropertyChanged(nameof(Commands), _commands, value);
-                _commands = value;
-                OnPropertyChanged(nameof(Commands));
             }
         }
 

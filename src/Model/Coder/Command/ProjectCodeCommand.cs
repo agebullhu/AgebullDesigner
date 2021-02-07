@@ -95,7 +95,7 @@ namespace Agebull.EntityModel.Designer
             StateMessage = "正在生成" + model.Caption + "...";
             using (CodeGeneratorScope.CreateScope(model as NotificationObject))
             {
-                _builder.CreateModelCode(model.Parent, model);
+                _builder.CreateModelCode(model.Project, model);
             }
             StateMessage = model.Caption + "已完成";
             return true;

@@ -51,7 +51,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             var pg = new PorjectVUEGenerator
             {
                 Model = entity,
-                Project = entity.Parent,
+                Project = entity.Project,
             };
             pg.WriteDesignerCode(project.PagePath);
             pg.WriteCustomCode(project.PagePath);

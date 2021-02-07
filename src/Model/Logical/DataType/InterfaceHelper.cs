@@ -19,7 +19,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="field"></param>
         public static void CheckLinkField(IEntityConfig entity, IFieldConfig field)
         {
-            var link = field.IsLinkField ? entity.Parent.Find(field.LinkTable) : null;
+            var link = field.IsLinkField ? entity.Project.Find(field.LinkTable) : null;
             var linkField = link?.Find(field.LinkField);
             if (linkField != null)
             {

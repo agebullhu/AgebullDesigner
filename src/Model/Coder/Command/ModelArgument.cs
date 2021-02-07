@@ -61,7 +61,7 @@ namespace Agebull.EntityModel.Designer
             Projects = new List<ProjectConfig>();
             foreach (var entity in list)
             {
-                var project = entity.Parent;
+                var project = entity.Project;
                 if (project == null)
                     continue;
                 if (!Projects.Contains(project))

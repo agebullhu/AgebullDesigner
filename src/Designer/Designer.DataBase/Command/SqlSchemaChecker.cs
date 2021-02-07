@@ -109,7 +109,7 @@ SELECT {0}", entity.PrimaryColumn.DbFieldName);
                     Description = description,
                     ReadTableName = table,
                     SaveTableName = table,
-                    Parent = Project
+                    Project = Project
                 };
             }
             else

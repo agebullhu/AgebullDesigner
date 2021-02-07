@@ -14,8 +14,8 @@
     <UserControl.DataContext>
         <mysql:DataBaseViewModel/>
     </UserControl.DataContext>
-    <DockPanel Margin="0" Background="White">
-        <WrapPanel DockPanel.Dock="Top" DataContext="{Binding Context.SelectEntity}">
+    <DockPanel Margin="0" Background="White"  DataContext="{Binding Model}">
+        <WrapPanel DockPanel.Dock="Top" DataContext="{Binding Extend}">
             <WrapPanel.Resources>
                 <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
             </WrapPanel.Resources>
@@ -31,20 +31,20 @@
                 <Label Content="读取表名" />
                 <TextBox Text="{Binding ReadTableName,Mode=TwoWay}"  Width="300"/>
             </StackPanel>
-            <!--<StackPanel>
+            <StackPanel>
                 <Label Content="数据库编号" />
                 <TextBox Text="{Binding DbIndex,Mode=TwoWay}" />
             </StackPanel>
             <StackPanel>
                 <Label Content="按修改更新" />
                 <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding UpdateByModified,Mode=TwoWay}" />
-            </StackPanel>-->
+            </StackPanel>
             <StackPanel>
                 <Label Content="主键字段" />
-                <TextBox IsReadOnly="True" Text="{Binding PrimaryField,Mode=OneWay}" />
+                <TextBox IsReadOnly="True" Text="{Binding Entity.PrimaryField,Mode=OneWay}" />
             </StackPanel>
         </WrapPanel>
-        <TabControl DockPanel.Dock="Bottom" DataContext="{Binding Context.SelectField}">
+        <TabControl DockPanel.Dock="Bottom" DataContext="{Binding SelectField}">
             <TabControl.Resources>
                 <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
             </TabControl.Resources>
@@ -130,27 +130,26 @@
         <DataGrid AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
-                  DataContext="{Binding Context}"
-                  ItemsSource="{Binding SelectEntity.Properties}">
+                  ItemsSource="{Binding Extend.Properties}">
             <DataGrid.Columns>
-                <DataGridCheckBoxColumn Binding="{Binding IsDiscard,Mode=OneWay}" IsReadOnly="True" Header="废" />
+                <DataGridCheckBoxColumn Binding="{Binding  Field.IsDiscard,Mode=OneWay}" IsReadOnly="True" Header="废" />
                 <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
                 <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />
                 <DataGridCheckBoxColumn Binding="{Binding NoStorage,Mode=TwoWay,Converter={StaticResource BoolReversalConverter}}" Header="存储" />
                 <DataGridCheckBoxColumn Binding="{Binding KeepUpdate,Mode=TwoWay}" Header="仅新增" />
                 <DataGridTextColumn Binding="{Binding DbFieldName,Mode=TwoWay}" Header="字段" />
-                <DataGridCheckBoxColumn Binding="{Binding IsPrimaryKey,Mode=TwoWay}" Header="主键" />
-                <DataGridCheckBoxColumn Binding="{Binding IsIdentity,Mode=TwoWay}" Header="自增" />
-                <DataGridCheckBoxColumn Binding="{Binding IsCompute,Mode=TwoWay}" Header="外联" />
+                <DataGridCheckBoxColumn Binding="{Binding Field.IsPrimaryKey,Mode=TwoWay}" Header="主键" />
+                <DataGridCheckBoxColumn Binding="{Binding Field.IsIdentity,Mode=TwoWay}" Header="自增" />
+                <DataGridCheckBoxColumn Binding="{Binding Field.IsCompute,Mode=TwoWay}" Header="外联" />
                 <DataGridTextColumn Binding="{Binding DbType,Mode=TwoWay}" Header="类型" />
                 <DataGridTextColumn Binding="{Binding Datalen,Mode=TwoWay}" Header="长度" />
                 <DataGridTextColumn Binding="{Binding Scale,Mode=TwoWay}" Header="精度" />
-                <DataGridCheckBoxColumn Binding="{Binding UniqueIndex,Mode=TwoWay}" Header="唯一索引" />
+                <DataGridCheckBoxColumn Binding="{Binding Field.UniqueIndex,Mode=TwoWay}" Header="唯一索引" />
                 <DataGridCheckBoxColumn Binding="{Binding IsDbIndex,Mode=TwoWay}" Header="索引" />
                 <DataGridCheckBoxColumn Binding="{Binding IsMemo,Mode=TwoWay}" Header="备注" />
                 <DataGridCheckBoxColumn Binding="{Binding IsBlob,Mode=TwoWay}" Header="BLOB" />
                 <DataGridCheckBoxColumn Binding="{Binding DbNullable,Mode=TwoWay}" Header="NULL" />
-                <DataGridTextColumn Binding="{Binding Initialization,Mode=TwoWay}" Header="默认值" />
+                <DataGridTextColumn Binding="{Binding Field.Initialization,Mode=TwoWay}" Header="默认值" />
                 <DataGridCheckBoxColumn Binding="{Binding CustomWrite,Mode=TwoWay}" Header="自定义保存" />
             </DataGrid.Columns>
             <i:Interaction.Behaviors>

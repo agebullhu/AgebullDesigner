@@ -13,6 +13,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         [JsonProperty]
         public string NowEditor { get; set; }
+
         /// <summary>
         /// ¹¤×÷ÊÓÍ¼
         /// </summary>

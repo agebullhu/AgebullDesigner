@@ -220,6 +220,16 @@ namespace Agebull.EntityModel.Config
                     ConfigDictionary[option.Key] = option.Config;
                 }
         }
+        /// <summary>
+        ///     加入配置
+        /// </summary>
+        /// <param name="option"></param>
+        public static void AddNormalConfig(ConfigBase config)
+        {
+            if (!config.Option.IsNormal)
+                return;
+            AddConfig(config.Option);
+        }
 
         /// <summary>
         ///     加入配置
@@ -255,9 +265,9 @@ namespace Agebull.EntityModel.Config
         /// <param name="key"></param>
         /// <returns></returns>
         public static TConfig GetConfigByKey<TConfig>(string key)
-            where TConfig : ConfigBase
+            where TConfig : class
         {
-            if (string.IsNullOrEmpty(key))
+            if (key.IsBlank())
                 return null;
             lock (ConfigDictionary)
             {

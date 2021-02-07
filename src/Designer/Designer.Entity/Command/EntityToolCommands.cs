@@ -120,11 +120,11 @@ namespace Agebull.EntityModel.Designer
         public void AutoClassify(EntityConfig entity)
         {
             var word = GlobalConfig.SplitWords(entity.Name).FirstOrDefault() ?? "None";
-            var cls = entity.Parent.Classifies.FirstOrDefault(p =>
+            var cls = entity.Project.Classifies.FirstOrDefault(p =>
                 string.Equals(p.Name, word, StringComparison.OrdinalIgnoreCase));
             if (cls == null)
             {
-                entity.Parent.Classifies.Add(cls = new EntityClassify
+                entity.Project.Classifies.Add(cls = new EntityClassify
                 {
                     Name = word
                 });
@@ -193,7 +193,7 @@ namespace Agebull.EntityModel.Designer
         {
             foreach (var field in entity.Properties.Where(p => p.IsLinkKey))
             {
-                var foreign = entity.Parent.Find(field.LinkTable);
+                var foreign = entity.Project.Find(field.LinkTable);
                 field.Name = foreign.Name + "Id";
                 field.DbFieldName = foreign.Name.ToLinkWordName("_", false) + "_id";
                 field.JsonName = field.Name.ToLWord();
@@ -212,7 +212,7 @@ namespace Agebull.EntityModel.Designer
         {
             foreach (var field in entity.Properties.Where(p => p.IsLinkKey))
             {
-                var foreign = entity.Parent.Find(field.LinkTable);
+                var foreign = entity.Project.Find(field.LinkTable);
                 field.CsType = foreign.PrimaryColumn.CsType;
                 field.DbType = foreign.PrimaryColumn.DbType;
                 field.Datalen = foreign.PrimaryColumn.Datalen;

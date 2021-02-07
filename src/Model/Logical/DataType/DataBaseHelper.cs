@@ -15,7 +15,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static string ToTableName(IEntityConfig entity)
         {
-            var style = CodeStyleManager.GetDatabaseStyle(entity.Parent.CodeStyle, entity.Parent.DbType);
+            var style = CodeStyleManager.GetDatabaseStyle(entity.Project.CodeStyle, entity.Project.DbType);
             return style.FormatTableName(entity); 
         }
 
@@ -26,7 +26,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static string ToViewName(IEntityConfig entity)
         {
-            var style = CodeStyleManager.GetDatabaseStyle(entity.Parent.CodeStyle, entity.Parent.DbType);
+            var style = CodeStyleManager.GetDatabaseStyle(entity.Project.CodeStyle, entity.Project.DbType);
             return style.FormatViewName(entity);
         }
 
@@ -37,7 +37,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static string ToDbFieldName(IFieldConfig field)
         {
-            var style = CodeStyleManager.GetDatabaseStyle(field.Parent.Parent.CodeStyle, field.Parent.Parent.DbType);
+            var style = CodeStyleManager.GetDatabaseStyle(field.Parent.Project.CodeStyle, field.Parent.Project.DbType);
             return style.FormatFieldName(field);
         }
 
@@ -67,7 +67,7 @@ namespace Agebull.EntityModel.Config
                     continue;
                 }
 
-                var table = entity.Parent.Find(field.LinkTable) ?? GlobalConfig.GetEntity(field.LinkTable);
+                var table = entity.Project.Find(field.LinkTable) ?? GlobalConfig.GetEntity(field.LinkTable);
 
                 if(table == null || table == entity)
                 {

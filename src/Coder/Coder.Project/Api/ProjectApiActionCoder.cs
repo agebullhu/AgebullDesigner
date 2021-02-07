@@ -302,7 +302,7 @@ namespace {NameSpace}.WebApi
 
         private string ExtendCode()
         {
-            var page = $"/{Model.Parent.PageRoot}/{Model.PagePath('/')}/index.htm".CheckUrlPath();
+            var page = $"/{Model.Project.PageRoot}/{Model.PagePath('/')}/index.htm".CheckUrlPath();
 
             var baseClass = "ApiController";
             if (Model.Interfaces != null)

@@ -79,7 +79,7 @@ namespace Agebull.EntityModel.Config
                 {
                     return;
                 }
-                if (value == _name)
+                if (_name.IsMe(value))
                     value = null;
                 BeforePropertyChanged(nameof(Caption), _caption, value);
                 _caption = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
@@ -107,7 +107,7 @@ namespace Agebull.EntityModel.Config
                 {
                     return;
                 }
-                if (value == _caption)
+                if (_caption.IsMe(value))
                     value = null;
                 BeforePropertyChanged(nameof(Description), _description, now);
                 _description = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
@@ -168,6 +168,10 @@ namespace Agebull.EntityModel.Config
         {
             using (WorkModelScope.CreateScope(WorkModel.Loding))
             {
+                Name = dest.Name;
+                Caption = dest.Caption;
+                Description = dest.Description;
+                Remark = dest.Remark;
                 CopyFrom(dest);
             }
         }
@@ -179,10 +183,6 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         protected virtual void CopyFrom(SimpleConfig dest)
         {
-            Name = dest.Name;
-            Caption = dest.Caption;
-            Description = dest.Description;
-            Remark = dest.Remark;
         }
     }
 }

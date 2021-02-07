@@ -101,7 +101,7 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution";
-        static string preGlobalSection = @"
+        static readonly string preGlobalSection = @"
     GlobalSection({0}) = preSolution";
 
         const string endGlobal = @"

@@ -1,41 +1,47 @@
 ﻿
+using Agebull.EntityModel.Config.V2021;
+
 namespace Agebull.EntityModel.Config
 {
     internal class PropertyDatabaseBusiness
     {
-        public FieldConfig Field { get; set; }
+        public DataBaseFieldConfig Field { get; set; }
+
+        public IFieldConfig Property => Field.Field;
+
+        public IEntityConfig Entity { get; set; }
 
         internal void CheckByDb(bool repair = false)
         {
-            if (!Field.Entity.EnableDataBase)
+            if (!Entity.EnableDataBase)
             {
                 Field.DbFieldName = null;
                 Field.DbType = null;
                 return;
             }
             if (repair)
-                Field.DbFieldName = DataBaseHelper.ToDbFieldName(Field);
+                Field.DbFieldName = DataBaseHelper.ToDbFieldName(Field.Field);
             if (repair || string.IsNullOrWhiteSpace(Field.DbType))
             {
                 RepairDbType();
             }
-            if (Field.IsPrimaryKey)
+            if (Property.IsPrimaryKey)
             {
-                Field.Nullable = false;
+                Property.Nullable = false;
                 Field.DbNullable = false;
-                Field.CanEmpty = false;
+                Property.CanEmpty = false;
             }
             if (Field.DbType != null)
                 Field.DbType = Field.DbType.ToUpper();
 
-            if (Field.Initialization == "getdate")
-                Field.Initialization = "now()";
+            if (Property.Initialization == "getdate")
+                Property.Initialization = "now()";
 
         }
 
         internal void RepairDbType()
         {
-            RobotCoder.DataTypeHelper.ToStandard(Field);
+            RobotCoder.DataTypeHelper.ToStandard(Property);
             if (Field.DbType == null)
                 return;
             

@@ -10,14 +10,6 @@ namespace Agebull.EntityModel.Designer
     public sealed class ConfigTrigger : ConfigTriggerBase<ConfigBase>
     {
         /// <summary>
-        /// 载入事件处理
-        /// </summary>
-        protected override void OnLoad()
-        {
-            GlobalTrigger.OnLoad(TargetConfig.Option);
-        }
-
-        /// <summary>
         ///     发出属性修改前事件
         /// </summary>
         /// <param name="property">属性</param>
