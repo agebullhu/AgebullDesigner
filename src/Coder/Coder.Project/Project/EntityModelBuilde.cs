@@ -15,7 +15,7 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            NormalCodeModel.RegistBuilder<EntityModelBuilder>();
+            CoderManager.RegistBuilder<EntityModelBuilder>();
         }
     }
     public sealed class EntityModelBuilder : ProjectBuilder

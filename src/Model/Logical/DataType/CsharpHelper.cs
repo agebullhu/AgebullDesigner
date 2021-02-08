@@ -227,7 +227,7 @@ namespace Agebull.EntityModel.Config
                     return csType;
             }
         }
-        public static string PropertyValueType(IFieldConfig col)
+        public static string PropertyValueType(IPropertyConfig col)
         {
             if (col.IsEnum)
                 return "NumberEnum";

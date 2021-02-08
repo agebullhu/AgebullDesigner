@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
 using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer
@@ -8,7 +9,7 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     ///  Ù–‘≈‰÷√¥•∑¢∆˜
     /// </summary>
-    public class FieldTrigger : ConfigTriggerBase<FieldConfig>
+    public class FieldTrigger : ConfigTriggerBase<DataBaseFieldConfig>
     {
         protected override void OnLoad()
         {
@@ -32,19 +33,19 @@ namespace Agebull.EntityModel.Designer
                 case nameof(TargetConfig.DbFieldName):
                     SyncLinkField(field => field.LinkField = TargetConfig.Name);
                     break;
-                case nameof(TargetConfig.CanEmpty):
-                    if (!TargetConfig.CanEmpty)
-                        TargetConfig.IsRequired = true;
-                    break;
+                //case nameof(TargetConfig.CanEmpty):
+                //    if (!TargetConfig.CanEmpty)
+                //        TargetConfig.IsRequired = true;
+                //    break;
                 case nameof(TargetConfig.LinkField):
                 case nameof(TargetConfig.IsLinkKey):
                 case nameof(TargetConfig.IsLinkCaption):
                 case nameof(TargetConfig.IsLinkField):
                     CheckLinkField();
                     break;
-                case nameof(TargetConfig.Nullable):
-                    TargetConfig.RaisePropertyChanged(nameof(TargetConfig.DbNullable));
-                    break;
+                //case nameof(TargetConfig.Nullable):
+                //    TargetConfig.RaisePropertyChanged(nameof(TargetConfig.DbNullable));
+                //    break;
             }
         }
 
@@ -106,7 +107,7 @@ namespace Agebull.EntityModel.Designer
                 case nameof(TargetConfig.CsType):
                     //if(string.IsNullOrWhiteSpace(newValue))
                     break;
-                case nameof(TargetConfig.DbType):
+                case nameof(TargetConfig.FieldType):
                     DataTypeHelper.ToStandardByDbType(TargetConfig, newValue?.ToString());
                     //SyncLinkField(field => field.DbType = TargetConfig.DbType);
                     break;

@@ -16,9 +16,9 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("Web-Api", "表单读取", "cs", ProjectApiActionCoder.ReadFormValue);
-            MomentCoder.RegisteCoder("Web-Api", "ApiController.cs", "cs", new ProjectApiActionCoder().BaseCode);
-            MomentCoder.RegisteCoder("Web-Api", "ApiController.Designer.cs", "cs", new ProjectApiActionCoder().ExtendCode);
+            CoderManager.RegisteCoder("Web-Api", "表单读取", "cs", ProjectApiActionCoder.ReadFormValue);
+            CoderManager.RegisteCoder("Web-Api", "ApiController.cs", "cs", new ProjectApiActionCoder().BaseCode);
+            CoderManager.RegisteCoder("Web-Api", "ApiController.Designer.cs", "cs", new ProjectApiActionCoder().ExtendCode);
             
         }
     }

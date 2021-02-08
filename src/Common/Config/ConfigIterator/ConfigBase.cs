@@ -290,11 +290,11 @@ namespace Agebull.EntityModel.Config.V2021
         /// <returns></returns>
         protected override void ForeachDown<T>(Action<T> action, bool doAction)
         {
-            Properties.DoForeach(action, doAction);
+            Fields.DoForeach(action, doAction);
         }
         public override void OnLoad()
         {
-            Properties.OnLoad(this);
+            Fields.OnLoad(this);
             base.OnLoad();
         }
     }
@@ -373,7 +373,7 @@ namespace Agebull.EntityModel.Config.V2021
         {
             if (ConfigIteratorExtension.IsParentOrFriendType<T>(typeof(IEntityConfig), typeof(ProjectConfig), typeof(SolutionConfig)))
             {
-                Field.Foreach(action);
+                Property.Foreach(action);
                 return true;
             }
             if (ConfigIteratorExtension.IsParentOrFriendType<T>(typeof(EntityExtendConfig)))

@@ -18,9 +18,9 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("单元测试", "数据读取单元测试(C#)", "cs", EntityUt);
-            MomentCoder.RegisteCoder("单元测试", "数据操作单元测试(C#)", "cs", UpdateUt);
-            MomentCoder.RegisteCoder<SolutionConfig>("单元测试", "API单元测试(C#)", "cs", ApiUt);
+            CoderManager.RegisteCoder("单元测试", "数据读取单元测试(C#)", "cs", EntityUt);
+            CoderManager.RegisteCoder("单元测试", "数据操作单元测试(C#)", "cs", UpdateUt);
+            CoderManager.RegisteCoder<SolutionConfig>("单元测试", "API单元测试(C#)", "cs", ApiUt);
         }
         #endregion
 
@@ -73,7 +73,7 @@ namespace Agebull.EntityModel.RobotCoder
             var data = new {config.EntityName}
             {{");
             bool first = true;
-            foreach (var field in config.LastProperties.Where(p => !p.DbInnerField && !p.NoProperty))
+            foreach (var field in config.LastProperties.Where(p => !p.NoProperty))
             {
                 if (first)
                     first = false;

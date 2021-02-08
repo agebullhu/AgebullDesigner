@@ -1,5 +1,6 @@
 using System.Text;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -119,16 +120,16 @@ namespace Agebull.EntityModel.RobotCoder
         private static int GetEntitySerializeLen(IEntityConfig entity)
         {
             int len = entity.LastProperties.Count + 94;
-            foreach (var property in entity.UserProperty)
+            foreach (var field in entity.DataTable.Fields)
             {
-                len += GetFieldSerializeLen(property);
+                len += GetFieldSerializeLen(field);
             }
             return len;
         }
 
-        private static int GetFieldSerializeLen(IFieldConfig field)
+        private static int GetFieldSerializeLen(DataBaseFieldConfig field)
         {
-            int.TryParse(field.ArrayLen, out int len);
+            int.TryParse(field.Property.ArrayLen, out int len);
 
             switch (field.CsType.ToLower())
             {

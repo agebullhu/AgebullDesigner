@@ -254,7 +254,7 @@ namespace Agebull.EntityModel.RobotCoder
             code.AppendLine(@"
         }");
         }
-        private string ConvertCode(IFieldConfig column, string arg)
+        private string ConvertCode(IPropertyConfig column, string arg)
         {
             switch (column.CsType)
             {

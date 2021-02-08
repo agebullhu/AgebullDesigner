@@ -129,54 +129,55 @@ namespace Agebull.EntityModel.Designer
         internal static void CheckSimple(IEntityConfig entity)
         {
             var cap = entity.CaptionColumn;
-            foreach (var field in entity.Properties)
+            foreach (var property in entity.Properties)
             {
-                if (field.IsSystemField || field.IsDiscard || !field.UserSee)
+                var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+                if (property.IsSystemField || property.IsDiscard || !property.UserSee)
                 {
-                    field.IsRequired = false;
-                    field.NoneGrid = true;
-                    field.NoneDetails = true;
+                    property.IsRequired = false;
+                    property.NoneGrid = true;
+                    property.NoneDetails = true;
                     continue;
                 }
-                if(field == cap)
+                if(property == cap)
                 {
-                    field.CanEmpty = false;
-                    field.IsRequired = true;
+                    property.CanEmpty = false;
+                    property.IsRequired = true;
                 }
                 if (field.IsLinkKey)
                 {
-                    field.NoneGrid = true;
-                    field.NoneDetails = false;
-                    field.InputType = "easyui-combobox";
-                    field.ComboBoxUrl = null;
-                    field.FormOption = "valueField:'id', textField:'text'";
+                    property.NoneGrid = true;
+                    property.NoneDetails = false;
+                    property.InputType = "easyui-combobox";
+                    property.ComboBoxUrl = null;
+                    property.FormOption = "valueField:'id', textField:'text'";
                 }
 
                 if (field.IsLinkCaption)
                 {
-                    field.NoneGrid = false;
-                    field.NoneDetails = true;
-                    field.CanEmpty = true;
-                    field.IsRequired = false;
+                    property.NoneGrid = false;
+                    property.NoneDetails = true;
+                    property.CanEmpty = true;
+                    property.IsRequired = false;
                 }
 
-                if (field.IsBlob || field.DataType == "ByteArray")
+                if (field.IsBlob || property.DataType == "ByteArray")
                 {
-                    field.CanEmpty = true;
-                    field.IsRequired = false;
-                    field.NoneJson = !field.IsImage;
-                    field.NoneGrid = true;
-                    field.NoneDetails = !field.IsImage;
+                    property.CanEmpty = true;
+                    property.IsRequired = false;
+                    property.NoneJson = !property.IsImage;
+                    property.NoneGrid = true;
+                    property.NoneDetails = !property.IsImage;
                     if (entity.PrimaryColumn != null)
-                        field.Index = entity.PrimaryColumn.Index;
+                        property.Index = entity.PrimaryColumn.Index;
                 }
             }
 
-            foreach (var field in entity.Properties)
+            foreach (var property in entity.Properties)
             {
-                if (field.IsPrimaryKey || !field.NoneGrid ||
-                    field.Name == "DataState" || field.Name == "AuditState" || field.Name == "IsFreeze")
-                    field.ExtendConfigListBool["easyui", "simple"] = true;
+                if (property.IsPrimaryKey || !property.NoneGrid ||
+                    property.Name == "DataState" || property.Name == "AuditState" || property.Name == "IsFreeze")
+                    property.ExtendConfigListBool["easyui", "simple"] = true;
             }
             if (entity.Properties.Count(p => !p.NoneDetails) > 12)
                 entity.FormCloumn = 2;

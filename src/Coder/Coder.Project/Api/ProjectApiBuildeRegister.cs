@@ -12,7 +12,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            NormalCodeModel.RegistBuilder<ProjectApiBuilde>();
+            CoderManager.RegistBuilder<ProjectApiBuilde>();
         }
 
     }

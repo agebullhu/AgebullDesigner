@@ -46,7 +46,7 @@ namespace Agebull.EntityModel.Designer
                 case IEntityConfig model:
                     list.Add(model);
                     break;
-                case IFieldConfig field:
+                case IPropertyConfig field:
                     list.Add(field.Parent);
                     break;
                 case ProjectConfig projectConfig:

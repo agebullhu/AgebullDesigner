@@ -141,7 +141,7 @@ namespace Agebull.EntityModel.Designer
             row.CreateCell(i).SetCell("更新时间", labelCell);
 
 
-            var fields = entity.DbFields.Where(p =>p!= null && !p.IsCompute).ToArray();
+            var fields = entity.DataTable.Fields.Where(p => !p.IsReadonly).ToArray();
             int line = 0;
             for (; line < fields.Length; line++)
             {
@@ -150,7 +150,7 @@ namespace Agebull.EntityModel.Designer
                 row.HeightInPoints = 20;//行高
                 i = 0;
                 row.CreateCell(i++).SetCell(field.DbFieldName, valueCell);
-                row.CreateCell(i++).SetCell(field.DbType?.ToUpper(), valueCell);
+                row.CreateCell(i++).SetCell(field.FieldType?.ToUpper(), valueCell);
                 row.CreateCell(i++).SetCell(field.CsType == "decimal" ? $"({field.Datalen},{field.Scale})" : (field.Datalen > 0 ? field.Datalen.ToString() : "-"), valueCell);
                 row.CreateCell(i++).SetCell(field.DbNullable ? "是" : "否", valueCell);
                 row.CreateCell(i++).SetCell(field.IsPrimaryKey ? "是" : "否", valueCell);

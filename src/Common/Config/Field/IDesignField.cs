@@ -29,6 +29,11 @@
             get;
             set;
         }
+        /// <summary>
+        /// 不生成属性
+        /// </summary>
+        bool NoProperty { get; set; }
+
         #endregion
 
         #region 数据类型
@@ -42,11 +47,6 @@
         /// 枚举类型(C#)
         /// </summary>
         bool IsEnum { get; set; }// Field.IsEnum;
-
-        /// <summary>
-        /// 是否时间
-        /// </summary>
-        bool IsTime { get; set; }// Field.IsTime;
 
         /// <summary>
         /// 是否扩展数组
@@ -70,11 +70,6 @@
 
         #region 字段特性
 
-
-        /// <summary>
-        /// 不生成属性
-        /// </summary>
-        bool NoProperty { get; set; }
 
         /// <summary>
         /// 是否扩展值

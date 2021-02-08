@@ -30,7 +30,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 当前表对象
         /// </summary>
-        public IFieldConfig PrimaryProperty => Model.PrimaryColumn;
+        public IPropertyConfig PrimaryProperty => Model.PrimaryColumn;
 
         /// <summary>
         /// 分类目录

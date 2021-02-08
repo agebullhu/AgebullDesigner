@@ -141,7 +141,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <returns></returns>
         public UserInterfaceField Find(string name)
         {
-            return Properties.FirstOrDefault(p => name.IsMe(p.Field.Name) || name.IsMe(p.Field.DbFieldName));
+            return Properties.FirstOrDefault(p => name.IsMe(p.Property.Name) );
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <returns></returns>
         public UserInterfaceField Find(params string[] names)
         {
-            return Properties.FirstOrDefault(p => names.Exist(p.Field.Name, p.Field.DbFieldName));
+            return Properties.FirstOrDefault(p => names.Exist(p.Property.Name));
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <returns></returns>
         public bool TryGet(out UserInterfaceField field, params string[] names)
         {
-            field = Properties.FirstOrDefault(p => names.Exist(p.Field.Name, p.Field.DbFieldName));
+            field = Properties.FirstOrDefault(p => names.Exist(p.Property.Name));
             return field != null;
         }
 
@@ -172,7 +172,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <returns></returns>
         public bool Exist(params string[] names)
         {
-            return Properties.Any(p => names.Exist(p.Field.Name, p.Field.DbFieldName));
+            return Properties.Any(p => names.Exist(p.Property.Name));
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <returns></returns>
         public void Add(UserInterfaceField field)
         {
-            if (!Properties.Any(p => p.Field == field.Field))
+            if (!Properties.Any(p => p.Property == field.Property))
             {
                 field.Parent = this;
                 Properties.Add(field);
@@ -205,7 +205,7 @@ namespace Agebull.EntityModel.Config.V2021
             {
                 var uiField = new UserInterfaceField
                 {
-                    Field = field,
+                    Property = field,
                     Parent = this,
                 };
                 uiField.Copy(field);

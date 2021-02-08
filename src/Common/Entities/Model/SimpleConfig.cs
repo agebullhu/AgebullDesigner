@@ -184,5 +184,6 @@ namespace Agebull.EntityModel.Config
         protected virtual void CopyFrom(SimpleConfig dest)
         {
         }
+
     }
 }

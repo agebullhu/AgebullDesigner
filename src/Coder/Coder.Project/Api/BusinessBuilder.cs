@@ -299,7 +299,7 @@ namespace {NameSpace}
         }");
         }
 
-        private void ComboValues(StringBuilder code, IFieldConfig cap)
+        private void ComboValues(StringBuilder code, IPropertyConfig cap)
         {
             var parent = Model.ParentColumn;
             if (parent == null)

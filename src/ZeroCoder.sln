@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Agebull.Common.Mvvm", "Common\WpfMvvmBase\Agebull.Common.Mvvm.csproj", "{6F6DC5D2-85EF-4BB5-82FA-BD21F7AA3053}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZeroDesigner", "Main\ZeroDesigner.csproj", "{030A33C1-E68A-4ED1-914C-F84ECF1469E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZeroCoder", "Main\ZeroCoder.csproj", "{030A33C1-E68A-4ED1-914C-F84ECF1469E2}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F088FC1D-1FBB-4224-97FA-A9535F6DC58F} = {F088FC1D-1FBB-4224-97FA-A9535F6DC58F}
 		{5DA82320-D5BD-408F-B915-C72EB6A52B91} = {5DA82320-D5BD-408F-B915-C72EB6A52B91}

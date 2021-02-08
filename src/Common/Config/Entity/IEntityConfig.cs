@@ -118,17 +118,17 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 主键字段
         /// </summary>
-        IFieldConfig PrimaryColumn { get; }// Properties.FirstOrDefault(p {get;}// Entity.PrimaryColumn == p.Field);
+        IPropertyConfig PrimaryColumn { get; }// Properties.FirstOrDefault(p {get;}// Entity.PrimaryColumn == p.Field);
 
         /// <summary>
         /// 标题字段
         /// </summary>
-        IFieldConfig CaptionColumn { get; }// Properties.FirstOrDefault(p {get;}// Entity.PrimaryColumn == p.Field);
+        IPropertyConfig CaptionColumn { get; }// Properties.FirstOrDefault(p {get;}// Entity.PrimaryColumn == p.Field);
 
         /// <summary>
         /// 上级字段
         /// </summary>
-        IFieldConfig ParentColumn { get; }
+        IPropertyConfig ParentColumn { get; }
 
         /// <summary>
         /// 是否有主键
@@ -275,40 +275,37 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        bool TryGet(out IFieldConfig field, params string[] names)
+        bool TryGet(out IPropertyConfig field, params string[] names)
         {
-            field = LastProperties.FirstOrDefault(p => names.Exist(p.Name, p.DbFieldName));
+            field = LastProperties.FirstOrDefault(p => names.Exist(p.Name));
             return field != null;
         }
 
-        IEnumerable<IFieldConfig> Properties { get; }
+        IEnumerable<IPropertyConfig> Properties { get; }
 
         /// <summary>
         /// 最终有效的属性
         /// </summary>
-        List<IFieldConfig> LastProperties { get; }
+        List<IPropertyConfig> LastProperties { get; }
 
         /// <summary>
         /// 公开的属性
         /// </summary>
-        IEnumerable<IFieldConfig> PublishProperty { get; }
+        IEnumerable<IPropertyConfig> PublishProperty { get; }
         /// <summary>
         /// 用户属性
         /// </summary>
-        IEnumerable<IFieldConfig> UserProperty { get; }
+        IEnumerable<IPropertyConfig> UserProperty { get; }
         /// <summary>
         /// 客户端可访问的属性
         /// </summary>
-        IEnumerable<IFieldConfig> ClientProperty { get; }
-        /// <summary>
-        /// 数据库字段
-        /// </summary>
-        IEnumerable<IFieldConfig> DbFields { get; }
+        IEnumerable<IPropertyConfig> ClientProperty { get; }
+       
 
         /// <summary>
         /// 命令集合
         /// </summary>
-        NotificationList<UserCommandConfig> Commands { get; }
+        NotificationList<CommandItemConfig> Commands { get; }
 
         #endregion
 

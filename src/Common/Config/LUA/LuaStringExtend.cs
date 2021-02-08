@@ -339,7 +339,7 @@ namespace Agebull.Common.LUA
             var column = GlobalConfig.GetConfig<FieldConfig>(key);
             if (column == null)
                 return null;
-            switch (column.DbType.ToLower())
+            switch (column.FieldType.ToLower())
             {
                 case "decimal":
                 case "numeric":
@@ -353,16 +353,16 @@ namespace Agebull.Common.LUA
                         column.Datalen = -1;
                     else if (column.Datalen < 100)
                         column.Datalen = 100;
-                    return $"{column.DbType}({(column.Datalen <= 0 ? "max" : column.Datalen.ToString())})";
+                    return $"{column.FieldType}({(column.Datalen <= 0 ? "max" : column.Datalen.ToString())})";
                 case "char":
                 case "nchar":
                 case "varchar":
                 case "nvarchar":
                     if (column.Datalen < 0 || column.Datalen > 4000)
                         column.Datalen = 0;
-                    return string.Format("{1}({0})", column.Datalen == 0 ? "max" : column.Datalen.ToString(), column.DbType.ToUpper());
+                    return string.Format("{1}({0})", column.Datalen == 0 ? "max" : column.Datalen.ToString(), column.FieldType.ToUpper());
                 default:
-                    return column.DbType.ToUpper();
+                    return column.FieldType.ToUpper();
             }
         }
 

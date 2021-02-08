@@ -78,7 +78,7 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
         /// <param name="arg"></param>
         public void UpperHump(DataTableConfig dataTable)
         {
-            foreach (var property in dataTable.Properties)
+            foreach (var property in dataTable.Fields)
             {
                 property.DbFieldName = property.Name;
             }
@@ -92,7 +92,7 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
         /// <param name="arg"></param>
         internal void LowerHump(DataTableConfig dataTable)
         {
-            foreach (var property in dataTable.Properties)
+            foreach (var property in dataTable.Fields)
             {
                 property.DbFieldName = property.Name.ToLWord();
             }
@@ -106,7 +106,7 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
         /// <param name="arg"></param>
         internal void Underlined(DataTableConfig dataTable)
         {
-            foreach (var property in dataTable.Properties)
+            foreach (var property in dataTable.Fields)
             {
                 property.DbFieldName = NameHelper.ToLinkWordName(property.Name, "_", false);
             }

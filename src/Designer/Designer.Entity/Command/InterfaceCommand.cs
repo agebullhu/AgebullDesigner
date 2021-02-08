@@ -94,7 +94,7 @@ namespace Agebull.EntityModel.Designer
                 DbFieldName = "memo",
                 JsonName = "memo",
                 DbNullable=true,
-                DbType = "TEXT"
+                FieldType = "TEXT"
             });
         }
 

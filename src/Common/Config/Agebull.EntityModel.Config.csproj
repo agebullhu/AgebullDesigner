@@ -38,4 +38,8 @@
     <ProjectReference Include="..\Entities\Agebull.Common.Entity.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="2021\Ui\Field\" />
+  </ItemGroup>
+
 </Project>

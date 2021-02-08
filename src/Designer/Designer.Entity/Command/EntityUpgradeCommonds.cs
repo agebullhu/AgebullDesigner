@@ -158,7 +158,7 @@ namespace Agebull.EntityModel.Designer
         {
             foreach (var field in entity.Properties.Where(p => p.IsIdentity))
             {
-                field.DbType = "BIGINT";
+                field.FieldType = "BIGINT";
                 field.DataType = "Int64";
                 field.CsType = "long";
             }
@@ -166,7 +166,7 @@ namespace Agebull.EntityModel.Designer
             {
                 var field = entity.PrimaryColumn;
 
-                field.DbType = "BIGINT";
+                field.FieldType = "BIGINT";
                 field.DataType = "Int64";
                 field.CsType = "long";
             }

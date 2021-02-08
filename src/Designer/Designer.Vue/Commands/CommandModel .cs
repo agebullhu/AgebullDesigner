@@ -50,7 +50,7 @@ namespace Agebull.EntityModel.Designer
                 IconName = "tree_Open",
                 SoruceView = "entity"
             });
-            commands.Add(new CommandItemBuilder<IFieldConfig>
+            commands.Add(new CommandItemBuilder<IPropertyConfig>
             {
                 SignleSoruce = false,
                 CanButton = true,
@@ -65,7 +65,7 @@ namespace Agebull.EntityModel.Designer
 
         }
 
-        public void CheckJsonName(IFieldConfig property)
+        public void CheckJsonName(IPropertyConfig property)
         {
             property.JsonName = property.Name.ToLWord();
         }

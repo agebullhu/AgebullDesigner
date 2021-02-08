@@ -15,11 +15,11 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("Web-Vue", "Html", "html", HtmlCode);
-            MomentCoder.RegisteCoder("Web-Vue", "Script", "js", ScriptCode);
-            MomentCoder.RegisteCoder("Web-Vue", "²Ëµ¥£¨Js£©", "js", MenuScriptCode);
-            MomentCoder.RegisteCoder("Web-Vue", "²Ëµ¥£¨Html£©", "html", MenuHtmlCode);
-            MomentCoder.RegisteCoder("Web-Vue", "ÏêÏ¸", "html", HtmlDetailsCode);
+            CoderManager.RegisteCoder("Web-Vue", "Html", "html", HtmlCode);
+            CoderManager.RegisteCoder("Web-Vue", "Script", "js", ScriptCode);
+            CoderManager.RegisteCoder("Web-Vue", "²Ëµ¥£¨Js£©", "js", MenuScriptCode);
+            CoderManager.RegisteCoder("Web-Vue", "²Ëµ¥£¨Html£©", "html", MenuHtmlCode);
+            CoderManager.RegisteCoder("Web-Vue", "ÏêÏ¸", "html", HtmlDetailsCode);
         }
         #endregion
 

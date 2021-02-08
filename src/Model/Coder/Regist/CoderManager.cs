@@ -1,44 +1,52 @@
 using System;
 using System.Collections.Generic;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Designer;
+using Cmd = System.Collections.Generic.Dictionary<string, System.Func<System.Action<System.Collections.Generic.Dictionary<string, string>>, Agebull.Common.Mvvm.CommandItemBase>>;
 
 namespace Agebull.EntityModel.RobotCoder
 {
     /// <summary>
-    /// 代码片断定义
+    /// 代码生成器管理
     /// </summary>
-    public class CoderDefine
+    public class CoderManager
     {
-        /// <summary>
-        /// 方法
-        /// </summary>
-        public Func<ConfigBase, string> Func { get; set; }
-        /// <summary>
-        /// 名称
-        /// </summary>
-        public string Name { get; set; }
+        #region 项目代码
 
         /// <summary>
-        /// 语言类型
+        /// 注册的项目代码生成器
         /// </summary>
-        public string Lang { get; set; }
+        public static readonly Dictionary<string, Cmd> Builders = new Dictionary<string, Cmd>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
-        /// 自定义执行
+        /// 注册的项目生成器
         /// </summary>
-        public bool CustomExecute { get; set; }
-    }
+        /// <returns></returns>
+        public static void RegistBuilder<TBuilder>()
+            where TBuilder : ProjectBuilder, new()
+        {
+            var builder = new TBuilder();
+            var type = typeof(IEntityConfig).Name;
+            if (!Builders.TryGetValue(type, out var cmd))
+                Builders.Add(type, cmd = new Cmd());
 
-    /// <summary>
-    /// 代码片断生成器
-    /// </summary>
-    public class MomentCoder
-    {
+            if (cmd.ContainsKey(builder.Name))
+                throw new ArgumentException("已注册名称为" + builder.Name + "的项目生成器，不应该重复注册");
+            cmd.Add(builder.Name, OnCodeSuccess => new ProjectCodeCommand(() => new TBuilder())
+            {
+                Caption = builder.Caption,
+                IconName = builder.Icon,
+                OnCodeSuccess = OnCodeSuccess
+            }.ToCommand(null));
+        }
+
+        #endregion
+        #region 代码片断
+
         //private static readonly List<string> types = new List<string>();
 
         //public static readonly Dictionary<string, CoderDefine> FindDictionary = new Dictionary<string, CoderDefine>();
-
-        public static readonly Dictionary<string, Dictionary<string, CoderDefine>> Coders = new Dictionary<string, Dictionary<string, CoderDefine>>();
+        public static readonly Dictionary<string, Dictionary<string, CoderDefine>> MomentCoders = new Dictionary<string, Dictionary<string, CoderDefine>>();
         //public static List<string> Types => types;
 
 
@@ -65,8 +73,8 @@ namespace Agebull.EntityModel.RobotCoder
         {
             NowType = type ?? "未分类";
 
-            if (!Coders.ContainsKey(NowType))
-                Coders.Add(NowType, new Dictionary<string, CoderDefine>());
+            if (!MomentCoders.ContainsKey(NowType))
+                MomentCoders.Add(NowType, new Dictionary<string, CoderDefine>());
 
             var define = new CoderDefine
             {
@@ -76,10 +84,10 @@ namespace Agebull.EntityModel.RobotCoder
                 Lang = lang
             };
 
-            if (Coders[NowType].ContainsKey(name))
-                Coders[NowType][name] = define;
+            if (MomentCoders[NowType].ContainsKey(name))
+                MomentCoders[NowType][name] = define;
             else
-                Coders[NowType].Add(name, define);
+                MomentCoders[NowType].Add(name, define);
         }
 
 
@@ -88,20 +96,20 @@ namespace Agebull.EntityModel.RobotCoder
         {
             NowType = type ?? "未分类";
 
-            if (!Coders.ContainsKey(NowType))
-                Coders.Add(NowType, new Dictionary<string, CoderDefine>());
+            if (!MomentCoders.ContainsKey(NowType))
+                MomentCoders.Add(NowType, new Dictionary<string, CoderDefine>());
 
             string NewFunc(ConfigBase cfg) => MomentCoderBase.CreateCode(cfg, func);
 
-            if (Coders[NowType].ContainsKey(name))
-                Coders[NowType][name] = new CoderDefine
+            if (MomentCoders[NowType].ContainsKey(name))
+                MomentCoders[NowType][name] = new CoderDefine
                 {
                     Func = NewFunc,
                     Name = name,
                     Lang = lang
                 };
             else
-                Coders[NowType].Add(name, new CoderDefine
+                MomentCoders[NowType].Add(name, new CoderDefine
                 {
                     Func = NewFunc,
                     Name = name,
@@ -114,20 +122,20 @@ namespace Agebull.EntityModel.RobotCoder
         {
             NowType = type ?? "未分类";
 
-            if (!Coders.ContainsKey(NowType))
-                Coders.Add(NowType, new Dictionary<string, CoderDefine>());
+            if (!MomentCoders.ContainsKey(NowType))
+                MomentCoders.Add(NowType, new Dictionary<string, CoderDefine>());
 
             string NewFunc(ConfigBase cfg) => MomentCoderBase.CreateCode(cfg, condition, func);
 
-            if (Coders[NowType].ContainsKey(name))
-                Coders[NowType][name] = new CoderDefine
+            if (MomentCoders[NowType].ContainsKey(name))
+                MomentCoders[NowType][name] = new CoderDefine
                 {
                     Func = NewFunc,
                     Name = name,
                     Lang = lang
                 };
             else
-                Coders[NowType].Add(name, new CoderDefine
+                MomentCoders[NowType].Add(name, new CoderDefine
                 {
                     Func = NewFunc,
                     Name = name,
@@ -139,20 +147,20 @@ namespace Agebull.EntityModel.RobotCoder
         {
             NowType = type ?? "未分类";
 
-            if (!Coders.ContainsKey(NowType))
-                Coders.Add(NowType, new Dictionary<string, CoderDefine>());
+            if (!MomentCoders.ContainsKey(NowType))
+                MomentCoders.Add(NowType, new Dictionary<string, CoderDefine>());
 
             string NewFunc(ConfigBase cfg) => MomentCoderBase.CreateCode(cfg, func);
 
-            if (Coders[NowType].ContainsKey(name))
-                Coders[NowType][name] = new CoderDefine
+            if (MomentCoders[NowType].ContainsKey(name))
+                MomentCoders[NowType][name] = new CoderDefine
                 {
                     Func = NewFunc,
                     Name = name,
                     Lang = lang
                 };
             else
-                Coders[NowType].Add(name, new CoderDefine
+                MomentCoders[NowType].Add(name, new CoderDefine
                 {
                     Func = NewFunc,
                     Name = name,
@@ -165,20 +173,20 @@ namespace Agebull.EntityModel.RobotCoder
         {
             NowType = type ?? "未分类";
 
-            if (!Coders.ContainsKey(NowType))
-                Coders.Add(NowType, new Dictionary<string, CoderDefine>());
+            if (!MomentCoders.ContainsKey(NowType))
+                MomentCoders.Add(NowType, new Dictionary<string, CoderDefine>());
 
             string NewFunc(ConfigBase cfg) => MomentCoderBase.CreateCode(cfg, func);
 
-            if (Coders[NowType].ContainsKey(name))
-                Coders[NowType][name] = new CoderDefine
+            if (MomentCoders[NowType].ContainsKey(name))
+                MomentCoders[NowType][name] = new CoderDefine
                 {
                     Func = NewFunc,
                     Name = name,
                     Lang = lang
                 };
             else
-                Coders[NowType].Add(name, new CoderDefine
+                MomentCoders[NowType].Add(name, new CoderDefine
                 {
                     Func = NewFunc,
                     Name = name,
@@ -190,20 +198,20 @@ namespace Agebull.EntityModel.RobotCoder
         {
             NowType = type ?? "未分类";
 
-            if (!Coders.ContainsKey(NowType))
-                Coders.Add(NowType, new Dictionary<string, CoderDefine>());
+            if (!MomentCoders.ContainsKey(NowType))
+                MomentCoders.Add(NowType, new Dictionary<string, CoderDefine>());
 
             string NewFunc(ConfigBase cfg) => MomentCoderBase.CreateCode(cfg, condition, func);
 
-            if (Coders[NowType].ContainsKey(name))
-                Coders[NowType][name] = new CoderDefine
+            if (MomentCoders[NowType].ContainsKey(name))
+                MomentCoders[NowType][name] = new CoderDefine
                 {
                     Func = NewFunc,
                     Name = name,
                     Lang = lang
                 };
             else
-                Coders[NowType].Add(name, new CoderDefine
+                MomentCoders[NowType].Add(name, new CoderDefine
                 {
                     Func = NewFunc,
                     Name = name,
@@ -217,20 +225,20 @@ namespace Agebull.EntityModel.RobotCoder
         {
             NowType = type ?? "未分类";
 
-            if (!Coders.ContainsKey(NowType))
-                Coders.Add(NowType, new Dictionary<string, CoderDefine>());
+            if (!MomentCoders.ContainsKey(NowType))
+                MomentCoders.Add(NowType, new Dictionary<string, CoderDefine>());
 
             string NewFunc(ConfigBase cfg) => MomentCoderBase.CreateCode(cfg, func);
 
-            if (Coders[NowType].ContainsKey(name))
-                Coders[NowType][name] = new CoderDefine
+            if (MomentCoders[NowType].ContainsKey(name))
+                MomentCoders[NowType][name] = new CoderDefine
                 {
                     Func = NewFunc,
                     Name = name,
                     Lang = lang
                 };
             else
-                Coders[NowType].Add(name, new CoderDefine
+                MomentCoders[NowType].Add(name, new CoderDefine
                 {
                     Func = NewFunc,
                     Name = name,
@@ -242,20 +250,20 @@ namespace Agebull.EntityModel.RobotCoder
         {
             NowType = type ?? "未分类";
 
-            if (!Coders.ContainsKey(NowType))
-                Coders.Add(NowType, new Dictionary<string, CoderDefine>());
+            if (!MomentCoders.ContainsKey(NowType))
+                MomentCoders.Add(NowType, new Dictionary<string, CoderDefine>());
 
             string NewFunc(ConfigBase cfg) => MomentCoderBase.CreateCode(cfg, condition, func);
 
-            if (Coders[NowType].ContainsKey(name))
-                Coders[NowType][name] = new CoderDefine
+            if (MomentCoders[NowType].ContainsKey(name))
+                MomentCoders[NowType][name] = new CoderDefine
                 {
                     Func = NewFunc,
                     Name = name,
                     Lang = lang
                 };
             else
-                Coders[NowType].Add(name, new CoderDefine
+                MomentCoders[NowType].Add(name, new CoderDefine
                 {
                     Func = NewFunc,
                     Name = name,
@@ -267,20 +275,20 @@ namespace Agebull.EntityModel.RobotCoder
         {
             NowType = type ?? "未分类";
 
-            if (!Coders.ContainsKey(NowType))
-                Coders.Add(NowType, new Dictionary<string, CoderDefine>());
+            if (!MomentCoders.ContainsKey(NowType))
+                MomentCoders.Add(NowType, new Dictionary<string, CoderDefine>());
 
             string NewFunc(ConfigBase cfg) => MomentCoderBase.CreateCode(cfg, func);
 
-            if (Coders[NowType].ContainsKey(name))
-                Coders[NowType][name] = new CoderDefine
+            if (MomentCoders[NowType].ContainsKey(name))
+                MomentCoders[NowType][name] = new CoderDefine
                 {
                     Func = NewFunc,
                     Name = name,
                     Lang = lang
                 };
             else
-                Coders[NowType].Add(name, new CoderDefine
+                MomentCoders[NowType].Add(name, new CoderDefine
                 {
                     Func = NewFunc,
                     Name = name,
@@ -292,25 +300,27 @@ namespace Agebull.EntityModel.RobotCoder
         {
             NowType = type ?? "未分类";
 
-            if (!Coders.ContainsKey(NowType))
-                Coders.Add(NowType, new Dictionary<string, CoderDefine>());
+            if (!MomentCoders.ContainsKey(NowType))
+                MomentCoders.Add(NowType, new Dictionary<string, CoderDefine>());
 
             string NewFunc(ConfigBase cfg) => MomentCoderBase.CreateCode(cfg, condition, func);
 
-            if (Coders[NowType].ContainsKey(name))
-                Coders[NowType][name] = new CoderDefine
+            if (MomentCoders[NowType].ContainsKey(name))
+                MomentCoders[NowType][name] = new CoderDefine
                 {
                     Func = NewFunc,
                     Name = name,
                     Lang = lang
                 };
             else
-                Coders[NowType].Add(name, new CoderDefine
+                MomentCoders[NowType].Add(name, new CoderDefine
                 {
                     Func = NewFunc,
                     Name = name,
                     Lang = lang
                 });
         }
+
+        #endregion
     }
 }

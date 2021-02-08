@@ -48,7 +48,7 @@ namespace Agebull.EntityModel.Designer
                 Name = "Link Field Check",
                 Caption = "关系连接修复",
                 Catalog = "工具",
-                Action = DataBaseHelper.CheckFieldLink,
+                Action = ent => DataBaseHelper.CheckFieldLink(ent.DataTable?.Fields),
                 Editor = "DataRelation",
                 WorkView = "database,model"
             });
@@ -112,7 +112,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void CheckRelation(EntityConfig entity)
         {
-            DataBaseHelper.CheckFieldLink(entity.Properties);
+            DataBaseHelper.CheckFieldLink(entity.DataTable?.Fields);
         }
 
         /// <summary>

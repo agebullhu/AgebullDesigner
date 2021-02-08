@@ -199,7 +199,7 @@ namespace Agebull.EntityModel.Designer
                 field.JsonName = field.Name.ToLWord();
                 field.Caption = foreign.PrimaryColumn.Caption;
                 field.CsType = foreign.PrimaryColumn.CsType;
-                field.DbType = foreign.PrimaryColumn.DbType;
+                field.FieldType = foreign.PrimaryColumn.FieldType;
                 field.Datalen = foreign.PrimaryColumn.Datalen;
             }
         }
@@ -214,7 +214,7 @@ namespace Agebull.EntityModel.Designer
             {
                 var foreign = entity.Project.Find(field.LinkTable);
                 field.CsType = foreign.PrimaryColumn.CsType;
-                field.DbType = foreign.PrimaryColumn.DbType;
+                field.FieldType = foreign.PrimaryColumn.FieldType;
                 field.Datalen = foreign.PrimaryColumn.Datalen;
             }
         }

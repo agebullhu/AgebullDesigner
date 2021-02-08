@@ -108,7 +108,7 @@ namespace Agebull.EntityModel.Designer
             set
             {
                 _selectColumns = value;
-                if(SelectColumns != null && SelectColumns.Count > 0 && SelectColumns[0] is IFieldConfig field)
+                if(SelectColumns != null && SelectColumns.Count > 0 && SelectColumns[0] is IPropertyConfig field)
                 {
                     SelectField = field;
                 }
@@ -138,7 +138,7 @@ namespace Agebull.EntityModel.Designer
         }
 
         private IEntityConfig _selectEntityConfig;
-        private IFieldConfig _selectFieldConfig;
+        private IPropertyConfig _selectFieldConfig;
         private ProjectConfig _selectProjectConfig;
         private IEnumerable _selectItemChildrens;
 
@@ -204,7 +204,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     µ±«∞≈‰÷√
         /// </summary>
-        public IFieldConfig SelectField
+        public IPropertyConfig SelectField
         {
             get => _selectFieldConfig;
             set
@@ -325,7 +325,7 @@ namespace Agebull.EntityModel.Designer
                         SelectChildrens = SelectItemChildrens;
                         FindKey = SelectEntity.Option.ReferenceTag;
                         break;
-                    case IFieldConfig field:
+                    case IPropertyConfig field:
                         SelectEntity = field.Parent;
                         SelectField = field;
                         SelectItemChildrens = SelectEntity?.Properties;

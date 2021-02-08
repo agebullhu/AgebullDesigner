@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -286,7 +288,8 @@ using Agebull.EntityModel.Interfaces;
             ExistProperties.TryAdd(Model.PrimaryField, Model.PrimaryField);
             foreach (var property in Columns.Where(p => p != PrimaryProperty).OrderBy(p => p.Index))
             {
-                if (property.DbInnerField)
+                var field = Model.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+                if (field!= null && field.DbInnerField)
                     DbInnerProperty(property, code);
                 else if (property.IsCompute)
                     ComputePropertyCode(property, code);
@@ -294,7 +297,7 @@ using Agebull.EntityModel.Interfaces;
                     PropertyCode(property, code);
                 ExistProperties.TryAdd(property.Name, property.Name);
                 AliasPropertyCode(property, code);
-                AccessProperties(property, code);
+                AccessProperties(property, field, code);
             }
             if (Model is ModelConfig model)
             {
@@ -340,7 +343,7 @@ using Agebull.EntityModel.Interfaces;
         }}";
         }
 
-        private void PropertyCode(IFieldConfig property, StringBuilder code,string ov="")
+        private void PropertyCode(IPropertyConfig property, StringBuilder code,string ov="")
         {
             var fieldName = FieldName(property);
             var propertyName = PropertyName(property);
@@ -377,7 +380,7 @@ using Agebull.EntityModel.Interfaces;
         /// </summary>
         /// <param name="property"></param>
         /// <param name="code"></param>
-        private void ComputePropertyCode(IFieldConfig property, StringBuilder code)
+        private void ComputePropertyCode(IPropertyConfig property, StringBuilder code)
         {
             var propertyName = PropertyName(property);
 
@@ -419,7 +422,7 @@ using Agebull.EntityModel.Interfaces;
         /// </summary>
         /// <param name="property"></param>
         /// <param name="code"></param>
-        private void AliasPropertyCode(IFieldConfig property, StringBuilder code)
+        private void AliasPropertyCode(IPropertyConfig property, StringBuilder code)
         {
             foreach (var name in property.GetAliasPropertys())
             {
@@ -435,7 +438,7 @@ using Agebull.EntityModel.Interfaces;
             }
         }
 
-        private void DbInnerProperty(IFieldConfig property, StringBuilder code)
+        private void DbInnerProperty(IPropertyConfig property, StringBuilder code)
         {
             code.Append($@"
         {PropertyHeader(property)}
@@ -447,9 +450,9 @@ using Agebull.EntityModel.Interfaces;
         /// 数据访问字段,有BUG小心
         /// </summary>
         /// <returns></returns>
-        private void AccessProperties(IFieldConfig property, StringBuilder code)
+        private void AccessProperties(IPropertyConfig property,DataBaseFieldConfig field, StringBuilder code)
         {
-            if (string.IsNullOrWhiteSpace(property.StorageProperty))
+            if (field == null || field.StorageProperty.IsBlank())
                 return;
             code.Append($@"
 
@@ -460,7 +463,7 @@ using Agebull.EntityModel.Interfaces;
         /// 仅存储使用
         /// </remarks>
         [JsonIgnore]
-        public string {property.StorageProperty}
+        public string {field.StorageProperty}
         {{
             get => this.{property.Name} == null ? null : Newtonsoft.Json.JsonConvert.SerializeObject(this.{property.Name});");
             if (!Model.IsQuery  && Model.UpdateByModified)
@@ -471,7 +474,7 @@ using Agebull.EntityModel.Interfaces;
                 this.{property.Name} = value == null 
                     ? null 
                     : Newtonsoft.Json.JsonConvert.DeserializeObject<{property.LastCsType}>(value);
-                this.OnSeted(nameof({property.StorageProperty}));
+                this.OnSeted(nameof({field.StorageProperty}));
             }}");
             }
             code.Append(@"

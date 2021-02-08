@@ -21,14 +21,6 @@
         bool IsExtendKey { get; set; }// Field.IsExtendKey;
 
         /// <summary>
-        /// 自增字段
-        /// </summary>
-        /// <remark>
-        /// 自增列,通过数据库(或REDIS)自动增加
-        /// </remark>
-        bool IsIdentity { get; set; }// Field.IsIdentity;
-
-        /// <summary>
         /// 全局标识
         /// </summary>
         /// <remark>

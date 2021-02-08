@@ -24,7 +24,7 @@ namespace Agebull.EntityModel.RobotCoder.Project
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("EntityModel", "数据结构", "cs", DataBaseBuilder.EntityStruct);
+            CoderManager.RegisteCoder("EntityModel", "数据结构", "cs", DataBaseBuilder.EntityStruct);
         }
 
         #endregion

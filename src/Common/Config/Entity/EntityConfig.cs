@@ -100,14 +100,14 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"标题字段"), Description("标题字段")]
-        public IFieldConfig CaptionColumn => Properties.FirstOrDefault(p => p.IsCaption && p.Entity == this);
+        public IPropertyConfig CaptionColumn => Properties.FirstOrDefault(p => p.IsCaption && p.Entity == this);
 
         /// <summary>
         /// 标题字段
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"标题字段"), Description("标题字段")]
-        public IFieldConfig ParentColumn => Properties.FirstOrDefault(p => p.IsParent && p.Entity == this);
+        public IPropertyConfig ParentColumn => Properties.FirstOrDefault(p => p.IsParent && p.Entity == this);
 
         /// <summary>
         /// 是否有主键
@@ -123,7 +123,7 @@ namespace Agebull.EntityModel.Config
         /// 主键字段
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        IFieldConfig IEntityConfig.PrimaryColumn => PrimaryColumn;
+        IPropertyConfig IEntityConfig.PrimaryColumn => PrimaryColumn;
 
         /// <summary>
         /// 主键字段
@@ -636,7 +636,7 @@ namespace Agebull.EntityModel.Config
             }
         }
 
-        IEnumerable<IFieldConfig> IEntityConfig.Properties => Properties;
+        IEnumerable<IPropertyConfig> IEntityConfig.Properties => Properties;
 
         #endregion
 

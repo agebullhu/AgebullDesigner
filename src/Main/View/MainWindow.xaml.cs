@@ -6,7 +6,7 @@
 // 修改:2014-12-03
 // *****************************************************/
 
-namespace Gboxt.Design.Main
+namespace Agebull.EntityModel.Designer
 {
     /// <summary>
     ///     MainWindow.xaml 的交互逻辑

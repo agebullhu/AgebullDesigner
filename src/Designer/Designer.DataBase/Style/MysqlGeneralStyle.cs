@@ -35,7 +35,7 @@ namespace Agebull.EntityModel.Config
 
         }
 
-        string IDatabaseCodeStyle.FormatFieldName(IFieldConfig field) => GlobalConfig.ToLinkWordName(field.Name, "_", false);
+        string IDatabaseCodeStyle.FormatFieldName(IPropertyConfig field) => GlobalConfig.ToLinkWordName(field.Name, "_", false);
 
         string IDatabaseCodeStyle.FormatViewName(IEntityConfig entity) => "view_" + entity.Name.Replace("tb_", "");
 

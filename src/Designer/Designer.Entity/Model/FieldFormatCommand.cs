@@ -668,7 +668,7 @@ Memo,s,±¸×¢";
                     Datalen = 200,
                     DataType = "String",
                     CsType = "string",
-                    DbType = "NVARCHAR",
+                    FieldType = "NVARCHAR",
                     Option =
                     {
                         Identity = idx++,
@@ -695,7 +695,7 @@ Memo,s,±¸×¢";
                     {
                         column.Datalen = 0;
                         column.IsMemo = true;
-                        column.DbType = "TEXT";
+                        column.FieldType = "TEXT";
                     }
                     else
                     {

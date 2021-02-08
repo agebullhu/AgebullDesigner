@@ -97,7 +97,7 @@ namespace Agebull.EntityModel.Designer
             entity.PrimaryColumn.KeepStorageScreen = StorageScreenType.Update;
             entity.PrimaryColumn.CsType = "long";
             entity.PrimaryColumn.DataType = "Int64";
-            entity.PrimaryColumn.DbType = "BIGINT";
+            entity.PrimaryColumn.FieldType = "BIGINT";
             Trace.WriteLine($@"ALTER TABLE {entity.SaveTableName} ALTER COLUMN {entity.PrimaryColumn.DbFieldName } BIGINT NOT NULL;");
         }
 

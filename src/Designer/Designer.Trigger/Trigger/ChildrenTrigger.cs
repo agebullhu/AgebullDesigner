@@ -9,7 +9,7 @@ namespace Agebull.EntityModel.Designer
     {
         protected override void OnPropertyChanged(string property)
         {
-            if (Target.IsModify && Target is IChildrenConfig children)
+            if (Target.IsModify && Target is IChildrenConfig children && children.Parent !=null)
                 children.Parent.IsModify = true;
         }
     }

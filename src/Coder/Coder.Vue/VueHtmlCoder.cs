@@ -88,33 +88,34 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             return html.IsEmpty() ? null : html.SpaceLine(level * 4);
         }
 
-        string Formater(IFieldConfig field)
+        string Formater(IPropertyConfig property)
         {
-            if (field.DataFormater != null)
+            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            if (property.DataFormater != null)
             {
-                return $" | {field.DataFormater}";
+                return $" | {property.DataFormater}";
             }
-            if (field.EnumConfig != null)
+            if (property.EnumConfig != null)
             {
-                return $" | {field.EnumConfig.Name.ToLWord()}Formater";
+                return $" | {property.EnumConfig.Name.ToLWord()}Formater";
             }
             else if (field.IsLinkKey)
             {
                 return $" | {field.LinkTable.ToLWord()}Formater";
             }
-            else if (field.CsType == nameof(DateTime))
+            else if (property.CsType == nameof(DateTime))
             {
-                return field.IsTime ? "| formatTime" : "| formatDate";
+                return property.IsTime ? "| formatTime" : "| formatDate";
             }
-            else if (field.CsType == "bool")
+            else if (property.CsType == "bool")
             {
                 return " | boolFormater";
             }
-            else if (field.IsMoney)
+            else if (property.IsMoney)
             {
                 return " | formatMoney";
             }
-            else if (field.CsType == "decimal")
+            else if (property.CsType == "decimal")
             {
                 return " | thousandsNumber";
             }
@@ -145,7 +146,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 </el-main>");
         }
 
-        string DetailsField(IFieldConfig field)
+        string DetailsField(IPropertyConfig field)
         {
             return $@"
                             <div class='detailsField'>
@@ -192,10 +193,11 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             }
             foreach (var property in entity.ClientProperty.Where(p => !p.NoneGrid && !p.GridDetails).ToArray())
             {
+                var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
                 var label = property.Caption;
-                if (property.IsLinkKey)
+                if (field.IsLinkKey)
                 {
-                    var table = GlobalConfig.Find(property.LinkTable);
+                    var table = GlobalConfig.Find(field.LinkTable);
                     if (table != null)
                         label = table.Caption;
                 }
@@ -247,7 +249,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         </template>
     </el-table-column>";
 
-        void GridField(StringBuilder code, IFieldConfig field, string caption)
+        void GridField(StringBuilder code, IPropertyConfig field, string caption)
         {
             var align = string.IsNullOrWhiteSpace(field.GridAlign) ? "left" : field.GridAlign;
             var fmt = Formater(field);
@@ -274,25 +276,24 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         <template slot-scope='props'>");
             foreach (var property in details)
             {
-                var field = property;
+                var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
                 var caption = property.Caption;
                 if (field.IsLinkKey)
                 {
-                    var friend =
-                        entity.LastProperties.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
+                    var friend = entity.DataTable.Fields.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
                     if (friend != null)
-                        caption = friend.Caption;
+                        caption = friend.Property.Caption;
                 }
-                if (field.IsMemo || field.MulitLine)
+                if (field.IsMemo || property.MulitLine)
                     code.Append($@"
             <div class='expand_line_block'>");
                 else
                 {
-                    var sp = field.FormCloumnSapn <= 0
+                    var sp = property.FormCloumnSapn <= 0
                         ? 1
-                        : field.FormCloumnSapn >= 4
+                        : property.FormCloumnSapn >= 4
                             ? 4
-                            : field.FormCloumnSapn;
+                            : property.FormCloumnSapn;
                     code.Append($@"
             <div class='expand_block_{sp}'>");
 
@@ -300,7 +301,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 code.Append($@"
                 <label class='expand_label'>{caption}£º</label>");
 
-                if (field.IsImage)
+                if (property.IsImage)
                 {
                     code.Append($@"
                 <el-image :src='{property.JsonName}' lazy></el-image>");
@@ -308,29 +309,29 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 else
                 {
                     code.Append($@"
-                <span class='expand_value'>{field.Prefix}{{{{props.row.{property.JsonName}");
-                    if (field.EnumConfig != null)
+                <span class='expand_value'>{property.Prefix}{{{{props.row.{property.JsonName}");
+                    if (property.EnumConfig != null)
                     {
-                        code.Append($@" | {field.EnumConfig.Name.ToLWord()}Formater");
+                        code.Append($@" | {property.EnumConfig.Name.ToLWord()}Formater");
                     }
-                    else if (field.CsType == nameof(DateTime))
+                    else if (property.CsType == nameof(DateTime))
                     {
-                        var fmt = field.IsTime ? "formatTime" : "formatDate";
+                        var fmt = property.IsTime ? "formatTime" : "formatDate";
                         code.Append($@" | {fmt}");
                     }
-                    else if (field.CsType == "bool")
+                    else if (property.CsType == "bool")
                     {
                         code.Append(@" | boolFormater");
                     }
-                    else if (field.IsMoney)
+                    else if (property.IsMoney)
                     {
                         code.Append(@" | formatMoney");
                     }
-                    else if (field.CsType == "decimal")
+                    else if (property.CsType == "decimal")
                     {
                         code.Append(@" | thousandsNumber");
                     }
-                    code.Append($@"}}}}{field.Suffix}</span>");
+                    code.Append($@"}}}}{property.Suffix}</span>");
                 }
                 code.Append($@"
             </div>");
@@ -424,17 +425,17 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             //}
             foreach (var property in Model.ClientProperty.Where(p => !p.NoneDetails).ToArray())
             {
-                var field = property;
+                var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
                 var caption = property.Caption;
-                var description = field.Description;
+                var description = property.Description;
 
                 if (field.IsLinkKey)
                 {
-                    var friend = Model.LastProperties.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
+                    var friend = Model.DataTable.Fields.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
                     if (friend != null)
                     {
-                        caption = friend.Caption;
-                        description = friend.Description;
+                        caption = friend.Property.Caption;
+                        description = friend.Property.Description;
                     }
                     else
                     {
@@ -452,7 +453,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 </el-form>");
             return FormatSpace(level, code);
         }
-        private void FormField(StringBuilder code, IFieldConfig property, string caption, string description, bool dialog)
+        private void FormField(StringBuilder code, IPropertyConfig property, string caption, string description, bool dialog)
         {
             var field = property;
             string style;
@@ -488,14 +489,14 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             code.Append(@"
     </el-form-item>");
         }
-        void ReadonlyField(StringBuilder code, IFieldConfig field)
+        void ReadonlyField(StringBuilder code, IPropertyConfig field)
         {
             code.Append($@"
         <span>&nbsp;{{{{form.data.{field.JsonName}{Formater(field)}}}}}</span>");
         }
-        void EditField(StringBuilder code, IFieldConfig field, string description)
+        void EditField(StringBuilder code, IPropertyConfig property, string description)
         {
-            static void SetDisabled(bool disabled, StringBuilder code, IFieldConfig field)
+            static void SetDisabled(bool disabled, StringBuilder code, IPropertyConfig field)
             {
                 var placeholder = HtmlAttribute("placeholder", field.Description);
                 if (disabled)
@@ -509,22 +510,23 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 code.Append(placeholder);
                 code.Append(" clearable");
             }
-            if (field.EnumConfig != null)
+            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            if (property.EnumConfig != null)
             {
                 code.Append($@"
-        <el-select v-model='form.data.{field.JsonName}'");
-                SetDisabled(true, code, field);
+        <el-select v-model='form.data.{property.JsonName}'");
+                SetDisabled(true, code, property);
                 code.Append($@" style='width:100%'>
             <el-option :key='0' :value='0' label='-'></el-option>
-            <el-option v-for='item in types.{field.EnumConfig.Name.ToLWord()}' :key='item.value' :label='item.label' :value='item.value'></el-option>
+            <el-option v-for='item in types.{property.EnumConfig.Name.ToLWord()}' :key='item.value' :label='item.label' :value='item.value'></el-option>
         </el-select>");
             }
             else if (field.IsLinkKey)
             {
                 var name = GlobalConfig.GetEntity(field.LinkTable)?.Name.ToLWord().ToPluralism();
                 code.Append($@"
-        <el-select v-model='form.data.{field.JsonName}'");
-                SetDisabled(true, code, field);
+        <el-select v-model='form.data.{property.JsonName}'");
+                SetDisabled(true, code, property);
                 code.Append($@" style='width:100%'>
             <el-option :key='0' :value='0' label='-'></el-option>
             <template v-for='item in combos.{name}'>
@@ -532,41 +534,41 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             </template>
         </el-select>");
             }
-            else if (field.CsType == "bool")
+            else if (property.CsType == "bool")
             {
                 code.Append($@"
-        <el-switch v-model='form.data.{field.JsonName}'");
-                SetDisabled(true, code, field);
+        <el-switch v-model='form.data.{property.JsonName}'");
+                SetDisabled(true, code, property);
                 code.Append(@"></el-switch>");
             }
-            else if (field.CsType == nameof(DateTime))
+            else if (property.CsType == nameof(DateTime))
             {
                 code.Append($@"
-        <el-date-picker v-model='form.data.{field.JsonName}'");
-                SetDisabled(false, code, field);
-                code.Append(field.IsTime
+        <el-date-picker v-model='form.data.{property.JsonName}'");
+                SetDisabled(false, code, property);
+                code.Append(property.IsTime
                     ? "value-format='yyyy-MM-ddTHH:mm:ss' type='datetime'"
                     : "value-format='yyyy-MM-dd' type='date'");
                 code.Append(@" style='width:100%'></el-date-picker>");
             }
-            else if (field.CsType == "string")
+            else if (property.CsType == "string")
             {
                 code.Append($@"
-        <el-input v-model='form.data.{field.JsonName}'auto-complete='off'");
+        <el-input v-model='form.data.{property.JsonName}'auto-complete='off'");
 
-                if (field.MulitLine)
+                if (property.MulitLine)
                 {
-                    code.Append($" type='textarea' rows='{field.Rows}'");
+                    code.Append($" type='textarea' rows='{property.Rows}'");
                 }
-                SetDisabled(false, code, field);
+                SetDisabled(false, code, property);
 
                 code.Append("></el-input>");
             }
             else
             {
                 code.Append($@"
-        <el-input v-model='form.data.{field.JsonName}' auto-complete='off'");
-                SetDisabled(false, code, field);
+        <el-input v-model='form.data.{property.JsonName}' auto-complete='off'");
+                SetDisabled(false, code, property);
 
                 code.Append("></el-input>");
             }
@@ -723,8 +725,8 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         string QueryList(int level)
         {
             StringBuilder quButton = new StringBuilder();
-            var properties = Model.ClientProperty.Where(p => p.CanUserQuery && p.UserSee &&
-                !p.NoStorage && !p.NoneDetails && !p.IsLinkKey && !p.IsPrimaryKey);
+            var properties = Model.DataTable.Fields.Where(p => p.Property.CanUserQuery && p.Property.UserSee &&
+                !p.NoStorage && !p.Property.NoneDetails && !p.IsLinkKey && !p.Property.IsPrimaryKey);
             //if (Entity.Interfaces.Contains("IStateData"))
             //{
             //    quButton.Append(satateQuery);
@@ -739,7 +741,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             foreach (var property in properties)
             {
                 quButton.Append($@"
-    <el-option value='{property.JsonName}' label='{property.Caption}'></el-option>");
+    <el-option value='{property.Property.JsonName}' label='{property.Caption}'></el-option>");
             }
             quButton.Append(@"
 </el-select>");

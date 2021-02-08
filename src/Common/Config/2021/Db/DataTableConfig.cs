@@ -139,8 +139,8 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         /// 字段列表
         /// </summary>
-        [DataMember, JsonProperty("properties", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal ConfigCollection<DataBaseFieldConfig> _properties;
+        [DataMember, JsonProperty("fields", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal ConfigCollection<DataBaseFieldConfig> _fields;
 
         /// <summary>
         /// 字段列表
@@ -150,23 +150,23 @@ namespace Agebull.EntityModel.Config.V2021
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据模型"), DisplayName(@"字段列表"), Description("字段列表")]
-        public ConfigCollection<DataBaseFieldConfig> Properties
+        public ConfigCollection<DataBaseFieldConfig> Fields
         {
             get
             {
-                if (_properties != null)
-                    return _properties;
-                _properties = new ConfigCollection<DataBaseFieldConfig>();
-                RaisePropertyChanged(nameof(Properties));
-                return _properties;
+                if (_fields != null)
+                    return _fields;
+                _fields = new ConfigCollection<DataBaseFieldConfig>();
+                RaisePropertyChanged(nameof(Fields));
+                return _fields;
             }
             set
             {
-                if (_properties == value)
+                if (_fields == value)
                     return;
-                BeforePropertyChanged(nameof(Properties), _properties, value);
-                _properties = value;
-                OnPropertyChanged(nameof(Properties));
+                BeforePropertyChanged(nameof(Fields), _fields, value);
+                _fields = value;
+                OnPropertyChanged(nameof(Fields));
             }
         }
 
@@ -177,10 +177,10 @@ namespace Agebull.EntityModel.Config.V2021
         /// <returns></returns>
         public void Add(DataBaseFieldConfig field)
         {
-            if (!Properties.Any(p => p.Field == field.Field))
+            if (!Fields.Any(p => p.Property == field.Property))
             {
                 field.Parent = this;
-                Properties.Add(field);
+                Fields.Add(field);
             }
         }
 
@@ -191,7 +191,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <returns></returns>
         public DataBaseFieldConfig Find(string name)
         {
-            return Properties.FirstOrDefault(p => name.IsMe(p.Field.Name) || name.IsMe(p.Field.DbFieldName));
+            return Fields.FirstOrDefault(p => name.IsMe(p.Property.Name));
         }
 
         /// <summary>
@@ -201,7 +201,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <returns></returns>
         public DataBaseFieldConfig Find(params string[] names)
         {
-            return Properties.FirstOrDefault(p => names.Exist(p.Field.Name, p.Field.DbFieldName));
+            return Fields.FirstOrDefault(p => names.Exist(p.Property.Name));
         }
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <returns></returns>
         public bool TryGet(out DataBaseFieldConfig field, params string[] names)
         {
-            field = Properties.FirstOrDefault(p => names.Exist(p.Field.Name, p.Field.DbFieldName));
+            field = Fields.FirstOrDefault(p => names.Exist(p.Property.Name));
             return field != null;
         }
 
@@ -222,7 +222,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <returns></returns>
         public bool Exist(params string[] names)
         {
-            return Properties.Any(p => names.Exist(p.Field.Name, p.Field.DbFieldName));
+            return Fields.Any(p => names.Exist(p.Property.Name));
         }
 
         #endregion
@@ -235,15 +235,15 @@ namespace Agebull.EntityModel.Config.V2021
         public void Upgrade()
         {
             Copy(Entity);
-            _properties = new ConfigCollection<DataBaseFieldConfig>();
+            _fields = new ConfigCollection<DataBaseFieldConfig>();
             foreach (var field in Entity.Properties)
             {
                 var uiField = new DataBaseFieldConfig
                 {
-                    Field = field
+                    Property = field
                 };
-                uiField.Copy(field);
-                _properties.Add(uiField);
+                uiField.Copy(field as SimpleConfig);
+                _fields.Add(uiField);
             }
         }
 
@@ -282,13 +282,13 @@ namespace Agebull.EntityModel.Config.V2021
             SaveTableName = dest.SaveTableName;
             DbIndex = dest.DbIndex;
             UpdateByModified = dest.UpdateByModified;
-            _properties = new ConfigCollection<DataBaseFieldConfig>();
+            _fields = new ConfigCollection<DataBaseFieldConfig>();
             if (dest is DataTableConfig dataTable)
-                foreach (var field in dataTable.Properties)
+                foreach (var field in dataTable.Fields)
                 {
                     var uiField = new DataBaseFieldConfig();
                     uiField.Copy(field);
-                    _properties.Add(uiField);
+                    _fields.Add(uiField);
                 }
         }
         #endregion

@@ -12,25 +12,14 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace Agebull.EntityModel.Config
+namespace Agebull.EntityModel.Config.V2021
 {
     /// <summary>
     /// 用户命令配置
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public partial class UserCommandConfig : ModelChildConfig
+    public partial class CommandItemConfig : ModelChildConfig, ICommandItem
     {
-        #region 构造
-
-        /// <summary>
-        /// 构造
-        /// </summary>
-        public UserCommandConfig()
-        {
-        }
-
-        #endregion
-
         #region 数据模型
 
         /// <summary>

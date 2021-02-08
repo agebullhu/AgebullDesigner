@@ -29,7 +29,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void CreateLast(EntityConfig entity)
         {
-            entity.LastProperties = new List<IFieldConfig>();
+            entity.LastProperties = new List<IPropertyConfig>();
             int idx = 0;
             foreach (var field in entity.Properties.OrderBy(p => p.Index))
             {
@@ -47,7 +47,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void CreateLast(ModelConfig model)
         {
-            model.LastProperties = new List<IFieldConfig>();
+            model.LastProperties = new List<IPropertyConfig>();
             int idx = 0;
             foreach (var property in model.Properties.OrderBy(p => p.Index))
             {

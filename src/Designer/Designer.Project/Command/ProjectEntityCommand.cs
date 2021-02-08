@@ -107,7 +107,7 @@ namespace Agebull.EntityModel.Designer
                     Field = field
                 };
                 property.CopyConfig(field);
-                ((IFieldConfig)property).Copy(field);
+                ((IPropertyConfig)property).Copy(field);
                 model.Add(property);
                 property.Field = field;
             }

@@ -14,21 +14,21 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         public IEntityConfig Model { get; set; }
 
-        public string Code(IEnumerable<IFieldConfig> fields)
+        public string Code(IEnumerable<IPropertyConfig> fields)
         {
             var code = new StringBuilder();
-            var configs = fields as IFieldConfig[] ?? fields.ToArray();
-            foreach (var field in configs.Where(p => !string.IsNullOrWhiteSpace(p.EmptyValue)))
+            var configs = fields as IPropertyConfig[] ?? fields.ToArray();
+            foreach (var property in configs.Where(p => !string.IsNullOrWhiteSpace(p.EmptyValue)))
             {
-                ConvertEmptyValue(code, field);
+                ConvertEmptyValue(code, property);
             }
 
-            foreach (var field in configs)
+            foreach (var property in configs)
             {
-                switch (field.CsType)
+                switch (property.CsType)
                 {
                     case "string":
-                        StringCheck(code, field);
+                        StringCheck(code, property);
                         continue;
                     case "int":
                     case "uint":
@@ -38,198 +38,199 @@ namespace Agebull.EntityModel.RobotCoder
                     case "long":
                     case "ulong":
                     case "decimal":
-                        NumberCheck(code, field);
+                        NumberCheck(code, property);
                         break;
                     case "DateTime":
-                        DateTimeCheck(code, field);
+                        DateTimeCheck(code, property);
                         break;
                 }
             }
             return code.ToString();
         }
 
-        static string EmptyCode(IFieldConfig field)
+        static string EmptyCode(IPropertyConfig property)
         {
-            var msg = field.Option["EmptyMessage"];
+            var msg = property.Option["EmptyMessage"];
             return string.IsNullOrWhiteSpace(msg)
-                ? $"result.AddNoEmpty(\"{field.Caption}\",nameof({field.Name}));"
-                : $"result.Add(\"{field.Caption}\",nameof({field.Name}),\"{msg}\");";
+                ? $"result.AddNoEmpty(\"{property.Caption}\",nameof({property.Name}));"
+                : $"result.Add(\"{property.Caption}\",nameof({property.Name}),\"{msg}\");";
         }
 
-        private static void DateTimeCheck(StringBuilder code, IFieldConfig field)
+        private static void DateTimeCheck(StringBuilder code, IPropertyConfig property)
         {
-            if (!field.CanEmpty || field.IsRequired)
+            if (!property.CanEmpty || property.IsRequired)
             {
-                code.Append(field.Nullable
+                code.Append(property.Nullable
                     ? $@"
-            if({field.Name} == null)
-                 {EmptyCode(field)}"
+            if({property.Name} == null)
+                 {EmptyCode(property)}"
                     : $@"
-            if({field.Name} == DateTime.MinValue)
-                 {EmptyCode(field)}");
+            if({property.Name} == DateTime.MinValue)
+                 {EmptyCode(property)}");
             }
-            if (field.Max == null && field.Min == null)
+            if (property.Max == null && property.Min == null)
                 return;
-            code.Append(!field.CanEmpty || field.IsRequired
+            code.Append(!property.CanEmpty || property.IsRequired
                 ? @"
             else 
             {"
-                : field.Nullable
+                : property.Nullable
                     ? $@"
-            if({field.Name} != null)
+            if({property.Name} != null)
             {{"
                     : "");
 
-            var msg = field.Option["ErrorMessage"];
-            if (field.Max != null && field.Min != null)
+            var msg = property.Option["ErrorMessage"];
+            if (property.Max != null && property.Min != null)
             {
                 code.Append($@"
-                if({field.Name} > new DateTime({field.Max}) ||{field.Name} < new DateTime({field.Min}))");
+                if({property.Name} > new DateTime({property.Max}) ||{property.Name} < new DateTime({property.Min}))");
                 code.Append(string.IsNullOrWhiteSpace(msg)
                     ? $@"
-                    result.Add(""{field.Caption}"",nameof({field.Name}),$""不能大于{field.Max}或小于{field.Min}"");"
+                    result.Add(""{property.Caption}"",nameof({property.Name}),$""不能大于{property.Max}或小于{property.Min}"");"
                     : $@"
-                    result.Add(""{field.Caption}"",nameof({field.Name}),$""{msg}"");");
+                    result.Add(""{property.Caption}"",nameof({property.Name}),$""{msg}"");");
             }
-            else if (field.Max != null)
+            else if (property.Max != null)
             {
                 code.Append($@"
-                if({field.Name} > new DateTime({field.Max}))");
+                if({property.Name} > new DateTime({property.Max}))");
                 code.Append(string.IsNullOrWhiteSpace(msg)
                     ? $@"
-                    result.Add(""{field.Caption}"",nameof({field.Name}),$""不能大于{field.Max}"");"
+                    result.Add(""{property.Caption}"",nameof({property.Name}),$""不能大于{property.Max}"");"
                     : $@"
-                    result.Add(""{field.Caption}"",nameof({field.Name}),$""{msg}"");");
+                    result.Add(""{property.Caption}"",nameof({property.Name}),$""{msg}"");");
             }
-            else if (field.Min != null)
+            else if (property.Min != null)
             {
                 code.Append($@"
-                if({field.Name} < new DateTime({field.Min}))");
+                if({property.Name} < new DateTime({property.Min}))");
                 code.Append(string.IsNullOrWhiteSpace(msg)
                     ? $@"
-                    result.Add(""{field.Caption}"",nameof({field.Name}),$""不能小于{field.Min}"");"
+                    result.Add(""{property.Caption}"",nameof({property.Name}),$""不能小于{property.Min}"");"
                     : $@"
-                    result.Add(""{field.Caption}"",nameof({field.Name}),$""{msg}"");");
+                    result.Add(""{property.Caption}"",nameof({property.Name}),$""{msg}"");");
             }
-            if (!field.CanEmpty || field.IsRequired || field.Nullable)
+            if (!property.CanEmpty || property.IsRequired || property.Nullable)
                 code.Append(@"
             }");
         }
 
-        private static void NumberCheck(StringBuilder code, IFieldConfig field)
+        private static void NumberCheck(StringBuilder code, IPropertyConfig property)
         {
-            if (field.Nullable && (!field.CanEmpty || field.IsRequired))
+            if (property.Nullable && (!property.CanEmpty || property.IsRequired))
             {
                 code.Append($@"
-            if({field.Name} == null)
-                 {EmptyCode(field)}");
+            if({property.Name} == null)
+                 {EmptyCode(property)}");
             }
 
-            bool isMin = decimal.TryParse(field.Min, out var min);
-            bool isMax = decimal.TryParse(field.Max, out var max);
+            bool isMin = decimal.TryParse(property.Min, out var min);
+            bool isMax = decimal.TryParse(property.Max, out var max);
             if (!isMin && !isMax)
                 return;
-            if (field.Nullable)
+            if (property.Nullable)
             {
-                if (field.CanEmpty && !field.IsRequired)
+                if (property.CanEmpty && !property.IsRequired)
                     code.Append($@"
-            if({field.Name} != null)");
+            if({property.Name} != null)");
                 code.Append(@"
             {");
             }
 
-            string last = field.CsType == "decimal" ? "M" : "";
+            string last = property.CsType == "decimal" ? "M" : "";
 
-            var msg = field.Option["ErrorMessage"];
+            var msg = property.Option["ErrorMessage"];
             if (isMin && isMax)
             {
                 code.Append($@"
-            if({field.Name} > {max}{last} ||{field.Name} < {min}{last})");
+            if({property.Name} > {max}{last} ||{property.Name} < {min}{last})");
                 code.Append(string.IsNullOrWhiteSpace(msg)
                     ? $@"
-                result.Add(""{field.Caption}"",nameof({field.Name}),$""不能大于{max}或小于{min}"");"
+                result.Add(""{property.Caption}"",nameof({property.Name}),$""不能大于{max}或小于{min}"");"
                     : $@"
-                result.Add(""{field.Caption}"",nameof({field.Name}),$""{msg}"");");
+                result.Add(""{property.Caption}"",nameof({property.Name}),$""{msg}"");");
             }
             else if (isMax)
             {
                 code.Append($@"
-            if({field.Name} > {max}{last})");
+            if({property.Name} > {max}{last})");
                 code.Append(string.IsNullOrWhiteSpace(msg)
                     ? $@"
-                result.Add(""{field.Caption}"",nameof({field.Name}),$""不能大于{max}"");"
+                result.Add(""{property.Caption}"",nameof({property.Name}),$""不能大于{max}"");"
                     : $@"
-                result.Add(""{field.Caption}"",nameof({field.Name}),$""{msg}"");");
+                result.Add(""{property.Caption}"",nameof({property.Name}),$""{msg}"");");
             }
             else
             {
                 code.Append($@"
-            if({field.Name} < {min}{last})");
+            if({property.Name} < {min}{last})");
                 code.Append(string.IsNullOrWhiteSpace(msg)
                     ? $@"
-                result.Add(""{field.Caption}"",nameof({field.Name}),$""不能小于{min}"");"
+                result.Add(""{property.Caption}"",nameof({property.Name}),$""不能小于{min}"");"
                     : $@"
-                result.Add(""{field.Caption}"",nameof({field.Name}),$""{msg}"");");
+                result.Add(""{property.Caption}"",nameof({property.Name}),$""{msg}"");");
             }
-            if (field.Nullable)
+            if (property.Nullable)
                 code.Append(@"
             }");
         }
 
-        private static void StringCheck(StringBuilder code, IFieldConfig field)
+        private static void StringCheck(StringBuilder code, IPropertyConfig property)
         {
-            if (!field.CanEmpty || field.IsRequired)
+            var field = property.Entity.DataTable.Fields.FirstOrDefault(p=>p.Property == property);
+            if (!property.CanEmpty || property.IsRequired)
             {
                 code.Append($@"
 
-            if(string.IsNullOrWhiteSpace({field.Name}))
-                {EmptyCode(field)}");
+            if(string.IsNullOrWhiteSpace({property.Name}))
+                {EmptyCode(property)}");
             }
 
-            if (field.Datalen <= 0 && field.Min == null)
+            if (field.Datalen <= 0 && property.Min == null)
                 return;
 
-            if (!field.CanEmpty || field.IsRequired)
+            if (!property.CanEmpty || property.IsRequired)
                 code.Append(@"
             else if(");
             else
                 code.Append($@"
 
-            if(!string.IsNullOrWhiteSpace({field.Name}) && ");
+            if(!string.IsNullOrWhiteSpace({property.Name}) && ");
 
-            var msg = field.Option["ErrorMessage"];
-            if (field.Datalen > 0 && field.Min != null)
+            var msg = property.Option["ErrorMessage"];
+            if (field.Datalen > 0 && property.Min != null)
             {
-                code.Append($@"({field.Name}.Length > {field.Datalen} || {field.Name}.Length < {field.Min}))");
+                code.Append($@"({property.Name}.Length > {field.Datalen} || {property.Name}.Length < {property.Min}))");
                 code.Append(string.IsNullOrWhiteSpace(msg)
                 ? $@"
-                result.Add(""{field.Caption}"",nameof({field.Name}),$""不能少于{field.Datalen}或多于{field.Min}个字"");"
+                result.Add(""{property.Caption}"",nameof({property.Name}),$""不能少于{field.Datalen}或多于{property.Min}个字"");"
                 : $@"
-                result.Add(""{field.Caption}"",nameof({field.Name}),$""{msg}"");");
+                result.Add(""{property.Caption}"",nameof({property.Name}),$""{msg}"");");
             }
             else if (field.Datalen > 0)
             {
-                code.Append($@"{field.Name}.Length > {field.Datalen})");
+                code.Append($@"{property.Name}.Length > {field.Datalen})");
                 code.Append(string.IsNullOrWhiteSpace(msg)
                 ? $@"
-                result.Add(""{field.Caption}"",nameof({field.Name}),$""不能多于{field.Datalen}个字"");"
+                result.Add(""{property.Caption}"",nameof({property.Name}),$""不能多于{field.Datalen}个字"");"
                 : $@"
-                result.Add(""{field.Caption}"",nameof({field.Name}),$""{msg}"");");
+                result.Add(""{property.Caption}"",nameof({property.Name}),$""{msg}"");");
             }
             else
             {
-                code.Append($@"{field.Name}.Length < {field.Min})");
+                code.Append($@"{property.Name}.Length < {property.Min})");
                 code.Append(string.IsNullOrWhiteSpace(msg)
                 ? $@"
-                result.Add(""{field.Caption}"",nameof({field.Name}),$""不能少于{field.Min}个字"");"
+                result.Add(""{property.Caption}"",nameof({property.Name}),$""不能少于{property.Min}个字"");"
                 : $@"
-                result.Add(""{field.Caption}"",nameof({field.Name}),$""{msg}"");");
+                result.Add(""{property.Caption}"",nameof({property.Name}),$""{msg}"");");
             }
         }
 
-        private static void ConvertEmptyValue(StringBuilder code, IFieldConfig field)
+        private static void ConvertEmptyValue(StringBuilder code, IPropertyConfig property)
         {
-            var ems = field.EmptyValue.Split(new[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
+            var ems = property.EmptyValue.Split(new[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
             code.Append(@"
             if(");
             bool isFirst = true;
@@ -239,16 +240,16 @@ namespace Agebull.EntityModel.RobotCoder
                     isFirst = false;
                 else
                     code.Append(@" || ");
-                switch (field.CsType)
+                switch (property.CsType)
                 {
                     case "string":
-                        code.Append($@"{field.Name} == ""{em}""");
+                        code.Append($@"{property.Name} == ""{em}""");
                         break;
                     case "Guid":
-                        code.Append($@"{field.Name} == new Guid(""{em}"")");
+                        code.Append($@"{property.Name} == new Guid(""{em}"")");
                         break;
                     case "DataTime":
-                        code.Append($@"{field.Name} == DataTime.Parse(""{em}"")");
+                        code.Append($@"{property.Name} == DataTime.Parse(""{em}"")");
                         break;
                     //case "int":
                     //case "long":
@@ -256,19 +257,19 @@ namespace Agebull.EntityModel.RobotCoder
                     //case "float":
                     //case "double":
                     default:
-                        code.Append($@"{field.Name} == {em}");
+                        code.Append($@"{property.Name} == {em}");
                         break;
                 }
             }
-            if (field.CanEmpty || field.CsType == "string")
+            if (property.CanEmpty || property.CsType == "string")
             {
                 code.Append($@")
-                {field.Name} = null;");
+                {property.Name} = null;");
             }
             else
             {
                 code.Append($@")
-                {field.Name} = default({field.CsType});");
+                {property.Name} = default({property.CsType});");
             }
         }
     }

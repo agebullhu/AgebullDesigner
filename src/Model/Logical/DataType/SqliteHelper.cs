@@ -106,7 +106,7 @@ namespace Agebull.EntityModel.Config.Sqlite
         ///     从C#的类型转为DBType
         /// </summary>
         /// <param name="field"> </param>
-        public static SqliteType ToSqlDbType(FieldConfig field) => ToSqlDbType(field.DbType, field.CsType);
+        public static SqliteType ToSqlDbType(FieldConfig field) => ToSqlDbType(field.FieldType, field.CsType);
 
         /// <summary>
         ///     从C#的类型转为DBType
@@ -373,7 +373,7 @@ namespace Agebull.EntityModel.Config.Sqlite
         /// <param name="column"> C#的类型</param>
         public static string ColumnType(FieldConfig column)
         {
-            switch (column.DbType.ToLower())
+            switch (column.FieldType.ToLower())
             {
                 case "decimal":
                 case "numeric":
@@ -387,16 +387,16 @@ namespace Agebull.EntityModel.Config.Sqlite
                     if (column.IsBlob || column.Datalen <= 0 || column.Datalen >= 4000)
                         return "VARBINARY(max)";
                     else
-                        return $"{column.DbType.ToUpper()}({column.Datalen})";
+                        return $"{column.FieldType.ToUpper()}({column.Datalen})";
                 case "char":
                 case "nchar":
                 case "varchar":
                 case "nvarchar":
                     if (column.IsBlob || column.Datalen < 0 || column.Datalen > 4000)
                         return "VARCHAR(max)";
-                    return $"{column.DbType.ToUpper()}({column.Datalen})";
+                    return $"{column.FieldType.ToUpper()}({column.Datalen})";
                 default:
-                    return column.DbType.ToUpper();
+                    return column.FieldType.ToUpper();
             }
         }
     }

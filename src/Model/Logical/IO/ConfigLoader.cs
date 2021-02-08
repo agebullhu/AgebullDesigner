@@ -121,9 +121,7 @@ namespace Agebull.EntityModel.Designer
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             string path = Path.Combine(directory, "Entity");
-            var files = !Directory.Exists(path)
-                ? IOHelper.GetAllFiles(directory, "ent")
-                : IOHelper.GetAllFiles(path, "*.*");
+            var files = Directory.GetFiles(path, "*.json");
             foreach (var entFile in files)
             {
                 var entity = DeSerializer<EntityConfig>(entFile);

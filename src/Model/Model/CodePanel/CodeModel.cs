@@ -10,7 +10,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -20,21 +19,13 @@ using System.Windows.Media.Imaging;
 using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.RobotCoder;
-using Cmd = System.Collections.Generic.Dictionary<string, System.Func<System.Action<System.Collections.Generic.Dictionary<string, string>>, Agebull.Common.Mvvm.CommandItemBase>>;
+
 #endregion
 
 namespace Agebull.EntityModel.Designer
 {
-    public class NormalCodeModel : DesignModelBase
+    public class CodeModel : DesignModelBase
     {
-        /// <summary>
-        ///     分类
-        /// </summary>
-        public NormalCodeModel()
-        {
-            EditorName = "Code";
-        }
-
         #region 操作命令
 
         /// <summary>
@@ -58,40 +49,11 @@ namespace Agebull.EntityModel.Designer
                 Caption = "复制代码",
                 Image = Application.Current.Resources["img_file"] as ImageSource
             });
-            foreach (var cmd in Builders.Values)
+            foreach (var cmd in CoderManager.Builders.Values)
                 foreach (var builder in cmd.Values)
                     commands.Add(builder(OnCodeSuccess));
             base.CreateCommands(commands);
         }
-
-        /// <summary>
-        /// 注册的项目代码生成器
-        /// </summary>
-        static readonly Dictionary<string, Cmd> Builders =
-            new Dictionary<string, Cmd>(StringComparer.OrdinalIgnoreCase);
-
-        /// <summary>
-        /// 注册的项目生成器
-        /// </summary>
-        /// <returns></returns>
-        public static void RegistBuilder<TBuilder>()
-            where TBuilder : ProjectBuilder, new()
-        {
-            var builder = new TBuilder();
-            var type = typeof(IEntityConfig).Name;
-            if (!Builders.TryGetValue(type, out var cmd))
-                Builders.Add(type, cmd = new Cmd());
-
-            if (cmd.ContainsKey(builder.Name))
-                throw new ArgumentException("已注册名称为" + builder.Name + "的项目生成器，不应该重复注册");
-            cmd.Add(builder.Name, OnCodeSuccess => new ProjectCodeCommand(() => new TBuilder())
-            {
-                Caption = builder.Caption,
-                IconName = builder.Icon,
-                OnCodeSuccess = OnCodeSuccess
-            }.ToCommand(null));
-        }
-
         #endregion
 
         #region 文件代码
@@ -173,7 +135,12 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 代码命令树根
         /// </summary>
-        public TreeRoot MomentTreeRoot { get; } = new TreeRoot();
+       static TreeRoot treeRoot;
+
+        /// <summary>
+        /// 代码命令树根
+        /// </summary>
+        public TreeRoot MomentTreeRoot => treeRoot;
 
         /// <summary>
         /// 初始化
@@ -181,29 +148,10 @@ namespace Agebull.EntityModel.Designer
         protected override void DoInitialize()
         {
             base.DoInitialize();
-
-            foreach (var clasf in MomentCoder.Coders)
-            {
-                if (clasf.Value == null || clasf.Value.Count == 0)
-                    continue;
-                TreeItemBase parent = new TreeItem(clasf.Key)
-                {
-                    IsExpanded = false,
-                    ItemsState = 3,
-                    SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
-                };
-                MomentTreeRoot.Items.Add((TreeItem)parent);
-                foreach (var item in clasf.Value)
-                {
-                    parent.Items.Add(new TreeItem<CoderDefine>(item.Value)
-                    {
-                        Header = item.Key,
-                        ItemsState = 3,
-                        SoruceTypeIcon = Application.Current.Resources["img_code"] as BitmapImage
-                    });
-                }
-            }
-            MomentTreeRoot.SelectItemChanged += OnMomentSelectItemChanged;
+            if (treeRoot == null)
+                CreateTree();
+            treeRoot.SelectItemChanged += OnMomentSelectItemChanged;
+            RaisePropertyChanged(nameof(MomentTreeRoot));
         }
 
         private void OnMomentSelectItemChanged(object sender, EventArgs e)
@@ -237,6 +185,31 @@ namespace Agebull.EntityModel.Designer
                     return;
                 _ViewIndex = value;
                 OnPropertyChanged(nameof(ViewIndex));
+            }
+        }
+        void CreateTree()
+        {
+            treeRoot = new TreeRoot();
+            foreach (var clasf in CoderManager.MomentCoders)
+            {
+                if (clasf.Value == null || clasf.Value.Count == 0)
+                    continue;
+                var parent = new TreeItem(clasf.Key)
+                {
+                    IsExpanded = false,
+                    ItemsState = 3,
+                    SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
+                };
+                treeRoot.Items.Add(parent);
+                foreach (var item in clasf.Value)
+                {
+                    parent.Items.Add(new TreeItem<CoderDefine>(item.Value)
+                    {
+                        Header = item.Key,
+                        ItemsState = 3,
+                        SoruceTypeIcon = Application.Current.Resources["img_code"] as BitmapImage
+                    });
+                }
             }
         }
         #endregion
@@ -306,7 +279,7 @@ namespace Agebull.EntityModel.Designer
 ";
 
                 Browser.NavigateToString(html);
-                Editor.ShowCode();
+             //   Editor.ShowCode();
             }
         }
 

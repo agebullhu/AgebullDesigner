@@ -4,12 +4,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:mvvm="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm" xmlns:designer="clr-namespace:Agebull.EntityModel.Designer;assembly=Agebull.EntityModel.Designer.Model"
+             xmlns:mvvm="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm" 
+             xmlns:designer="clr-namespace:Agebull.EntityModel.Designer"
              mc:Ignorable="d" 
              d:DesignHeight="600"
              d:DesignWidth="1000">
     <UserControl.DataContext>
-        <designer:EditorViewModel/>
+        <designer:CodeViewModel/>
     </UserControl.DataContext>
     <Grid Background="{x:Static SystemColors.ControlBrush}">
         <Grid.RowDefinitions>
@@ -21,7 +22,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Border Grid.ColumnSpan="2" Style="{StaticResource ToolBar}" DataContext="{Binding NormalCode}">
+        <Border Grid.ColumnSpan="2" Style="{StaticResource ToolBar}">
             <ItemsControl VerticalAlignment="Stretch"
                           HorizontalAlignment="Stretch"
                           ItemsSource="{Binding Commands}">
@@ -38,12 +39,12 @@
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
         </Border>
-        <TabControl Grid.Column="0" Grid.Row="1" DataContext="{Binding NormalCode}" SelectedIndex="{Binding ViewIndex}">
+        <TabControl Grid.Column="0" Grid.Row="1" SelectedIndex="{Binding Model.ViewIndex}">
             <TabItem Header="代码片断">
-                <TreeView ItemContainerStyle="{DynamicResource SimpleTree}" ItemsSource="{Binding MomentTreeRoot.Items}" />
+                <TreeView ItemContainerStyle="{DynamicResource SimpleTree}" ItemsSource="{Binding Model.MomentTreeRoot.Items}" />
             </TabItem>
             <TabItem Header="项目代码">
-                <TreeView ItemContainerStyle="{DynamicResource SimpleTree}" ItemsSource="{Binding FileTreeRoot.Items}" />
+                <TreeView ItemContainerStyle="{DynamicResource SimpleTree}" ItemsSource="{Binding Model.FileTreeRoot.Items}" />
             </TabItem>
         </TabControl>
         <GridSplitter Grid.Column="0" Grid.Row="1" Width="5" BorderThickness="1,0" />

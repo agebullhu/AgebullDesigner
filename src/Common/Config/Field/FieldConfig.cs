@@ -21,7 +21,7 @@ namespace Agebull.EntityModel.Config
     /// 属性配置
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public partial class FieldConfig : FieldConfigBase, IFieldConfig, IChildrenConfig
+    public partial class FieldConfig : FieldConfigBase, IPropertyConfig, IChildrenConfig
     {
         #region 视角开关
 
@@ -54,7 +54,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 自已
         /// </summary>
-        protected sealed override IFieldConfig Me => this;
+        protected sealed override IPropertyConfig Me => this;
 
         /// <summary>
         /// 联合编辑配置
@@ -1590,16 +1590,16 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"存储类型"), Description("存储类型")]
-        public string DbType
+        public string FieldType
         {
             get => ReferenceOrThis._dbType?.ToUpper();
             set
             {
                 if (string.Equals(_dbType, value, StringComparison.OrdinalIgnoreCase))
                     return;
-                BeforePropertyChanged(nameof(DbType), _dbType, value);
+                BeforePropertyChanged(nameof(FieldType), _dbType, value);
                 _dbType = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(DbType));
+                OnPropertyChanged(nameof(FieldType));
             }
         }
 
@@ -2966,6 +2966,116 @@ namespace Agebull.EntityModel.Config
                 _linkField = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(LinkField));
             }
+        }
+        #endregion
+
+
+        #region Upgrade
+
+        /// <summary>
+        /// 字段复制
+        /// </summary>
+        /// <param name="dest">复制源</param>
+        /// <returns></returns>
+        public void Copy(IPropertyConfig dest, bool full = true)
+        {
+            if (full)
+            {
+                Entity = dest.Entity;
+                IsCaption = dest.IsCaption;
+                IsPrimaryKey = dest.IsPrimaryKey;
+                IsExtendKey = dest.IsExtendKey;
+                IsGlobalKey = dest.IsGlobalKey;
+                UniqueIndex = dest.UniqueIndex;
+                UniqueString = dest.UniqueString;
+            }
+            Group = dest.Group;
+            JsonName = dest.JsonName;
+            DataType = dest.DataType;
+            CsType = dest.CsType;
+            Initialization = dest.Initialization;
+            CppType = dest.CppType;
+            CppName = dest.CppName;
+            CppLastType = dest.CppLastType;
+            CppTypeObject = dest.CppTypeObject;
+            ComputeGetCode = dest.ComputeGetCode;
+            ComputeSetCode = dest.ComputeSetCode;
+            IsCustomCompute = dest.IsCustomCompute;
+            NoneApiArgument = dest.NoneApiArgument;
+            ApiArgumentName = dest.ApiArgumentName;
+            NoneJson = dest.NoneJson;
+            HelloCode = dest.HelloCode;
+
+            IsTime = dest.IsTime;
+            IsArray = dest.IsArray;
+            IsDictionary = dest.IsDictionary;
+            IsEnum = dest.IsEnum;
+            CustomType = dest.CustomType;
+            ReferenceType = dest.ReferenceType;
+            Nullable = dest.Nullable;
+            IsExtendValue = dest.IsExtendValue;
+            EnumKey = dest.EnumKey;
+            EnumConfig = dest.EnumConfig;
+            InnerField = dest.InnerField;
+            IsSystemField = dest.IsSystemField;
+            IsInterfaceField = dest.IsInterfaceField;
+            IsPrivateField = dest.IsPrivateField;
+            IsMiddleField = dest.IsMiddleField;
+            CanGet = dest.CanGet;
+            CanSet = dest.CanSet;
+            IsCompute = dest.IsCompute;
+            /*
+                IsIdentity = dest.IsIdentity;
+            Function = dest.Function;
+            Having = dest.Having;
+            DbFieldName = dest.DbFieldName;
+            FieldType = dest.FieldType;
+            KeepUpdate = dest.KeepUpdate;
+            DbNullable = dest.DbNullable;
+            Datalen = dest.Datalen;
+            ArrayLen = dest.ArrayLen;
+            Scale = dest.Scale;
+            FixedLength = dest.FixedLength;
+            IsMemo = dest.IsMemo;
+            IsBlob = dest.IsBlob;
+            DbInnerField = dest.DbInnerField;
+            NoProperty = dest.NoProperty;
+            NoStorage = dest.NoStorage;
+            KeepStorageScreen = dest.KeepStorageScreen;
+            CustomWrite = dest.CustomWrite;
+            StorageProperty = dest.StorageProperty;
+            IsLinkField = dest.IsLinkField;
+            LinkTable = dest.LinkTable;
+            IsLinkKey = dest.IsLinkKey;
+            IsLinkCaption = dest.IsLinkCaption;
+            LinkField = dest.LinkField;
+            */
+            IsUserReadOnly = dest.IsUserReadOnly;
+            MulitLine = dest.MulitLine;
+            Prefix = dest.Prefix;
+            Suffix = dest.Suffix;
+            EmptyValue = dest.EmptyValue;
+            UiRequired = dest.UiRequired;
+            InputType = dest.InputType;
+            FormCloumnSapn = dest.FormCloumnSapn;
+            FormOption = dest.FormOption;
+            UserOrder = dest.UserOrder;
+            ComboBoxUrl = dest.ComboBoxUrl;
+            IsImage = dest.IsImage;
+            IsMoney = dest.IsMoney;
+            GridAlign = dest.GridAlign;
+            GridWidth = dest.GridWidth;
+            DataFormater = dest.DataFormater;
+            GridDetails = dest.GridDetails;
+            NoneGrid = dest.NoneGrid;
+            NoneDetails = dest.NoneDetails;
+            GridDetailsCode = dest.GridDetailsCode;
+            DataRuleDesc = dest.DataRuleDesc;
+            ValidateCode = dest.ValidateCode;
+            CanEmpty = dest.CanEmpty;
+            IsRequired = dest.IsRequired;
+            Max = dest.Max;
+            Min = dest.Min;
         }
         #endregion
     }

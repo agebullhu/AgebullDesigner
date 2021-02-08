@@ -193,7 +193,7 @@ namespace Agebull.EntityModel.Designer
                 column = new FieldConfig
                 {
                     DbFieldName = field,
-                    DbType = dbType,
+                    FieldType = dbType,
                     CsType = MySqlDataBaseHelper.ToCSharpType(dbType),
                     Entity = entity
                 };
@@ -204,11 +204,11 @@ namespace Agebull.EntityModel.Designer
                 }
                 column.Description = column.Caption;
             }
-            else if (column.DbType != dbType)
+            else if (column.FieldType != dbType)
             {
-                _trace.Track = $@"--字段类型变更:{column.DbType }->{dbType}";
-                column.DbType = dbType;
-                column.CsType = MySqlDataBaseHelper.ToCSharpType(column.DbType);
+                _trace.Track = $@"--字段类型变更:{column.FieldType }->{dbType}";
+                column.FieldType = dbType;
+                column.CsType = MySqlDataBaseHelper.ToCSharpType(column.FieldType);
             }
             column.DbNullable = reader.GetString(1) == "YES";
             column.IsPrimaryKey = reader.GetString(4) == "PRI";
@@ -243,7 +243,7 @@ namespace Agebull.EntityModel.Designer
 
         private void CheckName(FieldConfig column)
         {
-            switch (column.DbType.ToLower())
+            switch (column.FieldType.ToLower())
             {
                 case "varchar":
                 case "longtext":

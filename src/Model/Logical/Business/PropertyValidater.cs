@@ -78,12 +78,12 @@ namespace Agebull.EntityModel.Config
             //    trace.Track = "====>字段为用户ID映射而字段类型不是Int型";
             //}
             bool ist = DataBaseType == DataBaseType.SqlServer
-                        ? SqlServerHelper.IsDataBaseType(Field.DbType)
-                        : MySqlDataBaseHelper.IsDataBaseType(Field.DbType);
+                        ? SqlServerHelper.IsDataBaseType(Field.FieldType)
+                        : MySqlDataBaseHelper.IsDataBaseType(Field.FieldType);
             if (!ist)
             {
                 result = false;
-                Message.Track = "====>字段存储类型不正确" + Field.DbType;
+                Message.Track = "====>字段存储类型不正确" + Field.FieldType;
             }
 
             if (Field.IsLinkKey)

@@ -29,10 +29,10 @@ namespace Agebull.EntityModel.Config
                 return;
             if (!Entity.EnableDataBase)
             {
-                foreach (var col in DataTable.Properties)
+                foreach (var col in DataTable.Fields)
                 {
                     col.DbFieldName = null;
-                    col.DbType = null;
+                    col.FieldType = null;
                 }
 
                 DataTable.IsModify = true;
@@ -51,7 +51,7 @@ namespace Agebull.EntityModel.Config
             {
                 DataTable.SaveTableName = name;
             }
-            foreach (var col in DataTable.Properties)
+            foreach (var col in DataTable.Fields)
             {
                 if (col.IsDiscard)
                 {
@@ -59,7 +59,7 @@ namespace Agebull.EntityModel.Config
                 }
                 if (string.IsNullOrWhiteSpace(col.OldName))
                     col.OldName = col.DbFieldName;
-                col.DbFieldName = DataBaseHelper.ToDbFieldName(col.Field);
+                col.DbFieldName = DataBaseHelper.ToDbFieldName(col.Property);
             }
         }
 
@@ -73,10 +73,10 @@ namespace Agebull.EntityModel.Config
                 return;
             if (!Entity.EnableDataBase)
             {
-                foreach (var col in DataTable.Properties)
+                foreach (var col in DataTable.Fields)
                 {
                     col.DbFieldName = null;
-                    col.DbType = null;
+                    col.FieldType = null;
                 }
 
                 DataTable.IsModify = true;
@@ -113,7 +113,7 @@ namespace Agebull.EntityModel.Config
             {
                 Entity = DataTable.Entity
             };
-            foreach (var col in DataTable.Properties)
+            foreach (var col in DataTable.Fields)
             {
                 if (col.IsDiscard)
                 {
@@ -122,7 +122,7 @@ namespace Agebull.EntityModel.Config
                 model.Field = col;
                 model.CheckByDb(repair);
             }
-            DataBaseHelper.CheckFieldLink(Entity.Properties);
+            DataBaseHelper.CheckFieldLink(Entity.DataTable?.Fields);
             CheckIndex();
         }
 
@@ -132,11 +132,11 @@ namespace Agebull.EntityModel.Config
 
         public void CheckIndex()
         {
-            foreach (var field in DataTable.Properties)
+            foreach (var field in DataTable.Fields)
             {
                 if (field.NoStorage)
                     continue;
-                if (field.Field.IsLinkKey || field.Field.IsCaption || field.Field.IsEnum)
+                if (field.IsLinkKey || field.Property.IsCaption || field.Property.IsEnum)
                 {
                     field.IsDbIndex = true;
                     Trace.WriteLine($"--{field.Caption}:{field.DbFieldName}");

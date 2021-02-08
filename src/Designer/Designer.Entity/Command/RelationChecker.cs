@@ -66,7 +66,7 @@ namespace Agebull.EntityModel.Designer
                 field.LinkField = link.Name;
                 field.DataType = link.DataType;
                 field.CsType = link.CsType;
-                field.DbType = link.DbType;
+                field.FieldType = link.FieldType;
                 field.Datalen = link.Datalen;
             }
         }

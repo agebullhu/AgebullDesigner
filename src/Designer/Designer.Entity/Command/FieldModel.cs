@@ -13,7 +13,7 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal class FieldModel : DesignCommondBase<IFieldConfig>
+    internal class FieldModel : DesignCommondBase<IPropertyConfig>
     {
         #region 操作命令
 
@@ -23,7 +23,7 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
-            commands.Add(new CommandItemBuilder<IFieldConfig>
+            commands.Add(new CommandItemBuilder<IPropertyConfig>
             {
                 SignleSoruce = false,
                 WorkView = "adv",
@@ -33,7 +33,7 @@ namespace Agebull.EntityModel.Designer
                 IconName = "tree_item"
             });
 
-            commands.Add(new CommandItemBuilder<IFieldConfig>
+            commands.Add(new CommandItemBuilder<IPropertyConfig>
             {
                 SignleSoruce = false,
                 WorkView= "adv",
@@ -43,7 +43,7 @@ namespace Agebull.EntityModel.Designer
                 IconName = "tree_item"
             });
 
-            commands.Add(new CommandItemBuilder<IFieldConfig>
+            commands.Add(new CommandItemBuilder<IPropertyConfig>
             {
                 SignleSoruce = false,
                 WorkView = "adv",
@@ -53,7 +53,7 @@ namespace Agebull.EntityModel.Designer
                 Description = "第一个[标点]后解析为说明",
                 IconName = "tree_item"
             });
-            commands.Add(new CommandItemBuilder<IFieldConfig>
+            commands.Add(new CommandItemBuilder<IPropertyConfig>
             {
                 Catalog = "字段",
                 WorkView = "adv",
@@ -73,7 +73,7 @@ namespace Agebull.EntityModel.Designer
 
         #endregion
 
-        public void UpdateCustomType(IFieldConfig field)
+        public void UpdateCustomType(IPropertyConfig field)
         {
             if (string.IsNullOrWhiteSpace(field.CustomType))
             {
@@ -95,25 +95,29 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        public void ChineseField(IFieldConfig property)
+        public void ChineseField(IPropertyConfig property)
         {
             if (property.Name[0] < 255)
                 return;
             var caption = property.Caption ?? property.Name;
 
             property.JsonName = property.Name.ConvertToPinYin().ToLWord();
-            property.DbFieldName = NameHelper.ToName(property.Name.ConvertToPinYin().SplitWords());
+            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            if (field == null)
+                return;
+            field.DbFieldName = NameHelper.ToName(property.Name.ConvertToPinYin().SplitWords());
         }
 
-        public void CheckName(IFieldConfig property)
+        public void CheckName(IPropertyConfig property)
         {
-            var bak = property.DbFieldName;
-            if (string.IsNullOrWhiteSpace(bak))
-                bak = property.Name;
+            var bak = property.Name;
             property.Name = GlobalConfig.ToLinkWordName(bak, null,true);
-            property.DbFieldName = bak;
+            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            if (field == null)
+                return;
+            field.DbFieldName = bak;
         }
-        public void CheckCaption(IFieldConfig property)
+        public void CheckCaption(IPropertyConfig property)
         {
             if (string.IsNullOrWhiteSpace(property.Caption))
                 return;

@@ -218,7 +218,7 @@ namespace Agebull.EntityModel.Designer
             IsGlobal = false;
             IsFriend = false;
 
-            ExtendEditorPanel.Dispatcher.Invoke(() =>
+            WorkContext.SynchronousContext.InvokeInUiThread(() =>
             {
                 ExtendEditorPanel.UpdateLayout();
                 ExtendEditorPanel.Child = new TextBlock
@@ -264,7 +264,7 @@ namespace Agebull.EntityModel.Designer
             IsGlobal = type == 2;
             history[CurrentType] = EditorModel.Screen.NowEditor = CurrentEditorName = name;
 
-            ExtendEditorPanel.Dispatcher.Invoke(() =>
+            WorkContext.SynchronousContext.InvokeInUiThread(() =>
             {
                 var editor = option.Create();
                 if (editor.DataContext is EditorViewModelBase viewModel)

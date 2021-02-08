@@ -18,7 +18,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("TSON", "序列化代码(C#)", "cs", CreateCode);
+            CoderManager.RegisteCoder("TSON", "序列化代码(C#)", "cs", CreateCode);
         }
         #endregion
 

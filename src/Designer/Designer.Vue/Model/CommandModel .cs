@@ -39,29 +39,7 @@ namespace Agebull.EntityModel.Designer
             Context = DataModelDesignModel.Current?.Context;
         }
 
-        /// <summary>
-        /// 生成命令对象
-        /// </summary>
-        /// <returns></returns>
-        public override void CreateCommands(IList<CommandItemBase> commands)
-        {
-            commands.Append(new CommandItem
-            {
-                Catalog = "新增命令",
-                IsButton = true,
-                SignleSoruce = true,
-                Caption = "新增命令",
-                Action = AddCommand,
-                IconName = "img_add"
-            });
-            base.CreateCommands(commands);
-        }
-
         #endregion
 
-        void AddCommand(object arg)
-        {
-            Context.SelectEntity.Commands.Add(new UserCommandConfig());
-        }
     }
 }

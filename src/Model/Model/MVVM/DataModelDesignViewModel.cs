@@ -51,11 +51,6 @@ namespace Agebull.EntityModel.Designer
             AttachAction = obj => Model.Editor.ExtendEditorManager.ExtendEditorPanel = (Border)obj
         };
 
-
-        public DependencyAction WebBrowserBehavior => new DependencyAction
-        {
-            AttachAction = obj => Model.NormalCode.Browser = (WebBrowser)obj
-        };
         #endregion
     }
 }

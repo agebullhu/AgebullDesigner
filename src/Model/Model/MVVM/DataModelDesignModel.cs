@@ -45,7 +45,7 @@ namespace Agebull.EntityModel.Designer
         public DesignContext Context { get; }
         public TreeModel Tree { get; }
         public ConfigIoModel ConfigIo { get; }
-        public NormalCodeModel NormalCode { get; }
+        //public CoderManager NormalCode { get; }
 
         /// <summary>
         /// 编辑器模型
@@ -89,11 +89,7 @@ namespace Agebull.EntityModel.Designer
                 Model = this,
                 Context = Context
             };
-            NormalCode = new NormalCodeModel
-            {
-                Model = this,
-                Context = Context
-            };
+
             Editor = new EditorModel
             {
                 Model = this,
@@ -103,7 +99,7 @@ namespace Agebull.EntityModel.Designer
             ExtendConfig.Editor = Editor;
             Context.Editor = Editor;
             ConfigIo.Editor = Editor;
-            NormalCode.Editor = Editor;
+
             Tree.Editor = Editor;
         }
 
@@ -121,13 +117,13 @@ namespace Agebull.EntityModel.Designer
             ExtendConfig.ViewModel = ViewModel;
             Context.ViewModel = ViewModel;
             ConfigIo.ViewModel = ViewModel;
-            NormalCode.ViewModel = ViewModel;
+
             Tree.ViewModel = ViewModel;
 
             ExtendConfig.Dispatcher = Dispatcher;
             Context.Dispatcher = Dispatcher;
             ConfigIo.Dispatcher = Dispatcher;
-            NormalCode.Dispatcher = Dispatcher;
+
             Tree.Dispatcher = Dispatcher;
 
 
@@ -135,7 +131,7 @@ namespace Agebull.EntityModel.Designer
             Context.Initialize();
             Tree.Initialize();
             ExtendConfig.Initialize();
-            NormalCode.Initialize();
+
             ConfigIo.Initialize();
         }
 
@@ -192,7 +188,7 @@ namespace Agebull.EntityModel.Designer
             Context.OnSolutionChanged();
             ConfigIo.OnSolutionChanged();
             Tree.OnSolutionChanged();
-            NormalCode.OnSolutionChanged();
+
             FirstSelect();
 
         }

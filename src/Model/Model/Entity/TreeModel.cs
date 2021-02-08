@@ -8,6 +8,7 @@ using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Agebull.EntityModel.Config.V2021;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -339,10 +340,10 @@ namespace Agebull.EntityModel.Designer
         }
         private TreeItem CreateCommandTreeItem(object arg)
         {
-            if (!(arg is UserCommandConfig cmd))
+            if (!(arg is CommandItemConfig cmd))
                 return new TreeItem(arg);
 
-            var colItem = new ConfigTreeItem<UserCommandConfig>(cmd)
+            var colItem = new ConfigTreeItem<CommandItemConfig>(cmd)
             {
                 IsExpanded = true,
                 FriendView = "model,command",

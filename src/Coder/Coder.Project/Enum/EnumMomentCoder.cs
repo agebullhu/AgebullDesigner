@@ -18,10 +18,10 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder<EnumConfig>("枚举", "枚举(C++)", "cpp", (EnumCpp));
-            MomentCoder.RegisteCoder<EnumConfig>("枚举", "枚举(JS)", "js", EnumJs);
-            MomentCoder.RegisteCoder<EnumConfig>("枚举", "枚举(C#)", "cs", (EnumFunc));
-            MomentCoder.RegisteCoder<EnumConfig>("枚举", "枚举名称扩展方法(Enum.Caption())", "cs", ToCaption);
+            CoderManager.RegisteCoder<EnumConfig>("枚举", "枚举(C++)", "cpp", (EnumCpp));
+            CoderManager.RegisteCoder<EnumConfig>("枚举", "枚举(JS)", "js", EnumJs);
+            CoderManager.RegisteCoder<EnumConfig>("枚举", "枚举(C#)", "cs", (EnumFunc));
+            CoderManager.RegisteCoder<EnumConfig>("枚举", "枚举名称扩展方法(Enum.Caption())", "cs", ToCaption);
         }
         #endregion
 

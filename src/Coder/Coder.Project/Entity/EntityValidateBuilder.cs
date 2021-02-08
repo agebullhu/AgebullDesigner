@@ -23,7 +23,7 @@ namespace Agebull.EntityModel.RobotCoder
         public string ValidateCode()
         {
             var coder = new EntityValidateCoder {Model = Model};
-            var code = coder.Code(Columns.Where(p => !p.DbInnerField && !p.IsSystemField && !p.CustomWrite));
+            var code = coder.Code(Columns.Where(p => !p.IsSystemField));
             var rela = new StringBuilder();
             if(Model is ModelConfig model)
             foreach (var relation in model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty).OrderBy(p => p.Index))

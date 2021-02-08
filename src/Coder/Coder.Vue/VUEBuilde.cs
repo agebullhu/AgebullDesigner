@@ -14,7 +14,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            NormalCodeModel.RegistBuilder<VUEBuilder>();
+            CoderManager.RegistBuilder<VUEBuilder>();
         }
     }
 

@@ -10,6 +10,8 @@ namespace Agebull.EntityModel.Config.V2021
     [JsonObject(MemberSerialization.OptIn, ItemNullValueHandling = NullValueHandling.Ignore)]
     public partial class UserInterfaceField : FieldExtendConfig, IUIFieldConfig
     {
+        #region 字段
+
         /// <summary>
         /// 用户可见
         /// </summary>
@@ -20,7 +22,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 用户可见
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"用户可见"), Description(@"用户可见")]
+        [Category(""), DisplayName(@"用户可见"), Description(@"用户可见")]
         public bool UserSee
         {
             get => _userSee;
@@ -44,7 +46,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 用户是否可查询
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"用户是否可查询"), Description(@"用户是否可查询")]
+        [Category(""), DisplayName(@"用户是否可查询"), Description(@"用户是否可查询")]
         public bool CanUserQuery
         {
             get => _canUserQuery;
@@ -72,7 +74,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 是否用户可编辑
         /// </remarks>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"不可编辑"), Description(@"是否用户可编辑")]
+        [Category(""), DisplayName(@"不可编辑"), Description(@"是否用户可编辑")]
         public bool IsUserReadOnly
         {
             get => _isUserReadOnly;
@@ -96,7 +98,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 多行文本
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"多行文本"), Description(@"多行文本")]
+        [Category(""), DisplayName(@"多行文本"), Description(@"多行文本")]
         public bool MulitLine
         {
             get => _mulitLine;
@@ -124,7 +126,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 默认为3行
         /// </remarks>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"多行文本的行数"), Description(@"默认为3行")]
+        [Category(""), DisplayName(@"多行文本的行数"), Description(@"默认为3行")]
         public int Rows
         {
             get => _rows;
@@ -148,7 +150,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 前缀
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"前缀"), Description(@"前缀")]
+        [Category(""), DisplayName(@"前缀"), Description(@"前缀")]
         public string Prefix
         {
             get => _prefix;
@@ -172,7 +174,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 后缀
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"后缀"), Description(@"后缀")]
+        [Category(""), DisplayName(@"后缀"), Description(@"后缀")]
         public string Suffix
         {
             get => _suffix;
@@ -200,7 +202,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 等同于空值的文本,多个用#号分开
         /// </remarks>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"等同于空值的文本"), Description(@"等同于空值的文本,多个用#号分开")]
+        [Category(""), DisplayName(@"等同于空值的文本"), Description(@"等同于空值的文本,多个用#号分开")]
         public string EmptyValue
         {
             get => _emptyValue;
@@ -224,7 +226,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 界面必填字段
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"界面必填字段"), Description(@"界面必填字段")]
+        [Category(""), DisplayName(@"界面必填字段"), Description(@"界面必填字段")]
         public bool UiRequired
         {
             get => _uiRequired;
@@ -248,7 +250,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 输入类型
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"输入类型"), Description(@"输入类型")]
+        [Category(""), DisplayName(@"输入类型"), Description(@"输入类型")]
         public string InputType
         {
             get => _inputType;
@@ -272,7 +274,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// Form中占几列宽度
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"Form中占几列宽度"), Description(@"Form中占几列宽度")]
+        [Category(""), DisplayName(@"Form中占几列宽度"), Description(@"Form中占几列宽度")]
         public int FormCloumnSapn
         {
             get => _formCloumnSapn;
@@ -296,7 +298,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// Form中的设置
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"Form中的设置"), Description(@"Form中的设置")]
+        [Category(""), DisplayName(@"Form中的设置"), Description(@"Form中的设置")]
         public string FormOption
         {
             get => _formOption;
@@ -320,7 +322,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 用户排序
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"用户排序"), Description(@"用户排序")]
+        [Category(""), DisplayName(@"用户排序"), Description(@"用户排序")]
         public bool UserOrder
         {
             get => _userOrder;
@@ -344,7 +346,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 下拉列表的地址
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"下拉列表的地址"), Description(@"下拉列表的地址")]
+        [Category(""), DisplayName(@"下拉列表的地址"), Description(@"下拉列表的地址")]
         public string ComboBoxUrl
         {
             get => _comboBoxUrl;
@@ -368,7 +370,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 是否图片
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"是否图片"), Description(@"是否图片")]
+        [Category(""), DisplayName(@"是否图片"), Description(@"是否图片")]
         public bool IsImage
         {
             get => _isImage;
@@ -392,7 +394,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 货币类型
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"货币类型"), Description(@"货币类型")]
+        [Category(""), DisplayName(@"货币类型"), Description(@"货币类型")]
         public bool IsMoney
         {
             get => _isMoney;
@@ -416,7 +418,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 表格对齐
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"表格对齐"), Description(@"表格对齐")]
+        [Category(""), DisplayName(@"表格对齐"), Description(@"表格对齐")]
         public string GridAlign
         {
             get => _gridAlign;
@@ -440,7 +442,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 占表格宽度比例
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"占表格宽度比例"), Description(@"占表格宽度比例")]
+        [Category(""), DisplayName(@"占表格宽度比例"), Description(@"占表格宽度比例")]
         public int GridWidth
         {
             get => _gridWidth;
@@ -464,7 +466,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 数据格式器
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"数据格式器"), Description(@"数据格式器")]
+        [Category(""), DisplayName(@"数据格式器"), Description(@"数据格式器")]
         public string DataFormater
         {
             get => _dataFormater;
@@ -488,7 +490,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 显示在列表详细页中
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"显示在列表详细页中"), Description(@"显示在列表详细页中")]
+        [Category(""), DisplayName(@"显示在列表详细页中"), Description(@"显示在列表详细页中")]
         public bool GridDetails
         {
             get => _gridDetails;
@@ -512,7 +514,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 列表不显示
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"列表不显示"), Description(@"列表不显示")]
+        [Category(""), DisplayName(@"列表不显示"), Description(@"列表不显示")]
         public bool NoneGrid
         {
             get => _noneGrid;
@@ -536,7 +538,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 详细不显示
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"详细不显示"), Description(@"详细不显示")]
+        [Category(""), DisplayName(@"详细不显示"), Description(@"详细不显示")]
         public bool NoneDetails
         {
             get => _noneDetails;
@@ -560,7 +562,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 列表详细页代码
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [DisplayName(@"列表详细页代码"), Description(@"列表详细页代码")]
+        [Category(""), DisplayName(@"列表详细页代码"), Description(@"列表详细页代码")]
         public string GridDetailsCode
         {
             get => _gridDetailsCode;
@@ -573,6 +575,127 @@ namespace Agebull.EntityModel.Config.V2021
                 OnPropertyChanged(nameof(GridDetailsCode));
             }
         }
+
+        /// <summary>
+        /// 可导入
+        /// </summary>
+        [DataMember, JsonProperty("canImport", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _canImport;
+
+        /// <summary>
+        /// 可导入
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName(@"可导入"), Description(@"可导入")]
+        public bool CanImport
+        {
+            get => _canImport;
+            set
+            {
+                if (_canImport == value)
+                    return;
+                BeforePropertyChanged(nameof(CanImport), _canImport, value);
+                _canImport = value;
+                OnPropertyChanged(nameof(CanImport));
+            }
+        }
+
+        /// <summary>
+        /// 可导出
+        /// </summary>
+        [DataMember, JsonProperty("canExport", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _canExport;
+
+        /// <summary>
+        /// 可导出
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName(@"可导出"), Description(@"可导出")]
+        public bool CanExport
+        {
+            get => _canExport;
+            set
+            {
+                if (_canExport == value)
+                    return;
+                BeforePropertyChanged(nameof(CanExport), _canExport, value);
+                _canExport = value;
+                OnPropertyChanged(nameof(CanExport));
+            }
+        }
+
+        /// <summary>
+        /// 用户提示文本
+        /// </summary>
+        [DataMember, JsonProperty("userHint", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _userHint;
+
+        /// <summary>
+        /// 用户提示文本
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName(@"用户提示文本"), Description(@"用户提示文本")]
+        public bool UserHint
+        {
+            get => _userHint;
+            set
+            {
+                if (_userHint == value)
+                    return;
+                BeforePropertyChanged(nameof(UserHint), _userHint, value);
+                _userHint = value;
+                OnPropertyChanged(nameof(UserHint));
+            }
+        }
+
+        /// <summary>
+        /// 是否时间
+        /// </summary>
+        [DataMember, JsonProperty("isTime", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isTime;
+
+        /// <summary>
+        /// 是否时间
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName(@"是否时间"), Description(@"是否时间")]
+        public bool IsTime
+        {
+            get => _isTime;
+            set
+            {
+                if (_isTime == value)
+                    return;
+                BeforePropertyChanged(nameof(IsTime), _isTime, value);
+                _isTime = value;
+                OnPropertyChanged(nameof(IsTime));
+            }
+        }
+        #endregion 字段
+
+        #region 兼容性升级
+
+        /// <summary>
+        /// 兼容性升级
+        /// </summary>
+        public void Upgrade()
+        {
+            //Copy(Entity);
+        }
+
+        #endregion
+
+        #region 字段复制
+
+        /// <summary>
+        /// 字段复制
+        /// </summary>
+        /// <param name="dest">复制源</param>
+        public void Copy(IUIFieldConfig dest)
+        {
+            CopyFrom((SimpleConfig)dest);
+        }
+
         /// <summary>
         /// 字段复制
         /// </summary>
@@ -582,15 +705,6 @@ namespace Agebull.EntityModel.Config.V2021
             base.CopyFrom(dest);
             if (dest is IUIFieldConfig cfg)
                 CopyProperty(cfg);
-        }
-
-        /// <summary>
-        /// 字段复制
-        /// </summary>
-        /// <param name="dest">复制源</param>
-        public void Copy(IUIFieldConfig dest)
-        {
-            Copy((SimpleConfig)dest);
         }
 
         /// <summary>
@@ -623,7 +737,12 @@ namespace Agebull.EntityModel.Config.V2021
             NoneGrid = dest.NoneGrid;
             NoneDetails = dest.NoneDetails;
             GridDetailsCode = dest.GridDetailsCode;
-        }
-    }
+            CanImport = dest.CanImport;
+            CanExport = dest.CanExport;
+            UserHint = dest.UserHint;
 
+            IsTime = dest.IsTime;
+        }
+        #endregion 字段复制
+    }
 }

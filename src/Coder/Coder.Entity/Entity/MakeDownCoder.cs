@@ -18,9 +18,9 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("文档", "入参", "md", Makedown);
-            MomentCoder.RegisteCoder("文档", "出参", "md", Makedown2);
-            MomentCoder.RegisteCoder("文档", "JSON", "json", Json);
+            CoderManager.RegisteCoder("文档", "入参", "md", Makedown);
+            CoderManager.RegisteCoder("文档", "出参", "md", Makedown2);
+            CoderManager.RegisteCoder("文档", "JSON", "json", Json);
         }
         #endregion
 
@@ -78,7 +78,7 @@ namespace Agebull.EntityModel.RobotCoder
                     first = false;
                 else code.AppendLine(",");
                 code.Append($@"            ""{ field.JsonName ?? field.Name}"" : ");
-                if (field.IsEnum)
+                if (field.IsEnum && field.EnumConfig != null)
                 {
                     code.Append($@"""{ (field.EnumConfig.Items.FirstOrDefault()?.Value ?? "0")}""");
                 }

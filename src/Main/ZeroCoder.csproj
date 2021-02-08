@@ -118,6 +118,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Model\Model\Agebull.EntityModel.Designer.Model.csproj" />
+    <PackageReference Include="ZeroTeam.MessageMVC.ApiContract" Version="1.1.5.3" />
+    <PackageReference Include="ZeroTeam.MessageMVC.Core" Version="1.1.5.3" />
+    <PackageReference Include="ZeroTeam.MessageMVC.FastHttpApi" Version="1.1.5.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -341,8 +344,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <Page Update="Editor\ConfigForm.xaml">
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="views\" />
   </ItemGroup>
 </Project>

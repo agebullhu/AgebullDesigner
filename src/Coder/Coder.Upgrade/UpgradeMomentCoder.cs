@@ -16,9 +16,9 @@ namespace Agebull.EntityModel.RobotCoder.Upgrade
 
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("升级", "CopyFrom", "cs", UpdateConfig);
-            MomentCoder.RegisteCoder("升级", "类定义", "cs", ClassDefault);
-            //MomentCoder.RegisteCoder("Web-Vue", "Script", "js", ScriptCode);
+            CoderManager.RegisteCoder("升级", "CopyFrom", "cs", UpdateConfig);
+            CoderManager.RegisteCoder("升级", "类定义", "cs", ClassDefault);
+            //CoderManager.RegisteCoder("Web-Vue", "Script", "js", ScriptCode);
         }
         #endregion
         #region 设计

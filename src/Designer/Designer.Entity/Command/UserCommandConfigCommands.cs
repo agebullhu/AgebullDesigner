@@ -13,6 +13,7 @@ using System.ComponentModel.Composition;
 using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
 using System.Linq;
+using Agebull.EntityModel.Config.V2021;
 
 #endregion
 
@@ -23,18 +24,19 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal class UserCommandConfigCommands : DesignCommondBase<UserCommandConfig>
+    internal class UserCommandConfigCommands : DesignCommondBase<CommandItemConfig>
     {
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
-            commands.Add(new CommandItemBuilder<UserCommandConfig>
+            commands.Add(new CommandItemBuilder<CommandItemConfig>
             {
                 Action = p => p.Parent?.Commands.Remove(p),
                 Catalog = "编辑",
                 SoruceView = "model",
                 SignleSoruce = true,
-                TargetType = typeof(UserCommandConfig),
+                TargetType = typeof(CommandItemConfig),
                 Caption = "删除命令",
+                Editor = "Command",
                 IconName = "img_del"
             });
             commands.Add(new CommandItemBuilder<ModelConfig>
@@ -45,6 +47,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "编辑",
                 IconName = "tree_Open",
                 SoruceView = "model",
+                Editor = "Command",
                 WorkView = "Model"
             });
             commands.Add(new CommandItemBuilder<ModelConfig>
@@ -53,6 +56,7 @@ namespace Agebull.EntityModel.Designer
                 Action = AddAuditCommand,
                 Caption = "新增审核命令",
                 Catalog = "编辑",
+                Editor = "Command",
                 IconName = "tree_Open",
                 SoruceView = "model",
                 WorkView = "Model"
@@ -65,7 +69,7 @@ namespace Agebull.EntityModel.Designer
         /// <param name="entity"></param>
         public void AddCommand(ModelConfig entity)
         {
-            if (Model.CreateNew("新增命令", out UserCommandConfig config))
+            if (Model.CreateNew("新增命令", out CommandItemConfig config))
                 entity.Add(config);
         }
         /// <summary>
@@ -76,14 +80,14 @@ namespace Agebull.EntityModel.Designer
         {
             if (entity.Commands.Count != 0 && entity.Commands.Any(p => p.Name == "Pass"))
                 return;
-            entity.Add(new UserCommandConfig
+            entity.Add(new CommandItemConfig
             {
                 Name = "Pass",
                 Button = "btnPass",
                 Caption = "审核通过",
                 Description = "审核通过"
             });
-            entity.Add(new UserCommandConfig
+            entity.Add(new CommandItemConfig
             {
                 Name = "Deny",
                 Button = "btnDeny",

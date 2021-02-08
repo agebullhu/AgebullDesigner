@@ -106,7 +106,7 @@ namespace Agebull.EntityModel.Designer
                 if (newColumn == null)
                 {
                     newColumn = new PropertyConfig();
-                    ((IFieldConfig)model).Copy(copyColumn,false);
+                    ((IPropertyConfig)model).Copy(copyColumn,false);
                     newColumn.Option.Index = newColumn.Option.Identity = 0;
                     model.Add(newColumn);
                 }

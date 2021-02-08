@@ -6,6 +6,7 @@ using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
+
     /// <summary>
     /// 代码生成基类
     /// </summary>
@@ -58,19 +59,20 @@ namespace Agebull.EntityModel.RobotCoder
         #region 通用代码
 
 
-        protected string PropertyHeader(IFieldConfig property)
+        protected string PropertyHeader(IPropertyConfig property)
         {
             return $@"{RemCode(property)}
         [JsonIgnore]";
         }
 
-        protected string FieldHeader(IFieldConfig property, bool noneJson)
+        protected string FieldHeader(IPropertyConfig property, bool noneJson)
         {
-            if (property.IsReference && property.Option is IFieldConfig iField && iField.Entity.IsInterface)
+            if (property.IsReference && property.Option is IPropertyConfig iField && iField.Entity.IsInterface)
             {
                 return RemCode(property);
             }
 
+            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
             var code = new List<string>();
             //var rule = DataRuleCode(property);
             //if(rule != null)
@@ -81,7 +83,7 @@ namespace Agebull.EntityModel.RobotCoder
             }
             else
             {
-                if (property.IsRequired || property.IsCaption || property.IsPrimaryKey || property.IsLinkCaption || property.IsLinkCaption)
+                if (property.IsRequired || property.IsCaption || property.IsPrimaryKey || field.IsLinkCaption || field.IsLinkCaption)
                     code.Add($@"JsonProperty(""{property.JsonName}"", NullValueHandling = NullValueHandling.Include)");
                 else
                     code.Add($@"JsonProperty(""{property.JsonName}"", DefaultValueHandling = DefaultValueHandling.Ignore)");
@@ -93,8 +95,9 @@ namespace Agebull.EntityModel.RobotCoder
                 : $@"{RemCode(property)}
         [{ string.Join(" , ", code)}]";
         }
-        public static string RemCode(IFieldConfig property, bool simple = false, int space = 8)
+        public static string RemCode(IPropertyConfig property, bool simple = false, int space = 8)
         {
+            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
             var code = new StringBuilder();
             code.AppendLine();
             code.Append(' ', space);
@@ -105,17 +108,17 @@ namespace Agebull.EntityModel.RobotCoder
             code.AppendLine();
             if (!simple && property.Entity.EnableDataBase)
             {
-                if (property.IsLinkKey)
+                if (field.IsLinkKey)
                 {
                     code.Append(' ', space);
-                    code.AppendLine($@"///  --外键 : [{property.LinkTable}-{property.LinkField}]");
+                    code.AppendLine($@"///  --外键 : [{field.LinkTable}-{field.LinkField}]");
                 }
-                else if (property.IsLinkField)
+                else if (field.IsLinkField)
                 {
                     code.Append(' ', space);
-                    code.AppendLine($@"///  --{(!property.NoStorage && property.IsCompute ? "链接" : "冗余")}字段 : [{property.LinkTable}-{property.LinkField}]");
+                    code.AppendLine($@"///  --{(!field.NoStorage && property.IsCompute ? "链接" : "冗余")}字段 : [{field.LinkTable}-{field.LinkField}]");
                 }
-                else if (property.NoStorage)
+                else if (field.NoStorage)
                 {
                     code.Append(' ', space);
                     code.AppendLine(@"///  -- 此字段不存储在数据库中");
@@ -202,7 +205,7 @@ namespace Agebull.EntityModel.RobotCoder
             return code.ToString();
         }
 
-        public string DataRuleCode(IFieldConfig property)
+        public string DataRuleCode(IPropertyConfig property)
         {
             StringBuilder code = new StringBuilder();
             var re = code.ToString();
@@ -265,7 +268,7 @@ namespace Agebull.EntityModel.RobotCoder
             return code.ToString();
         }
 
-        static string HelloCode(IFieldConfig property, bool cs = true)
+        static string HelloCode(IPropertyConfig property, bool cs = true)
         {
             if (!string.IsNullOrWhiteSpace(property.HelloCode))
                 return property.HelloCode;

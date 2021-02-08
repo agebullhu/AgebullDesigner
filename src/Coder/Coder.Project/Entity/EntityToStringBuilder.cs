@@ -37,7 +37,7 @@ namespace Agebull.EntityModel.RobotCoder
             return code.ToString();
         }
 
-        private void ToStringCode(StringBuilder code, IFieldConfig field)
+        private void ToStringCode(StringBuilder code, IPropertyConfig field)
         {
             var caption = string.IsNullOrWhiteSpace(field.Caption) ? field.Name : field.Caption;
             if (string.IsNullOrWhiteSpace(field.ArrayLen))

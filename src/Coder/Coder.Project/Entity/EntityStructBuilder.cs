@@ -4,6 +4,7 @@ using System.Text;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Config.Mysql;
 using Agebull.EntityModel.Config.SqlServer;
+using Agebull.EntityModel.Config.V2021;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -17,11 +18,11 @@ namespace Agebull.EntityModel.RobotCoder
         /// <inheritdoc />
         protected override string Folder => "Struct";
 
-        int DbType(IFieldConfig field)
+        int DbType(DataBaseFieldConfig field)
         {
             if (Project.DbType == DataBaseType.SqlServer)
-                return (int)SqlServerHelper.ToSqlDbType(field.DbType,field.CsType);
-            return (int)MySqlDataBaseHelper.ToSqlDbType(field.DbType, field.CsType);
+                return (int)SqlServerHelper.ToSqlDbType(field.FieldType,field.Property.CsType);
+            return (int)MySqlDataBaseHelper.ToSqlDbType(field.FieldType, field.Property.CsType);
         }
         #endregion
 
@@ -97,34 +98,35 @@ namespace Agebull.EntityModel.RobotCoder
 ";
         }
 
-        private void EntityStruct(IEntityConfig table, StringBuilder codeStruct, StringBuilder codeConst, ref bool isFirst, ref int idx)
+        private void EntityStruct(IEntityConfig entity, StringBuilder codeStruct, StringBuilder codeConst, ref bool isFirst, ref int idx)
         {
-            if (table == null)
+            if (entity == null || entity.DataTable == null)
                 return;
+            var table = entity.DataTable;
+            if (!string.IsNullOrWhiteSpace(entity.ModelBase))
+                EntityStruct(Project.Models.FirstOrDefault(p => p.Name == entity.ModelBase), codeStruct, codeConst, ref isFirst, ref idx);
 
-            if (!string.IsNullOrWhiteSpace(table.ModelBase))
-                EntityStruct(Project.Models.FirstOrDefault(p => p.Name == table.ModelBase), codeStruct, codeConst, ref isFirst, ref idx);
-
-            if (table.PrimaryColumn != null)
+            var primary = table.Fields.FirstOrDefault(p => p.Property == entity.PrimaryColumn);
+            if (primary != null)
             {
-                codeConst.Append(PropertyIndex(table.PrimaryColumn, ref idx));
-                PropertyStruct(codeStruct, table.PrimaryColumn, ref isFirst);
+                codeConst.Append(PropertyIndex(primary, ref idx));
+                PropertyStruct(codeStruct, primary, ref isFirst);
             }
 
-            foreach (var property in table.PublishProperty.Where(p => p != table.PrimaryColumn).OrderBy(p => p.Index))
+            foreach (var field in table.Fields.Where(p => p != primary).OrderBy(p => p.Index))
             {
-                codeConst.Append(PropertyIndex(property, ref idx));
-                PropertyStruct(codeStruct, property, ref isFirst);
+                codeConst.Append(PropertyIndex(field, ref idx));
+                PropertyStruct(codeStruct, field, ref isFirst);
             }
 
-            foreach (var property in table.LastProperties.Where(p => !table.PublishProperty.Any(pp => p == pp) && p != table.PrimaryColumn).OrderBy(p => p.Index))
+            foreach (var field in table.Fields.Where(p => !entity.PublishProperty.Any(pp => p == pp) && p != entity.PrimaryColumn).OrderBy(p => p.Index))
             {
-                codeConst.Append(PropertyIndex(property, ref idx));
-                PropertyStruct(codeStruct, property, ref isFirst);
+                codeConst.Append(PropertyIndex(field, ref idx));
+                PropertyStruct(codeStruct, field, ref isFirst);
             }
         }
 
-        private string PropertyIndex(IFieldConfig property, ref int idx)
+        private string PropertyIndex(DataBaseFieldConfig property, ref int idx)
         {
             return $@"
 
@@ -139,16 +141,16 @@ namespace Agebull.EntityModel.RobotCoder
             public const int Real_{property.Name} = {idx++};";
         }
 
-        private void PropertyStruct(StringBuilder codeStruct, IFieldConfig property,ref bool isFirst)
+        private void PropertyStruct(StringBuilder codeStruct, DataBaseFieldConfig field, ref bool isFirst)
         {
             if (isFirst)
                 isFirst = false;
             else
                 codeStruct.Append(',');
-
+            var property = field.Property;
             var featrue = new List<string>();
 
-            if (!property.DbInnerField)
+            if (!field.DbInnerField)
             {
                 if (property.IsInterfaceField)
                 {
@@ -162,7 +164,7 @@ namespace Agebull.EntityModel.RobotCoder
                 }
             }
 
-            if (!property.NoStorage)
+            if (!field.NoStorage)
             {
                 featrue.Add("PropertyFeatrue.DbCloumn");
             }
@@ -174,15 +176,15 @@ namespace Agebull.EntityModel.RobotCoder
                         {{
                             Index        = {property.Name},
                             Featrue      = {(featrue.Count == 0 ? "PropertyFeatrue.None" : string.Join(" | ", featrue))},
-                            Link         = ""{property.LinkField}"",
+                            Link         = ""{field.LinkField}"",
                             Name         = ""{property.Name}"",
                             Caption      = @""{property.Caption}"",
                             JsonName     = ""{property.JsonName}"",
-                            ColumnName   = ""{property.DbFieldName}"",
+                            ColumnName   = ""{field.DbFieldName}"",
                             PropertyType = typeof({property.CustomType ?? property.CsType}),
                             CanNull      = {(property.Nullable ? "true" : "false")},
                             ValueType    = PropertyValueType.{CsharpHelper.PropertyValueType(property)},
-                            DbType       = {DbType(property)},
+                            DbType       = {DbType(field)},
                             CanImport    = {(property.ExtendConfigListBool["easyui", "CanImport"] ? "true" : "false")},
                             CanExport    = {(property.ExtendConfigListBool["easyui", "CanExport"] ? "true" : "false")},
                             Description  = @""{property.Description}""

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Config.SqlServer;
+using Agebull.EntityModel.Config.V2021;
 using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer
@@ -19,7 +20,7 @@ namespace Agebull.EntityModel.Designer
         {
             var code = new StringBuilder();
             code.AppendFormat(@"INSERT INTO [dbo].[{0}]({1}", entity.ReadTableName, entity.PrimaryColumn.DbFieldName);
-            foreach (var col in entity.PublishProperty) //.Where(p => p.DbIndex > 0)
+            foreach (var col in entity.DataTable.Fields) //.Where(p => p.DbIndex > 0)
             {
                 if (col.IsPrimaryKey)
                     continue;
@@ -28,7 +29,7 @@ namespace Agebull.EntityModel.Designer
 
             code.AppendFormat(@")
 SELECT {0}", entity.PrimaryColumn.DbFieldName);
-            foreach (var col in entity.PublishProperty) //.Where(p => p.DbIndex > 0)
+            foreach (var col in entity.DataTable.Fields) //.Where(p => p.DbIndex > 0)
             {
                 if (col.IsPrimaryKey)
                     continue;
@@ -142,22 +143,30 @@ SELECT {0}", entity.PrimaryColumn.DbFieldName);
 
         private void CheckColumns(SqlCommand cmd, EntityConfig entity)
         {
+            entity.DataTable ??= new DataTableConfig();
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
                 var field = reader.GetString(0);
-                var col = entity.Properties.FirstOrDefault(p =>
+                var col = entity.DataTable.Fields.FirstOrDefault(p =>
                     string.Equals(p.Name, field, StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(p.DbFieldName, field, StringComparison.OrdinalIgnoreCase));
-
+                var property = col?.Property;
                 if (col == null)
                 {
                     Trace.WriteLine($" ++++ {field}");
-                    entity.Add(col = new FieldConfig
+                    property = new FieldConfig
                     {
                         Name = field,
                         DbFieldName = field,
                         Entity = Entity
+                    };
+                    entity.Add(property as FieldConfig);
+                    entity.DataTable.Add(col = new DataBaseFieldConfig
+                    {
+                        Property = property,
+                        Name = field,
+                        DbFieldName = field
                     });
                     if (!reader.IsDBNull(7))
                         col.Caption = col.Description = reader.GetString(7);
@@ -172,15 +181,15 @@ SELECT {0}", entity.PrimaryColumn.DbFieldName);
 
                 }
                 col.NoStorage = false;
-                col.DbType = reader.GetString(1);
+                col.FieldType = reader.GetString(1);
                 col.DbNullable = reader.GetBoolean(5);
                 col.Datalen = Convert.ToInt32(reader.GetValue(2));
                 col.Scale = Convert.ToInt32(reader.GetValue(3));
-                col.IsPrimaryKey = !reader.IsDBNull(8);
+                property.IsPrimaryKey = !reader.IsDBNull(8);
                 col.IsIdentity = reader.GetBoolean(9);
-                col.IsCompute = reader.GetBoolean(10);
+                col.IsReadonly = reader.GetBoolean(10);
                 if (col.CsType == null)
-                    DataTypeHelper.ToStandardByDbType(col, col.DbType);
+                    DataTypeHelper.ToStandardByDbType(col, col.FieldType);
 
                 if (col.CsType != null && col.CsType.Equals("string", StringComparison.OrdinalIgnoreCase))
                 {
@@ -291,11 +300,11 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                         }
                     }
 
-                    if (checkInt && !isInt && (col.CsType != "decimal" || col.DbType != "decimal"))
+                    if (checkInt && !isInt && (col.CsType != "decimal" || col.FieldType != "decimal"))
                     {
                         TraceMessage.DefaultTrace.Track = "改变字段类型";
                         col.CsType = "decimal";
-                        col.DbType = "decimal";
+                        col.FieldType = "decimal";
                     }
 
                     //if (!col.DbNullable)
@@ -304,7 +313,7 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                     //        TraceMessage.DefaultTrace.Track = "字段已改成不为空";
                     //    col.Nullable = false;
                     //}
-                    col.DbType = SqlServerHelper.ToDataBaseType(col);
+                    col.FieldType = SqlServerHelper.ToDataBaseType(col);
                 }
             }
 

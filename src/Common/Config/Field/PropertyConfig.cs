@@ -18,7 +18,7 @@ namespace Agebull.EntityModel.Config
     /// 属性配置
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public partial class PropertyConfig : FieldConfigBase, IFieldConfig, IChildrenConfig
+    public partial class PropertyConfig : FieldConfigBase, IPropertyConfig, IChildrenConfig
     {
         #region 视角开关
 
@@ -287,16 +287,16 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据库"), DisplayName(@"存储类型"), Description("存储类型")]
-        public string DbType
+        public string FieldType
         {
-            get => _dbType ?? Field.DbType;
+            get => _dbType ?? Field.FieldType;
             set
             {
                 if (string.Equals(_dbType, value, StringComparison.OrdinalIgnoreCase))
                     return;
-                BeforePropertyChanged(nameof(DbType), _dbType, value);
+                BeforePropertyChanged(nameof(FieldType), _dbType, value);
                 _dbType = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(DbType));
+                OnPropertyChanged(nameof(FieldType));
             }
         }
 
@@ -726,7 +726,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 自已
         /// </summary>
-        protected sealed override IFieldConfig Me => this;
+        protected sealed override IPropertyConfig Me => this;
 
         /// <summary>
         /// 是否数据库索引

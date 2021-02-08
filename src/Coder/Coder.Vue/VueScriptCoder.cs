@@ -91,8 +91,8 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// <returns></returns>
         void LinkFunctions()
         {
-            var array = Model.ClientProperty
-                .Where(p => p.UserSee && p.IsLinkKey)
+            var array = Model.DataTable.Fields
+                .Where(p => p.Property.UserSee && p.IsLinkKey)
                 .Select(p => GlobalConfig.GetEntity(p.LinkTable))
                 .Distinct().ToArray();
             if (array.Length == 0)
@@ -239,7 +239,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             '{property.JsonName}' : [{sub}]");
             }
         }
-        private static void DateTimeCheck(IFieldConfig field, StringBuilder code, ref string dot)
+        private static void DateTimeCheck(IPropertyConfig field, StringBuilder code, ref string dot)
         {
             if (field.Max.IsNotEmpty() && field.Min.IsNotEmpty())
                 code.Append($@"{dot}{{ min: {field.Min}, max: {field.Max}, message: '时间从 {field.Min} 到 {field.Max} 之间', trigger: 'blur' }}");
@@ -251,7 +251,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             dot = @",";
         }
 
-        private static void NumberCheck(IFieldConfig field, StringBuilder code, ref string dot)
+        private static void NumberCheck(IPropertyConfig field, StringBuilder code, ref string dot)
         {
             if (field.Max.IsNotEmpty() && field.Min.IsNotEmpty())
                 code.Append($@"{dot}{{ min: {field.Min}, max: {field.Max}, message: '数值从 {field.Min} 到 {field.Max} 之间', trigger: 'blur' }}");
@@ -263,17 +263,18 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             dot = @",";
         }
 
-        private static void StringCheck(IFieldConfig field, StringBuilder code, ref string dot)
+        private static void StringCheck(IPropertyConfig property, StringBuilder code, ref string dot)
         {
-            if (field.Max.IsEmpty() && !field.IsBlob && !field.IsMemo)
-                field.Max = field.Datalen.ToString();
+            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            if (property.Max.IsEmpty() && !field.IsBlob && !field.IsMemo)
+                property.Max = field.Datalen.ToString();
 
-            if (field.Max.IsNotEmpty() && field.Min.IsNotEmpty())
-                code.Append($@"{dot}{{ min: {field.Min}, max: {field.Max}, message: '长度在 {field.Min} 到 {field.Max} 个字符', trigger: 'blur' }}");
-            else if (field.Max.IsNotEmpty())
-                code.Append($@"{dot}{{ max: {field.Max}, message: '长度不大于 {field.Max} 个字符', trigger: 'blur' }}");
-            else if (field.Min.IsNotEmpty())
-                code.Append($@"{dot}{{ min: {field.Min}, message: '长度不小于 {field.Min} 个字符', trigger: 'blur' }}");
+            if (property.Max.IsNotEmpty() && property.Min.IsNotEmpty())
+                code.Append($@"{dot}{{ min: {property.Min}, max: {property.Max}, message: '长度在 {property.Min} 到 {property.Max} 个字符', trigger: 'blur' }}");
+            else if (property.Max.IsNotEmpty())
+                code.Append($@"{dot}{{ max: {property.Max}, message: '长度不大于 {property.Max} 个字符', trigger: 'blur' }}");
+            else if (property.Min.IsNotEmpty())
+                code.Append($@"{dot}{{ min: {property.Min}, message: '长度不小于 {property.Min} 个字符', trigger: 'blur' }}");
             else return;
             dot = @",";
         }

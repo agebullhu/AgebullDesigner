@@ -26,14 +26,14 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         /// <param name="property"></param>
         /// <returns></returns>
-        public static string FieldName(IFieldConfig property) => $"_{property.Name.ToLWord()}";
+        public static string FieldName(IPropertyConfig property) => $"_{property.Name.ToLWord()}";
 
         /// <summary>
         /// 统一的字段名称
         /// </summary>
         /// <param name="property"></param>
         /// <returns></returns>
-        public static string PropertyName(IFieldConfig property) =>
+        public static string PropertyName(IPropertyConfig property) =>
             property.IsInterfaceField && property.Entity.IsInterface
             ? $"{property.Entity.EntityName}.{property.Name}"
             : property.Name;
@@ -41,9 +41,9 @@ namespace Agebull.EntityModel.RobotCoder
         protected abstract bool IsClient { get; }
 
 
-        protected IFieldConfig[] Columns => Model.PublishProperty.OrderBy(p => p.Index).ToArray();
+        protected IPropertyConfig[] Columns => Model.PublishProperty.OrderBy(p => p.Index).ToArray();
 
-        protected IFieldConfig[] ReadWriteColumns => Model.PublishProperty.Where(p => p.CanGet && p.CanSet).OrderBy(p => p.Index).ToArray();
+        protected IPropertyConfig[] ReadWriteColumns => Model.PublishProperty.Where(p => p.CanGet && p.CanSet).OrderBy(p => p.Index).ToArray();
 
 
         #region 通用代码
@@ -110,7 +110,7 @@ namespace Agebull.EntityModel.RobotCoder
             return " : " + string.Join(" , ", list);
         }
 
-        protected void ContentProperty(IFieldConfig property, StringBuilder code)
+        protected void ContentProperty(IPropertyConfig property, StringBuilder code)
         {
             if (property.EnumConfig != null && property.CsType != "string")
             {

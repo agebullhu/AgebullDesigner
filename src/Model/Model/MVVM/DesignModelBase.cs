@@ -91,7 +91,7 @@ namespace Agebull.EntityModel.Designer
             if (command.CanButton)
                 command.IsButton = true;
             command.Source = DesignModel;
-            command.SignleSoruce = true;
+            //command.SignleSoruce = true;
             return true;
         }
         #endregion

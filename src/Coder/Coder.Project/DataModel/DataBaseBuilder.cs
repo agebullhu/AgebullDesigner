@@ -5,6 +5,7 @@ using System.Text;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Config.Mysql;
 using Agebull.EntityModel.Config.SqlServer;
+using Agebull.EntityModel.Config.V2021;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -215,7 +216,7 @@ namespace {Project.NameSpace}.DataAccess
         {");
             foreach (var entity in Project.Entities)
             {
-                CreateeAccess(code, entity);
+                CreateeAccess(code, entity, entity.DataTable);
             }
             code.Append(@"
         }");
@@ -230,16 +231,16 @@ namespace {Project.NameSpace}.DataAccess
         {");
             foreach (var model in Project.Models)
             {
-                CreateeAccess(code, model);
+                CreateeAccess(code, model, model.DataTable);
             }
             code.Append(@"
         }");
             return code.ToString();
         }
 
-        private void CreateeAccess(StringBuilder code, IEntityConfig entity)
+        private void CreateeAccess(StringBuilder code, IEntityConfig entity,DataTableConfig dataTable)
         {
-            if (!entity.EnableDataBase)
+            if (dataTable == null)
                 return;
             var name = entity.IsQuery ? "DataQuery" : "DataAccess";
 
@@ -293,20 +294,20 @@ namespace {Project.NameSpace}.DataAccess
 
         public static string EntityStruct(IEntityConfig entity)
         {
+            var table = entity.DataTable;
             var codeStruct = new StringBuilder();
             int idx = 0;
-            var primary = entity.PrimaryColumn;
-            var last = entity.LastProperties.Where(p => p != primary && !p.NoStorage);
+            var primary = table.Fields.First(p=>p.Property == entity.PrimaryColumn);
+            var last = table.Fields.Where(p => p.Property != primary && !p.NoStorage);
             EntityProperty(codeStruct, entity, primary, ref idx, false);
-            foreach (var property in last.Where(p => !p.IsInterfaceField).OrderBy(p => p.Index))
+            foreach (var property in last.Where(p => !p.Property.IsInterfaceField).OrderBy(p => p.Index))
             {
                 EntityProperty(codeStruct, entity, property, ref idx, true);
             }
-            foreach (var property in last.Where(p => p.IsInterfaceField))
+            foreach (var property in last.Where(p => p.Property.IsInterfaceField))
             {
                 EntityProperty(codeStruct, entity, property, ref idx, true);
             }
-
             return $@"
         #region {entity.Name}({entity.Caption})
 
@@ -340,7 +341,7 @@ namespace {Project.NameSpace}.DataAccess
             /// <summary>
             /// 数据表名称
             /// </summary>
-            public const string tableName = ""{entity.SaveTableName}"";
+            public const string tableName = ""{table.SaveTableName}"";
 
             /// <summary>
             /// 实体说明
@@ -356,54 +357,54 @@ namespace {Project.NameSpace}.DataAccess
 ";
         }
 
-        internal static string EntityProperty(StringBuilder codeStruct, IEntityConfig model, IFieldConfig property, ref int idx, bool pro)
+        internal static string EntityProperty(StringBuilder codeStruct, IEntityConfig model, DataBaseFieldConfig field, ref int idx, bool pro)
         {
             var str = new StringBuilder("new EntityProperty(");
             bool isOutField = false;
-            if (property.Entity != model.Entity)
+            if (field.Entity != model.Entity)
             {
                 if (pro)
                     return null;
                 isOutField = true;
-                str.Append($"{property.Entity.Name}_Struct_.{property.Field.Name}");
+                str.Append($"{field.Entity.Name}_Struct_.{field.Property.Name}");
             }
-            else if (property.IsReference && property.Option.Reference is IFieldConfig rf && rf.IsInterfaceField)
+            else if (field.IsReference && field.Option.Reference is IPropertyConfig rf && rf.IsInterfaceField)
             {
                 if (pro)
                     return null;
                 isOutField = true;
-                var friend = property.Option.Reference as IFieldConfig;
+                var friend = field.Option.Reference as IPropertyConfig;
                 str.Append($"GlobalDataInterfaces.{friend.Entity.Name}.{friend.Name}");
             }
-            else if (property.IsLinkField)
+            else if (field.IsLinkField)
             {
-                var entity = GlobalConfig.GetEntity(property.LinkTable);
+                var entity = GlobalConfig.GetEntity(field.LinkTable);
                 if (entity != null)
                 {
                     if (pro)
                         return null;
-                    var friend = entity.Find(property.LinkField);
+                    var friend = entity.Find(field.LinkField);
                     isOutField = true;
                     str.Append($"{entity.Name}_Struct_.{friend.Name}");
                 }
             }
             if (!isOutField)
             {
-                PropertyStruct(codeStruct, property);
+                PropertyStruct(codeStruct, field);
                 if (pro)
                     return null;
-                str.Append($"{property.Entity.Name}_Struct_.{property.Field.Name}");
+                str.Append($"{field.Entity.Name}_Struct_.{field.Property.Name}");
             }
             str.Append($", {idx++}");
             if (isOutField)
-                str.Append($", \"{property.Name}\", \"{property.Entity.SaveTableName}\", \"{property.DbFieldName}\", {ReadWrite(property)}, {PropertyFeature(property)}");
+                str.Append($", \"{field.Name}\", \"{field.Entity.SaveTableName}\", \"{field.DbFieldName}\", {ReadWrite(field)}, {PropertyFeature(field)}");
             str.Append(")");
             return str.ToString();
         }
 
-        public static string ReadWrite(IFieldConfig property)
+        public static string ReadWrite(DataBaseFieldConfig property)
         {
-            if (property.NoStorage || property.DbInnerField || property.NoProperty)
+            if (property.NoStorage || property.DbInnerField || property.Property.NoProperty)
             {
                 return "ReadWriteFeatrue.None";
             }
@@ -442,38 +443,38 @@ namespace {Project.NameSpace}.DataAccess
             return "ReadWriteFeatrue.None";
         }
 
-        static string PropertyFeature(IFieldConfig property)
+        static string PropertyFeature(DataBaseFieldConfig field)
         {
             var features = new List<string>();
-            if (property.IsInterfaceField)
+            if (field.Property.IsInterfaceField)
                 features.Add("PropertyFeatrue.Interface");
 
-            if (property.NoProperty)
+            if (field.Property.NoProperty)
             {
-                if (!property.NoStorage)
+                if (!field.NoStorage)
                 {
                     features.Add("PropertyFeatrue.Field");
                 }
                 return string.Join(" | ", features);
             }
-            var head = property.IsInterfaceField ? "PropertyFeatrue.Interface | " : "";
-            if (property.IsPrimaryKey)
+            var head = field.Property.IsInterfaceField ? "PropertyFeatrue.Interface | " : "";
+            if (field.Property.IsPrimaryKey)
             {
                 return head + "PropertyFeatrue.PrimaryProperty";
             }
-            if (property.NoStorage)
+            if (field.NoStorage)
             {
                 return head + "PropertyFeatrue.Property";
             }
-            if (property.DbInnerField)
+            if (field.DbInnerField)
             {
                 return head + "PropertyFeatrue.Field";
             }
-            if (property.IsLinkKey)
+            if (field.IsLinkKey)
             {
                 return head + "PropertyFeatrue.ForeignKey";
             }
-            if (property.IsLinkField)
+            if (field.IsLinkField)
             {
                 return head + "PropertyFeatrue.OutProperty";
             }
@@ -481,18 +482,18 @@ namespace {Project.NameSpace}.DataAccess
             return head + "PropertyFeatrue.General";
         }
 
-        static void PropertyStruct(StringBuilder codeStruct, IFieldConfig property)
+        static void PropertyStruct(StringBuilder codeStruct, DataBaseFieldConfig field)
         {
             string featrue;
-            if (property.IsPrimaryKey)
+            if (field.Property.IsPrimaryKey)
             {
                 featrue = "PropertyFeatrue.PrimaryProperty";
             }
-            else if (property.NoStorage)
+            else if (field.NoStorage)
             {
                 featrue = "PropertyFeatrue.Property";
             }
-            else if (!property.DbInnerField && !property.NoProperty)
+            else if (!field.DbInnerField && !field.Property.NoProperty)
             {
                 featrue = "PropertyFeatrue.General";
             }
@@ -504,32 +505,32 @@ namespace {Project.NameSpace}.DataAccess
             codeStruct.Append($@"
 
             /// <summary>
-            /// {property.Caption.ToRemString()}
+            /// {field.Caption.ToRemString()}
             /// </summary>
-            public static PropertyDefault {property.Name} = new PropertyDefault
+            public static PropertyDefault {field.Name} = new PropertyDefault
             {{
-                Name           = ""{property.Name}"",
-                Caption        = @""{property.Caption}"",
-                PropertyType   = typeof({property.CustomType ?? property.CsType}),
-                ValueType      = PropertyValueType.{CsharpHelper.PropertyValueType(property)},
-                CanNull        = {(property.Nullable ? "true" : "false")},
-                DbType         = {DbType(property)},
-                FieldName      = ""{property.DbFieldName}"",
-                JsonName       = ""{property.JsonName}"",
+                Name           = ""{field.Name}"",
+                Caption        = @""{field.Caption}"",
+                PropertyType   = typeof({field.Property.CustomType ?? field.Property.CsType}),
+                ValueType      = PropertyValueType.{CsharpHelper.PropertyValueType(field.Property)},
+                CanNull        = {(field.Property.Nullable ? "true" : "false")},
+                DbType         = {DbType(field)},
+                FieldName      = ""{field.DbFieldName}"",
+                JsonName       = ""{field.Property.JsonName}"",
                 Entity         = entityName,
                 PropertyFeatrue= {featrue},
-                DbReadWrite    = {ReadWrite(property)},
-                CanImport      = {(property.ExtendConfigListBool["easyui", "CanImport"] ? "true" : "false")},
-                CanExport      = {(property.ExtendConfigListBool["easyui", "CanExport"] ? "true" : "false")},
-                Description    = @""{property.Description}""
+                DbReadWrite    = {ReadWrite(field)},
+                CanImport      = {(field.ExtendConfigListBool["easyui", "CanImport"] ? "true" : "false")},
+                CanExport      = {(field.ExtendConfigListBool["easyui", "CanExport"] ? "true" : "false")},
+                Description    = @""{field.Description}""
             }};");
         }
 
-        static string DbType(IFieldConfig field)
+        static string DbType(DataBaseFieldConfig field)
         {
             return field.Entity.Project.DbType == DataBaseType.SqlServer
-                ? $"(int)System.Data.SqlDbType.{SqlServerHelper.ToSqlDbType(field.DbType, field.CsType)}"
-                : $"(int)MySqlConnector.MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field.DbType, field.CsType)}";
+                ? $"(int)System.Data.SqlDbType.{SqlServerHelper.ToSqlDbType(field.FieldType, field.Property.CsType)}"
+                : $"(int)MySqlConnector.MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field.FieldType, field.Property.CsType)}";
         }
 
         #endregion

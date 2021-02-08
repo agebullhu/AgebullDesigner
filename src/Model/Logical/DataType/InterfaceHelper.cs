@@ -16,21 +16,22 @@ namespace Agebull.EntityModel.RobotCoder
         /// ¼ì²é×Ö¶ÎÁ¬½Ó
         /// </summary>
         /// <param name="entity"></param>
-        /// <param name="field"></param>
-        public static void CheckLinkField(IEntityConfig entity, IFieldConfig field)
+        /// <param name="property"></param>
+        public static void CheckLinkField(IEntityConfig entity, IPropertyConfig property)
         {
+            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
             var link = field.IsLinkField ? entity.Project.Find(field.LinkTable) : null;
             var linkField = link?.Find(field.LinkField);
             if (linkField != null)
             {
-                field.Option.ReferenceConfig = linkField;
-                field.Option.IsLink = true;
+                property.Option.ReferenceConfig = linkField;
+                property.Option.IsLink = true;
                 return;
             }
+            field.IsReadonly = false;
             field.IsLinkCaption = false;
             field.IsLinkField = false;
             field.IsLinkKey = false;
-            field.IsCompute = false;
         }
 
         /// <summary>
@@ -52,19 +53,23 @@ namespace Agebull.EntityModel.RobotCoder
                 {
                     if (iField.IsDelete || iField.IsDiscard)
                         continue;
-                    if (!entity.TryGet(out var field, iField.Name, iField.DbFieldName))
+                    if (!entity.TryGet(out var property, iField.Name, iField.DbFieldName))
                     {
                         var f = new FieldConfig();
                         f.Copy(iField);
                         entity.LastProperties.TryAdd(f);
-                        field = f;
-                        field.Index = ++idx;
+                        property = f;
+                        property.Index = ++idx;
                     }
-                    field.IsInterfaceField = true;
-                    field.Option.ReferenceKey = iField.Key;
-                    field.Entity = entity.Entity;
-                    field.Option.ReferenceConfig = iField;
-                    field.Option.IsReference = true;
+                    property.IsInterfaceField = true;
+                    property.Option.ReferenceKey = iField.Key;
+                    property.Entity = entity.Entity;
+                    property.Option.ReferenceConfig = iField;
+                    property.Option.IsReference = true;
+
+                    var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+                    if (field == null)
+                        return;
                     field.LinkTable = entity.Name;
                     field.LinkField = iField.Name;
                 }

@@ -13,19 +13,19 @@ namespace Agebull.EntityModel.RobotCoder
     {
         #region SQL构造
 
-        protected override string LoadFields() => SqlMomentCoder.LoadSql(Model);
+        protected override string LoadFields() => SqlMomentCoder.LoadSql(Model.DataTable);
 
-        protected override string Having() => SqlMomentCoder.HavingSql(Model);
+        protected override string Having() => SqlMomentCoder.HavingSql(Model.DataTable);
 
-        protected override string GroupFields() => SqlMomentCoder.GroupSql(Model);
+        protected override string GroupFields() => SqlMomentCoder.GroupSql(Model.DataTable);
 
         protected override string OrderbyFields()
         {
-            var field = Model.Properties.FirstOrDefault(p => p.Name == Model.OrderField);
+            var field = Model.DataTable.Fields.FirstOrDefault(p => p.Name == Model.OrderField);
             if (field == null)
                 return null;
             return Model is ModelConfig model
-                ? $"{model.ReadTableName}.{field.DbFieldName} {(Model.OrderDesc ? " DESC" : "")}"
+                ? $"{model.DataTable.ReadTableName}.{field.DbFieldName} {(Model.OrderDesc ? " DESC" : "")}"
                 : $"{field.DbFieldName} {(Model.OrderDesc ? " DESC" : "")}";
         }
         protected override string ReadTableName()
@@ -46,8 +46,8 @@ namespace Agebull.EntityModel.RobotCoder
                         : entity.PrimaryColumn;
 
                     var inField = releation.PrimaryEntity == model.Entity
-                        ? Model.PrimaryColumn
-                        : Model.Properties.FirstOrDefault(p => p.IsLinkKey && p.LinkTable == entity.Name);
+                        ? model.DataTable.Fields.FirstOrDefault(p=>p == Model.PrimaryColumn)
+                        : model.DataTable.Fields.FirstOrDefault(p => p.IsLinkKey && p.LinkTable == entity.Name);
 
 
                     code.AppendLine();
@@ -81,8 +81,8 @@ namespace Agebull.EntityModel.RobotCoder
         {
             if (Model.IsQuery)
                 return null;
-            var columns = Model.PublishProperty.Where(p => p.Entity == Model.Entity &&
-                    !p.IsIdentity && !p.IsCompute && !p.CustomWrite &&
+            var columns = Model.DataTable.Fields.Where(p => p.Entity == Model.Entity &&
+                    !p.IsIdentity && !p.IsReadonly && !p.CustomWrite &&
                     !p.DbInnerField &&
                     !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)
                 ).ToArray();
@@ -108,8 +108,8 @@ namespace Agebull.EntityModel.RobotCoder
         {
             if (Model.IsQuery)
                 return null;
-            var columns = Model.PublishProperty.Where(p => p.Entity == Model.Entity &&
-                    !p.IsIdentity && !p.IsCompute && !p.CustomWrite &&
+            var columns = Model.DataTable.Fields.Where(p => p.Entity == Model.Entity &&
+                    !p.IsIdentity && !p.IsReadonly && !p.CustomWrite &&
                     !p.DbInnerField &&
                     !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)
                 ).ToArray();
@@ -136,8 +136,8 @@ namespace Agebull.EntityModel.RobotCoder
                 return null;
             var isFirst = true;
             var sql = new StringBuilder();
-            var columns = Model.PublishProperty.Where(p => p.Entity == Model.Entity &&
-                    !p.IsIdentity && !p.IsCompute && !p.CustomWrite &&
+            var columns = Model.DataTable.Fields.Where(p => p.Entity == Model.Entity &&
+                    !p.IsIdentity && !p.IsReadonly && !p.CustomWrite &&
                     !p.DbInnerField &&
                     !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)
                 ).ToArray();
@@ -176,22 +176,22 @@ namespace Agebull.EntityModel.RobotCoder
         public void SetEntityParameter(DbCommand cmd,{Model.EntityName} entity)
         {{");
 
-            foreach (var property in Model.PublishProperty.Where(p => !p.DbInnerField).OrderBy(p => p.Index))
+            foreach (var field in Model.DataTable.Fields.Where(p => !p.DbInnerField).OrderBy(p => p.Index))
             {
-                if (!string.IsNullOrWhiteSpace(property.CustomType))
+                if (!string.IsNullOrWhiteSpace(field.Property.CustomType))
                 {
                     code.Append($@"
-            cmd.Parameters.Add(new MySqlParameter(""{property.Name}"", ({property.CsType})entity.{property.Name}));");
+            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"", ({field.CsType})entity.{field.Name}));");
                 }
-                else if (property.CsType.Equals("bool", StringComparison.OrdinalIgnoreCase))
+                else if (field.CsType.Equals("bool", StringComparison.OrdinalIgnoreCase))
                 {
                     code.Append($@"
-            cmd.Parameters.Add(new MySqlParameter(""{property.Name}"", entity.{property.Name} ? (byte)1 : (byte)0));");
+            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"", entity.{field.Name} ? (byte)1 : (byte)0));");
                 }
                 else
                 {
                     code.Append($@"
-            cmd.Parameters.Add(new MySqlParameter(""{property.Name}"", entity.{property.Name}));");
+            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"", entity.{field.Name}));");
                 }
             }
             code.Append(@"
@@ -215,15 +215,15 @@ namespace Agebull.EntityModel.RobotCoder
             switch (property)
             {");
 
-            foreach (var property in Model.DbFields)
+            foreach (var field in Model.DataTable.Fields)
             {
-                if (property.DbFieldName.ToLower() != property.Name.ToLower())
+                if (field.DbFieldName.ToLower() != field.Name.ToLower())
                     code.Append($@"
-                case ""{property.DbFieldName.ToLower()}"":");
+                case ""{field.DbFieldName.ToLower()}"":");
 
                 code.Append($@"
-                case ""{property.Name.ToLower()}"":
-                    return (int)MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(property.DbType, property.CsType)};");
+                case ""{field.Name.ToLower()}"":
+                    return (int)MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field.FieldType, field.CsType)};");
             }
 
             code.Append(@"
@@ -248,7 +248,7 @@ namespace Agebull.EntityModel.RobotCoder
         {{
             var reader = r as MySqlDataReader;");
             int idx = 0;
-            foreach (var property in Model.DbFields.Where(p => !p.DbInnerField && !p.NoProperty && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)))
+            foreach (var property in Model.DataTable.Fields.Where(p => !p.DbInnerField && !p.NoStorage && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)))
             {
                 SqlMomentCoder.FieldReadCode(property, code, idx++);
             }
@@ -315,8 +315,8 @@ namespace Agebull.EntityModel.RobotCoder
                     : friend.PrimaryColumn;
 
                 var inField = re.PrimaryEntity == model.Entity
-                    ? Model.PrimaryColumn
-                    : Model.Properties.FirstOrDefault(p => p.IsLinkKey && p.LinkTable == friend.Name);
+                    ? Model.DataTable.Fields.FirstOrDefault(p => p == Model.PrimaryColumn)
+                    : Model.DataTable.Fields.FirstOrDefault(p => p.IsLinkKey && p.LinkTable == friend.Name);
 
                 code.Append($@"
             {{

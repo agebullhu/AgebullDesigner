@@ -16,24 +16,24 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         /// 存储类型
         /// </summary>
-        [DataMember, JsonProperty("dbType", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _dbType;
+        [DataMember, JsonProperty("fieldType", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal string _fieldType;
 
         /// <summary>
         /// 存储类型
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
         [Category(""), DisplayName(@"存储类型"), Description(@"存储类型")]
-        public string DbType
+        public string FieldType
         {
-            get => _dbType;
+            get => _fieldType;
             set
             {
-                if (_dbType == value)
+                if (_fieldType == value)
                     return;
-                BeforePropertyChanged(nameof(DbType), _dbType, value);
-                _dbType = value;
-                OnPropertyChanged(nameof(DbType));
+                BeforePropertyChanged(nameof(FieldType), _fieldType, value);
+                _fieldType = value;
+                OnPropertyChanged(nameof(FieldType));
             }
         }
 
@@ -424,6 +424,290 @@ namespace Agebull.EntityModel.Config.V2021
                 OnPropertyChanged(nameof(NoStorage));
             }
         }
+
+        /// <summary>
+        /// 自增字段
+        /// </summary>/// <remarks>
+        /// 自增列,通过数据库(或REDIS)自动增加
+        /// </remarks>
+        [DataMember, JsonProperty("isIdentity", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isIdentity;
+
+        /// <summary>
+        /// 自增字段
+        /// </summary>/// <remarks>
+        /// 自增列,通过数据库(或REDIS)自动增加
+        /// </remarks>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName(@"自增字段"), Description(@"自增列,通过数据库(或REDIS)自动增加")]
+        public bool IsIdentity
+        {
+            get => _isIdentity;
+            set
+            {
+                if (_isIdentity == value)
+                    return;
+                BeforePropertyChanged(nameof(IsIdentity), _isIdentity, value);
+                _isIdentity = value;
+                OnPropertyChanged(nameof(IsIdentity));
+            }
+        }
+
+        /// <summary>
+        /// 汇总方法
+        /// </summary>
+        [DataMember, JsonProperty("function", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal string _function;
+
+        /// <summary>
+        /// 汇总方法
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName(@"汇总方法"), Description(@"汇总方法")]
+        public string Function
+        {
+            get => _function;
+            set
+            {
+                if (_function == value)
+                    return;
+                BeforePropertyChanged(nameof(Function), _function, value);
+                _function = value;
+                OnPropertyChanged(nameof(Function));
+            }
+        }
+
+        /// <summary>
+        /// 汇总条件
+        /// </summary>
+        [DataMember, JsonProperty("having", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal string _having;
+
+        /// <summary>
+        /// 汇总条件
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName(@"汇总条件"), Description(@"汇总条件")]
+        public string Having
+        {
+            get => _having;
+            set
+            {
+                if (_having == value)
+                    return;
+                BeforePropertyChanged(nameof(Having), _having, value);
+                _having = value;
+                OnPropertyChanged(nameof(Having));
+            }
+        }
+
+        /// <summary>
+        /// 值类型
+        /// </summary>
+        [DataMember, JsonProperty("valueType", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal string _valueType;
+
+        /// <summary>
+        /// 值类型
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName(@"值类型"), Description(@"值类型")]
+        public string ValueType
+        {
+            get => _valueType;
+            set
+            {
+                if (_valueType == value)
+                    return;
+                BeforePropertyChanged(nameof(ValueType), _valueType, value);
+                _valueType = value;
+                OnPropertyChanged(nameof(ValueType));
+            }
+        }
+
+        /// <summary>
+        /// 上级外键
+        /// </summary>
+        [DataMember, JsonProperty("isParent", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isParent;
+
+        /// <summary>
+        /// 上级外键
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName(@"上级外键"), Description(@"上级外键")]
+        public bool IsParent
+        {
+            get => _isParent;
+            set
+            {
+                if (_isParent == value)
+                    return;
+                BeforePropertyChanged(nameof(IsParent), _isParent, value);
+                _isParent = value;
+                OnPropertyChanged(nameof(IsParent));
+            }
+        }
+
+        /// <summary>
+        /// 连接字段
+        /// </summary>
+        [DataMember, JsonProperty("isLinkField", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isLinkField;
+
+        /// <summary>
+        /// 连接字段
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName(@"连接字段"), Description(@"连接字段")]
+        public bool IsLinkField
+        {
+            get => _isLinkField;
+            set
+            {
+                if (_isLinkField == value)
+                    return;
+                BeforePropertyChanged(nameof(IsLinkField), _isLinkField, value);
+                _isLinkField = value;
+                OnPropertyChanged(nameof(IsLinkField));
+            }
+        }
+
+        /// <summary>
+        /// 关联表名
+        /// </summary>
+        [DataMember, JsonProperty("linkTable", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal string _linkTable;
+
+        /// <summary>
+        /// 关联表名
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName(@"关联表名"), Description(@"关联表名")]
+        public string LinkTable
+        {
+            get => _linkTable;
+            set
+            {
+                if (_linkTable == value)
+                    return;
+                BeforePropertyChanged(nameof(LinkTable), _linkTable, value);
+                _linkTable = value;
+                OnPropertyChanged(nameof(LinkTable));
+            }
+        }
+
+        /// <summary>
+        /// 关联表主键
+        /// </summary>/// <remarks>
+        /// 关联表主键,即与另一个实体关联的外键
+        /// </remarks>
+        [DataMember, JsonProperty("isLinkKey", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isLinkKey;
+
+        /// <summary>
+        /// 关联表主键
+        /// </summary>/// <remarks>
+        /// 关联表主键,即与另一个实体关联的外键
+        /// </remarks>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName(@"关联表主键"), Description(@"关联表主键,即与另一个实体关联的外键")]
+        public bool IsLinkKey
+        {
+            get => _isLinkKey;
+            set
+            {
+                if (_isLinkKey == value)
+                    return;
+                BeforePropertyChanged(nameof(IsLinkKey), _isLinkKey, value);
+                _isLinkKey = value;
+                OnPropertyChanged(nameof(IsLinkKey));
+            }
+        }
+
+        /// <summary>
+        /// 关联表标题
+        /// </summary>/// <remarks>
+        /// 关联表标题,即此字段为关联表的标题内容
+        /// </remarks>
+        [DataMember, JsonProperty("isLinkCaption", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isLinkCaption;
+
+        /// <summary>
+        /// 关联表标题
+        /// </summary>/// <remarks>
+        /// 关联表标题,即此字段为关联表的标题内容
+        /// </remarks>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName(@"关联表标题"), Description(@"关联表标题,即此字段为关联表的标题内容")]
+        public bool IsLinkCaption
+        {
+            get => _isLinkCaption;
+            set
+            {
+                if (_isLinkCaption == value)
+                    return;
+                BeforePropertyChanged(nameof(IsLinkCaption), _isLinkCaption, value);
+                _isLinkCaption = value;
+                OnPropertyChanged(nameof(IsLinkCaption));
+            }
+        }
+
+        /// <summary>
+        /// 关联字段名称
+        /// </summary>/// <remarks>
+        /// 关联字段名称,即在关联表中的字段名称
+        /// </remarks>
+        [DataMember, JsonProperty("linkField", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal string _linkField;
+
+        /// <summary>
+        /// 关联字段名称
+        /// </summary>/// <remarks>
+        /// 关联字段名称,即在关联表中的字段名称
+        /// </remarks>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName(@"关联字段名称"), Description(@"关联字段名称,即在关联表中的字段名称")]
+        public string LinkField
+        {
+            get => _linkField;
+            set
+            {
+                if (_linkField == value)
+                    return;
+                BeforePropertyChanged(nameof(LinkField), _linkField, value);
+                _linkField = value;
+                OnPropertyChanged(nameof(LinkField));
+            }
+        }
+
+        /// <summary>
+        /// 是否只读
+        /// </summary>/// <remarks>
+        /// 指数据只可读,无法写入的场景,如此字段为汇总字段
+        /// </remarks>
+        [DataMember, JsonProperty("isReadonly", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isReadonly;
+
+        /// <summary>
+        /// 是否只读
+        /// </summary>/// <remarks>
+        /// 指数据只可读,无法写入的场景,如此字段为汇总字段
+        /// </remarks>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName(@"是否只读"), Description(@"指数据只可读,无法写入的场景,如此字段为汇总字段")]
+        public bool IsReadonly
+        {
+            get => _isReadonly;
+            set
+            {
+                if (_isReadonly == value)
+                    return;
+                BeforePropertyChanged(nameof(IsReadonly), _isReadonly, value);
+                _isReadonly = value;
+                OnPropertyChanged(nameof(IsReadonly));
+            }
+        }
         #endregion 字段
 
         #region 兼容性升级
@@ -458,6 +742,10 @@ namespace Agebull.EntityModel.Config.V2021
             base.CopyFrom(dest);
             if (dest is IDataBaseFieldConfig cfg)
                 CopyProperty(cfg);
+            if (dest is FieldConfig cefg)
+                CopyProperty(cefg);
+            if (dest is PropertyConfig p)
+                CopyProperty(p);
         }
 
         /// <summary>
@@ -467,7 +755,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <returns></returns>
         public void CopyProperty(IDataBaseFieldConfig dest)
         {
-            DbType = dest.DbType;
+            FieldType = dest.FieldType;
             DbFieldName = dest.DbFieldName;
             KeepUpdate = dest.KeepUpdate;
             DbNullable = dest.DbNullable;
@@ -483,7 +771,92 @@ namespace Agebull.EntityModel.Config.V2021
             CustomWrite = dest.CustomWrite;
             StorageProperty = dest.StorageProperty;
             NoStorage = dest.NoStorage;
+            IsIdentity = dest.IsIdentity;
+            Function = dest.Function;
+            Having = dest.Having;
+            ValueType = dest.ValueType;
+            IsParent = dest.IsParent;
+            IsLinkField = dest.IsLinkField;
+            LinkTable = dest.LinkTable;
+            IsLinkKey = dest.IsLinkKey;
+            IsLinkCaption = dest.IsLinkCaption;
+            LinkField = dest.LinkField;
+            IsReadonly = dest.IsReadonly;
+        }
+
+
+        /// <summary>
+        /// 字段复制
+        /// </summary>
+        /// <param name="dest">复制源</param>
+        /// <returns></returns>
+        public void CopyProperty(FieldConfig dest)
+        {
+            FieldType = dest.FieldType;
+            DbFieldName = dest.DbFieldName;
+            KeepUpdate = dest.KeepUpdate;
+            DbNullable = dest.DbNullable;
+            NeedDbIndex = dest.NeedDbIndex;
+            Datalen = dest.Datalen;
+            Scale = dest.Scale;
+            IsDbIndex = dest.IsDbIndex;
+            FixedLength = dest.FixedLength;
+            IsMemo = dest.IsMemo;
+            IsBlob = dest.IsBlob;
+            DbInnerField = dest.DbInnerField;
+            KeepStorageScreen = dest.KeepStorageScreen;
+            CustomWrite = dest.CustomWrite;
+            StorageProperty = dest.StorageProperty;
+            NoStorage = dest.NoStorage;
+            IsIdentity = dest.IsIdentity;
+            Function = dest.Function;
+            Having = dest.Having;
+            ValueType = dest.ValueType;
+            IsParent = dest.IsParent;
+            IsLinkField = dest.IsLinkField;
+            LinkTable = dest.LinkTable;
+            IsLinkKey = dest.IsLinkKey;
+            IsLinkCaption = dest.IsLinkCaption;
+            LinkField = dest.LinkField;
+            IsReadonly = dest.IsReadonly;
+        }
+
+        /// <summary>
+        /// 字段复制
+        /// </summary>
+        /// <param name="dest">复制源</param>
+        /// <returns></returns>
+        public void CopyProperty(PropertyConfig dest)
+        {
+            FieldType = dest.FieldType;
+            DbFieldName = dest.DbFieldName;
+            KeepUpdate = dest.KeepUpdate;
+            DbNullable = dest.DbNullable;
+            NeedDbIndex = dest.NeedDbIndex;
+            Datalen = dest.Datalen;
+            Scale = dest.Scale;
+            IsDbIndex = dest.IsDbIndex;
+            FixedLength = dest.FixedLength;
+            IsMemo = dest.IsMemo;
+            IsBlob = dest.IsBlob;
+            DbInnerField = dest.DbInnerField;
+            KeepStorageScreen = dest.KeepStorageScreen;
+            CustomWrite = dest.CustomWrite;
+            StorageProperty = dest.StorageProperty;
+            NoStorage = dest.NoStorage;
+            IsIdentity = dest.IsIdentity;
+            Function = dest.Function;
+            Having = dest.Having;
+            ValueType = dest.ValueType;
+            IsParent = dest.IsParent;
+            IsLinkField = dest.IsLinkField;
+            LinkTable = dest.LinkTable;
+            IsLinkKey = dest.IsLinkKey;
+            IsLinkCaption = dest.IsLinkCaption;
+            LinkField = dest.LinkField;
+            IsReadonly = dest.IsReadonly;
         }
         #endregion 字段复制
     }
 }
+

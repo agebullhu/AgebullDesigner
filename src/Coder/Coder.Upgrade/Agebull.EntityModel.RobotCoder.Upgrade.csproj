@@ -18,6 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="UpgradeMomentCoder.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Coder.Sql\Agebull.EntityModel.RobotCoder.DataBase.csproj" />
     <ProjectReference Include="..\..\Model\Model\Agebull.EntityModel.Designer.Model.csproj" />
   </ItemGroup>

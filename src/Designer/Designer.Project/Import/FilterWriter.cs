@@ -113,7 +113,7 @@ namespace Agebull.EntityModel.Designer
                     column.IsCompute = storeGeneratedPattern == "Compute";
                     column.IsIdentity = storeGeneratedPattern == "Identity";
 
-                    column.DbType = GetAttribute(xProperty, "Type");
+                    column.FieldType = GetAttribute(xProperty, "Type");
                     column.Datalen = GetAttribute(xProperty, "MaxLength", int.MaxValue);
                     column.Min = GetAttribute(xProperty, "MinLength");
                     column.Nullable = GetAttribute(xProperty, "Nullable", true);
@@ -131,7 +131,7 @@ namespace Agebull.EntityModel.Designer
                     }
                     if (column.IsIdentity)
                     {
-                        column.DbType = "INT";
+                        column.FieldType = "INT";
                         column.Nullable = false;
                     }
                 }

@@ -8,10 +8,10 @@ namespace Agebull.EntityModel.Config
     /// </summary>
     public class EntitySorter : ConfigModelBase
     {
-        List<IFieldConfig> columns;
-        List<IFieldConfig> dcs;
+        List<IPropertyConfig> columns;
+        List<IPropertyConfig> dcs;
         private IEntityConfig entity;
-        IFieldConfig pk, pc;
+        IPropertyConfig pk, pc;
         /// <summary>
         /// 表结构对象
         /// </summary>
@@ -61,7 +61,7 @@ namespace Agebull.EntityModel.Config
             {
                 pc.Option.Index = ++idx;
             }
-            IEnumerable<IFieldConfig> fields = columns.Where(p => !string.IsNullOrWhiteSpace(p.Group));
+            IEnumerable<IPropertyConfig> fields = columns.Where(p => !string.IsNullOrWhiteSpace(p.Group));
             if (!string.IsNullOrEmpty(pk.Group))
             {
                 foreach (var column in columns.Where(p => p.Group == pk.Group).OrderBy(p => p.Index))

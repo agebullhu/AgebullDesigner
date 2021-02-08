@@ -477,7 +477,7 @@ namespace Agebull.EntityModel.Designer
                         Description = desc,
                         DbFieldName = field,
                         CsType = "string",
-                        DbType = "nvarchar",
+                        FieldType = "nvarchar",
                         DbNullable = true,
                         Nullable = true,
                         CanEmpty = true

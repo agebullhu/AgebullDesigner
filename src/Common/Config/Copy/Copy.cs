@@ -420,7 +420,7 @@
             KeepUpdate = dest.KeepUpdate;
             DbFieldName = dest.DbFieldName;
             DbNullable = dest.DbNullable;
-            DbType = dest.DbType;
+            FieldType = dest.FieldType;
             Datalen = dest.Datalen;
             ArrayLen = dest.ArrayLen;
             Scale = dest.Scale;
@@ -638,7 +638,7 @@
             JsonName = dest.JsonName;
             DataType = dest.DataType;
             CsType = dest.CsType;
-            DbType = dest.DbType;
+            FieldType = dest.FieldType;
             KeepStorageScreen = dest.KeepStorageScreen;
             Initialization = dest.Initialization;
             Function = dest.Function;
@@ -820,42 +820,4 @@
         }
     }
 
-    partial class UserCommandConfig
-    {
-        /// <summary>
-        /// 字段复制
-        /// </summary>
-        /// <param name="dest">复制源</param>
-        protected override void CopyFrom(SimpleConfig dest)
-        {
-            base.CopyFrom(dest);
-            if (dest is UserCommandConfig cfg)
-                CopyProperty(cfg);
-        }
-
-        /// <summary>
-        /// 字段复制
-        /// </summary>
-        /// <param name="dest">复制源</param>
-        public void Copy(UserCommandConfig dest)
-        {
-            CopyFrom(dest);
-        }
-
-        /// <summary>
-        /// 字段复制
-        /// </summary>
-        /// <param name="dest">复制源</param>
-        /// <returns></returns>
-        public void CopyProperty(UserCommandConfig dest)
-        {
-            Button = dest.Button;
-            Icon = dest.Icon;
-            IsLocalAction = dest.IsLocalAction;
-            IsSingleObject = dest.IsSingleObject;
-            IsMulitOperator = dest.IsMulitOperator;
-            JsMethod = dest.JsMethod;
-            Api = dest.Api;
-        }
-    }
 }

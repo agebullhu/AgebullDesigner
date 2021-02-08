@@ -157,54 +157,54 @@ namespace Agebull.EntityModel.Config
                 case "string":
                 case "nvarchar":
                     column.CsType = "string";
-                    column.DbType = "NVARCHAR";
+                    column.FieldType = "NVARCHAR";
                     break;
                 case "b":
                 case "bool":
                     column.CsType = "bool";
-                    column.DbType = "BOOL";
+                    column.FieldType = "BOOL";
                     break;
                 case "i":
                 case "int":
                     column.CsType = "int";
-                    column.DbType = "int";
+                    column.FieldType = "int";
                     break;
                 case "l":
                 case "long":
                 case "bigint":
                     column.CsType = "long";
-                    column.DbType = "BIGINT";
+                    column.FieldType = "BIGINT";
                     break;
                 case "d":
                 case "decimal":
                 case "money":
                 case "numeric":
                     column.CsType = "decimal";
-                    column.DbType = "decimal";
+                    column.FieldType = "decimal";
                     break;
                 case "f":
                 case "float":
                     column.CsType = "double";
-                    column.DbType = "double";
+                    column.FieldType = "double";
                     break;
                 case "p":
                     column.IsPrimaryKey = true;
                     column.CsType = "int";
-                    column.DbType = "int";
+                    column.FieldType = "int";
                     break;
                 case "u":
                     column.IsUserId = true;
                     column.CsType = "int";
-                    column.DbType = "int";
+                    column.FieldType = "int";
                     break;
                 case "datetime":
                     column.IsUserId = true;
                     column.CsType = "DateTime";
-                    column.DbType = "DateTime";
+                    column.FieldType = "DateTime";
                     break;
                 default:
                     column.CsType = tp;
-                    column.DbType = tp;
+                    column.FieldType = tp;
                     break;
             }
         }
@@ -257,7 +257,7 @@ namespace Agebull.EntityModel.Config
                     DbFieldName = name,
                     Name = name,
                     CsType = "string",
-                    DbType = "nvarchar"
+                    FieldType = "nvarchar"
                 });
                 column.Option.Index = idx++;
                 if (words.Length > 1)

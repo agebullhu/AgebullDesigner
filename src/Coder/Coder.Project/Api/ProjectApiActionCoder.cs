@@ -191,14 +191,14 @@ namespace {NameSpace}.WebApi
         public string QueryCode()
         {
             var code = new StringBuilder();
-            var properties = Model.LastProperties.Where(p => !p.NoStorage && p.CanUserQuery);
+            var fields = Model.DataTable.Fields.Where(p => !p.NoStorage && p.Property.CanUserQuery);
             code.Append(@"
             if (RequestArgumentConvert.TryGet(""_value_"", out string _value_)  && !string.IsNullOrEmpty(_value_))
             {
                 var field = RequestArgumentConvert.GetString(""_field_"");
                 ");
 
-            var querys = properties.Where(p => p.CsType == "string" && !p.IsLinkKey && !p.IsBlob).ToArray();
+            var querys = fields.Where(p => p.Property.CsType == "string" && !p.IsLinkKey && !p.IsBlob).ToArray();
             if (querys.Length > 0)
             {
                 code.Append(@"if (string.IsNullOrWhiteSpace(field) || field == ""_any_"")
@@ -219,9 +219,10 @@ namespace {NameSpace}.WebApi
             code.Append(@"RequestArgumentConvert.SetArgument(field,_value_);
             }");
 
-            foreach (var pro in properties)
+            foreach (var field in fields)
             {
-                if (pro.IsPrimaryKey || pro.IsLinkKey)
+                var pro = field.Property;
+                if (pro.Field.IsPrimaryKey || field.IsLinkKey)
                 {
                     if (pro.CsType == "string")
                         code.Append($@"
@@ -491,14 +492,14 @@ namespace {NameSpace}.WebApi
             //{group.Key ?? "ÆÕÍ¨×Ö¶Î"}");
                 foreach (var pro in group.OrderBy(p => p.Index))
                 {
-                    var field = pro;
-                    if (field == model.PrimaryColumn)
+                    var field = model.DataTable.Fields.FirstOrDefault(p=>p.Property == pro) ;
+                    if (pro == model.PrimaryColumn)
                     {
                         continue;
                     }
                     code.Append(@"
             if(");
-                    if (field.IsPrimaryKey || field.KeepUpdate)
+                    if (pro.IsPrimaryKey || field.KeepUpdate)
                     {
                         code.Append(@"!convert.IsUpdata && ");
 
@@ -507,10 +508,10 @@ namespace {NameSpace}.WebApi
                     {
                         code.Append(@"convert.IsUpdata && ");
                     }
-                    switch (field.DataType)
+                    switch (pro.DataType)
                     {
-                        case "ByteArray" when field.IsImage:
-                            code.Append($@"convert.TryGetValue(""{field.JsonName}"" , out string file))
+                        case "ByteArray" when pro.IsImage:
+                            code.Append($@"convert.TryGetValue(""{pro.JsonName}"" , out string file))
             {{
                 if (string.IsNullOrWhiteSpace(file))
                     data.{pro.Name}_Base64 = null;
@@ -525,23 +526,23 @@ namespace {NameSpace}.WebApi
             }}");
                             continue;
                         case "ByteArray":
-                            code.Append($@"convert.TryGetValue(""{field.JsonName}"" , out string {pro.Name}))
+                            code.Append($@"convert.TryGetValue(""{pro.JsonName}"" , out string {pro.Name}))
                 data.{pro.Name}_Base64 = {pro.Name};");
                             continue;
                     }
-                    if (field.IsEnum && !string.IsNullOrWhiteSpace(field.CustomType))
+                    if (pro.IsEnum && !string.IsNullOrWhiteSpace(pro.CustomType))
                     {
-                        code.Append($@"convert.TryGetEnum(""{field.JsonName}"" , out {field.CustomType} {pro.Name}))
+                        code.Append($@"convert.TryGetEnum(""{pro.JsonName}"" , out {pro.CustomType} {pro.Name}))
                 data.{pro.Name} = {pro.Name};");
                     }
-                    else if (!string.IsNullOrWhiteSpace(field.CustomType))
+                    else if (!string.IsNullOrWhiteSpace(pro.CustomType))
                     {
-                        code.Append($@"convert.TryGetValue(""{field.JsonName}"" , out {field.CsType} {pro.Name}))
-                data.{pro.Name} = ({field.CustomType}){pro.Name};");
+                        code.Append($@"convert.TryGetValue(""{pro.JsonName}"" , out {pro.CsType} {pro.Name}))
+                data.{pro.Name} = ({pro.CustomType}){pro.Name};");
                     }
                     else
                     {
-                        code.Append($@"convert.TryGetValue(""{field.JsonName}"" , out {field.CsType} {pro.Name}))
+                        code.Append($@"convert.TryGetValue(""{pro.JsonName}"" , out {pro.CsType} {pro.Name}))
                 data.{pro.Name} = {pro.Name};");
                     }
                 }
