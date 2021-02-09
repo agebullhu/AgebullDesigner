@@ -507,7 +507,7 @@ namespace Agebull.EntityModel.Config
             {
                 folders.Add(BranchFolder);
             }
-            if (!end.IsEmpty())
+            if (!end.IsBlank())
             {
                 folders.Add(end);
             }

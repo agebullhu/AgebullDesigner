@@ -1,4 +1,5 @@
 ﻿using Agebull.EntityModel.Config.V2021;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -90,7 +91,7 @@ namespace Agebull.EntityModel.Config
                 return hase;
             }
             FieldConfig pro = field.IsLinkKey ? table.PrimaryColumn : table.Find(field.LinkField);
-            if (pro == null && !field.Option.ReferenceKey.IsEmpty())
+            if (pro == null && !field.Option.ReferenceKey.IsBlank())
             {
                 pro = GlobalConfig.GetConfig<FieldConfig>(field.Option.ReferenceKey);
             }

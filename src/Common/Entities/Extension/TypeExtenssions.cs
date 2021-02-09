@@ -11,20 +11,6 @@ namespace Agebull.EntityModel
     public static class TypeExtenssions
     {
         /// <summary>
-        /// 是否NULL或空字符串
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        public static bool IsEmpty(this string str) => string.IsNullOrWhiteSpace(str);
-
-        /// <summary>
-        /// 是否NULL或空字符串
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        public static bool IsNotEmpty(this string str) => !string.IsNullOrWhiteSpace(str);
-
-        /// <summary>
         /// 是否null或长度为0的数组
         /// </summary>
         /// <param name="array">数组</param>

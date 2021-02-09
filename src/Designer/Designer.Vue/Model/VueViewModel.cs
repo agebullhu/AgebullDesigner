@@ -11,8 +11,6 @@
 using Agebull.Common;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Config.V2021;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -31,18 +29,19 @@ namespace Agebull.EntityModel.Designer
 
     }
 
-    internal class VueModel : EntityExtendModel<PageConfig,UserInterfaceField>
+    internal class VueModel : EditorModel
     {
+        #region 操作命令
 
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        protected override void DoInitialize()
+        public VueModel()
         {
-            base.DoInitialize();
-            Extend = Entity?.Page;
-
+            Model = DataModelDesignModel.Current;
+            Context = DataModelDesignModel.Current?.Context;
         }
+
+        #endregion
+
+
         #region 代码
 
         internal static void CheckUi(IEntityConfig entity)
@@ -74,7 +73,7 @@ namespace Agebull.EntityModel.Designer
                 field.CanUserQuery = field.UserSee;
             }
         }
-        
+
 
         internal static void CheckUiType(IEntityConfig entity)
         {
@@ -131,7 +130,7 @@ namespace Agebull.EntityModel.Designer
             var cap = entity.CaptionColumn;
             foreach (var property in entity.Properties)
             {
-                var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+                var field = entity.DataTable[property];
                 if (property.IsSystemField || property.IsDiscard || !property.UserSee)
                 {
                     property.IsRequired = false;
@@ -139,7 +138,7 @@ namespace Agebull.EntityModel.Designer
                     property.NoneDetails = true;
                     continue;
                 }
-                if(property == cap)
+                if (property == cap)
                 {
                     property.CanEmpty = false;
                     property.IsRequired = true;
@@ -173,11 +172,11 @@ namespace Agebull.EntityModel.Designer
                 }
             }
 
-            foreach (var property in entity.Properties)
+            foreach (var field in entity.Properties)
             {
-                if (property.IsPrimaryKey || !property.NoneGrid ||
-                    property.Name == "DataState" || property.Name == "AuditState" || property.Name == "IsFreeze")
-                    property.ExtendConfigListBool["easyui", "simple"] = true;
+                if (field.IsPrimaryKey || !field.NoneGrid ||
+                    field.Name == "DataState" || field.Name == "AuditState" || field.Name == "IsFreeze")
+                    field.ExtendConfigListBool["easyui", "simple"] = true;
             }
             if (entity.Properties.Count(p => !p.NoneDetails) > 12)
                 entity.FormCloumn = 2;

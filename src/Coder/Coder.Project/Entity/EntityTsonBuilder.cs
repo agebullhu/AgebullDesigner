@@ -190,7 +190,7 @@ namespace Agebull.EntityModel.RobotCoder
                 {
                     code.Append($@"
             //{field.Caption}
-            if(!writer.IsEmpty(this._{field.Name.ToLWord()}))
+            if(!writer.IsBlank(this._{field.Name.ToLWord()}))
             {{
                 writer.WriteIndex(FIELD_INDEX_{Model.Name.ToUpper()}_{field.Name.ToUpper()});
                 writer.Write(this._{field.Name.ToLWord()});

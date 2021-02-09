@@ -39,7 +39,7 @@ namespace Agebull.EntityModel.Designer
                         TargetConfig.DataTable = null;
                     }
                     break;
-                case nameof(TargetConfig.EnableUI):
+                /*case nameof(TargetConfig.EnableUI):
                     if (TargetConfig.EnableUI)
                     {
                         ConfigLoader.LoadPage(TargetConfig as IEntityConfig, Path.GetDirectoryName(TargetConfig.SaveFileName));
@@ -54,7 +54,7 @@ namespace Agebull.EntityModel.Designer
                         ConfigWriter.SaveExtendConfig(TargetConfig, TargetConfig.Page);
                         TargetConfig.Page = null;
                     }
-                    break;
+                    break;*/
             }
         }
 

@@ -64,7 +64,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
         static string HtmlAttribute(string attr, string value)
         {
-            return value.IsEmpty() ? "" : $" {attr}= '{value}'";
+            return value.IsBlank() ? "" : $" {attr}= '{value}'";
         }
         string ToNoFromSection(string html) => Model.DetailsPage
             ? $@"
@@ -85,7 +85,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
         string FormatSpace(int level, string html)
         {
-            return html.IsEmpty() ? null : html.SpaceLine(level * 4);
+            return html.IsBlank() ? null : html.SpaceLine(level * 4);
         }
 
         string Formater(IPropertyConfig property)
@@ -476,14 +476,14 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             code.Append($@"
     <el-form-item label='{caption}' prop='{property.JsonName}'{style}>");
 
-            if (field.Prefix.IsNotEmpty())
+            if (field.Prefix.IsBlank())
                 code.Append($@"
         <span>{field.Prefix}&nbsp;</span>");
             if (Model.IsUiReadOnly || property.IsUserReadOnly)
                 ReadonlyField(code, field);
             else
                 EditField(code, field, description);
-            if (field.Suffix.IsNotEmpty())
+            if (field.Suffix.IsBlank())
                 code.Append($@"
         <span>{field.Suffix}</span>");
             code.Append(@"

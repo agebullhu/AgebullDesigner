@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -509,7 +510,7 @@ ALTER TABLE `{dataTable.SaveTableName}`
                 return " AUTO_INCREMENT";
             if (col.Property.IsPrimaryKey)
                 return Empty;
-            if (col.Property.Initialization.IsEmpty())
+            if (col.Property.Initialization.IsBlank())
             {
                 if (col.DbNullable)
                     return null;

@@ -416,7 +416,7 @@ namespace {NameSpace}.WebApi
         /// <param name=""id"">Ñ¡ÔñµÄID</param>
         [Route(""{cmd.Api}"")]
         public async Task<IApiResult> On{cmd.Name}(long id) => await");
-                    if (cmd.ServiceCommand.IsEmpty())
+                    if (cmd.ServiceCommand.IsBlank())
                         code.Append($@" this.Business.{cmd.Name}(id)  ? ApiResultHelper.Succees() : ApiResultHelper.Helper.ArgumentError;");
                     else
                         code.Append($@" {cmd.ServiceCommand}(id);");
@@ -437,7 +437,7 @@ namespace {NameSpace}.WebApi
             if (!RequestArgumentConvert.TryGetIDs(""selects"",out var ids))
                 return ApiResultHelper.Helper.ArgumentError;");
 
-                    if (cmd.ServiceCommand.IsEmpty())
+                    if (cmd.ServiceCommand.IsBlank())
                         code.Append($@"
             return await this.Business.{cmd.Name}(ids) 
                    ? ApiResultHelper.Succees()
@@ -459,7 +459,7 @@ namespace {NameSpace}.WebApi
         /// </remark>
         [Route(""{cmd.Api}"")]
         public async Task<IApiResult> On{cmd.Name}() => await");
-                    if (cmd.ServiceCommand.IsEmpty())
+                    if (cmd.ServiceCommand.IsBlank())
                         code.Append($@" this.Business.{cmd.Name}()  ? ApiResultHelper.Succees() : ApiResultHelper.Helper.ArgumentError;");
                     else
                         code.Append($@" {cmd.ServiceCommand}();");

@@ -309,9 +309,9 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         string PagePath(char sp = '\\')
         {
-            if (!PageFolder.IsEmpty())
+            if (!PageFolder.IsBlank())
                 return PageFolder;
-            if (Project.NoClassify || Classify.IsEmpty() || Classify.Equals("None", StringComparison.InvariantCulture))
+            if (Project.NoClassify || Classify.IsBlank() || Classify.Equals("None", StringComparison.InvariantCulture))
                 return Abbreviation;
             var cls = Project.Classifies.FirstOrDefault(p => p.Name == Classify);
             return $"{cls?.Abbreviation ?? Classify.ToLWord()}{sp}{Abbreviation}";
