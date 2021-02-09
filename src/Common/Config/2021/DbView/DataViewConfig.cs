@@ -3,15 +3,16 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 
-namespace Agebull.EntityModel.Config
+namespace Agebull.EntityModel.Config.V2021
 {
     /// <summary>
-    ///     数据关联配置
+    ///     数据视图配置
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public sealed partial class ReleationConfig : ModelChildConfig
+    public sealed partial class DataViewConfig : EntityExtendConfig
     {
         #region MyRegion
+
         [IgnoreDataMember, JsonIgnore]
         EntityConfig _primary;
         [IgnoreDataMember, JsonIgnore]

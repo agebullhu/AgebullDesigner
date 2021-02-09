@@ -199,10 +199,6 @@
                         <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding EnableValidate,Mode=TwoWay}"/>
                     </StackPanel>
                     <StackPanel Style="{StaticResource FieldPanel}">
-                        <Label Content="启用数据事件" />
-                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding EnableDataEvent,Mode=TwoWay}"/>
-                    </StackPanel>
-                    <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="启用数据库" />
                         <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding EnableDataBase,Mode=TwoWay}"/>
                     </StackPanel>

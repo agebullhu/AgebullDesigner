@@ -35,6 +35,10 @@
                 <Label Content="数据库编号" />
                 <TextBox Text="{Binding DbIndex,Mode=TwoWay}" />
             </StackPanel>
+            <StackPanel Style="{StaticResource FieldPanel}">
+                <Label Content="启用数据事件" />
+                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding EnableDataEvent,Mode=TwoWay}"/>
+            </StackPanel>
             <StackPanel>
                 <Label Content="按修改更新" />
                 <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding UpdateByModified,Mode=TwoWay}" />

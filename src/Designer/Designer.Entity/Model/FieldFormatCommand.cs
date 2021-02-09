@@ -55,38 +55,33 @@ Memo,s,备注";
             foreach (var ch in code)
             {
                 #region 注释
-                if (rem == 1 && ch == '\n')
-                {
-                    rem = 0;
-                    pre = '\0';
-                    type = "word";
-                    continue;
-                }
-                if (rem == 2 && pre == '*' && ch == '/')
-                {
-                    rem = 0;
-                    pre = '\0';
-                    type = "word";
-                    continue;
-                }
-                if (rem == 0 && pre == '/' && ch == '/')
-                {
-                    type = "rem";
-                    rem = 1;
-                    pre = '\0';
-                    continue;
-                }
-                if (rem == 0 && pre == '/' && ch == '*')
-                {
-                    type = "rem";
-                    rem = 2;
-                    pre = '\0';
-                    continue;
-                }
-                #endregion
-                #region 代码块
                 if (rem != 0)
                 {
+                    if (rem == 1 && ch == '\n')
+                    {
+                        AddWord();
+                        rem = 0;
+                        pre = '\0';
+                        type = "word";
+                        continue;
+                    }
+                    if (rem == 2 && pre == '*' && ch == '/')
+                    {
+                        AddWord();
+                        rem = 0;
+                        pre = '\0';
+                        type = "word";
+                        continue;
+                    }
+                    if (rem == 3 && ch == ']')
+                    {
+                        AddWord();
+                        rem = 0;
+                        pre = '\0';
+                        type = "word";
+                        continue;
+                    }
+
                     if (ch == '>')
                     {
                         AddWord();
@@ -108,39 +103,63 @@ Memo,s,备注";
                         pre = ch;
                         continue;
                     }
+                    if (ch != '/' || builder.Length > 0)//注释除开始的/其它都要
+                        builder.Append(ch);
+                    continue;
                 }
-                else
+                if (rem == 0 && pre == '/' && ch == '/')
                 {
-                    if (ch == '{')
-                    {
-                        AddWord();
-                        inCodes++;
-                        type = "code";
-                        pre = '\0';
-                        continue;
-                    }
-                    else if (ch == '}')
-                    {
-                        AddWord();
-                        inCodes--;
-                        if (inCodes == 0)
-                            type = "word";
-                        pre = '\0';
-                        continue;
-                    }
+                    type = "rem";
+                    rem = 1;
+                    pre = '\0';
+                    continue;
+                }
+                if (rem == 0 && pre == '/' && ch == '*')
+                {
+                    type = "rem";
+                    rem = 2;
+                    pre = '\0';
+                    continue;
+                }
+                if (rem == 0 && ch == '[')
+                {
+                    type = "attr";
+                    rem = 3;
+                    pre = '\0';
+                    continue;
+                }
+                #endregion
+                #region 代码块
+                if (ch == '{')
+                {
+                    AddWord();
+                    inCodes++;
+                    type = "code";
+                    pre = '\0';
+                    continue;
+                }
+                else if (ch == '}')
+                {
+                    AddWord();
+                    inCodes--;
+                    if (inCodes == 0)
+                        type = "word";
+                    pre = '\0';
+                    continue;
                 }
                 if (char.IsWhiteSpace(ch))
                 {
                     AddWord();
                     continue;
                 }
+
                 if (!char.IsPunctuation(ch))
                 {
                     builder.Append(ch);
                     pre = '\0';
                     continue;
                 }
-                if (rem == 0 && inCodes == 0)
+                if (inCodes == 0)
                 {
                     if (ch == '=')
                     {
@@ -158,11 +177,7 @@ Memo,s,备注";
                         continue;
                     }
                 }
-                if (type == "word" && (ch == '.' || ch == '>' || ch == '>' || ch == '[' || ch == ']'))//类型
-                {
-                    builder.Append(ch);
-                }
-                else if (type == "rem" && ch != '/' && builder.Length > 0)//注释除开始的/其它都要
+                if (type == "word" && (ch == '.' || ch == '<' || ch == '>' || ch == '[' || ch == ']' || ch == '(' || ch == ')'))//类型
                 {
                     builder.Append(ch);
                 }
@@ -189,7 +204,7 @@ Memo,s,备注";
                 return null;
             var words = ToCSharpWord(Fields);
             var fields = new List<FieldConfig>();
-            
+
             FieldConfig field = null;
             int inRem = 0;
             int step = -1;
@@ -200,8 +215,14 @@ Memo,s,备注";
                     step = -1;
                     continue;
                 }
+                if (word.Name == "attr")
+                {
+                    continue;
+                }
                 if (word.Name == "close")
                 {
+                    if (field != null)
+                        fields.Remove(field);
                     step = -1;//跳过字段定义
                     continue;
                 }
@@ -229,7 +250,6 @@ Memo,s,备注";
                 }
                 if (word.Name == "rem")
                 {
-                    
                     if (inRem == 2)
                     {
                         if (step < 0)
