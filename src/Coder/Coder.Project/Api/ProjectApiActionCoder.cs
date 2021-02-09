@@ -24,7 +24,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         protected override void CreateDesignerCode(string path)
         {
-            if (Model.IsInterface || Model.IsQuery)
+            if (Model.IsInterface || Model.DataTable.IsQuery)
                 return;
 
             var fileName = "ApiController.Designer.cs";

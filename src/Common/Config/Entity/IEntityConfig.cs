@@ -57,7 +57,7 @@ namespace Agebull.EntityModel.Config
             get;
             set;
         }
-
+        /*
         /// <summary>
         /// 页面配置
         /// </summary>
@@ -65,7 +65,7 @@ namespace Agebull.EntityModel.Config
         {
             get;
             set;
-        }
+        }*/
 
         /// <summary>
         /// 数据表配置
@@ -297,7 +297,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 命令集合
         /// </summary>
-        NotificationList<CommandItemConfig> Commands { get; }
+        NotificationList<UserCommandConfig> Commands { get; }
 
         #endregion
 

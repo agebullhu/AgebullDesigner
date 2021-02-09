@@ -126,7 +126,7 @@ namespace Agebull.EntityModel.RobotCoder
                     , Model.Name
                     , Model.PrimaryColumn.Name
                     , "DataBase"
-                    , Model.DbIndex); ;
+                    , Model.DataTable.DbIndex); ;
             code.Append(SqlServerQyeryCode());
             return code.ToString();
         }

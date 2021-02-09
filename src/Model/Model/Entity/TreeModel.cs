@@ -340,10 +340,10 @@ namespace Agebull.EntityModel.Designer
         }
         private TreeItem CreateCommandTreeItem(object arg)
         {
-            if (!(arg is CommandItemConfig cmd))
+            if (!(arg is UserCommandConfig cmd))
                 return new TreeItem(arg);
 
-            var colItem = new ConfigTreeItem<CommandItemConfig>(cmd)
+            var colItem = new ConfigTreeItem<UserCommandConfig>(cmd)
             {
                 IsExpanded = true,
                 FriendView = "model,command",

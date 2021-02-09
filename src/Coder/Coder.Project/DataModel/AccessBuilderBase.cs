@@ -134,7 +134,7 @@ namespace {Project.NameSpace}.DataAccess
             {{
                 IsQuery          = false,
                 UpdateByMidified = true,
-                EventLevel       = EventEventLevel.{(Model.EnableDataEvent ? "Simple" : "None")},
+                EventLevel       = EventEventLevel.{(Model.DataTable.EnableDataEvent ? "Simple" : "None")},
                 InjectionLevel   = InjectionLevel.All,
                 SqlBuilder       = new MySqlSqlBuilder<{Model.EntityName}>(),
                 DataStruct       = Struct,

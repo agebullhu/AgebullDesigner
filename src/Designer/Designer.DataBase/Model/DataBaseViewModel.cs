@@ -96,7 +96,7 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
             {
                 property.DbFieldName = property.Name.ToLWord();
             }
-            if (string.IsNullOrWhiteSpace(dataTable.Entity.SaveTableName))
+            if (string.IsNullOrWhiteSpace(dataTable.SaveTableName))
                 dataTable.SaveTableName = "tb_" + dataTable.Name.ToLWord();
         }
 

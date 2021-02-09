@@ -61,7 +61,7 @@ namespace Agebull.EntityModel.RobotCoder
             //    _ => "MySqlConnector",//case DataBaseType.MySql:
             //};
             string baseClass = "BusinessLogicBase";
-            if (!Model.IsQuery && Model.Interfaces != null)
+            if (!Model.DataTable.IsQuery && Model.Interfaces != null)
             {
                 if (Model.Interfaces.Contains("IStateData"))
                     baseClass = "BusinessLogicByStateData";

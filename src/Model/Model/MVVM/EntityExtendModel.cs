@@ -7,7 +7,7 @@ namespace Agebull.EntityModel.Designer
 {
     public class EntityExtendModel<TEntend, TField> : DesignModelBase, IGridSelectionBinding
         where TEntend : EntityExtendConfig
-        where TField : FieldExtendConfig
+        where TField : FieldExtendConfig<TEntend>
     {
         #region 操作命令
 

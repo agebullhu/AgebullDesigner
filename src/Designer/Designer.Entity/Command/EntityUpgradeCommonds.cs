@@ -226,7 +226,6 @@ namespace Agebull.EntityModel.Designer
             entity.EnableDataBase = true;
             entity.EnableEditApi = true;
             entity.EnableUI = true;
-            entity.EnableDataEvent = true;
         }
         
         void ToStandardName(EntityConfig entity)

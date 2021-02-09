@@ -108,7 +108,7 @@ namespace Agebull.EntityModel.Config
         #endregion
 
         #region V2021
-
+        /*
         /// <summary>
         /// 页面配置
         /// </summary>
@@ -134,7 +134,7 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(Page));
             }
         }
-
+        */
         /// <summary>
         /// 数据表配置
         /// </summary>
@@ -165,7 +165,7 @@ namespace Agebull.EntityModel.Config
         /// 命令集合
         /// </summary>
         [DataMember, JsonProperty("_commands", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal NotificationList<CommandItemConfig> _commands;
+        internal NotificationList<UserCommandConfig> _commands;
 
         /// <summary>
         /// 命令集合
@@ -175,13 +175,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"扩展对象"), DisplayName(@"命令集合"), Description("命令集合,数据模型中可调用的命令")]
-        public NotificationList<CommandItemConfig> Commands
+        public NotificationList<UserCommandConfig> Commands
         {
             get
             {
                 if (_commands != null)
                     return _commands;
-                _commands = new NotificationList<CommandItemConfig>();
+                _commands = new NotificationList<UserCommandConfig>();
                 RaisePropertyChanged(nameof(Commands));
                 return _commands;
             }
@@ -198,7 +198,7 @@ namespace Agebull.EntityModel.Config
         /// 加入子级
         /// </summary>
         /// <param name="propertyConfig"></param>
-        public void Add(CommandItemConfig propertyConfig)
+        public void Add(UserCommandConfig propertyConfig)
         {
             propertyConfig.Parent = this as IEntityConfig;
             Commands.TryAdd(propertyConfig);
@@ -207,7 +207,7 @@ namespace Agebull.EntityModel.Config
         /// 加入子级
         /// </summary>
         /// <param name="propertyConfig"></param>
-        public void Remove(CommandItemConfig propertyConfig)
+        public void Remove(UserCommandConfig propertyConfig)
         {
             Commands.Remove(propertyConfig);
         }

@@ -24,17 +24,17 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal class UserCommandConfigCommands : DesignCommondBase<CommandItemConfig>
+    internal class UserCommandConfigCommands : DesignCommondBase<UserCommandConfig>
     {
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
-            commands.Add(new CommandItemBuilder<CommandItemConfig>
+            commands.Add(new CommandItemBuilder<UserCommandConfig>
             {
                 Action = p => p.Parent?.Commands.Remove(p),
                 Catalog = "编辑",
                 SoruceView = "model",
                 SignleSoruce = true,
-                TargetType = typeof(CommandItemConfig),
+                TargetType = typeof(UserCommandConfig),
                 Caption = "删除命令",
                 Editor = "Command",
                 IconName = "img_del"
@@ -69,7 +69,7 @@ namespace Agebull.EntityModel.Designer
         /// <param name="entity"></param>
         public void AddCommand(ModelConfig entity)
         {
-            if (Model.CreateNew("新增命令", out CommandItemConfig config))
+            if (Model.CreateNew("新增命令", out UserCommandConfig config))
                 entity.Add(config);
         }
         /// <summary>
@@ -80,14 +80,14 @@ namespace Agebull.EntityModel.Designer
         {
             if (entity.Commands.Count != 0 && entity.Commands.Any(p => p.Name == "Pass"))
                 return;
-            entity.Add(new CommandItemConfig
+            entity.Add(new UserCommandConfig
             {
                 Name = "Pass",
                 Button = "btnPass",
                 Caption = "审核通过",
                 Description = "审核通过"
             });
-            entity.Add(new CommandItemConfig
+            entity.Add(new UserCommandConfig
             {
                 Name = "Deny",
                 Button = "btnDeny",

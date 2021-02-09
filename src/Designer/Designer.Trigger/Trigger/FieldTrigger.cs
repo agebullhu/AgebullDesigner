@@ -83,7 +83,7 @@ namespace Agebull.EntityModel.Designer
             string name = TargetConfig.Entity.Name;
             foreach (var entity in SolutionConfig.Current.Entities.Where(p => p != TargetConfig.Entity))
             {
-                foreach (var field in entity.Properties.Where(p => p.IsLinkField &&
+                foreach (var field in entity.DataTable.Fields.Where(p => p.IsLinkField &&
                     (p.LinkTable == saveTable || p.LinkTable == name) &&
                     (p.LinkField == TargetConfig.DbFieldName || p.LinkField == TargetConfig.Name)))
                 {

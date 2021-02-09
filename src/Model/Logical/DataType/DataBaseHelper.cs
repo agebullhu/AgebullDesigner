@@ -75,8 +75,8 @@ namespace Agebull.EntityModel.Config
             var entity = field.Parent.Entity;
 
             if (string.IsNullOrWhiteSpace(field.LinkTable) ||
-                field.LinkTable == entity.Name || field.LinkTable == entity.ReadTableName ||
-                field.LinkTable == entity.SaveTableName)
+                field.LinkTable == field.Parent.Name || field.LinkTable == field.Parent.ReadTableName ||
+                field.LinkTable == field.Parent.SaveTableName)
             {
                 SetNoLink(field);
                 return hase;

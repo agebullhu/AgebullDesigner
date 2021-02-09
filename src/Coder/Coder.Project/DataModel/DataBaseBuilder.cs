@@ -242,7 +242,7 @@ namespace {Project.NameSpace}.DataAccess
         {
             if (dataTable == null)
                 return;
-            var name = entity.IsQuery ? "DataQuery" : "DataAccess";
+            var name = dataTable.IsQuery ? "DataQuery" : "DataAccess";
 
             code.Append($@"
             /// <summary>
@@ -397,7 +397,7 @@ namespace {Project.NameSpace}.DataAccess
             }
             str.Append($", {idx++}");
             if (isOutField)
-                str.Append($", \"{field.Name}\", \"{field.Entity.SaveTableName}\", \"{field.DbFieldName}\", {ReadWrite(field)}, {PropertyFeature(field)}");
+                str.Append($", \"{field.Name}\", \"{field.Parent.SaveTableName}\", \"{field.DbFieldName}\", {ReadWrite(field)}, {PropertyFeature(field)}");
             str.Append(")");
             return str.ToString();
         }

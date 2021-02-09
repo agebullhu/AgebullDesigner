@@ -30,7 +30,7 @@ namespace Agebull.EntityModel.RobotCoder
         }
         protected override string ReadTableName()
         {
-            var table = Model.ReadTableName;
+            var table = Model.DataTable.ReadTableName;
             var code = new StringBuilder();
             code.Append(table);
             if (Model is ModelConfig model)
@@ -65,21 +65,21 @@ namespace Agebull.EntityModel.RobotCoder
                 if (Model.Interfaces.Contains("ILogicDeleteData"))
                 {
                     var entity = GlobalConfig.GetEntity("ILogicDeleteData");
-                    return $"UPDATE `{Model.SaveTableName}` SET `{entity.Properties[0].DbFieldName}`=1 ";
+                    return $"UPDATE `{Model.DataTable.SaveTableName}` SET `{entity.Properties[0].DbFieldName}`=1 ";
                 }
                 if (Model.Interfaces.Contains("IStateData"))
                 {
                     var entity = GlobalConfig.GetEntity("IStateData");
                     var field = entity.Properties.FirstOrDefault(p => p.Name == "DataState");
-                    return $"UPDATE `{Model.SaveTableName}` SET `{field.DbFieldName}`=255 ";
+                    return $"UPDATE `{Model.DataTable.SaveTableName}` SET `{field.DbFieldName}`=255 ";
                 }
             }
-            return $"DELETE FROM `{Model.SaveTableName}`";
+            return $"DELETE FROM `{Model.DataTable.SaveTableName}`";
         }
 
         protected override string InsertFieldCode()
         {
-            if (Model.IsQuery)
+            if (Model.DataTable.IsQuery)
                 return null;
             var columns = Model.DataTable.Fields.Where(p => p.Entity == Model.Entity &&
                     !p.IsIdentity && !p.IsReadonly && !p.CustomWrite &&
@@ -106,7 +106,7 @@ namespace Agebull.EntityModel.RobotCoder
         }
         protected override string InsertValuesCode()
         {
-            if (Model.IsQuery)
+            if (Model.DataTable.IsQuery)
                 return null;
             var columns = Model.DataTable.Fields.Where(p => p.Entity == Model.Entity &&
                     !p.IsIdentity && !p.IsReadonly && !p.CustomWrite &&
@@ -132,7 +132,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         protected override string UpdateFields()
         {
-            if (Model.IsQuery)
+            if (Model.DataTable.IsQuery)
                 return null;
             var isFirst = true;
             var sql = new StringBuilder();
@@ -286,7 +286,7 @@ namespace Agebull.EntityModel.RobotCoder
                 code.Append(@"
         }");
             }
-            if (Model.IsQuery || model.Releations.Count == 0)
+            if (Model.DataTable.IsQuery || model.Releations.Count == 0)
                 return code.ToString();
             var releations = model.Releations.Where(p => p.CanWrite).ToArray();
             if (releations.Length == 0)

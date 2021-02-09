@@ -596,7 +596,7 @@ ALTER TABLE `{dataTable.SaveTableName}`
             var all = fields.All(p => p.Property.IsInterfaceField || p.Entity == dataTable.Entity);
             var sql = new StringBuilder();
             var isFirst = true;
-            foreach (var property in fields)
+            foreach (var field in fields)
             {
                 if (isFirst)
                 {
@@ -608,8 +608,8 @@ ALTER TABLE `{dataTable.SaveTableName}`
                 }
                 var head = all
                     ? ""
-                    : $"`{property.Entity.ReadTableName}`.";
-                sql.Append($"`{property.Function}({head}`{property.DbFieldName}`) {property.Having}");
+                    : $"`{field.Parent.ReadTableName}`.";
+                sql.Append($"`{field.Function}({head}`{field.DbFieldName}`) {field.Having}");
             }
             return isFirst ? "null" : $"\"\\nHAVING {sql}\"";
         }
@@ -637,7 +637,7 @@ ALTER TABLE `{dataTable.SaveTableName}`
                 }
                 var head = all
                     ? ""
-                    : $"`{field.Entity.ReadTableName}`.";
+                    : $"`{field.Parent.ReadTableName}`.";
                 sql.Append($"{head}.`{field.DbFieldName}`");
             }
             return isFirst ? "null" : $"\"\\nGROUP BY {sql}\"";

@@ -209,7 +209,7 @@ namespace Agebull.EntityModel.Designer
         public static void LoadEntityExtend(IEntityConfig entity, string directory)
         {
             LoadDataTable(entity, directory);
-            LoadPage(entity, directory);
+            //LoadPage(entity, directory);
         }
 
         public static void LoadDataTable(IEntityConfig entity, string directory)
@@ -228,7 +228,7 @@ namespace Agebull.EntityModel.Designer
                 entity.DataTable.Upgrade();
             }
             // ReSharper disable once AssignNullToNotNullAttribute
-            string fileName = Path.Combine(directory, "Extend", PageConfig.GetFileName(entity));
+            string fileName = Path.Combine(directory, "Extend", DataTableConfig.GetFileName(entity));
             if (!File.Exists(fileName))
             {
                 Upgrade();
@@ -246,6 +246,7 @@ namespace Agebull.EntityModel.Designer
             model.Option.IsDelete = false;
             entity.DataTable = model;
         }
+        /*
         public static void LoadPage(IEntityConfig entity, string directory)
         {
             if (!entity.EnableUI)
@@ -278,7 +279,7 @@ namespace Agebull.EntityModel.Designer
                 Trace.WriteLine(e.ToString());
             }
         }
-
+        */
 
         #endregion
         #region V2018版本兼容

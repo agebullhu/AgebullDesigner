@@ -155,8 +155,8 @@ namespace Agebull.EntityModel.Designer
         static void SaveModelExtend(IEntityConfig entity, string dir, bool checkState)
         {
             var path = IOHelper.CheckPath(dir, "Extend");
-            if (entity.Page != null)
-                SaveConfig(entity.Page, path, checkState);
+            //if (entity.Page != null)
+            //    SaveConfig(entity.Page, path, checkState);
             if (entity.DataTable != null)
                 SaveConfig(entity.DataTable, path, checkState);
         }

@@ -207,7 +207,7 @@ namespace Agebull.EntityModel.Config
         protected override void ForeachDown<T>(Action<T> action, bool doAction)
         {
             DataTable?.Foreach(action, doAction);
-            Page?.Foreach(action, doAction);
+            //Page?.Foreach(action, doAction);
 
             if (WorkContext.InCoderGenerating)
             {
@@ -222,7 +222,7 @@ namespace Agebull.EntityModel.Config
         public override void OnLoad()
         {
             DataTable?.OnLoad();
-            Page?.OnLoad();
+            //Page?.OnLoad();
             base.OnLoad();
         }
 
@@ -292,6 +292,28 @@ namespace Agebull.EntityModel.Config.V2021
         }
     }
 
+    partial class FieldExtendConfig<TParent>
+    {
+        /// <summary>
+        /// 向上遍历
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        protected override bool ForeachUp<T>(Action<T> action)
+        {
+            if (ConfigIteratorExtension.IsParentOrFriendType<T>(typeof(IEntityConfig), typeof(ProjectConfig), typeof(SolutionConfig)))
+            {
+                Property.Foreach(action);
+                return true;
+            }
+            if (ConfigIteratorExtension.IsParentOrFriendType<T>(typeof(EntityExtendConfig)))
+            {
+                Parent.Foreach(action);
+                return true;
+            }
+            return false;
+        }
+    }
     partial class DataTableConfig
     {
         /// <summary>
@@ -309,7 +331,7 @@ namespace Agebull.EntityModel.Config.V2021
             base.OnLoad();
         }
     }
-
+    /*
     partial class PageConfig
     {
         /// <summary>
@@ -333,7 +355,6 @@ namespace Agebull.EntityModel.Config.V2021
             base.OnLoad();
         }
     }
-
     partial class PageContentConfig
     {
         /// <summary>
@@ -372,27 +393,6 @@ namespace Agebull.EntityModel.Config.V2021
             base.OnLoad();
         }
     }
-
-    partial class FieldExtendConfig
-    {
-        /// <summary>
-        /// 向上遍历
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        protected override bool ForeachUp<T>(Action<T> action)
-        {
-            if (ConfigIteratorExtension.IsParentOrFriendType<T>(typeof(IEntityConfig), typeof(ProjectConfig), typeof(SolutionConfig)))
-            {
-                Property.Foreach(action);
-                return true;
-            }
-            if (ConfigIteratorExtension.IsParentOrFriendType<T>(typeof(EntityExtendConfig)))
-            {
-                Parent.Foreach(action);
-                return true;
-            }
-            return false;
-        }
-    }
+    
+    */
 }
