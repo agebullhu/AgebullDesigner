@@ -37,6 +37,7 @@ namespace Agebull.EntityModel.Config
         /// </remarks>
         public bool IsReadonly { get; set; }
 
+        
 
         /// <summary>
         /// 值类型

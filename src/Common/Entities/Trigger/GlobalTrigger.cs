@@ -38,6 +38,15 @@ namespace Agebull.EntityModel
         }
 
         /// <summary>
+        /// ×¢²á´¥·¢Æ÷
+        /// </summary>
+        public static void RegistTrigger(Type type) 
+        {
+            TriggerCreaters.Add(() => ReflectionExtend.Generate(type) as EventTrigger);
+            Triggers.Add(ReflectionExtend.Generate(type) as EventTrigger);
+        }
+
+        /// <summary>
         /// ÖØÖÃ
         /// </summary>
         public static void Reset()

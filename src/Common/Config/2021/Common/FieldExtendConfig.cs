@@ -10,19 +10,20 @@ namespace Agebull.EntityModel.Config.V2021
     /// 基于字段的扩展设置
     /// </summary>
     [JsonObject(MemberSerialization.OptIn, ItemNullValueHandling = NullValueHandling.Ignore)]
-    public partial class FieldExtendConfig : ConfigBase, IChildrenConfig
+    public partial class FieldExtendConfig<TParent> : ConfigBase, IChildrenConfig
+        where TParent : EntityExtendConfig
     {
         #region 引用
 
-        ConfigBase IChildrenConfig.Parent { get => Parent as ConfigBase; set => Parent = value as EntityExtendConfig; }
+        ConfigBase IChildrenConfig.Parent { get => Parent; set => Parent = value as TParent; }
 
         [IgnoreDataMember, JsonIgnore]
-        private EntityExtendConfig parent;
+        private TParent parent;
 
         /// <summary>
         /// 上级
         /// </summary>
-        public EntityExtendConfig Parent
+        public TParent Parent
         {
             get => parent; set
             {
@@ -106,7 +107,7 @@ namespace Agebull.EntityModel.Config.V2021
         [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"标题")]
         public override string Caption
         {
-            get => _caption ?? Property?.Caption;
+            get => Property?.Caption;
             set
             {
                 base.Caption = value;
@@ -119,31 +120,19 @@ namespace Agebull.EntityModel.Config.V2021
         [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"说明")]
         public override string Description
         {
-            get => _description ?? Property?.Description;
+            get => Property?.Description;
             set => base.Description = value;
         }
 
-        /// <summary>
-        /// 参见
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"参见")]
-        public override string Remark
-        {
-            get => _remark ?? Property?.Remark;
-            set => base.Remark = value;
-        }
+        #endregion
 
+        #region 字段属性同步
 
         /// <summary>
-        ///     是否主键
+        ///     Json名称
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        public bool IsPrimaryKey => Property.IsPrimaryKey;
-        /// <summary>
-        ///     是否空值
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        public bool Nullable => Property.Nullable;
+        public string JsonName { get => Property.JsonName; set => Property.JsonName = value; }
 
         /// <summary>
         ///     初始值
@@ -156,6 +145,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
         public string CsType => Property.CsType;
+
         /// <summary>
         ///     类型名称
         /// </summary>
@@ -179,7 +169,7 @@ namespace Agebull.EntityModel.Config.V2021
         protected override void CopyFrom(SimpleConfig dest)
         {
             base.CopyFrom(dest);
-            if (dest is FieldExtendConfig cfg)
+            if (dest is FieldExtendConfig< TParent> cfg)
                 CopyProperty(cfg);
         }
 
@@ -187,7 +177,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 字段复制
         /// </summary>
         /// <param name="dest">复制源</param>
-        public void Copy(FieldExtendConfig dest)
+        public void Copy(FieldExtendConfig<TParent> dest)
         {
             CopyFrom(dest);
         }
@@ -197,7 +187,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// </summary>
         /// <param name="dest">复制源</param>
         /// <returns></returns>
-        public void CopyProperty(FieldExtendConfig dest)
+        public void CopyProperty(FieldExtendConfig<TParent> dest)
         {
             PropertyKey = dest.PropertyKey;
             Property = dest.Property;

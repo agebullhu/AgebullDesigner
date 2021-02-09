@@ -214,5 +214,9 @@ namespace Agebull.EntityModel.Config
 
         #endregion
 
+        #region 兼容性
+
+        public bool IsView { get; set; }
+        #endregion
     }
 }

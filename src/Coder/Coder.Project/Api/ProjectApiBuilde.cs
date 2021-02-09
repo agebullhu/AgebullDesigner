@@ -2,6 +2,7 @@
 using System.Text;
 using Agebull.Common;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
 
 namespace Agebull.EntityModel.RobotCoder.EasyUi
 {
@@ -16,14 +17,14 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// 标题
         /// </summary>
         public override string Caption => Name;
-        string EventCode(IEntityConfig entity) => entity.EnableDataEvent
+        string EventCode(DataTableConfig entity) => entity.EnableDataEvent
             ?            
             $@"
         /// <summary>
         /// {entity.Caption}
         /// </summary>
-        [Route(""{entity.EntityName}"")]
-        public Task {entity.EntityName}Event(EntityEventArgument argument), [FromServices] IEntityEventHandler<{entity.EntityName}> handler) => handler.OnEvent(argument);"
+        [Route(""{entity.Entity.EntityName}"")]
+        public Task {entity.Entity.EntityName}Event(EntityEventArgument argument), [FromServices] IEntityEventHandler<{entity.Entity.EntityName}> handler) => handler.OnEvent(argument);"
             : null;
 
         /// <summary>
@@ -36,11 +37,11 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 
             foreach (var entity in project.Entities)
             {
-                entityEvents.Append(EventCode(entity));
+                entityEvents.Append(EventCode(entity.DataTable));
             }
             foreach (var entity in project.Models)
             {
-                entityEvents.Append(EventCode(entity));
+                entityEvents.Append(EventCode(entity.DataTable));
             }
             //DataEventCode(project, entityEvents);
         }

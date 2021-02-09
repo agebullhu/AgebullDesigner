@@ -8,7 +8,7 @@ namespace Agebull.EntityModel.Config.V2021
     /// 用户界面的字段设置
     /// </summary>
     [JsonObject(MemberSerialization.OptIn, ItemNullValueHandling = NullValueHandling.Ignore)]
-    public partial class UserInterfaceField : FieldExtendConfig, IUIFieldConfig
+    public partial class UserInterfaceField : FieldExtendConfig<PageConfig>, IUIFieldConfig
     {
         #region 字段
 

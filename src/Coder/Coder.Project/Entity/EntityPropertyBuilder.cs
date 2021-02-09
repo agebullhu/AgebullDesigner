@@ -83,7 +83,7 @@ using Agebull.EntityModel.Interfaces;
 
         internal string InterfaceProperty()
         {
-            if (Model.IsInterface || Model.IsQuery)
+            if (Model.IsInterface || Model.DataTable.IsQuery)
                 return "";
             var code = new StringBuilder();
             if (Model.PrimaryColumn != null)
@@ -149,9 +149,9 @@ using Agebull.EntityModel.Interfaces;
 
         internal string EntityEditStatus()
         {
-            if (Model.IsInterface || Model.IsQuery || !Model.UpdateByModified)
+            if (Model.IsInterface || Model.DataTable.IsQuery || !Model.DataTable.UpdateByModified)
                 return "";
-            return Model.IsQuery
+            return Model.DataTable.IsQuery
                 ? null
                 : @"
         #region 修改记录
@@ -319,7 +319,7 @@ using Agebull.EntityModel.Interfaces;
 
             var propertyName = property.Name;
 
-            if (Model.IsQuery || !Model.UpdateByModified)
+            if (Model.DataTable.IsQuery || !Model.DataTable.UpdateByModified)
                 return $@"
         {FieldHeader(property,false)}
         public {property.LastCsType} {property.Name} {{ get; set; }}";
@@ -350,7 +350,7 @@ using Agebull.EntityModel.Interfaces;
 
             var type = property.IsEnum && property.CsType == "string" ? "string" : property.LastCsType;
 
-            if (Model.IsQuery || !Model.UpdateByModified)
+            if (Model.DataTable.IsQuery || !Model.DataTable.UpdateByModified)
 
                 code.Append($@"
         {FieldHeader(property, property.DataType == "ByteArray")}
@@ -466,7 +466,7 @@ using Agebull.EntityModel.Interfaces;
         public string {field.StorageProperty}
         {{
             get => this.{property.Name} == null ? null : Newtonsoft.Json.JsonConvert.SerializeObject(this.{property.Name});");
-            if (!Model.IsQuery  && Model.UpdateByModified)
+            if (!Model.DataTable.IsQuery  && Model.DataTable.UpdateByModified)
             {
                 code.Append($@"
             set
@@ -489,7 +489,7 @@ using Agebull.EntityModel.Interfaces;
                 : model.EntityName;
             var cs = releation.Name.ToLWord();
 
-            if (Model.IsQuery || !Model.UpdateByModified)
+            if (Model.DataTable.IsQuery || !Model.DataTable.UpdateByModified)
                 code.Append($@"
 
         /// <summary>

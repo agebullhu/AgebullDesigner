@@ -10,62 +10,30 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
     <UserControl.DataContext>
-        <mysql:DataRelationViewModel/>
+        <mysql:DataBaseViewModel/>
     </UserControl.DataContext>
-    <DockPanel Margin="0" Background="White">
-        <WrapPanel DockPanel.Dock="Bottom" DataContext="{Binding Context.SelectField}">
-            <WrapPanel.Resources>
-                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
-            </WrapPanel.Resources>
-            <!--<StackPanel>
-                <Label Content="是否连接字段" />
-                <ComboBox Width="160" Padding="3" VerticalAlignment="Center"
-                          ItemsSource="{x:Static defaults:EnumHelper.BoolList}" DisplayMemberPath="Name"
-                          SelectedValuePath="Value" SelectedValue="{Binding IsLinkField,Mode=TwoWay}" />
-            </StackPanel>-->
-            <StackPanel>
-                <Label Content="关联表名" />
-                <TextBox Text="{Binding LinkTable,Mode=TwoWay}" />
-            </StackPanel>
-            <StackPanel>
-                <Label Content="关联字段" />
-                <TextBox Text="{Binding LinkField,Mode=TwoWay}" />
-            </StackPanel>
-            <StackPanel>
-                <Label Content="主建关联" />
-                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsLinkKey,Mode=TwoWay}" />
-            </StackPanel>
-            <StackPanel>
-                <Label Content="标题关联" />
-                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsLinkCaption,Mode=TwoWay}" />
-            </StackPanel>
-        </WrapPanel>
-        <DataGrid AutoGenerateColumns="False"
+
+    <DataGrid AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
-                  DataContext="{Binding Context}"
-                  ItemsSource="{Binding SelectEntity.Properties}">
-            <DataGrid.Columns>
-                <DataGridCheckBoxColumn Binding="{Binding IsDiscard,Mode=OneWay}" IsReadOnly="True" Header="废" />
-                <DataGridTextColumn Binding="{Binding Index,Mode=TwoWay}" Header="序号" />
-                <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
-                <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />
-                <DataGridTextColumn Binding="{Binding DbFieldName,Mode=TwoWay}" Header="字段" />
-                <DataGridCheckBoxColumn Binding="{Binding IsPrimaryKey,Mode=TwoWay}" Header="主键" />
-                <DataGridTextColumn Binding="{Binding DbType,Mode=TwoWay}" Header="类型" />
-                <DataGridCheckBoxColumn Binding="{Binding IsCaption,Mode=TwoWay}" Header="标题" />
-                <DataGridCheckBoxColumn Binding="{Binding IsCompute,Mode=TwoWay}" Header="计算列" />
-                <DataGridCheckBoxColumn Binding="{Binding IsLinkField,Mode=TwoWay}" Header="关联" />
-                <DataGridCheckBoxColumn Binding="{Binding IsParent,Mode=TwoWay}" Header="上级外键" />
-                <DataGridCheckBoxColumn Binding="{Binding IsLinkKey,Mode=TwoWay}" Header="外键" />
-                <DataGridCheckBoxColumn Binding="{Binding IsLinkCaption,Mode=TwoWay}" Header="外部标题" />
-                <DataGridTextColumn Binding="{Binding LinkTable,Mode=TwoWay}" Header="关联实体" />
-                <DataGridTextColumn Binding="{Binding LinkField,Mode=TwoWay}" Header="关联字段" />
-                <!--<DataGridCheckBoxColumn Binding="{Binding IsUserId,Mode=TwoWay}" Header="用户关联" />-->
-            </DataGrid.Columns>
-            <i:Interaction.Behaviors>
-                <behaviors:DataGridGenertColumnsBehavior />
-            </i:Interaction.Behaviors>
-        </DataGrid>
-    </DockPanel>
+                  ItemsSource="{Binding Model.Extend.Fields}">
+        <DataGrid.Columns>
+            <DataGridTextColumn Binding="{Binding Index,Mode=TwoWay}" Header="序号" />
+            <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
+            <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />
+            <DataGridTextColumn Binding="{Binding DbFieldName,Mode=TwoWay}" Header="字段" />
+            <DataGridCheckBoxColumn Binding="{Binding IsPrimaryKey,Mode=TwoWay}" Header="主键" />
+            <DataGridCheckBoxColumn Binding="{Binding IsCaption,Mode=TwoWay}" Header="标题" />
+            <DataGridCheckBoxColumn Binding="{Binding IsReadonly,Mode=TwoWay}" Header="只读" />
+            <DataGridCheckBoxColumn Binding="{Binding IsParent,Mode=TwoWay}" Header="内联" />
+            <DataGridCheckBoxColumn Binding="{Binding IsLinkField,Mode=TwoWay}" Header="外联" />
+            <DataGridCheckBoxColumn Binding="{Binding IsLinkKey,Mode=TwoWay}" Header="外键链接" />
+            <DataGridCheckBoxColumn Binding="{Binding IsLinkCaption,Mode=TwoWay}" Header="标题链接" />
+            <DataGridTextColumn Binding="{Binding LinkTable,Mode=TwoWay}" Header="链接实体" MinWidth="140"/>
+            <DataGridTextColumn Binding="{Binding LinkField,Mode=TwoWay}" Header="链接字段"  MinWidth="140"/>
+        </DataGrid.Columns>
+        <i:Interaction.Behaviors>
+            <behaviors:DataGridGenertColumnsBehavior />
+        </i:Interaction.Behaviors>
+    </DataGrid>
 </UserControl>

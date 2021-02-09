@@ -50,7 +50,7 @@
         /// <summary>
         /// 备注字段
         /// </summary>
-        bool IsMemo { get; }
+        bool IsText { get; }
         /// <summary>
         /// 大数据
         /// </summary>

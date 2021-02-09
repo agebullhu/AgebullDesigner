@@ -19,7 +19,7 @@ namespace Agebull.EntityModel.Config
     /// <summary>
     /// 实体配置
     /// </summary>
-    public interface IEntityConfig : IConfig, IEntityUi, IEntityCpp, IDataTable, IConfigIterator
+    public interface IEntityConfig : IConfig, IEntityUi, IEntityCpp, IConfigIterator//, IDataTable
     {
         #region 视角开关
 
@@ -58,14 +58,6 @@ namespace Agebull.EntityModel.Config
             set;
         }
 
-        /// <summary>
-        /// 启用数据事件
-        /// </summary>
-        bool EnableDataEvent
-        {
-            get;
-            set;
-        }
         /// <summary>
         /// 页面配置
         /// </summary>
@@ -161,14 +153,6 @@ namespace Agebull.EntityModel.Config
             set;
         }
 
-        /// <summary>
-        /// 是否查询
-        /// </summary>
-        bool IsQuery
-        {
-            get;
-            set;
-        }
 
         /// <summary>
         /// 参考类型
@@ -216,6 +200,14 @@ namespace Agebull.EntityModel.Config
         #endregion
 
         #region 设计器支持
+
+        /// <summary>
+        ///     保存地址
+        /// </summary>
+        string SaveFileName
+        {
+            get;
+        }
 
         /// <summary>
         /// 列序号起始值
@@ -335,14 +327,11 @@ namespace Agebull.EntityModel.Config
             MaxIdentity = dest.MaxIdentity;
             RedisKey = dest.RedisKey;
             EntityName = dest.EntityName;
-            IsQuery = dest.IsQuery;
             ReferenceType = dest.ReferenceType;
             ModelInclude = dest.ModelInclude;
             ModelBase = dest.ModelBase;
             DataVersion = dest.DataVersion;
-            EnableDataEvent = dest.EnableDataEvent;
             EnableDataBase = dest.EnableDataBase;
-            EnableDataEvent = dest.EnableDataEvent;
             EnableEditApi = dest.EnableEditApi;
             EnableUI = dest.EnableUI;
             EnableEditApi = dest.EnableEditApi;
@@ -351,7 +340,6 @@ namespace Agebull.EntityModel.Config
             ReadCoreCodes = dest.ReadCoreCodes;
             IsInterface = dest.IsInterface;
             EnableValidate = dest.EnableValidate;
-            UpdateByModified = dest.UpdateByModified;
             ApiName = dest.ApiName;
 
             IsUiReadOnly = dest.IsUiReadOnly;
@@ -360,45 +348,50 @@ namespace Agebull.EntityModel.Config
             DetailsPage = dest.DetailsPage;
             FormCloumn = dest.FormCloumn;
             CppName = dest.CppName;
+            /*
+            EnableDataEvent = dest.EnableDataEvent;
+            UpdateByModified = dest.UpdateByModified;
+            IsQuery = dest.IsQuery;
+            EnableDataEvent = dest.EnableDataEvent;*/
         }
         #endregion
 
     }
-
+    /// <summary>
+    /// 数据表配置
+    /// </summary>
     public interface IDataTable
     {
         /// <summary>
-        /// 存储表名(设计录入)
-        /// </summary>
-        /// <remark>
+        /// 存储表名
+        /// </summary>/// <remarks>
         /// 存储表名,即实体对应的数据库表.因为模型可能直接使用视图,但增删改还在基础的表中时行,而不在视图中时行
-        /// </remark>
-        string ReadTableName
-        {
-            get;
-        }
+        /// </remarks>
+        string ReadTableName { get; }
         /// <summary>
         /// 存储表名
         /// </summary>
-        string SaveTableName
-        {
-            get;
-        }
+        string SaveTableName { get; }
         /// <summary>
         /// 数据库编号
         /// </summary>
-        int DbIndex
-        {
-            get;
-        }
+        int DbIndex { get; }
         /// <summary>
         /// 按修改更新
         /// </summary>
-        bool UpdateByModified
-        {
-            get;
-            set;
-        }
+        bool UpdateByModified { get; }
+        /// <summary>
+        /// 是否视图
+        /// </summary>
+        bool IsView { get; }
+        /// <summary>
+        /// 是否查询
+        /// </summary>
+        bool IsQuery { get; }
+        /// <summary>
+        /// 启用数据事件
+        /// </summary>
+        bool EnableDataEvent { get; }
     }
 
     public interface IEntityCpp

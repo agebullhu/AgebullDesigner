@@ -76,10 +76,10 @@ namespace Agebull.EntityModel.RobotCoder
 
         protected string ExtendInterface()
         {
-            if (Model.IsQuery)
+            if (Model.DataTable.IsQuery)
                 return null;
             var list = new List<string>();
-            if (Model.UpdateByModified)
+            if (Model.DataTable.UpdateByModified)
                 list.Add("IEditStatus");
             if (Model.PrimaryColumn != null)
             {

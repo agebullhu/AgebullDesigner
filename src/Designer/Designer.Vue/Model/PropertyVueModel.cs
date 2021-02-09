@@ -36,7 +36,7 @@ namespace Agebull.EntityModel.Config
             {
                 property.MulitLine = true;
             }
-            else if (field.IsMemo || field.IsBlob || property.InputType == "mulit")
+            else if (field.IsText || field.IsBlob || property.InputType == "mulit")
             {
                 property.InputType = "easyui-textbox";
                 property.MulitLine = true;

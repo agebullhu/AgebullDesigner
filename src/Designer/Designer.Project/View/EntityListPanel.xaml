@@ -14,17 +14,6 @@
                   CanUserDeleteRows="False"
                   ItemsSource="{Binding Model.Context.SelectProject.Entities}">
         <DataGrid.Columns>
-            <DataGridTemplateColumn>
-                <DataGridTemplateColumn.Header>
-                    <CheckBox Margin="0" Padding="0" IsChecked="{Binding Model.SelectAll}"
-                              DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=designer1:EntityListPanel,AncestorLevel=1}}"/>
-                </DataGridTemplateColumn.Header>
-                <DataGridTemplateColumn.CellTemplate>
-                    <DataTemplate>
-                        <CheckBox Name="chk" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding Option.IsSelect,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
-                    </DataTemplate>
-                </DataGridTemplateColumn.CellTemplate>
-            </DataGridTemplateColumn>
             <DataGridCheckBoxColumn Binding="{Binding Option.IsDelete,Mode=TwoWay}" Header="删除" />
             <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />
             <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" IsReadOnly="true" Header="标题" />

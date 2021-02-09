@@ -73,7 +73,7 @@ namespace Agebull.EntityModel.Config
                     {
                         Field.FieldType = "LONGTEXT";
                     }
-                    else if (Field.IsMemo)
+                    else if (Field.IsText)
                     {
                         Field.Datalen = 0;
                         Field.FieldType = "TEXT";

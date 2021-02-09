@@ -44,7 +44,7 @@
                 <TextBox IsReadOnly="True" Text="{Binding Entity.PrimaryField,Mode=OneWay}" />
             </StackPanel>
         </WrapPanel>
-        <TabControl DockPanel.Dock="Bottom" DataContext="{Binding SelectField}">
+        <TabControl DockPanel.Dock="Bottom" DataContext="{Binding SelectField}" MinHeight="160">
             <TabControl.Resources>
                 <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
             </TabControl.Resources>
@@ -56,24 +56,23 @@
                     </StackPanel>
                     <StackPanel>
                         <Label Content="存储类型" />
-                        <ComboBox ItemsSource="{x:Static mysql1:MySqlDataBaseHelper.DataTypeList}"
-                                  SelectedValue="{Binding DbType,Mode=TwoWay}" />
+                        <ComboBox ItemsSource="{x:Static mysql1:MySqlDataBaseHelper.DataTypeList}" SelectedValue="{Binding FieldType,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="长度" />
+                        <TextBox Text="{Binding Datalen,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="精度" />
+                        <TextBox Text="{Binding Scale,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="存储空值" />
                         <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DbNullable,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel>
-                        <Label Content="数据长度" />
-                        <TextBox Text="{Binding Datalen,Mode=TwoWay}" />
-                    </StackPanel>
-                    <StackPanel>
-                        <Label Content="存储精度" />
-                        <TextBox Text="{Binding Scale,Mode=TwoWay}" />
-                    </StackPanel>
-                    <StackPanel>
-                        <Label Content="备注" />
-                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsMemo,Mode=TwoWay}" />
+                        <Label Content="Text" />
+                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsText,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="BLOB" />
@@ -81,12 +80,60 @@
                     </StackPanel>
                 </WrapPanel>
             </TabItem>
-            <TabItem Header="扩展">
+            <TabItem Header="链接">
                 <WrapPanel>
                     <StackPanel>
-                        <Label Content="构建索引" />
+                        <Label Content="外部关联" />
+                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsLinkField,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="关联表名" />
+                        <TextBox Text="{Binding LinkTable,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="关联字段" />
+                        <TextBox Text="{Binding LinkField,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="主建关联" />
+                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsLinkKey,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="标题关联" />
+                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsLinkCaption,Mode=TwoWay}" />
+                    </StackPanel>
+                </WrapPanel>
+            </TabItem>
+            <TabItem Header="聚合">
+                <WrapPanel>
+                    <StackPanel>
+                        <Label Content="聚合方法" />
+                        <TextBox Text="{Binding Function,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="聚合条件" />
+                        <TextBox Text="{Binding Having,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="读取类型" />
+                        <ComboBox ItemsSource="{x:Static mysql1:MySqlDataBaseHelper.DataTypeList}" SelectedValue="{Binding ValueType,Mode=TwoWay}" />
+                    </StackPanel>
+                </WrapPanel>
+            </TabItem>
+            <TabItem Header="索引">
+                <WrapPanel>
+                    <StackPanel>
+                        <Label Content="普通索引" />
                         <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsDbIndex,Mode=TwoWay}" />
                     </StackPanel>
+                    <StackPanel>
+                        <Label Content="唯一索引" />
+                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding UniqueIndex,Mode=TwoWay}" />
+                    </StackPanel>
+                </WrapPanel>
+            </TabItem>
+            <TabItem Header="扩展">
+                <WrapPanel>
                     <StackPanel>
                         <Label Content="不存储" />
                         <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding NoStorage,Mode=TwoWay}" />
@@ -95,26 +142,13 @@
                         <Label Content="不更新" />
                         <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding KeepUpdate,Mode=TwoWay}" />
                     </StackPanel>
-                    <!--<StackPanel>
-                        <Label Content="存储列ID" />
-                        <TextBox Text="{Binding DbIndex,Mode=TwoWay}" />
-                    </StackPanel>
-                    <StackPanel>
-                        <Label Content="UNICODE" />
-                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding Unicode,Mode=TwoWay}" />
-                    </StackPanel>
-                    <StackPanel>
-                        <Label Content="固定长度" />
-                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding FixedLength,Mode=TwoWay}" />
-                    </StackPanel>-->
                     <StackPanel>
                         <Label Content="仅数据库字段" />
                         <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DbInnerField,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="不保存的场景" />
-                        <ComboBox ItemsSource="{x:Static defaults:EnumHelper.StorageScreenTypeList}"
-                                  SelectedValue="{Binding KeepStorageScreen,Mode=TwoWay}" />
+                        <ComboBox ItemsSource="{x:Static defaults:EnumHelper.StorageScreenTypeList}" SelectedValue="{Binding KeepStorageScreen,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="自定义保存" />
@@ -130,27 +164,20 @@
         <DataGrid AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
-                  ItemsSource="{Binding Extend.Properties}">
+                  ItemsSource="{Binding Extend.Fields}">
             <DataGrid.Columns>
-                <DataGridCheckBoxColumn Binding="{Binding  Field.IsDiscard,Mode=OneWay}" IsReadOnly="True" Header="废" />
+                <DataGridCheckBoxColumn Binding="{Binding NoStorage,Mode=TwoWay,Converter={StaticResource BoolReversalConverter}}" Header="存储" />
                 <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
                 <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />
-                <DataGridCheckBoxColumn Binding="{Binding NoStorage,Mode=TwoWay,Converter={StaticResource BoolReversalConverter}}" Header="存储" />
                 <DataGridCheckBoxColumn Binding="{Binding KeepUpdate,Mode=TwoWay}" Header="仅新增" />
                 <DataGridTextColumn Binding="{Binding DbFieldName,Mode=TwoWay}" Header="字段" />
-                <DataGridCheckBoxColumn Binding="{Binding Field.IsPrimaryKey,Mode=TwoWay}" Header="主键" />
-                <DataGridCheckBoxColumn Binding="{Binding Field.IsIdentity,Mode=TwoWay}" Header="自增" />
-                <DataGridCheckBoxColumn Binding="{Binding Field.IsCompute,Mode=TwoWay}" Header="外联" />
-                <DataGridTextColumn Binding="{Binding DbType,Mode=TwoWay}" Header="类型" />
+                <DataGridCheckBoxColumn Binding="{Binding IsPrimaryKey,Mode=TwoWay}" Header="主键" />
+                <DataGridCheckBoxColumn Binding="{Binding IsIdentity,Mode=TwoWay}" Header="自增" />
+                <DataGridCheckBoxColumn Binding="{Binding IsReadonly,Mode=TwoWay}" Header="只读" />
+                <DataGridTextColumn Binding="{Binding Property.DataType,Mode=TwoWay}" Header="数据类型" />
+                <DataGridTextColumn Binding="{Binding FieldType,Mode=TwoWay}" Header="存储类型" />
                 <DataGridTextColumn Binding="{Binding Datalen,Mode=TwoWay}" Header="长度" />
-                <DataGridTextColumn Binding="{Binding Scale,Mode=TwoWay}" Header="精度" />
-                <DataGridCheckBoxColumn Binding="{Binding Field.UniqueIndex,Mode=TwoWay}" Header="唯一索引" />
-                <DataGridCheckBoxColumn Binding="{Binding IsDbIndex,Mode=TwoWay}" Header="索引" />
-                <DataGridCheckBoxColumn Binding="{Binding IsMemo,Mode=TwoWay}" Header="备注" />
-                <DataGridCheckBoxColumn Binding="{Binding IsBlob,Mode=TwoWay}" Header="BLOB" />
                 <DataGridCheckBoxColumn Binding="{Binding DbNullable,Mode=TwoWay}" Header="NULL" />
-                <DataGridTextColumn Binding="{Binding Field.Initialization,Mode=TwoWay}" Header="默认值" />
-                <DataGridCheckBoxColumn Binding="{Binding CustomWrite,Mode=TwoWay}" Header="自定义保存" />
             </DataGrid.Columns>
             <i:Interaction.Behaviors>
                 <behaviors:DataGridGenertColumnsBehavior />

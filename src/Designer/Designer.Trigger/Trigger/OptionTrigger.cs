@@ -5,7 +5,7 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// TargetConfig´¥·¢Æ÷
     /// </summary>
-    public class OptionTrigger : EventTrigger
+    public sealed class OptionTrigger : EventTrigger
     {
         /// <summary>
         /// ¹¹Ôì

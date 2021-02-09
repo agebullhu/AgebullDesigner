@@ -11,6 +11,8 @@ namespace Agebull.EntityModel.Config.V2021
     [DataContract, JsonObject(MemberSerialization.OptIn)]
     public partial class EntityExtendConfig : FileConfigBase, IChildrenConfig
     {
+
+        #region 引用
         ConfigBase IChildrenConfig.Parent { get => Entity as ConfigBase; set => Entity = value as IEntityConfig; }
 
         /// <summary>
@@ -37,7 +39,44 @@ namespace Agebull.EntityModel.Config.V2021
                 OnPropertyChanged("IChildrenConfig.Parent");
             }
         }
+        #endregion
 
+        #region 名称关联
+
+        /// <summary>
+        ///     名称
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"名称")]
+        public override string Name
+        {
+            get => Entity?.Name;
+            set => base.Name = value;
+        }
+
+        /// <summary>
+        ///     标题
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"标题")]
+        public override string Caption
+        {
+            get => Entity?.Caption;
+            set
+            {
+                base.Caption = value;
+            }
+        }
+
+        /// <summary>
+        ///     说明
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"说明")]
+        public override string Description
+        {
+            get => Entity?.Description;
+            set => base.Description = value;
+        }
+
+        #endregion
 
         /// <summary>
         /// 字段复制

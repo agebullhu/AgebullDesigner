@@ -266,7 +266,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         private static void StringCheck(IPropertyConfig property, StringBuilder code, ref string dot)
         {
             var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
-            if (property.Max.IsEmpty() && !field.IsBlob && !field.IsMemo)
+            if (property.Max.IsEmpty() && !field.IsBlob && !field.IsText)
                 property.Max = field.Datalen.ToString();
 
             if (property.Max.IsNotEmpty() && property.Min.IsNotEmpty())

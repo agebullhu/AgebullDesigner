@@ -113,7 +113,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// </summary>
         public void Upgrade()
         {
-            Copy(Entity);
+            Copy((ConfigBase)Entity);
             _properties = new ConfigCollection<DataBaseFieldConfig>();
             foreach (var field in Entity.Properties)
             {

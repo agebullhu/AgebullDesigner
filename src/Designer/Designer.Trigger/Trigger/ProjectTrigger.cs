@@ -7,7 +7,7 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// 项目配置触发器
     /// </summary>
-    public class ProjectTrigger : ParentConfigTrigger<ProjectConfig>
+    public sealed class ProjectTrigger : ParentConfigTrigger<ProjectConfig>
     {
         /// <summary>
         /// 载入事件处理

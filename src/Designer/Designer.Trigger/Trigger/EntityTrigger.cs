@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
 using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer
@@ -11,8 +13,70 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// 实体配置触发器
     /// </summary>
-    public class EntityTrigger : ParentConfigTrigger<EntityConfig>
+    public sealed class EntityBaseTrigger : ParentConfigTrigger<EntityConfigBase>
     {
+        /// <summary>
+        /// 属性事件处理
+        /// </summary>
+        /// <param name="property"></param>
+        protected override void OnPropertyChangedInner(string property)
+        {
+            switch (property)
+            {
+                case nameof(TargetConfig.EnableDataBase):
+                    if (TargetConfig.EnableDataBase)
+                    {
+                        ConfigLoader.LoadDataTable(TargetConfig as IEntityConfig, Path.GetDirectoryName(TargetConfig.SaveFileName));
+                        if (TargetConfig.DataTable == null)
+                        {
+                            TargetConfig.DataTable = new DataTableConfig();
+                            TargetConfig.DataTable.Upgrade();
+                        }
+                    }
+                    else
+                    {
+                        ConfigWriter.SaveExtendConfig(TargetConfig, TargetConfig.DataTable);
+                        TargetConfig.DataTable = null;
+                    }
+                    break;
+                case nameof(TargetConfig.EnableUI):
+                    if (TargetConfig.EnableUI)
+                    {
+                        ConfigLoader.LoadPage(TargetConfig as IEntityConfig, Path.GetDirectoryName(TargetConfig.SaveFileName));
+                        if (TargetConfig.Page == null)
+                        {
+                            TargetConfig.Page = new PageConfig();
+                            TargetConfig.Page.Upgrade();
+                        }
+                    }
+                    else
+                    {
+                        ConfigWriter.SaveExtendConfig(TargetConfig, TargetConfig.Page);
+                        TargetConfig.Page = null;
+                    }
+                    break;
+            }
+        }
+
+        /// <summary>
+        ///     发出属性修改前事件
+        /// </summary>
+        /// <param name="property">属性</param>
+        /// <param name="oldValue">旧值</param>
+        /// <param name="newValue">新值</param>
+        protected override void BeforePropertyChangedInner(string property, object oldValue, object newValue)
+        {
+
+        }
+
+    }
+
+    /// <summary>
+    /// 实体配置触发器
+    /// </summary>
+    public sealed class EntityTrigger : ParentConfigTrigger<EntityConfig>
+    {
+
         protected override void OnLoad()
         {
             foreach (var field in TargetConfig.Properties)

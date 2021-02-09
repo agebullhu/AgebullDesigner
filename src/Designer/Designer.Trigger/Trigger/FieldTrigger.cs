@@ -9,7 +9,7 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     ///  Ù–‘≈‰÷√¥•∑¢∆˜
     /// </summary>
-    public class FieldTrigger : ConfigTriggerBase<DataBaseFieldConfig>
+    public sealed class FieldTrigger : ConfigTriggerBase<DataBaseFieldConfig>
     {
         protected override void OnLoad()
         {
@@ -77,9 +77,9 @@ namespace Agebull.EntityModel.Designer
             TargetConfig.Option.ReferenceConfig = null;
         }
 
-        private void SyncLinkField(Action<FieldConfig> action)
+        private void SyncLinkField(Action<DataBaseFieldConfig> action)
         {
-            string saveTable = TargetConfig.Entity.SaveTableName;
+            string saveTable = TargetConfig.Parent.SaveTableName;
             string name = TargetConfig.Entity.Name;
             foreach (var entity in SolutionConfig.Current.Entities.Where(p => p != TargetConfig.Entity))
             {

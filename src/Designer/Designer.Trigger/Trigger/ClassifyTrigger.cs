@@ -6,7 +6,7 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// 分类触发器
     /// </summary>
-    public class ClassifyTrigger : ParentConfigTrigger<EntityClassify>
+    public sealed class ClassifyTrigger : ParentConfigTrigger<EntityClassify>
     {
         /// <summary>
         /// 属性事件处理

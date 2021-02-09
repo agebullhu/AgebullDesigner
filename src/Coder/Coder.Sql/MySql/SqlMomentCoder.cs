@@ -77,7 +77,7 @@ ALTER TABLE  `{dataTable.SaveTableName}`");
     ADD UNIQUE (`{property.DbFieldName}`)");
                     continue;
                 }
-                if (property.IsMemo || property.IsBlob)
+                if (property.IsText || property.IsBlob)
                 {
                     code.Append($@"
     ADD FULLTEXT (`{property.DbFieldName}`)");
@@ -122,7 +122,7 @@ ALTER TABLE  `{dataTable.SaveTableName}`");
     ADD UNIQUE (`{property.DbFieldName}`)");
                     continue;
                 }
-                if (property.IsMemo || property.IsBlob)
+                if (property.IsText || property.IsBlob)
                 {
                     code.Append($@"
     ADD FULLTEXT (`{property.DbFieldName}`)");

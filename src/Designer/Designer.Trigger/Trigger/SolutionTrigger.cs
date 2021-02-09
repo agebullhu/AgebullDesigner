@@ -7,7 +7,7 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// 解决方案配置触发器
     /// </summary>
-    public class SolutionTrigger : ParentConfigTrigger<SolutionConfig>
+    public sealed class SolutionTrigger : ParentConfigTrigger<SolutionConfig>
     {
         /// <summary>
         /// 载入事件处理

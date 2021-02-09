@@ -40,7 +40,7 @@ namespace Agebull.EntityModel.Config
                 return;
             foreach (var item in enumerable)
             {
-                item.Look(action, doAction);
+                item.Foreach(action, doAction);
             }
         }
 

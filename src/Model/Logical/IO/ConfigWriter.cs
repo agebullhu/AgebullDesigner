@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
 using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Designer
@@ -23,6 +24,16 @@ namespace Agebull.EntityModel.Designer
                 SaveConfig(Path.Combine(dir, config.GetFileName()), config, checkState);
         }
 
+        /// <summary>
+        /// 保存设计文件
+        /// </summary>
+        public static void SaveExtendConfig(FileConfigBase entity, EntityExtendConfig extend)
+        {
+            if (extend == null)
+                return;
+            var dir = Path.GetDirectoryName(entity.SaveFileName);
+            SaveConfig(Path.Combine(dir,"Extend", extend.GetFileName()), extend, false);
+        }
         /// <summary>
         /// 保存设计文件
         /// </summary>
@@ -62,7 +73,7 @@ namespace Agebull.EntityModel.Designer
                 string json = JsonConvert.SerializeObject(config);
                 File.WriteAllText(filename, json, Encoding.UTF8);
                 config.SaveFileName = filename;
-                config.Foreach<ConfigBase>(p => p.IsModify = false);
+                config.Foreach(p => p.IsModify = false);
             }
             catch (Exception e)
             {

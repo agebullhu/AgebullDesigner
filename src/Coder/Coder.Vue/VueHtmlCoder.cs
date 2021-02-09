@@ -284,7 +284,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                     if (friend != null)
                         caption = friend.Property.Caption;
                 }
-                if (field.IsMemo || property.MulitLine)
+                if (field.IsText || property.MulitLine)
                     code.Append($@"
             <div class='expand_line_block'>");
                 else

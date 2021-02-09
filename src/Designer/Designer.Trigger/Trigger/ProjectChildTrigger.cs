@@ -5,7 +5,7 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// ParentConfigBase触发器
     /// </summary>
-    public class ProjectChildTrigger : ConfigTriggerBase<ProjectChildConfigBase>
+    public sealed class ProjectChildTrigger : ConfigTriggerBase<ProjectChildConfigBase>
     {
         /// <summary>
         ///     发出属性修改前事件

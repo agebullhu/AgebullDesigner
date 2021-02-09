@@ -14,15 +14,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="2021\Commond\**" />
+    <Compile Remove="2021\DataRule\**" />
     <Compile Remove="IConfigIterator\**" />
     <Compile Remove="Remove\**" />
     <Compile Remove="V5\**" />
+    <EmbeddedResource Remove="2021\Commond\**" />
+    <EmbeddedResource Remove="2021\DataRule\**" />
     <EmbeddedResource Remove="IConfigIterator\**" />
     <EmbeddedResource Remove="Remove\**" />
     <EmbeddedResource Remove="V5\**" />
+    <None Remove="2021\Commond\**" />
+    <None Remove="2021\DataRule\**" />
     <None Remove="IConfigIterator\**" />
     <None Remove="Remove\**" />
     <None Remove="V5\**" />
+    <Page Remove="2021\Commond\**" />
+    <Page Remove="2021\DataRule\**" />
     <Page Remove="IConfigIterator\**" />
     <Page Remove="Remove\**" />
     <Page Remove="V5\**" />

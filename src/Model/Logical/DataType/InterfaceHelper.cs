@@ -19,7 +19,9 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="property"></param>
         public static void CheckLinkField(IEntityConfig entity, IPropertyConfig property)
         {
-            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            var field = property.Entity?.DataTable[property];
+            if (field == null)
+                return;
             var link = field.IsLinkField ? entity.Project.Find(field.LinkTable) : null;
             var linkField = link?.Find(field.LinkField);
             if (linkField != null)

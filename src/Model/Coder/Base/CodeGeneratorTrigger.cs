@@ -36,10 +36,11 @@ namespace Agebull.EntityModel.Designer
                 if (field.IsDelete || field.IsDiscard)
                     continue;
                 field.Option.Index = ++idx;
-                entity.LastProperties.TryAdd(field,p=>p.Key);
-                InterfaceHelper.CheckLinkField(entity, field);
+                entity.LastProperties.TryAdd(field, p => p.Key);
+                if (entity.EnableDataBase)
+                    InterfaceHelper.CheckLinkField(entity, field);
             }
-            InterfaceHelper.CheckLastInterface(entity,idx);
+            InterfaceHelper.CheckLastInterface(entity, idx);
         }
 
         /// <summary>
@@ -51,7 +52,7 @@ namespace Agebull.EntityModel.Designer
             int idx = 0;
             foreach (var property in model.Properties.OrderBy(p => p.Index))
             {
-                if (property.IsDelete || property.IsDiscard )
+                if (property.IsDelete || property.IsDiscard)
                     continue;
                 property.Option.Index = ++idx;
                 InterfaceHelper.CheckLinkField(model, property);

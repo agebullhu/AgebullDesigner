@@ -1,4 +1,5 @@
 using System.ComponentModel.Composition;
+using System.Linq;
 using Agebull.EntityModel;
 using Agebull.EntityModel.Designer;
 
@@ -16,16 +17,10 @@ namespace Agebull.Common.Config.Designer.EasyUi
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            GlobalTrigger.RegistTrigger<ConfigTrigger>();
-            GlobalTrigger.RegistTrigger<OptionTrigger>();
-            GlobalTrigger.RegistTrigger<FieldTrigger>();
-            GlobalTrigger.RegistTrigger<EntityTrigger>();
-            GlobalTrigger.RegistTrigger<ClassifyTrigger>();
-            GlobalTrigger.RegistTrigger<ChildrenTrigger>();
-            GlobalTrigger.RegistTrigger<ProjectTrigger>();
-            GlobalTrigger.RegistTrigger<ProjectChildTrigger>();
-            GlobalTrigger.RegistTrigger<SolutionTrigger>();
-            GlobalTrigger.RegistTrigger<EnumTrigger>();
+            foreach(var trigger in GetType().Assembly.GetTypes().Where(p =>p.IsSealed && p.IsSubclassOf(typeof(EventTrigger))))
+            {
+                GlobalTrigger.RegistTrigger(trigger);
+            }
         }
     }
 }

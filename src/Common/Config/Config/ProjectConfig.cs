@@ -1005,6 +1005,8 @@ namespace Agebull.EntityModel.Config
         /// <param name="classify"></param>
         public void Add(EntityClassify classify)
         {
+            if (classify == null)
+                return;
             try
             {
                 classify.Project = this;
@@ -1023,6 +1025,8 @@ namespace Agebull.EntityModel.Config
         /// <param name="entity"></param>
         public void Add(ModelConfig model)
         {
+            if (model == null)
+                return;
             try
             {
                 SolutionConfig.Current.Add(model);
@@ -1042,6 +1046,8 @@ namespace Agebull.EntityModel.Config
         /// <param name="entity"></param>
         public void Add(EntityConfig entity)
         {
+            if (entity == null)
+                return;
             try
             {
                 SolutionConfig.Current.Add(entity);
@@ -1074,6 +1080,8 @@ namespace Agebull.EntityModel.Config
         /// <param name="enumConfig"></param>
         public void Add(EnumConfig enumConfig)
         {
+            if (enumConfig == null)
+                return;
             try
             {
                 SolutionConfig.Current.Add(enumConfig);

@@ -9,8 +9,35 @@ namespace Agebull.EntityModel.Config.V2021
     /// 数据库字段
     /// </summary>
     [JsonObject(MemberSerialization.OptIn, ItemNullValueHandling = NullValueHandling.Ignore)]
-    public partial class DataBaseFieldConfig : FieldExtendConfig, IDataBaseFieldConfig
+    public partial class DataBaseFieldConfig : FieldExtendConfig<DataTableConfig>, IDataBaseFieldConfig
     {
+        #region 字段属性同步
+
+        /// <summary>
+        ///     唯一索引
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        public bool UniqueIndex { get => Property.UniqueIndex; set => Property.UniqueIndex = value; }
+
+        /// <summary>
+        ///     是否主键
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        public bool IsPrimaryKey { get => Property.IsPrimaryKey; set => Property.IsPrimaryKey = value; }
+
+        /// <summary>
+        ///     是否标题
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        public bool IsCaption { get => Property.IsCaption; set => Property.IsCaption = value; }
+        
+        /// <summary>
+        ///     是否空值
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        public bool Nullable { get => Property.Nullable; set => Property.Nullable = value; }
+        
+        #endregion
         #region 字段
 
         /// <summary>
@@ -244,24 +271,24 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         /// 备注字段
         /// </summary>
-        [DataMember, JsonProperty("isMemo", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isMemo;
+        [DataMember, JsonProperty("isText", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isText;
 
         /// <summary>
-        /// 备注字段
+        /// 长文本
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
         [Category(""), DisplayName(@"备注字段"), Description(@"备注字段")]
-        public bool IsMemo
+        public bool IsText
         {
-            get => _isMemo;
+            get => _isText;
             set
             {
-                if (_isMemo == value)
+                if (_isText == value)
                     return;
-                BeforePropertyChanged(nameof(IsMemo), _isMemo, value);
-                _isMemo = value;
-                OnPropertyChanged(nameof(IsMemo));
+                BeforePropertyChanged(nameof(IsText), _isText, value);
+                _isText = value;
+                OnPropertyChanged(nameof(IsText));
             }
         }
 
@@ -764,7 +791,7 @@ namespace Agebull.EntityModel.Config.V2021
             Scale = dest.Scale;
             IsDbIndex = dest.IsDbIndex;
             FixedLength = dest.FixedLength;
-            IsMemo = dest.IsMemo;
+            IsText = dest.IsText;
             IsBlob = dest.IsBlob;
             DbInnerField = dest.DbInnerField;
             KeepStorageScreen = dest.KeepStorageScreen;
@@ -801,7 +828,7 @@ namespace Agebull.EntityModel.Config.V2021
             Scale = dest.Scale;
             IsDbIndex = dest.IsDbIndex;
             FixedLength = dest.FixedLength;
-            IsMemo = dest.IsMemo;
+            IsText = dest.IsMemo;
             IsBlob = dest.IsBlob;
             DbInnerField = dest.DbInnerField;
             KeepStorageScreen = dest.KeepStorageScreen;
@@ -837,7 +864,7 @@ namespace Agebull.EntityModel.Config.V2021
             Scale = dest.Scale;
             IsDbIndex = dest.IsDbIndex;
             FixedLength = dest.FixedLength;
-            IsMemo = dest.IsMemo;
+            IsText = dest.IsMemo;
             IsBlob = dest.IsBlob;
             DbInnerField = dest.DbInnerField;
             KeepStorageScreen = dest.KeepStorageScreen;

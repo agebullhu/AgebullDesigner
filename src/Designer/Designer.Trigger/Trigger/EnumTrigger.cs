@@ -7,7 +7,7 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// 枚举配置触发器
     /// </summary>
-    public class EnumTrigger : ParentConfigTrigger<EnumConfig>
+    public sealed class EnumTrigger : ParentConfigTrigger<EnumConfig>
     {
         protected override void OnLoad()
         {

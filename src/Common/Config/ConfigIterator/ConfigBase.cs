@@ -15,7 +15,7 @@ namespace Agebull.EntityModel.Config
                 return;
 
             action(this);
-            ForeachDown(action, false);
+            ForeachDown(action, true);
         }
 
         /// <summary>
@@ -27,15 +27,14 @@ namespace Agebull.EntityModel.Config
         {
             if (IsDiscard || IsDelete)
                 return;
-            Look(action, false);
+            Foreach(action, false);
         }
-
         /// <summary>
         /// ±éÀú
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
-        public void Look<T>(Action<T> action, bool doAll)
+        public void Foreach<T>(Action<T> action, bool doAll)
         {
             if (IsDiscard || IsDelete)
                 return;
@@ -49,6 +48,18 @@ namespace Agebull.EntityModel.Config
             if (!doAll && ForeachUp(action))
                 return;
             ForeachDown(action, doAll);
+        }
+
+        /// <summary>
+        /// ±éÀú
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        public void Look<T>(Action<T> action)
+        {
+            if (IsDiscard || IsDelete)
+                return;
+            Foreach(action, true);
         }
 
         /// <summary>
@@ -92,7 +103,7 @@ namespace Agebull.EntityModel.Config
         {
             foreach (var project in Projects)
             {
-                project.Look(action, doAction);
+                project.Foreach(action, doAction);
             }
         }
     }
@@ -195,8 +206,8 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         protected override void ForeachDown<T>(Action<T> action, bool doAction)
         {
-            DataTable?.Look(action, doAction);
-            Page?.Look(action, doAction);
+            DataTable?.Foreach(action, doAction);
+            Page?.Foreach(action, doAction);
 
             if (WorkContext.InCoderGenerating)
             {
@@ -257,7 +268,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         protected override void ForeachDown<T>(Action<T> action, bool doAction)
         {
-            Me.EnumConfig?.Look(action, doAction);
+            Me.EnumConfig?.Foreach(action, doAction);
         }
     }
 }
