@@ -8,8 +8,8 @@
 
 #region 引用
 
-using System.Windows.Controls;
 using Agebull.Common.Mvvm;
+using Microsoft.Web.WebView2.Wpf;
 
 #endregion
 
@@ -30,7 +30,11 @@ namespace Agebull.EntityModel.Designer
 
         public DependencyAction WebBrowserBehavior => new DependencyAction
         {
-            AttachAction = obj => Model.Browser = (WebBrowser)obj
+            AttachAction = obj =>
+            {
+                Model.Browser = (WebView2)obj;
+                Model.Browser.EnsureCoreWebView2Async();
+            }
         };
     }
 }

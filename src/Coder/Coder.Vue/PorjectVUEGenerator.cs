@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Agebull.EntityModel.Config;
+using System;
 using System.Diagnostics;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder.VUE
 {
@@ -30,7 +30,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             };
             try
             {
-                var code =coder.HtmlCode();
+                var code = coder.Card();
                 WriteFile(file, code);
             }
             catch (Exception e)

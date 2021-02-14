@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 
 namespace Agebull.EntityModel.Config
 {
@@ -211,13 +210,13 @@ namespace Agebull.EntityModel.Config
 
             if (WorkContext.InCoderGenerating)
             {
-                Me.LastProperties.DoForeach(action, doAction);
+                IEntity.LastProperties.DoForeach(action, doAction);
             }
             else
             {
-                Me.Properties.DoForeach(action, doAction);
+                IEntity.Properties.DoForeach(action, doAction);
             }
-            Me.Commands.DoForeach(action, doAction);
+            IEntity.Commands.DoForeach(action, doAction);
         }
         public override void OnLoad()
         {
@@ -269,6 +268,7 @@ namespace Agebull.EntityModel.Config
         protected override void ForeachDown<T>(Action<T> action, bool doAction)
         {
             Me.EnumConfig?.Foreach(action, doAction);
+            DataBaseField?.Foreach(action, doAction);
         }
     }
 }
@@ -328,6 +328,14 @@ namespace Agebull.EntityModel.Config.V2021
         public override void OnLoad()
         {
             Fields.OnLoad(this);
+            base.OnLoad();
+        }
+    }
+    partial class DataBaseFieldConfig
+    {
+        public override void OnLoad()
+        {
+            Property.DataBaseField = this;
             base.OnLoad();
         }
     }

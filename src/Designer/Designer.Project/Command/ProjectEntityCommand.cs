@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Designer.NewConfig;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.Designer.NewConfig;
-using System;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -99,7 +99,7 @@ namespace Agebull.EntityModel.Designer
             };
             model.CopyConfig(entity);
             ((IEntityConfig)model).Copy(entity);
-            foreach(var field in entity.Properties)
+            foreach (var field in entity.Properties)
             {
                 var property = new PropertyConfig
                 {

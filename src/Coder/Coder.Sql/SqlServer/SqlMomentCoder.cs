@@ -1,12 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Config.SqlServer;
 using Agebull.EntityModel.Config.V2021;
 using Agebull.EntityModel.Designer;
+using System.ComponentModel.Composition;
+using System.Linq;
+using System.Text;
 using static System.String;
 
 namespace Agebull.EntityModel.RobotCoder.DataBase.Sqlerver
@@ -25,7 +23,7 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.Sqlerver
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            CoderManager.RegisteCoder< DataTableConfig>("Sqlerver", "生成表(SQL)", "sql", CreateTable);
+            CoderManager.RegisteCoder<DataTableConfig>("Sqlerver", "生成表(SQL)", "sql", CreateTable);
             CoderManager.RegisteCoder<DataTableConfig>("Sqlerver", "插入表字段(SQL)", "sql", AddColumnCode);
             CoderManager.RegisteCoder<DataTableConfig>("Sqlerver", "修改表字段(SQL)", "sql", ChangeColumnCode);
             CoderManager.RegisteCoder<DataTableConfig>("Sqlerver", "生成视图(SQL)", "sql", CreateView);
@@ -41,8 +39,8 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.Sqlerver
 
         public static string TruncateTable(DataTableConfig entity)
         {
-            
-                
+
+
             return $@"
 /*******************************{entity.Caption}*******************************/
 TRUNCATE TABLE [{entity.SaveTableName}];
@@ -136,8 +134,8 @@ CREATE VIEW [{viewName}] AS
         {
             if (entity == null)
                 return "";
-            
-                return $"{entity.Caption} : 设置为普通类(EnableDataBase=true)，无法生成SQL";
+
+            return $"{entity.Caption} : 设置为普通类(EnableDataBase=true)，无法生成SQL";
             return $@"
 /*******************************{entity.Caption}*******************************/
 DROP TABLE [{entity.SaveTableName}];
@@ -184,8 +182,8 @@ VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Project.Name}/{entity.Name
 
         public static string CreateTableCode(DataTableConfig entity, bool signle = false)
         {
-            
-                return "";//这个设置为普通类，无法生成SQL
+
+            return "";//这个设置为普通类，无法生成SQL
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
@@ -234,8 +232,8 @@ EXECUTE sp_addextendedproperty N'MS_Description', @v, N'SCHEMA', N'dbo', N'TABLE
         {
             if (entity == null)
                 return "";
-            
-                return $"{entity.Caption} : 设置为普通类(EnableDataBase=true)，无法生成SQL";
+
+            return $"{entity.Caption} : 设置为普通类(EnableDataBase=true)，无法生成SQL";
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/

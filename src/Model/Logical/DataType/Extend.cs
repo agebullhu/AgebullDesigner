@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text;
-
-namespace Agebull.EntityModel.Config
+﻿namespace Agebull.EntityModel.Config
 {
     /// <summary>
     /// C++与C#类型转换辅助类

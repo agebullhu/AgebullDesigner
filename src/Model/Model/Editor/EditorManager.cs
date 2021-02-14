@@ -1,10 +1,11 @@
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -92,7 +93,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 扩展对象插入的控件
         /// </summary>
-        internal Border ExtendEditorPanel { get; set; }
+        internal static Border ExtendEditorPanel { get; set; }
 
         /// <summary>
         /// 当前已匹配的类型
@@ -239,7 +240,7 @@ namespace Agebull.EntityModel.Designer
             bool current = currentEditorName == null;
             foreach (var ext in exts.OrderBy(p => p.Value.Index))
             {
-                if (CurrentView.IsNotBlank() && ext.Value.Filter.Count > 0 && !ext.Value.Filter.Contains(CurrentView,StringComparer.OrdinalIgnoreCase))
+                if (CurrentView.IsPresent() && ext.Value.Filter.Count > 0 && !ext.Value.Filter.Contains(CurrentView, StringComparer.OrdinalIgnoreCase))
                     continue;
                 editors.Add(new CommandItem<string>
                 {
@@ -264,7 +265,12 @@ namespace Agebull.EntityModel.Designer
             IsGlobal = type == 2;
             history[CurrentType] = EditorModel.Screen.NowEditor = CurrentEditorName = name;
 
-            WorkContext.SynchronousContext.InvokeInUiThread(() =>
+            WorkContext.SynchronousContext.InvokeInUiThread(ShowEditor,option);
+        }
+
+        private void ShowEditor(EditorOption option)
+        {
+            try
             {
                 var editor = option.Create();
                 if (editor.DataContext is EditorViewModelBase viewModel)
@@ -292,7 +298,11 @@ namespace Agebull.EntityModel.Designer
                 }
                 //ExtendEditorPanel.Child.UpdateLayout();
                 ExtendEditorPanel.UpdateLayout();
-            });
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex, "ShowEditor");
+            }
         }
 
         #endregion

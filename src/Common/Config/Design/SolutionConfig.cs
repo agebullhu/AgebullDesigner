@@ -27,7 +27,6 @@
 
 #endregion
 
-using System;
 
 namespace Agebull.EntityModel.Config
 {

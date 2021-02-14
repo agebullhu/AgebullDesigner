@@ -1,6 +1,6 @@
-using System.ComponentModel.Composition;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Designer.Vue.View;
+using System.ComponentModel.Composition;
 
 namespace Agebull.EntityModel.Designer.Vue
 {

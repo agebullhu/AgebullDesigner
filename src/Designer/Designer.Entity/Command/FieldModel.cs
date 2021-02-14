@@ -1,10 +1,10 @@
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -36,7 +36,7 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder<IPropertyConfig>
             {
                 SignleSoruce = false,
-                WorkView= "adv",
+                WorkView = "adv",
                 Catalog = "×Ö¶Î",
                 Action = CheckName,
                 Caption = "ÊôÐÔÃû³Æ´óÍÕ·å",
@@ -111,7 +111,7 @@ namespace Agebull.EntityModel.Designer
         public void CheckName(IPropertyConfig property)
         {
             var bak = property.Name;
-            property.Name = GlobalConfig.ToLinkWordName(bak, null,true);
+            property.Name = GlobalConfig.ToLinkWordName(bak, null, true);
             var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
             if (field == null)
                 return;
@@ -122,11 +122,11 @@ namespace Agebull.EntityModel.Designer
             if (string.IsNullOrWhiteSpace(property.Caption))
                 return;
             var caption = property.Caption;
-            for (var idx = 0;idx < caption.Length; idx++)
+            for (var idx = 0; idx < caption.Length; idx++)
             {
                 if (char.IsPunctuation(caption[idx]))
                 {
-                    property.Caption = caption.Substring(0,idx);
+                    property.Caption = caption.Substring(0, idx);
                     property.Description = caption;
                     return;
                 }

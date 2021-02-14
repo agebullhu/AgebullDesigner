@@ -1,7 +1,5 @@
-using System;
-using System.Linq;
-using System.Resources;
 using Agebull.EntityModel.Config;
+using System;
 
 namespace Agebull.EntityModel.RobotCoder
 {

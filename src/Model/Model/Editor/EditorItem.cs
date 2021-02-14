@@ -8,7 +8,7 @@ namespace Agebull.EntityModel.Designer
     public class EditorItem : NotificationObject
     {
         public ConfigBase Config { get; set; }
-        
+
         public string Name { get; set; }
 
         public string Value

@@ -4,8 +4,9 @@
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <ApplicationIcon>icon.ico</ApplicationIcon>
+    <StartupObject></StartupObject>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -19,6 +20,13 @@
     <DefineConstants>TRACE;CLIENT</DefineConstants>
     <OutputPath>..\Program\</OutputPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="views\**" />
+    <EmbeddedResource Remove="views\**" />
+    <None Remove="views\**" />
+    <Page Remove="views\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Editor\PropertyPage.xaml.cs" />
@@ -118,9 +126,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Model\Model\Agebull.EntityModel.Designer.Model.csproj" />
-    <PackageReference Include="ZeroTeam.MessageMVC.ApiContract" Version="1.1.5.3" />
-    <PackageReference Include="ZeroTeam.MessageMVC.Core" Version="1.1.5.3" />
-    <PackageReference Include="ZeroTeam.MessageMVC.FastHttpApi" Version="1.1.5.4" />
+    <PackageReference Include="ZeroTeam.MessageMVC.ApiContract" Version="1.1.5.5" />
+    <PackageReference Include="ZeroTeam.MessageMVC.Core" Version="1.1.5.5" />
+    <PackageReference Include="ZeroTeam.MessageMVC.FastHttpApi" Version="1.1.5.5" />
   </ItemGroup>
 
   <ItemGroup>
@@ -353,9 +361,5 @@
     <Page Update="Editor\ConfigForm.xaml">
       <SubType>Designer</SubType>
     </Page>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="views\" />
   </ItemGroup>
 </Project>

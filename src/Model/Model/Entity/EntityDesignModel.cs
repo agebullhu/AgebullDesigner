@@ -1,14 +1,11 @@
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Media;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.RobotCoder;
-using System.Text;
-using Agebull.Common;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -24,7 +21,7 @@ namespace Agebull.EntityModel.Designer
             Model = DataModelDesignModel.Current;
             Context = DataModelDesignModel.Current?.Context;
         }
-        
+
         /// <summary>
         /// 生成命令对象
         /// </summary>
@@ -72,10 +69,10 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void CopyColumns(object arg)
         {
-            if(Context.SelectEntity is EntityConfig entity)
+            if (Context.SelectEntity is EntityConfig entity)
             {
                 Context.CopiedTable = entity;
-                Context.CopyColumns = Context.SelectColumns.OfType<FieldConfig>().OrderBy(p=>p.Index).ToList();
+                Context.CopyColumns = Context.SelectColumns.OfType<FieldConfig>().OrderBy(p => p.Index).ToList();
                 Context.StateMessage = $"复制了{Context.CopyColumns.Count}行";
             }
         }
@@ -130,7 +127,7 @@ namespace Agebull.EntityModel.Designer
 
         public void PateFields(bool toReference, EntityConfig source, EntityConfig Entity, List<FieldConfig> columns)
         {
-            foreach (var copyColumn in columns.OrderBy(p=>p.Index))
+            foreach (var copyColumn in columns.OrderBy(p => p.Index))
             {
                 var refe = toReference && !copyColumn.Entity.IsInterface;
                 FieldConfig newColumn = null;
@@ -167,7 +164,7 @@ namespace Agebull.EntityModel.Designer
                     newColumn.Entity = source;
                     newColumn.Option.Copy(copyColumn.Option, false);
                     newColumn.Option.Index = newColumn.Option.Identity = 0;
-                    
+
                     if (refe && !copyColumn.IsLinkField)
                     {
                         if (copyColumn.IsPrimaryKey)

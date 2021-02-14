@@ -1,11 +1,9 @@
-﻿using System;
+﻿using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Media;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.Config;
 using Application = System.Windows.Application;
 
 namespace Agebull.EntityModel.Designer
@@ -170,7 +168,7 @@ namespace Agebull.EntityModel.Designer
                 IsRoot = true
             };
 
-            foreach (var ed in EditorManager. GlobalEditors)
+            foreach (var ed in EditorManager.GlobalEditors)
             {
                 var item = new CommandItem<string>
                 {

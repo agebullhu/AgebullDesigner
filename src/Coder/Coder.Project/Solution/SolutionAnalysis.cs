@@ -1,11 +1,9 @@
-﻿using System;
+﻿using Agebull.Common;
+using Agebull.EntityModel.Config;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using Agebull.Common;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Designer;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -315,7 +313,7 @@ EndGlobal";
         void CreateDomain()
         {
             var path = IOHelper.CheckPath(SolutionConfig.Current.RootPath, SolutionConfig.Current.SrcFolder, "Domain");
-            Path.Combine(GlobalConfig.RootPath, "Templates", "Domain", "OperatorInjection.cs").FileCopyTo( Path.Combine(path, "OperatorInjection.cs"));
+            Path.Combine(GlobalConfig.RootPath, "Templates", "Domain", "OperatorInjection.cs").FileCopyTo(Path.Combine(path, "OperatorInjection.cs"));
             var prjFile = Path.Combine(path, SolutionConfig.Current.Name + ".Domain.csproj");
             if (!File.Exists(prjFile))
             {
@@ -336,8 +334,8 @@ EndGlobal";
                 var text = File.ReadAllText(tmpFile);
                 File.WriteAllText(proFile, text.Replace("@namespace", SolutionConfig.Current.NameSpace));
             }
-            
-           var startFile = Path.Combine(path, "Startup.cs");
+
+            var startFile = Path.Combine(path, "Startup.cs");
             if (!File.Exists(startFile))
             {
                 var tmpFile = Path.Combine(GlobalConfig.RootPath, "Templates", "Domain", "Startup.cs");
@@ -352,7 +350,7 @@ EndGlobal";
 
                 }
                 text.Replace("@namespace", SolutionConfig.Current.NameSpace);
-                text.Replace("@dbRegist",reg.ToString());
+                text.Replace("@dbRegist", reg.ToString());
                 File.WriteAllText(startFile, text.ToString());
             }
             var cfgFile = Path.Combine(path, "appsettings.json");

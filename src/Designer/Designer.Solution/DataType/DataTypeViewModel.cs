@@ -8,12 +8,10 @@
 
 #region 引用
 
-using Agebull.Common;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.RobotCoder;
 using System.Collections.Generic;
-using System.Linq;
 
 #endregion
 

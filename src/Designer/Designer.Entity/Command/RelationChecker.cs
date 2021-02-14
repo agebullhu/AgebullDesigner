@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Agebull.EntityModel.Config;
+using System;
 using System.Diagnostics;
 using System.Linq;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -19,9 +19,9 @@ namespace Agebull.EntityModel.Designer
             Trace.WriteLine($"**********{entity.Caption ?? entity.Name}**********");
             try
             {
-                var fields = entity.Properties.Where(p => 
+                var fields = entity.Properties.Where(p =>
                     /*p.CsType == "long" && */p.Name.Length > 3 &&
-                    string.Equals(p.Name.Substring(p.Name.Length - 2), "ID",StringComparison.OrdinalIgnoreCase)).ToArray();
+                    string.Equals(p.Name.Substring(p.Name.Length - 2), "ID", StringComparison.OrdinalIgnoreCase)).ToArray();
                 foreach (var field in fields)
                 {
                     var words = GlobalConfig.SplitWords(field.Name);
@@ -120,7 +120,7 @@ namespace Agebull.EntityModel.Designer
                     field.Option.ReferenceConfig = re.PrimaryColumn;
                     field.Option.IsLink = true;
                     field.IsCompute = false;
-                    var cf = entity.Properties.FirstOrDefault(p => (p.LinkField == caption.Name&& p.LinkTable == re.Name) || (p.Name == caption.Name && p.NoStorage));
+                    var cf = entity.Properties.FirstOrDefault(p => (p.LinkField == caption.Name && p.LinkTable == re.Name) || (p.Name == caption.Name && p.NoStorage));
                     if (cf == null)
                     {
                         entity.Add(cf = new FieldConfig
@@ -128,7 +128,7 @@ namespace Agebull.EntityModel.Designer
                             Name = caption.Name
                         });
                         cf.Copy(caption.Field);
-                        
+
                     }
                     cf.NoStorage = false;
                     cf.Caption = $"{re.Caption}{caption.Caption}";

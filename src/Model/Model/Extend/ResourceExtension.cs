@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Baml2006;
 using System.Windows.Markup;
 using System.Windows.Resources;
-using Agebull.EntityModel.Designer;
 
 namespace Agebull.EntityModel
 {

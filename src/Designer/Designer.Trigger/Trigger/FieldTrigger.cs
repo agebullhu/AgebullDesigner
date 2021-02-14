@@ -1,8 +1,8 @@
-using System;
-using System.Linq;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Config.V2021;
 using Agebull.EntityModel.RobotCoder;
+using System;
+using System.Linq;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -43,9 +43,9 @@ namespace Agebull.EntityModel.Designer
                 case nameof(TargetConfig.IsLinkField):
                     CheckLinkField();
                     break;
-                //case nameof(TargetConfig.Nullable):
-                //    TargetConfig.RaisePropertyChanged(nameof(TargetConfig.DbNullable));
-                //    break;
+                    //case nameof(TargetConfig.Nullable):
+                    //    TargetConfig.RaisePropertyChanged(nameof(TargetConfig.DbNullable));
+                    //    break;
             }
         }
 

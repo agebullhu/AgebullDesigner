@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.RobotCoder;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -93,7 +92,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "备注",
                 DbFieldName = "memo",
                 JsonName = "memo",
-                DbNullable=true,
+                DbNullable = true,
                 FieldType = "TEXT"
             });
         }

@@ -8,7 +8,7 @@
         /// <summary>
         /// 用户可见
         /// </summary>
-        bool UserSee { get;  }
+        bool UserSee { get; }
         /// <summary>
         /// 用户是否可查询
         /// </summary>

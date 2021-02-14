@@ -34,6 +34,10 @@
                 <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding TreeUi,Mode=TwoWay}" />
             </StackPanel>
             <StackPanel>
+                <Label Content="详细查询" />
+                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding FormQuery,Mode=TwoWay}" />
+            </StackPanel>
+            <StackPanel>
                 <Label Content="详细编辑页面" />
                 <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DetailsPage,Mode=TwoWay}" />
             </StackPanel>

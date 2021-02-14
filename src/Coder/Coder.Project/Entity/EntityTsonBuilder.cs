@@ -1,6 +1,6 @@
-using System.Text;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Config.V2021;
+using System.Text;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -190,7 +190,7 @@ namespace Agebull.EntityModel.RobotCoder
                 {
                     code.Append($@"
             //{field.Caption}
-            if(!writer.IsBlank(this._{field.Name.ToLWord()}))
+            if(!writer.IsMissing(this._{field.Name.ToLWord()}))
             {{
                 writer.WriteIndex(FIELD_INDEX_{Model.Name.ToUpper()}_{field.Name.ToUpper()});
                 writer.Write(this._{field.Name.ToLWord()});

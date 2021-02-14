@@ -1,10 +1,8 @@
-using System;
+using Agebull.EntityModel.Config;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.RobotCoder.DataBase.MySql;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -63,7 +61,7 @@ namespace {Project.NameSpace}.DataAccess
 
         protected string Code()
         {
-            var primary = Model.DataTable.Fields.FirstOrDefault(p=>p.Property == Model.PrimaryColumn);
+            var primary = Model.DataTable.Fields.FirstOrDefault(p => p.Property == Model.PrimaryColumn);
             return $@"#region
 using System;
 using System.Collections.Generic;

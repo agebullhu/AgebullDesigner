@@ -25,7 +25,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 取文件名
         /// </summary>
         /// <returns></returns>
-        public static string GetFileName(IEntityConfig entity) => entity?.Name.Trim().Replace(' ', '_').Replace('>', '_').Replace('<', '_') + ".datatable.json";
+        public static string GetFileName(IEntityConfig entity) => entity?.Name?.Trim().Replace(' ', '_').Replace('>', '_').Replace('<', '_') + ".datatable.json";
 
         #endregion
 
@@ -114,10 +114,32 @@ namespace Agebull.EntityModel.Config.V2021
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
+        public DataBaseFieldConfig Find(Func<DataBaseFieldConfig, bool> filter)
+        {
+            return Fields.FirstOrDefault(filter);
+        }
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public DataBaseFieldConfig Find(params string[] names)
         {
             return Fields.FirstOrDefault(p => names.Exist(p.Property.Name));
         }
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool TryGet(Func<DataBaseFieldConfig, bool> filter, out DataBaseFieldConfig field)
+        {
+            field = Fields.FirstOrDefault(filter);
+            return field != null;
+        }
+
 
         /// <summary>
         /// 查找实体
@@ -147,18 +169,34 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         /// 兼容性升级
         /// </summary>
+        public static DataTableConfig Create(IEntityConfig entity)
+        {
+            var table = new DataTableConfig
+            {
+                Entity = entity
+            };
+            table.Upgrade();
+            return table;
+        }
+        /// <summary>
+        /// 兼容性升级
+        /// </summary>
         public void Upgrade()
         {
-            Copy((ConfigBase)Entity);
+            var entity = Entity.Entity;
+            if (entity == null)
+                return;
+            Copy((ConfigBase)entity);
             _fields = new ConfigCollection<DataBaseFieldConfig>();
-            foreach (var field in Entity.Properties)
+            foreach (var property in Entity.Properties)
             {
                 var uiField = new DataBaseFieldConfig
                 {
-                    Property = field
+                    Property = property
                 };
-                uiField.Copy(field as SimpleConfig);
+                uiField.Copy(property as SimpleConfig);
                 _fields.Add(uiField);
+                property.DataBaseField = uiField;
             }
         }
 
@@ -337,18 +375,33 @@ namespace Agebull.EntityModel.Config.V2021
                 OnPropertyChanged(nameof(EnableDataEvent));
             }
         }
+
+        /// <summary>
+        /// 是否关联表
+        /// </summary>
+        [DataMember, JsonProperty("isLinkTable", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isLinkTable;
+
+        /// <summary>
+        /// 是否关联表
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(""), DisplayName(@"是否关联表"), Description(@"是否关联表")]
+        public bool IsLinkTable
+        {
+            get => _isLinkTable;
+            set
+            {
+                if (_isLinkTable == value)
+                    return;
+                BeforePropertyChanged(nameof(IsLinkTable), _isLinkTable, value);
+                _isLinkTable = value;
+                OnPropertyChanged(nameof(IsLinkTable));
+            }
+        }
         #endregion 字段
 
         #region 字段复制
-
-        /// <summary>
-        /// 字段复制
-        /// </summary>
-        /// <param name="dest">复制源</param>
-        public void Copy(DataTableConfig dest)
-        {
-            Copy((SimpleConfig)dest);
-        }
 
         /// <summary>
         /// 字段复制
@@ -378,7 +431,9 @@ namespace Agebull.EntityModel.Config.V2021
             UpdateByModified = dest.UpdateByModified;
             IsView = dest.IsView;
             IsQuery = dest.IsQuery;
-            EnableDataEvent = dest.EnableDataEvent; _fields = new ConfigCollection<DataBaseFieldConfig>();
+            EnableDataEvent = dest.EnableDataEvent;
+            IsLinkTable = dest.IsLinkTable;
+            _fields = new ConfigCollection<DataBaseFieldConfig>();
             if (dest is DataTableConfig dataTable)
                 foreach (var field in dataTable.Fields)
                 {
@@ -401,7 +456,9 @@ namespace Agebull.EntityModel.Config.V2021
             UpdateByModified = dest.UpdateByModified;
             IsView = dest.IsView;
             IsQuery = dest.IsQuery;
-            EnableDataEvent = dest.EnableDataEvent; _fields = new ConfigCollection<DataBaseFieldConfig>();
+            IsLinkTable = dest.IsLinkTable;
+            EnableDataEvent = dest.EnableDataEvent;
+            _fields = new ConfigCollection<DataBaseFieldConfig>();
             foreach (var field in dest.Properties)
             {
                 var uiField = new DataBaseFieldConfig();
@@ -422,13 +479,20 @@ namespace Agebull.EntityModel.Config.V2021
             UpdateByModified = dest.UpdateByModified;
             IsView = dest.IsView;
             IsQuery = dest.IsQuery;
-            EnableDataEvent = dest.EnableDataEvent; _fields = new ConfigCollection<DataBaseFieldConfig>();
+            EnableDataEvent = dest.EnableDataEvent;
+            IsLinkTable = dest.IsLinkTable;
+            _fields = new ConfigCollection<DataBaseFieldConfig>();
             foreach (var field in dest.Properties)
             {
                 var uiField = new DataBaseFieldConfig();
                 uiField.Copy(field);
                 _fields.Add(uiField);
             }
+        }
+
+        public object Find(Func<object, object> p)
+        {
+            throw new NotImplementedException();
         }
         #endregion 字段复制
 

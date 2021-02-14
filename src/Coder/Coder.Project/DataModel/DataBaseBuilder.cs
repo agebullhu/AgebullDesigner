@@ -1,11 +1,11 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Config.Mysql;
 using Agebull.EntityModel.Config.SqlServer;
 using Agebull.EntityModel.Config.V2021;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -238,7 +238,7 @@ namespace {Project.NameSpace}.DataAccess
             return code.ToString();
         }
 
-        private void CreateeAccess(StringBuilder code, IEntityConfig entity,DataTableConfig dataTable)
+        private void CreateeAccess(StringBuilder code, IEntityConfig entity, DataTableConfig dataTable)
         {
             if (dataTable == null)
                 return;
@@ -295,9 +295,11 @@ namespace {Project.NameSpace}.DataAccess
         public static string EntityStruct(IEntityConfig entity)
         {
             var table = entity.DataTable;
+            if (table == null)
+                return "";
             var codeStruct = new StringBuilder();
             int idx = 0;
-            var primary = table.Fields.First(p=>p.Property == entity.PrimaryColumn);
+            var primary = table.Fields.First(p => p.Property == entity.PrimaryColumn);
             var last = table.Fields.Where(p => p.Property != primary && !p.NoStorage);
             EntityProperty(codeStruct, entity, primary, ref idx, false);
             foreach (var property in last.Where(p => !p.Property.IsInterfaceField).OrderBy(p => p.Index))

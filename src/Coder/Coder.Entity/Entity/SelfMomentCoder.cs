@@ -1,7 +1,7 @@
-using System.ComponentModel.Composition;
-using System.Text;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Designer;
+using System.ComponentModel.Composition;
+using System.Text;
 
 namespace Agebull.EntityModel.RobotCoder.Upgrade
 {
@@ -33,7 +33,7 @@ namespace Agebull.EntityModel.RobotCoder.Upgrade
         private static string GetCopy(EntityConfig entity)
         {
             StringBuilder code = new StringBuilder();
-            
+
 
             code.Append($@"
     partial class {entity.EntityName}

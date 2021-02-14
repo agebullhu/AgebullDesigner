@@ -1,9 +1,8 @@
-using System;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Designer;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Designer;
 
 namespace Agebull.EntityModel.RobotCoder
 {

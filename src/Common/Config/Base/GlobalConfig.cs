@@ -267,7 +267,7 @@ namespace Agebull.EntityModel.Config
         public static TConfig GetConfigByKey<TConfig>(string key)
             where TConfig : class
         {
-            if (key.IsBlank())
+            if (key.IsMissing())
                 return null;
             lock (ConfigDictionary)
             {

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Windows;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.Designer
 {

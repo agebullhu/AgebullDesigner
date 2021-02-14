@@ -1,12 +1,12 @@
-﻿using System.IO;
-using System.Text;
-using Agebull.Common;
+﻿using Agebull.Common;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Config.V2021;
+using System.IO;
+using System.Text;
 
 namespace Agebull.EntityModel.RobotCoder.EasyUi
 {
-    public sealed class ProjectApiBuilde  : ProjectBuilder
+    public sealed class ProjectApiBuilde : ProjectBuilder
     {
         /// <summary>
         /// 名称
@@ -18,7 +18,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         public override string Caption => Name;
         string EventCode(DataTableConfig entity) => entity.EnableDataEvent
-            ?            
+            ?
             $@"
         /// <summary>
         /// {entity.Caption}
@@ -110,5 +110,5 @@ namespace {project.NameSpace}.Events
             pg.WriteCustomCode(apiPath);
         }
     }
-    
+
 }

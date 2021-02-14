@@ -1,8 +1,7 @@
+using Agebull.Common.Mvvm;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
-using Agebull.Common;
-using Agebull.Common.Mvvm;
 
 namespace Agebull.EntityModel.Designer
 {

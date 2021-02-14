@@ -6,15 +6,13 @@
 // ÐÞ¸Ä:2014-11-29
 // *****************************************************/
 
-using System.Collections;
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config.V2021;
+using Agebull.EntityModel.Designer;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Config.V2021;
-using Agebull.EntityModel.Designer;
 
 namespace Agebull.Common.Config.Designer.DataBase.Mysql
 {

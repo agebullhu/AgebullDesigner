@@ -19,7 +19,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 当前对象
         /// </summary>
-        public TConfig TargetConfig => (TConfig)Target  ;
+        public TConfig TargetConfig => (TConfig)Target;
 
         /// <summary>
         ///     发出属性修改前事件

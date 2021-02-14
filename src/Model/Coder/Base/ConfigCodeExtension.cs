@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Agebull.EntityModel.Config;
+using System;
 using System.Text;
 using System.Web;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -10,13 +10,23 @@ namespace Agebull.EntityModel.RobotCoder
     /// </summary>
     public static class ConfigCodeExtension
     {
+        public static string FormatLineSpace(this StringBuilder html,int level)
+        {
+            return html.Length == 0 ? null : level <= 0 ? html.ToString() : html.ToString().SpaceLine(level * 4);
+        }
+
+        public static string FormatLineSpace(this string html,int level)
+        {
+            return html.IsMissing() ? null : level <= 0 ? html : html.SpaceLine(level * 4);
+        }
+
         public static string RemCode(this ConfigBase config)
         {
             var code = new StringBuilder();
             code.Append($@"/// <summary>
 {config.Caption.RemCode()}
 /// </summary>");
-            if (config.Description.IsNotBlank()
+            if (config.Description.IsPresent()
                 && !config.Description.IsMe(config.Name)
                 && !config.Description.IsMe(config.Caption))
             {

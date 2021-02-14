@@ -8,13 +8,11 @@
 
 #region 引用
 
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.IO;
-using System.Linq;
 using System.Windows;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
 
 #endregion
 
@@ -26,7 +24,7 @@ namespace Agebull.EntityModel.Designer
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
     internal class EntityEditCommands : DesignCommondBase<EntityConfig>
-    { 
+    {
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
             commands.Add(new CommandItemBuilder<EntityConfig>

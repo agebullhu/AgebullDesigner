@@ -1,6 +1,4 @@
-﻿using System.Windows.Controls;
-
-namespace Agebull.EntityModel.Designer.Card
+﻿namespace Agebull.EntityModel.Designer.Card
 {
     /// <summary>
     /// ConfigForm.xaml 的交互逻辑

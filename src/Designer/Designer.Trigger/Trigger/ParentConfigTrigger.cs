@@ -1,4 +1,3 @@
-using System.Linq;
 using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.Designer

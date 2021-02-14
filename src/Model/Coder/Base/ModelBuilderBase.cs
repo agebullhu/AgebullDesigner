@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Designer;
+using System.IO;
 
 namespace Agebull.EntityModel.RobotCoder
 {

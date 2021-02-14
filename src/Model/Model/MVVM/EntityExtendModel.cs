@@ -1,5 +1,5 @@
-﻿using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
+﻿using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Config.V2021;
 using System.Collections;
 

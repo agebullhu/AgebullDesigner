@@ -1,9 +1,7 @@
-using System;
+using Agebull.EntityModel.Config;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Web;
-using Agebull.EntityModel.Config;
 
 namespace System.Text
 {
@@ -20,7 +18,7 @@ namespace System.Text
         /// </summary>
         public static bool Exist(this IEnumerable<string> strs, string word)
         {
-            return strs != null && strs.Any() && 
+            return strs != null && strs.Any() &&
                 strs.Any(p => string.Equals(p, word, StringComparison.OrdinalIgnoreCase));
         }
 
@@ -29,8 +27,8 @@ namespace System.Text
         /// </summary>
         public static bool Exist(this IEnumerable<string> strs, params string[] words)
         {
-            return strs != null && strs.Any() && 
-                words != null && words.Any() && 
+            return strs != null && strs.Any() &&
+                words != null && words.Any() &&
                 strs.Any(str => words.Any(p => string.Equals(p, str, StringComparison.OrdinalIgnoreCase)));
         }
 
@@ -123,7 +121,7 @@ namespace System.Text
         /// <returns>Ãû³Æ</returns>
         public static string ToName(this string text, char link = '_', bool uWord = false)
         {
-            return ToName(SplitWords(text),  link ,  uWord);
+            return ToName(SplitWords(text), link, uWord);
         }
 
         /// <summary>

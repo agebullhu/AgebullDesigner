@@ -1,9 +1,9 @@
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Config.V2021;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -256,7 +256,7 @@ using Agebull.EntityModel.Interfaces;
             foreach (var property in Columns)
             {
                 string ov = "";
-                if(filter)
+                if (filter)
                 {
                     switch (property.Name.ToLower())
                     {
@@ -275,7 +275,7 @@ using Agebull.EntityModel.Interfaces;
             }
             return code.ToString();
         }
-        
+
         /// <summary>
         /// 属性代码
         /// </summary>
@@ -289,7 +289,7 @@ using Agebull.EntityModel.Interfaces;
             foreach (var property in Columns.Where(p => p != PrimaryProperty).OrderBy(p => p.Index))
             {
                 var field = Model.DataTable.Fields.FirstOrDefault(p => p.Property == property);
-                if (field!= null && field.DbInnerField)
+                if (field != null && field.DbInnerField)
                     DbInnerProperty(property, code);
                 else if (property.IsCompute)
                     ComputePropertyCode(property, code);
@@ -321,13 +321,13 @@ using Agebull.EntityModel.Interfaces;
 
             if (Model.DataTable.IsQuery || !Model.DataTable.UpdateByModified)
                 return $@"
-        {FieldHeader(property,false)}
+        {FieldHeader(property, false)}
         public {property.LastCsType} {property.Name} {{ get; set; }}";
 
             var fieldName = FieldName(property);
 
             return $@"
-        {FieldHeader(property,  false)}
+        {FieldHeader(property, false)}
         private {property.LastCsType} {fieldName};
         {PropertyHeader(property)}
         public {property.LastCsType} {propertyName}
@@ -343,7 +343,7 @@ using Agebull.EntityModel.Interfaces;
         }}";
         }
 
-        private void PropertyCode(IPropertyConfig property, StringBuilder code,string ov="")
+        private void PropertyCode(IPropertyConfig property, StringBuilder code, string ov = "")
         {
             var fieldName = FieldName(property);
             var propertyName = PropertyName(property);
@@ -450,9 +450,9 @@ using Agebull.EntityModel.Interfaces;
         /// 数据访问字段,有BUG小心
         /// </summary>
         /// <returns></returns>
-        private void AccessProperties(IPropertyConfig property,DataBaseFieldConfig field, StringBuilder code)
+        private void AccessProperties(IPropertyConfig property, DataBaseFieldConfig field, StringBuilder code)
         {
-            if (field == null || field.StorageProperty.IsBlank())
+            if (field == null || field.StorageProperty.IsMissing())
                 return;
             code.Append($@"
 
@@ -466,7 +466,7 @@ using Agebull.EntityModel.Interfaces;
         public string {field.StorageProperty}
         {{
             get => this.{property.Name} == null ? null : Newtonsoft.Json.JsonConvert.SerializeObject(this.{property.Name});");
-            if (!Model.DataTable.IsQuery  && Model.DataTable.UpdateByModified)
+            if (!Model.DataTable.IsQuery && Model.DataTable.UpdateByModified)
             {
                 code.Append($@"
             set
@@ -498,7 +498,7 @@ using Agebull.EntityModel.Interfaces;
         [JsonProperty(""{cs}"" , NullValueHandling = NullValueHandling.Include)]
         public {type} {releation.Name} {{ get; set; }}");
             else
-            code.Append($@"
+                code.Append($@"
 
         [JsonProperty(""{cs}"", NullValueHandling = NullValueHandling.Include)]
         private {type} _{cs};

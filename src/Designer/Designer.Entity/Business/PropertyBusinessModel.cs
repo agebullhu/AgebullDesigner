@@ -12,9 +12,9 @@ namespace Agebull.EntityModel.Config
 
         public FieldConfig Property { get; set; }
         #endregion
-        
+
         #region ÐÞ¸´
-        
+
         private void RepairCaption()
         {
             if (Property.IsSystemField)
@@ -65,12 +65,12 @@ namespace Agebull.EntityModel.Config
             RepairCaption();
             CheckRegular();
         }
-        
+
         private void CheckRegular()
         {
             if (Property.IsSystemField)
                 return;
-            Property.CsType =CsharpHelper. GetStdCsType(Property.CsType);
+            Property.CsType = CsharpHelper.GetStdCsType(Property.CsType);
             Property.Nullable = Property.CsType == "string";
             if (Property.CsType == "string")
             {

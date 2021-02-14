@@ -1,6 +1,6 @@
-using System.Collections.Specialized;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
+using System.Collections.Specialized;
 
 namespace Agebull.EntityModel.Designer
 {

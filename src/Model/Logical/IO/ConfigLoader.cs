@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Agebull.Common;
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
+using Newtonsoft.Json;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
-using Agebull.Common;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Config.V2021;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -219,26 +217,18 @@ namespace Agebull.EntityModel.Designer
                 entity.DataTable = null;
                 return;
             }
-            void Upgrade()
-            {
-                entity.DataTable = new DataTableConfig
-                {
-                    Entity = entity
-                };
-                entity.DataTable.Upgrade();
-            }
             // ReSharper disable once AssignNullToNotNullAttribute
             string fileName = Path.Combine(directory, "Extend", DataTableConfig.GetFileName(entity));
             if (!File.Exists(fileName))
             {
-                Upgrade();
+                entity.DataTable = null;
                 return;
             }
 
             var model = DeSerializer<DataTableConfig>(fileName);
             if (model == null)
             {
-                Upgrade();
+                entity.DataTable = null;
                 return;
             }
             model.SaveFileName = fileName;
@@ -265,7 +255,7 @@ namespace Agebull.EntityModel.Designer
             try
             {
                 var json = File.ReadAllText(fileName, Encoding.UTF8);
-                if (json.IsBlank() || json[0] != '<')
+                if (json.IsMissing() || json[0] != '<')
                 {
                     entity.Page.Upgrade();
                     return;

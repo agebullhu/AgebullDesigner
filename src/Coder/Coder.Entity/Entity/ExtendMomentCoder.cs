@@ -1,9 +1,8 @@
-﻿using System;
-using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using Agebull.EntityModel.Config;
+﻿using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Designer;
+using System;
+using System.ComponentModel.Composition;
+using System.Text;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -20,10 +19,10 @@ namespace Agebull.EntityModel.RobotCoder
         {
             CoderManager.RegisteCoder("其它", "新增 CS代码", "cs", NewCsCode);
             CoderManager.RegisteCoder("其它", "新增 CS代码(复制)", "cs", NewCopyCsCode);
-            CoderManager.RegisteCoder("其它","修改 CS代码","cs",  EditCsCode);
-            CoderManager.RegisteCoder("其它","数据库测试","cs",  DbTestCode);
-            CoderManager.RegisteCoder("其它","用户子级模板","cs",  UserSwitchUid);
-            CoderManager.RegisteCoder("其它","保存Redis到数据库","cs",  SaveToDb);
+            CoderManager.RegisteCoder("其它", "修改 CS代码", "cs", EditCsCode);
+            CoderManager.RegisteCoder("其它", "数据库测试", "cs", DbTestCode);
+            CoderManager.RegisteCoder("其它", "用户子级模板", "cs", UserSwitchUid);
+            CoderManager.RegisteCoder("其它", "保存Redis到数据库", "cs", SaveToDb);
             CoderManager.RegisteCoder("其它", "字段静态化", "cs", ToCSharpCode);
         }
         #endregion

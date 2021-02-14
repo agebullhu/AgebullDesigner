@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:mvvm="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm" 
-             xmlns:designer="clr-namespace:Agebull.EntityModel.Designer"
+             xmlns:designer="clr-namespace:Agebull.EntityModel.Designer" xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="600"
              d:DesignWidth="1000">
@@ -48,10 +48,12 @@
             </TabItem>
         </TabControl>
         <GridSplitter Grid.Column="0" Grid.Row="1" Width="5" BorderThickness="1,0" />
-        <WebBrowser Grid.Column="1" Grid.Row="1" Margin="5,0,0,0">
-            <i:Interaction.Behaviors>
-                <mvvm:DependencyBehavior BehaviorAction="{Binding WebBrowserBehavior}" />
-            </i:Interaction.Behaviors>
-        </WebBrowser>
+        <Border  Grid.Column="1" Grid.Row="1" Margin="5,0,0,0">
+            <wpf:WebView2 Source="http://localhost:9407/index.html">
+                <i:Interaction.Behaviors>
+                    <mvvm:DependencyBehavior BehaviorAction="{Binding WebBrowserBehavior}" />
+                </i:Interaction.Behaviors>
+            </wpf:WebView2>
+        </Border>
     </Grid>
 </UserControl>

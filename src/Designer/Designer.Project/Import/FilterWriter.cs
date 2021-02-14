@@ -1,8 +1,8 @@
+using Agebull.EntityModel.Config;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -64,7 +64,7 @@ namespace Agebull.EntityModel.Designer
                 });
                 foreach (XElement xProperty in xMappingFragment.Elements(nsDef + "ScalarProperty"))
                 {
-                    string name = GetAttribute(xProperty,nameof(entity.Name));
+                    string name = GetAttribute(xProperty, nameof(entity.Name));
                     entity.Add(new FieldConfig
                     {
                         Name = name,

@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.Composition;
-using Agebull.EntityModel.Config;
+﻿using Agebull.EntityModel.Config;
+using System.ComponentModel.Composition;
 
 namespace Agebull.EntityModel.Designer
 {

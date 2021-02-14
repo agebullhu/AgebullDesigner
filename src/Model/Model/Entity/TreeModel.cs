@@ -175,21 +175,29 @@ namespace Agebull.EntityModel.Designer
 
         private TreeItem CreateEntityClassifiesTreeItem(object charg)
         {
-            if (!(charg is EntityClassify classify))
-                return new TreeItem(charg);
-            return new ConfigTreeItem<EntityClassify>(classify)
-            {
-                IsAssist = true,
-                Friend = classify,
-                FriendView = "entity,classify",
-                SoruceView = "entity,classify",
-                IsExpanded = false,
-                Tag = nameof(EntityClassify),
-                CreateChildFunc = CreateEntityTreeItem,
-                FriendItems = classify.Items,
-                SoruceItemsExpression = () => classify.Items,
-                SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
-            };
+            if (charg is EntityClassify classify)
+                return new ConfigTreeItem<EntityClassify>(classify)
+                {
+                    IsAssist = true,
+                    Friend = classify,
+                    FriendView = "entity,classify",
+                    SoruceView = "entity,classify",
+                    IsExpanded = false,
+                    Tag = nameof(EntityClassify),
+                    CreateChildFunc = CreateEntityTreeItem,
+                    FriendItems = classify.Items,
+                    SoruceItemsExpression = () => classify.Items,
+                    SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
+                };
+            if (charg is SimpleConfig config)
+                return new TreeItem<SimpleConfig>(config)
+                {
+                    Header = config.Caption,
+                    IsExpanded = false,
+                    Tag = nameof(SimpleConfig),
+                    SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
+                };
+            return null;
         }
 
         internal TreeItem CreateEntityTreeItem(object arg)

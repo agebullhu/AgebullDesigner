@@ -1,6 +1,5 @@
-﻿using System.ComponentModel.Composition;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Designer;
+﻿using Agebull.EntityModel.Designer;
+using System.ComponentModel.Composition;
 
 namespace Agebull.EntityModel.RobotCoder.EasyUi
 {
@@ -19,7 +18,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
             CoderManager.RegisteCoder("Web-Api", "表单读取", "cs", ProjectApiActionCoder.ReadFormValue);
             CoderManager.RegisteCoder("Web-Api", "ApiController.cs", "cs", new ProjectApiActionCoder().BaseCode);
             CoderManager.RegisteCoder("Web-Api", "ApiController.Designer.cs", "cs", new ProjectApiActionCoder().ExtendCode);
-            
+
         }
     }
 }

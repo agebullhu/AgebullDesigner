@@ -8,12 +8,10 @@
 
 #region 引用
 
-using System;
-using System.Collections.ObjectModel;
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
 using System.Windows;
 using System.Windows.Media;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
 
 #endregion
 

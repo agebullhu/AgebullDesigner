@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Config.V2021;
-using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -39,22 +36,22 @@ namespace Agebull.EntityModel.Designer
                         TargetConfig.DataTable = null;
                     }
                     break;
-                /*case nameof(TargetConfig.EnableUI):
-                    if (TargetConfig.EnableUI)
-                    {
-                        ConfigLoader.LoadPage(TargetConfig as IEntityConfig, Path.GetDirectoryName(TargetConfig.SaveFileName));
-                        if (TargetConfig.Page == null)
+                    /*case nameof(TargetConfig.EnableUI):
+                        if (TargetConfig.EnableUI)
                         {
-                            TargetConfig.Page = new PageConfig();
-                            TargetConfig.Page.Upgrade();
+                            ConfigLoader.LoadPage(TargetConfig as IEntityConfig, Path.GetDirectoryName(TargetConfig.SaveFileName));
+                            if (TargetConfig.Page == null)
+                            {
+                                TargetConfig.Page = new PageConfig();
+                                TargetConfig.Page.Upgrade();
+                            }
                         }
-                    }
-                    else
-                    {
-                        ConfigWriter.SaveExtendConfig(TargetConfig, TargetConfig.Page);
-                        TargetConfig.Page = null;
-                    }
-                    break;*/
+                        else
+                        {
+                            ConfigWriter.SaveExtendConfig(TargetConfig, TargetConfig.Page);
+                            TargetConfig.Page = null;
+                        }
+                        break;*/
             }
         }
 

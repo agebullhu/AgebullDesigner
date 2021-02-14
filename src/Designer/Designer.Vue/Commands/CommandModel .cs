@@ -8,15 +8,11 @@
 
 #region 引用
 
-using Agebull.Common;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
 using System.Text;
-using System.Windows;
-using System.Windows.Media;
 
 #endregion
 

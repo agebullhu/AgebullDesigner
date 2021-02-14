@@ -12,15 +12,6 @@
                 <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Button.xaml" />
                 <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/ConfigDataTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <Style x:Key="ParentConfigStyle" TargetType="{x:Type ContentControl}">
-                <Setter Property="ContentTemplate" Value="{StaticResource configTemplate}" />
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding Path=Option.IsParent}" Value="True">
-                        <Setter Property="ContentTemplate" Value="{DynamicResource ParentConfigTemplate}" />
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-
             <Style x:Key="ConfigStyle" TargetType="{x:Type ContentControl}">
                 <Setter Property="ContentTemplate" Value="{StaticResource configTemplate}" />
                 <Style.Triggers>
@@ -30,15 +21,18 @@
                     <DataTrigger Binding="{Binding Path=Option.Type}" Value="EntityConfig">
                         <Setter Property="ContentTemplate" Value="{DynamicResource EntityConfigTemplate}" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Path=Option.Type}" Value="FieldConfig">
-                        <Setter Property="ContentTemplate" Value="{DynamicResource FieldConfigTemplate}" />
-                    </DataTrigger>
                     <DataTrigger Binding="{Binding Path=Option.Type}" Value="ModelConfig">
                         <Setter Property="ContentTemplate" Value="{DynamicResource EntityConfigTemplate}" />
                     </DataTrigger>
+                    <DataTrigger Binding="{Binding Path=Option.Type}" Value="EntityClassify">
+                        <Setter Property="ContentTemplate" Value="{DynamicResource EntityClassifyTemplate}" />
+                    </DataTrigger> 
                     <DataTrigger Binding="{Binding Path=Option.Type}" Value="PropertyConfig">
                         <Setter Property="ContentTemplate" Value="{DynamicResource FieldConfigTemplate}" />
                     </DataTrigger>
+                    <DataTrigger Binding="{Binding Path=Option.Type}" Value="FieldConfig">
+                        <Setter Property="ContentTemplate" Value="{DynamicResource FieldConfigTemplate}" />
+                    </DataTrigger> 
                     <DataTrigger Binding="{Binding Path=Option.Type}" Value="SolutionConfig">
                         <Setter Property="ContentTemplate" Value="{DynamicResource SolutionTemplate}" />
                     </DataTrigger>
@@ -62,43 +56,8 @@
         <designer:EditorViewModel/>
     </UserControl.DataContext>
     <ScrollViewer  DataContext="{Binding Model.Context.SelectConfig}">
-        <StackPanel Style="{StaticResource LayoutPanel}">
-            <GroupBox Header="名称(设计时)" Margin="5">
-                <StackPanel Orientation="Vertical" Margin="0">
-                    <WrapPanel Orientation="Horizontal" Margin="0">
-                        <StackPanel>
-                            <Label Content="名称" />
-                            <TextBox
-                                IsReadOnly="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}"
-                                Text="{Binding Name,Mode=TwoWay}" />
-                        </StackPanel>
-                        <StackPanel>
-                            <Label Content="标题" />
-                            <TextBox Text="{Binding Caption,Mode=TwoWay}" Tag="{Binding Name}" />
-                        </StackPanel>
-                        <StackPanel Style="{StaticResource AdvFieldPanel}">
-                            <Label Content="标识" />
-                            <TextBox IsReadOnly="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}"
-                                     Text="{Binding Identity,Mode=TwoWay}"/>
-                        </StackPanel>
-                        <StackPanel Style="{StaticResource AdvFieldPanel}">
-                            <Label Content="别名" />
-                            <TextBox Text="{Binding Alias,Mode=TwoWay}" />
-                        </StackPanel>
-                    </WrapPanel>
-                    <StackPanel Style="{StaticResource AdvFieldPanel}">
-                        <Label Content="说明" />
-                        <TextBox Style="{StaticResource TrdTextBox}" Height="48"
-                                 Text="{Binding Description,Mode=TwoWay}" />
-                    </StackPanel>
-                </StackPanel>
-            </GroupBox>
-            <Border DataContext="{Binding}">
-                <ContentControl Style="{DynamicResource ParentConfigStyle}" />
-            </Border>
-            <Border DataContext="{Binding}">
-                <ContentControl Style="{DynamicResource ConfigStyle}" />
-            </Border>
-        </StackPanel>
+        <Border DataContext="{Binding}">
+            <ContentControl Style="{DynamicResource ConfigStyle}" />
+        </Border>
     </ScrollViewer>
 </UserControl>

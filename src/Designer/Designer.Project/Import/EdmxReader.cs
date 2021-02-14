@@ -8,11 +8,11 @@
 
 #region 引用
 
+using Agebull.EntityModel.Config;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using Agebull.EntityModel.Config;
 
 #endregion
 

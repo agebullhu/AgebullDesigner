@@ -1,13 +1,20 @@
-﻿namespace Agebull.EntityModel.Config
+﻿using Agebull.EntityModel.Config.V2021;
+
+namespace Agebull.EntityModel.Config
 {
 
     /// <summary>
     /// 属性配置
     /// </summary>
-    public interface IPropertyConfig : IConfig, IDesignField, IUIFieldConfig,  ICppFieldConfig,
+    public interface IPropertyConfig : IConfig, IDesignField, IUIFieldConfig, ICppFieldConfig,
         IRelationFieldConfig, IFieldRuleConfig, ICustomCodeFieldConfig, IKeyFieldConfig, ICollectFieldConfig,
         IApiFieldConfig, ICsModelFieldConfig, IEnumFieldConfig, IConfigIterator//IDataBaseFieldConfig,
     {
+
+        /// <summary>
+        /// 数据字段
+        /// </summary>
+        DataBaseFieldConfig DataBaseField { get; set; }
 
         #region 视角开关
 

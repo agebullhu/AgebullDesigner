@@ -1,8 +1,7 @@
-using System.ComponentModel.Composition;
-using Agebull.EntityModel;
-using Agebull.EntityModel.Designer;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Designer;
 using Agebull.EntityModel.Designer.View;
+using System.ComponentModel.Composition;
 
 namespace Agebull.Common.Config.Designer.EasyUi
 {

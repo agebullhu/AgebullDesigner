@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Agebull.EntityModel.Config;
+﻿using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Config.Mysql;
 using Agebull.EntityModel.Config.SqlServer;
 using Agebull.EntityModel.Config.V2021;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -21,7 +21,7 @@ namespace Agebull.EntityModel.RobotCoder
         int DbType(DataBaseFieldConfig field)
         {
             if (Project.DbType == DataBaseType.SqlServer)
-                return (int)SqlServerHelper.ToSqlDbType(field.FieldType,field.Property.CsType);
+                return (int)SqlServerHelper.ToSqlDbType(field.FieldType, field.Property.CsType);
             return (int)MySqlDataBaseHelper.ToSqlDbType(field.FieldType, field.Property.CsType);
         }
         #endregion
@@ -36,7 +36,7 @@ namespace Agebull.EntityModel.RobotCoder
             int idx = 0;
             var codeConst = new StringBuilder();
             var codeStruct = new StringBuilder();
-            EntityStruct(Model, codeStruct, codeConst, ref isFirst,ref idx);
+            EntityStruct(Model, codeStruct, codeConst, ref isFirst, ref idx);
             return $@"
         #region 数据结构
 

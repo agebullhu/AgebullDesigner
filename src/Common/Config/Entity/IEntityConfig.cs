@@ -292,7 +292,7 @@ namespace Agebull.EntityModel.Config
         /// 客户端可访问的属性
         /// </summary>
         IEnumerable<IPropertyConfig> ClientProperty { get; }
-       
+
 
         /// <summary>
         /// 命令集合
@@ -309,9 +309,9 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         string PagePath(char sp = '\\')
         {
-            if (!PageFolder.IsBlank())
+            if (!PageFolder.IsMissing())
                 return PageFolder;
-            if (Project.NoClassify || Classify.IsBlank() || Classify.Equals("None", StringComparison.InvariantCulture))
+            if (Project.NoClassify || Classify.IsMissing() || Classify.Equals("None", StringComparison.InvariantCulture))
                 return Abbreviation;
             var cls = Project.Classifies.FirstOrDefault(p => p.Name == Classify);
             return $"{cls?.Abbreviation ?? Classify.ToLWord()}{sp}{Abbreviation}";
@@ -389,6 +389,10 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         bool IsQuery { get; }
         /// <summary>
+        /// 是否关联表
+        /// </summary>
+        bool IsLinkTable { get; }
+        /// <summary>
         /// 启用数据事件
         /// </summary>
         bool EnableDataEvent { get; }
@@ -453,6 +457,15 @@ namespace Agebull.EntityModel.Config
         /// 树形界面
         /// </summary>
         bool TreeUi
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 表单查询
+        /// </summary>
+        bool FormQuery
         {
             get;
             set;

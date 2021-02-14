@@ -8,10 +8,10 @@
 
 #region 引用
 
+using Agebull.Common.Mvvm;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using Agebull.Common.Mvvm;
 
 #endregion
 
@@ -50,7 +50,7 @@ namespace Agebull.EntityModel.Designer
 
         public CommandItemBase OkCommand => new CommandItem
         {
-            Action =arg=> DoClose(),
+            Action = arg => DoClose(),
             Caption = "完成",
             Image = Application.Current.Resources["imgSave"] as ImageSource
         };
@@ -78,7 +78,7 @@ namespace Agebull.EntityModel.Designer
                     old.Caption = field.Caption;
                     old.Description = field.Description;
                     old.CustomType = field.CustomType;
-                    old.Nullable  = field.Nullable;
+                    old.Nullable = field.Nullable;
                     old.IsArray = field.IsArray;
                     old.IsDictionary = field.IsDictionary;
                     old.Datalen = field.Datalen;

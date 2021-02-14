@@ -1,11 +1,10 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using Agebull.EntityModel.Config;
+﻿using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Config.V2021;
 using Newtonsoft.Json;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -32,7 +31,7 @@ namespace Agebull.EntityModel.Designer
             if (extend == null)
                 return;
             var dir = Path.GetDirectoryName(entity.SaveFileName);
-            SaveConfig(Path.Combine(dir,"Extend", extend.GetFileName()), extend, false);
+            SaveConfig(Path.Combine(dir, "Extend", extend.GetFileName()), extend, false);
         }
         /// <summary>
         /// 保存设计文件
@@ -90,7 +89,7 @@ namespace Agebull.EntityModel.Designer
             try
             {
 
-                if (config.SaveFileName.IsNotBlank() && File.Exists(config.SaveFileName))
+                if (config.SaveFileName.IsPresent() && File.Exists(config.SaveFileName))
                     File.Delete(config.SaveFileName);
             }
             catch (Exception e)

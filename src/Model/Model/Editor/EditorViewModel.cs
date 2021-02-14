@@ -11,7 +11,7 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     public class EditorViewModel : EditorViewModelBase<DesignModelBase>
     {
-        
+
     }
     /// <summary>
     /// 扩展ViewModel基类
@@ -26,8 +26,8 @@ namespace Agebull.EntityModel.Designer
         {
             var host = obj as WindowsFormsHost;
             // ReSharper disable PossibleNullReferenceException
-           PropertyGrid = host.Child as PropertyGrid;
-           PropertyGrid.PropertyValueChanged += PropertyGrid_PropertyValueChanged;
+            PropertyGrid = host.Child as PropertyGrid;
+            PropertyGrid.PropertyValueChanged += PropertyGrid_PropertyValueChanged;
             // ReSharper restore PossibleNullReferenceException
         }
 

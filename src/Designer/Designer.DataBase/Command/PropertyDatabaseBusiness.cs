@@ -44,7 +44,7 @@ namespace Agebull.EntityModel.Config
             RobotCoder.DataTypeHelper.ToStandard(Property);
             if (Field.FieldType == null)
                 return;
-            
+
             switch (Field.FieldType = Field.FieldType.ToUpper())
             {
                 case "EMPTY":

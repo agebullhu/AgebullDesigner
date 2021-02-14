@@ -20,13 +20,10 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
-                    <Grid Margin="0,0,0,5">
-                        <Image x:Name="ctrImage"
+                    <Image x:Name="ctrImage" Margin="0"
                                    Source="{StaticResource tree_Open}"
-                                   Width="16"
-                                   Height="16" />
-
-                    </Grid>
+                                   Width="10"
+                                   Height="10" />
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked"
                                      Value="False">
@@ -46,20 +43,16 @@
         </Setter>
     </Style>
     <Style TargetType="{x:Type TreeViewItem}">
-        <Setter Property="IsExpanded"
-                    Value="{Binding IsExpanded ,Mode=TwoWay}" />
-        <Setter Property="ItemsSource"
-                    Value="{Binding Items}" />
-        <Setter Property="Visibility"
-                Value="{Binding Visibility,Mode=TwoWay}" />
-        <Setter Property="IsSelected"
-                    Value="{Binding IsUiSelected,Mode=TwoWay}" />
+        <Setter Property="IsExpanded" Value="{Binding IsExpanded ,Mode=TwoWay}" />
+        <Setter Property="ItemsSource" Value="{Binding Items}" />
+        <Setter Property="Visibility" Value="{Binding Visibility,Mode=TwoWay}" />
+        <Setter Property="IsSelected" Value="{Binding IsUiSelected,Mode=TwoWay}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TreeViewItem}">
                     <Grid HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="16" />
+                            <ColumnDefinition Width="12" />
                             <ColumnDefinition />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
@@ -76,7 +69,7 @@
                                     Background="{TemplateBinding Background}"
                                     SnapsToDevicePixels="true" />
 
-                        <ToggleButton Grid.Row="0"
+                        <ToggleButton Grid.Row="0" Margin="-2,0,0,0"
                                           Grid.Column="0"
                                           x:Name="Expander"
                                           ClickMode="Press"
@@ -91,14 +84,14 @@
                             <ContentPresenter.Content>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="14" />
                                         <ColumnDefinition />
                                         <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
 
                                     <Border x:Name="ctrBusy"
-                                                Width="16"
-                                                Height="16"
+                                                Width="12"
+                                                Height="12"
                                                 RenderTransformOrigin="0.5,0.5"
                                                 Visibility="Collapsed">
                                         <Border.RenderTransform>
@@ -123,18 +116,20 @@
                                     <Border Grid.Column="1" BorderThickness="0,0,0,1" BorderBrush="{Binding BackgroundColor}">
                                         <StackPanel Orientation="Horizontal ">
                                             <Image Source="{Binding SoruceTypeIcon}"
-                                                   Width="16"
-                                                   Height="16"
-                                                   Margin="6,0,0,0" />
+                                                   Width="12"
+                                                   Height="12"
+                                                   Margin="2,0,0,0" />
                                             <Image Source="{Binding StatusIcon}"
-                                                   Width="16"
-                                                   Height="16"
-                                                   Margin="6,0,0,0" />
-                                            <TextBlock Text="{Binding Header}"
+                                                   Width="12"
+                                                   Height="12"
+                                                   Margin="0" />
+                                            <TextBlock TextWrapping="Wrap"
                                                        x:Name="ctrHeader"
+                                                       FontSize="12"
+                                                       Text="{Binding Header, Mode=OneWay}"
                                                        Foreground="{Binding Color}"
                                                        FontWeight="{Binding FontWeight}"
-                                                       Margin="5,0" />
+                                                       Margin="0,1" />
                                             <StackPanel.ContextMenu>
                                                 <ContextMenu ItemsSource="{Binding Commands}">
                                                     <!--<ContextMenu.ItemTemplate>
@@ -150,7 +145,6 @@
                                             </StackPanel.ContextMenu>
                                         </StackPanel>
                                     </Border>
-
                                 </Grid>
                             </ContentPresenter.Content>
                         </ContentPresenter>
@@ -326,12 +320,12 @@
                                                    Width="16"
                                                    Height="16"
                                                    Margin="6,0,0,0" />
-                                            <TextBlock Text="{Binding Header}"
+                                        <TextBlock Text="{Binding Header}"
                                                        x:Name="ctrHeader"
                                                        Foreground="{Binding Color}"
                                                        FontWeight="{Binding FontWeight}"
                                                        Margin="5,0" />
-                                        </StackPanel>
+                                    </StackPanel>
                                     </Border>
                             </ContentPresenter.Content>
                         </ContentPresenter>

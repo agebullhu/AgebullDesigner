@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Text;
 
@@ -151,7 +150,7 @@ namespace Agebull.EntityModel.Config
                 property.Index = 999;
             }
 
-            if (field.IsLinkKey &&!property.NoneGrid)
+            if (field.IsLinkKey && !property.NoneGrid)
             {
                 property.GridDetails = true;
                 property.NoneGrid = true;

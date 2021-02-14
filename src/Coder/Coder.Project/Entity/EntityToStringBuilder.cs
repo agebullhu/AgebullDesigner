@@ -1,5 +1,5 @@
-using System.Text;
 using Agebull.EntityModel.Config;
+using System.Text;
 
 namespace Agebull.EntityModel.RobotCoder
 {

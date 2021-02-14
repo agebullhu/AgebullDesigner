@@ -28,7 +28,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="400" />
+                <ColumnDefinition Width="360" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <cp:ConfigTreePanel Grid.Column="0" Grid.Row="1"  Grid.RowSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
@@ -57,7 +57,6 @@
             </Border>
             
             <Border Margin="0"  Grid.Column="1" Grid.Row="2" BorderThickness="1">
-                <card:ConfigForm  />
                 <i:Interaction.Behaviors>
                     <b:DependencyBehavior BehaviorAction="{Binding ExtendEditorBehavior}" />
                 </i:Interaction.Behaviors>

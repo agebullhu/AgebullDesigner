@@ -70,7 +70,7 @@ namespace Agebull.EntityModel.Config.V2021
         [Category(""), DisplayName(@"字段"), Description(@"字段")]
         public IPropertyConfig Property
         {
-            get => _property ?? (_propertyKey.IsBlank() ? null : _property = GlobalConfig.GetConfigByKey<IPropertyConfig>(_propertyKey));
+            get => _property ?? (_propertyKey.IsMissing() ? null : _property = GlobalConfig.GetConfigByKey<IPropertyConfig>(_propertyKey));
             set
             {
                 if (_property == value)
@@ -169,7 +169,7 @@ namespace Agebull.EntityModel.Config.V2021
         protected override void CopyFrom(SimpleConfig dest)
         {
             base.CopyFrom(dest);
-            if (dest is FieldExtendConfig< TParent> cfg)
+            if (dest is FieldExtendConfig<TParent> cfg)
                 CopyProperty(cfg);
         }
 

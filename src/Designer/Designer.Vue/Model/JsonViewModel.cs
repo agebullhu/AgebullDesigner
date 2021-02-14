@@ -1,11 +1,8 @@
+using Agebull.Common.Mvvm;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
-using Agebull.Common;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer
 {

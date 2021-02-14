@@ -8,18 +8,13 @@
 
 #region 引用
 
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Windows.Threading;
-using Agebull.Common;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Config.Mysql;
-using Agebull.EntityModel.RobotCoder;
 using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Windows.Threading;
 
 
 #endregion
@@ -130,7 +125,7 @@ namespace Agebull.EntityModel.Designer
             return tables;
         }
 
-        private void CheckTable(MySqlConnection connection,string table,string desc)
+        private void CheckTable(MySqlConnection connection, string table, string desc)
         {
             bool isnew = false;
             var entity = _project.Find(table);
@@ -286,7 +281,7 @@ namespace Agebull.EntityModel.Designer
 
         #region 外键
 
-        private void CheckForeignKey(MySqlConnection connection,EntityConfig entity)
+        private void CheckForeignKey(MySqlConnection connection, EntityConfig entity)
         {
             using var cmd = connection.CreateCommand();
             cmd.CommandText = KeyInfoSql(entity.SaveTableName);

@@ -1,8 +1,8 @@
-using System;
-using System.Linq;
-using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -14,7 +14,7 @@ namespace Agebull.EntityModel.Designer
         {
             CommondFilter = cmd =>
             {
-                if (cmd.Editor.IsBlank() || EditorName.IsBlank() || !cmd.Editor.Contains(EditorName, StringComparison.OrdinalIgnoreCase))
+                if (cmd.Editor.IsMissing() || EditorName.IsMissing() || !cmd.Editor.Contains(EditorName, StringComparison.OrdinalIgnoreCase))
                     return false;
                 return true;
             };

@@ -67,8 +67,8 @@ namespace Agebull.EntityModel.Config
             Entity.IsModify = true;
         }
 
-        
-        
+
+
         private void RepairCaption()
         {
             RepairConfigName(Entity);

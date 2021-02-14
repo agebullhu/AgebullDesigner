@@ -24,12 +24,12 @@
 
 #region 命名空间引用
 
-using System;
-using System.Diagnostics;
-using System.IO;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
 using Newtonsoft.Json;
+using System;
+using System.Diagnostics;
+using System.IO;
 
 #endregion
 
@@ -135,7 +135,7 @@ namespace Agebull.EntityModel.Designer
             ConfigIo.Initialize();
         }
 
-        bool CheckType(Type source, Type target,bool signle)
+        bool CheckType(Type source, Type target, bool signle)
         {
             if (target == typeof(ConfigBase))
                 return true;
@@ -153,9 +153,9 @@ namespace Agebull.EntityModel.Designer
             if (source == typeof(ModelConfig))
             {
                 return target == typeof(PropertyConfig) ||
-                     target == typeof(CommandConfig) ;
+                     target == typeof(CommandConfig);
             }
-            
+
             if (source == typeof(EntityClassify))
             {
                 return target == typeof(EntityConfig) ||
@@ -172,7 +172,7 @@ namespace Agebull.EntityModel.Designer
                      target == typeof(CommandConfig) ||
                      target == typeof(PropertyConfig) ||
                      target == typeof(EnumConfig) ||
-                     target == typeof(ApiItem) ;
+                     target == typeof(ApiItem);
             }
             return false;
         }

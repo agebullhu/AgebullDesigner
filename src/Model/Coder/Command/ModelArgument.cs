@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Agebull.EntityModel.Config;
+using System.Collections.Generic;
 using System.Linq;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.Designer
 {

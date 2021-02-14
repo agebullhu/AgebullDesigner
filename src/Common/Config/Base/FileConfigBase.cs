@@ -9,7 +9,7 @@ namespace Agebull.EntityModel.Config
     ///     单独保存的配置
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public abstract partial class FileConfigBase : ClassifyConfig
+    public abstract partial class FileConfigBase : ConfigBase
     {
         /// <summary>
         ///     保存地址

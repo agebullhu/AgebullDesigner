@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Designer;
+using System;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -20,7 +16,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 当前对象
         /// </summary>
-        public  ProjectConfig Project { get; private set; }
+        public ProjectConfig Project { get; private set; }
 
         /// <summary>
         /// 当前对象

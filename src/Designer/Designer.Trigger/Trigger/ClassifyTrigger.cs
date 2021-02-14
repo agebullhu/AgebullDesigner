@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using Agebull.EntityModel.Config;
+﻿using Agebull.EntityModel.Config;
+using System.Linq;
 
 namespace Agebull.EntityModel.Designer
 {

@@ -113,7 +113,7 @@ namespace Agebull.Common.Mvvm
         /// 标签
         /// </summary>
         string Tag { get; set; }
-        
+
         /// <summary>
         ///     无需确认
         /// </summary>
@@ -134,7 +134,7 @@ namespace Agebull.Common.Mvvm
         /// <param name="sour">源</param>
         public static void CopyFrom(this ICommandItem dist, ICommandItem sour)
         {
-            dist. Key = sour.Key ?? sour.GetHashCode().ToString();
+            dist.Key = sour.Key ?? sour.GetHashCode().ToString();
             dist.NoConfirm = sour.NoConfirm;
             dist.Name = sour.Name;
             dist.Tag = sour.Tag;

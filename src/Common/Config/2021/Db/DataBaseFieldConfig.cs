@@ -30,14 +30,15 @@ namespace Agebull.EntityModel.Config.V2021
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
         public bool IsCaption { get => Property.IsCaption; set => Property.IsCaption = value; }
-        
+
         /// <summary>
         ///     是否空值
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
         public bool Nullable { get => Property.Nullable; set => Property.Nullable = value; }
-        
+
         #endregion
+
         #region 字段
 
         /// <summary>

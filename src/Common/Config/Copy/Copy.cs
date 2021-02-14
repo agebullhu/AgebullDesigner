@@ -93,39 +93,6 @@
         }
     }
 
-    partial class ClassifyConfig
-    {
-        /// <summary>
-        /// 字段复制
-        /// </summary>
-        /// <param name="dest">复制源</param>
-        protected override void CopyFrom(SimpleConfig dest)
-        {
-            base.CopyFrom(dest);
-            if (dest is ClassifyConfig cfg)
-                CopyProperty(cfg);
-        }
-
-        /// <summary>
-        /// 字段复制
-        /// </summary>
-        /// <param name="dest">复制源</param>
-        public void Copy(ClassifyConfig dest)
-        {
-            CopyFrom(dest);
-        }
-
-        /// <summary>
-        /// 字段复制
-        /// </summary>
-        /// <param name="dest">复制源</param>
-        /// <returns></returns>
-        public void CopyProperty(ClassifyConfig dest)
-        {
-            Classify = dest.Classify;
-        }
-    }
-
     partial class EntityClassify
     {
         /// <summary>
@@ -678,22 +645,10 @@
             IsParent = dest.IsParent;
             IsPrimaryKey = dest.IsPrimaryKey;
             IsExtendKey = dest.IsExtendKey;
-            IsIdentity = dest.IsIdentity;
             IsGlobalKey = dest.IsGlobalKey;
             UniqueIndex = dest.UniqueIndex;
             UniqueString = dest.UniqueString;
-            KeepUpdate = dest.KeepUpdate;
-            DbNullable = dest.DbNullable;
-            Datalen = dest.Datalen;
             ArrayLen = dest.ArrayLen;
-            Scale = dest.Scale;
-            FixedLength = dest.FixedLength;
-            IsMemo = dest.IsMemo;
-            IsBlob = dest.IsBlob;
-            DbInnerField = dest.DbInnerField;
-            NoStorage = dest.NoStorage;
-            CustomWrite = dest.CustomWrite;
-            StorageProperty = dest.StorageProperty;
 
             IsUserReadOnly = dest.IsUserReadOnly;
             MulitLine = dest.MulitLine;
@@ -723,11 +678,6 @@
             Max = dest.Max;
             Min = dest.Min;
             IsLinkField = dest.IsLinkField;
-            LinkTable = dest.LinkTable;
-            IsLinkKey = dest.IsLinkKey;
-            IsLinkCaption = dest.IsLinkCaption;
-            IsUserId = dest.IsUserId;
-            LinkField = dest.LinkField;
         }
     }
 

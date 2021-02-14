@@ -1,7 +1,7 @@
-using System;
-using System.Linq;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Config.V2021;
+using System;
+using System.Linq;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -53,10 +53,14 @@ namespace Agebull.EntityModel.RobotCoder
 
                     if (property.CsType == "unit")
                         property.CsType = "long";
-                    if (!string.IsNullOrWhiteSpace(property.CustomType))
-                        property.DataType = "Enum";
-                    if (string.Equals(property.DataType, "Enum", StringComparison.OrdinalIgnoreCase))
+
+                    if (property.CustomType.IsPresent() && property.DataType.IsMissing())
+                        property.DataType = "Int32";
+                    else if (property.DataType.IsMe("Enum"))
+                    {
+                        property.DataType = "Int32";
                         property.CsType = "int";
+                    }
 
                     DataTypeMapConfig dataType;
                     if (property.IsPrimaryKey || (field != null && field.IsLinkField))
@@ -191,7 +195,7 @@ namespace Agebull.EntityModel.RobotCoder
                 string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
             bool updataDataType = dataType == null;
             var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
-            
+
             if (updataDataType)
             {
                 dataType.Datalen = field.Datalen;

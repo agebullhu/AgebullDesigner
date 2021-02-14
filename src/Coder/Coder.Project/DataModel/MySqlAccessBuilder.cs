@@ -1,11 +1,9 @@
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.Mysql;
+using Agebull.EntityModel.RobotCoder.DataBase.MySql;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
-using Agebull.EntityModel.Config.Mysql;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.RobotCoder.DataBase.MySql;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -46,7 +44,7 @@ namespace Agebull.EntityModel.RobotCoder
                         : entity.PrimaryColumn;
 
                     var inField = releation.PrimaryEntity == model.Entity
-                        ? model.DataTable.Fields.FirstOrDefault(p=>p == Model.PrimaryColumn)
+                        ? model.DataTable.Fields.FirstOrDefault(p => p == Model.PrimaryColumn)
                         : model.DataTable.Fields.FirstOrDefault(p => p.IsLinkKey && p.LinkTable == entity.Name);
 
 

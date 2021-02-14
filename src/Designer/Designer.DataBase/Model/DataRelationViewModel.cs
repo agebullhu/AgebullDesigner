@@ -1,4 +1,3 @@
-using System.Windows;
 using Agebull.EntityModel.Designer;
 
 namespace Agebull.Common.Config.Designer.DataBase.Mysql
@@ -9,6 +8,6 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
         {
             EditorName = "DataRelation";
         }
-        
+
     }
 }

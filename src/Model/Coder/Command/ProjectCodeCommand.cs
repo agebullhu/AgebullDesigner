@@ -1,14 +1,13 @@
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.RobotCoder;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -221,7 +220,7 @@ namespace Agebull.EntityModel.Designer
         {
             using (CodeGeneratorScope.CreateScope(SolutionConfig.Current))
             {
-                var argument = (ModelArgument )args;
+                var argument = (ModelArgument)args;
                 if (!BeginDo(argument))
                     return false;
                 try

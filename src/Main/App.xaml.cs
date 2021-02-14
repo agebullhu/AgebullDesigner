@@ -1,10 +1,6 @@
-﻿using Agebull.Common.Configuration;
-using Agebull.EntityModel.Designer.Card;
+﻿using Agebull.EntityModel.Designer.Card;
 using BeetleX.FastHttpApi;
-using Microsoft.Extensions.Hosting;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using ZeroTeam.MessageMVC;
 
@@ -31,12 +27,12 @@ namespace Agebull.EntityModel.Designer
                 Dispatcher = Dispatcher
             };
             Trace.Listeners.Add(new MessageTraceListener());
-            //ZeroApp.StartNoHost(services => services.AddMessageMvcFastHttpApi(), false, null);
+            ZeroApp.StartNoHost(services => services.AddMessageMvcFastHttpApi(), false, null);
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
-            //ZeroFlowControl.Shutdown().Wait();
+            ZeroFlowControl.Shutdown().Wait();
             base.OnExit(e);
         }
     }

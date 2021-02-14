@@ -194,18 +194,6 @@ namespace Agebull.EntityModel.Config
             get => Field.EnumConfig; set => Field.EnumConfig = value;
         }
 
-        /// <summary>
-        /// 内部字段
-        /// </summary>
-        /// <remark>
-        /// 是否内部字段,即非用户字段,不呈现给用户
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"模型设计"), DisplayName(@"内部字段"), Description("是否内部字段,即非用户字段,不呈现给用户")]
-        public bool InnerField
-        {
-            get => Field.InnerField; set => Field.InnerField = value;
-        }
 
         /// <summary>
         /// 系统字段
@@ -557,18 +545,7 @@ namespace Agebull.EntityModel.Config
         {
             get => Field.DbInnerField; set => Field.DbInnerField = value;
         }
-        /// <summary>
-        /// 非数据库字段
-        /// </summary>
-        /// <remark>
-        /// 是否非数据库字段,如果为真,数据库的读写均忽略这个字段
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"非数据库字段")]
-        public bool NoStorage
-        {
-            get => Field.NoStorage; set => Field.NoStorage = value;
-        }
+
 
         /// <summary>
         /// 自定义保存
@@ -1016,19 +993,6 @@ namespace Agebull.EntityModel.Config
         }
         #endregion
         #region 数据关联
-
-        /// <summary>
-        /// 连接字段
-        /// </summary>
-        /// <remark>
-        /// 连接字段
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据关联"), DisplayName(@"连接字段"), Description("连接字段")]
-        public bool IsLinkField
-        {
-            get => Field.IsLinkField; set => Field.IsLinkField = value;
-        }
 
         /// <summary>
         /// 关联表名

@@ -31,8 +31,20 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public virtual string Key
         {
-            get;set;
+            get; set;
         }
+        public SimpleConfig()
+        {
+
+        }
+        public SimpleConfig(bool notCheck)
+        {
+            notNameCaptionCheck = notCheck;
+        }
+        /// <summary>
+        ///     不检查名称类型
+        /// </summary>
+        bool notNameCaptionCheck;
 
         /// <summary>
         ///     名称
@@ -55,7 +67,7 @@ namespace Agebull.EntityModel.Config
                     return;
                 }
                 BeforePropertyChanged(nameof(Name), _name, now);
-                _name = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _name = now;
                 RaisePropertyChanged(nameof(Name));
             }
         }
@@ -72,17 +84,18 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"标题")]
         public virtual string Caption
         {
-            get => WorkContext.InCoderGenerating ? _caption ?? _name : _caption;
+            get => notNameCaptionCheck ? _caption: WorkContext.InCoderGenerating ? _caption ?? _name : _caption;
             set
             {
-                if (_caption == value)
+                var now = value.IsPresent() ? value.Trim() : null;
+                if (_caption == now)
                 {
                     return;
                 }
-                if (_name.IsMe(value))
-                    value = null;
-                BeforePropertyChanged(nameof(Caption), _caption, value);
-                _caption = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                if (!notNameCaptionCheck && _name.IsMe(now))
+                    now = null;
+                BeforePropertyChanged(nameof(Caption), _caption, now);
+                _caption = string.IsNullOrWhiteSpace(now) ? null : now.Trim();
                 RaisePropertyChanged(nameof(Caption));
             }
         }
@@ -99,18 +112,18 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"说明")]
         public virtual string Description
         {
-            get => WorkContext.InCoderGenerating ? _description ?? Caption : _description;
+            get => notNameCaptionCheck ? _description : WorkContext.InCoderGenerating ? _description ?? Caption : _description;
             set
             {
-                var now = !string.IsNullOrWhiteSpace(value) ? value.Trim() : null;
+                var now = value.IsPresent() ? value.Trim() : null;
                 if (_description == now)
                 {
                     return;
                 }
-                if (_caption.IsMe(value))
-                    value = null;
+                if (!notNameCaptionCheck && Caption.IsMe(now))
+                    now = null;
                 BeforePropertyChanged(nameof(Description), _description, now);
-                _description = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _description = now;
                 RaisePropertyChanged(nameof(Description));
             }
         }

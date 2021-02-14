@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.RobotCoder;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -171,7 +171,7 @@ namespace Agebull.EntityModel.Designer
                 field.CsType = "long";
             }
         }
-        
+
 
         /// <summary>
         /// 外键排前面
@@ -220,14 +220,14 @@ namespace Agebull.EntityModel.Designer
                     property.Caption = fi.Caption;
             }
         }
-        
+
         void ResetView(IEntityConfig entity)
         {
             entity.EnableDataBase = true;
             entity.EnableEditApi = true;
             entity.EnableUI = true;
         }
-        
+
         void ToStandardName(EntityConfig entity)
         {
             var name = entity.Name;

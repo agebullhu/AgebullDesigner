@@ -1,8 +1,8 @@
+using Agebull.EntityModel.Config;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -178,7 +178,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         private static void StringCheck(StringBuilder code, IPropertyConfig property)
         {
-            var field = property.Entity.DataTable.Fields.FirstOrDefault(p=>p.Property == property);
+            var field = property.Entity.DataTable.Fields.FirstOrDefault(p => p.Property == property);
             if (!property.CanEmpty || property.IsRequired)
             {
                 code.Append($@"

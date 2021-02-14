@@ -35,7 +35,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 表示自己的后期实现
         /// </summary>
-        protected sealed override IEntityConfig Me => this;
+        protected sealed override IEntityConfig IEntity => this;
 
         /// <summary>
         /// 阻止使用的范围

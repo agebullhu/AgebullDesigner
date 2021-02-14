@@ -1,7 +1,6 @@
 ﻿using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
 using System.Collections.Generic;
-using Agebull.Common;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -64,11 +63,11 @@ namespace Agebull.EntityModel.Designer
         #endregion
 
         #region 操作
-        
+
         public void RelationColumns(object arg)
         {
             ModelRelationDesignModel.CheckReleation(Context.SelectModel);
-            
+
         }
         public void DeleteColumns(object arg)
         {
@@ -106,7 +105,7 @@ namespace Agebull.EntityModel.Designer
                 if (newColumn == null)
                 {
                     newColumn = new PropertyConfig();
-                    ((IPropertyConfig)model).Copy(copyColumn,false);
+                    ((IPropertyConfig)model).Copy(copyColumn, false);
                     newColumn.Option.Index = newColumn.Option.Identity = 0;
                     model.Add(newColumn);
                 }

@@ -91,7 +91,7 @@ namespace Agebull.EntityModel.Config
                 return hase;
             }
             FieldConfig pro = field.IsLinkKey ? table.PrimaryColumn : table.Find(field.LinkField);
-            if (pro == null && !field.Option.ReferenceKey.IsBlank())
+            if (pro == null && !field.Option.ReferenceKey.IsMissing())
             {
                 pro = GlobalConfig.GetConfig<FieldConfig>(field.Option.ReferenceKey);
             }

@@ -1,9 +1,9 @@
+using Agebull.EntityModel.Config;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -14,7 +14,7 @@ namespace Agebull.EntityModel.Designer
 
         protected override void DoInitialize()
         {
-            Config = DesignModel  as EnumConfig;
+            Config = DesignModel as EnumConfig;
             Config = Context.SelectConfig as EnumConfig ?? Context.SelectConfig.Friend as EnumConfig;
             SyncSelect();
             base.DoInitialize();

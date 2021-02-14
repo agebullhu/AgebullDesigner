@@ -1,9 +1,8 @@
-using System;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Designer;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Designer;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -24,7 +23,7 @@ namespace Agebull.EntityModel.RobotCoder
 
 
         string CreateCode(EntityConfig entity)
-        { 
+        {
             StringBuilder code1 = new StringBuilder();
             foreach (var property in entity.PublishProperty.Where(p => !p.NoneJson))
             {

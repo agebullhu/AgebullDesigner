@@ -1,6 +1,5 @@
-using System.Collections.Specialized;
-using System.Linq;
 using Agebull.EntityModel.Config;
+using System.Collections.Specialized;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -18,7 +17,7 @@ namespace Agebull.EntityModel.Designer
             TargetConfig.Enums.CollectionChanged += OnEnumCollectionChanged;
             TargetConfig.ApiItems.CollectionChanged += OnApiCollectionChanged;
         }
-        
+
         /// <summary>
         /// 属性事件处理
         /// </summary>
@@ -26,7 +25,7 @@ namespace Agebull.EntityModel.Designer
         protected override void OnPropertyChangedInner(string property)
         {
         }
-        
+
         /// <summary>
         ///     发出属性修改前事件
         /// </summary>

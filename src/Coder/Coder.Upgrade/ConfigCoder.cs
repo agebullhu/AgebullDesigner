@@ -1,10 +1,8 @@
-using System;
-using System.Text;
-using System.ComponentModel.Composition;
-using System.Linq;
-using System.Reflection;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Designer;
+using System.ComponentModel.Composition;
+using System.Linq;
+using System.Text;
 
 namespace Agebull.EntityModel.RobotCoder.Upgrade
 {

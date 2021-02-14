@@ -1,9 +1,8 @@
+using Agebull.EntityModel.Config;
 using System;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Agebull.Common;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder.EasyUi
 {
@@ -191,6 +190,8 @@ namespace {NameSpace}.WebApi
         public string QueryCode()
         {
             var code = new StringBuilder();
+            if (!Model.EnableDataBase)
+                return "";
             var fields = Model.DataTable.Fields.Where(p => !p.NoStorage && p.Property.CanUserQuery);
             code.Append(@"
             if (RequestArgumentConvert.TryGet(""_value_"", out string _value_)  && !string.IsNullOrEmpty(_value_))
@@ -416,7 +417,7 @@ namespace {NameSpace}.WebApi
         /// <param name=""id"">Ñ¡ÔñµÄID</param>
         [Route(""{cmd.Api}"")]
         public async Task<IApiResult> On{cmd.Name}(long id) => await");
-                    if (cmd.ServiceCommand.IsBlank())
+                    if (cmd.ServiceCommand.IsMissing())
                         code.Append($@" this.Business.{cmd.Name}(id)  ? ApiResultHelper.Succees() : ApiResultHelper.Helper.ArgumentError;");
                     else
                         code.Append($@" {cmd.ServiceCommand}(id);");
@@ -437,7 +438,7 @@ namespace {NameSpace}.WebApi
             if (!RequestArgumentConvert.TryGetIDs(""selects"",out var ids))
                 return ApiResultHelper.Helper.ArgumentError;");
 
-                    if (cmd.ServiceCommand.IsBlank())
+                    if (cmd.ServiceCommand.IsMissing())
                         code.Append($@"
             return await this.Business.{cmd.Name}(ids) 
                    ? ApiResultHelper.Succees()
@@ -459,7 +460,7 @@ namespace {NameSpace}.WebApi
         /// </remark>
         [Route(""{cmd.Api}"")]
         public async Task<IApiResult> On{cmd.Name}() => await");
-                    if (cmd.ServiceCommand.IsBlank())
+                    if (cmd.ServiceCommand.IsMissing())
                         code.Append($@" this.Business.{cmd.Name}()  ? ApiResultHelper.Succees() : ApiResultHelper.Helper.ArgumentError;");
                     else
                         code.Append($@" {cmd.ServiceCommand}();");
@@ -492,19 +493,19 @@ namespace {NameSpace}.WebApi
             //{group.Key ?? "ÆÕÍ¨×Ö¶Î"}");
                 foreach (var pro in group.OrderBy(p => p.Index))
                 {
-                    var field = model.DataTable.Fields.FirstOrDefault(p=>p.Property == pro) ;
+                    var field = model.DataTable.Fields.FirstOrDefault(p => p.Property == pro);
                     if (pro == model.PrimaryColumn)
                     {
                         continue;
                     }
                     code.Append(@"
             if(");
-                    if (pro.IsPrimaryKey || field.KeepUpdate)
+                    if (pro.IsPrimaryKey || (field != null && field.KeepUpdate))
                     {
                         code.Append(@"!convert.IsUpdata && ");
 
                     }
-                    if (field.KeepStorageScreen == StorageScreenType.Insert)
+                    if (field != null && field.KeepStorageScreen == StorageScreenType.Insert)
                     {
                         code.Append(@"convert.IsUpdata && ");
                     }

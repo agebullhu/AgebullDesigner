@@ -568,32 +568,6 @@ namespace Agebull.EntityModel.Config
 
         EnumConfig GetEnumConfig() => _enumConfig ??= GlobalConfig.GetEnum(_customType);
 
-        /// <summary>
-        /// 内部字段
-        /// </summary>
-        [DataMember, JsonProperty("_innerField", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _innerField;
-
-        /// <summary>
-        /// 内部字段
-        /// </summary>
-        /// <remark>
-        /// 是否内部字段,即非用户字段,不呈现给用户
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"模型设计"), DisplayName(@"内部字段"), Description("是否内部字段,即非用户字段,不呈现给用户")]
-        public bool InnerField
-        {
-            get => InterfaceOrThis._innerField;
-            set
-            {
-                if (_innerField == value)
-                    return;
-                BeforePropertyChanged(nameof(InnerField), _innerField, value);
-                _innerField = value;
-                OnPropertyChanged(nameof(InnerField));
-            }
-        }
 
         /// <summary>
         /// 系统字段
@@ -1800,37 +1774,6 @@ namespace Agebull.EntityModel.Config
             }
         }
 
-        /// <summary>
-        /// 非数据库字段的说明文字
-        /// </summary>
-        const string NoStorage_Description = @"是否非数据库字段,如果为真,数据库的读写均忽略这个字段";
-
-        /// <summary>
-        /// 非数据库字段
-        /// </summary>
-        [DataMember, JsonProperty("NoStorage", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _noStorage;
-
-        /// <summary>
-        /// 数据库的读写忽略这个字段
-        /// </summary>
-        /// <remark>
-        /// 是否非数据库字段,如果为真,数据库的读写均忽略这个字段
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"非数据库字段"), Description(NoStorage_Description)]
-        public bool NoStorage
-        {
-            get => InterfaceOrThis._noStorage || !EnableDataBase;
-            set
-            {
-                if (_noStorage == value)
-                    return;
-                BeforePropertyChanged(nameof(NoStorage), _noStorage, value);
-                _noStorage = value;
-                OnPropertyChanged(nameof(NoStorage));
-            }
-        }
 
         /// <summary>
         /// *跳过保存的场景
@@ -2798,33 +2741,6 @@ namespace Agebull.EntityModel.Config
         }
         #endregion
         #region 数据关联
-
-        /// <summary>
-        /// 连接字段
-        /// </summary>
-        [DataMember, JsonProperty("IsLinkField", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isLinkField;
-
-        /// <summary>
-        /// 连接字段
-        /// </summary>
-        /// <remark>
-        /// 连接字段
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据关联"), DisplayName(@"连接字段"), Description("连接字段")]
-        public bool IsLinkField
-        {
-            get => IsLinkKey || IsLinkCaption || _isLinkField;
-            set
-            {
-                if (_isLinkField == value)
-                    return;
-                BeforePropertyChanged(nameof(IsLinkField), _isLinkField, value);
-                _isLinkField = value;
-                OnPropertyChanged(nameof(IsLinkField));
-            }
-        }
 
         /// <summary>
         /// 关联表名

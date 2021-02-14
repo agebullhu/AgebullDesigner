@@ -1,13 +1,12 @@
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.Mysql;
+using Agebull.EntityModel.Config.V2021;
+using Agebull.EntityModel.Designer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
-using Agebull.Common;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Config.Mysql;
-using Agebull.EntityModel.Config.V2021;
-using Agebull.EntityModel.Designer;
 using static System.String;
 
 namespace Agebull.EntityModel.RobotCoder.DataBase.MySql
@@ -26,22 +25,22 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.MySql
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            CoderManager.RegisteCoder<DataTableConfig>("MySql", "生成表(SQL)", "sql",  CreateTable);
-            CoderManager.RegisteCoder< DataTableConfig>("MySql", "插入表字段(SQL)", "sql",  AddColumnCode);
-            CoderManager.RegisteCoder< DataTableConfig>("MySql", "插入缺少字段(SQL)", "sql",  ChangeColumnCode2);
-            CoderManager.RegisteCoder< DataTableConfig>("MySql", "修改表字段(SQL)", "sql",  ChangeColumnCode);
-            CoderManager.RegisteCoder< DataTableConfig>("MySql", "修改表名(SQL)", "sql",  ReName);
-            CoderManager.RegisteCoder< DataTableConfig>("MySql", "修改字段名(SQL)", "sql",  ChangeColumnName);
-            CoderManager.RegisteCoder< DataTableConfig>("MySql", "修改主键字段名(SQL)", "sql",  ChangeColumnName2);
-            CoderManager.RegisteCoder< DataTableConfig>("MySql", "修改BOOL字段(SQL)", "sql",  ChangeBoolColumnCode);
-            CoderManager.RegisteCoder< DataTableConfig>("MySql", "生成视图(SQL)", "sql",  CreateView);
+            CoderManager.RegisteCoder<DataTableConfig>("MySql", "生成表(SQL)", "sql", CreateTable);
+            CoderManager.RegisteCoder<DataTableConfig>("MySql", "插入表字段(SQL)", "sql", AddColumnCode);
+            CoderManager.RegisteCoder<DataTableConfig>("MySql", "插入缺少字段(SQL)", "sql", ChangeColumnCode2);
+            CoderManager.RegisteCoder<DataTableConfig>("MySql", "修改表字段(SQL)", "sql", ChangeColumnCode);
+            CoderManager.RegisteCoder<DataTableConfig>("MySql", "修改表名(SQL)", "sql", ReName);
+            CoderManager.RegisteCoder<DataTableConfig>("MySql", "修改字段名(SQL)", "sql", ChangeColumnName);
+            CoderManager.RegisteCoder<DataTableConfig>("MySql", "修改主键字段名(SQL)", "sql", ChangeColumnName2);
+            CoderManager.RegisteCoder<DataTableConfig>("MySql", "修改BOOL字段(SQL)", "sql", ChangeBoolColumnCode);
+            CoderManager.RegisteCoder<DataTableConfig>("MySql", "生成视图(SQL)", "sql", CreateView);
             CoderManager.RegisteCoder<ProjectConfig>("MySql", "插入页面表(SQL)", "sql", PageInsertSql);
-            CoderManager.RegisteCoder< DataTableConfig>("MySql", "删除视图(SQL)", "sql",  DropView);
-            CoderManager.RegisteCoder< DataTableConfig>("MySql", "删除表(SQL)", "sql",  DropTable);
-            CoderManager.RegisteCoder< DataTableConfig>("MySql", "清除表(SQL)", "sql",  TruncateTable);
-            CoderManager.RegisteCoder< DataTableConfig>("MySql", "添加全部索引", "sql",  AddIndex);
-            CoderManager.RegisteCoder< DataTableConfig>("MySql", "添加关键索引", "sql",  AddRefIndex);
-            CoderManager.RegisteCoder< DataTableConfig>("MySql", "添加外键", "sql",  AddRelation);
+            CoderManager.RegisteCoder<DataTableConfig>("MySql", "删除视图(SQL)", "sql", DropView);
+            CoderManager.RegisteCoder<DataTableConfig>("MySql", "删除表(SQL)", "sql", DropTable);
+            CoderManager.RegisteCoder<DataTableConfig>("MySql", "清除表(SQL)", "sql", TruncateTable);
+            CoderManager.RegisteCoder<DataTableConfig>("MySql", "添加全部索引", "sql", AddIndex);
+            CoderManager.RegisteCoder<DataTableConfig>("MySql", "添加关键索引", "sql", AddRefIndex);
+            CoderManager.RegisteCoder<DataTableConfig>("MySql", "添加外键", "sql", AddRelation);
         }
         #endregion
 
@@ -338,7 +337,7 @@ CREATE TABLE `{0}`("
    {(isFirst ? "" : ",")}{FieldDefault(col)}");
                 isFirst = false;
             }
-            var primary = dataTable.Fields.FirstOrDefault(p=>p.Property == dataTable.Entity.PrimaryColumn);
+            var primary = dataTable.Fields.FirstOrDefault(p => p.Property == dataTable.Entity.PrimaryColumn);
             if (dataTable.Entity.PrimaryColumn != null)
                 code.Append($@"
     , PRIMARY KEY (`{primary.DbFieldName}`)");
@@ -428,7 +427,7 @@ ALTER TABLE `{dataTable.SaveTableName}`");
             var code = new StringBuilder();
             if (dataTable.Entity.PrimaryColumn != null)
             {
-                var primary = dataTable.Fields.FirstOrDefault(p=>p.Property == dataTable.Entity.PrimaryColumn);
+                var primary = dataTable.Fields.FirstOrDefault(p => p.Property == dataTable.Entity.PrimaryColumn);
                 code.Append($@"
 /*{dataTable.Caption}*/
 ALTER TABLE `{dataTable.SaveTableName}`
@@ -510,7 +509,7 @@ ALTER TABLE `{dataTable.SaveTableName}`
                 return " AUTO_INCREMENT";
             if (col.Property.IsPrimaryKey)
                 return Empty;
-            if (col.Property.Initialization.IsBlank())
+            if (col.Property.Initialization.IsMissing())
             {
                 if (col.DbNullable)
                     return null;
@@ -590,7 +589,7 @@ ALTER TABLE `{dataTable.SaveTableName}`
 
         public static string HavingSql(DataTableConfig dataTable)
         {
-            var fields = dataTable.Fields.Where(p => !IsNullOrEmpty(p.Having) && !IsNullOrEmpty(p.Function) && 
+            var fields = dataTable.Fields.Where(p => !IsNullOrEmpty(p.Having) && !IsNullOrEmpty(p.Function) &&
             !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)).ToArray();
             if (fields.Length == 0)
                 return "null";

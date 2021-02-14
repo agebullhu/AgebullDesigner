@@ -1,13 +1,14 @@
-﻿using System;
-using Agebull.EntityModel.Config;
+﻿using Agebull.EntityModel.Config;
+using System;
 
 namespace Agebull.EntityModel.RobotCoder
 {
     /// <summary>
     /// 代码片断定义
     /// </summary>
-    public class CoderDefine
+    public class CoderDefine :SimpleConfig
     {
+        public CoderDefine() : base(true){}
         /// <summary>
         /// 方法
         /// </summary>
@@ -15,7 +16,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 名称
         /// </summary>
-        public string Name { get; set; }
+        public override string Name { get; set; }
 
         /// <summary>
         /// 语言类型

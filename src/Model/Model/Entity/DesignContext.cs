@@ -1,10 +1,10 @@
+using Agebull.CodeRefactor.CodeRefactor;
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using Agebull.CodeRefactor.CodeRefactor;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -108,7 +108,7 @@ namespace Agebull.EntityModel.Designer
             set
             {
                 _selectColumns = value;
-                if(SelectColumns != null && SelectColumns.Count > 0 && SelectColumns[0] is IPropertyConfig field)
+                if (SelectColumns != null && SelectColumns.Count > 0 && SelectColumns[0] is IPropertyConfig field)
                 {
                     SelectField = field;
                 }
@@ -152,7 +152,7 @@ namespace Agebull.EntityModel.Designer
             get => _selectConfig;
             internal set
             {
-                
+
                 if (_selectConfig == value)
                     return;
                 PreSelectConfig = _selectConfig;

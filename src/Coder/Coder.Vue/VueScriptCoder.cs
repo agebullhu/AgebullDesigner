@@ -1,8 +1,8 @@
+using Agebull.EntityModel.Config;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder.VUE
 {
@@ -241,11 +241,11 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         }
         private static void DateTimeCheck(IPropertyConfig field, StringBuilder code, ref string dot)
         {
-            if (field.Max.IsBlank() && field.Min.IsBlank())
+            if (field.Max.IsPresent() && field.Min.IsPresent())
                 code.Append($@"{dot}{{ min: {field.Min}, max: {field.Max}, message: '时间从 {field.Min} 到 {field.Max} 之间', trigger: 'blur' }}");
-            else if (field.Max.IsBlank())
+            else if (field.Max.IsPresent())
                 code.Append($@"{dot}{{ max: {field.Max}, message: '时间不大于 {field.Max}', trigger: 'blur' }}");
-            else if (field.Min.IsBlank())
+            else if (field.Min.IsPresent())
                 code.Append($@"{dot}{{ min: {field.Min}, message: '时间不小于 {field.Min}', trigger: 'blur' }}");
             else return;
             dot = @",";
@@ -253,11 +253,11 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
         private static void NumberCheck(IPropertyConfig field, StringBuilder code, ref string dot)
         {
-            if (field.Max.IsBlank() && field.Min.IsBlank())
+            if (field.Max.IsPresent() && field.Min.IsPresent())
                 code.Append($@"{dot}{{ min: {field.Min}, max: {field.Max}, message: '数值从 {field.Min} 到 {field.Max} 之间', trigger: 'blur' }}");
-            else if (field.Max.IsBlank())
+            else if (field.Max.IsPresent())
                 code.Append($@"{dot}{{ max: {field.Max}, message: '数值不大于 {field.Max}', trigger: 'blur' }}");
-            else if (field.Min.IsBlank())
+            else if (field.Min.IsPresent())
                 code.Append($@"{dot}{{ min: {field.Min}, message: '数值不小于 {field.Min}', trigger: 'blur' }}");
             else return;
             dot = @",";
@@ -265,15 +265,15 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
         private static void StringCheck(IPropertyConfig property, StringBuilder code, ref string dot)
         {
-            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
-            if (property.Max.IsBlank() && !field.IsBlob && !field.IsText)
+            var field = property.DataBaseField;
+            if (property.Max.IsMissing() && field != null && !field.IsBlob && !field.IsText)
                 property.Max = field.Datalen.ToString();
 
-            if (property.Max.IsBlank() && property.Min.IsBlank())
+            if (property.Max.IsPresent() && property.Min.IsPresent())
                 code.Append($@"{dot}{{ min: {property.Min}, max: {property.Max}, message: '长度在 {property.Min} 到 {property.Max} 个字符', trigger: 'blur' }}");
-            else if (property.Max.IsBlank())
+            else if (property.Max.IsPresent())
                 code.Append($@"{dot}{{ max: {property.Max}, message: '长度不大于 {property.Max} 个字符', trigger: 'blur' }}");
-            else if (property.Min.IsBlank())
+            else if (property.Min.IsPresent())
                 code.Append($@"{dot}{{ min: {property.Min}, message: '长度不小于 {property.Min} 个字符', trigger: 'blur' }}");
             else return;
             dot = @",";
@@ -289,7 +289,6 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             datas.Add($@"
         apiPrefix : '/{Project.ApiName}/{Model.ApiName}/v1'");
         }
-
         #endregion
 
         #region 扩展方法
@@ -298,49 +297,107 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
         void ArgumentMethod()
         {
-            string ext = "";
-            var order = Model.Properties.FirstOrDefault(p => p.Name == Model.OrderField);
-            if (order != null)
-                ext += $@",
-                _sort_: '{order.JsonName}',
-                _order_: '{(Model.OrderDesc ? "desc" : "asc")}'";
-            if (Model.Interfaces != null)
+            if (Model.FormQuery)
             {
-                if (Model.Interfaces.Contains("IStateData"))
-                    ext += $@",
-                _state_: this.list.dataState";
-                if (Model.Interfaces.Contains("IAuditData"))
-                    ext += $@",
-                _audit_: this.list.audit";
+                var code = new StringBuilder();
+                code.Append(@"
+        query : {");
+                bool first = true;
+                foreach (var property in Model.Properties.Where(p => p.CanUserQuery).ToArray())
+                {
+                    if (first) first = false;
+                    else code.Append(',');
+
+                    code.Append($@"
+            {property.JsonName} : ''");
+                }
+                code.Append(@"
+        }");
+                datas.Add(code.ToString());
+                code.Clear();
+                code.Append(@"
+        clearQuery () {
+            this.query={");
+                first = true;
+                foreach (var property in Model.Properties.Where(p => p.CanUserQuery).ToArray())
+                {
+                    if (first) first = false;
+                    else code.Append(',');
+
+                    code.Append($@"
+                {property.JsonName} : ''");
+                }
+                code.Append(@"
+            };
+        }");
+                overrides.Add(code.ToString()); 
             }
-            if (Model.TreeUi)
-                if (Model.ParentColumn == null)
-                    ext = @",
-                pid: this.tree.pid,
-                type: this.tree.type";
-                else
-                    ext = $@",
-                {Model.ParentColumn.JsonName}: this.tree.pid,
-                type: this.tree.type";
-            overrides.Add($@"
-        getQueryArgs() {{
-            let args = {{
-                _field_: this.list.field,
-                _value_: this.list.keyWords,
+            {
+                var code = new StringBuilder();
+                code.Append(@"
+        getQueryArgs() {
+            let args = {
                 _page_: this.list.page,
-                _size_: this.list.pageSize{ext}
-            }}; 
+                _size_: this.list.pageSize");
+
+                var order = Model.Properties.FirstOrDefault(p => p.Name == Model.OrderField);
+                if (order != null)
+                    code.Append($@",
+                _sort_: '{order.JsonName}',
+                _order_: '{(Model.OrderDesc ? "desc" : "asc")}'");
+
+                if (Model.Interfaces != null)
+                {
+                    if (Model.Interfaces.Contains("IStateData"))
+                        code.Append(@",
+                _state_: this.list.dataState");
+                    if (Model.Interfaces.Contains("IAuditData"))
+                        code.Append(@",
+                _audit_: this.list.audit");
+                }
+                if (Model.TreeUi)
+                {
+                    if (Model.ParentColumn == null)
+                        code.Append(@",
+                pid: this.tree.pid,
+                type: this.tree.type");
+                    else
+                        code.Append($@",
+                {Model.ParentColumn.JsonName}: this.tree.pid,
+                type: this.tree.type");
+                }
+
+                if (!Model.FormQuery)
+                    code.Append(@",
+                _field_: this.list.field,
+                _value_: this.list.keyWords");
+
+                code.Append(@"
+            };");
+                if (Model.FormQuery)
+                {
+                    foreach (var property in Model.Properties.Where(p => p.CanUserQuery).ToArray())
+                    {
+                        code.Append($@"
+            if(this.query.{property.JsonName})
+                args.{property.JsonName} = this.query;");
+                    }
+                }
+                code.Append(@"
             return args;
-        }}");
+        }");
+                overrides.Add(code.ToString());
+            }
+
             if (!Model.TreeUi)
                 return;
-            if (Model.ParentColumn==null)
+            if (Model.ParentColumn == null)
                 overrides.Add($@"
         setArgument(arg) {{
             arg.pid = this.tree.pid;
             arg.type = this.tree.type;
         }}");
-            else 
+            else
                 overrides.Add($@"
         setArgument(arg) {{
             arg.{Model.ParentColumn.JsonName} = this.tree.pid;
@@ -378,7 +435,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             {
                 if (first) first = false;
                 else code.Append(',');
-                 var field = property;
+                var field = property;
                 if (isInner && field.Name == "ParentId")
                 {
                     if (!Model.TreeUi)

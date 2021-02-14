@@ -8,20 +8,18 @@
 
 #region 引用
 
+using Agebull.Common.Reflection;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Designer.AssemblyAnalyzer;
+using Newtonsoft.Json;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Reflection;
-using System.IO;
-using System.Collections.Generic;
-using Newtonsoft.Json;
-using Agebull.Common;
-using System.Diagnostics;
-using Agebull.EntityModel.Designer.AssemblyAnalyzer;
 
 #endregion
 
@@ -246,10 +244,10 @@ namespace Agebull.EntityModel.Designer
             GetInfo(config, type);
             foreach (var field in type.GetFields(BindingFlags.Static | BindingFlags.Public))
             {
-                var col = config.Items.FirstOrDefault(p=>p.Name == field.Name);
+                var col = config.Items.FirstOrDefault(p => p.Name == field.Name);
                 if (col == null)
                 {
-                    config.Add(col= new EnumItem
+                    config.Add(col = new EnumItem
                     {
                         Name = field.Name,
                         Value = Convert.ToInt64(field.GetValue(null)).ToString()
@@ -270,8 +268,8 @@ namespace Agebull.EntityModel.Designer
                 Trace.WriteLine(enName, "Skip");
                 return;
             }
-            
-           var entity = _project.Find(type.Name, enName);
+
+            var entity = _project.Find(type.Name, enName);
             if (entity != null)
             {
                 entity.Name = enName;
@@ -346,7 +344,7 @@ namespace Agebull.EntityModel.Designer
                     continue;
                 col.Option.Index = entity.Properties.Count;
                 GetInfo(col, type, pro);
-                
+
                 col.IsInterfaceField = interFace;
                 CheckPropertyType(type, entity, col, pro, pro.PropertyType, jo != null, dc != null);
 
@@ -355,7 +353,7 @@ namespace Agebull.EntityModel.Designer
             }
             foreach (var field in fields)
             {
-                if (field.IsSpecialName || field.Name[0]!='_' && !char.IsLetter(field.Name[0]))
+                if (field.IsSpecialName || field.Name[0] != '_' && !char.IsLetter(field.Name[0]))
                 {
                     continue;
                 }
@@ -373,7 +371,7 @@ namespace Agebull.EntityModel.Designer
                 CheckPropertyType(type, entity, col, field, field.FieldType, jo != null, dc != null);
             }
         }
-        private static void CheckPropertyType(Type type,EntityConfig entity, FieldConfig prperty, MemberInfo field, Type fieldType,bool json,bool dataMember)
+        private static void CheckPropertyType(Type type, EntityConfig entity, FieldConfig prperty, MemberInfo field, Type fieldType, bool json, bool dataMember)
         {
             try
             {
@@ -414,7 +412,7 @@ namespace Agebull.EntityModel.Designer
                     prperty.LinkTable = prperty.CustomType;
                 }
             }
-            catch  (Exception ex)
+            catch (Exception ex)
             {
                 prperty.CsType = "object";
                 Trace.WriteLine(ex, $"Error : {type.FullName}.{field.Name}");
@@ -455,7 +453,7 @@ namespace Agebull.EntityModel.Designer
         #region XML文档
 
 
-        private void GetInfo(ClassifyConfig config, Type type)
+        private void GetInfo(EntityConfig config, Type type)
         {
             var member = XmlMember.Find(type);
             if (member != null)
@@ -472,6 +470,24 @@ namespace Agebull.EntityModel.Designer
             {
                 config.Classify = ct.Category;
             }
+            var de = type.GetAttribute<DescriptionAttribute>();
+            if (de != null)
+            {
+                config.Description = de.Description;
+            }
+        }
+        private void GetInfo(SimpleConfig config, Type type)
+        {
+            var member = XmlMember.Find(type);
+            if (member != null)
+            {
+                config.Caption = member.DisplayName;
+                config.Description = member.Summary;
+                config.Remark = member.Remark;
+            }
+            var ca = type.GetAttribute<DisplayNameAttribute>();
+            if (ca != null)
+                config.Caption = ca.DisplayName;
             var de = type.GetAttribute<DescriptionAttribute>();
             if (de != null)
             {

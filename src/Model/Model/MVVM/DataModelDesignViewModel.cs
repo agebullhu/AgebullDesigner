@@ -8,14 +8,9 @@
 
 #region 引用
 
-using System.Collections;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Forms.Integration;
-using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
-using PropertyGrid = System.Windows.Forms.PropertyGrid;
-using PropertyValueChangedEventArgs = System.Windows.Forms.PropertyValueChangedEventArgs;
+using System.Collections;
+using System.Windows.Controls;
 
 #endregion
 
@@ -48,7 +43,7 @@ namespace Agebull.EntityModel.Designer
 
         public DependencyAction ExtendEditorBehavior => new DependencyAction
         {
-            AttachAction = obj => Model.Editor.ExtendEditorManager.ExtendEditorPanel = (Border)obj
+            AttachAction = obj => EditorManager.ExtendEditorPanel = (Border)obj
         };
 
         #endregion

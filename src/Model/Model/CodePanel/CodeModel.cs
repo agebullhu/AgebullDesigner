@@ -8,17 +8,17 @@
 
 #region 引用
 
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.RobotCoder;
+using Microsoft.Web.WebView2.Wpf;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.RobotCoder;
 
 #endregion
 
@@ -63,7 +63,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public TreeRoot FileTreeRoot { get; } = new TreeRoot();
 
-        internal WebBrowser Browser;
+        internal WebView2 Browser;
 
 
         private void OnCodeSuccess(Dictionary<string, string> fields)
@@ -84,7 +84,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     FileTreeRoot.Items.Add(item = new TreeItem(file.Key)
                     {
-                        Header = folder,
+                        Caption = folder,
                         Name = folder,
                         IsExpanded = true,
                         SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
@@ -96,7 +96,7 @@ namespace Agebull.EntityModel.Designer
                     Remark = file.Value,
                 })
                 {
-                    Header = name,
+                    Caption = name,
                     Name = name,
                     Tag = Path.GetExtension(file.Key)?.Trim('.'),
                     SoruceTypeIcon = Application.Current.Resources["img_code"] as BitmapImage
@@ -135,7 +135,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 代码命令树根
         /// </summary>
-       static TreeRoot treeRoot;
+        static TreeRoot treeRoot;
 
         /// <summary>
         /// 代码命令树根
@@ -252,8 +252,22 @@ namespace Agebull.EntityModel.Designer
                 if (Equals(_extendCode, value))
                     return;
                 _extendCode = value;
-                var code = System.Web.HttpUtility.HtmlEncode(value ?? "");
-                var html = $@"
+                ShowHtml();
+
+                //   Editor.ShowCode();
+            }
+        }
+        bool isInit = false;
+        async void ShowHtml()
+        {
+            if (!isInit)
+            {
+                isInit = true;
+                await Browser.EnsureCoreWebView2Async();
+
+            }
+            var code = System.Web.HttpUtility.HtmlEncode(_extendCode ?? "");
+            var html = $@"
 <html style='padding:0;margin:0'>
     <head>
         <meta charset='utf-8'/>
@@ -275,14 +289,9 @@ namespace Agebull.EntityModel.Designer
     <body style='padding:0;margin:0'>
         <pre><code class='{_codeType}'>{code}</code></pre>
     </body>
-</html>
-";
-
-                Browser.NavigateToString(html);
-             //   Editor.ShowCode();
-            }
+</html>";
+            Browser.NavigateToString(html);
         }
-
         private void DoMomentCode()
         {
             ViewIndex = 0;

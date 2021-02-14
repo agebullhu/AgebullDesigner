@@ -1,6 +1,6 @@
+using Agebull.EntityModel.Config;
 using System.IO;
 using System.Linq;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -8,7 +8,7 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// ≈‰÷√∂¡–¥∆˜
     /// </summary>
-    public class SolutionWriter: ConfigWriter
+    public class SolutionWriter : ConfigWriter
     {
         SolutionConfig Solution;
 
