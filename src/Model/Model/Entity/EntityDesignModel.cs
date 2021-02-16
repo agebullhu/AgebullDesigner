@@ -133,21 +133,21 @@ namespace Agebull.EntityModel.Designer
                 FieldConfig newColumn = null;
                 if (refe)
                 {
-                    newColumn = Entity.Properties.FirstOrDefault(p => p.ReferenceKey == copyColumn.Key);
+                    newColumn = Entity.Find(p => p.ReferenceKey == copyColumn.Key);
                     if (newColumn == null)
                     {
                         string name = copyColumn.Entity.Name;
                         if (copyColumn.IsPrimaryKey)
                         {
-                            newColumn = Entity.Properties.FirstOrDefault(p => p.LinkTable == name && p.IsLinkKey);
+                            newColumn = Entity.Find(p => p.LinkTable == name && p.IsLinkKey);
                         }
                         else if (copyColumn.IsCaption)
                         {
-                            newColumn = Entity.Properties.FirstOrDefault(p => p.LinkTable == name && p.IsLinkCaption);
+                            newColumn = Entity.Find(p => p.LinkTable == name && p.IsLinkCaption);
                         }
                         else
                         {
-                            newColumn = Entity.Properties.FirstOrDefault(
+                            newColumn = Entity.Find(
                                 p => string.Equals(p.LinkTable, name, StringComparison.OrdinalIgnoreCase) && (
                                          string.Equals(p.LinkField, copyColumn.Name, StringComparison.OrdinalIgnoreCase) ||
                                          string.Equals(p.LinkField, copyColumn.DbFieldName, StringComparison.OrdinalIgnoreCase)));

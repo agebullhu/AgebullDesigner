@@ -34,43 +34,43 @@ namespace Agebull.EntityModel.RobotCoder.DataBase.Sqlite
 
         #region View
 
-        public static string DropView(DataTableConfig entity)
+        public static string DropView(DataTableConfig dataTable)
         {
             return $@"
--- {entity.Caption}
-DROP VIEW [{entity.ReadTableName}];";
+-- {dataTable.Caption}
+DROP VIEW [{dataTable.ReadTableName}];";
         }
 
-        public static string CreateView(DataTableConfig model)
+        public static string CreateView(DataTableConfig dataTable)
         {
-            DataBaseHelper.CheckFieldLink(model.Fields);
-            var array = model.Fields.Where(p => p.IsLinkField && !p.IsLinkKey).ToArray();
+            DataBaseHelper.CheckFieldLink(dataTable.Fields);
+            var array = dataTable.FindAndToArray(p => p.IsLinkField && !p.IsLinkKey);
             if (array.Length == 0)
             {
-                return $"-- {model.Caption}没有字段引用其它表的无需视图";
+                return $"-- {dataTable.Caption}没有字段引用其它表的无需视图";
             }
-            var tables = model.Fields.Where(p => p.IsLinkField && !p.IsLinkKey).Select(p => p.LinkTable).Distinct().Select(GlobalConfig.GetEntity).ToDictionary(p => p.Name);
+            var tables = dataTable.FindAndToArray(p => p.IsLinkField && !p.IsLinkKey).Select(p => p.LinkTable).Distinct().Select(GlobalConfig.GetEntity).ToDictionary(p => p.Name);
             if (tables.Count == 0)
             {
-                model.ReadTableName = model.SaveTableName; ;
-                return $"-- {model.Caption}没有字段引用其它表的无需视图";
+                dataTable.ReadTableName = dataTable.SaveTableName; ;
+                return $"-- {dataTable.Caption}没有字段引用其它表的无需视图";
             }
             string viewName;
-            if (IsNullOrWhiteSpace(model.ReadTableName) || model.ReadTableName == model.SaveTableName)
+            if (IsNullOrWhiteSpace(dataTable.ReadTableName) || dataTable.ReadTableName == dataTable.SaveTableName)
             {
-                viewName = DataBaseHelper.ToViewName(model.Entity);
+                viewName = DataBaseHelper.ToViewName(dataTable.Entity);
             }
             else
             {
-                viewName = model.ReadTableName;
+                viewName = dataTable.ReadTableName;
             }
             var builder = new StringBuilder();
             builder.Append($@"
--- {model.Caption}
+-- {dataTable.Caption}
 CREATE VIEW [{viewName}] AS 
     SELECT ");
             bool first = true;
-            foreach (var field in model.Fields)
+            foreach (var field in dataTable.Fields)
             {
                 if (first)
                     first = false;
@@ -82,9 +82,7 @@ CREATE VIEW [{viewName}] AS
                 {
                     if (tables.TryGetValue(field.LinkTable, out var friend))
                     {
-                        var linkField =
-                            friend.Properties.FirstOrDefault(
-                                p => p.DbFieldName == field.LinkField || p.Name == field.LinkField);
+                        var linkField = friend.Find(field.LinkField);
                         if (linkField != null)
                         {
                             builder.AppendFormat(@"[{0}].[{1}] as [{2}]", friend.Name, linkField.DbFieldName, field.DbFieldName);
@@ -92,22 +90,21 @@ CREATE VIEW [{viewName}] AS
                         }
                     }
                 }
-                builder.AppendFormat(@"[{0}].[{1}] as [{1}]", model.SaveTableName, field.DbFieldName);
+                builder.AppendFormat(@"[{0}].[{1}] as [{1}]", dataTable.SaveTableName, field.DbFieldName);
             }
             builder.Append($@"
-    FROM [{model.SaveTableName}]");
+    FROM [{dataTable.SaveTableName}]");
             foreach (var table in tables.Values)
             {
-                var field = model.Fields.FirstOrDefault(p => p.IsLinkKey && (p.LinkTable == table.Name || p.LinkTable == table.SaveTableName));
+                var field = dataTable.Find(p => p.IsLinkKey && (p.LinkTable == table.Name || p.LinkTable == table.SaveTableName));
                 if (field == null)
                     continue;
-                var linkField = table.Properties.FirstOrDefault(
-                    p => p.Name == field.LinkField || p.DbFieldName == field.LinkField);
+                var linkField = table.Find(field.LinkField);
                 if (linkField == null)
                     continue;
                 builder.AppendFormat(@"
     LEFT JOIN [{1}] [{4}] ON [{0}].[{2}] = [{4}].[{3}]"
-                        , model.SaveTableName, table.SaveTableName, field.DbFieldName, linkField.DbFieldName, table.Name);
+                        , dataTable.SaveTableName, table.SaveTableName, field.DbFieldName, linkField.DbFieldName, table.Name);
             }
             builder.Append(';');
             builder.AppendLine("GO");
@@ -127,7 +124,7 @@ CREATE VIEW [{viewName}] AS
 /*{entity.Caption}*/
 CREATE TABLE [{entity.SaveTableName}](");
             bool isFirst = true;
-            foreach (var col in entity.Fields.Where(p => !p.Property.IsCompute))
+            foreach (var col in entity.FindAndToArray(p => !p.IsReadonly))
             {
                 code.Append($@"
    {(isFirst ? "" : ",")}{FieldDefault(col)}");

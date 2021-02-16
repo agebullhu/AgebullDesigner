@@ -1,5 +1,6 @@
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.RobotCoder;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,34 +9,67 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// TargetConfig触发器
     /// </summary>
-    public class CodeGeneratorTrigger : EventTrigger
+    public class CodeGeneratorTrigger : IEventTrigger
     {
-        private ConfigBase config;
         /// <summary>
-        /// 开始代码生成
+        /// 构造
         /// </summary>
-        public override void OnCodeGeneratorBegin(NotificationObject obj)
+        public CodeGeneratorTrigger()
         {
-            config = (ConfigBase)obj;
-            config.Foreach<EntityConfig>(CreateLast);
-            config.Foreach<ModelConfig>(CreateLast);
+            TargetType = typeof(ConfigBase);
+        }
+
+        /// <summary>
+        /// 目标类型
+        /// </summary>
+        public Type TargetType { get; }
+
+        /// <summary>
+        /// 目标类型
+        /// </summary>
+        public ConfigBase Target { get; private set; }
+
+        /// <summary>
+        /// 当前配置对象
+        /// </summary>
+        object IEventTrigger.Target
+        {
+            get => Target;
+            set => Target = value as ConfigBase;
         }
 
         /// <summary>
         /// 开始代码生成
         /// </summary>
-        public void CreateLast(EntityConfig entity)
+        void IEventTrigger.OnCodeGeneratorBegin(object obj)
+        {
+            Target = (ConfigBase)obj;
+            Target.Foreach<IEntityConfig>(CreateLast);
+        }
+        /// <summary>
+        /// 完成代码生成
+        /// </summary>
+        void IEventTrigger.OnCodeGeneratorEnd()
+        {
+            Target.Foreach<IEntityConfig>(ClearLast);
+        }
+
+
+        /// <summary>
+        /// 开始代码生成
+        /// </summary>
+        public void CreateLast(IEntityConfig entity)
         {
             entity.LastProperties = new List<IPropertyConfig>();
             int idx = 0;
-            foreach (var field in entity.Properties.OrderBy(p => p.Index))
+            foreach (var property in entity.Properties.OrderBy(p => p.Index))
             {
-                if (field.IsDelete || field.IsDiscard)
+                if (property.IsDelete || property.IsDiscard)
                     continue;
-                field.Option.Index = ++idx;
-                entity.LastProperties.TryAdd(field, p => p.Key);
+                property.Option.Index = ++idx;
+                entity.LastProperties.TryAdd(property, p => p.Key);
                 if (entity.EnableDataBase)
-                    InterfaceHelper.CheckLinkField(entity, field);
+                    InterfaceHelper.CheckLinkField(entity, property);
             }
             InterfaceHelper.CheckLastInterface(entity, idx);
         }
@@ -43,27 +77,15 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 开始代码生成
         /// </summary>
-        public void CreateLast(ModelConfig model)
+        public void ClearLast(IEntityConfig entity)
         {
-            model.LastProperties = new List<IPropertyConfig>();
-            int idx = 0;
-            foreach (var property in model.Properties.OrderBy(p => p.Index))
+            if (entity.LastProperties == null)
+                return;
+            foreach (var property in entity.LastProperties.Where(p=> !entity.Exist(pro=> pro == p)))
             {
-                if (property.IsDelete || property.IsDiscard)
-                    continue;
-                property.Option.Index = ++idx;
-                InterfaceHelper.CheckLinkField(model, property);
-                model.LastProperties.TryAdd(property, p => p.Key);
+                entity.DataTable.Fields.Remove(property.DataBaseField);
             }
-            InterfaceHelper.CheckLastInterface(model, idx);
-        }
-
-        /// <summary>
-        /// 完成代码生成
-        /// </summary>
-        public override void OnCodeGeneratorEnd()
-        {
-            config.Foreach<EntityConfig>(entity => entity.LastProperties = null);
+            entity.LastProperties = null;
         }
     }
 }

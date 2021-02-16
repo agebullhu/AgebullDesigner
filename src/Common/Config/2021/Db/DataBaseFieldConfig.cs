@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 
@@ -738,18 +739,6 @@ namespace Agebull.EntityModel.Config.V2021
         }
         #endregion 字段
 
-        #region 兼容性升级
-
-        /// <summary>
-        /// 兼容性升级
-        /// </summary>
-        public void Upgrade()
-        {
-            //Copy(Entity);
-        }
-
-        #endregion
-
         #region 字段复制
 
         /// <summary>
@@ -820,33 +809,36 @@ namespace Agebull.EntityModel.Config.V2021
         /// <returns></returns>
         public void CopyProperty(FieldConfig dest)
         {
-            FieldType = dest.FieldType;
-            DbFieldName = dest.DbFieldName;
-            KeepUpdate = dest.KeepUpdate;
-            DbNullable = dest.DbNullable;
-            NeedDbIndex = dest.NeedDbIndex;
-            Datalen = dest.Datalen;
-            Scale = dest.Scale;
-            IsDbIndex = dest.IsDbIndex;
-            FixedLength = dest.FixedLength;
-            IsText = dest.IsMemo;
-            IsBlob = dest.IsBlob;
-            DbInnerField = dest.DbInnerField;
-            KeepStorageScreen = dest.KeepStorageScreen;
-            CustomWrite = dest.CustomWrite;
-            StorageProperty = dest.StorageProperty;
-            NoStorage = dest.NoStorage;
-            IsIdentity = dest.IsIdentity;
-            Function = dest.Function;
-            Having = dest.Having;
-            ValueType = dest.ValueType;
-            IsParent = dest.IsParent;
-            IsLinkField = dest.IsLinkField;
-            LinkTable = dest.LinkTable;
-            IsLinkKey = dest.IsLinkKey;
-            IsLinkCaption = dest.IsLinkCaption;
-            LinkField = dest.LinkField;
-            IsReadonly = dest.IsReadonly;
+            FieldType = dest._dbType;
+            DbFieldName = dest._dbFieldName;
+
+            DbNullable = dest._dbNullable;
+            //NeedDbIndex = dest.NeedDbIndex;
+            Datalen = dest._datalen;
+            Scale = dest._scale;
+            IsDbIndex = dest._isDbIndex;
+            FixedLength = dest._fixedLength;
+            IsText = dest._isMemo;
+            IsBlob = dest._isBlob;
+            DbInnerField = dest._dbInnerField;
+            KeepStorageScreen = dest._keepStorageScreen;
+            CustomWrite = dest._customWrite;
+            StorageProperty = dest._storageProperty;
+            IsIdentity = dest._isIdentity;
+            Function = dest._function;
+            Having = dest._having;
+
+            ValueType = dest._valueType;
+            LinkTable = dest._linkTable.IsMe(Parent.SaveTableName) ? null : dest.LinkTable;
+            LinkField = LinkTable.IsMissing() ? null: dest.LinkField;
+
+            IsParent = dest._isParent;
+            IsLinkKey = dest._isLinkKey;
+            IsLinkCaption = dest._isLinkCaption;
+
+            NoStorage = DbFieldName.IsMissing();
+            IsLinkField = dest.IsParent || dest.IsLinkKey || dest.IsLinkCaption || LinkField.IsPresent();
+            IsReadonly = IsLinkField;
         }
 
         /// <summary>
@@ -856,33 +848,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <returns></returns>
         public void CopyProperty(PropertyConfig dest)
         {
-            FieldType = dest.FieldType;
-            DbFieldName = dest.DbFieldName;
-            KeepUpdate = dest.KeepUpdate;
-            DbNullable = dest.DbNullable;
-            NeedDbIndex = dest.NeedDbIndex;
-            Datalen = dest.Datalen;
-            Scale = dest.Scale;
-            IsDbIndex = dest.IsDbIndex;
-            FixedLength = dest.FixedLength;
-            IsText = dest.IsMemo;
-            IsBlob = dest.IsBlob;
-            DbInnerField = dest.DbInnerField;
-            KeepStorageScreen = dest.KeepStorageScreen;
-            CustomWrite = dest.CustomWrite;
-            StorageProperty = dest.StorageProperty;
-            NoStorage = dest.NoStorage;
-            IsIdentity = dest.IsIdentity;
-            Function = dest.Function;
-            Having = dest.Having;
-            ValueType = dest.ValueType;
-            IsParent = dest.IsParent;
-            IsLinkField = dest.IsLinkField;
-            LinkTable = dest.LinkTable;
-            IsLinkKey = dest.IsLinkKey;
-            IsLinkCaption = dest.IsLinkCaption;
-            LinkField = dest.LinkField;
-            IsReadonly = dest.IsReadonly;
+            CopyProperty(dest.Field);
         }
         #endregion 字段复制
     }

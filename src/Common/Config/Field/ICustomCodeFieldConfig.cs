@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Agebull.EntityModel.Config
 {
@@ -6,7 +8,13 @@ namespace Agebull.EntityModel.Config
     {
 
         #region 计算列
-        List<string> GetAliasPropertys();
+        List<string> GetAliasPropertys()
+        {
+            if (string.IsNullOrWhiteSpace(Alias))
+                return new List<string>();
+            var alias = Alias.Split(new[] { ' ', ',', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Distinct();
+            return alias.Where(p => p != Name).Select(p => p.Trim()).ToList();
+        }
 
         /// <summary>
         /// 自定义代码(get)

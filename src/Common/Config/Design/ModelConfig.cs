@@ -60,7 +60,7 @@ namespace Agebull.EntityModel.Config
         /// 数据关联配置
         /// </summary>
         [DataMember, JsonProperty("releations", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal NotificationList<ReleationConfig> _releations;
+        internal ConfigCollection<ReleationConfig> _releations;
 
         /// <summary>
         /// 数据关联配置
@@ -70,13 +70,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"数据关联配置"), Description("数据关联配置")]
-        public NotificationList<ReleationConfig> Releations
+        public ConfigCollection<ReleationConfig> Releations
         {
             get
             {
                 if (_releations != null)
                     return _releations;
-                _releations = new NotificationList<ReleationConfig>();
+                _releations = new ConfigCollection<ReleationConfig>(this);
                 OnPropertyChanged(nameof(Releations));
                 return _releations;
             }
@@ -86,6 +86,8 @@ namespace Agebull.EntityModel.Config
                     return;
                 BeforePropertyChanged(nameof(Releations), _releations, value);
                 _releations = value;
+                if (value != null)
+                    value.Parent = this;
                 OnPropertyChanged(nameof(Releations));
             }
         }

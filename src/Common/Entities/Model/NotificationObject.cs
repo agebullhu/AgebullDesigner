@@ -51,13 +51,10 @@ namespace Agebull.EntityModel
             get => _isModify;
             set
             {
-                if (_isModify == value)
+                if (WorkContext.IsNoChangedNotify || _isModify == value)
                     return;
-                if (!WorkContext.IsNoChangedNotify)
-                {
-                    _isModify = value;
-                    RaisePropertyChanged(nameof(IsModify));
-                }
+                _isModify = value;
+                RaisePropertyChanged(nameof(IsModify));
             }
         }
 
@@ -96,23 +93,23 @@ namespace Agebull.EntityModel
             RaisePropertyChanged(new PropertyChangedEventArgs(propertyName));
         }
 
-        private string preName;
         /// <summary>
         ///     发出属性修改事件(不受阻止模式影响)
         /// </summary>
         /// <param name="args">属性</param>
-        private void RaisePropertyChanged(PropertyChangedEventArgs args)
+        protected virtual void RaisePropertyChanged(PropertyChangedEventArgs args)
         {
             if (WorkContext.IsNoChangedNotify)
                 return;
             InvokeInUiThread(RaisePropertyChangedInner, args);
         }
 
+        private string preName;
         /// <summary>
         ///     发出属性修改事件(不受阻止模式影响)
         /// </summary>
         /// <param name="args">属性</param>
-        private void RaisePropertyChangedInner(PropertyChangedEventArgs args)
+        protected void RaisePropertyChangedInner(PropertyChangedEventArgs args)
         {
             if (preName == args.PropertyName)
                 return;

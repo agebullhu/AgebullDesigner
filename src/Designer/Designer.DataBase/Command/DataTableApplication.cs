@@ -6,7 +6,7 @@ namespace Agebull.EntityModel.Config
     /// <summary>
     /// 实体排序器
     /// </summary>
-    public class EntityDatabaseBusiness : ConfigModelBase
+    public class DataTableApplication : ConfigModelBase
     {
         /// <summary>
         /// 表结构对象
@@ -20,18 +20,19 @@ namespace Agebull.EntityModel.Config
 
 
         /// <summary>
-        ///     规范名称
+        ///     自动修复(从模型修复数据存储)
         /// </summary>
-        public void StandardName()
+        public void StandardName(bool repair)
         {
+
             if (DataTable.IsFreeze || Entity.IsInterface)
                 return;
             if (!Entity.EnableDataBase)
             {
-                foreach (var col in DataTable.Fields)
+                foreach (var field in DataTable.Fields)
                 {
-                    col.DbFieldName = null;
-                    col.FieldType = null;
+                    field.DbFieldName = null;
+                    field.FieldType = null;
                 }
 
                 DataTable.IsModify = true;
@@ -50,15 +51,15 @@ namespace Agebull.EntityModel.Config
             {
                 DataTable.SaveTableName = name;
             }
-            foreach (var col in DataTable.Fields)
+            foreach (var field in DataTable.Fields)
             {
-                if (col.IsDiscard)
+                if (field.IsDiscard)
                 {
                     continue;
                 }
-                if (string.IsNullOrWhiteSpace(col.OldName))
-                    col.OldName = col.DbFieldName;
-                col.DbFieldName = DataBaseHelper.ToDbFieldName(col.Property);
+                if (string.IsNullOrWhiteSpace(field.OldName))
+                    field.OldName = field.DbFieldName;
+                field.DbFieldName = DataBaseHelper.ToDbFieldName(field.Property);
             }
         }
 
@@ -72,10 +73,10 @@ namespace Agebull.EntityModel.Config
                 return;
             if (!Entity.EnableDataBase)
             {
-                foreach (var col in DataTable.Fields)
+                foreach (var field in DataTable.Fields)
                 {
-                    col.DbFieldName = null;
-                    col.FieldType = null;
+                    field.DbFieldName = null;
+                    field.FieldType = null;
                 }
 
                 DataTable.IsModify = true;
@@ -112,16 +113,16 @@ namespace Agebull.EntityModel.Config
             {
                 Entity = DataTable.Entity
             };
-            foreach (var col in DataTable.Fields)
+            foreach (var field in DataTable.Fields)
             {
-                if (col.IsDiscard)
+                if (field.IsDiscard)
                 {
                     continue;
                 }
-                model.Field = col;
+                model.Field = field;
                 model.CheckByDb(repair);
             }
-            DataBaseHelper.CheckFieldLink(Entity.DataTable?.Fields);
+            DataBaseHelper.CheckFieldLink(Entity.DataTable.Fields);
             CheckIndex();
         }
 

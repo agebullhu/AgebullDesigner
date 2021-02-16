@@ -35,12 +35,12 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 外键实体
         /// </summary>
-        public FieldConfig ForeignField => _foreignField ??= ForeignEntity?.Properties.FirstOrDefault(p => p.Name == ForeignKey);
+        public FieldConfig ForeignField => _foreignField ??= ForeignEntity?.Find(p => p.Name == ForeignKey);
 
         /// <summary>
         /// 实体
         /// </summary>
-        public FieldConfig PrimaryField => _primaryField ??= PrimaryEntity?.Properties.FirstOrDefault(p => p.Name == PrimaryKey);
+        public FieldConfig PrimaryField => _primaryField ??= PrimaryEntity?.Find(p => p.Name == PrimaryKey);
 
 
         #endregion

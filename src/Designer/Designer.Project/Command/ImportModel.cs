@@ -219,7 +219,7 @@ namespace Agebull.EntityModel.Designer
                 string t1 = row?.Cells[0].StringCellValue;
                 if (string.IsNullOrWhiteSpace(t1))
                     break;
-                var field = entity.Properties.FirstOrDefault(p => p.Name == t1);
+                var field = entity.Find(p => p.Name == t1);
                 if (field == null)
                     continue;
                 string c = row.Cells[1].StringCellValue;
@@ -454,7 +454,7 @@ namespace Agebull.EntityModel.Designer
                 var desc = string.Empty;
                 if (cell.CellComment?.String != null)
                     desc = cell.CellComment.String.String;
-                var col = entity.Properties.FirstOrDefault(p => string.Equals(p.Name, field, StringComparison.OrdinalIgnoreCase));
+                var col = entity.Find(p => string.Equals(p.Name, field, StringComparison.OrdinalIgnoreCase));
                 if (col != null)
                 {
                     col.Option.ResetState();
@@ -484,7 +484,7 @@ namespace Agebull.EntityModel.Designer
                     });
                 }
             }
-            foreach (var col in entity.Properties.Where(p => p.IsDiscard))
+            foreach (var col in entity.Where(p => p.IsDiscard))
             {
                 Model.Context.CurrentTrace.TraceMessage.Track = "过时字段:" + col.Name;
             }

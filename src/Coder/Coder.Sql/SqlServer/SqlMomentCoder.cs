@@ -59,12 +59,12 @@ GO";
         public static string CreateView(DataTableConfig entity)
         {
             DataBaseHelper.CheckFieldLink(entity.Fields);
-            var array = entity.Fields.Where(p => p.IsLinkField && !p.IsLinkKey).ToArray();
+            var array = entity.FindAndToArray(p => p.IsLinkField && !p.IsLinkKey).ToArray();
             if (array.Length == 0)
             {
                 return $"/**********{entity.Caption}**********没有字段引用其它表的无需视图**********/";
             }
-            var tables = entity.Fields.Where(p => p.IsLinkField && !p.IsLinkKey).Select(p => p.LinkTable).Distinct().Select(GlobalConfig.GetEntity).ToDictionary(p => p.Name);
+            var tables = entity.FindAndToArray(p => p.IsLinkField && !p.IsLinkKey).Select(p => p.LinkTable).Distinct().Select(GlobalConfig.GetEntity).ToDictionary(p => p.Name);
             if (tables.Count == 0)
             {
                 entity.ReadTableName = entity.SaveTableName; ;
@@ -98,7 +98,7 @@ CREATE VIEW [{viewName}] AS
                     if (tables.TryGetValue(field.LinkTable, out var friend))
                     {
                         var linkField =
-                            friend.Properties.FirstOrDefault(
+                            friend.Find(
                                 p => p.DbFieldName == field.LinkField || p.Name == field.LinkField);
                         if (linkField != null)
                         {
@@ -113,11 +113,10 @@ CREATE VIEW [{viewName}] AS
     FROM [{entity.SaveTableName}]");
             foreach (var table in tables.Values)
             {
-                var field = entity.Fields.FirstOrDefault(p => p.IsLinkKey && (p.LinkTable == table.Name || p.LinkTable == table.SaveTableName));
+                var field = entity.Find(p => p.IsLinkKey && (p.LinkTable == table.Name || p.LinkTable == table.SaveTableName));
                 if (field == null)
                     continue;
-                var linkField = table.Properties.FirstOrDefault(
-                    p => p.Name == field.LinkField || p.DbFieldName == field.LinkField);
+                var linkField = table.Find(p => p.Name == field.LinkField || p.DbFieldName == field.LinkField);
                 if (linkField == null)
                     continue;
                 builder.AppendFormat(@"
@@ -182,17 +181,15 @@ VALUES(2,'{entity.Name}','{entity.Caption}','/{entity.Project.Name}/{entity.Name
 
         public static string CreateTableCode(DataTableConfig entity, bool signle = false)
         {
-
-            return "";//这个设置为普通类，无法生成SQL
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
 CREATE TABLE [{entity.SaveTableName}](");
             bool isFirst = true;
-            foreach (var col in entity.Fields.Where(p => !p.Property.IsCompute))
+            foreach (var field in entity.FindAndToArray(p => !p.IsReadonly))
             {
                 code.Append($@"
-   {(isFirst ? "" : ",")}{FieldDefault(col)}");
+   {(isFirst ? "" : ",")}{FieldDefault(field)}");
 
                 isFirst = false;
             }
@@ -220,7 +217,7 @@ EXECUTE sp_addextendedproperty N'MS_Description', @v, N'SCHEMA', N'dbo', N'TABLE
                     entity.SaveTableName
                 }', NULL, NULL;");
 
-            foreach (var col in entity.Fields.Where(p => !p.Property.IsCompute))
+            foreach (var col in entity.FindAndToArray(p => !p.IsReadonly))
             {
                 code.Append($@"
 SET @v = N'{col.Caption?.Replace('\'', '‘')}:{col.Description?.Replace('\'', '‘')}'
@@ -239,7 +236,7 @@ EXECUTE sp_addextendedproperty N'MS_Description', @v, N'SCHEMA', N'dbo', N'TABLE
 /*{entity.Caption}*/
 ALTER TABLE [{entity.SaveTableName}]");
             bool isFirst = true;
-            foreach (var col in entity.Fields.Where(p => !p.Property.IsCompute))
+            foreach (var col in entity.FindAndToArray(p => !p.IsReadonly))
             {
                 if (isFirst)
                     isFirst = false;
@@ -261,28 +258,28 @@ ALTER TABLE [{entity.SaveTableName}]");
 /*{entity.Caption}*/
 ALTER TABLE [{entity.SaveTableName}]");
             bool isFirst = true;
-            foreach (var col in entity.Fields.Where(p => !p.Property.IsCompute))
+            foreach (var field in entity.FindAndToArray(p => !p.IsReadonly))
             {
                 if (isFirst)
                     isFirst = false;
                 else
                     code.Append(',');
                 code.Append($@"
-    ALTER COLUMN [{col.DbFieldName}] {FieldDefault(col)}");
+    ALTER COLUMN [{field.DbFieldName}] {FieldDefault(field)}");
             }
             code.Append(@";");
             MemCode(entity, code);
             return code.ToString();
         }
 
-        private static string FieldDefault(DataBaseFieldConfig col)
+        private static string FieldDefault(DataBaseFieldConfig field)
         {
-            var def = col.Property.Initialization == null
+            var def = field.Property.Initialization == null
                 ? null
-                : col.Property.CsType == "string" ? $"DEFAULT '{col.Property.Initialization}'" : $"DEFAULT {col.Property.Initialization}";
-            var nulldef = col.Property.CsType == "string" || col.DbNullable ? " NULL" : " NOT NULL";
-            var identity = col.IsIdentity ? " IDENTITY(1,1)" : null;
-            return $"[{col.DbFieldName}] {SqlServerHelper.ColumnType(col)}{identity}{nulldef} {def} -- '{col.Caption}'";
+                : field.Property.CsType == "string" ? $"DEFAULT '{field.Property.Initialization}'" : $"DEFAULT {field.Property.Initialization}";
+            var nulldef = field.Property.CsType == "string" || field.DbNullable ? " NULL" : " NOT NULL";
+            var identity = field.IsIdentity ? " IDENTITY(1,1)" : null;
+            return $"[{field.DbFieldName}] {SqlServerHelper.ColumnType(field)}{identity}{nulldef} {def} -- '{field.Caption}'";
         }
 
         #endregion

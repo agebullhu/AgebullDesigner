@@ -126,6 +126,7 @@ namespace Agebull.EntityModel
             foreach (var obj in collection)
                 Add(obj);
         }
+
         long lockEvent;
         public void BeginLockEvent()
         {
@@ -179,6 +180,41 @@ namespace Agebull.EntityModel
             Add(item);
             return true;
         }
+
+        /*// <summary>
+        ///     加入
+        /// </summary>
+        /// <param name="item">节点</param>
+        protected virtual void OnAdd(T item)
+        {
+        }
+
+        /// <summary>
+        ///     加入
+        /// </summary>
+        /// <param name="item">节点</param>
+        protected virtual void OnRemove(T item)
+        {
+        }
+
+        /// <summary>
+        ///     加入
+        /// </summary>
+        /// <param name="item">节点</param>
+        public new void Add(T item)
+        {
+            OnAdd(item);
+            base.Add(item);
+        }
+        /// <summary>
+        ///     加入
+        /// </summary>
+        /// <param name="item">节点</param>
+        public new void Remove(T item)
+        {
+            OnRemove(item);
+            base.Remove(item);
+        }*/
 
         /// <summary>将指定索引处的项移动到集合中的新位置。</summary>
         /// <param name="oldIndex">从零开始的索引，指定项的新位置。</param>

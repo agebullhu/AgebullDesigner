@@ -71,7 +71,7 @@ namespace Agebull.EntityModel.Designer
             {
                 if (field.IsDelete)
                     continue;
-                var old = Model.Entity.Properties.FirstOrDefault(p => p != null && p.Name == field.Name);
+                var old = Model.Entity.Find(p => p != null && p.Name == field.Name);
                 if (old != null)
                 {
                     old.CsType = field.CsType;

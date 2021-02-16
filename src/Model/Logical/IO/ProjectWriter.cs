@@ -107,7 +107,7 @@ namespace Agebull.EntityModel.Designer
             else
             {
                 //删除字段处理
-                foreach (var field in entity.Properties.Where(p => p.IsDelete).ToArray())
+                foreach (var field in entity.Where(p => p.IsDelete).ToArray())
                 {
                     entity.Remove(field);
                 }
@@ -128,7 +128,7 @@ namespace Agebull.EntityModel.Designer
             else
             {
                 //删除字段处理
-                foreach (var property in model.Properties.Where(p => p.IsDelete).ToArray())
+                foreach (var property in model.Where(p => p.IsDelete).ToArray())
                 {
                     model.Remove(property);
                 }
@@ -150,9 +150,11 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         static void SaveModelExtend(IEntityConfig entity, string dir, bool checkState)
         {
-            var path = IOHelper.CheckPath(dir, "Extend");
+            var path = IOHelper.CheckPath(Path.GetDirectoryName(dir), "DataBase");
             //if (entity.Page != null)
             //    SaveConfig(entity.Page, path, checkState);
+
+            // ReSharper disable once AssignNullToNotNullAttribute
             if (entity.DataTable != null)
                 SaveConfig(entity.DataTable, path, checkState);
         }

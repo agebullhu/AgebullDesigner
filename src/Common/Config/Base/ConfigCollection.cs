@@ -1,6 +1,9 @@
+using Agebull.EntityModel.Config;
 using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace Agebull.EntityModel
@@ -9,9 +12,80 @@ namespace Agebull.EntityModel
     ///     表示一个自动存储的列表对象
     /// </summary>
     public class ConfigCollection<TConfig> : NotificationList<TConfig>
-        where TConfig : NotificationObject, new()
+        where TConfig : ConfigBase, IChildrenConfig, new()
     {
+        public ConfigBase Parent { get; set; }
+
+        public ConfigCollection()
+        {
+
+        }
+
+        public ConfigCollection(ConfigBase parent)
+        {
+            Parent = parent;
+        }
+
+        /// <summary>
+        /// 遍历
+        /// </summary>
+        /// <typeparam name="TDest"></typeparam>
+        /// <returns></returns>
+        public void DoForeach<T>(Action<T> action, bool doAction)
+        {
+            foreach (var item in this)
+            {
+                item.Foreach(action, doAction);
+            }
+        }
+
+
+        /// <summary>
+        /// 遍历
+        /// </summary>
+        /// <typeparam name="TDest"></typeparam>
+        /// <returns></returns>
+        public void OnLoad(ConfigBase parent)
+        {
+            Parent = parent;
+            foreach (var item in this)
+            {
+                item.Parent = parent;
+                item.OnLoad();
+            }
+        }
+
         #region 属性修改
+
+        /// <summary>
+        ///     通过提供的参数引发 <see cref="E:System.Collections.ObjectModel.NotificationList`1.CollectionChanged" /> 事件。
+        /// </summary>
+        /// <param name="e">要引发事件的自变量。</param>
+        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            if (WorkContext.InLoding)
+                return;
+            if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                GlobalTrigger.OnLoad(Parent);
+                return;
+            }
+            if (e.NewItems != null)
+            {
+                foreach (var item in e.NewItems.OfType<TConfig>())
+                {
+                    if (Parent != null)
+                        item.Parent = Parent;
+                    GlobalTrigger.OnAdded(Parent, item);
+                    item.OnLoad();
+                }
+            }
+            if (e.OldItems == null)
+                return;
+            foreach (var item in e.OldItems)
+                GlobalTrigger.OnRemoved(Parent, item);
+            base.OnCollectionChanged(e);
+        }
 
         /// <summary>
         ///     发出属性修改事件
@@ -58,6 +132,7 @@ namespace Agebull.EntityModel
         }
 
         #endregion
+
         #region 状态修改事件
 
         /// <summary>

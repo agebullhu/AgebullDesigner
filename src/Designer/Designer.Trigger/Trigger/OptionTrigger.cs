@@ -3,29 +3,10 @@ using Agebull.EntityModel.Config;
 namespace Agebull.EntityModel.Designer
 {
     /// <summary>
-    /// TargetConfig触发器
+    /// Target触发器
     /// </summary>
-    public sealed class OptionTrigger : EventTrigger
+    public sealed class OptionTrigger : EventTrigger<ConfigDesignOption>
     {
-        /// <summary>
-        /// 构造
-        /// </summary>
-        public OptionTrigger()
-        {
-            TargetType = typeof(ConfigDesignOption);
-        }
-
-        /// <summary>
-        /// 当前对象
-        /// </summary>
-        public ConfigDesignOption Option => (ConfigDesignOption)Target;
-
-
-        /// <summary>
-        /// 当前对象
-        /// </summary>
-        public ConfigBase Config => Option?.Config;
-
         /// <summary>
         ///     发出属性修改前事件
         /// </summary>
@@ -37,7 +18,7 @@ namespace Agebull.EntityModel.Designer
             switch (property)
             {
                 case nameof(ConfigDesignOption.Key):
-                    GlobalConfig.RemoveConfig(Option);
+                    GlobalConfig.RemoveConfig(Target);
                     break;
             }
         }
@@ -51,11 +32,15 @@ namespace Agebull.EntityModel.Designer
             switch (property)
             {
                 case nameof(ConfigDesignOption.Key):
-                    GlobalConfig.AddConfig(Option);
+                    GlobalConfig.AddConfig(Target);
                     break;
                 case nameof(ConfigDesignOption.IsDiscard):
                 case nameof(ConfigDesignOption.IsDelete):
-                    GlobalConfig.RemoveConfig(Option);
+                    GlobalConfig.RemoveConfig(Target);
+                    break;
+                case nameof(ConfigDesignOption.IsModify):
+                    if (Target.IsModify && Target.Config != null)
+                        Target.Config.IsModify = true;
                     break;
             }
         }

@@ -187,7 +187,7 @@ namespace Agebull.EntityModel.Config
         /// 命令集合
         /// </summary>
         [DataMember, JsonProperty("_commands", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal NotificationList<UserCommandConfig> _commands;
+        internal ConfigCollection<UserCommandConfig> _commands;
 
         /// <summary>
         /// 命令集合
@@ -197,13 +197,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"扩展对象"), DisplayName(@"命令集合"), Description("命令集合,数据模型中可调用的命令")]
-        public NotificationList<UserCommandConfig> Commands
+        public ConfigCollection<UserCommandConfig> Commands
         {
             get
             {
                 if (_commands != null)
                     return _commands;
-                _commands = new NotificationList<UserCommandConfig>();
+                _commands = new ConfigCollection<UserCommandConfig>(this);
                 RaisePropertyChanged(nameof(Commands));
                 return _commands;
             }
@@ -213,6 +213,8 @@ namespace Agebull.EntityModel.Config
                     return;
                 BeforePropertyChanged(nameof(Commands), _commands, value);
                 _commands = value;
+                if (value != null)
+                    value.Parent = this;
                 OnPropertyChanged(nameof(Commands));
             }
         }

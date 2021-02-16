@@ -106,20 +106,20 @@ namespace Agebull.EntityModel.RobotCoder
             if (!string.IsNullOrWhiteSpace(entity.ModelBase))
                 EntityStruct(Project.Models.FirstOrDefault(p => p.Name == entity.ModelBase), codeStruct, codeConst, ref isFirst, ref idx);
 
-            var primary = table.Fields.FirstOrDefault(p => p.Property == entity.PrimaryColumn);
+            var primary = table.PrimaryField;
             if (primary != null)
             {
                 codeConst.Append(PropertyIndex(primary, ref idx));
                 PropertyStruct(codeStruct, primary, ref isFirst);
             }
 
-            foreach (var field in table.Fields.Where(p => p != primary).OrderBy(p => p.Index))
+            foreach (var field in table.Where(p => p != primary).OrderBy(p => p.Index))
             {
                 codeConst.Append(PropertyIndex(field, ref idx));
                 PropertyStruct(codeStruct, field, ref isFirst);
             }
 
-            foreach (var field in table.Fields.Where(p => !entity.PublishProperty.Any(pp => p == pp) && p != entity.PrimaryColumn).OrderBy(p => p.Index))
+            foreach (var field in table.Where(p => !entity.PublishProperty.Any(pp => p == pp) && p != entity.PrimaryColumn).OrderBy(p => p.Index))
             {
                 codeConst.Append(PropertyIndex(field, ref idx));
                 PropertyStruct(codeStruct, field, ref isFirst);

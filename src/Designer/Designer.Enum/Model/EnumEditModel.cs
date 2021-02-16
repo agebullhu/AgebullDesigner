@@ -38,8 +38,6 @@ namespace Agebull.EntityModel.Designer
             else
             {
                 StringBuilder sb = new StringBuilder();
-                if (Config.Items == null)
-                    Config.Items = new NotificationList<EnumItem>();
                 Items = Config.Items;
                 foreach (var item in Items.OrderBy(p => p.Number))
                 {

@@ -58,7 +58,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     字段
         /// </summary>
-        public NotificationList<FieldConfig> Columns { get; } = new ConfigCollection<FieldConfig>();
+        public NotificationList<FieldConfig> Columns { get; } = new NotificationList<FieldConfig>();
 
         #endregion
 

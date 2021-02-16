@@ -71,7 +71,7 @@ namespace Agebull.EntityModel.RobotCoder
                 return RemCode(property);
             }
 
-            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            var field = property.DataBaseField;
             var code = new List<string>();
             //var rule = DataRuleCode(property);
             //if(rule != null)
@@ -96,7 +96,7 @@ namespace Agebull.EntityModel.RobotCoder
         }
         public static string RemCode(IPropertyConfig property, bool simple = false, int space = 8)
         {
-            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            var field = property.DataBaseField;
             var code = new StringBuilder();
             code.AppendLine();
             code.Append(' ', space);

@@ -17,21 +17,22 @@ namespace Agebull.EntityModel
             get;
             set;
         }
-        /// <summary>
-        /// 触发器
-        /// </summary>
-        private static readonly List<Func<EventTrigger>> TriggerCreaters = new List<Func<EventTrigger>>();
 
         /// <summary>
         /// 触发器
         /// </summary>
-        private static readonly List<EventTrigger> Triggers = new List<EventTrigger>();
+        private static readonly List<Func<IEventTrigger>> TriggerCreaters = new List<Func<IEventTrigger>>();
+
+        /// <summary>
+        /// 触发器
+        /// </summary>
+        private static readonly List<IEventTrigger> Triggers = new List<IEventTrigger>();
 
         /// <summary>
         /// 注册触发器
         /// </summary>
         /// <typeparam name="TTrigger"></typeparam>
-        public static void RegistTrigger<TTrigger>() where TTrigger : EventTrigger, new()
+        public static void RegistTrigger<TTrigger>() where TTrigger : IEventTrigger, new()
         {
             TriggerCreaters.Add(() => new TTrigger());
             Triggers.Add(new TTrigger());
@@ -42,8 +43,8 @@ namespace Agebull.EntityModel
         /// </summary>
         public static void RegistTrigger(Type type)
         {
-            TriggerCreaters.Add(() => ReflectionExtend.Generate(type) as EventTrigger);
-            Triggers.Add(ReflectionExtend.Generate(type) as EventTrigger);
+            TriggerCreaters.Add(() => ReflectionExtend.Generate(type) as IEventTrigger);
+            Triggers.Add(ReflectionExtend.Generate(type) as IEventTrigger);
         }
 
         /// <summary>
@@ -62,7 +63,7 @@ namespace Agebull.EntityModel
         /// </summary>
         /// <param name="config"></param>
         /// <param name="property"></param>
-        public static void OnPropertyChanged(NotificationObject config, string property)
+        public static void OnPropertyChanged(object config, string property)
         {
             if (WorkContext.IsNoChangedNotify || config == null)
                 return;
@@ -87,7 +88,7 @@ namespace Agebull.EntityModel
         /// <param name="property">属性</param>
         /// <param name="oldValue">旧值</param>
         /// <param name="newValue">新值</param>
-        public static void BeforePropertyChanged(NotificationObject config, string property, object oldValue, object newValue)
+        public static void BeforePropertyChanged(object config, string property, object oldValue, object newValue)
         {
             if (WorkContext.IsNoChangedNotify || config == null)
                 return;
@@ -109,7 +110,7 @@ namespace Agebull.EntityModel
         /// 构造事件处理
         /// </summary>
         /// <param name="config"></param>
-        public static void OnLoad(NotificationObject config)
+        public static void OnLoad(object config)
         {
             if (config == null)
                 return;
@@ -131,7 +132,7 @@ namespace Agebull.EntityModel
         /// 构造事件处理
         /// </summary>
         /// <param name="config"></param>
-        public static void OnCtor(NotificationObject config)
+        public static void OnCtor(object config)
         {
             if (WorkContext.IsNoChangedNotify || config == null)
                 return;
@@ -142,11 +143,10 @@ namespace Agebull.EntityModel
         /// 构造事件处理
         /// </summary>
         /// <param name="config"></param>
-        public static void OnCreate(NotificationObject config)
+        public static void OnCreate(object config)
         {
             if (config == null)
                 return;
-            var type = config.GetType();
             var scope = NameEventScope.CreateScope(config, "Global", nameof(OnCreate));
             if (scope == null)
                 return;
@@ -154,20 +154,19 @@ namespace Agebull.EntityModel
             {
                 foreach (var trigger in Triggers)
                 {
-                    if (trigger.TargetType == null || trigger.TargetType == type || type.IsSubclassOf(trigger.TargetType))
+                    if (trigger.TargetType.IsFrientType(config))
                         trigger.OnCreate(config);
                 }
             }
-            if (WorkContext.IsNoChangedNotify)
-                return;
             OnLoad(config);
         }
+
         /// <summary>
         /// 加入事件处理
         /// </summary>
         /// <param name="config"></param>
         /// <param name="parent"></param>
-        public static void OnAdded(NotificationObject parent, NotificationObject config)
+        public static void OnAdded(object parent, object config)
         {
             if (config == null)
                 return;
@@ -176,20 +175,20 @@ namespace Agebull.EntityModel
                 return;
             using (scope)
             {
-                var type = config.GetType();
                 foreach (var trigger in Triggers)
                 {
-                    if (trigger.TargetType == null || trigger.TargetType == type || type.IsSubclassOf(trigger.TargetType))
+                    if (trigger.TargetType.IsFrientType(config))
                         trigger.OnAdded(config, config);
                 }
             }
+            OnLoad(config);
         }
         /// <summary>
         /// 删除事件处理
         /// </summary>
         /// <param name="config"></param>
         /// <param name="parent"></param>
-        public static void OnRemoved(NotificationObject parent, NotificationObject config)
+        public static void OnRemoved(object parent, object config)
         {
             if (config == null)
                 return;
@@ -198,10 +197,9 @@ namespace Agebull.EntityModel
                 return;
             using (scope)
             {
-                var type = config.GetType();
                 foreach (var trigger in Triggers)
                 {
-                    if (trigger.TargetType == null || trigger.TargetType == type || type.IsSubclassOf(trigger.TargetType))
+                    if (trigger.TargetType.IsFrientType(config))
                         trigger.OnRemoved(config, config);
                 }
             }
@@ -214,7 +212,7 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 开始代码生成
         /// </summary>
-        public static void OnCodeGeneratorBegin(NotificationObject config)
+        public static void OnCodeGeneratorBegin(object config)
         {
             if (config == null)
                 return;

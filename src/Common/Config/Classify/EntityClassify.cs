@@ -11,6 +11,9 @@ namespace Agebull.EntityModel.Config
     public partial class EntityClassify : IndependenceConfigBase, IChildrenConfig
     {
         ConfigBase IChildrenConfig.Parent { get => Project; set => Project = value as ProjectConfig; }
+
+        private ProjectConfig project;
+
         /// <summary>
         /// 上级
         /// </summary>
@@ -29,8 +32,7 @@ namespace Agebull.EntityModel.Config
         /// 子级
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        private ConfigCollection<EntityConfig> _items = new ConfigCollection<EntityConfig>();
-        private ProjectConfig project;
+        private ConfigCollection<EntityConfig> _items;
 
         /// <summary>
         /// 子级
@@ -38,7 +40,14 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore, Browsable(false)]
         public ConfigCollection<EntityConfig> Items
         {
-            get => _items;
+            get
+            {
+                if (_items != null)
+                    return _items;
+                _items = new ConfigCollection<EntityConfig>(this);
+                RaisePropertyChanged(nameof(Items));
+                return _items;
+            }
             set
             {
                 if (_items == value)
@@ -46,6 +55,8 @@ namespace Agebull.EntityModel.Config
                     return;
                 }
                 _items = value;
+                if (value != null)
+                    value.Parent = this;
                 RaisePropertyChanged(() => Items);
             }
         }

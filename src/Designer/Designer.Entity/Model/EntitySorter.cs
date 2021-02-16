@@ -23,8 +23,8 @@ namespace Agebull.EntityModel.Config
                 entity = value;
                 pk = Entity.Entity.PrimaryColumn;
                 pc = Entity.Entity.CaptionColumn;
-                columns = entity.Properties.Where(p => !p.IsDiscard && p != pc && p != pk).OrderBy(p => p.Index).ToList();
-                dcs = entity.Properties.Where(p => p.IsDiscard && p != pc && p != pk).OrderBy(p => p.Index).ToList();
+                columns = entity.Where(p => !p.IsDiscard && p != pc && p != pk).OrderBy(p => p.Index).ToList();
+                dcs = entity.Where(p => p.IsDiscard && p != pc && p != pk).OrderBy(p => p.Index).ToList();
             }
         }
 

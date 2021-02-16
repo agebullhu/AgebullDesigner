@@ -299,8 +299,8 @@ namespace {Project.NameSpace}.DataAccess
                 return "";
             var codeStruct = new StringBuilder();
             int idx = 0;
-            var primary = table.Fields.First(p => p.Property == entity.PrimaryColumn);
-            var last = table.Fields.Where(p => p.Property != primary && !p.NoStorage);
+            var primary = table.PrimaryField;
+            var last = table.Where(p => p != primary && !p.NoStorage);
             EntityProperty(codeStruct, entity, primary, ref idx, false);
             foreach (var property in last.Where(p => !p.Property.IsInterfaceField).OrderBy(p => p.Index))
             {

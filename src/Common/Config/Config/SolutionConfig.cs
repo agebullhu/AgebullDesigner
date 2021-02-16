@@ -214,7 +214,7 @@ namespace Agebull.EntityModel.Config
         /// 项目集合
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        internal NotificationList<ProjectConfig> _projects;
+        internal ConfigCollection<ProjectConfig> _projects;
 
         /// <summary>
         /// 项目集合
@@ -233,13 +233,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"对象集合"), DisplayName(@"项目集合"), Description("项目")]
-        public NotificationList<ProjectConfig> ProjectList
+        public ConfigCollection<ProjectConfig> ProjectList
         {
             get
             {
                 if (_projects != null)
                     return _projects;
-                _projects = new NotificationList<ProjectConfig>();
+                _projects = new ConfigCollection<ProjectConfig>(this);
                 RaisePropertyChanged(nameof(Projects));
                 return _projects;
             }
@@ -249,6 +249,8 @@ namespace Agebull.EntityModel.Config
                     return;
                 BeforePropertyChanged(nameof(Projects), _projects, value);
                 _projects = value;
+                if (value != null)
+                    value.Parent = this;
                 RaisePropertyChanged(nameof(Projects));
             }
         }

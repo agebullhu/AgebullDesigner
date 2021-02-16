@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -25,31 +26,11 @@ namespace Agebull.EntityModel.Config.V2021
         /// 取文件名
         /// </summary>
         /// <returns></returns>
-        public static string GetFileName(IEntityConfig entity) => entity?.Name?.Trim().Replace(' ', '_').Replace('>', '_').Replace('<', '_') + ".datatable.json";
+        public static string GetFileName(IEntityConfig entity) => $"{entity?.Name?.ToName('_')}.{entity?.Type}.datatable.json";
 
         #endregion
 
         #region 子级
-
-        /// <summary>
-        /// 标题字段
-        /// </summary>
-        /// <returns></returns>
-        public DataBaseFieldConfig CaptionField => Entity.CaptionColumn == null ? null : Fields.FirstOrDefault(p => p.Property == Entity.CaptionColumn);
-
-        /// <summary>
-        /// 主键字段
-        /// </summary>
-        /// <param name="property"></param>
-        /// <returns></returns>
-        public DataBaseFieldConfig PrimaryField => Fields.FirstOrDefault(p => p.Property == Entity.PrimaryColumn);
-
-        /// <summary>
-        /// 取字段
-        /// </summary>
-        /// <param name="property"></param>
-        /// <returns></returns>
-        public DataBaseFieldConfig this[IPropertyConfig property] => Fields.FirstOrDefault(p => p.Property == property);
 
         /// <summary>
         /// 字段列表
@@ -71,7 +52,7 @@ namespace Agebull.EntityModel.Config.V2021
             {
                 if (_fields != null)
                     return _fields;
-                _fields = new ConfigCollection<DataBaseFieldConfig>();
+                _fields = new ConfigCollection<DataBaseFieldConfig>(this);
                 RaisePropertyChanged(nameof(Fields));
                 return _fields;
             }
@@ -81,9 +62,31 @@ namespace Agebull.EntityModel.Config.V2021
                     return;
                 BeforePropertyChanged(nameof(Fields), _fields, value);
                 _fields = value;
+                if (value != null)
+                    value.Parent = this;
                 OnPropertyChanged(nameof(Fields));
             }
         }
+
+        /// <summary>
+        /// 标题字段
+        /// </summary>
+        /// <returns></returns>
+        public DataBaseFieldConfig CaptionField => Entity.CaptionColumn == null ? null : Fields.FirstOrDefault(p => p.Property == Entity.CaptionColumn || p.Property.Field == Entity.CaptionColumn.Field);
+
+        /// <summary>
+        /// 主键字段
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public DataBaseFieldConfig PrimaryField => Fields.FirstOrDefault(p => p.Property == Entity.PrimaryColumn || p.Property.Field == Entity.PrimaryColumn.Field);
+
+        /// <summary>
+        /// 取字段
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public DataBaseFieldConfig this[IPropertyConfig property] => Fields.FirstOrDefault(p => p.Property == property || p.Property.Field == property.Field);
 
         /// <summary>
         /// 查找实体
@@ -94,7 +97,6 @@ namespace Agebull.EntityModel.Config.V2021
         {
             if (!Fields.Any(p => p.Property == field.Property))
             {
-                field.Parent = this;
                 Fields.Add(field);
             }
         }
@@ -106,7 +108,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <returns></returns>
         public DataBaseFieldConfig Find(string name)
         {
-            return Fields.FirstOrDefault(p => name.IsMe(p.Property.Name));
+            return Fields.FirstOrDefault(p => name.IsMe(p.Name) || name.IsMe(p.DbFieldName));
         }
 
         /// <summary>
@@ -124,9 +126,38 @@ namespace Agebull.EntityModel.Config.V2021
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
+        public DataBaseFieldConfig[] FindAndToArray(Func<DataBaseFieldConfig, bool> filter)
+        {
+            return Fields.Where(filter).ToArray();
+        }
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public IEnumerable<DataBaseFieldConfig> Where(Func<DataBaseFieldConfig, bool> filter)
+        {
+            return Fields.Where(filter);
+        }
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool Any(Func<DataBaseFieldConfig, bool> filter)
+        {
+            return Fields.Any(filter);
+        }
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public DataBaseFieldConfig Find(params string[] names)
         {
-            return Fields.FirstOrDefault(p => names.Exist(p.Property.Name));
+            return Fields.FirstOrDefault(p => names.Exist(p.Name, p.DbFieldName));
         }
 
         /// <summary>
@@ -148,7 +179,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <returns></returns>
         public bool TryGet(out DataBaseFieldConfig field, params string[] names)
         {
-            field = Fields.FirstOrDefault(p => names.Exist(p.Property.Name));
+            field = Fields.FirstOrDefault(p => names.Exist(p.Name,p.DbFieldName));
             return field != null;
         }
 
@@ -159,45 +190,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <returns></returns>
         public bool Exist(params string[] names)
         {
-            return Fields.Any(p => names.Exist(p.Property.Name));
-        }
-
-        #endregion
-
-        #region 兼容性升级
-
-        /// <summary>
-        /// 兼容性升级
-        /// </summary>
-        public static DataTableConfig Create(IEntityConfig entity)
-        {
-            var table = new DataTableConfig
-            {
-                Entity = entity
-            };
-            table.Upgrade();
-            return table;
-        }
-        /// <summary>
-        /// 兼容性升级
-        /// </summary>
-        public void Upgrade()
-        {
-            var entity = Entity.Entity;
-            if (entity == null)
-                return;
-            Copy((ConfigBase)entity);
-            _fields = new ConfigCollection<DataBaseFieldConfig>();
-            foreach (var property in Entity.Properties)
-            {
-                var uiField = new DataBaseFieldConfig
-                {
-                    Property = property
-                };
-                uiField.Copy(property as SimpleConfig);
-                _fields.Add(uiField);
-                property.DataBaseField = uiField;
-            }
+            return Fields.Any(p => names.Exist(p.Name, p.DbFieldName));
         }
 
         #endregion
@@ -401,6 +394,32 @@ namespace Agebull.EntityModel.Config.V2021
         }
         #endregion 字段
 
+        #region 兼容性升级
+
+        /// <summary>
+        /// 兼容性升级
+        /// </summary>
+        public static DataTableConfig Create(IEntityConfig entity)
+        {
+            var table = new DataTableConfig
+            {
+                Entity = entity
+            };
+            table.Upgrade();
+            return table;
+        }
+        /// <summary>
+        /// 兼容性升级
+        /// </summary>
+        public void Upgrade()
+        {
+            if (Entity == null)
+                return;
+            Copy((ConfigBase)Entity);
+        }
+
+        #endregion
+
         #region 字段复制
 
         /// <summary>
@@ -433,11 +452,15 @@ namespace Agebull.EntityModel.Config.V2021
             IsQuery = dest.IsQuery;
             EnableDataEvent = dest.EnableDataEvent;
             IsLinkTable = dest.IsLinkTable;
-            _fields = new ConfigCollection<DataBaseFieldConfig>();
+            _fields = new ConfigCollection<DataBaseFieldConfig>(this);
             if (dest is DataTableConfig dataTable)
                 foreach (var field in dataTable.Fields)
                 {
-                    var uiField = new DataBaseFieldConfig();
+                    var uiField = new DataBaseFieldConfig
+                    {
+                        Parent = this,
+                        Property =field.Property
+                    };
                     uiField.Copy(field);
                     _fields.Add(uiField);
                 }
@@ -458,10 +481,14 @@ namespace Agebull.EntityModel.Config.V2021
             IsQuery = dest.IsQuery;
             IsLinkTable = dest.IsLinkTable;
             EnableDataEvent = dest.EnableDataEvent;
-            _fields = new ConfigCollection<DataBaseFieldConfig>();
+            _fields = new ConfigCollection<DataBaseFieldConfig>(this);
             foreach (var field in dest.Properties)
             {
-                var uiField = new DataBaseFieldConfig();
+                var uiField = new DataBaseFieldConfig
+                {
+                    Parent = this,
+                    Property = field
+                };
                 uiField.Copy(field);
                 _fields.Add(uiField);
             }
@@ -481,19 +508,19 @@ namespace Agebull.EntityModel.Config.V2021
             IsQuery = dest.IsQuery;
             EnableDataEvent = dest.EnableDataEvent;
             IsLinkTable = dest.IsLinkTable;
-            _fields = new ConfigCollection<DataBaseFieldConfig>();
+            _fields = new ConfigCollection<DataBaseFieldConfig>(this);
             foreach (var field in dest.Properties)
             {
-                var uiField = new DataBaseFieldConfig();
+                var uiField = new DataBaseFieldConfig
+                {
+                    Parent = this,
+                    Property = field
+                };
                 uiField.Copy(field);
                 _fields.Add(uiField);
             }
         }
 
-        public object Find(Func<object, object> p)
-        {
-            throw new NotImplementedException();
-        }
         #endregion 字段复制
 
     }

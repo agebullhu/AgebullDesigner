@@ -105,7 +105,7 @@ namespace Agebull.EntityModel.Designer
         /// <param name="entity"></param>
         public void SiteReadOnly(EntityConfig entity)
         {
-            foreach (var field in entity.Properties.Where(p => p.LinkTable == "Site" || p.LinkTable == "Organization"))
+            foreach (var field in entity.Where(p => p.LinkTable == "Site" || p.LinkTable == "Organization"))
             {
                 field.IsUserReadOnly = true;
             }
@@ -139,7 +139,7 @@ namespace Agebull.EntityModel.Designer
             foreach (var i in GlobalConfig.GetEntities(p => p.IsInterface))
             {
                 bool all = true;
-                foreach (var pro in i.Properties.Where(p => !p.IsDiscard && !p.IsDelete))
+                foreach (var pro in i.Where(p => !p.IsDiscard && !p.IsDelete))
                 {
                     if (entity.Properties.Any(p => p.ReferenceKey == pro.Key || string.Equals(p.DbFieldName, pro.DbFieldName, StringComparison.OrdinalIgnoreCase)))
                         continue;
@@ -150,7 +150,7 @@ namespace Agebull.EntityModel.Designer
                     continue;
                 if (!entity.DataInterfaces.Contains(i.Name))
                     entity.DataInterfaces.Add(i.Name);
-                foreach (var pro in i.Properties.Where(p => !p.IsDiscard && !p.IsDelete))
+                foreach (var pro in i.Where(p => !p.IsDiscard && !p.IsDelete))
                 {
                     var link = entity.Properties.First(p => p.ReferenceKey == pro.Key || string.Equals(p.DbFieldName, pro.DbFieldName, StringComparison.OrdinalIgnoreCase));
                     entity.Properties.Remove(link);
@@ -188,7 +188,7 @@ namespace Agebull.EntityModel.Designer
         /// <param name="entity"></param>
         public void ForeignKeyName(EntityConfig entity)
         {
-            foreach (var field in entity.Properties.Where(p => p.IsLinkKey))
+            foreach (var field in entity.Where(p => p.IsLinkKey))
             {
                 var foreign = entity.Project.Find(field.LinkTable);
                 field.Name = foreign.Name + "Id";
@@ -207,7 +207,7 @@ namespace Agebull.EntityModel.Designer
         /// <param name="entity"></param>
         public void ForeignKeyDbTypeSync(EntityConfig entity)
         {
-            foreach (var field in entity.Properties.Where(p => p.IsLinkKey))
+            foreach (var field in entity.Where(p => p.IsLinkKey))
             {
                 var foreign = entity.Project.Find(field.LinkTable);
                 field.CsType = foreign.PrimaryColumn.CsType;

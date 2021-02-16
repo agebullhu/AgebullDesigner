@@ -127,8 +127,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     Name = name,
                     Description = desc,
-                    Caption = column.Caption,
-                    Items = new ConfigCollection<EnumItem>()
+                    Caption = column.Caption
                 };
             }
             else

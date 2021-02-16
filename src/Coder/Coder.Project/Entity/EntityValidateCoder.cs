@@ -178,7 +178,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         private static void StringCheck(StringBuilder code, IPropertyConfig property)
         {
-            var field = property.Entity.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            var field = property.DataBaseField;
             if (!property.CanEmpty || property.IsRequired)
             {
                 code.Append($@"

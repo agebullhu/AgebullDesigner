@@ -8,10 +8,10 @@ namespace Agebull.EntityModel
     /// </summary>
     public class WorkModelScope : ScopeBase
     {
-        readonly WorkModel _workModel;
+        readonly WorkModel oldModel;
         WorkModelScope(WorkModel model)
         {
-            _workModel = WorkContext.WorkModel;
+            oldModel = WorkContext.WorkModel;
             WorkContext._workModel = model;
         }
         /// <summary>
@@ -27,7 +27,7 @@ namespace Agebull.EntityModel
         /// <inheritdoc />
         protected override void OnDispose()
         {
-            WorkContext._workModel = _workModel;
+            WorkContext._workModel = oldModel;
         }
 
     }

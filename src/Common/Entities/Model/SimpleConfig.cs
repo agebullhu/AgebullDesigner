@@ -6,25 +6,10 @@ using System.Runtime.Serialization;
 namespace Agebull.EntityModel.Config
 {
     /// <summary>
-    /// 属性配置
-    /// </summary>
-    public interface IKey
-    {
-        /// <summary>
-        /// 标识
-        /// </summary>
-        string Key
-        {
-            get;
-            set;
-        }
-    }
-
-    /// <summary>
     ///     配置基础
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public class SimpleConfig : NotificationObject, IKey
+    public class SimpleConfig : NotificationObject, ISimpleConfig
     {
         /// <summary>
         /// 标识
@@ -187,6 +172,11 @@ namespace Agebull.EntityModel.Config
                 Remark = dest.Remark;
                 CopyFrom(dest);
             }
+        }
+        void ISimpleConfig.CopyFrom(ISimpleConfig dest)
+        {
+            if (dest is SimpleConfig config)
+                CopyFrom(config);
         }
 
         /// <summary>

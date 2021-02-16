@@ -288,7 +288,7 @@ using Agebull.EntityModel.Interfaces;
             ExistProperties.TryAdd(Model.PrimaryField, Model.PrimaryField);
             foreach (var property in Columns.Where(p => p != PrimaryProperty).OrderBy(p => p.Index))
             {
-                var field = Model.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+                var field = property.DataBaseField;
                 if (field != null && field.DbInnerField)
                     DbInnerProperty(property, code);
                 else if (property.IsCompute)

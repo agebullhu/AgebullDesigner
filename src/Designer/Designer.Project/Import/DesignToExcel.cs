@@ -141,7 +141,7 @@ namespace Agebull.EntityModel.Designer
             row.CreateCell(i).SetCell("更新时间", labelCell);
 
 
-            var fields = entity.DataTable.Fields.Where(p => !p.IsReadonly).ToArray();
+            var fields = entity.DataTable.FindAndToArray(p => !p.IsReadonly);
             int line = 0;
             for (; line < fields.Length; line++)
             {

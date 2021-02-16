@@ -25,7 +25,7 @@ namespace Agebull.EntityModel.Config
                 property.UiRequired = false;
                 return;
             }
-            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            var field = property.DataBaseField;
             if (property.IsPrimaryKey && field.IsIdentity)
             {
                 property.NoneDetails = true;
@@ -86,7 +86,7 @@ namespace Agebull.EntityModel.Config
                     return;
             }
 
-            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            var field = property.DataBaseField;
             if (property.MulitLine)
             {
                 property.GridWidth = 3;
@@ -132,7 +132,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public void CheckFieldShow(IPropertyConfig property)
         {
-            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            var field = property.DataBaseField;
             if (property.IsPrimaryKey || field.IsLinkKey)
             {
                 property.GridDetails = true;
@@ -165,7 +165,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public void CheckKeyShow(IPropertyConfig property)
         {
-            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            var field = property.DataBaseField;
             if (property.IsPrimaryKey)
             {
                 property.NoneGrid = true;
@@ -194,7 +194,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         private static void RepairInputConfig(IPropertyConfig property)
         {
-            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            var field = property.DataBaseField;
             if (property.IsSystemField || property.IsCompute || field.IsIdentity)
             {
                 property.NoneDetails = true;
@@ -219,7 +219,7 @@ namespace Agebull.EntityModel.Config
                 property.ComboBoxUrl = null;
                 return;
             }
-            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            var field = property.DataBaseField;
             if (field.IsBlob && property.CsType == "string")
             {
                 property.MulitLine = true;
@@ -246,7 +246,7 @@ namespace Agebull.EntityModel.Config
                     property.InputType = "easyui-combobox";
                     property.ComboBoxUrl = null;
                     property.FormOption = "valueField:'id', textField:'text'";
-                    var title = property.Entity.DataTable.Fields.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
+                    var title = property.Parent.DataTable.Find(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
                     if (title != null)
                     {
                         property.NoneDetails = false;
@@ -284,7 +284,7 @@ namespace Agebull.EntityModel.Config
 
         private static void RepairListConfig(IPropertyConfig property)
         {
-            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            var field = property.DataBaseField;
             if (property.IsSystemField || field.IsIdentity)
             {
                 property.NoneGrid = true;
@@ -303,7 +303,7 @@ namespace Agebull.EntityModel.Config
                 return;
             }
 
-            var title = property.Entity.DataTable.Fields.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
+            var title = property.Parent.DataTable.CaptionField;
             if (title != null)
             {
                 property.NoneGrid = true;

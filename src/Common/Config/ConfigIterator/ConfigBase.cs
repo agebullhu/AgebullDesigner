@@ -198,6 +198,16 @@ namespace Agebull.EntityModel.Config
 
     partial class EntityConfigBase
     {
+        public override void OnLoad()
+        {
+            DataTable?.OnLoad();
+            //Page?.OnLoad();
+            base.OnLoad();
+        }
+
+    }
+    partial class EntityConfig
+    {
         /// <summary>
         /// 向下遍历
         /// </summary>
@@ -210,24 +220,14 @@ namespace Agebull.EntityModel.Config
 
             if (WorkContext.InCoderGenerating)
             {
-                IEntity.LastProperties.DoForeach(action, doAction);
+                LastProperties.DoForeach(action, doAction);
             }
             else
             {
-                IEntity.Properties.DoForeach(action, doAction);
+                Properties.DoForeach(action, doAction);
             }
-            IEntity.Commands.DoForeach(action, doAction);
+            Commands.DoForeach(action, doAction);
         }
-        public override void OnLoad()
-        {
-            DataTable?.OnLoad();
-            //Page?.OnLoad();
-            base.OnLoad();
-        }
-
-    }
-    partial class EntityConfig
-    {
         public override void OnLoad()
         {
             Properties.OnLoad(this);
@@ -237,8 +237,31 @@ namespace Agebull.EntityModel.Config
 
     partial class ModelConfig
     {
+        /// <summary>
+        /// 向下遍历
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        protected override void ForeachDown<T>(Action<T> action, bool doAction)
+        {
+            DataTable?.Foreach(action, doAction);
+            //Page?.Foreach(action, doAction);
+
+            if (WorkContext.InCoderGenerating)
+            {
+                LastProperties.DoForeach(action, doAction);
+            }
+            else
+            {
+                Properties.DoForeach(action, doAction);
+            }
+            Commands.DoForeach(action, doAction);
+            Releations.DoForeach(action, doAction);
+        }
         public override void OnLoad()
         {
+            Commands.OnLoad(this);
+            Releations.OnLoad(this);
             Properties.OnLoad(this);
             base.OnLoad();
         }

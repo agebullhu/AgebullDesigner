@@ -23,7 +23,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 自已
         /// </summary>
-        protected abstract IPropertyConfig Me { get; }
+        public abstract IPropertyConfig Me { get; }
 
         #region 兼容性
 

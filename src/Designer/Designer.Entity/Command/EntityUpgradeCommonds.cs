@@ -156,7 +156,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void IdentityToBigint(EntityConfig entity)
         {
-            foreach (var field in entity.Properties.Where(p => p.IsIdentity))
+            foreach (var field in entity.Where(p => p.IsIdentity))
             {
                 field.FieldType = "BIGINT";
                 field.DataType = "Int64";
@@ -178,7 +178,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void LinkKeyFirst(EntityConfig entity)
         {
-            foreach (var property in entity.Properties.Where(p => p.IsLinkKey))
+            foreach (var property in entity.Where(p => p.IsLinkKey))
             {
                 property.Index = 1;
             }
@@ -188,7 +188,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void LinkKeyLast(EntityConfig entity)
         {
-            foreach (var property in entity.Properties.Where(p => p.IsLinkKey))
+            foreach (var property in entity.Where(p => p.IsLinkKey))
             {
                 property.Index = 256;
             }
@@ -211,7 +211,7 @@ namespace Agebull.EntityModel.Designer
                 if (!property.IsLinkField)
                     continue;
                 var link = GlobalConfig.GetEntity(property.LinkTable);
-                var fi = link?.Properties.FirstOrDefault(p => p.Name == property.LinkField);
+                var fi = link?.Find(p => p.Name == property.LinkField);
                 if (fi == null)
                     continue;
                 if (property.IsLinkKey)

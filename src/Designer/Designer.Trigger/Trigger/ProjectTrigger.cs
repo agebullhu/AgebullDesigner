@@ -6,16 +6,16 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// 项目配置触发器
     /// </summary>
-    public sealed class ProjectTrigger : ParentConfigTrigger<ProjectConfig>
+    public sealed class ProjectTrigger : ConfigTriggerBase<ProjectConfig>
     {
         /// <summary>
         /// 载入事件处理
         /// </summary>
         protected override void OnLoad()
         {
-            TargetConfig.Entities.CollectionChanged += OnEntityCollectionChanged;
-            TargetConfig.Enums.CollectionChanged += OnEnumCollectionChanged;
-            TargetConfig.ApiItems.CollectionChanged += OnApiCollectionChanged;
+            Target.Entities.CollectionChanged += OnEntityCollectionChanged;
+            Target.Enums.CollectionChanged += OnEnumCollectionChanged;
+            Target.ApiItems.CollectionChanged += OnApiCollectionChanged;
         }
 
         /// <summary>

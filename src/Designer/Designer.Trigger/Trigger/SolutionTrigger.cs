@@ -7,7 +7,7 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// 解决方案配置触发器
     /// </summary>
-    public sealed class SolutionTrigger : ParentConfigTrigger<SolutionConfig>
+    public sealed class SolutionTrigger : ConfigTriggerBase<SolutionConfig>
     {
         /// <summary>
         /// 载入事件处理
@@ -16,16 +16,14 @@ namespace Agebull.EntityModel.Designer
         {
             SolutionModel model = new SolutionModel
             {
-                Solution = TargetConfig
+                Solution = Target
             };
 
             model.RepairByLoaded();
             model.ResetStatus();
             model.OnSolutionLoad();
 
-            TargetConfig.ProjectList.CollectionChanged += ConfigCollectionChanged;
-
-            foreach (var project in TargetConfig.Projects)
+            foreach (var project in Target.Projects)
             {
                 project.OnLoad();
             }
@@ -41,31 +39,19 @@ namespace Agebull.EntityModel.Designer
         {
             switch (property)
             {
-                case nameof(TargetConfig.IdDataType):
-                    TargetConfig.Foreach<FieldConfig>(p =>
+                case nameof(Target.IdDataType):
+                    Target.Foreach<FieldConfig>(p =>
                     {
                         if (p.IsPrimaryKey || p.IsLinkField)
-                            p.DataType = TargetConfig.IdDataType;
+                            p.DataType = Target.IdDataType;
                     });
                     break;
-                case nameof(TargetConfig.UserIdDataType):
-                    TargetConfig.Foreach<FieldConfig>(p =>
+                case nameof(Target.UserIdDataType):
+                    Target.Foreach<FieldConfig>(p =>
                     {
                         if (p.IsUserId)
-                            p.DataType = TargetConfig.UserIdDataType;
+                            p.DataType = Target.UserIdDataType;
                     });
-                    break;
-                case nameof(TargetConfig.Entities):
-                    TargetConfig.EntityList.CollectionChanged += EntitiesCollectionChanged;
-                    break;
-                case nameof(TargetConfig.Projects):
-                    TargetConfig.ProjectList.CollectionChanged += ConfigCollectionChanged;
-                    break;
-                case nameof(TargetConfig.ApiItems):
-                    TargetConfig.ApiList.CollectionChanged += ConfigCollectionChanged;
-                    break;
-                case nameof(TargetConfig.Enums):
-                    TargetConfig.EnumList.CollectionChanged += ConfigCollectionChanged;
                     break;
             }
         }
@@ -80,79 +66,14 @@ namespace Agebull.EntityModel.Designer
         {
             switch (property)
             {
-                case nameof(TargetConfig.Entities):
-                    if (oldValue != null)
-                        ((INotifyCollectionChanged)oldValue).CollectionChanged -= EntitiesCollectionChanged;
-                    break;
-                case nameof(TargetConfig.Projects):
-                    if (oldValue != null)
-                        ((INotifyCollectionChanged)oldValue).CollectionChanged -= ConfigCollectionChanged;
-                    break;
-                case nameof(TargetConfig.ApiItems):
-                    if (oldValue != null)
-                        ((INotifyCollectionChanged)oldValue).CollectionChanged -= ConfigCollectionChanged;
-                    break;
-                case nameof(TargetConfig.Enums):
-                    if (oldValue != null)
-                        ((INotifyCollectionChanged)oldValue).CollectionChanged -= ConfigCollectionChanged;
-                    break;
-                case nameof(TargetConfig.RootPath):
+                case nameof(Target.RootPath):
                     SolutionModel model = new SolutionModel
                     {
-                        Solution = TargetConfig
+                        Solution = Target
                     };
                     model.CheckProjectPath((string)oldValue, (string)newValue);
                     break;
             }
         }
-
-        private void ConfigCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-                OnLoad(TargetConfig);
-                return;
-            }
-            if (e.NewItems != null)
-            {
-                foreach (ConfigBase item in e.NewItems)
-                    GlobalTrigger.OnAdded(TargetConfig, item);
-            }
-            if (e.OldItems == null)
-                return;
-            foreach (ConfigBase item in e.OldItems)
-                GlobalTrigger.OnRemoved(TargetConfig, item);
-        }
-
-        private void EntitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-                foreach (var item in TargetConfig.Entities)
-                {
-                    item.Project.Remove(item);
-                    GlobalTrigger.OnRemoved(TargetConfig, item);
-                }
-                foreach (var item in TargetConfig.Entities)
-                {
-                    GlobalTrigger.OnAdded(TargetConfig, item);
-                }
-                return;
-            }
-            if (e.NewItems != null)
-                foreach (EntityConfig item in e.NewItems)
-                {
-                    GlobalTrigger.OnAdded(TargetConfig, item);
-                }
-            if (e.OldItems == null)
-                return;
-            foreach (EntityConfig item in e.OldItems)
-            {
-                item.Project.Remove(item);
-                GlobalTrigger.OnRemoved(TargetConfig, item);
-            }
-        }
-
-
     }
 }

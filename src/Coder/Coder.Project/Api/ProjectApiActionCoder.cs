@@ -192,7 +192,7 @@ namespace {NameSpace}.WebApi
             var code = new StringBuilder();
             if (!Model.EnableDataBase)
                 return "";
-            var fields = Model.DataTable.Fields.Where(p => !p.NoStorage && p.Property.CanUserQuery);
+            var fields = Model.DataTable.Where(p => !p.NoStorage && p.Property.CanUserQuery);
             code.Append(@"
             if (RequestArgumentConvert.TryGet(""_value_"", out string _value_)  && !string.IsNullOrEmpty(_value_))
             {
@@ -493,7 +493,7 @@ namespace {NameSpace}.WebApi
             //{group.Key ?? "ÆÕÍ¨×Ö¶Î"}");
                 foreach (var pro in group.OrderBy(p => p.Index))
                 {
-                    var field = model.DataTable.Fields.FirstOrDefault(p => p.Property == pro);
+                    var field = pro.DataBaseField;
                     if (pro == model.PrimaryColumn)
                     {
                         continue;

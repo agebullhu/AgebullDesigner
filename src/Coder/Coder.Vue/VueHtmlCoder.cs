@@ -310,11 +310,11 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         <template slot-scope='props'>");
             foreach (var property in details)
             {
-                var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+                var field = property.DataBaseField;
                 var caption = property.Caption;
                 if (field.IsLinkKey)
                 {
-                    var friend = entity.DataTable.Fields.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
+                    var friend = entity.DataTable.Find(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
                     if (friend != null)
                         caption = friend.Property.Caption;
                 }
@@ -608,7 +608,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             code.Append($@"
 <div class='region-body'>
     <el-form ref='queryForm' :model='query' label-width='100px' label-position='left' @submit.native.prevent>");
-            foreach (var property in Model.Properties.Where(p => p.CanUserQuery).ToArray())
+            foreach (var property in Model.Where(p => p.CanUserQuery).ToArray())
             {
                 FormField(code, "query", false, property, false, 2);
             }
@@ -630,8 +630,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 return null;
             }
             StringBuilder quButton = new StringBuilder();
-            var properties = Model.DataTable.Fields.Where(p => p.Property.CanUserQuery && p.Property.UserSee &&
-                !p.NoStorage && !p.IsLinkKey && !p.Property.IsPrimaryKey);
+            var fields = Model.DataTable.FindAndToArray(p => p.Property.CanUserQuery && p.Property.UserSee && !p.NoStorage && !p.IsLinkKey && !p.Property.IsPrimaryKey);
             //if (Entity.Interfaces.Contains("IStateData"))
             //{
             //    quButton.Append(satateQuery);
@@ -645,10 +644,10 @@ namespace Agebull.EntityModel.RobotCoder.VUE
     <el-input placeholder='ÇëÊäÈëËÑË÷ÄÚÈÝ' v-model='list.keyWords' class='input-with-select' clearable>
         <el-select v-model='list.field' slot='prepend' placeholder='Ñ¡Ôñ×Ö¶Î' style='width: 160px;'>
             <el-option value='_any_' label='Ä£ºý²éÑ¯'></el-option>");
-            foreach (var property in properties)
+            foreach (var field in fields)
             {
                 quButton.Append($@"
-                <el-option value='{property.Property.JsonName}' label='{property.Caption}'></el-option>");
+                <el-option value='{field.Property.JsonName}' label='{field.Caption}'></el-option>");
             }
             quButton.Append(@"
             </el-select>
@@ -754,7 +753,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                     code.Append(property.IsUserReadOnly ? " readonly" : " :readonly='form.readonly'");
                 }
             }
-            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            var field = property.DataBaseField;
             if (property.EnumConfig != null)
             {
                 code.Append($@"
@@ -823,7 +822,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
         static string Formater(IPropertyConfig property)
         {
-            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            var field = property.DataBaseField;
             if (property.DataFormater != null)
             {
                 return $" | {property.DataFormater}";

@@ -19,7 +19,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         protected override string OrderbyFields()
         {
-            var field = Model.DataTable.Fields.FirstOrDefault(p => p.Name == Model.OrderField);
+            var field = Model.DataTable.Find(p => p.Name == Model.OrderField);
             if (field == null)
                 return null;
             return Model is ModelConfig model
@@ -40,12 +40,12 @@ namespace Agebull.EntityModel.RobotCoder
                         : releation.PrimaryEntity;
 
                     var outField = releation.PrimaryEntity == model.Entity
-                        ? entity.Properties.FirstOrDefault(p => p.Name == releation.ForeignKey)
+                        ? entity.Find(p => p.Name == releation.ForeignKey)
                         : entity.PrimaryColumn;
 
                     var inField = releation.PrimaryEntity == model.Entity
-                        ? model.DataTable.Fields.FirstOrDefault(p => p == Model.PrimaryColumn)
-                        : model.DataTable.Fields.FirstOrDefault(p => p.IsLinkKey && p.LinkTable == entity.Name);
+                        ? model.DataTable.PrimaryField
+                        : model.DataTable.Find(p => p.IsLinkKey && p.LinkTable == entity.Name);
 
 
                     code.AppendLine();
@@ -68,7 +68,7 @@ namespace Agebull.EntityModel.RobotCoder
                 if (Model.Interfaces.Contains("IStateData"))
                 {
                     var entity = GlobalConfig.GetEntity("IStateData");
-                    var field = entity.Properties.FirstOrDefault(p => p.Name == "DataState");
+                    var field = entity.Find(p => p.Name == "DataState");
                     return $"UPDATE `{Model.DataTable.SaveTableName}` SET `{field.DbFieldName}`=255 ";
                 }
             }
@@ -79,11 +79,11 @@ namespace Agebull.EntityModel.RobotCoder
         {
             if (Model.DataTable.IsQuery)
                 return null;
-            var columns = Model.DataTable.Fields.Where(p => p.Entity == Model.Entity &&
+            var columns = Model.DataTable.FindAndToArray(p => p.Entity == Model.Entity &&
                     !p.IsIdentity && !p.IsReadonly && !p.CustomWrite &&
                     !p.DbInnerField &&
                     !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)
-                ).ToArray();
+                );
 
             var fields = new StringBuilder();
 
@@ -106,11 +106,11 @@ namespace Agebull.EntityModel.RobotCoder
         {
             if (Model.DataTable.IsQuery)
                 return null;
-            var columns = Model.DataTable.Fields.Where(p => p.Entity == Model.Entity &&
+            var columns = Model.DataTable.FindAndToArray(p => p.Entity == Model.Entity &&
                     !p.IsIdentity && !p.IsReadonly && !p.CustomWrite &&
                     !p.DbInnerField &&
                     !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)
-                ).ToArray();
+                );
             var values = new StringBuilder();
             var isFirst = true;
             foreach (var property in columns)
@@ -134,11 +134,11 @@ namespace Agebull.EntityModel.RobotCoder
                 return null;
             var isFirst = true;
             var sql = new StringBuilder();
-            var columns = Model.DataTable.Fields.Where(p => p.Entity == Model.Entity &&
+            var columns = Model.DataTable.FindAndToArray(p => p.Entity == Model.Entity &&
                     !p.IsIdentity && !p.IsReadonly && !p.CustomWrite &&
                     !p.DbInnerField &&
                     !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)
-                ).ToArray();
+                );
 
             foreach (var property in columns)
             {
@@ -174,7 +174,7 @@ namespace Agebull.EntityModel.RobotCoder
         public void SetEntityParameter(DbCommand cmd,{Model.EntityName} entity)
         {{");
 
-            foreach (var field in Model.DataTable.Fields.Where(p => !p.DbInnerField).OrderBy(p => p.Index))
+            foreach (var field in Model.DataTable.FindAndToArray(p => !p.DbInnerField).OrderBy(p => p.Index))
             {
                 if (!string.IsNullOrWhiteSpace(field.Property.CustomType))
                 {
@@ -246,9 +246,9 @@ namespace Agebull.EntityModel.RobotCoder
         {{
             var reader = r as MySqlDataReader;");
             int idx = 0;
-            foreach (var property in Model.DataTable.Fields.Where(p => !p.DbInnerField && !p.NoStorage && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)))
+            foreach (var fieldConfig in Model.DataTable.FindAndToArray(p => !p.DbInnerField && !p.NoStorage && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)))
             {
-                SqlMomentCoder.FieldReadCode(property, code, idx++);
+                SqlMomentCoder.FieldReadCode(fieldConfig, code, idx++);
             }
             code.Append(@"
         }");
@@ -256,8 +256,7 @@ namespace Agebull.EntityModel.RobotCoder
             {
                 return code.ToString();
             }
-            var array = model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty
-                        && p.ModelType != ReleationModelType.Custom).ToArray();
+            var array = model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty && p.ModelType != ReleationModelType.Custom).ToArray();
             if (array.Length != 0)
             {
                 code.Append($@"
@@ -309,12 +308,12 @@ namespace Agebull.EntityModel.RobotCoder
                     : re.PrimaryEntity;
 
                 var outField = re.PrimaryEntity == model.Entity
-                    ? friend.Properties.FirstOrDefault(p => p.Name == re.ForeignKey)
+                    ? friend.Find(p => p.Name == re.ForeignKey)
                     : friend.PrimaryColumn;
 
                 var inField = re.PrimaryEntity == model.Entity
-                    ? Model.DataTable.Fields.FirstOrDefault(p => p == Model.PrimaryColumn)
-                    : Model.DataTable.Fields.FirstOrDefault(p => p.IsLinkKey && p.LinkTable == friend.Name);
+                    ? Model.DataTable.PrimaryField
+                    : Model.DataTable.Find(p => p.IsLinkKey && p.LinkTable == friend.Name);
 
                 code.Append($@"
             {{

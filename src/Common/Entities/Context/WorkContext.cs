@@ -20,7 +20,7 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 当前工作模式
         /// </summary>
-        [ThreadStatic] internal static WorkModel _workModel;
+        internal static WorkModel _workModel;
 
         /// <summary>
         /// 当前工作模式

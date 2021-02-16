@@ -101,7 +101,7 @@ namespace Agebull.EntityModel.Designer
             foreach (var copyColumn in columns)
             {
                 PropertyConfig newColumn = null;
-                newColumn = model.Properties.FirstOrDefault(p => p.Field == copyColumn);
+                newColumn = model.Find(p => p.Field == copyColumn);
                 if (newColumn == null)
                 {
                     newColumn = new PropertyConfig();

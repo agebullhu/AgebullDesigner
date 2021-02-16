@@ -91,7 +91,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// <returns></returns>
         void LinkFunctions()
         {
-            var array = Model.DataTable.Fields
+            var array = Model.DataTable
                 .Where(p => p.Property.UserSee && p.IsLinkKey)
                 .Select(p => GlobalConfig.GetEntity(p.LinkTable))
                 .Distinct().ToArray();
@@ -303,7 +303,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 code.Append(@"
         query : {");
                 bool first = true;
-                foreach (var property in Model.Properties.Where(p => p.CanUserQuery).ToArray())
+                foreach (var property in Model.Where(p => p.CanUserQuery).ToArray())
                 {
                     if (first) first = false;
                     else code.Append(',');
@@ -319,7 +319,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         clearQuery () {
             this.query={");
                 first = true;
-                foreach (var property in Model.Properties.Where(p => p.CanUserQuery).ToArray())
+                foreach (var property in Model.Where(p => p.CanUserQuery).ToArray())
                 {
                     if (first) first = false;
                     else code.Append(',');
@@ -340,7 +340,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 _page_: this.list.page,
                 _size_: this.list.pageSize");
 
-                var order = Model.Properties.FirstOrDefault(p => p.Name == Model.OrderField);
+                var order = Model.Find(p => p.Name == Model.OrderField);
                 if (order != null)
                     code.Append($@",
                 _sort_: '{order.JsonName}',
@@ -376,7 +376,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             };");
                 if (Model.FormQuery)
                 {
-                    foreach (var property in Model.Properties.Where(p => p.CanUserQuery).ToArray())
+                    foreach (var property in Model.Where(p => p.CanUserQuery).ToArray())
                     {
                         code.Append($@"
             if(this.query.{property.JsonName})

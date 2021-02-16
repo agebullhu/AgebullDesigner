@@ -217,8 +217,9 @@ namespace Agebull.EntityModel.Designer
                 entity.DataTable = null;
                 return;
             }
+            var path = Path.GetDirectoryName(directory);
             // ReSharper disable once AssignNullToNotNullAttribute
-            string fileName = Path.Combine(directory, "Extend", DataTableConfig.GetFileName(entity));
+            string fileName = Path.Combine(path, "DataBase", DataTableConfig.GetFileName(entity));
             if (!File.Exists(fileName))
             {
                 entity.DataTable = null;

@@ -1,4 +1,5 @@
 ﻿using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace Agebull.EntityModel.Designer
             Trace.WriteLine($"**********{entity.Caption ?? entity.Name}**********");
             try
             {
-                var fields = entity.Properties.Where(p =>
+                var fields = entity.Where(p =>
                     /*p.CsType == "long" && */p.Name.Length > 3 &&
                     string.Equals(p.Name.Substring(p.Name.Length - 2), "ID", StringComparison.OrdinalIgnoreCase)).ToArray();
                 foreach (var field in fields)
@@ -56,10 +57,10 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         internal static void CheckLinkType(EntityConfig entity)
         {
-            foreach (var field in entity.Properties.Where(p => p.Option.IsLink).ToArray())
+            foreach (var field in entity.Where(p => p.Option.IsLink).ToArray())
             {
                 var friend = GlobalConfig.GetEntity(field.LinkTable);
-                var link = friend?.Properties.FirstOrDefault(p =>
+                var link = friend?.Find(p =>
                     (string.Equals(p.Name, field.LinkField, StringComparison.OrdinalIgnoreCase)));
                 if (link == null)
                     continue;
@@ -100,13 +101,14 @@ namespace Agebull.EntityModel.Designer
         ///     检查
         /// </summary>
         /// <returns></returns>
-        internal static void DoLink(EntityConfig entity)
+        internal static void DoLink(EntityConfig e)
         {
+            DataTableConfig entity = e.DataTable;
             bool hase = false;
             Trace.WriteLine($"**********{entity.Caption ?? entity.Name}**********");
             try
             {
-                foreach (var field in entity.Properties.Where(p => p.IsLinkKey).ToArray())
+                foreach (var field in entity.Where(p => p.IsLinkKey).ToArray())
                 {
                     var re = GlobalConfig.GetEntity(field.LinkTable);
                     var caption = re?.CaptionColumn;
@@ -119,23 +121,29 @@ namespace Agebull.EntityModel.Designer
                     field.IsLinkKey = true;
                     field.Option.ReferenceConfig = re.PrimaryColumn;
                     field.Option.IsLink = true;
-                    field.IsCompute = false;
-                    var cf = entity.Properties.FirstOrDefault(p => (p.LinkField == caption.Name && p.LinkTable == re.Name) || (p.Name == caption.Name && p.NoStorage));
+                    field.IsReadonly = true;
+                    var cf = entity.Find(p => (p.LinkField == caption.Name && p.LinkTable == re.Name) || (p.Name == caption.Name && p.NoStorage));
                     if (cf == null)
                     {
-                        entity.Add(cf = new FieldConfig
+                        var property = new FieldConfig
                         {
                             Name = caption.Name
+                        };
+                        entity.Entity.Entity.Add(property);
+                        property.Copy(caption.Field);
+                        entity.Add(cf = new DataBaseFieldConfig
+                        {
+                            Parent = entity,
+                            Property = property
                         });
-                        cf.Copy(caption.Field);
-
+                        cf.Copy(property);
                     }
                     cf.NoStorage = false;
                     cf.Caption = $"{re.Caption}{caption.Caption}";
                     cf.Index = field.Index;
                     cf.LinkTable = re.Name;
                     cf.LinkField = caption.Name;
-                    cf.IsCompute = true;
+                    cf.IsReadonly = false;
                     cf.IsLinkCaption = true;
                     cf.IsLinkKey = false;
                     cf.Option.ReferenceConfig = caption.Field;
@@ -153,9 +161,9 @@ namespace Agebull.EntityModel.Designer
                 //    entity.ReadTableName = DataBaseHelper.ToViewName(entity);
                 //}
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Trace.WriteLine(e);
+                Trace.WriteLine(ex);
             }
         }
     }

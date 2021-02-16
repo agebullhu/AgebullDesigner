@@ -90,7 +90,7 @@ namespace Agebull.EntityModel.Config
         /// 枚举节点
         /// </summary>
         [DataMember, JsonProperty("_items", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal NotificationList<EnumItem> _items;
+        internal ConfigCollection<EnumItem> _items;
 
         /// <summary>
         /// 枚举节点
@@ -100,13 +100,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"枚举节点"), Description("枚举节点")]
-        public NotificationList<EnumItem> Items
+        public ConfigCollection<EnumItem> Items
         {
             get
             {
                 if (_items != null)
                     return _items;
-                _items = new NotificationList<EnumItem>();
+                _items = new ConfigCollection<EnumItem>(this);
                 RaisePropertyChanged(nameof(Items));
                 return _items;
             }
@@ -116,6 +116,8 @@ namespace Agebull.EntityModel.Config
                     return;
                 BeforePropertyChanged(nameof(Items), _items, value);
                 _items = value;
+                if (value != null)
+                    value.Parent = this;
                 OnPropertyChanged(nameof(Items));
             }
         }

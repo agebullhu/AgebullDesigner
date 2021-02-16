@@ -30,11 +30,6 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public ConfigBase Config { get; internal set; }
 
-        /// <summary>
-        ///     ÊÇ·ñ»ùÓÚParentConfigBase
-        /// </summary>
-        public bool IsParent => Config.GetType().IsSubclassOf(typeof(IndependenceConfigBase));
-
         private bool _isSelect;
 
         /// <summary>

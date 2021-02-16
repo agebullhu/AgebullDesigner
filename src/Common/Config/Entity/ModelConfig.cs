@@ -8,10 +8,12 @@
 *****************************************************/
 
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 
 namespace Agebull.EntityModel.Config
 {
@@ -22,6 +24,11 @@ namespace Agebull.EntityModel.Config
     public partial class ModelConfig : EntityConfigBase, IEntityConfig
     {
         #region 系统
+
+        /// <summary>
+        /// 类型
+        /// </summary>
+        public string Type => "model";
 
         /// <summary>
         /// 表示自己的后期实现
@@ -159,22 +166,22 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"主键字段"), Description("主键字段")]
         public PropertyConfig PrimaryColumn => WorkContext.InCoderGenerating
-            ? Properties.FirstOrDefault(p => p.Field.IsPrimaryKey && p.Field.Entity == Entity) ?? Properties.FirstOrDefault()
-            : Properties.FirstOrDefault(p => p.Field.IsPrimaryKey && p.Field.Entity == Entity);
+            ? Find(p => p.Field.IsPrimaryKey && p.Field.Entity == Entity) ?? Find()
+            : Find(p => p.Field.IsPrimaryKey && p.Field.Entity == Entity);
 
         /// <summary>
         /// 标题字段
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"标题字段"), Description("标题字段")]
-        public IPropertyConfig CaptionColumn => Properties.FirstOrDefault(p => p.IsCaption && p.Entity == Entity);
+        public IPropertyConfig CaptionColumn => Find(p => p.IsCaption && p.Entity == Entity);
 
         /// <summary>
         /// 标题字段
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"标题字段"), Description("标题字段")]
-        public IPropertyConfig ParentColumn => Properties.FirstOrDefault(p => p.IsParent && p.Entity == Entity);
+        public IPropertyConfig ParentColumn => Find(p => p.IsParent && p.Entity == Entity);
 
         /// <summary>
         /// 主键字段
@@ -550,7 +557,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_properties != null)
                     return _properties;
-                _properties = new ConfigCollection<PropertyConfig>();
+                _properties = new ConfigCollection<PropertyConfig>(this);
                 RaisePropertyChanged(nameof(Properties));
                 return _properties;
             }
@@ -560,12 +567,114 @@ namespace Agebull.EntityModel.Config
                     return;
                 BeforePropertyChanged(nameof(Properties), _properties, value);
                 _properties = value;
+                if (value != null)
+                    value.Parent = this;
                 OnPropertyChanged(nameof(Properties));
             }
         }
 
         IEnumerable<IPropertyConfig> IEntityConfig.Properties => Properties;
 
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public PropertyConfig Find(string name)
+        {
+            return Find(p =>
+                name.Equals(p.Name, StringComparison.OrdinalIgnoreCase) ||
+                name.Equals(p.DataBaseField?.DbFieldName, StringComparison.OrdinalIgnoreCase));
+        }
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public PropertyConfig Find(Func<PropertyConfig, bool> filter)
+        {
+            return Find(filter);
+        }
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public PropertyConfig Find(params string[] names)
+        {
+            return Find(p => names.Exist(p.Name, p.DataBaseField?.DbFieldName));
+        }
+
+        public bool Exist(Func<PropertyConfig, bool> filter)
+        {
+            return Properties.Any(filter);
+        }
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public IPropertyConfig[] FindLastAndToArray(Func<IPropertyConfig, bool> filter)
+        {
+            return LastProperties.Where(filter).ToArray();
+        }
+
+        public bool ExistLast(Func<IPropertyConfig, bool> filter)
+        {
+            return LastProperties.Any(filter);
+        }
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public IEnumerable<IPropertyConfig> WhereLast(Func<IPropertyConfig, bool> filter)
+        {
+            return LastProperties.Where(filter);
+        }
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public PropertyConfig[] FindAndToArray(Func<PropertyConfig, bool> filter)
+        {
+            return Where(filter).ToArray();
+        }
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public IEnumerable<PropertyConfig> Where(Func<PropertyConfig, bool> filter)
+        {
+            return Where(filter);
+        }
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool TryGet(out PropertyConfig field, params string[] names)
+        {
+            field = Find(p => names.Exist(p.Name, p.DataBaseField?.DbFieldName));
+            return field != null;
+        }
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool Exist(params string[] names)
+        {
+            return Properties.Any(p => names.Exist(p.Name, p.DataBaseField?.DbFieldName));
+        }
         #endregion
 
         #region 数据库

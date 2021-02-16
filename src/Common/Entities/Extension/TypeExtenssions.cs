@@ -134,5 +134,29 @@ namespace Agebull.EntityModel
                 self.Add(item);
             return self;
         }
+        /// <summary>
+        /// 是否关联类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public static bool IsFrientType(this Type type,Type target)
+        {
+            return type == null || target == type || type.IsSubclassOf(target) || type.IsSupperInterface(target);
+        }
+
+        /// <summary>
+        /// 是否关联类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static bool IsFrientType(this Type type, object obj)
+        {
+            if (obj == null)
+                return false;
+            var target = obj.GetType();
+            return type == null || target == type || type.IsSubclassOf(target) || type.IsSupperInterface(target);
+        }
     }
 }

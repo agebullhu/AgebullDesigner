@@ -332,7 +332,7 @@ namespace Agebull.EntityModel.Designer
                 }
                 bool interFace = pro.Name.Contains('.');
                 var name = interFace ? pro.Name.Split('(')[0].Split('.').Last() : pro.Name;
-                var col = entity.Properties.FirstOrDefault(p => string.Equals(name, p.Name, StringComparison.OrdinalIgnoreCase));
+                var col = entity.Find(p => string.Equals(name, p.Name, StringComparison.OrdinalIgnoreCase));
                 if (col == null)
                 {
                     entity.Add(col = new FieldConfig
@@ -358,7 +358,7 @@ namespace Agebull.EntityModel.Designer
                     continue;
                 }
                 string name = field.Name.Trim('_');
-                var col = entity.Properties.FirstOrDefault(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
+                var col = entity.Find(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
                 if (col == null)
                 {
                     entity.Add(col = new FieldConfig

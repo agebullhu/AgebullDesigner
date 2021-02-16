@@ -61,7 +61,7 @@ namespace {Project.NameSpace}.DataAccess
 
         protected string Code()
         {
-            var primary = Model.DataTable.Fields.FirstOrDefault(p => p.Property == Model.PrimaryColumn);
+            var primary = Model.DataTable.PrimaryField;
             return $@"#region
 using System;
 using System.Collections.Generic;
@@ -292,8 +292,8 @@ namespace {Project.NameSpace}.DataAccess
             //}
             var code = new StringBuilder();
             var table = model.DataTable;
-            var primary = table.Fields.First(p => p.Property == model.PrimaryColumn);
-            var last = table.Fields.Where(p => p != primary && !p.NoStorage);
+            var primary = table.PrimaryField;
+            var last = table.Where(p => p != primary && !p.NoStorage);
             properties.Add(DataBaseBuilder.EntityProperty(code, model, primary, ref idx, false));
             foreach (var property in last.Where(p => !p.Property.IsInterfaceField).OrderBy(p => p.Index))
             {
@@ -342,7 +342,7 @@ namespace {Project.NameSpace}.DataAccess
             switch (property.ToLower()) 
             {{");
 
-            foreach (var field in Model.DataTable.Fields.Where(p => p.Property.CanGet))
+            foreach (var field in Model.DataTable.FindAndToArray(p => p.Property.CanGet))
             {
                 var names = field.Property.GetAliasPropertys().Select(p => p.ToLower()).ToList();
                 var name = field.Name.ToLower();
@@ -381,7 +381,7 @@ namespace {Project.NameSpace}.DataAccess
             switch(property.Trim().ToLower())
             {{");
 
-            foreach (var field in Model.DataTable.Fields.Where(p => p.Property.CanSet))
+            foreach (var field in Model.DataTable.FindAndToArray(p => p.Property.CanSet))
             {
                 var names = field.Property.GetAliasPropertys().Select(p => p.ToLower()).ToList();
 

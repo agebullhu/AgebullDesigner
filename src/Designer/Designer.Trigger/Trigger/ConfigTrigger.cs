@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace Agebull.EntityModel.Designer
 {
     /// <summary>
-    /// TargetConfig触发器
+    /// Target触发器
     /// </summary>
     public sealed class ConfigTrigger : ConfigTriggerBase<ConfigBase>
     {
@@ -18,25 +18,17 @@ namespace Agebull.EntityModel.Designer
         {
             Trace.WriteLineIf(SolutionConfig.Current.DetailTrace,
                 $"[{oldValue}] => [{newValue}]",
-                $"属性修改({Target.GetType().Name }) : {TargetConfig.Name}.{property}");
+                $"属性修改({Target.GetType().Name }) : {Target.Name}.{property}");
             switch (property)
             {
-                case nameof(TargetConfig.Name):
-                    var option = TargetConfig.Option;
+                case nameof(Target.Name):
+                    var option = Target.Option;
                     var now = (string)newValue;
                     if (!string.IsNullOrWhiteSpace(now) && !option.OldNames.Contains(now) && now != "NewField")
                         option.OldNames.Add(now);
                     option.RaisePropertyChanged(nameof(option.NameHistory));
                     break;
             }
-        }
-
-        /// <summary>
-        /// 属性事件处理
-        /// </summary>
-        /// <param name="property"></param>
-        protected override void OnPropertyChangedInner(string property)
-        {
         }
     }
 }

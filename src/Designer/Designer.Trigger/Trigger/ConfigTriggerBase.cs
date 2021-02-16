@@ -3,24 +3,11 @@ using Agebull.EntityModel.Config;
 namespace Agebull.EntityModel.Designer
 {
     /// <summary>
-    /// TargetConfig触发器
+    /// Target触发器
     /// </summary>
-    public abstract class ConfigTriggerBase<TConfig> : EventTrigger
+    public class ConfigTriggerBase<TConfig> : EventTrigger<TConfig>
         where TConfig : ConfigBase
     {
-        /// <summary>
-        /// 构造
-        /// </summary>
-        protected ConfigTriggerBase()
-        {
-            TargetType = typeof(TConfig);
-        }
-
-        /// <summary>
-        /// 当前对象
-        /// </summary>
-        public TConfig TargetConfig => (TConfig)Target;
-
         /// <summary>
         ///     发出属性修改前事件
         /// </summary>
@@ -29,7 +16,7 @@ namespace Agebull.EntityModel.Designer
         /// <param name="newValue">新值</param>
         protected sealed override void BeforePropertyChanged(string property, object oldValue, object newValue)
         {
-            if (TargetConfig.Option.IsReadonly)
+            if (Target.Option.IsReadonly)
                 return;
             BeforePropertyChangedInner(property, oldValue, newValue);
         }
@@ -40,7 +27,7 @@ namespace Agebull.EntityModel.Designer
         /// <param name="property">属性</param>
         /// <param name="oldValue">旧值</param>
         /// <param name="newValue">新值</param>
-        protected abstract void BeforePropertyChangedInner(string property, object oldValue, object newValue);
+        protected virtual void BeforePropertyChangedInner(string property, object oldValue, object newValue) { }
 
         /// <summary>
         /// 属性事件处理
@@ -48,7 +35,7 @@ namespace Agebull.EntityModel.Designer
         /// <param name="property"></param>
         protected sealed override void OnPropertyChanged(string property)
         {
-            if (TargetConfig.Option.IsReadonly)
+            if (Target.Option.IsReadonly)
                 return;
             OnPropertyChangedInner(property);
         }
@@ -57,33 +44,6 @@ namespace Agebull.EntityModel.Designer
         /// 属性事件处理
         /// </summary>
         /// <param name="property"></param>
-        protected abstract void OnPropertyChangedInner(string property);
-    }
-
-    /// <summary>
-    /// TargetConfig触发器
-    /// </summary>
-    public abstract class ConfigBaseTriggerEx<TConfig> : ConfigTriggerBase<TConfig>
-        where TConfig : ConfigBase
-    {
-        /// <summary>
-        ///     发出属性修改前事件
-        /// </summary>
-        /// <param name="property">属性</param>
-        /// <param name="oldValue">旧值</param>
-        /// <param name="newValue">新值</param>
-        protected override void BeforePropertyChangedInner(string property, object oldValue, object newValue)
-        {
-
-        }
-
-        /// <summary>
-        /// 属性事件处理
-        /// </summary>
-        /// <param name="property"></param>
-        protected override void OnPropertyChangedInner(string property)
-        {
-
-        }
+        protected virtual void OnPropertyChangedInner(string property) { }
     }
 }

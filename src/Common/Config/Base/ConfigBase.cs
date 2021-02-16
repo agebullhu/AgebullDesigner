@@ -17,8 +17,8 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public ConfigBase()
         {
-            GlobalTrigger.OnCtor(this);
             Option.Config = this;
+            GlobalTrigger.OnCtor(this);
         }
 
         /// <summary>

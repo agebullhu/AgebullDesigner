@@ -1,7 +1,5 @@
 ﻿using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Config.V2021;
 using System.Collections.Specialized;
-using System.IO;
 using System.Linq;
 
 namespace Agebull.EntityModel.Designer
@@ -10,77 +8,16 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// 实体配置触发器
     /// </summary>
-    public sealed class EntityBaseTrigger : ParentConfigTrigger<EntityConfigBase>
-    {
-        /// <summary>
-        /// 属性事件处理
-        /// </summary>
-        /// <param name="property"></param>
-        protected override void OnPropertyChangedInner(string property)
-        {
-            switch (property)
-            {
-                case nameof(TargetConfig.EnableDataBase):
-                    if (TargetConfig.EnableDataBase)
-                    {
-                        ConfigLoader.LoadDataTable(TargetConfig as IEntityConfig, Path.GetDirectoryName(TargetConfig.SaveFileName));
-                        if (TargetConfig.DataTable == null)
-                        {
-                            TargetConfig.DataTable = new DataTableConfig();
-                            TargetConfig.DataTable.Upgrade();
-                        }
-                    }
-                    else
-                    {
-                        ConfigWriter.SaveExtendConfig(TargetConfig, TargetConfig.DataTable);
-                        TargetConfig.DataTable = null;
-                    }
-                    break;
-                    /*case nameof(TargetConfig.EnableUI):
-                        if (TargetConfig.EnableUI)
-                        {
-                            ConfigLoader.LoadPage(TargetConfig as IEntityConfig, Path.GetDirectoryName(TargetConfig.SaveFileName));
-                            if (TargetConfig.Page == null)
-                            {
-                                TargetConfig.Page = new PageConfig();
-                                TargetConfig.Page.Upgrade();
-                            }
-                        }
-                        else
-                        {
-                            ConfigWriter.SaveExtendConfig(TargetConfig, TargetConfig.Page);
-                            TargetConfig.Page = null;
-                        }
-                        break;*/
-            }
-        }
-
-        /// <summary>
-        ///     发出属性修改前事件
-        /// </summary>
-        /// <param name="property">属性</param>
-        /// <param name="oldValue">旧值</param>
-        /// <param name="newValue">新值</param>
-        protected override void BeforePropertyChangedInner(string property, object oldValue, object newValue)
-        {
-
-        }
-
-    }
-
-    /// <summary>
-    /// 实体配置触发器
-    /// </summary>
-    public sealed class EntityTrigger : ParentConfigTrigger<EntityConfig>
+    public sealed class EntityTrigger : ConfigTriggerBase<EntityConfig>
     {
 
         protected override void OnLoad()
         {
-            foreach (var field in TargetConfig.Properties)
+            foreach (var field in Target.Properties)
             {
                 GlobalTrigger.OnLoad(field);
             }
-            TargetConfig.MaxIdentity = TargetConfig.Properties.Count == 0 ? 0 : TargetConfig.Properties.Max(p => p.Identity);
+            Target.MaxIdentity = Target.Properties.Count == 0 ? 0 : Target.Properties.Max(p => p.Identity);
         }
 
         /// <summary>
@@ -91,20 +28,20 @@ namespace Agebull.EntityModel.Designer
         {
             switch (property)
             {
-                case nameof(TargetConfig.Name):
-                    TargetConfig.RaisePropertyChanged(nameof(TargetConfig.DisplayName));
+                case nameof(Target.Name):
+                    Target.RaisePropertyChanged(nameof(Target.DisplayName));
                     break;
-                case nameof(TargetConfig.SaveTableName):
-                    TargetConfig.RaisePropertyChanged(nameof(TargetConfig.ReadTableName));
-                    TargetConfig.RaisePropertyChanged(nameof(TargetConfig.DisplayName));
-                    TargetConfig.RaisePropertyChanged(nameof(TargetConfig.SaveTableName));
+                case nameof(Target.SaveTableName):
+                    Target.RaisePropertyChanged(nameof(Target.ReadTableName));
+                    Target.RaisePropertyChanged(nameof(Target.DisplayName));
+                    Target.RaisePropertyChanged(nameof(Target.SaveTableName));
                     break;
-                case nameof(TargetConfig.ReadTableName):
-                    TargetConfig.RaisePropertyChanged(nameof(TargetConfig.SaveTableName));
-                    TargetConfig.RaisePropertyChanged(nameof(TargetConfig.DisplayName));
-                    TargetConfig.RaisePropertyChanged(nameof(TargetConfig.SaveTableName));
+                case nameof(Target.ReadTableName):
+                    Target.RaisePropertyChanged(nameof(Target.SaveTableName));
+                    Target.RaisePropertyChanged(nameof(Target.DisplayName));
+                    Target.RaisePropertyChanged(nameof(Target.SaveTableName));
                     break;
-                case nameof(TargetConfig.Classify):
+                case nameof(Target.Classify):
                     OnClassifyChanged();
                     break;
             }
@@ -120,20 +57,20 @@ namespace Agebull.EntityModel.Designer
         {
             switch (property)
             {
-                //case nameof(TargetConfig.Name):
-                //case nameof(TargetConfig.ReadTableName):
-                //case nameof(TargetConfig.SaveTableName):
+                //case nameof(Target.Name):
+                //case nameof(Target.ReadTableName):
+                //case nameof(Target.SaveTableName):
                 //    SyncLinkTable(oldValue, newValue);
                 //    break;
-                case nameof(TargetConfig.Classify):
-                    if (TargetConfig.Project == null || WorkContext.WorkModel == WorkModel.Repair)
+                case nameof(Target.Classify):
+                    if (Target.Project == null || WorkContext.WorkModel == WorkModel.Repair)
                         return;
-                    var oldCls = TargetConfig.Project.Classifies.FirstOrDefault(p => p.Name == (string)oldValue);
-                    oldCls?.Items.Remove(TargetConfig);
-                    var newoldCls = TargetConfig.Project.Classifies.FirstOrDefault(p => p.Name == (string)newValue);
-                    newoldCls?.Items.TryAdd(TargetConfig);
+                    var oldCls = Target.Project.Classifies.FirstOrDefault(p => p.Name == (string)oldValue);
+                    oldCls?.Items.Remove(Target);
+                    var newoldCls = Target.Project.Classifies.FirstOrDefault(p => p.Name == (string)newValue);
+                    newoldCls?.Items.TryAdd(Target);
                     break;
-                case nameof(TargetConfig.Properties):
+                case nameof(Target.Properties):
                     if (oldValue is NotificationList<FieldConfig> ops)
                         ops.CollectionChanged -= OnPropertiesCollectionChanged;
                     break;
@@ -161,16 +98,16 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         private void OnClassifyChanged()
         {
-            //TargetConfig.ExtendConfig.Clear();
-            //TargetConfig["File_Web_Index"] = $"{TargetConfig.Classify}\\{TargetConfig.PageFolder}\\Index.aspx";
-            //TargetConfig["File_Web_Action"] = $"{TargetConfig.Classify}\\{TargetConfig.PageFolder}\\Action.aspx";
-            //TargetConfig["File_Web_Form"] = $"{TargetConfig.Classify}\\{TargetConfig.PageFolder}\\Form.htm";
-            //TargetConfig["File_Web_Script"] = $"{TargetConfig.Classify}\\{TargetConfig.PageFolder}\\script.js";
-            //TargetConfig["File_Web_Item"] = $"{TargetConfig.Classify}\\{TargetConfig.PageFolder}\\Item.aspx";
-            //TargetConfig["File_Web_Details"] = $"{TargetConfig.Classify}\\{TargetConfig.PageFolder}\\Details.aspx";
+            //Target.ExtendConfig.Clear();
+            //Target["File_Web_Index"] = $"{Target.Classify}\\{Target.PageFolder}\\Index.aspx";
+            //Target["File_Web_Action"] = $"{Target.Classify}\\{Target.PageFolder}\\Action.aspx";
+            //Target["File_Web_Form"] = $"{Target.Classify}\\{Target.PageFolder}\\Form.htm";
+            //Target["File_Web_Script"] = $"{Target.Classify}\\{Target.PageFolder}\\script.js";
+            //Target["File_Web_Item"] = $"{Target.Classify}\\{Target.PageFolder}\\Item.aspx";
+            //Target["File_Web_Details"] = $"{Target.Classify}\\{Target.PageFolder}\\Details.aspx";
 
-            //TargetConfig["File_Model_Business"] = $"{TargetConfig.Classify}\\{TargetConfig.PageFolder}BusinessLogic";
-            //TargetConfig["File_Model_Action"] = $"Page\\{TargetConfig.Classify}\\{TargetConfig.PageFolder}\\{TargetConfig.Name}PageAction";
+            //Target["File_Model_Business"] = $"{Target.Classify}\\{Target.PageFolder}BusinessLogic";
+            //Target["File_Model_Action"] = $"Page\\{Target.Classify}\\{Target.PageFolder}\\{Target.Name}PageAction";
         }
 
         #region 字段同步

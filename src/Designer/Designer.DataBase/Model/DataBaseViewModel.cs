@@ -76,9 +76,9 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
         /// <param name="arg"></param>
         public void UpperHump(DataTableConfig dataTable)
         {
-            foreach (var property in dataTable.Fields)
+            foreach (var field in dataTable.Fields)
             {
-                property.DbFieldName = property.Name;
+                field.DbFieldName = field.Name;
             }
             if (string.IsNullOrWhiteSpace(dataTable.SaveTableName))
                 dataTable.SaveTableName = "tb_" + dataTable.Name;
@@ -90,9 +90,9 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
         /// <param name="arg"></param>
         internal void LowerHump(DataTableConfig dataTable)
         {
-            foreach (var property in dataTable.Fields)
+            foreach (var field in dataTable.Fields)
             {
-                property.DbFieldName = property.Name.ToLWord();
+                field.DbFieldName = field.Name.ToLWord();
             }
             if (string.IsNullOrWhiteSpace(dataTable.SaveTableName))
                 dataTable.SaveTableName = "tb_" + dataTable.Name.ToLWord();
@@ -104,9 +104,9 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
         /// <param name="arg"></param>
         internal void Underlined(DataTableConfig dataTable)
         {
-            foreach (var property in dataTable.Fields)
+            foreach (var field in dataTable.Fields)
             {
-                property.DbFieldName = NameHelper.ToLinkWordName(property.Name, "_", false);
+                field.DbFieldName = NameHelper.ToLinkWordName(field.Name, "_", false);
             }
             if (string.IsNullOrWhiteSpace(dataTable.SaveTableName))
                 dataTable.SaveTableName = "tb_" + NameHelper.ToLinkWordName(dataTable.Name, "_", false);

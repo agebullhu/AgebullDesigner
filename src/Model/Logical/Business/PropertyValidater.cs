@@ -111,7 +111,7 @@ namespace Agebull.EntityModel.Config
         //    var entity = CoderBase.GetEntity( Property.Parent.CppName);
         //    if (entity != null)
         //    {
-        //        friend = entity.Properties.FirstOrDefault(p => p.Name == Property.Name || Property.Alias?.Contains(p.Name) == true);
+        //        friend = entity.Find(p => p.Name == Property.Name || Property.Alias?.Contains(p.Name) == true);
 
         //    }
         //    if (friend != null)

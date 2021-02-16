@@ -20,20 +20,20 @@ namespace Agebull.EntityModel.Designer
         {
             var code = new StringBuilder();
             code.AppendFormat(@"INSERT INTO [dbo].[{0}]({1}", entity.ReadTableName, entity.PrimaryColumn.DbFieldName);
-            foreach (var col in entity.DataTable.Fields) //.Where(p => p.DbIndex > 0)
+            foreach (var field in entity.DataTable.Fields) //.Where(p => p.DbIndex > 0)
             {
-                if (col.IsPrimaryKey)
+                if (field.IsPrimaryKey)
                     continue;
-                code.AppendFormat(@",[{0}]", col.DbFieldName);
+                code.AppendFormat(@",[{0}]", field.DbFieldName);
             }
 
             code.AppendFormat(@")
 SELECT {0}", entity.PrimaryColumn.DbFieldName);
-            foreach (var col in entity.DataTable.Fields) //.Where(p => p.DbIndex > 0)
+            foreach (var field in entity.DataTable.Fields) //.Where(p => p.DbIndex > 0)
             {
-                if (col.IsPrimaryKey)
+                if (field.IsPrimaryKey)
                     continue;
-                code.AppendFormat(@",[{0}]", col.DbFieldName);
+                code.AppendFormat(@",[{0}]", field.DbFieldName);
             }
 
             code.AppendFormat(@" FROM {0}_OLD;", entity.ReadTableName);
@@ -115,9 +115,9 @@ SELECT {0}", entity.PrimaryColumn.DbFieldName);
             }
             else
             {
-                foreach (var col in entity.Properties)
+                foreach (var field in entity.Properties)
                 {
-                    col.NoStorage = true;
+                    field.NoStorage = true;
                 }
 
                 entity.ReadTableName = entity.SaveTableName = table;
@@ -147,54 +147,53 @@ SELECT {0}", entity.PrimaryColumn.DbFieldName);
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                var field = reader.GetString(0);
-                var col = entity.DataTable.Fields.FirstOrDefault(p =>
-                    string.Equals(p.Name, field, StringComparison.OrdinalIgnoreCase) ||
-                    string.Equals(p.DbFieldName, field, StringComparison.OrdinalIgnoreCase));
-                var property = col?.Property;
-                if (col == null)
+                var name = reader.GetString(0);
+                var field = entity.DataTable.Find(name);
+                var property = field?.Property;
+                if (field == null)
                 {
                     Trace.WriteLine($" ++++ {field}");
                     property = new FieldConfig
                     {
-                        Name = field,
-                        DbFieldName = field,
+                        Name = name,
+                        DbFieldName = name,
                         Entity = Entity
                     };
                     entity.Add(property as FieldConfig);
-                    entity.DataTable.Add(col = new DataBaseFieldConfig
+                    entity.DataTable.Add(field = new DataBaseFieldConfig
                     {
                         Property = property,
-                        Name = field,
-                        DbFieldName = field
+                        Name = name,
+                        DbFieldName = name
                     });
                     if (!reader.IsDBNull(7))
-                        col.Caption = col.Description = reader.GetString(7);
+                        field.Caption = field.Description = reader.GetString(7);
 
                 }
                 else
                 {
-                    Trace.WriteLine($" ==== {col.Name}");
-                    col.Option.ReferenceKey = null;
-                    col.Option.IsLink = false;
-                    col.DbFieldName = field;
+                    Trace.WriteLine($" ==== {field.Name}");
+                    field.Option.ReferenceKey = null;
+                    field.Option.IsLink = false;
+                    field.DbFieldName = name;
 
                 }
-                col.NoStorage = false;
-                col.FieldType = reader.GetString(1);
-                col.DbNullable = reader.GetBoolean(5);
-                col.Datalen = Convert.ToInt32(reader.GetValue(2));
-                col.Scale = Convert.ToInt32(reader.GetValue(3));
+                field.NoStorage = false;
+                field.FieldType = reader.GetString(1);
+                field.DbNullable = reader.GetBoolean(5);
+                field.Datalen = Convert.ToInt32(reader.GetValue(2));
+                field.Scale = Convert.ToInt32(reader.GetValue(3));
                 property.IsPrimaryKey = !reader.IsDBNull(8);
-                col.IsIdentity = reader.GetBoolean(9);
-                col.IsReadonly = reader.GetBoolean(10);
-                if (col.CsType == null)
-                    DataTypeHelper.ToStandardByDbType(col, col.FieldType);
+                property.DataBaseField = field;
+                field.IsIdentity = reader.GetBoolean(9);
+                field.IsReadonly = reader.GetBoolean(10);
+                if (field.CsType == null)
+                    DataTypeHelper.ToStandardByDbType(field, field.FieldType);
 
-                if (col.CsType != null && col.CsType.Equals("string", StringComparison.OrdinalIgnoreCase))
+                if (field.CsType != null && field.CsType.Equals("string", StringComparison.OrdinalIgnoreCase))
                 {
-                    col.Datalen = Convert.ToInt32(reader.GetValue(4));
-                    col.Scale = 0;
+                    field.Datalen = Convert.ToInt32(reader.GetValue(4));
+                    field.Scale = 0;
                 }
             }
         }
@@ -245,10 +244,10 @@ ORDER BY [Tables].object_id, [Columns].column_id";
         {
             foreach (var schema in Project.Entities)
             {
-                foreach (var col in schema.Properties)
+                foreach (var field in schema.Properties)
                 {
-                    if (col.CsType == "string")
-                        col.DbNullable = true;
+                    if (field.CsType == "string")
+                        field.DbNullable = true;
                 }
             }
 
@@ -264,13 +263,13 @@ ORDER BY [Tables].object_id, [Columns].column_id";
             foreach (var schema in Project.Entities)
             {
                 TraceMessage.DefaultTrace.Message2 = schema.ReadTableName;
-                foreach (var col in schema.Properties)
+                foreach (var field in schema.Properties)
                 {
-                    TraceMessage.DefaultTrace.Message3 = col.DbFieldName;
+                    TraceMessage.DefaultTrace.Message3 = field.DbFieldName;
 
                     var checkInt = true;
                     var isInt = true;
-                    switch (col.CsType.ToLower())
+                    switch (field.CsType.ToLower())
                     {
                         case "guid":
                         case "datetime":
@@ -282,13 +281,13 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                             break;
                     }
 
-                    var sql1 = $"SELECT [{col.DbFieldName}] FROM [{schema.ReadTableName}]";
+                    var sql1 = $"SELECT [{field.DbFieldName}] FROM [{schema.ReadTableName}]";
                     using (var cmd = new SqlCommand(sql1, connection))
                     {
                         using var reader = cmd.ExecuteReader();
                         while (reader.Read())
                         {
-                            if (reader.IsDBNull(0)) col.DbNullable = true;
+                            if (reader.IsDBNull(0)) field.DbNullable = true;
                             if (checkInt)
                             {
                                 var obj = reader[0].ToString();
@@ -300,20 +299,20 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                         }
                     }
 
-                    if (checkInt && !isInt && (col.CsType != "decimal" || col.FieldType != "decimal"))
+                    if (checkInt && !isInt && (field.CsType != "decimal" || field.FieldType != "decimal"))
                     {
                         TraceMessage.DefaultTrace.Track = "改变字段类型";
-                        col.CsType = "decimal";
-                        col.FieldType = "decimal";
+                        field.CsType = "decimal";
+                        field.FieldType = "decimal";
                     }
 
-                    //if (!col.DbNullable)
+                    //if (!field.DbNullable)
                     //{
-                    //    if (col.Nullable)
+                    //    if (field.Nullable)
                     //        TraceMessage.DefaultTrace.Track = "字段已改成不为空";
-                    //    col.Nullable = false;
+                    //    field.Nullable = false;
                     //}
-                    col.FieldType = SqlServerHelper.ToDataBaseType(col);
+                    field.FieldType = SqlServerHelper.ToDataBaseType(field);
                 }
             }
 

@@ -5,12 +5,12 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// ParentConfigBase´¥·¢Æ÷
     /// </summary>
-    public class ChildrenTrigger : EventTrigger
+    public sealed class ChildrenTrigger : EventTrigger<IChildrenConfig>
     {
         protected override void OnPropertyChanged(string property)
         {
-            if (Target.IsModify && Target is IChildrenConfig children && children.Parent != null)
-                children.Parent.IsModify = true;
+            if (Target.IsModify && Target.Parent != null)
+                Target.Parent.IsModify = true;
         }
     }
 }

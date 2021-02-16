@@ -112,7 +112,7 @@ namespace Agebull.EntityModel.Designer
                 foreach (XElement xProperty in xMap.Elements(ns + "Property"))
                 {
                     name = GetAttribute(xProperty, "Name");
-                    var column = entity.Properties.FirstOrDefault(p => p.DbFieldName == name);
+                    var column = entity.Find(p => p.DbFieldName == name);
                     if (column == null)
                     {
                         entity.Add(column = new FieldConfig
@@ -136,7 +136,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     XElement xPropertyRef = xProperty.Element(ns + "PropertyRef");
                     name = GetAttribute(xPropertyRef, "Name");
-                    var column = entity.Properties.FirstOrDefault(p => p.DbFieldName == name);
+                    var column = entity.Find(p => p.DbFieldName == name);
                     if (column != null)
                     {
                         column.IsPrimaryKey = true;
@@ -176,7 +176,7 @@ namespace Agebull.EntityModel.Designer
                 foreach (XElement xProperty in xMap.Elements(nsDef + "Property"))
                 {
                     name = GetAttribute(xProperty, "Name");
-                    var column = entity.Properties.FirstOrDefault(p => p.Name == name || p.DbFieldName == name);
+                    var column = entity.Find(p => p.Name == name || p.DbFieldName == name);
                     if (column == null)
                     {
                         entity.Add(column = new FieldConfig

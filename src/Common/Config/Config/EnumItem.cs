@@ -17,8 +17,39 @@ namespace Agebull.EntityModel.Config
     /// 枚举值节点
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public partial class EnumItem : ChildConfig<EnumConfig>
+    public partial class EnumItem : ConfigBase,IChildrenConfig
     {
+
+        ConfigBase IChildrenConfig.Parent { get => _parent; set => Parent = value as EnumConfig; }
+
+        /// <summary>
+        /// 上级
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        internal EnumConfig _parent;
+
+        /// <summary>
+        /// 上级
+        /// </summary>
+        /// <remark>
+        /// 上级
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"设计器支持"), DisplayName(@"上级"), Description("上级")]
+        public EnumConfig Parent
+        {
+            get => _parent;
+            set
+            {
+                if (_parent == value)
+                    return;
+                BeforePropertyChanged(nameof(Parent), _parent, value);
+                _parent = value;
+                OnPropertyChanged(nameof(Parent));
+                OnPropertyChanged("IChildrenConfig.Parent");
+            }
+        }
+
         #region 构造
 
         /// <summary>

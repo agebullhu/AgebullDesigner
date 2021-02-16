@@ -49,7 +49,7 @@ namespace Agebull.EntityModel.RobotCoder
             using (WorkModelScope.CreateScope(WorkModel.Repair))
                 foreach (var property in entity.Properties)
                 {
-                    var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+                    var field = property.DataBaseField;
 
                     if (property.CsType == "unit")
                         property.CsType = "long";
@@ -77,15 +77,15 @@ namespace Agebull.EntityModel.RobotCoder
         public static void ToStandardByDbType(IEntityConfig entity)
         {
             using (WorkModelScope.CreateScope(WorkModel.Repair))
-                foreach (var property in entity.DataTable.Fields)
+                foreach (var field in entity.DataTable.Fields)
                 {
-                    ToStandardByDbType(property);
+                    ToStandardByDbType(field);
                 }
         }
 
-        private static void ToStandardByDbType(DataBaseFieldConfig property)
+        private static void ToStandardByDbType(DataBaseFieldConfig field)
         {
-            ToStandardByDbType(property, property.FieldType);
+            ToStandardByDbType(field, field.FieldType);
         }
         public static void ToStandardByDbType(DataBaseFieldConfig field, string dbType)
         {
@@ -114,7 +114,7 @@ namespace Agebull.EntityModel.RobotCoder
         {
             if (property.Entity == null)
                 return;
-            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            var field = property.DataBaseField;
             if (field != null)
                 field.FieldType = property.Entity.Project.DbType switch
                 {
@@ -157,7 +157,7 @@ namespace Agebull.EntityModel.RobotCoder
             property.CsType = dataType.CSharp;
             property.CppType = dataType.Cpp;
 
-            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            var field = property.DataBaseField;
             if (field == null)
                 return;
             if (updataDataType)
@@ -194,7 +194,7 @@ namespace Agebull.EntityModel.RobotCoder
             var dataType = GlobalConfig.CurrentSolution.DataTypeMap.FirstOrDefault(p =>
                 string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
             bool updataDataType = dataType == null;
-            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            var field = property.DataBaseField;
 
             if (updataDataType)
             {

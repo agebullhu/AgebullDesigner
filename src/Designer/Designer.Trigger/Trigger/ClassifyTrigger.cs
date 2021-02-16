@@ -6,7 +6,7 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// 分类触发器
     /// </summary>
-    public sealed class ClassifyTrigger : ParentConfigTrigger<EntityClassify>
+    public sealed class ClassifyTrigger : ConfigTriggerBase<EntityClassify>
     {
         /// <summary>
         /// 属性事件处理
@@ -16,24 +16,14 @@ namespace Agebull.EntityModel.Designer
         {
             switch (property)
             {
-                case nameof(TargetConfig.Name):
+                case nameof(Target.Name):
                     using (WorkModelScope.CreateScope(WorkModel.Repair))
                     {
-                        foreach (var entity in TargetConfig.Items.ToArray())
-                            entity.Classify = TargetConfig.Name;
+                        foreach (var entity in Target.Items.ToArray())
+                            entity.Classify = Target.Name;
                     }
                     break;
             }
-        }
-
-        /// <summary>
-        ///     发出属性修改前事件
-        /// </summary>
-        /// <param name="property">属性</param>
-        /// <param name="oldValue">旧值</param>
-        /// <param name="newValue">新值</param>
-        protected override void BeforePropertyChangedInner(string property, object oldValue, object newValue)
-        {
         }
     }
 }

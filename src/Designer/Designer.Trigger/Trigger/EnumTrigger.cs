@@ -6,14 +6,14 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// 枚举配置触发器
     /// </summary>
-    public sealed class EnumTrigger : ParentConfigTrigger<EnumConfig>
+    public sealed class EnumTrigger : ConfigTriggerBase<EnumConfig>
     {
         protected override void OnLoad()
         {
-            TargetConfig.Option.IsReference = false;
-            TargetConfig.Option.IsLink = false;
-            TargetConfig.Option.ReferenceKey = null;
-            TargetConfig.Option.ReferenceConfig = null;
+            Target.Option.IsReference = false;
+            Target.Option.IsLink = false;
+            Target.Option.ReferenceKey = null;
+            Target.Option.ReferenceConfig = null;
         }
 
         protected override void BeforePropertyChangedInner(string property, object oldValue, object newValue)

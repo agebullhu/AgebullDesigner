@@ -726,7 +726,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 自已
         /// </summary>
-        protected sealed override IPropertyConfig Me => this;
+        public sealed override IPropertyConfig Me => this;
 
         /// <summary>
         /// 是否数据库索引

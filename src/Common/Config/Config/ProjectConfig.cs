@@ -24,7 +24,7 @@ namespace Agebull.EntityModel.Config
     /// 项目设置
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public partial class ProjectConfig : IndependenceConfigBase
+    public partial class ProjectConfig : IndependenceConfigBase,IChildrenConfig
     {
         #region 子级
 
@@ -48,7 +48,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_classifies != null)
                     return _classifies;
-                _classifies = new ConfigCollection<EntityClassify>();
+                _classifies = new ConfigCollection<EntityClassify>(this);
                 RaisePropertyChanged(nameof(Classifies));
                 return _classifies;
             }
@@ -58,6 +58,8 @@ namespace Agebull.EntityModel.Config
                     return;
                 BeforePropertyChanged(nameof(Classifies), _classifies, value);
                 _classifies = value;
+                if (value != null)
+                    value.Parent = this;
                 OnPropertyChanged(nameof(Classifies));
             }
         }
@@ -66,7 +68,7 @@ namespace Agebull.EntityModel.Config
         /// 模型集合
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        internal NotificationList<ModelConfig> _models;
+        internal ConfigCollection<ModelConfig> _models;
 
 
         /// <summary>
@@ -77,13 +79,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"子级"), DisplayName(@"模型集合"), Description("模型集合")]
-        public NotificationList<ModelConfig> Models
+        public ConfigCollection<ModelConfig> Models
         {
             get
             {
                 if (_models != null)
                     return _models;
-                _models = new NotificationList<ModelConfig>();
+                _models = new ConfigCollection<ModelConfig>(this);
                 RaisePropertyChanged(nameof(Models));
                 return _models;
             }
@@ -93,6 +95,8 @@ namespace Agebull.EntityModel.Config
                     return;
                 BeforePropertyChanged(nameof(Models), _models, value);
                 _models = value;
+                if (value != null)
+                    value.Parent = this;
                 OnPropertyChanged(nameof(Models));
             }
         }
@@ -115,7 +119,7 @@ namespace Agebull.EntityModel.Config
         /// 实体集合
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        internal NotificationList<EntityConfig> _entities;
+        internal ConfigCollection<EntityConfig> _entities;
 
 
         /// <summary>
@@ -126,13 +130,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"子级"), DisplayName(@"实体集合"), Description("实体集合")]
-        public NotificationList<EntityConfig> Entities
+        public ConfigCollection<EntityConfig> Entities
         {
             get
             {
                 if (_entities != null)
                     return _entities;
-                _entities = new NotificationList<EntityConfig>();
+                _entities = new ConfigCollection<EntityConfig>(this);
                 RaisePropertyChanged(nameof(Entities));
                 return _entities;
             }
@@ -142,6 +146,8 @@ namespace Agebull.EntityModel.Config
                     return;
                 BeforePropertyChanged(nameof(Entities), _entities, value);
                 _entities = value;
+                if (value != null)
+                    value.Parent = this;
                 OnPropertyChanged(nameof(Entities));
             }
         }
@@ -150,7 +156,7 @@ namespace Agebull.EntityModel.Config
         /// API节点集合
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        internal NotificationList<ApiItem> _apiItems;
+        internal ConfigCollection<ApiItem> _apiItems;
 
         /// <summary>
         /// API节点集合
@@ -160,13 +166,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"子级"), DisplayName(@"API节点集合"), Description("API节点集合")]
-        public NotificationList<ApiItem> ApiItems
+        public ConfigCollection<ApiItem> ApiItems
         {
             get
             {
                 if (_apiItems != null)
                     return _apiItems;
-                _apiItems = new NotificationList<ApiItem>();
+                _apiItems = new ConfigCollection<ApiItem>();
                 RaisePropertyChanged(nameof(ApiItems));
                 return _apiItems;
             }
@@ -176,6 +182,8 @@ namespace Agebull.EntityModel.Config
                     return;
                 BeforePropertyChanged(nameof(ApiItems), _apiItems, value);
                 _apiItems = value;
+                if (value != null)
+                    value.Parent = this;
                 OnPropertyChanged(nameof(ApiItems));
             }
         }
@@ -242,7 +250,7 @@ namespace Agebull.EntityModel.Config
         /// 枚举集合
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        internal NotificationList<EnumConfig> _enums;
+        internal ConfigCollection<EnumConfig> _enums;
 
         /// <summary>
         /// 枚举集合
@@ -252,13 +260,13 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"对象集合"), DisplayName(@"枚举集合"), Description("枚举集合")]
-        public NotificationList<EnumConfig> Enums
+        public ConfigCollection<EnumConfig> Enums
         {
             get
             {
                 if (_enums != null)
                     return _enums;
-                _enums = new NotificationList<EnumConfig>();
+                _enums = new ConfigCollection<EnumConfig>(this);
                 RaisePropertyChanged(nameof(Enums));
                 return _enums;
             }
@@ -268,6 +276,8 @@ namespace Agebull.EntityModel.Config
                     return;
                 BeforePropertyChanged(nameof(Enums), _enums, value);
                 _enums = value;
+                if (value != null)
+                    value.Parent = this;
                 OnPropertyChanged(nameof(Enums));
             }
         }
@@ -1242,6 +1252,9 @@ namespace Agebull.EntityModel.Config
                 return _modelKey;
             }
         }
+
+        [IgnoreDataMember, JsonIgnore]
+        public ConfigBase Parent { get; set; }
         #endregion
 
     }

@@ -81,6 +81,14 @@ namespace Agebull.EntityModel.Config
         #region 系统
 
         /// <summary>
+        /// 类型
+        /// </summary>
+        string Type
+        {
+            get;
+        }
+
+        /// <summary>
         /// 对应实体
         /// </summary>
         EntityConfig Entity
@@ -110,12 +118,12 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 主键字段
         /// </summary>
-        IPropertyConfig PrimaryColumn { get; }// Properties.FirstOrDefault(p {get;}// Entity.PrimaryColumn == p.Field);
+        IPropertyConfig PrimaryColumn { get; }// Find(p {get;}// Entity.PrimaryColumn == p.Field);
 
         /// <summary>
         /// 标题字段
         /// </summary>
-        IPropertyConfig CaptionColumn { get; }// Properties.FirstOrDefault(p {get;}// Entity.PrimaryColumn == p.Field);
+        IPropertyConfig CaptionColumn { get; }// Find(p {get;}// Entity.PrimaryColumn == p.Field);
 
         /// <summary>
         /// 上级字段
@@ -267,10 +275,94 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
+        IPropertyConfig Find(string name)
+        {
+            return Find(p => p.Name.IsMe(name) || name.IsMe(p.DataBaseField?.DbFieldName));
+        }
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        IPropertyConfig Find(Func<IPropertyConfig, bool> filter)
+        {
+            return Find(filter);
+        }
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        IPropertyConfig Find(params string[] names)
+        {
+            return Find(p => names.Exist(p.Name, p.Name, p.DataBaseField?.DbFieldName));
+        }
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        IPropertyConfig[] FindLastAndToArray(Func<IPropertyConfig, bool> filter)
+        {
+            return LastProperties.Where(filter).ToArray();
+        }
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        IEnumerable<IPropertyConfig> WhereLast(Func<IPropertyConfig, bool> filter)
+        {
+            return LastProperties.Where(filter);
+        }
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        IPropertyConfig[] FindAndToArray(Func<IPropertyConfig, bool> filter)
+        {
+            return Where(filter).ToArray();
+        }
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        IEnumerable<IPropertyConfig> Where(Func<IPropertyConfig, bool> filter)
+        {
+            return Where(filter);
+        }
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         bool TryGet(out IPropertyConfig field, params string[] names)
         {
-            field = LastProperties.FirstOrDefault(p => names.Exist(p.Name));
+            field = Find(p => names.Exist(p.Name, p.Name, p.DataBaseField?.DbFieldName));
             return field != null;
+        }
+
+        bool Exist(Func<IPropertyConfig, bool> filter)
+        {
+            return Properties.Any(filter);
+        }
+
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        bool Exist(params string[] names)
+        {
+            return Properties.Any(p => names.Exist(p.Name, p.Name, p.DataBaseField?.DbFieldName));
         }
 
         IEnumerable<IPropertyConfig> Properties { get; }
@@ -278,7 +370,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 最终有效的属性
         /// </summary>
-        List<IPropertyConfig> LastProperties { get; }
+        List<IPropertyConfig> LastProperties { get; set; }
 
         /// <summary>
         /// 公开的属性
@@ -297,10 +389,9 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 命令集合
         /// </summary>
-        NotificationList<UserCommandConfig> Commands { get; }
+        ConfigCollection<UserCommandConfig> Commands { get; }
 
         #endregion
-
 
         #region 方法
 

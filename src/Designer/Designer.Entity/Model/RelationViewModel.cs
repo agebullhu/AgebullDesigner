@@ -140,7 +140,7 @@ namespace Agebull.EntityModel.Designer
         public void LinkDiscovery(object arg)
         {
             var model = Context.SelectModel;
-            foreach (var field in model.Properties.Where(p => p.IsLinkKey))
+            foreach (var field in model.Where(p => p.IsLinkKey))
             {
                 if (model.Releations.Any(p => p.PrimaryTable == field.LinkTable))
                     return;
@@ -190,7 +190,7 @@ namespace Agebull.EntityModel.Designer
                 return;
             foreach (var field in model.Entity.Properties)
             {
-                var pro = model.Properties.FirstOrDefault(p => p.Field == field);
+                var pro = model.Find(p => p.Field == field);
                 if (pro != null)
                 {
                     continue;
@@ -218,7 +218,7 @@ namespace Agebull.EntityModel.Designer
 
             if (!join)
             {
-                foreach (var pro in model.Properties.Where(p => p.Entity == entity).ToArray())
+                foreach (var pro in model.Where(p => p.Entity == entity).ToArray())
                 {
                     model.Properties.Remove(pro);
                 }
@@ -229,7 +229,7 @@ namespace Agebull.EntityModel.Designer
                 if (field.IsPrimaryKey && model.Properties.Any(p => p.IsLinkKey && p.LinkTable == entity.Name))
                     continue;
 
-                var pro = model.Properties.FirstOrDefault(p => p.Field == field);
+                var pro = model.Find(p => p.Field == field);
 
                 if (pro != null)
                     continue;

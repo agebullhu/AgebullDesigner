@@ -102,7 +102,7 @@ namespace Agebull.EntityModel.Designer
             var caption = property.Caption ?? property.Name;
 
             property.JsonName = property.Name.ConvertToPinYin().ToLWord();
-            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            var field = property.DataBaseField;
             if (field == null)
                 return;
             field.DbFieldName = NameHelper.ToName(property.Name.ConvertToPinYin().SplitWords());
@@ -112,7 +112,7 @@ namespace Agebull.EntityModel.Designer
         {
             var bak = property.Name;
             property.Name = GlobalConfig.ToLinkWordName(bak, null, true);
-            var field = property.Entity?.DataTable.Fields.FirstOrDefault(p => p.Property == property);
+            var field = property.DataBaseField;
             if (field == null)
                 return;
             field.DbFieldName = bak;

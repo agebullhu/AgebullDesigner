@@ -54,7 +54,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 自已
         /// </summary>
-        protected sealed override IPropertyConfig Me => this;
+        public sealed override IPropertyConfig Me => this;
 
         /// <summary>
         /// 联合编辑配置
@@ -1791,7 +1791,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"数据库"), DisplayName(@"*跳过保存的场景"), Description("跳过保存的场景")]
         public StorageScreenType KeepStorageScreen
         {
-            get => DbInnerField || NoStorage
+            get => DbInnerField
                 ? StorageScreenType.Read | StorageScreenType.Insert | StorageScreenType.Update
                 : CustomWrite || IsIdentity || IsCompute
                     ? StorageScreenType.Insert | StorageScreenType.Update
