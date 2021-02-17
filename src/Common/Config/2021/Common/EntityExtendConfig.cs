@@ -25,7 +25,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 对应实体
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"对应实体"), Description(@"对应实体")]
+        [DisplayName(@"对应实体"), Description(@"对应实体")]
         public IEntityConfig Entity
         {
             get => _entity;

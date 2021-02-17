@@ -120,16 +120,16 @@ namespace Agebull.EntityModel.RobotCoder
         private static int GetEntitySerializeLen(IEntityConfig entity)
         {
             int len = entity.LastProperties.Count + 94;
-            foreach (var field in entity.DataTable.Fields)
+            foreach (var field in entity.LastProperties)
             {
                 len += GetFieldSerializeLen(field);
             }
             return len;
         }
 
-        private static int GetFieldSerializeLen(DataBaseFieldConfig field)
+        private static int GetFieldSerializeLen(IPropertyConfig field)
         {
-            int.TryParse(field.Property.ArrayLen, out int len);
+            int.TryParse(field.ArrayLen, out int len);
 
             switch (field.CsType.ToLower())
             {
@@ -156,7 +156,7 @@ namespace Agebull.EntityModel.RobotCoder
                 case "guid":
                     return len > 1 ? 1 + len * 18 : 18;
                 case "string":
-                    return field.Datalen > 1 ? 1 + field.Datalen * 2 : 501;
+                    return field.DataBaseField.Datalen > 1 ? 1 + field.DataBaseField.Datalen * 2 : 501;
 
             }
             var entity = GlobalConfig.GetModel(field.CsType);

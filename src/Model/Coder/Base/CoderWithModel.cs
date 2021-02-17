@@ -49,7 +49,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <returns></returns>
         public string GetBaseCode<TBuilder>() where TBuilder : ModelBuilderBase, new()
         {
-            using (CodeGeneratorScope.CreateScope(Model as NotificationObject))
+            using (CodeGeneratorScope.CreateScope(Model,false))
             {
                 var builder = new TBuilder
                 {
@@ -58,6 +58,7 @@ namespace Agebull.EntityModel.RobotCoder
                 return builder.BaseCode;
             }
         }
+
         /// <summary>
         /// 取得其它生成器的能力
         /// </summary>
@@ -66,7 +67,7 @@ namespace Agebull.EntityModel.RobotCoder
         public string GetExtendCode<TBuilder>()
             where TBuilder : ModelBuilderBase, new()
         {
-            using (CodeGeneratorScope.CreateScope(Model as NotificationObject))
+            using (CodeGeneratorScope.CreateScope(Model, false))
             {
                 var builder = new TBuilder
                 {

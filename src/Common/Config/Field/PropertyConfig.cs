@@ -166,33 +166,6 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 数据库字段名称
-        /// </summary>
-        [DataMember, JsonProperty("_columnName", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _dbFieldName;
-
-        /// <summary>
-        /// 数据库字段名称
-        /// </summary>
-        /// <remark>
-        /// 字段名称
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"数据库字段名称"), Description("字段名称")]
-        public string DbFieldName
-        {
-            get => _dbFieldName ?? Field?.DbFieldName;
-            set
-            {
-                if (_dbFieldName == value)
-                    return;
-                BeforePropertyChanged(nameof(DbFieldName), _dbFieldName, value);
-                _dbFieldName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(DbFieldName));
-            }
-        }
-
-        /// <summary>
         /// 字段名称(json)
         /// </summary>
         [DataMember, JsonProperty("jsonName", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
@@ -274,60 +247,6 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 存储类型
-        /// </summary>
-        [DataMember, JsonProperty("DbType", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _dbType;
-
-        /// <summary>
-        /// 存储类型
-        /// </summary>
-        /// <remark>
-        /// 存储类型
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"存储类型"), Description("存储类型")]
-        public string FieldType
-        {
-            get => _dbType ?? Field.FieldType;
-            set
-            {
-                if (string.Equals(_dbType, value, StringComparison.OrdinalIgnoreCase))
-                    return;
-                BeforePropertyChanged(nameof(FieldType), _dbType, value);
-                _dbType = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(FieldType));
-            }
-        }
-
-        /// <summary>
-        /// *跳过保存的场景
-        /// </summary>
-        [DataMember, JsonProperty("KeepStorageScreen", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal StorageScreenType? _keepStorageScreen;
-
-        /// <summary>
-        /// *跳过保存的场景
-        /// </summary>
-        /// <remark>
-        /// 跳过保存的场景
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"*跳过保存的场景"), Description("跳过保存的场景")]
-        public StorageScreenType KeepStorageScreen
-        {
-            get => _keepStorageScreen == null ? Field.KeepStorageScreen : _keepStorageScreen.Value;
-            set
-            {
-                if (_keepStorageScreen == value)
-                    return;
-                BeforePropertyChanged(nameof(KeepStorageScreen), _keepStorageScreen, value);
-                _keepStorageScreen = value;
-                OnPropertyChanged(nameof(KeepStorageScreen));
-            }
-        }
-
-        /// <summary>
         /// 初始值的说明文字
         /// </summary>
         const string Initialization_Description = @"3初始值,原样写入代码,如果是文本,需要加引号";
@@ -358,58 +277,6 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(Initialization));
             }
         }
-        #endregion
-
-        #region 汇总支持
-
-        /// <summary>
-        /// 汇总方法
-        /// </summary>
-        [DataMember, JsonProperty("function", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _function;
-
-        /// <summary>
-        /// 汇总方法
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"汇总方法"), Description("汇总方法")]
-        public string Function
-        {
-            get => _function;
-            set
-            {
-                if (string.Equals(_function, value, StringComparison.OrdinalIgnoreCase))
-                    return;
-                BeforePropertyChanged(nameof(Function), _function, value);
-                _function = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(Function));
-            }
-        }
-
-        /// <summary>
-        /// 汇总条件
-        /// </summary>
-        [DataMember, JsonProperty("having", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _having;
-
-        /// <summary>
-        /// 汇总条件
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"汇总条件"), Description("汇总条件")]
-        public string Having
-        {
-            get => _having;
-            set
-            {
-                if (string.Equals(_having, value, StringComparison.OrdinalIgnoreCase))
-                    return;
-                BeforePropertyChanged(nameof(Having), _having, value);
-                _having = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(Having));
-            }
-        }
-
         #endregion
 
         #region CPP
@@ -727,15 +594,6 @@ namespace Agebull.EntityModel.Config
         /// 自已
         /// </summary>
         public sealed override IPropertyConfig Me => this;
-
-        /// <summary>
-        /// 是否数据库索引
-        /// </summary>
-        public bool IsDbIndex
-        {
-            get => Field.IsDbIndex;
-            set => Field.IsDbIndex = value;
-        }
 
         /// <summary>
         /// 分组

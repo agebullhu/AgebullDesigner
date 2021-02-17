@@ -19,12 +19,27 @@ namespace Agebull.EntityModel.Config
         #region 视角开关
 
         /// <summary>
+        /// 自增字段
+        /// </summary>
+        bool IsIdentity
+        {
+            get;
+        }
+        /// <summary>
+        /// 活动（未删除未废弃）
+        /// </summary>
+        bool IsActive
+        {
+            get;
+        }
+        /// <summary>
         /// 启用数据库支持
         /// </summary>
         bool EnableDataBase
         {
             get;
         }
+        
         /// <summary>
         /// 启用数据校验
         /// </summary>
@@ -48,6 +63,10 @@ namespace Agebull.EntityModel.Config
         {
             get;
         }
+        /// <summary>
+        /// 不存储
+        /// </summary>
+        bool NoStorage { get; }
 
         #endregion
         #region 复制

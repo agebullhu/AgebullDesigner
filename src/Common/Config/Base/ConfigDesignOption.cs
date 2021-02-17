@@ -293,7 +293,7 @@ namespace Agebull.EntityModel.Config
         ///     状态
         /// </summary>
         [DataMember, JsonProperty("state", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        private ConfigStateType _state;
+        internal ConfigStateType _state;
 
         /// <summary>
         /// 是否预定义对象

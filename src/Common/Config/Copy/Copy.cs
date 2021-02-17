@@ -214,10 +214,6 @@
             IsInterface = dest.IsInterface;
             EnableValidate = dest.EnableValidate;
             Properties = dest.Properties;
-            ReadTableName = dest.ReadTableName;
-            SaveTableName = dest.SaveTableName;
-            DbIndex = dest.DbIndex;
-            UpdateByModified = dest.UpdateByModified;
             ApiName = dest.ApiName;
             EnableUI = dest.EnableUI;
             IsUiReadOnly = dest.IsUiReadOnly;
@@ -338,7 +334,6 @@
                 IsGlobalKey = dest.IsGlobalKey;
                 UniqueIndex = dest.UniqueIndex;
                 UniqueString = dest.UniqueString;
-                StorageProperty = dest.StorageProperty;
             }
             Name = dest.Name;
             Caption = dest.Caption;
@@ -381,23 +376,7 @@
             NoneJson = dest.NoneJson;
             JsonName = dest.JsonName;
             HelloCode = dest.HelloCode;
-            Function = dest.Function;
-            Having = dest.Having;
-            IsDbIndex = dest.IsDbIndex;
-            KeepUpdate = dest.KeepUpdate;
-            DbFieldName = dest.DbFieldName;
-            DbNullable = dest.DbNullable;
-            FieldType = dest.FieldType;
-            Datalen = dest.Datalen;
             ArrayLen = dest.ArrayLen;
-            Scale = dest.Scale;
-            FixedLength = dest.FixedLength;
-            IsMemo = dest.IsMemo;
-            IsBlob = dest.IsBlob;
-            DbInnerField = dest.DbInnerField;
-            NoStorage = dest.NoStorage;
-            KeepStorageScreen = dest.KeepStorageScreen;
-            CustomWrite = dest.CustomWrite;
             IsUserReadOnly = dest.IsUserReadOnly;
             MulitLine = dest.MulitLine;
             Prefix = dest.Prefix;
@@ -424,12 +403,6 @@
             IsRequired = dest.IsRequired;
             Max = dest.Max;
             Min = dest.Min;
-            IsLinkField = dest.IsLinkField;
-            LinkTable = dest.LinkTable;
-            IsLinkKey = dest.IsLinkKey;
-            IsLinkCaption = dest.IsLinkCaption;
-            IsUserId = dest.IsUserId;
-            LinkField = dest.LinkField;
         }
 
     }
@@ -486,10 +459,6 @@
             IsInterface = dest.IsInterface;
             EnableValidate = dest.EnableValidate;
             Properties = dest.Properties;
-            ReadTableName = dest.ReadTableName;
-            SaveTableName = dest.SaveTableName;
-            DbIndex = dest.DbIndex;
-            UpdateByModified = dest.UpdateByModified;
             ApiName = dest.ApiName;
             EnableUI = dest.EnableUI;
             IsUiReadOnly = dest.IsUiReadOnly;
@@ -601,15 +570,9 @@
             Caption = dest.Caption;
             Description = dest.Description;
             Remark = dest.Remark;
-            DbFieldName = dest.DbFieldName;
             JsonName = dest.JsonName;
             DataType = dest.DataType;
             CsType = dest.CsType;
-            FieldType = dest.FieldType;
-            KeepStorageScreen = dest.KeepStorageScreen;
-            Initialization = dest.Initialization;
-            Function = dest.Function;
-            Having = dest.Having;
             CppType = dest.CppType;
             CppName = dest.CppName;
             CppLastType = dest.CppLastType;

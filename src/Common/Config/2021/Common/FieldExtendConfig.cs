@@ -43,7 +43,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 字段键
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"字段键"), Description(@"字段键")]
+        [DisplayName(@"字段键"), Description(@"字段键")]
         public string PropertyKey
         {
             get => _propertyKey;
@@ -67,7 +67,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 字段
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"字段"), Description(@"字段")]
+        [DisplayName(@"字段"), Description(@"字段")]
         public IPropertyConfig Property
         {
             get => _property ?? (_propertyKey.IsMissing() ? null : _property = GlobalConfig.GetConfigByKey<IPropertyConfig>(_propertyKey));
@@ -144,8 +144,13 @@ namespace Agebull.EntityModel.Config.V2021
         ///     类型名称
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
+        public string DataType => Property.DataType;
+        /// <summary>
+        ///     类型名称
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
         public string CsType => Property.CsType;
-
+        
         /// <summary>
         ///     类型名称
         /// </summary>
@@ -161,7 +166,7 @@ namespace Agebull.EntityModel.Config.V2021
         #endregion
 
         #region 框架支持
-
+        /*
         /// <summary>
         /// 字段复制
         /// </summary>
@@ -191,7 +196,7 @@ namespace Agebull.EntityModel.Config.V2021
         {
             PropertyKey = dest.PropertyKey;
             Property = dest.Property;
-        }
+        }*/
         #endregion
     }
 }

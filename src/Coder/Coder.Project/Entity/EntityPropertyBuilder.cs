@@ -289,7 +289,7 @@ using Agebull.EntityModel.Interfaces;
             foreach (var property in Columns.Where(p => p != PrimaryProperty).OrderBy(p => p.Index))
             {
                 var field = property.DataBaseField;
-                if (field != null && field.DbInnerField)
+                if (!property.NoStorage && field.DbInnerField)
                     DbInnerProperty(property, code);
                 else if (property.IsCompute)
                     ComputePropertyCode(property, code);

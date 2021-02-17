@@ -225,16 +225,33 @@ namespace Agebull.EntityModel.Designer
             project.Copy(classify);
 
             var entities = classify.Items.ToArray();
-            entities.Foreach(classify.Project.Remove);
+            foreach(var e in entities)
+            {
+                if (e is EntityConfig entity)
+                {
+                    classify.Project.Remove(entity);
+                }
+                else if (e is ModelConfig model)
+                {
+                    classify.Project.Remove(model);
+                }
+            }
+
             classify.Project.Remove(classify);
 
             project.Add(classify);
             GlobalConfig.CurrentSolution.Add(project);
-            entities.Foreach(e =>
+            foreach (var e in entities)
             {
-                e.Classify = null;
-                project.Add(e);
-            });
+                if (e is EntityConfig entity)
+                {
+                    project.Add(entity);
+                }
+                else if (e is ModelConfig model)
+                {
+                    project.Add(model);
+                }
+            }
         }
     }
 }

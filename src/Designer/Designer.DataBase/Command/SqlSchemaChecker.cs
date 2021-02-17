@@ -19,7 +19,8 @@ namespace Agebull.EntityModel.Designer
         public static string MoveData(EntityConfig entity)
         {
             var code = new StringBuilder();
-            code.AppendFormat(@"INSERT INTO [dbo].[{0}]({1}", entity.ReadTableName, entity.PrimaryColumn.DbFieldName);
+            var pri = entity.DataTable.PrimaryField;
+            code.AppendFormat(@"INSERT INTO [dbo].[{0}]({1}", entity.DataTable.ReadTableName, pri.DbFieldName);
             foreach (var field in entity.DataTable.Fields) //.Where(p => p.DbIndex > 0)
             {
                 if (field.IsPrimaryKey)
@@ -28,7 +29,7 @@ namespace Agebull.EntityModel.Designer
             }
 
             code.AppendFormat(@")
-SELECT {0}", entity.PrimaryColumn.DbFieldName);
+SELECT {0}", pri.DbFieldName);
             foreach (var field in entity.DataTable.Fields) //.Where(p => p.DbIndex > 0)
             {
                 if (field.IsPrimaryKey)
@@ -36,7 +37,7 @@ SELECT {0}", entity.PrimaryColumn.DbFieldName);
                 code.AppendFormat(@",[{0}]", field.DbFieldName);
             }
 
-            code.AppendFormat(@" FROM {0}_OLD;", entity.ReadTableName);
+            code.AppendFormat(@" FROM {0}_OLD;", entity.DataTable.ReadTableName);
             return code.ToString();
         }
 
@@ -97,51 +98,19 @@ SELECT {0}", entity.PrimaryColumn.DbFieldName);
             if (ch[0].Equals("tb", StringComparison.OrdinalIgnoreCase))
                 ch.RemoveAt(0);
             var name = GlobalConfig.ToName(ch);
-            var entity = FindEntity(name);
-            var add = entity == null;
-            if (add)
-            {
+            var entity = GlobalConfig.Find(name);
+            if (entity == null)
                 return;
-                entity = new EntityConfig
-                {
-                    Name = name,
-                    Classify = ch[0],
-                    Caption = description,
-                    Description = description,
-                    ReadTableName = table,
-                    SaveTableName = table,
-                    Project = Project
-                };
-            }
-            else
+            foreach (var field in entity.Properties)
             {
-                foreach (var field in entity.Properties)
-                {
-                    field.NoStorage = true;
-                }
-
-                entity.ReadTableName = entity.SaveTableName = table;
+                field.NoStorage = true;
             }
 
+            entity.DataTable.ReadTableName = entity.DataTable.SaveTableName = table;
             CheckColumns(cmd, entity);
-            if (add)
-                Project.Add(entity);
         }
 
-        /// <summary>
-        ///     取得实体对象
-        /// </summary>
-        /// <param name="tableName"></param>
-        /// <returns></returns>
-        public static EntityConfig FindEntity(string tableName)
-        {
-            return tableName == null
-                ? null
-                : GlobalConfig.GetEntity(p => string.Equals(p.ReadTableName, tableName, StringComparison.OrdinalIgnoreCase))
-                  ?? GlobalConfig.GetEntity(p => string.Equals(p.Name, tableName, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private void CheckColumns(SqlCommand cmd, EntityConfig entity)
+        private void CheckColumns(SqlCommand cmd, IEntityConfig entity)
         {
             entity.DataTable ??= new DataTableConfig();
             using var reader = cmd.ExecuteReader();
@@ -156,19 +125,12 @@ SELECT {0}", entity.PrimaryColumn.DbFieldName);
                     property = new FieldConfig
                     {
                         Name = name,
-                        DbFieldName = name,
                         Entity = Entity
                     };
-                    entity.Add(property as FieldConfig);
-                    entity.DataTable.Add(field = new DataBaseFieldConfig
-                    {
-                        Property = property,
-                        Name = name,
-                        DbFieldName = name
-                    });
+                    entity.Entity.Add(property as FieldConfig);//触发器会自动加入数据库字段
+                    field = property.DataBaseField;
                     if (!reader.IsDBNull(7))
                         field.Caption = field.Description = reader.GetString(7);
-
                 }
                 else
                 {
@@ -244,7 +206,7 @@ ORDER BY [Tables].object_id, [Columns].column_id";
         {
             foreach (var schema in Project.Entities)
             {
-                foreach (var field in schema.Properties)
+                foreach (var field in schema.DataTable.Fields)
                 {
                     if (field.CsType == "string")
                         field.DbNullable = true;
@@ -262,14 +224,15 @@ ORDER BY [Tables].object_id, [Columns].column_id";
             connection.Open();
             foreach (var schema in Project.Entities)
             {
-                TraceMessage.DefaultTrace.Message2 = schema.ReadTableName;
-                foreach (var field in schema.Properties)
+                TraceMessage.DefaultTrace.Message2 = schema.DataTable.ReadTableName;
+                foreach (var property in schema.Properties)
                 {
+                    var field = property.DataBaseField;
                     TraceMessage.DefaultTrace.Message3 = field.DbFieldName;
 
                     var checkInt = true;
                     var isInt = true;
-                    switch (field.CsType.ToLower())
+                    switch (property.CsType.ToLower())
                     {
                         case "guid":
                         case "datetime":
@@ -281,7 +244,7 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                             break;
                     }
 
-                    var sql1 = $"SELECT [{field.DbFieldName}] FROM [{schema.ReadTableName}]";
+                    var sql1 = $"SELECT [{field.DbFieldName}] FROM [{schema.DataTable.ReadTableName}]";
                     using (var cmd = new SqlCommand(sql1, connection))
                     {
                         using var reader = cmd.ExecuteReader();
@@ -299,10 +262,10 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                         }
                     }
 
-                    if (checkInt && !isInt && (field.CsType != "decimal" || field.FieldType != "decimal"))
+                    if (checkInt && !isInt && (property.CsType != "decimal" || field.FieldType != "decimal"))
                     {
                         TraceMessage.DefaultTrace.Track = "改变字段类型";
-                        field.CsType = "decimal";
+                        property.CsType = "decimal";
                         field.FieldType = "decimal";
                     }
 
@@ -312,7 +275,7 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                     //        TraceMessage.DefaultTrace.Track = "字段已改成不为空";
                     //    field.Nullable = false;
                     //}
-                    field.FieldType = SqlServerHelper.ToDataBaseType(field);
+                    field.FieldType = SqlServerHelper.ToDataBaseType(property);
                 }
             }
 
@@ -342,14 +305,14 @@ ORDER BY [Tables].object_id, [Columns].column_id";
             foreach (var schema in Project.Entities) CheckColumns(cmd, schema);
         }
 
-        public static string SetPrimary(EntityConfig entity)
+        public static string SetPrimary(IEntityConfig entity)
         {
             return string.Format(@"ALTER TABLE dbo.{0} ADD CONSTRAINT
 PK_{0} PRIMARY KEY CLUSTERED 
 (
 	[{1}]
 ) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY];",
-                entity.ReadTableName, entity.PrimaryColumn.DbFieldName);
+                entity.DataTable.ReadTableName, entity.PrimaryColumn.DataBaseField.DbFieldName);
         }
 
         #endregion
@@ -380,8 +343,8 @@ PK_{0} PRIMARY KEY CLUSTERED
                 cmd.Parameters.Add(parameter = new SqlParameter("@entity", SqlDbType.NVarChar, 256));
                 foreach (var schema in Project.Entities)
                 {
-                    TraceMessage.DefaultTrace.Message2 = schema.ReadTableName;
-                    parameter.Value = schema.ReadTableName;
+                    TraceMessage.DefaultTrace.Message2 = schema.DataTable.ReadTableName;
+                    parameter.Value = schema.DataTable.ReadTableName;
                     var sqls = AlertTable(cmd, schema);
                     foreach (var sq in sqls)
                     {

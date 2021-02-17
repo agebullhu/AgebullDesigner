@@ -187,7 +187,7 @@ namespace Agebull.EntityModel.RobotCoder
                 {EmptyCode(property)}");
             }
 
-            if (field.Datalen <= 0 && property.Min == null)
+            if ((field == null || field.Datalen <= 0) && property.Min == null)
                 return;
 
             if (!property.CanEmpty || property.IsRequired)

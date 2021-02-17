@@ -279,7 +279,10 @@ namespace Agebull.EntityModel.Designer
                 entity = new EntityConfig
                 {
                     Name = enName,
-                    ReadTableName = enName
+                    DataTable = new Config.V2021.DataTableConfig
+                    {
+                        ReadTableName = enName
+                    }
                 };
                 _project.Add(entity);
             }
@@ -409,7 +412,6 @@ namespace Agebull.EntityModel.Designer
                 {
                     //prperty.CustomType = ReflectionHelper.GetTypeName(type1);
                     prperty.NoStorage = true;
-                    prperty.LinkTable = prperty.CustomType;
                 }
             }
             catch (Exception ex)

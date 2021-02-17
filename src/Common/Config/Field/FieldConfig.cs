@@ -275,6 +275,33 @@ namespace Agebull.EntityModel.Config
                 OnPropertyChanged(nameof(IsArray));
             }
         }
+
+        /// <summary>
+        /// 数组长度
+        /// </summary>
+        [DataMember, JsonProperty("ArrayLen", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal string _arrayLen;
+
+        /// <summary>
+        /// 数组长度
+        /// </summary>
+        /// <remark>
+        /// 数组长度
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"模型设计"), DisplayName(@"数组长度"), Description("数组长度")]
+        public string ArrayLen
+        {
+            get => ReferenceOrThis._arrayLen;
+            set
+            {
+                if (_arrayLen == value)
+                    return;
+                BeforePropertyChanged(nameof(ArrayLen), _arrayLen, value);
+                _arrayLen = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                OnPropertyChanged(nameof(ArrayLen));
+            }
+        }
         /// <summary>
         /// 是否字典
         /// </summary>
@@ -1273,38 +1300,6 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 自增字段的说明文字
-        /// </summary>
-        const string IsIdentity_Description = @"自增列,通过数据库(或REDIS)自动增加";
-
-        /// <summary>
-        /// 自增字段
-        /// </summary>
-        [DataMember, JsonProperty("IsIdentity", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isIdentity;
-
-        /// <summary>
-        /// 自增字段
-        /// </summary>
-        /// <remark>
-        /// 自增列,通过数据库(或REDIS)自动增加
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据标识"), DisplayName(@"自增字段"), Description(IsIdentity_Description)]
-        public bool IsIdentity
-        {
-            get => _isIdentity;
-            set
-            {
-                if (_isIdentity == value)
-                    return;
-                BeforePropertyChanged(nameof(IsIdentity), _isIdentity, value);
-                _isIdentity = value;
-                OnPropertyChanged(nameof(IsIdentity));
-            }
-        }
-
-        /// <summary>
         /// 全局标识
         /// </summary>
         [DataMember, JsonProperty("IsGlobalKey", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
@@ -1383,496 +1378,6 @@ namespace Agebull.EntityModel.Config
         }
         #endregion
 
-        #region 汇总支持
-
-        /// <summary>
-        /// 汇总方法
-        /// </summary>
-        [DataMember, JsonProperty("function", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _function;
-
-        /// <summary>
-        /// 汇总方法
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"汇总方法"), Description("汇总方法")]
-        public string Function
-        {
-            get => _function;
-            set
-            {
-                if (string.Equals(_function, value, StringComparison.OrdinalIgnoreCase))
-                    return;
-                BeforePropertyChanged(nameof(Function), _function, value);
-                _function = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(Function));
-            }
-        }
-
-        /// <summary>
-        /// 汇总条件
-        /// </summary>
-        [DataMember, JsonProperty("having", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _having;
-
-        /// <summary>
-        /// 汇总条件
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"汇总条件"), Description("汇总条件")]
-        public string Having
-        {
-            get => _having;
-            set
-            {
-                if (string.Equals(_having, value, StringComparison.OrdinalIgnoreCase))
-                    return;
-                BeforePropertyChanged(nameof(Having), _having, value);
-                _having = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(Having));
-            }
-        }
-
-        #endregion
-
-        #region 数据库
-
-        /// <summary>
-        /// 构建数据库索引
-        /// </summary>
-        /// <remark>
-        /// 构建数据库索引的优化选项
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"构建数据库索引"), Description("构建数据库索引的优化选项")]
-        public bool NeedDbIndex => _isDbIndex || (ReferenceProperty?.NeedDbIndex ?? IsPrimaryKey || IsIdentity || IsLinkKey || IsCaption);
-
-
-        /// <summary>
-        /// 数据库索引
-        /// </summary>
-        [DataMember, JsonProperty("isDbIndex", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isDbIndex;
-
-        /// <summary>
-        /// 是否数据库索引
-        /// </summary>
-        /// <remark>
-        /// 构建数据库索引的优化选项
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"是否数据库索引"), Description("构建数据库索引的优化选项")]
-        public bool IsDbIndex
-        {
-            get => _isDbIndex;
-            set
-            {
-                if (_isDbIndex == value)
-                    return;
-                BeforePropertyChanged(nameof(IsDbIndex), _isDbIndex, value);
-                _isDbIndex = value;
-                OnPropertyChanged(nameof(IsDbIndex));
-            }
-        }
-
-        /// <summary>
-        /// 不更新
-        /// </summary>
-        /// <remark>
-        /// 不更新
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"不更新"), Description("不更新")]
-        public bool KeepUpdate
-        {
-            get => KeepStorageScreen == StorageScreenType.Update;
-            set => KeepStorageScreen = value ? StorageScreenType.Update : StorageScreenType.None;
-        }
-
-        /// <summary>
-        /// 数据库字段名称
-        /// </summary>
-        [DataMember, JsonProperty("_columnName", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _dbFieldName;
-
-        /// <summary>
-        /// 数据库字段名称
-        /// </summary>
-        /// <remark>
-        /// 字段名称
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"数据库字段名称"), Description("字段名称")]
-        public string DbFieldName
-        {
-            get => InCoding ? _dbFieldName ?? Name : _dbFieldName;
-            set
-            {
-                if (_dbFieldName == value)
-                    return;
-                if (Name == value)
-                    value = null;
-                BeforePropertyChanged(nameof(DbFieldName), _dbFieldName, value);
-                _dbFieldName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(DbFieldName));
-            }
-        }
-
-        /// <summary>
-        /// 能否存储空值的说明文字
-        /// </summary>
-        const string DbNullable_Description = @"如为真,在存储空值读取时使用语言类型的默认值";
-
-        /// <summary>
-        /// 能否存储空值
-        /// </summary>
-        [DataMember, JsonProperty("_dbNullable", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _dbNullable;
-
-        /// <summary>
-        /// 能否存储空值
-        /// </summary>
-        /// <remark>
-        /// 如为真,在存储空值读取时使用语言类型的默认值
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"能否存储空值"), Description(DbNullable_Description)]
-        public bool DbNullable
-        {
-            get => InterfaceOrThis._dbNullable;
-            set
-            {
-                if (_dbNullable == value)
-                    return;
-                BeforePropertyChanged(nameof(DbNullable), _dbNullable, value);
-                _dbNullable = value;
-                OnPropertyChanged(nameof(DbNullable));
-            }
-        }
-
-        /// <summary>
-        /// 存储类型
-        /// </summary>
-        [DataMember, JsonProperty("DbType", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _dbType;
-
-        /// <summary>
-        /// 存储类型
-        /// </summary>
-        /// <remark>
-        /// 存储类型
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"存储类型"), Description("存储类型")]
-        public string FieldType
-        {
-            get => ReferenceOrThis._dbType?.ToUpper();
-            set
-            {
-                if (string.Equals(_dbType, value, StringComparison.OrdinalIgnoreCase))
-                    return;
-                BeforePropertyChanged(nameof(FieldType), _dbType, value);
-                _dbType = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(FieldType));
-            }
-        }
-
-        /// <summary>
-        /// 数据长度
-        /// </summary>
-        [DataMember, JsonProperty("_datalen", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal int _datalen;
-
-        /// <summary>
-        /// 数据长度
-        /// </summary>
-        /// <remark>
-        /// 文本或二进制存储的最大长度
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"数据长度"), Description("文本或二进制存储的最大长度")]
-        public int Datalen
-        {
-            get => ReferenceOrThis._datalen;
-            set
-            {
-                if (_datalen == value)
-                    return;
-                BeforePropertyChanged(nameof(Datalen), _datalen, value);
-                _datalen = value;
-                OnPropertyChanged(nameof(Datalen));
-                OnPropertyChanged(nameof(AutoDataRuleDesc));
-            }
-        }
-
-        /// <summary>
-        /// 数组长度
-        /// </summary>
-        [DataMember, JsonProperty("ArrayLen", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _arrayLen;
-
-        /// <summary>
-        /// 数组长度
-        /// </summary>
-        /// <remark>
-        /// 数组长度
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"数组长度"), Description("数组长度")]
-        public string ArrayLen
-        {
-            get => ReferenceOrThis._arrayLen;
-            set
-            {
-                if (_arrayLen == value)
-                    return;
-                BeforePropertyChanged(nameof(ArrayLen), _arrayLen, value);
-                _arrayLen = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(ArrayLen));
-            }
-        }
-
-        /// <summary>
-        /// 存储精度
-        /// </summary>
-        [DataMember, JsonProperty("Scale", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal int _scale;
-
-        /// <summary>
-        /// 存储精度
-        /// </summary>
-        /// <remark>
-        /// 存储精度
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"存储精度"), Description("存储精度")]
-        public int Scale
-        {
-            get => ReferenceOrThis._scale;
-            set
-            {
-                if (_scale == value)
-                    return;
-                BeforePropertyChanged(nameof(Scale), _scale, value);
-                _scale = value;
-                OnPropertyChanged(nameof(Scale));
-                OnPropertyChanged(nameof(AutoDataRuleDesc));
-            }
-        }
-
-        /// <summary>
-        /// 固定长度
-        /// </summary>
-        [DataMember, JsonProperty("FixedLength", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _fixedLength;
-
-        /// <summary>
-        /// 固定长度
-        /// </summary>
-        /// <remark>
-        /// 是否固定长度字符串
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"固定长度"), Description("是否固定长度字符串")]
-        public bool FixedLength
-        {
-            get => ReferenceOrThis._fixedLength;
-            set
-            {
-                if (_fixedLength == value)
-                    return;
-                BeforePropertyChanged(nameof(FixedLength), _fixedLength, value);
-                _fixedLength = value;
-                OnPropertyChanged(nameof(FixedLength));
-            }
-        }
-
-        /// <summary>
-        /// 备注字段
-        /// </summary>
-        [DataMember, JsonProperty("IsMemo", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isMemo;
-
-        /// <summary>
-        /// 备注字段
-        /// </summary>
-        /// <remark>
-        /// 是否备注字段
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"备注字段"), Description("是否备注字段")]
-        public bool IsMemo
-        {
-            get => _isMemo;
-            set
-            {
-                if (_isMemo == value)
-                    return;
-                BeforePropertyChanged(nameof(IsMemo), _isMemo, value);
-                _isMemo = value;
-                OnPropertyChanged(nameof(IsMemo));
-            }
-        }
-
-        /// <summary>
-        /// 大数据
-        /// </summary>
-        [DataMember, JsonProperty("IsBlob", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isBlob;
-
-        /// <summary>
-        /// 大数据
-        /// </summary>
-        /// <remark>
-        /// 是否大数据
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"大数据"), Description("是否大数据")]
-        public bool IsBlob
-        {
-            get => InterfaceOrThis._isBlob || DataType == "ByteArray";
-            set
-            {
-                value = value || DataType == "ByteArray";
-                if (_isBlob == value)
-                    return;
-                BeforePropertyChanged(nameof(IsBlob), _isBlob, value);
-                _isBlob = value;
-                OnPropertyChanged(nameof(IsBlob));
-            }
-        }
-
-        /// <summary>
-        /// 内部字段(数据库)的说明文字
-        /// </summary>
-        const string DbInnerField_Description = @"数据库内部字段,如果为真,仅支持在SQL的语句中出现此字段，不支持外部的读写";
-
-        /// <summary>
-        /// 内部字段(数据库)
-        /// </summary>
-        [DataMember, JsonProperty("DbInnerField", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _dbInnerField;
-
-        /// <summary>
-        /// 内部字段(数据库)
-        /// </summary>
-        /// <remark>
-        /// 数据库内部字段,如果为真,仅支持在SQL的语句中出现此字段，不支持外部的读写
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"内部字段(数据库)"), Description(DbInnerField_Description)]
-        public bool DbInnerField
-        {
-            get => InterfaceOrThis._dbInnerField;
-            set
-            {
-                if (_dbInnerField == value)
-                    return;
-                BeforePropertyChanged(nameof(DbInnerField), _dbInnerField, value);
-                _dbInnerField = value;
-                OnPropertyChanged(nameof(DbInnerField));
-            }
-        }
-
-
-        /// <summary>
-        /// *跳过保存的场景
-        /// </summary>
-        [DataMember, JsonProperty("KeepStorageScreen", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal StorageScreenType _keepStorageScreen;
-
-        /// <summary>
-        /// *跳过保存的场景
-        /// </summary>
-        /// <remark>
-        /// 跳过保存的场景
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"*跳过保存的场景"), Description("跳过保存的场景")]
-        public StorageScreenType KeepStorageScreen
-        {
-            get => DbInnerField
-                ? StorageScreenType.Read | StorageScreenType.Insert | StorageScreenType.Update
-                : CustomWrite || IsIdentity || IsCompute
-                    ? StorageScreenType.Insert | StorageScreenType.Update
-                    : UniqueIndex || IsPrimaryKey
-                        ? StorageScreenType.Update
-                        : InterfaceOrThis._keepStorageScreen;
-            set
-            {
-                if (_keepStorageScreen == value)
-                    return;
-                BeforePropertyChanged(nameof(KeepStorageScreen), _keepStorageScreen, value);
-                _keepStorageScreen = value;
-                OnPropertyChanged(nameof(KeepStorageScreen));
-            }
-        }
-
-        /// <summary>
-        /// 自定义保存的说明文字
-        /// </summary>
-        const string CustomWrite_Description = @"自定义保存,如果为真,数据库的写入忽略这个字段,数据的写入由代码自行维护";
-
-        /// <summary>
-        /// 自定义保存
-        /// </summary>
-        [DataMember, JsonProperty("CustomWrite", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _customWrite;
-
-        /// <summary>
-        /// 自定义保存
-        /// </summary>
-        /// <remark>
-        /// 自定义保存,如果为真,数据库的写入忽略这个字段,数据的写入由代码自行维护
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"自定义保存"), Description(CustomWrite_Description)]
-        public bool CustomWrite
-        {
-            get => _customWrite;
-            set
-            {
-                if (_customWrite == value)
-                    return;
-                BeforePropertyChanged(nameof(CustomWrite), _customWrite, value);
-                _customWrite = value;
-                OnPropertyChanged(nameof(CustomWrite));
-            }
-        }
-
-        /// <summary>
-        /// 存储值读写字段的说明文字
-        /// </summary>
-        const string StorageProperty_Description = @"存储值读写字段(internal),即使用非基础类型时,当发生读写数据库操作时使用的字段,字段为文本(JSON或XML)类型,使用序列化方法读写";
-
-        /// <summary>
-        /// 存储值读写字段
-        /// </summary>
-        [DataMember, JsonProperty("StorageProperty", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _storageProperty;
-
-        /// <summary>
-        /// 存储值读写字段
-        /// </summary>
-        /// <remark>
-        /// 存储值读写字段(internal),即使用非基础类型时,当发生读写数据库操作时使用的字段,字段为文本(JSON或XML)类型,使用序列化方法读写
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"存储值读写字段"), Description(StorageProperty_Description)]
-        public string StorageProperty
-        {
-            get => _storageProperty;
-            set
-            {
-                if (_storageProperty == value)
-                    return;
-                BeforePropertyChanged(nameof(StorageProperty), _storageProperty, value);
-                _storageProperty = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(StorageProperty));
-            }
-        }
-        #endregion
-
         #region 用户界面
 
         /// <summary>
@@ -1907,7 +1412,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"用户可见"), Description("用户可见")]
-        public bool UserSee => !InnerField && !DbInnerField && !NoProperty;
+        public bool UserSee => !InnerField && !NoProperty;
 
 
         /// <summary>
@@ -2554,17 +2059,19 @@ namespace Agebull.EntityModel.Config
                 if (CsType == "string")
                 {
                     string max = Max;
-                    if (!IsBlob && !IsMemo && Datalen > 0)
+                    if(!NoStorage)
                     {
-                        decs.Append($"可存储{Datalen}个字符.");
-                        if ((int.TryParse(max, out var len) && len > Datalen))
+                        if (!DataBaseField. IsBlob && !DataBaseField.IsText && DataBaseField.Datalen > 0)
                         {
-                            max = Max = null;
+                            decs.Append($"可存储{DataBaseField.Datalen}个字符.");
+                            if ((int.TryParse(max, out var len) && len > DataBaseField.Datalen))
+                            {
+                                max = Max = null;
+                            }
+                            if (string.IsNullOrWhiteSpace(max))
+                                max = DataBaseField.Datalen.ToString();
                         }
-                        if (string.IsNullOrWhiteSpace(max))
-                            max = Datalen.ToString();
                     }
-
                     if (!string.IsNullOrWhiteSpace(Min) && !string.IsNullOrWhiteSpace(max))
                     {
                         decs.Append($"合理长度在{Min}-{max}之间.");
@@ -2740,151 +2247,6 @@ namespace Agebull.EntityModel.Config
             }
         }
         #endregion
-        #region 数据关联
-
-        /// <summary>
-        /// 关联表名
-        /// </summary>
-        [DataMember, JsonProperty("LinkTable", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _linkTable;
-
-        /// <summary>
-        /// 关联表名
-        /// </summary>
-        /// <remark>
-        /// 关联表名
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据关联"), DisplayName(@"关联表名"), Description("关联表名")]
-        public string LinkTable
-        {
-            get => _linkTable;
-            set
-            {
-                if (_linkTable == value)
-                    return;
-                if (Entity != null && (string.Equals(value, Entity.Name, StringComparison.OrdinalIgnoreCase) ||
-                                       string.Equals(value, Entity.SaveTableName, StringComparison.OrdinalIgnoreCase) ||
-                                       string.Equals(value, Entity.ReadTableName, StringComparison.OrdinalIgnoreCase)))
-                {
-                    value = null;
-                }
-                BeforePropertyChanged(nameof(LinkTable), _linkTable, value);
-                _linkTable = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-
-                OnPropertyChanged(nameof(LinkTable));
-            }
-        }
-
-        /// <summary>
-        /// 关联表主键
-        /// </summary>
-        [DataMember, JsonProperty("IsLinkKey", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isLinkKey;
-
-        /// <summary>
-        /// 关联表主键
-        /// </summary>
-        /// <remark>
-        /// 关联表主键,即与另一个实体关联的外键
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据关联"), DisplayName(@"关联表主键"), Description("关联表主键,即与另一个实体关联的外键")]
-        public bool IsLinkKey
-        {
-            get => _isLinkKey;
-            set
-            {
-                if (_isLinkKey == value)
-                    return;
-                BeforePropertyChanged(nameof(IsLinkKey), _isLinkKey, value);
-                _isLinkKey = value;
-                OnPropertyChanged(nameof(IsLinkKey));
-            }
-        }
-
-        /// <summary>
-        /// 关联表标题
-        /// </summary>
-        [DataMember, JsonProperty("IsLinkCaption", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isLinkCaption;
-
-        /// <summary>
-        /// 关联表标题
-        /// </summary>
-        /// <remark>
-        /// 关联表标题,即此字段为关联表的标题内容
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据关联"), DisplayName(@"关联表标题"), Description("关联表标题,即此字段为关联表的标题内容")]
-        public bool IsLinkCaption
-        {
-            get => _isLinkCaption;
-            set
-            {
-                if (_isLinkCaption == value)
-                    return;
-                BeforePropertyChanged(nameof(IsLinkCaption), _isLinkCaption, value);
-                _isLinkCaption = value;
-                OnPropertyChanged(nameof(IsLinkCaption));
-            }
-        }
-
-        /// <summary>
-        /// 对应客户ID
-        /// </summary>
-        [DataMember, JsonProperty("IsUserId", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isUserId;
-
-        /// <summary>
-        /// 对应客户ID
-        /// </summary>
-        /// <remark>
-        /// 是对应的UID,已过时,原来用于龙之战鼓
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据关联"), DisplayName(@"对应客户ID"), Description("是对应的UID,已过时,原来用于龙之战鼓")]
-        public bool IsUserId
-        {
-            get => _isUserId;
-            set
-            {
-                if (_isUserId == value)
-                    return;
-                BeforePropertyChanged(nameof(IsUserId), _isUserId, value);
-                _isUserId = value;
-                OnPropertyChanged(nameof(IsUserId));
-            }
-        }
-
-        /// <summary>
-        /// 关联字段名称
-        /// </summary>
-        [DataMember, JsonProperty("LinkField", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _linkField;
-
-        /// <summary>
-        /// 关联字段名称
-        /// </summary>
-        /// <remark>
-        /// 关联字段名称,即在关联表中的字段名称
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据关联"), DisplayName(@"关联字段名称"), Description("关联字段名称,即在关联表中的字段名称")]
-        public string LinkField
-        {
-            get => string.IsNullOrWhiteSpace(_linkField) ? Name : _linkField;
-            set
-            {
-                if (_linkField == value)
-                    return;
-                BeforePropertyChanged(nameof(LinkField), _linkField, value);
-                _linkField = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(LinkField));
-            }
-        }
-        #endregion
-
 
         #region Upgrade
 

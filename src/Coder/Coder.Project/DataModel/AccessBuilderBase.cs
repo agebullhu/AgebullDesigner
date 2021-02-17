@@ -1,4 +1,5 @@
 using Agebull.EntityModel.Config;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -292,14 +293,14 @@ namespace {Project.NameSpace}.DataAccess
             //}
             var code = new StringBuilder();
             var table = model.DataTable;
-            var primary = table.PrimaryField;
-            var last = table.Where(p => p != primary && !p.NoStorage);
-            properties.Add(DataBaseBuilder.EntityProperty(code, model, primary, ref idx, false));
-            foreach (var property in last.Where(p => !p.Property.IsInterfaceField).OrderBy(p => p.Index))
+
+            var last = model.WhereLast(p => p != model.PrimaryColumn);
+            properties.Add(DataBaseBuilder.EntityProperty(code, model, model.PrimaryColumn, ref idx, false));
+            foreach (var property in last.Where(p => !p.IsInterfaceField).OrderBy(p => p.Index))
             {
                 properties.Add(DataBaseBuilder.EntityProperty(code, model, property, ref idx, false));
             }
-            foreach (var property in last.Where(p => p.Property.IsInterfaceField))
+            foreach (var property in last.Where(p => p.IsInterfaceField))
             {
                 properties.Add(DataBaseBuilder.EntityProperty(code, model, property, ref idx, false));
             }
@@ -341,21 +342,14 @@ namespace {Project.NameSpace}.DataAccess
             if (property == null) return null;
             switch (property.ToLower()) 
             {{");
-
-            foreach (var field in Model.DataTable.FindAndToArray(p => p.Property.CanGet))
+            var gets = Model.FindLastAndToArray(p => !p.NoProperty && p.CanGet);
+            foreach (var property in gets)
             {
-                var names = field.Property.GetAliasPropertys().Select(p => p.ToLower()).ToList();
-                var name = field.Name.ToLower();
-                if (!names.Contains(name))
-                    names.Add(name);
-                name = field.DbFieldName.ToLower();
-                if (!names.Contains(name))
-                    names.Add(name);
-                foreach (var alias in names)
+                foreach (var name in Names(property))
                     code.Append($@"
-                case ""{alias}"" :");
+                case ""{name}"" :");
                 code.Append($@"
-                    return entity.{field.Name};");
+                    return entity.{property.Name};");
             }
             code.AppendLine(@"
             }
@@ -380,61 +374,52 @@ namespace {Project.NameSpace}.DataAccess
             if(property == null) return;
             switch(property.Trim().ToLower())
             {{");
-
-            foreach (var field in Model.DataTable.FindAndToArray(p => p.Property.CanSet))
+            var sets = Model.FindLastAndToArray(p => !p.NoProperty && p.CanSet);
+            foreach (var property in sets)
             {
-                var names = field.Property.GetAliasPropertys().Select(p => p.ToLower()).ToList();
-
-                var varName = $"tmp{field.Name}_";
-
-                var name = field.Name.ToLower();
-                if (!names.Contains(name))
-                    names.Add(name);
-                name = field.DbFieldName.ToLower();
-                if (!names.Contains(name))
-                    names.Add(name);
-                foreach (var alia in names)
+                var varName = $"tmp{property.Name}";
+                foreach (var name in Names(property))
                     code.Append($@"
-            case ""{alia}"":");
+            case ""{name}"":");
 
                 code.Append($@"
                 if (value == null)
-                     entity.{field.Name} = default;
-                else if(value is {field.LastCsType} {varName})
-                    entity.{field.Name} = {varName};");
+                     entity.{property.Name} = default;
+                else if(value is {property.LastCsType} {varName})
+                    entity.{property.Name} = {varName};");
 
-                switch (field.CsType)
+                switch (property.CsType)
                 {
                     case "string":
                     case "String":
                         code.Append($@"
                 else
-                    entity.{field.Name} = value.ToString();
+                    entity.{property.Name} = value.ToString();
                 return;");
                         continue;
                     case "bool":
                     case "Boolean":
                         code.Append($@"
-                else if(value is int i{field.Name})
-                    entity.{field.Name} = i{field.Name} != 0;
-                else if (int.TryParse(value.ToString(), out var { name}_vl))
-                    entity.{ field.Name} = { name}_vl != 0; ");
+                else if(value is int i{property.Name})
+                    entity.{property.Name} = i{property.Name} != 0;
+                else if (int.TryParse(value.ToString(), out var { property.Name}_vl))
+                    entity.{ property.Name} = { property.Name}_vl != 0; ");
                         break;
                 }
 
-                if (!string.IsNullOrWhiteSpace(field.CustomType))
+                if (!string.IsNullOrWhiteSpace(property.CustomType))
                 {
                     code.Append($@"
-                else if(value is int i{field.Name})
-                    entity.{field.Name} = ({field.CustomType})i{field.Name};
-                else if (int.TryParse(value.ToString(), out i{field.Name}))
-                    entity.{field.Name} = ({field.CustomType})i{field.Name};");
+                else if(value is int i{property.Name})
+                    entity.{property.Name} = ({property.CustomType})i{property.Name};
+                else if (int.TryParse(value.ToString(), out i{property.Name}))
+                    entity.{property.Name} = ({property.CustomType})i{property.Name};");
                 }
                 code.AppendLine($@"
-                else if ({field.LastCsType}.TryParse(value.ToString(), out {varName}))
-                    entity.{field.Name} = {varName};
+                else if ({property.LastCsType}.TryParse(value.ToString(), out {varName}))
+                    entity.{property.Name} = {varName};
                 else
-                    entity.{field.Name} = default;
+                    entity.{property.Name} = default;
                 return;");
             }
             code.AppendLine(@"
@@ -443,7 +428,14 @@ namespace {Project.NameSpace}.DataAccess
 
             return code.ToString();
         }
-
+        string[] Names(IPropertyConfig property)
+        {
+            var names = property.GetAliasPropertys().ToList();
+            names.Add(property.Name);
+            names.Add(property.JsonName);
+            names.Add(property.DataBaseField?.DbFieldName);
+            return names.Where(p => p.IsPresent()).Select(p => p.ToLower()).Distinct().ToArray();
+        }
         #endregion
     }
 }

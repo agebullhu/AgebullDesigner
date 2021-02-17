@@ -89,7 +89,7 @@ namespace Agebull.EntityModel.Config.V2021
         public DataBaseFieldConfig this[IPropertyConfig property] => Fields.FirstOrDefault(p => p.Property == property || p.Property.Field == property.Field);
 
         /// <summary>
-        /// 查找实体
+        /// 查找字段
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -102,7 +102,7 @@ namespace Agebull.EntityModel.Config.V2021
         }
 
         /// <summary>
-        /// 查找实体
+        /// 查找字段
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -112,7 +112,17 @@ namespace Agebull.EntityModel.Config.V2021
         }
 
         /// <summary>
-        /// 查找实体
+        /// 查找字段
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public DataBaseFieldConfig FindLast(string name)
+        {
+            return Fields.FirstOrDefault(p => p.IsActive && !p.NoStorage && name.IsOnce(p.Name,p.DbFieldName));
+        }
+
+        /// <summary>
+        /// 查找字段
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -122,7 +132,17 @@ namespace Agebull.EntityModel.Config.V2021
         }
 
         /// <summary>
-        /// 查找实体
+        /// 查找字段（排除暂存的删除或废弃内容）
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public DataBaseFieldConfig FindLast(Func<DataBaseFieldConfig, bool> filter)
+        {
+            return Fields.FirstOrDefault(p => p.IsActive && !p.NoStorage && filter(p));
+        }
+
+        /// <summary>
+        /// 查找字段
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -132,7 +152,36 @@ namespace Agebull.EntityModel.Config.V2021
         }
 
         /// <summary>
-        /// 查找实体
+        /// 查找字段（排除暂存的删除或废弃内容）
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public DataBaseFieldConfig[] FindLastAndToArray(Func<DataBaseFieldConfig, bool> filter)
+        {
+            return Fields.Where(p => p.IsActive && !p.NoStorage && filter(p)).ToArray();
+        }
+
+        /// <summary>
+        /// 查找字段（排除暂存的删除或废弃内容）
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public IEnumerable<DataBaseFieldConfig> Last()
+        {
+            return Fields.Where(p => p.IsActive && !p.NoStorage);
+        }
+        /// <summary>
+        /// 查找字段（排除暂存的删除或废弃内容）
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public IEnumerable<DataBaseFieldConfig> WhereLast(Func<DataBaseFieldConfig, bool> filter)
+        {
+            return Fields.Where(p => p.IsActive && !p.NoStorage && filter(p));
+        }
+
+        /// <summary>
+        /// 查找字段
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -140,18 +189,29 @@ namespace Agebull.EntityModel.Config.V2021
         {
             return Fields.Where(filter);
         }
+
         /// <summary>
-        /// 查找实体
+        /// 最终是否存在（排除暂存的删除或废弃内容）
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool AnyLast(Func<DataBaseFieldConfig, bool> filter)
+        {
+            return Fields.Any(p => p.IsActive && filter(p));
+        }
+
+        /// <summary>
+        /// 查找字段
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
         public bool Any(Func<DataBaseFieldConfig, bool> filter)
         {
-            return Fields.Any(filter);
+            return Fields.Any(p => filter(p));
         }
 
         /// <summary>
-        /// 查找实体
+        /// 查找字段
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -161,7 +221,7 @@ namespace Agebull.EntityModel.Config.V2021
         }
 
         /// <summary>
-        /// 查找实体
+        /// 查找字段
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -173,18 +233,18 @@ namespace Agebull.EntityModel.Config.V2021
 
 
         /// <summary>
-        /// 查找实体
+        /// 查找字段
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
         public bool TryGet(out DataBaseFieldConfig field, params string[] names)
         {
-            field = Fields.FirstOrDefault(p => names.Exist(p.Name,p.DbFieldName));
+            field = Fields.FirstOrDefault(p => names.Exist(p.Name, p.DbFieldName));
             return field != null;
         }
 
         /// <summary>
-        /// 查找实体
+        /// 查找字段
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -211,7 +271,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 存储表名,即实体对应的数据库表.因为模型可能直接使用视图,但增删改还在基础的表中时行,而不在视图中时行
         /// </remarks>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"存储表名"), Description(@"存储表名,即实体对应的数据库表.因为模型可能直接使用视图,但增删改还在基础的表中时行,而不在视图中时行")]
+        [DisplayName(@"存储表名"), Description(@"存储表名,即实体对应的数据库表.因为模型可能直接使用视图,但增删改还在基础的表中时行,而不在视图中时行")]
         public string ReadTableName
         {
             get => _readTableName;
@@ -235,7 +295,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 存储表名
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"存储表名"), Description(@"存储表名")]
+        [DisplayName(@"存储表名"), Description(@"存储表名")]
         public string SaveTableName
         {
             get => _saveTableName;
@@ -259,7 +319,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 数据库编号
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"数据库编号"), Description(@"数据库编号")]
+        [DisplayName(@"数据库编号"), Description(@"数据库编号")]
         public int DbIndex
         {
             get => _dbIndex;
@@ -283,7 +343,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 按修改更新
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"按修改更新"), Description(@"按修改更新")]
+        [DisplayName(@"按修改更新"), Description(@"按修改更新")]
         public bool UpdateByModified
         {
             get => _updateByModified;
@@ -307,7 +367,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 是否视图
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"是否视图"), Description(@"是否视图")]
+        [DisplayName(@"是否视图"), Description(@"是否视图")]
         public bool IsView
         {
             get => _isView;
@@ -331,7 +391,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 是否查询
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"是否查询"), Description(@"是否查询")]
+        [DisplayName(@"是否查询"), Description(@"是否查询")]
         public bool IsQuery
         {
             get => _isQuery;
@@ -355,7 +415,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 启用数据事件
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"启用数据事件"), Description(@"启用数据事件")]
+        [DisplayName(@"启用数据事件"), Description(@"启用数据事件")]
         public bool EnableDataEvent
         {
             get => _enableDataEvent;
@@ -369,29 +429,6 @@ namespace Agebull.EntityModel.Config.V2021
             }
         }
 
-        /// <summary>
-        /// 是否关联表
-        /// </summary>
-        [DataMember, JsonProperty("isLinkTable", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isLinkTable;
-
-        /// <summary>
-        /// 是否关联表
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"是否关联表"), Description(@"是否关联表")]
-        public bool IsLinkTable
-        {
-            get => _isLinkTable;
-            set
-            {
-                if (_isLinkTable == value)
-                    return;
-                BeforePropertyChanged(nameof(IsLinkTable), _isLinkTable, value);
-                _isLinkTable = value;
-                OnPropertyChanged(nameof(IsLinkTable));
-            }
-        }
         #endregion 字段
 
         #region 兼容性升级
@@ -451,7 +488,6 @@ namespace Agebull.EntityModel.Config.V2021
             IsView = dest.IsView;
             IsQuery = dest.IsQuery;
             EnableDataEvent = dest.EnableDataEvent;
-            IsLinkTable = dest.IsLinkTable;
             _fields = new ConfigCollection<DataBaseFieldConfig>(this);
             if (dest is DataTableConfig dataTable)
                 foreach (var field in dataTable.Fields)
@@ -459,7 +495,7 @@ namespace Agebull.EntityModel.Config.V2021
                     var uiField = new DataBaseFieldConfig
                     {
                         Parent = this,
-                        Property =field.Property
+                        Property = field.Property
                     };
                     uiField.Copy(field);
                     _fields.Add(uiField);
@@ -471,56 +507,28 @@ namespace Agebull.EntityModel.Config.V2021
         /// </summary>
         /// <param name="dest">复制源</param>
         /// <returns></returns>
-        public void CopyProperty(EntityConfig dest)
+        public void CopyProperty(EntityConfigBase dest)
         {
-            ReadTableName = dest.ReadTableName;
-            SaveTableName = dest.SaveTableName;
-            DbIndex = dest.DbIndex;
-            UpdateByModified = dest.UpdateByModified;
-            IsView = dest.IsView;
-            IsQuery = dest.IsQuery;
-            IsLinkTable = dest.IsLinkTable;
-            EnableDataEvent = dest.EnableDataEvent;
-            _fields = new ConfigCollection<DataBaseFieldConfig>(this);
-            foreach (var field in dest.Properties)
-            {
-                var uiField = new DataBaseFieldConfig
-                {
-                    Parent = this,
-                    Property = field
-                };
-                uiField.Copy(field);
-                _fields.Add(uiField);
-            }
-        }
-        /// <summary>
-        /// 字段复制
-        /// </summary>
-        /// <param name="dest">复制源</param>
-        /// <returns></returns>
-        public void CopyProperty(ModelConfig dest)
-        {
-            ReadTableName = dest.ReadTableName;
-            SaveTableName = dest.SaveTableName;
-            DbIndex = dest.DbIndex;
-            UpdateByModified = dest.UpdateByModified;
+            ReadTableName = dest._readTableName;
+            SaveTableName = dest._saveTableName;
+            DbIndex = dest._dbIndex;
+            UpdateByModified = dest._updateByModified;
             IsView = dest.IsView;
             IsQuery = dest.IsQuery;
             EnableDataEvent = dest.EnableDataEvent;
-            IsLinkTable = dest.IsLinkTable;
             _fields = new ConfigCollection<DataBaseFieldConfig>(this);
-            foreach (var field in dest.Properties)
+            foreach (var property in dest.IEntity.Properties)
             {
-                var uiField = new DataBaseFieldConfig
+                var field = new DataBaseFieldConfig
                 {
                     Parent = this,
-                    Property = field
+                    Property = property
                 };
-                uiField.Copy(field);
-                _fields.Add(uiField);
+                field.Copy(property.Field);
+                property.DataBaseField = field;
+                _fields.Add(field);
             }
         }
-
         #endregion 字段复制
 
     }

@@ -35,12 +35,13 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         public void WriteCustomCode(string path)
         {
-            using (CodeGeneratorScope.CreateScope(CurrentConfig as EntityConfig))
+            if (!CanWrite)
+                return;
+            using (CodeGeneratorScope.CreateScope(CurrentConfig, false))
             {
                 try
                 {
-                    if (CanWrite)
-                        CreateCustomCode(path);
+                    CreateCustomCode(path);
                 }
                 catch (Exception e)
                 {
@@ -54,12 +55,13 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         public void WriteDesignerCode(string path)
         {
-            using (CodeGeneratorScope.CreateScope(CurrentConfig as EntityConfig))
+            if (!CanWrite)
+                return;
+            using (CodeGeneratorScope.CreateScope(CurrentConfig, false))
             {
                 try
                 {
-                    if (CanWrite)
-                        CreateDesignerCode(path);
+                    CreateDesignerCode(path);
                 }
                 catch (Exception e)
                 {

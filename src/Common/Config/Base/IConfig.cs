@@ -95,6 +95,7 @@
         string OldName
         {
             get;
+            set;
         }
 
         /// <summary>
@@ -147,6 +148,8 @@
         /// 配置
         /// </summary>
         ConfigDesignOption Option { get; }
+
+        void RaisePropertyChanged(string property);
         #endregion
     }
 }

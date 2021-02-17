@@ -14,12 +14,9 @@
         /// </summary>
         string DbFieldName { get; }
         /// <summary>
-        /// 不更新
-        /// </summary>
-        bool KeepUpdate { get; }
-        /// <summary>
         /// 能否存储空值
-        /// </summary>/// <remarks>
+        /// </summary>
+        /// <remarks>
         /// 如为真,在存储空值读取时使用语言类型的默认值
         /// </remarks>
         bool DbNullable { get; }

@@ -31,19 +31,6 @@ namespace Agebull.EntityModel.Config
         public string Type => "model";
 
         /// <summary>
-        /// 表示自己的后期实现
-        /// </summary>
-        protected sealed override IEntityConfig IEntity => this;
-
-        /// <summary>
-        /// 构造
-        /// </summary>
-        public ModelConfig()
-        {
-            _desingSwitch = 0xFFFF;
-        }
-
-        /// <summary>
         /// 实体名称
         /// </summary>
         [DataMember, JsonProperty("entityKey", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
@@ -117,32 +104,6 @@ namespace Agebull.EntityModel.Config
             set => base.Remark = value;
         }
 
-        /// <summary>
-        /// 最大字段标识号
-        /// </summary>
-        [DataMember, JsonProperty("MaxIdentity", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal int _maxIdentity;
-
-        /// <summary>
-        /// 最大字段标识号
-        /// </summary>
-        /// <remark>
-        /// 最大字段标识号
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"系统"), DisplayName(@"最大字段标识号"), Description("最大字段标识号")]
-        public int MaxIdentity
-        {
-            get => _maxIdentity;
-            set
-            {
-                if (_maxIdentity == value)
-                    return;
-                BeforePropertyChanged(nameof(MaxIdentity), _maxIdentity, value);
-                _maxIdentity = value;
-                OnPropertyChanged(nameof(MaxIdentity));
-            }
-        }
         #endregion
 
         #region 数据标识
@@ -265,30 +226,6 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(EntityName), _entityName, value);
                 _entityName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(EntityName));
-            }
-        }
-
-        /// <summary>
-        /// 是否查询
-        /// </summary>
-        [DataMember, JsonProperty("isQuery", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isQuery;
-
-        /// <summary>
-        /// 是否查询
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据模型"), DisplayName(@"是否查询"), Description("是否查询")]
-        public bool IsQuery
-        {
-            get => _isQuery;
-            set
-            {
-                if (_isQuery == value)
-                    return;
-                BeforePropertyChanged(nameof(IsQuery), _isQuery, value);
-                _isQuery = value;
-                OnPropertyChanged(nameof(IsQuery));
             }
         }
 
@@ -477,7 +414,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"名称"), Description("名称")]
-        public string DisplayName => $"{Caption}({EntityName}:{ReadTableName}";
+        public string DisplayName => $"{Caption}({EntityName}:{DataTable.ReadTableName}";
 
         /// <summary>
         /// 不同版本读数据的代码
@@ -582,9 +519,8 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public PropertyConfig Find(string name)
         {
-            return Find(p =>
-                name.Equals(p.Name, StringComparison.OrdinalIgnoreCase) ||
-                name.Equals(p.DataBaseField?.DbFieldName, StringComparison.OrdinalIgnoreCase));
+            return Properties.FirstOrDefault(p =>
+                name.IsOnce(p.Name,p.DataBaseField?.DbFieldName));
         }
         /// <summary>
         /// 查找实体
@@ -593,7 +529,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public PropertyConfig Find(Func<PropertyConfig, bool> filter)
         {
-            return Find(filter);
+            return Properties.FirstOrDefault(filter);
         }
 
         /// <summary>
@@ -603,7 +539,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public PropertyConfig Find(params string[] names)
         {
-            return Find(p => names.Exist(p.Name, p.DataBaseField?.DbFieldName));
+            return Properties.FirstOrDefault(p => names.Exist(p.Name, p.DataBaseField?.DbFieldName));
         }
 
         public bool Exist(Func<PropertyConfig, bool> filter)
@@ -642,7 +578,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public PropertyConfig[] FindAndToArray(Func<PropertyConfig, bool> filter)
         {
-            return Where(filter).ToArray();
+            return Properties.Where(filter).ToArray();
         }
 
         /// <summary>
@@ -652,7 +588,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public IEnumerable<PropertyConfig> Where(Func<PropertyConfig, bool> filter)
         {
-            return Where(filter);
+            return Properties.Where(filter);
         }
 
         /// <summary>
@@ -662,7 +598,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public bool TryGet(out PropertyConfig field, params string[] names)
         {
-            field = Find(p => names.Exist(p.Name, p.DataBaseField?.DbFieldName));
+            field = Properties.FirstOrDefault(p => names.Exist(p.Name, p.DataBaseField?.DbFieldName));
             return field != null;
         }
 
@@ -674,124 +610,6 @@ namespace Agebull.EntityModel.Config
         public bool Exist(params string[] names)
         {
             return Properties.Any(p => names.Exist(p.Name, p.DataBaseField?.DbFieldName));
-        }
-        #endregion
-
-        #region 数据库
-
-        /// <summary>
-        /// 存储表名(设计录入)的说明文字
-        /// </summary>
-        const string ReadTableName_Description = @"存储表名,即实体对应的数据库表.因为模型可能直接使用视图,但增删改还在基础的表中时行,而不在视图中时行";
-
-        /// <summary>
-        /// 存储表名(设计录入)
-        /// </summary>
-        [DataMember, JsonProperty("_tableName", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _readTableName;
-
-        /// <summary>
-        /// 存储表名(设计录入)
-        /// </summary>
-        /// <remark>
-        /// 存储表名,即实体对应的数据库表.因为模型可能直接使用视图,但增删改还在基础的表中时行,而不在视图中时行
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"存储表名(设计录入)"), Description(ReadTableName_Description)]
-        public string ReadTableName
-        {
-            get => _readTableName ?? Entity.ReadTableName;
-            set
-            {
-                if (_readTableName == value)
-                    return;
-                BeforePropertyChanged(nameof(ReadTableName), _readTableName, value);
-                _readTableName = string.IsNullOrWhiteSpace(value) || value.Equals(_readTableName, System.StringComparison.OrdinalIgnoreCase)
-                    ? null
-                    : value.Trim();
-                OnPropertyChanged(nameof(ReadTableName));
-            }
-        }
-
-        /// <summary>
-        /// 存储表名
-        /// </summary>
-        [DataMember, JsonProperty("_saveTableName", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _saveTableName;
-
-        /// <summary>
-        /// 存储表名
-        /// </summary>
-        /// <remark>
-        /// 存储表名
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"存储表名"), Description("存储表名")]
-        public string SaveTableName
-        {
-            get => _saveTableName ?? Entity.SaveTableName;
-            set
-            {
-                if (_saveTableName == value)
-                    return;
-                BeforePropertyChanged(nameof(SaveTableName), _saveTableName, value);
-                _saveTableName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(SaveTableName));
-            }
-        }
-
-        /// <summary>
-        /// 数据库编号
-        /// </summary>
-        [DataMember, JsonProperty("_dbIndex", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal int _dbIndex;
-
-        /// <summary>
-        /// 数据库编号
-        /// </summary>
-        /// <remark>
-        /// 数据库编号
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"数据库编号"), Description("数据库编号")]
-        public int DbIndex
-        {
-            get => _dbIndex;
-            set
-            {
-                if (_dbIndex == value)
-                    return;
-                BeforePropertyChanged(nameof(DbIndex), _dbIndex, value);
-                _dbIndex = value;
-                OnPropertyChanged(nameof(DbIndex));
-            }
-        }
-
-        /// <summary>
-        /// 按修改更新
-        /// </summary>
-        [DataMember, JsonProperty("UpdateByModified", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _updateByModified;
-
-        /// <summary>
-        /// 按修改更新
-        /// </summary>
-        /// <remark>
-        /// 按修改更新
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"按修改更新"), Description("按修改更新")]
-        public bool UpdateByModified
-        {
-            get => _updateByModified;
-            set
-            {
-                if (_updateByModified == value)
-                    return;
-                BeforePropertyChanged(nameof(UpdateByModified), _updateByModified, value);
-                _updateByModified = value;
-                OnPropertyChanged(nameof(UpdateByModified));
-            }
         }
         #endregion
 

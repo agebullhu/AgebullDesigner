@@ -57,6 +57,20 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
+        /// 数组长度
+        /// </summary>
+        /// <remark>
+        /// 数组长度
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"模型设计"), DisplayName(@"数组长度"), Description("数组长度")]
+        public string ArrayLen
+        {
+            get => Field.ArrayLen;
+            set => Field.ArrayLen = value;
+        }
+
+        /// <summary>
         /// 是否字典
         /// </summary>
         /// <remark>
@@ -363,19 +377,6 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 自增字段
-        /// </summary>
-        /// <remark>
-        /// 自增列,通过数据库(或REDIS)自动增加
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据标识"), DisplayName(@"自增字段")]
-        public bool IsIdentity
-        {
-            get => Field.IsIdentity; set => Field.IsIdentity = value;
-        }
-
-        /// <summary>
         /// 全局标识
         /// </summary>
         /// <remark>
@@ -413,166 +414,6 @@ namespace Agebull.EntityModel.Config
             get => Field.UniqueString; set => Field.UniqueString = value;
         }
         #endregion
-        #region 数据库
-
-        /// <summary>
-        /// 不更新
-        /// </summary>
-        /// <remark>
-        /// 不更新
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"不更新"), Description("不更新")]
-        public bool KeepUpdate
-        {
-            get => Field.KeepUpdate; set => Field.KeepUpdate = value;
-        }
-
-        /// <summary>
-        /// 能否存储空值
-        /// </summary>
-        /// <remark>
-        /// 如为真,在存储空值读取时使用语言类型的默认值
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"能否存储空值")]
-        public bool DbNullable
-        {
-            get => Field.DbNullable; set => Field.DbNullable = value;
-        }
-
-        /// <summary>
-        /// 构建数据库索引
-        /// </summary>
-        /// <remark>
-        /// 构建数据库索引的优化选项
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"构建数据库索引"), Description("构建数据库索引的优化选项")]
-        public bool NeedDbIndex => Field.NeedDbIndex;
-
-        /// <summary>
-        /// 数据长度
-        /// </summary>
-        /// <remark>
-        /// 文本或二进制存储的最大长度
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"数据长度"), Description("文本或二进制存储的最大长度")]
-        public int Datalen
-        {
-            get => Field.Datalen;
-            set => Field.Datalen = value;
-        }
-
-        /// <summary>
-        /// 数组长度
-        /// </summary>
-        /// <remark>
-        /// 数组长度
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"数组长度"), Description("数组长度")]
-        public string ArrayLen
-        {
-            get => Field.ArrayLen;
-            set => Field.ArrayLen = value;
-        }
-
-        /// <summary>
-        /// 存储精度
-        /// </summary>
-        /// <remark>
-        /// 存储精度
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"存储精度"), Description("存储精度")]
-        public int Scale
-        {
-            get => Field.Scale;
-            set => Field.Scale = value;
-        }
-
-        /// <summary>
-        /// 固定长度
-        /// </summary>
-        /// <remark>
-        /// 是否固定长度字符串
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"固定长度"), Description("是否固定长度字符串")]
-        public bool FixedLength
-        {
-            get => Field.FixedLength; set => Field.FixedLength = value;
-        }
-
-        /// <summary>
-        /// 备注字段
-        /// </summary>
-        /// <remark>
-        /// 是否备注字段
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"备注字段"), Description("是否备注字段")]
-        public bool IsMemo
-        {
-            get => Field.IsMemo;
-            set => Field.IsMemo = value;
-        }
-
-        /// <summary>
-        /// 大数据
-        /// </summary>
-        /// <remark>
-        /// 是否大数据
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"大数据"), Description("是否大数据")]
-        public bool IsBlob
-        {
-            get => Field.IsBlob; set => Field.IsBlob = value;
-        }
-
-        /// <summary>
-        /// 内部字段(数据库)
-        /// </summary>
-        /// <remark>
-        /// 数据库内部字段,如果为真,仅支持在SQL的语句中出现此字段，不支持外部的读写
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"内部字段(数据库)")]
-        public bool DbInnerField
-        {
-            get => Field.DbInnerField; set => Field.DbInnerField = value;
-        }
-
-
-        /// <summary>
-        /// 自定义保存
-        /// </summary>
-        /// <remark>
-        /// 自定义保存,如果为真,数据库的写入忽略这个字段,数据的写入由代码自行维护
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"自定义保存")]
-        public bool CustomWrite
-        {
-            get => Field.CustomWrite; set => Field.CustomWrite = value;
-        }
-
-        /// <summary>
-        /// 存储值读写字段
-        /// </summary>
-        /// <remark>
-        /// 存储值读写字段(internal),即使用非基础类型时,当发生读写数据库操作时使用的字段,字段为文本(JSON或XML)类型,使用序列化方法读写
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"存储值读写字段")]
-        public string StorageProperty
-        {
-            get => Field.StorageProperty; set => Field.StorageProperty = value;
-        }
-        #endregion
         #region 用户界面
 
         /// <summary>
@@ -583,7 +424,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"用户可见"), Description("用户可见")]
-        public bool UserSee => !InnerField && !DbInnerField && !NoProperty;
+        public bool UserSee => !InnerField && !NoProperty;
 
         /// <summary>
         /// 不可编辑
@@ -992,74 +833,6 @@ namespace Agebull.EntityModel.Config
             get => Field.Min; set => Field.Min = value;
         }
         #endregion
-        #region 数据关联
-
-        /// <summary>
-        /// 关联表名
-        /// </summary>
-        /// <remark>
-        /// 关联表名
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据关联"), DisplayName(@"关联表名"), Description("关联表名")]
-        public string LinkTable
-        {
-            get => Field.LinkTable; set => Field.LinkTable = value;
-        }
-
-        /// <summary>
-        /// 关联表主键
-        /// </summary>
-        /// <remark>
-        /// 关联表主键,即与另一个实体关联的外键
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据关联"), DisplayName(@"关联表主键"), Description("关联表主键,即与另一个实体关联的外键")]
-        public bool IsLinkKey
-        {
-            get => Field.IsLinkKey; set => Field.IsLinkKey = value;
-        }
-
-        /// <summary>
-        /// 关联表标题
-        /// </summary>
-        /// <remark>
-        /// 关联表标题,即此字段为关联表的标题内容
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据关联"), DisplayName(@"关联表标题"), Description("关联表标题,即此字段为关联表的标题内容")]
-        public bool IsLinkCaption
-        {
-            get => Field.IsLinkCaption; set => Field.IsLinkCaption = value;
-        }
-
-        /// <summary>
-        /// 对应客户ID
-        /// </summary>
-        /// <remark>
-        /// 是对应的UID,已过时,原来用于龙之战鼓
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据关联"), DisplayName(@"对应客户ID"), Description("是对应的UID,已过时,原来用于龙之战鼓")]
-        public bool IsUserId
-        {
-            get => Field.IsUserId; set => Field.IsUserId = value;
-        }
-
-        /// <summary>
-        /// 关联字段名称
-        /// </summary>
-        /// <remark>
-        /// 关联字段名称,即在关联表中的字段名称
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据关联"), DisplayName(@"关联字段名称"), Description("关联字段名称,即在关联表中的字段名称")]
-        public string LinkField
-        {
-            get => Field.LinkField; set => Field.LinkField = value;
-        }
-        #endregion
-
         #region Upgrade
 
         /// <summary>

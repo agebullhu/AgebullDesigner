@@ -7,23 +7,23 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// 解决方案配置触发器
     /// </summary>
-    public sealed class SolutionTrigger : ConfigTriggerBase<SolutionConfig>
+    public sealed class SolutionTrigger : ConfigTriggerBase<SolutionConfig>, IEventTrigger
     {
         /// <summary>
         /// 载入事件处理
         /// </summary>
-        protected override void OnLoad()
+        public override void OnLoad()
         {
             SolutionModel model = new SolutionModel
             {
-                Solution = Target
+                Solution = TargetConfig
             };
 
             model.RepairByLoaded();
             model.ResetStatus();
             model.OnSolutionLoad();
 
-            foreach (var project in Target.Projects)
+            foreach (var project in TargetConfig.Projects)
             {
                 project.OnLoad();
             }
@@ -39,18 +39,11 @@ namespace Agebull.EntityModel.Designer
         {
             switch (property)
             {
-                case nameof(Target.IdDataType):
-                    Target.Foreach<FieldConfig>(p =>
+                case nameof(TargetConfig.IdDataType):
+                    TargetConfig.Foreach<FieldConfig>(p =>
                     {
                         if (p.IsPrimaryKey || p.IsLinkField)
-                            p.DataType = Target.IdDataType;
-                    });
-                    break;
-                case nameof(Target.UserIdDataType):
-                    Target.Foreach<FieldConfig>(p =>
-                    {
-                        if (p.IsUserId)
-                            p.DataType = Target.UserIdDataType;
+                            p.DataType = TargetConfig.IdDataType;
                     });
                     break;
             }
@@ -66,10 +59,10 @@ namespace Agebull.EntityModel.Designer
         {
             switch (property)
             {
-                case nameof(Target.RootPath):
+                case nameof(TargetConfig.RootPath):
                     SolutionModel model = new SolutionModel
                     {
-                        Solution = Target
+                        Solution = TargetConfig
                     };
                     model.CheckProjectPath((string)oldValue, (string)newValue);
                     break;

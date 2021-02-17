@@ -32,19 +32,19 @@ namespace Agebull.EntityModel.Config
         /// 子级
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        private ConfigCollection<EntityConfig> _items;
+        private ConfigCollection<EntityConfigBase> _items;
 
         /// <summary>
         /// 子级
         /// </summary>
         [IgnoreDataMember, JsonIgnore, Browsable(false)]
-        public ConfigCollection<EntityConfig> Items
+        public ConfigCollection<EntityConfigBase> Items
         {
             get
             {
                 if (_items != null)
                     return _items;
-                _items = new ConfigCollection<EntityConfig>(this);
+                _items = new ConfigCollection<EntityConfigBase>(this);
                 RaisePropertyChanged(nameof(Items));
                 return _items;
             }

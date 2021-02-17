@@ -5,7 +5,7 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// Target触发器
     /// </summary>
-    public sealed class OptionTrigger : EventTrigger<ConfigDesignOption>
+    public sealed class OptionTrigger : EventTrigger<ConfigDesignOption>, IEventTrigger
     {
         /// <summary>
         ///     发出属性修改前事件
@@ -13,12 +13,12 @@ namespace Agebull.EntityModel.Designer
         /// <param name="property">属性</param>
         /// <param name="oldValue">旧值</param>
         /// <param name="newValue">新值</param>
-        protected override void BeforePropertyChanged(string property, object oldValue, object newValue)
+        public override void BeforePropertyChanged(string property, object oldValue, object newValue)
         {
             switch (property)
             {
                 case nameof(ConfigDesignOption.Key):
-                    GlobalConfig.RemoveConfig(Target);
+                    GlobalConfig.RemoveConfig(TargetConfig);
                     break;
             }
         }
@@ -27,20 +27,20 @@ namespace Agebull.EntityModel.Designer
         /// 属性事件处理
         /// </summary>
         /// <param name="property"></param>
-        protected override void OnPropertyChanged(string property)
+        public override void OnPropertyChanged(string property)
         {
             switch (property)
             {
                 case nameof(ConfigDesignOption.Key):
-                    GlobalConfig.AddConfig(Target);
+                    GlobalConfig.AddConfig(TargetConfig);
                     break;
                 case nameof(ConfigDesignOption.IsDiscard):
                 case nameof(ConfigDesignOption.IsDelete):
-                    GlobalConfig.RemoveConfig(Target);
+                    GlobalConfig.RemoveConfig(TargetConfig);
                     break;
                 case nameof(ConfigDesignOption.IsModify):
-                    if (Target.IsModify && Target.Config != null)
-                        Target.Config.IsModify = true;
+                    if (TargetConfig.IsModify && TargetConfig.Config != null)
+                        TargetConfig.Config.IsModify = true;
                     break;
             }
         }

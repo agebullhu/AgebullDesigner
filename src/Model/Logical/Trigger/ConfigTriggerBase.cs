@@ -14,9 +14,9 @@ namespace Agebull.EntityModel.Designer
         /// <param name="property">属性</param>
         /// <param name="oldValue">旧值</param>
         /// <param name="newValue">新值</param>
-        protected sealed override void BeforePropertyChanged(string property, object oldValue, object newValue)
+        public sealed override void BeforePropertyChanged(string property, object oldValue, object newValue)
         {
-            if (Target.Option.IsReadonly)
+            if (TargetConfig.Option.IsReadonly)
                 return;
             BeforePropertyChangedInner(property, oldValue, newValue);
         }
@@ -33,9 +33,9 @@ namespace Agebull.EntityModel.Designer
         /// 属性事件处理
         /// </summary>
         /// <param name="property"></param>
-        protected sealed override void OnPropertyChanged(string property)
+        public sealed override void OnPropertyChanged(string property)
         {
-            if (Target.Option.IsReadonly)
+            if (TargetConfig.Option.IsReadonly)
                 return;
             OnPropertyChangedInner(property);
         }

@@ -314,7 +314,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 var caption = property.Caption;
                 if (field.IsLinkKey)
                 {
-                    var friend = entity.DataTable.Find(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
+                    var friend = entity.DataTable.FindLast(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
                     if (friend != null)
                         caption = friend.Property.Caption;
                 }
@@ -630,7 +630,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 return null;
             }
             StringBuilder quButton = new StringBuilder();
-            var fields = Model.DataTable.FindAndToArray(p => p.Property.CanUserQuery && p.Property.UserSee && !p.NoStorage && !p.IsLinkKey && !p.Property.IsPrimaryKey);
+            var fields = Model.DataTable.FindLastAndToArray(p => p.Property.CanUserQuery && p.Property.UserSee && !p.NoStorage && !p.IsLinkKey && !p.Property.IsPrimaryKey);
             //if (Entity.Interfaces.Contains("IStateData"))
             //{
             //    quButton.Append(satateQuery);
@@ -753,7 +753,6 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                     code.Append(property.IsUserReadOnly ? " readonly" : " :readonly='form.readonly'");
                 }
             }
-            var field = property.DataBaseField;
             if (property.EnumConfig != null)
             {
                 code.Append($@"
@@ -764,9 +763,9 @@ namespace Agebull.EntityModel.RobotCoder.VUE
             <el-option v-for='item in types.{property.EnumConfig.Name.ToLWord()}' :key='item.value' :label='item.label' :value='item.value'></el-option>
         </el-select>");
             }
-            else if (field != null && field.IsLinkKey)
+            else if (!property.NoStorage && property.DataBaseField.IsLinkKey)
             {
-                var name = GlobalConfig.GetEntity(field.LinkTable)?.Name.ToLWord().ToPluralism();
+                var name = GlobalConfig.GetEntity(property.DataBaseField.LinkTable)?.Name.ToLWord().ToPluralism();
                 code.Append($@"
         <el-select v-model='{model}.{property.JsonName}'");
                 SetDisabled(true);

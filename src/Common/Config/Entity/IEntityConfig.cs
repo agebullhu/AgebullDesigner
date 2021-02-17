@@ -23,6 +23,12 @@ namespace Agebull.EntityModel.Config
     {
         #region 视角开关
 
+        bool IsLinkTable
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// 启用数据库支持
         /// </summary>
@@ -31,6 +37,7 @@ namespace Agebull.EntityModel.Config
             get;
             set;
         }
+        
         /// <summary>
         /// 启用数据校验
         /// </summary>
@@ -277,7 +284,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         IPropertyConfig Find(string name)
         {
-            return Find(p => p.Name.IsMe(name) || name.IsMe(p.DataBaseField?.DbFieldName));
+            return Properties.FirstOrDefault(p => p.Name.IsMe(name) || name.IsMe(p.DataBaseField?.DbFieldName));
         }
         /// <summary>
         /// 查找实体
@@ -286,7 +293,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         IPropertyConfig Find(Func<IPropertyConfig, bool> filter)
         {
-            return Find(filter);
+            return Properties.FirstOrDefault(filter);
         }
 
         /// <summary>
@@ -296,7 +303,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         IPropertyConfig Find(params string[] names)
         {
-            return Find(p => names.Exist(p.Name, p.Name, p.DataBaseField?.DbFieldName));
+            return Properties.FirstOrDefault(p => names.Exist(p.Name, p.Name, p.DataBaseField?.DbFieldName));
         }
 
         /// <summary>
@@ -326,7 +333,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         IPropertyConfig[] FindAndToArray(Func<IPropertyConfig, bool> filter)
         {
-            return Where(filter).ToArray();
+            return Properties.Where(filter).ToArray();
         }
 
         /// <summary>
@@ -336,7 +343,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         IEnumerable<IPropertyConfig> Where(Func<IPropertyConfig, bool> filter)
         {
-            return Where(filter);
+            return Properties.Where(filter);
         }
 
         /// <summary>
@@ -346,7 +353,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         bool TryGet(out IPropertyConfig field, params string[] names)
         {
-            field = Find(p => names.Exist(p.Name, p.Name, p.DataBaseField?.DbFieldName));
+            field = Properties.FirstOrDefault(p => names.Exist(p.Name, p.Name, p.DataBaseField?.DbFieldName));
             return field != null;
         }
 
@@ -479,10 +486,7 @@ namespace Agebull.EntityModel.Config
         /// 是否查询
         /// </summary>
         bool IsQuery { get; }
-        /// <summary>
-        /// 是否关联表
-        /// </summary>
-        bool IsLinkTable { get; }
+
         /// <summary>
         /// 启用数据事件
         /// </summary>

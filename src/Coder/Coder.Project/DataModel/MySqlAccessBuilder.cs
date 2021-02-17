@@ -19,7 +19,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         protected override string OrderbyFields()
         {
-            var field = Model.DataTable.Find(p => p.Name == Model.OrderField);
+            var field = Model.DataTable.FindLast(p => p.Name == Model.OrderField);
             if (field == null)
                 return null;
             return Model is ModelConfig model
@@ -40,17 +40,17 @@ namespace Agebull.EntityModel.RobotCoder
                         : releation.PrimaryEntity;
 
                     var outField = releation.PrimaryEntity == model.Entity
-                        ? entity.Find(p => p.Name == releation.ForeignKey)
-                        : entity.PrimaryColumn;
+                        ? entity.DataTable.FindLast(p => p.Name == releation.ForeignKey)
+                        : entity.DataTable.PrimaryField;
 
                     var inField = releation.PrimaryEntity == model.Entity
                         ? model.DataTable.PrimaryField
-                        : model.DataTable.Find(p => p.IsLinkKey && p.LinkTable == entity.Name);
+                        : model.DataTable.FindLast(p => p.IsLinkKey && p.LinkTable == entity.Name);
 
 
                     code.AppendLine();
                     code.Append(releation.JoinType == EntityJoinType.Inner ? "INNER JOIN" : "LEFT JOIN");
-                    code.Append($"`{entity.ReadTableName}` ON `{table}`.`{inField.DbFieldName}` = `{entity.ReadTableName}`.`{outField.DbFieldName}` {releation.Condition}");
+                    code.Append($"`{entity.DataTable.ReadTableName}` ON `{table}`.`{inField.DbFieldName}` = `{entity.DataTable.ReadTableName}`.`{outField.DbFieldName}` {releation.Condition}");
                 }
             }
             return code.ToString();
@@ -63,12 +63,12 @@ namespace Agebull.EntityModel.RobotCoder
                 if (Model.Interfaces.Contains("ILogicDeleteData"))
                 {
                     var entity = GlobalConfig.GetEntity("ILogicDeleteData");
-                    return $"UPDATE `{Model.DataTable.SaveTableName}` SET `{entity.Properties[0].DbFieldName}`=1 ";
+                    return $"UPDATE `{Model.DataTable.SaveTableName}` SET `{entity.Properties[0].DataBaseField.DbFieldName}`=1 ";
                 }
                 if (Model.Interfaces.Contains("IStateData"))
                 {
                     var entity = GlobalConfig.GetEntity("IStateData");
-                    var field = entity.Find(p => p.Name == "DataState");
+                    var field = entity.Find(p => p.Name == "DataState").DataBaseField;
                     return $"UPDATE `{Model.DataTable.SaveTableName}` SET `{field.DbFieldName}`=255 ";
                 }
             }
@@ -79,7 +79,7 @@ namespace Agebull.EntityModel.RobotCoder
         {
             if (Model.DataTable.IsQuery)
                 return null;
-            var columns = Model.DataTable.FindAndToArray(p => p.Entity == Model.Entity &&
+            var columns = Model.DataTable.FindLastAndToArray(p => p.Entity == Model.Entity &&
                     !p.IsIdentity && !p.IsReadonly && !p.CustomWrite &&
                     !p.DbInnerField &&
                     !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)
@@ -106,7 +106,7 @@ namespace Agebull.EntityModel.RobotCoder
         {
             if (Model.DataTable.IsQuery)
                 return null;
-            var columns = Model.DataTable.FindAndToArray(p => p.Entity == Model.Entity &&
+            var columns = Model.DataTable.FindLastAndToArray(p => p.Entity == Model.Entity &&
                     !p.IsIdentity && !p.IsReadonly && !p.CustomWrite &&
                     !p.DbInnerField &&
                     !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)
@@ -134,11 +134,7 @@ namespace Agebull.EntityModel.RobotCoder
                 return null;
             var isFirst = true;
             var sql = new StringBuilder();
-            var columns = Model.DataTable.FindAndToArray(p => p.Entity == Model.Entity &&
-                    !p.IsIdentity && !p.IsReadonly && !p.CustomWrite &&
-                    !p.DbInnerField &&
-                    !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)
-                );
+            var columns = Model.DataTable.FindLastAndToArray(p => p.Entity == Model.Entity && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update));
 
             foreach (var property in columns)
             {
@@ -174,7 +170,7 @@ namespace Agebull.EntityModel.RobotCoder
         public void SetEntityParameter(DbCommand cmd,{Model.EntityName} entity)
         {{");
 
-            foreach (var field in Model.DataTable.FindAndToArray(p => !p.DbInnerField).OrderBy(p => p.Index))
+            foreach (var field in Model.DataTable.FindLastAndToArray(p => !p.DbInnerField).OrderBy(p => p.Index))
             {
                 if (!string.IsNullOrWhiteSpace(field.Property.CustomType))
                 {
@@ -213,7 +209,7 @@ namespace Agebull.EntityModel.RobotCoder
             switch (property)
             {");
 
-            foreach (var field in Model.DataTable.Fields)
+            foreach (var field in Model.DataTable.Last())
             {
                 if (field.DbFieldName.ToLower() != field.Name.ToLower())
                     code.Append($@"
@@ -246,7 +242,7 @@ namespace Agebull.EntityModel.RobotCoder
         {{
             var reader = r as MySqlDataReader;");
             int idx = 0;
-            foreach (var fieldConfig in Model.DataTable.FindAndToArray(p => !p.DbInnerField && !p.NoStorage && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)))
+            foreach (var fieldConfig in Model.DataTable.FindLastAndToArray(p => !p.DbInnerField && !p.NoStorage && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)))
             {
                 SqlMomentCoder.FieldReadCode(fieldConfig, code, idx++);
             }
@@ -313,7 +309,7 @@ namespace Agebull.EntityModel.RobotCoder
 
                 var inField = re.PrimaryEntity == model.Entity
                     ? Model.DataTable.PrimaryField
-                    : Model.DataTable.Find(p => p.IsLinkKey && p.LinkTable == friend.Name);
+                    : Model.DataTable.FindLast(p => p.IsLinkKey && p.LinkTable == friend.Name);
 
                 code.Append($@"
             {{

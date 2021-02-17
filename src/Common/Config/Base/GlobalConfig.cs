@@ -55,10 +55,9 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static ModelConfig GetModel(string name)
         {
-            return name == null
+            return name.IsMissing()
                 ? null
-                : GetModel(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase))
-                ?? GetModel(p => string.Equals(p.ReadTableName, name, StringComparison.OrdinalIgnoreCase));
+                : GetModel(p => name.IsOnce(p.Name, p.DataTable?.ReadTableName, p.DataTable?.SaveTableName));
         }
 
         /// <summary>
@@ -78,11 +77,9 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static EntityConfig GetEntity(string name)
         {
-            return string.IsNullOrWhiteSpace(name)
+            return name.IsMissing()
                 ? null
-                : GetEntity(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase))
-                ?? GetEntity(p => string.Equals(p.ReadTableName, name, StringComparison.OrdinalIgnoreCase))
-                ?? GetEntity(p => string.Equals(p.SaveTableName, name, StringComparison.OrdinalIgnoreCase));
+                : GetEntity(p => name.IsOnce(p.Name, p.DataTable?.ReadTableName, p.DataTable?.SaveTableName));
         }
 
         /// <summary>
@@ -93,8 +90,8 @@ namespace Agebull.EntityModel.Config
         public static EnumConfig GetEnum(string name)
         {
             return name == null
-                ? null :
-                FirstOrDefault(Enums, p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
+                ? null
+                : FirstOrDefault(Enums, p => p.Name.IsMe(name));
         }
 
         /// <summary>
@@ -106,7 +103,7 @@ namespace Agebull.EntityModel.Config
         {
             return name == null
                 ? null
-                : FirstOrDefault(Projects, p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
+                : FirstOrDefault(Projects, p => p.Name.IsMe(name));
         }
 
         /// <summary>
@@ -118,9 +115,7 @@ namespace Agebull.EntityModel.Config
         {
             return names.Length == 0
                 ? null
-                : GetEntity(p => names.Any(name => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase) ||
-                                                                                 string.Equals(p.ReadTableName, name, StringComparison.OrdinalIgnoreCase) ||
-                                                                                 string.Equals(p.SaveTableName, name, StringComparison.OrdinalIgnoreCase)));
+                : GetEntity(p => names.Exist(p.Name,p.DataTable?.ReadTableName,p.DataTable?.SaveTableName));
 
         }
 
@@ -801,6 +796,7 @@ namespace Agebull.EntityModel.Config
         {
             if (project == null)
                 return;
+
             TryAdd(Projects, project);
         }
 

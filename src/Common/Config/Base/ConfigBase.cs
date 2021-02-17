@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 
@@ -240,6 +241,13 @@ namespace Agebull.EntityModel.Config
         #region 系统
 
         /// <summary>
+        /// 是否活动
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore, Browsable(false), ReadOnly(true)]
+        [Category("设计器支持"), DisplayName("是否活动")]
+        public bool IsActive => !Option._state.HasFlag(ConfigStateType.Delete) && !Option._state.HasFlag(ConfigStateType.Discard);
+
+        /// <summary>
         /// 引用对象键
         /// </summary>
         /// <remark>
@@ -271,7 +279,11 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category("设计器支持"), DisplayName("废弃"), Description("废弃")]
-        public bool IsDiscard => Option.IsDiscard;
+        public bool IsDiscard
+        {
+            get => Option.IsDiscard;
+            set => Option.IsDiscard = value;
+        }
 
         /// <summary>
         /// 冻结
@@ -281,7 +293,11 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category("设计器支持"), DisplayName("冻结"), Description("如为真,此配置的更改将不生成代码")]
-        public bool IsFreeze => Option.IsFreeze;
+        public bool IsFreeze
+        {
+            get => Option.IsFreeze;
+            set => Option.IsFreeze = value;
+        }
 
         /// <summary>
         /// 标记删除
@@ -291,7 +307,11 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category("设计器支持"), DisplayName("标记删除"), Description("如为真,保存时删除")]
-        public bool IsDelete => Option.IsDelete;
+        public bool IsDelete
+        {
+            get => Option.IsDelete;
+            set => Option.IsDelete = value;
+        }
         #endregion 系统 
 
         #region 扩展

@@ -8,7 +8,7 @@ namespace Agebull.EntityModel.Config
         /// ±éÀú
         /// </summary>
         /// <param name="action"></param>
-        public void Foreach(Action<ConfigBase> action)
+        public void Look(Action<ConfigBase> action)
         {
             if (IsDiscard || IsDelete)
                 return;
@@ -88,6 +88,7 @@ namespace Agebull.EntityModel.Config
         {
             GlobalTrigger.OnLoad(this);
             GlobalTrigger.OnLoad(Option);
+            IsModify = false;
         }
     }
 
@@ -230,6 +231,7 @@ namespace Agebull.EntityModel.Config
         }
         public override void OnLoad()
         {
+            Commands.OnLoad(this);
             Properties.OnLoad(this);
             base.OnLoad();
         }

@@ -91,16 +91,18 @@ namespace Agebull.EntityModel.Config
                 if (idf != null)
                     idf.IsPrimaryKey = true;
                 else
-                    Entity.Entity.Add(new FieldConfig
+                {
+                    var property = new FieldConfig
                     {
                         Name = "Id",
                         Caption = DataTable.Caption + "ID",
                         JsonName = "id",
-                        DbFieldName = "id",
                         IsIdentity = true,
                         IsPrimaryKey = true,
                         DataType = SolutionConfig.Current.IdDataType
-                    });
+                    };
+                    Entity.Entity.Add(property);
+                }
             }
 
             if (repair || string.IsNullOrWhiteSpace(DataTable.SaveTableName))

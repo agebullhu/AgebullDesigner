@@ -66,7 +66,7 @@ ALTER TABLE `{dataTable.OldName}` RENAME TO `{dataTable.SaveTableName}`;";
             code.Append($@"
 ALTER TABLE  `{dataTable.SaveTableName}`");
             bool isFirst = true;
-            foreach (var field in dataTable.FindAndToArray(p => p.NeedDbIndex))
+            foreach (var field in dataTable.FindLastAndToArray(p => p.NeedDbIndex))
             {
                 if (isFirst)
                     isFirst = false;
@@ -87,12 +87,12 @@ ALTER TABLE  `{dataTable.SaveTableName}`");
     ADD INDEX {field.Name}_Index (`{field.DbFieldName}`)");
             }
 
-            if (dataTable.Any(p => p.Property.UniqueIndex))
+            if (dataTable.AnyLast(p => p.Property.UniqueIndex))
             {
                 isFirst = true;
                 code.Append($@"
     ADD INDEX {dataTable.Name}_Unique_Index (");
-                foreach (var field in dataTable.FindAndToArray(p => p.Property.UniqueIndex))
+                foreach (var field in dataTable.FindLastAndToArray(p => p.Property.UniqueIndex))
                 {
                     if (isFirst)
                         isFirst = false;
@@ -111,7 +111,7 @@ ALTER TABLE  `{dataTable.SaveTableName}`");
             code.Append($@"
 ALTER TABLE  `{dataTable.SaveTableName}`");
             bool isFirst = true;
-            foreach (var field in dataTable.FindAndToArray(p => p.NeedDbIndex && p.Property.IsSystemField))
+            foreach (var field in dataTable.FindLastAndToArray(p => p.NeedDbIndex && p.Property.IsSystemField))
             {
                 if (isFirst)
                     isFirst = false;
@@ -132,12 +132,12 @@ ALTER TABLE  `{dataTable.SaveTableName}`");
     ADD INDEX {field.Name}_Index (`{field.DbFieldName}`)");
             }
 
-            if (dataTable.Any(p => p.Property.UniqueIndex))
+            if (dataTable.AnyLast(p => p.Property.UniqueIndex))
             {
                 isFirst = true;
                 code.Append($@"
     ADD INDEX {dataTable.Name}_Unique_Index (");
-                foreach (var field in dataTable.FindAndToArray(p => p.Property.UniqueIndex))
+                foreach (var field in dataTable.FindLastAndToArray(p => p.Property.UniqueIndex))
                 {
                     if (isFirst)
                         isFirst = false;
@@ -156,7 +156,7 @@ ALTER TABLE  `{dataTable.SaveTableName}`");
 
         public static string AddRelation(DataTableConfig dataTable)
         {
-            var fields = dataTable.FindAndToArray(p => p.IsLinkKey).ToArray();
+            var fields = dataTable.FindLastAndToArray(p => p.IsLinkKey).ToArray();
             if (fields.Length == 0)
                 return "";
             var code = new StringBuilder();
@@ -164,10 +164,9 @@ ALTER TABLE  `{dataTable.SaveTableName}`");
 /*{dataTable.Caption}*/
 ALTER TABLE  `{dataTable.SaveTableName}`");
             bool isFirst = true;
-            foreach (var property in fields)
+            foreach (var field in fields)
             {
-                var rela = dataTable.Entity.Project.Find(property.LinkTable)
-                    ?? GlobalConfig.GetEntity(property.LinkTable);
+                var rela = (dataTable.Entity.Project.Find(field.LinkTable) ?? GlobalConfig.GetEntity(field.LinkTable)).DataTable;
                 if (rela == null)
                     continue;
                 if (isFirst)
@@ -176,9 +175,9 @@ ALTER TABLE  `{dataTable.SaveTableName}`");
                     code.Append(',');
 
                 code.Append($@"
-    /*{rela.Caption}: {property.DbFieldName} <=> {rela.PrimaryColumn.DbFieldName}*/
-    ADD CONSTRAINT `{rela.Name}` FOREIGN KEY (`{property.DbFieldName}`) 
-        REFERENCES `{rela.SaveTableName}` (`{rela.PrimaryColumn.DbFieldName}`)");
+    /*{rela.Caption}: {field.DbFieldName} <=> {rela.PrimaryField.DbFieldName}*/
+    ADD CONSTRAINT `{rela.Name}` FOREIGN KEY (`{field.DbFieldName}`) 
+        REFERENCES `{rela.SaveTableName}` (`{rela.PrimaryField.DbFieldName}`)");
 
             }
             code.Append(";");
@@ -208,12 +207,12 @@ DROP VIEW `{dataTable.ReadTableName}`;
         }
         public static string CreateView(DataTableConfig dataTable)
         {
-            var array = dataTable.FindAndToArray(p => p.IsLinkField && !p.IsLinkKey).ToArray();
+            var array = dataTable.FindLastAndToArray(p => p.IsLinkField && !p.IsLinkKey).ToArray();
             if (array.Length == 0)
             {
                 return $"/**********{dataTable.Caption}**********没有字段引用其它表的无需视图**********/";
             }
-            var tables = dataTable.FindAndToArray(p => p.IsLinkField && !p.IsLinkKey).Select(p => p.LinkTable).Distinct().Select(GlobalConfig.GetEntity).ToDictionary(p => p.Name);
+            var tables = dataTable.FindLastAndToArray(p => p.IsLinkField && !p.IsLinkKey).Select(p => p.LinkTable).Distinct().Select(GlobalConfig.GetEntity).ToDictionary(p => p.Name);
             if (tables.Count == 0)
             {
                 dataTable.ReadTableName = dataTable.SaveTableName; ;
@@ -234,7 +233,7 @@ DROP VIEW `{dataTable.ReadTableName}`;
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS 
     SELECT ");
             bool first = true;
-            foreach (var field in dataTable.Fields)
+            foreach (var field in dataTable.Last())
             {
                 if (first)
                     first = false;
@@ -246,7 +245,7 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
                 {
                     if (tables.TryGetValue(field.LinkTable, out var friend))
                     {
-                        var linkField = friend.Find(p => p.DbFieldName == field.LinkField || p.Name == field.LinkField);
+                        var linkField = friend.DataTable.Find(p => p.DbFieldName == field.LinkField || p.Name == field.LinkField);
                         if (linkField != null)
                         {
                             builder.Append($@"`{friend.Name}`.`{linkField.DbFieldName}` as `{field.DbFieldName}`");
@@ -260,14 +259,14 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `{viewName}` AS
     FROM `{dataTable.SaveTableName}` `{dataTable.Name}`");
             foreach (var table in tables.Values)
             {
-                var field = dataTable.Find(p => p.IsLinkKey && (p.LinkTable == table.SaveTableName || p.LinkTable == table.Name));
+                var field = dataTable.FindLast(p => p.IsLinkKey && (p.LinkTable == table.DataTable.SaveTableName || p.LinkTable == table.Name));
                 if (field == null)
                     continue;
-                var linkField = table.Find(p => p.Name == field.LinkField || p.DbFieldName == field.LinkField);
+                var linkField = table.DataTable.FindLast(p => p.Name == field.LinkField || p.DbFieldName == field.LinkField);
                 if (linkField == null)
                     continue;
                 builder.Append($@"
-    LEFT JOIN `{table.SaveTableName}` `{table.Name}` ON `{dataTable.Name}`.`{field.DbFieldName}` = `{table.Name}`.`{linkField.DbFieldName}`");
+    LEFT JOIN `{table.DataTable.SaveTableName}` `{table.Name}` ON `{dataTable.Name}`.`{field.DbFieldName}` = `{table.Name}`.`{linkField.DbFieldName}`");
             }
             builder.Append(';');
             builder.AppendLine();
@@ -331,7 +330,7 @@ CREATE TABLE `{0}`("
                 , dataTable.Caption);
 
             bool isFirst = true;
-            foreach (var field in dataTable.FindAndToArray(p => !p.IsReadonly))
+            foreach (var field in dataTable.FindLastAndToArray(p => !p.IsReadonly))
             {
                 code.Append($@"
    {(isFirst ? "" : ",")}{FieldDefault(field)}");
@@ -342,7 +341,7 @@ CREATE TABLE `{0}`("
                 code.Append($@"
     , PRIMARY KEY (`{primary.DbFieldName}`)");
             //if (dataTable.PrimaryColumn.IsIdentity)
-            var uns = dataTable.FindAndToArray(p => p.Property.UniqueIndex);
+            var uns = dataTable.FindLastAndToArray(p => p.Property.UniqueIndex);
             if (uns.Any())
             {
                 code.Append($@"
@@ -373,7 +372,7 @@ CREATE TABLE `{0}`("
 /*{dataTable.Caption}*/
 ALTER TABLE `{dataTable.SaveTableName}`");
             bool isFirst = true;
-            foreach (var col in dataTable.FindAndToArray(p => !p.IsReadonly))
+            foreach (var col in dataTable.FindLastAndToArray(p => !p.IsReadonly))
             {
                 if (isFirst)
                     isFirst = false;
@@ -400,7 +399,7 @@ ALTER TABLE `{dataTable.SaveTableName}`");
         {
             if (dataTable == null)
                 return;
-            var fields = dataTable.FindAndToArray(p => !p.IsReadonly && p.Property.CsType == "bool").ToArray();
+            var fields = dataTable.FindLastAndToArray(p => !p.IsReadonly && p.Property.CsType == "bool").ToArray();
 
             code.Append($@"
 /*{dataTable.Caption}*/
@@ -444,7 +443,7 @@ ALTER TABLE `{dataTable.SaveTableName}`
 /*{dataTable.Caption}*/
 ALTER TABLE `{dataTable.SaveTableName}`");
             bool isFirst = true;
-            foreach (var col in dataTable.FindAndToArray(p => !p.IsReadonly))
+            foreach (var col in dataTable.FindLastAndToArray(p => !p.IsReadonly))
             {
                 if (isFirst)
                     isFirst = false;
@@ -466,7 +465,7 @@ ALTER TABLE `{dataTable.SaveTableName}`");
 /*{dataTable.Caption}*/
 ALTER TABLE `{dataTable.SaveTableName}`");
             bool isFirst = true;
-            foreach (var col in dataTable.FindAndToArray(p => !p.IsReadonly))
+            foreach (var col in dataTable.FindLastAndToArray(p => !p.IsReadonly))
             {
                 if (isFirst)
                     isFirst = false;
@@ -548,7 +547,7 @@ ALTER TABLE `{dataTable.SaveTableName}`
 
         public static string LoadSql(DataTableConfig dataTable)
         {
-            var fields = dataTable.FindAndToArray(p => !p.DbInnerField && !p.NoStorage && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)).ToArray();
+            var fields = dataTable.FindLastAndToArray(p => !p.DbInnerField && !p.NoStorage && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)).ToArray();
             var isFirst = true;
             var all = fields.All(p => p.Property.IsInterfaceField || p.Entity == dataTable.Entity);
             var lines = new List<string>();
@@ -589,7 +588,7 @@ ALTER TABLE `{dataTable.SaveTableName}`
 
         public static string HavingSql(DataTableConfig dataTable)
         {
-            var fields = dataTable.FindAndToArray(p => !IsNullOrEmpty(p.Having) && !IsNullOrEmpty(p.Function) &&
+            var fields = dataTable.FindLastAndToArray(p => !IsNullOrEmpty(p.Having) && !IsNullOrEmpty(p.Function) &&
             !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)).ToArray();
             if (fields.Length == 0)
                 return "null";
@@ -616,7 +615,7 @@ ALTER TABLE `{dataTable.SaveTableName}`
 
         public static string GroupSql(DataTableConfig dataTable)
         {
-            var fields = dataTable.FindAndToArray(p => IsNullOrEmpty(p.Function)).ToArray();
+            var fields = dataTable.FindLastAndToArray(p => p.Function.IsPresent()).ToArray();
             if (fields.Length == 0)
                 return "null";
             var all = fields.All(p => p.Property.IsInterfaceField || p.Entity == dataTable.Entity);
@@ -711,9 +710,9 @@ ALTER TABLE `{dataTable.SaveTableName}`
         public static void FieldReadCode(PropertyConfig property, StringBuilder code, int idx)
         {
 
-            if (property.CsType.ToLower() == "string")
+            if (property.CsType.IsMe("string"))
             {
-                switch (property.FieldType.ToLower())
+                switch (property.DataBaseField.FieldType.ToLower())
                 {
                     case "char":
                     case "varchar":
@@ -738,14 +737,14 @@ ALTER TABLE `{dataTable.SaveTableName}`
 
             }
 
-            if (!IsNullOrWhiteSpace(property.CustomType))
+            if (property.CustomType.IsPresent())
             {
                 code.Append($@"
             entity.{property.Name} = ({property.CustomType})(await reader.GetFieldValueAsync<int>({idx}));");
                 return;
             }
 
-            if (property.DbNullable)
+            if (property.DataBaseField.DbNullable)
                 code.Append($@"
             if (reader.IsDBNull({idx}))
                 entity.{property.Name} = default;

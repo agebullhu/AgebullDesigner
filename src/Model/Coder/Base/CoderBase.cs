@@ -82,7 +82,7 @@ namespace Agebull.EntityModel.RobotCoder
             }
             else
             {
-                if (property.IsRequired || property.IsCaption || property.IsPrimaryKey || field.IsLinkCaption || field.IsLinkCaption)
+                if (property.IsRequired || property.IsCaption || property.IsPrimaryKey || (!property.NoStorage && (field.IsLinkCaption || field.IsLinkCaption)))
                     code.Add($@"JsonProperty(""{property.JsonName}"", NullValueHandling = NullValueHandling.Include)");
                 else
                     code.Add($@"JsonProperty(""{property.JsonName}"", DefaultValueHandling = DefaultValueHandling.Ignore)");
@@ -107,7 +107,12 @@ namespace Agebull.EntityModel.RobotCoder
             code.AppendLine();
             if (!simple && property.Entity.EnableDataBase)
             {
-                if (field.IsLinkKey)
+                if (property.NoStorage)
+                {
+                    code.Append(' ', space);
+                    code.AppendLine(@"///  -- 此字段不存储在数据库中");
+                }
+                else if (field.IsLinkKey)
                 {
                     code.Append(' ', space);
                     code.AppendLine($@"///  --外键 : [{field.LinkTable}-{field.LinkField}]");
@@ -116,11 +121,6 @@ namespace Agebull.EntityModel.RobotCoder
                 {
                     code.Append(' ', space);
                     code.AppendLine($@"///  --{(!field.NoStorage && property.IsCompute ? "链接" : "冗余")}字段 : [{field.LinkTable}-{field.LinkField}]");
-                }
-                else if (field.NoStorage)
-                {
-                    code.Append(' ', space);
-                    code.AppendLine(@"///  -- 此字段不存储在数据库中");
                 }
             }
             code.Append(' ', space);

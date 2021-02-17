@@ -85,7 +85,7 @@ GO";
 CREATE VIEW [{viewName}] AS 
     SELECT ");
             bool first = true;
-            foreach (var field in entity.Fields)
+            foreach (var field in entity.Last())
             {
                 if (first)
                     first = false;
@@ -98,7 +98,7 @@ CREATE VIEW [{viewName}] AS
                     if (tables.TryGetValue(field.LinkTable, out var friend))
                     {
                         var linkField =
-                            friend.Find(
+                            friend.DataTable.Find(
                                 p => p.DbFieldName == field.LinkField || p.Name == field.LinkField);
                         if (linkField != null)
                         {
@@ -113,15 +113,15 @@ CREATE VIEW [{viewName}] AS
     FROM [{entity.SaveTableName}]");
             foreach (var table in tables.Values)
             {
-                var field = entity.Find(p => p.IsLinkKey && (p.LinkTable == table.Name || p.LinkTable == table.SaveTableName));
+                var field = entity.Find(p => p.IsLinkKey && (p.LinkTable == table.Name || p.LinkTable == table.DataTable.SaveTableName));
                 if (field == null)
                     continue;
-                var linkField = table.Find(p => p.Name == field.LinkField || p.DbFieldName == field.LinkField);
+                var linkField = table.DataTable.Find(p => p.Name == field.LinkField || p.DbFieldName == field.LinkField);
                 if (linkField == null)
                     continue;
                 builder.AppendFormat(@"
     LEFT JOIN [{1}] [{4}] ON [{0}].[{2}] = [{4}].[{3}]"
-                        , entity.SaveTableName, table.SaveTableName, field.DbFieldName, linkField.DbFieldName, table.Name);
+                        , entity.SaveTableName, table.DataTable.SaveTableName, field.DbFieldName, linkField.DbFieldName, table.Name);
             }
             builder.Append(';');
             builder.AppendLine("GO");

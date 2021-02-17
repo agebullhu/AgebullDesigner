@@ -7,18 +7,18 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// 实体配置触发器
     /// </summary>
-    public sealed class EntityBaseTrigger : ConfigTriggerBase<EntityConfigBase>
+    public sealed class EntityBaseTrigger : ConfigTriggerBase<EntityConfigBase>, IEventTrigger
     {
-        protected override void OnAdded(object config)
+        public override void OnAdded(object config)
         {
-            if (Target.EnableDataBase)
+            if (TargetConfig.EnableDataBase)
             {
                 var property = config as IPropertyConfig;
                 var dbField = new DataBaseFieldConfig
                 {
                     Property = property
                 };
-                dbField.Copy(Target);
+                dbField.Copy(TargetConfig);
                 property.DataBaseField = dbField;
             }
         }
@@ -31,20 +31,20 @@ namespace Agebull.EntityModel.Designer
         {
             switch (property)
             {
-                case nameof(Target.EnableDataBase):
-                    if (Target.EnableDataBase)
+                case nameof(TargetConfig.EnableDataBase):
+                    if (TargetConfig.EnableDataBase)
                     {
-                        ConfigLoader.LoadDataTable(Target as IEntityConfig, Path.GetDirectoryName(Target.SaveFileName));
-                        if (Target.DataTable == null)
+                        ConfigLoader.LoadDataTable(TargetConfig as IEntityConfig, Path.GetDirectoryName(TargetConfig.SaveFileName));
+                        if (TargetConfig.DataTable == null)
                         {
-                            Target.DataTable = new DataTableConfig();
-                            Target.DataTable.Upgrade();
+                            TargetConfig.DataTable = new DataTableConfig();
+                            TargetConfig.DataTable.Upgrade();
                         }
                     }
                     else
                     {
-                        ConfigWriter.SaveExtendConfig(Target, Target.DataTable);
-                        Target.DataTable = null;
+                        ConfigWriter.SaveExtendConfig(TargetConfig, TargetConfig.DataTable);
+                        TargetConfig.DataTable = null;
                     }
                     break;
                     /*case nameof(Target.EnableUI):

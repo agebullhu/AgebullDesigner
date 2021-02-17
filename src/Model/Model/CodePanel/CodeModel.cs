@@ -84,7 +84,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     FileTreeRoot.Items.Add(item = new TreeItem(file.Key)
                     {
-                        Caption = folder,
+                        Header = folder,
                         Name = folder,
                         IsExpanded = true,
                         SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
@@ -96,7 +96,7 @@ namespace Agebull.EntityModel.Designer
                     Remark = file.Value,
                 })
                 {
-                    Caption = name,
+                    Header = name,
                     Name = name,
                     Tag = Path.GetExtension(file.Key)?.Trim('.'),
                     SoruceTypeIcon = Application.Current.Resources["img_code"] as BitmapImage

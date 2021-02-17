@@ -145,7 +145,7 @@ namespace Agebull.EntityModel
         /// </summary>
         /// <param name="config"></param>
         /// <param name="parent"></param>
-         void OnRemoved(object parent, object config)
+        void OnRemoved(object parent, object config)
         {
             Target = parent;
             var scope = NameEventScope.CreateScope(config, this.GetTypeName(), nameof(OnRemoved));
@@ -164,12 +164,67 @@ namespace Agebull.EntityModel
         {
         }
 
+
+        /// <summary>
+        /// 规整对象
+        /// </summary>
+        void Regularize(object config)
+        {
+            Target = config;
+            var scope = NameEventScope.CreateScope(config, this.GetTypeName(), nameof(Regularize));
+            if (scope == null)
+                return;
+            using (scope)
+            {
+                Regularize();
+            }
+        }
+
+
+        /// <summary>
+        /// 规整对象
+        /// </summary>
+        void Regularize()
+        {
+
+        }
+
         /// <summary>
         /// 开始代码生成
         /// </summary>
         void OnCodeGeneratorBegin(object config)
         {
+            Target = config;
+            var scope = NameEventScope.CreateScope(config, this.GetTypeName(), nameof(OnCodeGeneratorBegin));
+            if (scope == null)
+                return;
+            using (scope)
+            {
+                OnCodeGeneratorBegin();
+            }
+        }
 
+        /// <summary>
+        /// 开始代码生成
+        /// </summary>
+        void OnCodeGeneratorBegin()
+        {
+
+        }
+
+        /// <summary>
+        /// 完成代码生成
+        /// </summary>
+        void OnCodeGeneratorEnd(object config)
+        {
+            Target = config;
+            var scope = NameEventScope.CreateScope(config, this.GetTypeName(), nameof(OnCodeGeneratorBegin));
+            if (scope == null)
+                return;
+            using (scope)
+            {
+                OnCodeGeneratorEnd();
+            }
         }
 
         /// <summary>

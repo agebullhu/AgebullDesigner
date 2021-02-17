@@ -69,7 +69,8 @@ namespace Agebull.EntityModel.RobotCoder
                     break;
                 case EntityConfig entity:
                     List<EnumConfig> enums = new List<EnumConfig>();
-                    using (CodeGeneratorScope.CreateScope(entity))
+                    GlobalTrigger.DoRegularize(entity);
+                    using (CodeGeneratorScope.CreateScope(entity,false))
                     {
                         foreach (var ef in entity.LastProperties.Where(p => p.EnumConfig != null))
                             if (!enums.Contains(ef.EnumConfig))

@@ -6,7 +6,7 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// 分类触发器
     /// </summary>
-    public sealed class ClassifyTrigger : ConfigTriggerBase<EntityClassify>
+    public sealed class ClassifyTrigger : ConfigTriggerBase<EntityClassify>, IEventTrigger
     {
         /// <summary>
         /// 属性事件处理
@@ -16,11 +16,11 @@ namespace Agebull.EntityModel.Designer
         {
             switch (property)
             {
-                case nameof(Target.Name):
+                case nameof(TargetConfig.Name):
                     using (WorkModelScope.CreateScope(WorkModel.Repair))
                     {
-                        foreach (var entity in Target.Items.ToArray())
-                            entity.Classify = Target.Name;
+                        foreach (var entity in TargetConfig.Items.ToArray())
+                            entity.Classify = TargetConfig.Name;
                     }
                     break;
             }

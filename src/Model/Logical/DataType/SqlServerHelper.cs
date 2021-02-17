@@ -106,7 +106,7 @@ namespace Agebull.EntityModel.Config.SqlServer
         ///     从C#的类型转为DBType
         /// </summary>
         /// <param name="field"> </param>
-        public static SqlDbType ToSqlDbType(FieldConfig field) => ToSqlDbType(field.FieldType, field.CsType);
+        public static SqlDbType ToSqlDbType(FieldConfig property) => ToSqlDbType(property.DataBaseField.FieldType, property.CsType);
 
         /// <summary>
         ///     从C#的类型转为DBType
@@ -320,11 +320,11 @@ namespace Agebull.EntityModel.Config.SqlServer
                     return "BOOL";
                 case "byte[]":
                 case "binary":
-                    return property.IsBlob ? "IMAGE" : "VARBINARY";
+                    return property.DataBaseField.IsBlob ? "IMAGE" : "VARBINARY";
                 case "char":
                     return "NCHAR";
                 case "string":
-                    return property.IsBlob ? "TEXT" : "NVARCHAR";
+                    return property.DataBaseField.IsBlob ? "TEXT" : "NVARCHAR";
                 case "datetime":
                     return "DATETIME";
                 case "guid":

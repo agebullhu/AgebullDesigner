@@ -11,12 +11,9 @@ namespace Agebull.EntityModel
     public static class TypeExtenssions
     {
         /// <summary>
-        /// 是否null或长度为0的数组
+        /// 是否等于其中之一
         /// </summary>
-        /// <param name="array">数组</param>
-        /// <returns></returns>
-        public static bool IsEmptyOrNull<T>(this IEnumerable<T> array) => array == null || !array.Any();
-
+        public static bool IsOnce(this string array, params string[] strs) => array != null && strs.Length > 0 && strs.Any(p => array.IsMe(p));
 
         /// <summary>
         /// 页面代码路径
@@ -140,7 +137,7 @@ namespace Agebull.EntityModel
         /// <param name="type"></param>
         /// <param name="target"></param>
         /// <returns></returns>
-        public static bool IsFrientType(this Type type,Type target)
+        public static bool IsFrientType(this Type type, Type target)
         {
             return type == null || target == type || type.IsSubclassOf(target) || type.IsSupperInterface(target);
         }
@@ -148,15 +145,15 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 是否关联类型
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="target"></param>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static bool IsFrientType(this Type type, object obj)
+        public static bool IsFrientType(this Type target, object obj)
         {
             if (obj == null)
                 return false;
-            var target = obj.GetType();
-            return type == null || target == type || type.IsSubclassOf(target) || type.IsSupperInterface(target);
+            var objType = obj.GetType();
+            return target == null || objType == target || objType.IsSubclassOf(target) || objType.IsSupperInterface(target);
         }
     }
 }

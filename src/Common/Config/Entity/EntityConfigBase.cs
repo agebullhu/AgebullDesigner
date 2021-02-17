@@ -1,5 +1,7 @@
 ﻿using Agebull.EntityModel.Config.V2021;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Text;
@@ -13,6 +15,14 @@ namespace Agebull.EntityModel.Config
     public abstract partial class EntityConfigBase : ProjectChildConfigBase
     {
         #region 视角开关
+
+        /// <summary>
+        /// 构造
+        /// </summary>
+        public EntityConfigBase()
+        {
+            _desingSwitch = 0xFFFF;
+        }
 
         /// <summary>
         /// 设计视角组合存储对象
@@ -243,9 +253,66 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 表示自己的后期实现
         /// </summary>
-        protected abstract IEntityConfig IEntity { get; }
+        public IEntityConfig IEntity => this as IEntityConfig;
 
+        /// <summary>
+        /// 是否视图（兼容性属性）
+        /// </summary>
         public bool IsView { get; set; }
+
+        /// <summary>
+        /// 是否查询
+        /// </summary>
+        [DataMember, JsonProperty("isQuery", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _isQuery;
+
+        /// <summary>
+        /// 是否查询
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据模型"), DisplayName(@"是否查询"), Description("是否查询")]
+        public bool IsQuery
+        {
+            get => _isQuery;
+            set
+            {
+                if (_isQuery == value)
+                    return;
+                BeforePropertyChanged(nameof(IsQuery), _isQuery, value);
+                _isQuery = value;
+                OnPropertyChanged(nameof(IsQuery));
+            }
+        }
+        #region 数据库
+#pragma warning disable CS0649
+        /// <summary>
+        /// 存储表名(设计录入)
+        /// </summary>
+        [DataMember, JsonProperty("_tableName", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal string _readTableName;
+
+        /// <summary>
+        /// 存储表名
+        /// </summary>
+        [DataMember, JsonProperty("_saveTableName", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal string _saveTableName;
+
+        /// <summary>
+        /// 数据库编号
+        /// </summary>
+        [DataMember, JsonProperty("_dbIndex", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal int _dbIndex;
+
+
+        /// <summary>
+        /// 按修改更新
+        /// </summary>
+        [DataMember, JsonProperty("UpdateByModified", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal bool _updateByModified;
+
+        #endregion
+
+#pragma warning restore CS0469
         #endregion
 
         #region 视图

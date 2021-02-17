@@ -62,7 +62,7 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 代码显示器
         /// </summary>
-        [ThreadStatic] internal static Dictionary<string, string> codes;
+        [ThreadStatic] public static Dictionary<string, string> codes;
 
         /// <summary>
         /// 代码显示器
@@ -73,7 +73,7 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 代码显示器
         /// </summary>
-        [ThreadStatic] internal static bool? writeToFile;
+        [ThreadStatic] public static bool? writeToFile;
 
         /// <summary>
         /// 代码显示器

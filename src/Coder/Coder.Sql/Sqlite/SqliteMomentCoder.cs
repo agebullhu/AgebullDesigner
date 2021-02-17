@@ -70,7 +70,7 @@ DROP VIEW [{dataTable.ReadTableName}];";
 CREATE VIEW [{viewName}] AS 
     SELECT ");
             bool first = true;
-            foreach (var field in dataTable.Fields)
+            foreach (var field in dataTable.Last())
             {
                 if (first)
                     first = false;
@@ -82,7 +82,7 @@ CREATE VIEW [{viewName}] AS
                 {
                     if (tables.TryGetValue(field.LinkTable, out var friend))
                     {
-                        var linkField = friend.Find(field.LinkField);
+                        var linkField = friend.DataTable.Find(field.LinkField);
                         if (linkField != null)
                         {
                             builder.AppendFormat(@"[{0}].[{1}] as [{2}]", friend.Name, linkField.DbFieldName, field.DbFieldName);
@@ -96,15 +96,15 @@ CREATE VIEW [{viewName}] AS
     FROM [{dataTable.SaveTableName}]");
             foreach (var table in tables.Values)
             {
-                var field = dataTable.Find(p => p.IsLinkKey && (p.LinkTable == table.Name || p.LinkTable == table.SaveTableName));
+                var field = dataTable.FindLast(p => p.IsLinkKey && (p.LinkTable == table.Name || p.LinkTable == table.DataTable.SaveTableName));
                 if (field == null)
                     continue;
-                var linkField = table.Find(field.LinkField);
+                var linkField = table.DataTable.FindLast(field.LinkField);
                 if (linkField == null)
                     continue;
                 builder.AppendFormat(@"
     LEFT JOIN [{1}] [{4}] ON [{0}].[{2}] = [{4}].[{3}]"
-                        , dataTable.SaveTableName, table.SaveTableName, field.DbFieldName, linkField.DbFieldName, table.Name);
+                        , dataTable.SaveTableName, table.DataTable.SaveTableName, field.DbFieldName, linkField.DbFieldName, table.Name);
             }
             builder.Append(';');
             builder.AppendLine("GO");

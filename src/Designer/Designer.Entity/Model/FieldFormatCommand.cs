@@ -679,16 +679,19 @@ Memo,s,备注";
                 * 2 每个单词用逗号分开
                 * 3 第一个单词 代码名称; 第二个单词 数据类型;第三个单词 说明文本
                 */
-                FieldConfig column = new FieldConfig
+                var property = new FieldConfig
                 {
                     Name = name,
                     CanUserQuery = true,
                     IsPrimaryKey = name.Equals("ID", StringComparison.OrdinalIgnoreCase),
                     ApiArgumentName = words[0],
-                    Datalen = 200,
+                    DataBaseField = new Config.V2021.DataBaseFieldConfig
+                    {
+                        Datalen = 200,
+                        FieldType = "NVARCHAR",
+                    },
                     DataType = "String",
                     CsType = "string",
-                    FieldType = "NVARCHAR",
                     Option =
                     {
                         Identity = idx++,
@@ -696,35 +699,35 @@ Memo,s,备注";
                     }
                 };
                 if (words.Length > 1)
-                    CsharpHelper.CheckType(column, words[1]);
+                    CsharpHelper.CheckType(property, words[1]);
                 if (words.Length > 2 && words[2] != "@" && words[2] != "#")
-                    column.Caption = words[2];
+                    property.Caption = words[2];
                 if (words.Length > 3 && words[3] != "@" && words[3] != "#")
-                    column.Description = words.Length < 4 ? null : words.Skip(3).LinkToString(",").TrimEnd('@', '#');
+                    property.Description = words.Length < 4 ? null : words.Skip(3).LinkToString(",").TrimEnd('@', '#');
 
 
                 var old = columns.FirstOrDefault(p => p != null && p.Name == name);
                 if (old != null)
                 {
-                    old.Caption = column.Caption;
-                    old.Description = column.Description;
+                    old.Caption = property.Caption;
+                    old.Description = property.Description;
                 }
                 else
                 {
                     if (name == "Memo")
                     {
-                        column.Datalen = 0;
-                        column.IsMemo = true;
-                        column.FieldType = "TEXT";
+                        property.DataBaseField.Datalen = 0;
+                        property.DataBaseField.IsText = true;
+                        property.DataBaseField.FieldType = "TEXT";
                     }
                     else
                     {
-                        DataTypeHelper.CsDataType(column);
+                        DataTypeHelper.CsDataType(property);
                     }
-                    columns.Add(column);
+                    columns.Add(property);
                 }
-                column.DbFieldName = column.Name.ToName('_', false);
-                column.JsonName = column.Name.ToLWord();
+                property.DataBaseField.DbFieldName = property.Name.ToName('_', false);
+                property.JsonName = property.Name.ToLWord();
             }
 
             return columns;

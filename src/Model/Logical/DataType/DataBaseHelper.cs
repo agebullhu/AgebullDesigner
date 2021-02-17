@@ -90,10 +90,10 @@ namespace Agebull.EntityModel.Config
                 SetNoLink(field);
                 return hase;
             }
-            FieldConfig pro = field.IsLinkKey ? table.PrimaryColumn : table.Find(field.LinkField);
+            var pro = field.IsLinkKey ? table.DataTable.PrimaryField : table.DataTable.Find(field.LinkField);
             if (pro == null && !field.Option.ReferenceKey.IsMissing())
             {
-                pro = GlobalConfig.GetConfig<FieldConfig>(field.Option.ReferenceKey);
+                pro = GlobalConfig.GetConfig<FieldConfig>(field.Option.ReferenceKey).DataBaseField;
             }
             if (pro == null || pro == field.Property || pro.Entity == entity)
             {
@@ -113,7 +113,7 @@ namespace Agebull.EntityModel.Config
             field.NoStorage = false;
 
             field.FieldType = pro.FieldType;
-            field.Property.ArrayLen = pro.ArrayLen;
+            field.Property.ArrayLen = pro.Property.ArrayLen;
             field.Datalen = pro.Datalen;
             field.Scale = pro.Scale;
 

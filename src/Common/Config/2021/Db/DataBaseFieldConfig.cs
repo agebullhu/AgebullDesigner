@@ -36,7 +36,7 @@ namespace Agebull.EntityModel.Config.V2021
         ///     是否空值
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        public bool Nullable { get => Property.Nullable; set => Property.Nullable = value; }
+        public bool Nullable { get => Property.Nullable; }
 
         #endregion
 
@@ -52,7 +52,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 存储类型
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"存储类型"), Description(@"存储类型")]
+        [DisplayName(@"存储类型"), Description(@"存储类型")]
         public string FieldType
         {
             get => _fieldType;
@@ -76,7 +76,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 数据库字段名称
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"数据库字段名称"), Description(@"数据库字段名称")]
+        [DisplayName(@"数据库字段名称"), Description(@"数据库字段名称")]
         public string DbFieldName
         {
             get => _dbFieldName;
@@ -87,30 +87,6 @@ namespace Agebull.EntityModel.Config.V2021
                 BeforePropertyChanged(nameof(DbFieldName), _dbFieldName, value);
                 _dbFieldName = value;
                 OnPropertyChanged(nameof(DbFieldName));
-            }
-        }
-
-        /// <summary>
-        /// 不更新
-        /// </summary>
-        [DataMember, JsonProperty("keepUpdate", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _keepUpdate;
-
-        /// <summary>
-        /// 不更新
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"不更新"), Description(@"不更新")]
-        public bool KeepUpdate
-        {
-            get => _keepUpdate;
-            set
-            {
-                if (_keepUpdate == value)
-                    return;
-                BeforePropertyChanged(nameof(KeepUpdate), _keepUpdate, value);
-                _keepUpdate = value;
-                OnPropertyChanged(nameof(KeepUpdate));
             }
         }
 
@@ -128,7 +104,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 如为真,在存储空值读取时使用语言类型的默认值
         /// </remarks>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"能否存储空值"), Description(@"如为真,在存储空值读取时使用语言类型的默认值")]
+        [DisplayName(@"能否存储空值"), Description(@"如为真,在存储空值读取时使用语言类型的默认值")]
         public bool DbNullable
         {
             get => _dbNullable;
@@ -139,30 +115,6 @@ namespace Agebull.EntityModel.Config.V2021
                 BeforePropertyChanged(nameof(DbNullable), _dbNullable, value);
                 _dbNullable = value;
                 OnPropertyChanged(nameof(DbNullable));
-            }
-        }
-
-        /// <summary>
-        /// 需要构建索引
-        /// </summary>
-        [DataMember, JsonProperty("needDbIndex", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _needDbIndex;
-
-        /// <summary>
-        /// 需要构建索引
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"需要构建索引"), Description(@"需要构建索引")]
-        public bool NeedDbIndex
-        {
-            get => _needDbIndex;
-            set
-            {
-                if (_needDbIndex == value)
-                    return;
-                BeforePropertyChanged(nameof(NeedDbIndex), _needDbIndex, value);
-                _needDbIndex = value;
-                OnPropertyChanged(nameof(NeedDbIndex));
             }
         }
 
@@ -180,7 +132,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 文本或二进制存储的最大长度
         /// </remarks>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"数据长度"), Description(@"文本或二进制存储的最大长度")]
+        [DisplayName(@"数据长度"), Description(@"文本或二进制存储的最大长度")]
         public int Datalen
         {
             get => _datalen;
@@ -204,7 +156,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 存储精度
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"存储精度"), Description(@"存储精度")]
+        [DisplayName(@"存储精度"), Description(@"存储精度")]
         public int Scale
         {
             get => _scale;
@@ -228,7 +180,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 是否数据库索引
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"是否数据库索引"), Description(@"是否数据库索引")]
+        [DisplayName(@"是否数据库索引"), Description(@"是否数据库索引")]
         public bool IsDbIndex
         {
             get => _isDbIndex;
@@ -256,7 +208,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 是否固定长度字符串
         /// </remarks>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"固定长度"), Description(@"是否固定长度字符串")]
+        [DisplayName(@"固定长度"), Description(@"是否固定长度字符串")]
         public bool FixedLength
         {
             get => _fixedLength;
@@ -280,7 +232,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 长文本
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"备注字段"), Description(@"备注字段")]
+        [DisplayName(@"备注字段"), Description(@"备注字段")]
         public bool IsText
         {
             get => _isText;
@@ -304,7 +256,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 大数据
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"大数据"), Description(@"大数据")]
+        [DisplayName(@"大数据"), Description(@"大数据")]
         public bool IsBlob
         {
             get => _isBlob;
@@ -332,7 +284,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 数据库内部字段,如果为真,仅支持在SQL的语句中出现此字段,不支持外部的读写
         /// </remarks>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"内部字段(数据库)"), Description(@"数据库内部字段,如果为真,仅支持在SQL的语句中出现此字段,不支持外部的读写")]
+        [DisplayName(@"内部字段(数据库)"), Description(@"数据库内部字段,如果为真,仅支持在SQL的语句中出现此字段,不支持外部的读写")]
         public bool DbInnerField
         {
             get => _dbInnerField;
@@ -356,7 +308,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 存储数据时跳过的场景
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"存储数据时跳过的场景"), Description(@"存储数据时跳过的场景")]
+        [DisplayName(@"存储数据时跳过的场景"), Description(@"存储数据时跳过的场景")]
         public StorageScreenType KeepStorageScreen
         {
             get => _keepStorageScreen;
@@ -384,7 +336,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 自定义保存,如果为真,数据库的写入忽略这个字段,数据的写入由代码自行维护
         /// </remarks>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"自定义保存"), Description(@"自定义保存,如果为真,数据库的写入忽略这个字段,数据的写入由代码自行维护")]
+        [DisplayName(@"自定义保存"), Description(@"自定义保存,如果为真,数据库的写入忽略这个字段,数据的写入由代码自行维护")]
         public bool CustomWrite
         {
             get => _customWrite;
@@ -412,7 +364,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 存储值读写字段(internal),即使用非基础类型时,当发生读写数据库操作时使用的字段,字段为文本(JSON或XML)类型,使用序列化方法读写
         /// </remarks>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"存储值读写字段"), Description(@"存储值读写字段(internal),即使用非基础类型时,当发生读写数据库操作时使用的字段,字段为文本(JSON或XML)类型,使用序列化方法读写")]
+        [DisplayName(@"存储值读写字段"), Description(@"存储值读写字段(internal),即使用非基础类型时,当发生读写数据库操作时使用的字段,字段为文本(JSON或XML)类型,使用序列化方法读写")]
         public string StorageProperty
         {
             get => _storageProperty;
@@ -440,7 +392,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 是否非数据库字段,如果为真,数据库的读写均忽略这个字段
         /// </remarks>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"非数据库字段"), Description(@"是否非数据库字段,如果为真,数据库的读写均忽略这个字段")]
+        [DisplayName(@"非数据库字段"), Description(@"是否非数据库字段,如果为真,数据库的读写均忽略这个字段")]
         public bool NoStorage
         {
             get => _noStorage;
@@ -468,7 +420,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 自增列,通过数据库(或REDIS)自动增加
         /// </remarks>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"自增字段"), Description(@"自增列,通过数据库(或REDIS)自动增加")]
+        [DisplayName(@"自增字段"), Description(@"自增列,通过数据库(或REDIS)自动增加")]
         public bool IsIdentity
         {
             get => _isIdentity;
@@ -492,7 +444,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 汇总方法
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"汇总方法"), Description(@"汇总方法")]
+        [DisplayName(@"汇总方法"), Description(@"汇总方法")]
         public string Function
         {
             get => _function;
@@ -516,7 +468,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 汇总条件
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"汇总条件"), Description(@"汇总条件")]
+        [DisplayName(@"汇总条件"), Description(@"汇总条件")]
         public string Having
         {
             get => _having;
@@ -540,7 +492,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 值类型
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"值类型"), Description(@"值类型")]
+        [DisplayName(@"值类型"), Description(@"值类型")]
         public string ValueType
         {
             get => _valueType;
@@ -564,7 +516,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 上级外键
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"上级外键"), Description(@"上级外键")]
+        [DisplayName(@"上级外键"), Description(@"上级外键")]
         public bool IsParent
         {
             get => _isParent;
@@ -588,7 +540,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 连接字段
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"连接字段"), Description(@"连接字段")]
+        [DisplayName(@"连接字段"), Description(@"连接字段")]
         public bool IsLinkField
         {
             get => _isLinkField;
@@ -612,7 +564,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 关联表名
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"关联表名"), Description(@"关联表名")]
+        [DisplayName(@"关联表名"), Description(@"关联表名")]
         public string LinkTable
         {
             get => _linkTable;
@@ -640,7 +592,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 关联表主键,即与另一个实体关联的外键
         /// </remarks>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"关联表主键"), Description(@"关联表主键,即与另一个实体关联的外键")]
+        [DisplayName(@"关联表主键"), Description(@"关联表主键,即与另一个实体关联的外键")]
         public bool IsLinkKey
         {
             get => _isLinkKey;
@@ -668,7 +620,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 关联表标题,即此字段为关联表的标题内容
         /// </remarks>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"关联表标题"), Description(@"关联表标题,即此字段为关联表的标题内容")]
+        [DisplayName(@"关联表标题"), Description(@"关联表标题,即此字段为关联表的标题内容")]
         public bool IsLinkCaption
         {
             get => _isLinkCaption;
@@ -696,7 +648,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 关联字段名称,即在关联表中的字段名称
         /// </remarks>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"关联字段名称"), Description(@"关联字段名称,即在关联表中的字段名称")]
+        [DisplayName(@"关联字段名称"), Description(@"关联字段名称,即在关联表中的字段名称")]
         public string LinkField
         {
             get => _linkField;
@@ -724,7 +676,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// 指数据只可读,无法写入的场景,如此字段为汇总字段
         /// </remarks>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(@"是否只读"), Description(@"指数据只可读,无法写入的场景,如此字段为汇总字段")]
+        [DisplayName(@"是否只读"), Description(@"指数据只可读,无法写入的场景,如此字段为汇总字段")]
         public bool IsReadonly
         {
             get => _isReadonly;
@@ -738,6 +690,78 @@ namespace Agebull.EntityModel.Config.V2021
             }
         }
         #endregion 字段
+
+        #region 扩展
+
+        /// <summary>
+        /// 构建数据库索引
+        /// </summary>
+        /// <remark>
+        /// 构建数据库索引的优化选项
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据库"), DisplayName(@"构建数据库索引"), Description("构建数据库索引的优化选项")]
+        public bool NeedDbIndex => _isDbIndex || IsPrimaryKey || IsIdentity || IsLinkKey || IsCaption;
+
+
+        /// <summary>
+        /// 更新
+        /// </summary>
+        /// <remark>
+        /// 更新
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据库"), DisplayName(@"更新"), Description("更新")]
+        public bool CanUpdate
+        {
+            get => !KeepStorageScreen.HasFlag(StorageScreenType.Update);
+            set
+            {
+                if (value)
+                    KeepStorageScreen &= ~StorageScreenType.Update;
+                else
+                    KeepStorageScreen |= StorageScreenType.Update;
+                RaisePropertyChanged(nameof(CanUpdate));
+            }
+        }
+
+        /// <summary>
+        /// 新增
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据库"), DisplayName(@"新增"), Description("新增")]
+        public bool CanInsert
+        {
+            get => !KeepStorageScreen.HasFlag(StorageScreenType.Insert);
+            set
+            {
+                if (value)
+                    KeepStorageScreen &= ~StorageScreenType.Insert;
+                else
+                    KeepStorageScreen |= StorageScreenType.Insert;
+                RaisePropertyChanged(nameof(CanInsert));
+            }
+        }
+
+        /// <summary>
+        /// 读取
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"数据库"), DisplayName(@"读取"), Description("读取")]
+        public bool CanRead
+        {
+            get => !KeepStorageScreen.HasFlag(StorageScreenType.Read);
+            set
+            {
+                if (value)
+                    KeepStorageScreen &= ~StorageScreenType.Read;
+                else
+                    KeepStorageScreen |= StorageScreenType.Read;
+                RaisePropertyChanged(nameof(CanRead));
+            }
+        }
+
+        #endregion
 
         #region 字段复制
 
@@ -757,7 +781,7 @@ namespace Agebull.EntityModel.Config.V2021
         protected override void CopyFrom(SimpleConfig dest)
         {
             base.CopyFrom(dest);
-            if (dest is IDataBaseFieldConfig cfg)
+            if (dest is DataBaseFieldConfig cfg)
                 CopyProperty(cfg);
             if (dest is FieldConfig cefg)
                 CopyProperty(cefg);
@@ -770,13 +794,13 @@ namespace Agebull.EntityModel.Config.V2021
         /// </summary>
         /// <param name="dest">复制源</param>
         /// <returns></returns>
-        public void CopyProperty(IDataBaseFieldConfig dest)
+        public void CopyProperty(DataBaseFieldConfig dest)
         {
             FieldType = dest.FieldType;
             DbFieldName = dest.DbFieldName;
-            KeepUpdate = dest.KeepUpdate;
+
             DbNullable = dest.DbNullable;
-            NeedDbIndex = dest.NeedDbIndex;
+
             Datalen = dest.Datalen;
             Scale = dest.Scale;
             IsDbIndex = dest.IsDbIndex;
@@ -809,11 +833,13 @@ namespace Agebull.EntityModel.Config.V2021
         /// <returns></returns>
         public void CopyProperty(FieldConfig dest)
         {
+            if (dest._dbFieldName.IsMissing() || dest._dbType.IsMissing())
+                return;
             FieldType = dest._dbType;
             DbFieldName = dest._dbFieldName;
 
             DbNullable = dest._dbNullable;
-            //NeedDbIndex = dest.NeedDbIndex;
+
             Datalen = dest._datalen;
             Scale = dest._scale;
             IsDbIndex = dest._isDbIndex;
@@ -829,15 +855,15 @@ namespace Agebull.EntityModel.Config.V2021
             Having = dest._having;
 
             ValueType = dest._valueType;
-            LinkTable = dest._linkTable.IsMe(Parent.SaveTableName) ? null : dest.LinkTable;
-            LinkField = LinkTable.IsMissing() ? null: dest.LinkField;
+            LinkTable = dest._linkTable.IsMe(Parent.SaveTableName) ? null : dest._linkTable;
+            LinkField = LinkTable.IsMissing() ? null : dest._linkField;
 
             IsParent = dest._isParent;
             IsLinkKey = dest._isLinkKey;
             IsLinkCaption = dest._isLinkCaption;
 
             NoStorage = DbFieldName.IsMissing();
-            IsLinkField = dest.IsParent || dest.IsLinkKey || dest.IsLinkCaption || LinkField.IsPresent();
+            IsLinkField = dest.IsParent || dest._isLinkKey || dest._isLinkCaption || LinkField.IsPresent();
             IsReadonly = IsLinkField;
         }
 
@@ -849,6 +875,8 @@ namespace Agebull.EntityModel.Config.V2021
         public void CopyProperty(PropertyConfig dest)
         {
             CopyProperty(dest.Field);
+            Having = dest._having;
+            Function = dest._function;
         }
         #endregion 字段复制
     }

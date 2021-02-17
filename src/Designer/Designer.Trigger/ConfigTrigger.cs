@@ -6,7 +6,7 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// Target触发器
     /// </summary>
-    public sealed class ConfigTrigger : ConfigTriggerBase<ConfigBase>
+    public sealed class ConfigTrigger : ConfigTriggerBase<ConfigBase>, IEventTrigger
     {
         /// <summary>
         ///     发出属性修改前事件
@@ -18,17 +18,24 @@ namespace Agebull.EntityModel.Designer
         {
             Trace.WriteLineIf(SolutionConfig.Current.DetailTrace,
                 $"[{oldValue}] => [{newValue}]",
-                $"属性修改({Target.GetType().Name }) : {Target.Name}.{property}");
+                $"属性修改({TargetConfig.GetType().Name }) : {TargetConfig.Name}.{property}");
             switch (property)
             {
-                case nameof(Target.Name):
-                    var option = Target.Option;
+                case nameof(TargetConfig.Name):
+                    var option = TargetConfig.Option;
                     var now = (string)newValue;
                     if (!string.IsNullOrWhiteSpace(now) && !option.OldNames.Contains(now) && now != "NewField")
                         option.OldNames.Add(now);
                     option.RaisePropertyChanged(nameof(option.NameHistory));
                     break;
             }
+        }
+        /// <summary>
+        /// 规整对象
+        /// </summary>
+        public void Regularize()
+        {
+            TargetConfig.Foreach<object>(GlobalTrigger.DoRegularize, true);
         }
     }
 }

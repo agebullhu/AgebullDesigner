@@ -109,9 +109,7 @@ namespace Agebull.EntityModel.Config
         {
             return names.Length == 0
                 ? null
-                : Entities.FirstOrDefault(p => names.Any(name => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase) ||
-                                                                                   string.Equals(p.ReadTableName, name, StringComparison.OrdinalIgnoreCase) ||
-                                                                                   string.Equals(p.SaveTableName, name, StringComparison.OrdinalIgnoreCase)))
+                : Entities.FirstOrDefault(p => names.Exist(p.Name,p.DataTable?.ReadTableName,p.DataTable?.SaveTableName))
                 ?? GlobalConfig.Find(names);
         }
 

@@ -91,9 +91,9 @@ namespace Agebull.EntityModel.RobotCoder.VUE
         /// <returns></returns>
         void LinkFunctions()
         {
-            var array = Model.DataTable
-                .Where(p => p.Property.UserSee && p.IsLinkKey)
-                .Select(p => GlobalConfig.GetEntity(p.LinkTable))
+            var array = Model.LastProperties
+                .Where(p => p.UserSee && !p.NoStorage && p.DataBaseField.IsLinkKey)
+                .Select(p => GlobalConfig.GetEntity(p.DataBaseField.LinkTable))
                 .Distinct().ToArray();
             if (array.Length == 0)
                 return;
@@ -265,10 +265,6 @@ namespace Agebull.EntityModel.RobotCoder.VUE
 
         private static void StringCheck(IPropertyConfig property, StringBuilder code, ref string dot)
         {
-            var field = property.DataBaseField;
-            if (property.Max.IsMissing() && field != null && !field.IsBlob && !field.IsText)
-                property.Max = field.Datalen.ToString();
-
             if (property.Max.IsPresent() && property.Min.IsPresent())
                 code.Append($@"{dot}{{ min: {property.Min}, max: {property.Max}, message: '长度在 {property.Min} 到 {property.Max} 个字符', trigger: 'blur' }}");
             else if (property.Max.IsPresent())
@@ -330,7 +326,7 @@ namespace Agebull.EntityModel.RobotCoder.VUE
                 code.Append(@"
             };
         }");
-                overrides.Add(code.ToString()); 
+                overrides.Add(code.ToString());
             }
             {
                 var code = new StringBuilder();

@@ -10,6 +10,7 @@
 
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.RobotCoder;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -72,7 +73,6 @@ namespace Agebull.EntityModel.Designer
                 (FormatPrepare, Format.DoCheckFieldes, CheckFieldesEnd)
                 {
                     IsButton=true,
-
                     Caption = "分析文本",
                     Image = Application.Current.Resources["tree_Assembly"] as ImageSource
                 },

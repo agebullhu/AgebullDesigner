@@ -6,7 +6,7 @@ using System.Text;
 namespace Agebull.EntityModel.Config
 {
     /// <summary>
-    ///     配置基础
+    ///     表示可以独立的一个配置对象
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
     public abstract partial class IndependenceConfigBase : FileConfigBase
@@ -61,6 +61,33 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(IsGlobal), _isGlobal, value);
                 _isGlobal = value;
                 OnPropertyChanged(nameof(IsGlobal));
+            }
+        }
+
+        /// <summary>
+        /// 最大字段标识号
+        /// </summary>
+        [DataMember, JsonProperty("MaxIdentity", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal int _maxIdentity;
+
+        /// <summary>
+        /// 最大字段标识号
+        /// </summary>
+        /// <remark>
+        /// 最大字段标识号
+        /// </remark>
+        [IgnoreDataMember, JsonIgnore]
+        [Category(@"系统"), DisplayName(@"最大字段标识号"), Description("最大字段标识号")]
+        public int MaxIdentity
+        {
+            get => _maxIdentity;
+            set
+            {
+                if (_maxIdentity == value)
+                    return;
+                BeforePropertyChanged(nameof(MaxIdentity), _maxIdentity, value);
+                _maxIdentity = value;
+                OnPropertyChanged(nameof(MaxIdentity));
             }
         }
     }

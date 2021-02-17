@@ -100,17 +100,6 @@ namespace Agebull.EntityModel.Designer
         }
 
         /// <summary>
-        ///     组织单元只读
-        /// </summary>
-        /// <param name="entity"></param>
-        public void SiteReadOnly(EntityConfig entity)
-        {
-            foreach (var field in entity.Where(p => p.LinkTable == "Site" || p.LinkTable == "Organization"))
-            {
-                field.IsUserReadOnly = true;
-            }
-        }
-        /// <summary>
         ///     自动分类
         /// </summary>
         /// <param name="entity"></param>
@@ -139,9 +128,9 @@ namespace Agebull.EntityModel.Designer
             foreach (var i in GlobalConfig.GetEntities(p => p.IsInterface))
             {
                 bool all = true;
-                foreach (var pro in i.Where(p => !p.IsDiscard && !p.IsDelete))
+                foreach (var pro in i.Where(p => p.IsActive && !p.NoStorage))
                 {
-                    if (entity.Properties.Any(p => p.ReferenceKey == pro.Key || string.Equals(p.DbFieldName, pro.DbFieldName, StringComparison.OrdinalIgnoreCase)))
+                    if (entity.Properties.Any(p => p.ReferenceKey == pro.Key || pro.DataBaseField.DbFieldName.IsMe(p.DataBaseField?.DbFieldName)))
                         continue;
                     all = false;
                     break;
@@ -150,9 +139,9 @@ namespace Agebull.EntityModel.Designer
                     continue;
                 if (!entity.DataInterfaces.Contains(i.Name))
                     entity.DataInterfaces.Add(i.Name);
-                foreach (var pro in i.Where(p => !p.IsDiscard && !p.IsDelete))
+                foreach (var pro in i.Where(p => p.IsActive && !p.NoStorage))
                 {
-                    var link = entity.Properties.First(p => p.ReferenceKey == pro.Key || string.Equals(p.DbFieldName, pro.DbFieldName, StringComparison.OrdinalIgnoreCase));
+                    var link = entity.Find(p => p.ReferenceKey == pro.Key || pro.DataBaseField.DbFieldName.IsMe(p.DataBaseField?.DbFieldName));
                     entity.Properties.Remove(link);
                 }
             }
@@ -174,11 +163,11 @@ namespace Agebull.EntityModel.Designer
         public void PrimaryKeyName(EntityConfig entity)
         {
             entity.PrimaryColumn.Name = "Id";
-            entity.PrimaryColumn.DbFieldName = "id";
-            entity.PrimaryColumn.Caption = entity.Caption + "ID";
+            entity.PrimaryColumn.DataBaseField.DbFieldName = "id";
+            entity.PrimaryColumn.Caption = entity.Caption + "Id";
             if (entity.PrimaryColumn.CsType == "string")
             {
-                entity.PrimaryColumn.Datalen = 36;
+                entity.PrimaryColumn.DataBaseField.Datalen = 36;
             }
         }
 
@@ -188,16 +177,20 @@ namespace Agebull.EntityModel.Designer
         /// <param name="entity"></param>
         public void ForeignKeyName(EntityConfig entity)
         {
-            foreach (var field in entity.Where(p => p.IsLinkKey))
+            foreach (var field in entity.DataTable.Where(p => p.IsLinkKey))
             {
-                var foreign = entity.Project.Find(field.LinkTable);
+                var foreign = entity.Project.Find(field.LinkTable)?.DataTable?.PrimaryField;
+                if (foreign == null)
+                    continue;
                 field.Name = foreign.Name + "Id";
-                field.DbFieldName = foreign.Name.ToLinkWordName("_", false) + "_id";
-                field.JsonName = field.Name.ToLWord();
-                field.Caption = foreign.PrimaryColumn.Caption;
-                field.CsType = foreign.PrimaryColumn.CsType;
-                field.FieldType = foreign.PrimaryColumn.FieldType;
-                field.Datalen = foreign.PrimaryColumn.Datalen;
+                field.DbFieldName = foreign.Entity.Name.ToLinkWordName("_", false) + "_id";
+                field.JsonName = field.JsonName;
+                field.Caption = foreign.Caption;
+                field.Property.DataType = foreign.DataType;
+                field.Property.CsType = foreign.CsType;
+                field.FieldType = foreign.FieldType;
+                field.Datalen = foreign.Datalen;
+                field.Scale = foreign.Scale;
             }
         }
 
@@ -207,12 +200,16 @@ namespace Agebull.EntityModel.Designer
         /// <param name="entity"></param>
         public void ForeignKeyDbTypeSync(EntityConfig entity)
         {
-            foreach (var field in entity.Where(p => p.IsLinkKey))
+            foreach (var field in entity.DataTable.Where(p => p.IsLinkKey))
             {
-                var foreign = entity.Project.Find(field.LinkTable);
-                field.CsType = foreign.PrimaryColumn.CsType;
-                field.FieldType = foreign.PrimaryColumn.FieldType;
-                field.Datalen = foreign.PrimaryColumn.Datalen;
+                var foreign = entity.Project.Find(field.LinkTable)?.DataTable?.PrimaryField;
+                if (foreign == null)
+                    continue;
+                field.Property.DataType = foreign.DataType;
+                field.Property.CsType = foreign.CsType;
+                field.FieldType = foreign.FieldType;
+                field.Datalen = foreign.Datalen;
+                field.Scale = foreign.Scale;
             }
         }
 

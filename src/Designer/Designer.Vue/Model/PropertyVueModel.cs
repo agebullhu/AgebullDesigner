@@ -240,7 +240,7 @@ namespace Agebull.EntityModel.Config
             property.FormOption = null;
             if (field.IsLinkKey)
             {
-                var entity = Find(p => p.SaveTableName == field.LinkTable);
+                var entity = Find(field.LinkTable);
                 if (entity != null)
                 {
                     property.InputType = "easyui-combobox";

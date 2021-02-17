@@ -261,10 +261,8 @@ namespace Agebull.EntityModel.Designer
                 case nameof(FieldConfig.IsPrimaryKey):
                 case nameof(FieldConfig.IsEnum):
                 case nameof(FieldConfig.IsDiscard):
-                case nameof(FieldConfig.DbInnerField):
                 case nameof(FieldConfig.IsInterfaceField):
                 case nameof(FieldConfig.CustomType):
-                case nameof(FieldConfig.CustomWrite):
                 case nameof(FieldConfig.IsCompute):
                 case nameof(FieldConfig.ComputeGetCode):
                 case nameof(FieldConfig.ComputeSetCode):
@@ -272,16 +270,12 @@ namespace Agebull.EntityModel.Designer
                         item.SoruceTypeIcon = Application.Current.Resources["tree_default"] as BitmapImage;
                     else if (property.IsDiscard)
                         item.SoruceTypeIcon = Application.Current.Resources["img_clear"] as BitmapImage;
-                    else if (property.DbInnerField)
-                        item.SoruceTypeIcon = Application.Current.Resources["img_lock"] as BitmapImage;
                     else if (property.IsInterfaceField)
                         item.SoruceTypeIcon = Application.Current.Resources["img_face"] as BitmapImage;
                     else if (property.IsEnum)
                         item.SoruceTypeIcon = Application.Current.Resources["tree_Child4"] as BitmapImage;
                     else if (!string.IsNullOrWhiteSpace(property.CustomType))
                         item.SoruceTypeIcon = Application.Current.Resources["img_man"] as BitmapImage;
-                    else if (property.CustomWrite)
-                        item.SoruceTypeIcon = Application.Current.Resources["tree_item"] as BitmapImage;
                     else if (!string.IsNullOrWhiteSpace(property.ComputeGetCode) || !string.IsNullOrWhiteSpace(property.ComputeSetCode))
                         item.SoruceTypeIcon = Application.Current.Resources["img_code"] as BitmapImage;
                     else if (property.IsCompute)
@@ -388,10 +382,8 @@ namespace Agebull.EntityModel.Designer
                 case nameof(FieldConfig.IsPrimaryKey):
                 case nameof(FieldConfig.IsEnum):
                 case nameof(FieldConfig.IsDiscard):
-                case nameof(FieldConfig.DbInnerField):
                 case nameof(FieldConfig.IsInterfaceField):
                 case nameof(FieldConfig.CustomType):
-                case nameof(FieldConfig.CustomWrite):
                 case nameof(FieldConfig.IsCompute):
                 case nameof(FieldConfig.ComputeGetCode):
                 case nameof(FieldConfig.ComputeSetCode):
@@ -399,16 +391,12 @@ namespace Agebull.EntityModel.Designer
                         item.SoruceTypeIcon = Application.Current.Resources["tree_default"] as BitmapImage;
                     else if (property.IsDiscard)
                         item.SoruceTypeIcon = Application.Current.Resources["img_clear"] as BitmapImage;
-                    else if (property.DbInnerField)
-                        item.SoruceTypeIcon = Application.Current.Resources["img_lock"] as BitmapImage;
                     else if (property.IsInterfaceField)
                         item.SoruceTypeIcon = Application.Current.Resources["img_face"] as BitmapImage;
                     else if (property.IsEnum)
                         item.SoruceTypeIcon = Application.Current.Resources["tree_Child4"] as BitmapImage;
                     else if (!string.IsNullOrWhiteSpace(property.CustomType))
                         item.SoruceTypeIcon = Application.Current.Resources["img_man"] as BitmapImage;
-                    else if (property.CustomWrite)
-                        item.SoruceTypeIcon = Application.Current.Resources["tree_item"] as BitmapImage;
                     else if (!string.IsNullOrWhiteSpace(property.ComputeGetCode) || !string.IsNullOrWhiteSpace(property.ComputeSetCode))
                         item.SoruceTypeIcon = Application.Current.Resources["img_code"] as BitmapImage;
                     else if (property.IsCompute)

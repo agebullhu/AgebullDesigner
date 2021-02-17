@@ -10,6 +10,7 @@
 
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -172,10 +173,7 @@ namespace Agebull.EntityModel.Designer
             {
                 return;
             }
-            using (CodeGeneratorScope.CreateScope(SolutionConfig.Current))
-            {
-                DesignToExcel.Import(dialog.FileName, Context.GetSelectEntities());
-            }
+            DesignToExcel.Import(dialog.FileName, Context.GetSelectEntities());
         }
         #endregion
 
@@ -471,17 +469,22 @@ namespace Agebull.EntityModel.Designer
                 else
                 {
                     Model.Context.CurrentTrace.TraceMessage.Track = "新增字段:" + field;
-                    entity.Add(new FieldConfig
+                    var column = new FieldConfig
                     {
                         Name = field,
                         Description = desc,
-                        DbFieldName = field,
                         CsType = "string",
-                        FieldType = "nvarchar",
-                        DbNullable = true,
                         Nullable = true,
                         CanEmpty = true
+                    };
+                    entity.DataTable.Add(column.DataBaseField = new DataBaseFieldConfig
+                    {
+                        DbFieldName = field,
+                        FieldType = "nvarchar",
+                        DbNullable = true,
+                        Property = column
                     });
+                    entity.Add(column);
                 }
             }
             foreach (var col in entity.Where(p => p.IsDiscard))

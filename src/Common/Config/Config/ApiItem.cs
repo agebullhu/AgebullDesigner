@@ -47,7 +47,7 @@ namespace Agebull.EntityModel.Config
         /// Api调用方式（GET、POST)
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName(Method_Description), Description(Method_Description)]
+        [DisplayName(Method_Description), Description(Method_Description)]
         public HttpMethod Method
         {
             get => _Method;
@@ -75,7 +75,7 @@ namespace Agebull.EntityModel.Config
         /// 请求参数名称
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName("请求参数名称"), Description("请求参数名称")]
+        [DisplayName("请求参数名称"), Description("请求参数名称")]
         public string CallArg
         {
             get => _callArg;
@@ -102,7 +102,7 @@ namespace Agebull.EntityModel.Config
         /// API编码
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName("API编码"), Description("API编码")]
+        [DisplayName("API编码"), Description("API编码")]
         public string Code
         {
             get => _code;
@@ -129,7 +129,7 @@ namespace Agebull.EntityModel.Config
         /// 返回参数名称
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName("返回参数名称"), Description("返回参数名称")]
+        [DisplayName("返回参数名称"), Description("返回参数名称")]
         public string ResultArg
         {
             get => _resultArg;
@@ -157,7 +157,7 @@ namespace Agebull.EntityModel.Config
         /// 路由路径
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName("路由路径"), Description("路由路径")]
+        [DisplayName("路由路径"), Description("路由路径")]
         public string RoutePath
         {
             get => _routePath;
@@ -184,7 +184,7 @@ namespace Agebull.EntityModel.Config
         /// 是否用户命令
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName("是否用户命令"), Description("是否用户命令")]
+        [DisplayName("是否用户命令"), Description("是否用户命令")]
         public bool IsUserCommand
         {
             get => _isUserCommand;
@@ -210,7 +210,7 @@ namespace Agebull.EntityModel.Config
         /// 原始内容
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName("原始内容"), Description("原始内容")]
+        [DisplayName("原始内容"), Description("原始内容")]
         public string Org
         {
             get
@@ -241,7 +241,7 @@ namespace Agebull.EntityModel.Config
         /// 是否用户命令
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName("是否用户命令"), Description("是否用户命令")]
+        [DisplayName("是否用户命令"), Description("是否用户命令")]
         public bool IsUserCommand
         {
             get
@@ -273,7 +273,7 @@ namespace Agebull.EntityModel.Config
         /// 对应的另一半(API与Notify的关系)
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName("对应的另一半"), Description(Friend_Description)]
+        [DisplayName("对应的另一半"), Description(Friend_Description)]
         public string Friend
         {
             get
@@ -305,7 +305,7 @@ namespace Agebull.EntityModel.Config
         /// 对应的另一半(API与Notify的关系)
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName("对应的另一半"), Description(FriendKey_Description)]
+        [DisplayName("对应的另一半"), Description(FriendKey_Description)]
         public Guid FriendKey
         {
             get
@@ -335,7 +335,7 @@ namespace Agebull.EntityModel.Config
         /// 本地命令(不转发)
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
-        [Category(""), DisplayName("本地命令"), Description("本地命令(不转发)")]
+        [DisplayName("本地命令"), Description("本地命令(不转发)")]
         public bool LocalCommand
         {
             get

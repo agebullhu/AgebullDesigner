@@ -36,18 +36,18 @@
                     //result = false;
                     Message.Track = "***主键字段被设置为过时";
                 }
-                if (!string.IsNullOrWhiteSpace(Entity.SaveTableName))
+                if (!string.IsNullOrWhiteSpace(Entity.DataTable.SaveTableName))
                 {
-                    Entity.SaveTableName = Entity.SaveTableName.Trim();
+                    Entity.DataTable.SaveTableName = Entity.DataTable.SaveTableName.Trim();
                 }
-                if (string.IsNullOrWhiteSpace(Entity.ReadTableName))
+                if (string.IsNullOrWhiteSpace(Entity.DataTable.ReadTableName))
                 {
                     result = false;
                     Message.Track = "***实体存储名称不能为空";
                 }
                 else
                 {
-                    Entity.ReadTableName = Entity.ReadTableName.Trim();
+                    Entity.DataTable.ReadTableName = Entity.DataTable.ReadTableName.Trim();
                 }
             }
             foreach (var col in Entity.Properties)
@@ -60,7 +60,7 @@
                 Message.Message3 = $"=>{col.Caption}:{col.Name}";
                 var model = new PropertyValidater
                 {
-                    Field = col,
+                    Property = col,
                     DataBaseType = Entity.Project.DbType
                 };
                 if (!model.Validate(Message))

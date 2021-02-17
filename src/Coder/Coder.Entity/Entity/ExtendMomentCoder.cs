@@ -191,7 +191,7 @@ namespace Agebull.EntityModel.RobotCoder
         {
             return string.Format(@"
             if(user._{0} != null)
-                {0}.LoadValue();", entity.ReadTableName);
+                {0}.LoadValue();", entity.DataTable.ReadTableName);
         }
 
 

@@ -207,8 +207,39 @@ namespace Agebull.EntityModel
 
         #region 代码生成范围
 
-        private static readonly object My = new object();
+        /// <summary>
+        /// 规整对象
+        /// </summary>
+        public static void Regularize(object config)
+        {
+            if (config == null)
+                return;
+            var scope = NameEventScope.CreateScope(config, "Global", nameof(OnCodeGeneratorBegin));
+            if (scope == null)
+                return;
+            using (scope)
+            {
+                foreach (var trigger in Triggers)
+                {
+                    if (trigger.TargetType.IsFrientType(config))
+                        trigger.Regularize(config);
+                }
+            }
+        }
 
+        /// <summary>
+        /// 规整对象
+        /// </summary>
+        public static void DoRegularize(object config)
+        {
+            if (config == null)
+                return;
+            foreach (var trigger in Triggers)
+            {
+                if (trigger.TargetType.IsFrientType(config))
+                    trigger.Regularize(config);
+            }
+        }
         /// <summary>
         /// 开始代码生成
         /// </summary>
@@ -216,30 +247,35 @@ namespace Agebull.EntityModel
         {
             if (config == null)
                 return;
-            var scope = NameEventScope.CreateScope(My, "Global", nameof(OnCodeGeneratorBegin));
+            var scope = NameEventScope.CreateScope(config, "Global", nameof(OnCodeGeneratorBegin));
             if (scope == null)
                 return;
             using (scope)
             {
+                //DoRegularize(config);
                 foreach (var trigger in Triggers)
                 {
-                    trigger.OnCodeGeneratorBegin(config);
+                    if (trigger.TargetType.IsFrientType(config))
+                        trigger.OnCodeGeneratorBegin(config);
                 }
             }
         }
+
+        private static readonly object My = new object();
+
         /// <summary>
         /// 完成代码生成
         /// </summary>
-        public static void OnCodeGeneratorEnd()
+        public static void OnCodeGeneratorEnd(object config)
         {
-            var scope = NameEventScope.CreateScope(My, "Global", nameof(OnCodeGeneratorBegin));
+            var scope = NameEventScope.CreateScope(config, "Global", nameof(OnCodeGeneratorBegin));
             if (scope == null)
                 return;
             using (scope)
             {
                 foreach (var trigger in Triggers)
                 {
-                    trigger.OnCodeGeneratorEnd();
+                    trigger.OnCodeGeneratorEnd(config);
                 }
             }
         }

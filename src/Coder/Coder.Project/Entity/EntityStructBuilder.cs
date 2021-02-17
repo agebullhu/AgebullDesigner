@@ -102,31 +102,30 @@ namespace Agebull.EntityModel.RobotCoder
         {
             if (entity == null || entity.DataTable == null)
                 return;
-            var table = entity.DataTable;
             if (!string.IsNullOrWhiteSpace(entity.ModelBase))
                 EntityStruct(Project.Models.FirstOrDefault(p => p.Name == entity.ModelBase), codeStruct, codeConst, ref isFirst, ref idx);
 
-            var primary = table.PrimaryField;
+            var primary = entity.PrimaryColumn;
             if (primary != null)
             {
                 codeConst.Append(PropertyIndex(primary, ref idx));
                 PropertyStruct(codeStruct, primary, ref isFirst);
             }
 
-            foreach (var field in table.Where(p => p != primary).OrderBy(p => p.Index))
+            foreach (var property in entity.WhereLast(p => p != primary).OrderBy(p => p.Index))
             {
-                codeConst.Append(PropertyIndex(field, ref idx));
-                PropertyStruct(codeStruct, field, ref isFirst);
+                codeConst.Append(PropertyIndex(property, ref idx));
+                PropertyStruct(codeStruct, property, ref isFirst);
             }
-
-            foreach (var field in table.Where(p => !entity.PublishProperty.Any(pp => p == pp) && p != entity.PrimaryColumn).OrderBy(p => p.Index))
+            /*
+            foreach (var property in entity.WhereLast(p => p != entity.PrimaryColumn && !entity.PublishProperty.Any(pp => p == pp)).OrderBy(p => p.Index))
             {
-                codeConst.Append(PropertyIndex(field, ref idx));
-                PropertyStruct(codeStruct, field, ref isFirst);
-            }
+                codeConst.Append(PropertyIndex(property, ref idx));
+                PropertyStruct(codeStruct, property, ref isFirst);
+            }*/
         }
 
-        private string PropertyIndex(DataBaseFieldConfig property, ref int idx)
+        private string PropertyIndex(IPropertyConfig property, ref int idx)
         {
             return $@"
 
@@ -141,32 +140,32 @@ namespace Agebull.EntityModel.RobotCoder
             public const int Real_{property.Name} = {idx++};";
         }
 
-        private void PropertyStruct(StringBuilder codeStruct, DataBaseFieldConfig field, ref bool isFirst)
+        private void PropertyStruct(StringBuilder codeStruct, IPropertyConfig property, ref bool isFirst)
         {
             if (isFirst)
                 isFirst = false;
             else
                 codeStruct.Append(',');
-            var property = field.Property;
+
             var featrue = new List<string>();
 
-            if (!field.DbInnerField)
-            {
-                if (property.IsInterfaceField)
-                {
-                    featrue.Add("PropertyFeatrue.Interface");
-                    if (!property.NoProperty)
-                        featrue.Add("PropertyFeatrue.Property");
-                }
-                else
-                {
-                    featrue.Add("PropertyFeatrue.Property");
-                }
-            }
-
-            if (!field.NoStorage)
+            var field = property.DataBaseField;
+            if (!property.NoStorage)
             {
                 featrue.Add("PropertyFeatrue.DbCloumn");
+                if (!field.DbInnerField)
+                {
+                    if (property.IsInterfaceField)
+                    {
+                        featrue.Add("PropertyFeatrue.Interface");
+                        if (!property.NoProperty)
+                            featrue.Add("PropertyFeatrue.Property");
+                    }
+                    else
+                    {
+                        featrue.Add("PropertyFeatrue.Property");
+                    }
+                }
             }
 
             codeStruct.Append($@"
@@ -176,11 +175,11 @@ namespace Agebull.EntityModel.RobotCoder
                         {{
                             Index        = {property.Name},
                             Featrue      = {(featrue.Count == 0 ? "PropertyFeatrue.None" : string.Join(" | ", featrue))},
-                            Link         = ""{field.LinkField}"",
+                            Link         = ""{field?.LinkField}"",
                             Name         = ""{property.Name}"",
                             Caption      = @""{property.Caption}"",
                             JsonName     = ""{property.JsonName}"",
-                            ColumnName   = ""{field.DbFieldName}"",
+                            ColumnName   = ""{field?.DbFieldName}"",
                             PropertyType = typeof({property.CustomType ?? property.CsType}),
                             CanNull      = {(property.Nullable ? "true" : "false")},
                             ValueType    = PropertyValueType.{CsharpHelper.PropertyValueType(property)},

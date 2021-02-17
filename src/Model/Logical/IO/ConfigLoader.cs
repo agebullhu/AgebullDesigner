@@ -28,13 +28,16 @@ namespace Agebull.EntityModel.Designer
             GlobalConfig.ClearConfigDictionary();
             GlobalConfig.GlobalSolution = LoadSolution(GlobalConfig.CheckPath(GlobalConfig.RootPath, "Global"), "global.json", true);
 
-            GlobalConfig.GlobalSolution.Foreach(GlobalConfig.AddNormalConfig);
+            GlobalConfig.GlobalSolution.Look(GlobalConfig.AddNormalConfig);
+
+            GlobalTrigger.OnLoad(GlobalConfig.GlobalSolution);
             var re = GlobalConfig.GlobalSolution;
             if (!string.IsNullOrWhiteSpace(sluFile) && !string.Equals(sluFile, GlobalConfig.GlobalSolution.SaveFileName, StringComparison.OrdinalIgnoreCase))
             {
                 var solution = LoadSolution(Path.GetDirectoryName(sluFile), Path.GetFileName(sluFile), false);
 
-                solution.Foreach(GlobalConfig.AddNormalConfig);
+                solution.Look(GlobalConfig.AddNormalConfig);
+                GlobalTrigger.OnLoad(solution);
                 re = GlobalConfig.LocalSolution = solution;
             }
             return re;
@@ -72,7 +75,6 @@ namespace Agebull.EntityModel.Designer
                 {
                     Trace.WriteLine(ex);
                 }
-                GlobalTrigger.OnLoad(solution);
                 return solution;
             }
         }
@@ -138,7 +140,6 @@ namespace Agebull.EntityModel.Designer
                 GlobalConfig.AddConfig(field);
             }
             LoadEntityExtend(entity, path);
-            GlobalConfig.AddConfig(entity);
             return entity;
         }
 
@@ -200,7 +201,6 @@ namespace Agebull.EntityModel.Designer
                 GlobalConfig.AddConfig(field);
             }
             LoadEntityExtend(model, path);
-            GlobalConfig.AddConfig(model);
             return model;
         }
 
@@ -329,6 +329,7 @@ namespace Agebull.EntityModel.Designer
                     config = (TConfig)new DataContractSerializer(typeof(TConfig)).ReadObject(pteam);
                 }
                 config.SaveFileName = file;
+                GlobalConfig.AddConfig(config);
                 return config;
             }
             catch (Exception e)

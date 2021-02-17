@@ -383,7 +383,7 @@ namespace Agebull.EntityModel.Designer
                 RaisePropertyChanged(() => SelectRelationTable);
                 RaisePropertyChanged(() => CurrentRelationColumns);
                 if (value != null)
-                    SelectRelationColumn = value.PrimaryColumn;
+                    SelectRelationColumn = value.PrimaryColumn.Field;
             }
         }
 

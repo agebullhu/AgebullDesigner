@@ -9,6 +9,7 @@
 #region 引用
 
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -72,16 +73,24 @@ namespace Agebull.EntityModel.Designer
                 Tables.Add(entity = new EntityConfig
                 {
                     Name = entityName,
-                    ReadTableName = GetAttribute(xMappingFragment, "StoreEntitySet")
+                    DataTable = new DataTableConfig
+                    {
+                        ReadTableName = GetAttribute(xMappingFragment, "StoreEntitySet")
+                    }
                 });
                 foreach (XElement xProperty in xMappingFragment.Elements(nsDef + "ScalarProperty"))
                 {
                     string name = GetAttribute(xProperty, "Name");
-                    entity.Add(new FieldConfig
+                    var column = new FieldConfig
                     {
                         Name = name,
-                        DbFieldName = GetAttribute(xProperty, "ColumnName")
+                    };
+                    entity.DataTable.Add(column.DataBaseField = new DataBaseFieldConfig
+                    {
+                        DbFieldName = GetAttribute(xProperty, "ColumnName"),
+                        Property = column
                     });
+                    entity.Add(column);
                 }
             }
             // ReSharper restore PossibleNullReferenceException
@@ -99,25 +108,27 @@ namespace Agebull.EntityModel.Designer
             foreach (XElement xMap in xSchema.Elements(ns + "EntityType"))
             {
                 string name = GetAttribute(xMap, "Name");
-                EntityConfig entity = Tables.FirstOrDefault(p => p.ReadTableName == name);
+                EntityConfig entity = Tables.FirstOrDefault(p => p.DataTable.ReadTableName == name);
                 if (entity == null)
                 {
                     Tables.Add(entity = new EntityConfig
                     {
-                        ReadTableName = name,
-                        Name = name
+                        Name = name,
+                        DataTable = new DataTableConfig
+                        {
+                            ReadTableName = name
+                        }
                     });
                 }
 
                 foreach (XElement xProperty in xMap.Elements(ns + "Property"))
                 {
                     name = GetAttribute(xProperty, "Name");
-                    var column = entity.Find(p => p.DbFieldName == name);
+                    var column = entity.Find(p => p.DataBaseField.DbFieldName == name);
                     if (column == null)
                     {
                         entity.Add(column = new FieldConfig
                         {
-                            DbFieldName = name,
                             Name = name
                         });
                     }
@@ -125,18 +136,18 @@ namespace Agebull.EntityModel.Designer
                     column.IsCompute = storeGeneratedPattern == "Compute";
                     column.IsIdentity = storeGeneratedPattern == "Identity";
 
-                    column.FieldType = GetAttribute(xProperty, "Type");
-                    column.Datalen = GetAttribute(xProperty, "MaxLength", int.MaxValue);
+                    column.DataBaseField.FieldType = GetAttribute(xProperty, "Type");
+                    column.DataBaseField.Datalen = GetAttribute(xProperty, "MaxLength", int.MaxValue);
                     column.Min = GetAttribute(xProperty, "MinLength");
-                    column.Nullable = GetAttribute(xProperty, "Nullable", true);
-                    column.FixedLength = GetAttribute(xProperty, "FixedLength", false);
+                    column.DataBaseField.DbNullable = GetAttribute(xProperty, "Nullable", true);
+                    column.DataBaseField.FixedLength = GetAttribute(xProperty, "FixedLength", false);
                 }
 
                 foreach (XElement xProperty in xMap.Elements(ns + "Key"))
                 {
                     XElement xPropertyRef = xProperty.Element(ns + "PropertyRef");
                     name = GetAttribute(xPropertyRef, "Name");
-                    var column = entity.Find(p => p.DbFieldName == name);
+                    var column = entity.DataTable.Find(p => p.DbFieldName == name);
                     if (column != null)
                     {
                         column.IsPrimaryKey = true;
@@ -144,7 +155,7 @@ namespace Agebull.EntityModel.Designer
                     if (column.IsIdentity)
                     {
                         column.FieldType = "INT";
-                        column.Nullable = false;
+                        column.DbNullable = false;
                     }
                 }
             }
@@ -168,25 +179,27 @@ namespace Agebull.EntityModel.Designer
                 {
                     Tables.Add(entity = new EntityConfig
                     {
-                        ReadTableName = name,
-                        Name = name
+                        Name = name,
+                        DataTable = new DataTableConfig
+                        {
+                            ReadTableName = name
+                        }
                     });
                 }
 
                 foreach (XElement xProperty in xMap.Elements(nsDef + "Property"))
                 {
                     name = GetAttribute(xProperty, "Name");
-                    var column = entity.Find(p => p.Name == name || p.DbFieldName == name);
+                    var column = entity.Find(p => p.Name == name || p.DataBaseField.DbFieldName == name);
                     if (column == null)
                     {
                         entity.Add(column = new FieldConfig
                         {
-                            DbFieldName = name,
                             Name = name
                         });
                     }
                     column.CsType = GetAttribute(xProperty, "Type");
-                    column.Datalen = GetAttribute(xProperty, "MaxLength", int.MaxValue);
+                    column.DataBaseField.Datalen = GetAttribute(xProperty, "MaxLength", int.MaxValue);
                     column.Min = GetAttribute(xProperty, "MinLength");
 
                     if (!column.IsPrimaryKey)

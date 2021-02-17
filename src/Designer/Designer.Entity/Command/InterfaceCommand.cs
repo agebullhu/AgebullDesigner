@@ -1,5 +1,6 @@
 ﻿using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
 using Agebull.EntityModel.RobotCoder;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -86,15 +87,21 @@ namespace Agebull.EntityModel.Designer
         {
             if (entity.Exist("memo"))
                 return;
-            entity.Add(new FieldConfig
+            var property = new FieldConfig
             {
                 Name = "Memo",
                 Caption = "备注",
+                JsonName = "memo"
+            };
+            property.DataBaseField = new DataBaseFieldConfig
+            {
                 DbFieldName = "memo",
-                JsonName = "memo",
+                Property = property,
                 DbNullable = true,
                 FieldType = "TEXT"
-            });
+            };
+            entity.Add(property);
+            entity.DataTable.Add(property.DataBaseField);
         }
 
     }

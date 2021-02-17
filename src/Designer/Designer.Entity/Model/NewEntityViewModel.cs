@@ -67,25 +67,46 @@ namespace Agebull.EntityModel.Designer
                 MessageBox.Show("实体名称为空或没有字段,请检查");
                 return;
             }
-            foreach (var field in Model.Columns)
+            foreach (var property in Model.Columns)
             {
-                if (field.IsDelete)
+                if (!property.IsActive)
                     continue;
-                var old = Model.Entity.Find(p => p != null && p.Name == field.Name);
+                var old = Model.Entity.Find(property.Name);
                 if (old != null)
                 {
-                    old.CsType = field.CsType;
-                    old.Caption = field.Caption;
-                    old.Description = field.Description;
-                    old.CustomType = field.CustomType;
-                    old.Nullable = field.Nullable;
-                    old.IsArray = field.IsArray;
-                    old.IsDictionary = field.IsDictionary;
-                    old.Datalen = field.Datalen;
+                    old.CsType = property.CsType;
+                    old.Caption = property.Caption;
+                    old.Description = property.Description;
+                    old.CustomType = property.CustomType;
+                    old.Nullable = property.Nullable;
+                    old.IsArray = property.IsArray;
+                    old.IsDictionary = property.IsDictionary;
+                    if (property.DataBaseField != null)
+                    {
+                        old.DataBaseField.Copy(property.DataBaseField);
+                    }
+                    if(!old.IsActive)
+                    {
+                        old.IsDelete = false;
+                        old.IsDiscard = false;
+                    }
                 }
                 else
                 {
-                    Model.Entity.Add(field);
+                    Model.Entity.Add(property);
+                    if (property.DataBaseField == null)
+                    {
+                        property.DataBaseField = new Config.V2021.DataBaseFieldConfig
+                        {
+                            Property = property
+                        };
+                        Model.Entity.DataTable.Add(property.DataBaseField);
+                        property.DataBaseField.Copy(property);
+                    }
+                    else
+                    {
+                        Model.Entity.DataTable.Add(property.DataBaseField);
+                    }
                 }
             }
             var window = (Window)View;

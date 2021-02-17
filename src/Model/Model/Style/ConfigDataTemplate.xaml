@@ -614,9 +614,16 @@
                             <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DataBaseField.DbInnerField,Mode=TwoWay}" />
                         </StackPanel>
                         <StackPanel Style="{StaticResource AdvFieldPanel}">
-                            <Label Content="不保存的场景" />
-                            <ComboBox ItemsSource="{x:Static defaults:EnumHelper.StorageScreenTypeList}"
-                                  SelectedValue="{Binding DataBaseField.KeepStorageScreen,Mode=TwoWay}" />
+                            <Label Content="读取" />
+                            <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DataBaseField.CanRead,Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource AdvFieldPanel}">
+                            <Label Content="新增" />
+                            <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DataBaseField.CanInsert,Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource AdvFieldPanel}">
+                            <Label Content="更新" />
+                            <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DataBaseField.CanUpdate,Mode=TwoWay}" />
                         </StackPanel>
                         <StackPanel Style="{StaticResource AdvFieldPanel}">
                             <Label Content="自定义写入" />

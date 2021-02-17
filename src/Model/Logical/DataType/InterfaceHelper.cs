@@ -55,30 +55,33 @@ namespace Agebull.EntityModel.RobotCoder
                 {
                     if (iField.IsDelete || iField.IsDiscard)
                         continue;
-                    if (!entity.TryGet(out var property, iField.Name, iField.DbFieldName))
+                    GlobalTrigger.DoRegularize(iField);
+                    if (!entity.TryGet(out var property, iField.Name))
                     {
                         var field = new FieldConfig();
                         field.Copy(iField);
                         entity.LastProperties.TryAdd(field);
                         property = field;
-                        property.Index = ++idx;
-                        property.DataBaseField = entity.DataTable.Find(iField.Name);
-                        if(property.DataBaseField == null)
-                        {
-                            property.DataBaseField = new DataBaseFieldConfig
-                            {
-                                Property = property
-                            };
-                            entity.DataTable.Add(property.DataBaseField);
-                            property.DataBaseField.Copy(field);
-                        }
                     }
+                    property.DataBaseField = entity.DataTable.Find(iField.Name);
+                    if (property.DataBaseField == null)
+                    {
+                        property.DataBaseField = new DataBaseFieldConfig
+                        {
+                            Property = property
+                        };
+                        entity.DataTable.Add(property.DataBaseField);
+                    }
+                    property.DataBaseField.Copy(iField.DataBaseField);
+                    property.Index = ++idx;
                     property.IsInterfaceField = true;
                     property.Option.ReferenceKey = iField.Key;
                     property.Entity = entity.Entity;
                     property.Option.ReferenceConfig = iField;
                     property.Option.IsReference = true;
 
+                    GlobalTrigger.DoRegularize(property.DataBaseField);
+                    GlobalTrigger.DoRegularize(property);
                 }
             }
         }
@@ -111,7 +114,7 @@ namespace Agebull.EntityModel.RobotCoder
             var existFields = new List<(FieldConfig inf, FieldConfig field)>();
             foreach (var iField in array)
             {
-                if (entity.TryGet(out var field, iField.Name, iField.DbFieldName))
+                if (entity.TryGet(out var field, iField.Name))
                 {
                     existFields.Add((iField, field));
                 }
@@ -143,7 +146,7 @@ namespace Agebull.EntityModel.RobotCoder
                 var existFields = new List<(FieldConfig, FieldConfig)>();
                 foreach (var iField in array)
                 {
-                    if (entity.TryGet(out var field, iField.Name, iField.DbFieldName))
+                    if (entity.TryGet(out var field, iField.Name))
                     {
                         existFields.Add((iField, field));
                     }

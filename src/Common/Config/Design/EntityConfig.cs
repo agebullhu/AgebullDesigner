@@ -81,7 +81,7 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [IgnoreDataMember, JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"客户端可访问的属性"), Description("客户端可访问的属性")]
-        public IEnumerable<IPropertyConfig> ClientProperty => LastProperties?.Where(p => p.UserSee);
+        public IEnumerable<IPropertyConfig> ClientProperty => LastProperties?.Where(p =>!p.NoProperty && p.UserSee);
 
         #endregion
     }

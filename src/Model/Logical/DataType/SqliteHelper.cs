@@ -106,7 +106,7 @@ namespace Agebull.EntityModel.Config.Sqlite
         ///     从C#的类型转为DBType
         /// </summary>
         /// <param name="field"> </param>
-        public static SqliteType ToSqlDbType(FieldConfig field) => ToSqlDbType(field.FieldType, field.CsType);
+        public static SqliteType ToSqlDbType(FieldConfig field) => ToSqlDbType(field.DataBaseField.FieldType, field.CsType);
 
         /// <summary>
         ///     从C#的类型转为DBType
@@ -256,11 +256,11 @@ namespace Agebull.EntityModel.Config.Sqlite
                     return "BOOL";
                 case "byte[]":
                 case "binary":
-                    return property.IsBlob ? "IMAGE" : "VARBINARY";
+                    return property.DataBaseField.IsBlob ? "IMAGE" : "VARBINARY";
                 case "char":
                     return "NCHAR";
                 case "string":
-                    return property.IsBlob ? "TEXT" : "NVARCHAR";
+                    return property.DataBaseField.IsBlob ? "TEXT" : "NVARCHAR";
                 case "datetime":
                     return "DATETIME";
                 case "guid":
@@ -371,8 +371,9 @@ namespace Agebull.EntityModel.Config.Sqlite
         ///     从C#的类型转为My sql的类型
         /// </summary>
         /// <param name="column"> C#的类型</param>
-        public static string ColumnType(FieldConfig column)
+        public static string ColumnType(FieldConfig property)
         {
+            var column = property.DataBaseField;
             switch (column.FieldType.ToLower())
             {
                 case "decimal":

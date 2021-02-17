@@ -192,7 +192,7 @@ namespace {NameSpace}.WebApi
             var code = new StringBuilder();
             if (!Model.EnableDataBase)
                 return "";
-            var fields = Model.DataTable.Where(p => !p.NoStorage && p.Property.CanUserQuery);
+            var fields = Model.DataTable.WhereLast(p => !p.Property.NoProperty && p.Property.CanUserQuery);
             code.Append(@"
             if (RequestArgumentConvert.TryGet(""_value_"", out string _value_)  && !string.IsNullOrEmpty(_value_))
             {
@@ -285,7 +285,7 @@ namespace {NameSpace}.WebApi
                     {
                         case "string":
                             code.Append($@"
-                filter.AddAnd(p => p.{pro.Name}.Like({pro.JsonName}));");
+                filter.AddAnd(p => p.{pro.Name}.LeftLike({pro.JsonName}));");
                             break;
                         default:
                             code.Append(!string.IsNullOrWhiteSpace(pro.CustomType)
@@ -297,6 +297,10 @@ namespace {NameSpace}.WebApi
                     }
                     code.Append(@"
             }");
+                    if(pro.CsType.IsMe("string"))
+                    code.Append($@"
+            else if(RequestArgumentConvert.TryGet(""{pro.JsonName}_p"" , out {pro.CsType} {pro.JsonName}2))
+                filter.AddAnd(p => p.{pro.Name}.Like({pro.JsonName}2));");
                 }
             }
             return code.ToString();
@@ -494,20 +498,20 @@ namespace {NameSpace}.WebApi
                 foreach (var pro in group.OrderBy(p => p.Index))
                 {
                     var field = pro.DataBaseField;
-                    if (pro == model.PrimaryColumn)
+                    if (!pro.NoStorage && field.KeepStorageScreen.HasFlag(StorageScreenType.Insert | StorageScreenType.Update))
+                        continue;
+                    if (!pro.NoStorage && pro.DataBaseField.IsIdentity)
                     {
                         continue;
                     }
                     code.Append(@"
             if(");
-                    if (pro.IsPrimaryKey || (field != null && field.KeepUpdate))
+                    if (!pro.NoStorage)
                     {
-                        code.Append(@"!convert.IsUpdata && ");
-
-                    }
-                    if (field != null && field.KeepStorageScreen == StorageScreenType.Insert)
-                    {
-                        code.Append(@"convert.IsUpdata && ");
+                        if (field.KeepStorageScreen.HasFlag(StorageScreenType.Insert))
+                            code.Append(@"!convert.IsIsInsert && ");
+                        else if (field.KeepStorageScreen.HasFlag(StorageScreenType.Update))
+                            code.Append(@"!convert.IsIsInsert && ");
                     }
                     switch (pro.DataType)
                     {

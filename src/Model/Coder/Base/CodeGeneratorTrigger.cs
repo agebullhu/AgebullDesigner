@@ -72,6 +72,17 @@ namespace Agebull.EntityModel.Designer
                     InterfaceHelper.CheckLinkField(entity, property);
             }
             InterfaceHelper.CheckLastInterface(entity, idx);
+            foreach (var field in entity.DataTable.Fields.ToArray())
+            {
+                if (field.Property == null || field.Property.IsDelete || field.Property.IsDiscard || !entity.LastProperties.Any(pro => pro == field.Property))
+                {
+                    field.IsDiscard = true;
+                }
+                else
+                {
+                    field.IsDiscard = false;
+                }
+            }
         }
 
         /// <summary>

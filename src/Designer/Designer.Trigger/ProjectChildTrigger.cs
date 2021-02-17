@@ -23,13 +23,13 @@ namespace Agebull.EntityModel.Designer
         /// <param name="property"></param>
         protected override void OnPropertyChangedInner(string property)
         {
-            if (Target.Project == null)
+            if (TargetConfig.Project == null)
                 return;
             switch (property)
             {
                 case nameof(NotificationObject.IsModify):
-                    if (Target.IsModify)
-                        Target.Project.IsModify = true;
+                    if (TargetConfig.IsModify)
+                        TargetConfig.Project.IsModify = true;
                     return;
             }
         }

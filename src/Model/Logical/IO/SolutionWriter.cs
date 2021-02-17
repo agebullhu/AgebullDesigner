@@ -30,7 +30,7 @@ namespace Agebull.EntityModel.Designer
                 SaveSolution(solution);
             }
             GlobalConfig.ClearConfigDictionary();
-            solution.Foreach(GlobalConfig.AddNormalConfig);
+            solution.Look(GlobalConfig.AddNormalConfig);
         }
 
         /// <summary>

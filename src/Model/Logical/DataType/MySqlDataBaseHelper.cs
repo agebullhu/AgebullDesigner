@@ -106,7 +106,7 @@ namespace Agebull.EntityModel.Config.Mysql
         ///     从C#的类型转为DBType
         /// </summary>
         /// <param name="field"> </param>
-        public static MySqlDbType ToSqlDbType(FieldConfig field) => ToSqlDbType(field.FieldType, field.CsType);
+        public static MySqlDbType ToSqlDbType(FieldConfig property) => ToSqlDbType(property.DataBaseField.FieldType, property.CsType);
 
         /// <summary>
         ///     从C#的类型转为DBType
@@ -322,11 +322,11 @@ namespace Agebull.EntityModel.Config.Mysql
                     return "BOOL";
                 case "byte[]":
                 case "binary":
-                    return property.IsBlob ? "LONGBLOB" : "BLOB";
+                    return property.DataBaseField.IsBlob ? "LONGBLOB" : "BLOB";
                 case "char":
                     return "NCHAR";
                 case "string":
-                    return property.IsBlob ? "LONGTEXT" : property.IsMemo ? "TEXT" : "NVARCHAR";
+                    return property.DataBaseField.IsBlob ? "LONGTEXT" : property.DataBaseField.IsText ? "TEXT" : "NVARCHAR";
                 case "datetime":
                     return "DATETIME";
                 case "guid":
