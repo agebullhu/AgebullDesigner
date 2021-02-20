@@ -31,14 +31,14 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = ToStandardName,
                 Caption = "规范名称",
-                Catalog = "修复",
+                Catalog = "工具",
                 IconName = "规范"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>
             {
                 Action = ResetView,
                 Caption = "重置视角",
-                Catalog = "修复",
+                Catalog = "工具",
                 IconName = "视角"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>
@@ -99,7 +99,7 @@ namespace Agebull.EntityModel.Designer
                 Action = LinkKeyFirst,
                 Caption = "外键排前",
                 SoruceView = "entity",
-                Catalog = "排序",
+                Catalog = "工具",
                 IconName = "排序",
                 WorkView = "adv"
             });
@@ -108,7 +108,7 @@ namespace Agebull.EntityModel.Designer
                 Action = LinkKeyLast,
                 Caption = "外键排后",
                 SoruceView = "entity",
-                Catalog = "排序",
+                Catalog = "工具",
                 IconName = "排序",
                 WorkView = "adv"
             });

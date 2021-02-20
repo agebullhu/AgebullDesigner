@@ -109,7 +109,7 @@
                                                        Width="12" Height="12" Margin="2,0,0,0" FontSize="10"/>
                                             <TextBlock TextWrapping="Wrap"
                                                        x:Name="ctrHeader"
-                                                       FontSize="12"
+                                                       FontSize="13"
                                                        Text="{Binding Header, Mode=OneWay}"
                                                        Foreground="{Binding Color}"
                                                        FontWeight="{Binding FontWeight}"

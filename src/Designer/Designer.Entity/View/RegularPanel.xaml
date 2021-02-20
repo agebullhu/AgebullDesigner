@@ -12,10 +12,10 @@
         <designer:RegularViewModel/>
     </UserControl.DataContext>
     <DockPanel>
-        <GroupBox DockPanel.Dock="Bottom"  Header="数据规则" Margin="5"  DataContext="{Binding Model.Context.SelectField}">
-            <GroupBox.Resources>
+        <Border Background="White" DockPanel.Dock="Bottom" DataContext="{Binding Model.Context.SelectField}">
+            <Border.Resources>
                 <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
-            </GroupBox.Resources>
+            </Border.Resources>
             <StackPanel Style="{StaticResource LayoutPanel}">
                 <StackPanel Style="{StaticResource FieldPanel}">
                     <Label Content = "初始值" />
@@ -81,7 +81,7 @@
                     </TextBlock>
                 </StackPanel>
             </StackPanel>
-        </GroupBox>
+        </Border>
         <DataGrid AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"

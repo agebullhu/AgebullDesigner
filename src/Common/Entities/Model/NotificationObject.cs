@@ -99,6 +99,8 @@ namespace Agebull.EntityModel
         /// <param name="args">属性</param>
         protected void RaisePropertyChanged(PropertyChangedEventArgs args)
         {
+            if (WorkContext.IsNoChangedNotify)
+                return;
             InvokeInUiThread(RaisePropertyChangedInner, args);
         }
 

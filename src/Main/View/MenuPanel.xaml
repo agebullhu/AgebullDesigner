@@ -3,15 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d">
-    <StackPanel Orientation="Vertical" Background="WhiteSmoke">
-        <Border Padding="2" Height="28" BorderThickness="0,0,0,1" BorderBrush="Silver">
+             mc:Ignorable="d" Background="#f5f6f7" >
+    <StackPanel Orientation="Vertical" >
+        <Border Padding="2" Height="28" BorderThickness="0,1,0,1" BorderBrush="Silver">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Menu ItemsSource="{Binding Model.Editor.Menus}"/>
+                <Menu Background="#f5f6f7" ItemsSource="{Binding Model.Editor.Menus}"/>
 
                 <Border Grid.Column="1" BorderThickness="1" BorderBrush="Silver" Background="White">
                     <StackPanel Orientation="Horizontal">
@@ -23,21 +23,6 @@
                 </Border>
             </Grid>
         </Border>
-        <Border Padding="2" Height="28" BorderThickness="0,0,0,1" BorderBrush="Silver">
-            <ItemsControl VerticalAlignment="Stretch"
-                              HorizontalAlignment="Stretch"
-                              ItemsSource="{Binding Model.Editor.Buttons}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Button Style="{StaticResource CommandButton}" />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
-        </Border>
+        
     </StackPanel>
 </UserControl>

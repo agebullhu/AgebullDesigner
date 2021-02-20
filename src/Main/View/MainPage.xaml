@@ -7,8 +7,6 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:cp="clr-namespace:Agebull.EntityModel.Designer"
              xmlns:simpleDesign="clr-namespace:Agebull.EntityModel.Designer;assembly=Agebull.EntityModel.Designer.Model"
-             xmlns:view="clr-namespace:Agebull.EntityModel.Designer"
-             xmlns:card="clr-namespace:Agebull.EntityModel.Designer.Card"
              mc:Ignorable="d"
              d:DesignHeight="600"
              d:DesignWidth="1000">
@@ -31,12 +29,27 @@
                 <ColumnDefinition Width="360" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <cp:ConfigTreePanel Grid.Column="0" Grid.Row="1"  Grid.RowSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+            <Border Background="#f5f6f7" Grid.Column="0" Grid.Row="1"   Padding="2" BorderThickness="0,0,0,1" BorderBrush="Silver">
+                <ItemsControl VerticalAlignment="Stretch"
+                              HorizontalAlignment="Stretch"
+                              ItemsSource="{Binding Model.Editor.Buttons}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Style="{StaticResource CommandButton}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </Border>
+            <cp:ConfigTreePanel Grid.Column="0" Grid.Row="2"  Grid.RowSpan="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
 
-            <GridSplitter Grid.Column="0" Grid.Row="1" Grid.RowSpan="2"
-                          Width="5"
-                          BorderThickness="1,0" />
-            <Border Background="SkyBlue" BorderBrush="Silver" Height="28" Padding="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="1" BorderThickness="0,0,0,1">
+            <GridSplitter Background="#f5f6f7" Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" Width="3" BorderBrush="Silver" BorderThickness="1,0" />
+            <Border Background="#f5f6f7" BorderThickness="0,0,0,1" BorderBrush="Silver" 
+                    Padding="2" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="1">
                 <DockPanel>
                     <ItemsControl DockPanel.Dock="Right" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ItemsSource="{Binding Model.Editor.ExtendEditors}">
                         <ItemsControl.ItemTemplate>

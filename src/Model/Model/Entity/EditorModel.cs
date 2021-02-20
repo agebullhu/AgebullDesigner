@@ -97,7 +97,6 @@ namespace Agebull.EntityModel.Designer
                     },
                     new CommandItem
                     {
-                        IsButton=true,
                         Action =arg=> Model.ConfigIo.Load(),
                         Caption = "打开",
                         NoConfirm=true,
@@ -299,7 +298,7 @@ namespace Agebull.EntityModel.Designer
             menus.Insert(3, new CommandItem
             {
                 IsRoot = true,
-                Caption = "其它",
+                Caption = "工具",
                 Items = new NotificationList<CommandItemBase>()
             });
             if (item.Commands == null || item.Commands.Count == 0)

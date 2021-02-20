@@ -60,6 +60,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void CreateLast(IEntityConfig entity)
         {
+
             entity.LastProperties = new List<IPropertyConfig>();
             int idx = 0;
             foreach (var property in entity.Properties.OrderBy(p => p.Index))

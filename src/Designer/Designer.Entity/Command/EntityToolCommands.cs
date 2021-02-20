@@ -73,7 +73,7 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity,model",
                 Caption = "规范实体名([Name]Data)",
                 Action = CheckDataName,
-                Catalog = "规范"
+                Catalog = "实体"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {

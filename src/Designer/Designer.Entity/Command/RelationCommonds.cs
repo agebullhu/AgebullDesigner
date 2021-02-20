@@ -24,7 +24,7 @@ namespace Agebull.EntityModel.Designer
         {
             commands.Add(new CommandItemBuilder<IEntityConfig>
             {
-                Catalog = "数据关联",
+                Catalog = "数据库",
                 SignleSoruce = false,
                 IsButton = false,
                 SoruceView = "entity",
@@ -40,7 +40,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "自动关联对象",
                 SoruceView = "entity",
                 Action = RelationChecker.DoCheck,
-                Catalog = "数据关联",
+                Catalog = "数据库",
                 IconName = "关联"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>
@@ -50,7 +50,7 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity",
                 Caption = "还原关联对象数据类型",
                 Action = RelationChecker.CheckLinkType,
-                Catalog = "数据关联",
+                Catalog = "数据库",
                 IconName = "类型"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>
@@ -60,7 +60,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "自动外联标题",
                 SoruceView = "entity",
                 Action = RelationChecker.DoLinkCaption,
-                Catalog = "数据关联",
+                Catalog = "数据库",
                 IconName = "关联"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>
@@ -70,14 +70,14 @@ namespace Agebull.EntityModel.Designer
                 Caption = "清除所有外联",
                 SoruceView = "entity",
                 Action = RelationChecker.ClearLink,
-                Catalog = "数据关联",
+                Catalog = "数据库",
                 IconName = "清除"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>
             {
                 Name = "规范实体主键",
                 Caption = "规范实体主键",
-                Catalog = "数据关联",
+                Catalog = "数据库",
                 SoruceView = "entity",
                 WorkView = "database",
                 IconName = "规范",

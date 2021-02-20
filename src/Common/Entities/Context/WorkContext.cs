@@ -31,7 +31,7 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 是否不引发修改事件
         /// </summary>
-        public static bool IsNoChangedNotify => WorkModel >= WorkModel.Show;
+        public static bool IsNoChangedNotify => WorkModel >= WorkModel.Coder;
 
         /// <summary>
         /// 正在载入

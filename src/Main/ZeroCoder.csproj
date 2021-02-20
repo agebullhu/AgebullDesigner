@@ -12,13 +12,17 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>TRACE;CLIENT</DefineConstants>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-    <DebugType>embedded</DebugType>
+    <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
+    <Optimize>false</Optimize>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;CLIENT</DefineConstants>
     <OutputPath>..\Program\</OutputPath>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>true</Optimize>
   </PropertyGroup>
 
   <ItemGroup>
@@ -55,9 +59,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Model\Model\Agebull.EntityModel.Designer.Model.csproj" />
-    <PackageReference Include="ZeroTeam.MessageMVC.ApiContract" Version="1.1.5.5" />
-    <PackageReference Include="ZeroTeam.MessageMVC.Core" Version="1.1.5.5" />
-    <PackageReference Include="ZeroTeam.MessageMVC.FastHttpApi" Version="1.1.5.5" />
+    <PackageReference Include="ZeroTeam.MessageMVC.ApiContract" Version="1.1.5.11" />
+    <PackageReference Include="ZeroTeam.MessageMVC.Core" Version="1.1.5.11" />
+    <PackageReference Include="ZeroTeam.MessageMVC.FastHttpApi" Version="1.1.5.11" />
   </ItemGroup>
 
   <ItemGroup>

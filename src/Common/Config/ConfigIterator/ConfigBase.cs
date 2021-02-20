@@ -28,7 +28,7 @@ namespace Agebull.EntityModel.Config
                 return;
             Foreach(action, false);
         }
-
+        bool inForeach = false;
         /// <summary>
         /// ±éÀú
         /// </summary>
@@ -38,14 +38,24 @@ namespace Agebull.EntityModel.Config
         {
             if (IsDiscard || IsDelete)
                 return;
-            if (this is T t)
+            //if (inForeach)
+            //    return;
+            try
             {
-                action(t);
-                if (!doAll)
-                    return;
+                inForeach = true;
+                if (this is T t)
+                {
+                    action(t);
+                    if (!doAll)
+                        return;
+                }
+                if (doAll || !ForeachUp(action))
+                    ForeachDown(action, doAll);
             }
-            if (doAll || !ForeachUp(action))
-                ForeachDown(action, doAll);
+            finally
+            {
+                inForeach = false;
+            }
         }
 
         /// <summary>

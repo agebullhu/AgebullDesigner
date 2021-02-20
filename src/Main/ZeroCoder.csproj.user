@@ -9,5 +9,11 @@
     <Page Update="Editor\ConfigForm.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Style\DataGrid.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Style\TabControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 </Project>

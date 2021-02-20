@@ -6,7 +6,7 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
              xmlns:designer="clr-namespace:Agebull.EntityModel.Designer"
-             mc:Ignorable="d"
+             mc:Ignorable="d"  Background="White"
              d:DesignHeight="900"
              d:DesignWidth="1100">
     <UserControl.DataContext>

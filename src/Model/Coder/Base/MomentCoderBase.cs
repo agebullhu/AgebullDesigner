@@ -24,7 +24,7 @@ namespace Agebull.EntityModel.RobotCoder
             GlobalTrigger.Regularize(GlobalConfig.CurrentSolution);
             config.Foreach<IEntityConfig>(arg =>
             {
-                using var scope = CodeGeneratorScope.CreateScope(config,false);
+                using var scope = CodeGeneratorScope.CreateScope(arg, true);
                 code.AppendLine(coder(arg));
             });
             return code.ToString();
@@ -43,7 +43,7 @@ namespace Agebull.EntityModel.RobotCoder
             StringBuilder code = new StringBuilder();
             config.Foreach<TConfig>(arg =>
             {
-                using var scope = CodeGeneratorScope.CreateScope(config, false);
+                using var scope = CodeGeneratorScope.CreateScope(arg, true);
                 code.AppendLine(coder(arg));
             });
             return code.ToString();
@@ -63,7 +63,7 @@ namespace Agebull.EntityModel.RobotCoder
             StringBuilder code = new StringBuilder();
             config.Foreach<TConfig>(arg =>
             {
-                using var scope = CodeGeneratorScope.CreateScope(config, false);
+                using var scope = CodeGeneratorScope.CreateScope(arg, true);
                 code.AppendLine(coder(arg));
             });
             return code.ToString();

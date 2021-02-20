@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:defaults="clr-namespace:Agebull.EntityModel.Config;assembly=Agebull.EntityModel.Designer.Logical"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
              xmlns:designer="clr-namespace:Agebull.EntityModel.Designer"
@@ -16,7 +15,7 @@
         <behaviors:BoolToVisibleConverter x:Key="BoolToVisibleConverter" />
         <behaviors:BoolReversalConverter x:Key="BoolReversalConverter" />
     </UserControl.Resources>
-    <DockPanel>
+    <DockPanel Background="White" >
         <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal" DataContext="{Binding Model.Context.SelectEntity}">
             <WrapPanel.Resources>
                 <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>

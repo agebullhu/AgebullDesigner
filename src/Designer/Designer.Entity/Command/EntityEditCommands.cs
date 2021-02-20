@@ -30,7 +30,7 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
                 Action = AddNewProperty,
-                Caption = "导入字段",
+                Caption = "新增字段",
                 SignleSoruce = true,
                 IsButton = true,
                 Catalog = "实体",
@@ -50,7 +50,7 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
                 Action = DeleteEntity,
-                Caption = "删除实体",
+                Caption = "删除",
                 SoruceView = "entity",
                 IsButton = false,
                 SignleSoruce = true,

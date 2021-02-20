@@ -24,11 +24,10 @@ namespace Agebull.EntityModel.Designer
         {
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                IsButton = true,
-                Caption = "生成模型",
+                Caption = "增加模型",
                 Catalog = "模型",
                 SoruceView = "entity",
-                IconName = "模型",
+                IconName = "增加",
                 Action = ToModel
             });
             commands.Add(new CommandItemBuilder<ProjectConfig>
@@ -36,11 +35,10 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "枚举",
                 Action = NewEnum,
                 NoConfirm = true,
-                IsButton = true,
                 SignleSoruce = true,
                 SoruceView = "enum",
                 Caption = "新增枚举",
-                IconName = "枚举"
+                IconName = "增加"
             });
             commands.Add(new CommandItemBuilder<ProjectConfig>
             {
@@ -50,7 +48,7 @@ namespace Agebull.EntityModel.Designer
                 IsButton = true,
                 Caption = "增加实体",
                 Action = AddEntity,
-                IconName = "实体"
+                IconName = "增加"
             });
             commands.Add(new CommandItemBuilder<ProjectConfig>
             {
@@ -58,7 +56,7 @@ namespace Agebull.EntityModel.Designer
                 SignleSoruce = true,
                 IsButton = true,
                 SoruceView = "entity",
-                Caption = "粘贴实体",
+                Caption = "粘贴",
                 Action = PasteTable,
                 IconName = "粘贴"
             });

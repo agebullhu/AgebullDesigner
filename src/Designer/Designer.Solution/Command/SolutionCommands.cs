@@ -34,7 +34,7 @@ namespace Agebull.EntityModel.Designer
                 SignleSoruce = true,
                 Caption = "新增项目",
                 Action = AddProject,
-                IconName = "新增"
+                IconName = "增加"
             });
 
             commands.Add(new CommandItemBuilder<ConfigBase>

@@ -5,10 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <DockPanel>
-        <Border Background="WhiteSmoke" BorderThickness="0,0,0,1" DockPanel.Dock="Top">
+    <DockPanel Background="#f5f6f7" Margin="0">
+        <Border BorderBrush="Silver" BorderThickness="0,0,0,1" DockPanel.Dock="Top">
             <DockPanel>
-                <Menu DockPanel.Dock="Right">
+                <Menu Background="#f5f6f7" DockPanel.Dock="Right">
                     <MenuItem DataContext="{Binding Menus}"/>
                 </Menu>
                 <ItemsControl VerticalAlignment="Stretch"

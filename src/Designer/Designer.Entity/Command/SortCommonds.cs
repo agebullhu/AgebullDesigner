@@ -26,7 +26,7 @@ namespace Agebull.EntityModel.Designer
                 IsButton = false,
                 TargetType = typeof(ProjectChildConfigBase),
                 Action = SortField,
-                Catalog = "排序",
+                Catalog = "工具",
                 ConfirmMessage = "按自然顺序并从0更新序号吗?",
                 Caption = "排序(自然顺序)",
                 IconName = "排序"
@@ -36,9 +36,9 @@ namespace Agebull.EntityModel.Designer
                 IsButton = true,
                 TargetType = typeof(ProjectChildConfigBase),
                 Action = SortFieldByIndex,
-                Catalog = "排序",
+                Catalog = "工具",
                 ConfirmMessage = "按序号大小排序并从0更新序号吗?",
-                Caption = "按序号排序",
+                Caption = "排序",
                 IconName = "排序"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>
@@ -48,7 +48,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "按组排序",
                 Description = "主键-标题最前面，相同组的字段临近，其它按序号",
                 ConfirmMessage = "确认？",
-                Catalog = "排序",
+                Catalog = "工具",
                 IconName = "排序"
             });
         }
