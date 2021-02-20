@@ -71,8 +71,8 @@ namespace Agebull.EntityModel.Config
                     return;
                 BeforePropertyChanged(nameof(Model), _model, value);
                 _model = value;
-                OnPropertyChanged(nameof(Model));
-                OnPropertyChanged("IChildrenConfig.Parent");
+                RaisePropertyChanged(nameof(Model));
+                RaisePropertyChanged("Parent");
             }
         }
         [DataMember, JsonProperty("fieldKey", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
@@ -95,6 +95,7 @@ namespace Agebull.EntityModel.Config
                 field = value;
                 fieldKey = value.Key.ToString();
                 OnPropertyChanged(nameof(Field));
+                RaisePropertyChanged(nameof(fieldKey));
             }
         }
 

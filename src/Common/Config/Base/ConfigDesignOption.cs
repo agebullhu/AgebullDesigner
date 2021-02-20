@@ -44,7 +44,7 @@ namespace Agebull.EntityModel.Config
                     return;
                 BeforePropertyChanged(nameof(IsSelect), _isSelect, value);
                 _isSelect = value;
-                OnPropertyChanged(nameof(IsSelect));
+                RaisePropertyChanged(nameof(IsSelect));
             }
         }
 
@@ -172,12 +172,13 @@ namespace Agebull.EntityModel.Config
                 {
                     _state |= ConfigStateType.Reference;
                 }
-                OnPropertyChanged(nameof(Link));
-                OnPropertyChanged(nameof(IsLink));
-                OnPropertyChanged(nameof(Reference));
-                OnPropertyChanged(nameof(IsReference));
+                RaisePropertyChanged(nameof(Link));
+                RaisePropertyChanged(nameof(IsLink));
+                RaisePropertyChanged(nameof(Reference));
+                RaisePropertyChanged(nameof(IsReference));
                 OnPropertyChanged(nameof(ReferenceKey));
-                OnPropertyChanged(nameof(ReferenceConfig));
+                RaisePropertyChanged(nameof(ReferenceConfig));
+                OnPropertyChanged(nameof(State));
             }
         }
 
@@ -296,6 +297,11 @@ namespace Agebull.EntityModel.Config
         internal ConfigStateType _state;
 
         /// <summary>
+        ///     状态
+        /// </summary>
+        [IgnoreDataMember, JsonIgnore, Browsable(false), ReadOnly(true)]
+        public ConfigStateType State { get => _state; set => _state = value; }
+        /// <summary>
         /// 是否预定义对象
         /// </summary>
         [IgnoreDataMember, JsonIgnore, Browsable(false), ReadOnly(true)]
@@ -309,7 +315,8 @@ namespace Agebull.EntityModel.Config
                     _state |= ConfigStateType.Predefined;
                 else
                     _state &= ~ConfigStateType.Predefined;
-                OnPropertyChanged(nameof(IsPredefined));
+                OnPropertyChanged(nameof(State));
+                RaisePropertyChanged(nameof(IsPredefined));
             }
         }
 
@@ -338,8 +345,9 @@ namespace Agebull.EntityModel.Config
                         _referenceConfig = null;
                     }
                 }
-                OnPropertyChanged(nameof(IsReference));
-                OnPropertyChanged(nameof(IsLink));
+                OnPropertyChanged(nameof(State));
+                RaisePropertyChanged(nameof(IsReference));
+                RaisePropertyChanged(nameof(IsLink));
             }
         }
 
@@ -371,8 +379,9 @@ namespace Agebull.EntityModel.Config
                         _referenceConfig = null;
                     }
                 }
-                OnPropertyChanged(nameof(IsReference));
-                OnPropertyChanged(nameof(IsLink));
+                OnPropertyChanged(nameof(State));
+                RaisePropertyChanged(nameof(IsReference));
+                RaisePropertyChanged(nameof(IsLink));
             }
         }
 
@@ -411,8 +420,9 @@ namespace Agebull.EntityModel.Config
         public void LockConfig()
         {
             _state |= ConfigStateType.Lock;
-            OnPropertyChanged(nameof(IsLock));
-            OnPropertyChanged(nameof(CanLock));
+            OnPropertyChanged(nameof(State));
+            RaisePropertyChanged(nameof(IsLock));
+            RaisePropertyChanged(nameof(CanLock));
         }
 
         /// <summary>
@@ -423,22 +433,23 @@ namespace Agebull.EntityModel.Config
             bool pred = IsPredefined;
             _state = ConfigStateType.None;
             IsPredefined = pred;
-            OnPropertyChanged(nameof(IsLock));
-            OnPropertyChanged(nameof(IsDiscard));
-            OnPropertyChanged(nameof(IsFreeze));
-            OnPropertyChanged(nameof(IsDelete));
-            OnPropertyChanged(nameof(CanLock));
-            OnPropertyChanged(nameof(IsReadonly));
-            OnPropertyChanged(nameof(IsReference));
-            OnPropertyChanged(nameof(IsPredefined));
-            OnPropertyChanged(nameof(IsNormal));
+            OnPropertyChanged(nameof(State));
+            RaisePropertyChanged(nameof(IsLock));
+            RaisePropertyChanged(nameof(IsDiscard));
+            RaisePropertyChanged(nameof(IsFreeze));
+            RaisePropertyChanged(nameof(IsDelete));
+            RaisePropertyChanged(nameof(CanLock));
+            RaisePropertyChanged(nameof(IsReadonly));
+            RaisePropertyChanged(nameof(IsReference));
+            RaisePropertyChanged(nameof(IsPredefined));
+            RaisePropertyChanged(nameof(IsNormal));
         }
         /// <summary>
         /// 是否正常
         /// </summary>
         [IgnoreDataMember, JsonIgnore]
         [Category("设计器支持"), DisplayName("是否正常"), Description("是否正常")]
-        public bool IsNormal => !_state.HasFlags(ConfigStateType.Discard, ConfigStateType.Delete);
+        public bool IsNormal => !_state.HasFlag(ConfigStateType.Delete) && !_state.HasFlag(ConfigStateType.Discard);
 
         /// <summary>
         /// 废弃
@@ -458,8 +469,9 @@ namespace Agebull.EntityModel.Config
                     _state |= ConfigStateType.Discard;
                 else
                     _state &= ~ConfigStateType.Discard;
-                OnPropertyChanged(nameof(IsDiscard));
-                OnPropertyChanged(nameof(IsNormal));
+                OnPropertyChanged(nameof(State));
+                RaisePropertyChanged(nameof(IsDiscard));
+                RaisePropertyChanged(nameof(IsNormal));
             }
         }
 
@@ -481,7 +493,8 @@ namespace Agebull.EntityModel.Config
                     _state |= ConfigStateType.Freeze;
                 else
                     _state &= ~ConfigStateType.Freeze;
-                OnPropertyChanged(nameof(IsFreeze));
+                OnPropertyChanged(nameof(State));
+                RaisePropertyChanged(nameof(IsFreeze));
             }
         }
 
@@ -503,8 +516,9 @@ namespace Agebull.EntityModel.Config
                     _state |= ConfigStateType.Delete;
                 else
                     _state &= ~ConfigStateType.Delete;
-                OnPropertyChanged(nameof(IsDelete));
-                OnPropertyChanged(nameof(IsNormal));
+                OnPropertyChanged(nameof(State));
+                RaisePropertyChanged(nameof(IsDelete));
+                RaisePropertyChanged(nameof(IsNormal));
             }
         }
         #endregion 

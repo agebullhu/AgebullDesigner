@@ -34,7 +34,17 @@ namespace Agebull.EntityModel.Designer
                 SignleSoruce = true,
                 Caption = "新增项目",
                 Action = AddProject,
-                IconName = "img_add"
+                IconName = "新增"
+            });
+
+            commands.Add(new CommandItemBuilder<ConfigBase>
+            {
+                Catalog = "编辑",
+                IsButton = false,
+                SignleSoruce = true,
+                Caption = "逻辑检查",
+                Action = cfg => GlobalTrigger.DoRegularize(cfg),
+                IconName = "检查"
             });
 
             commands.Add(new CommandItemBuilder<SolutionConfig>
@@ -44,7 +54,7 @@ namespace Agebull.EntityModel.Designer
                 SignleSoruce = true,
                 Caption = "生成解决方案",
                 Action = arg => new SolutionAnalysis().SyncSolutionFile(),
-                IconName = "img_add"
+                IconName = "代码"
             });
         }
 

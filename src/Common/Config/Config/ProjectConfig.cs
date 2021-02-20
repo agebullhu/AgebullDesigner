@@ -60,7 +60,7 @@ namespace Agebull.EntityModel.Config
                 _classifies = value;
                 if (value != null)
                     value.Parent = this;
-                OnPropertyChanged(nameof(Classifies));
+                RaisePropertyChanged(nameof(Classifies));
             }
         }
 
@@ -97,7 +97,7 @@ namespace Agebull.EntityModel.Config
                 _models = value;
                 if (value != null)
                     value.Parent = this;
-                OnPropertyChanged(nameof(Models));
+                RaisePropertyChanged(nameof(Models));
             }
         }
         /// <summary>
@@ -146,7 +146,7 @@ namespace Agebull.EntityModel.Config
                 _entities = value;
                 if (value != null)
                     value.Parent = this;
-                OnPropertyChanged(nameof(Entities));
+                RaisePropertyChanged(nameof(Entities));
             }
         }
 
@@ -182,7 +182,7 @@ namespace Agebull.EntityModel.Config
                 _apiItems = value;
                 if (value != null)
                     value.Parent = this;
-                OnPropertyChanged(nameof(ApiItems));
+                RaisePropertyChanged(nameof(ApiItems));
             }
         }
 
@@ -276,7 +276,7 @@ namespace Agebull.EntityModel.Config
                 _enums = value;
                 if (value != null)
                     value.Parent = this;
-                OnPropertyChanged(nameof(Enums));
+                RaisePropertyChanged(nameof(Enums));
             }
         }
         #endregion
@@ -394,8 +394,8 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChanged(nameof(BranchFolder), _branchFolder, value);
                 _branchFolder = string.IsNullOrWhiteSpace(value) ? null : value.Trim('\\', '/').Trim();
                 OnPropertyChanged(nameof(BranchFolder));
-                OnPropertyChanged(nameof(ApiPath));
-                OnPropertyChanged(nameof(ModelPath));
+                RaisePropertyChanged(nameof(ApiPath));
+                RaisePropertyChanged(nameof(ModelPath));
             }
         }
 
@@ -426,6 +426,7 @@ namespace Agebull.EntityModel.Config
             else
                 GlobalConfig.CheckPath(root, _pageFolder);
             RaisePropertyChanged(nameof(PagePath));
+            IsModify = true;
         }
 
         /// <summary>

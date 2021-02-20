@@ -39,7 +39,7 @@ namespace Agebull.EntityModel.Designer
                 IsButton = true,
                 Action = arg => DoMomentCode(),
                 Caption = "生成代码片断",
-                Image = Application.Current.Resources["img_file"] as ImageSource
+                IconName = "代码"
             });
 
             commands.Add(new CommandItem
@@ -47,11 +47,13 @@ namespace Agebull.EntityModel.Designer
                 IsButton = true,
                 Action = arg => CopyCode(),
                 Caption = "复制代码",
-                Image = Application.Current.Resources["img_file"] as ImageSource
+                IconName = "复制"
             });
             foreach (var cmd in CoderManager.Builders.Values)
+            {
                 foreach (var builder in cmd.Values)
                     commands.Add(builder(OnCodeSuccess));
+            }
             base.CreateCommands(commands);
         }
         #endregion
@@ -87,7 +89,7 @@ namespace Agebull.EntityModel.Designer
                         Header = folder,
                         Name = folder,
                         IsExpanded = true,
-                        SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
+                        SoruceTypeIconName = "文件夹"
                     });
                 }
                 item.Items.Add(new TreeItem<SimpleConfig>(new SimpleConfig
@@ -99,7 +101,7 @@ namespace Agebull.EntityModel.Designer
                     Header = name,
                     Name = name,
                     Tag = Path.GetExtension(file.Key)?.Trim('.'),
-                    SoruceTypeIcon = Application.Current.Resources["img_code"] as BitmapImage
+                    SoruceTypeIconName = "代码"
                 });
             }
 
@@ -198,7 +200,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     IsExpanded = false,
                     ItemsState = 3,
-                    SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
+                    SoruceTypeIconName = "文件夹"
                 };
                 treeRoot.Items.Add(parent);
                 foreach (var item in clasf.Value)
@@ -207,7 +209,7 @@ namespace Agebull.EntityModel.Designer
                     {
                         Header = item.Key,
                         ItemsState = 3,
-                        SoruceTypeIcon = Application.Current.Resources["img_code"] as BitmapImage
+                        SoruceTypeIconName = item.Value.Lang
                     });
                 }
             }

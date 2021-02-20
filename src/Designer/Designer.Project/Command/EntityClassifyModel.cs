@@ -27,7 +27,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "增加实体",
                 SoruceView = "entity",
                 Action = AddEntity,
-                IconName = "tree_Open"
+                IconName = "增加"
             });
             commands.Add(new CommandItemBuilder<EntityClassify>
             {
@@ -37,7 +37,7 @@ namespace Agebull.EntityModel.Designer
                 IsButton = true,
                 Caption = "粘贴实体",
                 Action = PasteTable,
-                IconName = "tree_item"
+                IconName = "粘贴"
             });
         }
 

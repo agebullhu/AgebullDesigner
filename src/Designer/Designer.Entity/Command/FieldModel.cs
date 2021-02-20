@@ -30,7 +30,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "字段",
                 Action = ChineseField,
                 Caption = "中文字段处理",
-                IconName = "tree_item"
+                IconName = "字段"
             });
 
             commands.Add(new CommandItemBuilder<IPropertyConfig>
@@ -40,7 +40,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "字段",
                 Action = CheckName,
                 Caption = "属性名称大驼峰",
-                IconName = "tree_item"
+                IconName = "格式"
             });
 
             commands.Add(new CommandItemBuilder<IPropertyConfig>
@@ -51,7 +51,7 @@ namespace Agebull.EntityModel.Designer
                 Action = CheckCaption,
                 Caption = "标题与注释拆解",
                 Description = "第一个[标点]后解析为说明",
-                IconName = "tree_item"
+                IconName = "拆分"
             });
             commands.Add(new CommandItemBuilder<IPropertyConfig>
             {
@@ -59,7 +59,7 @@ namespace Agebull.EntityModel.Designer
                 WorkView = "adv",
                 Action = UpdateCustomType,
                 Caption = "修复用户类型",
-                IconName = "img_modify"
+                IconName = "类型"
             });
             commands.Add(new CommandItemBuilder<FieldConfig>
             {
@@ -67,7 +67,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "编辑",
                 Caption = "删除字段",
                 SignleSoruce = true,
-                IconName = "img_del"
+                IconName = "删除"
             });
         }
 

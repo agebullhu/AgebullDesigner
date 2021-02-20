@@ -97,11 +97,11 @@
             <TabItem Header="数据编辑"
                      IsEnabled="{Binding NoneDetails,Mode=OneWay,Converter={StaticResource BoolReversalConverter}}">
                 <WrapPanel>
-                    <StackPanel>
+                    <!--StackPanel>
                         <Label Content="能否编辑" />
                         <ComboBox IsReadOnly="True" Style="{StaticResource BoolCombo}"
                                   SelectedValue="{Binding CanUserInput,Mode=OneWay}" />
-                    </StackPanel>
+                    </StackPanel-->
                     <StackPanel>
                         <Label Content="用户只读" />
                         <ComboBox Style="{StaticResource BoolCombo}"

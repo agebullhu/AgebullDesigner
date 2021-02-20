@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Agebull.EntityModel.Config
 {
@@ -17,12 +18,19 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static bool IsParentOrFriendType<T>(params Type[] types)
         {
-            var destType = typeof(T);
-
-            foreach (var type in types)
+            try
             {
-                if (type == destType || type.IsSubclassOf(destType) || type.IsSupperInterface(destType))
-                    return true;
+                var destType = typeof(T);
+
+                foreach (var type in types)
+                {
+                    if (type == destType || type.IsSubclassOf(destType) || type.IsSupperInterface(destType))
+                        return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex);
             }
             return false;
         }

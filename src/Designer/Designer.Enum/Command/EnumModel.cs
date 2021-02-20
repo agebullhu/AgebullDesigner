@@ -21,7 +21,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "编辑",
                 Action = SortEnum,
                 Caption = "排序",
-                IconName = "tree_sum",
+                IconName = "排序",
                 SoruceView = "enum",
             });
             commands.Add(new CommandItemBuilder<FieldConfig>
@@ -29,7 +29,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "工具",
                 Action = ResetEnumParent,
                 Caption = "按使用重新分配枚举项目归属",
-                IconName = "tree_sum",
+                IconName = "修复",
                 SoruceView = "enum",
             });
         }

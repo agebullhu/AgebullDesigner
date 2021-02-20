@@ -49,21 +49,21 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
                 Action = UpperHump,
                 IsButton = true,
                 Caption = "大驼峰名称",
-                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                IconName = "格式"
             });
             commands.Add(new CommandItem<DataTableConfig>
             {
                 Action = LowerHump,
                 IsButton = true,
                 Caption = "小驼峰名称",
-                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                IconName = "格式"
             });
             commands.Add(new CommandItem<DataTableConfig>
             {
                 Action = Underlined,
                 IsButton = true,
                 Caption = "小写下划线名称(C风格)",
-                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                IconName = "格式"
             });
             base.CreateCommands(commands);
         }

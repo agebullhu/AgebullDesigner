@@ -157,7 +157,7 @@ namespace Agebull.EntityModel.Designer
             var item = new AsyncCommandItem<object, bool>(DoPrepare, Doing, End)
             {
                 Source = arg,
-                Image = Application.Current.Resources[IconName ?? "imgDefault"] as ImageSource
+                IconName = IconName
             };
             item.CopyFrom(this);
             return item;

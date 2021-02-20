@@ -8,10 +8,15 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 {
     public sealed class ProjectApiBuilde : ProjectBuilder
     {
+        public ProjectApiBuilde()
+        {
+            Icon = "Api";
+        }
         /// <summary>
         /// 名称
         /// </summary>
-        public override string Name => "Edit Api";
+        public override string Name => "编辑API";
+
 
         /// <summary>
         /// 标题

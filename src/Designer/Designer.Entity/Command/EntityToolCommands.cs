@@ -23,14 +23,14 @@ namespace Agebull.EntityModel.Designer
                 Caption = "检查设计",
                 Catalog = "工具",
                 SoruceView = "entity",
-                IconName = "tree_item"
+                IconName = "检查"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
                 Action = PrimaryKeyName,
                 Caption = "主键标题为[表名]ID",
                 Catalog = "字段",
-                IconName = "tree_Open",
+                IconName = "规范",
                 SoruceView = "entity"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
@@ -38,7 +38,7 @@ namespace Agebull.EntityModel.Designer
                 Action = ForeignKeyName,
                 Caption = "外键名称规范(Caption相同,Name为[主表]+Id)",
                 Catalog = "字段",
-                IconName = "tree_Open",
+                IconName = "关联",
                 SoruceView = "entity"
             });
 
@@ -47,7 +47,7 @@ namespace Agebull.EntityModel.Designer
                 Action = ForeignKeyDbTypeSync,
                 Caption = "外键数据类型一致",
                 Catalog = "字段",
-                IconName = "tree_Open",
+                IconName = "关联",
                 SoruceView = "entity"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
@@ -55,7 +55,7 @@ namespace Agebull.EntityModel.Designer
                 Action = ForeignKeyName,
                 Caption = "外键信息同主键",
                 Catalog = "字段",
-                IconName = "tree_Open",
+                IconName = "关联",
                 SoruceView = "entity"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
@@ -64,7 +64,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "日期字段精确到时间",
                 Catalog = "字段",
                 SoruceView = "entity",
-                IconName = "tree_item"
+                IconName = "时钟"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
@@ -73,7 +73,7 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity,model",
                 Caption = "规范实体名([Name]Data)",
                 Action = CheckDataName,
-                Catalog = "工具"
+                Catalog = "规范"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
@@ -83,7 +83,7 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity",
                 Caption = "自动分类",
                 Action = AutoClassify,
-                IconName = "tree_Open"
+                IconName = "分类"
             });
 
             commands.Add(new CommandItemBuilder<EntityConfig>
@@ -94,7 +94,7 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity",
                 Caption = "接口识别",
                 Action = AutoInterface,
-                IconName = "tree_Open"
+                IconName = "插头"
             });
 
         }

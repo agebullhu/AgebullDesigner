@@ -28,7 +28,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "生成模型",
                 Catalog = "模型",
                 SoruceView = "entity",
-                IconName = "tree_Open",
+                IconName = "模型",
                 Action = ToModel
             });
             commands.Add(new CommandItemBuilder<ProjectConfig>
@@ -40,7 +40,7 @@ namespace Agebull.EntityModel.Designer
                 SignleSoruce = true,
                 SoruceView = "enum",
                 Caption = "新增枚举",
-                IconName = "tree_Open"
+                IconName = "枚举"
             });
             commands.Add(new CommandItemBuilder<ProjectConfig>
             {
@@ -50,7 +50,7 @@ namespace Agebull.EntityModel.Designer
                 IsButton = true,
                 Caption = "增加实体",
                 Action = AddEntity,
-                IconName = "tree_Open"
+                IconName = "实体"
             });
             commands.Add(new CommandItemBuilder<ProjectConfig>
             {
@@ -60,7 +60,7 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity",
                 Caption = "粘贴实体",
                 Action = PasteTable,
-                IconName = "tree_item"
+                IconName = "粘贴"
             });
 
             commands.Add(new CommandItemBuilder<ProjectConfig>
@@ -70,7 +70,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "编辑",
                 Caption = "复制基础配置到其它项目",
                 Action = CopyToProject,
-                IconName = "tree_item"
+                IconName = "扩散"
             });
 
 
@@ -80,7 +80,7 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity",
                 Caption = "升级为项目",
                 Action = ToProject,
-                IconName = "tree_item"
+                IconName = "向上"
             });
         }
 

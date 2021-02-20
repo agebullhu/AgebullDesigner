@@ -26,8 +26,8 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public CommandItemBase Menus => new CommandItem
         {
-            IsRoot = true,
-            Caption = "¡þ",
+            IconName = "²Ëµ¥",
+            OnlyIcon = true,
             Items = Commands.Where(p => p.NoButton).ToNotificationList<CommandItemBase>()
         };
 

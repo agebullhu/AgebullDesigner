@@ -13,12 +13,14 @@
                 </Grid.ColumnDefinitions>
                 <Menu ItemsSource="{Binding Model.Editor.Menus}"/>
 
-                <StackPanel Grid.Column="1" Orientation="Horizontal" Background="White">
+                <Border Grid.Column="1" BorderThickness="1" BorderBrush="Silver" Background="White">
+                    <StackPanel Orientation="Horizontal">
                     <TextBox BorderThickness="0" Text="{Binding Model.Context.FindKey,Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}" Margin="2"  Width="200"  />
                     <ContentControl DataContext="{Binding Model.Tree.FindCommand}">
-                        <Button Style="{StaticResource CommandButton}" />
+                         <Button Style="{StaticResource OnlyIconCommand}" />
                     </ContentControl>
-                </StackPanel>
+                    </StackPanel>
+                </Border>
             </Grid>
         </Border>
         <Border Padding="2" Height="28" BorderThickness="0,0,0,1" BorderBrush="Silver">

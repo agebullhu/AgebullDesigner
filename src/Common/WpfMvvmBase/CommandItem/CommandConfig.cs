@@ -127,6 +127,15 @@ namespace Agebull.Common.Mvvm
         }
 
         /// <summary>
+        ///     只显示图标
+        /// </summary>
+        public bool OnlyIcon
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         ///     分类
         /// </summary>
         public string Catalog

@@ -3,13 +3,22 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:client="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm">
 
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Button.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style x:Key="FontAwesome" >
+        <Setter Property="TextElement.FontFamily" Value="/Agebull.Common.Mvvm;component/WebFont/fonts/#FontAwesome" />
+    </Style>
+
     <client:BoolAlignmentConverter x:Key="BoolAlignmentConverter" />
     <client:BoolToVisibleConverter x:Key="BoolToVisibleConverter" />
     <client:ReversionBoolToVisibleConverter x:Key="ReversionVisibleConverter" />
+
     <Style TargetType="{x:Type MenuItem}">
         <Setter Property="Command" Value="{Binding Command}" />
         <Setter Property="Header" Value="{Binding Caption}" />
-        <Setter Property="Icon" Value="{Binding Image}" />
+        <Setter Property="Tag" Value="{Binding Image}" />
         <Setter Property="IsChecked" Value="{Binding IsChecked}" />
         <Setter Property="ItemsSource" Value="{Binding Items}" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
@@ -19,82 +28,62 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type MenuItem}">
-                    <StackPanel MinWidth="50" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ToolTip="{Binding Description}"
+                    <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ToolTip="{Binding Description}"
                                 Margin="0">
-                        <Grid VerticalAlignment="Center" Visibility="{Binding IsLine,Converter={StaticResource ReversionVisibleConverter}}">
+                        <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="6" />
                             </Grid.ColumnDefinitions>
-
-                            <Border Grid.Column="0" BorderThickness="0,0,1,0" Background="#EFEFEFEF"
-                                    BorderBrush="Silver"
-                                    Visibility="{Binding IsRoot,Converter={StaticResource ReversionVisibleConverter}}"
-                                    Padding="4">
-                                <StackPanel Margin="4,0" Width="16" Height="16"
-                                            VerticalAlignment="Center"
-                                            HorizontalAlignment="Center">
-                                    <Image x:Name="ctrIcon"
-                                           Source="{TemplateBinding Icon}"
-                                           Width="16"
-                                           Visibility="{Binding IsBusy,Converter={StaticResource ReversionVisibleConverter}}"
-                                           Height="16" />
-                                    <Border Visibility="{Binding IsBusy,Converter={StaticResource BoolToVisibleConverter}}"
-                                            Width="16"
-                                            Height="16"
-                                            RenderTransformOrigin="0.5,0.5">
-                                        <Border.RenderTransform>
-                                            <TransformGroup>
-                                                <ScaleTransform />
-                                                <SkewTransform />
-                                                <RotateTransform />
-                                                <TranslateTransform />
-                                            </TransformGroup>
-                                        </Border.RenderTransform>
-                                        <Border.Background>
-                                            <LinearGradientBrush EndPoint="0.5,0"
-                                                                 MappingMode="RelativeToBoundingBox"
-                                                                 StartPoint="0.5,0.5">
-                                                <GradientStop Color="#FFF50C8C"
-                                                              Offset="0" />
-                                                <GradientStop Color="#FF1116EB"
-                                                              Offset="1" />
-                                            </LinearGradientBrush>
-                                        </Border.Background>
-                                    </Border>
-                                </StackPanel>
+                            <Border MinWidth="24" Visibility="{Binding OnlyIcon,Converter={StaticResource BoolToVisibleConverter}}"
+                                     Padding="4" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <TextBlock Name="ctrIcon2" Text="{Binding Image}" Style="{StaticResource FontAwesome}" FontSize="14"/>
                             </Border>
-                            <Border Grid.Column="0" BorderThickness="0,0,1,0" Background="#331116FE"
-                                    BorderBrush="Silver"
-                                    CornerRadius="6"
-                                    Width="20" Height="20"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Center"
-                                    Visibility="{Binding IsChecked,Converter={StaticResource BoolToVisibleConverter}}"/>
-                            <Border Grid.Column="2" Background="Silver" BorderBrush="Silver"
-                                    BorderThickness="1" Width="1" Height="16" Margin="3,0,0,3"
-                                    Visibility="{Binding IsRoot,Converter={StaticResource BoolToVisibleConverter}}" />
 
-                            <TextBlock Grid.Column="1" Background="Transparent" Padding="4"
-                                
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="{Binding IsRoot,Converter={StaticResource BoolAlignmentConverter}}"
-                                    Text="{TemplateBinding Header}" />
+                            <Border MinWidth="50" Visibility="{Binding OnlyIcon,Converter={StaticResource ReversionVisibleConverter}}">
+                                <Grid VerticalAlignment="Center" Visibility="{Binding IsLine,Converter={StaticResource ReversionVisibleConverter}}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="6" />
+                                    </Grid.ColumnDefinitions>
 
-                            <Popup Grid.Column="0" Grid.ColumnSpan="2" x:Name="pop"
-                                   IsOpen="{TemplateBinding IsSubmenuOpen}"
-                                   Margin="-1" 
-                                   AllowsTransparency="True" Placement="Bottom">
+                                    <Border Grid.Column="0" BorderThickness="0,0,1,0" Background="#EFEFEFEF"
+                                            BorderBrush="Silver"
+                                            Visibility="{Binding IsRoot,Converter={StaticResource ReversionVisibleConverter}}"
+                                            Padding="4">
+                                        <StackPanel Margin="4,0" Width="16" Height="16" VerticalAlignment="Center" HorizontalAlignment="Center">
+
+                                            <TextBlock x:Name="ctrIcon" Text="{Binding Image}"
+                                                       Style="{StaticResource FontAwesome}"  FontSize="14"
+                                                       Width="16" Height="16"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <Border Grid.Column="0" BorderThickness="0,0,1,0" Background="#331116FE"
+                                            BorderBrush="Silver"
+                                            CornerRadius="6"
+                                            Width="20" Height="20"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Center"
+                                            Visibility="{Binding IsChecked,Converter={StaticResource BoolToVisibleConverter}}"/>
+                                    <TextBlock Grid.Column="1" Background="Transparent" Padding="4"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="{Binding IsRoot,Converter={StaticResource BoolAlignmentConverter}}"
+                                                Text="{TemplateBinding Header}" />
+
+                                    <Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch" x:Name="ctrBorder" Grid.Column="0" Grid.ColumnSpan="3" 
+                                        Visibility="Hidden" Background="#331116FE" />
+                                    <Border Grid.Column="2" Background="Silver" BorderBrush="Silver"
+                                            BorderThickness="1" Width="1" Height="16" Margin="3,0,0,3"
+                                            Visibility="{Binding IsRoot,Converter={StaticResource BoolToVisibleConverter}}" />
+
+                                </Grid>
+                            </Border>
+                            <Popup x:Name="pop" IsOpen="{TemplateBinding IsSubmenuOpen}" Margin="-1" AllowsTransparency="True" Placement="Bottom">
                                 <Border Background="WhiteSmoke" BorderThickness="1"  BorderBrush="SkyBlue">
                                     <StackPanel IsItemsHost="True" />
                                 </Border>
                             </Popup>
-                            <Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                                    x:Name="ctrBorder" Grid.Column="0" Grid.ColumnSpan="3"
-                                    Visibility="Hidden" Background="#331116FE" />
                         </Grid>
-
                         <Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#EFEFEFEF"
                                 Visibility="{Binding IsLine,Converter={StaticResource BoolToVisibleConverter}}">
                             <Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
@@ -103,21 +92,17 @@
                     </StackPanel>
                     <ControlTemplate.Triggers>
                         <!--鼠标移入移出-->
-                        <Trigger Property="IsMouseOver"
-                                 Value="True">
-                            <Setter Property="IsSubmenuOpen"
-                                    Value="True" />
-                            <Setter Property="Visibility"
-                                    TargetName="ctrBorder"
-                                    Value="Visible" />
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="IsSubmenuOpen" Value="True" />
+                            <Setter Property="Visibility" TargetName="ctrBorder" Value="Visible" />
+                            <Setter Property="Foreground" TargetName="ctrIcon" Value="Blue" />
+                            <Setter Property="Foreground" TargetName="ctrIcon2" Value="Blue" />
                         </Trigger>
-                        <Trigger Property="IsMouseOver"
-                                 Value="False">
-                            <Setter Property="IsSubmenuOpen"
-                                    Value="False" />
-                            <Setter Property="Visibility"
-                                    TargetName="ctrBorder"
-                                    Value="Hidden" />
+                        <Trigger Property="IsMouseOver" Value="False">
+                            <Setter Property="IsSubmenuOpen" Value="False" />
+                            <Setter Property="Visibility" TargetName="ctrBorder" Value="Hidden" />
+                            <Setter Property="Foreground" TargetName="ctrIcon" Value="Black" />
+                            <Setter Property="Foreground" TargetName="ctrIcon2" Value="Black" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

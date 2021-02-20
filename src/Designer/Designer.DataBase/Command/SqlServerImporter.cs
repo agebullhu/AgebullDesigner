@@ -25,7 +25,7 @@ namespace Agebull.Common.Config.Designer
                 Catalog = "数据库",
                 SoruceView = "entity",
                 WorkView = "database",
-                IconName = "tree_Assembly"
+                IconName = "数据库"
             });
         }
 

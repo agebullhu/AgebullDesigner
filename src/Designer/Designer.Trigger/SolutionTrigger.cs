@@ -20,7 +20,6 @@ namespace Agebull.EntityModel.Designer
             };
 
             model.RepairByLoaded();
-            model.ResetStatus();
             model.OnSolutionLoad();
 
             foreach (var project in TargetConfig.Projects)
@@ -28,6 +27,7 @@ namespace Agebull.EntityModel.Designer
                 project.OnLoad();
             }
 
+            model.ResetStatus();
             CommandCoefficient.ClearCommand();
         }
 

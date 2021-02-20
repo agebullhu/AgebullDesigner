@@ -42,7 +42,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "文件",
                 SoruceView = "entity",
                 Caption = "导入程序集",
-                IconName = "tree_Assembly",
+                IconName = "导入",
                 TargetType = typeof(ProjectConfig)
             });
             /*
@@ -60,7 +60,7 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity",
                 Caption = "导入EF配置文件",
                 TargetType = typeof(ProjectConfig),
-                IconName = "tree_Assembly"
+                IconName = "导入"
             });
             commands.Add(new CommandItemBuilder<ProjectConfig>
             {
@@ -69,7 +69,7 @@ namespace Agebull.EntityModel.Designer
                 Action = ImportToExcel,
                 Caption = "导出Excel文档",
                 TargetType = typeof(ProjectConfig),
-                IconName = "tree_Assembly"
+                IconName = "Excel"
             });
         }
 

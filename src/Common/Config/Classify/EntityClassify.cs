@@ -20,11 +20,12 @@ namespace Agebull.EntityModel.Config
         [IgnoreDataMember, JsonIgnore]
         public ProjectConfig Project
         {
-            get => project; set
+            get => project;
+            set
             {
                 project = value;
-                OnPropertyChanged(nameof(Project));
-                OnPropertyChanged("IChildrenConfig.Parent");
+                RaisePropertyChanged(nameof(Project));
+                RaisePropertyChanged("IChildrenConfig.Parent");
             }
         }
 

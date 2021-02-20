@@ -15,15 +15,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Old\**" />
     <Compile Remove="Remove\**" />
+    <EmbeddedResource Remove="Old\**" />
     <EmbeddedResource Remove="Remove\**" />
+    <None Remove="Old\**" />
     <None Remove="Remove\**" />
+    <Page Remove="Old\**" />
     <Page Remove="Remove\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    
-    
   </ItemGroup>
 
   <ItemGroup>

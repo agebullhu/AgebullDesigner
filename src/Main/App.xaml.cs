@@ -13,12 +13,12 @@ namespace Agebull.EntityModel.Designer
     {
         public App()
         {
-            EditorManager.Registe<ConfigForm>("基本信息", 255, "tree_Child4");
-            EditorManager.Registe<CodePanel>("代码生成", 256, "img_code");
-            EditorManager.Registe<DesignInfoPanel>("设计信息", 257, "img_check");
-            EditorManager.Registe<PropertyPanel>("属性表格", 258, "img_ref");
-            EditorManager.Registe<ExtendPanel>("扩展信息", 259, "img_check");
-            EditorManager.Registe<TracePanel>("跟踪信息", 260, "ImgSubmit");
+            EditorManager.Registe<ConfigForm>("基本信息", 255, "基本信息");
+            EditorManager.Registe<CodePanel>("代码生成", 256, "代码生成");
+            EditorManager.Registe<DesignInfoPanel>("设计信息", 257, "设计信息");
+            EditorManager.Registe<PropertyPanel>("属性表格", 258, "属性表格");
+            EditorManager.Registe<ExtendPanel>("扩展信息", 259, "扩展信息");
+            EditorManager.Registe<TracePanel>("跟踪信息", 260, "跟踪信息");
 
             AddInImporter.Importe();
 

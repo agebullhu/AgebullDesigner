@@ -6,7 +6,7 @@ namespace Agebull.EntityModel.RobotCoder
     /// <summary>
     /// 项目代码生成基类
     /// </summary>
-    public abstract class ProjectBuilder : FileCoder,IDisposable
+    public abstract class ProjectBuilder : FileCoder, IDisposable
     {
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 图标
         /// </summary>
-        public virtual string Icon => "img_code";
+        public virtual string Icon { get; set; } = "代码";
 
 
         /// <summary>

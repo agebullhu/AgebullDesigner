@@ -29,7 +29,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "排序",
                 ConfirmMessage = "按自然顺序并从0更新序号吗?",
                 Caption = "排序(自然顺序)",
-                IconName = "tree_item"
+                IconName = "排序"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>
             {
@@ -39,7 +39,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "排序",
                 ConfirmMessage = "按序号大小排序并从0更新序号吗?",
                 Caption = "按序号排序",
-                IconName = "tree_item"
+                IconName = "排序"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>
             {
@@ -49,7 +49,7 @@ namespace Agebull.EntityModel.Designer
                 Description = "主键-标题最前面，相同组的字段临近，其它按序号",
                 ConfirmMessage = "确认？",
                 Catalog = "排序",
-                IconName = "img_filter"
+                IconName = "排序"
             });
         }
 

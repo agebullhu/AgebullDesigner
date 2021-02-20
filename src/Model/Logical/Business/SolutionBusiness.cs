@@ -21,6 +21,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public void ResetStatus()
         {
+            Solution.Look<ConfigBase>(p => p.IsModify = false);
         }
 
         #endregion
@@ -87,6 +88,7 @@ namespace Agebull.EntityModel.Config
                 //}
             }
             RepairTypedefByLoad();
+
         }
 
         private static void RepairClassifies(ProjectConfig project)

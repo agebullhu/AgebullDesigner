@@ -5,18 +5,23 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:reflection="clr-namespace:Agebull.EntityModel.Config;assembly=Agebull.EntityModel.Designer.Logical" 
              xmlns:designer="clr-namespace:Agebull.EntityModel.Designer;assembly=Agebull.EntityModel.Designer.Model"
-             mc:Ignorable="d" 
-             d:DesignHeight="1000" d:DesignWidth="1691.588">
+             mc:Ignorable="d">
     <UserControl.Resources>
-        <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml" />
-        <Style x:Key="ConfigStyle2" TargetType="{x:Type ContentControl}">
-            <Setter Property="ContentTemplate" Value="{StaticResource configTemplate}" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Path=Option.Type}" Value="FileConfigBase">
-                    <Setter Property="ContentTemplate" Value="{DynamicResource FileConfigTemplate}" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml" />
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Button.xaml" />
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/ConfigDataTemplate.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="ConfigStyle2" TargetType="{x:Type ContentControl}">
+                <Setter Property="ContentTemplate" Value="{DynamicResource configTemplate}" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Path=Option.Type}" Value="FileConfigBase">
+                        <Setter Property="ContentTemplate" Value="{DynamicResource FileConfigTemplate}" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.DataContext>
         <designer:EditorViewModel/>

@@ -173,7 +173,9 @@
                 <DataGridCheckBoxColumn Binding="{Binding NoStorage,Mode=TwoWay,Converter={StaticResource BoolReversalConverter}}" Header="存储" />
                 <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
                 <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />
-                <DataGridCheckBoxColumn Binding="{Binding KeepUpdate,Mode=TwoWay}" Header="仅新增" />
+                <DataGridCheckBoxColumn Binding="{Binding CanRead,Mode=TwoWay}" Header="读取" />
+                <DataGridCheckBoxColumn Binding="{Binding CanInsert,Mode=TwoWay}" Header="新增" />
+                <DataGridCheckBoxColumn Binding="{Binding CanUpdate,Mode=TwoWay}" Header="修改" />
                 <DataGridTextColumn Binding="{Binding DbFieldName,Mode=TwoWay}" Header="字段" />
                 <DataGridCheckBoxColumn Binding="{Binding IsPrimaryKey,Mode=TwoWay}" Header="主键" />
                 <DataGridCheckBoxColumn Binding="{Binding IsIdentity,Mode=TwoWay}" Header="自增" />

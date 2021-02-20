@@ -32,21 +32,21 @@ namespace Agebull.EntityModel.Designer
                 Action = ToStandardName,
                 Caption = "规范名称",
                 Catalog = "修复",
-                IconName = "tree_Type"
+                IconName = "规范"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>
             {
                 Action = ResetView,
                 Caption = "重置视角",
                 Catalog = "修复",
-                IconName = "tree_Type"
+                IconName = "视角"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>
             {
                 Action = EmptyFromDb,
                 Caption = "空值校验同数据库",
                 Catalog = "实体",
-                IconName = "tree_Type",
+                IconName = "检查",
                 WorkView = "adv"
             });
 
@@ -58,7 +58,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "拆分到新表",
                 SoruceView = "entity",
                 Catalog = "实体",
-                IconName = "img_add",
+                IconName = "拆分",
                 WorkView = "adv"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>
@@ -70,7 +70,7 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity",
                 SignleSoruce = true,
                 Editor = "Regular",
-                IconName = "tree_item",
+                IconName = "修复",
                 WorkView = "adv"
             });
 
@@ -80,7 +80,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "按C#类型标准检查并修复",
                 SoruceView = "entity",
                 Catalog = "实体",
-                IconName = "tree_Type",
+                IconName = "C#",
                 WorkView = "adv"
             });
 
@@ -90,7 +90,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "按数据库类型标准检查并修复",
                 SoruceView = "entity",
                 Catalog = "实体",
-                IconName = "tree_Type",
+                IconName = "数据库",
                 WorkView = "adv"
             });
 
@@ -100,7 +100,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "外键排前",
                 SoruceView = "entity",
                 Catalog = "排序",
-                IconName = "tree_Type",
+                IconName = "排序",
                 WorkView = "adv"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>
@@ -109,7 +109,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "外键排后",
                 SoruceView = "entity",
                 Catalog = "排序",
-                IconName = "tree_Type",
+                IconName = "排序",
                 WorkView = "adv"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>
@@ -118,7 +118,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "查找关联表",
                 SoruceView = "entity",
                 Catalog = "实体",
-                IconName = "tree_Type",
+                IconName = "查找",
                 WorkView = "adv"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>
@@ -126,7 +126,7 @@ namespace Agebull.EntityModel.Designer
                 Action = CheckName,
                 Caption = "名称中的[标识]统一替换为[编号]",
                 Catalog = "字段",
-                IconName = "tree_item"
+                IconName = "字段"
             });
 
             commands.Add(new CommandItemBuilder<IEntityConfig>
@@ -134,7 +134,7 @@ namespace Agebull.EntityModel.Designer
                 Action = IdentityToBigint,
                 Caption = "自增字段转为BIGINT类型",
                 Catalog = "字段",
-                IconName = "tree_item"
+                IconName = "字段"
             });
         }
 

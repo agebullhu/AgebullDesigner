@@ -16,9 +16,9 @@ namespace Agebull.EntityModel.Designer.Vue
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            EditorManager.Registe<IEntityConfig, VuePanel>("Vue界面", "UI");
-            EditorManager.Registe<IEntityConfig, CommandPanel>("命令编辑", "UI");
-            EditorManager.Registe<IEntityConfig, JsonPanel>("序列化设置", "Model", "UI");
+            EditorManager.Registe2<IEntityConfig, VuePanel>("Vue界面", "Html", "UI");
+            EditorManager.Registe2<IEntityConfig, CommandPanel>("命令编辑", "Html", "UI");
+            EditorManager.Registe2<IEntityConfig, JsonPanel>("序列化设置","Html", "Model", "UI");
         }
     }
 }

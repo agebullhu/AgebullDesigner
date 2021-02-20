@@ -93,7 +93,7 @@ namespace Agebull.EntityModel.Designer
                     {
                         Action =arg=> Model.ConfigIo.CreateNew(),
                         Caption = "新建",
-                        Image = Application.Current.Resources["img_add"] as ImageSource
+                        IconName  ="新文件"
                     },
                     new CommandItem
                     {
@@ -101,13 +101,13 @@ namespace Agebull.EntityModel.Designer
                         Action =arg=> Model.ConfigIo.Load(),
                         Caption = "打开",
                         NoConfirm=true,
-                        Image = Application.Current.Resources["img_open"] as ImageSource
+                        IconName  ="文件夹"
                     },
                     new CommandItem
                     {
                         Action =arg=> Model.ConfigIo.ReLoad(),
                         Caption = "重新载入",
-                        Image = Application.Current.Resources["img_redo"] as ImageSource
+                        IconName  ="载入"
                     },
                     CommandItemBase.Line,
                     new CommandItem
@@ -115,14 +115,14 @@ namespace Agebull.EntityModel.Designer
                         Action = arg=>Model.ConfigIo.LoadGlobal(),
                         Caption = "全局",
                         NoConfirm=true,
-                        Image = Application.Current.Resources["img_open"] as ImageSource
+                        IconName  ="地球"
                     },
                     new CommandItem
                     {
                         Action = arg=>Model.ConfigIo.LoadLocal(),
                         Caption = "本地",
                         NoConfirm=true,
-                        Image = Application.Current.Resources["img_open"] as ImageSource
+                        IconName  ="本地"
                     },
                     CommandItemBase.Line,
                     new CommandItem
@@ -131,7 +131,7 @@ namespace Agebull.EntityModel.Designer
                         Caption = "保存实体",
                         SoruceView = "entity",
                         Action = arg=>Model.ConfigIo.SaveEntity(),
-                        IconName = "tree_item"
+                        IconName  ="保存"
                     },
                     new CommandItem
                     {
@@ -139,7 +139,7 @@ namespace Agebull.EntityModel.Designer
                         NoConfirm=true,
                         Action = arg=>Model.ConfigIo.SaveProject(),
                         Caption = "保存项目",
-                        Image = Application.Current.Resources["imgSave"] as ImageSource
+                        IconName  ="保存"
                     },
                     new CommandItem
                     {
@@ -147,14 +147,15 @@ namespace Agebull.EntityModel.Designer
                         NoConfirm=true,
                         Action = arg=>Model.ConfigIo.SaveSolution(),
                         Caption = "保存解决方案",
-                        Image = Application.Current.Resources["imgSave"] as ImageSource
+                        IconName  ="保存"
                     },
                     CommandItemBase.Line,
                     CommandItemBase.Line,
                     new CommandItem
                     {
                         Action = arg=>Application.Current.Shutdown(),
-                        Caption = "退出"
+                        Caption = "退出",
+                        IconName  ="关闭"
                     }
                 }
             };
@@ -176,7 +177,7 @@ namespace Agebull.EntityModel.Designer
                     Source = ed.Key,
                     Action = ExtendEditorManager.OnEditorSelect,
                     Caption = ed.Key,
-                    IconName = "tree_Child1"
+                    IconName = ed.Value.Icon
                 };
                 item.Source = item;
                 windowMenu.Items.Add(item);
@@ -192,7 +193,8 @@ namespace Agebull.EntityModel.Designer
             var vitem = new CommandItem<CommandItemBase>
             {
                 Action = OnWorkView,
-                Caption = "专家视角"
+                Caption = "专家视角",
+                IconName = "视角"
             };
             vitem.Source = vitem;
             viewMenu.Items.Add(vitem);
@@ -200,7 +202,8 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = OnWorkView,
                 Caption = "数据库设计",
-                WorkView = "DataBase"
+                WorkView = "DataBase",
+                IconName = "数据库"
             };
             vitem.Source = vitem;
             viewMenu.Items.Add(vitem);
@@ -208,7 +211,8 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = OnWorkView,
                 Caption = "实体设计",
-                WorkView = "Entity"
+                WorkView = "Entity",
+                IconName = "实体"
             };
             vitem.Source = vitem;
             viewMenu.Items.Add(vitem);
@@ -216,7 +220,8 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = OnWorkView,
                 Caption = "模型设计",
-                WorkView = "Model"
+                WorkView = "Model",
+                IconName = "模型"
             };
             vitem.Source = vitem;
             viewMenu.Items.Add(vitem);
@@ -224,7 +229,8 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = OnWorkView,
                 Caption = "用户交互",
-                WorkView = "UI"
+                WorkView = "UI",
+                IconName = "UI"
             };
             vitem.Source = vitem;
             viewMenu.Items.Add(vitem);
@@ -233,7 +239,8 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = OnAdvancedView,
                 Caption = "全部属性",
-                IsChecked = AdvancedView
+                IsChecked = AdvancedView,
+                IconName = "全部"
             };
             vitem.Source = vitem;
             viewMenu.Items.Add(vitem);

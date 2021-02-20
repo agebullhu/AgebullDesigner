@@ -192,7 +192,7 @@ namespace {NameSpace}.WebApi
             var code = new StringBuilder();
             if (!Model.EnableDataBase)
                 return "";
-            var fields = Model.DataTable.WhereLast(p => !p.Property.NoProperty && p.Property.CanUserQuery);
+            var fields = Model.DataTable.WhereLast(p => p.Property.CanUserQuery && p.Property.UserSee);
             code.Append(@"
             if (RequestArgumentConvert.TryGet(""_value_"", out string _value_)  && !string.IsNullOrEmpty(_value_))
             {

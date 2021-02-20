@@ -45,8 +45,7 @@ namespace Agebull.EntityModel.Config
                     return;
                 BeforePropertyChanged(nameof(Parent), _parent, value);
                 _parent = value;
-                OnPropertyChanged(nameof(Parent));
-                OnPropertyChanged("IChildrenConfig.Parent");
+                RaisePropertyChanged(nameof(Parent));
             }
         }
 

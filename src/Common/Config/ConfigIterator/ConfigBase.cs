@@ -28,6 +28,7 @@ namespace Agebull.EntityModel.Config
                 return;
             Foreach(action, false);
         }
+
         /// <summary>
         /// ±éÀú
         /// </summary>
@@ -37,16 +38,14 @@ namespace Agebull.EntityModel.Config
         {
             if (IsDiscard || IsDelete)
                 return;
-
             if (this is T t)
             {
                 action(t);
                 if (!doAll)
                     return;
             }
-            if (!doAll && ForeachUp(action))
-                return;
-            ForeachDown(action, doAll);
+            if (doAll || !ForeachUp(action))
+                ForeachDown(action, doAll);
         }
 
         /// <summary>
@@ -88,7 +87,6 @@ namespace Agebull.EntityModel.Config
         {
             GlobalTrigger.OnLoad(this);
             GlobalTrigger.OnLoad(Option);
-            IsModify = false;
         }
     }
 

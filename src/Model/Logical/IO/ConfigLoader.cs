@@ -38,9 +38,16 @@ namespace Agebull.EntityModel.Designer
 
                 solution.Look(GlobalConfig.AddNormalConfig);
                 GlobalTrigger.OnLoad(solution);
+                solution.Look(First);
                 re = GlobalConfig.LocalSolution = solution;
             }
+            GlobalConfig.GlobalSolution.Look(First);
             return re;
+        }
+
+        public static void First(ConfigBase cfg)
+        {
+            cfg.IsModify = false;
         }
 
         public static SolutionConfig LoadSolution(string directory, string file, bool isGlobal)

@@ -44,12 +44,49 @@ namespace Agebull.EntityModel.Designer
         /// <typeparam name="TConfig">对应的类型</typeparam>
         /// <param name="name">扩展名称</param>
         /// <param name="filter">关联的工作模式</param>
+        public static void Registe2<TConfig, TEditor>(string name, string icon, params string[] filter)
+            where TEditor : UserControl, new()
+        {
+            Registe2<TConfig, TEditor>(name, icon, 0, filter);
+        }
+
+        /// <summary>
+        /// 注册扩展
+        /// </summary>
+        /// <typeparam name="TEditor">扩展类型</typeparam>
+        /// <typeparam name="TConfig">对应的类型</typeparam>
+        /// <param name="name">扩展名称</param>
+        /// <param name="filter">关联的工作模式</param>
         public static void Registe<TConfig, TEditor>(string name, params string[] filter)
             where TEditor : UserControl, new()
         {
             Registe<TConfig, TEditor>(name, 0, filter);
         }
 
+        /// <summary>
+        /// 注册扩展
+        /// </summary>
+        /// <typeparam name="TEditor">扩展类型</typeparam>
+        /// <typeparam name="TConfig">对应的类型</typeparam>
+        /// <param name="name">扩展名称</param>
+        /// <param name="index">显示顺序</param>
+        /// <param name="filter">关联的工作模式</param>
+        public static void Registe2<TConfig, TEditor>(string name, string icon, int index, params string[] filter)
+            where TEditor : UserControl, new()
+        {
+            if (!Editors.TryGetValue(typeof(TConfig), out var exts))
+                Editors.Add(typeof(TConfig), exts = new Dictionary<string, EditorOption>(StringComparer.OrdinalIgnoreCase));
+            exts[name] = new EditorOption
+            {
+                Name = name,
+                Index = index,
+                Icon = icon ?? "编辑器",
+                Caption = name,
+                Create = () => new TEditor()
+            };
+            if (filter.Length > 0)
+                exts[name].Filter.AddRange(filter);
+        }
         /// <summary>
         /// 注册扩展
         /// </summary>
@@ -67,7 +104,7 @@ namespace Agebull.EntityModel.Designer
             {
                 Name = name,
                 Index = index,
-                Icon = "img_modify",
+                Icon = "编辑器",
                 Caption = name,
                 Create = () => new TEditor()
             };

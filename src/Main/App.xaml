@@ -6,9 +6,9 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Button.xaml" />
-                <ResourceDictionary Source="Style\Icon.xaml"/>
                 <ResourceDictionary Source="Style\TreeView.xaml"/>
                 <ResourceDictionary Source="Style\Menu.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/WPFUI;component/skin/style.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

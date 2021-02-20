@@ -15,9 +15,9 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            EditorManager.Registe<ProjectConfig, EntityListPanel>("实体列表");
-            EditorManager.Registe<ProjectConfig, EnumListPanel>("枚举列表");
-            EditorManager.Registe<ProjectConfig, ApiListPanel>("接口列表");
+            EditorManager.Registe2<ProjectConfig, EntityListPanel>("实体列表", "实体");
+            EditorManager.Registe2<ProjectConfig, EnumListPanel>("枚举列表", "枚举");
+            EditorManager.Registe2<ProjectConfig, ApiListPanel>("接口列表", "接口");
         }
     }
 }

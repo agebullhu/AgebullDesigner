@@ -245,7 +245,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         [IgnoreDataMember, JsonIgnore, Browsable(false), ReadOnly(true)]
         [Category("设计器支持"), DisplayName("是否活动")]
-        public bool IsActive => !Option._state.HasFlag(ConfigStateType.Delete) && !Option._state.HasFlag(ConfigStateType.Discard);
+        public bool IsActive => Option.IsNormal;
 
         /// <summary>
         /// 引用对象键

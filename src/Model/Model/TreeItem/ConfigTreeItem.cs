@@ -2,10 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
 
@@ -105,10 +102,35 @@ namespace Agebull.EntityModel.Designer
             }
             HeaderField = "Name,Caption,Abbreviation";
             HeaderExtendExpression = FormatTitle;
-            StatusField = "IsReference,IsDelete,IsFreeze,Discard";
-            StatusExpression = p => GetImage(p);
+            StatusField = "IsDelete,IsFreeze,Discard,IsModify";
+            StatusIconName = SyncStatusImageAutomatic();
+
             if (Source != null)
                 Source.PropertyChanged += OnModelPropertyChanged;
+        }
+
+        /// <summary>
+        /// 同步自动处理
+        /// </summary>
+        protected override string SyncStatusImageAutomatic()
+        {
+            if (Model.IsDelete)
+            {
+                return "删除状态";
+            }
+            else if (Model.IsDiscard)
+            {
+                return "废弃状态";
+            }
+            else if (Model.Option.IsFreeze)
+            {
+                return "锁定状态";
+            }
+            else if (Model.IsModify)
+            {
+                return "修改状态";
+            }
+            else return "正常状态";
         }
 
 
@@ -136,7 +158,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "刷新",
                 Catalog = "视图",
                 Action = arg => ReBuildChild(),
-                Image = Application.Current.Resources["img_flush"] as ImageSource
+                IconName = "刷新"
             });
             base.CreateCommandList(commands);
         }
@@ -155,38 +177,6 @@ namespace Agebull.EntityModel.Designer
                 Items.AddRange(item.Items);
         }
 
-        #endregion
-        #region 图标
-
-        private BitmapImage GetImage(TModel m)
-        {
-            return !(m is IndependenceConfigBase par)
-                   ? imgDefault
-                   : par.IsReference
-                        ? imgRef
-                        : m.IsDelete
-                            ? imgDel
-                            : m.IsDiscard
-                                ? imgDiscard
-                                : m.IsFreeze
-                                    ? imgLock
-                                    : m.IsModify
-                                        ? imgModify
-                                        : imgDefault;
-        }
-        private static readonly BitmapImage imgRef = Application.Current.Resources["img_ref"] as BitmapImage;
-
-        private static readonly BitmapImage imgLock = Application.Current.Resources["img_lock"] as BitmapImage;
-
-        private static readonly BitmapImage imgDel = Application.Current.Resources["img_del"] as BitmapImage;
-
-        private static readonly BitmapImage imgDiscard = Application.Current.Resources["img_discard"] as BitmapImage;
-
-        private static readonly BitmapImage imgModify = Application.Current.Resources["img_modify"] as BitmapImage;
-
-        private static readonly BitmapImage imgDefault = Application.Current.Resources["img_no_modify"] as BitmapImage;
-        private static readonly BitmapImage imgLink = Application.Current.Resources["img_switch"] as BitmapImage;
-        
         #endregion
 
     }

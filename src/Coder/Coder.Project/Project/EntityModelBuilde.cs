@@ -20,6 +20,16 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
     public sealed class EntityModelBuilder : ProjectBuilder
     {
         /// <summary>
+        /// 名称
+        /// </summary>
+        public override string Name => "实体模型";
+
+        public EntityModelBuilder()
+        {
+            Icon = "C#";
+        }
+
+        /// <summary>
         /// 生成项目代码
         /// </summary>
         /// <param name="project"></param>
@@ -38,11 +48,6 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
             };
             enums.WriteDesignerCode(project.ModelPath);
         }
-
-        /// <summary>
-        /// 名称
-        /// </summary>
-        public override string Name => "Entity & Model";
 
         /// <summary>
         /// 标题

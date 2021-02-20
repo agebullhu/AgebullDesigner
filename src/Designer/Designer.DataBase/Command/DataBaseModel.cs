@@ -41,7 +41,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "重新升级",
                 Editor = "DataBase",
                 WorkView = "database",
-                IconName = "tree_item"
+                IconName = "分析"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>()
             {
@@ -51,13 +51,14 @@ namespace Agebull.EntityModel.Designer
                 Caption = "标准化字段名称",
                 Editor = "DataBase",
                 WorkView = "database",
-                IconName = "tree_item",
+                IconName = "格式",
                 ConfirmMessage = "是否执行【标准化字段名称】操作"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>()
             {
                 Name = "Link Field Check",
                 Caption = "关系连接修复",
+                IconName = "修复",
                 Catalog = "工具",
                 Action = ent => DataBaseHelper.CheckFieldLink(ent.DataTable.Fields),
                 Editor = "DataRelation",
@@ -72,7 +73,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "重构数据库设计",
                 Editor = "DataBase",
                 WorkView = "database",
-                IconName = "tree_item",
+                IconName = "修复",
                 ConfirmMessage = "是否执行【重构数据库设计】操作"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>()
@@ -83,7 +84,7 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity",
                 Editor = "DataBase",
                 WorkView = "database",
-                IconName = "tree_item",
+                IconName = "修复",
                 ConfirmMessage = "是否执行【修复数据库设计】操作"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>
@@ -94,7 +95,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "修复数据关联",
                 Editor = "DataBase",
                 WorkView = "database",
-                IconName = "tree_item",
+                IconName = "修复",
                 ConfirmMessage = "是否执行【修复数据库设计】操作"
             });
 
@@ -106,15 +107,10 @@ namespace Agebull.EntityModel.Designer
                 Caption = "索引构建",
                 Editor = "DataBase",
                 WorkView = "database",
-                IconName = "tree_item",
+                IconName = "索引",
                 ConfirmMessage = "是否执行【修复数据库设计】操作"
             });
         }
-
-        #region 基础
-
-        #endregion
-
 
         #region 数据库设计检查
 

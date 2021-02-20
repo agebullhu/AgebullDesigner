@@ -16,12 +16,12 @@ namespace Agebull.Common.Config.Designer.EasyUi
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            EditorManager.Registe<ModelConfig, ModelReleasePanel>("关系连接");
-            EditorManager.Registe<ModelConfig, ModelFieldsPanel>("连接字段", "Entity", "Model");
+            EditorManager.Registe2<ModelConfig, ModelReleasePanel>("关系连接","关联");
+            EditorManager.Registe2<ModelConfig, ModelFieldsPanel>("连接字段", "字段", "Entity", "Model");
 
-            EditorManager.Registe<EntityConfig, FieldsPanel>("字段");
-            EditorManager.Registe<IEntityConfig, RegularPanel>("校验", "Model");
-            EditorManager.Registe<IEntityConfig, ModelCodePanel>("对象", "Entity", "Model");
+            EditorManager.Registe2<EntityConfig, FieldsPanel>("字段", "字段");
+            EditorManager.Registe2<IEntityConfig, RegularPanel>("校验", "检查", "Model");
+            EditorManager.Registe2<IEntityConfig, ModelCodePanel>("对象", "C#", "Entity", "Model");
 
             CommandIoc.EditEntityCommand = EditEntityCommand;
             CommandIoc.AddFieldsCommand = AddFieldsCommand;

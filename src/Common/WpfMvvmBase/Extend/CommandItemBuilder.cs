@@ -56,7 +56,6 @@ namespace Agebull.EntityModel.Designer
         /// 命令
         /// </summary>
         public Action<TParameter> Action { get; set; }
-
         /// <summary>
         /// 转为命令对象
         /// </summary>

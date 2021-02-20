@@ -30,7 +30,7 @@ namespace Agebull.Common
                 return null;
             }
             str = str.Trim();
-            if (Cache.TryGetValue(str, out var to))
+            if (Cache.TryGetValue(str, out string to))
             {
                 return to;
             }
@@ -39,23 +39,23 @@ namespace Agebull.Common
             //var appid = "20161104000031344";
             //var secretKey = "E5JzhwEjhVWL9FWzjY74";
 
-            var random = new Random((int)DateTime.Now.Ticks % short.MaxValue);
-            var salt = random.Next(32768, 65536);
-            var sign1 = $@"20161104000031344{str}{salt}E5JzhwEjhVWL9FWzjY74";
+            Random random = new Random((int)DateTime.Now.Ticks % short.MaxValue);
+            int salt = random.Next(32768, 65536);
+            string sign1 = $@"20161104000031344{str}{salt}E5JzhwEjhVWL9FWzjY74";
             byte[] buf = Encoding.UTF8.GetBytes(sign1); //tbPass为输入密码的文本框
             MD5 md5 = new MD5CryptoServiceProvider();
-            var output = md5.ComputeHash(buf);
-            var sign = BitConverter.ToString(output).Replace("-", "").ToLower();
-            var url =
+            byte[] output = md5.ComputeHash(buf);
+            string sign = BitConverter.ToString(output).Replace("-", "").ToLower();
+            string url =
                 $@"http://api.fanyi.baidu.com/api/trans/vip/translate?appid=20161104000031344&from={(fromChiness ? "zh" : "auto")}&to={(!fromChiness ? "zh" : "en")}&q={str}&salt={salt}&sign={sign}";
             WebClient client = new WebClient(); //引用System.Net
-            var buffer = client.DownloadData(url);
+            byte[] buffer = client.DownloadData(url);
             //client_id为自己的api_id，q为翻译对象，from为翻译语言，to为翻译后语言
             string result = Encoding.UTF8.GetString(buffer);
             StringReader sr = new StringReader(result);
             JsonTextReader jsonReader = new JsonTextReader(sr); //引用Newtonsoft.Json 自带
             JsonSerializer serializer = new JsonSerializer();
-            var r = serializer.Deserialize<FanYiResult>(jsonReader); //因为获取后的为json对象 ，实行转换
+            FanYiResult r = serializer.Deserialize<FanYiResult>(jsonReader); //因为获取后的为json对象 ，实行转换
             if (string.IsNullOrWhiteSpace(r.ErrorCode) && r.Result != null && r.Result.Length > 0)
             {
                 Cache.TryAdd(str, r.Result[0].Dest);

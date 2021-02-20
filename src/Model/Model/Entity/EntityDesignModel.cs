@@ -35,7 +35,7 @@ namespace Agebull.EntityModel.Designer
                 NoConfirm = true,
                 Action = CopyColumns,
                 Caption = "复制列",
-                Image = Application.Current.Resources["tree_item"] as ImageSource
+                IconName = "复制"
             });
             commands.Add(new CommandItem
             {
@@ -43,21 +43,21 @@ namespace Agebull.EntityModel.Designer
                 Action = PasteColumns,
                 NoConfirm = true,
                 Caption = "粘贴列",
-                Image = Application.Current.Resources["tree_item"] as ImageSource
+                IconName  = "粘贴"
             });
             commands.Add(new CommandItem
             {
                 IsButton = true,
                 Action = ClearColumns,
                 Caption = "清除列",
-                Image = Application.Current.Resources["img_del"] as ImageSource
+                IconName = "清除"
             });
             commands.Add(new CommandItem
             {
                 IsButton = true,
                 Action = DeleteColumns,
                 Caption = "删除所选列",
-                Image = Application.Current.Resources["img_del"] as ImageSource
+                IconName = "删除"
             });
 
             base.CreateCommands(commands);

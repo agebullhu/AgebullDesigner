@@ -45,10 +45,6 @@ namespace Agebull.EntityModel.Designer
                 property.InnerField = true;
             }
 
-            if (property.Nullable && property.DataBaseField != null)
-            {
-                property.DataBaseField.DbNullable = false;
-            }
             if (property.ComputeGetCode.IsPresent() || property.ComputeSetCode.IsPresent())
             {
                 property.IsCustomCompute = true;
@@ -57,14 +53,10 @@ namespace Agebull.EntityModel.Designer
             {
                 property.IsCompute = true;
             }
-            if (!property.IsCompute && property.DataBaseField != null)
-            {
-                property.DataBaseField.IsDiscard = true;
-            }
-            if (property.NoStorage || property.InnerField)
-                property.CanUserQuery = false;
-            if (property.NoProperty || property.InnerField || property.IsCompute)
+
+            if (property.NoProperty || property.InnerField || property.IsCompute || !property.CanSet)
                 property.IsUserReadOnly = true;
+
             if (!property.CsType.IsMe("string"))
             {
                 property.Rows = 0;
@@ -72,6 +64,7 @@ namespace Agebull.EntityModel.Designer
             }
             if (property.CsType.IsMe("string") && (!property.CanEmpty || property.IsRequired))
                 property.UiRequired = true;
+
             if (!property.UserSee)
             {
                 property.NoneGrid = true;

@@ -30,7 +30,7 @@ namespace Agebull.EntityModel.Designer
                 ConfirmMessage = "确认执行【识别枚举】操作吗?\n形如【类型，1操作，2返回，3未知样式】的说明文字",
                 SoruceView = "entity",
                 SignleSoruce = false,
-                IconName = "tree_item"
+                IconName = "枚举"
             });
             commands.Add(new CommandItemBuilder<FieldConfig>
             {
@@ -40,7 +40,7 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity",
                 TargetType = type,
                 Caption = "刷新枚举引用",
-                IconName = "tree_item"
+                IconName = "引用"
             });
             commands.Add(new CommandItemBuilder<IPropertyConfig>
             {
@@ -51,7 +51,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "绑定或新增枚举",
                 SoruceView = "field",
                 SignleSoruce = true,
-                IconName = "tree_item"
+                IconName = "新增"
             });
             commands.Add(new CommandItemBuilder<IPropertyConfig>
             {
@@ -61,7 +61,7 @@ namespace Agebull.EntityModel.Designer
                 TargetType = type,
                 Caption = "清除枚举绑定",
                 SignleSoruce = true,
-                IconName = "tree_item"
+                IconName = "清除"
             });
         }
 

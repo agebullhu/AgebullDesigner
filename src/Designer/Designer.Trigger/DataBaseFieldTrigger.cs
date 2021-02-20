@@ -48,6 +48,14 @@ namespace Agebull.EntityModel.Designer
                 TargetConfig.Datalen = 200;
 
             #endregion
+
+            if (TargetConfig.IsText || TargetConfig.IsBlob || TargetConfig.Datalen < 0)
+                TargetConfig.Datalen = 0;
+            if (!TargetConfig.FieldType.IsOnce("decimal", "number"))
+                TargetConfig.Scale = 0;
+            if (TargetConfig.IsIdentity)
+                TargetConfig.IsReadonly = true;
+
             #region KeepStorageScreen
             if (TargetConfig.DbInnerField)
                 TargetConfig.KeepStorageScreen = StorageScreenType.Read | StorageScreenType.Insert | StorageScreenType.Update;
@@ -133,10 +141,12 @@ namespace Agebull.EntityModel.Designer
             }
             #endregion
 
-            if (TargetConfig.IsText || TargetConfig.IsBlob || TargetConfig.Datalen < 0)
-                TargetConfig.Datalen = 0;
-            if (!TargetConfig.FieldType.IsOnce("decimal", "number"))
-                TargetConfig.Scale = 0;
+            if (TargetConfig.DbInnerField)
+                TargetConfig.Property.NoProperty = true;
+
+            if (TargetConfig.IsReadonly)
+                TargetConfig.Property.IsUserReadOnly = true;
+            TargetConfig.Option.State = TargetConfig.Property.Option.State;
         }
     }
 }

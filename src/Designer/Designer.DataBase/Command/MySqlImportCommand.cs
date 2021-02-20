@@ -25,7 +25,7 @@ namespace Agebull.Common.Config.Designer
                 Catalog = "数据库",
                 WorkView = "database",
                 SoruceView = "entity",
-                IconName = "tree_Assembly"
+                IconName = "数据库"
             });
             CommandCoefficient.RegisterItem<EntityConfig>(new CommandItemBuilder<EntityConfig>
             {
@@ -35,7 +35,7 @@ namespace Agebull.Common.Config.Designer
                 Catalog = "数据库",
                 WorkView = "database",
                 SoruceView = "entity",
-                IconName = "tree_Assembly"
+                IconName = "数据库"
             });
         }
 

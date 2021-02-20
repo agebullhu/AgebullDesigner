@@ -18,7 +18,7 @@
             <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />
             <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" IsReadOnly="true" Header="标题" />
             <DataGridTextColumn Binding="{Binding EntityName,Mode=TwoWay}" Header="实体类名" />
-            <DataGridTextColumn Binding="{Binding SaveTableName,Mode=TwoWay}" Header="数据表名" />
+            <DataGridTextColumn Binding="{Binding DataTable.SaveTableName,Mode=TwoWay}" Header="数据表名" />
             <DataGridTextColumn Binding="{Binding PrimaryField,Mode=OneWay}" IsReadOnly="true" Header="主键" />
             <DataGridCheckBoxColumn Binding="{Binding IsInterface,Mode=TwoWay}" Header="接口定义" />
             <DataGridCheckBoxColumn Binding="{Binding EnableDataBase,Mode=TwoWay}" Header="启用数据库" />

@@ -24,7 +24,6 @@ namespace Agebull.Common.Mvvm
             get;
             set;
         }
-
         /// <summary>
         ///     标题
         /// </summary>
@@ -65,6 +64,14 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         bool NoButton { get; }
 
+        /// <summary>
+        ///     显示图标
+        /// </summary>
+        bool OnlyIcon
+        {
+            get;
+            set;
+        }
         /// <summary>
         ///     分类
         /// </summary>
@@ -149,6 +156,7 @@ namespace Agebull.Common.Mvvm
             dist.SoruceView = sour.SoruceView;
             dist.TargetType = sour.TargetType;
             dist.IconName = sour.IconName;
+            dist.OnlyIcon = sour.OnlyIcon;
             dist.ConfirmMessage = sour.ConfirmMessage;
         }
     }

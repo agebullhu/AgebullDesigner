@@ -30,7 +30,7 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity",
                 Caption = "所有非自增主键设置为雪花码",
                 Action = AutoSnowFlakeId,
-                IconName = "tree_Open"
+                IconName = "字段"
             });
 
             commands.Add(new CommandItemBuilder<IEntityConfig>
@@ -40,7 +40,8 @@ namespace Agebull.EntityModel.Designer
                 Caption = "自动关联对象",
                 SoruceView = "entity",
                 Action = RelationChecker.DoCheck,
-                Catalog = "数据关联"
+                Catalog = "数据关联",
+                IconName = "关联"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>
             {
@@ -49,7 +50,8 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity",
                 Caption = "还原关联对象数据类型",
                 Action = RelationChecker.CheckLinkType,
-                Catalog = "数据关联"
+                Catalog = "数据关联",
+                IconName = "类型"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>
             {
@@ -58,7 +60,8 @@ namespace Agebull.EntityModel.Designer
                 Caption = "自动外联标题",
                 SoruceView = "entity",
                 Action = RelationChecker.DoLinkCaption,
-                Catalog = "数据关联"
+                Catalog = "数据关联",
+                IconName = "关联"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>
             {
@@ -67,7 +70,8 @@ namespace Agebull.EntityModel.Designer
                 Caption = "清除所有外联",
                 SoruceView = "entity",
                 Action = RelationChecker.ClearLink,
-                Catalog = "数据关联"
+                Catalog = "数据关联",
+                IconName = "清除"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>
             {
@@ -76,6 +80,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "数据关联",
                 SoruceView = "entity",
                 WorkView = "database",
+                IconName = "规范",
                 Action = CheckPrimary,
                 TargetType = typeof(IEntityConfig)
             });

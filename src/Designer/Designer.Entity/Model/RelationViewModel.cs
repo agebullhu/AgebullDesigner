@@ -42,7 +42,7 @@ namespace Agebull.EntityModel.Designer
                 Action = AddColumns,
                 NoConfirm = true,
                 Caption = "增加行",
-                Image = Application.Current.Resources["tree_add"] as ImageSource
+                IconName = "新增"
             });
             commands.Add(new CommandItem
             {
@@ -50,7 +50,7 @@ namespace Agebull.EntityModel.Designer
                 Action = RelationDiscovery,
                 NoConfirm = true,
                 Caption = "向下关系发现",
-                Image = Application.Current.Resources["tree_item"] as ImageSource
+                IconName = "向下"
             });
             commands.Add(new CommandItem
             {
@@ -58,7 +58,7 @@ namespace Agebull.EntityModel.Designer
                 Action = LinkDiscovery,
                 NoConfirm = true,
                 Caption = "向上关系发现",
-                Image = Application.Current.Resources["tree_item"] as ImageSource
+                IconName = "向上"
             });
             commands.Add(new CommandItem
             {
@@ -66,14 +66,14 @@ namespace Agebull.EntityModel.Designer
                 Action = PasteColumns,
                 NoConfirm = true,
                 Caption = "粘贴关系",
-                Image = Application.Current.Resources["tree_item"] as ImageSource
+                IconName = "粘贴"
             });
             commands.Add(new CommandItem
             {
                 IsButton = true,
                 Action = DeleteColumns,
                 Caption = "删除行",
-                Image = Application.Current.Resources["img_del"] as ImageSource
+                IconName = "删除"
             });
             base.CreateCommands(commands);
         }

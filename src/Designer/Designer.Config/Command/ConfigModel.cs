@@ -22,7 +22,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "工具",
                 SignleSoruce = false,
 
-                IconName = "tree_item"
+                IconName = "清除"
             });
             commands.Add(new CommandItemBuilder<ConfigBase>
             {
@@ -31,28 +31,28 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "工具",
                 SignleSoruce = false,
 
-                IconName = "tree_item"
+                IconName = "清除"
             });
             commands.Add(new CommandItemBuilder<ConfigBase>
             {
                 Action = Lock,
                 Caption = "锁定",
                 Catalog = "设计",
-                IconName = "img_lock"
+                IconName = "锁定"
             });
             commands.Add(new CommandItemBuilder<ConfigBase>
             {
                 Action = UnLock,
                 Caption = "解锁",
                 Catalog = "设计",
-                IconName = "img_no_modify"
+                IconName = "解锁"
             });
             commands.Add(new CommandItemBuilder<ConfigBase>
             {
                 Action = ToModify,
                 Caption = "强制已修改",
                 Catalog = "设计",
-                IconName = "img_modify"
+                IconName = "修改"
             });
         }
 

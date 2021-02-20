@@ -14,7 +14,5 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         {
             CoderManager.RegistBuilder<ProjectApiBuilde>();
         }
-
     }
-
 }

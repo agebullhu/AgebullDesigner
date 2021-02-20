@@ -24,23 +24,29 @@ namespace Agebull.Common.Mvvm
     /// </summary>
     public abstract class CommandItemBase : CommandConfig
     {
-
         #region 状态
 
-        /// <summary>
-        ///     图标
-        /// </summary>
-        ImageSource _image;
+        string AutoIcon(string name)
+        {
+            if(name == null)
+                return "Icon";
+            if (name.Contains("新增") || name.Contains("增加"))
+                return "新增";
+            if (name.Contains("清除") || name.Contains("删除"))
+                return "删除";
+            if (name.Contains("排序"))
+                return "排序";
+            return "Icon";
+        }
 
         /// <summary>
         ///     图标
         /// </summary>
-        public ImageSource Image
+        public string Image
         {
             get => IsRoot
                 ? null
-                : (_image ??= Application.Current.Resources[IconName ?? "imgDefault"] as ImageSource);
-            set => _image = value;
+                : IconMap.Instance[IconName ?? AutoIcon(Caption)];
         }
 
         /// <summary>

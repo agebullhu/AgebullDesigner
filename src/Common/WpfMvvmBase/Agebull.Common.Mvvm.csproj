@@ -18,11 +18,42 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="WebFont\fonts\css\font-awesome.css" />
+    <None Remove="WebFont\fonts\css\Unicode编码.txt" />
+    <None Remove="WebFont\fonts\css\UTF-8编码.txt" />
+    <None Remove="WebFont\fonts\fontawesome-webfont.svg" />
+    <None Remove="WebFont\fonts\fontawesome-webfont.ttf" />
+    <None Remove="WebFont\fonts\fontawesome-webfont.woff" />
+    <None Remove="WebFont\fonts\fontawesome-webfont.woff2" />
+    <None Remove="WebFont\fonts\FontAwesome.otf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="WebFont\fonts\css\font-awesome.css" />
+    <Content Include="WebFont\fonts\fontawesome-webfont.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="WebFont\fonts\css\Unicode编码.txt" />
+    <Resource Include="WebFont\fonts\css\UTF-8编码.txt" />
+    <Resource Include="WebFont\fonts\fontawesome-webfont.ttf" />
+    <Resource Include="WebFont\fonts\fontawesome-webfont.woff" />
+    <Resource Include="WebFont\fonts\fontawesome-webfont.woff2" />
+    <Resource Include="WebFont\fonts\FontAwesome.otf" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Config\Agebull.EntityModel.Config.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="WebFont\style.xaml">
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
 </Project>

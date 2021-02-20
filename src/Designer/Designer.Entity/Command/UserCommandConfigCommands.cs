@@ -36,7 +36,7 @@ namespace Agebull.EntityModel.Designer
                 TargetType = typeof(UserCommandConfig),
                 Caption = "删除命令",
                 Editor = "Command",
-                IconName = "img_del"
+                IconName = "删除"
             });
             commands.Add(new CommandItemBuilder<ModelConfig>
             {
@@ -44,7 +44,7 @@ namespace Agebull.EntityModel.Designer
                 Action = AddCommand,
                 Caption = "新增命令",
                 Catalog = "编辑",
-                IconName = "tree_Open",
+                IconName = "新增",
                 SoruceView = "model",
                 Editor = "Command",
                 WorkView = "Model"
@@ -56,7 +56,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "新增审核命令",
                 Catalog = "编辑",
                 Editor = "Command",
-                IconName = "tree_Open",
+                IconName = "新增",
                 SoruceView = "model",
                 WorkView = "Model"
             });

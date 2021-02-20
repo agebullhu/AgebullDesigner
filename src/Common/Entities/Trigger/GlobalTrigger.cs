@@ -120,7 +120,7 @@ namespace Agebull.EntityModel
                 return;
             using (scope)
             {
-                foreach (var trigger in Triggers)
+                foreach (var trigger in Triggers.ToArray())
                 {
                     if (trigger.TargetType == null || trigger.TargetType == type || type.IsSubclassOf(trigger.TargetType))
                         trigger.OnLoad(config);

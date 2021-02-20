@@ -27,7 +27,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "增加参数",
                 Action = AddArgument,
                 SoruceView = "api",
-                IconName = "tree_Open"
+                IconName = "增加"
             });
             commands.Add(new CommandItemBuilder<ApiItem>
             {
@@ -37,7 +37,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "增加返回值",
                 SoruceView = "api",
                 Action = AddResult,
-                IconName = "tree_item"
+                IconName = "增加"
             });
         }
 

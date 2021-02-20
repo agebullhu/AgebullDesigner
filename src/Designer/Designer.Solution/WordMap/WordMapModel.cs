@@ -12,7 +12,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using System.Windows.Media;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -47,15 +46,14 @@ namespace Agebull.EntityModel.Designer
             wordItems.CollectionChanged += WordItems_CollectionChanged;
         }
         public static readonly Dictionary<string, WordItem> Maps = new Dictionary<string, WordItem>(StringComparer.OrdinalIgnoreCase);
-
-        static readonly NotificationList<WordItem> wordItems = new NotificationList<WordItem>();
+        private static readonly NotificationList<WordItem> wordItems = new NotificationList<WordItem>();
 
         private static void WordItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             static void Reset()
             {
                 Maps.Clear();
-                foreach (var item in wordItems)
+                foreach (WordItem item in wordItems)
                 {
                     if (string.IsNullOrWhiteSpace(item.English))
                         continue;
@@ -70,7 +68,7 @@ namespace Agebull.EntityModel.Designer
 
             void Add()
             {
-                foreach (var item in e.NewItems.Cast<WordItem>())
+                foreach (WordItem item in e.NewItems.Cast<WordItem>())
                 {
                     if (string.IsNullOrWhiteSpace(item.English))
                         continue;
@@ -84,7 +82,7 @@ namespace Agebull.EntityModel.Designer
             }
             void Remove()
             {
-                foreach (var item in e.OldItems.Cast<WordItem>())
+                foreach (WordItem item in e.OldItems.Cast<WordItem>())
                 {
                     if (string.IsNullOrWhiteSpace(item.English))
                         continue;
@@ -113,18 +111,18 @@ namespace Agebull.EntityModel.Designer
         #endregion
         #region 查找
 
-        static bool FindChiness(string eng, string next, out (bool joinNext, string chiness) ch)
+        private static bool FindChiness(string eng, string next, out (bool joinNext, string chiness) ch)
         {
             if (next != null)
             {
-                if (FindChiness(eng + next, out var chiness))
+                if (FindChiness(eng + next, out string chiness))
                 {
                     ch = (true, chiness);
                     return true;
                 }
             }
             {
-                if (FindChiness(eng, out var chiness))
+                if (FindChiness(eng, out string chiness))
                 {
                     ch = (false, chiness);
                     return true;
@@ -135,9 +133,9 @@ namespace Agebull.EntityModel.Designer
             return false;
         }
 
-        static bool FindChiness(string eng, out string chiness)
+        private static bool FindChiness(string eng, out string chiness)
         {
-            if (Maps.TryGetValue(eng, out var item))
+            if (Maps.TryGetValue(eng, out WordItem item))
             {
                 chiness = item.Chiness;
                 return true;
@@ -191,38 +189,41 @@ namespace Agebull.EntityModel.Designer
                 Name = "Reload",
                 IsButton = true,
                 Caption = "重新载入",
-                Action = p => Reload()
+                Action = p => Reload(),
+                IconName = "载入"
             },
             new CommandItem
             {
                 Name = "New",
                 Caption = "新增",
                 IsButton = true,
-                Action = arg => NewWord()
+                Action = arg => NewWord(),
+                IconName = "新增"
             },
             new CommandItem
             {
                 Name = "Remove",
                 Caption = "清理并保存",
                 IsButton = true,
-                Action = arg => Clear(wordItems.Count == 0 ? null : wordItems.ToList(), true)
+                Action = arg => Clear(wordItems.Count == 0 ? null : wordItems.ToList(), true),
+                IconName = "清理"
             },
             new CommandItem
             {
                 IsButton = true,
                 Action = DeleteColumns,
                 Caption = "删除选中",
-                Image = Application.Current.Resources["img_del"] as ImageSource
+                IconName = "删除"
             });
             base.CreateCommands(commands);
         }
         internal static void NewWord()
         {
-            var window = new NewConfigWindow
+            NewConfigWindow window = new NewConfigWindow
             {
                 Title = "新增字典"
             };
-            var vm = (NewConfigViewModel)window.DataContext;
+            NewConfigViewModel vm = (NewConfigViewModel)window.DataContext;
             vm.Config = new ConfigBase();
             if (window.ShowDialog() == true)
             {
@@ -232,7 +233,7 @@ namespace Agebull.EntityModel.Designer
 
         internal static void AddMap(ConfigBase cfg)
         {
-            if (Maps.TryGetValue(cfg.Name, out var item))
+            if (Maps.TryGetValue(cfg.Name, out WordItem item))
             {
                 item.Chiness = cfg.Caption;
                 item.Description = cfg.Description;
@@ -253,11 +254,11 @@ namespace Agebull.EntityModel.Designer
         {
             try
             {
-                var file = Path.Combine(GlobalConfig.RootPath, "Config", "words.json");
+                string file = Path.Combine(GlobalConfig.RootPath, "Config", "words.json");
                 if (!File.Exists(file))
                     return;
-                var json = File.ReadAllText(file);
-                var items = JsonConvert.DeserializeObject<List<WordItem>>(json);
+                string json = File.ReadAllText(file);
+                List<WordItem> items = JsonConvert.DeserializeObject<List<WordItem>>(json);
                 Clear(items, true);
             }
             catch (Exception e)
@@ -270,8 +271,8 @@ namespace Agebull.EntityModel.Designer
         {
             try
             {
-                var file = Path.Combine(GlobalConfig.RootPath, "Config", "words.json");
-                var json = JsonConvert.SerializeObject(wordItems);
+                string file = Path.Combine(GlobalConfig.RootPath, "Config", "words.json");
+                string json = JsonConvert.SerializeObject(wordItems);
                 File.WriteAllText(file, json);
             }
             catch (Exception e)
@@ -286,19 +287,19 @@ namespace Agebull.EntityModel.Designer
             {
                 return;
             }
-            foreach (var col in SelectColumns.OfType<WordItem>().ToArray())
+            foreach (WordItem col in SelectColumns.OfType<WordItem>().ToArray())
             {
                 wordItems.Remove(col);
             }
             SelectColumns = null;
         }
 
-        static void Clear(List<WordItem> items, bool save = false)
+        private static void Clear(List<WordItem> items, bool save = false)
         {
             wordItems.Clear();
             Maps.Clear();
             if (items != null)
-                foreach (var item in items)
+                foreach (WordItem item in items)
                 {
                     if (string.IsNullOrWhiteSpace(item.Chiness) || string.IsNullOrEmpty(item.English))
                         continue;
@@ -381,17 +382,17 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         /// <param name="str">中文</param>
         /// <returns>英文</returns>
-        static string ToChiness(string str)
+        private static string ToChiness(string str)
         {
             try
             {
-                if (FindChiness(str, out var mi))
+                if (FindChiness(str, out string mi))
                 {
                     return mi;
                 }
 
-                var w = GlobalConfig.ToWords(str);
-                var words = new List<string>();
+                List<string> w = GlobalConfig.ToWords(str);
+                List<string> words = new List<string>();
                 StringBuilder sb = new StringBuilder();
                 w.ForEach(p =>
                 {
@@ -414,10 +415,10 @@ namespace Agebull.EntityModel.Designer
                     words.Add(sb.ToString());
                 }
                 sb = new StringBuilder();
-                for (var idx = 0; idx < words.Count; idx++)
+                for (int idx = 0; idx < words.Count; idx++)
                 {
-                    var word = words[idx];
-                    if (!FindChiness(word, idx + 1 == words.Count ? null : words[idx + 1], out var res))
+                    string word = words[idx];
+                    if (!FindChiness(word, idx + 1 == words.Count ? null : words[idx + 1], out (bool joinNext, string chiness) res))
                         sb.Append(BaiduTranslator.Translate(word, false));
                     else
                     {
@@ -447,20 +448,20 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         /// <param name="str">英文</param>
         /// <returns>中文</returns>
-        static string ToEnglish(string str)
+        private static string ToEnglish(string str)
         {
             try
             {
-                if (Maps.TryGetValue(str, out var item))
+                if (Maps.TryGetValue(str, out WordItem item))
                 {
                     return item.English;
                 }
 
-                var words = GlobalConfig.ToWords(str);
+                List<string> words = GlobalConfig.ToWords(str);
                 StringBuilder sb = new StringBuilder();
                 words.ForEach(word =>
                 {
-                    if (Maps.TryGetValue(word, out var i))
+                    if (Maps.TryGetValue(word, out WordItem i))
                         sb.Append(i.English);
                     else
                         sb.Append(BaiduTranslator.Translate(word, true));

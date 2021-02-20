@@ -194,7 +194,7 @@ namespace Agebull.EntityModel
                 {
                     Source = Model,
                     Caption = "载入子级",
-                    Image = Application.Current.Resources["async_Executing"] as BitmapImage,
+                    IconName = "载入子级",
                 };
             }
             var loadChildren = _modelFunction.GetFunction<IList>();
@@ -204,7 +204,7 @@ namespace Agebull.EntityModel
                 {
                     Source = Model,
                     Caption = "载入子级",
-                    Image = Application.Current.Resources["async_Executing"] as BitmapImage,
+                    IconName = "载入子级",
                 };
             }
             return null;
@@ -253,25 +253,7 @@ namespace Agebull.EntityModel
         #endregion
 
         #region 内容自动更新
-
-        private Expression<Func<TModel, BitmapImage>> _statusExpression;
-        /// <summary>
-        /// 取图标的方法
-        /// </summary>
-        [Browsable(false)]
-        public Expression<Func<TModel, BitmapImage>> StatusExpression
-        {
-            get => _statusExpression;
-            set
-            {
-                _statusExpression = value;
-                if (value == null)
-                    return;
-                ModelDelegates.AnnexDelegate(ReflectionHelper.GetFunc(value));
-                SyncStatusImageAutomatic();
-            }
-        }
-
+        
         private Expression<Func<TModel, Brush>> _colorExpression;
 
         /// <summary>

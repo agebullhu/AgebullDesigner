@@ -40,7 +40,7 @@ namespace Agebull.EntityModel.Designer
                 Action = RelationColumns,
                 NoConfirm = true,
                 Caption = "更新关系列",
-                Image = Application.Current.Resources["tree_item"] as ImageSource
+                IconName = "更新"
             });
             commands.Add(new CommandItem
             {
@@ -48,14 +48,14 @@ namespace Agebull.EntityModel.Designer
                 Action = PasteColumns,
                 NoConfirm = true,
                 Caption = "粘贴列",
-                Image = Application.Current.Resources["tree_item"] as ImageSource
+                IconName = "粘贴"
             });
             commands.Add(new CommandItem
             {
                 IsButton = true,
                 Action = DeleteColumns,
                 Caption = "删除所选列",
-                Image = Application.Current.Resources["img_del"] as ImageSource
+                IconName = "删除"
             });
             base.CreateCommands(commands);
         }

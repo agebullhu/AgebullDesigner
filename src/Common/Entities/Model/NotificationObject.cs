@@ -97,10 +97,8 @@ namespace Agebull.EntityModel
         ///     发出属性修改事件(不受阻止模式影响)
         /// </summary>
         /// <param name="args">属性</param>
-        protected virtual void RaisePropertyChanged(PropertyChangedEventArgs args)
+        protected void RaisePropertyChanged(PropertyChangedEventArgs args)
         {
-            if (WorkContext.IsNoChangedNotify)
-                return;
             InvokeInUiThread(RaisePropertyChangedInner, args);
         }
 
@@ -111,7 +109,7 @@ namespace Agebull.EntityModel
         /// <param name="args">属性</param>
         protected void RaisePropertyChangedInner(PropertyChangedEventArgs args)
         {
-            if (preName == args.PropertyName)
+            if (WorkContext.IsNoChangedNotify || preName == args.PropertyName)
                 return;
             preName = args.PropertyName;
             try
@@ -135,14 +133,7 @@ namespace Agebull.EntityModel
             var expression = (MemberExpression)action.Body;
             return expression.Member.Name;
         }
-        /// <summary>
-        ///     发出属性修改事件
-        /// </summary>
-        /// <param name="action">属性字段</param>
-        protected void OnPropertyChanged<T>(Expression<Func<T>> action)
-        {
-            OnPropertyChanged(GetPropertyName(action));
-        }
+
 
         /// <summary>
         ///     发出属性修改前事件
@@ -193,14 +184,6 @@ namespace Agebull.EntityModel
         /// </summary>
         /// <param name="propertyName">属性</param>
         protected virtual void RecordModifiedInner(string propertyName)
-        {
-        }
-
-        /// <summary>
-        ///     属性修改处理
-        /// </summary>
-        /// <param name="propertyName">属性</param>
-        protected virtual void OnPropertyChangedInner(string propertyName)
         {
         }
 

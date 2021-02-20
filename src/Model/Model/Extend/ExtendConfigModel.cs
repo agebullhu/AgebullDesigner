@@ -56,7 +56,7 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = Add,
                 Caption = "增加",
-                Image = Application.Current.Resources["tree_item"] as ImageSource
+                IconName = "增加"
             });
             base.CreateCommands(commands);
         }

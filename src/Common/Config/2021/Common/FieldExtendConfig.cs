@@ -25,11 +25,12 @@ namespace Agebull.EntityModel.Config.V2021
         /// </summary>
         public TParent Parent
         {
-            get => parent; set
+            get => parent; 
+            set
             {
                 parent = value;
-                OnPropertyChanged(nameof(Parent));
-                OnPropertyChanged("IChildrenConfig.Parent");
+                RaisePropertyChanged(nameof(Parent));
+                RaisePropertyChanged("IChildrenConfig.Parent");
             }
         }
 
@@ -54,6 +55,7 @@ namespace Agebull.EntityModel.Config.V2021
                 BeforePropertyChanged(nameof(PropertyKey), _propertyKey, value);
                 _propertyKey = value;
                 _property = GlobalConfig.GetConfigByKey<IPropertyConfig>(_propertyKey);
+                RaisePropertyChanged(nameof(Property));
                 OnPropertyChanged(nameof(PropertyKey));
             }
         }
@@ -78,7 +80,7 @@ namespace Agebull.EntityModel.Config.V2021
                 BeforePropertyChanged(nameof(Property), _property, value);
                 _property = value;
                 _propertyKey = value?.Key;
-                OnPropertyChanged(nameof(Property));
+                RaisePropertyChanged(nameof(Property));
                 OnPropertyChanged(nameof(PropertyKey));
             }
         }

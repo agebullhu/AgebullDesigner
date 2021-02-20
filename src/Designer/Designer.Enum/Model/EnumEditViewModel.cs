@@ -14,14 +14,14 @@ namespace Agebull.EntityModel.Designer
                 IsButton = true,
                 Action = Model.DoCheckFieldes,
                 Caption = "分析文本(Value Name Caption Description)",
-                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                IconName = "分析"
             },
             new CommandItem
             {
                 IsButton = true,
                 Action = Model.DoFormatCSharp,
                 Caption = "分析文本(C#代码)",
-                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                IconName = "C#"
             });
             base.CreateCommands(commands);
         }
