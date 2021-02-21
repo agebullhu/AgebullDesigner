@@ -8,14 +8,9 @@
 
 #region 引用
 
-using System.Collections;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Forms.Integration;
-using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
-using PropertyGrid = System.Windows.Forms.PropertyGrid;
-using PropertyValueChangedEventArgs = System.Windows.Forms.PropertyValueChangedEventArgs;
+using System.Collections;
+using System.Windows.Controls;
 
 #endregion
 
@@ -41,50 +36,16 @@ namespace Agebull.EntityModel.Designer
 
         #endregion
 
-        #region 属性表格
-
-
-        private void GetPropertyGrid(DependencyObject obj)
-        {
-            var host = obj as WindowsFormsHost;
-            // ReSharper disable PossibleNullReferenceException
-            Model.Editor.PropertyGrid = host.Child as PropertyGrid;
-            Model.Editor.PropertyGrid.PropertyValueChanged += PropertyGrid_PropertyValueChanged;
-            // ReSharper restore PossibleNullReferenceException
-        }
-
-        private void PropertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
-        {
-            string name = e.ChangedItem?.PropertyDescriptor?.Name;
-            if (name == null)
-                return;
-            foreach (var obj in Model.Editor.PropertyGrid.SelectedObjects)
-            {
-                var config = obj as ConfigBase;
-                config?.RaisePropertyChanged(name);
-            }
-        }
-
-        public DependencyAction PropertyGridHostBehavior => new DependencyAction
-        {
-            AttachAction = GetPropertyGrid
-        };
-        #endregion
 
         #region 扩展
 
         public DelegateCommand SaveCommand => new DelegateCommand(Model.ConfigIo.SaveProject);
 
-        public DependencyAction TabControlBehavior => new DependencyAction
+        public DependencyAction ExtendEditorBehavior => new DependencyAction
         {
-            AttachAction = obj => Model.Editor.ExtendEditorPanel = (TabControl)obj
+            AttachAction = obj => EditorManager.ExtendEditorPanel = (Border)obj
         };
 
-
-        public DependencyAction WebBrowserBehavior => new DependencyAction
-        {
-            AttachAction = obj => Model.NormalCode.Browser = (WebBrowser)obj
-        };
         #endregion
     }
 }

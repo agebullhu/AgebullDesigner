@@ -12,9 +12,9 @@ namespace Agebull.EntityModel.Config
 
         public FieldConfig Property { get; set; }
         #endregion
-        
+
         #region ÐÞ¸´
-        
+
         private void RepairCaption()
         {
             if (Property.IsSystemField)
@@ -65,26 +65,27 @@ namespace Agebull.EntityModel.Config
             RepairCaption();
             CheckRegular();
         }
-        
+
         private void CheckRegular()
         {
             if (Property.IsSystemField)
                 return;
-            Property.CsType =CsharpHelper. GetStdCsType(Property.CsType);
+            var field = Property.DataBaseField;
+            Property.CsType = CsharpHelper.GetStdCsType(Property.CsType);
             Property.Nullable = Property.CsType == "string";
             if (Property.CsType == "string")
             {
-                if (Property.Datalen <= 0)
-                    Property.Datalen = 100;
+                if (field.Datalen <= 0)
+                    field.Datalen = 100;
                 Property.ArrayLen = "0";
                 Property.Nullable = false;
             }
             else
             {
-                Property.Datalen = 0;
+                field.Datalen = 0;
             }
-            Property.Scale = 0;
-            Property.CanEmpty = Property.DbNullable;
+            field.Scale = 0;
+            Property.CanEmpty = field.DbNullable;
             //Property.NoneJson = Property.UserSee;
         }
 
@@ -101,7 +102,7 @@ namespace Agebull.EntityModel.Config
             if (strs.Length > 0 && int.TryParse(strs[1], out int len))
             {
                 if (Property.CsType == "string")
-                    Property.Datalen = len;
+                    Property.DataBaseField.Datalen = len;
                 else
                 {
                     Property.ArrayLen = strs[1];

@@ -1,15 +1,12 @@
+using Agebull.Common.Mvvm;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
-using Agebull.Common;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer
 {
-    internal class JsonViewModel : ExtendViewModelBase<JsonModel>
+    internal class JsonViewModel : EditorViewModelBase<JsonModel>
     {
         public JsonViewModel()
         {
@@ -32,49 +29,49 @@ namespace Agebull.EntityModel.Designer
                 Action = Format1,
                 IsButton = true,
                 Caption = "大驼峰(Json)",
-                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                IconName = "格式"
             },
             new CommandItem
             {
                 Action = Format2,
                 IsButton = true,
                 Caption = "小驼峰(Json)",
-                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                IconName = "格式"
             },
             new CommandItem
             {
                 Action = Format3,
                 IsButton = true,
                 Caption = "小写下划线(Json)",
-                Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                IconName = "格式"
             }
             //new CommandItem
             //{
             //    Action = Format4,
             //    IsButton = true,
             //    Caption = "大驼峰(API)",
-            //    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+            //    IconName = "分析"
             //},
             //new CommandItem
             //{
             //    Action = Format5,
             //    IsButton = true,
             //    Caption = "小驼峰(API)",
-            //    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+            //    IconName = "分析"
             //},
             //new CommandItem
             //{
             //    Action = Format6,
             //    IsButton = true,
             //    Caption = "小写下划线(API)",
-            //    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+            //    IconName = "分析"
             //},
             //new CommandItem
             //{
             //    Action = Check,
             //    IsButton = true,
             //    Caption = "检查",
-            //    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+            //    IconName = "分析"
             );
             base.CreateCommands(commands);
         }

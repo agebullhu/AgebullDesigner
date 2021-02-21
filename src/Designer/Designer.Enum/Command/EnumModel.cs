@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using Agebull.Common;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -22,7 +21,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "编辑",
                 Action = SortEnum,
                 Caption = "排序",
-                IconName = "tree_sum",
+                IconName = "排序",
                 SoruceView = "enum",
             });
             commands.Add(new CommandItemBuilder<FieldConfig>
@@ -30,7 +29,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "工具",
                 Action = ResetEnumParent,
                 Caption = "按使用重新分配枚举项目归属",
-                IconName = "tree_sum",
+                IconName = "修复",
                 SoruceView = "enum",
             });
         }
@@ -42,7 +41,6 @@ namespace Agebull.EntityModel.Designer
             @enum.Items.Clear();
             foreach (var item in array.OrderBy(p => p.Number))
                 @enum.Add(item);
-            @enum.IsModify = true;
         }
         public void ResetEnumParent(FieldConfig property)
         {
@@ -51,7 +49,7 @@ namespace Agebull.EntityModel.Designer
             property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
             if (property.EnumConfig != null)
             {
-                property.Entity.Parent.Add(property.EnumConfig);
+                property.Entity.Project.Add(property.EnumConfig);
             }
         }
     }

@@ -1,0 +1,125 @@
+html body {
+    font-family: "Microsoft YaHei", "宋体";
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background-image: url(/images/bask7.jpg);
+    background-size: 100% 100%;
+}
+
+#body {
+    overflow: hidden;
+    min-height: 600px;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+}
+
+.main_border {
+    display: block;
+    border: 0.6px solid silver;
+    background-color: rgba(255, 255, 255, 0.59);
+    border-radius: 10px 10px 0 0;
+    width: 420px;
+    height: 280px;
+    overflow: hidden;
+    position: absolute;
+    top: 50%;
+    margin-top: -80px;
+    left: 50%;
+    margin-left: -210px;
+}
+
+.title {
+    text-align: center;
+    font-size: 28px;
+    padding-top: 16px;
+}
+
+.block {
+    width: 100%;
+    display: inline-block;
+}
+
+.line {
+    border-top: 1px solid rgb(217, 217, 217);
+    width: 380px;
+    height: 1px;
+    margin: 8px 20px 6px 20px;
+}
+
+.button {
+    width: 320px;
+    height: 42px;
+    margin-left: 50px;
+    margin-top: 0px;
+    background: #35766c;
+    border-radius: 2.4px;
+    letter-spacing: 0;
+    text-align: center;
+    font-family: PingFangSC-Regular;
+    font-size: 18px;
+    color: #ffffff;
+    border: 1px solid #d7d7d7;
+}
+
+.message {
+    width: 320px;
+    height: 22px;
+    margin-left: 50px;
+    margin-top: 5px;
+    color: red;
+    font-size: 10px;
+    text-align: center;
+}
+
+.input_border {
+    background: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 2px;
+    width: 310;
+    height: 32px;
+    margin-left: 56px;
+    margin: 16px 50px 0 50px;
+    overflow: hidden;
+}
+
+.input_border i {
+    margin-top: 10px;
+    margin-left: 12px;
+    width: 16px;
+    color: #1b5063;
+    height: 16px;
+}
+
+.input_border input {
+    width: 280px;
+    border: 0;
+    height: 100%;
+    float: right;
+    margin: 0;
+    color: #999999;
+    outline: none;
+    background-color: white;
+}
+
+.copy {
+    position: absolute;
+    font-size: 18px;
+    height: 32px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    text-align: center;
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.59);
+}

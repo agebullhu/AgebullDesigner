@@ -6,33 +6,30 @@ using System.Runtime.Serialization;
 namespace Agebull.EntityModel.Config
 {
     /// <summary>
-    /// 属性配置
-    /// </summary>
-    public interface IKey
-    {
-        /// <summary>
-        /// 标识
-        /// </summary>
-        string Key
-        {
-            get;
-            set;
-        }
-    }
-
-    /// <summary>
     ///     配置基础
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public class SimpleConfig : NotificationObject, IKey
+    public class SimpleConfig : NotificationObject, ISimpleConfig
     {
         /// <summary>
         /// 标识
         /// </summary>
         public virtual string Key
         {
-            get;set;
+            get; set;
         }
+        public SimpleConfig()
+        {
+
+        }
+        public SimpleConfig(bool notCheck)
+        {
+            notNameCaptionCheck = notCheck;
+        }
+        /// <summary>
+        ///     不检查名称类型
+        /// </summary>
+        bool notNameCaptionCheck;
 
         /// <summary>
         ///     名称
@@ -43,7 +40,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     名称
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"名称")]
+        [JsonIgnore, Category("设计支持"), DisplayName(@"名称")]
         public virtual string Name
         {
             get => _name;
@@ -54,8 +51,8 @@ namespace Agebull.EntityModel.Config
                 {
                     return;
                 }
-                BeforePropertyChanged(nameof(Name), _name, now);
-                _name = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                BeforePropertyChange(nameof(Name), _name, now);
+                _name = now;
                 RaisePropertyChanged(nameof(Name));
             }
         }
@@ -69,20 +66,21 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     标题
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"标题")]
+        [JsonIgnore, Category("设计支持"), DisplayName(@"标题")]
         public virtual string Caption
         {
-            get => WorkContext.InCoderGenerating ? _caption ?? _name : _caption;
+            get => notNameCaptionCheck ? _caption: WorkContext.InCoderGenerating ? _caption ?? _name : _caption;
             set
             {
-                if (_caption == value)
+                var now = value.IsPresent() ? value.Trim() : null;
+                if (_caption == now)
                 {
                     return;
                 }
-                if (value == _name)
-                    value = null;
-                BeforePropertyChanged(nameof(Caption), _caption, value);
-                _caption = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                if (!notNameCaptionCheck && _name.IsMe(now))
+                    now = null;
+                BeforePropertyChange(nameof(Caption), _caption, now);
+                _caption = string.IsNullOrWhiteSpace(now) ? null : now.Trim();
                 RaisePropertyChanged(nameof(Caption));
             }
         }
@@ -96,21 +94,21 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     说明
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"说明")]
+        [JsonIgnore, Category("设计支持"), DisplayName(@"说明")]
         public virtual string Description
         {
-            get => WorkContext.InCoderGenerating ? _description ?? Caption : _description;
+            get => notNameCaptionCheck ? _description : WorkContext.InCoderGenerating ? _description ?? Caption : _description;
             set
             {
-                var now = !string.IsNullOrWhiteSpace(value) ? value.Trim() : null;
+                var now = value.IsPresent() ? value.Trim() : null;
                 if (_description == now)
                 {
                     return;
                 }
-                if (value == _caption)
-                    value = null;
-                BeforePropertyChanged(nameof(Description), _description, now);
-                _description = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                if (!notNameCaptionCheck && Caption.IsMe(now))
+                    now = null;
+                BeforePropertyChange(nameof(Description), _description, now);
+                _description = now;
                 RaisePropertyChanged(nameof(Description));
             }
         }
@@ -121,7 +119,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 参见
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"参见")]
+        [JsonIgnore, Category("设计支持"), DisplayName(@"参见")]
         public virtual string Remark
         {
             get => _remark;
@@ -132,7 +130,7 @@ namespace Agebull.EntityModel.Config
                 {
                     return;
                 }
-                BeforePropertyChanged(nameof(Description), _description, now);
+                BeforePropertyChange(nameof(Description), _description, now);
                 _remark = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 RaisePropertyChanged(nameof(Description));
             }
@@ -168,8 +166,17 @@ namespace Agebull.EntityModel.Config
         {
             using (WorkModelScope.CreateScope(WorkModel.Loding))
             {
+                Name = dest.Name;
+                Caption = dest.Caption;
+                Description = dest.Description;
+                Remark = dest.Remark;
                 CopyFrom(dest);
             }
+        }
+        void ISimpleConfig.CopyFrom(ISimpleConfig dest)
+        {
+            if (dest is SimpleConfig config)
+                CopyFrom(config);
         }
 
         /// <summary>
@@ -179,10 +186,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         protected virtual void CopyFrom(SimpleConfig dest)
         {
-            Name = dest.Name;
-            Caption = dest.Caption;
-            Description = dest.Description;
-            Remark = dest.Remark;
         }
+
     }
 }

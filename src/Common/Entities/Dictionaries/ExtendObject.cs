@@ -106,7 +106,7 @@ namespace Agebull.EntityModel
         /// <summary>
         ///     依赖方法字典
         /// </summary>
-        [IgnoreDataMember]
+        [JsonIgnore]
         public DependencyDelegates DependencyDelegates
         {
             get => _dependencyFunction ??= new DependencyDelegates();
@@ -116,7 +116,7 @@ namespace Agebull.EntityModel
         /// <summary>
         ///     依赖对象字典
         /// </summary>
-        [IgnoreDataMember]
+        [JsonIgnore]
         public DependencyObjects DependencyObjects
         {
             get => _dependencyObject ??= new DependencyObjects();
@@ -136,7 +136,7 @@ namespace Agebull.EntityModel
         /// <summary>
         ///     依赖对象字典
         /// </summary>
-        [IgnoreDataMember]
+        [JsonIgnore]
         public ModelFunctionDictionary<TModel> ModelFunction
         {
             get => _modelFunction ??= new ModelFunctionDictionary<TModel>();

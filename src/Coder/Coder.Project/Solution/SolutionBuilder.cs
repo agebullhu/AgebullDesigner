@@ -1,6 +1,3 @@
-using System.IO;
-using Agebull.EntityModel.Config;
-
 namespace Agebull.EntityModel.RobotCoder
 {
     /// <summary>

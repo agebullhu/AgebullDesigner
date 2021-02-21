@@ -29,7 +29,7 @@ namespace Agebull.EntityModel
         /// <summary>
         ///     ÒÀÀµ·½·¨×Öµä
         /// </summary>
-        [IgnoreDataMember]
+        [JsonIgnore]
         private readonly Dictionary<Type, object> _dictionary = new Dictionary<Type, object>();
 
         /// <summary>

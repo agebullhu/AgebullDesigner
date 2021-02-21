@@ -1,5 +1,6 @@
-using System.Text;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
+using System.Text;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -119,14 +120,14 @@ namespace Agebull.EntityModel.RobotCoder
         private static int GetEntitySerializeLen(IEntityConfig entity)
         {
             int len = entity.LastProperties.Count + 94;
-            foreach (var property in entity.UserProperty)
+            foreach (var field in entity.LastProperties)
             {
-                len += GetFieldSerializeLen(property);
+                len += GetFieldSerializeLen(field);
             }
             return len;
         }
 
-        private static int GetFieldSerializeLen(IFieldConfig field)
+        private static int GetFieldSerializeLen(IPropertyConfig field)
         {
             int.TryParse(field.ArrayLen, out int len);
 
@@ -155,7 +156,7 @@ namespace Agebull.EntityModel.RobotCoder
                 case "guid":
                     return len > 1 ? 1 + len * 18 : 18;
                 case "string":
-                    return field.Datalen > 1 ? 1 + field.Datalen * 2 : 501;
+                    return field.DataBaseField.Datalen > 1 ? 1 + field.DataBaseField.Datalen * 2 : 501;
 
             }
             var entity = GlobalConfig.GetModel(field.CsType);
@@ -189,7 +190,7 @@ namespace Agebull.EntityModel.RobotCoder
                 {
                     code.Append($@"
             //{field.Caption}
-            if(!writer.IsEmpty(this._{field.Name.ToLWord()}))
+            if(!writer.IsMissing(this._{field.Name.ToLWord()}))
             {{
                 writer.WriteIndex(FIELD_INDEX_{Model.Name.ToUpper()}_{field.Name.ToUpper()});
                 writer.Write(this._{field.Name.ToLWord()});

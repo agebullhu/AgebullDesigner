@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.SqlServer;
+using Agebull.EntityModel.Config.V2021;
+using Agebull.EntityModel.RobotCoder;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Config.SqlServer;
-using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -18,24 +19,25 @@ namespace Agebull.EntityModel.Designer
         public static string MoveData(EntityConfig entity)
         {
             var code = new StringBuilder();
-            code.AppendFormat(@"INSERT INTO [dbo].[{0}]({1}", entity.ReadTableName, entity.PrimaryColumn.DbFieldName);
-            foreach (var col in entity.PublishProperty) //.Where(p => p.DbIndex > 0)
+            var pri = entity.DataTable.PrimaryField;
+            code.AppendFormat(@"INSERT INTO [dbo].[{0}]({1}", entity.DataTable.ReadTableName, pri.DbFieldName);
+            foreach (var field in entity.DataTable.Fields) //.Where(p => p.DbIndex > 0)
             {
-                if (col.IsPrimaryKey)
+                if (field.IsPrimaryKey)
                     continue;
-                code.AppendFormat(@",[{0}]", col.DbFieldName);
+                code.AppendFormat(@",[{0}]", field.DbFieldName);
             }
 
             code.AppendFormat(@")
-SELECT {0}", entity.PrimaryColumn.DbFieldName);
-            foreach (var col in entity.PublishProperty) //.Where(p => p.DbIndex > 0)
+SELECT {0}", pri.DbFieldName);
+            foreach (var field in entity.DataTable.Fields) //.Where(p => p.DbIndex > 0)
             {
-                if (col.IsPrimaryKey)
+                if (field.IsPrimaryKey)
                     continue;
-                code.AppendFormat(@",[{0}]", col.DbFieldName);
+                code.AppendFormat(@",[{0}]", field.DbFieldName);
             }
 
-            code.AppendFormat(@" FROM {0}_OLD;", entity.ReadTableName);
+            code.AppendFormat(@" FROM {0}_OLD;", entity.DataTable.ReadTableName);
             return code.ToString();
         }
 
@@ -96,96 +98,64 @@ SELECT {0}", entity.PrimaryColumn.DbFieldName);
             if (ch[0].Equals("tb", StringComparison.OrdinalIgnoreCase))
                 ch.RemoveAt(0);
             var name = GlobalConfig.ToName(ch);
-            var entity = FindEntity(name);
-            var add = entity == null;
-            if (add)
-            {
+            var entity = GlobalConfig.Find(name);
+            if (entity == null)
                 return;
-                entity = new EntityConfig
-                {
-                    Name = name,
-                    Classify = ch[0],
-                    Caption = description,
-                    Description = description,
-                    ReadTableName = table,
-                    SaveTableName = table,
-                    Parent = Project
-                };
-            }
-            else
+            foreach (var field in entity.Properties)
             {
-                foreach (var col in entity.Properties)
-                {
-                    col.NoStorage = true;
-                }
-
-                entity.ReadTableName = entity.SaveTableName = table;
+                field.NoStorage = true;
             }
 
+            entity.DataTable.ReadTableName = entity.DataTable.SaveTableName = table;
             CheckColumns(cmd, entity);
-            if (add)
-                Project.Add(entity);
         }
 
-        /// <summary>
-        ///     取得实体对象
-        /// </summary>
-        /// <param name="tableName"></param>
-        /// <returns></returns>
-        public static EntityConfig FindEntity(string tableName)
+        private void CheckColumns(SqlCommand cmd, IEntityConfig entity)
         {
-            return tableName == null
-                ? null
-                : GlobalConfig.GetEntity(p => string.Equals(p.ReadTableName, tableName, StringComparison.OrdinalIgnoreCase))
-                  ?? GlobalConfig.GetEntity(p => string.Equals(p.Name, tableName, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private void CheckColumns(SqlCommand cmd, EntityConfig entity)
-        {
+            entity.DataTable ??= new DataTableConfig();
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                var field = reader.GetString(0);
-                var col = entity.Properties.FirstOrDefault(p =>
-                    string.Equals(p.Name, field, StringComparison.OrdinalIgnoreCase) ||
-                    string.Equals(p.DbFieldName, field, StringComparison.OrdinalIgnoreCase));
-
-                if (col == null)
+                var name = reader.GetString(0);
+                var field = entity.DataTable.Find(name);
+                var property = field?.Property;
+                if (field == null)
                 {
                     Trace.WriteLine($" ++++ {field}");
-                    entity.Add(col = new FieldConfig
+                    property = new FieldConfig
                     {
-                        Name = field,
-                        DbFieldName = field,
+                        Name = name,
                         Entity = Entity
-                    });
+                    };
+                    entity.Entity.Add(property as FieldConfig);//触发器会自动加入数据库字段
+                    field = property.DataBaseField;
                     if (!reader.IsDBNull(7))
-                        col.Caption = col.Description = reader.GetString(7);
-
+                        field.Caption = field.Description = reader.GetString(7);
                 }
                 else
                 {
-                    Trace.WriteLine($" ==== {col.Name}");
-                    col.Option.ReferenceKey = null;
-                    col.Option.IsLink = false;
-                    col.DbFieldName = field;
+                    Trace.WriteLine($" ==== {field.Name}");
+                    field.Option.ReferenceKey = null;
+                    field.Option.IsLink = false;
+                    field.DbFieldName = name;
 
                 }
-                col.NoStorage = false;
-                col.DbType = reader.GetString(1);
-                col.DbNullable = reader.GetBoolean(5);
-                col.Datalen = Convert.ToInt32(reader.GetValue(2));
-                col.Scale = Convert.ToInt32(reader.GetValue(3));
-                col.IsPrimaryKey = !reader.IsDBNull(8);
-                col.IsIdentity = reader.GetBoolean(9);
-                col.IsCompute = reader.GetBoolean(10);
-                if (col.CsType == null)
-                    DataTypeHelper.ToStandardByDbType(col, col.DbType);
+                field.NoStorage = false;
+                field.FieldType = reader.GetString(1);
+                field.DbNullable = reader.GetBoolean(5);
+                field.Datalen = Convert.ToInt32(reader.GetValue(2));
+                field.Scale = Convert.ToInt32(reader.GetValue(3));
+                property.IsPrimaryKey = !reader.IsDBNull(8);
+                property.DataBaseField = field;
+                field.IsIdentity = reader.GetBoolean(9);
+                field.IsReadonly = reader.GetBoolean(10);
+                if (field.CsType == null)
+                    DataTypeHelper.ToStandardByDbType(field, field.FieldType);
 
-                if (col.CsType != null && col.CsType.Equals("string", StringComparison.OrdinalIgnoreCase))
+                if (field.CsType != null && field.CsType.Equals("string", StringComparison.OrdinalIgnoreCase))
                 {
-                    col.Datalen = Convert.ToInt32(reader.GetValue(4));
-                    col.Scale = 0;
+                    field.Datalen = Convert.ToInt32(reader.GetValue(4));
+                    field.Scale = 0;
                 }
             }
         }
@@ -236,10 +206,10 @@ ORDER BY [Tables].object_id, [Columns].column_id";
         {
             foreach (var schema in Project.Entities)
             {
-                foreach (var col in schema.Properties)
+                foreach (var field in schema.DataTable.Fields)
                 {
-                    if (col.CsType == "string")
-                        col.DbNullable = true;
+                    if (field.CsType == "string")
+                        field.DbNullable = true;
                 }
             }
 
@@ -254,14 +224,15 @@ ORDER BY [Tables].object_id, [Columns].column_id";
             connection.Open();
             foreach (var schema in Project.Entities)
             {
-                TraceMessage.DefaultTrace.Message2 = schema.ReadTableName;
-                foreach (var col in schema.Properties)
+                TraceMessage.DefaultTrace.Message2 = schema.DataTable.ReadTableName;
+                foreach (var property in schema.Properties)
                 {
-                    TraceMessage.DefaultTrace.Message3 = col.DbFieldName;
+                    var field = property.DataBaseField;
+                    TraceMessage.DefaultTrace.Message3 = field.DbFieldName;
 
                     var checkInt = true;
                     var isInt = true;
-                    switch (col.CsType.ToLower())
+                    switch (property.CsType.ToLower())
                     {
                         case "guid":
                         case "datetime":
@@ -273,13 +244,13 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                             break;
                     }
 
-                    var sql1 = $"SELECT [{col.DbFieldName}] FROM [{schema.ReadTableName}]";
+                    var sql1 = $"SELECT [{field.DbFieldName}] FROM [{schema.DataTable.ReadTableName}]";
                     using (var cmd = new SqlCommand(sql1, connection))
                     {
                         using var reader = cmd.ExecuteReader();
                         while (reader.Read())
                         {
-                            if (reader.IsDBNull(0)) col.DbNullable = true;
+                            if (reader.IsDBNull(0)) field.DbNullable = true;
                             if (checkInt)
                             {
                                 var obj = reader[0].ToString();
@@ -291,20 +262,20 @@ ORDER BY [Tables].object_id, [Columns].column_id";
                         }
                     }
 
-                    if (checkInt && !isInt && (col.CsType != "decimal" || col.DbType != "decimal"))
+                    if (checkInt && !isInt && (property.CsType != "decimal" || field.FieldType != "decimal"))
                     {
                         TraceMessage.DefaultTrace.Track = "改变字段类型";
-                        col.CsType = "decimal";
-                        col.DbType = "decimal";
+                        property.CsType = "decimal";
+                        field.FieldType = "decimal";
                     }
 
-                    //if (!col.DbNullable)
+                    //if (!field.DbNullable)
                     //{
-                    //    if (col.Nullable)
+                    //    if (field.Nullable)
                     //        TraceMessage.DefaultTrace.Track = "字段已改成不为空";
-                    //    col.Nullable = false;
+                    //    field.Nullable = false;
                     //}
-                    col.DbType = SqlServerHelper.ToDataBaseType(col);
+                    field.FieldType = SqlServerHelper.ToDataBaseType(property);
                 }
             }
 
@@ -334,14 +305,14 @@ ORDER BY [Tables].object_id, [Columns].column_id";
             foreach (var schema in Project.Entities) CheckColumns(cmd, schema);
         }
 
-        public static string SetPrimary(EntityConfig entity)
+        public static string SetPrimary(IEntityConfig entity)
         {
             return string.Format(@"ALTER TABLE dbo.{0} ADD CONSTRAINT
 PK_{0} PRIMARY KEY CLUSTERED 
 (
 	[{1}]
 ) WITH( STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY];",
-                entity.ReadTableName, entity.PrimaryColumn.DbFieldName);
+                entity.DataTable.ReadTableName, entity.PrimaryColumn.DataBaseField.DbFieldName);
         }
 
         #endregion
@@ -372,8 +343,8 @@ PK_{0} PRIMARY KEY CLUSTERED
                 cmd.Parameters.Add(parameter = new SqlParameter("@entity", SqlDbType.NVarChar, 256));
                 foreach (var schema in Project.Entities)
                 {
-                    TraceMessage.DefaultTrace.Message2 = schema.ReadTableName;
-                    parameter.Value = schema.ReadTableName;
+                    TraceMessage.DefaultTrace.Message2 = schema.DataTable.ReadTableName;
+                    parameter.Value = schema.DataTable.ReadTableName;
                     var sqls = AlertTable(cmd, schema);
                     foreach (var sq in sqls)
                     {

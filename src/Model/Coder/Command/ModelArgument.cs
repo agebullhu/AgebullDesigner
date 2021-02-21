@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Agebull.EntityModel.Config;
+using System.Collections.Generic;
 using System.Linq;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -46,7 +46,7 @@ namespace Agebull.EntityModel.Designer
                 case IEntityConfig model:
                     list.Add(model);
                     break;
-                case IFieldConfig field:
+                case IPropertyConfig field:
                     list.Add(field.Parent);
                     break;
                 case ProjectConfig projectConfig:
@@ -61,7 +61,7 @@ namespace Agebull.EntityModel.Designer
             Projects = new List<ProjectConfig>();
             foreach (var entity in list)
             {
-                var project = entity.Parent;
+                var project = entity.Project;
                 if (project == null)
                     continue;
                 if (!Projects.Contains(project))

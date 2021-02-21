@@ -8,7 +8,6 @@
 *****************************************************/
 
 using Newtonsoft.Json;
-using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 
@@ -44,7 +43,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 外部定义
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据模型"), DisplayName(@"外部定义"), Description("外部定义")]
         public bool IsOut
         {
@@ -53,7 +52,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_isOut == value)
                     return;
-                BeforePropertyChanged(nameof(IsOut), _isOut, value);
+                BeforePropertyChange(nameof(IsOut), _isOut, value);
                 _isOut = value;
                 OnPropertyChanged(nameof(IsOut));
             }
@@ -70,7 +69,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否位域
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据模型"), DisplayName(@"是否位域"), Description("是否位域")]
         public bool IsFlagEnum
         {
@@ -79,7 +78,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_isFlagEnum == value)
                     return;
-                BeforePropertyChanged(nameof(IsFlagEnum), _isFlagEnum, value);
+                BeforePropertyChange(nameof(IsFlagEnum), _isFlagEnum, value);
                 _isFlagEnum = value;
                 OnPropertyChanged(nameof(IsFlagEnum));
             }
@@ -88,20 +87,10 @@ namespace Agebull.EntityModel.Config
         #region 设计器支持
 
         /// <summary>
-        /// 遍历子级
-        /// </summary>
-        public override void ForeachChild(Action<ConfigBase> action)
-        {
-            if (_items == null)
-                return;
-            foreach (var item in _items)
-                action(item);
-        }
-        /// <summary>
         /// 枚举节点
         /// </summary>
         [DataMember, JsonProperty("_items", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal NotificationList<EnumItem> _items;
+        internal ConfigCollection<EnumItem> _items;
 
         /// <summary>
         /// 枚举节点
@@ -109,15 +98,15 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 枚举节点
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"枚举节点"), Description("枚举节点")]
-        public NotificationList<EnumItem> Items
+        public ConfigCollection<EnumItem> Items
         {
             get
             {
                 if (_items != null)
                     return _items;
-                _items = new NotificationList<EnumItem>();
+                _items = new ConfigCollection<EnumItem>(this, nameof(Items));
                 RaisePropertyChanged(nameof(Items));
                 return _items;
             }
@@ -125,8 +114,13 @@ namespace Agebull.EntityModel.Config
             {
                 if (_items == value)
                     return;
-                BeforePropertyChanged(nameof(Items), _items, value);
+                BeforePropertyChange(nameof(Items), _items, value);
                 _items = value;
+                if (value != null)
+                {
+                    value.Name = nameof(Items);
+                    value.Parent = this;
+                }
                 OnPropertyChanged(nameof(Items));
             }
         }

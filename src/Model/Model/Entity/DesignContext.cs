@@ -1,10 +1,10 @@
+using Agebull.CodeRefactor.CodeRefactor;
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using Agebull.CodeRefactor.CodeRefactor;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -13,12 +13,13 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     public class DesignContext : DesignModelBase, IGridSelectionBinding
     {
+        #region 设计对象
+
         public static DesignContext Instance { get; set; }
         public DesignContext()
         {
             Instance = this;
         }
-        #region 设计对象
 
         /// <summary>
         ///     当前文件名
@@ -88,7 +89,6 @@ namespace Agebull.EntityModel.Designer
                         var idx = 0;
                         foreach (var item in value)
                             array[idx++] = item;
-                        Editor.PropertyGrid.SelectedObjects = array;
                     }
                     return;
                 }
@@ -108,7 +108,7 @@ namespace Agebull.EntityModel.Designer
             set
             {
                 _selectColumns = value;
-                if(SelectColumns != null && SelectColumns.Count > 0 && SelectColumns[0] is IFieldConfig field)
+                if (SelectColumns != null && SelectColumns.Count > 0 && SelectColumns[0] is IPropertyConfig field)
                 {
                     SelectField = field;
                 }
@@ -138,7 +138,7 @@ namespace Agebull.EntityModel.Designer
         }
 
         private IEntityConfig _selectEntityConfig;
-        private IFieldConfig _selectFieldConfig;
+        private IPropertyConfig _selectFieldConfig;
         private ProjectConfig _selectProjectConfig;
         private IEnumerable _selectItemChildrens;
 
@@ -152,7 +152,7 @@ namespace Agebull.EntityModel.Designer
             get => _selectConfig;
             internal set
             {
-                
+
                 if (_selectConfig == value)
                     return;
                 PreSelectConfig = _selectConfig;
@@ -193,7 +193,7 @@ namespace Agebull.EntityModel.Designer
                     return;
                 _selectEntityConfig = value;
                 if (value != null)
-                    SelectProject = value.Parent;
+                    SelectProject = value.Project;
 
                 RaisePropertyChanged(() => SelectEntity);
                 RaisePropertyChanged(() => SelectModel);
@@ -204,7 +204,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     当前配置
         /// </summary>
-        public IFieldConfig SelectField
+        public IPropertyConfig SelectField
         {
             get => _selectFieldConfig;
             set
@@ -308,7 +308,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     case ProjectConfig project:
                         SelectProject = project;
-                        if (SelectEntity != null && SelectEntity.Parent != project)
+                        if (SelectEntity != null && SelectEntity.Project != project)
                         {
                             SelectEntity = null;
                         }
@@ -325,7 +325,7 @@ namespace Agebull.EntityModel.Designer
                         SelectChildrens = SelectItemChildrens;
                         FindKey = SelectEntity.Option.ReferenceTag;
                         break;
-                    case IFieldConfig field:
+                    case IPropertyConfig field:
                         SelectEntity = field.Parent;
                         SelectField = field;
                         SelectItemChildrens = SelectEntity?.Properties;
@@ -335,7 +335,7 @@ namespace Agebull.EntityModel.Designer
                     case ProjectChildConfigBase child:
                         SelectField = null;
                         SelectEntity = null;
-                        SelectProject = child.Parent;
+                        SelectProject = child.Project;
                         break;
                     case SolutionConfig _:
                         SelectChildrens = Solution.Projects;
@@ -356,8 +356,6 @@ namespace Agebull.EntityModel.Designer
             ConfigBase cfg = item?.Source as ConfigBase;
             SelectTag = item?.Tag;
             SetSelect(cfg);
-            if (Editor.PropertyGrid != null)
-                Editor.PropertyGrid.SelectedObject = SelectConfig;
             RaisePropertyChanged(() => SelectTag);
         }
         public string SelectTag { get; set; }
@@ -385,7 +383,7 @@ namespace Agebull.EntityModel.Designer
                 RaisePropertyChanged(() => SelectRelationTable);
                 RaisePropertyChanged(() => CurrentRelationColumns);
                 if (value != null)
-                    SelectRelationColumn = value.PrimaryColumn;
+                    SelectRelationColumn = value.PrimaryColumn.Field;
             }
         }
 

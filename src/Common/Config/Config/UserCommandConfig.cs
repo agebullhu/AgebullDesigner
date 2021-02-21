@@ -45,7 +45,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 按钮名称
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据模型"), DisplayName(@"按钮名称"), Description("按钮名称")]
         public string Button
         {
@@ -54,7 +54,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_button == value)
                     return;
-                BeforePropertyChanged(nameof(Button), _button, value);
+                BeforePropertyChange(nameof(Button), _button, value);
                 _button = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Button));
             }
@@ -72,7 +72,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 按钮图标
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据模型"), DisplayName(@"按钮图标"), Description("按钮图标")]
         public string Icon
         {
@@ -81,7 +81,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_icon == value)
                     return;
-                BeforePropertyChanged(nameof(Icon), _icon, value);
+                BeforePropertyChange(nameof(Icon), _icon, value);
                 _icon = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Icon));
             }
@@ -104,7 +104,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否本地操作,即在客户端的操作,服务器无接口
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据模型"), DisplayName(@"本地操作"), Description(IsLocalAction_Description)]
         public bool IsLocalAction
         {
@@ -113,7 +113,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_isLocalAction == value)
                     return;
-                BeforePropertyChanged(nameof(IsLocalAction), _isLocalAction, value);
+                BeforePropertyChange(nameof(IsLocalAction), _isLocalAction, value);
                 _isLocalAction = value;
                 OnPropertyChanged(nameof(IsLocalAction));
             }
@@ -128,7 +128,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 多选操作
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据模型"), DisplayName(@"多选")]
         public bool IsMulitOperator
         {
@@ -137,7 +137,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (isMulitOperator == value)
                     return;
-                BeforePropertyChanged(nameof(IsMulitOperator), isMulitOperator, value);
+                BeforePropertyChange(nameof(IsMulitOperator), isMulitOperator, value);
                 isMulitOperator = value;
                 OnPropertyChanged(nameof(IsMulitOperator));
             }
@@ -154,7 +154,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否单对象操作,即操作对象只能是一行数据
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据模型"), DisplayName(@"单选"), Description("是否单对象操作,即操作对象只能是一行数据")]
         public bool IsSingleObject
         {
@@ -163,7 +163,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_isSingleObject == value)
                     return;
-                BeforePropertyChanged(nameof(IsSingleObject), _isSingleObject, value);
+                BeforePropertyChange(nameof(IsSingleObject), _isSingleObject, value);
                 _isSingleObject = value;
                 OnPropertyChanged(nameof(IsSingleObject));
             }
@@ -179,7 +179,7 @@ namespace Agebull.EntityModel.Config
         /// Js方法
         /// </summary>
         /// <remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据模型"), DisplayName(@"Js方法"), Description("Js方法")]
         public string JsMethod
         {
@@ -188,7 +188,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (jsMethod == value)
                     return;
-                BeforePropertyChanged(nameof(JsMethod), jsMethod, value);
+                BeforePropertyChange(nameof(JsMethod), jsMethod, value);
                 jsMethod = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(JsMethod));
             }
@@ -205,7 +205,7 @@ namespace Agebull.EntityModel.Config
         /// 接口名称
         /// </summary>
         /// <remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据模型"), DisplayName(@"接口名称"), Description("接口名称")]
         public string Api
         {
@@ -214,7 +214,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (api == value)
                     return;
-                BeforePropertyChanged(nameof(Api), api, value);
+                BeforePropertyChange(nameof(Api), api, value);
                 api = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Api));
             }
@@ -230,7 +230,7 @@ namespace Agebull.EntityModel.Config
         /// 服务器调用代码
         /// </summary>
         /// <remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据模型"), DisplayName(@"服务器调用代码"), Description("服务器调用代码")]
         public string ServiceCommand
         {
@@ -239,7 +239,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (serviceCommand == value)
                     return;
-                BeforePropertyChanged(nameof(ServiceCommand), serviceCommand, value);
+                BeforePropertyChange(nameof(ServiceCommand), serviceCommand, value);
                 serviceCommand = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(ServiceCommand));
             }

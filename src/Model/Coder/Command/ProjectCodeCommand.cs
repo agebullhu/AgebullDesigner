@@ -1,14 +1,13 @@
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.RobotCoder;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -60,7 +59,6 @@ namespace Agebull.EntityModel.Designer
             return _builder.Validate(project);
         }
 
-
         /// <summary>
         /// 单个检查
         /// </summary>
@@ -93,9 +91,9 @@ namespace Agebull.EntityModel.Designer
         public bool Execute(IEntityConfig model)
         {
             StateMessage = "正在生成" + model.Caption + "...";
-            using (CodeGeneratorScope.CreateScope(model as NotificationObject))
+            using (CodeGeneratorScope.CreateScope(model,false))
             {
-                _builder.CreateModelCode(model.Parent, model);
+                _builder.CreateModelCode(model.Project, model);
             }
             StateMessage = model.Caption + "已完成";
             return true;
@@ -107,7 +105,7 @@ namespace Agebull.EntityModel.Designer
         public bool Execute(ProjectConfig project)
         {
             StateMessage = "正在生成" + project.Caption + "...";
-            using (CodeGeneratorScope.CreateScope(project))
+            using (CodeGeneratorScope.CreateScope(project, false))
             {
                 _builder.CreateProjectCode(project);
             }
@@ -159,7 +157,7 @@ namespace Agebull.EntityModel.Designer
             var item = new AsyncCommandItem<object, bool>(DoPrepare, Doing, End)
             {
                 Source = arg,
-                Image = Application.Current.Resources[IconName ?? "imgDefault"] as ImageSource
+                IconName = IconName
             };
             item.CopyFrom(this);
             return item;
@@ -179,6 +177,8 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
+
+
         /// <summary>
         /// 命令使用的
         /// </summary>
@@ -187,6 +187,7 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         private bool DoPrepare(object args, Action<object> setArgs)
         {
+            GlobalTrigger.Regularize(GlobalConfig.CurrentSolution);
             var argument = new ModelArgument
             {
                 Argument = args ?? GlobalConfig.CurrentConfig
@@ -219,28 +220,25 @@ namespace Agebull.EntityModel.Designer
 
         private bool Doing(object args)
         {
-            using (CodeGeneratorScope.CreateScope(SolutionConfig.Current))
+            var argument = (ModelArgument)args;
+            if (!BeginDo(argument))
+                return false;
+            try
             {
-                var argument = (ModelArgument )args;
-                if (!BeginDo(argument))
-                    return false;
-                try
+                foreach (var model in argument.Models)
                 {
-                    foreach (var model in argument.Models)
-                    {
-                        Execute(model);
-                    }
-                    foreach (var project in argument.Projects)
-                    {
-                        Execute(project);
-                    }
+                    Execute(model);
+                }
+                foreach (var project in argument.Projects)
+                {
+                    Execute(project);
+                }
 
-                    return true;
-                }
-                finally
-                {
-                    EndDo(argument);
-                }
+                return true;
+            }
+            finally
+            {
+                EndDo(argument);
             }
         }
 

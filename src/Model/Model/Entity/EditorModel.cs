@@ -1,33 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Forms;
-using System.Windows.Media;
-using Agebull.Common.Mvvm;
+﻿using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Media;
 using Application = System.Windows.Application;
-using TabControl = System.Windows.Controls.TabControl;
 
 namespace Agebull.EntityModel.Designer
 {
     public class EditorModel : DesignModelBase
     {
         #region 初始化
+        public EditorModel()
+        {
+            ExtendEditorManager = new EditorManager
+            {
+                Model = this
+            };
+        }
 
         public void CreateMenus(DataModelDesignModel model)
         {
             Menus = CreateMenus();
         }
+
         /// <summary>
         ///     初始化
         /// </summary>
         protected override void DoInitialize()
         {
+            Dispatcher = Model.Dispatcher;
             OnPropertyChanged(nameof(Menus));
-            CheckWindow();
+            ExtendEditorManager.CheckEditor();
             Context.PropertyChanged += Context_PropertyChanged;
         }
 
@@ -37,120 +41,31 @@ namespace Agebull.EntityModel.Designer
         public override void OnSolutionChanged()
         {
             SolutionConfig.Current.WorkView = Screen.WorkView;
-            CheckWindow();
+            ExtendEditorManager.CheckEditor();
         }
+
+        private Action checkExtendAction;
+        private Action CheckWindowAction => checkExtendAction ??= ExtendEditorManager.CheckEditor;
+
         #endregion
 
         #region 扩展对象
 
-        /// <summary>
-        /// 扩展对象插入的控件
-        /// </summary>
-        internal TabControl ExtendEditorPanel { get; set; }
+        public EditorManager ExtendEditorManager { get; }
 
-        private Action checkExtendAction;
-        private Action CheckWindowAction => checkExtendAction ??= CheckWindow;
+        /// <summary>
+        /// 菜单
+        /// </summary>
+        public NotificationList<CommandItemBase> ExtendEditors => ExtendEditorManager.ExtendEditors;
 
         private void Context_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Context.SelectConfig))
+            if (e.PropertyName == nameof(Model.Context.SelectConfig))
             {
-                ExtendEditorPanel.Dispatcher.BeginInvoke(CheckWindowAction);
+                Model.Dispatcher.BeginInvoke(CheckWindowAction);
             }
         }
-
-        internal void CheckWindow()
-        {
-            CreateExtendEditor();
-            CheckEditorVisibility();
-        }
-
-        Type extendType;
-        string extendWorkView;
-        List<ExtendViewModelBase> currentViewModel = new List<ExtendViewModelBase>();
-        List<ExtendViewModelBase> friendViewModel = new List<ExtendViewModelBase>();
-        private bool HaseExtend => ExtendEditorPanel.Items.Count > 0;
-        internal void CreateExtendEditor()
-        {
-            if (Context.SelectConfig == null || NowEditor != EditorConfig)
-            {
-                return;
-            }
-            var type = Context.SelectConfig.GetType();
-            if (extendType == type && extendWorkView == WorkView)
-            {
-                foreach (var vm in currentViewModel)
-                    vm.SetContextConfig(Model, Context.SelectConfig);
-                if (Context.SelectConfig.Friend != null)
-                    foreach (var vm in friendViewModel)
-                        vm.SetContextConfig(Model, Context.SelectConfig.Friend);
-                return;
-            }
-            currentViewModel.Clear();
-            friendViewModel.Clear();
-            extendType = type;
-            extendWorkView = WorkView;
-
-            ExtendEditorPanel.Items.Clear();
-            if (DesignerManager.ExtendDictionary.TryGetValue(type, out var exts) && exts.Count != 0)
-            {
-                foreach (var ext in exts.OrderBy(p => p.Value.Index))
-                {
-                    if (WorkView != null && ext.Value.Filter.Count > 0 && !ext.Value.Filter.Contains(WorkView))
-                        continue;
-                    var vm = CreateExtendEditor(ext.Key, ext.Value, Context.SelectConfig);
-                    currentViewModel.Add(vm);
-                }
-            }
-            if (Context.SelectConfig.Friend != null)
-                if (DesignerManager.ExtendDictionary.TryGetValue(Context.SelectConfig.Friend.GetType(), out exts) && exts.Count != 0)
-                {
-                    foreach (var ext in exts.OrderBy(p => p.Value.Index))
-                    {
-                        if (WorkView != null && ext.Value.Filter.Count > 0 && !ext.Value.Filter.Contains(WorkView))
-                            continue;
-                        var vm = CreateExtendEditor(ext.Key, ext.Value, Context.SelectConfig.Friend);
-
-                        friendViewModel.Add(vm);
-                    }
-                }
-            if (ExtendEditorPanel.Items.Count > 0)
-            {
-                Model.Dispatcher.Invoke(() =>
-                {
-                    ExtendEditorPanel.UpdateLayout();
-                    ExtendEditorPanel.SelectedIndex = 0;
-                    ExtendEditorPanel.UpdateLayout();
-                });
-            }
-        }
-        private ExtendViewModelBase CreateExtendEditor(string title, ExtendViewOption option, ConfigBase config)
-        {
-            var editor = option.Create();
-            var vm = (ExtendViewModelBase)editor.DataContext;
-
-            vm.SetContextConfig(Model, config);
-            var item = new TabItem
-            {
-                Header = title,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch
-            };
-            var ext = new ExtendPanel
-            {
-                Child = editor,
-                DataContext = editor.DataContext,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
-            };
-            item.Content = ext;
-            ExtendEditorPanel.Items.Add(item);
-            item.UpdateLayout();
-            return vm;
-        }
-
         #endregion
-
 
         #region 菜单
 
@@ -178,21 +93,20 @@ namespace Agebull.EntityModel.Designer
                     {
                         Action =arg=> Model.ConfigIo.CreateNew(),
                         Caption = "新建",
-                        Image = Application.Current.Resources["img_add"] as ImageSource
+                        IconName  ="新文件"
                     },
                     new CommandItem
                     {
-                        IsButton=true,
                         Action =arg=> Model.ConfigIo.Load(),
                         Caption = "打开",
                         NoConfirm=true,
-                        Image = Application.Current.Resources["img_open"] as ImageSource
+                        IconName  ="文件夹"
                     },
                     new CommandItem
                     {
                         Action =arg=> Model.ConfigIo.ReLoad(),
                         Caption = "重新载入",
-                        Image = Application.Current.Resources["img_redo"] as ImageSource
+                        IconName  ="载入"
                     },
                     CommandItemBase.Line,
                     new CommandItem
@@ -200,14 +114,14 @@ namespace Agebull.EntityModel.Designer
                         Action = arg=>Model.ConfigIo.LoadGlobal(),
                         Caption = "全局",
                         NoConfirm=true,
-                        Image = Application.Current.Resources["img_open"] as ImageSource
+                        IconName  ="地球"
                     },
                     new CommandItem
                     {
                         Action = arg=>Model.ConfigIo.LoadLocal(),
                         Caption = "本地",
                         NoConfirm=true,
-                        Image = Application.Current.Resources["img_open"] as ImageSource
+                        IconName  ="本地"
                     },
                     CommandItemBase.Line,
                     new CommandItem
@@ -216,7 +130,7 @@ namespace Agebull.EntityModel.Designer
                         Caption = "保存实体",
                         SoruceView = "entity",
                         Action = arg=>Model.ConfigIo.SaveEntity(),
-                        IconName = "tree_item"
+                        IconName  ="保存"
                     },
                     new CommandItem
                     {
@@ -224,7 +138,7 @@ namespace Agebull.EntityModel.Designer
                         NoConfirm=true,
                         Action = arg=>Model.ConfigIo.SaveProject(),
                         Caption = "保存项目",
-                        Image = Application.Current.Resources["imgSave"] as ImageSource
+                        IconName  ="保存"
                     },
                     new CommandItem
                     {
@@ -232,14 +146,15 @@ namespace Agebull.EntityModel.Designer
                         NoConfirm=true,
                         Action = arg=>Model.ConfigIo.SaveSolution(),
                         Caption = "保存解决方案",
-                        Image = Application.Current.Resources["imgSave"] as ImageSource
+                        IconName  ="保存"
                     },
                     CommandItemBase.Line,
                     CommandItemBase.Line,
                     new CommandItem
                     {
                         Action = arg=>Application.Current.Shutdown(),
-                        Caption = "退出"
+                        Caption = "退出",
+                        IconName  ="关闭"
                     }
                 }
             };
@@ -247,22 +162,24 @@ namespace Agebull.EntityModel.Designer
             #endregion
             #region 窗口菜单
 
-            WindowMenu = new CommandItem
+            windowMenu = new CommandItem
             {
                 Caption = "窗口",
                 IsRoot = true
             };
-            foreach (var job in RootJobs)
+
+            foreach (var ed in EditorManager.GlobalEditors)
             {
-                var item = new CommandItem<CommandItemBase>
+                var item = new CommandItem<string>
                 {
-                    Action = OnJobSelect,
-                    Caption = job.Key,
-                    IsChecked = job.Key == NowEditor,
-                    IconName = "tree_Child1"
+                    Index = ed.Value.Index,
+                    Source = ed.Key,
+                    Action = ExtendEditorManager.OnEditorSelect,
+                    Caption = ed.Key,
+                    IconName = ed.Value.Icon
                 };
                 item.Source = item;
-                WindowMenu.Items.Add(item);
+                windowMenu.Items.Add(item);
             }
             #endregion
             #region 视角菜单
@@ -275,7 +192,8 @@ namespace Agebull.EntityModel.Designer
             var vitem = new CommandItem<CommandItemBase>
             {
                 Action = OnWorkView,
-                Caption = "专家视角"
+                Caption = "专家视角",
+                IconName = "视角"
             };
             vitem.Source = vitem;
             viewMenu.Items.Add(vitem);
@@ -283,7 +201,8 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = OnWorkView,
                 Caption = "数据库设计",
-                WorkView = "DataBase"
+                WorkView = "DataBase",
+                IconName = "数据库"
             };
             vitem.Source = vitem;
             viewMenu.Items.Add(vitem);
@@ -291,7 +210,8 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = OnWorkView,
                 Caption = "实体设计",
-                WorkView = "Entity"
+                WorkView = "Entity",
+                IconName = "实体"
             };
             vitem.Source = vitem;
             viewMenu.Items.Add(vitem);
@@ -299,15 +219,17 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = OnWorkView,
                 Caption = "模型设计",
-                WorkView = "Model"
+                WorkView = "Model",
+                IconName = "模型"
             };
             vitem.Source = vitem;
             viewMenu.Items.Add(vitem);
             vitem = new CommandItem<CommandItemBase>
             {
                 Action = OnWorkView,
-                Caption = "接口设计",
-                WorkView = "Api"
+                Caption = "用户交互",
+                WorkView = "UI",
+                IconName = "UI"
             };
             vitem.Source = vitem;
             viewMenu.Items.Add(vitem);
@@ -315,9 +237,9 @@ namespace Agebull.EntityModel.Designer
             vitem = new CommandItem<CommandItemBase>
             {
                 Action = OnAdvancedView,
-                Caption = "高级设置",
-                WorkView = "Adv",
-                IsChecked = AdvancedView
+                Caption = "全部属性",
+                IsChecked = AdvancedView,
+                IconName = "全部"
             };
             vitem.Source = vitem;
             viewMenu.Items.Add(vitem);
@@ -327,10 +249,10 @@ namespace Agebull.EntityModel.Designer
             {
                 fileMenu,
                 viewMenu,
-                WindowMenu
+                windowMenu
             };
         }
-
+        internal CommandItem windowMenu;
         private CommandItemBase[] _buttons;
 
 
@@ -346,8 +268,6 @@ namespace Agebull.EntityModel.Designer
                 RaisePropertyChanged(nameof(Buttons));
             }
         }
-
-        public CommandItemBase WindowMenu { get; private set; }
 
         private CommandItemBase viewMenu, fileMenu;
         /// <summary>
@@ -378,7 +298,7 @@ namespace Agebull.EntityModel.Designer
             menus.Insert(3, new CommandItem
             {
                 IsRoot = true,
-                Caption = "其它",
+                Caption = "工具",
                 Items = new NotificationList<CommandItemBase>()
             });
             if (item.Commands == null || item.Commands.Count == 0)
@@ -414,7 +334,7 @@ namespace Agebull.EntityModel.Designer
                         fileMenu.Items.Insert(fileMenu.Items.Count - 2, cmd);
                         continue;
                     case "窗口":
-                        sub = WindowMenu;
+                        sub = windowMenu;
                         break;
                     default:
                         sub = menus.FirstOrDefault(p => p.Caption == cl);
@@ -450,17 +370,6 @@ namespace Agebull.EntityModel.Designer
         }
 
 
-        CommandItemBase preJobItem;
-        public void OnJobSelect(CommandItemBase item)
-        {
-            if (preJobItem != null)
-                preJobItem.IsChecked = false;
-            preJobItem = item;
-            preJobItem.IsChecked = true;
-            Screen.NowEditor = item.Caption;
-            CheckWindow();
-            DataModelDesignModel.SaveUserScreen();
-        }
         #endregion
 
         #region 业务视角
@@ -473,7 +382,7 @@ namespace Agebull.EntityModel.Designer
             _preWorkViewItem = viewItem;
             viewItem.IsChecked = true;
             WorkView = viewItem.WorkView;
-            CheckWindow();
+            ExtendEditorManager.CheckEditor();
             DataModelDesignModel.SaveUserScreen();
         }
 
@@ -485,9 +394,12 @@ namespace Agebull.EntityModel.Designer
             get => SolutionConfig.Current?.WorkView;
             set
             {
-                Screen.WorkView = value;
                 if (SolutionConfig.Current != null)
                     SolutionConfig.Current.WorkView = value;
+                if (Screen.WorkView != value)
+                {
+                    Screen.WorkView = value;
+                }
             }
         }
 
@@ -520,143 +432,18 @@ namespace Agebull.EntityModel.Designer
         #region EditPanel
 
         /// <summary>
-        ///     属性表格
-        /// </summary>
-        internal PropertyGrid PropertyGrid { get; set; }
-
-        /// <summary>
-        ///     可用工作列表
-        /// </summary>
-        internal Dictionary<string, int> RootJobs { get; } = new Dictionary<string, int>
-        {
-            {EditorInfo,0},
-            {EditorConfig,0},
-            {EditorPropertyGrid,0},
-            {EditorCode,0},
-            {EditorTrace,0}
-        };
-
-        public const string EditorInfo = "基本信息";
-        public const string EditorConfig = "对象设计";
-        public const string EditorCode = "代码生成";
-        public const string EditorPropertyGrid = "属性表格";
-        public const string EditorTrace = "跟踪消息";
-
-        /// <summary>
-        /// 当前编辑器
-        /// </summary>
-        public string NowEditor => Screen.NowEditor ?? EditorPropertyGrid;
-
-        /// <summary>
         /// 临时显示跟踪窗口
         /// </summary>
         public void ShowTrace()
         {
-            ExtendPanelVisibility = Visibility.Collapsed;
-            ConfigFormVisibility = Visibility.Collapsed;
-            CodePanelVisibility = Visibility.Collapsed;
-            TracePanelVisibility = Visibility.Visible;
-            PropertyPageVisibility = Visibility.Collapsed;
-            RaisePropertyChanged(nameof(ExtendPanelVisibility));
-            RaisePropertyChanged(nameof(ConfigFormVisibility));
-            RaisePropertyChanged(nameof(CodePanelVisibility));
-            RaisePropertyChanged(nameof(TracePanelVisibility));
-            RaisePropertyChanged(nameof(PropertyPageVisibility));
+            ExtendEditorManager.OnEditorSelect("跟踪信息");
         }
         /// <summary>
         /// 临时显示代码窗口
         /// </summary>
         public void ShowCode()
         {
-            ExtendPanelVisibility = Visibility.Collapsed;
-            ConfigFormVisibility = Visibility.Collapsed;
-            CodePanelVisibility = Visibility.Visible;
-            TracePanelVisibility = Visibility.Collapsed;
-            PropertyPageVisibility = Visibility.Collapsed;
-            RaisePropertyChanged(nameof(ExtendPanelVisibility));
-            RaisePropertyChanged(nameof(ConfigFormVisibility));
-            RaisePropertyChanged(nameof(CodePanelVisibility));
-            RaisePropertyChanged(nameof(TracePanelVisibility));
-            RaisePropertyChanged(nameof(PropertyPageVisibility));
-        }
-        public Visibility ExtendPanelVisibility { get; set; } = Visibility.Collapsed;
-        public Visibility ConfigFormVisibility { get; set; } = Visibility.Collapsed;
-        public Visibility CodePanelVisibility { get; set; } = Visibility.Collapsed;
-        public Visibility TracePanelVisibility { get; set; } = Visibility.Collapsed;
-        public Visibility PropertyPageVisibility { get; set; } = Visibility.Collapsed;
-
-
-        internal void CheckEditorVisibility()
-        {
-            if (WindowMenu != null)
-            {
-                var item = WindowMenu.Items.FirstOrDefault(p => string.Equals(p.Caption, NowEditor, StringComparison.OrdinalIgnoreCase));
-                if (item != null && preJobItem != item)
-                {
-                    item.IsChecked = true;
-                    if (preJobItem != null)
-                        preJobItem.IsChecked = false;
-                    preJobItem = item;
-                }
-
-            }
-            if (viewMenu != null)
-            {
-                var item = viewMenu.Items.FirstOrDefault(p => string.Equals(p.Catalog, WorkView, StringComparison.OrdinalIgnoreCase));
-                if (item != null && _preWorkViewItem != item)
-                {
-                    item.IsChecked = true;
-                    if (_preWorkViewItem != null)
-                        _preWorkViewItem.IsChecked = false;
-                    _preWorkViewItem = item;
-                }
-
-            }
-            switch (NowEditor)
-            {
-                case EditorInfo:
-                    ExtendPanelVisibility = Visibility.Collapsed;
-                    ConfigFormVisibility = Visibility.Visible;
-                    CodePanelVisibility = Visibility.Collapsed;
-                    TracePanelVisibility = Visibility.Collapsed;
-                    PropertyPageVisibility = Visibility.Collapsed;
-                    break;
-                case EditorCode:
-                    ExtendPanelVisibility = Visibility.Collapsed;
-                    ConfigFormVisibility = Visibility.Collapsed;
-                    CodePanelVisibility = Visibility.Visible;
-                    TracePanelVisibility = Visibility.Collapsed;
-                    PropertyPageVisibility = Visibility.Collapsed;
-                    break;
-                case EditorPropertyGrid:
-                    ExtendPanelVisibility = Visibility.Collapsed;
-                    ConfigFormVisibility = Visibility.Collapsed;
-                    CodePanelVisibility = Visibility.Collapsed;
-                    TracePanelVisibility = Visibility.Collapsed;
-                    PropertyPageVisibility = Visibility.Visible;
-                    break;
-                case EditorTrace:
-                    ExtendPanelVisibility = Visibility.Collapsed;
-                    ConfigFormVisibility = Visibility.Collapsed;
-                    CodePanelVisibility = Visibility.Collapsed;
-                    TracePanelVisibility = Visibility.Visible;
-                    PropertyPageVisibility = Visibility.Collapsed;
-                    break;
-                case EditorConfig:
-                    ExtendPanelVisibility = HaseExtend ? Visibility.Visible : Visibility.Collapsed;
-                    ConfigFormVisibility = HaseExtend ? Visibility.Collapsed : Visibility.Visible;
-                    CodePanelVisibility = Visibility.Collapsed;
-                    TracePanelVisibility = Visibility.Collapsed;
-                    PropertyPageVisibility = Visibility.Collapsed;
-                    break;
-                default:
-                    return;
-            }
-            RaisePropertyChanged(nameof(ExtendPanelVisibility));
-            RaisePropertyChanged(nameof(ConfigFormVisibility));
-            RaisePropertyChanged(nameof(CodePanelVisibility));
-            RaisePropertyChanged(nameof(TracePanelVisibility));
-            RaisePropertyChanged(nameof(PropertyPageVisibility));
+            ExtendEditorManager.OnEditorSelect("代码生成");
         }
 
         #endregion

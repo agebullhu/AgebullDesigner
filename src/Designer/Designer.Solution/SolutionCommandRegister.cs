@@ -28,8 +28,8 @@ namespace Agebull.EntityModel.Designer
         void IAutoRegister.AutoRegist()
         {
             WordMapModel.Reload();
-            DesignerManager.Registe<SolutionConfig, DataTypePanel>("类型映射");
-            DesignerManager.Registe<SolutionConfig, WordMapPanel>("数据字典");
+            EditorManager.Registe2<SolutionConfig, DataTypePanel>("类型映射", "类型");
+            EditorManager.Registe2<SolutionConfig, WordMapPanel>("数据字典", "类型");
         }
     }
 }

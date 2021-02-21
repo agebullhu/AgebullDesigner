@@ -1,5 +1,5 @@
-﻿using System;
-using Agebull.EntityModel.Config;
+﻿using Agebull.EntityModel.Config;
+using System;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -11,18 +11,18 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 新增实体的方法(UI后期实现)
         /// </summary>
-        public static Func<EntityConfig,bool> EditEntityCommand;
+        public static Func<EntityConfig, bool> EditEntityCommand;
         /// <summary>
         /// 新增多个字段的方法(UI后期实现)
         /// </summary>
         public static Func<EntityConfig, bool> AddFieldsCommand;
-        
+
         /// <summary>
         /// 生成新配置
         /// </summary>
         /// <returns></returns>
         public static Func<string, ConfigBase, bool> NewConfigCommand;
-        
+
     }
 
 }

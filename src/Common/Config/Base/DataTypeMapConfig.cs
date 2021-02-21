@@ -305,7 +305,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 文本或二进制存储的最大长度
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据库"), DisplayName(@"数据长度"), Description("文本或二进制存储的最大长度")]
         public int Datalen
         {
@@ -314,7 +314,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_datalen == value)
                     return;
-                BeforePropertyChanged(nameof(Datalen), _datalen, value);
+                BeforePropertyChange(nameof(Datalen), _datalen, value);
                 _datalen = value;
                 OnPropertyChanged(nameof(Datalen));
             }
@@ -331,7 +331,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 存储精度
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据库"), DisplayName(@"存储精度"), Description("存储精度")]
         public int Scale
         {
@@ -340,7 +340,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_scale == value)
                     return;
-                BeforePropertyChanged(nameof(Scale), _scale, value);
+                BeforePropertyChange(nameof(Scale), _scale, value);
                 _scale = value;
                 OnPropertyChanged(nameof(Scale));
             }
@@ -358,7 +358,6 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         ///     C#
         /// </remark>
-        [IgnoreDataMember]
         [JsonIgnore]
         [Category("语言")]
         [DisplayName("C#")]
@@ -369,7 +368,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_csharp == value)
                     return;
-                BeforePropertyChanged(nameof(CSharp), _csharp, value);
+                BeforePropertyChange(nameof(CSharp), _csharp, value);
                 _csharp = value;
                 OnPropertyChanged(nameof(CSharp));
             }
@@ -388,7 +387,6 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         ///     C++
         /// </remark>
-        [IgnoreDataMember]
         [JsonIgnore]
         [Category("语言")]
         [DisplayName("C++")]
@@ -399,7 +397,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_cpp == value)
                     return;
-                BeforePropertyChanged(nameof(Cpp), _cpp, value);
+                BeforePropertyChange(nameof(Cpp), _cpp, value);
                 _cpp = value;
                 OnPropertyChanged(nameof(Cpp));
             }
@@ -419,7 +417,6 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         ///     Java
         /// </remark>
-        [IgnoreDataMember]
         [JsonIgnore]
         [Category("语言")]
         [DisplayName("Java")]
@@ -430,7 +427,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_java == value)
                     return;
-                BeforePropertyChanged(nameof(Java), _java, value);
+                BeforePropertyChange(nameof(Java), _java, value);
                 _java = value;
                 OnPropertyChanged(nameof(Java));
             }
@@ -449,7 +446,6 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         ///     Golang
         /// </remark>
-        [IgnoreDataMember]
         [JsonIgnore]
         [Category("语言")]
         [DisplayName("Golang")]
@@ -460,7 +456,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_golang == value)
                     return;
-                BeforePropertyChanged(nameof(Golang), _golang, value);
+                BeforePropertyChange(nameof(Golang), _golang, value);
                 _golang = value;
                 OnPropertyChanged(nameof(Golang));
             }
@@ -479,7 +475,6 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         ///     MySql
         /// </remark>
-        [IgnoreDataMember]
         [JsonIgnore]
         [Category("语言")]
         [DisplayName("MySql")]
@@ -490,7 +485,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_mysql == value)
                     return;
-                BeforePropertyChanged(nameof(MySql), _mysql, value);
+                BeforePropertyChange(nameof(MySql), _mysql, value);
                 _mysql = value;
                 OnPropertyChanged(nameof(MySql));
             }
@@ -509,7 +504,6 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         ///     SqlServer
         /// </remark>
-        [IgnoreDataMember]
         [JsonIgnore]
         [Category("语言")]
         [DisplayName("SqlServer")]
@@ -520,7 +514,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_sqlServer == value)
                     return;
-                BeforePropertyChanged(nameof(SqlServer), _sqlServer, value);
+                BeforePropertyChange(nameof(SqlServer), _sqlServer, value);
                 _sqlServer = value;
                 OnPropertyChanged(nameof(SqlServer));
             }
@@ -539,7 +533,6 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         ///     Oracle
         /// </remark>
-        [IgnoreDataMember]
         [JsonIgnore]
         [Category("语言")]
         [DisplayName("Oracle")]
@@ -550,7 +543,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_oracle == value)
                     return;
-                BeforePropertyChanged(nameof(Oracle), _oracle, value);
+                BeforePropertyChange(nameof(Oracle), _oracle, value);
                 _oracle = value;
                 OnPropertyChanged(nameof(Oracle));
             }
@@ -568,7 +561,6 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         ///     Oracle
         /// </remark>
-        [IgnoreDataMember]
         [JsonIgnore]
         [Category("语言")]
         [DisplayName("Oracle")]
@@ -579,7 +571,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_sqlite == value)
                     return;
-                BeforePropertyChanged(nameof(Sqlite), _sqlite, value);
+                BeforePropertyChange(nameof(Sqlite), _sqlite, value);
                 _sqlite = value;
                 OnPropertyChanged(nameof(Sqlite));
             }
@@ -599,7 +591,6 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         ///     JavaScript
         /// </remark>
-        [IgnoreDataMember]
         [JsonIgnore]
         [Category("语言")]
         [DisplayName("JavaScript")]
@@ -610,7 +601,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_js == value)
                     return;
-                BeforePropertyChanged(nameof(JavaScript), _js, value);
+                BeforePropertyChange(nameof(JavaScript), _js, value);
                 _js = value;
                 OnPropertyChanged(nameof(JavaScript));
             }

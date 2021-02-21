@@ -1,8 +1,7 @@
-using System.ComponentModel.Composition;
-using Agebull.EntityModel;
-using Agebull.EntityModel.Designer;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Designer;
 using Agebull.EntityModel.Designer.View;
+using System.ComponentModel.Composition;
 
 namespace Agebull.Common.Config.Designer.EasyUi
 {
@@ -18,8 +17,7 @@ namespace Agebull.Common.Config.Designer.EasyUi
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            DesignerManager.Registe<EnumConfig, EnumEdit>("±à¼­Ã¶¾Ù");
+            EditorManager.Registe2<EnumConfig, EnumEdit>("±à¼­Ã¶¾Ù", "Ã¶¾Ù");
         }
-
     }
 }

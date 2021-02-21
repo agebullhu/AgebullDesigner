@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿using Agebull.EntityModel.Config;
+using System.Linq;
 using System.Text;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -254,7 +254,7 @@ namespace Agebull.EntityModel.RobotCoder
             code.AppendLine(@"
         }");
         }
-        private string ConvertCode(IFieldConfig column, string arg)
+        private string ConvertCode(IPropertyConfig column, string arg)
         {
             switch (column.CsType)
             {

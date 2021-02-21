@@ -1,5 +1,4 @@
-﻿using Agebull.Common;
-using Agebull.Common.Mvvm;
+﻿using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
 using System;
 using System.Collections.Generic;
@@ -10,7 +9,7 @@ using System.Windows.Media;
 
 namespace Agebull.EntityModel.Designer
 {
-    internal class RelationViewModel : ExtendViewModelBase<ModelRelationDesignModel>
+    internal class RelationViewModel : EditorViewModelBase<ModelRelationDesignModel>
     {
         public RelationViewModel()
         {
@@ -43,7 +42,7 @@ namespace Agebull.EntityModel.Designer
                 Action = AddColumns,
                 NoConfirm = true,
                 Caption = "增加行",
-                Image = Application.Current.Resources["tree_add"] as ImageSource
+                IconName = "新增"
             });
             commands.Add(new CommandItem
             {
@@ -51,7 +50,7 @@ namespace Agebull.EntityModel.Designer
                 Action = RelationDiscovery,
                 NoConfirm = true,
                 Caption = "向下关系发现",
-                Image = Application.Current.Resources["tree_item"] as ImageSource
+                IconName = "向下"
             });
             commands.Add(new CommandItem
             {
@@ -59,7 +58,7 @@ namespace Agebull.EntityModel.Designer
                 Action = LinkDiscovery,
                 NoConfirm = true,
                 Caption = "向上关系发现",
-                Image = Application.Current.Resources["tree_item"] as ImageSource
+                IconName = "向上"
             });
             commands.Add(new CommandItem
             {
@@ -67,14 +66,14 @@ namespace Agebull.EntityModel.Designer
                 Action = PasteColumns,
                 NoConfirm = true,
                 Caption = "粘贴关系",
-                Image = Application.Current.Resources["tree_item"] as ImageSource
+                IconName = "粘贴"
             });
             commands.Add(new CommandItem
             {
                 IsButton = true,
                 Action = DeleteColumns,
                 Caption = "删除行",
-                Image = Application.Current.Resources["img_del"] as ImageSource
+                IconName = "删除"
             });
             base.CreateCommands(commands);
         }
@@ -141,11 +140,11 @@ namespace Agebull.EntityModel.Designer
         public void LinkDiscovery(object arg)
         {
             var model = Context.SelectModel;
-            foreach (var field in model.Properties.Where(p => p.IsLinkKey))
+            foreach (var field in model.Where(p => p.DataBaseField.IsLinkKey))
             {
-                if (model.Releations.Any(p => p.PrimaryTable == field.LinkTable))
+                if (model.Releations.Any(p => p.PrimaryTable == field.DataBaseField.LinkTable))
                     return;
-                var parent = GlobalConfig.GetEntity(field.LinkTable);
+                var parent = GlobalConfig.GetEntity(field.DataBaseField.LinkTable);
                 model.Releations.Add(new ReleationConfig
                 {
                     Name = parent.Name,
@@ -165,19 +164,19 @@ namespace Agebull.EntityModel.Designer
             var model = Context.SelectModel;
             SolutionConfig.Current.Foreach<FieldConfig>(field =>
             {
-                if (!field.IsLinkKey || !model.Entity.Name.Equals(field.LinkTable, StringComparison.OrdinalIgnoreCase))
+                if (field.NoStorage || !field.DataBaseField.IsLinkKey || !model.Entity.Name.Equals(field.DataBaseField.LinkTable, StringComparison.OrdinalIgnoreCase))
                 {
                     return;
                 }
-                if (model.Releations.Any(p => p.ForeignTable == field.Parent.Name && p.ForeignKey == field.Name))
+                if (model.Releations.Any(p => p.ForeignTable == field.Entity.Name && p.ForeignKey == field.Name))
                     return;
                 model.Releations.Add(new ReleationConfig
                 {
-                    Name = field.Parent.Name,
-                    Caption = field.Parent.Caption,
+                    Name = field.Entity.Name,
+                    Caption = field.Entity.Caption,
                     PrimaryTable = model.Name,
                     PrimaryKey = model.Entity.PrimaryColumn.Name,
-                    ForeignTable = field.Parent.Name,
+                    ForeignTable = field.Entity.Name,
                     ForeignKey = field.Name,
                     JoinType = EntityJoinType.none,
                     ModelType = ReleationModelType.Custom
@@ -191,7 +190,7 @@ namespace Agebull.EntityModel.Designer
                 return;
             foreach (var field in model.Entity.Properties)
             {
-                var pro = model.Properties.FirstOrDefault(p => p.Field == field);
+                var pro = model.Find(p => p.Field == field);
                 if (pro != null)
                 {
                     continue;
@@ -219,68 +218,68 @@ namespace Agebull.EntityModel.Designer
 
             if (!join)
             {
-                foreach (var pro in model.Properties.Where(p => p.Entity == entity).ToArray())
+                foreach (var pro in model.Where(p => p.Entity == entity).ToArray())
                 {
                     model.Properties.Remove(pro);
                 }
                 return;
             }
-            foreach (var field in entity.Properties)
+            foreach (var property in entity.Properties)
             {
-                if (field.IsPrimaryKey && model.Properties.Any(p => p.IsLinkKey && p.LinkTable == entity.Name))
+                if (property.IsPrimaryKey && model.DataTable.Any(p => p.IsLinkKey && p.LinkTable == entity.Name))
                     continue;
 
-                var pro = model.Properties.FirstOrDefault(p => p.Field == field);
+                var modelProperty = model.Find(p => p.Field == property);
 
-                if (pro != null)
+                if (modelProperty != null)
                     continue;
-                pro = new PropertyConfig
+                modelProperty = new PropertyConfig
                 {
-                    Field = field
+                    Field = property
                 };
-                pro.Option.IsDiscard = true;
-                var name = field.Name;
-                if (field.IsPrimaryKey || model.Properties.Any(p => p.Name == name))
+                modelProperty.Option.IsDiscard = true;
+                var name = property.Name;
+                if (property.IsPrimaryKey || model.Properties.Any(p => p.Name == name))
                 {
-                    name = $"{entity.Name}{field.Name}";
+                    name = $"{entity.Name}{property.Name}";
                 }
                 var count = model.Properties.Count(p => p.Name == name);
                 if (count > 0)
                 {
-                    name = $"{entity.Name}{field.Name}{count}";
+                    name = $"{entity.Name}{property.Name}{count}";
                 }
-                if (pro.Name != name)
-                    pro.Name = name;
+                if (modelProperty.Name != name)
+                    modelProperty.Name = name;
 
                 var prefix = GlobalConfig.ToLinkWordName(entity.Name, "_", false);
-                name = field.DbFieldName;
-                if (field.IsPrimaryKey || model.Properties.Any(p => p.DbFieldName == name))
+                name = property.DataBaseField.DbFieldName;
+                if (property.IsPrimaryKey || model.DataTable.Any(p => p.DbFieldName == name))
                 {
                     name = $"{prefix}_{name}";
                 }
-                count = model.Properties.Count(p => p.DbFieldName == name);
+                count = model.DataTable.Fields.Count(p => p.DbFieldName == name);
                 if (count > 0)
                 {
                     name = $"{prefix}_{name}_{count}";
                 }
-                if (pro.DbFieldName != name)
-                    pro.DbFieldName = name;
+                if (property.DataBaseField.DbFieldName != name)
+                    property.DataBaseField.DbFieldName = name;
 
                 prefix = entity.Name.ToLWord();
-                name = field.Name.ToLWord();
-                if (field.IsPrimaryKey || model.Properties.Any(p => p.JsonName == name))
+                name = property.Name.ToLWord();
+                if (property.IsPrimaryKey || model.Properties.Any(p => p.JsonName == name))
                 {
-                    name = $"{prefix}{field.Name}";
+                    name = $"{prefix}{property.Name}";
                 }
                 count = model.Properties.Count(p => p.JsonName == name);
                 if (count > 0)
                 {
                     name = $"{prefix}_{name}_{count}";
                 }
-                if (pro.JsonName != name)
-                    pro.JsonName = name;
+                if (modelProperty.JsonName != name)
+                    modelProperty.JsonName = name;
 
-                model.Properties.Add(pro);
+                model.Properties.Add(modelProperty);
             }
         }
         #endregion

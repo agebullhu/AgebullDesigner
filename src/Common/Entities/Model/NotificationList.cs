@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
+using System.Threading;
 
 #endregion
 
@@ -125,6 +127,39 @@ namespace Agebull.EntityModel
                 Add(obj);
         }
 
+        long lockEvent;
+        public void BeginLockEvent()
+        {
+            Interlocked.Increment(ref lockEvent);
+        }
+        public void EndLockEvent()
+        {
+            if (Interlocked.Decrement(ref lockEvent) <= 0)
+            {
+                lockEvent = 0;
+                OnPropertyChanged(nameof(Count));
+                OnPropertyChanged(IndexerName);
+                OnCollectionReset();
+            }
+        }
+
+        public void Sort(Func<IEnumerable<T>, IEnumerable<T>> func)
+        {
+            if (Count == 0)
+                return;
+            BeginLockEvent();
+            try
+            {
+                var old = this.ToArray();
+                Clear();
+                AddRange(func(old));
+            }
+            finally
+            {
+                EndLockEvent();
+            }
+        }
+
         public void AddRange(IEnumerable<T> collection)
         {
             if (collection == null)
@@ -133,25 +168,6 @@ namespace Agebull.EntityModel
                 Add(obj);
         }
 
-        /// <summary>
-        ///    在集合中加入
-        /// </summary>
-        /// <param name="item">节点</param>
-        /// <returns>false表示之前已存在集合中，true表示新加入集合</returns>
-        public void DoAdd(T item)
-        {
-            base.Add(item);
-        }
-
-        /// <summary>
-        ///     在集合中加入
-        /// </summary>
-        /// <param name="item">节点</param>
-        /// <returns>false表示之前已存在集合中，true表示新加入集合</returns>
-        public new void Add(T item)
-        {
-            base.Add(item);
-        }
         /// <summary>
         ///     如果不在集合中就加入
         /// </summary>
@@ -164,6 +180,41 @@ namespace Agebull.EntityModel
             Add(item);
             return true;
         }
+
+        /*// <summary>
+        ///     加入
+        /// </summary>
+        /// <param name="item">节点</param>
+        protected virtual void OnAdd(T item)
+        {
+        }
+
+        /// <summary>
+        ///     加入
+        /// </summary>
+        /// <param name="item">节点</param>
+        protected virtual void OnRemove(T item)
+        {
+        }
+
+        /// <summary>
+        ///     加入
+        /// </summary>
+        /// <param name="item">节点</param>
+        public new void Add(T item)
+        {
+            OnAdd(item);
+            base.Add(item);
+        }
+        /// <summary>
+        ///     加入
+        /// </summary>
+        /// <param name="item">节点</param>
+        public new void Remove(T item)
+        {
+            OnRemove(item);
+            base.Remove(item);
+        }*/
 
         /// <summary>将指定索引处的项移动到集合中的新位置。</summary>
         /// <param name="oldIndex">从零开始的索引，指定项的新位置。</param>
@@ -293,27 +344,36 @@ namespace Agebull.EntityModel
 
         private void OnPropertyChanged(string propertyName)
         {
+            if (Interlocked.Read(ref lockEvent) > 0)
+                return;
             OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
         }
 
         private void OnCollectionChanged(NotifyCollectionChangedAction action, object item, int index)
         {
+            if (Interlocked.Read(ref lockEvent) > 0)
+                return;
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(action, item, index));
         }
 
         private void OnCollectionChanged(NotifyCollectionChangedAction action, object item, int index, int oldIndex)
         {
+            if (Interlocked.Read(ref lockEvent) > 0)
+                return;
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(action, item, index, oldIndex));
         }
 
-        private void OnCollectionChanged(NotifyCollectionChangedAction action, object oldItem, object newItem,
-            int index)
+        private void OnCollectionChanged(NotifyCollectionChangedAction action, object oldItem, object newItem, int index)
         {
+            if (Interlocked.Read(ref lockEvent) > 0)
+                return;
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(action, newItem, oldItem, index));
         }
 
         private void OnCollectionReset()
         {
+            if (Interlocked.Read(ref lockEvent) > 0)
+                return;
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 

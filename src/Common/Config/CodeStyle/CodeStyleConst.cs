@@ -1,7 +1,4 @@
-﻿using Agebull.EntityModel.Common;
-using System.Collections.Generic;
-
-namespace Agebull.EntityModel.Config
+﻿namespace Agebull.EntityModel.Config
 {
     /// <summary>
     /// 代码风格常量

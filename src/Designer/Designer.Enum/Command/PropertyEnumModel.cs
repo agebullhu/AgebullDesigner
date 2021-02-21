@@ -1,13 +1,11 @@
-﻿using System;
+﻿using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Designer.NewConfig;
-using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -32,7 +30,7 @@ namespace Agebull.EntityModel.Designer
                 ConfirmMessage = "确认执行【识别枚举】操作吗?\n形如【类型，1操作，2返回，3未知样式】的说明文字",
                 SoruceView = "entity",
                 SignleSoruce = false,
-                IconName = "tree_item"
+                IconName = "枚举"
             });
             commands.Add(new CommandItemBuilder<FieldConfig>
             {
@@ -42,9 +40,9 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity",
                 TargetType = type,
                 Caption = "刷新枚举引用",
-                IconName = "tree_item"
+                IconName = "引用"
             });
-            commands.Add(new CommandItemBuilder<IFieldConfig>
+            commands.Add(new CommandItemBuilder<IPropertyConfig>
             {
                 Catalog = "枚举",
                 NoConfirm = true,
@@ -53,9 +51,9 @@ namespace Agebull.EntityModel.Designer
                 Caption = "绑定或新增枚举",
                 SoruceView = "field",
                 SignleSoruce = true,
-                IconName = "tree_item"
+                IconName = "新增"
             });
-            commands.Add(new CommandItemBuilder<IFieldConfig>
+            commands.Add(new CommandItemBuilder<IPropertyConfig>
             {
                 Catalog = "枚举",
                 SoruceView = "entity",
@@ -63,11 +61,11 @@ namespace Agebull.EntityModel.Designer
                 TargetType = type,
                 Caption = "清除枚举绑定",
                 SignleSoruce = true,
-                IconName = "tree_item"
+                IconName = "清除"
             });
         }
 
-        public void BindEnum(IFieldConfig property)
+        public void BindEnum(IPropertyConfig property)
         {
             property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
             if (property.EnumConfig != null)
@@ -79,11 +77,11 @@ namespace Agebull.EntityModel.Designer
                 Name = property.CustomType ?? (property.Name.Contains("Type") ? property.Name : property.Name + "Type"),
                 Caption = property.Caption + "类型"
             };
-            property.Entity.Parent.Add(enumConfig);
+            property.Entity.Project.Add(enumConfig);
             property.EnumConfig = enumConfig;
         }
 
-        public void CheckEnum(IFieldConfig property)
+        public void CheckEnum(IPropertyConfig property)
         {
             property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
         }
@@ -91,7 +89,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 删除枚举
         /// </summary>
-        public void DeleteEnum(IFieldConfig property)
+        public void DeleteEnum(IPropertyConfig property)
         {
             property.CustomType = null;
         }
@@ -129,8 +127,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     Name = name,
                     Description = desc,
-                    Caption = column.Caption,
-                    Items = new ConfigCollection<EnumItem>()
+                    Caption = column.Caption
                 };
             }
             else
@@ -220,7 +217,7 @@ namespace Agebull.EntityModel.Designer
             if (ec.Items.Count > 1)
             {
                 if (isNew)
-                    column.Entity.Parent.Add(ec);
+                    column.Entity.Project.Add(ec);
 
                 ec.Option.ReferenceKey = column.Option.Key;
                 column.EnumConfig = ec;

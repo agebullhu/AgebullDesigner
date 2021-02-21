@@ -1,0 +1,32 @@
+﻿<UserControl x:Class="Agebull.EntityModel.Designer.EditorPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <DockPanel Background="#f5f6f7" Margin="0">
+        <Border BorderBrush="Silver" BorderThickness="0,0,0,1" DockPanel.Dock="Top">
+            <DockPanel>
+                <Menu Background="#f5f6f7" DockPanel.Dock="Right">
+                    <MenuItem DataContext="{Binding Menus}"/>
+                </Menu>
+                <ItemsControl VerticalAlignment="Stretch"
+                          HorizontalAlignment="Stretch"
+                          ItemsSource="{Binding Buttons}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Style="{StaticResource CommandButton}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </DockPanel>
+        </Border>
+        <Border x:Name="editor"/>
+    </DockPanel>
+</UserControl>

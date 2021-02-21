@@ -5,6 +5,7 @@
     /// </summary>
     public interface IDesignGlobal
     {
+        void Clear();
         /// <summary>
         ///     状态消息
         /// </summary>

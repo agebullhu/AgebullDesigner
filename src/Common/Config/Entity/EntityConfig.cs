@@ -21,48 +21,19 @@ namespace Agebull.EntityModel.Config
     /// 实体配置
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public partial class EntityConfig : ProjectChildConfigBase, IEntityConfig
+    public partial class EntityConfig : EntityConfigBase, IEntityConfig
     {
         #region 系统
-        /// <summary>
-        /// 构造
-        /// </summary>
-        public EntityConfig()
-        {
-            _desingSwitch = 0xFFFF;
-        }
-
         /// <summary>
         /// 阻止使用的范围
         /// </summary>
         EntityConfig IEntityConfig.Entity => this;
 
         /// <summary>
-        /// 最大字段标识号
+        /// 类型
         /// </summary>
-        [DataMember, JsonProperty("MaxIdentity", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal int _maxIdentity;
+        public string Type => "entity";
 
-        /// <summary>
-        /// 最大字段标识号
-        /// </summary>
-        /// <remark>
-        /// 最大字段标识号
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"系统"), DisplayName(@"最大字段标识号"), Description("最大字段标识号")]
-        public int MaxIdentity
-        {
-            get => _maxIdentity;
-            set
-            {
-                if (_maxIdentity == value)
-                    return;
-                BeforePropertyChanged(nameof(MaxIdentity), _maxIdentity, value);
-                _maxIdentity = value;
-                OnPropertyChanged(nameof(MaxIdentity));
-            }
-        }
         #endregion
 
         #region 数据标识
@@ -73,7 +44,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否存在属性组合唯一值
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"是否存在属性组合唯一值"), Description("是否存在属性组合唯一值")]
         public bool IsUniqueUnion => Properties.Count > 0 && Properties.Any(p => p.UniqueIndex);
 
@@ -84,30 +55,30 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 主键字段
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"主键字段"), Description("主键字段")]
-        public FieldConfig PrimaryColumn => WorkContext.InCoderGenerating
-            ? Properties.FirstOrDefault(p => p.IsPrimaryKey && p.Entity == this) ?? Properties.FirstOrDefault()
-            : Properties.FirstOrDefault(p => p.IsPrimaryKey && p.Entity == this);
+        public IPropertyConfig PrimaryColumn => WorkContext.InCoderGenerating
+            ? Find(p => p.IsPrimaryKey && p.Entity == this) ?? Find()
+            : Find(p => p.IsPrimaryKey && p.Entity == this);
 
         /// <summary>
         /// 标题字段
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"标题字段"), Description("标题字段")]
-        public IFieldConfig CaptionColumn => Properties.FirstOrDefault(p => p.IsCaption && p.Entity == this);
+        public IPropertyConfig CaptionColumn => Find(p => p.IsCaption && p.Entity == this);
 
         /// <summary>
         /// 标题字段
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"标题字段"), Description("标题字段")]
-        public IFieldConfig ParentColumn => Properties.FirstOrDefault(p => p.IsParent && p.Entity == this);
+        public IPropertyConfig ParentColumn => Find(p => p.IsParent && p.Entity == this);
 
         /// <summary>
         /// 是否有主键
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"是否有主键"), Description("是否有主键")]
         public bool HasePrimaryKey => Properties.Any(p => p.IsPrimaryKey && p.Entity == this);
 
@@ -117,8 +88,8 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 主键字段
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        IFieldConfig IEntityConfig.PrimaryColumn => PrimaryColumn;
+        [JsonIgnore]
+        IPropertyConfig IEntityConfig.PrimaryColumn => PrimaryColumn;
 
         /// <summary>
         /// 主键字段
@@ -126,7 +97,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 主键字段
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"主键字段"), Description("主键字段")]
         public string PrimaryField => PrimaryColumn?.Name;
 
@@ -142,7 +113,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 保存在Redis中使用的键模板
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"Redis唯一键模板"), Description("保存在Redis中使用的键模板")]
         public string RedisKey
         {
@@ -151,7 +122,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_redisKey == value)
                     return;
-                BeforePropertyChanged(nameof(RedisKey), _redisKey, value);
+                BeforePropertyChange(nameof(RedisKey), _redisKey, value);
                 _redisKey = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(RedisKey));
             }
@@ -169,7 +140,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 是否关联表
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"是否关联表")]
         public bool IsLinkTable
         {
@@ -178,35 +149,12 @@ namespace Agebull.EntityModel.Config
             {
                 if (_isLinkTable == value)
                     return;
-                BeforePropertyChanged(nameof(IsLinkTable), _isLinkTable, value);
+                BeforePropertyChange(nameof(IsLinkTable), _isLinkTable, value);
                 _isLinkTable = value;
                 OnPropertyChanged(nameof(IsLinkTable));
             }
         }
 
-        /// <summary>
-        /// 是否查询
-        /// </summary>
-        [DataMember, JsonProperty("isQuery", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isQuery;
-
-        /// <summary>
-        /// 是否查询
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据标识"), DisplayName(@"是否查询")]
-        public bool IsQuery
-        {
-            get => _isQuery;
-            set
-            {
-                if (_isQuery == value)
-                    return;
-                BeforePropertyChanged(nameof(IsQuery), _isQuery, value);
-                _isQuery = value;
-                OnPropertyChanged(nameof(IsQuery));
-            }
-        }
 
         /// <summary>
         /// 非标准数据类型
@@ -220,7 +168,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 非标准数据类型
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据模型"), DisplayName(@"非标准数据类型"), Description("非标准数据类型")]
         public bool NoStandardDataType
         {
@@ -229,7 +177,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_noStandardDataType == value)
                     return;
-                BeforePropertyChanged(nameof(NoStandardDataType), _noStandardDataType, value);
+                BeforePropertyChange(nameof(NoStandardDataType), _noStandardDataType, value);
                 _noStandardDataType = value;
                 OnPropertyChanged(nameof(NoStandardDataType));
             }
@@ -247,7 +195,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 实体名称
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据模型"), DisplayName(@"实体名称"), Description("实体名称")]
         public string EntityName
         {
@@ -258,7 +206,7 @@ namespace Agebull.EntityModel.Config
                     value = null;
                 if (_entityName == value)
                     return;
-                BeforePropertyChanged(nameof(EntityName), _entityName, value);
+                BeforePropertyChange(nameof(EntityName), _entityName, value);
                 _entityName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(EntityName));
             }
@@ -275,7 +223,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 字段类型
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计(C#)"), DisplayName(@"参考类型(C#)"), Description("字段类型")]
         public string ReferenceType
         {
@@ -284,7 +232,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_referenceType == value)
                     return;
-                BeforePropertyChanged(nameof(ReferenceType), _referenceType, value);
+                BeforePropertyChange(nameof(ReferenceType), _referenceType, value);
                 _referenceType = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(ReferenceType));
             }
@@ -302,7 +250,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 模型
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据模型"), DisplayName(@"模型"), Description("模型")]
         public string ModelInclude
         {
@@ -311,7 +259,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_modelInclude == value)
                     return;
-                BeforePropertyChanged(nameof(ModelInclude), _modelInclude, value);
+                BeforePropertyChange(nameof(ModelInclude), _modelInclude, value);
                 _modelInclude = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(ModelInclude));
             }
@@ -329,7 +277,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 模型
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据模型"), DisplayName(@"基类"), Description("模型")]
         public string ModelBase
         {
@@ -338,7 +286,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_modelBase == value)
                     return;
-                BeforePropertyChanged(nameof(ModelBase), _modelBase, value);
+                BeforePropertyChange(nameof(ModelBase), _modelBase, value);
                 _modelBase = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(ModelBase));
             }
@@ -356,7 +304,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 数据版本
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据模型"), DisplayName(@"数据版本"), Description("数据版本")]
         public int DataVersion
         {
@@ -365,7 +313,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_dataVersion == value)
                     return;
-                BeforePropertyChanged(nameof(DataVersion), _dataVersion, value);
+                BeforePropertyChange(nameof(DataVersion), _dataVersion, value);
                 _dataVersion = value;
                 OnPropertyChanged(nameof(DataVersion));
             }
@@ -383,7 +331,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 说明
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据模型"), DisplayName(@"继承的接口集合"), Description("说明")]
         public List<string> DataInterfaces
         {
@@ -415,7 +363,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 说明
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据模型"), DisplayName(@"继承的接口集合"), Description("说明")]
         public string Interfaces
         {
@@ -424,7 +372,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_interfaces == value)
                     return;
-                BeforePropertyChanged(nameof(Interfaces), _interfaces, value);
+                BeforePropertyChange(nameof(Interfaces), _interfaces, value);
                 _interfaces = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 
                 _dataInterfaces = new List<string>();
@@ -454,7 +402,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 列序号起始值
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"列序号起始值"), Description("列序号起始值")]
         public int ColumnIndexStart
         {
@@ -463,7 +411,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_columnIndexStart == value)
                     return;
-                BeforePropertyChanged(nameof(ColumnIndexStart), _columnIndexStart, value);
+                BeforePropertyChange(nameof(ColumnIndexStart), _columnIndexStart, value);
                 _columnIndexStart = value;
                 OnPropertyChanged(nameof(ColumnIndexStart));
             }
@@ -475,9 +423,9 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 名称
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"名称"), Description("名称")]
-        public string DisplayName => $"{Caption}({EntityName}:{ReadTableName}";
+        public string DisplayName => $"{Caption}({EntityName}:{DataTable.ReadTableName}";
 
         /// <summary>
         /// 不同版本读数据的代码
@@ -491,7 +439,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 不同版本读数据的代码
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"不同版本读数据的代码"), Description("不同版本读数据的代码")]
         public Dictionary<int, string> ReadCoreCodes
         {
@@ -500,7 +448,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_readCoreCodes == value)
                     return;
-                BeforePropertyChanged(nameof(ReadCoreCodes), _readCoreCodes, value);
+                BeforePropertyChange(nameof(ReadCoreCodes), _readCoreCodes, value);
                 _readCoreCodes = value;
                 OnPropertyChanged(nameof(ReadCoreCodes));
             }
@@ -518,7 +466,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 作为系统的接口的定义
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"接口定义"), Description("作为系统的接口的定义")]
         public bool IsInterface
         {
@@ -527,7 +475,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_isInterface == value)
                     return;
-                BeforePropertyChanged(nameof(IsInterface), _isInterface, value);
+                BeforePropertyChange(nameof(IsInterface), _isInterface, value);
                 _isInterface = value;
                 OnPropertyChanged(nameof(IsInterface));
             }
@@ -537,48 +485,6 @@ namespace Agebull.EntityModel.Config
 
         #region 子级
 
-        /// <summary>
-        /// 查找实体
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public FieldConfig Find(string name)
-        {
-            return Properties.FirstOrDefault(p => 
-                name.Equals(p.Name,StringComparison.OrdinalIgnoreCase) ||
-                name.Equals(p.DbFieldName, StringComparison.OrdinalIgnoreCase));
-        }
-
-        /// <summary>
-        /// 查找实体
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public FieldConfig Find(params string[] names)
-        {
-            return Properties.FirstOrDefault(p => names.Exist(p.Name, p.DbFieldName));
-        }
-
-        /// <summary>
-        /// 查找实体
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public bool TryGet(out FieldConfig field, params string[] names)
-        {
-            field = Properties.FirstOrDefault(p => names.Exist(p.Name, p.DbFieldName));
-            return field != null;
-        }
-
-        /// <summary>
-        /// 查找实体
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public bool Exist(params string[] names)
-        {
-            return Properties.Any(p => names.Exist(p.Name, p.DbFieldName));
-        }
 
         /*// <summary>
         /// 字段列表
@@ -598,7 +504,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 字段列表
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据模型"), DisplayName(@"字段列表"), Description("字段列表")]
         public ConfigCollection<FieldConfig> Properties
         {
@@ -617,7 +523,7 @@ namespace Agebull.EntityModel.Config
                 //}
                 if (_properties != null)
                     return _properties;
-                _properties = new ConfigCollection<FieldConfig>();
+                _properties = new ConfigCollection<FieldConfig>(this, nameof(Properties));
                 RaisePropertyChanged(nameof(Properties));
                 return _properties;
             }
@@ -625,406 +531,118 @@ namespace Agebull.EntityModel.Config
             {
                 if (_properties == value)
                     return;
-                BeforePropertyChanged(nameof(Properties), _properties, value);
+                BeforePropertyChange(nameof(Properties), _properties, value);
                 _properties = value;
+                if (value != null)
+                {
+                    value.Name = nameof(Properties);
+                    value.Parent = this;
+                }
                 OnPropertyChanged(nameof(Properties));
             }
         }
 
-        IEnumerable<IFieldConfig> IEntityConfig.Properties => Properties;
-
-        #endregion
-
-        #region 数据库
+        IEnumerable<IPropertyConfig> IEntityConfig.Properties => Properties;
 
         /// <summary>
-        /// 存储表名(设计录入)的说明文字
+        /// 查找实体
         /// </summary>
-        const string ReadTableName_Description = @"存储表名,即实体对应的数据库表.因为模型可能直接使用视图,但增删改还在基础的表中时行,而不在视图中时行";
-
-        /// <summary>
-        /// 存储表名(设计录入)
-        /// </summary>
-        [DataMember, JsonProperty("_tableName", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _readTableName;
-
-        /// <summary>
-        /// 存储表名(设计录入)
-        /// </summary>
-        /// <remark>
-        /// 存储表名,即实体对应的数据库表.因为模型可能直接使用视图,但增删改还在基础的表中时行,而不在视图中时行
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"存储表名(设计录入)"), Description(ReadTableName_Description)]
-        public string ReadTableName
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public FieldConfig Find(string name)
         {
-            get => string.IsNullOrWhiteSpace(_readTableName)
-                ? SaveTableName
-                : _readTableName;
-            set
-            {
-                if (SaveTableName == value)
-                    value = null;
-                if (_readTableName == value)
-                    return;
-                BeforePropertyChanged(nameof(ReadTableName), _readTableName, value);
-                _readTableName = string.IsNullOrWhiteSpace(value) || value.Equals(_readTableName, System.StringComparison.OrdinalIgnoreCase)
-                    ? null
-                    : value.Trim();
-                OnPropertyChanged(nameof(ReadTableName));
-            }
+            return Properties.FirstOrDefault(p =>
+                name.Equals(p.Name, StringComparison.OrdinalIgnoreCase) ||
+                name.Equals(p.DataBaseField?.DbFieldName, StringComparison.OrdinalIgnoreCase));
+        }
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public FieldConfig Find(Func<FieldConfig, bool> filter)
+        {
+            return Properties.FirstOrDefault(filter);
         }
 
         /// <summary>
-        /// 存储表名
+        /// 查找实体
         /// </summary>
-        [DataMember, JsonProperty("_saveTableName", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _saveTableName;
-
-        /// <summary>
-        /// 存储表名
-        /// </summary>
-        /// <remark>
-        /// 存储表名
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"存储表名"), Description("存储表名")]
-        public string SaveTableName
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public FieldConfig Find(params string[] names)
         {
-            get => WorkContext.InCoderGenerating ? _saveTableName ?? Name : _saveTableName;
-            set
-            {
-                if (Name == value)
-                    value = null;
-                if (_saveTableName == value)
-                    return;
-                BeforePropertyChanged(nameof(SaveTableName), _saveTableName, value);
-                _saveTableName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(SaveTableName));
-            }
+            return Properties.FirstOrDefault(p => names.Exist(p.Name, p.DataBaseField?.DbFieldName));
+        }
+
+        public bool Exist(Func<FieldConfig, bool> filter)
+        {
+            return Properties.Any(filter);
+        }
+        /// <summary>
+        /// 查找实体
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public IPropertyConfig[] FindLastAndToArray(Func<IPropertyConfig, bool> filter)
+        {
+            return LastProperties.Where(filter).ToArray();
+        }
+
+        public bool ExistLast(Func<IPropertyConfig, bool> filter)
+        {
+            return LastProperties.Any(filter);
         }
 
         /// <summary>
-        /// 数据库编号
+        /// 查找实体
         /// </summary>
-        [DataMember, JsonProperty("_dbIndex", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal int _dbIndex;
-
-        /// <summary>
-        /// 数据库编号
-        /// </summary>
-        /// <remark>
-        /// 数据库编号
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"数据库编号"), Description("数据库编号")]
-        public int DbIndex
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public IEnumerable<IPropertyConfig> WhereLast(Func<IPropertyConfig, bool> filter)
         {
-            get => _dbIndex;
-            set
-            {
-                if (_dbIndex == value)
-                    return;
-                BeforePropertyChanged(nameof(DbIndex), _dbIndex, value);
-                _dbIndex = value;
-                OnPropertyChanged(nameof(DbIndex));
-            }
+            return LastProperties.Where(filter);
         }
 
         /// <summary>
-        /// 按修改更新
+        /// 查找实体
         /// </summary>
-        [DataMember, JsonProperty("UpdateByModified", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _updateByModified;
-
-        /// <summary>
-        /// 按修改更新
-        /// </summary>
-        /// <remark>
-        /// 按修改更新
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"按修改更新"), Description("按修改更新")]
-        public bool UpdateByModified
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public FieldConfig[] FindAndToArray(Func<FieldConfig, bool> filter)
         {
-            get => _updateByModified;
-            set
-            {
-                if (_updateByModified == value)
-                    return;
-                BeforePropertyChanged(nameof(UpdateByModified), _updateByModified, value);
-                _updateByModified = value;
-                OnPropertyChanged(nameof(UpdateByModified));
-            }
-        }
-        #endregion
-
-        #region 用户界面
-
-        /// <summary>
-        /// 接口名称
-        /// </summary>
-        [DataMember, JsonProperty("_apiName", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _apiName;
-
-        /// <summary>
-        /// 接口名称
-        /// </summary>
-        /// <remark>
-        /// 接口名称
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"解决方案"), DisplayName(@"接口名称"), Description("接口名称")]
-        public string ApiName
-        {
-            get => WorkContext.InCoderGenerating ? _apiName ?? Abbreviation : _apiName;
-            set
-            {
-                if (_apiName == value)
-                    return;
-                if (value == Name)
-                    value = null;
-                BeforePropertyChanged(nameof(ApiName), _apiName, value);
-                _apiName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(ApiName));
-            }
-        }
-
-
-        /// <summary>
-        /// 界面只读
-        /// </summary>
-        [DataMember, JsonProperty("isUiReadOnly", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isUiReadOnly;
-
-        /// <summary>
-        /// 界面只读
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"用户界面"), DisplayName(@"界面只读"), Description("界面只读")]
-        public bool IsUiReadOnly
-        {
-            get => _isUiReadOnly;
-            set
-            {
-                if (_isUiReadOnly == value)
-                    return;
-                BeforePropertyChanged(nameof(IsUiReadOnly), _isUiReadOnly, value);
-                _isUiReadOnly = value;
-                OnPropertyChanged(nameof(IsUiReadOnly));
-            }
-        }
-        /// <summary>
-        /// 页面文件夹名称
-        /// </summary>
-        [DataMember, JsonProperty("PageFolder", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _pageFolder;
-
-        /// <summary>
-        /// 页面文件夹名称
-        /// </summary>
-        /// <remark>
-        /// 页面文件夹名称
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"用户界面"), DisplayName(@"页面文件夹名称"), Description("页面文件夹名称")]
-        public string PageFolder
-        {
-            get => WorkContext.InCoderGenerating ? _pageFolder ?? Name : _pageFolder;
-            set
-            {
-                if (_pageFolder == value)
-                    return;
-                BeforePropertyChanged(nameof(PageFolder), _pageFolder, value);
-                _pageFolder = string.IsNullOrWhiteSpace(value)  || value  == Name ? null : value.Trim();
-                OnPropertyChanged(nameof(PageFolder));
-            }
+            return Where(filter).ToArray();
         }
 
         /// <summary>
-        /// 树形界面
+        /// 查找实体
         /// </summary>
-        [DataMember, JsonProperty("TreeUi", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _treeUi;
-
-        /// <summary>
-        /// 树形界面
-        /// </summary>
-        /// <remark>
-        /// 树形界面
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"用户界面"), DisplayName(@"树形界面"), Description("树形界面")]
-        public bool TreeUi
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public IEnumerable<FieldConfig> Where(Func<FieldConfig, bool> filter)
         {
-            get => _treeUi;
-            set
-            {
-                if (_treeUi == value)
-                    return;
-                BeforePropertyChanged(nameof(TreeUi), _treeUi, value);
-                _treeUi = value;
-                OnPropertyChanged(nameof(TreeUi));
-            }
+            return Properties.Where(filter);
         }
 
         /// <summary>
-        /// 详细编辑页面
+        /// 查找实体
         /// </summary>
-        [DataMember, JsonProperty("detailsPage", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _detailsPage;
-
-        /// <summary>
-        /// 详细编辑页面
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore, Category(@"用户界面")]
-        public bool DetailsPage
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool TryGet(out FieldConfig field, params string[] names)
         {
-            get => _detailsPage;
-            set
-            {
-                if (_detailsPage == value)
-                    return;
-                BeforePropertyChanged(nameof(DetailsPage), _detailsPage, value);
-                _detailsPage = value;
-                OnPropertyChanged(nameof(DetailsPage));
-            }
+            field = Properties.FirstOrDefault(p => names.Exist(p.Name, p.DataBaseField?.DbFieldName));
+            return field != null;
         }
 
         /// <summary>
-        /// 编辑页面分几列
+        /// 查找实体
         /// </summary>
-        [DataMember, JsonProperty("FormCloumn", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal int _formCloumn;
-
-        /// <summary>
-        /// 编辑页面分几列
-        /// </summary>
-        /// <remark>
-        /// 编辑页面分几列
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"用户界面"), DisplayName(@"编辑页面分几列"), Description("编辑页面分几列")]
-        public int FormCloumn
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool Exist(params string[] names)
         {
-            get => _formCloumn;
-            set
-            {
-                if (_formCloumn == value)
-                    return;
-                BeforePropertyChanged(nameof(FormCloumn), _formCloumn, value);
-                _formCloumn = value;
-                OnPropertyChanged(nameof(FormCloumn));
-            }
-        }
-
-        [DataMember, JsonProperty("OrderField", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _orderField;
-
-        [DataMember, JsonProperty("OrderDesc", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _orderDesc;
-
-        /// <summary>
-        /// 默认排序字段
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"用户界面"), DisplayName(@"默认排序字段"), Description("默认排序字段")]
-        public string OrderField
-        {
-            get => _orderField ?? PrimaryField;
-            set
-            {
-                if (_orderField == value)
-                    return;
-                BeforePropertyChanged(nameof(OrderField), _orderField, value);
-                _orderField = value;
-                OnPropertyChanged(nameof(OrderField));
-            }
-        }
-
-        /// <summary>
-        /// 默认反序
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"用户界面"), DisplayName(@"默认反序"), Description("默认反序")]
-        public bool OrderDesc
-        {
-            get => _orderDesc;
-            set
-            {
-                if (_orderDesc == value)
-                    return;
-                BeforePropertyChanged(nameof(OrderDesc), _orderDesc, value);
-                _orderDesc = value;
-                OnPropertyChanged(nameof(OrderDesc));
-            }
-        }
-
-        /// <summary>
-        /// 命令集合
-        /// </summary>
-        [DataMember, JsonProperty("_commands", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal NotificationList<UserCommandConfig> _commands;
-
-        /// <summary>
-        /// 命令集合
-        /// </summary>
-        /// <remark>
-        /// 命令集合,数据模型中可调用的命令
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"业务模型"), DisplayName(@"命令集合"), Description("命令集合,数据模型中可调用的命令")]
-        public NotificationList<UserCommandConfig> Commands
-        {
-            get
-            {
-                if (_commands != null)
-                    return _commands;
-                _commands = new NotificationList<UserCommandConfig>();
-                RaisePropertyChanged(nameof(Commands));
-                return _commands;
-            }
-            set
-            {
-                if (_commands == value)
-                    return;
-                BeforePropertyChanged(nameof(Commands), _commands, value);
-                _commands = value;
-                OnPropertyChanged(nameof(Commands));
-            }
-        }
-
-        #endregion 
-
-        #region C++
-
-        /// <summary>
-        /// C++名称
-        /// </summary>
-        [DataMember, JsonProperty("CppName", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _cppName;
-
-        /// <summary>
-        /// C++名称
-        /// </summary>
-        /// <remark>
-        /// C++字段名称
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category(@"C++"), DisplayName(@"C++名称"), Description("C++字段名称")]
-        public string CppName
-        {
-            get => WorkContext.InCoderGenerating ? _cppName ?? Name : _cppName;
-            set
-            {
-                if (Name == value)
-                    value = null;
-                if (_cppName == value)
-                    return;
-                BeforePropertyChanged(nameof(CppName), _cppName, value);
-                _cppName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(CppName));
-            }
+            return Properties.Any(p => names.Exist(p.Name, p.DataBaseField ? .DbFieldName));
         }
         #endregion
 

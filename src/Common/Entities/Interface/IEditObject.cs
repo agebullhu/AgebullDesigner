@@ -39,10 +39,7 @@ namespace Agebull.EntityModel
     /// <summary>
     ///     编辑对象
     /// </summary>
-    public interface IEditObject : IEntityObject
-#if CLIENT
-        , INotifyPropertyChanging, INotifyPropertyChanged
-#endif
+    public interface IEditObject : IEntityObject, INotifyPropertyChanging, INotifyPropertyChanged
     {
         /// <summary>
         ///     是否修改

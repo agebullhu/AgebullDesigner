@@ -21,6 +21,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public void ResetStatus()
         {
+            Solution.Look<ConfigBase>(p =>p.ResetModify(true));
         }
 
         #endregion
@@ -60,22 +61,22 @@ namespace Agebull.EntityModel.Config
                 //}
                 foreach (var entity in project.Entities.Where(p => !p.IsReference))
                 {
-                    entity.Parent = project;
+                    entity.Project = project;
                     RepairEntityByLoad(entity, project);
                 }
                 foreach (var model in project.Models)
                 {
-                    model.Parent = project;
+                    model.Project = project;
                     RepairModelByLoad(model, project);
                 }
 
                 foreach (var cfg in project.ApiItems)
                 {
-                    cfg.Parent = project;
+                    cfg.Project = project;
                 }
                 foreach (var cfg in project.Enums)
                 {
-                    cfg.Parent = project;
+                    cfg.Project = project;
                 }
                 RepairClassifies(project);
 
@@ -87,6 +88,7 @@ namespace Agebull.EntityModel.Config
                 //}
             }
             RepairTypedefByLoad();
+
         }
 
         private static void RepairClassifies(ProjectConfig project)
@@ -100,7 +102,6 @@ namespace Agebull.EntityModel.Config
                     project.Classifies.Add(classify = new EntityClassify
                     {
                         Project = project,
-                        Classify = name,
                         Name = name
                     });
                 }

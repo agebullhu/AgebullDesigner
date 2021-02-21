@@ -9,11 +9,19 @@ namespace Agebull.Common.Mvvm
     public class CommandConfig : NotificationObject, ICommandItem
     {
         /// <summary>
+        /// 序号
+        /// </summary>
+        public int Index
+        {
+            get;
+            set;
+        }
+        /// <summary>
         /// 标识
         /// </summary>
         public string Key
         {
-            get; 
+            get;
             set;
         }
 
@@ -101,9 +109,27 @@ namespace Agebull.Common.Mvvm
         }
 
         /// <summary>
+        ///     面对的编辑器
+        /// </summary>
+        public string Tag
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         ///     只能单个操作
         /// </summary>
         public bool SignleSoruce
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        ///     只显示图标
+        /// </summary>
+        public bool OnlyIcon
         {
             get;
             set;

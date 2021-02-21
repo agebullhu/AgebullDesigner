@@ -100,9 +100,9 @@
                 <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
                 <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />
                 <DataGridTextColumn Binding="{Binding JsonName,Mode=TwoWay}" Header="Json名称" />
-                <DataGridTextColumn Binding="{Binding DbFieldName,Mode=TwoWay}" Header="表字段" />
+                <DataGridTextColumn Binding="{Binding DataBaseField.DbFieldName,Mode=TwoWay}" Header="表字段" />
                 <DataGridCheckBoxColumn Binding="{Binding IsPrimaryKey,Mode=TwoWay}" Header="主键" />
-                <DataGridCheckBoxColumn Binding="{Binding IsIdentity,Mode=TwoWay}" Header="自增" />
+                <DataGridCheckBoxColumn Binding="{Binding DataBaseField.IsIdentity,Mode=TwoWay}" Header="自增" />
                 <DataGridCheckBoxColumn Binding="{Binding IsCaption,Mode=TwoWay}" Header="标题" />
                 <DataGridTextColumn Binding="{Binding DataType,Mode=TwoWay}" Header="基础类型" />
                 <DataGridTextColumn Binding="{Binding ReferenceType,Mode=TwoWay}" Header="引用类型" />
@@ -114,11 +114,11 @@
                 <DataGridCheckBoxColumn Binding="{Binding IsDictionary,Mode=TwoWay}" Header="字典" />
                 <DataGridCheckBoxColumn Binding="{Binding Option.IsDelete,Mode=TwoWay}" Header="删除" />
                 <DataGridTextColumn Header="存储类型"
-                                    Binding="{Binding DbType, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
+                                    Binding="{Binding DataBaseField.FieldType, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" />
                 <DataGridTextColumn Header="存储长度"
-                                    Binding="{Binding Datalen, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                                    Binding="{Binding DataBaseField.Datalen, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
                 <DataGridTextColumn Header="存储精度"
-                                    Binding="{Binding Scale, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                                    Binding="{Binding DataBaseField.Scale, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

@@ -1,44 +1,32 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="Icon.xaml"/>
         <ResourceDictionary Source="Menu.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
+    <Style x:Key="FontAwesome" >
+        <Setter Property="TextElement.FontFamily" Value="/Agebull.Common.Mvvm;component/WebFont/fonts/#FontAwesome" />
+    </Style>
 
     <Style TargetType="ToggleButton"
                x:Key="TreeHeaderButton">
         <!--修改模板属性-->
-        <Setter Property="Background"
-                    Value="{x:Null}" />
-        <Setter Property="BorderBrush"
-                    Value="{x:Null}" />
-        <Setter Property="BorderThickness"
-                    Value="0" />
+        <Setter Property="Background" Value="{x:Null}" />
+        <Setter Property="BorderBrush" Value="{x:Null}" />
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
-                    <Grid Margin="0,0,0,5">
-                        <Image x:Name="ctrImage"
-                                   Source="{StaticResource tree_Open}"
-                                   Width="16"
-                                   Height="16" />
-
-                    </Grid>
+                    <TextBlock x:Name="ctrImage" Margin="0" Text="&#xf196;" Width="10" Height="10" Style="{StaticResource FontAwesome}"  FontSize="10"/>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsChecked"
-                                     Value="False">
-                            <Setter Property="Source"
-                                        TargetName="ctrImage"
-                                        Value="{StaticResource tree_Open}" />
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter Property="Text" TargetName="ctrImage" Value="&#xf196;" />
+                            <Setter Property="Foreground" TargetName="ctrImage" Value="Black" />
                         </Trigger>
-                        <Trigger Property="IsChecked"
-                                     Value="True">
-                            <Setter Property="Source"
-                                        TargetName="ctrImage"
-                                        Value="{StaticResource tree_Close}" />
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Text" TargetName="ctrImage" Value="&#xf147;" />
+                            <Setter Property="Foreground" TargetName="ctrImage" Value="Blue" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -46,20 +34,16 @@
         </Setter>
     </Style>
     <Style TargetType="{x:Type TreeViewItem}">
-        <Setter Property="IsExpanded"
-                    Value="{Binding IsExpanded ,Mode=TwoWay}" />
-        <Setter Property="ItemsSource"
-                    Value="{Binding Items}" />
-        <Setter Property="Visibility"
-                Value="{Binding Visibility,Mode=TwoWay}" />
-        <Setter Property="IsSelected"
-                    Value="{Binding IsUiSelected,Mode=TwoWay}" />
+        <Setter Property="IsExpanded" Value="{Binding IsExpanded ,Mode=TwoWay}" />
+        <Setter Property="ItemsSource" Value="{Binding Items}" />
+        <Setter Property="Visibility" Value="{Binding Visibility,Mode=TwoWay}" />
+        <Setter Property="IsSelected" Value="{Binding IsUiSelected,Mode=TwoWay}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TreeViewItem}">
                     <Grid HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="16" />
+                            <ColumnDefinition Width="12" />
                             <ColumnDefinition />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
@@ -75,8 +59,7 @@
                                     BorderThickness="{TemplateBinding BorderThickness}"
                                     Background="{TemplateBinding Background}"
                                     SnapsToDevicePixels="true" />
-
-                        <ToggleButton Grid.Row="0"
+                        <ToggleButton Grid.Row="0" Margin="-2,0,0,0"
                                           Grid.Column="0"
                                           x:Name="Expander"
                                           ClickMode="Press"
@@ -91,14 +74,14 @@
                             <ContentPresenter.Content>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="16" />
+                                        <ColumnDefinition Width="14" />
                                         <ColumnDefinition />
                                         <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
 
                                     <Border x:Name="ctrBusy"
-                                                Width="16"
-                                                Height="16"
+                                                Width="12"
+                                                Height="12"
                                                 RenderTransformOrigin="0.5,0.5"
                                                 Visibility="Collapsed">
                                         <Border.RenderTransform>
@@ -122,19 +105,17 @@
                                     </Border>
                                     <Border Grid.Column="1" BorderThickness="0,0,0,1" BorderBrush="{Binding BackgroundColor}">
                                         <StackPanel Orientation="Horizontal ">
-                                            <Image Source="{Binding SoruceTypeIcon}"
-                                                   Width="16"
-                                                   Height="16"
-                                                   Margin="6,0,0,0" />
-                                            <Image Source="{Binding StatusIcon}"
-                                                   Width="16"
-                                                   Height="16"
-                                                   Margin="6,0,0,0" />
-                                            <TextBlock Text="{Binding Header}"
+                                            <TextBlock Text="{Binding SoruceTypeIcon}" Style="{StaticResource FontAwesome}" 
+                                                       Width="12" Height="12" Margin="2,0,0,0" FontSize="10"/>
+                                            <TextBlock TextWrapping="Wrap"
                                                        x:Name="ctrHeader"
+                                                       FontSize="13"
+                                                       Text="{Binding Header, Mode=OneWay}"
                                                        Foreground="{Binding Color}"
                                                        FontWeight="{Binding FontWeight}"
-                                                       Margin="5,0" />
+                                                       Margin="0,1" />
+                                            <TextBlock Text="{Binding StatusIcon}" Style="{StaticResource FontAwesome}" 
+                                                       Width="12" Height="12" Margin="2,0,0,0" FontSize="10" Foreground="DeepPink"/>
                                             <StackPanel.ContextMenu>
                                                 <ContextMenu ItemsSource="{Binding Commands}">
                                                     <!--<ContextMenu.ItemTemplate>
@@ -150,7 +131,6 @@
                                             </StackPanel.ContextMenu>
                                         </StackPanel>
                                     </Border>
-
                                 </Grid>
                             </ContentPresenter.Content>
                         </ContentPresenter>
@@ -322,16 +302,15 @@
                             <ContentPresenter.Content>
                                 <Border Grid.Column="1" BorderThickness="0,0,0,1" BorderBrush="{Binding BackgroundColor}">
                                         <StackPanel Orientation="Horizontal ">
-                                            <Image Source="{Binding SoruceTypeIcon}"
-                                                   Width="16"
-                                                   Height="16"
-                                                   Margin="6,0,0,0" />
-                                            <TextBlock Text="{Binding Header}"
+
+                                        <TextBlock Padding="0,2,0,0" Text="{Binding SoruceTypeIcon}" Style="{StaticResource FontAwesome}" 
+                                                   Margin="6,0,0,0" FontSize="11"/>
+                                        <TextBlock Text="{Binding Header}"
                                                        x:Name="ctrHeader"
                                                        Foreground="{Binding Color}"
                                                        FontWeight="{Binding FontWeight}"
-                                                       Margin="5,0" />
-                                        </StackPanel>
+                                                       Margin="5,0,0,0" />
+                                    </StackPanel>
                                     </Border>
                             </ContentPresenter.Content>
                         </ContentPresenter>

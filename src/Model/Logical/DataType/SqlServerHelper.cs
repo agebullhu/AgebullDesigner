@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Agebull.EntityModel.Config.V2021;
+using System.Collections.Generic;
 using System.Data;
 
 namespace Agebull.EntityModel.Config.SqlServer
@@ -105,7 +106,7 @@ namespace Agebull.EntityModel.Config.SqlServer
         ///     从C#的类型转为DBType
         /// </summary>
         /// <param name="field"> </param>
-        public static SqlDbType ToSqlDbType(FieldConfig field) => ToSqlDbType(field.DbType, field.CsType);
+        public static SqlDbType ToSqlDbType(FieldConfig property) => ToSqlDbType(property.DataBaseField.FieldType, property.CsType);
 
         /// <summary>
         ///     从C#的类型转为DBType
@@ -319,11 +320,11 @@ namespace Agebull.EntityModel.Config.SqlServer
                     return "BOOL";
                 case "byte[]":
                 case "binary":
-                    return property.IsBlob ? "IMAGE" : "VARBINARY";
+                    return property.DataBaseField.IsBlob ? "IMAGE" : "VARBINARY";
                 case "char":
                     return "NCHAR";
                 case "string":
-                    return property.IsBlob ? "TEXT" : "NVARCHAR";
+                    return property.DataBaseField.IsBlob ? "TEXT" : "NVARCHAR";
                 case "datetime":
                     return "DATETIME";
                 case "guid":
@@ -434,9 +435,9 @@ namespace Agebull.EntityModel.Config.SqlServer
         ///     从C#的类型转为My sql的类型
         /// </summary>
         /// <param name="column"> C#的类型</param>
-        public static string ColumnType(IFieldConfig column)
+        public static string ColumnType(DataBaseFieldConfig column)
         {
-            switch (column.DbType.ToLower())
+            switch (column.FieldType.ToLower())
             {
                 case "decimal":
                 case "numeric":
@@ -450,16 +451,16 @@ namespace Agebull.EntityModel.Config.SqlServer
                     if (column.IsBlob || column.Datalen <= 0 || column.Datalen >= 4000)
                         return "VARBINARY(max)";
                     else
-                        return $"{column.DbType.ToUpper()}({column.Datalen})";
+                        return $"{column.FieldType.ToUpper()}({column.Datalen})";
                 case "char":
                 case "nchar":
                 case "varchar":
                 case "nvarchar":
                     if (column.IsBlob || column.Datalen < 0 || column.Datalen > 4000)
                         return "VARCHAR(max)";
-                    return $"{column.DbType.ToUpper()}({column.Datalen})";
+                    return $"{column.FieldType.ToUpper()}({column.Datalen})";
                 default:
-                    return column.DbType.ToUpper();
+                    return column.FieldType.ToUpper();
             }
         }
     }

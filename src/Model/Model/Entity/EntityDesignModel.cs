@@ -1,14 +1,12 @@
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Media;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.RobotCoder;
-using System.Text;
-using Agebull.Common;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -24,7 +22,7 @@ namespace Agebull.EntityModel.Designer
             Model = DataModelDesignModel.Current;
             Context = DataModelDesignModel.Current?.Context;
         }
-        
+
         /// <summary>
         /// 生成命令对象
         /// </summary>
@@ -37,7 +35,7 @@ namespace Agebull.EntityModel.Designer
                 NoConfirm = true,
                 Action = CopyColumns,
                 Caption = "复制列",
-                Image = Application.Current.Resources["tree_item"] as ImageSource
+                IconName = "复制"
             });
             commands.Add(new CommandItem
             {
@@ -45,21 +43,21 @@ namespace Agebull.EntityModel.Designer
                 Action = PasteColumns,
                 NoConfirm = true,
                 Caption = "粘贴列",
-                Image = Application.Current.Resources["tree_item"] as ImageSource
+                IconName  = "粘贴"
             });
             commands.Add(new CommandItem
             {
                 IsButton = true,
                 Action = ClearColumns,
                 Caption = "清除列",
-                Image = Application.Current.Resources["img_del"] as ImageSource
+                IconName = "清除"
             });
             commands.Add(new CommandItem
             {
                 IsButton = true,
                 Action = DeleteColumns,
                 Caption = "删除所选列",
-                Image = Application.Current.Resources["img_del"] as ImageSource
+                IconName = "删除"
             });
 
             base.CreateCommands(commands);
@@ -72,10 +70,10 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void CopyColumns(object arg)
         {
-            if(Context.SelectEntity is EntityConfig entity)
+            if (Context.SelectEntity is EntityConfig entity)
             {
                 Context.CopiedTable = entity;
-                Context.CopyColumns = Context.SelectColumns.OfType<FieldConfig>().OrderBy(p=>p.Index).ToList();
+                Context.CopyColumns = Context.SelectColumns.OfType<FieldConfig>().OrderBy(p => p.Index).ToList();
                 Context.StateMessage = $"复制了{Context.CopyColumns.Count}行";
             }
         }
@@ -130,96 +128,98 @@ namespace Agebull.EntityModel.Designer
 
         public void PateFields(bool toReference, EntityConfig source, EntityConfig Entity, List<FieldConfig> columns)
         {
-            foreach (var copyColumn in columns.OrderBy(p=>p.Index))
+            foreach (var copyProperty in columns.OrderBy(p => p.Index))
             {
-                var refe = toReference && !copyColumn.Entity.IsInterface;
-                FieldConfig newColumn = null;
+                var refe = toReference && !copyProperty.Entity.IsInterface;
+                FieldConfig newProperty = null;
                 if (refe)
                 {
-                    newColumn = Entity.Properties.FirstOrDefault(p => p.ReferenceKey == copyColumn.Key);
-                    if (newColumn == null)
+                    newProperty = Entity.Find(p => p.ReferenceKey == copyProperty.Key);
+                    if (newProperty == null)
                     {
-                        string name = copyColumn.Entity.Name;
-                        if (copyColumn.IsPrimaryKey)
+                        string name = copyProperty.Entity.Name;
+                        if (copyProperty.IsPrimaryKey)
                         {
-                            newColumn = Entity.Properties.FirstOrDefault(p => p.LinkTable == name && p.IsLinkKey);
+                            newProperty = Entity.DataTable.Find(p => p.LinkTable == name && p.IsLinkKey)?.Property.Field;
                         }
-                        else if (copyColumn.IsCaption)
+                        else if (copyProperty.IsCaption)
                         {
-                            newColumn = Entity.Properties.FirstOrDefault(p => p.LinkTable == name && p.IsLinkCaption);
+                            newProperty = Entity.DataTable.Find(p => p.LinkTable == name && p.IsLinkCaption)?.Property.Field;
                         }
                         else
                         {
-                            newColumn = Entity.Properties.FirstOrDefault(
-                                p => string.Equals(p.LinkTable, name, StringComparison.OrdinalIgnoreCase) && (
-                                         string.Equals(p.LinkField, copyColumn.Name, StringComparison.OrdinalIgnoreCase) ||
-                                         string.Equals(p.LinkField, copyColumn.DbFieldName, StringComparison.OrdinalIgnoreCase)));
+                            newProperty = Entity.DataTable.Find(p => name.IsMe(p.LinkTable) &&
+                                p.LinkField.IsOnce(p.LinkField, copyProperty.DataBaseField?.DbFieldName))?.Property.Field;
                         }
                     }
                 }
-                if (newColumn == null)
+                var field = newProperty?.DataBaseField;
+                if (newProperty == null)
                 {
-                    newColumn = new FieldConfig
+                    newProperty = new FieldConfig
                     {
-                        Entity = Entity
+                        Entity = Entity,
                     };
-                    newColumn.CopyProperty(copyColumn, false);
-                    newColumn.Entity = source;
-                    newColumn.Option.Copy(copyColumn.Option, false);
-                    newColumn.Option.Index = newColumn.Option.Identity = 0;
-                    
-                    if (refe && !copyColumn.IsLinkField)
+                    newProperty.CopyProperty(copyProperty, false);
+                    newProperty.Entity = source;
+                    newProperty.Option.Copy(copyProperty.Option, false);
+                    newProperty.Option.Index = newProperty.Option.Identity = 0;
+                    newProperty.Entity = source;
+                    Entity.Add(newProperty);
+
+                    field = newProperty.DataBaseField;
+                    field.CopyProperty(copyProperty);
+
+                    if (refe && !copyProperty.IsLinkField)
                     {
-                        if (copyColumn.IsPrimaryKey)
+                        if (copyProperty.IsPrimaryKey)
                         {
-                            newColumn.Name = copyColumn.Entity.Name + "Id";
-                            newColumn.Caption = copyColumn.Entity.Caption + "ID";
-                            newColumn.DbFieldName = copyColumn.Name.ToLinkWordName("_", false) + "_id";
+                            newProperty.Name = copyProperty.Entity.Name + "Id";
+                            newProperty.Caption = copyProperty.Entity.Caption + "ID";
+                            field.DbFieldName = copyProperty.Name.ToLinkWordName("_", false) + "_id";
                         }
-                        else if (copyColumn.IsCaption)
+                        else if (copyProperty.IsCaption)
                         {
-                            newColumn.Name = copyColumn.Entity.Name;
-                            newColumn.Caption = copyColumn.Entity.Caption;
+                            newProperty.Name = copyProperty.Entity.Name;
+                            newProperty.Caption = copyProperty.Entity.Caption;
                         }
-                        newColumn.Option.IsLink = true;
-                        newColumn.Option.ReferenceConfig = copyColumn;
-                        newColumn.DbFieldName = DataBaseHelper.ToDbFieldName(newColumn);
-                        newColumn.JsonName = newColumn.Name.ToLWord();
+                        newProperty.Option.IsLink = true;
+                        newProperty.Option.ReferenceConfig = copyProperty;
+                        field.DbFieldName = DataBaseHelper.ToDbFieldName(newProperty);
+                        newProperty.JsonName = newProperty.Name.ToLWord();
                     }
-                    Entity.Add(newColumn);
                 }
                 if (refe)
                 {
-                    if (copyColumn.IsLinkField)
+                    if (copyProperty.IsLinkField)
                     {
-                        newColumn.Option.IsLink = true;
-                        newColumn.Option.ReferenceConfig = copyColumn.Option.ReferenceConfig;
+                        newProperty.Option.IsLink = true;
+                        newProperty.Option.ReferenceConfig = copyProperty.Option.ReferenceConfig;
                     }
                     else
                     {
-                        newColumn.IsLinkField = true;
-                        newColumn.Option.ReferenceConfig = copyColumn;
-                        newColumn.LinkTable = source.Name;
-                        newColumn.LinkField = copyColumn.Name;
-                        if (copyColumn.IsLinkKey || copyColumn.IsPrimaryKey)
+                        newProperty.IsLinkField = true;
+                        newProperty.Option.ReferenceConfig = copyProperty;
+                        field.LinkTable = source.Name;
+                        field.LinkField = copyProperty.Name;
+                        if (field.IsLinkKey || copyProperty.IsPrimaryKey)
                         {
-                            newColumn.IsLinkKey = true;
-                            newColumn.KeepUpdate = true;
+                            field.IsLinkKey = true;
+                            field.CanUpdate = false;
                         }
-                        else if (copyColumn.IsCaption)
+                        else if (copyProperty.IsCaption)
                         {
-                            newColumn.IsLinkCaption = true;
-                            newColumn.IsCompute = true;
+                            field.IsLinkCaption = true;
+                            field.IsReadonly = true;
                         }
                     }
                 }
-                newColumn.Entity = Entity;
-                newColumn.IsPrimaryKey = false;
-                newColumn.IsCaption = false;
-                if (newColumn.IsLinkKey)
-                    newColumn.NoneApiArgument = true;
+                newProperty.Entity = Entity;
+                newProperty.IsPrimaryKey = false;
+                newProperty.IsCaption = false;
+                if (field.IsLinkKey)
+                    newProperty.NoneApiArgument = true;
             }
-            Entity.IsModify = true;
         }
 
         #endregion

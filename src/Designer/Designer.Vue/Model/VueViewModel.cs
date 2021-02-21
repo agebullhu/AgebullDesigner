@@ -8,19 +8,15 @@
 
 #region 引用
 
-using Agebull.Common;
-using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Media;
 
 #endregion
 
 namespace Agebull.EntityModel.Designer
 {
-    internal class VueViewModel : ExtendViewModelBase<VueModel>
+    internal class VueViewModel : EditorViewModelBase<VueModel>
     {
         public VueViewModel()
         {
@@ -29,7 +25,7 @@ namespace Agebull.EntityModel.Designer
 
     }
 
-    internal class VueModel : DesignModelBase
+    internal class VueModel : EditorModel
     {
         #region 操作命令
 
@@ -73,7 +69,7 @@ namespace Agebull.EntityModel.Designer
                 field.CanUserQuery = field.UserSee;
             }
         }
-        
+
 
         internal static void CheckUiType(IEntityConfig entity)
         {
@@ -128,46 +124,47 @@ namespace Agebull.EntityModel.Designer
         internal static void CheckSimple(IEntityConfig entity)
         {
             var cap = entity.CaptionColumn;
-            foreach (var field in entity.Properties)
+            foreach (var property in entity.Properties)
             {
-                if (field.IsSystemField || field.IsDiscard || !field.UserSee)
+                var field = entity.DataTable[property];
+                if (property.IsSystemField || property.IsDiscard || !property.UserSee)
                 {
-                    field.IsRequired = false;
-                    field.NoneGrid = true;
-                    field.NoneDetails = true;
+                    property.IsRequired = false;
+                    property.NoneGrid = true;
+                    property.NoneDetails = true;
                     continue;
                 }
-                if(field == cap)
+                if (property == cap)
                 {
-                    field.CanEmpty = false;
-                    field.IsRequired = true;
+                    property.CanEmpty = false;
+                    property.IsRequired = true;
                 }
                 if (field.IsLinkKey)
                 {
-                    field.NoneGrid = true;
-                    field.NoneDetails = false;
-                    field.InputType = "easyui-combobox";
-                    field.ComboBoxUrl = null;
-                    field.FormOption = "valueField:'id', textField:'text'";
+                    property.NoneGrid = true;
+                    property.NoneDetails = false;
+                    property.InputType = "easyui-combobox";
+                    property.ComboBoxUrl = null;
+                    property.FormOption = "valueField:'id', textField:'text'";
                 }
 
                 if (field.IsLinkCaption)
                 {
-                    field.NoneGrid = false;
-                    field.NoneDetails = true;
-                    field.CanEmpty = true;
-                    field.IsRequired = false;
+                    property.NoneGrid = false;
+                    property.NoneDetails = true;
+                    property.CanEmpty = true;
+                    property.IsRequired = false;
                 }
 
-                if (field.IsBlob || field.DataType == "ByteArray")
+                if (field.IsBlob || property.DataType == "ByteArray")
                 {
-                    field.CanEmpty = true;
-                    field.IsRequired = false;
-                    field.NoneJson = !field.IsImage;
-                    field.NoneGrid = true;
-                    field.NoneDetails = !field.IsImage;
+                    property.CanEmpty = true;
+                    property.IsRequired = false;
+                    property.NoneJson = !property.IsImage;
+                    property.NoneGrid = true;
+                    property.NoneDetails = !property.IsImage;
                     if (entity.PrimaryColumn != null)
-                        field.Index = entity.PrimaryColumn.Index;
+                        property.Index = entity.PrimaryColumn.Index;
                 }
             }
 

@@ -33,7 +33,7 @@ namespace Agebull.EntityModel
                 //Action = ToCommand(),
                 Name = JobName,
                 Caption = JobName,
-                Image = ImageName == null ? null : Application.Current.Resources[ImageName] as ImageSource
+                IconName = IconName
             };
         }
 
@@ -56,22 +56,22 @@ namespace Agebull.EntityModel
             }
         }
 
-        private string _imageName;
+        private string _iconName;
 
         /// <summary>
         ///     图标名称
         /// </summary>
-        public string ImageName
+        public string IconName
         {
-            get => _imageName;
+            get => _iconName;
             set
             {
-                if (_imageName == value)
+                if (_iconName == value)
                 {
                     return;
                 }
-                _imageName = value;
-                RaisePropertyChanged(() => ImageName);
+                _iconName = value;
+                RaisePropertyChanged(() => IconName);
             }
         }
 

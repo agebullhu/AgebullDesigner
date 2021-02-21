@@ -8,6 +8,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>TRACE;CLIENT</DefineConstants>
+    <Optimize>false</Optimize>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -27,11 +28,38 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.ComponentModel.Composition" Version="4.7.0" />
+    <Compile Remove="Entity\CoderManager.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.705.50" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Coder\Agebull.EntityModel.RobotCoder.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="CodePanel\CodePanel.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\AgebullMac\.nuget\packages\microsoft.web.webview2\1.0.705.50\build\\..\runtimes\win-x86\native\WebView2Loader.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\AgebullMac\.nuget\packages\microsoft.web.webview2\1.0.705.50\build\\..\runtimes\win-x64\native\WebView2Loader.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\AgebullMac\.nuget\packages\microsoft.web.webview2\1.0.705.50\build\\..\runtimes\win-x86\native\WebView2Loader.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\AgebullMac\.nuget\packages\microsoft.web.webview2\1.0.705.50\build\\..\runtimes\win-x64\native\WebView2Loader.dll" />
   </ItemGroup>
 
 </Project>

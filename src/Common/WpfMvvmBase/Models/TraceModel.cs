@@ -1,5 +1,6 @@
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel;
+using Agebull.EntityModel.Config;
 using System.Windows;
 using System.Windows.Media;
 
@@ -54,13 +55,29 @@ namespace Agebull.CodeRefactor.CodeRefactor
                 RaisePropertyChanged(() => MessageToTrace);
             }
         }
-
+        /// <summary>
+        /// 消息是否写入跟踪信息中
+        /// </summary>
+        public bool DetailTrace
+        {
+            get => SolutionConfig.Current.DetailTrace;
+            set
+            {
+                if (Equals(SolutionConfig.Current.DetailTrace, value))
+                {
+                    return;
+                }
+                SolutionConfig.Current.DetailTrace = value;
+                RaisePropertyChanged(() => DetailTrace);
+            }
+        }
+        
         public CommandItemBase ClearTraceCommand => _clearTraceCommand ??= new CommandItem
         {
             NoConfirm = true,
             Action = ClearTrace,
             Caption = "清除跟踪信息",
-            Image = Application.Current.Resources["tree_Close"] as ImageSource
+            IconName = "清除"
         };
 
 
@@ -74,7 +91,7 @@ namespace Agebull.CodeRefactor.CodeRefactor
             NoConfirm = true,
             Action = CopyTrace,
             Caption = "复制跟踪信息",
-            Image = Application.Current.Resources["tree_Close"] as ImageSource
+            IconName = "复制"
         };
 
         public CommandItemBase ShowDefaultMessageCommand => new CommandItem
@@ -87,7 +104,7 @@ namespace Agebull.CodeRefactor.CodeRefactor
             },
             NoConfirm = true,
             Caption = "切换到全局消息",
-            Image = Application.Current.Resources["tree_default"] as ImageSource
+            IconName = "切换"
         };
 
         private void CopyTrace(object arg)

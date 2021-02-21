@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 
 namespace Agebull.EntityModel.Config
 {
+
     /// <summary>
     ///     配置基础
     /// </summary>
@@ -17,17 +18,18 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public ConfigBase()
         {
-            GlobalTrigger.OnCtor(this);
             Option.Config = this;
+            ValueRecords.Add(nameof(Option), _option);
+            GlobalTrigger.OnCtor(this);
         }
 
         /// <summary>
         /// 联合编辑配置
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         public virtual ConfigBase Friend => null;
 
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         private ConfigDesignOption _option;
 
         /// <summary>
@@ -36,13 +38,13 @@ namespace Agebull.EntityModel.Config
         [DataMember, JsonProperty("option", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         public ConfigDesignOption Option
         {
-            get => _option ??= new ConfigDesignOption { Config = this };
-            set
+            get
             {
-                _option = value;
                 if (_option != null)
-                    _option.Config = this;
-                OnPropertyChanged(nameof(Option));
+                    return _option;
+                _option ??= new ConfigDesignOption { Config = this };
+                BeforePropertyChange(nameof(Option), null, _option);
+                return _option;
             }
         }
 
@@ -63,7 +65,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 属性别名
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"别名"), Description("属性别名")]
         public string Alias
         {
@@ -72,7 +74,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_alias == value)
                     return;
-                BeforePropertyChanged(nameof(Alias), _alias, value);
+                BeforePropertyChange(nameof(Alias), _alias, value);
                 _alias = string.IsNullOrWhiteSpace(value) || value == Name ? null : value.Trim();
                 OnPropertyChanged(nameof(Alias));
             }
@@ -91,7 +93,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 属性别名
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"别名"), Description("属性别名")]
         public string OldName
         {
@@ -100,7 +102,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_oldName == value)
                     return;
-                BeforePropertyChanged(nameof(OldName), _oldName, value);
+                BeforePropertyChange(nameof(OldName), _oldName, value);
                 _oldName = value?.Trim();
                 OnPropertyChanged(nameof(OldName));
             }
@@ -112,7 +114,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     名称
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"名称")]
+        [JsonIgnore, Category("设计支持"), DisplayName(@"名称")]
         public sealed override string Name
         {
             get => Option.Reference != null ? Option.Reference.Name : base.Name;
@@ -122,7 +124,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     标题
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"标题")]
+        [JsonIgnore, Category("设计支持"), DisplayName(@"标题")]
         public sealed override string Caption
         {
             get => Option.Reference != null ? Option.Reference.Caption : base.Caption;
@@ -132,7 +134,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     说明
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"说明")]
+        [JsonIgnore, Category("设计支持"), DisplayName(@"说明")]
         public sealed override string Description
         {
             get => Option.Reference != null ? Option.Reference.Description : base.Description;
@@ -142,13 +144,131 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 参见
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"参见")]
+        [JsonIgnore, Category("设计支持"), DisplayName(@"参见")]
         public sealed override string Remark
         {
             get => Option.Reference != null ? Option.Reference.Remark : base.Remark;
             set => base.Remark = value;
         }*/
         #endregion
+
+
+        #region 设计标识
+
+        /// <summary>
+        /// 标识
+        /// </summary>
+        /// <remark>
+        /// 名称
+        /// </remark>
+        [JsonIgnore]
+        [Category("设计标识"), DisplayName("标识"), Description("名称")]
+        public override string Key => Option.Key;
+
+        /// <summary>
+        /// 唯一标识
+        /// </summary>
+        /// <remark>
+        /// 唯一标识
+        /// </remark>
+        [JsonIgnore]
+        [Category("设计标识"), DisplayName("唯一标识"), Description("唯一标识")]
+        public int Identity
+        {
+            get => Option.Identity;
+            set => Option.Identity = value;
+        }
+
+        /// <summary>
+        /// 编号
+        /// </summary>
+        /// <remark>
+        /// 编号
+        /// </remark>
+        [JsonIgnore]
+        [Category("设计标识"), DisplayName("编号"), Description("编号")]
+        public int Index
+        {
+            get => Option.Index;
+            set => Option.Index = value;
+        }
+        #endregion
+
+        #region 系统
+
+        /// <summary>
+        /// 是否活动
+        /// </summary>
+        [JsonIgnore, Browsable(false), ReadOnly(true)]
+        [Category("设计器支持"), DisplayName("是否活动")]
+        public bool IsActive => Option.IsNormal;
+
+        /// <summary>
+        /// 引用对象键
+        /// </summary>
+        /// <remark>
+        /// 引用对象键
+        /// </remark>
+        [JsonIgnore]
+        [Category("设计器支持"), DisplayName("引用对象键"), Description("引用对象键，指内部对象的引用")]
+        public string ReferenceKey
+        {
+            get => Option.ReferenceKey;
+            set => Option.ReferenceKey = value;
+        }
+
+        /// <summary>
+        /// 是否参照对象
+        /// </summary>
+        /// <remark>
+        /// 是否参照对象，是则永远只读
+        /// </remark>
+        [JsonIgnore]
+        [Category("设计器支持"), DisplayName("是否参照对象"), Description("是否参照对象，是则永远只读")]
+        public bool IsReference => Option.IsReference;
+
+        /// <summary>
+        /// 废弃
+        /// </summary>
+        /// <remark>
+        /// 废弃
+        /// </remark>
+        [JsonIgnore]
+        [Category("设计器支持"), DisplayName("废弃"), Description("废弃")]
+        public bool IsDiscard
+        {
+            get => Option.IsDiscard;
+            set => Option.IsDiscard = value;
+        }
+
+        /// <summary>
+        /// 冻结
+        /// </summary>
+        /// <remark>
+        /// 如为真,此配置的更改将不生成代码
+        /// </remark>
+        [JsonIgnore]
+        [Category("设计器支持"), DisplayName("冻结"), Description("如为真,此配置的更改将不生成代码")]
+        public bool IsFreeze
+        {
+            get => Option.IsFreeze;
+            set => Option.IsFreeze = value;
+        }
+
+        /// <summary>
+        /// 标记删除
+        /// </summary>
+        /// <remark>
+        /// 如为真,保存时删除
+        /// </remark>
+        [JsonIgnore]
+        [Category("设计器支持"), DisplayName("标记删除"), Description("如为真,保存时删除")]
+        public bool IsDelete
+        {
+            get => Option.IsDelete;
+            set => Option.IsDelete = value;
+        }
+        #endregion 系统 
 
         #region 扩展配置
 
@@ -183,132 +303,30 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 扩展配置
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore, Browsable(false)]
-        public ConfigItemListBool ExtendConfigListBool => Option.ExtendConfigListBool;
-
-        /// <summary>
-        /// 扩展配置
-        /// </summary>
-        [IgnoreDataMember, JsonIgnore, Browsable(false)]
-        public ConfigItemList ExtendConfigList => Option.ExtendConfigList;
-
-        #endregion
-
-        #region 设计标识
-
-        /// <summary>
-        /// 标识
-        /// </summary>
-        /// <remark>
-        /// 名称
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category("设计标识"), DisplayName("标识"), Description("名称")]
-        public override string Key => Option.Key;
-
-        /// <summary>
-        /// 唯一标识
-        /// </summary>
-        /// <remark>
-        /// 唯一标识
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category("设计标识"), DisplayName("唯一标识"), Description("唯一标识")]
-        public int Identity
-        {
-            get => Option.Identity;
-            set => Option.Identity = value;
-        }
-
-        /// <summary>
-        /// 编号
-        /// </summary>
-        /// <remark>
-        /// 编号
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category("设计标识"), DisplayName("编号"), Description("编号")]
-        public int Index
-        {
-            get => Option.Index;
-            set => Option.Index = value;
-        }
-        #endregion
-
-        #region 系统
-
-        /// <summary>
-        /// 引用对象键
-        /// </summary>
-        /// <remark>
-        /// 引用对象键
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category("设计器支持"), DisplayName("引用对象键"), Description("引用对象键，指内部对象的引用")]
-        public string ReferenceKey
-        {
-            get => Option.ReferenceKey;
-            set => Option.ReferenceKey = value;
-        }
-
-        /// <summary>
-        /// 是否参照对象
-        /// </summary>
-        /// <remark>
-        /// 是否参照对象，是则永远只读
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category("设计器支持"), DisplayName("是否参照对象"), Description("是否参照对象，是则永远只读")]
-        public bool IsReference => Option.IsReference;
-
-        /// <summary>
-        /// 废弃
-        /// </summary>
-        /// <remark>
-        /// 废弃
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category("设计器支持"), DisplayName("废弃"), Description("废弃")]
-        public bool IsDiscard => Option.IsDiscard;
-
-        /// <summary>
-        /// 冻结
-        /// </summary>
-        /// <remark>
-        /// 如为真,此配置的更改将不生成代码
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category("设计器支持"), DisplayName("冻结"), Description("如为真,此配置的更改将不生成代码")]
-        public bool IsFreeze => Option.IsFreeze;
-
-        /// <summary>
-        /// 标记删除
-        /// </summary>
-        /// <remark>
-        /// 如为真,保存时删除
-        /// </remark>
-        [IgnoreDataMember, JsonIgnore]
-        [Category("设计器支持"), DisplayName("标记删除"), Description("如为真,保存时删除")]
-        public bool IsDelete => Option.IsDelete;
-        #endregion 系统 
-
-        #region 扩展
-
-        /// <summary>
         /// 标签（对应关系等）
         /// </summary>
         /// <remark>
         /// 值
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("*设计"), DisplayName("标签（对应关系等）"), Description("值")]
         public string Tag
         {
             get => this["Tag"];
             set => this["Tag"] = value;
         }
+
+        /// <summary>
+        /// 扩展配置
+        /// </summary>
+        [JsonIgnore, Browsable(false)]
+        public ConfigItemListBool ExtendConfigListBool => Option.ExtendConfigListBool;
+
+        /// <summary>
+        /// 扩展配置
+        /// </summary>
+        [JsonIgnore, Browsable(false)]
+        public ConfigItemList ExtendConfigList => Option.ExtendConfigList;
 
         #endregion
     }

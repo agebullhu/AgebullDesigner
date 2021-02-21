@@ -8,19 +8,15 @@
 
 #region 引用
 
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows;
-using System.Windows.Media;
-using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
+using System.Linq;
 
 #endregion
 
 namespace Agebull.EntityModel.Designer
 {
-    public sealed class EnumListViewModel : ExtendViewModelBase<EnumListModel>
+    public sealed class EnumListViewModel : EditorViewModelBase<EnumListModel>
     {
 
     }

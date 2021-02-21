@@ -4,4 +4,9 @@
     <ShowAllFiles>true</ShowAllFiles>
     <ProjectView>ShowAllFiles</ProjectView>
   </PropertyGroup>
+  <ItemGroup>
+    <Page Update="WebFont\style.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
 </Project>

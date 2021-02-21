@@ -21,7 +21,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 名称
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         public string Name
         {
             get => _name;
@@ -37,7 +37,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 数据类型
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         public string Type
         {
             get => _type;
@@ -53,7 +53,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 值
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         public string Value
         {
             get => _value;

@@ -29,6 +29,6 @@
         /// </summary>
         /// <param name="field"></param>
         /// <returns></returns>
-        string FormatFieldName(IFieldConfig field);
+        string FormatFieldName(IPropertyConfig field);
     }
 }

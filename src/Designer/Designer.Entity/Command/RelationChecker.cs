@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
+using System;
 using System.Diagnostics;
 using System.Linq;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -14,14 +15,14 @@ namespace Agebull.EntityModel.Designer
         ///     检查
         /// </summary>
         /// <returns></returns>
-        internal static void DoCheck(EntityConfig entity)
+        internal static void DoCheck(IEntityConfig entity)
         {
             Trace.WriteLine($"**********{entity.Caption ?? entity.Name}**********");
             try
             {
-                var fields = entity.Properties.Where(p => 
+                var fields = entity.DataTable.Where(p =>
                     /*p.CsType == "long" && */p.Name.Length > 3 &&
-                    string.Equals(p.Name.Substring(p.Name.Length - 2), "ID",StringComparison.OrdinalIgnoreCase)).ToArray();
+                    string.Equals(p.Name.Substring(p.Name.Length - 2), "ID", StringComparison.OrdinalIgnoreCase)).ToArray();
                 foreach (var field in fields)
                 {
                     var words = GlobalConfig.SplitWords(field.Name);
@@ -35,7 +36,7 @@ namespace Agebull.EntityModel.Designer
                     {
                         continue;
                     }
-                    field.IsCompute = false;
+                    field.IsReadonly = false;
                     field.IsLinkCaption = false;
                     field.IsLinkField = true;
                     field.LinkTable = re.Name;
@@ -54,19 +55,19 @@ namespace Agebull.EntityModel.Designer
         ///     检查
         /// </summary>
         /// <returns></returns>
-        internal static void CheckLinkType(EntityConfig entity)
+        internal static void CheckLinkType(IEntityConfig entity)
         {
-            foreach (var field in entity.Properties.Where(p => p.Option.IsLink).ToArray())
+            foreach (var field in entity.DataTable.Where(p => p.Option.IsLink).ToArray())
             {
                 var friend = GlobalConfig.GetEntity(field.LinkTable);
-                var link = friend?.Properties.FirstOrDefault(p =>
+                var link = friend?.DataTable?.Find(p =>
                     (string.Equals(p.Name, field.LinkField, StringComparison.OrdinalIgnoreCase)));
                 if (link == null)
                     continue;
                 field.LinkField = link.Name;
-                field.DataType = link.DataType;
-                field.CsType = link.CsType;
-                field.DbType = link.DbType;
+                field.Property.DataType = link.DataType;
+                field.Property.CsType = link.CsType;
+                field.FieldType = link.FieldType;
                 field.Datalen = link.Datalen;
             }
         }
@@ -74,12 +75,13 @@ namespace Agebull.EntityModel.Designer
         ///     检查
         /// </summary>
         /// <returns></returns>
-        internal static void ClearLink(EntityConfig entity)
+        internal static void ClearLink(IEntityConfig entity)
         {
-            Trace.WriteLine($"**********{entity.Caption ?? entity.Name}**********");
+            DataTableConfig dataTable = entity.DataTable;
+            Trace.WriteLine($"[ClearLink] {entity.Caption ?? entity.Name}");
             try
             {
-                foreach (var field in entity.Properties)
+                foreach (var field in dataTable.Fields)
                 {
                     field.LinkTable = null;
                     field.LinkField = null;
@@ -88,7 +90,7 @@ namespace Agebull.EntityModel.Designer
                     field.IsLinkField = false;
                     field.Option.ReferenceConfig = null;
                     field.Option.IsLink = false;
-                    field.IsCompute = false;
+                    field.IsReadonly = false;
                 }
             }
             catch (Exception e)
@@ -97,55 +99,58 @@ namespace Agebull.EntityModel.Designer
             }
         }
         /// <summary>
-        ///     检查
+        ///     链接标题字段
         /// </summary>
         /// <returns></returns>
-        internal static void DoLink(EntityConfig entity)
+        internal static void DoLinkCaption(IEntityConfig entity)
         {
+            DataTableConfig dataTable = entity.DataTable;
             bool hase = false;
-            Trace.WriteLine($"**********{entity.Caption ?? entity.Name}**********");
+            Trace.WriteLine($"[DoLink] {entity.Caption ?? entity.Name}");
             try
             {
-                foreach (var field in entity.Properties.Where(p => p.IsLinkKey).ToArray())
+                foreach (var linkKey in dataTable.FindAndToArray(p => p.IsLinkKey))
                 {
-                    var re = GlobalConfig.GetEntity(field.LinkTable);
-                    var caption = re?.CaptionColumn;
+                    var linkTable = GlobalConfig.GetEntity(linkKey.LinkTable);
+                    var caption = linkTable?.CaptionColumn;
                     if (caption == null)
                         continue;
                     hase = true;
 
-                    field.LinkTable = re.Name;
-                    field.LinkField = re.PrimaryColumn.Name;
-                    field.IsLinkKey = true;
-                    field.Option.ReferenceConfig = re.PrimaryColumn;
-                    field.Option.IsLink = true;
-                    field.IsCompute = false;
-                    var cf = entity.Properties.FirstOrDefault(p => (p.LinkField == caption.Name&& p.LinkTable == re.Name) || (p.Name == caption.Name && p.NoStorage));
-                    if (cf == null)
+                    linkKey.LinkTable = linkTable.Name;
+                    linkKey.LinkField = linkTable.PrimaryColumn.Name;
+                    linkKey.IsLinkKey = true;
+                    linkKey.Option.ReferenceConfig = linkTable.PrimaryColumn.Field;
+                    linkKey.Option.IsLink = true;
+                    linkKey.IsReadonly = true;
+                    var linkCaption = dataTable.Find(p => p.LinkField == caption.Name && p.LinkTable == linkTable.Name);
+                    if (linkCaption == null)
                     {
-                        entity.Add(cf = new FieldConfig
+                        var property = new FieldConfig
                         {
                             Name = caption.Name
-                        });
-                        cf.Copy(caption.Field);
-                        
+                        };
+                        dataTable.Entity.Entity.Add(property);
+                        property.Copy(caption.Field);
+                        linkCaption = property.DataBaseField;
+                        linkCaption.Copy(caption.Field);
+                        linkCaption.LinkTable = linkTable.Name;
+                        linkCaption.LinkField = caption.Name;
                     }
-                    cf.NoStorage = false;
-                    cf.Caption = $"{re.Caption}{caption.Caption}";
-                    cf.Index = field.Index;
-                    cf.LinkTable = re.Name;
-                    cf.LinkField = caption.Name;
-                    cf.IsCompute = true;
-                    cf.IsLinkCaption = true;
-                    cf.IsLinkKey = false;
-                    cf.Option.ReferenceConfig = caption.Field;
-                    cf.Option.IsLink = true;
-                    Trace.WriteLine($"{entity.Caption ?? entity.Name}:{field.Name} => {re.Caption ?? re.Name}:{re.PrimaryField }");
+                    linkCaption.NoStorage = false;
+                    linkCaption.Caption = $"{linkTable.Caption}{caption.Caption}";
+                    linkCaption.Index = linkKey.Index;
+                    linkCaption.IsReadonly = false;
+                    linkCaption.IsLinkCaption = true;
+                    linkCaption.IsLinkKey = false;
+                    linkCaption.Option.ReferenceConfig = caption.Field;
+                    linkCaption.Option.IsLink = true;
+                    Trace.WriteLine($"{dataTable.Caption ?? dataTable.Name}:{linkKey.Name} => {linkTable.Caption ?? linkTable.Name}:{linkTable.PrimaryField }");
                 }
 
                 if (!hase)
                 {
-                    entity.ReadTableName = entity.SaveTableName;
+                    dataTable.ReadTableName = dataTable.SaveTableName;
                     return;
                 }
                 //if (string.IsNullOrWhiteSpace(entity.ReadTableName) || entity.ReadTableName == entity.SaveTable)
@@ -153,9 +158,9 @@ namespace Agebull.EntityModel.Designer
                 //    entity.ReadTableName = DataBaseHelper.ToViewName(entity);
                 //}
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Trace.WriteLine(e);
+                Trace.WriteLine(ex);
             }
         }
     }

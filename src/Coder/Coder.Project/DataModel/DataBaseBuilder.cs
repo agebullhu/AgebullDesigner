@@ -1,10 +1,11 @@
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.Mysql;
+using Agebull.EntityModel.Config.SqlServer;
+using Agebull.EntityModel.Config.V2021;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Config.Mysql;
-using Agebull.EntityModel.Config.SqlServer;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -215,7 +216,7 @@ namespace {Project.NameSpace}.DataAccess
         {");
             foreach (var entity in Project.Entities)
             {
-                CreateeAccess(code, entity);
+                CreateeAccess(code, entity, entity.DataTable);
             }
             code.Append(@"
         }");
@@ -230,18 +231,18 @@ namespace {Project.NameSpace}.DataAccess
         {");
             foreach (var model in Project.Models)
             {
-                CreateeAccess(code, model);
+                CreateeAccess(code, model, model.DataTable);
             }
             code.Append(@"
         }");
             return code.ToString();
         }
 
-        private void CreateeAccess(StringBuilder code, IEntityConfig entity)
+        private void CreateeAccess(StringBuilder code, IEntityConfig entity, DataTableConfig dataTable)
         {
-            if (!entity.EnableDataBase)
+            if (dataTable == null)
                 return;
-            var name = entity.IsQuery ? "DataQuery" : "DataAccess";
+            var name = dataTable.IsQuery ? "DataQuery" : "DataAccess";
 
             code.Append($@"
             /// <summary>
@@ -296,7 +297,7 @@ namespace {Project.NameSpace}.DataAccess
             var codeStruct = new StringBuilder();
             int idx = 0;
             var primary = entity.PrimaryColumn;
-            var last = entity.LastProperties.Where(p => p != primary && !p.NoStorage);
+            var last = entity.WhereLast(p => p != primary);
             EntityProperty(codeStruct, entity, primary, ref idx, false);
             foreach (var property in last.Where(p => !p.IsInterfaceField).OrderBy(p => p.Index))
             {
@@ -340,7 +341,7 @@ namespace {Project.NameSpace}.DataAccess
             /// <summary>
             /// 数据表名称
             /// </summary>
-            public const string tableName = ""{entity.SaveTableName}"";
+            public const string tableName = ""{entity.DataTable?.SaveTableName}"";
 
             /// <summary>
             /// 实体说明
@@ -356,7 +357,7 @@ namespace {Project.NameSpace}.DataAccess
 ";
         }
 
-        internal static string EntityProperty(StringBuilder codeStruct, IEntityConfig model, IFieldConfig property, ref int idx, bool pro)
+        internal static string EntityProperty(StringBuilder codeStruct, IEntityConfig model, IPropertyConfig property, ref int idx, bool pro)
         {
             var str = new StringBuilder("new EntityProperty(");
             bool isOutField = false;
@@ -365,24 +366,24 @@ namespace {Project.NameSpace}.DataAccess
                 if (pro)
                     return null;
                 isOutField = true;
-                str.Append($"{property.Entity.Name}_Struct_.{property.Field.Name}");
+                str.Append($"{property.Entity.Name}_Struct_.{property.Name}");
             }
-            else if (property.IsReference && property.Option.Reference is IFieldConfig rf && rf.IsInterfaceField)
+            else if (property.IsReference && property.Option.Reference is IPropertyConfig rf && rf.IsInterfaceField)
             {
                 if (pro)
                     return null;
                 isOutField = true;
-                var friend = property.Option.Reference as IFieldConfig;
+                var friend = property.Option.Reference as IPropertyConfig;
                 str.Append($"GlobalDataInterfaces.{friend.Entity.Name}.{friend.Name}");
             }
-            else if (property.IsLinkField)
+            else if (!property.NoStorage && property.DataBaseField.IsLinkField)
             {
-                var entity = GlobalConfig.GetEntity(property.LinkTable);
+                var entity = GlobalConfig.GetEntity(property.DataBaseField.LinkTable);
                 if (entity != null)
                 {
                     if (pro)
                         return null;
-                    var friend = entity.Find(property.LinkField);
+                    var friend = entity.Find(property.DataBaseField.LinkField);
                     isOutField = true;
                     str.Append($"{entity.Name}_Struct_.{friend.Name}");
                 }
@@ -392,24 +393,24 @@ namespace {Project.NameSpace}.DataAccess
                 PropertyStruct(codeStruct, property);
                 if (pro)
                     return null;
-                str.Append($"{property.Entity.Name}_Struct_.{property.Field.Name}");
+                str.Append($"{property.Entity.Name}_Struct_.{property.Name}");
             }
             str.Append($", {idx++}");
             if (isOutField)
-                str.Append($", \"{property.Name}\", \"{property.Entity.SaveTableName}\", \"{property.DbFieldName}\", {ReadWrite(property)}, {PropertyFeature(property)}");
+                str.Append($", \"{property.Name}\", \"{property.Entity.DataTable.SaveTableName}\", \"{property.DataBaseField?.DbFieldName}\", {ReadWrite(property.DataBaseField)}, {PropertyFeature(property)}");
             str.Append(")");
             return str.ToString();
         }
 
-        public static string ReadWrite(IFieldConfig property)
+        public static string ReadWrite(DataBaseFieldConfig field)
         {
-            if (property.NoStorage || property.DbInnerField || property.NoProperty)
+            if (field == null || !field.IsActive || field.NoStorage)
             {
                 return "ReadWriteFeatrue.None";
             }
-            bool read = !property.KeepStorageScreen.HasFlag(StorageScreenType.Read);
-            var insert = property.IsLinkKey || !property.IsLinkField && !property.IsIdentity && !property.KeepStorageScreen.HasFlag(StorageScreenType.Insert);
-            var update = !property.IsLinkField && !property.IsIdentity && !property.KeepStorageScreen.HasFlag(StorageScreenType.Update);
+            bool read = field.CanRead;
+            var insert = field.CanInsert;
+            var update = field.CanUpdate;
 
             if (read && insert && update)
             {
@@ -442,7 +443,7 @@ namespace {Project.NameSpace}.DataAccess
             return "ReadWriteFeatrue.None";
         }
 
-        static string PropertyFeature(IFieldConfig property)
+        static string PropertyFeature(IPropertyConfig property)
         {
             var features = new List<string>();
             if (property.IsInterfaceField)
@@ -465,23 +466,23 @@ namespace {Project.NameSpace}.DataAccess
             {
                 return head + "PropertyFeatrue.Property";
             }
-            if (property.DbInnerField)
+            var field = property.DataBaseField;
+            if (field.DbInnerField)
             {
                 return head + "PropertyFeatrue.Field";
             }
-            if (property.IsLinkKey)
+            if (field.IsLinkKey)
             {
                 return head + "PropertyFeatrue.ForeignKey";
             }
-            if (property.IsLinkField)
+            if (field.IsLinkField)
             {
                 return head + "PropertyFeatrue.OutProperty";
             }
-
             return head + "PropertyFeatrue.General";
         }
 
-        static void PropertyStruct(StringBuilder codeStruct, IFieldConfig property)
+        static void PropertyStruct(StringBuilder codeStruct, IPropertyConfig property)
         {
             string featrue;
             if (property.IsPrimaryKey)
@@ -492,13 +493,20 @@ namespace {Project.NameSpace}.DataAccess
             {
                 featrue = "PropertyFeatrue.Property";
             }
-            else if (!property.DbInnerField && !property.NoProperty)
+            else if (property.NoProperty)
             {
-                featrue = "PropertyFeatrue.General";
+                if (property.DataBaseField.DbInnerField)
+                    featrue = "PropertyFeatrue.Field";
+                else
+                    featrue = "PropertyFeatrue.None";
+            }
+            else if (property.DataBaseField.DbInnerField)
+            {
+                featrue = "PropertyFeatrue.Field";
             }
             else
             {
-                featrue = "PropertyFeatrue.Field";
+                featrue = "PropertyFeatrue.General";
             }
 
             codeStruct.Append($@"
@@ -513,23 +521,23 @@ namespace {Project.NameSpace}.DataAccess
                 PropertyType   = typeof({property.CustomType ?? property.CsType}),
                 ValueType      = PropertyValueType.{CsharpHelper.PropertyValueType(property)},
                 CanNull        = {(property.Nullable ? "true" : "false")},
-                DbType         = {DbType(property)},
-                FieldName      = ""{property.DbFieldName}"",
+                DbType         = {DbType(property.DataBaseField)},
+                FieldName      = ""{property.DataBaseField?.DbFieldName}"",
                 JsonName       = ""{property.JsonName}"",
                 Entity         = entityName,
                 PropertyFeatrue= {featrue},
-                DbReadWrite    = {ReadWrite(property)},
+                DbReadWrite    = {ReadWrite(property.DataBaseField)},
                 CanImport      = {(property.ExtendConfigListBool["easyui", "CanImport"] ? "true" : "false")},
                 CanExport      = {(property.ExtendConfigListBool["easyui", "CanExport"] ? "true" : "false")},
                 Description    = @""{property.Description}""
             }};");
         }
 
-        static string DbType(IFieldConfig field)
+        static string DbType(DataBaseFieldConfig field)
         {
-            return field.Entity.Parent.DbType == DataBaseType.SqlServer
-                ? $"(int)System.Data.SqlDbType.{SqlServerHelper.ToSqlDbType(field.DbType, field.CsType)}"
-                : $"(int)MySqlConnector.MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field.DbType, field.CsType)}";
+            return field == null || !field.IsActive ? null : field.Entity.Project.DbType == DataBaseType.SqlServer
+                ? $"(int)System.Data.SqlDbType.{SqlServerHelper.ToSqlDbType(field.FieldType, field.CsType)}"
+                : $"(int)MySqlConnector.MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field.FieldType, field.CsType)}";
         }
 
         #endregion

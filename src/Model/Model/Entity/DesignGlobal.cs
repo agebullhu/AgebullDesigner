@@ -1,5 +1,3 @@
-using System.Collections.ObjectModel;
-using System.IO;
 using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.Designer
@@ -161,6 +159,14 @@ namespace Agebull.EntityModel.Designer
                 return _apiItems;
             }
         }
-
+        public void Clear()
+        {
+            _entities = null;
+            _enums = null;
+            _models = null;
+            _projects = null;
+            _solutions = null;
+            _apiItems = null;
+        }
     }
 }

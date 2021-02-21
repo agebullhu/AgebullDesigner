@@ -11,6 +11,7 @@
               HorizontalAlignment="Stretch"
               FontFamily="Verdana"
               FontSize="14"
-              Background="#FFF0F0F0"
-              Foreground="#FF180EF1" />
+              Background="{x:Null}"
+              Margin="0"
+              Foreground="#FF180EF1" BorderThickness="0" />
 </UserControl>

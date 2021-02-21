@@ -12,10 +12,10 @@
         <designer:RegularViewModel/>
     </UserControl.DataContext>
     <DockPanel>
-        <GroupBox DockPanel.Dock="Bottom"  Header="数据规则" Margin="5"  DataContext="{Binding Model.Context.SelectField}">
-            <GroupBox.Resources>
+        <Border Background="White" DockPanel.Dock="Bottom" DataContext="{Binding Model.Context.SelectField}">
+            <Border.Resources>
                 <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml"/>
-            </GroupBox.Resources>
+            </Border.Resources>
             <StackPanel Style="{StaticResource LayoutPanel}">
                 <StackPanel Style="{StaticResource FieldPanel}">
                     <Label Content = "初始值" />
@@ -47,7 +47,7 @@
                 </StackPanel>
                 <StackPanel Style="{StaticResource FieldPanel}">
                     <Label Content = "可存储空" />
-                    <ComboBox Style="{StaticResource BoolCombo}"  SelectedValue="{Binding DbNullable,Mode=TwoWay}" />
+                    <ComboBox Style="{StaticResource BoolCombo}"  SelectedValue="{Binding DataBaseField.DbNullable,Mode=TwoWay}" />
                     <TextBlock Style="{StaticResource HelpText}">
                         指在数据存储时可为空值,即数据库中的NULL类型,否则使用的是初始值设置的内容(如果未设置,则数字为0,其它类型不可预知)
                     </TextBlock>
@@ -66,13 +66,13 @@
                         当为真时：非审核对象每次录入都会校验；审核对象在提交时校验，即正式数据必填，草稿状态按【可为空值】设置来。
                     </TextBlock>
                 </StackPanel>
-                <StackPanel Style="{StaticResource FieldPanel}">
+                <!--StackPanel Style="{StaticResource FieldPanel}">
                     <Label Content = "首次写入" />
                     <ComboBox Style="{StaticResource BoolCombo}"  SelectedValue="{Binding KeepUpdate,Mode=TwoWay}" />
                     <TextBlock Style="{StaticResource HelpText}">
                         新增时录入后不再被更改(即INSERT的SQL包括此字段,UPDATE的SQL不包括)
                     </TextBlock>
-                </StackPanel>
+                </StackPanel-->
                 <StackPanel Style="{StaticResource FieldPanel}">
                     <Label Content = "用户只读" />
                     <ComboBox Style="{StaticResource BoolCombo}"  SelectedValue="{Binding IsUserReadOnly,Mode=TwoWay}" />
@@ -81,7 +81,7 @@
                     </TextBlock>
                 </StackPanel>
             </StackPanel>
-        </GroupBox>
+        </Border>
         <DataGrid AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
@@ -94,14 +94,14 @@
                                     Header="标题" />
                 <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                                     Header="属性" />
-                <DataGridCheckBoxColumn
-                    Binding="{Binding KeepUpdate,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="首次写入" />
+                <!--DataGridCheckBoxColumn
+                    Binding="{Binding KeepUpdate,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="首次写入" /-->
                 <DataGridCheckBoxColumn
                     Binding="{Binding IsSystemField,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="系统" />
                 <DataGridCheckBoxColumn
                     Binding="{Binding IsCompute,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="计算列" />
                 <DataGridCheckBoxColumn
-                    Binding="{Binding DbNullable,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="可存储空" />
+                    Binding="{Binding DataBaseField.DbNullable,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="可存储空" />
                 <DataGridCheckBoxColumn
                     Binding="{Binding Nullable,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Header="空类型" />
                 <DataGridCheckBoxColumn

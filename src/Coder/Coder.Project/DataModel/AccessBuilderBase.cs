@@ -1,10 +1,9 @@
+using Agebull.EntityModel.Config;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.RobotCoder.DataBase.MySql;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -63,6 +62,7 @@ namespace {Project.NameSpace}.DataAccess
 
         protected string Code()
         {
+            var primary = Model.DataTable.PrimaryField;
             return $@"#region
 using System;
 using System.Collections.Generic;
@@ -122,7 +122,7 @@ namespace {Project.NameSpace}.DataAccess
                 ReadTableName    = {Model.Entity.Name}_Struct_.tableName,
                 WriteTableName   = {Model.Entity.Name}_Struct_.tableName,
                 PrimaryProperty  = {Model.Entity.Name}_Struct_.primaryProperty,
-                IsIdentity       = {(Model.PrimaryColumn?.IsIdentity ?? false ? "true" : "false")},{Interfaces(Model)}
+                IsIdentity       = {(primary?.IsIdentity ?? false ? "true" : "false")},{Interfaces(Model)}
                 Properties       = new List<EntityProperty>
                 {{
                     {EntityStruct()}
@@ -133,7 +133,7 @@ namespace {Project.NameSpace}.DataAccess
             {{
                 IsQuery          = false,
                 UpdateByMidified = true,
-                EventLevel       = EventEventLevel.{(Model.EnableDataEvent ? "Simple" : "None")},
+                EventLevel       = EventEventLevel.{(Model.DataTable.EnableDataEvent ? "Simple" : "None")},
                 InjectionLevel   = InjectionLevel.All,
                 SqlBuilder       = new MySqlSqlBuilder<{Model.EntityName}>(),
                 DataStruct       = Struct,
@@ -292,9 +292,10 @@ namespace {Project.NameSpace}.DataAccess
             //    EntityStruct(modelBase, properties, ref idx);
             //}
             var code = new StringBuilder();
-            var primary = model.PrimaryColumn;
-            var last = model.LastProperties.Where(p => p != primary && !p.NoStorage);
-            properties.Add(DataBaseBuilder.EntityProperty(code, model, primary, ref idx, false));
+            var table = model.DataTable;
+
+            var last = model.WhereLast(p => p != model.PrimaryColumn);
+            properties.Add(DataBaseBuilder.EntityProperty(code, model, model.PrimaryColumn, ref idx, false));
             foreach (var property in last.Where(p => !p.IsInterfaceField).OrderBy(p => p.Index))
             {
                 properties.Add(DataBaseBuilder.EntityProperty(code, model, property, ref idx, false));
@@ -341,19 +342,12 @@ namespace {Project.NameSpace}.DataAccess
             if (property == null) return null;
             switch (property.ToLower()) 
             {{");
-
-            foreach (var property in Model.PublishProperty.Where(p => p.CanGet))
+            var gets = Model.FindLastAndToArray(p => !p.NoProperty && p.CanGet);
+            foreach (var property in gets)
             {
-                var names = property.GetAliasPropertys().Select(p => p.ToLower()).ToList();
-                var name = property.Name.ToLower();
-                if (!names.Contains(name))
-                    names.Add(name);
-                name = property.DbFieldName.ToLower();
-                if (!names.Contains(name))
-                    names.Add(name);
-                foreach (var alias in names)
+                foreach (var name in Names(property))
                     code.Append($@"
-                case ""{alias}"" :");
+                case ""{name}"" :");
                 code.Append($@"
                     return entity.{property.Name};");
             }
@@ -380,22 +374,13 @@ namespace {Project.NameSpace}.DataAccess
             if(property == null) return;
             switch(property.Trim().ToLower())
             {{");
-
-            foreach (var property in Model.PublishProperty.Where(p => p.CanSet))
+            var sets = Model.FindLastAndToArray(p => !p.NoProperty && p.CanSet);
+            foreach (var property in sets)
             {
-                var names = property.GetAliasPropertys().Select(p => p.ToLower()).ToList();
-
-                var varName = $"tmp{property.Name}_";
-
-                var name = property.Name.ToLower();
-                if (!names.Contains(name))
-                    names.Add(name);
-                name = property.DbFieldName.ToLower();
-                if (!names.Contains(name))
-                    names.Add(name);
-                foreach (var alia in names)
+                var varName = $"tmp{property.Name}";
+                foreach (var name in Names(property))
                     code.Append($@"
-            case ""{alia}"":");
+            case ""{name}"":");
 
                 code.Append($@"
                 if (value == null)
@@ -417,8 +402,8 @@ namespace {Project.NameSpace}.DataAccess
                         code.Append($@"
                 else if(value is int i{property.Name})
                     entity.{property.Name} = i{property.Name} != 0;
-                else if (int.TryParse(value.ToString(), out var { name}_vl))
-                    entity.{ property.Name} = { name}_vl != 0; ");
+                else if (int.TryParse(value.ToString(), out var { property.Name}_vl))
+                    entity.{ property.Name} = { property.Name}_vl != 0; ");
                         break;
                 }
 
@@ -443,7 +428,14 @@ namespace {Project.NameSpace}.DataAccess
 
             return code.ToString();
         }
-
+        string[] Names(IPropertyConfig property)
+        {
+            var names = property.GetAliasPropertys().ToList();
+            names.Add(property.Name);
+            names.Add(property.JsonName);
+            names.Add(property.DataBaseField?.DbFieldName);
+            return names.Where(p => p.IsPresent()).Select(p => p.ToLower()).Distinct().ToArray();
+        }
         #endregion
     }
 }

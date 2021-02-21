@@ -21,7 +21,7 @@ namespace Agebull.EntityModel
     ///     扩展方法字典
     /// </summary>
     /// <remarks>
-    ///     依赖对象都为IgnoreDataMember属性,即不可网络序列化
+    ///     依赖对象都为JsonIgnore属性,即不可网络序列化
     /// </remarks>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
     public abstract class FunctionDictionaryBase
@@ -29,13 +29,13 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 有名称的方法字典
         /// </summary>
-        [IgnoreDataMember]
+        [JsonIgnore]
         private readonly Dictionary<string, object> _nameDictionary = new Dictionary<string, object>();
 
         /// <summary>
         /// 依赖字典
         /// </summary>
-        [IgnoreDataMember]
+        [JsonIgnore]
         private readonly Dictionary<Type, object> _dependencyDictionary = new Dictionary<Type, object>();
 
         /// <summary>

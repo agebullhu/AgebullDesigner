@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 
-#if CLIENT
 namespace Agebull.EntityModel
 {
     /// <summary>
@@ -20,7 +19,7 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 当前工作模式
         /// </summary>
-        [ThreadStatic] internal static WorkModel _workModel;
+        internal static WorkModel _workModel;
 
         /// <summary>
         /// 当前工作模式
@@ -31,7 +30,7 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 是否不引发修改事件
         /// </summary>
-        public static bool IsNoChangedNotify => WorkModel >= WorkModel.Show;
+        public static bool IsNoChangedNotify => WorkModel >= WorkModel.Coder;
 
         /// <summary>
         /// 正在载入
@@ -62,7 +61,7 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 代码显示器
         /// </summary>
-        [ThreadStatic] internal static Dictionary<string, string> codes;
+        [ThreadStatic] public static Dictionary<string, string> codes;
 
         /// <summary>
         /// 代码显示器
@@ -73,7 +72,7 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 代码显示器
         /// </summary>
-        [ThreadStatic] internal static bool? writeToFile;
+        [ThreadStatic] public static bool? writeToFile;
 
         /// <summary>
         /// 代码显示器
@@ -82,4 +81,3 @@ namespace Agebull.EntityModel
 
     }
 }
-#endif

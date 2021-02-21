@@ -1,10 +1,10 @@
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -13,7 +13,7 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal class FieldModel : DesignCommondBase<IFieldConfig>
+    internal class FieldModel : DesignCommondBase<IPropertyConfig>
     {
         #region 操作命令
 
@@ -23,27 +23,27 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
-            commands.Add(new CommandItemBuilder<IFieldConfig>
+            commands.Add(new CommandItemBuilder<IPropertyConfig>
             {
                 SignleSoruce = false,
                 WorkView = "adv",
                 Catalog = "字段",
                 Action = ChineseField,
                 Caption = "中文字段处理",
-                IconName = "tree_item"
+                IconName = "字段"
             });
 
-            commands.Add(new CommandItemBuilder<IFieldConfig>
+            commands.Add(new CommandItemBuilder<IPropertyConfig>
             {
                 SignleSoruce = false,
-                WorkView= "adv",
+                WorkView = "adv",
                 Catalog = "字段",
                 Action = CheckName,
                 Caption = "属性名称大驼峰",
-                IconName = "tree_item"
+                IconName = "格式"
             });
 
-            commands.Add(new CommandItemBuilder<IFieldConfig>
+            commands.Add(new CommandItemBuilder<IPropertyConfig>
             {
                 SignleSoruce = false,
                 WorkView = "adv",
@@ -51,15 +51,15 @@ namespace Agebull.EntityModel.Designer
                 Action = CheckCaption,
                 Caption = "标题与注释拆解",
                 Description = "第一个[标点]后解析为说明",
-                IconName = "tree_item"
+                IconName = "拆分"
             });
-            commands.Add(new CommandItemBuilder<IFieldConfig>
+            commands.Add(new CommandItemBuilder<IPropertyConfig>
             {
                 Catalog = "字段",
                 WorkView = "adv",
                 Action = UpdateCustomType,
                 Caption = "修复用户类型",
-                IconName = "img_modify"
+                IconName = "类型"
             });
             commands.Add(new CommandItemBuilder<FieldConfig>
             {
@@ -67,13 +67,13 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "编辑",
                 Caption = "删除字段",
                 SignleSoruce = true,
-                IconName = "img_del"
+                IconName = "删除"
             });
         }
 
         #endregion
 
-        public void UpdateCustomType(IFieldConfig field)
+        public void UpdateCustomType(IPropertyConfig field)
         {
             if (string.IsNullOrWhiteSpace(field.CustomType))
             {
@@ -95,34 +95,38 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        public void ChineseField(IFieldConfig property)
+        public void ChineseField(IPropertyConfig property)
         {
             if (property.Name[0] < 255)
                 return;
             var caption = property.Caption ?? property.Name;
 
             property.JsonName = property.Name.ConvertToPinYin().ToLWord();
-            property.DbFieldName = NameHelper.ToName(property.Name.ConvertToPinYin().SplitWords());
+            var field = property.DataBaseField;
+            if (field == null)
+                return;
+            field.DbFieldName = NameHelper.ToName(property.Name.ConvertToPinYin().SplitWords());
         }
 
-        public void CheckName(IFieldConfig property)
+        public void CheckName(IPropertyConfig property)
         {
-            var bak = property.DbFieldName;
-            if (string.IsNullOrWhiteSpace(bak))
-                bak = property.Name;
-            property.Name = GlobalConfig.ToLinkWordName(bak, null,true);
-            property.DbFieldName = bak;
+            var bak = property.Name;
+            property.Name = GlobalConfig.ToLinkWordName(bak, null, true);
+            var field = property.DataBaseField;
+            if (field == null)
+                return;
+            field.DbFieldName = bak;
         }
-        public void CheckCaption(IFieldConfig property)
+        public void CheckCaption(IPropertyConfig property)
         {
             if (string.IsNullOrWhiteSpace(property.Caption))
                 return;
             var caption = property.Caption;
-            for (var idx = 0;idx < caption.Length; idx++)
+            for (var idx = 0; idx < caption.Length; idx++)
             {
                 if (char.IsPunctuation(caption[idx]))
                 {
-                    property.Caption = caption.Substring(0,idx);
+                    property.Caption = caption.Substring(0, idx);
                     property.Description = caption;
                     return;
                 }

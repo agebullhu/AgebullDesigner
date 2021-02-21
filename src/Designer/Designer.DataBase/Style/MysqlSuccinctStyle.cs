@@ -15,7 +15,7 @@
 
         string IDatabaseCodeStyle.FormatTableName(IEntityConfig entity) => GlobalConfig.ToLinkWordName(entity.Name, "_", false);
 
-        string IDatabaseCodeStyle.FormatFieldName(IFieldConfig field) => GlobalConfig.ToLinkWordName(field.Name, "_", false);
+        string IDatabaseCodeStyle.FormatFieldName(IPropertyConfig field) => GlobalConfig.ToLinkWordName(field.Name, "_", false);
 
         string IDatabaseCodeStyle.FormatViewName(IEntityConfig entity) => "view_" + GlobalConfig.ToLinkWordName(entity.Name, "_", false);
 

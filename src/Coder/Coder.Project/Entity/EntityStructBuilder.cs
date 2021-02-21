@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Agebull.EntityModel.Config;
+﻿using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Config.Mysql;
 using Agebull.EntityModel.Config.SqlServer;
+using Agebull.EntityModel.Config.V2021;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -17,11 +18,11 @@ namespace Agebull.EntityModel.RobotCoder
         /// <inheritdoc />
         protected override string Folder => "Struct";
 
-        int DbType(IFieldConfig field)
+        int DbType(DataBaseFieldConfig field)
         {
             if (Project.DbType == DataBaseType.SqlServer)
-                return (int)SqlServerHelper.ToSqlDbType(field.DbType,field.CsType);
-            return (int)MySqlDataBaseHelper.ToSqlDbType(field.DbType, field.CsType);
+                return (int)SqlServerHelper.ToSqlDbType(field.FieldType, field.Property.CsType);
+            return (int)MySqlDataBaseHelper.ToSqlDbType(field.FieldType, field.Property.CsType);
         }
         #endregion
 
@@ -35,14 +36,14 @@ namespace Agebull.EntityModel.RobotCoder
             int idx = 0;
             var codeConst = new StringBuilder();
             var codeStruct = new StringBuilder();
-            EntityStruct(Model, codeStruct, codeConst, ref isFirst,ref idx);
+            EntityStruct(Model, codeStruct, codeConst, ref isFirst, ref idx);
             return $@"
         #region 数据结构
 
         /// <summary>
         /// 实体结构
         /// </summary>
-        [IgnoreDataMember,Browsable (false)]
+        [JsonIgnore,Browsable (false)]
         public override EntityStruct __Struct
         {{
             get
@@ -97,34 +98,34 @@ namespace Agebull.EntityModel.RobotCoder
 ";
         }
 
-        private void EntityStruct(IEntityConfig table, StringBuilder codeStruct, StringBuilder codeConst, ref bool isFirst, ref int idx)
+        private void EntityStruct(IEntityConfig entity, StringBuilder codeStruct, StringBuilder codeConst, ref bool isFirst, ref int idx)
         {
-            if (table == null)
+            if (entity == null || entity.DataTable == null)
                 return;
+            if (!string.IsNullOrWhiteSpace(entity.ModelBase))
+                EntityStruct(Project.Models.FirstOrDefault(p => p.Name == entity.ModelBase), codeStruct, codeConst, ref isFirst, ref idx);
 
-            if (!string.IsNullOrWhiteSpace(table.ModelBase))
-                EntityStruct(Project.Models.FirstOrDefault(p => p.Name == table.ModelBase), codeStruct, codeConst, ref isFirst, ref idx);
-
-            if (table.PrimaryColumn != null)
+            var primary = entity.PrimaryColumn;
+            if (primary != null)
             {
-                codeConst.Append(PropertyIndex(table.PrimaryColumn, ref idx));
-                PropertyStruct(codeStruct, table.PrimaryColumn, ref isFirst);
+                codeConst.Append(PropertyIndex(primary, ref idx));
+                PropertyStruct(codeStruct, primary, ref isFirst);
             }
 
-            foreach (var property in table.PublishProperty.Where(p => p != table.PrimaryColumn).OrderBy(p => p.Index))
-            {
-                codeConst.Append(PropertyIndex(property, ref idx));
-                PropertyStruct(codeStruct, property, ref isFirst);
-            }
-
-            foreach (var property in table.LastProperties.Where(p => !table.PublishProperty.Any(pp => p == pp) && p != table.PrimaryColumn).OrderBy(p => p.Index))
+            foreach (var property in entity.WhereLast(p => p != primary).OrderBy(p => p.Index))
             {
                 codeConst.Append(PropertyIndex(property, ref idx));
                 PropertyStruct(codeStruct, property, ref isFirst);
             }
+            /*
+            foreach (var property in entity.WhereLast(p => p != entity.PrimaryColumn && !entity.PublishProperty.Any(pp => p == pp)).OrderBy(p => p.Index))
+            {
+                codeConst.Append(PropertyIndex(property, ref idx));
+                PropertyStruct(codeStruct, property, ref isFirst);
+            }*/
         }
 
-        private string PropertyIndex(IFieldConfig property, ref int idx)
+        private string PropertyIndex(IPropertyConfig property, ref int idx)
         {
             return $@"
 
@@ -139,7 +140,7 @@ namespace Agebull.EntityModel.RobotCoder
             public const int Real_{property.Name} = {idx++};";
         }
 
-        private void PropertyStruct(StringBuilder codeStruct, IFieldConfig property,ref bool isFirst)
+        private void PropertyStruct(StringBuilder codeStruct, IPropertyConfig property, ref bool isFirst)
         {
             if (isFirst)
                 isFirst = false;
@@ -148,23 +149,23 @@ namespace Agebull.EntityModel.RobotCoder
 
             var featrue = new List<string>();
 
-            if (!property.DbInnerField)
-            {
-                if (property.IsInterfaceField)
-                {
-                    featrue.Add("PropertyFeatrue.Interface");
-                    if (!property.NoProperty)
-                        featrue.Add("PropertyFeatrue.Property");
-                }
-                else
-                {
-                    featrue.Add("PropertyFeatrue.Property");
-                }
-            }
-
+            var field = property.DataBaseField;
             if (!property.NoStorage)
             {
                 featrue.Add("PropertyFeatrue.DbCloumn");
+                if (!field.DbInnerField)
+                {
+                    if (property.IsInterfaceField)
+                    {
+                        featrue.Add("PropertyFeatrue.Interface");
+                        if (!property.NoProperty)
+                            featrue.Add("PropertyFeatrue.Property");
+                    }
+                    else
+                    {
+                        featrue.Add("PropertyFeatrue.Property");
+                    }
+                }
             }
 
             codeStruct.Append($@"
@@ -174,15 +175,15 @@ namespace Agebull.EntityModel.RobotCoder
                         {{
                             Index        = {property.Name},
                             Featrue      = {(featrue.Count == 0 ? "PropertyFeatrue.None" : string.Join(" | ", featrue))},
-                            Link         = ""{property.LinkField}"",
+                            Link         = ""{field?.LinkField}"",
                             Name         = ""{property.Name}"",
                             Caption      = @""{property.Caption}"",
                             JsonName     = ""{property.JsonName}"",
-                            ColumnName   = ""{property.DbFieldName}"",
+                            ColumnName   = ""{field?.DbFieldName}"",
                             PropertyType = typeof({property.CustomType ?? property.CsType}),
                             CanNull      = {(property.Nullable ? "true" : "false")},
                             ValueType    = PropertyValueType.{CsharpHelper.PropertyValueType(property)},
-                            DbType       = {DbType(property)},
+                            DbType       = {DbType(field)},
                             CanImport    = {(property.ExtendConfigListBool["easyui", "CanImport"] ? "true" : "false")},
                             CanExport    = {(property.ExtendConfigListBool["easyui", "CanExport"] ? "true" : "false")},
                             Description  = @""{property.Description}""

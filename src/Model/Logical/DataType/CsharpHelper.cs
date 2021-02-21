@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 
 namespace Agebull.EntityModel.Config
 {
@@ -11,10 +9,10 @@ namespace Agebull.EntityModel.Config
     {
         public static void CheckType(FieldConfig column, string type)
         {
-            column.Datalen = 0;
+            column.DataBaseField.Datalen = 0;
             column.IsDictionary = column.IsArray = false;
             column.IsIdentity = false;
-            column.DbNullable = true;
+            column.DataBaseField.DbNullable = true;
             column.CanEmpty = true;
             column.CsType = null;
             column.ReferenceType = null;
@@ -50,7 +48,7 @@ namespace Agebull.EntityModel.Config
                             column.Nullable = true;
                             break;
                         case '#':
-                            column.DbNullable = false;
+                            column.DataBaseField.DbNullable = false;
                             break;
                         case '!':
                             column.CanEmpty = false;
@@ -72,7 +70,7 @@ namespace Agebull.EntityModel.Config
             {
                 case "type":
                     CheckPropertyType(column, code.ToString());
-                    column.Datalen = 0;
+                    column.DataBaseField.Datalen = 0;
                     if (column.CsType != null)
                         valueType = "*";
                     break;
@@ -83,10 +81,10 @@ namespace Agebull.EntityModel.Config
                 case "len":
                     if (int.TryParse(code.ToString(), out var len))
                     {
-                        if (column.Datalen <= 0)
-                            column.Datalen = len;
+                        if (column.DataBaseField.Datalen <= 0)
+                            column.DataBaseField.Datalen = len;
                         else
-                            column.Scale = len;
+                            column.DataBaseField.Scale = len;
                     }
                     break;
             }
@@ -103,13 +101,13 @@ namespace Agebull.EntityModel.Config
                 case "nvarchar":
                     column.CsType = "string";
                     column.DataType = "String";
-                    if (column.Datalen <= 0)
-                        column.Datalen = 200;
+                    if (column.DataBaseField.Datalen <= 0)
+                        column.DataBaseField.Datalen = 200;
                     break;
                 case "ls":
                     column.CsType = "string";
                     column.DataType = "String";
-                    column.IsBlob = true;
+                    column.DataBaseField.IsBlob = true;
                     break;
                 case "b":
                 case "bit":
@@ -227,7 +225,7 @@ namespace Agebull.EntityModel.Config
                     return csType;
             }
         }
-        public static string PropertyValueType(IFieldConfig col)
+        public static string PropertyValueType(IPropertyConfig col)
         {
             if (col.IsEnum)
                 return "NumberEnum";

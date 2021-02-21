@@ -182,7 +182,7 @@ namespace Agebull.Common.Mvvm
         /// <param name="cmdFilter">过滤器</param>
         /// <param name="arg">当前对象</param>
         /// <returns></returns>
-        public static void EditorToolbar(IList<CommandItemBase> list,Func<ICommandItemBuilder, bool> cmdFilter,Type type)
+        public static void EditorToolbar(IList<CommandItemBase> list, Func<ICommandItemBuilder, bool> cmdFilter, Type type)
         {
             var dictionary = new HashSet<string>();
             foreach (var item in list)
@@ -190,7 +190,7 @@ namespace Agebull.Common.Mvvm
 
             foreach (var item in CommandBuilders)
             {
-                if (!IsType(item.Key,type))
+                if (!IsType(item.Key, type))
                     continue;
                 foreach (var func in item.Value)
                 {

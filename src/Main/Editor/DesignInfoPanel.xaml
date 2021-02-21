@@ -1,0 +1,88 @@
+﻿<UserControl x:Class="Agebull.EntityModel.Designer.Card.DesignInfoPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:reflection="clr-namespace:Agebull.EntityModel.Config;assembly=Agebull.EntityModel.Designer.Logical" 
+             xmlns:designer="clr-namespace:Agebull.EntityModel.Designer;assembly=Agebull.EntityModel.Designer.Model"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml" />
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Button.xaml" />
+                <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/ConfigDataTemplate.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="ConfigStyle2" TargetType="{x:Type ContentControl}">
+                <Setter Property="ContentTemplate" Value="{DynamicResource configTemplate}" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Path=Option.Type}" Value="FileConfigBase">
+                        <Setter Property="ContentTemplate" Value="{DynamicResource FileConfigTemplate}" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <UserControl.DataContext>
+        <designer:EditorViewModel/>
+    </UserControl.DataContext>
+    <ScrollViewer  DataContext="{Binding Model.Context.SelectConfig}">
+        <StackPanel Style="{StaticResource LayoutPanel}"  DataContext="{Binding Option}">
+            <GroupBox Header="设计时" Margin="5">
+                <WrapPanel>
+                    <StackPanel>
+                        <Label Content = "唯一标识" />
+                        <TextBox IsReadOnly ="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}" Text="{Binding Identity,Mode=TwoWay,StringFormat=X}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content = "排序编号" />
+                        <TextBox IsReadOnly ="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}" Text="{Binding Index,Mode=TwoWay,StringFormat=X}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content = "全局标识" />
+                        <TextBox Style="{StaticResource MidTextBox}" IsReadOnly ="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}" Text="{Binding Key, Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content= "引用对象" />
+                        <ComboBox ItemsSource="{x:Static reflection:EnumHelper.BoolList}" SelectedValue="{Binding IsReference,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content = "引用标识" />
+                        <TextBox Style="{StaticResource MidTextBox}" IsReadOnly ="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}" Text="{Binding ReferenceKey,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content= "关联对象" />
+                        <ComboBox ItemsSource="{x:Static reflection:EnumHelper.BoolList}" SelectedValue="{Binding IsLink,Mode=TwoWay}" />
+                    </StackPanel>
+                </WrapPanel>
+            </GroupBox>
+            <GroupBox Header="编辑标记(设计时)" Margin="5">
+                <WrapPanel>
+                    <StackPanel>
+                        <Label Content= "标记废弃" />
+                        <ComboBox Style="{StaticResource BoolCombo}"  SelectedValue="{Binding IsDiscard,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content= "标记冻结" />
+                        <ComboBox Style="{StaticResource BoolCombo}"  SelectedValue="{Binding IsFreeze,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content= "标记删除" />
+                        <ComboBox Style="{StaticResource BoolCombo}"  SelectedValue="{Binding IsDelete,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content= "标记修改" />
+                        <ComboBox Style="{StaticResource BoolCombo}"  SelectedValue="{Binding IsModify,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content= "上帝模式" />
+                        <ComboBox Style="{StaticResource BoolCombo}"  SelectedValue="{Binding Solution.GodMode,Mode=TwoWay}" />
+                    </StackPanel>
+                </WrapPanel>
+            </GroupBox>
+            <Border DataContext="{Binding}">
+                <ContentControl Style="{DynamicResource ConfigStyle2}" />
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

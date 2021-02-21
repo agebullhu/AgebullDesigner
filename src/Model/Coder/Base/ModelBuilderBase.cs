@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Designer;
+using System.IO;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -17,14 +13,14 @@ namespace Agebull.EntityModel.RobotCoder
         public string GetBaseCode(IEntityConfig config)
         {
             Model = config;
-            Project = Model.Parent;
+            Project = Model.Project;
             return CreateBaCode();
         }
 
         public string GetExtendCode(IEntityConfig config)
         {
             Model = config;
-            Project = Model.Parent;
+            Project = Model.Project;
             return CreateExCode();
         }
         #endregion
