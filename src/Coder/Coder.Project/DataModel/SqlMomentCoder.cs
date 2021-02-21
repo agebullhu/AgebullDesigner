@@ -1,12 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Config.SqlServer;
 using Agebull.EntityModel.Designer;
-using static System.String;
+using System.ComponentModel.Composition;
 
 namespace Agebull.EntityModel.RobotCoder.Project
 {
@@ -24,7 +17,7 @@ namespace Agebull.EntityModel.RobotCoder.Project
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("EntityModel", "数据结构", "cs", DataBaseBuilder.EntityStruct);
+            CoderManager.RegisteCoder("EntityModel", "数据结构", "cs", DataBaseBuilder.EntityStruct);
         }
 
         #endregion

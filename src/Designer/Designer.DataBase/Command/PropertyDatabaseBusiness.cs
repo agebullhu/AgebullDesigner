@@ -1,45 +1,51 @@
 ﻿
+using Agebull.EntityModel.Config.V2021;
+
 namespace Agebull.EntityModel.Config
 {
     internal class PropertyDatabaseBusiness
     {
-        public FieldConfig Field { get; set; }
+        public DataBaseFieldConfig Field { get; set; }
+
+        public IPropertyConfig Property => Field.Property;
+
+        public IEntityConfig Entity { get; set; }
 
         internal void CheckByDb(bool repair = false)
         {
-            if (!Field.Entity.EnableDataBase)
+            if (!Entity.EnableDataBase)
             {
                 Field.DbFieldName = null;
-                Field.DbType = null;
+                Field.FieldType = null;
                 return;
             }
             if (repair)
-                Field.DbFieldName = DataBaseHelper.ToDbFieldName(Field);
-            if (repair || string.IsNullOrWhiteSpace(Field.DbType))
+                Field.DbFieldName = DataBaseHelper.ToDbFieldName(Field.Property);
+            if (repair || string.IsNullOrWhiteSpace(Field.FieldType))
             {
                 RepairDbType();
             }
-            if (Field.IsPrimaryKey)
+            if (Property.IsPrimaryKey)
             {
-                Field.Nullable = false;
+                Property.Nullable = false;
                 Field.DbNullable = false;
-                Field.CanEmpty = false;
+                Property.CanEmpty = false;
             }
-            if (Field.DbType != null)
-                Field.DbType = Field.DbType.ToUpper();
+            if (Field.FieldType != null)
+                Field.FieldType = Field.FieldType.ToUpper();
 
-            if (Field.Initialization == "getdate")
-                Field.Initialization = "now()";
+            if (Property.Initialization == "getdate")
+                Property.Initialization = "now()";
 
         }
 
         internal void RepairDbType()
         {
-            RobotCoder.DataTypeHelper.ToStandard(Field);
-            if (Field.DbType == null)
+            RobotCoder.DataTypeHelper.ToStandard(Property);
+            if (Field.FieldType == null)
                 return;
-            
-            switch (Field.DbType = Field.DbType.ToUpper())
+
+            switch (Field.FieldType = Field.FieldType.ToUpper())
             {
                 case "EMPTY":
                     Field.NoStorage = true;
@@ -48,12 +54,12 @@ namespace Agebull.EntityModel.Config
                 case "VARBINARY":
                     if (Field.IsBlob)
                     {
-                        Field.DbType = "LONGBLOB";
+                        Field.FieldType = "LONGBLOB";
                     }
                     else if (Field.Datalen >= 500)
                     {
                         Field.Datalen = 0;
-                        Field.DbType = "BLOB";
+                        Field.FieldType = "BLOB";
                     }
                     else if (Field.Datalen <= 0)
                     {
@@ -65,17 +71,17 @@ namespace Agebull.EntityModel.Config
                 case "NVARCHAR":
                     if (Field.IsBlob)
                     {
-                        Field.DbType = "LONGTEXT";
+                        Field.FieldType = "LONGTEXT";
                     }
-                    else if (Field.IsMemo)
+                    else if (Field.IsText)
                     {
                         Field.Datalen = 0;
-                        Field.DbType = "TEXT";
+                        Field.FieldType = "TEXT";
                     }
                     else if (Field.Datalen >= 500)
                     {
                         Field.Datalen = 0;
-                        Field.DbType = "TEXT";
+                        Field.FieldType = "TEXT";
                     }
                     else if (Field.Datalen <= 0)
                     {

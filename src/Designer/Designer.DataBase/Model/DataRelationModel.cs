@@ -15,6 +15,6 @@ namespace Agebull.EntityModel.Designer
 {
     internal class DataRelationModel : ModelDesignModel
     {
-        
+
     }
 }

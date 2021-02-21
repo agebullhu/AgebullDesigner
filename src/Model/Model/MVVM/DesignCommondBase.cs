@@ -1,7 +1,7 @@
+using Agebull.Common.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Windows.Threading;
-using Agebull.Common.Mvvm;
 
 namespace Agebull.EntityModel.Designer
 {

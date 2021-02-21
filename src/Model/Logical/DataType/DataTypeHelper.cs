@@ -1,6 +1,7 @@
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
 using System;
 using System.Linq;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -43,22 +44,26 @@ namespace Agebull.EntityModel.RobotCoder
         }
 
 
-        public static void ToStandard(EntityConfig entity)
+        public static void ToStandard(IEntityConfig entity)
         {
             using (WorkModelScope.CreateScope(WorkModel.Repair))
                 foreach (var property in entity.Properties)
                 {
+                    var field = property.DataBaseField;
+
                     if (property.CsType == "unit")
                         property.CsType = "long";
-                    if (!string.IsNullOrWhiteSpace(property.CustomType))
-                        property.DataType = "Enum";
-                    if (string.Equals(property.DataType, "Enum", StringComparison.OrdinalIgnoreCase))
+
+                    if (property.CustomType.IsPresent() && property.DataType.IsMissing())
+                        property.DataType = "Int32";
+                    else if (property.DataType.IsMe("Enum"))
+                    {
+                        property.DataType = "Int32";
                         property.CsType = "int";
+                    }
 
                     DataTypeMapConfig dataType;
-                    if (property.IsPrimaryKey || property.IsLinkField)
-                        dataType = FindByName(SolutionConfig.Current.IdDataType);
-                    else if (property.IsUserId)
+                    if (property.IsPrimaryKey || (field != null && field.IsLinkField))
                         dataType = FindByName(SolutionConfig.Current.IdDataType);
                     else
                         dataType = FindByCSharp(property.CsType);
@@ -69,32 +74,32 @@ namespace Agebull.EntityModel.RobotCoder
                 }
         }
 
-        public static void ToStandardByDbType(EntityConfig entity)
+        public static void ToStandardByDbType(IEntityConfig entity)
         {
             using (WorkModelScope.CreateScope(WorkModel.Repair))
-                foreach (var property in entity.Properties)
+                foreach (var field in entity.DataTable.Fields)
                 {
-                    ToStandardByDbType(property);
+                    ToStandardByDbType(field);
                 }
         }
 
-        private static void ToStandardByDbType(FieldConfig property)
+        private static void ToStandardByDbType(DataBaseFieldConfig field)
         {
-            ToStandardByDbType(property, property.DbType);
+            ToStandardByDbType(field, field.FieldType);
         }
-        public static void ToStandardByDbType(FieldConfig property, string dbType)
+        public static void ToStandardByDbType(DataBaseFieldConfig field, string dbType)
         {
-            if (property.NoStorage || string.IsNullOrWhiteSpace(dbType))
+            if (field.NoStorage || string.IsNullOrWhiteSpace(dbType))
                 return;
-            DataTypeMapConfig dataType = FindByDb(property.Entity.Parent.DbType, dbType);
+            DataTypeMapConfig dataType = FindByDb(field.Entity.Project.DbType, dbType);
             if (dataType == null)
                 return;
-            property.DataType = dataType.Name;
-            property.CsType = dataType.CSharp;
-            property.CppType = dataType.Cpp;
+            field.Property.DataType = dataType.Name;
+            field.Property.CsType = dataType.CSharp;
+            field.Property.CppType = dataType.Cpp;
         }
 
-        public static void ToStandard(FieldConfig property)
+        public static void ToStandard(IPropertyConfig property)
         {
             var dataType = string.IsNullOrWhiteSpace(property.DataType) ? FindByCSharp(property.CsType) : FindByName(property.DataType);
             if (dataType.Name.ToLower() != "object")
@@ -105,111 +110,137 @@ namespace Agebull.EntityModel.RobotCoder
             }
             ToValueDataType(property, dataType);
         }
-        public static void ToValueDataType(FieldConfig property, DataTypeMapConfig dataType)
+        public static void ToValueDataType(IPropertyConfig property, DataTypeMapConfig dataType)
         {
             if (property.Entity == null)
                 return;
-            property.DbType = property.Entity.Parent.DbType switch
-            {
-                DataBaseType.SqlServer => dataType.SqlServer,
-                DataBaseType.Sqlite => dataType.Sqlite,
-                _ => dataType.MySql,
-            };
+            var field = property.DataBaseField;
+            if (field != null)
+                field.FieldType = property.Entity.Project.DbType switch
+                {
+                    DataBaseType.SqlServer => dataType.SqlServer,
+                    DataBaseType.Sqlite => dataType.Sqlite,
+                    _ => dataType.MySql,
+                };
         }
 
-        public static void CsDataType(FieldConfig arg)
+        public static void CsDataType(IPropertyConfig property)
         {
             DataTypeMapConfig dataType;
-            if (arg.CustomType != null)
+            if (property.CustomType != null)
             {
-                arg.IsEnum = true;
+                property.IsEnum = true;
             }
-            if (arg.IsEnum)
+            if (property.IsEnum)
             {
                 dataType = GlobalConfig.CurrentSolution.DataTypeMap.FirstOrDefault(p => p.Name == "Enum");
             }
-            else if (arg.CsType == "int")
+            else if (property.CsType == "int")
             {
                 dataType = GlobalConfig.CurrentSolution.DataTypeMap.FirstOrDefault(p => p.Name == "Int32");
             }
             else
             {
-                dataType = GlobalConfig.CurrentSolution.DataTypeMap.FirstOrDefault(p => string.Equals(p.CSharp, arg.CsType, StringComparison.OrdinalIgnoreCase));
+                dataType = GlobalConfig.CurrentSolution.DataTypeMap.FirstOrDefault(p => string.Equals(p.CSharp, property.CsType, StringComparison.OrdinalIgnoreCase));
             }
-
+            bool updataDataType = dataType == null;
             if (dataType == null)
             {
                 GlobalConfig.CurrentSolution.DataTypeMap.Add(dataType = new DataTypeMapConfig
                 {
-                    Name = arg.DataType ?? arg.CsType,
-                    CSharp = arg.CsType,
-                    Cpp = arg.CppType,
-                    Datalen = arg.Datalen,
-                    Scale = arg.Scale,
-                    MySql = arg.DbType
+                    Name = property.DataType ?? property.CsType,
+                    CSharp = property.CsType,
+                    Cpp = property.CppType,
                 });
             }
-            arg.DataType = dataType.Name;
-            arg.CsType = dataType.CSharp;
-            arg.CppType = dataType.Cpp;
-            if (arg.Datalen <= 0)
-                arg.Datalen = dataType.Datalen;
-            arg.Scale = dataType.Scale;
-            if (arg.Entity == null)
-                arg.DbType = dataType.MySql;
+            property.DataType = dataType.Name;
+            property.CsType = dataType.CSharp;
+            property.CppType = dataType.Cpp;
+
+            var field = property.DataBaseField;
+            if (field == null)
+                return;
+            if (updataDataType)
+            {
+                dataType.Datalen = field.Datalen;
+                dataType.Scale = field.Scale;
+                dataType.MySql = field.FieldType;
+            }
+            if (field.Datalen <= 0)
+                field.Datalen = dataType.Datalen;
+            field.Scale = dataType.Scale;
+            if (property.Entity == null)
+                field.FieldType = dataType.MySql;
             else
-                arg.DbType = arg.Entity.Parent.DbType switch
+                field.FieldType = property.Entity.Project.DbType switch
                 {
                     DataBaseType.SqlServer => dataType.SqlServer,
                     _ => dataType.MySql,
                 };
-            if (arg.DbType.Contains('('))
+            if (field.FieldType.Contains('('))
             {
-                var words = arg.DbType.Split(new[] { ',', '(', ')', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                arg.DbType = words[0];
+                var words = field.FieldType.Split(new[] { ',', '(', ')', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                field.FieldType = words[0];
                 if (words.Length > 1 && int.TryParse(words[1], out var len))
-                    arg.Datalen = len;
+                    field.Datalen = len;
 
                 if (words.Length > 2 && int.TryParse(words[2], out var scale))
-                    arg.Scale = scale;
+                    field.Scale = scale;
             }
         }
-        public static void StandardDataType(FieldConfig arg)
+        public static void StandardDataType(IPropertyConfig property)
         {
-            string name = arg.IsEnum ? "Enum" : arg.DataType;
+            string name = property.IsEnum ? "Enum" : property.DataType;
             var dataType = GlobalConfig.CurrentSolution.DataTypeMap.FirstOrDefault(p =>
                 string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
+            bool updataDataType = dataType == null;
+            var field = property.DataBaseField;
+
+            if (updataDataType)
+            {
+                dataType.Datalen = field.Datalen;
+                dataType.Scale = field.Scale;
+                dataType.MySql = field.FieldType;
+            }
             if (dataType == null)
             {
                 GlobalConfig.CurrentSolution.DataTypeMap.Add(new DataTypeMapConfig
                 {
-                    Name = arg.DataType,
-                    CSharp = arg.CsType,
-                    Cpp = arg.CppType,
-                    Datalen = arg.Datalen,
-                    Scale = arg.Scale,
-                    MySql = arg.DbType
+                    Name = property.DataType,
+                    CSharp = property.CsType,
+                    Cpp = property.CppType,
                 });
+                if (field == null)
+                    return;
             }
             else
             {
-                arg.DataType = dataType.Name;
-                arg.CsType = dataType.CSharp;
-                arg.CppType = dataType.Cpp;
-                arg.Datalen = dataType.Datalen;
-                arg.Scale = dataType.Scale;
-                if (arg.Entity == null)
-                    arg.DbType = dataType.MySql;
+                property.DataType = dataType.Name;
+                property.CsType = dataType.CSharp;
+                property.CppType = dataType.Cpp;
+
+                if (field == null)
+                    return;
+                field.Datalen = dataType.Datalen;
+                field.Scale = dataType.Scale;
+                if (property.Entity == null)
+                    field.FieldType = dataType.MySql;
                 else
-                    arg.DbType = arg.Entity.Parent.DbType switch
+                    field.FieldType = property.Entity.Project.DbType switch
                     {
                         DataBaseType.SqlServer => dataType.SqlServer,
                         DataBaseType.Sqlite => dataType.Sqlite,
                         _ => dataType.MySql,
                     };
             }
+            if (updataDataType)
+            {
+                dataType.Datalen = field.Datalen;
+                dataType.Scale = field.Scale;
+                dataType.MySql = field.FieldType;
+            }
         }
-        public static bool IsType(this IFieldConfig property, string type)
+        public static bool IsType(this IPropertyConfig property, string type)
         {
             return property.CsType?.Equals(type, StringComparison.OrdinalIgnoreCase) ?? false;
         }

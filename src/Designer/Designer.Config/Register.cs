@@ -1,7 +1,7 @@
-using System.ComponentModel.Composition;
-using Agebull.EntityModel.Designer;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Designer;
 using Agebull.EntityModel.Designer.NewConfig;
+using System.ComponentModel.Composition;
 
 namespace Agebull.Common.Config.Designer.EasyUi
 {
@@ -30,7 +30,7 @@ namespace Agebull.Common.Config.Designer.EasyUi
         {
             var window = new NewConfigWindow
             {
-                Title = title 
+                Title = title
             };
             var vm = (NewConfigViewModel)window.DataContext;
             vm.Config = config;

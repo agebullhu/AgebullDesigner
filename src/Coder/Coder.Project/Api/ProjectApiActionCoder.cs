@@ -1,9 +1,8 @@
+using Agebull.EntityModel.Config;
 using System;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Agebull.Common;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder.EasyUi
 {
@@ -24,7 +23,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         protected override void CreateDesignerCode(string path)
         {
-            if (Model.IsInterface || Model.IsQuery)
+            if (Model.IsInterface || Model.DataTable.IsQuery)
                 return;
 
             var fileName = "ApiController.Designer.cs";
@@ -191,14 +190,16 @@ namespace {NameSpace}.WebApi
         public string QueryCode()
         {
             var code = new StringBuilder();
-            var properties = Model.LastProperties.Where(p => !p.NoStorage && p.CanUserQuery);
+            if (!Model.EnableDataBase)
+                return "";
+            var fields = Model.DataTable.WhereLast(p => p.Property.CanUserQuery && p.Property.UserSee);
             code.Append(@"
             if (RequestArgumentConvert.TryGet(""_value_"", out string _value_)  && !string.IsNullOrEmpty(_value_))
             {
                 var field = RequestArgumentConvert.GetString(""_field_"");
                 ");
 
-            var querys = properties.Where(p => p.CsType == "string" && !p.IsLinkKey && !p.IsBlob).ToArray();
+            var querys = fields.Where(p => p.Property.CsType == "string" && !p.IsLinkKey && !p.IsBlob).ToArray();
             if (querys.Length > 0)
             {
                 code.Append(@"if (string.IsNullOrWhiteSpace(field) || field == ""_any_"")
@@ -219,9 +220,10 @@ namespace {NameSpace}.WebApi
             code.Append(@"RequestArgumentConvert.SetArgument(field,_value_);
             }");
 
-            foreach (var pro in properties)
+            foreach (var field in fields)
             {
-                if (pro.IsPrimaryKey || pro.IsLinkKey)
+                var pro = field.Property;
+                if (pro.Field.IsPrimaryKey || field.IsLinkKey)
                 {
                     if (pro.CsType == "string")
                         code.Append($@"
@@ -283,7 +285,7 @@ namespace {NameSpace}.WebApi
                     {
                         case "string":
                             code.Append($@"
-                filter.AddAnd(p => p.{pro.Name}.Like({pro.JsonName}));");
+                filter.AddAnd(p => p.{pro.Name}.LeftLike({pro.JsonName}));");
                             break;
                         default:
                             code.Append(!string.IsNullOrWhiteSpace(pro.CustomType)
@@ -295,6 +297,10 @@ namespace {NameSpace}.WebApi
                     }
                     code.Append(@"
             }");
+                    if(pro.CsType.IsMe("string"))
+                    code.Append($@"
+            else if(RequestArgumentConvert.TryGet(""{pro.JsonName}_p"" , out {pro.CsType} {pro.JsonName}2))
+                filter.AddAnd(p => p.{pro.Name}.Like({pro.JsonName}2));");
                 }
             }
             return code.ToString();
@@ -302,7 +308,7 @@ namespace {NameSpace}.WebApi
 
         private string ExtendCode()
         {
-            var page = $"/{Model.Parent.PageRoot}/{Model.PagePath('/')}/index.htm".CheckUrlPath();
+            var page = $"/{Model.Project.PageRoot}/{Model.PagePath('/')}/index.htm".CheckUrlPath();
 
             var baseClass = "ApiController";
             if (Model.Interfaces != null)
@@ -415,7 +421,7 @@ namespace {NameSpace}.WebApi
         /// <param name=""id"">Ñ¡ÔñµÄID</param>
         [Route(""{cmd.Api}"")]
         public async Task<IApiResult> On{cmd.Name}(long id) => await");
-                    if (cmd.ServiceCommand.IsEmpty())
+                    if (cmd.ServiceCommand.IsMissing())
                         code.Append($@" this.Business.{cmd.Name}(id)  ? ApiResultHelper.Succees() : ApiResultHelper.Helper.ArgumentError;");
                     else
                         code.Append($@" {cmd.ServiceCommand}(id);");
@@ -436,7 +442,7 @@ namespace {NameSpace}.WebApi
             if (!RequestArgumentConvert.TryGetIDs(""selects"",out var ids))
                 return ApiResultHelper.Helper.ArgumentError;");
 
-                    if (cmd.ServiceCommand.IsEmpty())
+                    if (cmd.ServiceCommand.IsMissing())
                         code.Append($@"
             return await this.Business.{cmd.Name}(ids) 
                    ? ApiResultHelper.Succees()
@@ -458,7 +464,7 @@ namespace {NameSpace}.WebApi
         /// </remark>
         [Route(""{cmd.Api}"")]
         public async Task<IApiResult> On{cmd.Name}() => await");
-                    if (cmd.ServiceCommand.IsEmpty())
+                    if (cmd.ServiceCommand.IsMissing())
                         code.Append($@" this.Business.{cmd.Name}()  ? ApiResultHelper.Succees() : ApiResultHelper.Helper.ArgumentError;");
                     else
                         code.Append($@" {cmd.ServiceCommand}();");
@@ -491,26 +497,26 @@ namespace {NameSpace}.WebApi
             //{group.Key ?? "ÆÕÍ¨×Ö¶Î"}");
                 foreach (var pro in group.OrderBy(p => p.Index))
                 {
-                    var field = pro;
-                    if (field == model.PrimaryColumn)
+                    var field = pro.DataBaseField;
+                    if (!pro.NoStorage && field.KeepStorageScreen.HasFlag(StorageScreenType.Insert | StorageScreenType.Update))
+                        continue;
+                    if (!pro.NoStorage && pro.DataBaseField.IsIdentity)
                     {
                         continue;
                     }
                     code.Append(@"
             if(");
-                    if (field.IsPrimaryKey || field.KeepUpdate)
+                    if (!pro.NoStorage)
                     {
-                        code.Append(@"!convert.IsUpdata && ");
-
+                        if (field.KeepStorageScreen.HasFlag(StorageScreenType.Insert))
+                            code.Append(@"!convert.IsIsInsert && ");
+                        else if (field.KeepStorageScreen.HasFlag(StorageScreenType.Update))
+                            code.Append(@"!convert.IsIsInsert && ");
                     }
-                    if (field.KeepStorageScreen == StorageScreenType.Insert)
+                    switch (pro.DataType)
                     {
-                        code.Append(@"convert.IsUpdata && ");
-                    }
-                    switch (field.DataType)
-                    {
-                        case "ByteArray" when field.IsImage:
-                            code.Append($@"convert.TryGetValue(""{field.JsonName}"" , out string file))
+                        case "ByteArray" when pro.IsImage:
+                            code.Append($@"convert.TryGetValue(""{pro.JsonName}"" , out string file))
             {{
                 if (string.IsNullOrWhiteSpace(file))
                     data.{pro.Name}_Base64 = null;
@@ -525,23 +531,23 @@ namespace {NameSpace}.WebApi
             }}");
                             continue;
                         case "ByteArray":
-                            code.Append($@"convert.TryGetValue(""{field.JsonName}"" , out string {pro.Name}))
+                            code.Append($@"convert.TryGetValue(""{pro.JsonName}"" , out string {pro.Name}))
                 data.{pro.Name}_Base64 = {pro.Name};");
                             continue;
                     }
-                    if (field.IsEnum && !string.IsNullOrWhiteSpace(field.CustomType))
+                    if (pro.IsEnum && !string.IsNullOrWhiteSpace(pro.CustomType))
                     {
-                        code.Append($@"convert.TryGetEnum(""{field.JsonName}"" , out {field.CustomType} {pro.Name}))
+                        code.Append($@"convert.TryGetEnum(""{pro.JsonName}"" , out {pro.CustomType} {pro.Name}))
                 data.{pro.Name} = {pro.Name};");
                     }
-                    else if (!string.IsNullOrWhiteSpace(field.CustomType))
+                    else if (!string.IsNullOrWhiteSpace(pro.CustomType))
                     {
-                        code.Append($@"convert.TryGetValue(""{field.JsonName}"" , out {field.CsType} {pro.Name}))
-                data.{pro.Name} = ({field.CustomType}){pro.Name};");
+                        code.Append($@"convert.TryGetValue(""{pro.JsonName}"" , out {pro.CsType} {pro.Name}))
+                data.{pro.Name} = ({pro.CustomType}){pro.Name};");
                     }
                     else
                     {
-                        code.Append($@"convert.TryGetValue(""{field.JsonName}"" , out {field.CsType} {pro.Name}))
+                        code.Append($@"convert.TryGetValue(""{pro.JsonName}"" , out {pro.CsType} {pro.Name}))
                 data.{pro.Name} = {pro.Name};");
                     }
                 }

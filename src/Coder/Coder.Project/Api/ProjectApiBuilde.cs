@@ -1,29 +1,35 @@
-﻿using System.IO;
-using System.Text;
-using Agebull.Common;
+﻿using Agebull.Common;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
+using System.IO;
+using System.Text;
 
 namespace Agebull.EntityModel.RobotCoder.EasyUi
 {
-    public sealed class ProjectApiBuilde  : ProjectBuilder
+    public sealed class ProjectApiBuilde : ProjectBuilder
     {
+        public ProjectApiBuilde()
+        {
+            Icon = "Api";
+        }
         /// <summary>
         /// 名称
         /// </summary>
-        public override string Name => "Edit Api";
+        public override string Name => "编辑API";
+
 
         /// <summary>
         /// 标题
         /// </summary>
         public override string Caption => Name;
-        string EventCode(IEntityConfig entity) => entity.EnableDataEvent
-            ?            
+        string EventCode(DataTableConfig entity) => entity.EnableDataEvent
+            ?
             $@"
         /// <summary>
         /// {entity.Caption}
         /// </summary>
-        [Route(""{entity.EntityName}"")]
-        public Task {entity.EntityName}Event(EntityEventArgument argument), [FromServices] IEntityEventHandler<{entity.EntityName}> handler) => handler.OnEvent(argument);"
+        [Route(""{entity.Entity.EntityName}"")]
+        public Task {entity.Entity.EntityName}Event(EntityEventArgument argument), [FromServices] IEntityEventHandler<{entity.Entity.EntityName}> handler) => handler.OnEvent(argument);"
             : null;
 
         /// <summary>
@@ -36,11 +42,11 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
 
             foreach (var entity in project.Entities)
             {
-                entityEvents.Append(EventCode(entity));
+                entityEvents.Append(EventCode(entity.DataTable));
             }
             foreach (var entity in project.Models)
             {
-                entityEvents.Append(EventCode(entity));
+                entityEvents.Append(EventCode(entity.DataTable));
             }
             //DataEventCode(project, entityEvents);
         }
@@ -103,11 +109,11 @@ namespace {project.NameSpace}.Events
             var pg = new ProjectApiActionCoder
             {
                 Model = schema,
-                Project = schema.Parent,
+                Project = schema.Project,
             };
             pg.WriteDesignerCode(apiPath);
             pg.WriteCustomCode(apiPath);
         }
     }
-    
+
 }

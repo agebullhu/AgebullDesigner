@@ -13,29 +13,29 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 按C++类型不同的不同简化操作
         /// </summary>
-        /// <param name="field">字段</param>
+        /// <param name="property">字段</param>
         /// <param name="entityAction">实体类型的动作(最后一个参数为是否数组)</param>
         /// <param name="stringAction">文本类型的动作(最后一个参数为是否数组)</param>
         /// <param name="generalAction">一般类型的动作(最后一个参数为是否数组)</param>
-        public static void DoByCppType(FieldConfig field,
+        public static void DoByCppType(FieldConfig property,
             Action<FieldConfig, EntityConfig, bool> entityAction,
             Action<FieldConfig> stringAction,
             Action<FieldConfig, string, bool> generalAction)
         {
-            var type = ToCppLastType(field.CppLastType ?? field.CppType);
+            var type = ToCppLastType(property.CppLastType ?? property.CppType);
             //if (type is EntityConfig stru)
             //{
             //    entityAction(field, stru, !string.IsNullOrWhiteSpace(field.ArrayLen));
             //    return;
             //}
             var tp = type.ToString();
-            if (tp == "char" && field.Datalen > 1)
+            if (tp == "char" && property.DataBaseField.Datalen > 1)
             {
-                stringAction(field);
+                stringAction(property);
             }
             else
             {
-                generalAction(field, tp, !string.IsNullOrWhiteSpace(field.ArrayLen));
+                generalAction(property, tp, !string.IsNullOrWhiteSpace(property.ArrayLen));
             }
         }
 
@@ -43,7 +43,7 @@ namespace Agebull.EntityModel.Config
         /// 按C++类型不同的不同简化操作
         /// </summary>
         /// <param name="entity">实体</param>
-        /// <param name="field">字段</param>
+        /// <param name="property">字段</param>
         /// <param name="entityAction">实体类型的动作(最后一个参数为是否数组)</param>
         /// <param name="stringAction">文本类型的动作(最后一个参数为是否数组)</param>
         /// <param name="enumAction">枚举类型的处理</param>
@@ -66,13 +66,13 @@ namespace Agebull.EntityModel.Config
         ///	{
         ///	});
         /// </code>
-        public static void DoByCppType(EntityConfig entity, FieldConfig field,
+        public static void DoByCppType(EntityConfig entity, FieldConfig property,
             Action<FieldConfig, int> stringAction,
             Action<FieldConfig, string, int> generalAction,
             Action<FieldConfig, EntityConfig, int> entityAction,
             Action<FieldConfig, EnumConfig, int> enumAction)
         {
-            var type = ToCppLastType(field.CppLastType ?? field.CppType);
+            var type = ToCppLastType(property.CppLastType ?? property.CppType);
             if (type == null)
                 return;
             int len;
@@ -83,20 +83,20 @@ namespace Agebull.EntityModel.Config
             //    return;
             //}
             var tp = type.ToString();
-            if (tp == "char" && field.Datalen > 1)
+            if (tp == "char" && property.DataBaseField.Datalen > 1)
             {
-                stringAction(field, field.Datalen);
+                stringAction(property, property.DataBaseField.Datalen);
             }
             else
             {
-                int.TryParse(field.ArrayLen, out len);
-                if (field.EnumConfig != null)
+                int.TryParse(property.ArrayLen, out len);
+                if (property.EnumConfig != null)
                 {
-                    enumAction(field, field.EnumConfig, len);
+                    enumAction(property, property.EnumConfig, len);
                 }
                 else
                 {
-                    generalAction(field, tp, len);
+                    generalAction(property, tp, len);
                 }
             }
         }
@@ -141,8 +141,8 @@ namespace Agebull.EntityModel.Config
             switch (property.CsType.ToLower())
             {
                 case "string":
-                    if (property.Datalen <= 0)
-                        property.Datalen = 100;
+                    if (property.DataBaseField.Datalen <= 0)
+                        property.DataBaseField.Datalen = 100;
                     return "char";
                 case "datetime":
                     return "tm";

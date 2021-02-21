@@ -4,4 +4,9 @@
     <ProjectView>ShowAllFiles</ProjectView>
     <ShowAllFiles>true</ShowAllFiles>
   </PropertyGroup>
+  <ItemGroup>
+    <Page Update="CodePanel\CodePanel.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
 </Project>

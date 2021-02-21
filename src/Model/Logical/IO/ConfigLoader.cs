@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Agebull.Common;
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
+using Newtonsoft.Json;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
-using Agebull.Common;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.Config;
-using Newtonsoft.Json;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -25,33 +25,42 @@ namespace Agebull.EntityModel.Designer
         /// <param name="sluFile"></param>
         public static SolutionConfig Load(string sluFile)
         {
+            GlobalConfig.Global.Clear();
             GlobalConfig.ClearConfigDictionary();
-            ConfigLoader loader = new ConfigLoader();
-            loader.LoadSolution(GlobalConfig.CheckPath(GlobalConfig.RootPath, "Global"), "global.json", true);
-            GlobalConfig.GlobalSolution = loader._solution;
+            GlobalConfig.GlobalSolution = LoadSolution(GlobalConfig.CheckPath(GlobalConfig.RootPath, "Global"), "global.json", true);
 
-            GlobalConfig.GlobalSolution.Foreach<ConfigBase>(p => p.Option.IsNormal, p => GlobalConfig.AddConfig(p.Option));
+            GlobalConfig.GlobalSolution.Look(GlobalConfig.AddNormalConfig);
+
+            GlobalTrigger.OnLoad(GlobalConfig.GlobalSolution);
             var re = GlobalConfig.GlobalSolution;
             if (!string.IsNullOrWhiteSpace(sluFile) && !string.Equals(sluFile, GlobalConfig.GlobalSolution.SaveFileName, StringComparison.OrdinalIgnoreCase))
             {
-                loader = new ConfigLoader();
-                loader.LoadSolution(Path.GetDirectoryName(sluFile), Path.GetFileName(sluFile), false);
+                var solution = LoadSolution(Path.GetDirectoryName(sluFile), Path.GetFileName(sluFile), false);
 
-                loader._solution.Foreach<ConfigBase>(p => p.Option.IsNormal, p => GlobalConfig.AddConfig(p.Option));
-                re = GlobalConfig.LocalSolution = loader._solution;
+                solution.Look(GlobalConfig.AddNormalConfig);
+                GlobalTrigger.OnLoad(solution);
+                solution.Look(First);
+                re = GlobalConfig.LocalSolution = solution;
             }
+            GlobalConfig.GlobalSolution.Look(First);
             return re;
         }
 
-        private void LoadSolution(string directory, string file, bool isGlobal)
+        public static void First(ConfigBase cfg)
+        {
+            cfg.ResetModify(true);
+        }
+
+        public static SolutionConfig LoadSolution(string directory, string file, bool isGlobal)
         {
             CommandCoefficient.ClearCommand();
             var sluFile = Path.Combine(directory, file);
             using (WorkModelScope.CreateScope(WorkModel.Loding))
             {
+                SolutionConfig solution;
                 try
                 {
-                    _solution = DeSerializer<SolutionConfig>(sluFile) ?? new SolutionConfig
+                    solution = DeSerializer<SolutionConfig>(sluFile) ?? new SolutionConfig
                     {
                         Name = "GlobalConfig",
                         Caption = "全局配置",
@@ -61,29 +70,29 @@ namespace Agebull.EntityModel.Designer
                 catch (Exception exception)
                 {
                     Trace.WriteLine(exception);
-                    _solution = new SolutionConfig();
+                    solution = new SolutionConfig();
                 }
-                SolutionConfig.SetCurrentSolution(_solution);
-                _solution.IsGlobal = isGlobal;
-                _solution.SaveFileName = sluFile;
+                SolutionConfig.SetCurrentSolution(solution);
+                solution.IsGlobal = isGlobal;
+                solution.SaveFileName = sluFile;
                 try
                 {
-                    LoadProjects(directory);
+                    LoadProjects(solution, directory);
                 }
                 catch (Exception ex)
                 {
                     Trace.WriteLine(ex);
                 }
-                GlobalTrigger.OnLoad(_solution);
+                return solution;
             }
         }
 
-        private void LoadProjects(string directory)
+        public static void LoadProjects(SolutionConfig solution, string directory)
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             if (Directory.Exists(Path.Combine(directory, "Projects")))
             {
-                LoadOldProjects(directory);
+                LoadV2018Projects(solution, directory);
             }
             else
             {
@@ -97,98 +106,52 @@ namespace Agebull.EntityModel.Designer
                     ProjectConfig project = DeSerializer<ProjectConfig>(file);
                     if (project == null || project.IsDelete)
                         continue;
-                    _solution.Add(project);
+                    solution.Add(project);
                     LoadEntity(project, path);
                     LoadModel(project, path);
                     LoadEnums(project, path);
                     LoadApi(project, path);
                 }
 
-                if (_solution.ProjectList.Count != 0) return;
-                _solution.Add(new ProjectConfig
+                if (solution.ProjectList.Count != 0) return;
+                var porject = new ProjectConfig
                 {
-                    Name = _solution.Name,
-                    Caption = _solution.Caption,
-                    Description = _solution.Description,
-                });
+                    Name = solution.Name,
+                    Caption = solution.Caption,
+                    Description = solution.Description,
+                };
+                solution.Add(porject);
             }
         }
 
-        private void LoadOldProjects(string directory)
-        {
-            // ReSharper disable once AssignNullToNotNullAttribute
-            var files = IOHelper.GetAllFiles(directory, "prj");
-            foreach (var file in files)
-            {
-                ProjectConfig project = DeSerializer<ProjectConfig>(file);
-                if (project.IsDelete)
-                    continue;
-                _solution.Add(project);
-                var path = Path.Combine(Path.GetDirectoryName(file), project.Name);
-                LoadEntity(project, path);
-                LoadEnums(project, path);
-                LoadApi(project, path);
-            }
-
-            if (_solution.ProjectList.Count != 0) return;
-            _solution.Add(new ProjectConfig
-            {
-                Name = _solution.Name,
-                Caption = _solution.Caption,
-                Description = _solution.Description,
-            });
-        }
-        private void LoadModel(ProjectConfig project, string directory)
-        {
-            // ReSharper disable once AssignNullToNotNullAttribute
-            string path = Path.Combine(directory, "Model");
-            var files = !Directory.Exists(path)
-                ? IOHelper.GetAllFiles(directory, "ent")
-                : IOHelper.GetAllFiles(path, "*.*");
-            foreach (var entFile in files)
-            {
-                var model = DeSerializer<ModelConfig>(entFile);
-                if (model == null || model.IsDelete)
-                    continue;
-                model.Entity = GlobalConfig.GetEntity(p => p.Key == model._entityKey);
-                foreach (var field in model.Properties.ToArray())
-                {
-                    if (field.Field == null)
-                    {
-                        model.Properties.Remove(field);
-                        continue;
-                    }
-                    field.Model = model;
-                    GlobalConfig.AddConfig(field);
-                }
-                GlobalConfig.AddConfig(model);
-                project.Add(model);
-            }
-        }
-
-        private void LoadEntity(ProjectConfig project, string directory)
+        public static void LoadEntity(ProjectConfig project, string directory)
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             string path = Path.Combine(directory, "Entity");
-            var files = !Directory.Exists(path)
-                ? IOHelper.GetAllFiles(directory, "ent")
-                : IOHelper.GetAllFiles(path, "*.*");
+            var files = Directory.GetFiles(path, "*.json");
             foreach (var entFile in files)
             {
-                var entity = DeSerializer<EntityConfig>(entFile);
-                if (entity == null || entity.IsDelete)
-                    continue;
-                foreach (var field in entity.Properties)
-                {
-                    field.Entity = entity;
-                    GlobalConfig.AddConfig(field);
-                }
-                GlobalConfig.AddConfig(entity);
-                project.Add(entity);
+                EntityConfig entity = LoadEntity(path, entFile);
+                if (entity != null)
+                    project.Add(entity);
             }
         }
 
-        private void LoadEnums(ProjectConfig project, string directory)
+        private static EntityConfig LoadEntity(string path, string entFile)
+        {
+            var entity = DeSerializer<EntityConfig>(entFile);
+            if (entity == null || entity.IsDelete)
+                return null;
+            foreach (var field in entity.Properties)
+            {
+                field.Entity = entity;
+                GlobalConfig.AddConfig(field);
+            }
+            LoadEntityExtend(entity, path);
+            return entity;
+        }
+
+        public static void LoadEnums(ProjectConfig project, string directory)
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             string path = Path.Combine(directory, "Enum");
@@ -202,7 +165,7 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        private void LoadApi(ProjectConfig project, string directory)
+        public static void LoadApi(ProjectConfig project, string directory)
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             string path = Path.Combine(directory, "Api");
@@ -215,16 +178,139 @@ namespace Agebull.EntityModel.Designer
                 project.Add(api);
             }
         }
+        public static void LoadModel(ProjectConfig project, string directory)
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            string path = Path.Combine(directory, "Model");
+            if (!Directory.Exists(path))
+                return;
+            var files = IOHelper.GetAllFiles(path, "*.*");
+            foreach (var entFile in files)
+            {
+                ModelConfig model = LoadModel(path, entFile);
+                project.Add(model);
+            }
+        }
+
+        private static ModelConfig LoadModel(string path, string entFile)
+        {
+            var model = DeSerializer<ModelConfig>(entFile);
+            if (model == null || model.IsDelete)
+                return null;
+            model.Entity = GlobalConfig.GetEntity(p => p.Key == model._entityKey);
+            foreach (var field in model.Properties.ToArray())
+            {
+                if (field.Field == null)
+                {
+                    model.Properties.Remove(field);
+                    continue;
+                }
+                field.Model = model;
+                GlobalConfig.AddConfig(field);
+            }
+            LoadEntityExtend(model, path);
+            return model;
+        }
+
+        public static void LoadEntityExtend(IEntityConfig entity, string directory)
+        {
+            LoadDataTable(entity, directory);
+            //LoadPage(entity, directory);
+        }
+
+        public static void LoadDataTable(IEntityConfig entity, string directory)
+        {
+            if (!entity.EnableDataBase)
+            {
+                entity.DataTable = null;
+                return;
+            }
+            var path = Path.GetDirectoryName(directory);
+            // ReSharper disable once AssignNullToNotNullAttribute
+            string fileName = Path.Combine(path, "DataBase", DataTableConfig.GetFileName(entity));
+            if (!File.Exists(fileName))
+            {
+                entity.DataTable = null;
+                return;
+            }
+
+            var model = DeSerializer<DataTableConfig>(fileName);
+            if (model == null)
+            {
+                entity.DataTable = null;
+                return;
+            }
+            model.SaveFileName = fileName;
+            model.Entity = entity;
+            model.Option.IsDelete = false;
+            entity.DataTable = model;
+        }
+        /*
+        public static void LoadPage(IEntityConfig entity, string directory)
+        {
+            if (!entity.EnableUI)
+            {
+                entity.Page = null;
+                return;
+            }
+            entity.Page = new PageConfig { Entity = entity };
+            // ReSharper disable once AssignNullToNotNullAttribute
+            string fileName = Path.Combine(directory, "Extend", PageConfig.GetFileName(entity));
+            if (!File.Exists(fileName))
+            {
+                entity.Page.Upgrade();
+                return;
+            }
+            try
+            {
+                var json = File.ReadAllText(fileName, Encoding.UTF8);
+                if (json.IsMissing() || json[0] != '<')
+                {
+                    entity.Page.Upgrade();
+                    return;
+                }
+                entity.Page.SaveFileName = fileName;
+                var jObject = JsonConvert.DeserializeObject(json) as JObject;
+                entity.Page.Load(jObject);
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e.ToString());
+            }
+        }
+        */
 
         #endregion
+        #region V2018版本兼容
 
+        public static void LoadV2018Projects(SolutionConfig solution, string directory)
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            var files = IOHelper.GetAllFiles(directory, "prj");
+            foreach (var file in files)
+            {
+                ProjectConfig project = DeSerializer<ProjectConfig>(file);
+                if (project.IsDelete)
+                    continue;
+                solution.Add(project);
+                var path = Path.Combine(Path.GetDirectoryName(file), project.Name);
+                LoadEntity(project, path);
+                LoadEnums(project, path);
+                LoadApi(project, path);
+            }
+
+            if (solution.ProjectList.Count != 0) return;
+            solution.Add(new ProjectConfig
+            {
+                Name = solution.Name,
+                Caption = solution.Caption,
+                Description = solution.Description,
+            });
+        }
+
+
+        #endregion
         #region 基础支持
-
-        /// <summary>
-        ///     表结构对象
-        /// </summary>
-        private SolutionConfig _solution;
-
 
         /// <summary>
         /// 反序列化
@@ -251,6 +337,7 @@ namespace Agebull.EntityModel.Designer
                     config = (TConfig)new DataContractSerializer(typeof(TConfig)).ReadObject(pteam);
                 }
                 config.SaveFileName = file;
+                GlobalConfig.AddConfig(config);
                 return config;
             }
             catch (Exception e)

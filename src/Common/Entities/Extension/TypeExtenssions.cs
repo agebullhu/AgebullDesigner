@@ -11,26 +11,9 @@ namespace Agebull.EntityModel
     public static class TypeExtenssions
     {
         /// <summary>
-        /// 是否NULL或空字符串
+        /// 是否等于其中之一
         /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        public static bool IsEmpty(this string str) => string.IsNullOrWhiteSpace(str);
-
-        /// <summary>
-        /// 是否NULL或空字符串
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        public static bool IsNotEmpty(this string str) => !string.IsNullOrWhiteSpace(str);
-
-        /// <summary>
-        /// 是否null或长度为0的数组
-        /// </summary>
-        /// <param name="array">数组</param>
-        /// <returns></returns>
-        public static bool IsEmptyOrNull<T>(this IEnumerable<T> array) => array == null || !array.Any();
-
+        public static bool IsOnce(this string array, params string[] strs) => array != null && strs.Length > 0 && strs.Any(p => array.IsMe(p));
 
         /// <summary>
         /// 页面代码路径
@@ -147,6 +130,30 @@ namespace Agebull.EntityModel
             if (!self.Any(p => p.Key == item.Key))
                 self.Add(item);
             return self;
+        }
+        /// <summary>
+        /// 是否关联类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public static bool IsFrientType(this Type type, Type target)
+        {
+            return type == null || target == type || type.IsSubclassOf(target) || type.IsSupperInterface(target);
+        }
+
+        /// <summary>
+        /// 是否关联类型
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static bool IsFrientType(this Type target, object obj)
+        {
+            if (obj == null)
+                return false;
+            var objType = obj.GetType();
+            return target == null || objType == target || objType.IsSubclassOf(target) || objType.IsSupperInterface(target);
         }
     }
 }

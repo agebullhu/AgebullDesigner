@@ -1,17 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Designer;
+using System;
 
 namespace Agebull.EntityModel.RobotCoder
 {
     /// <summary>
     /// 项目代码生成基类
     /// </summary>
-    public abstract class ProjectBuilder : FileCoder
+    public abstract class ProjectBuilder : FileCoder, IDisposable
     {
+
         /// <summary>
         /// 文件名所保存的配置名称（即这个配置名称的值是生成的文件名）
         /// </summary>
@@ -20,7 +17,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 当前对象
         /// </summary>
-        public  ProjectConfig Project { get; private set; }
+        public ProjectConfig Project { get; private set; }
 
         /// <summary>
         /// 当前对象
@@ -58,7 +55,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 图标
         /// </summary>
-        public virtual string Icon => "img_code";
+        public virtual string Icon { get; set; } = "代码";
 
 
         /// <summary>
@@ -80,6 +77,7 @@ namespace Agebull.EntityModel.RobotCoder
         public virtual bool Validate(ProjectConfig project)
         {
             Project = project;
+            GlobalTrigger.Regularize(project);
             return true;
         }
 
@@ -89,6 +87,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name="schema"></param>
         public virtual bool Validate(IEntityConfig schema)
         {
+            GlobalTrigger.Regularize(schema);
             return true;
         }
 
@@ -128,6 +127,11 @@ namespace Agebull.EntityModel.RobotCoder
             };
             builder.WriteDesignerCode(path);
             builder.WriteCustomCode(path);
+        }
+        public IDisposable CodeScope { get; set; }
+        public void Dispose()
+        {
+            CodeScope?.Dispose();
         }
     }
 }

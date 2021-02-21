@@ -20,7 +20,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 关联的集合
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         private readonly NotificationList<EntityConfig> _collection;
         /// <summary>
         /// 更新分类的方法

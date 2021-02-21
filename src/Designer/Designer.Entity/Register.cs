@@ -1,6 +1,6 @@
-using System.ComponentModel.Composition;
-using Agebull.EntityModel.Designer;
 using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Designer;
+using System.ComponentModel.Composition;
 
 namespace Agebull.Common.Config.Designer.EasyUi
 {
@@ -16,13 +16,12 @@ namespace Agebull.Common.Config.Designer.EasyUi
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            DesignerManager.Registe<ModelConfig, ModelReleasePanel>("连接", "Model");
-            DesignerManager.Registe<ModelConfig, ModelFieldsPanel>("字段", "Model");
+            EditorManager.Registe2<ModelConfig, ModelReleasePanel>("关系连接","关联");
+            EditorManager.Registe2<ModelConfig, ModelFieldsPanel>("连接字段", "字段", "Entity", "Model");
 
-            DesignerManager.Registe<EntityConfig, FieldsPanel>("字段基本", "Entity");
-            DesignerManager.Registe<EntityConfig, RegularPanel>("数据校验", "Entity");
-            DesignerManager.Registe<EntityConfig, ModelCodePanel>("实体模型", "Entity");
-
+            EditorManager.Registe2<EntityConfig, FieldsPanel>("字段", "字段");
+            EditorManager.Registe2<IEntityConfig, RegularPanel>("校验", "检查", "Model");
+            EditorManager.Registe2<IEntityConfig, ModelCodePanel>("对象", "C#", "Entity", "Model");
 
             CommandIoc.EditEntityCommand = EditEntityCommand;
             CommandIoc.AddFieldsCommand = AddFieldsCommand;

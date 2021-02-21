@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Agebull.Common;
+using Agebull.EntityModel.Config;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
 using System.IO;
-using Agebull.Common;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -53,7 +53,7 @@ namespace Agebull.EntityModel.Designer
                 return;
             }
             var bin = Path.Combine(path, "Bin");
-            var runtime = Path.Combine(path, "Runtime");
+            var runtime = IOHelper.CheckPath(path, "Runtime");
             IOHelper.DeleteDirectory(runtime);
             GlobalConfig.CheckPath(runtime);
             var files = File.ReadAllText(Path.Combine(path, "config.txt")).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);

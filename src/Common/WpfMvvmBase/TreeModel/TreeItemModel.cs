@@ -30,7 +30,16 @@ namespace Agebull.EntityModel
             {
                 pp.PropertyChanged += OnModelPropertyChanged;
             }
+            if (source is IModifyObject mo)
+            {
+                mo.IsModifyChanged += Mo_IsModifyChanged;
+            }
             Source = source as NotificationObject;
+        }
+
+        private void Mo_IsModifyChanged(object sender, IsModifyEventArgs e)
+        {
+            BeginInvokeInUiThread(() => StatusIconName = SyncStatusImageAutomatic());
         }
 
         /// <summary>
@@ -189,7 +198,7 @@ namespace Agebull.EntityModel
                 Name = "ExpandedChild",
                 Caption = "切换展开",
                 Catalog = "视图",
-                IconName = "tree_Open",
+                IconName = "切换",
                 Action = ExpandedChild
             });
             return _commands = commands;
@@ -233,7 +242,7 @@ namespace Agebull.EntityModel
                 }
                 _soruceType = value;
                 RaisePropertyChanged(() => SoruceType);
-                RaisePropertyChanged(() => SoruceTypeIcon);
+                RaisePropertyChanged(() => SoruceTypeIconName);
             }
         }
 
@@ -290,13 +299,49 @@ namespace Agebull.EntityModel
                 RaisePropertyChanged(() => BackgroundColor);
             }
         }
+        /*
+        private string _soruceTypeFont;
 
-        private BitmapImage _soruceTypeIcon;
-        protected BitmapImage _baseIcon;
         /// <summary>
         ///     绑定类型
         /// </summary>
-        public BitmapImage SoruceTypeIcon
+        public string SoruceTypeFontName
+        {
+            get => _soruceTypeFont;
+            set
+            {
+                if (Equals(_soruceTypeFont, value))
+                {
+                    return;
+                }
+                _soruceTypeFont = value;
+                RaisePropertyChanged(() => SoruceTypeFontName);
+                RaisePropertyChanged(() => SoruceTypeFont);
+            }
+        }
+        /// <summary>
+        ///     绑定类型
+        /// </summary>
+        public FontFamily SoruceTypeFontName
+        {
+            get => _soruceTypeFont;
+            set
+            {
+                if (Equals(_soruceTypeFont, value))
+                {
+                    return;
+                }
+                _soruceTypeFont = value;
+                RaisePropertyChanged(() => SoruceTypeFontName);
+                RaisePropertyChanged(() => SoruceTypeFont);
+            }
+        }*/
+        private string _soruceTypeIcon;
+
+        /// <summary>
+        ///     绑定类型
+        /// </summary>
+        public string SoruceTypeIconName
         {
             get => _soruceTypeIcon;
             set
@@ -305,17 +350,22 @@ namespace Agebull.EntityModel
                 {
                     return;
                 }
-                if (_baseIcon == null)
-                    _baseIcon = value;
                 _soruceTypeIcon = value;
                 RaisePropertyChanged(() => SoruceTypeIcon);
+                RaisePropertyChanged(() => SoruceTypeIconName);
             }
         }
-        protected BitmapImage _statusIcon;
+
         /// <summary>
         ///     绑定类型
         /// </summary>
-        public BitmapImage StatusIcon
+        public string SoruceTypeIcon => IconMap.Instance[_soruceTypeIcon];
+
+        protected string _statusIcon;
+        /// <summary>
+        ///     状态
+        /// </summary>
+        public string StatusIconName
         {
             get => _statusIcon;
             set
@@ -326,8 +376,13 @@ namespace Agebull.EntityModel
                 }
                 _statusIcon = value;
                 RaisePropertyChanged(() => StatusIcon);
+                RaisePropertyChanged(() => StatusIconName);
             }
         }
+        /// <summary>
+        ///     状态
+        /// </summary>
+        public string StatusIcon => IconMap.Instance[_statusIcon];
 
 
         private CommandStatus _childsStatus;
@@ -374,9 +429,9 @@ namespace Agebull.EntityModel
             {
                 BeginInvokeInUiThread(SyncHeaderAutomatic);
             }
-            if (StatusField != null && StatusField.Contains(e.PropertyName))
+            if (StatusField.IsPresent() && StatusField.Contains(e.PropertyName))
             {
-                BeginInvokeInUiThread(SyncStatusImageAutomatic);
+                BeginInvokeInUiThread(()=>StatusIconName = SyncStatusImageAutomatic());
             }
             if (ColorField != null && ColorField.Contains(e.PropertyName))
             {
@@ -395,7 +450,7 @@ namespace Agebull.EntityModel
             }
             else if (StatusField != null && StatusField.Contains(e.PropertyName))
             {
-                BeginInvokeInUiThread(SyncStatusImageAutomatic);
+                StatusIconName = SyncStatusImageAutomatic();
             }
         }
         private Action<TreeItem, NotificationObject, string> _customPropertyChanged;
@@ -433,10 +488,7 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 同步自动处理
         /// </summary>
-        protected virtual void SyncStatusImageAutomatic()
-        {
-            StatusIcon = ModelDelegates.TryExecute<BitmapImage>();
-        }
+        protected virtual string SyncStatusImageAutomatic() => "正常状态";
 
         /// <summary>
         /// 模型名称相关的字段

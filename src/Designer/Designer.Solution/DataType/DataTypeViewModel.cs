@@ -8,12 +8,10 @@
 
 #region 引用
 
-using Agebull.Common;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.RobotCoder;
 using System.Collections.Generic;
-using System.Linq;
 
 #endregion
 
@@ -23,7 +21,7 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// 命令注册器
     /// </summary>
-    public sealed class DataTypeViewModel : ExtendViewModelBase<DesignModelBase>
+    public sealed class DataTypeViewModel : EditorViewModelBase<DesignModelBase>
     {
         public override void CreateCommands(IList<CommandItemBase> commands)
         {

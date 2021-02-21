@@ -8,15 +8,11 @@
 
 #region 引用
 
-using Agebull.Common;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
 using System.Text;
-using System.Windows;
-using System.Windows.Media;
 
 #endregion
 
@@ -38,7 +34,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "页面名称小驼峰",
                 Catalog = "用户界面",
                 Editor = "VUE",
-                IconName = "tree_Open",
+                IconName = "格式",
                 SoruceView = "entity"
             });
             commands.Add(new CommandItemBuilder<IEntityConfig>
@@ -47,10 +43,10 @@ namespace Agebull.EntityModel.Designer
                 Caption = "接口名称中划线",
                 Catalog = "用户界面",
                 Editor = "VUE",
-                IconName = "tree_Open",
+                IconName = "格式",
                 SoruceView = "entity"
             });
-            commands.Add(new CommandItemBuilder<IFieldConfig>
+            commands.Add(new CommandItemBuilder<IPropertyConfig>
             {
                 SignleSoruce = false,
                 CanButton = true,
@@ -58,14 +54,14 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "字段",
                 Action = CheckJsonName,
                 Caption = "Json名称小驼峰",
-                IconName = "tree_item",
+                IconName = "格式",
                 Editor = "Json",
                 ConfirmMessage = "确认执行【Json名称小驼峰】的操作吗?"
             });
 
         }
 
-        public void CheckJsonName(IFieldConfig property)
+        public void CheckJsonName(IPropertyConfig property)
         {
             property.JsonName = property.Name.ToLWord();
         }

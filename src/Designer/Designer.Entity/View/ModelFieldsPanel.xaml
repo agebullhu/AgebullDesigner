@@ -25,11 +25,11 @@
             <DataGridTextColumn Binding="{Binding Field.Entity.Name,Mode=OneWay}" Header="实体" />
             <DataGridTextColumn Binding="{Binding Caption,Mode=TwoWay}" Header="标题" />
             <DataGridTextColumn Binding="{Binding Name,Mode=TwoWay}" Header="名称" />
-            <DataGridTextColumn Binding="{Binding DbFieldName,Mode=TwoWay}" Header="字段" />
-            <DataGridTextColumn Binding="{Binding Function,Mode=TwoWay}" Header="汇总方法" />
-            <DataGridTextColumn Binding="{Binding Having,Mode=TwoWay}" Header="汇总条件" />
+            <DataGridTextColumn Binding="{Binding DataBaseField.DbFieldName,Mode=TwoWay}" Header="字段" />
+            <DataGridTextColumn Binding="{Binding DataBaseField.Function,Mode=TwoWay}" Header="汇总方法" />
+            <DataGridTextColumn Binding="{Binding DataBaseField.Having,Mode=TwoWay}" Header="汇总条件" />
             <DataGridTextColumn Binding="{Binding JsonName,Mode=TwoWay}" Header="Json" />
-            <DataGridTextColumn Binding="{Binding DbType,Mode=TwoWay}" Header="Db类型" />
+            <DataGridTextColumn Binding="{Binding DataBaseField.FieldType,Mode=TwoWay}" Header="Db类型" />
             <DataGridTextColumn Binding="{Binding CsType,Mode=TwoWay}" Header="C#类型" />
         </DataGrid.Columns>
         <i:Interaction.Behaviors>

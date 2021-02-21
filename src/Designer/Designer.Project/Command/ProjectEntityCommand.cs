@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Designer.NewConfig;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.Designer.NewConfig;
-using System;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -24,11 +24,10 @@ namespace Agebull.EntityModel.Designer
         {
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
-                IsButton = true,
-                Caption = "生成模型",
+                Caption = "增加模型",
                 Catalog = "模型",
                 SoruceView = "entity",
-                IconName = "tree_Open",
+                IconName = "增加",
                 Action = ToModel
             });
             commands.Add(new CommandItemBuilder<ProjectConfig>
@@ -36,11 +35,10 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "枚举",
                 Action = NewEnum,
                 NoConfirm = true,
-                IsButton = true,
                 SignleSoruce = true,
                 SoruceView = "enum",
                 Caption = "新增枚举",
-                IconName = "tree_Open"
+                IconName = "增加"
             });
             commands.Add(new CommandItemBuilder<ProjectConfig>
             {
@@ -50,7 +48,7 @@ namespace Agebull.EntityModel.Designer
                 IsButton = true,
                 Caption = "增加实体",
                 Action = AddEntity,
-                IconName = "tree_Open"
+                IconName = "增加"
             });
             commands.Add(new CommandItemBuilder<ProjectConfig>
             {
@@ -58,9 +56,9 @@ namespace Agebull.EntityModel.Designer
                 SignleSoruce = true,
                 IsButton = true,
                 SoruceView = "entity",
-                Caption = "粘贴实体",
+                Caption = "粘贴",
                 Action = PasteTable,
-                IconName = "tree_item"
+                IconName = "粘贴"
             });
 
             commands.Add(new CommandItemBuilder<ProjectConfig>
@@ -70,7 +68,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "编辑",
                 Caption = "复制基础配置到其它项目",
                 Action = CopyToProject,
-                IconName = "tree_item"
+                IconName = "扩散"
             });
 
 
@@ -80,7 +78,7 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity",
                 Caption = "升级为项目",
                 Action = ToProject,
-                IconName = "tree_item"
+                IconName = "向上"
             });
         }
 
@@ -99,7 +97,7 @@ namespace Agebull.EntityModel.Designer
             };
             model.CopyConfig(entity);
             ((IEntityConfig)model).Copy(entity);
-            foreach(var field in entity.Properties)
+            foreach (var field in entity.Properties)
             {
                 var property = new PropertyConfig
                 {
@@ -107,11 +105,11 @@ namespace Agebull.EntityModel.Designer
                     Field = field
                 };
                 property.CopyConfig(field);
-                ((IFieldConfig)property).Copy(field);
+                ((IPropertyConfig)property).Copy(field);
                 model.Add(property);
                 property.Field = field;
             }
-            entity.Parent.Add(model);
+            entity.Project.Add(model);
             model.Entity = entity;
         }
 
@@ -148,8 +146,7 @@ namespace Agebull.EntityModel.Designer
 
             foreach (var entity in Context.CopiedTables)
             {
-                entity.Parent = Context.SelectProject;
-                entity.Project = Context.SelectProject.Name;
+                entity.Project = Context.SelectProject;
                 foreach (var pro in entity.Properties)
                 {
                     pro.Tag = $"{entity.Tag},{pro.CppType},{pro.Name}";
@@ -173,7 +170,7 @@ namespace Agebull.EntityModel.Designer
             }
 
             var project = Context.SelectProject;
-            var entity = new EntityConfig { Parent = project };
+            var entity = new EntityConfig { Project = project };
             if (CommandIoc.EditEntityCommand(entity))
             {
                 project.Add(entity);
@@ -226,16 +223,33 @@ namespace Agebull.EntityModel.Designer
             project.Copy(classify);
 
             var entities = classify.Items.ToArray();
-            entities.Foreach(classify.Project.Remove);
+            foreach(var e in entities)
+            {
+                if (e is EntityConfig entity)
+                {
+                    classify.Project.Remove(entity);
+                }
+                else if (e is ModelConfig model)
+                {
+                    classify.Project.Remove(model);
+                }
+            }
+
             classify.Project.Remove(classify);
 
             project.Add(classify);
             GlobalConfig.CurrentSolution.Add(project);
-            entities.Foreach(e =>
+            foreach (var e in entities)
             {
-                e.Classify = null;
-                project.Add(e);
-            });
+                if (e is EntityConfig entity)
+                {
+                    project.Add(entity);
+                }
+                else if (e is ModelConfig model)
+                {
+                    project.Add(model);
+                }
+            }
         }
     }
 }

@@ -8,11 +8,8 @@
 
 #region 引用
 
-using Agebull.Common;
 using Agebull.Common.Mvvm;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows;
 
@@ -90,7 +87,6 @@ namespace Agebull.EntityModel
         /// <summary>
         ///     依赖对象字典
         /// </summary>
-        [IgnoreDataMember]
         public ModelFunctionDictionary<TModel> ModelFunction { get; private set; }
 
         /// <summary>

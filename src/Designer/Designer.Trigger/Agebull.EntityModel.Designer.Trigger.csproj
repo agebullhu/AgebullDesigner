@@ -15,8 +15,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    
-    
+    <Compile Remove="ChildrenTrigger.cs" />
+    <Compile Remove="EntityBaseTrigger.cs" />
   </ItemGroup>
 
   <ItemGroup>

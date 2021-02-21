@@ -1,14 +1,13 @@
 ﻿using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
 using System.Collections.Generic;
-using Agebull.Common;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 
 namespace Agebull.EntityModel.Designer
 {
-    internal class PropertyViewModel : ExtendViewModelBase<ModelFieldDesignModel>
+    internal class PropertyViewModel : EditorViewModelBase<ModelFieldDesignModel>
     {
         public PropertyViewModel()
         {
@@ -41,7 +40,7 @@ namespace Agebull.EntityModel.Designer
                 Action = RelationColumns,
                 NoConfirm = true,
                 Caption = "更新关系列",
-                Image = Application.Current.Resources["tree_item"] as ImageSource
+                IconName = "更新"
             });
             commands.Add(new CommandItem
             {
@@ -49,14 +48,14 @@ namespace Agebull.EntityModel.Designer
                 Action = PasteColumns,
                 NoConfirm = true,
                 Caption = "粘贴列",
-                Image = Application.Current.Resources["tree_item"] as ImageSource
+                IconName = "粘贴"
             });
             commands.Add(new CommandItem
             {
                 IsButton = true,
                 Action = DeleteColumns,
                 Caption = "删除所选列",
-                Image = Application.Current.Resources["img_del"] as ImageSource
+                IconName = "删除"
             });
             base.CreateCommands(commands);
         }
@@ -64,11 +63,11 @@ namespace Agebull.EntityModel.Designer
         #endregion
 
         #region 操作
-        
+
         public void RelationColumns(object arg)
         {
             ModelRelationDesignModel.CheckReleation(Context.SelectModel);
-            
+
         }
         public void DeleteColumns(object arg)
         {
@@ -102,16 +101,15 @@ namespace Agebull.EntityModel.Designer
             foreach (var copyColumn in columns)
             {
                 PropertyConfig newColumn = null;
-                newColumn = model.Properties.FirstOrDefault(p => p.Field == copyColumn);
+                newColumn = model.Find(p => p.Field == copyColumn);
                 if (newColumn == null)
                 {
                     newColumn = new PropertyConfig();
-                    ((IFieldConfig)model).Copy(copyColumn,false);
+                    ((IPropertyConfig)model).Copy(copyColumn, false);
                     newColumn.Option.Index = newColumn.Option.Identity = 0;
                     model.Add(newColumn);
                 }
             }
-            model.IsModify = true;
         }
 
         #endregion

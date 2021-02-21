@@ -1,11 +1,9 @@
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.Mysql;
+using Agebull.EntityModel.RobotCoder.DataBase.MySql;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
-using Agebull.EntityModel.Config.Mysql;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.RobotCoder.DataBase.MySql;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -13,24 +11,24 @@ namespace Agebull.EntityModel.RobotCoder
     {
         #region SQL构造
 
-        protected override string LoadFields() => SqlMomentCoder.LoadSql(Model);
+        protected override string LoadFields() => SqlMomentCoder.LoadSql(Model.DataTable);
 
-        protected override string Having() => SqlMomentCoder.HavingSql(Model);
+        protected override string Having() => SqlMomentCoder.HavingSql(Model.DataTable);
 
-        protected override string GroupFields() => SqlMomentCoder.GroupSql(Model);
+        protected override string GroupFields() => SqlMomentCoder.GroupSql(Model.DataTable);
 
         protected override string OrderbyFields()
         {
-            var field = Model.Properties.FirstOrDefault(p => p.Name == Model.OrderField);
+            var field = Model.DataTable.FindLast(p => p.Name == Model.OrderField);
             if (field == null)
                 return null;
             return Model is ModelConfig model
-                ? $"{model.ReadTableName}.{field.DbFieldName} {(Model.OrderDesc ? " DESC" : "")}"
+                ? $"{model.DataTable.ReadTableName}.{field.DbFieldName} {(Model.OrderDesc ? " DESC" : "")}"
                 : $"{field.DbFieldName} {(Model.OrderDesc ? " DESC" : "")}";
         }
         protected override string ReadTableName()
         {
-            var table = Model.ReadTableName;
+            var table = Model.DataTable.ReadTableName;
             var code = new StringBuilder();
             code.Append(table);
             if (Model is ModelConfig model)
@@ -42,17 +40,17 @@ namespace Agebull.EntityModel.RobotCoder
                         : releation.PrimaryEntity;
 
                     var outField = releation.PrimaryEntity == model.Entity
-                        ? entity.Properties.FirstOrDefault(p => p.Name == releation.ForeignKey)
-                        : entity.PrimaryColumn;
+                        ? entity.DataTable.FindLast(p => p.Name == releation.ForeignKey)
+                        : entity.DataTable.PrimaryField;
 
                     var inField = releation.PrimaryEntity == model.Entity
-                        ? Model.PrimaryColumn
-                        : Model.Properties.FirstOrDefault(p => p.IsLinkKey && p.LinkTable == entity.Name);
+                        ? model.DataTable.PrimaryField
+                        : model.DataTable.FindLast(p => p.IsLinkKey && p.LinkTable == entity.Name);
 
 
                     code.AppendLine();
                     code.Append(releation.JoinType == EntityJoinType.Inner ? "INNER JOIN" : "LEFT JOIN");
-                    code.Append($"`{entity.ReadTableName}` ON `{table}`.`{inField.DbFieldName}` = `{entity.ReadTableName}`.`{outField.DbFieldName}` {releation.Condition}");
+                    code.Append($"`{entity.DataTable.ReadTableName}` ON `{table}`.`{inField.DbFieldName}` = `{entity.DataTable.ReadTableName}`.`{outField.DbFieldName}` {releation.Condition}");
                 }
             }
             return code.ToString();
@@ -65,27 +63,27 @@ namespace Agebull.EntityModel.RobotCoder
                 if (Model.Interfaces.Contains("ILogicDeleteData"))
                 {
                     var entity = GlobalConfig.GetEntity("ILogicDeleteData");
-                    return $"UPDATE `{Model.SaveTableName}` SET `{entity.Properties[0].DbFieldName}`=1 ";
+                    return $"UPDATE `{Model.DataTable.SaveTableName}` SET `{entity.Properties[0].DataBaseField.DbFieldName}`=1 ";
                 }
                 if (Model.Interfaces.Contains("IStateData"))
                 {
                     var entity = GlobalConfig.GetEntity("IStateData");
-                    var field = entity.Properties.FirstOrDefault(p => p.Name == "DataState");
-                    return $"UPDATE `{Model.SaveTableName}` SET `{field.DbFieldName}`=255 ";
+                    var field = entity.Find(p => p.Name == "DataState").DataBaseField;
+                    return $"UPDATE `{Model.DataTable.SaveTableName}` SET `{field.DbFieldName}`=255 ";
                 }
             }
-            return $"DELETE FROM `{Model.SaveTableName}`";
+            return $"DELETE FROM `{Model.DataTable.SaveTableName}`";
         }
 
         protected override string InsertFieldCode()
         {
-            if (Model.IsQuery)
+            if (Model.DataTable.IsQuery)
                 return null;
-            var columns = Model.PublishProperty.Where(p => p.Entity == Model.Entity &&
-                    !p.IsIdentity && !p.IsCompute && !p.CustomWrite &&
+            var columns = Model.DataTable.FindLastAndToArray(p => p.Entity == Model.Entity &&
+                    !p.IsIdentity && !p.IsReadonly && !p.CustomWrite &&
                     !p.DbInnerField &&
                     !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)
-                ).ToArray();
+                );
 
             var fields = new StringBuilder();
 
@@ -106,13 +104,13 @@ namespace Agebull.EntityModel.RobotCoder
         }
         protected override string InsertValuesCode()
         {
-            if (Model.IsQuery)
+            if (Model.DataTable.IsQuery)
                 return null;
-            var columns = Model.PublishProperty.Where(p => p.Entity == Model.Entity &&
-                    !p.IsIdentity && !p.IsCompute && !p.CustomWrite &&
+            var columns = Model.DataTable.FindLastAndToArray(p => p.Entity == Model.Entity &&
+                    !p.IsIdentity && !p.IsReadonly && !p.CustomWrite &&
                     !p.DbInnerField &&
                     !p.KeepStorageScreen.HasFlag(StorageScreenType.Insert)
-                ).ToArray();
+                );
             var values = new StringBuilder();
             var isFirst = true;
             foreach (var property in columns)
@@ -132,15 +130,11 @@ namespace Agebull.EntityModel.RobotCoder
 
         protected override string UpdateFields()
         {
-            if (Model.IsQuery)
+            if (Model.DataTable.IsQuery)
                 return null;
             var isFirst = true;
             var sql = new StringBuilder();
-            var columns = Model.PublishProperty.Where(p => p.Entity == Model.Entity &&
-                    !p.IsIdentity && !p.IsCompute && !p.CustomWrite &&
-                    !p.DbInnerField &&
-                    !p.KeepStorageScreen.HasFlag(StorageScreenType.Update)
-                ).ToArray();
+            var columns = Model.DataTable.FindLastAndToArray(p => p.Entity == Model.Entity && !p.KeepStorageScreen.HasFlag(StorageScreenType.Update));
 
             foreach (var property in columns)
             {
@@ -176,22 +170,22 @@ namespace Agebull.EntityModel.RobotCoder
         public void SetEntityParameter(DbCommand cmd,{Model.EntityName} entity)
         {{");
 
-            foreach (var property in Model.PublishProperty.Where(p => !p.DbInnerField).OrderBy(p => p.Index))
+            foreach (var field in Model.DataTable.FindLastAndToArray(p => !p.DbInnerField).OrderBy(p => p.Index))
             {
-                if (!string.IsNullOrWhiteSpace(property.CustomType))
+                if (!string.IsNullOrWhiteSpace(field.Property.CustomType))
                 {
                     code.Append($@"
-            cmd.Parameters.Add(new MySqlParameter(""{property.Name}"", ({property.CsType})entity.{property.Name}));");
+            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"", ({field.CsType})entity.{field.Name}));");
                 }
-                else if (property.CsType.Equals("bool", StringComparison.OrdinalIgnoreCase))
+                else if (field.CsType.Equals("bool", StringComparison.OrdinalIgnoreCase))
                 {
                     code.Append($@"
-            cmd.Parameters.Add(new MySqlParameter(""{property.Name}"", entity.{property.Name} ? (byte)1 : (byte)0));");
+            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"", entity.{field.Name} ? (byte)1 : (byte)0));");
                 }
                 else
                 {
                     code.Append($@"
-            cmd.Parameters.Add(new MySqlParameter(""{property.Name}"", entity.{property.Name}));");
+            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"", entity.{field.Name}));");
                 }
             }
             code.Append(@"
@@ -215,15 +209,15 @@ namespace Agebull.EntityModel.RobotCoder
             switch (property)
             {");
 
-            foreach (var property in Model.DbFields)
+            foreach (var field in Model.DataTable.Last())
             {
-                if (property.DbFieldName.ToLower() != property.Name.ToLower())
+                if (field.DbFieldName.ToLower() != field.Name.ToLower())
                     code.Append($@"
-                case ""{property.DbFieldName.ToLower()}"":");
+                case ""{field.DbFieldName.ToLower()}"":");
 
                 code.Append($@"
-                case ""{property.Name.ToLower()}"":
-                    return (int)MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(property.DbType, property.CsType)};");
+                case ""{field.Name.ToLower()}"":
+                    return (int)MySqlDbType.{MySqlDataBaseHelper.ToSqlDbType(field.FieldType, field.CsType)};");
             }
 
             code.Append(@"
@@ -248,9 +242,9 @@ namespace Agebull.EntityModel.RobotCoder
         {{
             var reader = r as MySqlDataReader;");
             int idx = 0;
-            foreach (var property in Model.DbFields.Where(p => !p.DbInnerField && !p.NoProperty && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)))
+            foreach (var fieldConfig in Model.DataTable.FindLastAndToArray(p => !p.DbInnerField && !p.NoStorage && !p.KeepStorageScreen.HasFlag(StorageScreenType.Read)))
             {
-                SqlMomentCoder.FieldReadCode(property, code, idx++);
+                SqlMomentCoder.FieldReadCode(fieldConfig, code, idx++);
             }
             code.Append(@"
         }");
@@ -258,8 +252,7 @@ namespace Agebull.EntityModel.RobotCoder
             {
                 return code.ToString();
             }
-            var array = model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty
-                        && p.ModelType != ReleationModelType.Custom).ToArray();
+            var array = model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty && p.ModelType != ReleationModelType.Custom).ToArray();
             if (array.Length != 0)
             {
                 code.Append($@"
@@ -286,7 +279,7 @@ namespace Agebull.EntityModel.RobotCoder
                 code.Append(@"
         }");
             }
-            if (Model.IsQuery || model.Releations.Count == 0)
+            if (Model.DataTable.IsQuery || model.Releations.Count == 0)
                 return code.ToString();
             var releations = model.Releations.Where(p => p.CanWrite).ToArray();
             if (releations.Length == 0)
@@ -311,12 +304,12 @@ namespace Agebull.EntityModel.RobotCoder
                     : re.PrimaryEntity;
 
                 var outField = re.PrimaryEntity == model.Entity
-                    ? friend.Properties.FirstOrDefault(p => p.Name == re.ForeignKey)
+                    ? friend.Find(p => p.Name == re.ForeignKey)
                     : friend.PrimaryColumn;
 
                 var inField = re.PrimaryEntity == model.Entity
-                    ? Model.PrimaryColumn
-                    : Model.Properties.FirstOrDefault(p => p.IsLinkKey && p.LinkTable == friend.Name);
+                    ? Model.DataTable.PrimaryField
+                    : Model.DataTable.FindLast(p => p.IsLinkKey && p.LinkTable == friend.Name);
 
                 code.Append($@"
             {{

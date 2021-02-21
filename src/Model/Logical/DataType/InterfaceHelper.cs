@@ -1,9 +1,9 @@
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Agebull.Common;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -16,21 +16,24 @@ namespace Agebull.EntityModel.RobotCoder
         /// ¼ì²é×Ö¶ÎÁ¬½Ó
         /// </summary>
         /// <param name="entity"></param>
-        /// <param name="field"></param>
-        public static void CheckLinkField(IEntityConfig entity, IFieldConfig field)
+        /// <param name="property"></param>
+        public static void CheckLinkField(IEntityConfig entity, IPropertyConfig property)
         {
-            var link = field.IsLinkField ? entity.Parent.Find(field.LinkTable) : null;
+            var field = property.Entity?.DataTable[property];
+            if (field == null)
+                return;
+            var link = field.IsLinkField ? entity.Project.Find(field.LinkTable) : null;
             var linkField = link?.Find(field.LinkField);
             if (linkField != null)
             {
-                field.Option.ReferenceConfig = linkField;
-                field.Option.IsLink = true;
+                property.Option.ReferenceConfig = linkField;
+                property.Option.IsLink = true;
                 return;
             }
+            field.IsReadonly = false;
             field.IsLinkCaption = false;
             field.IsLinkField = false;
             field.IsLinkKey = false;
-            field.IsCompute = false;
         }
 
         /// <summary>
@@ -52,21 +55,34 @@ namespace Agebull.EntityModel.RobotCoder
                 {
                     if (iField.IsDelete || iField.IsDiscard)
                         continue;
-                    if (!entity.TryGet(out var field, iField.Name, iField.DbFieldName))
+                    GlobalTrigger.DoRegularize(iField);
+                    if (!entity.TryGet(out var property, iField.Name))
                     {
-                        var f = new FieldConfig();
-                        f.Copy(iField);
-                        entity.LastProperties.TryAdd(f);
-                        field = f;
-                        field.Index = ++idx;
+                        var field = new FieldConfig();
+                        field.Copy(iField);
+                        entity.LastProperties.TryAdd(field);
+                        property = field;
                     }
-                    field.IsInterfaceField = true;
-                    field.Option.ReferenceKey = iField.Key;
-                    field.Entity = entity.Entity;
-                    field.Option.ReferenceConfig = iField;
-                    field.Option.IsReference = true;
-                    field.LinkTable = entity.Name;
-                    field.LinkField = iField.Name;
+                    property.DataBaseField = entity.DataTable.Find(iField.Name);
+                    if (property.DataBaseField == null)
+                    {
+                        property.DataBaseField = new DataBaseFieldConfig
+                        {
+                            Parent = entity.DataTable,
+                            Property = property
+                        };
+                        entity.DataTable.Add(property.DataBaseField);
+                    }
+                    property.DataBaseField.Copy(iField.DataBaseField);
+                    property.Index = ++idx;
+                    property.IsInterfaceField = true;
+                    property.Option.ReferenceKey = iField.Key;
+                    property.Entity = entity.Entity;
+                    property.Option.ReferenceConfig = iField;
+                    property.Option.IsReference = true;
+
+                    GlobalTrigger.DoRegularize(property.DataBaseField);
+                    GlobalTrigger.DoRegularize(property);
                 }
             }
         }
@@ -95,11 +111,11 @@ namespace Agebull.EntityModel.RobotCoder
                 return;
             }
             interfaces.Add(iEntity.Name);
-            var array = iEntity.Properties.Where(p => !p.IsDiscard).ToArray();
+            var array = iEntity.Where(p => !p.IsDiscard).ToArray();
             var existFields = new List<(FieldConfig inf, FieldConfig field)>();
             foreach (var iField in array)
             {
-                if (entity.TryGet(out var field, iField.Name, iField.DbFieldName))
+                if (entity.TryGet(out var field, iField.Name))
                 {
                     existFields.Add((iField, field));
                 }
@@ -127,11 +143,11 @@ namespace Agebull.EntityModel.RobotCoder
             var interfaces = words == null || words.Length == 0 ? new List<string>() : new List<string>(words);
             foreach (var iEntity in iEntities)
             {
-                var array = iEntity.Properties.Where(p => !p.IsDiscard).ToArray();
+                var array = iEntity.Where(p => !p.IsDiscard).ToArray();
                 var existFields = new List<(FieldConfig, FieldConfig)>();
                 foreach (var iField in array)
                 {
-                    if (entity.TryGet(out var field, iField.Name, iField.DbFieldName))
+                    if (entity.TryGet(out var field, iField.Name))
                     {
                         existFields.Add((iField, field));
                     }

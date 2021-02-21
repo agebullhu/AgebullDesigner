@@ -13,7 +13,7 @@
 
 namespace Agebull.EntityModel.Designer
 {
-    internal class AllFieldsViewModel : ExtendViewModelBase<ModelDesignModel>
+    internal class AllFieldsViewModel : EditorViewModelBase<ModelDesignModel>
     {
     }
 

@@ -8,13 +8,11 @@
 
 #region 引用
 
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.IO;
-using System.Linq;
 using System.Windows;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
 
 #endregion
 
@@ -26,17 +24,17 @@ namespace Agebull.EntityModel.Designer
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
     internal class EntityEditCommands : DesignCommondBase<EntityConfig>
-    { 
+    {
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
                 Action = AddNewProperty,
-                Caption = "导入字段",
+                Caption = "新增字段",
                 SignleSoruce = true,
                 IsButton = true,
                 Catalog = "实体",
-                IconName = "tree_Open",
+                IconName = "字段",
                 SoruceView = "entity"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
@@ -47,17 +45,17 @@ namespace Agebull.EntityModel.Designer
                 IsButton = true,
                 SignleSoruce = true,
                 Catalog = "实体",
-                IconName = "tree_Child1"
+                IconName = "复制"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
                 Action = DeleteEntity,
-                Caption = "删除实体",
+                Caption = "删除",
                 SoruceView = "entity",
                 IsButton = false,
                 SignleSoruce = true,
                 Catalog = "实体",
-                IconName = "img_del"
+                IconName = "删除"
             });
         }
 
@@ -70,7 +68,7 @@ namespace Agebull.EntityModel.Designer
             {
                 return;
             }
-            entity.Parent.Remove(entity);
+            entity.Project.Remove(entity);
         }
 
 

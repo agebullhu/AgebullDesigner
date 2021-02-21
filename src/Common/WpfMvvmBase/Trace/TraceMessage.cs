@@ -214,7 +214,7 @@ namespace Agebull.EntityModel
                     var idx = _threadIndex[Thread.CurrentThread.ManagedThreadId] + 1;
                     if (idx >= _trace.Count)
                     {
-                        _trace.DoAdd(time ? $"{DateTime.Now}:{p}" : p);
+                        _trace.Add(time ? $"{DateTime.Now}:{p}" : p);
                         _threadIndex[Thread.CurrentThread.ManagedThreadId] = _trace.Count;
                     }
                     else
@@ -225,7 +225,7 @@ namespace Agebull.EntityModel
                 }
                 else
                 {
-                    _trace.DoAdd(time ? $"{DateTime.Now}:{p}" : p);
+                    _trace.Add(time ? $"{DateTime.Now}:{p}" : p);
                     _threadIndex.Add(Thread.CurrentThread.ManagedThreadId, _trace.Count - 1);
                 }
                 RaisePropertyChanged(() => Track);

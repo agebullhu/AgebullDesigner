@@ -1,5 +1,5 @@
-using System.Text;
 using Agebull.EntityModel.Config;
+using System.Text;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -37,7 +37,7 @@ namespace Agebull.EntityModel.RobotCoder
             return code.ToString();
         }
 
-        private void ToStringCode(StringBuilder code, IFieldConfig field)
+        private void ToStringCode(StringBuilder code, IPropertyConfig field)
         {
             var caption = string.IsNullOrWhiteSpace(field.Caption) ? field.Name : field.Caption;
             if (string.IsNullOrWhiteSpace(field.ArrayLen))

@@ -8,13 +8,13 @@
 
 #region 引用
 
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.RobotCoder;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Media;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
 
 #endregion
 
@@ -59,7 +59,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     字段
         /// </summary>
-        public NotificationList<FieldConfig> Columns { get; } = new ConfigCollection<FieldConfig>();
+        public NotificationList<FieldConfig> Columns { get; } = new NotificationList<FieldConfig>();
 
         #endregion
 
@@ -73,9 +73,8 @@ namespace Agebull.EntityModel.Designer
                 (FormatPrepare, Format.DoCheckFieldes, CheckFieldesEnd)
                 {
                     IsButton=true,
-
                     Caption = "分析文本",
-                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                    IconName = "分析"
                 },
             new CommandItem
                 {
@@ -87,7 +86,7 @@ namespace Agebull.EntityModel.Designer
                     IsButton=true,
 
                     Caption = "规整文本(C#风格属性)",
-                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                    IconName = "C#"
                 },
             new AsyncCommandItem<string, string>
                 (FormatPrepare, Format.DoFormatDocument2, FormatEnd)
@@ -95,7 +94,7 @@ namespace Agebull.EntityModel.Designer
                     IsButton=true,
 
                     Caption = "规整文本(API文档)",
-                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                    IconName = "Wrod"
                 },
             new AsyncCommandItem<string, string>
                 (FormatPrepare, Format.DoFormatDocument3, FormatEnd)
@@ -103,7 +102,7 @@ namespace Agebull.EntityModel.Designer
                     IsButton=true,
 
                     Caption = "规整文本(API文档2)",
-                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                    IconName = "Wrod"
                 },
             new AsyncCommandItem<string, string>
                 (FormatPrepare, Format.DoFormat2,FormatEnd)
@@ -111,7 +110,7 @@ namespace Agebull.EntityModel.Designer
                     IsButton=true,
 
                     Caption = "规整文本(名称 类型 标题)",
-                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                    IconName = "Wrod"
                 },
             new AsyncCommandItem<string, string>
                 (FormatPrepare, Format.DoFormatMySql, FormatEnd)
@@ -119,7 +118,7 @@ namespace Agebull.EntityModel.Designer
                     IsButton=true,
 
                     Caption = "规整文本(MySql数据库)",
-                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                    IconName = "数据库"
                 },
             new AsyncCommandItem<string, string>
                 (FormatPrepare, Format.DoFormatSqlServer, FormatEnd)
@@ -127,7 +126,7 @@ namespace Agebull.EntityModel.Designer
                     IsButton=true,
 
                     Caption = "规整文本(SqlServer数据库)",
-                    Image = Application.Current.Resources["tree_Assembly"] as ImageSource
+                    IconName = "数据库"
                 }
         };
 

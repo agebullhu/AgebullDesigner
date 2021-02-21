@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Agebull.EntityModel.Config
 {
@@ -55,10 +56,9 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static ModelConfig GetModel(string name)
         {
-            return name == null
+            return name.IsMissing()
                 ? null
-                : GetModel(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase))
-                ?? GetModel(p => string.Equals(p.ReadTableName, name, StringComparison.OrdinalIgnoreCase));
+                : GetModel(p => name.IsOnce(p.Name, p.DataTable?.ReadTableName, p.DataTable?.SaveTableName));
         }
 
         /// <summary>
@@ -78,11 +78,9 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public static EntityConfig GetEntity(string name)
         {
-            return string.IsNullOrWhiteSpace(name)
+            return name.IsMissing()
                 ? null
-                : GetEntity(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase))
-                ?? GetEntity(p => string.Equals(p.ReadTableName, name, StringComparison.OrdinalIgnoreCase))
-                ?? GetEntity(p => string.Equals(p.SaveTableName, name, StringComparison.OrdinalIgnoreCase));
+                : GetEntity(p => name.IsOnce(p.Name, p.DataTable?.ReadTableName, p.DataTable?.SaveTableName));
         }
 
         /// <summary>
@@ -93,8 +91,8 @@ namespace Agebull.EntityModel.Config
         public static EnumConfig GetEnum(string name)
         {
             return name == null
-                ? null :
-                FirstOrDefault(Enums, p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
+                ? null
+                : FirstOrDefault(Enums, p => p.Name.IsMe(name));
         }
 
         /// <summary>
@@ -106,7 +104,7 @@ namespace Agebull.EntityModel.Config
         {
             return name == null
                 ? null
-                : FirstOrDefault(Projects, p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
+                : FirstOrDefault(Projects, p => p.Name.IsMe(name));
         }
 
         /// <summary>
@@ -118,9 +116,7 @@ namespace Agebull.EntityModel.Config
         {
             return names.Length == 0
                 ? null
-                : GetEntity(p => names.Any(name => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase) ||
-                                                                                 string.Equals(p.ReadTableName, name, StringComparison.OrdinalIgnoreCase) ||
-                                                                                 string.Equals(p.SaveTableName, name, StringComparison.OrdinalIgnoreCase)));
+                : GetEntity(p => names.Exist(p.Name,p.DataTable?.ReadTableName,p.DataTable?.SaveTableName));
 
         }
 
@@ -192,7 +188,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     配置查找表
         /// </summary>
-        [IgnoreDataMember]
+        [JsonIgnore]
         public static Dictionary<string, ConfigBase> ConfigDictionary = new Dictionary<string, ConfigBase>();
 
         /// <summary>
@@ -219,6 +215,16 @@ namespace Agebull.EntityModel.Config
                 {
                     ConfigDictionary[option.Key] = option.Config;
                 }
+        }
+        /// <summary>
+        ///     加入配置
+        /// </summary>
+        /// <param name="option"></param>
+        public static void AddNormalConfig(ConfigBase config)
+        {
+            if (!config.Option.IsNormal)
+                return;
+            AddConfig(config.Option);
         }
 
         /// <summary>
@@ -255,9 +261,9 @@ namespace Agebull.EntityModel.Config
         /// <param name="key"></param>
         /// <returns></returns>
         public static TConfig GetConfigByKey<TConfig>(string key)
-            where TConfig : ConfigBase
+            where TConfig : class
         {
-            if (string.IsNullOrEmpty(key))
+            if (key.IsMissing())
                 return null;
             lock (ConfigDictionary)
             {
@@ -791,6 +797,7 @@ namespace Agebull.EntityModel.Config
         {
             if (project == null)
                 return;
+
             TryAdd(Projects, project);
         }
 

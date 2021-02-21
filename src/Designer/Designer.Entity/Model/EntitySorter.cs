@@ -8,10 +8,10 @@ namespace Agebull.EntityModel.Config
     /// </summary>
     public class EntitySorter : ConfigModelBase
     {
-        List<IFieldConfig> columns;
-        List<IFieldConfig> dcs;
+        List<IPropertyConfig> columns;
+        List<IPropertyConfig> dcs;
         private IEntityConfig entity;
-        IFieldConfig pk, pc;
+        IPropertyConfig pk, pc;
         /// <summary>
         /// 表结构对象
         /// </summary>
@@ -23,8 +23,8 @@ namespace Agebull.EntityModel.Config
                 entity = value;
                 pk = Entity.Entity.PrimaryColumn;
                 pc = Entity.Entity.CaptionColumn;
-                columns = entity.Properties.Where(p => !p.IsDiscard && p!=pc && p!=pk).OrderBy(p => p.Index).ToList();
-                dcs = entity.Properties.Where(p => p.IsDiscard && p != pc && p != pk).OrderBy(p => p.Index).ToList();
+                columns = entity.Where(p => !p.IsDiscard && p != pc && p != pk).OrderBy(p => p.Index).ToList();
+                dcs = entity.Where(p => p.IsDiscard && p != pc && p != pk).OrderBy(p => p.Index).ToList();
             }
         }
 
@@ -34,16 +34,13 @@ namespace Agebull.EntityModel.Config
             {
                 field.Option.Identity = field.Option.Index;
             }
-            var old = entity.Properties.ToArray();
             if (entity is EntityConfig e)
             {
-                e.Properties.Clear();
-                e.Properties.AddRange(old.Cast<FieldConfig>().OrderBy(p => p.Index));
+                e.Properties.Sort(p => p.OrderBy(p => p.Index));
             }
             if (entity is ModelConfig m)
             {
-                m.Properties.Clear();
-                m.Properties.AddRange(old.Cast<PropertyConfig>().OrderBy(p => p.Index));
+                m.Properties.Sort(p => p.OrderBy(p => p.Index));
             }
         }
 
@@ -61,7 +58,7 @@ namespace Agebull.EntityModel.Config
             {
                 pc.Option.Index = ++idx;
             }
-            IEnumerable<IFieldConfig> fields = columns.Where(p => !string.IsNullOrWhiteSpace(p.Group));
+            IEnumerable<IPropertyConfig> fields = columns.Where(p => !string.IsNullOrWhiteSpace(p.Group));
             if (!string.IsNullOrEmpty(pk.Group))
             {
                 foreach (var column in columns.Where(p => p.Group == pk.Group).OrderBy(p => p.Index))
@@ -70,7 +67,7 @@ namespace Agebull.EntityModel.Config
                 }
                 fields = fields.Where(p => p.Group != pk.Group);
             }
-            foreach (var group in fields.GroupBy(p=> p.Group))
+            foreach (var group in fields.GroupBy(p => p.Group))
             {
                 foreach (var column in group.OrderBy(p => p.Index))
                 {
@@ -105,7 +102,7 @@ namespace Agebull.EntityModel.Config
                 pc.Option.Index = ++idx;
             }
 
-            foreach (var field in columns.OrderBy(p=>p.Index))
+            foreach (var field in columns.OrderBy(p => p.Index))
             {
                 field.Option.Index = ++idx;
             }

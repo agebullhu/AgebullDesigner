@@ -1,6 +1,6 @@
+using Agebull.EntityModel.Config;
 using System.IO;
 using System.Linq;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -8,7 +8,7 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// ≈‰÷√∂¡–¥∆˜
     /// </summary>
-    public class SolutionWriter: ConfigWriter
+    public class SolutionWriter : ConfigWriter
     {
         SolutionConfig Solution;
 
@@ -30,7 +30,7 @@ namespace Agebull.EntityModel.Designer
                 SaveSolution(solution);
             }
             GlobalConfig.ClearConfigDictionary();
-            solution.Foreach<ConfigBase>(p => p.Option.IsNormal, p => GlobalConfig.AddConfig(p.Option));
+            solution.Look(GlobalConfig.AddNormalConfig);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace Agebull.EntityModel.Designer
                 SaveConfig(Solution.SaveFileName, Solution, true);
             }
 
-            Solution.Foreach<ConfigBase>(p => p.IsModify = false);
+            Solution.Look(p => p.ResetModify(true));
             //VersionControlItem.Current.TfsCheckIn();
         }
 

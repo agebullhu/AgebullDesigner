@@ -1,12 +1,9 @@
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Designer;
 using System;
-using System.Collections;
 using System.ComponentModel.Composition;
 using System.Windows;
-using System.Windows.Media;
-using Agebull.EntityModel.Designer;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
-using System.Collections.Generic;
 
 namespace Agebull.Common.Config.Designer
 {
@@ -28,7 +25,7 @@ namespace Agebull.Common.Config.Designer
                 Catalog = "数据库",
                 WorkView = "database",
                 SoruceView = "entity",
-                IconName = "tree_Assembly"
+                IconName = "数据库"
             });
             CommandCoefficient.RegisterItem<EntityConfig>(new CommandItemBuilder<EntityConfig>
             {
@@ -38,7 +35,7 @@ namespace Agebull.Common.Config.Designer
                 Catalog = "数据库",
                 WorkView = "database",
                 SoruceView = "entity",
-                IconName = "tree_Assembly"
+                IconName = "数据库"
             });
         }
 

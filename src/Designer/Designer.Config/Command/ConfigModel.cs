@@ -1,9 +1,7 @@
-﻿using System;
+﻿using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -24,7 +22,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "工具",
                 SignleSoruce = false,
 
-                IconName = "tree_item"
+                IconName = "清除"
             });
             commands.Add(new CommandItemBuilder<ConfigBase>
             {
@@ -33,28 +31,21 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "工具",
                 SignleSoruce = false,
 
-                IconName = "tree_item"
+                IconName = "清除"
             });
             commands.Add(new CommandItemBuilder<ConfigBase>
             {
                 Action = Lock,
                 Caption = "锁定",
                 Catalog = "设计",
-                IconName = "img_lock"
+                IconName = "锁定"
             });
             commands.Add(new CommandItemBuilder<ConfigBase>
             {
                 Action = UnLock,
                 Caption = "解锁",
                 Catalog = "设计",
-                IconName = "img_no_modify"
-            });
-            commands.Add(new CommandItemBuilder<ConfigBase>
-            {
-                Action = ToModify,
-                Caption = "强制已修改",
-                Catalog = "设计",
-                IconName = "img_modify"
+                IconName = "解锁"
             });
         }
 
@@ -66,11 +57,6 @@ namespace Agebull.EntityModel.Designer
         void Lock(ConfigBase project)
         {
             project.Option.IsFreeze = true;
-        }
-
-        public void ToModify(ConfigBase entity)
-        {
-            entity.IsModify = true;
         }
 
         /// <summary>

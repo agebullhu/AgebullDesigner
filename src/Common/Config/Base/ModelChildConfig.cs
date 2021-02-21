@@ -8,13 +8,13 @@ namespace Agebull.EntityModel.Config
     /// 属性配置
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public partial class ModelChildConfig : ConfigBase
+    public partial class ModelChildConfig : ConfigBase, IChildrenConfig
     {
         /// <summary>
         /// 上级
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
-        internal ModelConfig _parent;
+        [JsonIgnore]
+        internal IEntityConfig _parent;
 
         /// <summary>
         /// 上级
@@ -22,19 +22,20 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 上级
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"上级"), Description("上级")]
-        public ModelConfig Parent
+        public IEntityConfig Parent
         {
             get => _parent;
             set
             {
                 if (_parent == value)
                     return;
-                BeforePropertyChanged(nameof(Parent), _parent, value);
+                BeforePropertyChange(nameof(Parent), _parent, value);
                 _parent = value;
-                OnPropertyChanged(nameof(Parent));
+                RaisePropertyChanged(nameof(Parent));
             }
         }
+        ISimpleConfig IChildrenConfig.Parent { get => _parent as ModelConfig; set => _parent = value as ModelConfig; }
     }
 }

@@ -1,100 +1,209 @@
+using Agebull.EntityModel.Config;
 using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq.Expressions;
+using System.Linq;
+using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace Agebull.EntityModel
 {
     /// <summary>
     ///     表示一个自动存储的列表对象
     /// </summary>
-    public class ConfigCollection<TConfig> : NotificationList<TConfig>
-        where TConfig : NotificationObject, new()
+    public class ConfigCollection<TConfig> : NotificationList<TConfig>, IModifyObject
+        where TConfig : ConfigBase, IChildrenConfig
     {
-        #region 属性修改
+        #region 构造
 
-        /// <summary>
-        ///     发出属性修改事件
-        /// </summary>
-        /// <param name="action">属性字段</param>
-        protected void RaisePropertyChanged<T>(Expression<Func<T>> action)
+        [JsonIgnore]
+        public ModifyRecord ValueRecords { get; }
+
+        public ConfigCollection()
         {
-            OnPropertyChanged(GetPropertyName(action));
+            ValueRecords = new ModifyRecord
+            {
+                Me = this
+            };
         }
 
-        /// <param name="action">属性字段</param>
-        protected static string GetPropertyName<T>(Expression<Func<T>> action)
+        public ConfigCollection(ConfigBase parent, string name = null)
         {
-            var expression = (MemberExpression)action.Body;
-            return expression.Member.Name;
-        }
-        /// <summary>
-        ///     发出属性修改事件
-        /// </summary>
-        /// <param name="action">属性字段</param>
-        protected void OnPropertyChanged<T>(Expression<Func<T>> action)
-        {
-            OnPropertyChanged(GetPropertyName(action));
-        }
-
-
-        /// <summary>
-        ///     发出属性修改事件
-        /// </summary>
-        /// <param name="propertyName">属性</param>
-        public void RaisePropertyChanged(string propertyName)
-        {
-            OnPropertyChanged(propertyName);
-        }
-
-
-        /// <summary>
-        ///     发出属性修改事件
-        /// </summary>
-        /// <param name="propertyName">属性</param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            InvokeInUiThread(OnPropertyChanged, new PropertyChangedEventArgs(propertyName));
+            Name = name;
+            Parent = parent;
+            Parent.ValueRecords.Add(Name, false);
         }
 
         #endregion
+
+        #region 子级同步
+
+        public string Name { get; set; }
+        public ConfigBase Parent { get; set; }
+
+        private void OnRemove(TConfig item)
+        {
+            item.IsModifyChanged -= OnItemIsModifyChanged;
+
+            haseNewOrRemove = true;
+            CheckModify();
+            GlobalTrigger.OnRemoved(Parent, item);
+            GlobalConfig.RemoveConfig(item.Option);
+        }
+
+
+        private void OnAdd(TConfig item)
+        {
+            haseNewOrRemove = true;
+            GlobalConfig.AddConfig(item.Option);
+            item.Index = Count == 0 ? 1 : this.Max(p => p.Index) + 1;
+            item.Parent = Parent;
+            item.IsModifyChanged += OnItemIsModifyChanged;
+            item.OnLoad();
+            item.SetIsNew();
+            CheckModify();
+
+            if (Parent == null)
+                return;
+            GlobalTrigger.OnAdded(Parent, item);
+        }
+
+        /// <summary>
+        /// 遍历
+        /// </summary>
+        /// <typeparam name="TDest"></typeparam>
+        /// <returns></returns>
+        public void DoForeach<T>(Action<T> action, bool doAction)
+        {
+            if (doAction && this is T t)
+            {
+                action(t);
+            }
+            foreach (var item in this)
+            {
+                item.Foreach(action, doAction);
+            }
+        }
+
+
+        /// <summary>
+        /// 遍历
+        /// </summary>
+        /// <returns></returns>
+        public void OnLoad(string name, ConfigBase parent)
+        {
+            Name = name;
+            Parent = parent;
+            foreach (var item in this)
+            {
+                item.Parent = parent;
+                item.IsModifyChanged += OnItemIsModifyChanged;
+                item.OnLoad();
+            }
+            Parent.ValueRecords.Add(Name, false);
+        }
+
+
+        #endregion
+
+        #region 属性修改
+
+        /// <summary>
+        ///     通过提供的参数引发 <see cref="E:System.Collections.ObjectModel.NotificationList`1.CollectionChanged" /> 事件。
+        /// </summary>
+        /// <param name="e">要引发事件的自变量。</param>
+        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            if (WorkContext.InLoding)
+                return;
+            if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                haseNewOrRemove = true;
+                GlobalTrigger.OnLoad(Parent);
+                CheckModify();
+                return;
+            }
+            if (e.NewItems != null)
+            {
+                foreach (var item in e.NewItems.OfType<TConfig>())
+                {
+                    OnAdd(item);
+                }
+            }
+            if (e.OldItems == null)
+                return;
+            foreach (var item in e.OldItems.OfType<TConfig>())
+            {
+                OnRemove(item);
+            }
+            base.OnCollectionChanged(e);
+        }
+
+        #endregion
+
         #region 状态修改事件
 
         /// <summary>
-        ///     发出状态变化事件
+        ///     冻结
         /// </summary>
-        /// <param name="action">属性字段</param>
-        public void RaiseStatusChanged<T>(Expression<Func<T>> action)
+        [JsonIgnore]
+        public bool IsModify => modified > 0 || isNew || haseNewOrRemove;
+
+        public void ResetModify(bool isSaved)
         {
-            RaiseStatusChanged(GetPropertyName(action));
+            modified = 0;
+            isNew = !isSaved;
+            haseNewOrRemove = false;
+            Parent.ValueRecords.Add(Name, false);
+            if (WorkContext.InLoding)
+                return;
+            NotificationObject.InvokeInUiThread(RaiseStatusChangedInner, new IsModifyEventArgs(IsModify));
         }
 
-        /// <summary>
-        ///     发出状态变化事件
-        /// </summary>
-        /// <param name="status">状态</param>
-        public void RaiseStatusChanged(NotificationStatusType status)
+        public void SetIsNew()
         {
-            InvokeInUiThread(RaiseStatusChangedInner, new PropertyChangedEventArgs(status.ToString()));
+            isNew = true;
+            modified = Count;
+            haseNewOrRemove = false;
+            Parent.ValueRecords.Add(Name, false);
+            if (WorkContext.InLoding)
+                return;
+            NotificationObject.InvokeInUiThread(RaiseStatusChangedInner, new IsModifyEventArgs(IsModify));
         }
 
-        /// <summary>
-        ///     发出状态变化事件
-        /// </summary>
-        /// <param name="statusName">状态</param>
-        public void RaiseStatusChanged(string statusName)
+        [JsonIgnore]
+        int modified;
+        [JsonIgnore]
+        bool isNew;
+        [JsonIgnore]
+        bool haseNewOrRemove;
+
+        public void CheckModify()
         {
-            InvokeInUiThread(RaiseStatusChangedInner, new PropertyChangedEventArgs(statusName));
+            foreach (var item in this)
+                item.CheckModify();
+
+            modified = this.Count(p => p.IsModify);
+            Parent.ValueRecords.Add(Name, IsModify);
+            Parent.CheckModify();
+            //NotificationObject.InvokeInUiThread(RaiseStatusChangedInner, new IsModifyEventArgs(IsModify));
         }
+
+        private void OnItemIsModifyChanged(object sender, IsModifyEventArgs e)
+        {
+            CheckModify();
+        }
+
         /// <summary>
         ///     状态变化事件
         /// </summary>
-        private event PropertyChangedEventHandler statusChanged;
+        private event IsModifyEventHandler statusChanged;
 
         /// <summary>
         ///     状态变化事件
         /// </summary>
-        public event PropertyChangedEventHandler StatusChanged
+        public event IsModifyEventHandler IsModifyChanged
         {
             add
             {
@@ -103,97 +212,27 @@ namespace Agebull.EntityModel
             }
             remove => statusChanged -= value;
         }
+
         /// <summary>
         ///     发出状态变化事件
         /// </summary>
         /// <param name="args">属性</param>
-        private void RaiseStatusChangedInner(PropertyChangedEventArgs args)
+        private void RaiseStatusChangedInner(IsModifyEventArgs args)
         {
-            if (statusChanged == null)
-            {
+            if (WorkContext.InLoding)
                 return;
-            }
             try
             {
-                statusChanged(this, args);
+                statusChanged?.Invoke(this, args);
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex, "ObjectCollection.RaiseStatusChangedInner");
+                Trace.WriteLine(ex, "NotificationObject.RaiseStatusChangedInner");
                 throw;
             }
         }
 
-
         #endregion
-        #region UI线程同步支持
 
-        /// <summary>
-        ///     在UI线程中执行
-        /// </summary>
-        /// <param name="action"></param>
-        public void InvokeInUiThread(Action action)
-        {
-            if (WorkContext.SynchronousContext == null)
-            {
-                action();
-            }
-            else
-            {
-                WorkContext.SynchronousContext.InvokeInUiThread(action);
-            }
-        }
-
-        /// <summary>
-        ///     在UI线程中执行
-        /// </summary>
-        /// <param name="action"></param>
-        public void BeginInvokeInUiThread(Action action)
-        {
-            if (WorkContext.SynchronousContext == null)
-            {
-                action();
-            }
-            else
-            {
-                WorkContext.SynchronousContext.BeginInvokeInUiThread(action);
-            }
-        }
-
-        /// <summary>
-        ///     在UI线程中执行
-        /// </summary>
-        /// <param name="action"></param>
-        /// <param name="args"></param>
-        public void BeginInvokeInUiThread<T>(Action<T> action, T args)
-        {
-            if (WorkContext.SynchronousContext == null)
-            {
-                action(args);
-            }
-            else
-            {
-                WorkContext.SynchronousContext.BeginInvokeInUiThread(action, args);
-            }
-        }
-
-        /// <summary>
-        ///     在UI线程中执行
-        /// </summary>
-        /// <param name="action"></param>
-        /// <param name="args"></param>
-        public void InvokeInUiThread<T>(Action<T> action, T args)
-        {
-            if (WorkContext.SynchronousContext == null)
-            {
-                action(args);
-            }
-            else
-            {
-                WorkContext.SynchronousContext.InvokeInUiThread(action, args);
-            }
-        }
-
-        #endregion
     }
 }

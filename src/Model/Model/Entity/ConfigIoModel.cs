@@ -1,6 +1,6 @@
-﻿using System.IO;
-using Agebull.EntityModel.Config;
+﻿using Agebull.EntityModel.Config;
 using Microsoft.Win32;
+using System.IO;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace Agebull.EntityModel.Designer
@@ -77,7 +77,7 @@ namespace Agebull.EntityModel.Designer
             var tables = Context.GetSelectEntities();
             foreach (var entity in tables)
             {
-                var dir = GlobalConfig.CheckPath(directory, entity.Parent.Name, "Entity");
+                var dir = GlobalConfig.CheckPath(directory, entity.Project.Name, "Entity");
                 ProjectWriter.SaveEntity(entity, dir, true);
             }
         }
@@ -132,7 +132,8 @@ namespace Agebull.EntityModel.Designer
         public void Load(string sluFile)
         {
             Context.StateMessage = "正在载入...";
-            Context.Solution = ConfigLoader.Load(sluFile);
+            using (WorkModelScope.CreateScope(WorkModel.Loding))
+                Context.Solution = ConfigLoader.Load(sluFile);
             Context.StateMessage = "载入成功";
             Model.OnSolutionChanged();
         }

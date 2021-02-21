@@ -18,8 +18,8 @@ namespace Agebull.EntityModel
         /// </summary>
         /// <param name="n"></param>
         /// <param name="v"></param>
-        public ComboItem(string n,string v)
-            : base(n,v)
+        public ComboItem(string n, string v)
+            : base(n, v)
         {
         }
     }

@@ -34,14 +34,14 @@ namespace Agebull.EntityModel.Designer
         /// <param name="tables"></param>
         public static void Import(string file, IEnumerable<EntityConfig> tables)
         {
-            var project = tables.FirstOrDefault()?.Parent;
+            var project = tables.FirstOrDefault()?.Project;
             if (project == null)
             {
                 MessageBox.Show("提示：没有选择！");
                 return;
             }
             var workbook = new HSSFWorkbook();
-            using (CodeGeneratorScope.CreateScope(project))
+            using (CodeGeneratorScope.CreateScope(project,true))
             {
                 DoImport(workbook, project);
             }
@@ -91,7 +91,7 @@ namespace Agebull.EntityModel.Designer
                 int rowIdx = 0;
                 foreach (var entity in cls?.Items?.Where(p => p != null && p.EnableDataBase))
                 {
-                    rowIdx = ImportTable(workbook, sheet, entity, rowIdx);
+                    rowIdx = ImportTable(workbook, sheet, entity.IEntity, rowIdx);
                 }
             }
         }
@@ -99,7 +99,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         ///     读取表与实体关联表,初始化表结构
         /// </summary>
-        private static int ImportTable(HSSFWorkbook workbook, ISheet sheet, EntityConfig entity, int rowBase)
+        private static int ImportTable(HSSFWorkbook workbook, ISheet sheet, IEntityConfig entity, int rowBase)
         {
             var labelCell = GetCellStyle(workbook, HorizontalAlignment.Left, VerticalAlignment.Center, true, CreateFontStyle(workbook, "宋体", 9, true));
             var valueCell = GetCellStyle(workbook, HorizontalAlignment.Left, VerticalAlignment.Center, true, CreateFontStyle(workbook, "宋体"));
@@ -108,7 +108,7 @@ namespace Agebull.EntityModel.Designer
             var row = sheet.CreateRow(rowBase);
             row.HeightInPoints = 20;//行高
             row.CreateCell(0).SetCell("TABLE:", labelCell);
-            row.CreateCell(1).SetCellValue(entity.ReadTableName);
+            row.CreateCell(1).SetCellValue(entity.DataTable.ReadTableName);
             SetCellRangeAddress(sheet, valueCell, rowBase, rowBase, 1, 3);
 
             row.CreateCell(4).SetCell("变动时间:", labelCell);
@@ -141,7 +141,7 @@ namespace Agebull.EntityModel.Designer
             row.CreateCell(i).SetCell("更新时间", labelCell);
 
 
-            var fields = entity.DbFields.Where(p =>p!= null && !p.IsCompute).ToArray();
+            var fields = entity.DataTable.FindAndToArray(p => !p.IsReadonly);
             int line = 0;
             for (; line < fields.Length; line++)
             {
@@ -150,7 +150,7 @@ namespace Agebull.EntityModel.Designer
                 row.HeightInPoints = 20;//行高
                 i = 0;
                 row.CreateCell(i++).SetCell(field.DbFieldName, valueCell);
-                row.CreateCell(i++).SetCell(field.DbType?.ToUpper(), valueCell);
+                row.CreateCell(i++).SetCell(field.FieldType?.ToUpper(), valueCell);
                 row.CreateCell(i++).SetCell(field.CsType == "decimal" ? $"({field.Datalen},{field.Scale})" : (field.Datalen > 0 ? field.Datalen.ToString() : "-"), valueCell);
                 row.CreateCell(i++).SetCell(field.DbNullable ? "是" : "否", valueCell);
                 row.CreateCell(i++).SetCell(field.IsPrimaryKey ? "是" : "否", valueCell);

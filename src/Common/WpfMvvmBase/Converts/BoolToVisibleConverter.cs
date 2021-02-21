@@ -50,6 +50,26 @@ namespace Agebull.Common.Mvvm
     /// <summary>
     ///   布尔到可视的转换
     /// </summary>
+    public class EmptyToVisibleConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null || !(value is string str) || str.IsMissing())
+            {
+                return Visibility.Collapsed;
+            }
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value != null && (Visibility)value == Visibility.Visible;
+        }
+    }
+
+    /// <summary>
+    ///   布尔到可视的转换
+    /// </summary>
     public class BoolToVisibleConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

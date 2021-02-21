@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.Composition;
-using Agebull.EntityModel.Designer;
+﻿using Agebull.EntityModel.Designer;
+using System.ComponentModel.Composition;
 
 namespace Agebull.EntityModel.RobotCoder.EasyUi
 {
@@ -12,9 +12,7 @@ namespace Agebull.EntityModel.RobotCoder.EasyUi
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            NormalCodeModel.RegistBuilder<ProjectApiBuilde>();
+            CoderManager.RegistBuilder<ProjectApiBuilde>();
         }
-
     }
-    
 }

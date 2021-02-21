@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Text;
 
@@ -15,316 +14,306 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     取字段录入类型（EasyUi）
         /// </summary>
-        /// <param name="field"></param>
+        /// <param name="property"></param>
         /// <param name="repair">是否修复</param>
         /// <returns></returns>
-        public void CheckField(IFieldConfig field, bool repair = false)
+        public void CheckField(IPropertyConfig property, bool repair = false)
         {
-            if (!field.UserSee)
+            if (!property.UserSee)
             {
-                field.InputType = null;
-                field.UiRequired = false;
+                property.InputType = null;
+                property.UiRequired = false;
                 return;
             }
-            if (field.IsPrimaryKey && field.IsIdentity)
+            var field = property.DataBaseField;
+            if (property.IsPrimaryKey && field.IsIdentity)
             {
-                field.NoneDetails = true;
-                field.ExtendConfigListBool["easyui", "userFormHide"] = true;
+                property.NoneDetails = true;
+                property.ExtendConfigListBool["easyui", "userFormHide"] = true;
             }
-            if (field.InputType == "editor")
+            if (property.InputType == "editor")
             {
-                field.MulitLine = true;
+                property.MulitLine = true;
             }
-            else if (field.IsMemo || field.IsBlob || field.InputType == "mulit")
+            else if (field.IsText || field.IsBlob || property.InputType == "mulit")
             {
-                field.InputType = "easyui-textbox";
-                field.MulitLine = true;
+                property.InputType = "easyui-textbox";
+                property.MulitLine = true;
             }
             if (repair)
             {
-                if (field.Entity.Interfaces?.Contains("IAuditData") ?? false)
+                if (property.Entity.Interfaces?.Contains("IAuditData") ?? false)
                 {
-                    field.UiRequired = !field.CanEmpty;
+                    property.UiRequired = !property.CanEmpty;
                 }
                 else
                 {
 
-                    field.UiRequired = !field.IsUserReadOnly && (field.IsRequired || !field.CanEmpty);
+                    property.UiRequired = !property.IsUserReadOnly && (property.IsRequired || !property.CanEmpty);
                 }
-                RepairInputConfig(field);
-                RepairListConfig(field);
+                RepairInputConfig(property);
+                RepairListConfig(property);
             }
             else
             {
-                CheckInputConfig(field);
+                CheckInputConfig(property);
             }
 
-            if (field.NoneGrid)
+            if (property.NoneGrid)
             {
-                field.GridWidth = 0;
-                field.DataFormater = null;
+                property.GridWidth = 0;
+                property.DataFormater = null;
             }
-            if (field.NoneDetails)
+            if (property.NoneDetails)
             {
-                field.FormCloumnSapn = 0;
-                field.InputType = null;
-                field.FormOption = null;
-                field.ComboBoxUrl = null;
+                property.FormCloumnSapn = 0;
+                property.InputType = null;
+                property.FormOption = null;
+                property.ComboBoxUrl = null;
             }
         }
 
-        public void CheckSize(IFieldConfig field, SizeOption option)
+        public void CheckSize(IPropertyConfig property, SizeOption option)
         {
             switch (option)
             {
                 case SizeOption.None:
-                    field.GridWidth = 0;
-                    field.FormCloumnSapn = 0;
+                    property.GridWidth = 0;
+                    property.FormCloumnSapn = 0;
                     return;
                 case SizeOption.Auto:
-                    field.GridWidth = -1;
+                    property.GridWidth = -1;
                     return;
             }
 
-            if (field.MulitLine)
+            var field = property.DataBaseField;
+            if (property.MulitLine)
             {
-                field.GridWidth = 3;
+                property.GridWidth = 3;
             }
-            else if (field.CsType == "string")
+            else if (property.CsType == "string")
             {
-                field.GridWidth = field.Datalen / 50;
-                if (field.GridWidth > 5)
-                    field.GridWidth = 5;
-                else if (field.GridWidth == 0)
-                    field.GridWidth = 1;
+                property.GridWidth = field.Datalen / 50;
+                if (property.GridWidth > 5)
+                    property.GridWidth = 5;
+                else if (property.GridWidth == 0)
+                    property.GridWidth = 1;
             }
             else
             {
-                field.GridWidth = 1;
+                property.GridWidth = 1;
             }
-            if (field.GridWidth <= 0)
+            if (property.GridWidth <= 0)
             {
-                field.GridWidth = 1;
+                property.GridWidth = 1;
             }
-            else if (field.GridWidth > 3)
+            else if (property.GridWidth > 3)
             {
-                field.GridWidth = 3;
+                property.GridWidth = 3;
             }
         }
         /// <summary>
         ///     取字段录入类型（EasyUi）
         /// </summary>
-        /// <param name="field"></param>
+        /// <param name="property"></param>
         /// <returns></returns>
-        private static void CheckInputConfig(IFieldConfig field)
+        private static void CheckInputConfig(IPropertyConfig property)
         {
-            if (field.NoneDetails)
+            if (property.NoneDetails)
                 return;
-            if (string.IsNullOrWhiteSpace(field.InputType) || string.IsNullOrWhiteSpace(field.FormOption) && field.InputType == "easyui-combobox")
-                ResetInputType(field);
+            if (string.IsNullOrWhiteSpace(property.InputType) || string.IsNullOrWhiteSpace(property.FormOption) && property.InputType == "easyui-combobox")
+                ResetInputType(property);
         }
 
         /// <summary>
         ///     取字段录入类型（EasyUi）
         /// </summary>
-        /// <param name="field"></param>
+        /// <param name="property"></param>
         /// <returns></returns>
-        public void CheckFieldShow(IFieldConfig field)
+        public void CheckFieldShow(IPropertyConfig property)
         {
-            if (field.IsPrimaryKey || field.IsLinkKey)
+            var field = property.DataBaseField;
+            if (property.IsPrimaryKey || field.IsLinkKey)
             {
-                field.GridDetails = true;
+                property.GridDetails = true;
             }
-            if (field.Name.ToLower().Contains("memo") || field.Name.ToLower().Contains("remark"))
+            if (property.Name.ToLower().Contains("memo") || property.Name.ToLower().Contains("remark"))
             {
-                field.IsMemo = true;
+                property.MulitLine = true;
             }
-            if (field.IsMemo)
+            if (property.MulitLine)
             {
-                field.GridDetails = true;
-                field.MulitLine = true;
-                field.NoneGrid = true;
-                field.FormCloumnSapn = 2;
-                field.Index = 999;
+                property.GridDetails = true;
+                property.MulitLine = true;
+                property.NoneGrid = true;
+                property.FormCloumnSapn = 2;
+                property.Index = 999;
             }
-            if (field.LinkTable == "Site" && field.IsLinkCaption)
+
+            if (field.IsLinkKey && !property.NoneGrid)
             {
-                field.GridDetails = false;
-                field.NoneGrid = false;
-                field.Caption = "站点名称";
+                property.GridDetails = true;
+                property.NoneGrid = true;
             }
-            if (field.LinkTable == "Organization" && field.IsLinkCaption)
-            {
-                field.GridDetails = false;
-                field.NoneGrid = false;
-                field.Caption = "组织单元名称";
-            }
-            if (field.LinkTable == "User" && field.IsLinkCaption)
-            {
-                field.GridDetails = false;
-                field.NoneGrid = false;
-                field.Caption = "顾客昵称";
-            }
-            if (field.IsLinkKey &&!field.NoneGrid)
-            {
-                field.GridDetails = true;
-                field.NoneGrid = true;
-            }
-            CheckKeyShow(field);
+            CheckKeyShow(property);
         }
 
         /// <summary>
         ///     取字段录入类型（EasyUi）
         /// </summary>
-        /// <param name="field"></param>
+        /// <param name="property"></param>
         /// <returns></returns>
-        public void CheckKeyShow(IFieldConfig field)
+        public void CheckKeyShow(IPropertyConfig property)
         {
-            if (field.IsPrimaryKey)
+            var field = property.DataBaseField;
+            if (property.IsPrimaryKey)
             {
-                field.NoneGrid = true;
-                field.NoneDetails = true;
+                property.NoneGrid = true;
+                property.NoneDetails = true;
             }
             if (field.IsLinkKey)
             {
-                field.NoneGrid = true;
-                field.NoneDetails = false;
-                field.ExtendConfigListBool["easyui", "userFormHide"] = true;
+                property.NoneGrid = true;
+                property.NoneDetails = false;
+                property.ExtendConfigListBool["easyui", "userFormHide"] = true;
             }
             if (field.IsLinkCaption)
             {
-                field.NoneGrid = false;
-                field.NoneDetails = true;
+                property.NoneGrid = false;
+                property.NoneDetails = true;
             }
-            else if (field.IsLinkField && field.IsCompute)
+            else if (field.IsLinkField && property.IsCompute)
             {
-                field.IsUserReadOnly = true;
+                property.IsUserReadOnly = true;
             }
         }
         /// <summary>
         ///     取字段录入类型（EasyUi）
         /// </summary>
-        /// <param name="field"></param>
+        /// <param name="property"></param>
         /// <returns></returns>
-        private static void RepairInputConfig(IFieldConfig field)
+        private static void RepairInputConfig(IPropertyConfig property)
         {
-            if (field.IsSystemField || field.IsCompute || field.IsIdentity)
+            var field = property.DataBaseField;
+            if (property.IsSystemField || property.IsCompute || field.IsIdentity)
             {
-                field.NoneDetails = true;
-                field.IsUserReadOnly = true;
+                property.NoneDetails = true;
+                property.IsUserReadOnly = true;
                 return;
             }
-            field.NoneDetails = false;
-            ResetInputType(field);
+            property.NoneDetails = false;
+            ResetInputType(property);
         }
 
-        private static void ResetInputType(IFieldConfig field)
+        private static void ResetInputType(IPropertyConfig property)
         {
-            if (field.MulitLine || field.InputType == "editor")
-                field.FormCloumnSapn = field.Entity.FormCloumn;
+            if (property.MulitLine || property.InputType == "editor")
+                property.FormCloumnSapn = property.Entity.FormCloumn;
             else
-                field.FormCloumnSapn = 1;
-            if (field.MulitLine)
+                property.FormCloumnSapn = 1;
+            if (property.MulitLine)
             {
-                field.FormCloumnSapn = field.Entity.FormCloumn;
-                field.InputType = "easyui-textbox";
-                field.FormOption = null;
-                field.ComboBoxUrl = null;
+                property.FormCloumnSapn = property.Entity.FormCloumn;
+                property.InputType = "easyui-textbox";
+                property.FormOption = null;
+                property.ComboBoxUrl = null;
                 return;
             }
-            if (field.IsBlob && field.CsType == "string")
+            var field = property.DataBaseField;
+            if (field.IsBlob && property.CsType == "string")
             {
-                field.MulitLine = true;
-                field.FormCloumnSapn = field.Entity.FormCloumn;
-                field.InputType = "editor";
-                field.FormOption = null;
-                field.ComboBoxUrl = null;
+                property.MulitLine = true;
+                property.FormCloumnSapn = property.Entity.FormCloumn;
+                property.InputType = "editor";
+                property.FormOption = null;
+                property.ComboBoxUrl = null;
                 return;
             }
-            if (!string.IsNullOrWhiteSpace(field.CustomType))
+            if (!string.IsNullOrWhiteSpace(property.CustomType))
             {
-                field.NoneDetails = false;
-                field.InputType = "easyui-combobox";
-                field.ComboBoxUrl = null;
-                field.FormOption = $"valueField:'value',textField:'text',data:{field.CustomType.ToLWord()}";
+                property.NoneDetails = false;
+                property.InputType = "easyui-combobox";
+                property.ComboBoxUrl = null;
+                property.FormOption = $"valueField:'value',textField:'text',data:{property.CustomType.ToLWord()}";
                 return;
             }
-            field.FormOption = null;
+            property.FormOption = null;
             if (field.IsLinkKey)
             {
-                var entity = Find(p => p.SaveTableName == field.LinkTable);
+                var entity = Find(field.LinkTable);
                 if (entity != null)
                 {
-                    field.InputType = "easyui-combobox";
-                    field.ComboBoxUrl = null;
-                    field.FormOption = "valueField:'id', textField:'text'";
-                    var title = field.Entity.ClientProperty.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
+                    property.InputType = "easyui-combobox";
+                    property.ComboBoxUrl = null;
+                    property.FormOption = "valueField:'id', textField:'text'";
+                    var title = property.Parent.DataTable.Find(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
                     if (title != null)
                     {
-                        field.NoneDetails = false;
-                        field.NoneGrid = true;
+                        property.NoneDetails = false;
+                        property.NoneGrid = true;
 
-                        title.FormCloumnSapn = 0;
-                        title.InputType = null;
-                        title.NoneGrid = false;
-                        title.NoneDetails = true;
+                        title.Property.FormCloumnSapn = 0;
+                        title.Property.InputType = null;
+                        title.Property.NoneGrid = false;
+                        title.Property.NoneDetails = true;
                         return;
                     }
                 }
-                field.InputType = null;
-                field.NoneDetails = true;
+                property.InputType = null;
+                property.NoneDetails = true;
                 return;
             }
-            switch (field.CsType)
+            switch (property.CsType)
             {
                 case "DateTime":
-                    field.InputType = "easyui-datebox";
-                    field.FormOption = null;
-                    field.ComboBoxUrl = null;
+                    property.InputType = "easyui-datebox";
+                    property.FormOption = null;
+                    property.ComboBoxUrl = null;
                     break;
                 case "bool":
-                    field.FormOption = "valueField:'value',textField:'text',data:yesnoType";
-                    field.InputType = "easyui-combobox";
+                    property.FormOption = "valueField:'value',textField:'text',data:yesnoType";
+                    property.InputType = "easyui-combobox";
                     break;
                 default:
-                    field.InputType = "easyui-textbox";
-                    field.FormOption = null;
-                    field.ComboBoxUrl = null;
+                    property.InputType = "easyui-textbox";
+                    property.FormOption = null;
+                    property.ComboBoxUrl = null;
                     break;
             }
         }
 
-        private static void RepairListConfig(IFieldConfig field)
+        private static void RepairListConfig(IPropertyConfig property)
         {
-            if (field.IsSystemField || field.IsIdentity)
+            var field = property.DataBaseField;
+            if (property.IsSystemField || field.IsIdentity)
             {
-                field.NoneGrid = true;
-                field.GridWidth = -1;
+                property.NoneGrid = true;
+                property.GridWidth = -1;
                 return;
             }
             if (field.IsBlob)
             {
-                field.NoneGrid = true;
-                field.GridWidth = -1;
+                property.NoneGrid = true;
+                property.GridWidth = -1;
             }
 
             if (!field.IsLinkKey)
             {
-                field.NoneGrid = false;
+                property.NoneGrid = false;
                 return;
             }
 
-            var title = field.Entity.Properties.FirstOrDefault(p => p.LinkTable == field.LinkTable && p.IsLinkCaption);
+            var title = property.Parent.DataTable.CaptionField;
             if (title != null)
             {
-                field.NoneGrid = true;
-                title.NoneGrid = false;
-                field.NoneDetails = false;
-                title.NoneDetails = true;
+                property.NoneGrid = true;
+                title.Property.NoneGrid = false;
+                property.NoneDetails = false;
+                title.Property.NoneDetails = true;
                 return;
             }
 
-            field.NoneGrid = true;
+            property.NoneGrid = true;
         }
 
     }

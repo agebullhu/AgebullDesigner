@@ -8,17 +8,18 @@
 
 #region 引用
 
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
-using NPOI.HSSF.UserModel;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
 using MessageBox = System.Windows.MessageBox;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
@@ -41,7 +42,7 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "文件",
                 SoruceView = "entity",
                 Caption = "导入程序集",
-                IconName = "tree_Assembly",
+                IconName = "导入",
                 TargetType = typeof(ProjectConfig)
             });
             /*
@@ -59,7 +60,7 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity",
                 Caption = "导入EF配置文件",
                 TargetType = typeof(ProjectConfig),
-                IconName = "tree_Assembly"
+                IconName = "导入"
             });
             commands.Add(new CommandItemBuilder<ProjectConfig>
             {
@@ -68,7 +69,7 @@ namespace Agebull.EntityModel.Designer
                 Action = ImportToExcel,
                 Caption = "导出Excel文档",
                 TargetType = typeof(ProjectConfig),
-                IconName = "tree_Assembly"
+                IconName = "Excel"
             });
         }
 
@@ -172,10 +173,7 @@ namespace Agebull.EntityModel.Designer
             {
                 return;
             }
-            using (CodeGeneratorScope.CreateScope(SolutionConfig.Current))
-            {
-                DesignToExcel.Import(dialog.FileName, Context.GetSelectEntities());
-            }
+            DesignToExcel.Import(dialog.FileName, Context.GetSelectEntities());
         }
         #endregion
 
@@ -219,7 +217,7 @@ namespace Agebull.EntityModel.Designer
                 string t1 = row?.Cells[0].StringCellValue;
                 if (string.IsNullOrWhiteSpace(t1))
                     break;
-                var field = entity.Properties.FirstOrDefault(p => p.Name == t1);
+                var field = entity.Find(p => p.Name == t1);
                 if (field == null)
                     continue;
                 string c = row.Cells[1].StringCellValue;
@@ -454,7 +452,7 @@ namespace Agebull.EntityModel.Designer
                 var desc = string.Empty;
                 if (cell.CellComment?.String != null)
                     desc = cell.CellComment.String.String;
-                var col = entity.Properties.FirstOrDefault(p => string.Equals(p.Name, field, StringComparison.OrdinalIgnoreCase));
+                var col = entity.Find(p => string.Equals(p.Name, field, StringComparison.OrdinalIgnoreCase));
                 if (col != null)
                 {
                     col.Option.ResetState();
@@ -471,20 +469,26 @@ namespace Agebull.EntityModel.Designer
                 else
                 {
                     Model.Context.CurrentTrace.TraceMessage.Track = "新增字段:" + field;
-                    entity.Add(new FieldConfig
+                    var column = new FieldConfig
                     {
                         Name = field,
                         Description = desc,
-                        DbFieldName = field,
                         CsType = "string",
-                        DbType = "nvarchar",
-                        DbNullable = true,
                         Nullable = true,
                         CanEmpty = true
+                    };
+                    entity.DataTable.Add(column.DataBaseField = new DataBaseFieldConfig
+                    {
+                        Parent = entity.DataTable,
+                        DbFieldName = field,
+                        FieldType = "nvarchar",
+                        DbNullable = true,
+                        Property = column
                     });
+                    entity.Add(column);
                 }
             }
-            foreach (var col in entity.Properties.Where(p => p.IsDiscard))
+            foreach (var col in entity.Where(p => p.IsDiscard))
             {
                 Model.Context.CurrentTrace.TraceMessage.Track = "过时字段:" + col.Name;
             }

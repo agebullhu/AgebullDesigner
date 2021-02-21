@@ -8,12 +8,12 @@
 
 #region 引用
 
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Windows;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
 
 #endregion
 
@@ -24,7 +24,7 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     [Export(typeof(IAutoRegister))]
     [ExportMetadata("Symbol", '%')]
-    internal class DataBaseModel : DesignCommondBase<EntityConfig>
+    internal class DataBaseModel : DesignCommondBase<IEntityConfig>
     {
         /// <summary>
         /// 生成命令对象
@@ -32,7 +32,18 @@ namespace Agebull.EntityModel.Designer
         /// <param name="commands"></param>
         protected override void CreateCommands(List<ICommandItemBuilder> commands)
         {
-            commands.Add(new CommandItemBuilder<EntityConfig>()
+            commands.Add(new CommandItemBuilder<IEntityConfig>()
+            {
+                Action = Upgrade,
+                Catalog = "数据库",
+                CanButton=true,
+                SoruceView = "entity",
+                Caption = "重新升级",
+                Editor = "DataBase",
+                WorkView = "database",
+                IconName = "分析"
+            });
+            commands.Add(new CommandItemBuilder<IEntityConfig>()
             {
                 Action = StandardName,
                 Catalog = "数据库",
@@ -40,20 +51,21 @@ namespace Agebull.EntityModel.Designer
                 Caption = "标准化字段名称",
                 Editor = "DataBase",
                 WorkView = "database",
-                IconName = "tree_item",
+                IconName = "格式",
                 ConfirmMessage = "是否执行【标准化字段名称】操作"
             });
-            commands.Add(new CommandItemBuilder<EntityConfig>()
+            commands.Add(new CommandItemBuilder<IEntityConfig>()
             {
                 Name = "Link Field Check",
                 Caption = "关系连接修复",
+                IconName = "修复",
                 Catalog = "工具",
-                Action = DataBaseHelper.CheckFieldLink,
+                Action = ent => DataBaseHelper.CheckFieldLink(ent.DataTable.Fields),
                 Editor = "DataRelation",
                 WorkView = "database,model"
             });
 
-            commands.Add(new CommandItemBuilder<EntityConfig>()
+            commands.Add(new CommandItemBuilder<IEntityConfig>()
             {
                 Action = RepairByDb,
                 Catalog = "数据库",
@@ -61,10 +73,10 @@ namespace Agebull.EntityModel.Designer
                 Caption = "重构数据库设计",
                 Editor = "DataBase",
                 WorkView = "database",
-                IconName = "tree_item",
+                IconName = "修复",
                 ConfirmMessage = "是否执行【重构数据库设计】操作"
             });
-            commands.Add(new CommandItemBuilder<EntityConfig>()
+            commands.Add(new CommandItemBuilder<IEntityConfig>()
             {
                 Action = CheckByDb,
                 Catalog = "数据库",
@@ -72,10 +84,10 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity",
                 Editor = "DataBase",
                 WorkView = "database",
-                IconName = "tree_item",
+                IconName = "修复",
                 ConfirmMessage = "是否执行【修复数据库设计】操作"
             });
-            commands.Add(new CommandItemBuilder<EntityConfig>
+            commands.Add(new CommandItemBuilder<IEntityConfig>
             {
                 Action = CheckRelation,
                 Catalog = "数据库",
@@ -83,11 +95,11 @@ namespace Agebull.EntityModel.Designer
                 Caption = "修复数据关联",
                 Editor = "DataBase",
                 WorkView = "database",
-                IconName = "tree_item",
+                IconName = "修复",
                 ConfirmMessage = "是否执行【修复数据库设计】操作"
             });
 
-            commands.Add(new CommandItemBuilder<EntityConfig>
+            commands.Add(new CommandItemBuilder<IEntityConfig>
             {
                 Action = CheckIndex,
                 Catalog = "数据库",
@@ -95,34 +107,29 @@ namespace Agebull.EntityModel.Designer
                 Caption = "索引构建",
                 Editor = "DataBase",
                 WorkView = "database",
-                IconName = "tree_item",
+                IconName = "索引",
                 ConfirmMessage = "是否执行【修复数据库设计】操作"
             });
         }
-
-        #region 基础
-
-        #endregion
-
 
         #region 数据库设计检查
 
         /// <summary>
         /// 数据库设计检查
         /// </summary>
-        public void CheckRelation(EntityConfig entity)
+        public void CheckRelation(IEntityConfig entity)
         {
-            DataBaseHelper.CheckFieldLink(entity.Properties);
+            DataBaseHelper.CheckFieldLink(entity.DataTable.Fields);
         }
 
         /// <summary>
         /// 数据库设计检查
         /// </summary>
-        public void CheckIndex(EntityConfig entity)
+        public void CheckIndex(IEntityConfig entity)
         {
-            var business = new EntityDatabaseBusiness
+            var business = new DataTableApplication
             {
-                Entity = entity
+                DataTable = entity.DataTable
             };
             business.CheckIndex();
         }
@@ -130,23 +137,23 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 数据库设计检查
         /// </summary>
-        public void StandardName(EntityConfig entity)
+        public void StandardName(IEntityConfig entity)
         {
-            var business = new EntityDatabaseBusiness
+            var business = new DataTableApplication
             {
-                Entity = entity
+                DataTable = entity.DataTable
             };
-            business.StandardName();
+            business.StandardName(false);
         }
 
         /// <summary>
         /// 数据库设计检查
         /// </summary>
-        public void CheckByDb(EntityConfig entity)
+        public void CheckByDb(IEntityConfig entity)
         {
-            var business = new EntityDatabaseBusiness
+            var business = new DataTableApplication
             {
-                Entity = entity
+                DataTable = entity.DataTable
             };
             business.CheckDbConfig(false);
         }
@@ -154,13 +161,29 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 数据库设计检查
         /// </summary>
-        public void RepairByDb(EntityConfig entity)
+        public void Upgrade(IEntityConfig entity)
         {
-            using (CodeGeneratorScope.CreateScope(entity))
+            using (RepairScope.CreateScope(entity))
             {
-                EntityDatabaseBusiness business = new EntityDatabaseBusiness
+                entity.DataTable = new Config.V2021.DataTableConfig
                 {
                     Entity = entity
+                };
+                entity.DataTable.Upgrade();
+                entity.DataTable.OnLoad();
+            }
+        }
+
+        /// <summary>
+        /// 数据库设计检查
+        /// </summary>
+        public void RepairByDb(IEntityConfig entity)
+        {
+            using (RepairScope.CreateScope(entity))
+            {
+                DataTableApplication business = new DataTableApplication
+                {
+                    DataTable = entity.DataTable
                 };
                 business.CheckDbConfig(true);
             }

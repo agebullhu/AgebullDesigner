@@ -1,1 +1,1 @@
-﻿{"detailTrace":false,"idDataType":"Int64","userIdDataType":"Int64","headerView":3,"IsGlobal":true,"_name":"GlobalConfig","_caption":"全局配置","_description":"全局配置","option":{"_key":"20ad169c-273d-4f8e-aae1-2172115a3b71","_extendConfig":[{"name":"Tag","type":"string"}]}}
+﻿{"detailTrace":true,"idDataType":"Int64","userIdDataType":"Int64","headerView":3,"IsGlobal":true,"_name":"GlobalConfig","_caption":"全局配置","_description":"全局配置","option":{"_key":"20ad169c-273d-4f8e-aae1-2172115a3b71","_extendConfig":[{"name":"Tag","type":"string"}]}}

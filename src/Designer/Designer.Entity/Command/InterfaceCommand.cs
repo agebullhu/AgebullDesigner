@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
+using Agebull.EntityModel.RobotCoder;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
-using Agebull.EntityModel.RobotCoder;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -28,7 +28,7 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity",
                 SignleSoruce = false,
                 Catalog = "接口",
-                IconName = "img_link"
+                IconName = "清理"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
@@ -37,16 +37,16 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity",
                 SignleSoruce = false,
                 Catalog = "接口",
-                IconName = "img_link"
+                IconName = "接口"
             });
             commands.Add(new CommandItemBuilder<EntityConfig>
             {
                 Action = InterfaceHelper.ClearInterface,
-                Caption = "自动识别",
+                Caption = "清除接口",
                 SoruceView = "entity",
                 SignleSoruce = false,
                 Catalog = "接口",
-                IconName = "img_link"
+                IconName = "清除"
             });
 
             foreach (var iEntity in GlobalConfig.Global.Entities.Where(p => p.IsInterface))
@@ -58,7 +58,7 @@ namespace Agebull.EntityModel.Designer
                     SoruceView = "entity",
                     SignleSoruce = false,
                     Catalog = "接口",
-                    IconName = "img_link"
+                    IconName = "接口"
                 });
 
                 commands.Add(new CommandItemBuilder<EntityConfig>
@@ -68,7 +68,7 @@ namespace Agebull.EntityModel.Designer
                     SoruceView = "entity",
                     SignleSoruce = false,
                     Catalog = "接口",
-                    IconName = "img_link"
+                    IconName = "清除"
                 });
             }
 
@@ -79,7 +79,7 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity",
                 SignleSoruce = false,
                 Catalog = "接口",
-                IconName = "img_link"
+                IconName = "字段"
             });
         }
 
@@ -87,15 +87,22 @@ namespace Agebull.EntityModel.Designer
         {
             if (entity.Exist("memo"))
                 return;
-            entity.Add(new FieldConfig
+            var property = new FieldConfig
             {
                 Name = "Memo",
                 Caption = "备注",
+                JsonName = "memo"
+            };
+            property.DataBaseField = new DataBaseFieldConfig
+            {
+                Parent = entity.DataTable,
                 DbFieldName = "memo",
-                JsonName = "memo",
-                DbNullable=true,
-                DbType = "TEXT"
-            });
+                Property = property,
+                DbNullable = true,
+                FieldType = "TEXT"
+            };
+            entity.Add(property);
+            entity.DataTable.Add(property.DataBaseField);
         }
 
     }

@@ -1,9 +1,8 @@
-using System;
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Designer;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Designer;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -18,13 +17,13 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("TSON", "序列化代码(C#)", "cs", CreateCode);
+            CoderManager.RegisteCoder("TSON", "序列化代码(C#)", "cs", CreateCode);
         }
         #endregion
 
 
         string CreateCode(EntityConfig entity)
-        { 
+        {
             StringBuilder code1 = new StringBuilder();
             foreach (var property in entity.PublishProperty.Where(p => !p.NoneJson))
             {

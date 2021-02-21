@@ -1,8 +1,7 @@
-using System.ComponentModel.Composition;
-using System.IO;
 using Agebull.Common;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Designer;
+using System.ComponentModel.Composition;
 
 namespace Agebull.EntityModel.RobotCoder.WebApi
 {
@@ -15,11 +14,21 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            NormalCodeModel.RegistBuilder<EntityModelBuilder>();
+            CoderManager.RegistBuilder<EntityModelBuilder>();
         }
     }
     public sealed class EntityModelBuilder : ProjectBuilder
     {
+        /// <summary>
+        /// 名称
+        /// </summary>
+        public override string Name => "实体模型";
+
+        public EntityModelBuilder()
+        {
+            Icon = "C#";
+        }
+
         /// <summary>
         /// 生成项目代码
         /// </summary>
@@ -39,11 +48,6 @@ namespace Agebull.EntityModel.RobotCoder.WebApi
             };
             enums.WriteDesignerCode(project.ModelPath);
         }
-
-        /// <summary>
-        /// 名称
-        /// </summary>
-        public override string Name => "Entity & Model";
 
         /// <summary>
         /// 标题

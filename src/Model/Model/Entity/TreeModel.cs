@@ -8,6 +8,7 @@ using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Agebull.EntityModel.Config.V2021;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -67,7 +68,7 @@ namespace Agebull.EntityModel.Designer
                 HeaderExtendExpression = p => p.Caption ?? p.Name,
                 CreateChildrenFunc = CreateProjectTreeItem,
                 SoruceItemsExpression = () => Context.Solution.ProjectList,
-                SoruceTypeIcon = Application.Current.Resources["tree_Solution"] as BitmapImage
+                SoruceTypeIconName = "解决方案"
             });
             TreeRoot.SelectItemChanged += OnTreeSelectItemChanged;
         }
@@ -86,7 +87,7 @@ namespace Agebull.EntityModel.Designer
                     CreateChildrenFunc = CreateProjectClassifiesTreeItem,
                     IsAssist = true,
                     IsExpanded = false,
-                    SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
+                    SoruceTypeIconName = "项目"
                 });
             }
             else
@@ -111,7 +112,7 @@ namespace Agebull.EntityModel.Designer
                         Tag = nameof(EntityConfig),
                         CreateChildFunc = CreateEntityTreeItem,
                         SoruceItemsExpression = () => project.Entities,
-                        SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
+                        SoruceTypeIconName = "实体"
                     });
                 else
                     items.Add(new ConfigTreeItem<ProjectConfig>(project)
@@ -123,7 +124,7 @@ namespace Agebull.EntityModel.Designer
                         Tag = nameof(EntityConfig),
                         CreateChildFunc = CreateEntityClassifiesTreeItem,
                         SoruceItemsExpression = () => project.Classifies,
-                        SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
+                        SoruceTypeIconName = "实体"
                     });
 
                 items.Add(new ConfigTreeItem<ProjectConfig>(project)
@@ -135,7 +136,7 @@ namespace Agebull.EntityModel.Designer
                     HeaderField = null,
                     CreateChildFunc = CreateModelTreeItem,
                     SoruceItemsExpression = () => project.Models,
-                    SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
+                    SoruceTypeIconName = "模型"
                 });
                 //Model.CppModel.AddCppApiNode(node);
                 items.Add(new ConfigTreeItem<ProjectConfig>(project)
@@ -147,7 +148,7 @@ namespace Agebull.EntityModel.Designer
                     HeaderField = null,
                     CreateChildFunc = CreateEnumTreeItem,
                     SoruceItemsExpression = () => project.Enums,
-                    SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
+                    SoruceTypeIconName = "枚举"
                 });
 
                 //items.Add(new ConfigTreeItem<ProjectConfig>(project)
@@ -174,21 +175,29 @@ namespace Agebull.EntityModel.Designer
 
         private TreeItem CreateEntityClassifiesTreeItem(object charg)
         {
-            if (!(charg is EntityClassify classify))
-                return new TreeItem(charg);
-            return new ConfigTreeItem<EntityClassify>(classify)
-            {
-                IsAssist = true,
-                Friend = classify,
-                FriendView = "entity,classify",
-                SoruceView = "entity,classify",
-                IsExpanded = false,
-                Tag = nameof(EntityClassify),
-                CreateChildFunc = CreateEntityTreeItem,
-                FriendItems = classify.Items,
-                SoruceItemsExpression = () => classify.Items,
-                SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
-            };
+            if (charg is EntityClassify classify)
+                return new ConfigTreeItem<EntityClassify>(classify)
+                {
+                    IsAssist = true,
+                    Friend = classify,
+                    FriendView = "entity,classify",
+                    SoruceView = "entity,classify",
+                    IsExpanded = false,
+                    Tag = nameof(EntityClassify),
+                    CreateChildFunc = CreateEntityTreeItem,
+                    FriendItems = classify.Items,
+                    SoruceItemsExpression = () => classify.Items,
+                    SoruceTypeIconName = "类别"
+                };
+            if (charg is SimpleConfig config)
+                return new TreeItem<SimpleConfig>(config)
+                {
+                    Header = config.Caption,
+                    IsExpanded = false,
+                    Tag = nameof(SimpleConfig),
+                    SoruceTypeIconName = "类别"
+                };
+            return null;
         }
 
         internal TreeItem CreateEntityTreeItem(object arg)
@@ -204,7 +213,7 @@ namespace Agebull.EntityModel.Designer
                 
                 SoruceView = "entity",
                 CreateChildFunc = CreateFieldTreeItem,
-                SoruceTypeIcon = EntityIcon(entity),
+                SoruceTypeIconName = "实体",
                 SoruceItemsExpression = () => entity.Properties,
                 CustomPropertyChanged = Entity_PropertyChanged
             };
@@ -216,13 +225,12 @@ namespace Agebull.EntityModel.Designer
 
         private void Entity_PropertyChanged(TreeItem item, NotificationObject arg, string name)
         {
-            var entity = (EntityConfig)arg;
             switch (name)
             {
                 case null:
                 case nameof(EntityConfig.IsLinkTable):
                 case nameof(EntityConfig.EnableDataBase):
-                    item.SoruceTypeIcon = EntityIcon(entity);
+                    item.SoruceTypeIconName = "数据库";
                     break;
             }
         }
@@ -239,72 +247,10 @@ namespace Agebull.EntityModel.Designer
                 SoruceView = "entity,field",
                 Color = field.IsSystemField ? Brushes.Blue : Brushes.Black,
                 FontWeight = field.IsCompute ? FontWeights.Thin : FontWeights.DemiBold,
-                CustomPropertyChanged = FieldPropertyChanged
+                SoruceTypeIconName = "普通列",
+                CustomPropertyChanged = Property_PropertyChanged
             };
         }
-
-        private void FieldPropertyChanged(TreeItem item, NotificationObject arg, string name)
-        {
-            var property = (FieldConfig)arg;
-            switch (name)
-            {
-                case null:
-                case nameof(FieldConfig.IsPrimaryKey):
-                case nameof(FieldConfig.IsEnum):
-                case nameof(FieldConfig.IsDiscard):
-                case nameof(FieldConfig.DbInnerField):
-                case nameof(FieldConfig.IsInterfaceField):
-                case nameof(FieldConfig.CustomType):
-                case nameof(FieldConfig.CustomWrite):
-                case nameof(FieldConfig.IsCompute):
-                case nameof(FieldConfig.ComputeGetCode):
-                case nameof(FieldConfig.ComputeSetCode):
-                    if (property.IsPrimaryKey)
-                        item.SoruceTypeIcon = Application.Current.Resources["tree_default"] as BitmapImage;
-                    else if (property.IsDiscard)
-                        item.SoruceTypeIcon = Application.Current.Resources["img_clear"] as BitmapImage;
-                    else if (property.DbInnerField)
-                        item.SoruceTypeIcon = Application.Current.Resources["img_lock"] as BitmapImage;
-                    else if (property.IsInterfaceField)
-                        item.SoruceTypeIcon = Application.Current.Resources["img_face"] as BitmapImage;
-                    else if (property.IsEnum)
-                        item.SoruceTypeIcon = Application.Current.Resources["tree_Child4"] as BitmapImage;
-                    else if (!string.IsNullOrWhiteSpace(property.CustomType))
-                        item.SoruceTypeIcon = Application.Current.Resources["img_man"] as BitmapImage;
-                    else if (property.CustomWrite)
-                        item.SoruceTypeIcon = Application.Current.Resources["tree_item"] as BitmapImage;
-                    else if (!string.IsNullOrWhiteSpace(property.ComputeGetCode) || !string.IsNullOrWhiteSpace(property.ComputeSetCode))
-                        item.SoruceTypeIcon = Application.Current.Resources["img_code"] as BitmapImage;
-                    else if (property.IsCompute)
-                        item.SoruceTypeIcon = Application.Current.Resources["img_sum"] as BitmapImage;
-                    else
-                        item.SoruceTypeIcon = Application.Current.Resources["tree_File"] as BitmapImage;
-                    break;
-            }
-            switch (name)
-            {
-                case null:
-                case nameof(FieldConfig.CustomType):
-                case nameof(FieldConfig.ReferenceType):
-                    //item.ClearItems();
-                    if (property.CustomType == null)
-                        break;
-                    property.EnumConfig = GlobalConfig.GetEnum(property.CustomType);
-                    item.Friend = property.EnumConfig;
-                    //if (property.EnumConfig == null)
-                    //    break;
-                    //item.Items.Add(CreateEnumTreeItem(property.EnumConfig));
-                    return;
-                case nameof(FieldConfig.EnumConfig):
-                    //item.ClearItems();
-                    //if (property.EnumConfig == null)
-                    //    return;
-                    //item.Items.Add(CreateEnumTreeItem(property.EnumConfig));
-                    item.Friend = property.EnumConfig;
-                    break;
-            }
-        }
-
 
         private bool LoopCheck(TreeItemBase item, object source)
         {
@@ -333,7 +279,8 @@ namespace Agebull.EntityModel.Designer
                 FriendView = "model",
                 CreateChildFunc = CreatePropertyTreeItem,
                 SoruceItemsExpression = () => entity.Properties,
-                CustomPropertyChanged = ModelPropertyChanged
+                //CustomPropertyChanged = ModelPropertyChanged,
+                SoruceTypeIconName = "模型"
             };
             return tableItem;
         }
@@ -348,7 +295,7 @@ namespace Agebull.EntityModel.Designer
                 FriendView = "model,command",
                 HeaderField = "Caption",
                 HeaderExtendExpression = p => p.Caption,
-                SoruceTypeIcon = Application.Current.Resources["tree_Folder"] as BitmapImage
+                SoruceTypeIconName = "命令"
             };
             return colItem;
         }
@@ -362,6 +309,7 @@ namespace Agebull.EntityModel.Designer
             return new ConfigTreeItem<PropertyConfig>(property)
             {
                 Tag = nameof(ModelConfig),
+                SoruceTypeIconName = "普通列",
                 FriendView = "model,property",
                 Color = property.IsSystemField ? Brushes.Blue : Brushes.Black,
                 FontWeight = property.IsCompute ? FontWeights.Thin : FontWeights.DemiBold,
@@ -371,41 +319,22 @@ namespace Agebull.EntityModel.Designer
 
         private void Property_PropertyChanged(TreeItem item, NotificationObject arg, string name)
         {
-            var cfg = (PropertyConfig)arg;
-            var property = cfg.Field;
+            var property = (IPropertyConfig)arg ;
             switch (name)
             {
                 case null:
                 case nameof(FieldConfig.IsPrimaryKey):
+                case nameof(FieldConfig.CsType):
+                case nameof(FieldConfig.DataType):
+                case nameof(FieldConfig.IsImage):
+                case nameof(FieldConfig.IsTime):
                 case nameof(FieldConfig.IsEnum):
-                case nameof(FieldConfig.IsDiscard):
-                case nameof(FieldConfig.DbInnerField):
                 case nameof(FieldConfig.IsInterfaceField):
                 case nameof(FieldConfig.CustomType):
-                case nameof(FieldConfig.CustomWrite):
                 case nameof(FieldConfig.IsCompute):
                 case nameof(FieldConfig.ComputeGetCode):
                 case nameof(FieldConfig.ComputeSetCode):
-                    if (property.IsPrimaryKey)
-                        item.SoruceTypeIcon = Application.Current.Resources["tree_default"] as BitmapImage;
-                    else if (property.IsDiscard)
-                        item.SoruceTypeIcon = Application.Current.Resources["img_clear"] as BitmapImage;
-                    else if (property.DbInnerField)
-                        item.SoruceTypeIcon = Application.Current.Resources["img_lock"] as BitmapImage;
-                    else if (property.IsInterfaceField)
-                        item.SoruceTypeIcon = Application.Current.Resources["img_face"] as BitmapImage;
-                    else if (property.IsEnum)
-                        item.SoruceTypeIcon = Application.Current.Resources["tree_Child4"] as BitmapImage;
-                    else if (!string.IsNullOrWhiteSpace(property.CustomType))
-                        item.SoruceTypeIcon = Application.Current.Resources["img_man"] as BitmapImage;
-                    else if (property.CustomWrite)
-                        item.SoruceTypeIcon = Application.Current.Resources["tree_item"] as BitmapImage;
-                    else if (!string.IsNullOrWhiteSpace(property.ComputeGetCode) || !string.IsNullOrWhiteSpace(property.ComputeSetCode))
-                        item.SoruceTypeIcon = Application.Current.Resources["img_code"] as BitmapImage;
-                    else if (property.IsCompute)
-                        item.SoruceTypeIcon = Application.Current.Resources["img_sum"] as BitmapImage;
-                    else
-                        item.SoruceTypeIcon = Application.Current.Resources["tree_File"] as BitmapImage;
+                    item.SoruceTypeIconName = FieldIcon(property);
                     break;
             }
             switch (name)
@@ -429,7 +358,32 @@ namespace Agebull.EntityModel.Designer
                     break;
             }
         }
-
+        string FieldIcon(IPropertyConfig property)
+        {
+            if (property.IsPrimaryKey)
+                return "主键列";
+            if (property.DataBaseField.IsLinkKey)
+                return "外键列";
+            if (property.DataBaseField.IsLinkField)
+                return "链接列"; 
+            if (property.IsInterfaceField)
+                return "接口列";
+            if (property.DataBaseField.IsText || property.DataBaseField.IsBlob)
+                return "备注列";
+            if (property.IsEnum || property.CustomType.IsPresent())
+                return "枚举列";
+            if (property.IsCompute || (property.ComputeGetCode.IsPresent() || property.ComputeSetCode.IsPresent()))
+                return "计算列";
+            if (property.IsTime || property.DataType.IsMe(nameof(DateTime)))
+                return "时间列";
+            if (property.DataType.Contains("Int") || property.DataType.IsMe(nameof(Decimal)) || property.DataType.IsMe(nameof(Double)) || property.DataType.IsMe(nameof(Single)))
+                return "数字列";
+            if (property.IsImage)
+                return "图像列";
+            else
+                return  "普通列";
+        }
+        /*
         private void ModelPropertyChanged(TreeItem item, NotificationObject arg, string name)
         {
             var entity = (ModelConfig)arg;
@@ -437,10 +391,12 @@ namespace Agebull.EntityModel.Designer
             {
                 case null:
                 case nameof(ModelConfig.EnableDataBase):
-                    item.SoruceTypeIcon = Application.Current.Resources[entity.EnableDataBase ? "tree_Child4" : "tree_Type"] as BitmapImage;
+                    item.SoruceTypeIconName = Application.Current.Resources[entity.EnableDataBase ? "tree_Child4" : "tree_Type"] as BitmapImage;
                     break;
             }
-        }
+        }*/
+
+
         #endregion
 
         #region 枚举
@@ -455,7 +411,7 @@ namespace Agebull.EntityModel.Designer
                 CreateChildFunc = CreateEnumItem,
                 FriendView = "enum,field",
                 SoruceItemsExpression = () => enumConfig.Items,
-                SoruceTypeIcon = Application.Current.Resources["tree_Type"] as BitmapImage
+                SoruceTypeIconName = "枚举"
             };
         }
         private TreeItem CreateEnumItem(object arg)
@@ -467,7 +423,7 @@ namespace Agebull.EntityModel.Designer
             {
                 HeaderField = "Name,Value,Caption",
                 HeaderExtendExpression = p => $"{p.Name}:{p.Value}〖{p.Caption}〗",
-                SoruceTypeIcon = Application.Current.Resources["tree_Child4"] as BitmapImage
+                SoruceTypeIconName = "字段"
             };
         }
 
@@ -486,7 +442,7 @@ namespace Agebull.EntityModel.Designer
                 FriendView = "api",
                 HeaderField = "Name,Caption",
                 HeaderExtendExpression = m => $"{m.Caption}",
-                SoruceTypeIcon = Application.Current.Resources["tree_item"] as BitmapImage
+                SoruceTypeIconName = "字段"
             };
             var item2 = new ConfigTreeItem<ApiItem>(child)
             {
@@ -495,8 +451,7 @@ namespace Agebull.EntityModel.Designer
                 Header = $"参数{(child.CallArg == null ? null : "-" + child.CallArg)}",
                 HeaderField = "CallArg",
                 HeaderExtendExpression = m => $"参数{(m.CallArg == null ? null : "-" + m.CallArg)}",
-
-                SoruceTypeIcon = Application.Current.Resources["tree_item"] as BitmapImage
+                SoruceTypeIconName = "字段"
             };
             if (child.Argument != null)
             {
@@ -511,7 +466,7 @@ namespace Agebull.EntityModel.Designer
                 Header = $"参数{(child.ResultArg == null ? null : "-" + child.ResultArg)}",
                 HeaderField = "ResultArg",
                 HeaderExtendExpression = m => $"参数{(m.ResultArg == null ? null : "-" + m.ResultArg)}",
-                SoruceTypeIcon = Application.Current.Resources["tree_item"] as BitmapImage
+                SoruceTypeIconName = "字段"
             };
             if (child.Result != null)
             {
@@ -606,7 +561,7 @@ namespace Agebull.EntityModel.Designer
         public CommandItemBase FindCommand => new CommandItem
         {
             Action = Find,
-            IconName = "img_find"
+            IconName = "查找"
         };
 
         /// <summary>

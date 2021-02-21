@@ -8,18 +8,14 @@
 
 #region 引用
 
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Windows.Threading;
-using Agebull.Common;
 using Agebull.EntityModel.Config;
 using Agebull.EntityModel.Config.Mysql;
-using Agebull.EntityModel.RobotCoder;
+using Agebull.EntityModel.Config.V2021;
 using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Windows.Threading;
 
 
 #endregion
@@ -58,18 +54,18 @@ namespace Agebull.EntityModel.Designer
 
         public void Import(TraceMessage trace, EntityConfig entity, Dispatcher dispatcher)
         {
-            _project = entity.Parent;
-            _database = entity.Parent.DbSoruce;
+            _project = entity.Project;
+            _database = entity.Project.DbSoruce;
             _trace = trace;
             _dispatcher = dispatcher;
             var csb = new MySqlConnectionStringBuilder
             {
-                Server = entity.Parent.DbHost,
-                UserID = entity.Parent.DbUser,
-                Password = entity.Parent.DbPassWord,
-                Database = entity.Parent.DbSoruce,
+                Server = entity.Project.DbHost,
+                UserID = entity.Project.DbUser,
+                Password = entity.Project.DbPassWord,
+                Database = entity.Project.DbSoruce,
                 SslMode = MySqlSslMode.None,
-                Port = entity.Parent.DbPort
+                Port = entity.Project.DbPort
             };
             _connectionString = csb.ConnectionString;
 
@@ -78,7 +74,7 @@ namespace Agebull.EntityModel.Designer
             _trace.Track = "正在连接...";
             connection.Open();
             _trace.Track = "连接成功";
-            _trace.Message1 = entity.SaveTableName;
+            _trace.Message1 = entity.DataTable.SaveTableName;
             LoadColumn(connection, entity, false);
             CheckForeignKey(connection, entity);
             _trace.Message1 = "完成";
@@ -130,7 +126,7 @@ namespace Agebull.EntityModel.Designer
             return tables;
         }
 
-        private void CheckTable(MySqlConnection connection,string table,string desc)
+        private void CheckTable(MySqlConnection connection, string table, string desc)
         {
             bool isnew = false;
             var entity = _project.Find(table);
@@ -139,9 +135,12 @@ namespace Agebull.EntityModel.Designer
                 isnew = true;
                 entity = new EntityConfig
                 {
-                    ReadTableName = table,
-                    SaveTableName = table,
-                    Name = NameHelper.ToWordName(table)
+                    Name = NameHelper.ToWordName(table),
+                    DataTable = new DataTableConfig
+                    {
+                        ReadTableName = table,
+                        SaveTableName = table
+                    }
                 };
                 if (!string.IsNullOrWhiteSpace(desc))
                 {
@@ -166,7 +165,7 @@ namespace Agebull.EntityModel.Designer
         private void LoadColumn(MySqlConnection connection, EntityConfig entity, bool isNewEntity)
         {
             using var cmd = connection.CreateCommand();
-            cmd.CommandText = ColumnInfoSql(entity.SaveTableName);
+            cmd.CommandText = ColumnInfoSql(entity.DataTable.SaveTableName);
 
             using var reader = cmd.ExecuteReader();
             if (!reader.HasRows)
@@ -180,87 +179,93 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        private void ReadColumn(EntityConfig entity, bool isNewEntity, MySqlDataReader reader, string field)
+        private void ReadColumn(EntityConfig entity, bool isNewEntity, MySqlDataReader reader, string fieldName)
         {
-            _trace.Message3 = $"【{field}】";
+            _trace.Message3 = $"【{fieldName}】";
             var dbType = reader.GetString(2);
-            var column = entity.Find(field);
+            var property = entity.Find(fieldName);
+            var field = property?.DataBaseField;
             bool isNew = isNewEntity;
-            if (column == null)
+            if (property == null)
             {
                 _trace.Track = @"--新字段";
                 isNew = true;
-                column = new FieldConfig
+                entity.Add(property = new FieldConfig
                 {
-                    DbFieldName = field,
-                    DbType = dbType,
                     CsType = MySqlDataBaseHelper.ToCSharpType(dbType),
                     Entity = entity
-                };
-                InvokeInUiThread(() => entity.Add(column));
+                });
+                entity.DataTable.Add(field = new DataBaseFieldConfig
+                {
+                    Property = property,
+                    Parent = entity.DataTable,
+                    DbFieldName = fieldName,
+                    FieldType = dbType,
+                });
+                property.DataBaseField = field;
                 if (!reader.IsDBNull(5))
                 {
-                    column.Caption = reader.GetString(5);
+                    property.Caption = reader.GetString(5);
                 }
-                column.Description = column.Caption;
+                property.Description = property.Caption;
             }
-            else if (column.DbType != dbType)
+            else if (field.FieldType != dbType)
             {
-                _trace.Track = $@"--字段类型变更:{column.DbType }->{dbType}";
-                column.DbType = dbType;
-                column.CsType = MySqlDataBaseHelper.ToCSharpType(column.DbType);
+                _trace.Track = $@"--字段类型变更:{field.FieldType }->{dbType}";
+                field.FieldType = dbType;
+                property.CsType = MySqlDataBaseHelper.ToCSharpType(field.FieldType);
             }
-            column.DbNullable = reader.GetString(1) == "YES";
-            column.IsPrimaryKey = reader.GetString(4) == "PRI";
+            field.DbNullable = reader.GetString(1) == "YES";
+            property.IsPrimaryKey = reader.GetString(4) == "PRI";
 
-            if (column.CsType == "string" && !reader.IsDBNull(3))
+            if (property.CsType == "string" && !reader.IsDBNull(3))
             {
-                column.Datalen = (int)reader.GetInt64(3);
+                field.Datalen = (int)reader.GetInt64(3);
             }
 
             if (!reader.IsDBNull(6))
             {
                 var ext = reader.GetString(6);
-                column.IsIdentity = ext.Contains("auto_increment", StringComparison.OrdinalIgnoreCase);
+                property.IsIdentity = ext.Contains("auto_increment", StringComparison.OrdinalIgnoreCase);
             }
-            if (column.CsType != "string")
+            if (property.CsType != "string")
             {
                 if (!reader.IsDBNull(7))
                 {
-                    column.Datalen = (int)reader.GetInt64(7);
+                    field.Datalen = (int)reader.GetInt64(7);
                 }
                 if (!reader.IsDBNull(8))
                 {
-                    column.Scale = (int)reader.GetInt64(8);
+                    field.Scale = (int)reader.GetInt64(8);
                 }
             }
             if (isNew)
             {
-                CheckName(column);
+                CheckName(property);
             }
-            _trace.Track = $"--Name:{column.Name} Caption:{column.Caption}";
+            _trace.Track = $"--Name:{property.Name} Caption:{property.Caption}";
         }
 
-        private void CheckName(FieldConfig column)
+        private void CheckName(IPropertyConfig column)
         {
-            switch (column.DbType.ToLower())
+            switch (column.DataBaseField.DataType.ToLower())
             {
                 case "varchar":
                 case "longtext":
-                    column.Name = FirstBy(column.DbFieldName, "m_str", "M_str", "m_", "M_");
+                    column.Name = FirstBy(column.DataBaseField.DbFieldName, "m_str", "M_str", "m_", "M_");
                     break;
                 case "int":
                 case "tinyint":
-                    column.Name = FirstBy(column.DbFieldName, "m_b", "m_n", "m_", "M_");
+                    column.Name = FirstBy(column.DataBaseField.DbFieldName, "m_b", "m_n", "m_", "M_");
                     break;
                 case "double":
-                    column.Name = FirstBy(column.DbFieldName, "m_d", "m_", "M_");
+                    column.Name = FirstBy(column.DataBaseField.DbFieldName, "m_d", "m_", "M_");
                     break;
                 default:
-                    column.Name = FirstBy(column.DbFieldName, "m_", "M_");
+                    column.Name = FirstBy(column.DataBaseField.DbFieldName, "m_", "M_");
                     break;
             }
-            column.Name = NameHelper.ToWordName(column.Name ?? column.DbFieldName);
+            column.Name = NameHelper.ToWordName(column.Name ?? column.DataBaseField.DbFieldName);
 
             if (string.IsNullOrWhiteSpace(column.Caption))
             {
@@ -286,10 +291,10 @@ namespace Agebull.EntityModel.Designer
 
         #region 外键
 
-        private void CheckForeignKey(MySqlConnection connection,EntityConfig entity)
+        private void CheckForeignKey(MySqlConnection connection, EntityConfig entity)
         {
             using var cmd = connection.CreateCommand();
-            cmd.CommandText = KeyInfoSql(entity.SaveTableName);
+            cmd.CommandText = KeyInfoSql(entity.DataTable.SaveTableName);
 
             using var reader = cmd.ExecuteReader();
             if (!reader.HasRows)
@@ -301,9 +306,9 @@ namespace Agebull.EntityModel.Designer
                 if (property == null)
                     continue;
                 property.IsLinkField = true;
-                property.IsLinkKey = true;
-                property.LinkTable = reader.GetString(1);
-                property.LinkField = reader.GetString(2);
+                property.DataBaseField.IsLinkKey = true;
+                property.DataBaseField.LinkTable = reader.GetString(1);
+                property.DataBaseField.LinkField = reader.GetString(2);
             }
         }
         #endregion

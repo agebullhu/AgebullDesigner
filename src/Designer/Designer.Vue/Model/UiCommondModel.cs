@@ -8,17 +8,10 @@
 
 #region 引用
 
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel.Composition;
-using System.Linq;
-using System.Windows;
-using System.Windows.Media;
-using Agebull.EntityModel.Config;
 using Agebull.Common.Mvvm;
-using Agebull.EntityModel.RobotCoder;
-using Application = System.Windows.Application;
-using MessageBox = System.Windows.MessageBox;
+using Agebull.EntityModel.Config;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
 
 #endregion
 

@@ -1,5 +1,4 @@
-﻿using Agebull.EntityModel.Config;
-using System.Text;
+﻿using System.Text;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -61,13 +60,13 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// Redis存储键
         /// </summary>
-        [IgnoreDataMember]
+        [JsonIgnore]
         string __redisKey;
 
         /// <summary>
         /// Redis存储键
         /// </summary>
-        [IgnoreDataMember,Browsable(false)]
+        [JsonIgnore,Browsable(false)]
         string ICacheEntity.RedisKey
         {{
             get
@@ -79,7 +78,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// Redis存储键
         /// </summary>
-        [IgnoreDataMember,Browsable(false)]
+        [JsonIgnore,Browsable(false)]
         public string __RedisKey
         {{
             get
@@ -91,7 +90,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// Redis存储键
         /// </summary>
-        [IgnoreDataMember, Browsable(false)]
+        [JsonIgnore, Browsable(false)]
         public string __RedisType
         {{
             get
@@ -126,7 +125,7 @@ namespace Agebull.EntityModel.RobotCoder
                     , Model.Name
                     , Model.PrimaryColumn.Name
                     , "DataBase"
-                    , Model.DbIndex); ;
+                    , Model.DataTable.DbIndex); ;
             code.Append(SqlServerQyeryCode());
             return code.ToString();
         }

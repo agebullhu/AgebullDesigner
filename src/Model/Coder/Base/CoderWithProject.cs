@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using Agebull.EntityModel.Config;
+using System.Collections.Generic;
 
 namespace Agebull.EntityModel.RobotCoder
 {

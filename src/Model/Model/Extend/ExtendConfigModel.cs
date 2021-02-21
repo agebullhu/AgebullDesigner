@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
-using System.Collections.Generic;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -56,7 +56,7 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = Add,
                 Caption = "增加",
-                Image = Application.Current.Resources["tree_item"] as ImageSource
+                IconName = "增加"
             });
             base.CreateCommands(commands);
         }

@@ -21,7 +21,7 @@ namespace Agebull.EntityModel
     ///     对象依赖字典
     /// </summary>
     /// <remarks>
-    ///     依赖对象都为IgnoreDataMember属性,即不可网络序列化
+    ///     依赖对象都为JsonIgnore属性,即不可网络序列化
     /// </remarks>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
     public sealed class DependencyObjects

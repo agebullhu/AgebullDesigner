@@ -22,6 +22,6 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     数据校验
         /// </summary>
-        protected abstract  bool Validate();
+        protected abstract bool Validate();
     }
 }

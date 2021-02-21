@@ -1,6 +1,6 @@
+using Agebull.EntityModel.Config;
 using System;
 using System.Text;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -21,14 +21,12 @@ namespace Agebull.EntityModel.RobotCoder
         {
             StringBuilder code = new StringBuilder();
 
-            using (CodeGeneratorScope.CreateScope(GlobalConfig.CurrentSolution))
+            GlobalTrigger.Regularize(GlobalConfig.CurrentSolution);
+            config.Foreach<IEntityConfig>(arg =>
             {
-                config.Foreach<IEntityConfig>(arg =>
-                {
-                    code.AppendLine(coder(arg));
-                });
-            }
-
+                using var scope = CodeGeneratorScope.CreateScope(arg, true);
+                code.AppendLine(coder(arg));
+            });
             return code.ToString();
         }
 
@@ -41,16 +39,13 @@ namespace Agebull.EntityModel.RobotCoder
         public static string CreateCode<TConfig>(ConfigBase config, Func<TConfig, string> coder)
             where TConfig : ConfigBase
         {
+            GlobalTrigger.Regularize(GlobalConfig.CurrentSolution);
             StringBuilder code = new StringBuilder();
-
-            using (CodeGeneratorScope.CreateScope(GlobalConfig.CurrentSolution))
+            config.Foreach<TConfig>(arg =>
             {
-                config.Foreach<TConfig>(arg =>
-                {
-                    code.AppendLine(coder(arg));
-                });
-            }
-
+                using var scope = CodeGeneratorScope.CreateScope(arg, true);
+                code.AppendLine(coder(arg));
+            });
             return code.ToString();
         }
 
@@ -64,16 +59,13 @@ namespace Agebull.EntityModel.RobotCoder
         public static string CreateCode<TConfig>(ConfigBase config, Func<TConfig, bool> condition, Func<TConfig, string> coder)
             where TConfig : ConfigBase
         {
+            GlobalTrigger.Regularize(GlobalConfig.CurrentSolution);
             StringBuilder code = new StringBuilder();
-
-            using (CodeGeneratorScope.CreateScope(GlobalConfig.CurrentSolution))
+            config.Foreach<TConfig>(arg =>
             {
-                config.Foreach(condition, arg =>
-                {
-                    code.AppendLine(coder(arg));
-                });
-            }
-
+                using var scope = CodeGeneratorScope.CreateScope(arg, true);
+                code.AppendLine(coder(arg));
+            });
             return code.ToString();
         }
         #endregion

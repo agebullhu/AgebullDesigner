@@ -1,4 +1,3 @@
-using Agebull.EntityModel.Config;
 using System.IO;
 
 namespace Agebull.EntityModel.RobotCoder
@@ -7,7 +6,7 @@ namespace Agebull.EntityModel.RobotCoder
     /// <summary>
     /// 实体代码生成器
     /// </summary>
-    public sealed class EntityBuilder: ModelCoderBase
+    public sealed class EntityBuilder : ModelCoderBase
     {
         /// <summary>
         /// 名称

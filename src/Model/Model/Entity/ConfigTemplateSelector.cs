@@ -1,6 +1,6 @@
+using Agebull.EntityModel.Config;
 using System.Windows;
 using System.Windows.Controls;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.Designer
 {

@@ -1,9 +1,9 @@
+using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Designer;
 using System;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
-using Agebull.EntityModel.Config;
-using Agebull.EntityModel.Designer;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -18,9 +18,9 @@ namespace Agebull.EntityModel.RobotCoder
         /// </summary>
         void IAutoRegister.AutoRegist()
         {
-            MomentCoder.RegisteCoder("单元测试", "数据读取单元测试(C#)", "cs", EntityUt);
-            MomentCoder.RegisteCoder("单元测试", "数据操作单元测试(C#)", "cs", UpdateUt);
-            MomentCoder.RegisteCoder<SolutionConfig>("单元测试", "API单元测试(C#)", "cs", ApiUt);
+            CoderManager.RegisteCoder("单元测试", "数据读取单元测试(C#)", "cs", EntityUt);
+            CoderManager.RegisteCoder("单元测试", "数据操作单元测试(C#)", "cs", UpdateUt);
+            CoderManager.RegisteCoder<SolutionConfig>("单元测试", "API单元测试(C#)", "cs", ApiUt);
         }
         #endregion
 
@@ -73,7 +73,7 @@ namespace Agebull.EntityModel.RobotCoder
             var data = new {config.EntityName}
             {{");
             bool first = true;
-            foreach (var field in config.LastProperties.Where(p => !p.DbInnerField && !p.NoProperty))
+            foreach (var field in config.LastProperties.Where(p => !p.NoProperty))
             {
                 if (first)
                     first = false;
@@ -196,7 +196,7 @@ namespace Agebull.EntityModel.RobotCoder
         private static void ApiUt(StringBuilder code, ApiItem config)
         {
             code.Append($@"
-        {{//{config.Project}.{config.Name}
+        {{//{config.Project.Name}.{config.Name}
                 var result = caller.{config.Method.ToString().ToLower().ToUWord()}<{config.Result?.Name}>(""{config.RoutePath}""");
             if (config.Argument != null)
             {

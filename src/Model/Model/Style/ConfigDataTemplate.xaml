@@ -6,40 +6,84 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Agebull.EntityModel.Designer.Model;component/Style/Form.xaml" />
     </ResourceDictionary.MergedDictionaries>
-
-
+    
     <DataTemplate x:Key="configTemplate" />
 
-    <DataTemplate x:Key="ParentConfigTemplate" DataType="config:ParentConfigBase">
-        <GroupBox Header="设计器支持" Margin="5" Style="{StaticResource AdvGroupBox}"
-                  DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type Border}},Path=DataContext}"
-                  Visibility="{Binding Solution.AdvancedView,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
-            <WrapPanel>
-                <StackPanel Style="{StaticResource FieldPanel}">
-                    <Label Content="简称" />
-                    <TextBox Text="{Binding Abbreviation,Mode=TwoWay}" />
+    <DataTemplate x:Key="FileConfigTemplate" DataType="config:FileConfigBase">
+        <StackPanel Style="{StaticResource FieldPanel}"
+                    DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type Border}},Path=DataContext}">
+            <Label Content="保存地址" />
+            <TextBox Style="{StaticResource TrdTextBox}" Text="{Binding SaveFileName,Mode=OneWay}" />
+        </StackPanel>
+    </DataTemplate>
+    <DataTemplate x:Key="EntityClassifyTemplate" DataType="config:EntityClassify">
+        <GroupBox Header="名称(设计时)" Margin="5" DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type Border}},Path=DataContext}">
+            <StackPanel Orientation="Vertical" Margin="0">
+                <WrapPanel Orientation="Horizontal" Margin="0">
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="标题" />
+                        <TextBox Text="{Binding Caption,Mode=TwoWay}" Tag="{Binding Name}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="名称" />
+                        <TextBox Text="{Binding Name,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="简称" />
+                        <TextBox Text="{Binding Abbreviation,Mode=TwoWay}" />
+                    </StackPanel>
+                </WrapPanel>
+                <StackPanel Style="{StaticResource AdvFieldPanel}">
+                    <Label Content="说明" />
+                    <TextBox AcceptsReturn="True" Style="{StaticResource TrdTextBox}" Height="48"  Text="{Binding Description,Mode=TwoWay}" />
                 </StackPanel>
-                <StackPanel Style="{StaticResource FieldPanel}">
-                    <Label Content="分类" />
-                    <TextBox Text="{Binding Classify,Mode=TwoWay}" />
-                </StackPanel>
-                <StackPanel Style="{StaticResource FieldPanel}">
-                    <Label Content="全局对象" />
-                    <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsGlobal,Mode=TwoWay}" />
-                </StackPanel>
-                <StackPanel Style="{StaticResource FieldPanel}">
-                    <Label Content="保存地址" />
-                    <TextBox Style="{StaticResource TrdTextBox}" Text="{Binding SaveFileName,Mode=TwoWay}" />
-                </StackPanel> 
-            </WrapPanel>
+            </StackPanel>
         </GroupBox>
     </DataTemplate>
-
     <DataTemplate x:Key="SolutionTemplate" DataType="config:SolutionConfig">
         <StackPanel Style="{StaticResource LayoutPanel}"
                     DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type Border}},Path=DataContext}">
-            <GroupBox Header="代码生成根路径" Margin="5">
+
+            <GroupBox Header="名称(设计时)" Margin="5">
+                <StackPanel Orientation="Vertical" Margin="0">
+                    <WrapPanel Orientation="Horizontal" Margin="0">
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="标题" />
+                            <TextBox Text="{Binding Caption,Mode=TwoWay}" Tag="{Binding Name}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="名称" />
+                            <TextBox
+                                IsReadOnly="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}"
+                                Text="{Binding Name,Mode=TwoWay}" />
+                        </StackPanel>
+                    </WrapPanel>
+                    <StackPanel Style="{StaticResource AdvFieldPanel}">
+                        <Label Content="说明" />
+                        <TextBox AcceptsReturn="True" Style="{StaticResource TrdTextBox}" Height="48"
+                                 Text="{Binding Description,Mode=TwoWay}" />
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="全局默认" Margin="5">
                 <WrapPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="命名空间" />
+                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding NameSpace,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="主键数据类型" />
+                        <TextBox Text="{Binding IdDataType,Mode=TwoWay}" />
+                    </StackPanel>
+                </WrapPanel>
+            </GroupBox>
+            <GroupBox Header="代码生成根路径" Margin="5">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="管理页面" />
+                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding PagePath,Mode=TwoWay}"
+                                 Tag="{Binding AutoPagePath,Mode=OneWay}" />
+                    </StackPanel>
                     <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="解决方案" />
                         <TextBox Style="{StaticResource MidTextBox}" Text="{Binding RootPath,Mode=TwoWay}" />
@@ -52,37 +96,33 @@
                         <Label Content="文档文件夹" />
                         <TextBox Text="{Binding DocFolder,Mode=TwoWay}" Tag="doc" />
                     </StackPanel>
-                    <StackPanel Style="{StaticResource FieldPanel}">
-                        <Label Content="管理页面" />
-                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding PagePath,Mode=TwoWay}"
-                                 Tag="{Binding AutoPagePath,Mode=OneWay}" />
-                    </StackPanel>
-                </WrapPanel>
-            </GroupBox>
-            <GroupBox Header="全局默认" Margin="5">
-                <WrapPanel>
-                    <StackPanel Style="{StaticResource FieldPanel}">
-                        <Label Content="命名空间" />
-                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding NameSpace,Mode=TwoWay}" />
-                    </StackPanel>
-                    <StackPanel Style="{StaticResource FieldPanel}">
-                        <Label Content="主键数据类型" />
-                        <TextBox Text="{Binding IdDataType,Mode=TwoWay}" />
-                    </StackPanel>
-                    <StackPanel Style="{StaticResource FieldPanel}">
-                        <Label Content="用户标识数据类型" />
-                        <TextBox Text="{Binding UserIdDataType,Mode=TwoWay}" />
-                    </StackPanel>
-                </WrapPanel>
+                </StackPanel>
             </GroupBox>
         </StackPanel>
     </DataTemplate>
-    
+
     <DataTemplate x:Key="ProjectConfigTemplate" DataType="config:ProjectConfig">
         <StackPanel Style="{StaticResource LayoutPanel}"
                     DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type Border}},Path=DataContext}">
-            <GroupBox Header="数据模型" Margin="5">
-                <WrapPanel>
+            <GroupBox Header="名称(设计时)" Margin="5">
+                <StackPanel Orientation="Vertical" Margin="0">
+                    <WrapPanel Orientation="Horizontal" Margin="0">
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="标题" />
+                            <TextBox Text="{Binding Caption,Mode=TwoWay}" Tag="{Binding Name}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="名称" />
+                            <TextBox
+                                IsReadOnly="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}"
+                                Text="{Binding Name,Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="简称" />
+                            <TextBox Text="{Binding Abbreviation,Mode=TwoWay}" />
+                        </StackPanel>
+                    </WrapPanel>
+                    <WrapPanel Orientation="Horizontal" Margin="0">
                     <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="接口名称" />
                         <TextBox Text="{Binding ApiName,Mode=TwoWay}" Tag="{Binding Abbreviation,Mode=OneWay}" />
@@ -90,12 +130,18 @@
                     <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="服务名称" />
                         <TextBox Text="{Binding ServiceName,Mode=TwoWay}" Tag="{Binding Abbreviation,Mode=OneWay}" />
-                    </StackPanel> 
-                    <StackPanel Style="{StaticResource AdvFieldPanel}">
-                        <Label Content="命名空间" />
-                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding NameSpace,Mode=TwoWay}"
-                                 Tag="{Binding Solution.NameSpace,Mode=OneWay}" />
                     </StackPanel>
+                    </WrapPanel>
+                    <StackPanel Style="{StaticResource AdvFieldPanel}">
+                        <Label Content="说明" />
+                        <TextBox AcceptsReturn="True" Style="{StaticResource TrdTextBox}" Height="48"
+                                 Text="{Binding Description,Mode=TwoWay}" />
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="数据模型" Margin="5">
+                <WrapPanel>
+                    
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="运行时只读" />
                         <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding ReadOnly,Mode=TwoWay}" />
@@ -109,9 +155,13 @@
                         <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding NoClassify,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
+                        <Label Content="命名空间" />
+                        <TextBox Style="{StaticResource MidTextBox}" Text="{Binding NameSpace,Mode=TwoWay}"
+                                 Tag="{Binding Solution.NameSpace,Mode=OneWay}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="引用的命名空间" />
-                        <TextBox Style="{StaticResource MaxTextBox}" Height="100"
-                                 Text="{Binding UsingNameSpaces,Mode=TwoWay}" />
+                        <TextBox AcceptsReturn="True" Style="{StaticResource MidTextBox}" Height="100" Text="{Binding UsingNameSpaces,Mode=TwoWay}" />
                     </StackPanel>
                 </WrapPanel>
             </GroupBox>
@@ -191,16 +241,55 @@
     <DataTemplate x:Key="EntityConfigTemplate" DataType="config:IEntityConfig">
         <StackPanel Style="{StaticResource LayoutPanel}"
                     DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type Border}},Path=DataContext}">
-
+            <GroupBox Header="名称(设计时)" Margin="5">
+                <StackPanel Orientation="Vertical" Margin="0">
+                    <WrapPanel Orientation="Horizontal" Margin="0">
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="标题" />
+                            <TextBox Text="{Binding Caption,Mode=TwoWay}" Tag="{Binding Name}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="名称" />
+                            <TextBox IsReadOnly="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}" Text="{Binding Name,Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="实体名称" />
+                            <TextBox Text="{Binding EntityName,Mode=TwoWay}" Tag="{Binding Name,Mode=OneWay}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="简称" />
+                            <TextBox Text="{Binding Abbreviation,Mode=TwoWay}" />
+                        </StackPanel>
+                        
+                        <StackPanel Style="{StaticResource FieldPanel}" Visibility="{Binding EnableDataBase,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
+                            <Label Content="读取表名" />
+                            <TextBox Text="{Binding DataTable.ReadTableName,Mode=TwoWay}" Tag="{Binding DataTable.SaveTableName,Mode=OneWay}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource AdvFieldPanel}" Visibility="{Binding EnableDataBase,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
+                            <Label Content="存储表名" />
+                            <TextBox Text="{Binding DataTable.SaveTableName,Mode=TwoWay}"/>
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource AdvFieldPanel}" Visibility="{Binding EnableEditApi,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
+                            <Label Content="服务名称" />
+                            <TextBox Text="{Binding ApiName,Mode=TwoWay}" Tag="{Binding Abbreviation,Mode=OneWay}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="分类" />
+                            <TextBox Text="{Binding Classify,Mode=TwoWay}" />
+                        </StackPanel>
+                    </WrapPanel>
+                    <StackPanel Style="{StaticResource AdvFieldPanel}">
+                        <Label Content="说明" />
+                        <TextBox AcceptsReturn="True" Style="{StaticResource TrdTextBox}" Height="48"
+                                 Text="{Binding Description,Mode=TwoWay}" />
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
             <GroupBox Header="视角开关" Margin="5">
                 <WrapPanel>
                     <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="启用数据校验" />
                         <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding EnableValidate,Mode=TwoWay}"/>
-                    </StackPanel>
-                    <StackPanel Style="{StaticResource FieldPanel}">
-                        <Label Content="启用数据事件" />
-                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding EnableDataEvent,Mode=TwoWay}"/>
                     </StackPanel>
                     <StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="启用数据库" />
@@ -214,30 +303,20 @@
                         <Label Content="启用用户界面" />
                         <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding EnableUI,Mode=TwoWay}"/>
                     </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="主键字段" />
+                        <TextBox IsReadOnly="True" Text="{Binding PrimaryColumn,Mode=OneWay}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="标题字段" />
+                        <TextBox IsReadOnly="True" Text="{Binding CaptionColumn,Mode=OneWay}" />
+                    </StackPanel>
                 </WrapPanel>
             </GroupBox>
 
 
             <GroupBox Header="数据模型" Margin="5">
                 <WrapPanel>
-                    <StackPanel Style="{StaticResource FieldPanel}">
-                        <Label Content="实体名称" />
-                        <TextBox Text="{Binding EntityName,Mode=TwoWay}" Tag="{Binding Name,Mode=OneWay}" />
-                    </StackPanel>
-                    <StackPanel Style="{StaticResource AdvFieldPanel}">
-                        <Label Content="服务名称" />
-                        <TextBox Text="{Binding ApiName,Mode=TwoWay}" Tag="{Binding Abbreviation,Mode=OneWay}" />
-                    </StackPanel>
-                    <StackPanel Style="{StaticResource AdvFieldPanel}">
-                        <Label Content="是否查询" />
-                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsQuery,Mode=TwoWay}"
-                                  ToolTip="选择后,此类仅查询" />
-                    </StackPanel>
-                    <StackPanel Style="{StaticResource AdvFieldPanel}">
-                        <Label Content="是否关联表" />
-                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsLinkTable,Mode=TwoWay}"
-                                  ToolTip="选择后,此类仅表示两个实体表之前的关系" />
-                    </StackPanel>
                     <!--<StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="非标准数据类型" />
                         <ComboBox Style="{StaticResource BoolCombo}"
@@ -245,23 +324,6 @@
                                   ToolTip="选择后,此类不再使用解决方案的类型映射表进行自动数据类型匹配" />
                     </StackPanel>-->
 
-                    <StackPanel Style="{StaticResource FieldPanel}">
-                        <Label Content="接口定义" />
-                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsInterface,Mode=TwoWay}"
-                                  ToolTip="选择后,生成的是一个接口(interface)而不是一个类(class)" />
-                    </StackPanel>
-                    <StackPanel Style="{StaticResource AdvFieldPanel}">
-                        <Label Content="不拼接字段" />
-                        <ComboBox Style="{StaticResource  BoolCombo}"
-                                  SelectedValue="{Binding ExtendConfigListBool[CustomField],Mode=TwoWay}"
-                                  ToolTip="选择后,此数据接口仅作为标识，字符不注入到实体中" />
-                    </StackPanel>
-                    <StackPanel Style="{StaticResource AdvFieldPanel}">
-                        <Label Content="泛型参数" />
-                        <TextBox Text="{Binding ReferenceType,Mode=TwoWay}"
-                                 ToolTip="如果不为空,生成的是一个泛型对象,使用此处填写的泛型参数" />
-                    </StackPanel>
-                    
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="基类" />
                         <TextBox Text="{Binding ModelBase,Mode=TwoWay}" />
@@ -270,60 +332,62 @@
                         <Label Content="接口继承" />
                         <TextBox Style="{StaticResource MidTextBox}" Text="{Binding Interfaces,Mode=TwoWay}" />
                     </StackPanel>
-                </WrapPanel>
-            </GroupBox>
-            <GroupBox Header="数据库" Margin="5" 
-                      Visibility="{Binding Solution.IsDataBaseWorkView,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
-                <WrapPanel Visibility="{Binding EnableDataBase,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
-                    <StackPanel Style="{StaticResource FieldPanel}">
-                        <Label Content="读取表名" />
-                        <TextBox Text="{Binding ReadTableName,Mode=TwoWay}" Tag="{Binding SaveTableName,Mode=OneWay}" />
+                    <StackPanel Style="{StaticResource AdvFieldPanel}">
+                        <Label Content="接口定义" />
+                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsInterface,Mode=TwoWay}"
+                                  ToolTip="选择后,生成的是一个接口(interface)而不是一个类(class)" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
-                        <Label Content="存储表名" />
-                        <TextBox Text="{Binding SaveTableName,Mode=TwoWay}" Tag="{Binding SaveTableName,Mode=OneWay}" />
+                        <Label Content="泛型参数" />
+                        <TextBox Text="{Binding ReferenceType,Mode=TwoWay}"
+                                 ToolTip="如果不为空,生成的是一个泛型对象,使用此处填写的泛型参数" />
                     </StackPanel>
-                    <StackPanel Style="{StaticResource FieldPanel}">
-                        <Label Content="主键字段" />
-                        <TextBox IsReadOnly="True" Text="{Binding PrimaryColumn,Mode=OneWay}" />
+                    <StackPanel Style="{StaticResource AdvFieldPanel}">
+                        <Label Content="不拼接字段" />
+                        <ComboBox Style="{StaticResource  BoolCombo}"
+                                  SelectedValue="{Binding ExtendConfigListBool[CustomField],Mode=TwoWay}"
+                                  ToolTip="选择后,此数据接口仅作为标识，字符不注入到实体中" />
                     </StackPanel>
+                </WrapPanel>
+            </GroupBox>
+            <Border Visibility="{Binding Solution.IsDataBaseWorkView,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
+                <GroupBox Header="数据库" Margin="5" Visibility="{Binding EnableDataBase,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}" >
+                <WrapPanel>
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="组合主键" />
                         <ComboBox IsReadOnly="True" Style="{StaticResource BoolCombo}"
                                   SelectedValue="{Binding IsUniqueUnion,Mode=OneWay}" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
+                        <Label Content="是否查询" />
+                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DataTable.IsQuery,Mode=TwoWay}"
+                                  ToolTip="选择后,此类仅查询" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource AdvFieldPanel}">
+                        <Label Content="是否关联表" />
+                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsLinkTable,Mode=TwoWay}"
+                                  ToolTip="选择后,此类仅表示两个实体表之前的关系" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="数据库编号" />
-                        <TextBox Text="{Binding DbIndex,Mode=TwoWay}" />
+                        <TextBox Text="{Binding DataTable.DbIndex,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="按修改更新" />
                         <ComboBox Style="{StaticResource BoolCombo}"
-                                  SelectedValue="{Binding UpdateByModified,Mode=TwoWay}" />
-                    </StackPanel>
-                    <StackPanel Style="{StaticResource AdvFieldPanel}">
-                        <Label Content="RedisKey" />
-                        <TextBox Text="{Binding RedisKey,Mode=TwoWay}" />
-                    </StackPanel>
-                    <StackPanel Style="{StaticResource AdvFieldPanel}">
-                        <Label Content="无数据库支持" />
-                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding EnableDataBase,Mode=TwoWay}"
-                                  ToolTip="选择后,此类不进行任何数据库操作" />
+                                  SelectedValue="{Binding DataTable.UpdateByModified,Mode=TwoWay}" />
                     </StackPanel>
                 </WrapPanel>
             </GroupBox>
-
-            <GroupBox Header="用户界面" Margin="5"
-                           Visibility="{Binding Solution.IsModelWorkView,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
-                <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal"
-                      Visibility="{Binding EnableUI,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
-
-                    <StackPanel Style="{StaticResource AdvFieldPanel}">
-                        <Label Content="页面文件夹" />
-                        <TextBox Text="{Binding PageFolder,Mode=TwoWay}" Tag="{Binding Name,Mode=OneWay}"/>
-                    </StackPanel>
-
-                    <StackPanel Style="{StaticResource AdvFieldPanel}">
+            </Border>
+            <Border Visibility="{Binding Solution.IsModelWorkView,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
+                <GroupBox Header="用户界面" Margin="5" Visibility="{Binding EnableUI,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
+                    <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                        <StackPanel Style="{StaticResource AdvFieldPanel}">
+                            <Label Content="页面文件夹" />
+                            <TextBox Text="{Binding PageFolder,Mode=TwoWay}" Tag="{Binding Name,Mode=OneWay}"/>
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="数据只读" />
                         <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsUiReadOnly,Mode=TwoWay}" />
                     </StackPanel>
@@ -348,18 +412,48 @@
                         <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding OrderDesc,Mode=TwoWay}" />
                     </StackPanel>
                 </WrapPanel>
-            </GroupBox>
+                </GroupBox>
+            </Border>
         </StackPanel>
     </DataTemplate>
+    
     <DataTemplate x:Key="FieldConfigTemplate" DataType="config:IFieldConfig">
         <StackPanel Style="{StaticResource LayoutPanel}"
                     DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type Border}},Path=DataContext}">
+            <GroupBox Header="名称(设计时)" Margin="5">
+                <StackPanel Orientation="Vertical" Margin="0">
+                    <WrapPanel Orientation="Horizontal" Margin="0">
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="标题" />
+                            <TextBox Text="{Binding Caption,Mode=TwoWay}" Tag="{Binding Name}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="名称" />
+                            <TextBox  IsReadOnly="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}"
+                                Text="{Binding Name,Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource FieldPanel}" Visibility="{Binding NoneJson,Mode=OneWay,Converter={StaticResource ReversionBoolToVisibleConverter}}">
+                            <Label Content="Json名称" />
+                            <TextBox Text="{Binding JsonName,Mode=TwoWay}" Tag="{Binding Name,Mode=OneWay}"/>
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource FieldPanel}" Visibility="{Binding NoStorage,Mode=OneWay,Converter={StaticResource ReversionBoolToVisibleConverter}}">
+                            <Label Content="字段名称" />
+                            <TextBox Text="{Binding DataBaseField.DbFieldName,Mode=TwoWay}" Tag="{Binding Name,Mode=OneWay}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="分组" />
+                            <TextBox Text="{Binding Group,Mode=TwoWay}" Tag="string" />
+                        </StackPanel>
+                    </WrapPanel>
+                    <StackPanel Style="{StaticResource AdvFieldPanel}">
+                        <Label Content="说明" />
+                        <TextBox AcceptsReturn="True" Style="{StaticResource TrdTextBox}" Height="48"
+                                 Text="{Binding Description,Mode=TwoWay}" />
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
             <GroupBox Header="设置" Margin="5">
                 <WrapPanel>
-                    <StackPanel Style="{StaticResource FieldPanel}">
-                        <Label Content="分组" />
-                        <TextBox Text="{Binding Group,Mode=TwoWay}" Tag="string" />
-                    </StackPanel>
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="非属性" />
                         <ComboBox Style="{StaticResource BoolCombo}"
@@ -368,6 +462,14 @@
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="不存储" />
                         <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding NoStorage,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="不序列化" />
+                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding NoneJson,Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource AdvFieldPanel}">
+                        <Label Content="用户不可见" />
+                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding InnerField,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="计算列" />
@@ -413,18 +515,11 @@
                     </StackPanel>
                 </WrapPanel>
             </GroupBox>
+            
             <Border Visibility="{Binding Solution.IsApiWorkView,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
                 <Border  Visibility="{Binding EnableEditApi,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
                     <GroupBox Header="API交互" Margin="5">
                         <WrapPanel>
-                            <StackPanel Style="{StaticResource FieldPanel}">
-                                <Label Content="不序列化" />
-                                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding NoneJson,Mode=TwoWay}" />
-                            </StackPanel>
-                            <StackPanel Style="{StaticResource FieldPanel}">
-                                <Label Content="Json名称" />
-                                <TextBox Text="{Binding JsonName,Mode=TwoWay}" Tag="{Binding Name,Mode=OneWay}" />
-                            </StackPanel>
                             <StackPanel Style="{StaticResource AdvFieldPanel}">
                                 <Label Content="示例内容" />
                                 <TextBox Style="{StaticResource MidTextBox}" Text="{Binding HelloCode,Mode=TwoWay}" />
@@ -434,7 +529,7 @@
                 </Border>
             </Border>
 
-            <Border  Visibility="{Binding NoProperty,Mode=OneWay,Converter={StaticResource ReversionVisibleConverter}}">
+            <Border Visibility="{Binding NoProperty,Mode=OneWay,Converter={StaticResource ReversionVisibleConverter}}">
                 <GroupBox Header="数据类型" Margin="5"
                       Visibility="{Binding Solution.IsEntityWorkView,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
                     <WrapPanel>
@@ -477,63 +572,66 @@
                     </WrapPanel>
                 </GroupBox>
             </Border>
-            <Border  Visibility="{Binding NoStorage,Mode=OneWay,Converter={StaticResource ReversionVisibleConverter}}">
-
+            
+            <Border Visibility="{Binding NoStorage,Mode=OneWay,Converter={StaticResource ReversionVisibleConverter}}">
                 <GroupBox Header="字段存储" Margin="5"
                       Visibility="{Binding Solution.IsDataBaseWorkView,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
                     <WrapPanel>
                         <StackPanel Style="{StaticResource FieldPanel}">
-                            <Label Content="字段名称" />
-                            <TextBox Text="{Binding DbFieldName,Mode=TwoWay}" Tag="{Binding Name,Mode=OneWay}" />
-                        </StackPanel>
-                        <StackPanel Style="{StaticResource AdvFieldPanel}">
-                            <Label Content="自增数字" />
-                            <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsIdentity,Mode=TwoWay}" />
-                        </StackPanel>
-                        <StackPanel Style="{StaticResource FieldPanel}">
-                            <Label Content="构建索引" />
-                            <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsDbIndex,Mode=TwoWay}" />
-                        </StackPanel>
-                        <StackPanel Style="{StaticResource FieldPanel}">
                             <Label Content="存储类型" />
-                            <ComboBox ItemsSource="{x:Static mysql1:MySqlDataBaseHelper.DataTypeList}" SelectedValue="{Binding DbType,Mode=TwoWay}" />
+                            <ComboBox ItemsSource="{x:Static mysql1:MySqlDataBaseHelper.DataTypeList}" SelectedValue="{Binding DataBaseField.FieldType,Mode=TwoWay}" />
                         </StackPanel>
                         <StackPanel Style="{StaticResource FieldPanel}">
                             <Label Content="存储空值" />
-                            <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DbNullable,Mode=TwoWay}" />
+                            <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DataBaseField.DbNullable,Mode=TwoWay}" />
                         </StackPanel>
                         <StackPanel Style="{StaticResource FieldPanel}">
                             <Label Content="数据长度" />
-                            <TextBox Text="{Binding Datalen,Mode=TwoWay}" />
+                            <TextBox Text="{Binding DataBaseField.Datalen,Mode=TwoWay}" />
                         </StackPanel>
                         <StackPanel Style="{StaticResource FieldPanel}">
                             <Label Content="存储精度" />
-                            <TextBox Text="{Binding Scale,Mode=TwoWay}" />
+                            <TextBox Text="{Binding DataBaseField.Scale,Mode=TwoWay}" />
                         </StackPanel>
                         <StackPanel Style="{StaticResource AdvFieldPanel}">
-                            <Label Content="备注字段" />
-                            <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsMemo,Mode=TwoWay}" />
+                            <Label Content="自增数字" />
+                            <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DataBaseField.IsIdentity,Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="构建索引" />
+                            <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DataBaseField.IsDbIndex,Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource AdvFieldPanel}">
+                            <Label Content="长文本" />
+                            <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DataBaseField.IsText,Mode=TwoWay}" />
                         </StackPanel>
                         <StackPanel Style="{StaticResource AdvFieldPanel}">
                             <Label Content="大数据" />
-                            <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsBlob,Mode=TwoWay}" />
+                            <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DataBaseField.IsBlob,Mode=TwoWay}" />
                         </StackPanel>
                         <StackPanel Style="{StaticResource AdvFieldPanel}">
                             <Label Content="仅数据库字段" />
-                            <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DbInnerField,Mode=TwoWay}" />
+                            <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DataBaseField.DbInnerField,Mode=TwoWay}" />
                         </StackPanel>
                         <StackPanel Style="{StaticResource AdvFieldPanel}">
-                            <Label Content="不保存的场景" />
-                            <ComboBox ItemsSource="{x:Static defaults:EnumHelper.StorageScreenTypeList}"
-                                  SelectedValue="{Binding KeepStorageScreen,Mode=TwoWay}" />
+                            <Label Content="读取" />
+                            <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DataBaseField.CanRead,Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource AdvFieldPanel}">
+                            <Label Content="新增" />
+                            <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DataBaseField.CanInsert,Mode=TwoWay}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource AdvFieldPanel}">
+                            <Label Content="更新" />
+                            <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DataBaseField.CanUpdate,Mode=TwoWay}" />
                         </StackPanel>
                         <StackPanel Style="{StaticResource AdvFieldPanel}">
                             <Label Content="自定义写入" />
-                            <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding CustomWrite,Mode=TwoWay}" />
+                            <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DataBaseField.CustomWrite,Mode=TwoWay}" />
                         </StackPanel>
                         <StackPanel Style="{StaticResource AdvFieldPanel}">
                             <Label Content="存储字段" />
-                            <TextBox Text="{Binding StorageProperty,Mode=TwoWay}" />
+                            <TextBox Text="{Binding DataBaseField.StorageProperty,Mode=TwoWay}" />
                         </StackPanel>
                         <!--<StackPanel Style="{StaticResource FieldPanel}">
                         <Label Content="存储列ID" />
@@ -560,7 +658,7 @@
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="链接字段" />
                         <ComboBox Style="{StaticResource BoolCombo}"
-                                  SelectedValue="{Binding IsLinkField,Mode=TwoWay}" />
+                                  SelectedValue="{Binding DataBaseField.IsLinkField,Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="全局标识" />
@@ -570,9 +668,9 @@
                         <Label Content="扩展主键" />
                         <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsExtendKey,Mode=TwoWay}" />
                     </StackPanel>
-                    <StackPanel Style="{StaticResource AdvFieldPanel}">
+                    <StackPanel Style="{StaticResource AdvFieldPanel}" Visibility="{Binding IsLinkField,Mode=OneWay,Converter={StaticResource ReversionVisibleConverter}}">
                         <Label Content="唯一索引" />
-                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding UniqueIndex,Mode=TwoWay}" />
+                        <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DataBaseField.UniqueIndex,Mode=TwoWay}" />
                     </StackPanel>
                 </WrapPanel>
             </GroupBox>
@@ -583,21 +681,21 @@
                     <WrapPanel>
                         <StackPanel Style="{StaticResource FieldPanel}">
                             <Label Content="关联表名" />
-                            <TextBox Text="{Binding LinkTable,Mode=TwoWay}" />
+                            <TextBox Text="{Binding DataBaseField.LinkTable,Mode=TwoWay}" />
                         </StackPanel>
                         <StackPanel Style="{StaticResource FieldPanel}">
                             <Label Content="关联字段" />
-                            <TextBox Text="{Binding LinkField,Mode=TwoWay}" />
+                            <TextBox Text="{Binding DataBaseField.LinkField,Mode=TwoWay}" />
                         </StackPanel>
                         <StackPanel Style="{StaticResource FieldPanel}">
                             <Label Content="主键关联" />
                             <ComboBox Style="{StaticResource BoolCombo}"
-                                      SelectedValue="{Binding IsLinkKey,Mode=TwoWay}" />
+                                      SelectedValue="{Binding DataBaseField.IsLinkKey,Mode=TwoWay}" />
                         </StackPanel>
                         <StackPanel Style="{StaticResource FieldPanel}">
                             <Label Content="标题关联" />
                             <ComboBox Style="{StaticResource BoolCombo}"
-                                      SelectedValue="{Binding IsLinkCaption,Mode=TwoWay}" />
+                                      SelectedValue="{Binding DataBaseField.IsLinkCaption,Mode=TwoWay}" />
                         </StackPanel>
                         <!--<StackPanel Style="{StaticResource AdvFieldPanel}">
                             <Label Content="关系数组" />
@@ -627,7 +725,7 @@
 
             <WrapPanel Visibility="{Binding Solution.IsModelWorkView,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
 
-                <Border  Visibility="{Binding EnableUI,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
+                <Border Visibility="{Binding InnerField,Mode=OneWay,Converter={StaticResource ReversionVisibleConverter}}">
                     <GroupBox Header="显示内容" Margin="5"
                       Visibility="{Binding Solution.IsModelWorkView,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
                         <WrapPanel>
@@ -652,13 +750,9 @@
                         </WrapPanel>
                     </GroupBox>
                 </Border>
-                <Border Visibility="{Binding EnableUI,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
+                <Border Visibility="{Binding InnerField,Mode=OneWay,Converter={StaticResource ReversionVisibleConverter}}">
                     <GroupBox Header="数据编辑" Margin="5" Visibility="{Binding Solution.IsModelWorkView,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
                         <WrapPanel>
-                            <StackPanel Style="{StaticResource AdvFieldPanel}">
-                                <Label Content="用户不可见" />
-                                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding InnerField,Mode=TwoWay}" />
-                            </StackPanel>
                             <StackPanel Style="{StaticResource FieldPanel}">
                                 <Label Content="用户查询" />
                                 <ComboBox IsReadOnly="True" Style="{StaticResource BoolCombo}"
@@ -708,7 +802,7 @@
                     </GroupBox>
                 </Border>
 
-                <Border  Visibility="{Binding EnableUI,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
+                <Border Visibility="{Binding InnerField,Mode=OneWay,Converter={StaticResource ReversionVisibleConverter}}">
                     <GroupBox Header="列表表格" Margin="5"
                       Visibility="{Binding Solution.IsModelWorkView,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
                         <WrapPanel>
@@ -727,7 +821,7 @@
                         </WrapPanel>
                     </GroupBox>
                 </Border>
-                <Border Visibility="{Binding EnableUI,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
+                <Border Visibility="{Binding InnerField,Mode=OneWay,Converter={StaticResource ReversionVisibleConverter}}">
                     <GroupBox Header="导入导出" Margin="5"
                       Visibility="{Binding Solution.IsModelWorkView,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
                         <WrapPanel>
@@ -765,7 +859,7 @@
                             </StackPanel>
                             <StackPanel Style="{StaticResource FieldPanel}">
                                 <Label Content="最大值&lt;=" />
-                                <TextBox Text="{Binding Max,Mode=TwoWay}" Tag="{Binding Datalen,Mode=OneWay}" />
+                                <TextBox Text="{Binding Max,Mode=TwoWay}" Tag="{Binding DataBaseField.Datalen,Mode=OneWay}" />
                                 <TextBlock Style="{StaticResource HelpText}">
                             当为数字时，为最大的数字；当为时间时，为最大的时间。默认不校验。
                                 </TextBlock>
@@ -786,7 +880,7 @@
                             </StackPanel>
                             <StackPanel Style="{StaticResource FieldPanel}">
                                 <Label Content="可存储空" />
-                                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DbNullable,Mode=TwoWay}" />
+                                <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding DataBaseField.DbNullable,Mode=TwoWay}" />
                                 <TextBlock Style="{StaticResource HelpText}">
                             指在数据存储时可为空值,即数据库中的NULL类型,否则使用的是初始值设置的内容(如果未设置,则数字为0,其它类型不可预知)
                                 </TextBlock>
@@ -805,13 +899,13 @@
                             当为真时：非审核对象每次录入都会校验；审核对象在提交时校验，即正式数据必填，草稿状态按【可为空值】设置来。
                                 </TextBlock>
                             </StackPanel>
-                            <StackPanel Style="{StaticResource FieldPanel}">
+                            <!--StackPanel Style="{StaticResource FieldPanel}">
                                 <Label Content="首次写入" />
                                 <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding KeepUpdate,Mode=TwoWay}" />
                                 <TextBlock Style="{StaticResource HelpText}">
                             新增时录入后不再被更改(即INSERT的SQL包括此字段,UPDATE的SQL不包括)
                                 </TextBlock>
-                            </StackPanel>
+                            </StackPanel-->
                             <StackPanel Style="{StaticResource FieldPanel}">
                                 <Label Content="用户只读" />
                                 <ComboBox Style="{StaticResource BoolCombo}"
@@ -823,7 +917,7 @@
                         </StackPanel>
                     </GroupBox>
                 </Border>
-                
+
                 <!--
                 <GroupBox Header="C++" Margin="5" 
                           Visibility="{Binding Solution.IsEntityWorkView,Mode=OneWay,Converter={StaticResource BoolToVisibleConverter}}">
@@ -902,7 +996,29 @@
     </DataTemplate>
 
     <DataTemplate x:Key="EnumConfigTemplate" DataType="config:EnumConfig">
-        <GroupBox Header="数据模型" Margin="5"
+        <StackPanel Orientation="Vertical" Margin="0"
+                    DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type Border}},Path=DataContext}">
+            <GroupBox Header="名称(设计时)" Margin="5">
+                <StackPanel Orientation="Vertical" Margin="0">
+                    <WrapPanel Orientation="Horizontal" Margin="0">
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="标题" />
+                            <TextBox Text="{Binding Caption,Mode=TwoWay}" Tag="{Binding Name}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="名称" />
+                            <TextBox  IsReadOnly="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}"
+                                Text="{Binding Name,Mode=TwoWay}" />
+                        </StackPanel>
+                    </WrapPanel>
+                    <StackPanel Style="{StaticResource AdvFieldPanel}">
+                        <Label Content="说明" />
+                        <TextBox AcceptsReturn="True" Style="{StaticResource TrdTextBox}" Height="48"
+                                 Text="{Binding Description,Mode=TwoWay}" />
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="数据模型" Margin="5"
                   DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type Border}},Path=DataContext}">
             <WrapPanel>
                 <StackPanel Style="{StaticResource FieldPanel}">
@@ -912,24 +1028,63 @@
                 <StackPanel Style="{StaticResource FieldPanel}">
                     <Label Content="外部定义" />
                     <ComboBox Style="{StaticResource BoolCombo}" SelectedValue="{Binding IsOut,Mode=TwoWay}" />
-                </StackPanel> 
+                </StackPanel>
             </WrapPanel>
         </GroupBox>
-
+        </StackPanel>
     </DataTemplate>
+    
     <DataTemplate x:Key="EnumItemTemplate" DataType="config:EnumItem">
         <GroupBox Header="数据模型" Margin="5"
                   DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type Border}},Path=DataContext}">
-            <StackPanel Style="{StaticResource FieldPanel}">
-                <Label Content="值" />
-                <TextBox Text="{Binding Value,Mode=TwoWay}" />
+            <StackPanel Orientation="Vertical" Margin="0">
+                <WrapPanel Orientation="Horizontal" Margin="0">
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="标题" />
+                        <TextBox Text="{Binding Caption,Mode=TwoWay}" Tag="{Binding Name}" />
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource FieldPanel}">
+                        <Label Content="名称" />
+                        <TextBox  IsReadOnly="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}"
+                                Text="{Binding Name,Mode=TwoWay}" />
+                    </StackPanel>
+                </WrapPanel>
+                <StackPanel Style="{StaticResource FieldPanel}">
+                    <Label Content="值" />
+                    <TextBox Text="{Binding Value,Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Style="{StaticResource AdvFieldPanel}">
+                    <Label Content="说明" />
+                    <TextBox AcceptsReturn="True" Style="{StaticResource TrdTextBox}" Height="48"
+                                 Text="{Binding Description,Mode=TwoWay}" />
+                </StackPanel>
             </StackPanel>
         </GroupBox>
+        
     </DataTemplate>
 
     <DataTemplate x:Key="ApiTemplate" DataType="config:ApiItem">
-        <StackPanel
-            DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type Border}},Path=DataContext}">
+        <StackPanel DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type Border}},Path=DataContext}">
+            <GroupBox Header="名称(设计时)" Margin="5">
+                <StackPanel Orientation="Vertical" Margin="0">
+                    <WrapPanel Orientation="Horizontal" Margin="0">
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="标题" />
+                            <TextBox Text="{Binding Caption,Mode=TwoWay}" Tag="{Binding Name}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="名称" />
+                            <TextBox  IsReadOnly="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}"
+                                Text="{Binding Name,Mode=TwoWay}" />
+                        </StackPanel>
+                    </WrapPanel>
+                    <StackPanel Style="{StaticResource AdvFieldPanel}">
+                        <Label Content="说明" />
+                        <TextBox AcceptsReturn="True" Style="{StaticResource TrdTextBox}" Height="48"
+                                 Text="{Binding Description,Mode=TwoWay}" />
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
             <GroupBox Header="Web API" Margin="5">
                 <WrapPanel>
                     <StackPanel Style="{StaticResource FieldPanel}">
@@ -952,9 +1107,29 @@
             </GroupBox>
         </StackPanel>
     </DataTemplate>
+    
     <DataTemplate x:Key="UserCommandConfigTemplate" DataType="config:UserCommandConfig">
-        <StackPanel
-            DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type Border}},Path=DataContext}">
+        <StackPanel DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type Border}},Path=DataContext}">
+            <GroupBox Header="名称(设计时)" Margin="5">
+                <StackPanel Orientation="Vertical" Margin="0">
+                    <WrapPanel Orientation="Horizontal" Margin="0">
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="标题" />
+                            <TextBox Text="{Binding Caption,Mode=TwoWay}" Tag="{Binding Name}" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="名称" />
+                            <TextBox  IsReadOnly="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}"
+                                Text="{Binding Name,Mode=TwoWay}" />
+                        </StackPanel>
+                    </WrapPanel>
+                    <StackPanel Style="{StaticResource AdvFieldPanel}">
+                        <Label Content="说明" />
+                        <TextBox AcceptsReturn="True" Style="{StaticResource TrdTextBox}" Height="48"
+                                 Text="{Binding Description,Mode=TwoWay}" />
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
             <GroupBox Header="用户命令" Margin="5">
                 <WrapPanel>
                     <StackPanel Style="{StaticResource FieldPanel}">

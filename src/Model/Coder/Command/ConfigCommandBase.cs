@@ -1,7 +1,7 @@
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
 using System;
 using System.Collections;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -29,7 +29,7 @@ namespace Agebull.EntityModel.Designer
         CommandItemBase ICommandItemBuilder.ToCommand(string key, object arg, Func<object, IEnumerator> enumerator)
         {
             Key = key;
-            var item= ToCommand(arg, enumerator);
+            var item = ToCommand(arg, enumerator);
             item.Key = key;
             item.Source = arg;
             item.TargetType = TargetType;

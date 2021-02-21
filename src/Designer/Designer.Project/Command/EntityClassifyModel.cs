@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Linq;
-using System.Windows;
-using Agebull.Common.Mvvm;
+﻿using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Windows;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -28,7 +27,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "增加实体",
                 SoruceView = "entity",
                 Action = AddEntity,
-                IconName = "tree_Open"
+                IconName = "增加"
             });
             commands.Add(new CommandItemBuilder<EntityClassify>
             {
@@ -38,7 +37,7 @@ namespace Agebull.EntityModel.Designer
                 IsButton = true,
                 Caption = "粘贴实体",
                 Action = PasteTable,
-                IconName = "tree_item"
+                IconName = "粘贴"
             });
         }
 
@@ -84,7 +83,7 @@ namespace Agebull.EntityModel.Designer
             var project = cls.Project;
             var entity = new EntityConfig
             {
-                Parent = project,
+                Project = project,
                 Classify = cls.Name
             };
             if (CommandIoc.EditEntityCommand(entity))

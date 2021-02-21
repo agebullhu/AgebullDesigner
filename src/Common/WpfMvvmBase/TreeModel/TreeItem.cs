@@ -162,27 +162,22 @@ namespace Agebull.EntityModel
         #region 扩展方法
 
 
-        [IgnoreDataMember]
         protected readonly ModelFunctionDictionary<TModel> _modelFunction;
 
         /// <summary>
         ///     依赖方法(模型相关)
         /// </summary>
-        [IgnoreDataMember]
         public override IFunctionDictionary ModelDelegates => _modelFunction;
 
         /// <summary>
         ///     依赖方法(模型相关)
         /// </summary>
-        [IgnoreDataMember]
         public ModelFunctionDictionary<TModel> ModelDelegateDictionary => _modelFunction;
 
-        [IgnoreDataMember]
         private CommandItemBase _reloadCommand;
         /// <summary>
         ///     载入子级的命令
         /// </summary>
-        [IgnoreDataMember]
         public CommandItemBase LoadCommand => _reloadCommand ??= CreateCommand();
 
         private CommandItemBase CreateCommand()
@@ -194,7 +189,7 @@ namespace Agebull.EntityModel
                 {
                     Source = Model,
                     Caption = "载入子级",
-                    Image = Application.Current.Resources["async_Executing"] as BitmapImage,
+                    IconName = "载入子级",
                 };
             }
             var loadChildren = _modelFunction.GetFunction<IList>();
@@ -204,7 +199,7 @@ namespace Agebull.EntityModel
                 {
                     Source = Model,
                     Caption = "载入子级",
-                    Image = Application.Current.Resources["async_Executing"] as BitmapImage,
+                    IconName = "载入子级",
                 };
             }
             return null;
@@ -253,25 +248,7 @@ namespace Agebull.EntityModel
         #endregion
 
         #region 内容自动更新
-
-        private Expression<Func<TModel, BitmapImage>> _statusExpression;
-        /// <summary>
-        /// 取图标的方法
-        /// </summary>
-        [Browsable(false)]
-        public Expression<Func<TModel, BitmapImage>> StatusExpression
-        {
-            get => _statusExpression;
-            set
-            {
-                _statusExpression = value;
-                if (value == null)
-                    return;
-                ModelDelegates.AnnexDelegate(ReflectionHelper.GetFunc(value));
-                SyncStatusImageAutomatic();
-            }
-        }
-
+        
         private Expression<Func<TModel, Brush>> _colorExpression;
 
         /// <summary>

@@ -1,7 +1,7 @@
+using Agebull.EntityModel.Config;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Agebull.EntityModel.Config;
 
 namespace Agebull.EntityModel.RobotCoder
 {
@@ -61,7 +61,7 @@ namespace Agebull.EntityModel.RobotCoder
             //    _ => "MySqlConnector",//case DataBaseType.MySql:
             //};
             string baseClass = "BusinessLogicBase";
-            if (!Model.IsQuery && Model.Interfaces != null)
+            if (!Model.DataTable.IsQuery && Model.Interfaces != null)
             {
                 if (Model.Interfaces.Contains("IStateData"))
                     baseClass = "BusinessLogicByStateData";
@@ -299,7 +299,7 @@ namespace {NameSpace}
         }");
         }
 
-        private void ComboValues(StringBuilder code, IFieldConfig cap)
+        private void ComboValues(StringBuilder code, IPropertyConfig cap)
         {
             var parent = Model.ParentColumn;
             if (parent == null)

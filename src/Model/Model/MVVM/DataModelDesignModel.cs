@@ -24,12 +24,12 @@
 
 #region 命名空间引用
 
-using System;
-using System.Diagnostics;
-using System.IO;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
 using Newtonsoft.Json;
+using System;
+using System.Diagnostics;
+using System.IO;
 
 #endregion
 
@@ -45,7 +45,7 @@ namespace Agebull.EntityModel.Designer
         public DesignContext Context { get; }
         public TreeModel Tree { get; }
         public ConfigIoModel ConfigIo { get; }
-        public NormalCodeModel NormalCode { get; }
+        //public CoderManager NormalCode { get; }
 
         /// <summary>
         /// 编辑器模型
@@ -89,11 +89,7 @@ namespace Agebull.EntityModel.Designer
                 Model = this,
                 Context = Context
             };
-            NormalCode = new NormalCodeModel
-            {
-                Model = this,
-                Context = Context
-            };
+
             Editor = new EditorModel
             {
                 Model = this,
@@ -103,7 +99,7 @@ namespace Agebull.EntityModel.Designer
             ExtendConfig.Editor = Editor;
             Context.Editor = Editor;
             ConfigIo.Editor = Editor;
-            NormalCode.Editor = Editor;
+
             Tree.Editor = Editor;
         }
 
@@ -121,13 +117,13 @@ namespace Agebull.EntityModel.Designer
             ExtendConfig.ViewModel = ViewModel;
             Context.ViewModel = ViewModel;
             ConfigIo.ViewModel = ViewModel;
-            NormalCode.ViewModel = ViewModel;
+
             Tree.ViewModel = ViewModel;
 
             ExtendConfig.Dispatcher = Dispatcher;
             Context.Dispatcher = Dispatcher;
             ConfigIo.Dispatcher = Dispatcher;
-            NormalCode.Dispatcher = Dispatcher;
+
             Tree.Dispatcher = Dispatcher;
 
 
@@ -135,11 +131,11 @@ namespace Agebull.EntityModel.Designer
             Context.Initialize();
             Tree.Initialize();
             ExtendConfig.Initialize();
-            NormalCode.Initialize();
+
             ConfigIo.Initialize();
         }
 
-        bool CheckType(Type source, Type target,bool signle)
+        bool CheckType(Type source, Type target, bool signle)
         {
             if (target == typeof(ConfigBase))
                 return true;
@@ -157,9 +153,9 @@ namespace Agebull.EntityModel.Designer
             if (source == typeof(ModelConfig))
             {
                 return target == typeof(PropertyConfig) ||
-                     target == typeof(CommandConfig) ;
+                     target == typeof(CommandConfig);
             }
-            
+
             if (source == typeof(EntityClassify))
             {
                 return target == typeof(EntityConfig) ||
@@ -176,7 +172,7 @@ namespace Agebull.EntityModel.Designer
                      target == typeof(CommandConfig) ||
                      target == typeof(PropertyConfig) ||
                      target == typeof(EnumConfig) ||
-                     target == typeof(ApiItem) ;
+                     target == typeof(ApiItem);
             }
             return false;
         }
@@ -192,9 +188,10 @@ namespace Agebull.EntityModel.Designer
             Context.OnSolutionChanged();
             ConfigIo.OnSolutionChanged();
             Tree.OnSolutionChanged();
-            NormalCode.OnSolutionChanged();
+
             FirstSelect();
 
+            Context.Solution.Look(p => p.ResetModify(true));
         }
         /// <summary>
         /// 保证载入后选择正常
@@ -229,7 +226,6 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public static UserScreen Screen { get; set; } = new UserScreen
         {
-            NowEditor = EditorModel.EditorConfig,
             WorkView = "entity"
         };
 

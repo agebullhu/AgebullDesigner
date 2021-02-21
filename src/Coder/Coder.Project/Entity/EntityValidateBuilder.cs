@@ -14,33 +14,33 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 基本代码
         /// </summary>
-        protected override bool CanWrite =>true;
-        
+        protected override bool CanWrite => true;
+
         /// <summary>
         /// 校验代码
         /// </summary>
         /// <returns></returns>
         public string ValidateCode()
         {
-            var coder = new EntityValidateCoder {Model = Model};
-            var code = coder.Code(Columns.Where(p => !p.DbInnerField && !p.IsSystemField && !p.CustomWrite));
+            var coder = new EntityValidateCoder { Model = Model };
+            var code = coder.Code(Columns.Where(p => !p.IsSystemField));
             var rela = new StringBuilder();
-            if(Model is ModelConfig model)
-            foreach (var relation in model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty).OrderBy(p => p.Index))
-            {
-                if(relation.ModelType == ReleationModelType.Children)
+            if (Model is ModelConfig model)
+                foreach (var relation in model.Releations.Where(p => p.ModelType != ReleationModelType.ExtensionProperty).OrderBy(p => p.Index))
                 {
-                    rela.Append($@"
+                    if (relation.ModelType == ReleationModelType.Children)
+                    {
+                        rela.Append($@"
             if({relation.Name} != null)
                 foreach(var ch in {relation.Name})
                     ch?.Validate(result);");
-                }
-                else
-                {
-                    rela.Append($@"
+                    }
+                    else
+                    {
+                        rela.Append($@"
             {relation.Name}?.Validate(result);");
+                    }
                 }
-            }
 
             return $@"
 
@@ -56,7 +56,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <param name=""result"">结果存放处</param>
         public override void Validate(ValidateResult result)
         {{
-            {(Model.PrimaryColumn== null ? "" : "result.Id = " + Model.PrimaryColumn.Name + "?.ToString()") }; 
+            {(Model.PrimaryColumn == null ? "" : "result.Id = " + Model.PrimaryColumn.Name + "?.ToString()") }; 
             base.Validate(result);{code}
             ValidateEx(result);{rela}
         }}";

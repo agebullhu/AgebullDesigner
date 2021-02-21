@@ -8,10 +8,10 @@
 
 #region 引用
 
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using Agebull.EntityModel.Config;
-using Agebull.Common.Mvvm;
 using System.Linq;
 
 #endregion
@@ -35,7 +35,8 @@ namespace Agebull.EntityModel.Designer
                 SignleSoruce = true,
                 TargetType = typeof(UserCommandConfig),
                 Caption = "删除命令",
-                IconName = "img_del"
+                Editor = "Command",
+                IconName = "删除"
             });
             commands.Add(new CommandItemBuilder<ModelConfig>
             {
@@ -43,8 +44,9 @@ namespace Agebull.EntityModel.Designer
                 Action = AddCommand,
                 Caption = "新增命令",
                 Catalog = "编辑",
-                IconName = "tree_Open",
+                IconName = "新增",
                 SoruceView = "model",
+                Editor = "Command",
                 WorkView = "Model"
             });
             commands.Add(new CommandItemBuilder<ModelConfig>
@@ -53,7 +55,8 @@ namespace Agebull.EntityModel.Designer
                 Action = AddAuditCommand,
                 Caption = "新增审核命令",
                 Catalog = "编辑",
-                IconName = "tree_Open",
+                Editor = "Command",
+                IconName = "新增",
                 SoruceView = "model",
                 WorkView = "Model"
             });

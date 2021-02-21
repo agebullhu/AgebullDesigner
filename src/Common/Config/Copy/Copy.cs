@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace Agebull.EntityModel.Config
+﻿namespace Agebull.EntityModel.Config
 {
 
     partial class ConfigBase
@@ -62,7 +60,7 @@ namespace Agebull.EntityModel.Config
         }
     }
 
-    partial class ParentConfigBase
+    partial class IndependenceConfigBase
     {
         /// <summary>
         /// 字段复制
@@ -71,7 +69,7 @@ namespace Agebull.EntityModel.Config
         protected override void CopyFrom(SimpleConfig dest)
         {
             base.CopyFrom(dest);
-            if (dest is ParentConfigBase cfg)
+            if (dest is IndependenceConfigBase cfg)
                 CopyProperty(cfg);
         }
 
@@ -79,7 +77,7 @@ namespace Agebull.EntityModel.Config
         /// 字段复制
         /// </summary>
         /// <param name="dest">复制源</param>
-        public void Copy(ParentConfigBase dest)
+        public void Copy(IndependenceConfigBase dest)
         {
             CopyFrom(dest);
         }
@@ -89,42 +87,9 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="dest">复制源</param>
         /// <returns></returns>
-        public void CopyProperty(ParentConfigBase dest)
+        public void CopyProperty(IndependenceConfigBase dest)
         {
             Abbreviation = dest.Abbreviation;
-        }
-    }
-
-    partial class ClassifyConfig
-    {
-        /// <summary>
-        /// 字段复制
-        /// </summary>
-        /// <param name="dest">复制源</param>
-        protected override void CopyFrom(SimpleConfig dest)
-        {
-            base.CopyFrom(dest);
-            if (dest is ClassifyConfig cfg)
-                CopyProperty(cfg);
-        }
-
-        /// <summary>
-        /// 字段复制
-        /// </summary>
-        /// <param name="dest">复制源</param>
-        public void Copy(ClassifyConfig dest)
-        {
-            CopyFrom(dest);
-        }
-
-        /// <summary>
-        /// 字段复制
-        /// </summary>
-        /// <param name="dest">复制源</param>
-        /// <returns></returns>
-        public void CopyProperty(ClassifyConfig dest)
-        {
-            Classify = dest.Classify;
         }
     }
 
@@ -249,10 +214,6 @@ namespace Agebull.EntityModel.Config
             IsInterface = dest.IsInterface;
             EnableValidate = dest.EnableValidate;
             Properties = dest.Properties;
-            ReadTableName = dest.ReadTableName;
-            SaveTableName = dest.SaveTableName;
-            DbIndex = dest.DbIndex;
-            UpdateByModified = dest.UpdateByModified;
             ApiName = dest.ApiName;
             EnableUI = dest.EnableUI;
             IsUiReadOnly = dest.IsUiReadOnly;
@@ -361,7 +322,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <param name="dest">复制源</param>
         /// <returns></returns>
-        public void CopyProperty(FieldConfig dest,bool full=true)
+        public void CopyProperty(FieldConfig dest, bool full = true)
         {
             if (full)
             {
@@ -373,7 +334,6 @@ namespace Agebull.EntityModel.Config
                 IsGlobalKey = dest.IsGlobalKey;
                 UniqueIndex = dest.UniqueIndex;
                 UniqueString = dest.UniqueString;
-                StorageProperty = dest.StorageProperty;
             }
             Name = dest.Name;
             Caption = dest.Caption;
@@ -416,23 +376,7 @@ namespace Agebull.EntityModel.Config
             NoneJson = dest.NoneJson;
             JsonName = dest.JsonName;
             HelloCode = dest.HelloCode;
-            Function = dest.Function;
-            Having = dest.Having;
-            IsDbIndex = dest.IsDbIndex;
-            KeepUpdate = dest.KeepUpdate;
-            DbFieldName = dest.DbFieldName;
-            DbNullable = dest.DbNullable;
-            DbType = dest.DbType;
-            Datalen = dest.Datalen;
             ArrayLen = dest.ArrayLen;
-            Scale = dest.Scale;
-            FixedLength = dest.FixedLength;
-            IsMemo = dest.IsMemo;
-            IsBlob = dest.IsBlob;
-            DbInnerField = dest.DbInnerField;
-            NoStorage = dest.NoStorage;
-            KeepStorageScreen = dest.KeepStorageScreen;
-            CustomWrite = dest.CustomWrite;
             IsUserReadOnly = dest.IsUserReadOnly;
             MulitLine = dest.MulitLine;
             Prefix = dest.Prefix;
@@ -459,12 +403,6 @@ namespace Agebull.EntityModel.Config
             IsRequired = dest.IsRequired;
             Max = dest.Max;
             Min = dest.Min;
-            IsLinkField = dest.IsLinkField;
-            LinkTable = dest.LinkTable;
-            IsLinkKey = dest.IsLinkKey;
-            IsLinkCaption = dest.IsLinkCaption;
-            IsUserId = dest.IsUserId;
-            LinkField = dest.LinkField;
         }
 
     }
@@ -503,7 +441,7 @@ namespace Agebull.EntityModel.Config
             Caption = dest.Caption;
             Description = dest.Description;
             Remark = dest.Remark;
-            
+
             MaxIdentity = dest.MaxIdentity;
             RedisKey = dest.RedisKey;
             EntityName = dest.EntityName;
@@ -521,10 +459,6 @@ namespace Agebull.EntityModel.Config
             IsInterface = dest.IsInterface;
             EnableValidate = dest.EnableValidate;
             Properties = dest.Properties;
-            ReadTableName = dest.ReadTableName;
-            SaveTableName = dest.SaveTableName;
-            DbIndex = dest.DbIndex;
-            UpdateByModified = dest.UpdateByModified;
             ApiName = dest.ApiName;
             EnableUI = dest.EnableUI;
             IsUiReadOnly = dest.IsUiReadOnly;
@@ -636,15 +570,9 @@ namespace Agebull.EntityModel.Config
             Caption = dest.Caption;
             Description = dest.Description;
             Remark = dest.Remark;
-            DbFieldName = dest.DbFieldName;
             JsonName = dest.JsonName;
             DataType = dest.DataType;
             CsType = dest.CsType;
-            DbType = dest.DbType;
-            KeepStorageScreen = dest.KeepStorageScreen;
-            Initialization = dest.Initialization;
-            Function = dest.Function;
-            Having = dest.Having;
             CppType = dest.CppType;
             CppName = dest.CppName;
             CppLastType = dest.CppLastType;
@@ -680,23 +608,11 @@ namespace Agebull.EntityModel.Config
             IsParent = dest.IsParent;
             IsPrimaryKey = dest.IsPrimaryKey;
             IsExtendKey = dest.IsExtendKey;
-            IsIdentity = dest.IsIdentity;
             IsGlobalKey = dest.IsGlobalKey;
             UniqueIndex = dest.UniqueIndex;
             UniqueString = dest.UniqueString;
-            KeepUpdate = dest.KeepUpdate;
-            DbNullable = dest.DbNullable;
-            Datalen = dest.Datalen;
             ArrayLen = dest.ArrayLen;
-            Scale = dest.Scale;
-            FixedLength = dest.FixedLength;
-            IsMemo = dest.IsMemo;
-            IsBlob = dest.IsBlob;
-            DbInnerField = dest.DbInnerField;
-            NoStorage = dest.NoStorage;
-            CustomWrite = dest.CustomWrite;
-            StorageProperty = dest.StorageProperty;
-            
+
             IsUserReadOnly = dest.IsUserReadOnly;
             MulitLine = dest.MulitLine;
             Prefix = dest.Prefix;
@@ -725,11 +641,6 @@ namespace Agebull.EntityModel.Config
             Max = dest.Max;
             Min = dest.Min;
             IsLinkField = dest.IsLinkField;
-            LinkTable = dest.LinkTable;
-            IsLinkKey = dest.IsLinkKey;
-            IsLinkCaption = dest.IsLinkCaption;
-            IsUserId = dest.IsUserId;
-            LinkField = dest.LinkField;
         }
     }
 
@@ -822,42 +733,4 @@ namespace Agebull.EntityModel.Config
         }
     }
 
-    partial class UserCommandConfig
-    {
-        /// <summary>
-        /// 字段复制
-        /// </summary>
-        /// <param name="dest">复制源</param>
-        protected override void CopyFrom(SimpleConfig dest)
-        {
-            base.CopyFrom(dest);
-            if (dest is UserCommandConfig cfg)
-                CopyProperty(cfg);
-        }
-
-        /// <summary>
-        /// 字段复制
-        /// </summary>
-        /// <param name="dest">复制源</param>
-        public void Copy(UserCommandConfig dest)
-        {
-            CopyFrom(dest);
-        }
-
-        /// <summary>
-        /// 字段复制
-        /// </summary>
-        /// <param name="dest">复制源</param>
-        /// <returns></returns>
-        public void CopyProperty(UserCommandConfig dest)
-        {
-            Button = dest.Button;
-            Icon = dest.Icon;
-            IsLocalAction = dest.IsLocalAction;
-            IsSingleObject = dest.IsSingleObject;
-            IsMulitOperator = dest.IsMulitOperator;
-            JsMethod = dest.JsMethod;
-            Api = dest.Api;
-        }
-    }
 }

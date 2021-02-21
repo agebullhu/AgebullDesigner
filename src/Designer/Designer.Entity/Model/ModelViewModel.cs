@@ -1,6 +1,6 @@
 namespace Agebull.EntityModel.Designer
 {
-    internal class ModelViewModel : ExtendViewModelBase<ModelDesignModel>
+    internal class ModelViewModel : EditorViewModelBase<ModelDesignModel>
     {
         public ModelViewModel()
         {
