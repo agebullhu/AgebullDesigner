@@ -13,7 +13,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 上级
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         internal IEntityConfig _parent;
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 上级
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"上级"), Description("上级")]
         public IEntityConfig Parent
         {
@@ -31,11 +31,11 @@ namespace Agebull.EntityModel.Config
             {
                 if (_parent == value)
                     return;
-                BeforePropertyChanged(nameof(Parent), _parent, value);
+                BeforePropertyChange(nameof(Parent), _parent, value);
                 _parent = value;
                 RaisePropertyChanged(nameof(Parent));
             }
         }
-        ConfigBase IChildrenConfig.Parent { get => _parent as ModelConfig; set => _parent = value as ModelConfig; }
+        ISimpleConfig IChildrenConfig.Parent { get => _parent as ModelConfig; set => _parent = value as ModelConfig; }
     }
 }

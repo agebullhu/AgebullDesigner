@@ -23,7 +23,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 简称
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"简称"), Description(@"简称")]
         public string Abbreviation
         {
@@ -32,7 +32,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_abbreviation == value)
                     return;
-                BeforePropertyChanged(nameof(Abbreviation), _abbreviation, value);
+                BeforePropertyChange(nameof(Abbreviation), _abbreviation, value);
                 _abbreviation = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Abbreviation));
             }
@@ -49,7 +49,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 全局项目,是作为设计器支持的基础项目
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"全局项目"), Description("全局项目,是作为设计器支持的基础项目")]
         public bool IsGlobal
         {
@@ -58,7 +58,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_isGlobal == value)
                     return;
-                BeforePropertyChanged(nameof(IsGlobal), _isGlobal, value);
+                BeforePropertyChange(nameof(IsGlobal), _isGlobal, value);
                 _isGlobal = value;
                 OnPropertyChanged(nameof(IsGlobal));
             }
@@ -76,7 +76,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 最大字段标识号
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"系统"), DisplayName(@"最大字段标识号"), Description("最大字段标识号")]
         public int MaxIdentity
         {
@@ -85,7 +85,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_maxIdentity == value)
                     return;
-                BeforePropertyChanged(nameof(MaxIdentity), _maxIdentity, value);
+                BeforePropertyChange(nameof(MaxIdentity), _maxIdentity, value);
                 _maxIdentity = value;
                 OnPropertyChanged(nameof(MaxIdentity));
             }

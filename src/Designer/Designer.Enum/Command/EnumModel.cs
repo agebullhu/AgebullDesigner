@@ -41,7 +41,6 @@ namespace Agebull.EntityModel.Designer
             @enum.Items.Clear();
             foreach (var item in array.OrderBy(p => p.Number))
                 @enum.Add(item);
-            @enum.IsModify = true;
         }
         public void ResetEnumParent(FieldConfig property)
         {

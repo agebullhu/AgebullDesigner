@@ -20,12 +20,12 @@ namespace Agebull.EntityModel.Config
     public partial class EnumItem : ConfigBase,IChildrenConfig
     {
 
-        ConfigBase IChildrenConfig.Parent { get => _parent; set => Parent = value as EnumConfig; }
+        ISimpleConfig IChildrenConfig.Parent { get => _parent; set => Parent = value as EnumConfig; }
 
         /// <summary>
         /// 上级
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         internal EnumConfig _parent;
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 上级
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"上级"), Description("上级")]
         public EnumConfig Parent
         {
@@ -43,7 +43,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_parent == value)
                     return;
-                BeforePropertyChanged(nameof(Parent), _parent, value);
+                BeforePropertyChange(nameof(Parent), _parent, value);
                 _parent = value;
                 RaisePropertyChanged(nameof(Parent));
             }
@@ -75,7 +75,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 值
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据模型"), DisplayName(@"值"), Description("值")]
         public string Value
         {
@@ -84,7 +84,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_value == value)
                     return;
-                BeforePropertyChanged(nameof(Value), _value, value);
+                BeforePropertyChange(nameof(Value), _value, value);
                 _value = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Value));
             }
@@ -96,7 +96,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 值
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         public long Number
         {
             get

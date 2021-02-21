@@ -43,7 +43,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 实体结构
         /// </summary>
-        [IgnoreDataMember,Browsable (false)]
+        [JsonIgnore,Browsable (false)]
         public override EntityStruct __Struct
         {{
             get

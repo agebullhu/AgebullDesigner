@@ -28,7 +28,7 @@ namespace Agebull.EntityModel.Config
                 return;
             Foreach(action, false);
         }
-        bool inForeach = false;
+        //bool inForeach = false;
         /// <summary>
         /// ±éÀú
         /// </summary>
@@ -42,7 +42,11 @@ namespace Agebull.EntityModel.Config
             //    return;
             try
             {
-                inForeach = true;
+                //inForeach = true;
+                if (Option is T t2)
+                {
+                    action(t2);
+                }
                 if (this is T t)
                 {
                     action(t);
@@ -54,7 +58,7 @@ namespace Agebull.EntityModel.Config
             }
             finally
             {
-                inForeach = false;
+                //inForeach = false;
             }
         }
 
@@ -98,6 +102,23 @@ namespace Agebull.EntityModel.Config
             GlobalTrigger.OnLoad(this);
             GlobalTrigger.OnLoad(Option);
         }
+        /*
+        public override void ResetModify(bool isSaved)
+        {
+            ForeachDown<NotificationObject>(p=>p.ResetModify(isSaved),true);
+            base.ResetModify(isSaved);
+        }
+        public override void SetIsNew()
+        {
+            ForeachDown<NotificationObject>(p => p.SetIsNew(), true);
+            base.SetIsNew();
+        }
+        
+        public override void CheckModify()
+        {
+            ForeachDown<NotificationObject>(p => p.CheckModify(), true);
+            base.CheckModify();
+        }*/
     }
 
     partial class SolutionConfig
@@ -132,10 +153,10 @@ namespace Agebull.EntityModel.Config
         }
         public override void OnLoad()
         {
-            Entities.OnLoad(this);
-            Models.OnLoad(this);
-            Enums.OnLoad(this);
-            ApiItems.OnLoad(this);
+            Entities.OnLoad(nameof(Entities),this);
+            Models.OnLoad(nameof(Models), this);
+            Enums.OnLoad(nameof(Enums), this);
+            ApiItems.OnLoad(nameof(ApiItems), this);
             base.OnLoad();
         }
     }
@@ -199,7 +220,7 @@ namespace Agebull.EntityModel.Config
         }
         public override void OnLoad()
         {
-            Items.OnLoad(this);
+            Items.OnLoad(nameof(Items), this);
             base.OnLoad();
         }
     }
@@ -209,7 +230,7 @@ namespace Agebull.EntityModel.Config
     {
         public override void OnLoad()
         {
-            DataTable?.OnLoad();
+            (DataTable as IChildrenConfig)?.OnLoad(nameof(DataTable),this);
             //Page?.OnLoad();
             base.OnLoad();
         }
@@ -239,8 +260,8 @@ namespace Agebull.EntityModel.Config
         }
         public override void OnLoad()
         {
-            Commands.OnLoad(this);
-            Properties.OnLoad(this);
+            Commands.OnLoad(nameof(Commands), this);
+            Properties.OnLoad(nameof(Properties), this);
             base.OnLoad();
         }
     }
@@ -270,9 +291,9 @@ namespace Agebull.EntityModel.Config
         }
         public override void OnLoad()
         {
-            Commands.OnLoad(this);
-            Releations.OnLoad(this);
-            Properties.OnLoad(this);
+            Commands.OnLoad(nameof(Commands), this);
+            Releations.OnLoad(nameof(Releations), this);
+            Properties.OnLoad(nameof(Properties), this);
             base.OnLoad();
         }
     }
@@ -360,7 +381,7 @@ namespace Agebull.EntityModel.Config.V2021
         }
         public override void OnLoad()
         {
-            Fields.OnLoad(this);
+            Fields.OnLoad(nameof(Fields), this);
             base.OnLoad();
         }
     }

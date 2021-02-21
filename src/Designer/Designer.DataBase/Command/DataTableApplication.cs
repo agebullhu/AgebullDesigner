@@ -35,7 +35,6 @@ namespace Agebull.EntityModel.Config
                     field.FieldType = null;
                 }
 
-                DataTable.IsModify = true;
                 DataTable.ReadTableName = null;
                 DataTable.SaveTableName = null;
                 return;
@@ -79,7 +78,6 @@ namespace Agebull.EntityModel.Config
                     field.FieldType = null;
                 }
 
-                DataTable.IsModify = true;
                 DataTable.ReadTableName = null;
                 DataTable.SaveTableName = null;
                 return;

@@ -15,9 +15,9 @@ namespace Agebull.EntityModel.Config.V2021
     {
         #region 引用
 
-        ConfigBase IChildrenConfig.Parent { get => Parent; set => Parent = value as TParent; }
+        ISimpleConfig IChildrenConfig.Parent { get => Parent; set => Parent = value as TParent; }
 
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         private TParent parent;
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         /// 字段键
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [DisplayName(@"字段键"), Description(@"字段键")]
         public string PropertyKey
         {
@@ -52,7 +52,7 @@ namespace Agebull.EntityModel.Config.V2021
             {
                 if (_propertyKey == value)
                     return;
-                BeforePropertyChanged(nameof(PropertyKey), _propertyKey, value);
+                BeforePropertyChange(nameof(PropertyKey), _propertyKey, value);
                 _propertyKey = value;
                 _property = GlobalConfig.GetConfigByKey<IPropertyConfig>(_propertyKey);
                 RaisePropertyChanged(nameof(Property));
@@ -63,12 +63,12 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         /// 字段
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         internal IPropertyConfig _property;
         /// <summary>
         /// 字段
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [DisplayName(@"字段"), Description(@"字段")]
         public IPropertyConfig Property
         {
@@ -77,7 +77,7 @@ namespace Agebull.EntityModel.Config.V2021
             {
                 if (_property == value)
                     return;
-                BeforePropertyChanged(nameof(Property), _property, value);
+                BeforePropertyChange(nameof(Property), _property, value);
                 _property = value;
                 _propertyKey = value?.Key;
                 RaisePropertyChanged(nameof(Property));
@@ -96,7 +96,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         ///     名称
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"名称")]
+        [JsonIgnore, Category("设计支持"), DisplayName(@"名称")]
         public override string Name
         {
             get => Property?.Name;
@@ -106,7 +106,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         ///     标题
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"标题")]
+        [JsonIgnore, Category("设计支持"), DisplayName(@"标题")]
         public override string Caption
         {
             get => Property?.Caption;
@@ -119,7 +119,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         ///     说明
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"说明")]
+        [JsonIgnore, Category("设计支持"), DisplayName(@"说明")]
         public override string Description
         {
             get => Property?.Description;
@@ -133,36 +133,36 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         ///     Json名称
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         public string JsonName { get => Property.JsonName; set => Property.JsonName = value; }
 
         /// <summary>
         ///     初始值
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         public string Initialization { get => Property.Initialization; set => Property.Initialization = value; }
 
         /// <summary>
         ///     类型名称
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         public string DataType => Property.DataType;
         /// <summary>
         ///     类型名称
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         public string CsType => Property.CsType;
         
         /// <summary>
         ///     类型名称
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         public string LastCsType => Property.LastCsType;
 
         /// <summary>
         ///     自定义类型名称
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         public string CustomType => Property.CustomType;
 
         #endregion

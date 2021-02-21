@@ -49,7 +49,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 值类型
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [DisplayName(@"值类型"), Description(@"值类型")]
         public string ValueType
         {
@@ -58,7 +58,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_valueType == value)
                     return;
-                BeforePropertyChanged(nameof(ValueType), _valueType, value);
+                BeforePropertyChange(nameof(ValueType), _valueType, value);
                 _valueType = value;
                 OnPropertyChanged(nameof(ValueType));
             }
@@ -79,7 +79,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否内部字段,即非用户字段,不呈现给用户
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"内部字段"), Description("是否内部字段,即非用户字段,不呈现给用户")]
         public bool InnerField
         {
@@ -88,7 +88,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_innerField == value)
                     return;
-                BeforePropertyChanged(nameof(InnerField), _innerField, value);
+                BeforePropertyChange(nameof(InnerField), _innerField, value);
                 _innerField = value;
                 OnPropertyChanged(nameof(InnerField));
             }
@@ -97,13 +97,13 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 数据字段
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         internal DataBaseFieldConfig _dataBaseField;
 
         /// <summary>
         /// 数据字段
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"扩展对象"), DisplayName(@"数据字段"), Description("数据字段")]
         public DataBaseFieldConfig DataBaseField
         {
@@ -112,7 +112,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_dataBaseField == value)
                     return;
-                BeforePropertyChanged(nameof(DataBaseField), _dataBaseField, value);
+                BeforePropertyChange(nameof(DataBaseField), _dataBaseField, value);
                 _dataBaseField = value;
                 if (_dataBaseField != null)
                     _dataBaseField.Property = Me;
@@ -128,7 +128,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否非数据库字段,如果为真,数据库的读写均忽略这个字段
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据库"), DisplayName(@"非数据库字段"), Description(@"是否非数据库字段,如果为真,数据库的读写均忽略这个字段")]
         public bool IsLinkField
         {
@@ -156,7 +156,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 自增列,通过数据库(或REDIS)自动增加
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"自增字段"), Description(IsIdentity_Description)]
         public bool IsIdentity
         {
@@ -176,7 +176,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否非数据库字段,如果为真,数据库的读写均忽略这个字段
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据库"), DisplayName(@"非数据库字段"), Description(@"是否非数据库字段,如果为真,数据库的读写均忽略这个字段")]
         public bool NoStorage
         {

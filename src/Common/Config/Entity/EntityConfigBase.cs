@@ -35,14 +35,14 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 启用数据校验
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"视角开关"), DisplayName(@"启用数据校验"), Description("启用数据校验")]
         public bool EnableValidate
         {
             get => (_desingSwitch & 0x1) == 0x1;
             set
             {
-                BeforePropertyChanged(nameof(EnableValidate), _parent, value);
+                BeforePropertyChange(nameof(EnableValidate), _parent, value);
                 SetDesingSwitch(0x1, value);
                 OnPropertyChanged(nameof(EnableValidate));
             }
@@ -51,14 +51,14 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 启用数据事件
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"视角开关"), DisplayName(@"启用数据事件"), Description("启用数据事件")]
         public bool EnableDataEvent
         {
             get => (_desingSwitch & 0x2) == 0x2;
             set
             {
-                BeforePropertyChanged(nameof(EnableDataEvent), _parent, value);
+                BeforePropertyChange(nameof(EnableDataEvent), _parent, value);
                 SetDesingSwitch(0x2, value);
                 OnPropertyChanged(nameof(EnableDataEvent));
             }
@@ -67,14 +67,14 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 启用数据库
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"视角开关"), DisplayName(@"启用数据库"), Description("启用数据库")]
         public bool EnableDataBase
         {
             get => (_desingSwitch & 0x4) == 0x4;
             set
             {
-                BeforePropertyChanged(nameof(EnableDataBase), _parent, value);
+                BeforePropertyChange(nameof(EnableDataBase), _parent, value);
                 SetDesingSwitch(0x4, value);
                 OnPropertyChanged(nameof(EnableDataBase));
             }
@@ -82,14 +82,14 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 启用编辑API
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"视角开关"), DisplayName(@"启用编辑接口"), Description("启用编辑接口")]
         public bool EnableEditApi
         {
             get => (_desingSwitch & 0x8) == 0x8;
             set
             {
-                BeforePropertyChanged(nameof(EnableEditApi), _parent, value);
+                BeforePropertyChange(nameof(EnableEditApi), _parent, value);
                 SetDesingSwitch(0x8, value);
                 OnPropertyChanged(nameof(EnableEditApi));
             }
@@ -98,14 +98,14 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 启用用户界面
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"视角开关"), DisplayName(@"启用用户界面"), Description("启用用户界面")]
         public bool EnableUI
         {
             get => (_desingSwitch & 0x10) == 0x10;
             set
             {
-                BeforePropertyChanged(nameof(EnableUI), _parent, value);
+                BeforePropertyChange(nameof(EnableUI), _parent, value);
                 SetDesingSwitch(0x10, value);
                 OnPropertyChanged(nameof(EnableUI));
             }
@@ -123,7 +123,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 分类(仅引用可行)
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("*设计"), DisplayName("分类"), Description("分类(仅引用可行)")]
         public string Classify
         {
@@ -132,7 +132,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_classify == value)
                     return;
-                BeforePropertyChanged(nameof(Classify), _classify, value);
+                BeforePropertyChange(nameof(Classify), _classify, value);
                 _classify = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Classify));
             }
@@ -144,13 +144,13 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 页面配置
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         internal PageConfig _page;
 
         /// <summary>
         /// 页面配置
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"扩展对象"), DisplayName(@"页面配置"), Description("页面配置")]
         public PageConfig Page
         {
@@ -159,7 +159,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_page == value)
                     return;
-                BeforePropertyChanged(nameof(Page), _page, value);
+                BeforePropertyChange(nameof(Page), _page, value);
                 _page = value;
                 if (_page != null)
                     _page.Entity = Me;
@@ -170,13 +170,13 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 数据表配置
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         internal DataTableConfig _dataTable;
 
         /// <summary>
         /// 数据表配置
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"扩展对象"), DisplayName(@"数据表配置"), Description("数据表配置")]
         public DataTableConfig DataTable
         {
@@ -185,7 +185,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_dataTable == value)
                     return;
-                BeforePropertyChanged(nameof(DataTable), _dataTable, value);
+                BeforePropertyChange(nameof(DataTable), _dataTable, value);
                 _dataTable = value;
                 if (_dataTable != null)
                     _dataTable.Entity = IEntity;
@@ -205,7 +205,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 命令集合,数据模型中可调用的命令
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"扩展对象"), DisplayName(@"命令集合"), Description("命令集合,数据模型中可调用的命令")]
         public ConfigCollection<UserCommandConfig> Commands
         {
@@ -213,7 +213,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_commands != null)
                     return _commands;
-                _commands = new ConfigCollection<UserCommandConfig>(this);
+                _commands = new ConfigCollection<UserCommandConfig>(this, nameof(Commands));
                 RaisePropertyChanged(nameof(Commands));
                 return _commands;
             }
@@ -221,10 +221,13 @@ namespace Agebull.EntityModel.Config
             {
                 if (_commands == value)
                     return;
-                BeforePropertyChanged(nameof(Commands), _commands, value);
+                BeforePropertyChange(nameof(Commands), _commands, value);
                 _commands = value;
                 if (value != null)
+                {
+                    value.Name = nameof(Commands);
                     value.Parent = this;
+                }
                 OnPropertyChanged(nameof(Commands));
             }
         }
@@ -269,7 +272,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 是否查询
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据模型"), DisplayName(@"是否查询"), Description("是否查询")]
         public bool IsQuery
         {
@@ -278,7 +281,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_isQuery == value)
                     return;
-                BeforePropertyChanged(nameof(IsQuery), _isQuery, value);
+                BeforePropertyChange(nameof(IsQuery), _isQuery, value);
                 _isQuery = value;
                 OnPropertyChanged(nameof(IsQuery));
             }
@@ -329,7 +332,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 接口名称
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"解决方案"), DisplayName(@"接口名称"), Description("接口名称")]
         public string ApiName
         {
@@ -340,7 +343,7 @@ namespace Agebull.EntityModel.Config
                     return;
                 if (value == Name)
                     value = null;
-                BeforePropertyChanged(nameof(ApiName), _apiName, value);
+                BeforePropertyChange(nameof(ApiName), _apiName, value);
                 _apiName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(ApiName));
             }
@@ -356,7 +359,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 界面只读
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"界面只读"), Description("界面只读")]
         public bool IsUiReadOnly
         {
@@ -365,7 +368,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_isUiReadOnly == value)
                     return;
-                BeforePropertyChanged(nameof(IsUiReadOnly), _isUiReadOnly, value);
+                BeforePropertyChange(nameof(IsUiReadOnly), _isUiReadOnly, value);
                 _isUiReadOnly = value;
                 OnPropertyChanged(nameof(IsUiReadOnly));
             }
@@ -382,7 +385,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 页面文件夹名称
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"页面文件夹名称"), Description("页面文件夹名称")]
         public string PageFolder
         {
@@ -391,7 +394,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_pageFolder == value)
                     return;
-                BeforePropertyChanged(nameof(PageFolder), _pageFolder, value);
+                BeforePropertyChange(nameof(PageFolder), _pageFolder, value);
                 _pageFolder = string.IsNullOrWhiteSpace(value) || value == Name ? null : value.Trim();
                 OnPropertyChanged(nameof(PageFolder));
             }
@@ -409,7 +412,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 树形界面
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"树形界面"), Description("树形界面")]
         public bool TreeUi
         {
@@ -418,7 +421,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_treeUi == value)
                     return;
-                BeforePropertyChanged(nameof(TreeUi), _treeUi, value);
+                BeforePropertyChange(nameof(TreeUi), _treeUi, value);
                 _treeUi = value;
                 OnPropertyChanged(nameof(TreeUi));
             }
@@ -433,7 +436,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 详细编辑页面
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Category(@"用户界面")]
+        [JsonIgnore, Category(@"用户界面")]
         public bool DetailsPage
         {
             get => _detailsPage;
@@ -441,7 +444,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_detailsPage == value)
                     return;
-                BeforePropertyChanged(nameof(DetailsPage), _detailsPage, value);
+                BeforePropertyChange(nameof(DetailsPage), _detailsPage, value);
                 _detailsPage = value;
                 OnPropertyChanged(nameof(DetailsPage));
             }
@@ -459,7 +462,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 编辑页面分几列
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"编辑页面分几列"), Description("编辑页面分几列")]
         public int FormCloumn
         {
@@ -468,7 +471,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_formCloumn == value)
                     return;
-                BeforePropertyChanged(nameof(FormCloumn), _formCloumn, value);
+                BeforePropertyChange(nameof(FormCloumn), _formCloumn, value);
                 _formCloumn = value;
                 OnPropertyChanged(nameof(FormCloumn));
             }
@@ -483,7 +486,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 默认排序字段
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"默认排序字段"), Description("默认排序字段")]
         public string OrderField
         {
@@ -492,7 +495,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_orderField == value)
                     return;
-                BeforePropertyChanged(nameof(OrderField), _orderField, value);
+                BeforePropertyChange(nameof(OrderField), _orderField, value);
                 _orderField = value;
                 OnPropertyChanged(nameof(OrderField));
             }
@@ -501,7 +504,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 默认反序
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"默认反序"), Description("默认反序")]
         public bool OrderDesc
         {
@@ -510,7 +513,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_orderDesc == value)
                     return;
-                BeforePropertyChanged(nameof(OrderDesc), _orderDesc, value);
+                BeforePropertyChange(nameof(OrderDesc), _orderDesc, value);
                 _orderDesc = value;
                 OnPropertyChanged(nameof(OrderDesc));
             }
@@ -522,7 +525,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 表单查询
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"表单查询"), Description("表单查询")]
         public bool FormQuery
         {
@@ -531,7 +534,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_formQuery == value)
                     return;
-                BeforePropertyChanged(nameof(FormQuery), _formQuery, value);
+                BeforePropertyChange(nameof(FormQuery), _formQuery, value);
                 _formQuery = value;
                 OnPropertyChanged(nameof(FormQuery));
             }
@@ -554,7 +557,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// C++字段名称
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"C++"), DisplayName(@"C++名称"), Description("C++字段名称")]
         public string CppName
         {
@@ -565,7 +568,7 @@ namespace Agebull.EntityModel.Config
                     value = null;
                 if (_cppName == value)
                     return;
-                BeforePropertyChanged(nameof(CppName), _cppName, value);
+                BeforePropertyChange(nameof(CppName), _cppName, value);
                 _cppName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(CppName));
             }

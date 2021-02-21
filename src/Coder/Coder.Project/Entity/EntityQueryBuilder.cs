@@ -60,13 +60,13 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// Redis存储键
         /// </summary>
-        [IgnoreDataMember]
+        [JsonIgnore]
         string __redisKey;
 
         /// <summary>
         /// Redis存储键
         /// </summary>
-        [IgnoreDataMember,Browsable(false)]
+        [JsonIgnore,Browsable(false)]
         string ICacheEntity.RedisKey
         {{
             get
@@ -78,7 +78,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// Redis存储键
         /// </summary>
-        [IgnoreDataMember,Browsable(false)]
+        [JsonIgnore,Browsable(false)]
         public string __RedisKey
         {{
             get
@@ -90,7 +90,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// Redis存储键
         /// </summary>
-        [IgnoreDataMember, Browsable(false)]
+        [JsonIgnore, Browsable(false)]
         public string __RedisType
         {{
             get

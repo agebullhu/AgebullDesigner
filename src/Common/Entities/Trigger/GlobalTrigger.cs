@@ -88,7 +88,7 @@ namespace Agebull.EntityModel
         /// <param name="property">属性</param>
         /// <param name="oldValue">旧值</param>
         /// <param name="newValue">新值</param>
-        public static void BeforePropertyChanged(object config, string property, object oldValue, object newValue)
+        public static void BeforePropertyChange(object config, string property, object oldValue, object newValue)
         {
             if (WorkContext.IsNoChangedNotify || config == null)
                 return;
@@ -101,7 +101,7 @@ namespace Agebull.EntityModel
                 foreach (var trigger in Triggers)
                 {
                     if (trigger.TargetType == null || trigger.TargetType == type || type.IsSubclassOf(trigger.TargetType))
-                        trigger.BeforePropertyChanged(config, property, oldValue, newValue);
+                        trigger.BeforePropertyChange(config, property, oldValue, newValue);
                 }
             }
         }
@@ -120,6 +120,7 @@ namespace Agebull.EntityModel
                 return;
             using (scope)
             {
+                using var s = WorkModelScope.CreateScope(WorkModel.Loding);
                 foreach (var trigger in Triggers.ToArray())
                 {
                     if (trigger.TargetType == null || trigger.TargetType == type || type.IsSubclassOf(trigger.TargetType))
@@ -136,6 +137,7 @@ namespace Agebull.EntityModel
         {
             if (WorkContext.IsNoChangedNotify || config == null)
                 return;
+
             Dispatcher.Invoke(() => OnCreate(config));
         }
 
@@ -268,6 +270,8 @@ namespace Agebull.EntityModel
         /// </summary>
         public static void OnCodeGeneratorEnd(object config)
         {
+            if (config == null)
+                return;
             var scope = NameEventScope.CreateScope(config, "Global", nameof(OnCodeGeneratorBegin));
             if (scope == null)
                 return;
@@ -275,7 +279,8 @@ namespace Agebull.EntityModel
             {
                 foreach (var trigger in Triggers)
                 {
-                    trigger.OnCodeGeneratorEnd(config);
+                    if (trigger.TargetType.IsFrientType(config))
+                        trigger.OnCodeGeneratorEnd(config);
                 }
             }
         }

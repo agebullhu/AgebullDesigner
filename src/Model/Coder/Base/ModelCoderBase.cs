@@ -120,13 +120,13 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// {property.Caption}的可读内容
         /// </summary>
-        [IgnoreDataMember,JsonIgnore,DisplayName(""{property.Caption}"")]
+        [JsonIgnore,JsonIgnore,DisplayName(""{property.Caption}"")]
         public string {property.Name}_Content => {property.Name}.ToCaption();
 
         /// <summary>
         /// {property.Caption}的数字属性
         /// </summary>
-        [IgnoreDataMember,JsonIgnore]
+        [JsonIgnore,JsonIgnore]
         public {type} {property.Name}_Number
         {{
             get => ({type})this.{property.Name};

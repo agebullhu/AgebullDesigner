@@ -42,7 +42,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_isSelect == value)
                     return;
-                BeforePropertyChanged(nameof(IsSelect), _isSelect, value);
+                BeforePropertyChange(nameof(IsSelect), _isSelect, value);
                 _isSelect = value;
                 RaisePropertyChanged(nameof(IsSelect));
             }
@@ -65,7 +65,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 名称
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("设计标识"), DisplayName("标识"), Description("名称")]
         public string Key
         {
@@ -74,7 +74,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_key == value)
                     return;
-                BeforePropertyChanged(nameof(Key), _key, value);
+                BeforePropertyChange(nameof(Key), _key, value);
                 _key = value;
                 OnPropertyChanged(nameof(Key));
             }
@@ -91,7 +91,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 唯一标识
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("设计标识"), DisplayName("唯一标识"), Description("唯一标识")]
         public int Identity
         {
@@ -100,7 +100,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_identity == value)
                     return;
-                BeforePropertyChanged(nameof(Identity), _identity, value);
+                BeforePropertyChange(nameof(Identity), _identity, value);
                 _identity = value;
                 OnPropertyChanged(nameof(Identity));
             }
@@ -117,7 +117,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 序号
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("设计标识"), DisplayName("序号"), Description("序号")]
         public int Index
         {
@@ -126,7 +126,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_index == value)
                     return;
-                BeforePropertyChanged(nameof(Index), _index, value);
+                BeforePropertyChange(nameof(Index), _index, value);
                 _index = value;
                 OnPropertyChanged(nameof(Index));
             }
@@ -148,7 +148,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 引用对象键
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("引用"), DisplayName("引用对象键"), Description("引用对象键，指内部对象的引用")]
         public string ReferenceKey
         {
@@ -159,7 +159,7 @@ namespace Agebull.EntityModel.Config
                     return;
                 if (_referenceKey == _key)
                     _referenceKey = null;
-                BeforePropertyChanged(nameof(ReferenceKey), _referenceKey, value);
+                BeforePropertyChange(nameof(ReferenceKey), _referenceKey, value);
                 _referenceKey = value;
                 if (string.IsNullOrWhiteSpace(_referenceKey))
                 {
@@ -185,7 +185,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 引用对象
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         private ConfigBase _referenceConfig;
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 指内部对象的引用
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("引用"), DisplayName("引用对象"), Description("引用对象，指内部对象的引用")]
         public ConfigBase ReferenceConfig
         {
@@ -237,7 +237,7 @@ namespace Agebull.EntityModel.Config
                 {
                     _state |= ConfigStateType.Reference;
                 }
-                BeforePropertyChanged(nameof(ReferenceConfig), _referenceConfig, value);
+                BeforePropertyChange(nameof(ReferenceConfig), _referenceConfig, value);
                 OnPropertyChanged(nameof(Link));
                 OnPropertyChanged(nameof(IsLink));
                 OnPropertyChanged(nameof(Reference));
@@ -250,13 +250,13 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 引用对象(接口)
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         public ConfigBase Reference => IsReference ? ReferenceConfig : null;
 
         /// <summary>
         /// 链接对象(外连接)
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         public ConfigBase Link => IsLink ? ReferenceConfig : null;
 
         /// <summary>
@@ -271,7 +271,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 引用标签
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("引用"), DisplayName("引用标签"), Description("引用标签")]
         public string ReferenceTag
         {
@@ -280,7 +280,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_referenceTag == value)
                     return;
-                BeforePropertyChanged(nameof(ReferenceTag), _referenceTag, value);
+                BeforePropertyChange(nameof(ReferenceTag), _referenceTag, value);
                 _referenceTag = value;
                 OnPropertyChanged(nameof(ReferenceTag));
             }
@@ -299,18 +299,18 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     状态
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Browsable(false), ReadOnly(true)]
+        [JsonIgnore, Browsable(false), ReadOnly(true)]
         public ConfigStateType State { get => _state; set => _state = value; }
         /// <summary>
         /// 是否预定义对象
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Browsable(false), ReadOnly(true)]
+        [JsonIgnore, Browsable(false), ReadOnly(true)]
         public bool IsPredefined
         {
             get => _state.HasFlag(ConfigStateType.Predefined);
             set
             {
-                BeforePropertyChanged(nameof(IsPredefined), IsPredefined, value);
+                BeforePropertyChange(nameof(IsPredefined), IsPredefined, value);
                 if (value)
                     _state |= ConfigStateType.Predefined;
                 else
@@ -323,14 +323,14 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 是否关联对象
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("设计器支持"), DisplayName("是否关联对象"), Description("是否关联对象")]
         public bool IsLink
         {
             get => _state.HasFlag(ConfigStateType.Link);
             set
             {
-                BeforePropertyChanged(nameof(IsLink), IsLink, value);
+                BeforePropertyChange(nameof(IsLink), IsLink, value);
                 if (value)
                 {
                     _state &= ~ConfigStateType.Reference;
@@ -357,14 +357,14 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否引用对象，是则永远只读
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("设计器支持"), DisplayName("是否引用对象"), Description("是否引用对象")]
         public bool IsReference
         {
             get => _state.HasFlag(ConfigStateType.Reference);
             set
             {
-                BeforePropertyChanged(nameof(IsReference), IsReference, value);
+                BeforePropertyChange(nameof(IsReference), IsReference, value);
                 if (value)
                 {
                     _state &= ~ConfigStateType.Link;
@@ -391,7 +391,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 废弃,参照对象,冻结,引用对象,预定义对象，保存后被设置只读
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         public bool IsReadonly => _state.HasFlags(ConfigStateType.Delete, ConfigStateType.Freeze, ConfigStateType.Reference, ConfigStateType.Discard, ConfigStateType.Predefined);
 
 
@@ -401,7 +401,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 废弃,参照对象,冻结,引用对象,预定义对象，保存后被设置只读
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         public bool IsLock => _state.HasFlag(ConfigStateType.Lock);
 
 
@@ -411,7 +411,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 废弃,参照对象,冻结,引用对象,预定义对象，保存后被设置锁定
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         public bool CanLock => _state.HasFlags(ConfigStateType.Delete, ConfigStateType.Freeze, ConfigStateType.Reference, ConfigStateType.Discard, ConfigStateType.Predefined);
 
         /// <summary>
@@ -447,7 +447,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 是否正常
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("设计器支持"), DisplayName("是否正常"), Description("是否正常")]
         public bool IsNormal => !_state.HasFlag(ConfigStateType.Delete) && !_state.HasFlag(ConfigStateType.Discard);
 
@@ -457,14 +457,14 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 废弃
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("设计器支持"), DisplayName("废弃"), Description("废弃")]
         public bool IsDiscard
         {
             get => _state.HasFlag(ConfigStateType.Discard);
             set
             {
-                BeforePropertyChanged(nameof(IsDiscard), IsDiscard, value);
+                BeforePropertyChange(nameof(IsDiscard), IsDiscard, value);
                 if (value)
                     _state |= ConfigStateType.Discard;
                 else
@@ -481,14 +481,14 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 如为真,此配置的更改将不生成代码
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("设计器支持"), DisplayName("冻结"), Description("如为真,此配置的更改将不生成代码")]
         public bool IsFreeze
         {
             get => _state.HasFlag(ConfigStateType.Freeze);
             set
             {
-                BeforePropertyChanged(nameof(IsFreeze), IsFreeze, value);
+                BeforePropertyChange(nameof(IsFreeze), IsFreeze, value);
                 if (value)
                     _state |= ConfigStateType.Freeze;
                 else
@@ -504,14 +504,14 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 如为真,保存时删除
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("设计器支持"), DisplayName("标记删除"), Description("如为真,保存时删除")]
         public bool IsDelete
         {
             get => _state.HasFlag(ConfigStateType.Delete);
             set
             {
-                BeforePropertyChanged(nameof(IsDelete), IsDelete, value);
+                BeforePropertyChange(nameof(IsDelete), IsDelete, value);
                 if (value)
                     _state |= ConfigStateType.Delete;
                 else
@@ -536,7 +536,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 曾用名
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("运行时"), DisplayName("曾用名"), Description("曾用名")]
         public List<string> OldNames
         {
@@ -545,7 +545,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (_oldNames == value)
                     return;
-                BeforePropertyChanged(nameof(OldNames), _oldNames, value);
+                BeforePropertyChange(nameof(OldNames), _oldNames, value);
                 _oldNames = value;
                 OnPropertyChanged(nameof(OldNames));
             }
@@ -554,7 +554,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     曾用名
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [ReadOnly(true)]
         [Category("设计器支持")]
         [DisplayName(@"曾用名")]
@@ -619,7 +619,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 扩展配置
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("设计器支持")]
         [DisplayName("扩展配置")]
         public Dictionary<string, Dictionary<string, string>> Extend
@@ -629,27 +629,27 @@ namespace Agebull.EntityModel.Config
                 if (_extend != null)
                     return _extend;
                 _extend = new Dictionary<string, Dictionary<string, string>>();
-                BeforePropertyChanged(nameof(Extend), null, _extend);
+                BeforePropertyChange(nameof(Extend), null, _extend);
                 return _extend;
             }
         }
 
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         private ConfigItemDictionary _extendDictionary;
 
         /// <summary>
         /// 扩展配置
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Browsable(false)]
+        [JsonIgnore, Browsable(false)]
         public ConfigItemDictionary ExtendDictionary => _extendDictionary ??= new ConfigItemDictionary(Extend);
 
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         private ConfigItemListBool _extendBool;
 
         /// <summary>
         /// 扩展配置
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Browsable(false)]
+        [JsonIgnore, Browsable(false)]
         public ConfigItemListBool ExtendConfigListBool => _extendBool ??= new ConfigItemListBool(ExtendDictionary);
 
         /// <summary>
@@ -662,7 +662,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 扩展配置
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("设计器支持")]
         [DisplayName("扩展配置")]
         private NotificationList<ConfigItem> ExtendConfig
@@ -672,17 +672,17 @@ namespace Agebull.EntityModel.Config
                 if (_extendConfig != null)
                     return _extendConfig;
                 _extendConfig = new NotificationList<ConfigItem>();
-                BeforePropertyChanged(nameof(ExtendConfig), null, _extendConfig);
+                BeforePropertyChange(nameof(ExtendConfig), null, _extendConfig);
                 return _extendConfig;
             }
         }
 
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         private ConfigItemList _extendConfigList;
         /// <summary>
         /// 扩展配置
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Browsable(false)]
+        [JsonIgnore, Browsable(false)]
         public ConfigItemList ExtendConfigList => _extendConfigList ??= new ConfigItemList(ExtendConfig);
 
         /// <summary>

@@ -43,7 +43,7 @@ namespace {entity.Project.NameSpace}
         internal {property.LastCsType} _{property.JsonName};
 
 {field.RemCode().SpaceLine(8)}
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(""{property.Group}""), DisplayName(@""{property.Caption}""), Description(@""{property.Description}"")]
         public {property.LastCsType} {property.Name}
         {{
@@ -52,7 +52,7 @@ namespace {entity.Project.NameSpace}
             {{
                 if (_{property.JsonName} == value)
                     return;
-                BeforePropertyChanged(nameof({property.Name}), _{property.JsonName}, value);
+                BeforePropertyChange(nameof({property.Name}), _{property.JsonName}, value);
                 _{property.JsonName} = value;
                 OnPropertyChanged(nameof({property.Name}));
             }}

@@ -87,6 +87,7 @@ namespace Agebull.EntityModel.Designer
                     };
                     entity.DataTable.Add(column.DataBaseField = new DataBaseFieldConfig
                     {
+                        Parent = entity.DataTable,
                         DbFieldName = GetAttribute(xProperty, "ColumnName"),
                         Property = column
                     });

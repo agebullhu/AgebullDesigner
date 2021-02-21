@@ -162,27 +162,22 @@ namespace Agebull.EntityModel
         #region 扩展方法
 
 
-        [IgnoreDataMember]
         protected readonly ModelFunctionDictionary<TModel> _modelFunction;
 
         /// <summary>
         ///     依赖方法(模型相关)
         /// </summary>
-        [IgnoreDataMember]
         public override IFunctionDictionary ModelDelegates => _modelFunction;
 
         /// <summary>
         ///     依赖方法(模型相关)
         /// </summary>
-        [IgnoreDataMember]
         public ModelFunctionDictionary<TModel> ModelDelegateDictionary => _modelFunction;
 
-        [IgnoreDataMember]
         private CommandItemBase _reloadCommand;
         /// <summary>
         ///     载入子级的命令
         /// </summary>
-        [IgnoreDataMember]
         public CommandItemBase LoadCommand => _reloadCommand ??= CreateCommand();
 
         private CommandItemBase CreateCommand()

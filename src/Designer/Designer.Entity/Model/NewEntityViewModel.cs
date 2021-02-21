@@ -98,6 +98,7 @@ namespace Agebull.EntityModel.Designer
                     {
                         property.DataBaseField = new Config.V2021.DataBaseFieldConfig
                         {
+                            Parent = Model.Entity.DataTable,
                             Property = property
                         };
                         Model.Entity.DataTable.Add(property.DataBaseField);

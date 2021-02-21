@@ -32,7 +32,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 上级
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"设计器支持"), DisplayName(@"上级"), Description("上级")]
         public EntityConfig Entity
         {
@@ -49,7 +49,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否扩展数组
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"是否数组"), Description("是否数组")]
         public bool IsArray
         {
@@ -62,7 +62,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 数组长度
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"数组长度"), Description("数组长度")]
         public string ArrayLen
         {
@@ -76,7 +76,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否扩展数组
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"是否字典"), Description("是否字典")]
         public bool IsDictionary
         {
@@ -89,7 +89,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 字段类型
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"是否枚举类型)"), Description("字段类型")]
         public bool IsEnum
         {
@@ -103,7 +103,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 字段类型
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计(C#)"), DisplayName(@"非基本类型名称(C#)"), Description("字段类型")]
         public string CustomType
         {
@@ -116,7 +116,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 字段类型
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计(C#)"), DisplayName(@"参考类型(C#)"), Description("字段类型")]
         public string ReferenceType
         {
@@ -129,7 +129,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 最终生成C#代码时的属性类型
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计(C#)"), DisplayName(@"结果类型(C#)"), Description("最终生成C#代码时的属性类型")]
         public string LastCsType => ToLastCsType();
 
@@ -160,7 +160,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 即生成的C#代码,类型为空类型Nullable〈T〉 ,如int?
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计(C#)"), DisplayName(@"可空类型(C#)")]
         public bool Nullable
         {
@@ -175,7 +175,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否扩展值
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@""), DisplayName(@"是否扩展值"), Description("是否扩展值")]
         public bool IsExtendValue
         {
@@ -188,7 +188,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 当使用自定义类型时的枚举对象
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"对应枚举"), Description("当使用自定义类型时的枚举对象")]
         public string EnumKey
         {
@@ -201,7 +201,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 当使用自定义类型时的枚举对象
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"对应枚举"), Description("当使用自定义类型时的枚举对象")]
         public EnumConfig EnumConfig
         {
@@ -215,7 +215,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 系统字段
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"系统字段"), Description("系统字段")]
         public bool IsSystemField
         {
@@ -228,7 +228,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否接口字段
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"接口字段"), Description("是否接口字段")]
         public bool IsInterfaceField
         {
@@ -245,7 +245,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 私有字段,不应该复制
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计(C++)"), DisplayName(@"私有字段"), Description("私有字段,不应该复制")]
         public bool IsPrivateField
         {
@@ -258,7 +258,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 设计时使用的中间过程字段,即最终使用时不需要的字段
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计(C++)"), DisplayName(@"设计时字段")]
         public bool IsMiddleField
         {
@@ -276,7 +276,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否转为整数的小数,即使用扩大100成倍的整数
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计(C++)"), DisplayName(@"6位小数的整数"), Description(IsIntDecimal_Description)]
         public bool IsIntDecimal => Field.IsIntDecimal;
 
@@ -289,7 +289,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 可读,即可以生成Get代码
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"可读"), Description("可读,可以生成Get代码")]
         public bool CanGet
         {
@@ -302,7 +302,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 可写,即生成SET代码
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"可写"), Description("可写,即生成SET代码")]
         public bool CanSet
         {
@@ -314,7 +314,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否计算列，即数据源于其它字段.如关系引用字段
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计(计算列)"), DisplayName(@"计算列")]
         public bool IsCompute
         {
@@ -333,7 +333,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 标题字段
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"标题字段"), Description("标题字段")]
         public bool IsCaption
         {
@@ -343,7 +343,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 上级外键
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"上级外键"), Description("上级外键")]
         public bool IsParent
         {
@@ -356,7 +356,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 主键
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"主键字段"), Description("主键")]
         public bool IsPrimaryKey
         {
@@ -369,7 +369,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 即它也是唯一标识符,如用户的身份证号
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"唯一值字段"), Description("即它也是唯一标识符,如用户的身份证号")]
         public bool IsExtendKey
         {
@@ -382,7 +382,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否使用GUID的全局KEY
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"全局标识"), Description("是否使用GUID的全局KEY")]
         public bool IsGlobalKey
         {
@@ -395,7 +395,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 参与组合成唯一属性的顺序,大于0有效
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"唯一属性组合顺序"), Description("参与组合成唯一属性的顺序,大于0有效")]
         public bool UniqueIndex
         {
@@ -407,7 +407,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 5是否唯一文本
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据标识"), DisplayName(@"唯一文本"), Description("5是否唯一文本")]
         public bool UniqueString
         {
@@ -422,7 +422,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 用户可见
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"用户可见"), Description("用户可见")]
         public bool UserSee => !InnerField && !NoProperty;
 
@@ -432,7 +432,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否用户可编辑
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"不可编辑"), Description("是否用户可编辑")]
         public bool IsUserReadOnly
         {
@@ -454,7 +454,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 多行文本
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"多行文本"), Description("多行文本")]
         public bool MulitLine
         {
@@ -473,7 +473,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 多行文本的行数，默认为3行
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"行数"), Description("行数")]
         public int Rows
         {
@@ -482,7 +482,7 @@ namespace Agebull.EntityModel.Config
             {
                 if (rows == value)
                     return;
-                BeforePropertyChanged(nameof(Rows), rows, value);
+                BeforePropertyChange(nameof(Rows), rows, value);
                 rows = value;
                 OnPropertyChanged(nameof(Rows));
             }
@@ -494,7 +494,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 前缀
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"前缀"), Description("前缀")]
         public string Prefix
         {
@@ -508,7 +508,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 后缀
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"后缀"), Description("后缀")]
         public string Suffix
         {
@@ -521,7 +521,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 等同于空值的文本,多个用#号分开
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"等同于空值的文本"), Description("等同于空值的文本,多个用#号分开")]
         public string EmptyValue
         {
@@ -535,7 +535,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否必填字段
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"界面必填字段"), Description("界面必填字段")]
         public bool UiRequired
         {
@@ -548,7 +548,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 输入类型
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"输入类型"), Description("输入类型")]
         public string InputType
         {
@@ -561,7 +561,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// Form中占几列宽度
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"Form中占几列宽度"), Description("Form中占几列宽度")]
         public int FormCloumnSapn
         {
@@ -574,7 +574,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// Form中的EasyUi设置
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"Form中的EasyUi设置"), Description("Form中的EasyUi设置")]
         public string FormOption
         {
@@ -584,7 +584,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 用户排序
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"用户排序"), Description("用户排序")]
         public bool UserOrder
         {
@@ -597,7 +597,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 下拉列表的地址
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"下拉列表的地址"), Description("下拉列表的地址")]
         public string ComboBoxUrl
         {
@@ -608,7 +608,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 是否时间
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"模型设计"), DisplayName(@"是否时间"), Description("是否时间")]
         public bool IsTime
         {
@@ -622,7 +622,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否图片
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"是否图片"), Description("是否图片")]
         public bool IsImage
         {
@@ -635,7 +635,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否货币
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"货币类型"), Description("是否货币")]
         public bool IsMoney
         {
@@ -648,7 +648,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 对齐
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"表格对齐"), Description("对齐")]
         public string GridAlign
         {
@@ -661,7 +661,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 数据格式器
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"占表格宽度比例"), Description("数据格式器")]
         public int GridWidth
         {
@@ -674,7 +674,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 数据格式器
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"数据格式器"), Description("数据格式器")]
         public string DataFormater
         {
@@ -684,7 +684,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 是否用户内容
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"用户内容"), Description("用户内容")]
         public bool IsUserContent
         {
@@ -697,7 +697,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 显示在列表详细页中
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"显示在列表详细页中"), Description("显示在列表详细页中")]
         public bool GridDetails
         {
@@ -710,7 +710,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 列表不显示
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"列表不显示"), Description("列表不显示")]
         public bool NoneGrid
         {
@@ -723,7 +723,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 详细不显示
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"详细不显示"), Description("详细不显示")]
         public bool NoneDetails
         {
@@ -736,7 +736,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 详细界面代码
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"列表详细页代码"), Description("详细界面代码")]
         public string GridDetailsCode
         {
@@ -749,7 +749,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 值说明
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据规则"), DisplayName(@"数据说明"), Description("对于值数据规则的描述")]
         public string DataRuleDesc
         {
@@ -759,7 +759,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 值说明
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         public string AutoDataRuleDesc => Field.AutoDataRuleDesc;
         /// <summary>
         /// 校验代码
@@ -767,7 +767,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 校验代码,本字段用{0}代替
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据规则"), DisplayName(@"校验代码"), Description("校验代码,本字段用{0}代替")]
         public string ValidateCode
         {
@@ -785,7 +785,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 这是数据相关的逻辑,表示在存储时必须写入数据,否则逻辑不正确
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据规则"), DisplayName(@"能否为空"), Description(CanEmpty_Description)]
         public bool CanEmpty
         {
@@ -799,7 +799,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 是否必填字段
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"用户界面"), DisplayName(@"必填字段"), Description("是否必填字段")]
         public bool IsRequired
         {
@@ -813,7 +813,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 最大
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据规则"), DisplayName(@"最大值"), Description("最大")]
         public string Max
         {
@@ -826,7 +826,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 最小
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据规则"), DisplayName(@"最大值"), Description("最小")]
         public string Min
         {

@@ -110,7 +110,6 @@ namespace Agebull.EntityModel.Designer
                     model.Add(newColumn);
                 }
             }
-            model.IsModify = true;
         }
 
         #endregion

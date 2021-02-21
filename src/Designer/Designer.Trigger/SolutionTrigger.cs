@@ -18,7 +18,6 @@ namespace Agebull.EntityModel.Designer
             {
                 Solution = TargetConfig
             };
-
             model.RepairByLoaded();
             model.OnSolutionLoad();
 

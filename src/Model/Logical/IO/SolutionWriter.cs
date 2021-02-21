@@ -68,7 +68,7 @@ namespace Agebull.EntityModel.Designer
                 SaveConfig(Solution.SaveFileName, Solution, true);
             }
 
-            Solution.Foreach<ConfigBase>(p => p.IsModify = false);
+            Solution.Look(p => p.ResetModify(true));
             //VersionControlItem.Current.TfsCheckIn();
         }
 

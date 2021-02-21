@@ -86,11 +86,7 @@ namespace Agebull.EntityModel.Designer
                 return;
             if (!Equals(BackgroundColor, Source.IsModify ? Brushes.Red : Brushes.Transparent))
                 BackgroundColor = Source.IsModify ? Brushes.Red : Brushes.Transparent;
-            var par = Parent as TreeItem;
-            if (par?.Source != null && par.Source.IsModify != Source.IsModify)
-            {
-                par.Source.IsModify = Source.IsModify;
-            }
+
             base.OnSourceModify();
         }
 

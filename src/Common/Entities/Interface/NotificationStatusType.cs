@@ -3,7 +3,7 @@
     /// <summary>
     /// 通知对象的状态类型
     /// </summary>
-    public enum NotificationStatusType
+    public enum NotificationStateType
     {
         /// <summary>
         /// 原始状态

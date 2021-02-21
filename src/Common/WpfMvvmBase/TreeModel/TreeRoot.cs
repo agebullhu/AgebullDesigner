@@ -120,7 +120,6 @@ namespace Agebull.EntityModel
         /// <summary>
         ///     “¿¿µ∂‘œÛ◊÷µ‰
         /// </summary>
-        [IgnoreDataMember]
         public ModelFunctionDictionary<TreeRoot> ModelFunction
         {
             get => _modelFunction ??= new ModelFunctionDictionary<TreeRoot>();

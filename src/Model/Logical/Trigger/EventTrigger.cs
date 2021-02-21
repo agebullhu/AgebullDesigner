@@ -42,7 +42,7 @@ namespace Agebull.EntityModel
         /// <param name="property">属性</param>
         /// <param name="oldValue">旧值</param>
         /// <param name="newValue">新值</param>
-        public virtual void BeforePropertyChanged(string property, object oldValue, object newValue)
+        public virtual void BeforePropertyChange(string property, object oldValue, object newValue)
         {
         }
 

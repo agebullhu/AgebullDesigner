@@ -83,6 +83,7 @@ namespace Agebull.EntityModel.Designer
                 TargetConfig.DataTable.Add(property.DataBaseField = new DataBaseFieldConfig
                 {
                     Property = property,
+                    Parent = TargetConfig.DataTable,
                     DbFieldName = DataBaseHelper.ToDbFieldName(property)
                 });
                 property.DataBaseField.Copy(property.Field);
@@ -112,7 +113,7 @@ namespace Agebull.EntityModel.Designer
         /// <param name="property">属性</param>
         /// <param name="oldValue">旧值</param>
         /// <param name="newValue">新值</param>
-        void IEventTrigger.BeforePropertyChanged(string property, object oldValue, object newValue)
+        void IEventTrigger.BeforePropertyChange(string property, object oldValue, object newValue)
         {
             switch (property)
             {

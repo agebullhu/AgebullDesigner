@@ -21,7 +21,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public void ResetStatus()
         {
-            Solution.Look<ConfigBase>(p => p.IsModify = false);
+            Solution.Look<ConfigBase>(p =>p.ResetModify(true));
         }
 
         #endregion

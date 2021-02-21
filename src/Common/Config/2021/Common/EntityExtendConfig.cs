@@ -13,18 +13,18 @@ namespace Agebull.EntityModel.Config.V2021
     {
 
         #region 引用
-        ConfigBase IChildrenConfig.Parent { get => Entity as ConfigBase; set => Entity = value as IEntityConfig; }
+        ISimpleConfig IChildrenConfig.Parent { get => Entity as ConfigBase; set => Entity = value as IEntityConfig; }
 
         /// <summary>
         /// 对应实体
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         internal IEntityConfig _entity;
 
         /// <summary>
         /// 对应实体
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [DisplayName(@"对应实体"), Description(@"对应实体")]
         public IEntityConfig Entity
         {
@@ -33,7 +33,7 @@ namespace Agebull.EntityModel.Config.V2021
             {
                 if (_entity == value)
                     return;
-                BeforePropertyChanged(nameof(Entity), _entity, value);
+                BeforePropertyChange(nameof(Entity), _entity, value);
                 _entity = value;
                 RaisePropertyChanged(nameof(Entity));
                 RaisePropertyChanged("Parent");
@@ -46,7 +46,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         ///     名称
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"名称")]
+        [JsonIgnore, Category("设计支持"), DisplayName(@"名称")]
         public override string Name
         {
             get => Entity?.Name;
@@ -56,7 +56,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         ///     标题
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"标题")]
+        [JsonIgnore, Category("设计支持"), DisplayName(@"标题")]
         public override string Caption
         {
             get => Entity?.Caption;
@@ -69,7 +69,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         ///     说明
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"说明")]
+        [JsonIgnore, Category("设计支持"), DisplayName(@"说明")]
         public override string Description
         {
             get => Entity?.Description;

@@ -68,6 +68,7 @@ namespace Agebull.EntityModel.RobotCoder
                     {
                         property.DataBaseField = new DataBaseFieldConfig
                         {
+                            Parent = entity.DataTable,
                             Property = property
                         };
                         entity.DataTable.Add(property.DataBaseField);

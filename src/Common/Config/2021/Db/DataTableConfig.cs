@@ -44,26 +44,42 @@ namespace Agebull.EntityModel.Config.V2021
         /// <remark>
         /// 字段列表
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"数据模型"), DisplayName(@"字段列表"), Description("字段列表")]
         public ConfigCollection<DataBaseFieldConfig> Fields
         {
             get
             {
                 if (_fields != null)
+                {
+                    if(_fields.Parent == null)
+                    {
+                        _fields.OnLoad(nameof(Fields), this);
+                    }
                     return _fields;
-                _fields = new ConfigCollection<DataBaseFieldConfig>(this);
+                }
+                _fields = new ConfigCollection<DataBaseFieldConfig>(this,nameof(Fields));
                 RaisePropertyChanged(nameof(Fields));
                 return _fields;
             }
             set
             {
                 if (_fields == value)
+                {
+                    if (_fields.Parent == null)
+                    {
+                        _fields.Name = nameof(Fields);
+                        _fields.Parent = this;
+                    }
                     return;
-                BeforePropertyChanged(nameof(Fields), _fields, value);
+                }
+                BeforePropertyChange(nameof(Fields), _fields, value);
                 _fields = value;
                 if (value != null)
+                {
+                    value.Name = nameof(Fields);
                     value.Parent = this;
+                }
                 OnPropertyChanged(nameof(Fields));
             }
         }
@@ -270,7 +286,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// </summary>/// <remarks>
         /// 存储表名,即实体对应的数据库表.因为模型可能直接使用视图,但增删改还在基础的表中时行,而不在视图中时行
         /// </remarks>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [DisplayName(@"存储表名"), Description(@"存储表名,即实体对应的数据库表.因为模型可能直接使用视图,但增删改还在基础的表中时行,而不在视图中时行")]
         public string ReadTableName
         {
@@ -279,7 +295,7 @@ namespace Agebull.EntityModel.Config.V2021
             {
                 if (_readTableName == value)
                     return;
-                BeforePropertyChanged(nameof(ReadTableName), _readTableName, value);
+                BeforePropertyChange(nameof(ReadTableName), _readTableName, value);
                 _readTableName = value;
                 OnPropertyChanged(nameof(ReadTableName));
             }
@@ -294,7 +310,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         /// 存储表名
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [DisplayName(@"存储表名"), Description(@"存储表名")]
         public string SaveTableName
         {
@@ -303,7 +319,7 @@ namespace Agebull.EntityModel.Config.V2021
             {
                 if (_saveTableName == value)
                     return;
-                BeforePropertyChanged(nameof(SaveTableName), _saveTableName, value);
+                BeforePropertyChange(nameof(SaveTableName), _saveTableName, value);
                 _saveTableName = value;
                 OnPropertyChanged(nameof(SaveTableName));
             }
@@ -318,7 +334,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         /// 数据库编号
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [DisplayName(@"数据库编号"), Description(@"数据库编号")]
         public int DbIndex
         {
@@ -327,7 +343,7 @@ namespace Agebull.EntityModel.Config.V2021
             {
                 if (_dbIndex == value)
                     return;
-                BeforePropertyChanged(nameof(DbIndex), _dbIndex, value);
+                BeforePropertyChange(nameof(DbIndex), _dbIndex, value);
                 _dbIndex = value;
                 OnPropertyChanged(nameof(DbIndex));
             }
@@ -342,7 +358,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         /// 按修改更新
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [DisplayName(@"按修改更新"), Description(@"按修改更新")]
         public bool UpdateByModified
         {
@@ -351,7 +367,7 @@ namespace Agebull.EntityModel.Config.V2021
             {
                 if (_updateByModified == value)
                     return;
-                BeforePropertyChanged(nameof(UpdateByModified), _updateByModified, value);
+                BeforePropertyChange(nameof(UpdateByModified), _updateByModified, value);
                 _updateByModified = value;
                 OnPropertyChanged(nameof(UpdateByModified));
             }
@@ -366,7 +382,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         /// 是否视图
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [DisplayName(@"是否视图"), Description(@"是否视图")]
         public bool IsView
         {
@@ -375,7 +391,7 @@ namespace Agebull.EntityModel.Config.V2021
             {
                 if (_isView == value)
                     return;
-                BeforePropertyChanged(nameof(IsView), _isView, value);
+                BeforePropertyChange(nameof(IsView), _isView, value);
                 _isView = value;
                 OnPropertyChanged(nameof(IsView));
             }
@@ -390,7 +406,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         /// 是否查询
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [DisplayName(@"是否查询"), Description(@"是否查询")]
         public bool IsQuery
         {
@@ -399,7 +415,7 @@ namespace Agebull.EntityModel.Config.V2021
             {
                 if (_isQuery == value)
                     return;
-                BeforePropertyChanged(nameof(IsQuery), _isQuery, value);
+                BeforePropertyChange(nameof(IsQuery), _isQuery, value);
                 _isQuery = value;
                 OnPropertyChanged(nameof(IsQuery));
             }
@@ -414,7 +430,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         /// 启用数据事件
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [DisplayName(@"启用数据事件"), Description(@"启用数据事件")]
         public bool EnableDataEvent
         {
@@ -423,7 +439,7 @@ namespace Agebull.EntityModel.Config.V2021
             {
                 if (_enableDataEvent == value)
                     return;
-                BeforePropertyChanged(nameof(EnableDataEvent), _enableDataEvent, value);
+                BeforePropertyChange(nameof(EnableDataEvent), _enableDataEvent, value);
                 _enableDataEvent = value;
                 OnPropertyChanged(nameof(EnableDataEvent));
             }
@@ -488,7 +504,7 @@ namespace Agebull.EntityModel.Config.V2021
             IsView = dest.IsView;
             IsQuery = dest.IsQuery;
             EnableDataEvent = dest.EnableDataEvent;
-            _fields = new ConfigCollection<DataBaseFieldConfig>(this);
+            _fields = new ConfigCollection<DataBaseFieldConfig>(this, nameof(Fields));
             if (dest is DataTableConfig dataTable)
                 foreach (var field in dataTable.Fields)
                 {
@@ -516,7 +532,7 @@ namespace Agebull.EntityModel.Config.V2021
             IsView = dest.IsView;
             IsQuery = dest.IsQuery;
             EnableDataEvent = dest.EnableDataEvent;
-            _fields = new ConfigCollection<DataBaseFieldConfig>(this);
+            _fields = new ConfigCollection<DataBaseFieldConfig>(this, nameof(Fields));
             foreach (var property in dest.IEntity.Properties)
             {
                 var field = new DataBaseFieldConfig

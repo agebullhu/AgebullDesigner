@@ -220,7 +220,6 @@ namespace Agebull.EntityModel.Designer
                 if (field.IsLinkKey)
                     newProperty.NoneApiArgument = true;
             }
-            Entity.IsModify = true;
         }
 
         #endregion

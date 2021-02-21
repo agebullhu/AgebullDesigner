@@ -47,13 +47,6 @@ namespace Agebull.EntityModel.Designer
                 Catalog = "设计",
                 IconName = "解锁"
             });
-            commands.Add(new CommandItemBuilder<ConfigBase>
-            {
-                Action = ToModify,
-                Caption = "强制已修改",
-                Catalog = "设计",
-                IconName = "修改"
-            });
         }
 
         void UnLock(ConfigBase project)
@@ -64,11 +57,6 @@ namespace Agebull.EntityModel.Designer
         void Lock(ConfigBase project)
         {
             project.Option.IsFreeze = true;
-        }
-
-        public void ToModify(ConfigBase entity)
-        {
-            entity.IsModify = true;
         }
 
         /// <summary>

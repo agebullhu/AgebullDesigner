@@ -172,7 +172,6 @@ namespace Agebull.EntityModel.Designer
                 entity.DataTable.Upgrade();
                 entity.DataTable.OnLoad();
             }
-            entity.DataTable.IsModify = true;
         }
 
         /// <summary>

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 
-#if CLIENT
 namespace Agebull.EntityModel
 {
     /// <summary>
@@ -82,4 +81,3 @@ namespace Agebull.EntityModel
 
     }
 }
-#endif

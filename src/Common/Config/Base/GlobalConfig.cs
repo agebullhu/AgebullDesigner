@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Agebull.EntityModel.Config
 {
@@ -187,7 +188,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     配置查找表
         /// </summary>
-        [IgnoreDataMember]
+        [JsonIgnore]
         public static Dictionary<string, ConfigBase> ConfigDictionary = new Dictionary<string, ConfigBase>();
 
         /// <summary>

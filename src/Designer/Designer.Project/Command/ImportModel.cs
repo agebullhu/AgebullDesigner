@@ -479,6 +479,7 @@ namespace Agebull.EntityModel.Designer
                     };
                     entity.DataTable.Add(column.DataBaseField = new DataBaseFieldConfig
                     {
+                        Parent = entity.DataTable,
                         DbFieldName = field,
                         FieldType = "nvarchar",
                         DbNullable = true,

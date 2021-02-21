@@ -14,7 +14,7 @@ namespace Agebull.EntityModel.Designer
         /// <param name="property">属性</param>
         /// <param name="oldValue">旧值</param>
         /// <param name="newValue">新值</param>
-        public sealed override void BeforePropertyChanged(string property, object oldValue, object newValue)
+        public sealed override void BeforePropertyChange(string property, object oldValue, object newValue)
         {
             if (TargetConfig.Option.IsReadonly)
                 return;

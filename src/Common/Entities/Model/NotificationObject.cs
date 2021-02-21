@@ -10,8 +10,10 @@
 
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.Serialization;
 
@@ -19,44 +21,27 @@ using System.Runtime.Serialization;
 
 namespace Agebull.EntityModel
 {
+
     /// <summary>
     ///     有属性通知的对象
     /// </summary>
     [DataContract, JsonObject(MemberSerialization.OptIn)]
-    public abstract class NotificationObject : INotifyPropertyChanged
+    public abstract class NotificationObject : INotifyPropertyChanged, IModifyObject
     {
         #region 构造
 
-        ///// <summary>
-        ///// 构造
-        ///// </summary>
-        //protected NotificationObject()
-        //{
-        //    GlobalTrigger.OnCreate(this);
-        //}
+        /// <summary>
+        /// 构造
+        /// </summary>
+        protected NotificationObject()
+        {
+            ValueRecords  = new ModifyRecord { Me = this };
+            //GlobalTrigger.OnCreate(this);
+        }
 
         #endregion
 
         #region 属性修改通知
-
-#if CLIENT
-        [IgnoreDataMember]
-        private bool _isModify;
-        /// <summary>
-        ///     冻结
-        /// </summary>
-        [IgnoreDataMember, Category("系统"), DisplayName("已修改")]
-        public bool IsModify
-        {
-            get => _isModify;
-            set
-            {
-                if (WorkContext.IsNoChangedNotify || _isModify == value)
-                    return;
-                _isModify = value;
-                RaisePropertyChanged(nameof(IsModify));
-            }
-        }
 
         /// <summary>
         ///     属性修改事件
@@ -128,7 +113,7 @@ namespace Agebull.EntityModel
                 preName = null;
             }
         }
-#endif
+
         /// <param name="action">属性字段</param>
         protected static string GetPropertyName<T>(Expression<Func<T>> action)
         {
@@ -143,23 +128,40 @@ namespace Agebull.EntityModel
         /// <param name="propertyName">属性</param>
         /// <param name="oldValue">旧值</param>
         /// <param name="newValue">新值</param>
-        public void BeforePropertyChanged(string propertyName, object oldValue, object newValue)
+        public void BeforePropertyChange(string propertyName, object oldValue, object newValue)
         {
-            if (WorkContext.IsNoChangedNotify)
+            if (WorkContext.InLoding || WorkContext.InSaving)
                 return;
-            GlobalTrigger.BeforePropertyChanged(this, propertyName, oldValue, newValue);
+            ValueRecords.Record(propertyName, oldValue, newValue);
+            GlobalTrigger.BeforePropertyChange(this, propertyName, oldValue, newValue);
         }
+
         /// <summary>
         ///     发出属性修改前事件
         /// </summary>
         /// <param name="propertyName">属性</param>
         /// <param name="oldValue">旧值</param>
         /// <param name="newValue">新值</param>
-        protected void BeforePropertyChanged(string propertyName, string oldValue, string newValue)
+        protected void BeforePropertyChange(string propertyName, string oldValue, string newValue)
         {
-            if (WorkContext.IsNoChangedNotify)
+            if (WorkContext.InLoding || WorkContext.InSaving)
                 return;
-            GlobalTrigger.BeforePropertyChanged(this, propertyName, oldValue, newValue);
+            ValueRecords.Record(propertyName, oldValue, newValue);
+            GlobalTrigger.BeforePropertyChange(this, propertyName, oldValue, newValue);
+        }
+
+        /// <summary>
+        ///     发出属性修改前事件
+        /// </summary>
+        /// <param name="propertyName">属性</param>
+        /// <param name="oldValue">旧值</param>
+        /// <param name="newValue">新值</param>
+        protected void BeforePropertyChange(string propertyName, bool oldValue, bool newValue)
+        {
+            if (WorkContext.InLoding || WorkContext.InSaving)
+                return;
+            ValueRecords.Record(propertyName, oldValue, newValue);
+            GlobalTrigger.BeforePropertyChange(this, propertyName, oldValue, newValue);
         }
 
         /// <summary>
@@ -168,32 +170,17 @@ namespace Agebull.EntityModel
         /// <param name="propertyName">属性</param>
         public void OnPropertyChanged(string propertyName)
         {
-            if (WorkContext.IsNoChangedNotify)
+            if (WorkContext.InLoding)
                 return;
-            RecordModifiedInner(propertyName);
-#if CLIENT
             RaisePropertyChanged(new PropertyChangedEventArgs(propertyName));
-#endif
-            if (!IsModify && propertyName != nameof(IsModify))
-            {
-                OnStatusChanged(NotificationStatusType.Modified);
-                IsModify = true;
-            }
-        }
-
-        /// <summary>
-        ///     记录属性修改
-        /// </summary>
-        /// <param name="propertyName">属性</param>
-        protected virtual void RecordModifiedInner(string propertyName)
-        {
+            CheckModify();
         }
 
         #endregion
 
         #region UI线程同步支持
 
-#if CLIENT
+
         /// <summary>
         ///     在UI线程中执行
         /// </summary>
@@ -248,7 +235,7 @@ namespace Agebull.EntityModel
         /// </summary>
         /// <param name="action"></param>
         /// <param name="args"></param>
-        public void InvokeInUiThread<T>(Action<T> action, T args)
+        public static void InvokeInUiThread<T>(Action<T> action, T args)
         {
             try
             {
@@ -265,22 +252,57 @@ namespace Agebull.EntityModel
             {
             }
         }
-#endif
+
 
         #endregion
 
-        #region 状态修改事件
+        #region 修改事件
 
-#if CLIENT
+        [JsonIgnore]
+        public ModifyRecord ValueRecords { get; }
+
+        [JsonIgnore]
+        protected bool _isModify;
+        /// <summary>
+        ///     冻结
+        /// </summary>
+        [JsonIgnore, Category("系统"), DisplayName("已修改")]
+        public bool IsModify => _isModify;
+
+        public virtual void ResetModify(bool isSaved)
+        {
+            _isModify = false;
+            ValueRecords.Reset(isSaved);
+            InvokeInUiThread(RaiseStatusChangedInner, new IsModifyEventArgs(IsModify));
+        }
+
+        public virtual void SetIsNew()
+        {
+            _isModify = true;
+            ValueRecords.SetIsNew();
+            InvokeInUiThread(RaiseStatusChangedInner, new IsModifyEventArgs(IsModify));
+        }
+
+        public virtual void CheckModify()
+        {
+            ValueRecords.Check();
+            var md = ValueRecords.IsModify;
+            if (md != _isModify)
+            {
+                _isModify = md;
+                InvokeInUiThread(RaiseStatusChangedInner, new IsModifyEventArgs(IsModify));
+            }
+        }
+
         /// <summary>
         ///     状态变化事件
         /// </summary>
-        private event PropertyChangedEventHandler statusChanged;
+        private event IsModifyEventHandler statusChanged;
 
         /// <summary>
         ///     状态变化事件
         /// </summary>
-        public event PropertyChangedEventHandler StatusChanged
+        public event IsModifyEventHandler IsModifyChanged
         {
             add
             {
@@ -294,8 +316,10 @@ namespace Agebull.EntityModel
         ///     发出状态变化事件
         /// </summary>
         /// <param name="args">属性</param>
-        private void RaiseStatusChangedInner(PropertyChangedEventArgs args)
+        private void RaiseStatusChangedInner(IsModifyEventArgs args)
         {
+            if (WorkContext.InLoding)
+                return;
             try
             {
                 statusChanged?.Invoke(this, args);
@@ -307,56 +331,7 @@ namespace Agebull.EntityModel
             }
         }
 
-
-        /// <summary>
-        ///     发出状态变化事件
-        /// </summary>
-        /// <param name="status">状态</param>
-        public void OnStatusChanged(NotificationStatusType status)
-        {
-            OnStatusChangedInner(status);
-            RaiseStatusChanged(status.ToString());
-        }
-
-        /// <summary>
-        ///     发出状态变化事件
-        /// </summary>
-        /// <param name="status">状态</param>
-        public void OnStatusChanged(string status)
-        {
-            OnStatusChangedInner(status);
-            RaiseStatusChanged(status);
-        }
-
-        /// <summary>
-        ///     发出状态变化事件
-        /// </summary>
-        /// <param name="statusName">状态</param>
-        private void RaiseStatusChanged(string statusName)
-        {
-            InvokeInUiThread(RaiseStatusChangedInner, new PropertyChangedEventArgs(statusName));
-        }
-
-
-        /// <summary>
-        ///    状态变化处理
-        /// </summary>
-        /// <param name="status">状态</param>
-        protected virtual void OnStatusChangedInner(NotificationStatusType status)
-        {
-
-        }
-
-        /// <summary>
-        ///    状态变化处理
-        /// </summary>
-        /// <param name="status">状态</param>
-        protected virtual void OnStatusChangedInner(string status)
-        {
-
-        }
-#endif
-
         #endregion
     }
+
 }

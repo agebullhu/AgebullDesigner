@@ -198,6 +198,7 @@ namespace Agebull.EntityModel.Designer
                 entity.DataTable.Add(field = new DataBaseFieldConfig
                 {
                     Property = property,
+                    Parent = entity.DataTable,
                     DbFieldName = fieldName,
                     FieldType = dbType,
                 });

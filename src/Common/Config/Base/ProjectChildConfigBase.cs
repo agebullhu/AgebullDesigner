@@ -13,7 +13,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 上级项目
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         internal ProjectConfig _parent;
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace Agebull.EntityModel.Config
         /// <remark>
         /// 上级项目
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category(@"项目管理"), DisplayName(@"上级项目"), Description("上级项目")]
         public ProjectConfig Project
         {
@@ -31,13 +31,13 @@ namespace Agebull.EntityModel.Config
             {
                 if (_parent == value)
                     return;
-                BeforePropertyChanged(nameof(Project), _parent, value);
+                BeforePropertyChange(nameof(Project), _parent, value);
                 _parent = value;
                 RaisePropertyChanged(nameof(Project));
                 RaisePropertyChanged("Parent");
             }
         }
 
-        ConfigBase IChildrenConfig.Parent { get => _parent; set => _parent = value as ProjectConfig; }
+        ISimpleConfig IChildrenConfig.Parent { get => _parent; set => _parent = value as ProjectConfig; }
     }
 }

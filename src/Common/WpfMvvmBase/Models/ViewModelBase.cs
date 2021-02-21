@@ -87,7 +87,6 @@ namespace Agebull.EntityModel
         /// <summary>
         ///     依赖对象字典
         /// </summary>
-        [IgnoreDataMember]
         public ModelFunctionDictionary<TModel> ModelFunction { get; private set; }
 
         /// <summary>

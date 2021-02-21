@@ -14,14 +14,14 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     保存地址
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         private string _fileName;
 
 
         /// <summary>
         ///     保存地址
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Category("系统"), DisplayName("保存地址")]
+        [JsonIgnore, Category("系统"), DisplayName("保存地址")]
         public string SaveFileName
         {
             get => _fileName;
@@ -31,7 +31,7 @@ namespace Agebull.EntityModel.Config
                 {
                     return;
                 }
-                BeforePropertyChanged(nameof(SaveFileName), _fileName, value);
+                BeforePropertyChange(nameof(SaveFileName), _fileName, value);
                 _fileName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 RaisePropertyChanged(() => SaveFileName);
             }

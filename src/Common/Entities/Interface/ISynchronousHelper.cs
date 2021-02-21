@@ -1,4 +1,3 @@
-#if CLIENT
 using System;
 
 namespace Agebull.EntityModel
@@ -89,4 +88,3 @@ namespace Agebull.EntityModel
         void InvokeInUiThread<T1, T2, T3, T4>(Action<T1, T2, T3, T4> action, T1 args1, T2 args2, T3 arg3, T4 arg4);
     }
 }
-#endif

@@ -10,14 +10,14 @@ namespace Agebull.EntityModel.Config
     [DataContract, JsonObject(MemberSerialization.OptIn)]
     public partial class EntityClassify : IndependenceConfigBase, IChildrenConfig
     {
-        ConfigBase IChildrenConfig.Parent { get => Project; set => Project = value as ProjectConfig; }
+        ISimpleConfig IChildrenConfig.Parent { get => Project; set => Project = value as ProjectConfig; }
 
         private ProjectConfig project;
 
         /// <summary>
         /// 上级
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         public ProjectConfig Project
         {
             get => project;
@@ -32,20 +32,20 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 子级
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         private ConfigCollection<EntityConfigBase> _items;
 
         /// <summary>
         /// 子级
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Browsable(false)]
+        [JsonIgnore, Browsable(false)]
         public ConfigCollection<EntityConfigBase> Items
         {
             get
             {
                 if (_items != null)
                     return _items;
-                _items = new ConfigCollection<EntityConfigBase>(this);
+                _items = new ConfigCollection<EntityConfigBase>(this, nameof(Items));
                 RaisePropertyChanged(nameof(Items));
                 return _items;
             }
@@ -57,7 +57,10 @@ namespace Agebull.EntityModel.Config
                 }
                 _items = value;
                 if (value != null)
+                {
+                    value.Name = nameof(Items);
                     value.Parent = this;
+                }
                 RaisePropertyChanged(() => Items);
             }
         }

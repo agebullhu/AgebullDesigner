@@ -191,7 +191,7 @@ namespace Agebull.EntityModel.Designer
 
             FirstSelect();
 
-            Context.Solution.Look<ConfigBase>(p => p.IsModify = false);
+            Context.Solution.Look(p => p.ResetModify(true));
         }
         /// <summary>
         /// 保证载入后选择正常

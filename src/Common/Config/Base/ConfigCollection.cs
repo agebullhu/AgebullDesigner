@@ -2,66 +2,71 @@ using Agebull.EntityModel.Config;
 using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace Agebull.EntityModel
 {
     /// <summary>
     ///     表示一个自动存储的列表对象
     /// </summary>
-    public class ConfigCollection<TConfig> : NotificationList<TConfig>
+    public class ConfigCollection<TConfig> : NotificationList<TConfig>, IModifyObject
         where TConfig : ConfigBase, IChildrenConfig
     {
         #region 构造
 
+        [JsonIgnore]
+        public ModifyRecord ValueRecords { get; }
+
         public ConfigCollection()
         {
-
+            ValueRecords = new ModifyRecord
+            {
+                Me = this
+            };
         }
 
-        public ConfigCollection(ConfigBase parent)
+        public ConfigCollection(ConfigBase parent, string name = null)
         {
+            Name = name;
             Parent = parent;
+            Parent.ValueRecords.Add(Name, false);
         }
 
         #endregion
 
         #region 子级同步
 
+        public string Name { get; set; }
         public ConfigBase Parent { get; set; }
 
         private void OnRemove(TConfig item)
         {
-            item.PropertyChanged -= Item_PropertyChanged;
+            item.IsModifyChanged -= OnItemIsModifyChanged;
+
+            haseNewOrRemove = true;
+            CheckModify();
             GlobalTrigger.OnRemoved(Parent, item);
-            Parent.IsModify = true;
             GlobalConfig.RemoveConfig(item.Option);
         }
 
+
         private void OnAdd(TConfig item)
         {
-            if (Parent == null)
-                return;
+            haseNewOrRemove = true;
             GlobalConfig.AddConfig(item.Option);
             item.Index = Count == 0 ? 1 : this.Max(p => p.Index) + 1;
             item.Parent = Parent;
-            item.PropertyChanged += Item_PropertyChanged;
-            GlobalTrigger.OnAdded(Parent, item);
+            item.IsModifyChanged += OnItemIsModifyChanged;
             item.OnLoad();
-            item.IsModify = true;
-            Parent.IsModify = true;
-        }
+            item.SetIsNew();
+            CheckModify();
 
-        private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
             if (Parent == null)
                 return;
-            var cfg = sender as ConfigBase;
-            if (e.PropertyName == nameof(ConfigBase.IsModify))
-            {
-                if (cfg.IsModify)
-                    Parent.IsModify = true;
-            }
+            GlobalTrigger.OnAdded(Parent, item);
         }
 
         /// <summary>
@@ -71,6 +76,10 @@ namespace Agebull.EntityModel
         /// <returns></returns>
         public void DoForeach<T>(Action<T> action, bool doAction)
         {
+            if (doAction && this is T t)
+            {
+                action(t);
+            }
             foreach (var item in this)
             {
                 item.Foreach(action, doAction);
@@ -82,16 +91,20 @@ namespace Agebull.EntityModel
         /// 遍历
         /// </summary>
         /// <returns></returns>
-        public void OnLoad(ConfigBase parent)
+        public void OnLoad(string name, ConfigBase parent)
         {
+            Name = name;
             Parent = parent;
             foreach (var item in this)
             {
                 item.Parent = parent;
-                item.PropertyChanged += Item_PropertyChanged;
+                item.IsModifyChanged += OnItemIsModifyChanged;
                 item.OnLoad();
             }
+            Parent.ValueRecords.Add(Name, false);
         }
+
+
         #endregion
 
         #region 属性修改
@@ -106,7 +119,9 @@ namespace Agebull.EntityModel
                 return;
             if (e.Action == NotifyCollectionChangedAction.Reset)
             {
+                haseNewOrRemove = true;
                 GlobalTrigger.OnLoad(Parent);
+                CheckModify();
                 return;
             }
             if (e.NewItems != null)
@@ -123,6 +138,98 @@ namespace Agebull.EntityModel
                 OnRemove(item);
             }
             base.OnCollectionChanged(e);
+        }
+
+        #endregion
+
+        #region 状态修改事件
+
+        /// <summary>
+        ///     冻结
+        /// </summary>
+        [JsonIgnore]
+        public bool IsModify => modified > 0 || isNew || haseNewOrRemove;
+
+        public void ResetModify(bool isSaved)
+        {
+            modified = 0;
+            isNew = !isSaved;
+            haseNewOrRemove = false;
+            Parent.ValueRecords.Add(Name, false);
+            if (WorkContext.InLoding)
+                return;
+            NotificationObject.InvokeInUiThread(RaiseStatusChangedInner, new IsModifyEventArgs(IsModify));
+        }
+
+        public void SetIsNew()
+        {
+            isNew = true;
+            modified = Count;
+            haseNewOrRemove = false;
+            Parent.ValueRecords.Add(Name, false);
+            if (WorkContext.InLoding)
+                return;
+            NotificationObject.InvokeInUiThread(RaiseStatusChangedInner, new IsModifyEventArgs(IsModify));
+        }
+
+        [JsonIgnore]
+        int modified;
+        [JsonIgnore]
+        bool isNew;
+        [JsonIgnore]
+        bool haseNewOrRemove;
+
+        public void CheckModify()
+        {
+            foreach (var item in this)
+                item.CheckModify();
+
+            modified = this.Count(p => p.IsModify);
+            Parent.ValueRecords.Add(Name, IsModify);
+            Parent.CheckModify();
+            //NotificationObject.InvokeInUiThread(RaiseStatusChangedInner, new IsModifyEventArgs(IsModify));
+        }
+
+        private void OnItemIsModifyChanged(object sender, IsModifyEventArgs e)
+        {
+            CheckModify();
+        }
+
+        /// <summary>
+        ///     状态变化事件
+        /// </summary>
+        private event IsModifyEventHandler statusChanged;
+
+        /// <summary>
+        ///     状态变化事件
+        /// </summary>
+        public event IsModifyEventHandler IsModifyChanged
+        {
+            add
+            {
+                statusChanged -= value;
+                statusChanged += value;
+            }
+            remove => statusChanged -= value;
+        }
+
+        /// <summary>
+        ///     发出状态变化事件
+        /// </summary>
+        /// <param name="args">属性</param>
+        private void RaiseStatusChangedInner(IsModifyEventArgs args)
+        {
+            if (WorkContext.InLoding)
+                return;
+            try
+            {
+                statusChanged?.Invoke(this, args);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex, "NotificationObject.RaiseStatusChangedInner");
+                throw;
+            }
         }
 
         #endregion

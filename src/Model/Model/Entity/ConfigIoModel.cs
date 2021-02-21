@@ -132,7 +132,8 @@ namespace Agebull.EntityModel.Designer
         public void Load(string sluFile)
         {
             Context.StateMessage = "正在载入...";
-            Context.Solution = ConfigLoader.Load(sluFile);
+            using (WorkModelScope.CreateScope(WorkModel.Loding))
+                Context.Solution = ConfigLoader.Load(sluFile);
             Context.StateMessage = "载入成功";
             Model.OnSolutionChanged();
         }

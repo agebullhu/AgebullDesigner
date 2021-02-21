@@ -361,7 +361,11 @@ namespace Agebull.EntityModel.Designer
         string FieldIcon(IPropertyConfig property)
         {
             if (property.IsPrimaryKey)
-                return  "主键列";
+                return "主键列";
+            if (property.DataBaseField.IsLinkKey)
+                return "外键列";
+            if (property.DataBaseField.IsLinkField)
+                return "链接列"; 
             if (property.IsInterfaceField)
                 return "接口列";
             if (property.DataBaseField.IsText || property.DataBaseField.IsBlob)

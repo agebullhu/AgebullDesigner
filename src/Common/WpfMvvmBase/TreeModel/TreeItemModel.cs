@@ -30,7 +30,16 @@ namespace Agebull.EntityModel
             {
                 pp.PropertyChanged += OnModelPropertyChanged;
             }
+            if (source is IModifyObject mo)
+            {
+                mo.IsModifyChanged += Mo_IsModifyChanged;
+            }
             Source = source as NotificationObject;
+        }
+
+        private void Mo_IsModifyChanged(object sender, IsModifyEventArgs e)
+        {
+            BeginInvokeInUiThread(() => StatusIconName = SyncStatusImageAutomatic());
         }
 
         /// <summary>

@@ -29,7 +29,7 @@ namespace Agebull.EntityModel.Config
        /// <remark>
        /// 是否关系字段
        /// </remark>
-       [IgnoreDataMember, JsonIgnore]
+       [JsonIgnore]
        [Category(@""), DisplayName(@"是否关系字段"), Description("是否关系字段")]
        public bool IsRelationField
        {
@@ -38,7 +38,7 @@ namespace Agebull.EntityModel.Config
            {
                if (_isRelationField == value)
                    return;
-               BeforePropertyChanged(nameof(IsRelationField), _isRelationField, value);
+               BeforePropertyChange(nameof(IsRelationField), _isRelationField, value);
                _isRelationField = value;
                OnPropertyChanged(nameof(IsRelationField));
            }
@@ -56,7 +56,7 @@ namespace Agebull.EntityModel.Config
        /// <remark>
        /// 是否关系值
        /// </remark>
-       [IgnoreDataMember, JsonIgnore]
+       [JsonIgnore]
        [Category(@""), DisplayName(@"是否关系值"), Description("是否关系值")]
        public bool IsRelationValue
        {
@@ -65,7 +65,7 @@ namespace Agebull.EntityModel.Config
            {
                if (_isRelationValue == value)
                    return;
-               BeforePropertyChanged(nameof(IsRelationValue), _isRelationValue, value);
+               BeforePropertyChange(nameof(IsRelationValue), _isRelationValue, value);
                _isRelationValue = value;
                OnPropertyChanged(nameof(IsRelationValue));
            }
@@ -83,7 +83,7 @@ namespace Agebull.EntityModel.Config
        /// <remark>
        /// 是否关系数组
        /// </remark>
-       [IgnoreDataMember, JsonIgnore]
+       [JsonIgnore]
        [Category(@""), DisplayName(@"是否关系数组"), Description("是否关系数组")]
        public bool IsRelationArray
        {
@@ -92,7 +92,7 @@ namespace Agebull.EntityModel.Config
            {
                if (_isRelationArray == value)
                    return;
-               BeforePropertyChanged(nameof(IsRelationArray), _isRelationArray, value);
+               BeforePropertyChange(nameof(IsRelationArray), _isRelationArray, value);
                _isRelationArray = value;
                OnPropertyChanged(nameof(IsRelationArray));
            }
@@ -110,7 +110,7 @@ namespace Agebull.EntityModel.Config
        /// <remark>
        /// 是否扩展数组
        /// </remark>
-       [IgnoreDataMember, JsonIgnore]
+       [JsonIgnore]
        [Category(@""), DisplayName(@"是否扩展数组"), Description("是否扩展数组")]
        public bool IsExtendArray
        {
@@ -119,7 +119,7 @@ namespace Agebull.EntityModel.Config
            {
                if (_isExtendArray == value)
                    return;
-               BeforePropertyChanged(nameof(IsExtendArray), _isExtendArray, value);
+               BeforePropertyChange(nameof(IsExtendArray), _isExtendArray, value);
                _isExtendArray = value;
                OnPropertyChanged(nameof(IsExtendArray));
            }
@@ -183,7 +183,7 @@ namespace Agebull.EntityModel.Config
     /// 例  ID:*,颜色,EID:#Equipments 解析结果: 两个属性的对象,ID为整数,颜色为文本,EID为关联到Equipments表的主键字段
     /// 特殊说明:如果是否为关系表为真,只按 表名 解析成表间一对多关系
     /// </remark>
-    [IgnoreDataMember, JsonIgnore]
+    [JsonIgnore]
     [Category(@"扩展配置(过时)"), DisplayName(@"扩展组合规划"), Description(ExtendRole_Description)]
     public string ExtendRole
     {
@@ -192,7 +192,7 @@ namespace Agebull.EntityModel.Config
         {
             if (_extendRole == value)
                 return;
-            BeforePropertyChanged(nameof(ExtendRole), _extendRole, value);
+            BeforePropertyChange(nameof(ExtendRole), _extendRole, value);
             _extendRole = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
             OnPropertyChanged(nameof(ExtendRole));
         }
@@ -210,7 +210,7 @@ namespace Agebull.EntityModel.Config
     /// <remark>
     /// 值分隔符
     /// </remark>
-    [IgnoreDataMember, JsonIgnore]
+    [JsonIgnore]
     [Category(@"扩展配置(过时)"), DisplayName(@"值分隔符"), Description("值分隔符")]
     public string ValueSeparate
     {
@@ -219,7 +219,7 @@ namespace Agebull.EntityModel.Config
         {
             if (_valueSeparate == value)
                 return;
-            BeforePropertyChanged(nameof(ValueSeparate), _valueSeparate, value);
+            BeforePropertyChange(nameof(ValueSeparate), _valueSeparate, value);
             _valueSeparate = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
             OnPropertyChanged(nameof(ValueSeparate));
         }
@@ -237,7 +237,7 @@ namespace Agebull.EntityModel.Config
     /// <remark>
     /// 数组分隔符
     /// </remark>
-    [IgnoreDataMember, JsonIgnore]
+    [JsonIgnore]
     [Category(@"扩展配置(过时)"), DisplayName(@"数组分隔符"), Description("数组分隔符")]
     public string ArraySeparate
     {
@@ -246,7 +246,7 @@ namespace Agebull.EntityModel.Config
         {
             if (_arraySeparate == value)
                 return;
-            BeforePropertyChanged(nameof(ArraySeparate), _arraySeparate, value);
+            BeforePropertyChange(nameof(ArraySeparate), _arraySeparate, value);
             _arraySeparate = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
             OnPropertyChanged(nameof(ArraySeparate));
         }
@@ -269,7 +269,7 @@ namespace Agebull.EntityModel.Config
     /// <remark>
     /// 是否扩展数组,是则解析为二维数组,否解析为一维数组
     /// </remark>
-    [IgnoreDataMember, JsonIgnore]
+    [JsonIgnore]
     [Category(@"扩展配置(过时)"), DisplayName(@"是否扩展数组"), Description(ExtendArray_Description)]
     public bool ExtendArray
     {
@@ -278,7 +278,7 @@ namespace Agebull.EntityModel.Config
         {
             if (_extendArray == value)
                 return;
-            BeforePropertyChanged(nameof(ExtendArray), _extendArray, value);
+            BeforePropertyChange(nameof(ExtendArray), _extendArray, value);
             _extendArray = value;
             OnPropertyChanged(nameof(ExtendArray));
         }
@@ -309,7 +309,7 @@ namespace Agebull.EntityModel.Config
     /// 是的情况:1,2,3#红,黄,绿,第一组是ID属性,第二组是颜色属性,解析后为
     /// 否的情况:1,红#2,黄#3,绿,分别对应三组
     /// </remark>
-    [IgnoreDataMember, JsonIgnore]
+    [JsonIgnore]
     [Category(@"扩展配置(过时)"), DisplayName(@"是否值对分隔方式"), Description(IsKeyValueArray_Description)]
     public bool IsKeyValueArray
     {
@@ -318,7 +318,7 @@ namespace Agebull.EntityModel.Config
         {
             if (_isKeyValueArray == value)
                 return;
-            BeforePropertyChanged(nameof(IsKeyValueArray), _isKeyValueArray, value);
+            BeforePropertyChange(nameof(IsKeyValueArray), _isKeyValueArray, value);
             _isKeyValueArray = value;
             OnPropertyChanged(nameof(IsKeyValueArray));
         }
@@ -341,7 +341,7 @@ namespace Agebull.EntityModel.Config
     /// <remark>
     /// 是否为关系表,是则扩展组合规划 按 表名 解析成表间一对多关系
     /// </remark>
-    [IgnoreDataMember, JsonIgnore]
+    [JsonIgnore]
     [Category(@"扩展配置(过时)"), DisplayName(@"是否为关系表"), Description(IsRelation_Description)]
     public bool IsRelation
     {
@@ -350,7 +350,7 @@ namespace Agebull.EntityModel.Config
         {
             if (_isRelation == value)
                 return;
-            BeforePropertyChanged(nameof(IsRelation), _isRelation, value);
+            BeforePropertyChange(nameof(IsRelation), _isRelation, value);
             _isRelation = value;
             OnPropertyChanged(nameof(IsRelation));
         }
@@ -368,7 +368,7 @@ namespace Agebull.EntityModel.Config
     /// <remark>
     /// 扩展对象属性名称
     /// </remark>
-    [IgnoreDataMember, JsonIgnore]
+    [JsonIgnore]
     [Category(@"扩展配置(过时)"), DisplayName(@"扩展对象属性名称"), Description("扩展对象属性名称")]
     public string ExtendPropertyName
     {
@@ -377,7 +377,7 @@ namespace Agebull.EntityModel.Config
         {
             if (_extendPropertyName == value)
                 return;
-            BeforePropertyChanged(nameof(ExtendPropertyName), _extendPropertyName, value);
+            BeforePropertyChange(nameof(ExtendPropertyName), _extendPropertyName, value);
             _extendPropertyName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
             OnPropertyChanged(nameof(ExtendPropertyName));
         }
@@ -395,7 +395,7 @@ namespace Agebull.EntityModel.Config
     /// <remark>
     /// 扩展对象对象名称
     /// </remark>
-    [IgnoreDataMember, JsonIgnore]
+    [JsonIgnore]
     [Category(@"扩展配置(过时)"), DisplayName(@"扩展对象对象名称"), Description("扩展对象对象名称")]
     public string ExtendClassName
     {
@@ -404,7 +404,7 @@ namespace Agebull.EntityModel.Config
         {
             if (_extendClassName == value)
                 return;
-            BeforePropertyChanged(nameof(ExtendClassName), _extendClassName, value);
+            BeforePropertyChange(nameof(ExtendClassName), _extendClassName, value);
             _extendClassName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
             OnPropertyChanged(nameof(ExtendClassName));
         }
@@ -422,7 +422,7 @@ namespace Agebull.EntityModel.Config
     /// <remark>
     /// 扩展对象对象已定义
     /// </remark>
-    [IgnoreDataMember, JsonIgnore]
+    [JsonIgnore]
     [Category(@"扩展配置(过时)"), DisplayName(@"扩展对象对象已定义"), Description("扩展对象对象已定义")]
     public bool ExtendClassIsPredestinate
     {
@@ -431,7 +431,7 @@ namespace Agebull.EntityModel.Config
         {
             if (_extendClassIsPredestinate == value)
                 return;
-            BeforePropertyChanged(nameof(ExtendClassIsPredestinate), _extendClassIsPredestinate, value);
+            BeforePropertyChange(nameof(ExtendClassIsPredestinate), _extendClassIsPredestinate, value);
             _extendClassIsPredestinate = value;
             OnPropertyChanged(nameof(ExtendClassIsPredestinate));
         }

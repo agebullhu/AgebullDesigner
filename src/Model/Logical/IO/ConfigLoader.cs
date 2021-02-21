@@ -25,6 +25,7 @@ namespace Agebull.EntityModel.Designer
         /// <param name="sluFile"></param>
         public static SolutionConfig Load(string sluFile)
         {
+            GlobalConfig.Global.Clear();
             GlobalConfig.ClearConfigDictionary();
             GlobalConfig.GlobalSolution = LoadSolution(GlobalConfig.CheckPath(GlobalConfig.RootPath, "Global"), "global.json", true);
 
@@ -47,7 +48,7 @@ namespace Agebull.EntityModel.Designer
 
         public static void First(ConfigBase cfg)
         {
-            cfg.IsModify = false;
+            cfg.ResetModify(true);
         }
 
         public static SolutionConfig LoadSolution(string directory, string file, bool isGlobal)

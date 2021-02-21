@@ -24,7 +24,7 @@ namespace Agebull.EntityModel
         /// <param name="property">属性</param>
         /// <param name="oldValue">旧值</param>
         /// <param name="newValue">新值</param>
-        void BeforePropertyChanged(object config, string property, object oldValue, object newValue)
+        void BeforePropertyChange(object config, string property, object oldValue, object newValue)
         {
             Target = config;
             var scope = NameEventScope.CreateScope(config, this.GetTypeName(), property);
@@ -32,7 +32,7 @@ namespace Agebull.EntityModel
                 return;
             using (scope)
             {
-                BeforePropertyChanged(property, oldValue, newValue);
+                BeforePropertyChange(property, oldValue, newValue);
             }
         }
         /// <summary>
@@ -41,7 +41,7 @@ namespace Agebull.EntityModel
         /// <param name="property">属性</param>
         /// <param name="oldValue">旧值</param>
         /// <param name="newValue">新值</param>
-        void BeforePropertyChanged(string property, object oldValue, object newValue)
+        void BeforePropertyChange(string property, object oldValue, object newValue)
         {
         }
         /// <summary>
@@ -104,7 +104,7 @@ namespace Agebull.EntityModel
                 return;
             using (scope)
             {
-                using (WorkModelScope.CreateScope(WorkModel.Repair))
+                using (WorkModelScope.CreateScope(WorkModel.Loding))
                     OnLoad();
             }
         }

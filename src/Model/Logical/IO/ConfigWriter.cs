@@ -72,7 +72,7 @@ namespace Agebull.EntityModel.Designer
                 string json = JsonConvert.SerializeObject(config);
                 File.WriteAllText(filename, json, Encoding.UTF8);
                 config.SaveFileName = filename;
-                config.Look(p => p.IsModify = false);
+                config.Look(p => p.ResetModify(true));
             }
             catch (Exception e)
             {

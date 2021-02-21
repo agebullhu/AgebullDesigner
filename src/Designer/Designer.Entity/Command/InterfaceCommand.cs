@@ -95,6 +95,7 @@ namespace Agebull.EntityModel.Designer
             };
             property.DataBaseField = new DataBaseFieldConfig
             {
+                Parent = entity.DataTable,
                 DbFieldName = "memo",
                 Property = property,
                 DbNullable = true,

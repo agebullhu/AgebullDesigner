@@ -40,7 +40,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     名称
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"名称")]
+        [JsonIgnore, Category("设计支持"), DisplayName(@"名称")]
         public virtual string Name
         {
             get => _name;
@@ -51,7 +51,7 @@ namespace Agebull.EntityModel.Config
                 {
                     return;
                 }
-                BeforePropertyChanged(nameof(Name), _name, now);
+                BeforePropertyChange(nameof(Name), _name, now);
                 _name = now;
                 RaisePropertyChanged(nameof(Name));
             }
@@ -66,7 +66,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     标题
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"标题")]
+        [JsonIgnore, Category("设计支持"), DisplayName(@"标题")]
         public virtual string Caption
         {
             get => notNameCaptionCheck ? _caption: WorkContext.InCoderGenerating ? _caption ?? _name : _caption;
@@ -79,7 +79,7 @@ namespace Agebull.EntityModel.Config
                 }
                 if (!notNameCaptionCheck && _name.IsMe(now))
                     now = null;
-                BeforePropertyChanged(nameof(Caption), _caption, now);
+                BeforePropertyChange(nameof(Caption), _caption, now);
                 _caption = string.IsNullOrWhiteSpace(now) ? null : now.Trim();
                 RaisePropertyChanged(nameof(Caption));
             }
@@ -94,7 +94,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     说明
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"说明")]
+        [JsonIgnore, Category("设计支持"), DisplayName(@"说明")]
         public virtual string Description
         {
             get => notNameCaptionCheck ? _description : WorkContext.InCoderGenerating ? _description ?? Caption : _description;
@@ -107,7 +107,7 @@ namespace Agebull.EntityModel.Config
                 }
                 if (!notNameCaptionCheck && Caption.IsMe(now))
                     now = null;
-                BeforePropertyChanged(nameof(Description), _description, now);
+                BeforePropertyChange(nameof(Description), _description, now);
                 _description = now;
                 RaisePropertyChanged(nameof(Description));
             }
@@ -119,7 +119,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 参见
         /// </summary>
-        [IgnoreDataMember, JsonIgnore, Category("设计支持"), DisplayName(@"参见")]
+        [JsonIgnore, Category("设计支持"), DisplayName(@"参见")]
         public virtual string Remark
         {
             get => _remark;
@@ -130,7 +130,7 @@ namespace Agebull.EntityModel.Config
                 {
                     return;
                 }
-                BeforePropertyChanged(nameof(Description), _description, now);
+                BeforePropertyChange(nameof(Description), _description, now);
                 _remark = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 RaisePropertyChanged(nameof(Description));
             }

@@ -13,14 +13,14 @@ namespace Agebull.EntityModel.Config.V2021
     {
         #region MyRegion
 
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         EntityConfig _primary;
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         EntityConfig _foreign;
 
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         FieldConfig _primaryField;
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         FieldConfig _foreignField;
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         /// 同步写入
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("数据库"), DisplayName("同步写入"), Description("同步写入")]
         public bool CanWrite
         {
@@ -66,7 +66,7 @@ namespace Agebull.EntityModel.Config.V2021
             {
                 if (_canWrite == value)
                     return;
-                BeforePropertyChanged(nameof(CanWrite), _canWrite, value);
+                BeforePropertyChange(nameof(CanWrite), _canWrite, value);
                 _canWrite = value;
                 OnPropertyChanged(nameof(CanWrite));
             }
@@ -81,7 +81,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         /// 同步删除
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("数据库"), DisplayName("同步删除"), Description("同步删除")]
         public bool CanDelete
         {
@@ -90,7 +90,7 @@ namespace Agebull.EntityModel.Config.V2021
             {
                 if (canDelete == value)
                     return;
-                BeforePropertyChanged(nameof(CanDelete), canDelete, value);
+                BeforePropertyChange(nameof(CanDelete), canDelete, value);
                 canDelete = value;
                 OnPropertyChanged(nameof(CanDelete));
             }
@@ -108,7 +108,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <remark>
         /// 主表
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("数据库"), DisplayName("主表"), Description("主表")]
         public string PrimaryTable
         {
@@ -117,7 +117,7 @@ namespace Agebull.EntityModel.Config.V2021
             {
                 if (_primaryTable == value)
                     return;
-                BeforePropertyChanged(nameof(PrimaryTable), _primaryTable, value);
+                BeforePropertyChange(nameof(PrimaryTable), _primaryTable, value);
                 _primary = null; _primaryField = null;
                 _primaryTable = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(PrimaryTable));
@@ -136,7 +136,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <remark>
         /// 主键
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("数据库"), DisplayName("主键"), Description("主表连接字段名称")]
         public string PrimaryKey
         {
@@ -145,7 +145,7 @@ namespace Agebull.EntityModel.Config.V2021
             {
                 if (_primaryKey == value)
                     return;
-                BeforePropertyChanged(nameof(PrimaryKey), _primaryKey, value);
+                BeforePropertyChange(nameof(PrimaryKey), _primaryKey, value);
                 _primaryField = null;
                 _primaryKey = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(PrimaryKey));
@@ -164,7 +164,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <remark>
         /// 子表
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("数据库"), DisplayName("子表"), Description("关联表")]
         public string ForeignTable
         {
@@ -173,7 +173,7 @@ namespace Agebull.EntityModel.Config.V2021
             {
                 if (_foreignTable == value)
                     return;
-                BeforePropertyChanged(nameof(ForeignTable), _foreignTable, value);
+                BeforePropertyChange(nameof(ForeignTable), _foreignTable, value);
                 _foreign = null; _foreignField = null;
                 _foreignTable = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(ForeignTable));
@@ -192,7 +192,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <remark>
         /// 关联表的外键名称
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("数据库"), DisplayName("外键"), Description("关联表的外键名称")]
         public string ForeignKey
         {
@@ -201,7 +201,7 @@ namespace Agebull.EntityModel.Config.V2021
             {
                 if (_foreignKey == value)
                     return;
-                BeforePropertyChanged(nameof(ForeignKey), _foreignKey, value);
+                BeforePropertyChange(nameof(ForeignKey), _foreignKey, value);
                 _foreignField = null;
                 _foreignKey = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(ForeignKey));
@@ -220,7 +220,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <remark>
         /// 连接条件
         /// </remark>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("数据库"), DisplayName("连接条件"), Description("连接条件")]
         public string Condition
         {
@@ -229,7 +229,7 @@ namespace Agebull.EntityModel.Config.V2021
             {
                 if (_Condition == value)
                     return;
-                BeforePropertyChanged(nameof(Condition), _Condition, value);
+                BeforePropertyChange(nameof(Condition), _Condition, value);
                 _Condition = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
                 OnPropertyChanged(nameof(Condition));
             }
@@ -245,7 +245,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         /// 表连接类型
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("数据库"), DisplayName("表连接类型")]
         public EntityJoinType JoinType
         {
@@ -254,7 +254,7 @@ namespace Agebull.EntityModel.Config.V2021
             {
                 if (_joinType == value)
                     return;
-                BeforePropertyChanged(nameof(JoinType), _joinType, value);
+                BeforePropertyChange(nameof(JoinType), _joinType, value);
                 _joinType = value;
                 OnPropertyChanged(nameof(JoinType));
             }
@@ -269,7 +269,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <summary>
         /// 关系模型类型
         /// </summary>
-        [IgnoreDataMember, JsonIgnore]
+        [JsonIgnore]
         [Category("数据库"), DisplayName("关系模型类型")]
         public ReleationModelType ModelType
         {
@@ -278,7 +278,7 @@ namespace Agebull.EntityModel.Config.V2021
             {
                 if (_modelType == value)
                     return;
-                BeforePropertyChanged(nameof(ModelType), _modelType, value);
+                BeforePropertyChange(nameof(ModelType), _modelType, value);
                 _modelType = value;
                 OnPropertyChanged(nameof(ModelType));
             }

@@ -3,17 +3,8 @@
     /// <summary>
     ///     配置基础
     /// </summary>
-    public interface ISimpleConfig : IKey
+    public interface ISimpleConfig : IKey, IModifyObject
     {
-        /// <summary>
-        ///     是否修改
-        /// </summary>
-        bool IsModify
-        {
-            get;
-            set;
-        }
-
         /// <summary>
         ///     名称
         /// </summary>
