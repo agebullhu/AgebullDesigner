@@ -84,7 +84,6 @@ namespace Agebull.EntityModel.Designer
                 (FormatPrepare, Format.DoFormatCSharp, FormatEnd)
                 {
                     IsButton=true,
-
                     Caption = "规整文本(C#风格属性)",
                     IconName = "C#"
                 },

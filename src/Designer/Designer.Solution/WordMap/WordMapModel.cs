@@ -188,6 +188,8 @@ namespace Agebull.EntityModel.Designer
             {
                 Name = "Reload",
                 IsButton = true,
+
+                DoConfirm = true,
                 Caption = "重新载入",
                 Action = p => Reload(),
                 IconName = "载入"

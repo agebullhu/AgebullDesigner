@@ -122,14 +122,22 @@ namespace Agebull.Common.Mvvm
         string Tag { get; set; }
 
         /// <summary>
-        ///     无需确认
+        ///  显示确认
         /// </summary>
-        bool NoConfirm
+        bool DoConfirm
         {
             get;
             set;
         }
 
+        /// <summary>
+        ///     显示显示结果消息
+        /// </summary>
+        public bool ShowResultMessage
+        {
+            get;
+            set;
+        }
     }
     public static class CommandItemHelper
     {
@@ -142,7 +150,6 @@ namespace Agebull.Common.Mvvm
         public static void CopyFrom(this ICommandItem dist, ICommandItem sour)
         {
             dist.Key = sour.Key ?? sour.GetHashCode().ToString();
-            dist.NoConfirm = sour.NoConfirm;
             dist.Name = sour.Name;
             dist.Tag = sour.Tag;
             dist.Index = sour.Index;
@@ -158,6 +165,8 @@ namespace Agebull.Common.Mvvm
             dist.IconName = sour.IconName;
             dist.OnlyIcon = sour.OnlyIcon;
             dist.ConfirmMessage = sour.ConfirmMessage;
+            dist.DoConfirm = sour.DoConfirm;
+            dist.ShowResultMessage = sour.ShowResultMessage;
         }
     }
 }

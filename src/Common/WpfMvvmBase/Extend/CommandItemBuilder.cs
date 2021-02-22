@@ -11,6 +11,11 @@ namespace Agebull.EntityModel.Designer
     public class CommandItemBuilder : CommandConfig, ICommandItemBuilder
     {
         /// <summary>
+        /// 构造
+        /// </summary>
+        public CommandItemBuilder() { }
+
+        /// <summary>
         /// 命令
         /// </summary>
         public Action<object> Action { get; set; }
@@ -73,7 +78,6 @@ namespace Agebull.EntityModel.Designer
         }
     }
 
-
     /// <summary>
     /// 表示一个迭代命令生成器
     /// </summary>
@@ -135,6 +139,7 @@ namespace Agebull.EntityModel.Designer
             SignleSoruce = false;
             TargetType = typeof(TParameter);
         }
+
         /// <summary>
         /// 转为命令对象
         /// </summary>
@@ -151,6 +156,5 @@ namespace Agebull.EntityModel.Designer
             return item;
         }
     }
-
 
 }

@@ -38,15 +38,15 @@ namespace Agebull.EntityModel.Designer
                 RaisePropertyChanged(nameof(Config));
             }
         }
-
-        public CommandItemBase CancelCommand => new CommandItem
+        CommandItemBase cancelCommand;
+        public CommandItemBase CancelCommand => cancelCommand ??= new CommandItem
         {
             Action = DoCancel,
             Caption = "取消",
             IconName = "取消"
         };
-
-        public CommandItemBase OkCommand => new CommandItem
+        CommandItemBase okCommand;
+        public CommandItemBase OkCommand => okCommand??= new CommandItem
         {
             Action = DoClose,
             Caption = "完成",

@@ -75,6 +75,7 @@ namespace Agebull.EntityModel
         /// <typeparam name="TDest"></typeparam>
         /// <returns></returns>
         public void DoForeach<T>(Action<T> action, bool doAction)
+            where T : class
         {
             if (doAction && this is T t)
             {
@@ -122,20 +123,23 @@ namespace Agebull.EntityModel
                 haseNewOrRemove = true;
                 GlobalTrigger.OnLoad(Parent);
                 CheckModify();
-                return;
             }
-            if (e.NewItems != null)
+            else
             {
-                foreach (var item in e.NewItems.OfType<TConfig>())
+                if (e.NewItems != null)
                 {
-                    OnAdd(item);
+                    foreach (var item in e.NewItems.OfType<TConfig>())
+                    {
+                        OnAdd(item);
+                    }
                 }
-            }
-            if (e.OldItems == null)
-                return;
-            foreach (var item in e.OldItems.OfType<TConfig>())
-            {
-                OnRemove(item);
+                if (e.OldItems != null)
+                {
+                    foreach (var item in e.OldItems.OfType<TConfig>())
+                    {
+                        OnRemove(item);
+                    }
+                }
             }
             base.OnCollectionChanged(e);
         }

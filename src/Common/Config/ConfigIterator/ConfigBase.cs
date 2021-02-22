@@ -12,9 +12,14 @@ namespace Agebull.EntityModel.Config
         {
             if (IsDiscard || IsDelete)
                 return;
-
             action(this);
             ForeachDown(action, true);
+        }
+        protected virtual int CheckType(Type type)
+        {
+            if(type == GetType())
+                return 0;
+            return 1;
         }
 
         /// <summary>
@@ -23,42 +28,42 @@ namespace Agebull.EntityModel.Config
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
         public void Foreach<T>(Action<T> action)
+            where T : class
         {
-            if (IsDiscard || IsDelete)
-                return;
             Foreach(action, false);
         }
-        //bool inForeach = false;
+
         /// <summary>
         /// 遍历
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
         public void Foreach<T>(Action<T> action, bool doAll)
+            where T : class
         {
             if (IsDiscard || IsDelete)
                 return;
-            //if (inForeach)
-            //    return;
-            try
+
+            if (typeof(T) == typeof(ConfigDesignOption))
             {
-                //inForeach = true;
-                if (Option is T t2)
-                {
-                    action(t2);
-                }
-                if (this is T t)
-                {
-                    action(t);
-                    if (!doAll)
-                        return;
-                }
-                if (doAll || !ForeachUp(action))
-                    ForeachDown(action, doAll);
+                action(Option as T);
+                ForeachDown(action, doAll);
+                return;
             }
-            finally
+            if (this is T t)
             {
-                //inForeach = false;
+                action(t);
+                if (!doAll)
+                    return;
+            }
+            switch (CheckType(typeof(T)))
+            {
+                case -1:
+                    ForeachUp(action);
+                    break;
+                case 1:
+                    ForeachDown(action, doAll);
+                    break;
             }
         }
 
@@ -68,9 +73,8 @@ namespace Agebull.EntityModel.Config
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
         public void Look<T>(Action<T> action)
+            where T : class
         {
-            if (IsDiscard || IsDelete)
-                return;
             Foreach(action, true);
         }
 
@@ -79,9 +83,9 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        protected virtual bool ForeachUp<T>(Action<T> action)
+        protected virtual void ForeachUp<T>(Action<T> action)
+            where T : class
         {
-            return false;
         }
 
         /// <summary>
@@ -90,6 +94,7 @@ namespace Agebull.EntityModel.Config
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         protected virtual void ForeachDown<T>(Action<T> action, bool doAction)
+            where T : class
         {
         }
 
@@ -102,23 +107,6 @@ namespace Agebull.EntityModel.Config
             GlobalTrigger.OnLoad(this);
             GlobalTrigger.OnLoad(Option);
         }
-        /*
-        public override void ResetModify(bool isSaved)
-        {
-            ForeachDown<NotificationObject>(p=>p.ResetModify(isSaved),true);
-            base.ResetModify(isSaved);
-        }
-        public override void SetIsNew()
-        {
-            ForeachDown<NotificationObject>(p => p.SetIsNew(), true);
-            base.SetIsNew();
-        }
-        
-        public override void CheckModify()
-        {
-            ForeachDown<NotificationObject>(p => p.CheckModify(), true);
-            base.CheckModify();
-        }*/
     }
 
     partial class SolutionConfig
@@ -129,6 +117,7 @@ namespace Agebull.EntityModel.Config
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         protected override void ForeachDown<T>(Action<T> action, bool doAction)
+            where T : class
         {
             foreach (var project in Projects)
             {
@@ -139,12 +128,33 @@ namespace Agebull.EntityModel.Config
 
     partial class ProjectConfig
     {
+        protected override int CheckType(Type type)
+        {
+            if (type == GetType())
+                return 0;
+            if (type ==typeof(SolutionConfig))
+                return -1;
+            return 1;
+        }
+
+        /// <summary>
+        /// 向下遍历
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        protected override void ForeachUp<T>(Action<T> action)
+            where T : class
+        {
+            Solution.Foreach(action);
+        }
+
         /// <summary>
         /// 向下遍历
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         protected override void ForeachDown<T>(Action<T> action, bool doAction)
+            where T : class
         {
             Entities.DoForeach(action, doAction);
             Models.DoForeach(action, doAction);
@@ -153,7 +163,7 @@ namespace Agebull.EntityModel.Config
         }
         public override void OnLoad()
         {
-            Entities.OnLoad(nameof(Entities),this);
+            Entities.OnLoad(nameof(Entities), this);
             Models.OnLoad(nameof(Models), this);
             Enums.OnLoad(nameof(Enums), this);
             ApiItems.OnLoad(nameof(ApiItems), this);
@@ -164,19 +174,24 @@ namespace Agebull.EntityModel.Config
 
     partial class EntityClassify
     {
+        protected override int CheckType(Type type)
+        {
+            if (type == GetType() || type == typeof(ApiItem) || type == typeof(EnumConfig))
+                return 0;
+            if (type == typeof(SolutionConfig) || type == typeof(ProjectConfig))
+                return -1;
+            return 1;
+        }
+
         /// <summary>
         /// 向上遍历
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        protected override bool ForeachUp<T>(Action<T> action)
+        protected override void ForeachUp<T>(Action<T> action)
+            where T : class
         {
-            if (ConfigIteratorExtension.IsParentOrFriendType<T>(typeof(ProjectConfig), typeof(SolutionConfig)))
-            {
-                Project.Foreach(action);
-                return true;
-            }
-            return false;
+            Project.Foreach(action);
         }
 
         /// <summary>
@@ -185,26 +200,31 @@ namespace Agebull.EntityModel.Config
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         protected override void ForeachDown<T>(Action<T> action, bool doAction)
+            where T : class
         {
             Items.DoForeach(action, doAction);
         }
-
     }
     partial class ProjectChildConfigBase
     {
+        protected override int CheckType(Type type)
+        {
+            if (type == GetType())
+                return 0;
+            if (type == typeof(SolutionConfig) || type == typeof(ProjectConfig))
+                return -1;
+            return 1;
+        }
+
         /// <summary>
         /// 向上遍历
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        protected override bool ForeachUp<T>(Action<T> action)
+        protected override void ForeachUp<T>(Action<T> action)
+            where T : class
         {
-            if (ConfigIteratorExtension.IsParentOrFriendType<T>(typeof(ProjectConfig), typeof(SolutionConfig)))
-            {
-                Project.Foreach(action);
-                return true;
-            }
-            return false;
+            Project.Foreach(action);
         }
     }
     partial class EnumConfig
@@ -215,6 +235,7 @@ namespace Agebull.EntityModel.Config
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         protected override void ForeachDown<T>(Action<T> action, bool doAction)
+            where T : class
         {
             Items.DoForeach(action, doAction);
         }
@@ -228,9 +249,18 @@ namespace Agebull.EntityModel.Config
 
     partial class EntityConfigBase
     {
+        protected override int CheckType(Type type)
+        {
+            if (type == GetType()|| type == typeof(IEntityConfig))
+                return 0;
+            if (type == typeof(SolutionConfig) || type == typeof(ProjectConfig))
+                return -1;
+            return 1;
+        }
+
         public override void OnLoad()
         {
-            (DataTable as IChildrenConfig)?.OnLoad(nameof(DataTable),this);
+            (DataTable as IChildrenConfig)?.OnLoad(nameof(DataTable), this);
             //Page?.OnLoad();
             base.OnLoad();
         }
@@ -244,6 +274,7 @@ namespace Agebull.EntityModel.Config
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         protected override void ForeachDown<T>(Action<T> action, bool doAction)
+            where T : class
         {
             DataTable?.Foreach(action, doAction);
             //Page?.Foreach(action, doAction);
@@ -274,6 +305,7 @@ namespace Agebull.EntityModel.Config
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         protected override void ForeachDown<T>(Action<T> action, bool doAction)
+            where T : class
         {
             DataTable?.Foreach(action, doAction);
             //Page?.Foreach(action, doAction);
@@ -299,19 +331,24 @@ namespace Agebull.EntityModel.Config
     }
     partial class FieldConfigBase
     {
+        protected override int CheckType(Type type)
+        {
+            if (type == GetType() || type == typeof(IPropertyConfig))
+                return 0;
+            if (type == typeof(SolutionConfig) || type == typeof(ProjectConfig) || type == typeof(EntityConfig) || type == typeof(ModelConfig))
+                return -1;
+            return 1;
+        }
+
         /// <summary>
         /// 向上遍历
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        protected override bool ForeachUp<T>(Action<T> action)
+        protected override void ForeachUp<T>(Action<T> action)
+            where T : class
         {
-            if (ConfigIteratorExtension.IsParentOrFriendType<T>(typeof(IEntityConfig), typeof(ProjectConfig), typeof(SolutionConfig)))
-            {
-                Me.Entity.Foreach(action);
-                return true;
-            }
-            return false;
+            Me.Entity.Foreach(action);
         }
 
         /// <summary>
@@ -320,6 +357,7 @@ namespace Agebull.EntityModel.Config
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         protected override void ForeachDown<T>(Action<T> action, bool doAction)
+            where T : class
         {
             Me.EnumConfig?.Foreach(action, doAction);
             DataBaseField?.Foreach(action, doAction);
@@ -330,42 +368,52 @@ namespace Agebull.EntityModel.Config.V2021
 {
     partial class EntityExtendConfig
     {
+        protected override int CheckType(Type type)
+        {
+            if (type == GetType() || type == typeof(IPropertyConfig))
+                return 0;
+            if (type == typeof(SolutionConfig) || type == typeof(ProjectConfig) || type == typeof(EntityConfig) || type == typeof(ModelConfig))
+                return -1;
+            return 1;
+        }
+
         /// <summary>
         /// 向上遍历
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        protected override bool ForeachUp<T>(Action<T> action)
+        protected override void ForeachUp<T>(Action<T> action)
+            where T : class
         {
-            if (ConfigIteratorExtension.IsParentOrFriendType<T>(typeof(IEntityConfig), typeof(ProjectConfig), typeof(SolutionConfig)))
-            {
-                Entity.Foreach(action);
-                return true;
-            }
-            return false;
+            Entity.Foreach(action);
         }
     }
 
     partial class FieldExtendConfig<TParent>
     {
+        protected override int CheckType(Type type)
+        {
+            if (type == typeof(SolutionConfig) || type == typeof(ProjectConfig) || type == typeof(EntityConfig) || type == typeof(ModelConfig) || type == typeof(EntityExtendConfig))
+                return -1;
+            return 1;
+        }
+
         /// <summary>
         /// 向上遍历
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        protected override bool ForeachUp<T>(Action<T> action)
+        protected override void ForeachUp<T>(Action<T> action)
+            where T : class
         {
-            if (ConfigIteratorExtension.IsParentOrFriendType<T>(typeof(IEntityConfig), typeof(ProjectConfig), typeof(SolutionConfig)))
-            {
-                Property.Foreach(action);
-                return true;
-            }
             if (ConfigIteratorExtension.IsParentOrFriendType<T>(typeof(EntityExtendConfig)))
             {
                 Parent.Foreach(action);
-                return true;
             }
-            return false;
+            else
+            {
+                Property.Foreach(action);
+            }
         }
     }
     partial class DataTableConfig
@@ -376,6 +424,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         protected override void ForeachDown<T>(Action<T> action, bool doAction)
+            where T : class
         {
             Fields.DoForeach(action, doAction);
         }
@@ -387,6 +436,15 @@ namespace Agebull.EntityModel.Config.V2021
     }
     partial class DataBaseFieldConfig
     {
+        protected override int CheckType(Type type)
+        {
+            if (type == GetType() || type == typeof(IPropertyConfig))
+                return 0;
+            if (type == typeof(SolutionConfig) || type == typeof(ProjectConfig) || type == typeof(EntityConfig) || type == typeof(ModelConfig))
+                return -1;
+            return 1;
+        }
+
         public override void OnLoad()
         {
             Property.DataBaseField = this;

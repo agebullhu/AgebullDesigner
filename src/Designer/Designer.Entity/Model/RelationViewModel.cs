@@ -40,7 +40,6 @@ namespace Agebull.EntityModel.Designer
             {
                 IsButton = true,
                 Action = AddColumns,
-                NoConfirm = true,
                 Caption = "增加行",
                 IconName = "新增"
             });
@@ -48,7 +47,6 @@ namespace Agebull.EntityModel.Designer
             {
                 IsButton = true,
                 Action = RelationDiscovery,
-                NoConfirm = true,
                 Caption = "向下关系发现",
                 IconName = "向下"
             });
@@ -56,7 +54,6 @@ namespace Agebull.EntityModel.Designer
             {
                 IsButton = true,
                 Action = LinkDiscovery,
-                NoConfirm = true,
                 Caption = "向上关系发现",
                 IconName = "向上"
             });
@@ -64,7 +61,6 @@ namespace Agebull.EntityModel.Designer
             {
                 IsButton = true,
                 Action = PasteColumns,
-                NoConfirm = true,
                 Caption = "粘贴关系",
                 IconName = "粘贴"
             });

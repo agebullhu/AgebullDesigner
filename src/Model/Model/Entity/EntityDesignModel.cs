@@ -32,7 +32,6 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItem
             {
                 IsButton = true,
-                NoConfirm = true,
                 Action = CopyColumns,
                 Caption = "¸´ÖÆÁÐ",
                 IconName = "¸´ÖÆ"
@@ -41,9 +40,8 @@ namespace Agebull.EntityModel.Designer
             {
                 IsButton = true,
                 Action = PasteColumns,
-                NoConfirm = true,
                 Caption = "Õ³ÌùÁÐ",
-                IconName  = "Õ³Ìù"
+                IconName = "Õ³Ìù"
             });
             commands.Add(new CommandItem
             {

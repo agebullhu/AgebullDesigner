@@ -42,6 +42,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         internal static void DoForeach<TDest, T>(this IEnumerable<TDest> enumerable, Action<T> action, bool doAction)
             where TDest : IConfigIterator
+            where T : class
         {
             if (enumerable == null)
                 return;

@@ -170,9 +170,9 @@ namespace Agebull.EntityModel
         /// <param name="parent"></param>
         public static void OnAdded(object parent, object config)
         {
-            if (config == null)
+            if (parent == null)
                 return;
-            var scope = NameEventScope.CreateScope(config, "Global", nameof(OnAdded));
+            var scope = NameEventScope.CreateScope(parent, "Global", nameof(OnAdded));
             if (scope == null)
                 return;
             using (scope)
@@ -180,7 +180,7 @@ namespace Agebull.EntityModel
                 foreach (var trigger in Triggers)
                 {
                     if (trigger.TargetType.IsFrientType(config))
-                        trigger.OnAdded(config, config);
+                        trigger.OnAdded(parent, config);
                 }
             }
             OnLoad(config);
@@ -202,7 +202,7 @@ namespace Agebull.EntityModel
                 foreach (var trigger in Triggers)
                 {
                     if (trigger.TargetType.IsFrientType(config))
-                        trigger.OnRemoved(config, config);
+                        trigger.OnRemoved(parent, config);
                 }
             }
         }

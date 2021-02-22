@@ -1,4 +1,6 @@
 ﻿using Agebull.EntityModel.Config;
+using Agebull.EntityModel.Config.V2021;
+using Agebull.EntityModel.RobotCoder;
 using System;
 using System.Linq;
 
@@ -9,6 +11,41 @@ namespace Agebull.EntityModel.Designer
     /// </summary>
     public sealed class PropertyTrigger : ConfigTriggerBase<FieldConfigBase>, IEventTrigger
     {
+        public override void OnAdded(object parent)
+        {
+            var property = TargetConfig as IPropertyConfig;
+            CheckDbField((IEntityConfig)parent, property);
+        }
+
+        public static void CheckDbField(IEntityConfig parent, IPropertyConfig property)
+        {
+            if (property.DataBaseField == null)
+            {
+                parent.DataTable.Add(property.DataBaseField = new DataBaseFieldConfig
+                {
+                    Property = property,
+                    Parent = parent.DataTable,
+                    DbFieldName = DataBaseHelper.ToDbFieldName(property)
+                });
+                property.DataBaseField.Copy(property.Field);
+                DataTypeHelper.StandardDataType(property);
+            }
+            else
+            {
+                if (property.DataBaseField.DbFieldName.IsMissing())
+                {
+                    property.DataBaseField.DbFieldName = DataBaseHelper.ToDbFieldName(property);
+                }
+                if (property.DataBaseField.FieldType.IsMissing())
+                {
+                    DataTypeHelper.StandardDataType(property);
+                }
+            }
+            if (!parent.EnableDataBase)
+            {
+                property.DataBaseField.IsDiscard = true;
+            }
+        }
 
         /// <summary>
         /// 规整对象

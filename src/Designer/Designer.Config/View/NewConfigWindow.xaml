@@ -7,7 +7,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
         mc:Ignorable="d"
-        Title="新增配置" WindowStartupLocation="CenterScreen" Width="520" Height="240" ResizeMode="NoResize">
+        Title="新增配置" WindowStartupLocation="CenterScreen" Width="540" Height="280" ResizeMode="NoResize">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -23,17 +23,19 @@
         <behaviors:DependencyBehavior BehaviorAction="{Binding ViewBehavior}" />
     </i:Interaction.Behaviors>
     <DockPanel>
-        <Grid DockPanel.Dock="Bottom" MinHeight="42"  Margin="10">
+        <Grid DockPanel.Dock="Bottom" MinHeight="42"  Margin="10" DataContext="{Binding}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="5" />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="2" Style="{StaticResource MyButton}" DataContext="{Binding CancelCommand}"
-                    Width="100" DockPanel.Dock="Right" />
-            <Button Grid.Column="1" Style="{StaticResource MyButton}" DataContext="{Binding OkCommand}" 
-                    Width="100" DockPanel.Dock="Right" />
+            <Border DataContext="{Binding CancelCommand}"  Grid.Column="2" Width="100" >
+                <Button Style="{StaticResource MyButton}" Width="100" />
+            </Border>
+            <Border DataContext="{Binding OkCommand}"  Grid.Column="1" Width="100" >
+                <Button Style="{StaticResource MyButton}" Width="100" />
+            </Border>
         </Grid>
         <StackPanel Style="{StaticResource LayoutPanel}" DataContext="{Binding Config}">
             <WrapPanel>
@@ -47,8 +49,7 @@
                 </StackPanel>
                 <StackPanel>
                     <Label Content="说明" />
-                    <TextBox Style="{StaticResource MidTextBox}" Height="100"
-                             Text="{Binding Description,Mode=TwoWay}" />
+                    <TextBox Style="{StaticResource MidTextBox}" Height="100" Text="{Binding Description,Mode=TwoWay}" />
                 </StackPanel>
             </WrapPanel>
         </StackPanel>

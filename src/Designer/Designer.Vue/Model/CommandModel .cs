@@ -11,6 +11,12 @@
 
 #endregion
 
+using Agebull.Common.Mvvm;
+using Agebull.EntityModel.Config;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+
 namespace Agebull.EntityModel.Designer
 {
     internal class CommandViewModel : EditorViewModelBase<CommandModel>
@@ -33,6 +39,54 @@ namespace Agebull.EntityModel.Designer
         }
 
         #endregion
+
+        public override void CreateCommands(IList<CommandItemBase> commands)
+        {
+            commands.Add(new CommandItem
+            {
+                IsButton=true,
+                SignleSoruce = true,
+                Action = AddCommand,
+                Caption = "新增命令",
+                IconName = "新增"
+            });
+            commands.Add(new CommandItem
+            {
+                IsButton = true,
+                SignleSoruce = true,
+                Action = RemoveCommand,
+                Caption = "删除命令",
+                IconName = "删除"
+            });
+        }
+
+        /// <summary>
+        /// 新增命令
+        /// </summary>
+        /// <param name="entity"></param>
+        public void AddCommand(object arg)
+        {
+            if (Model.CreateNew("新增命令", out UserCommandConfig config))
+                Context.SelectModel.Add(config);
+        }
+
+        /// <summary>
+        /// 新增命令
+        /// </summary>
+        /// <param name="entity"></param>
+        public void RemoveCommand(object arg)
+        {
+            if (Context.SelectModel == null || Context.SelectColumns == null ||
+                MessageBox.Show("确认删除所选行吗?", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+            {
+                return;
+            }
+            foreach (var col in Context.SelectColumns.OfType<UserCommandConfig>().ToArray())
+            {
+                Context.SelectModel.Commands.Remove(col);
+            }
+            Context.SelectColumns = null;
+        }
 
     }
 }

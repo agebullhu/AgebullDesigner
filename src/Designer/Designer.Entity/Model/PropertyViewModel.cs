@@ -38,7 +38,7 @@ namespace Agebull.EntityModel.Designer
             {
                 IsButton = true,
                 Action = RelationColumns,
-                NoConfirm = true,
+                DoConfirm = true,
                 Caption = "更新关系列",
                 IconName = "更新"
             });
@@ -46,7 +46,6 @@ namespace Agebull.EntityModel.Designer
             {
                 IsButton = true,
                 Action = PasteColumns,
-                NoConfirm = true,
                 Caption = "粘贴列",
                 IconName = "粘贴"
             });

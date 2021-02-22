@@ -99,13 +99,13 @@ namespace Agebull.EntityModel.Designer
                     {
                         Action =arg=> Model.ConfigIo.Load(),
                         Caption = "打开",
-                        NoConfirm=true,
                         IconName  ="文件夹"
                     },
                     new CommandItem
                     {
                         Action =arg=> Model.ConfigIo.ReLoad(),
                         Caption = "重新载入",
+                        DoConfirm=true,
                         IconName  ="载入"
                     },
                     CommandItemBase.Line,
@@ -113,20 +113,17 @@ namespace Agebull.EntityModel.Designer
                     {
                         Action = arg=>Model.ConfigIo.LoadGlobal(),
                         Caption = "全局",
-                        NoConfirm=true,
                         IconName  ="地球"
                     },
                     new CommandItem
                     {
                         Action = arg=>Model.ConfigIo.LoadLocal(),
                         Caption = "本地",
-                        NoConfirm=true,
                         IconName  ="本地"
                     },
                     CommandItemBase.Line,
                     new CommandItem
                     {
-                        NoConfirm=true,
                         Caption = "保存实体",
                         SoruceView = "entity",
                         Action = arg=>Model.ConfigIo.SaveEntity(),
@@ -135,7 +132,6 @@ namespace Agebull.EntityModel.Designer
                     new CommandItem
                     {
                         IsButton=true,
-                        NoConfirm=true,
                         Action = arg=>Model.ConfigIo.SaveProject(),
                         Caption = "保存项目",
                         IconName  ="保存"
@@ -143,7 +139,6 @@ namespace Agebull.EntityModel.Designer
                     new CommandItem
                     {
                         IsButton=false,
-                        NoConfirm=true,
                         Action = arg=>Model.ConfigIo.SaveSolution(),
                         Caption = "保存解决方案",
                         IconName  ="保存"
@@ -154,6 +149,7 @@ namespace Agebull.EntityModel.Designer
                     {
                         Action = arg=>Application.Current.Shutdown(),
                         Caption = "退出",
+                        DoConfirm=true,
                         IconName  ="关闭"
                     }
                 }

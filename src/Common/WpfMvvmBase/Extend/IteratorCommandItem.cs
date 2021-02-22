@@ -78,7 +78,8 @@ namespace Agebull.EntityModel.Designer
                     Trace.WriteLine($"执行命令：{Caption ?? Name}");
                     Action(config);
                     Trace.WriteLine($"执行完成：{Caption ?? Name}");
-                    ShowMessageBox("执行成功");
+                    if (ShowResultMessage)
+                        ShowMessageBox("执行成功");
                     return true;
                 }
                 catch (Exception e)
@@ -109,7 +110,8 @@ namespace Agebull.EntityModel.Designer
                 Trace.WriteLine($"执行命令：{Caption ?? Name}");
                 config.Foreach<TTargetType>(DoAction);
                 Trace.WriteLine($"执行成功：{Caption ?? Name}");
-                ShowMessageBox("执行成功");
+                if (ShowResultMessage)
+                    ShowMessageBox("执行成功");
             }
             catch (Exception e)
             {

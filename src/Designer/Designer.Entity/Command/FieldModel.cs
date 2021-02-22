@@ -63,6 +63,7 @@ namespace Agebull.EntityModel.Designer
             });
             commands.Add(new CommandItemBuilder<FieldConfig>
             {
+                DoConfirm = true,
                 Action = p => p.Entity.Remove(p),
                 Catalog = "±à¼­",
                 Caption = "É¾³ý×Ö¶Î",

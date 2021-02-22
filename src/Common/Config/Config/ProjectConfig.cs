@@ -1223,7 +1223,10 @@ namespace Agebull.EntityModel.Config
         }
 
         [JsonIgnore]
-        ISimpleConfig IChildrenConfig.Parent { get; set; }
+        ISimpleConfig IChildrenConfig.Parent { get => Parent; set=> Parent = value as SolutionConfig; }
+
+        [JsonIgnore]
+        public SolutionConfig Parent { get; set; }
 
         #endregion
 

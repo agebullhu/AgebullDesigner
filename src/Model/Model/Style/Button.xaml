@@ -18,7 +18,6 @@
         <Setter Property="MinHeight" Value="28" />
         <Setter Property="BorderBrush" Value="{x:Static SystemColors.ActiveCaptionBrush}" />
         <Setter Property="Background" Value="{x:Static SystemColors.ControlBrush}" />
-
     </Style>
 
     <DataTemplate x:Key="CommandButtonTemplate" DataType="{x:Type mvvm:CommandItem}">
@@ -31,14 +30,10 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-
                 <TextBlock Grid.Column="0" x:Name="ctrIcon"  Text="{Binding Image}" Foreground="AliceBlue"
                            Style="{StaticResource FontAwesome}" FontSize="14" Width="16" Height="16"/>
-
-
                 <TextBlock Grid.Column="0" x:Name="ctrBusy"  Text="&#x110;" Foreground="Red" Visibility="Collapsed"
                            Style="{StaticResource FontAwesome}" FontSize="14" Width="16" Height="16"/>
-                
                 <TextBlock Grid.Column="1" Text="{Binding Caption}" Margin="5,0" />
             </Grid>
         </Border>
@@ -281,89 +276,54 @@
     </Style>
     <Style TargetType="Button" x:Key="CommandButton">
         <!--修改模板属性-->
-        <Setter Property="Background"
-                    Value="{x:Null}" />
-        <Setter Property="BorderBrush"
-                    Value="{x:Null}" />
-        <Setter Property="BorderThickness"
-                    Value="0" />
-        <Setter Property="Visibility"
-                    Value="{Binding Command.Visibility}" />
-        <Setter Property="Command"
-                    Value="{Binding Command}" />
-        <Setter Property="CommandParameter"
-                    Value="{Binding Parameter}" />
+        <Setter Property="Background" Value="{x:Null}" />
+        <Setter Property="BorderBrush" Value="{x:Null}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Visibility" Value="{Binding Command.Visibility}" />
+        <Setter Property="Command" Value="{Binding Command}" />
+        <Setter Property="CommandParameter" Value="{Binding Parameter}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <ContentPresenter x:Name="PART_Content"
-                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                    <ContentPresenter x:Name="PART_Content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
                         <ContentPresenter.Content>
-                            <Border x:Name="ctrBorder"
-                                        BorderBrush="Transparent"
-                                        BorderThickness="1"
-                                        Padding="2">
+                            <Border x:Name="ctrBorder" BorderBrush="Transparent" BorderThickness="1" Padding="2" Margin="3,1">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0"
-                                               x:Name="ctrIcon"
-                                               Text="{Binding Image}" Foreground="Black"
-                                               Style="{StaticResource FontAwesome}" FontSize="14"
-                                               Width="16"
-                                               Height="16" />
+                                    <TextBlock Grid.Column="0" x:Name="ctrIcon" Text="{Binding Image}"
+                                               Style="{StaticResource FontAwesome}" FontSize="14" Width="14" Height="14" />
                                     <TextBlock Grid.Column="0" x:Name="ctrBusy"  Text="&#x110;" Foreground="Red" Visibility="Collapsed"
-                           Style="{StaticResource FontAwesome}" FontSize="14" Width="16" Height="16"/>
-                                    <TextBlock Grid.Column="1"
-                                               VerticalAlignment="Center" 
-                                                   Text="{Binding Caption}"
-                                                   Margin="5,0" />
+                                               Style="{StaticResource FontAwesome}" FontSize="14" Width="14" Height="14"/>
+                                    <TextBlock x:Name="ctrCpation" Grid.Column="1" Foreground="Black" VerticalAlignment="Center"  Text="{Binding Caption}" Margin="1,0,0,0" />
                                 </Grid>
                             </Border>
                         </ContentPresenter.Content>
                     </ContentPresenter>
                     <ControlTemplate.Triggers>
                         <!--鼠标移入移出-->
-                        <Trigger Property="IsMouseOver"
-                                     Value="True">
-                            <Setter Property="BorderBrush"
-                                        TargetName="ctrBorder"
-                                        Value="WhiteSmoke" />
-                            <Setter Property="Background"
-                                        TargetName="ctrBorder"
-                                        Value="#881116EB" />
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="BorderBrush" TargetName="ctrBorder" Value="Silver" />
+                            <Setter Property="Foreground" TargetName="ctrCpation" Value="Black" />
                             <Setter Property="Foreground" TargetName="ctrIcon" Value="Blue" />
                         </Trigger>
-                        <Trigger Property="IsMouseOver"
-                                     Value="False">
-                            <Setter Property="BorderBrush"
-                                        TargetName="ctrBorder"
-                                        Value="Transparent" />
-                            <Setter Property="Background"
-                                        TargetName="ctrBorder"
-                                        Value="Transparent" />
+                        <Trigger Property="IsMouseOver" Value="False">
+                            <Setter Property="BorderBrush" TargetName="ctrBorder" Value="Transparent" />
                             <Setter Property="Foreground" TargetName="ctrIcon" Value="Black" />
+                            <Setter Property="Foreground" TargetName="ctrCpation" Value="Black" />
                         </Trigger>
-                        <Trigger Property="IsEnabled"
-                                     Value="false">
-                            <Setter Property="Foreground"
-                                        Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        <Trigger Property="IsEnabled"  Value="False">
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                             <Setter Property="Foreground" TargetName="ctrIcon" Value="Silver" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="True">
                             <Setter Property="Foreground" TargetName="ctrIcon" Value="Black" />
                         </Trigger>
-                        <DataTrigger Binding="{Binding Command.IsBusy}"
-                                         Value="True">
-                            <Setter Property="Visibility"
-                                        TargetName="ctrIcon"
-                                        Value="Collapsed" />
-                            <Setter Property="Visibility"
-                                        TargetName="ctrBusy"
-                                        Value="Visible" />
+                        <DataTrigger Binding="{Binding Command.IsBusy}" Value="True">
+                            <Setter Property="Visibility" TargetName="ctrIcon" Value="Collapsed" />
+                            <Setter Property="Visibility" TargetName="ctrBusy" Value="Visible" />
                             <DataTrigger.EnterActions>
                                 <BeginStoryboard x:Name="_beginStoryboard1">
                                     <Storyboard>
@@ -552,7 +512,7 @@
 
     <Style TargetType="Button" x:Key="MyButton">
         <!--修改模板属性-->
-        <Setter Property="Visibility" Value="{Binding Command.Visibility}" />
+        <Setter Property="Visibility" Value="{Binding Visibility}" />
         <Setter Property="Command" Value="{Binding Command}" />
         <Setter Property="CommandParameter" Value="{Binding Parameter}" />
         <Setter Property="BorderBrush" Value="Silver"/>
