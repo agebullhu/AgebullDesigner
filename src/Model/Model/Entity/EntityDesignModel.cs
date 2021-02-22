@@ -29,28 +29,28 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            commands.Add(new CommandItem
+            commands.Add(new SimpleCommandItem
             {
                 IsButton = true,
                 Action = CopyColumns,
                 Caption = "复制列",
                 IconName = "复制"
             });
-            commands.Add(new CommandItem
+            commands.Add(new SimpleCommandItem
             {
                 IsButton = true,
                 Action = PasteColumns,
                 Caption = "粘贴列",
                 IconName = "粘贴"
             });
-            commands.Add(new CommandItem
+            commands.Add(new SimpleCommandItem
             {
                 IsButton = true,
                 Action = ClearColumns,
                 Caption = "清除列",
                 IconName = "清除"
             });
-            commands.Add(new CommandItem
+            commands.Add(new SimpleCommandItem
             {
                 IsButton = true,
                 Action = DeleteColumns,
@@ -66,7 +66,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 复制字段
         /// </summary>
-        public void CopyColumns(object arg)
+        public void CopyColumns()
         {
             if (Context.SelectEntity is EntityConfig entity)
             {
@@ -79,7 +79,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 复制字段
         /// </summary>
-        public void PasteColumns(object arg)
+        public void PasteColumns()
         {
             if (Context.CopyColumns == null || Context.CopyColumns.Count == 0 ||
                     Context.CopiedTable == null || Context.CopiedTable == Context.SelectEntity ||
@@ -97,7 +97,7 @@ namespace Agebull.EntityModel.Designer
             //Context.SelectColumns = null;
             //this.RaisePropertyChanged(() => this.Context.CopiedTableCounts);
         }
-        public void ClearColumns(object arg)
+        public void ClearColumns()
         {
             if (!(Context.SelectEntity is EntityConfig entity) ||
                 MessageBox.Show("确认删除所有字段吗?", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
@@ -108,7 +108,7 @@ namespace Agebull.EntityModel.Designer
             entity.Properties.Clear();
         }
 
-        public void DeleteColumns(object arg)
+        public void DeleteColumns()
         {
             if (!(Context.SelectEntity is EntityConfig entity) || Context.SelectColumns == null ||
                 MessageBox.Show("确认删除所选字段吗?", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)

@@ -62,33 +62,21 @@
                     <BeginStoryboard x:Name="_beginStoryboard1">
                         <Storyboard>
                             <DoubleAnimationUsingKeyFrames
-                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)"
+                                    Storyboard.TargetProperty="(TextBlock.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)"
                                     Storyboard.TargetName="ctrBusy"
                                     RepeatBehavior="Forever">
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.1"
-                                                          Value="30" />
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.2"
-                                                          Value="60" />
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.3"
-                                                          Value="90" />
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.4"
-                                                          Value="120" />
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.5"
-                                                          Value="150" />
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.6"
-                                                          Value="180" />
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.7"
-                                                          Value="210" />
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.8"
-                                                          Value="240" />
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.9"
-                                                          Value="270" />
-                                <EasingDoubleKeyFrame KeyTime="0:0:1.0"
-                                                          Value="300" />
-                                <EasingDoubleKeyFrame KeyTime="0:0:1.1"
-                                                          Value="330" />
-                                <EasingDoubleKeyFrame KeyTime="0:0:1.2"
-                                                          Value="360" />
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="30" />
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="60" />
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="90" />
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="120" />
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="150" />
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.6"  Value="180" />
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.7"  Value="210" />
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.8" Value="240" />
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.9" Value="270" />
+                                <EasingDoubleKeyFrame KeyTime="0:0:1.0" Value="300" />
+                                <EasingDoubleKeyFrame KeyTime="0:0:1.1" Value="330" />
+                                <EasingDoubleKeyFrame KeyTime="0:0:1.2" Value="360" />
                             </DoubleAnimationUsingKeyFrames>
                         </Storyboard>
                     </BeginStoryboard>
@@ -222,7 +210,7 @@
                                         <RowDefinition Height="48" />
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
-                                    
+
                                     <TextBlock Grid.Column="0"
                                                HorizontalAlignment="Center"
                                                x:Name="ctrIcon"
@@ -442,12 +430,12 @@
                                      Value="false">
                             <Setter Property="Foreground"
                                         Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
-                                <Setter Property="Foreground" TargetName="ctrIcon" Value="Silver" />
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="True">
-                                <Setter Property="Foreground" TargetName="ctrIcon" Value="Black" />
-                            </Trigger>
-                            <DataTrigger Binding="{Binding Command.IsBusy}"
+                            <Setter Property="Foreground" TargetName="ctrIcon" Value="Silver" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="True">
+                            <Setter Property="Foreground" TargetName="ctrIcon" Value="Black" />
+                        </Trigger>
+                        <DataTrigger Binding="{Binding Command.IsBusy}"
                                          Value="True">
                             <Setter Property="Visibility"
                                         TargetName="ctrIcon"
@@ -516,126 +504,57 @@
         <Setter Property="Command" Value="{Binding Command}" />
         <Setter Property="CommandParameter" Value="{Binding Parameter}" />
         <Setter Property="BorderBrush" Value="Silver"/>
+        <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="FontSize" Value="16"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <ContentPresenter x:Name="PART_Content"
-                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              HorizontalAlignment="Stretch"
                                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
                         <ContentPresenter.Content>
-                            <Border Padding="5"
-                                        Width="{TemplateBinding Width}"
-                                        Height="{TemplateBinding Height}">
-                                <Border x:Name="ctrBorder"
-                                            BorderBrush="{TemplateBinding BorderBrush}"
-                                            Background="{TemplateBinding Background}"
-                                            BorderThickness="{TemplateBinding BorderThickness}" >
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Margin="10,0,0,0"
-                                                   x:Name="ctrIcon"
-                                               Text="{Binding Image}" Foreground="Black"
-                                               Style="{StaticResource FontAwesome}" FontSize="14"
+                            <Border Margin="2" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                <Border MinWidth="50" x:Name="ctrBorder" Padding="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                        BorderBrush="Silver" Background="Transparent" BorderThickness="1" >
+                                    <Border  HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock x:Name="ctrIcon" 
+                                                   Text="{Binding Image}"
+                                                   Foreground="{TemplateBinding Foreground}"
+                                                   Style="{StaticResource FontAwesome}"
+                                                   FontSize="{TemplateBinding FontSize}"
                                                    Width="16"
                                                    Height="16" />
-                                        <TextBlock Grid.Column="0" x:Name="ctrBusy"  Text="&#x110;" Foreground="Red" Visibility="Collapsed"
-                           Style="{StaticResource FontAwesome}" FontSize="14" Width="16" Height="16"/>
-                                        <TextBlock Grid.Column="1"
-                                                       VerticalAlignment="Center"
-                                                       TextAlignment="Center"
-                                                       FontSize="{TemplateBinding FontSize}"
-                                                       FontStyle="{TemplateBinding FontStyle}"
-                                                       Text="{Binding Caption}"
-                                                       Margin="5,0" />
-                                    </Grid>
+                                            <TextBlock VerticalAlignment="Center"
+                                                   TextAlignment="Center"
+                                                   Foreground="{TemplateBinding Foreground}"
+                                                   FontSize="{TemplateBinding FontSize}"
+                                                   FontStyle="{TemplateBinding FontStyle}"
+                                                   Text="{Binding Caption}"
+                                                   Margin="0" />
+                                        </StackPanel>
+                                    </Border>
                                 </Border>
                             </Border>
                         </ContentPresenter.Content>
                     </ContentPresenter>
                     <ControlTemplate.Triggers>
                         <!--鼠标移入移出-->
-                        <Trigger Property="IsMouseOver"
-                                         Value="True">
-                            <Setter Property="BorderBrush"
-                                            TargetName="ctrBorder"
-                                            Value="WhiteSmoke" />
-                            <Setter Property="Background"
-                                            TargetName="ctrBorder"
-                                            Value="#881116EB" />
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="ctrBorder" Value="#881116EB" />
                             <Setter Property="Foreground" TargetName="ctrIcon" Value="Blue" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="False">
-                            <Setter Property="BorderBrush" TargetName="ctrBorder" Value="Transparent" />
                             <Setter Property="Background" TargetName="ctrBorder" Value="Transparent" />
                             <Setter Property="Foreground" TargetName="ctrIcon" Value="Black" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
-                                <Setter Property="Foreground" TargetName="ctrIcon" Value="Silver" />
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="True">
-                                <Setter Property="Foreground" TargetName="ctrIcon" Value="Black" />
-                            </Trigger>
-                            <DataTrigger Binding="{Binding Command.IsBusy}"
-                                             Value="True">
-                            <Setter Property="Visibility"
-                                            TargetName="ctrIcon"
-                                            Value="Collapsed" />
-                            <Setter Property="Visibility"
-                                            TargetName="ctrBusy"
-                                            Value="Visible" />
-                            <DataTrigger.EnterActions>
-                                <BeginStoryboard x:Name="_beginStoryboard1">
-                                    <Storyboard>
-                                        <DoubleAnimationUsingKeyFrames
-                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)"
-                                                    Storyboard.TargetName="ctrBusy"
-                                                    RepeatBehavior="Forever">
-                                            <EasingDoubleKeyFrame KeyTime="0:0:0.1"
-                                                                          Value="30" />
-                                            <EasingDoubleKeyFrame KeyTime="0:0:0.2"
-                                                                          Value="60" />
-                                            <EasingDoubleKeyFrame KeyTime="0:0:0.3"
-                                                                          Value="90" />
-                                            <EasingDoubleKeyFrame KeyTime="0:0:0.4"
-                                                                          Value="120" />
-                                            <EasingDoubleKeyFrame KeyTime="0:0:0.5"
-                                                                          Value="150" />
-                                            <EasingDoubleKeyFrame KeyTime="0:0:0.6"
-                                                                          Value="180" />
-                                            <EasingDoubleKeyFrame KeyTime="0:0:0.7"
-                                                                          Value="210" />
-                                            <EasingDoubleKeyFrame KeyTime="0:0:0.8"
-                                                                          Value="240" />
-                                            <EasingDoubleKeyFrame KeyTime="0:0:0.9"
-                                                                          Value="270" />
-                                            <EasingDoubleKeyFrame KeyTime="0:0:1.0"
-                                                                          Value="300" />
-                                            <EasingDoubleKeyFrame KeyTime="0:0:1.1"
-                                                                          Value="330" />
-                                            <EasingDoubleKeyFrame KeyTime="0:0:1.2"
-                                                                          Value="360" />
-                                        </DoubleAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </DataTrigger.EnterActions>
-                            <DataTrigger.ExitActions>
-                                <StopStoryboard BeginStoryboardName="_beginStoryboard1" />
-                            </DataTrigger.ExitActions>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Command.IsBusy}"
-                                             Value="False">
-                            <Setter Property="Visibility"
-                                            TargetName="ctrIcon"
-                                            Value="Visible" />
-                            <Setter Property="Visibility"
-                                            TargetName="ctrBusy"
-                                            Value="Collapsed" />
-                        </DataTrigger>
+                            <Setter Property="Foreground" TargetName="ctrIcon" Value="Silver" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="True">
+                            <Setter Property="Foreground" TargetName="ctrIcon" Value="Black" />
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

@@ -34,7 +34,7 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            commands.Add(new CommandItem
+            commands.Add(new SimpleCommandItem
             {
                 IsButton = true,
                 Action = RelationColumns,
@@ -42,14 +42,14 @@ namespace Agebull.EntityModel.Designer
                 Caption = "更新关系列",
                 IconName = "更新"
             });
-            commands.Add(new CommandItem
+            commands.Add(new SimpleCommandItem
             {
                 IsButton = true,
                 Action = PasteColumns,
                 Caption = "粘贴列",
                 IconName = "粘贴"
             });
-            commands.Add(new CommandItem
+            commands.Add(new SimpleCommandItem
             {
                 IsButton = true,
                 Action = DeleteColumns,
@@ -63,12 +63,12 @@ namespace Agebull.EntityModel.Designer
 
         #region 操作
 
-        public void RelationColumns(object arg)
+        public void RelationColumns()
         {
             ModelRelationDesignModel.CheckReleation(Context.SelectModel);
 
         }
-        public void DeleteColumns(object arg)
+        public void DeleteColumns()
         {
             if (Context.SelectModel == null || Context.SelectColumns == null ||
                 MessageBox.Show("确认删除所选字段吗?", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
@@ -85,7 +85,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 复制字段
         /// </summary>
-        public void PasteColumns(object arg)
+        public void PasteColumns()
         {
             if (Context.CopyColumns == null || Context.CopyColumns.Count == 0 || Context.SelectEntity == null || Context.CopiedTable == null)
             {

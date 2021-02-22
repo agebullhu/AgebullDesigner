@@ -9,7 +9,7 @@ namespace Agebull.Common.Mvvm
     /// <summary>
     ///     命令基类
     /// </summary>
-    public class CommandBase : INotifyPropertyChanged, IStatus
+    public abstract class CommandBase : INotifyPropertyChanged, IStatus
     {
         #region 能否执行处理
 
@@ -58,6 +58,7 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         protected void OnCanExecuteChanged()
         {
+            RaisePropertyChanged(nameof(Visibility));
             if (_canExecuteChanged == null)
             {
                 return;
@@ -81,7 +82,6 @@ namespace Agebull.Common.Mvvm
         }
 
         #endregion
-
 
         #region 状态
         private Visibility _visibility;
@@ -182,7 +182,7 @@ namespace Agebull.Common.Mvvm
         ///     发出属性修改事件(不受阻止模式影响)
         /// </summary>
         /// <param name="propertyName">属性</param>
-        private void RaisePropertyChanged(string propertyName)
+        protected void RaisePropertyChanged(string propertyName)
         {
             if (propertyChanged == null)
             {
@@ -195,7 +195,7 @@ namespace Agebull.Common.Mvvm
         ///     发出属性修改事件
         /// </summary>
         /// <param name="args">属性</param>
-        private void RaisePropertyChangedInner(PropertyChangedEventArgs args)
+        protected void RaisePropertyChangedInner(PropertyChangedEventArgs args)
         {
             try
             {

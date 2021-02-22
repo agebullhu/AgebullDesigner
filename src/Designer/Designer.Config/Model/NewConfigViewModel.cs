@@ -39,27 +39,27 @@ namespace Agebull.EntityModel.Designer
             }
         }
         CommandItemBase cancelCommand;
-        public CommandItemBase CancelCommand => cancelCommand ??= new CommandItem
+        public CommandItemBase CancelCommand => cancelCommand ??= new SimpleCommandItem
         {
             Action = DoCancel,
             Caption = "取消",
             IconName = "取消"
         };
         CommandItemBase okCommand;
-        public CommandItemBase OkCommand => okCommand??= new CommandItem
+        public CommandItemBase OkCommand => okCommand??= new SimpleCommandItem
         {
             Action = DoClose,
             Caption = "完成",
             IconName  = "完成"
         };
 
-        private void DoCancel(object arg)
+        private void DoCancel()
         {
             var window = (Window)View;
             window.DialogResult = false;
         }
 
-        private void DoClose(object arg)
+        private void DoClose()
         {
             if (string.IsNullOrWhiteSpace(Config.Name))
             {

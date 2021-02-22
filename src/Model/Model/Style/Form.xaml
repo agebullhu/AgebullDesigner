@@ -125,7 +125,7 @@
     <Style TargetType="TextBox" x:Key="MaxTextBox">
         <Setter Property="Padding" Value="3" />
         <Setter Property="Template" Value="{StaticResource MyBox}" />
-        <Setter Property="Width" Value="970" />
+        <Setter Property="Width" Value="958" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
     <Style TargetType="TextBox" x:Key="MidTextBox">

@@ -42,7 +42,7 @@ namespace Agebull.EntityModel.Designer
 
         public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            commands.Add(new CommandItem
+            commands.Add(new SimpleCommandItem
             {
                 IsButton=true,
                 SignleSoruce = true,
@@ -50,7 +50,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "新增命令",
                 IconName = "新增"
             });
-            commands.Add(new CommandItem
+            commands.Add(new SimpleCommandItem
             {
                 IsButton = true,
                 SignleSoruce = true,
@@ -64,7 +64,7 @@ namespace Agebull.EntityModel.Designer
         /// 新增命令
         /// </summary>
         /// <param name="entity"></param>
-        public void AddCommand(object arg)
+        public void AddCommand()
         {
             if (Model.CreateNew("新增命令", out UserCommandConfig config))
                 Context.SelectModel.Add(config);
@@ -74,7 +74,7 @@ namespace Agebull.EntityModel.Designer
         /// 新增命令
         /// </summary>
         /// <param name="entity"></param>
-        public void RemoveCommand(object arg)
+        public void RemoveCommand()
         {
             if (Context.SelectModel == null || Context.SelectColumns == null ||
                 MessageBox.Show("确认删除所选行吗?", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)

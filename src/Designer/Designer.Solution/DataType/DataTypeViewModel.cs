@@ -25,26 +25,26 @@ namespace Agebull.EntityModel.Designer
     {
         public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            commands.Append(new CommandItem
+            commands.Append(new SimpleCommandItem
             {
                 Name = "New",
                 Caption = "新增数据类型",
                 IsButton = true,
-                Action = arg => Model.Context.Solution.DataTypeMap.Add(new DataTypeMapConfig())
+                Action = () => Model.Context.Solution.DataTypeMap.Add(new DataTypeMapConfig())
             },
-            new CommandItem
+            new SimpleCommandItem
             {
                 Name = "Sync",
                 Caption = "从C#语言解析字段数据类型",
                 IsButton = true,
-                Action = arg => Model.Context.Solution.Foreach<FieldConfig>(DataTypeHelper.CsDataType)
+                Action = () => Model.Context.Solution.Foreach<FieldConfig>(DataTypeHelper.CsDataType)
             },
-            new CommandItem
+            new SimpleCommandItem
             {
                 Name = "Sync",
                 Caption = "标准化字段数据类型",
                 IsButton = true,
-                Action = arg => Model.Context.Solution.Foreach<FieldConfig>(DataTypeHelper.StandardDataType)
+                Action = () => Model.Context.Solution.Foreach<FieldConfig>(DataTypeHelper.StandardDataType)
             });
             base.CreateCommands(commands);
         }

@@ -89,65 +89,65 @@ namespace Agebull.EntityModel.Designer
                 IsRoot = true,
                 Items = new NotificationList<CommandItemBase>
                 {
-                    new CommandItem
+                    new SimpleCommandItem
                     {
-                        Action =arg=> Model.ConfigIo.CreateNew(),
+                        Action = Model.ConfigIo.CreateNew,
                         Caption = "新建",
                         IconName  ="新文件"
                     },
-                    new CommandItem
+                    new SimpleCommandItem
                     {
-                        Action =arg=> Model.ConfigIo.Load(),
+                        Action = Model.ConfigIo.Load,
                         Caption = "打开",
                         IconName  ="文件夹"
                     },
-                    new CommandItem
+                    new SimpleCommandItem
                     {
-                        Action =arg=> Model.ConfigIo.ReLoad(),
+                        Action = Model.ConfigIo.ReLoad,
                         Caption = "重新载入",
                         DoConfirm=true,
                         IconName  ="载入"
                     },
                     CommandItemBase.Line,
-                    new CommandItem
+                    new SimpleCommandItem
                     {
-                        Action = arg=>Model.ConfigIo.LoadGlobal(),
+                        Action = Model.ConfigIo.LoadGlobal,
                         Caption = "全局",
                         IconName  ="地球"
                     },
-                    new CommandItem
+                    new SimpleCommandItem
                     {
-                        Action = arg=>Model.ConfigIo.LoadLocal(),
+                        Action = Model.ConfigIo.LoadLocal,
                         Caption = "本地",
                         IconName  ="本地"
                     },
                     CommandItemBase.Line,
-                    new CommandItem
+                    new SimpleCommandItem
                     {
                         Caption = "保存实体",
                         SoruceView = "entity",
-                        Action = arg=>Model.ConfigIo.SaveEntity(),
+                        Action = Model.ConfigIo.SaveEntity,
                         IconName  ="保存"
                     },
-                    new CommandItem
+                    new SimpleCommandItem
                     {
                         IsButton=true,
-                        Action = arg=>Model.ConfigIo.SaveProject(),
+                        Action = Model.ConfigIo.SaveProject,
                         Caption = "保存项目",
                         IconName  ="保存"
                     },
-                    new CommandItem
+                    new SimpleCommandItem
                     {
                         IsButton=false,
-                        Action = arg=>Model.ConfigIo.SaveSolution(),
+                        Action = Model.ConfigIo.SaveSolution,
                         Caption = "保存解决方案",
                         IconName  ="保存"
                     },
                     CommandItemBase.Line,
                     CommandItemBase.Line,
-                    new CommandItem
+                    new SimpleCommandItem
                     {
-                        Action = arg=>Application.Current.Shutdown(),
+                        Action = Application.Current.Shutdown,
                         Caption = "退出",
                         DoConfirm=true,
                         IconName  ="关闭"

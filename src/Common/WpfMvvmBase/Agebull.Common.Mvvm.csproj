@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <Compile Remove="CommandItem\RuntimeActionItem.cs" />
+    <Compile Remove="Models\AsyncWorkItem.cs" />
   </ItemGroup>
 
   <ItemGroup>
