@@ -95,7 +95,7 @@ namespace Agebull.EntityModel
             }
             else
             {
-                valueRecords.Add(propertyName, item = new ValueRecordItem(1, propertyName, this)
+                valueRecords.Add(propertyName, new ValueRecordItem(1, propertyName, this)
                 {
                     Original = value
                 });

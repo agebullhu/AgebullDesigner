@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Agebull.EntityModel
 {
@@ -176,7 +177,14 @@ namespace Agebull.EntityModel
                 return;
             using (scope)
             {
-                Regularize();
+                try
+                {
+                    Regularize();
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine(ex, "规整对象");
+                }
             }
         }
 

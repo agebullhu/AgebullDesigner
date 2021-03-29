@@ -24,8 +24,16 @@ namespace Agebull.EntityModel.RobotCoder
             GlobalTrigger.Regularize(GlobalConfig.CurrentSolution);
             config.Foreach<IEntityConfig>(arg =>
             {
-                using var scope = CodeGeneratorScope.CreateScope(arg, true);
-                code.AppendLine(coder(arg));
+                try
+                {
+                    using var scope = CodeGeneratorScope.CreateScope(arg, true);
+                    code.AppendLine(coder(arg));
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
             });
             return code.ToString();
         }

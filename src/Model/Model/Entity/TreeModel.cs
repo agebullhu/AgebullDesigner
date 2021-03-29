@@ -376,10 +376,12 @@ namespace Agebull.EntityModel.Designer
                 return "计算列";
             if (property.IsTime || property.DataType.IsMe(nameof(DateTime)))
                 return "时间列";
-            if (property.DataType.Contains("Int") || property.DataType.IsMe(nameof(Decimal)) || property.DataType.IsMe(nameof(Double)) || property.DataType.IsMe(nameof(Single)))
-                return "数字列";
+            if (property.DataType.IsMe("Boolean"))
+                return "布尔列";
             if (property.IsImage)
                 return "图像列";
+            if (property.DataType?.Contains("Int")==true || property.DataType.IsMe(nameof(Decimal)) || property.DataType.IsMe(nameof(Double)) || property.DataType.IsMe(nameof(Single)))
+                return "数字列";
             else
                 return  "普通列";
         }

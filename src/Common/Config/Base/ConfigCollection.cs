@@ -96,7 +96,7 @@ namespace Agebull.EntityModel
         {
             Name = name;
             Parent = parent;
-            foreach (var item in this)
+            foreach (var item in this.ToArray())
             {
                 item.Parent = parent;
                 item.IsModifyChanged += OnItemIsModifyChanged;

@@ -14,6 +14,13 @@ namespace Agebull.EntityModel.Config.V2021
     {
         #region 字段属性同步
 
+        protected override IPropertyConfig SetProperty(IPropertyConfig property)
+        {
+            if (property != null)
+                property.DataBaseField = this;
+            return property;
+        }
+
         /// <summary>
         ///     唯一索引
         /// </summary>
@@ -55,7 +62,7 @@ namespace Agebull.EntityModel.Config.V2021
         [DisplayName(@"存储类型"), Description(@"存储类型")]
         public string FieldType
         {
-            get => _fieldType;
+            get => _fieldType?.ToUpper();
             set
             {
                 if (_fieldType == value)

@@ -50,7 +50,15 @@ namespace Agebull.EntityModel.Designer
             #endregion
 
             if (TargetConfig.IsText || TargetConfig.IsBlob || TargetConfig.Datalen < 0)
+            {
                 TargetConfig.Datalen = 0;
+                TargetConfig.Property.CanEmpty = true;
+                TargetConfig.Property.IsRequired = false;
+            }
+            else if (TargetConfig.Datalen < 0)
+            {
+                TargetConfig.Datalen = 0;
+            }
             if (!TargetConfig.FieldType.IsOnce("decimal", "number"))
                 TargetConfig.Scale = 0;
             if (TargetConfig.IsIdentity)

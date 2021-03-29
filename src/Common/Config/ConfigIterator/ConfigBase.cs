@@ -104,6 +104,10 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public virtual void OnLoad()
         {
+            _option.Config = this;
+            ValueRecords.Add(nameof(Option), _option);
+            GlobalConfig.AddNormalConfig(this);
+
             GlobalTrigger.OnLoad(this);
             GlobalTrigger.OnLoad(Option);
         }
@@ -249,9 +253,21 @@ namespace Agebull.EntityModel.Config
 
     partial class EntityConfigBase
     {
+        /// <summary>
+        /// ÏòÏÂ±éÀú
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        protected override void ForeachDown<T>(Action<T> action, bool doAction)
+            where T : class
+        {
+            Commands.DoForeach(action, doAction);
+            DataTable?.Foreach(action, doAction);
+            //Page?.Foreach(action, doAction);
+        }
         protected override int CheckType(Type type)
         {
-            if (type == GetType()|| type == typeof(IEntityConfig))
+            if (type.IsSubclassOf(typeof(EntityConfigBase)) || type == typeof(IEntityConfig))
                 return 0;
             if (type == typeof(SolutionConfig) || type == typeof(ProjectConfig))
                 return -1;
@@ -276,9 +292,6 @@ namespace Agebull.EntityModel.Config
         protected override void ForeachDown<T>(Action<T> action, bool doAction)
             where T : class
         {
-            DataTable?.Foreach(action, doAction);
-            //Page?.Foreach(action, doAction);
-
             if (WorkContext.InCoderGenerating)
             {
                 LastProperties.DoForeach(action, doAction);
@@ -287,7 +300,7 @@ namespace Agebull.EntityModel.Config
             {
                 Properties.DoForeach(action, doAction);
             }
-            Commands.DoForeach(action, doAction);
+            base.ForeachDown<T>(action, doAction);
         }
         public override void OnLoad()
         {
@@ -307,9 +320,6 @@ namespace Agebull.EntityModel.Config
         protected override void ForeachDown<T>(Action<T> action, bool doAction)
             where T : class
         {
-            DataTable?.Foreach(action, doAction);
-            //Page?.Foreach(action, doAction);
-
             if (WorkContext.InCoderGenerating)
             {
                 LastProperties.DoForeach(action, doAction);
@@ -318,8 +328,9 @@ namespace Agebull.EntityModel.Config
             {
                 Properties.DoForeach(action, doAction);
             }
-            Commands.DoForeach(action, doAction);
             Releations.DoForeach(action, doAction);
+            base.ForeachDown<T>(action, doAction);
+
         }
         public override void OnLoad()
         {
@@ -447,7 +458,11 @@ namespace Agebull.EntityModel.Config.V2021
 
         public override void OnLoad()
         {
-            Property.DataBaseField = this;
+            var pro = Property;
+            if (pro != null)
+                pro.DataBaseField = this;
+            else 
+                Parent.Fields.Remove(this);
             base.OnLoad();
         }
     }

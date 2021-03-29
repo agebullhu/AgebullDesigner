@@ -67,7 +67,7 @@ namespace Agebull.EntityModel.Designer
         public void AddCommand()
         {
             if (Model.CreateNew("新增命令", out UserCommandConfig config))
-                Context.SelectModel.Add(config);
+                Context.SelectEntity.Commands.Add(config);
         }
 
         /// <summary>
