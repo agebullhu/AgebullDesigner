@@ -167,6 +167,7 @@ namespace Agebull.EntityModel.Config
         }
         public override void OnLoad()
         {
+            Classifies.OnLoad(nameof(Entities), this);
             Entities.OnLoad(nameof(Entities), this);
             Models.OnLoad(nameof(Models), this);
             Enums.OnLoad(nameof(Enums), this);
@@ -207,6 +208,12 @@ namespace Agebull.EntityModel.Config
             where T : class
         {
             Items.DoForeach(action, doAction);
+        }
+
+        public override void OnLoad()
+        {
+            Items.OnLoad(nameof(Items), this);
+            base.OnLoad();
         }
     }
     partial class ProjectChildConfigBase

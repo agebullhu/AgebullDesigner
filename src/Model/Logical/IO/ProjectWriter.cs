@@ -35,6 +35,9 @@ namespace Agebull.EntityModel.Designer
                 SolutionConfig.Current.ProjectList.Remove(project);
             }
             SaveConfig(Path.Combine(dir, "project.json"), project, checkState);
+
+            project.Foreach<ConfigBase>(p => p.ResetModify(true));
+
             return dir;
         }
 
