@@ -26,7 +26,7 @@ namespace Agebull.EntityModel.Designer
                 project.OnLoad();
             }
 
-            model.ResetStatus();
+            TargetConfig.Solution.ResetStatus();
             CommandCoefficient.ClearCommand();
         }
 
@@ -39,7 +39,7 @@ namespace Agebull.EntityModel.Designer
             switch (property)
             {
                 case nameof(TargetConfig.IdDataType):
-                    TargetConfig.Foreach<FieldConfig>(p =>
+                    TargetConfig.Preorder<FieldConfig>(p =>
                     {
                         if (p.IsPrimaryKey || p.IsLinkField)
                             p.DataType = TargetConfig.IdDataType;

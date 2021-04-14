@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Agebull.EntityModel.Config
 {
@@ -39,19 +40,27 @@ namespace Agebull.EntityModel.Config
         /// 遍历
         /// </summary>
         /// <typeparam name="TDest"></typeparam>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <param name="preorder">true:先根遍历 false:后根遍历</param>
         /// <returns></returns>
-        internal static void DoForeach<TDest, T>(this IEnumerable<TDest> enumerable, Action<T> action, bool doAction)
+        internal static void DoForeachDown<TDest, T>(this IEnumerable<TDest> enumerable, Action<T> action, bool preorder)
             where TDest : IConfigIterator
             where T : class
         {
             if (enumerable == null)
                 return;
+
+            if (preorder && enumerable is T t1)
+                action(t1);
             foreach (var item in enumerable)
             {
-                item.Foreach(action, doAction);
+                item.Foreach(action, preorder);
             }
+            if (!preorder && enumerable is T t2)
+                action(t2);
         }
-
+        
 
         /// <summary>
         /// 遍历

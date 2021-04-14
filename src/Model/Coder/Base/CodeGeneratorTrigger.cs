@@ -44,14 +44,14 @@ namespace Agebull.EntityModel.Designer
         void IEventTrigger.OnCodeGeneratorBegin(object obj)
         {
             Target = (ConfigBase)obj;
-            Target.Foreach<IEntityConfig>(CreateLast);
+            Target.Preorder<IEntityConfig>(CreateLast);
         }
         /// <summary>
         /// 完成代码生成
         /// </summary>
         void IEventTrigger.OnCodeGeneratorEnd()
         {
-            Target.Foreach<IEntityConfig>(ClearLast);
+            Target.Preorder<IEntityConfig>(ClearLast);
         }
 
 

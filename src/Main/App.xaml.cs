@@ -2,6 +2,7 @@
 using BeetleX.FastHttpApi;
 using System.Diagnostics;
 using System.Windows;
+using ZeroCoder.Editor;
 using ZeroTeam.MessageMVC;
 
 namespace Agebull.EntityModel.Designer
@@ -21,7 +22,8 @@ namespace Agebull.EntityModel.Designer
                 EditorManager.Registe<PropertyPanel>("属性表格", 258, "属性表格");
                 EditorManager.Registe<ExtendPanel>("扩展信息", 259, "扩展信息");
                 EditorManager.Registe<TracePanel>("跟踪信息", 260, "跟踪信息");
-
+                EditorManager.Registe<MofityPanel>("修改信息", 261, "修改");
+                
                 WorkContext.SynchronousContext = new DispatcherSynchronousContext
                 {
                     Dispatcher = Dispatcher

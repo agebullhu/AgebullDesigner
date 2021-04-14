@@ -158,7 +158,7 @@ namespace Agebull.EntityModel.Designer
         public void RelationDiscovery()
         {
             var model = Context.SelectModel;
-            SolutionConfig.Current.Foreach<FieldConfig>(field =>
+            SolutionConfig.Current.Preorder<FieldConfig>(field =>
             {
                 if (field.NoStorage || !field.DataBaseField.IsLinkKey || !model.Entity.Name.Equals(field.DataBaseField.LinkTable, StringComparison.OrdinalIgnoreCase))
                 {

@@ -108,7 +108,7 @@ namespace Agebull.EntityModel.Designer
             {
                 var config = (ConfigBase)arg;
                 Trace.WriteLine($"执行命令：{Caption ?? Name}");
-                config.Foreach<TTargetType>(DoAction);
+                config.Preorder<TTargetType>(DoAction);
                 Trace.WriteLine($"执行成功：{Caption ?? Name}");
                 if (ShowResultMessage)
                     ShowMessageBox("执行成功");

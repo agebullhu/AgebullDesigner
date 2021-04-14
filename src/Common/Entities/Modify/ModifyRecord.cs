@@ -20,8 +20,10 @@ namespace Agebull.EntityModel
     public class ModifyRecord
     {
         public readonly Dictionary<string, ValueRecordItem> valueRecords = new Dictionary<string, ValueRecordItem>();
+        
         private bool isModify;
 
+        public IEnumerable<ValueRecordItem> Items => valueRecords.Values;
 
 
         public int Modified { get; set; }
@@ -91,13 +93,14 @@ namespace Agebull.EntityModel
         {
             if (valueRecords.TryGetValue(propertyName, out var item))
             {
-                item.Original = value;
+                item.Current = value;
             }
             else
             {
                 valueRecords.Add(propertyName, new ValueRecordItem(1, propertyName, this)
                 {
-                    Original = value
+                    Original = value,
+                    Current = value
                 });
             }
             Check();
@@ -108,9 +111,17 @@ namespace Agebull.EntityModel
             {
                 item.Current = newValue;
             }
+            else if(oldValue != null && oldValue.GetType().IsBaseType())
+            {
+                valueRecords.Add(propertyName, new ValueRecordItem(2, propertyName, this)
+                {
+                    Original2 = oldValue.ToString(),
+                    Current2 = newValue.ToString()
+                });
+            }
             else
             {
-                valueRecords.Add(propertyName, item = new ValueRecordItem(1, propertyName, this)
+                valueRecords.Add(propertyName, new ValueRecordItem(1, propertyName, this)
                 {
                     Original = oldValue,
                     Current = newValue

@@ -12,26 +12,24 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
-        void Foreach<T>(Action<T> action)
+        /// <param name="preorder">true:先根遍历 false:后根遍历</param>
+        void Foreach<T>(Action<T> action, bool preorder)
             where T : class;
 
-
         /// <summary>
-        /// 遍历
+        /// 先根遍历
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
-        /// <param name="doAll">为true,所有点上都执行一次后再向下遍历，否则的话，执行一次就中止遍历</param>
-        void Foreach<T>(Action<T> action, bool doAll)
+        void Preorder<T>(Action<T> action)
             where T : class;
 
-
         /// <summary>
-        /// 遍历
+        /// 后根遍历
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
-        void Look<T>(Action<T> action)
+        void Postorder<T>(Action<T> action)
             where T : class;
     }
 }

@@ -37,14 +37,14 @@ namespace Agebull.EntityModel.Designer
                 Name = "Sync",
                 Caption = "从C#语言解析字段数据类型",
                 IsButton = true,
-                Action = () => Model.Context.Solution.Foreach<FieldConfig>(DataTypeHelper.CsDataType)
+                Action = () => Model.Context.Solution.Preorder<FieldConfig>(DataTypeHelper.CsDataType)
             },
             new SimpleCommandItem
             {
                 Name = "Sync",
                 Caption = "标准化字段数据类型",
                 IsButton = true,
-                Action = () => Model.Context.Solution.Foreach<FieldConfig>(DataTypeHelper.StandardDataType)
+                Action = () => Model.Context.Solution.Preorder<FieldConfig>(DataTypeHelper.StandardDataType)
             });
             base.CreateCommands(commands);
         }

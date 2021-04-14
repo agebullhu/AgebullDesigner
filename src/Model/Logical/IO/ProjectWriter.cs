@@ -36,7 +36,7 @@ namespace Agebull.EntityModel.Designer
             }
             SaveConfig(Path.Combine(dir, "project.json"), project, checkState);
 
-            project.Foreach<ConfigBase>(p => p.ResetModify(true));
+            project.ResetStatus();
 
             return dir;
         }

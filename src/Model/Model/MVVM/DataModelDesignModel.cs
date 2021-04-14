@@ -191,8 +191,9 @@ namespace Agebull.EntityModel.Designer
 
             FirstSelect();
 
-            Context.Solution.Look(p => p.ResetModify(true));
+            Context.Solution.ResetStatus();
         }
+
         /// <summary>
         /// 保证载入后选择正常
         /// </summary>

@@ -6,7 +6,15 @@
     <ShowAllFiles>true</ShowAllFiles>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Update="Editor\MofityPanel.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Page Update="Editor\ConfigForm.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Editor\MofityPanel.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Style\DataGrid.xaml">
