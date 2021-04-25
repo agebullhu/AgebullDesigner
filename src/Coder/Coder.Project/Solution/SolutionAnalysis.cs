@@ -385,7 +385,7 @@ EndGlobal";
         string ModelProjectContent(string name) => $@"<Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Condition = ""'$(Configuration)|$(Platform)'=='Release|AnyCPU'"" >
@@ -409,7 +409,7 @@ EndGlobal";
         string ApiProjectContent(string prjModel, string name) => $@"<Project Sdk=""Microsoft.NET.Sdk"">
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Condition = ""'$(Configuration)|$(Platform)'=='Release|AnyCPU'"" >

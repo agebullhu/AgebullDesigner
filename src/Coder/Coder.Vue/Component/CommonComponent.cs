@@ -25,10 +25,11 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
 
         public string ScriptCode()
         {
-            return $@"EntityComponents.components['{model.Project.PageFolder}-{model.PageFolder}'].common = {{
+            return $@"EntityComponents.components['{model.ComponentName}'].common = {{
     default: {{
         idField : '{model.PrimaryColumn.JsonName}',
-        apiPrefix : '/{model.Project.ApiName}/{model.ApiName}/v1'
+        apiPrefix : '/{model.Project.ApiName}/{model.ApiName}/v1',
+        url:'http://localhost'
     }},{Options().LinkToString(',')}
 }};";
         }

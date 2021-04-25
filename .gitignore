@@ -15,3 +15,4 @@ netcoreapp3.1
 *.exe
 src/Designer.Project/Agebull.EntityModel.Designer.Project_svg1kepz_wpftmp.csproj
 /src/Coder/byt31
+/src/Program/net5.0-windows

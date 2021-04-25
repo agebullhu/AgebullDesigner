@@ -3,6 +3,7 @@ using Agebull.EntityModel.Config.Mysql;
 using Agebull.EntityModel.Config.V2021;
 using Agebull.EntityModel.RobotCoder;
 using System;
+using System.Linq;
 using System.Text;
 
 namespace Agebull.EntityModel.Designer
@@ -47,8 +48,6 @@ namespace Agebull.EntityModel.Designer
             if (TargetConfig.CsType.IsMe("string") && !TargetConfig.IsText && !TargetConfig.IsBlob && TargetConfig.Datalen <= 0)
                 TargetConfig.Datalen = 200;
 
-            #endregion
-
             if (TargetConfig.IsText || TargetConfig.IsBlob || TargetConfig.Datalen < 0)
             {
                 TargetConfig.Datalen = 0;
@@ -63,6 +62,8 @@ namespace Agebull.EntityModel.Designer
                 TargetConfig.Scale = 0;
             if (TargetConfig.IsIdentity)
                 TargetConfig.IsReadonly = true;
+            #endregion
+
 
             #region KeepStorageScreen
             if (TargetConfig.DbInnerField)
@@ -73,6 +74,7 @@ namespace Agebull.EntityModel.Designer
                 TargetConfig.KeepStorageScreen |= StorageScreenType.Update;
 
             #endregion
+
             #region IsLinkField
             if (TargetConfig.IsParent)
             {
@@ -149,12 +151,20 @@ namespace Agebull.EntityModel.Designer
             }
             #endregion
 
+            #region ÆäËü
+
             if (TargetConfig.DbInnerField)
                 TargetConfig.Property.NoProperty = true;
 
             if (TargetConfig.IsReadonly)
                 TargetConfig.Property.IsUserReadOnly = true;
+
             TargetConfig.Option.State = TargetConfig.Property.Option.State;
+
+
+            TargetConfig.IsDiscard = TargetConfig.Property == null || TargetConfig.Property.IsDelete || TargetConfig.Property.IsDiscard ||
+                !TargetConfig.Entity.LastProperties.Any(pro => pro == TargetConfig.Property);
+            #endregion
         }
     }
 }

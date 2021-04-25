@@ -36,7 +36,7 @@ namespace Agebull.EntityModel.Designer
                     Action = VueModel.CheckUi,
                     WorkView = "entity",
                     CanButton=true,
-                    
+                Editor = "VUE",
                 },
                 new CommandItemBuilder<IEntityConfig>
                 {
@@ -45,7 +45,7 @@ namespace Agebull.EntityModel.Designer
                     WorkView = "entity",
                     Catalog = "用户界面",
                     CanButton=true,
-                    
+                Editor = "VUE",
                 },
                 new CommandItemBuilder<IEntityConfig>
                 {

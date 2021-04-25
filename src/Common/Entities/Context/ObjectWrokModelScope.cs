@@ -4,25 +4,27 @@ using System;
 namespace Agebull.EntityModel
 {
     /// <summary>
-    /// 工作模式范围
+    /// 对象工作范围
     /// </summary>
-    public class WorkModelScope : ScopeBase
+    public class ObjectWrokModelScope : ScopeBase
     {
         readonly WorkModel oldModel;
-        WorkModelScope(WorkModel model)
+        readonly object worker;
+        ObjectWrokModelScope(object obj, WorkModel model)
         {
+            worker = obj;
             oldModel = WorkContext.WorkModel;
             WorkContext._workModel = model;
+            GlobalTrigger.Regularize(obj);
         }
 
         /// <summary>
         /// 生成范围
         /// </summary>
-        /// <param name="model"></param>
         /// <returns></returns>
-        public static IDisposable CreateScope(WorkModel model)
+        public static IDisposable CreateScope(object worker, WorkModel model)
         {
-            return new WorkModelScope(model);
+            return new ObjectWrokModelScope(worker, model);
         }
 
         /// <inheritdoc />
@@ -30,6 +32,5 @@ namespace Agebull.EntityModel
         {
             WorkContext._workModel = oldModel;
         }
-
     }
 }

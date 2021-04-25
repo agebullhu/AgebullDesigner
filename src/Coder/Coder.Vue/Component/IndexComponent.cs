@@ -23,15 +23,15 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
             com.LinkFunctions();
             com.TreeMethod();
             com.Command();
-
-            return $@"EntityComponents.loadCommon('/html/{model.Project.PageFolder}/{model.PageFolder}', '{model.Project.PageFolder}-{model.PageFolder}', () => 
-    routes['page-{model.Project.PageFolder}-{model.PageFolder}'].option = new EditOption('{model.Project.PageFolder}-{model.PageFolder}').toVueOption({{
+            var path = $"/{model.Project.PageFolder.ToLinuxPath()}/{model.PageFolder.ToLinuxPath()}";
+            return $@"EntityComponents.loadCommon('{path}', '{model.ComponentName}', () => 
+    routes['page-{model.ComponentName}'].option = new EditOption('{model.ComponentName}').toVueOption({{
         title: '{model.Caption}',
         stateData: { (model.Interfaces != null && model.Interfaces.IndexOf("IStateData") >= 0 ? "true" : "false")},
         auditData: { (model.Interfaces != null && model.Interfaces.IndexOf("IAuditData") >= 0 ? "true" : "false")},
-        enableList: false,
-        enableDetails: false,
-        css: '/html/{model.Project.PageFolder}/{model.PageFolder}/index.css',
+        enableList: true,
+        enableDetails: true,
+        css: '{path}/index.css',
         mounted() {{
             let that = this;{com.readys.LinkToString(@"
             ,")}
@@ -40,11 +40,11 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
             ,")}
         }},
         entityComponents: [{{
-            entity: '{model.Project.PageFolder}-{model.PageFolder}',
-            path: '/html/{model.Project.PageFolder}/{model.PageFolder}',
+            entity: '{model.ComponentName}',
+            path: '{path}',
             item: ['list', 'form']
         }}]
-    }});
+    }})
 );";
         }
 
@@ -236,16 +236,15 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
             }
             code.Append($@"
         <div class='viewList'{(model.DetailsPage ? " v-if='!detailsVisiable'" : null)}>
-            <el-entity-{model.Project.PageFolder}-{model.PageFolder}-list :queryFilter='queryModel' @showDetails='showDetails'>
-            </el-entity-{model.Project.PageFolder}-{model.PageFolder}-list>
-        </el-card>
+            <el-entity-{model.ComponentName}-list ref='listPanel' :queryFilter='queryModel' @showDetails='showDetails' @selectionRowChange='selectionRowChange' @selectChanged='selectChanged'></el-entity-{model.ComponentName}-list>
+        </div>
     </div>");
             if (model.DetailsPage)
             {
                 code.Append($@"
     <div class='viewBody' v-if='detailsVisiable'>
         <el-card class='box-card innerRegion'>
-            <el-entity-{model.Project.PageFolder}-{model.PageFolder}-form :id='currentId'> </el-entity-{model.Project.PageFolder}-{model.PageFolder}-form>
+            <el-entity-{model.ComponentName}-form ref='formPanel' :id='currentId'> </el-entity-{model.ComponentName}-form>
         </el-card>
     </div>");
             }
@@ -256,13 +255,13 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
                 code.Append($@"
     <el-dialog title='¡¾{model.Caption}¡¿' :modal='false' :visible.sync='detailsVisiable' :show-close='false' :close-on-click-modal='false' width='{wid}px'>
         <div class='el-dialog__body_form' v-if='detailsVisiable'>
-            <el-entity-{model.Project.PageFolder}-{model.PageFolder}-form :id='currentId'> </el-entity-{model.Project.PageFolder}-{model.PageFolder}-form>
+            <el-entity-{model.ComponentName}-form ref='formPanel' :id='currentId'> </el-entity-{model.ComponentName}-form>
         </div>
         <div slot='footer'>");
                 if (!model.IsUiReadOnly)
                 {
                     code.Append(@"
-            <el-button icon='el-icon-check' @click='save' type='primary' v-if='!form.readonly'>±£´æ</el-button>");
+            <el-button icon='el-icon-check' @click='save' type='primary'>±£´æ</el-button>");
                 }
                 code.Append(@"
             <el-button icon='el-icon-close' @click='detailsVisiable = false'>È¡Ïû</el-button>
@@ -330,12 +329,12 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
                 if (!model.IsUiReadOnly)
                 {
                     exButton.Append(@"
-        <el-button icon='el-icon-edit' @click='doEdit' type='success' plain>±à¼­</el-button>");
+        <el-button icon='el-icon-edit' @click='showDetails' type='success' plain>±à¼­</el-button>");
                 }
                 else
                 {
                     exButton.Append(@"
-        <el-button icon='el-icon-edit' @click='doEdit' type='primary' plain>ÏêÏ¸</el-button>");
+        <el-button icon='el-icon-edit' @click='showDetails' type='primary' plain>ÏêÏ¸</el-button>");
                 }
             }
             if (!model.IsUiReadOnly)

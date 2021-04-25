@@ -12,6 +12,14 @@ namespace System.Text
     {
         #region 文本辅助
 
+        /// <summary>
+        /// 转为Linux下正确的路径
+        /// </summary>
+        public static string ToLinuxPath(this string folder)
+        {
+            return folder.Replace('\\','/');
+        }
+
 
         /// <summary>
         /// 数组中是否包含对应文本

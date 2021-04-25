@@ -21,7 +21,7 @@ namespace Agebull.EntityModel
                 return;
             if (includeChild)
             {
-                config.Postorder<object>(GlobalTrigger.OnCodeGeneratorBegin);
+                config.Preorder<object>(GlobalTrigger.OnCodeGeneratorBegin);
             }
             else
             {

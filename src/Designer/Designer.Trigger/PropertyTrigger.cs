@@ -76,7 +76,6 @@ namespace Agebull.EntityModel.Designer
                 property.CanSet = false;
                 property.CanGet = false;
             }
-
             if (property.IsPrivateField || property.IsMiddleField || property.NoneJson)
             {
                 property.InnerField = true;

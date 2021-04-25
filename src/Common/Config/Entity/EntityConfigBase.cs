@@ -398,6 +398,41 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChange(nameof(PageFolder), _pageFolder, value);
                 _pageFolder = string.IsNullOrWhiteSpace(value) || value == Name ? null : value.Trim();
                 OnPropertyChanged(nameof(PageFolder));
+                OnPropertyChanged(nameof(PagePath));
+            }
+        }
+
+        /// <summary>
+        /// 页面路径
+        /// </summary>
+        [JsonIgnore]
+        [Category(@"用户界面"), DisplayName(@"页面路径"), Description("页面路径")]
+        public string PagePath => $"{Project.PagePath}\\{PageFolder}";
+
+        /// <summary>
+        /// 页面文件夹名称
+        /// </summary>
+        [DataMember, JsonProperty("componentName", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal string _componentName;
+
+        /// <summary>
+        /// 页面组件名称
+        /// </summary>
+        /// <remark>
+        /// 页面组件名称
+        /// </remark>
+        [JsonIgnore]
+        [Category(@"用户界面"), DisplayName(@"页面组件名称"), Description("页面组件名称")]
+        public string ComponentName
+        {
+            get => WorkContext.InCoderGenerating ? _componentName ?? ApiName : _componentName;
+            set
+            {
+                if (_componentName == value)
+                    return;
+                BeforePropertyChange(nameof(ComponentName), _componentName, value);
+                _componentName = string.IsNullOrWhiteSpace(value) || value == Name ? null : value.Trim();
+                OnPropertyChanged(nameof(ComponentName));
             }
         }
 

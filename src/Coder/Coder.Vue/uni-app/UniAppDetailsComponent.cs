@@ -3,10 +3,9 @@ using System;
 using System.Linq;
 using System.Text;
 
-namespace Agebull.EntityModel.RobotCoder.VueComponents
+namespace Agebull.EntityModel.RobotCoder.UniAppComponents
 {
-
-    public class FormComponent
+    public class UniAppDetailsComponent
     {
         #region JS
 
@@ -67,15 +66,18 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
 
         public static string HtmlCode(IEntityConfig model)
         {
-            StringBuilder code = new StringBuilder();
-            code.Append($@"
-<el-form ref='dataForm' :rules='form.rules' :model='form.data' label-width='100px' label-position='left' @submit.native.prevent>");
+            var code = new StringBuilder();
+            code.Append($@"<template>
+	<view class='form'>
+		<uni-forms :value='details' ref='form' validate-trigger='bind' err-show-type='undertext'>");
             foreach (var property in model.ClientProperty.Where(p => !p.NoneDetails).ToArray())
             {
-                code.FormField("form.data", true, property, model.IsUiReadOnly || property.IsUserReadOnly, model.FormCloumn);
+                code.FormField("details", true, property, model.IsUiReadOnly || property.IsUserReadOnly, model.FormCloumn);
             }
             code.Append(@"
-</el-form>");
+        </uni-forms>
+	</view>
+</template>");
             return code.ToString();
         }
 

@@ -8,7 +8,9 @@
 
 #region 引用
 
+using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
+using System;
 using System.Linq;
 using System.Windows;
 
@@ -20,31 +22,82 @@ namespace Agebull.EntityModel.Designer
     {
         public VueViewModel()
         {
-            EditorName = "Vue";
+            EditorName = "VUE";
+        }
+        /// <summary>
+        /// 命令ICommandModel
+        /// </summary>
+        public override NotificationList<CommandItemBase> Commands
+        {
+            get
+            {
+                return Model.CreateCommands();
+            }
         }
 
     }
 
-    internal class VueModel : EditorModel
+    internal class VueModel : DesignModelBase
     {
         #region 操作命令
 
         public VueModel()
         {
+            EditorName = "VUE";
             Model = DataModelDesignModel.Current;
             Context = DataModelDesignModel.Current?.Context;
         }
 
         #endregion
 
-
         #region 代码
-
+        static void CheckModel(IEntityConfig entity,bool repair)
+        {
+            entity.EnableUI = true;
+            var cls = entity.Project.Classifies.FirstOrDefault(p => p.Name == entity.Classify);
+            if (repair || entity.ComponentName.IsMissing())
+            {
+                if (cls != null)
+                {
+                    entity.ComponentName = $"{entity.Project.Abbreviation}-{cls.Abbreviation}-{entity.Abbreviation}";
+                }
+                else
+                {
+                    entity.ComponentName = $"{entity.Project.Abbreviation}-{entity.Abbreviation}";
+                }
+            }
+            if (repair || entity.ApiName.IsMissing())
+            {
+                if (cls != null)
+                {
+                    entity.ApiName = $"{entity.Project.Abbreviation}\\{cls.Abbreviation}\\{entity.Abbreviation}";
+                }
+                else
+                {
+                    entity.ApiName = $"{entity.Project.Abbreviation}\\{entity.Abbreviation}";
+                }
+            }
+            if (repair || entity.PageFolder.IsMissing())
+            {
+                if (cls != null)
+                {
+                    entity.PageFolder = $"{cls.Abbreviation}\\{entity.Abbreviation}";
+                }
+                else
+                {
+                    entity.PageFolder = entity.Abbreviation;
+                }
+            }
+            if (entity.FormCloumn <= 0)
+            {
+                entity.FormCloumn = 2;
+            }
+        }
         internal static void CheckUi(IEntityConfig entity)
         {
             if (entity == null)
                 return;
-            entity.EnableUI = true;
+            CheckModel(entity,false);
             var bl = new PropertyVueModel();
             foreach (var field in entity.Properties)
             {
@@ -83,7 +136,7 @@ namespace Agebull.EntityModel.Designer
                     return;
                 repair = result == MessageBoxResult.Yes;
             }
-            entity.EnableUI = true;
+            CheckModel(entity, repair);
             var bl = new PropertyVueModel();
             foreach (var field in entity.Properties)
             {
@@ -168,16 +221,17 @@ namespace Agebull.EntityModel.Designer
                 }
             }
 
-            foreach (var field in entity.Properties)
-            {
-                if (field.IsPrimaryKey || !field.NoneGrid ||
-                    field.Name == "DataState" || field.Name == "AuditState" || field.Name == "IsFreeze")
-                    field.ExtendConfigListBool["easyui", "simple"] = true;
-            }
+            //foreach (var field in entity.Properties)
+            //{
+            //    if (field.IsPrimaryKey || !field.NoneGrid ||
+            //        field.Name == "DataState" || field.Name == "AuditState" || field.Name == "IsFreeze")
+            //        field.ExtendConfigListBool["easyui", "simple"] = true;
+            //}
             if (entity.Properties.Count(p => !p.NoneDetails) > 12)
                 entity.FormCloumn = 2;
         }
 
         #endregion
+
     }
 }
