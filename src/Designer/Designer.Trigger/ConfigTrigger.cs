@@ -35,7 +35,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void Regularize()
         {
-            TargetConfig.Foreach<object>(GlobalTrigger.DoRegularize, true);
+            //TargetConfig.Postorder<object>(GlobalTrigger.DoRegularize);
         }
     }
 }

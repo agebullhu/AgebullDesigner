@@ -24,21 +24,21 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            commands.Append(new CommandItem
+            commands.Append(new SimpleCommandItem
             {
                 Action = Format1,
                 IsButton = true,
                 Caption = "大驼峰(Json)",
                 IconName = "格式"
             },
-            new CommandItem
+            new SimpleCommandItem
             {
                 Action = Format2,
                 IsButton = true,
                 Caption = "小驼峰(Json)",
                 IconName = "格式"
             },
-            new CommandItem
+            new SimpleCommandItem
             {
                 Action = Format3,
                 IsButton = true,
@@ -79,21 +79,21 @@ namespace Agebull.EntityModel.Designer
 
         #region 扩展代码
 
-        public void Format1(object arg)
+        public void Format1()
         {
             foreach (var property in Context.SelectEntity.Properties)
             {
                 property.JsonName = NameHelper.ToWordName(property.Name);
             }
         }
-        internal void Format2(object arg)
+        internal void Format2()
         {
             foreach (var property in Context.SelectEntity.Properties)
             {
                 property.JsonName = NameHelper.ToTfWordName(property.Name);
             }
         }
-        internal void Format3(object arg)
+        internal void Format3()
         {
             foreach (var property in Context.SelectEntity.Properties)
             {
@@ -105,28 +105,28 @@ namespace Agebull.EntityModel.Designer
 
         #region 扩展代码
 
-        public void Format4(object arg)
+        public void Format4()
         {
             foreach (var property in Context.SelectEntity.Properties)
             {
                 property.ApiArgumentName = NameHelper.ToWordName(property.Name);
             }
         }
-        internal void Format5(object arg)
+        internal void Format5()
         {
             foreach (var property in Context.SelectEntity.Properties)
             {
                 property.ApiArgumentName = NameHelper.ToTfWordName(property.Name);
             }
         }
-        internal void Format6(object arg)
+        internal void Format6()
         {
             foreach (var property in Context.SelectEntity.Properties)
             {
                 property.ApiArgumentName = NameHelper.ToLinkWordName(property.Name, "_", false);
             }
         }
-        internal void Check(object arg)
+        internal void Check()
         {
             foreach (var property in Context.SelectEntity.Properties)
             {

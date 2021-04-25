@@ -25,7 +25,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         /// <typeparam name="TEditor">扩展类型</typeparam>
         /// <param name="name">扩展名称</param>
-        public static void Registe<TEditor>(string name, int idx, string icon = "img_modify")
+        public static void Registe<TEditor>(string name, int idx, string icon )
             where TEditor : UserControl, new()
         {
             GlobalEditors[name] = new EditorOption

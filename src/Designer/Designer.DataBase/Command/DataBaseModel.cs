@@ -163,7 +163,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void Upgrade(IEntityConfig entity)
         {
-            using (RepairScope.CreateScope(entity))
+            using (ObjectWrokModelScope.CreateScope(entity, WorkModel.Repair))
             {
                 entity.DataTable = new Config.V2021.DataTableConfig
                 {
@@ -179,7 +179,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void RepairByDb(IEntityConfig entity)
         {
-            using (RepairScope.CreateScope(entity))
+            using (ObjectWrokModelScope.CreateScope(entity, WorkModel.Repair))
             {
                 DataTableApplication business = new DataTableApplication
                 {

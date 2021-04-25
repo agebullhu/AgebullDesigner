@@ -62,7 +62,10 @@ namespace Agebull.EntityModel
                 throw new ArgumentNullException(nameof(collection));
             CopyFrom(collection);
         }
-
+        public override string ToString()
+        {
+            return GetType().GetTypeName();
+        }
         #endregion
 
         #region 线程完全

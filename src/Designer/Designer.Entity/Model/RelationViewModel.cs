@@ -36,39 +36,35 @@ namespace Agebull.EntityModel.Designer
         /// <returns></returns>
         public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            commands.Add(new CommandItem
+            commands.Add(new SimpleCommandItem
             {
                 IsButton = true,
                 Action = AddColumns,
-                NoConfirm = true,
                 Caption = "增加行",
                 IconName = "新增"
             });
-            commands.Add(new CommandItem
+            commands.Add(new SimpleCommandItem
             {
                 IsButton = true,
                 Action = RelationDiscovery,
-                NoConfirm = true,
                 Caption = "向下关系发现",
                 IconName = "向下"
             });
-            commands.Add(new CommandItem
+            commands.Add(new SimpleCommandItem
             {
                 IsButton = true,
                 Action = LinkDiscovery,
-                NoConfirm = true,
                 Caption = "向上关系发现",
                 IconName = "向上"
             });
-            commands.Add(new CommandItem
+            commands.Add(new SimpleCommandItem
             {
                 IsButton = true,
                 Action = PasteColumns,
-                NoConfirm = true,
                 Caption = "粘贴关系",
                 IconName = "粘贴"
             });
-            commands.Add(new CommandItem
+            commands.Add(new SimpleCommandItem
             {
                 IsButton = true,
                 Action = DeleteColumns,
@@ -82,7 +78,7 @@ namespace Agebull.EntityModel.Designer
 
         #region 操作
 
-        public void DeleteColumns(object arg)
+        public void DeleteColumns()
         {
             if (Context.SelectModel == null || Context.SelectColumns == null ||
                 MessageBox.Show("确认删除所选行吗?", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
@@ -99,7 +95,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 复制字段
         /// </summary>
-        public void AddColumns(object arg)
+        public void AddColumns()
         {
             Context.SelectModel.Releations.Add(new ReleationConfig
             {
@@ -111,7 +107,7 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 粘贴字段
         /// </summary>
-        public void PasteColumns(object arg)
+        public void PasteColumns()
         {
             if (Context.CopyColumns == null || Context.CopyColumns.Count == 0 || Context.SelectModel == null || Context.CopiedTable == null)
             {
@@ -137,7 +133,7 @@ namespace Agebull.EntityModel.Designer
                 CheckReleation(releation, Context.SelectModel);
             }
         }
-        public void LinkDiscovery(object arg)
+        public void LinkDiscovery()
         {
             var model = Context.SelectModel;
             foreach (var field in model.Where(p => p.DataBaseField.IsLinkKey))
@@ -159,10 +155,10 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        public void RelationDiscovery(object arg)
+        public void RelationDiscovery()
         {
             var model = Context.SelectModel;
-            SolutionConfig.Current.Foreach<FieldConfig>(field =>
+            SolutionConfig.Current.Preorder<FieldConfig>(field =>
             {
                 if (field.NoStorage || !field.DataBaseField.IsLinkKey || !model.Entity.Name.Equals(field.DataBaseField.LinkTable, StringComparison.OrdinalIgnoreCase))
                 {

@@ -34,18 +34,18 @@ namespace Agebull.EntityModel.Designer
         /// <param name="commands"></param>
         public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            commands.Add(new CommandItem
+            commands.Add(new SimpleCommandItem
             {
                 IsButton = true,
-                Action = arg => DoMomentCode(),
+                Action =  DoMomentCode,
                 Caption = "生成代码片断",
                 IconName = "代码"
             });
 
-            commands.Add(new CommandItem
+            commands.Add(new SimpleCommandItem
             {
                 IsButton = true,
-                Action = arg => CopyCode(),
+                Action = CopyCode,
                 Caption = "复制代码",
                 IconName = "复制"
             });

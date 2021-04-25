@@ -12,9 +12,8 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
 
         public static string JsCode(IEntityConfig model)
         {
-            return $@"EntityComponents.add('{model.Project.PageFolder}-{model.PageFolder}','form', {{
-    enableList:false,
-    enableDetails:true{Combos()}
+            return $@"EntityComponents.add('{model.ComponentName}','form', {{
+    isForm:true{Combos()}
 }});";
             #region ÏêÏ¸Ò³Ãæ
 
@@ -54,7 +53,7 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
                 }
 
                 if (load.Length > 0)
-                    return $@"
+                    return $@",
         mounted() {{
             var that=this;{load}
         }}";

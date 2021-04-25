@@ -35,7 +35,7 @@ namespace Agebull.EntityModel
         /// </summary>
         protected NotificationObject()
         {
-            ValueRecords  = new ModifyRecord { Me = this };
+            _valueRecords = new ModifyRecord { Me = this };
             //GlobalTrigger.OnCreate(this);
         }
 
@@ -259,7 +259,24 @@ namespace Agebull.EntityModel
         #region 修改事件
 
         [JsonIgnore]
-        public ModifyRecord ValueRecords { get; }
+        ModifyRecord _valueRecords;
+
+        /// <summary>
+        /// 当前的修改对象
+        /// </summary>
+        [JsonIgnore]
+        public ModifyRecord ValueRecords
+        {
+            get => _valueRecords;
+            set
+            {
+                if (_valueRecords == value)
+                    return;
+                _valueRecords = value;
+                RaisePropertyChanged(nameof(ValueRecords));
+            }
+        }
+
 
         [JsonIgnore]
         protected bool _isModify;
@@ -269,21 +286,21 @@ namespace Agebull.EntityModel
         [JsonIgnore, Category("系统"), DisplayName("已修改")]
         public bool IsModify => _isModify;
 
-        public virtual void ResetModify(bool isSaved)
+        public void ResetModify(bool isSaved)
         {
             _isModify = false;
             ValueRecords.Reset(isSaved);
             InvokeInUiThread(RaiseStatusChangedInner, new IsModifyEventArgs(IsModify));
         }
 
-        public virtual void SetIsNew()
+        public void SetIsNew()
         {
             _isModify = true;
             ValueRecords.SetIsNew();
             InvokeInUiThread(RaiseStatusChangedInner, new IsModifyEventArgs(IsModify));
         }
 
-        public virtual void CheckModify()
+        public void CheckModify()
         {
             ValueRecords.Check();
             var md = ValueRecords.IsModify;

@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
@@ -397,6 +398,41 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChange(nameof(PageFolder), _pageFolder, value);
                 _pageFolder = string.IsNullOrWhiteSpace(value) || value == Name ? null : value.Trim();
                 OnPropertyChanged(nameof(PageFolder));
+                OnPropertyChanged(nameof(PagePath));
+            }
+        }
+
+        /// <summary>
+        /// 页面路径
+        /// </summary>
+        [JsonIgnore]
+        [Category(@"用户界面"), DisplayName(@"页面路径"), Description("页面路径")]
+        public string PagePath => $"{Project.PagePath}\\{PageFolder}";
+
+        /// <summary>
+        /// 页面文件夹名称
+        /// </summary>
+        [DataMember, JsonProperty("componentName", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal string _componentName;
+
+        /// <summary>
+        /// 页面组件名称
+        /// </summary>
+        /// <remark>
+        /// 页面组件名称
+        /// </remark>
+        [JsonIgnore]
+        [Category(@"用户界面"), DisplayName(@"页面组件名称"), Description("页面组件名称")]
+        public string ComponentName
+        {
+            get => WorkContext.InCoderGenerating ? _componentName ?? ApiName : _componentName;
+            set
+            {
+                if (_componentName == value)
+                    return;
+                BeforePropertyChange(nameof(ComponentName), _componentName, value);
+                _componentName = string.IsNullOrWhiteSpace(value) || value == Name ? null : value.Trim();
+                OnPropertyChanged(nameof(ComponentName));
             }
         }
 
@@ -542,6 +578,54 @@ namespace Agebull.EntityModel.Config
 
         #endregion
 
+        #region 子级
+
+        /// <summary>
+        /// 最终有效的属性
+        /// </summary>
+        public List<IPropertyConfig> LastProperties { get; set; }
+
+        /// <summary>
+        /// 公开的属性
+        /// </summary>
+        /// <remark>
+        /// 公开的属性
+        /// </remark>
+        [JsonIgnore]
+        [Category(@"设计器支持"), DisplayName(@"公开的属性"), Description("公开的属性")]
+        public IEnumerable<IPropertyConfig> PublishProperty => LastProperties?.Where(p => !p.NoProperty);
+
+        /// <summary>
+        /// 用户属性
+        /// </summary>
+        /// <remark>
+        /// 用户属性
+        /// </remark>
+        [JsonIgnore]
+        [Category(@"设计器支持"), DisplayName(@"用户属性"), Description("用户属性")]
+        public IEnumerable<IPropertyConfig> UserProperty => LastProperties?.Where(p => !p.NoProperty && !p.IsMiddleField && !p.IsSystemField);
+
+        /// <summary>
+        /// C++的属性
+        /// </summary>
+        /// <remark>
+        /// C++的属性
+        /// </remark>
+        [JsonIgnore]
+        [Category(@"设计器支持"), DisplayName(@"C++的属性"), Description("C++的属性")]
+        public IEnumerable<IPropertyConfig> CppProperty => LastProperties?.Where(p => !p.NoProperty && !p.IsMiddleField && !p.IsSystemField);
+
+        /// <summary>
+        /// 客户端可访问的属性
+        /// </summary>
+        /// <remark>
+        /// 客户端可访问的属性
+        /// </remark>
+        [JsonIgnore]
+        [Category(@"设计器支持"), DisplayName(@"客户端可访问的属性"), Description("客户端可访问的属性")]
+        public IEnumerable<IPropertyConfig> ClientProperty => LastProperties?.Where(p => !p.NoProperty && p.UserSee);
+
+        #endregion
 
         #region C++
 

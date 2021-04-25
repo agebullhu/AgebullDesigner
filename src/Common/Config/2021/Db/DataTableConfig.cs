@@ -52,13 +52,13 @@ namespace Agebull.EntityModel.Config.V2021
             {
                 if (_fields != null)
                 {
-                    if(_fields.Parent == null)
+                    if (_fields.Parent == null)
                     {
                         _fields.OnLoad(nameof(Fields), this);
                     }
                     return _fields;
                 }
-                _fields = new ConfigCollection<DataBaseFieldConfig>(this,nameof(Fields));
+                _fields = new ConfigCollection<DataBaseFieldConfig>(this, nameof(Fields));
                 RaisePropertyChanged(nameof(Fields));
                 return _fields;
             }
@@ -134,7 +134,7 @@ namespace Agebull.EntityModel.Config.V2021
         /// <returns></returns>
         public DataBaseFieldConfig FindLast(string name)
         {
-            return Fields.FirstOrDefault(p => p.IsActive && !p.NoStorage && name.IsOnce(p.Name,p.DbFieldName));
+            return Fields.FirstOrDefault(p => p.IsActive && !p.NoStorage && name.IsOnce(p.Name, p.DbFieldName));
         }
 
         /// <summary>
@@ -290,13 +290,14 @@ namespace Agebull.EntityModel.Config.V2021
         [DisplayName(@"存储表名"), Description(@"存储表名,即实体对应的数据库表.因为模型可能直接使用视图,但增删改还在基础的表中时行,而不在视图中时行")]
         public string ReadTableName
         {
-            get => _readTableName;
+            get => _readTableName ?? _saveTableName;
             set
             {
-                if (_readTableName == value)
+                var vl = _saveTableName == value ? null : value;
+                if (_readTableName == vl)
                     return;
-                BeforePropertyChange(nameof(ReadTableName), _readTableName, value);
-                _readTableName = value;
+                BeforePropertyChange(nameof(ReadTableName), _readTableName, vl);
+                _readTableName = vl;
                 OnPropertyChanged(nameof(ReadTableName));
             }
         }

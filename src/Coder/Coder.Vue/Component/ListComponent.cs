@@ -12,9 +12,8 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
 
         public static string JsCode(IEntityConfig model)
         {
-            return $@"EntityComponents.add('{model.Project.PageFolder}-{model.PageFolder}','list', {{
-    enableList:true,
-    enableDetails:false
+            return $@"EntityComponents.add('{model.ComponentName}','list', {{
+    isList:true
 }});";
         }
         #endregion

@@ -74,7 +74,6 @@ namespace Agebull.CodeRefactor.CodeRefactor
         
         public CommandItemBase ClearTraceCommand => _clearTraceCommand ??= new CommandItem
         {
-            NoConfirm = true,
             Action = ClearTrace,
             Caption = "清除跟踪信息",
             IconName = "清除"
@@ -88,7 +87,6 @@ namespace Agebull.CodeRefactor.CodeRefactor
 
         public CommandItemBase CopyTraceCommand => _copyTraceCommand ??= new CommandItem
         {
-            NoConfirm = true,
             Action = CopyTrace,
             Caption = "复制跟踪信息",
             IconName = "复制"
@@ -102,7 +100,6 @@ namespace Agebull.CodeRefactor.CodeRefactor
                     ? TreeRoot.Root?.Extend.DependencyObjects.AutoDependency<TraceMessage>()
                     : TraceMessage.DefaultTrace;
             },
-            NoConfirm = true,
             Caption = "切换到全局消息",
             IconName = "切换"
         };

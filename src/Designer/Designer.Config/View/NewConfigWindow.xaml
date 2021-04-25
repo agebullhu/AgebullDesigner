@@ -7,7 +7,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:behaviors="clr-namespace:Agebull.Common.Mvvm;assembly=Agebull.Common.Mvvm"
         mc:Ignorable="d"
-        Title="新增配置" WindowStartupLocation="CenterScreen" Width="520" Height="240" ResizeMode="NoResize">
+        Title="新增配置" WindowStartupLocation="CenterScreen" Width="560" Height="240" ResizeMode="NoResize">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -23,18 +23,22 @@
         <behaviors:DependencyBehavior BehaviorAction="{Binding ViewBehavior}" />
     </i:Interaction.Behaviors>
     <DockPanel>
-        <Grid DockPanel.Dock="Bottom" MinHeight="42"  Margin="10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="5" />
-            </Grid.ColumnDefinitions>
-            <Button Grid.Column="2" Style="{StaticResource MyButton}" DataContext="{Binding CancelCommand}"
-                    Width="100" DockPanel.Dock="Right" />
-            <Button Grid.Column="1" Style="{StaticResource MyButton}" DataContext="{Binding OkCommand}" 
-                    Width="100" DockPanel.Dock="Right" />
-        </Grid>
+        <Border Background="#f5f6f7" BorderBrush="Silver" Padding="5" BorderThickness="0,1,0,0" DockPanel.Dock="Bottom" Margin="0" >
+            <Grid DataContext="{Binding}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="15" />
+                </Grid.ColumnDefinitions>
+                <Border DataContext="{Binding OkCommand}" VerticalAlignment="Stretch"  Grid.Column="1" Width="100" >
+                    <Button Style="{StaticResource MyButton}" />
+                </Border>
+                <Border DataContext="{Binding CancelCommand}" VerticalAlignment="Stretch"   Grid.Column="2" Width="100" >
+                    <Button Style="{StaticResource MyButton}"/>
+                </Border>
+            </Grid>
+        </Border>
         <StackPanel Style="{StaticResource LayoutPanel}" DataContext="{Binding Config}">
             <WrapPanel>
                 <StackPanel>
@@ -47,8 +51,7 @@
                 </StackPanel>
                 <StackPanel>
                     <Label Content="说明" />
-                    <TextBox Style="{StaticResource MidTextBox}" Height="100"
-                             Text="{Binding Description,Mode=TwoWay}" />
+                    <TextBox Style="{StaticResource MidTextBox}" Height="100" Text="{Binding Description,Mode=TwoWay}" />
                 </StackPanel>
             </WrapPanel>
         </StackPanel>

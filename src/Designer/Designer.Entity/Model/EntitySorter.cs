@@ -42,6 +42,11 @@ namespace Agebull.EntityModel.Config
             {
                 m.Properties.Sort(p => p.OrderBy(p => p.Index));
             }
+            foreach(var field in Entity.DataTable.Fields)
+            {
+                field.Index = field.Property.Index;
+            }
+            Entity.DataTable.Fields.Sort(p => p.OrderBy(p => p.Index));
         }
 
         /// <summary>

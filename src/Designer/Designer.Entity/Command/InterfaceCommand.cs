@@ -27,6 +27,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "清理字段",
                 SoruceView = "entity",
                 SignleSoruce = false,
+                DoConfirm = true,
                 Catalog = "接口",
                 IconName = "清理"
             });
@@ -44,6 +45,7 @@ namespace Agebull.EntityModel.Designer
                 Action = InterfaceHelper.ClearInterface,
                 Caption = "清除接口",
                 SoruceView = "entity",
+                DoConfirm = true,
                 SignleSoruce = false,
                 Catalog = "接口",
                 IconName = "清除"

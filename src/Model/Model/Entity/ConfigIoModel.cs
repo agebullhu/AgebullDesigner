@@ -47,11 +47,7 @@ namespace Agebull.EntityModel.Designer
             }
 
             SolutionWriter.Save(Context.Solution, Context.FileName);
-            SolutionModel model = new SolutionModel
-            {
-                Solution = Context.Solution
-            };
-            model.ResetStatus();
+
             Context.StateMessage = "保存成功";
         }
 

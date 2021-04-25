@@ -14,9 +14,7 @@ namespace Agebull.EntityModel.Designer
         {
             CommondFilter = cmd =>
             {
-                if (cmd.Editor.IsMissing() || EditorName.IsMissing() || !cmd.Editor.Contains(EditorName, StringComparison.OrdinalIgnoreCase))
-                    return false;
-                return true;
+                return !cmd.Editor.IsMissing() && !EditorName.IsMissing() && cmd.Editor.Contains(EditorName, StringComparison.OrdinalIgnoreCase);
             };
         }
 

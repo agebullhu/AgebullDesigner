@@ -577,7 +577,9 @@ namespace Agebull.EntityModel
             {
                 var items = CreateChild(value);
                 if (items != null && items.Count > 0)
+                {
                     Items.AddRange(items);
+                }
             }
         }
 

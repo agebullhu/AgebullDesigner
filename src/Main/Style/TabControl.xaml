@@ -12,7 +12,8 @@
                 <ControlTemplate TargetType="{x:Type TabControl}">
                     <Grid KeyboardNavigation.TabNavigation="Local">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="21" />
+                            <RowDefinition Height="2" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <VisualStateManager.VisualStateGroups>
@@ -27,18 +28,19 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <Border BorderThickness="0,1,0,0" BorderBrush="Silver">
-                            <TabPanel x:Name="HeaderPanel" Grid.Row="0" Panel.ZIndex="1" Margin="0,0,4,-1" IsItemsHost="True"
-                                  KeyboardNavigation.TabIndex="1" KeyboardNavigation.TabNavigation="Local"
-                                  Background="#f5f6f7" />
-                        </Border>
-                        <Border x:Name="Border" Grid.Row="1"
-                                BorderThickness="0,1,0,0" BorderBrush="Silver"
+                        <Border x:Name="Border" Grid.Row="1" Grid.RowSpan="2"
+                                BorderThickness="1,1,0,0" BorderBrush="Silver"
                                 Background="White"
                                 KeyboardNavigation.TabNavigation="Local"
                                 KeyboardNavigation.DirectionalNavigation="Contained"
                                 KeyboardNavigation.TabIndex="2">
                             <ContentPresenter x:Name="PART_SelectedContentHost" Margin="4" ContentSource="SelectedContent" />
+                        </Border>
+                        <Border BorderThickness="0,1,0,1" BorderBrush="Silver" Grid.RowSpan="2">
+                            <TabPanel x:Name="HeaderPanel" Grid.Row="0" Panel.ZIndex="1" 
+                                      Margin="0,0,0,0" IsItemsHost="True"
+                                      KeyboardNavigation.TabIndex="1" KeyboardNavigation.TabNavigation="Local"
+                                      Background="#f5f6f7" />
                         </Border>
                     </Grid>
                 </ControlTemplate>
@@ -50,36 +52,40 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TabItem}">
-                    <Grid x:Name="Root">
-                        <Border Grid.Row="0" x:Name="Border" Margin="0,0,-2,0"  BorderThickness="1,0">
-                            <Border.BorderBrush>
-                                <SolidColorBrush Color="Silver" />
-                            </Border.BorderBrush>
-                            <Border.Background>
-                                <SolidColorBrush Color="#f5f6f7" />
-                            </Border.Background>
-
-                            <Border Grid.Row="0" x:Name="Border2" Margin="0,0,0,0"  BorderThickness="0,0,0,1">
+                    <Border Margin="0,0,-1,-1"  >
+                        <Grid x:Name="Root">
+                            <Border Grid.Row="0" x:Name="Border" Margin="0"  BorderThickness="1,0">
                                 <Border.BorderBrush>
-                                    <SolidColorBrush Color="Red" />
+                                    <SolidColorBrush Color="Silver" />
                                 </Border.BorderBrush>
-                                <ContentPresenter x:Name="ContentSite"
+                                <Border.Background>
+                                    <SolidColorBrush Color="#f5f6f7" />
+                                </Border.Background>
+
+                                <Border Grid.Row="0" x:Name="Border2" Margin="0" Padding="0,0,0,2" BorderThickness="0,0,0,1">
+                                    <Border.BorderBrush>
+                                        <SolidColorBrush Color="Silver" />
+                                    </Border.BorderBrush>
+                                    <ContentPresenter x:Name="ContentSite"
                                   VerticalAlignment="Center"
                                   HorizontalAlignment="Center"
                                   ContentSource="Header"
                                   Margin="12,2,12,2"
                                   RecognizesAccessKey="True" />
+                                </Border>
                             </Border>
-                        </Border>
-                    </Grid>
+                        </Grid>
+                    </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter Property="Panel.ZIndex" Value="100" />
                             <Setter TargetName="Border2" Property="Background" Value="White" />
+                            <Setter TargetName="Border2" Property="BorderThickness" Value="0" />
                         </Trigger>
                         <Trigger Property="IsSelected" Value="False">
                             <Setter Property="Panel.ZIndex" Value="200" />
                             <Setter TargetName="Border2" Property="Background" Value="#f5f6f7" />
+                            <Setter TargetName="Border2" Property="BorderThickness" Value="0,0,0,1" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

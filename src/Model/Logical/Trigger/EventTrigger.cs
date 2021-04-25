@@ -74,8 +74,8 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 加入事件处理
         /// </summary>
-        /// <param name="config"></param>
-        public virtual void OnAdded(object config)
+        /// <param name="parent"></param>
+        public virtual void OnAdded(object parent)
         {
         }
 
@@ -84,7 +84,7 @@ namespace Agebull.EntityModel
         /// 删除事件处理
         /// </summary>
         /// <param name="config"></param>
-        public virtual void OnRemoved(object config)
+        public virtual void OnRemoved(object parent)
         {
         }
 

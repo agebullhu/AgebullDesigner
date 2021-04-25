@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -14,17 +13,17 @@ namespace Agebull.EntityModel.Config
     /// </summary>
     public class GlobalConfig : NotificationObject
     {
-#if DEBUG
+//#if DEBUG
         /// <summary>
         /// 根路径
         /// </summary>
         public static string RootPath = Path.GetDirectoryName(Environment.CurrentDirectory);
-#else
-        /// <summary>
-        /// 根路径
-        /// </summary>
-        public static string RootPath = Environment.CurrentDirectory;
-#endif
+//#else
+//        /// <summary>
+//        /// 根路径
+//        /// </summary>
+//        public static string RootPath = Environment.CurrentDirectory;
+//#endif
         #region 类型取得
 
         /// <summary>

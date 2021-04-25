@@ -52,6 +52,10 @@ namespace Agebull.EntityModel.Config
 
         #region 设计标识
 
+        public override string ToString()
+        {
+            return "基础配置";
+        }
 
         /// <summary>
         /// 标识

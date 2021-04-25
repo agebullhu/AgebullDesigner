@@ -72,13 +72,15 @@ namespace Agebull.EntityModel.Config.V2021
         [DisplayName(@"字段"), Description(@"字段")]
         public IPropertyConfig Property
         {
-            get => _property ?? (_propertyKey.IsMissing() ? null : _property = GlobalConfig.GetConfigByKey<IPropertyConfig>(_propertyKey));
+            get => _property ?? (_propertyKey.IsMissing() 
+                ? null
+                : _property = SetProperty(GlobalConfig.GetConfigByKey<IPropertyConfig>(_propertyKey)));
             set
             {
                 if (_property == value)
                     return;
                 BeforePropertyChange(nameof(Property), _property, value);
-                _property = value;
+                _property = SetProperty(value);
                 _propertyKey = value?.Key;
                 RaisePropertyChanged(nameof(Property));
                 OnPropertyChanged(nameof(PropertyKey));
@@ -88,6 +90,11 @@ namespace Agebull.EntityModel.Config.V2021
         /// 实体的上级
         /// </summary>
         public IEntityConfig Entity => Property?.Entity;
+
+        protected virtual IPropertyConfig SetProperty(IPropertyConfig property)
+        {
+            return property;
+        }
 
         #endregion
 
