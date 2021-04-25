@@ -69,6 +69,7 @@ namespace Agebull.EntityModel.Designer
                 Name = "清除所有外联",
                 Caption = "清除所有外联",
                 SoruceView = "entity",
+                DoConfirm = true,
                 Action = RelationChecker.ClearLink,
                 Catalog = "数据库",
                 IconName = "清除"

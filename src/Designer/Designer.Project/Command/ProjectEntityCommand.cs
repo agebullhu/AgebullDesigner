@@ -34,7 +34,6 @@ namespace Agebull.EntityModel.Designer
             {
                 Catalog = "枚举",
                 Action = NewEnum,
-                NoConfirm = true,
                 SignleSoruce = true,
                 SoruceView = "enum",
                 Caption = "新增枚举",

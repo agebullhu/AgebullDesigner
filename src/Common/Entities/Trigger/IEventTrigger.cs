@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Agebull.EntityModel
 {
@@ -122,21 +123,21 @@ namespace Agebull.EntityModel
         /// <param name="parent"></param>
         void OnAdded(object parent, object config)
         {
-            Target = parent;
+            Target = config;
             var scope = NameEventScope.CreateScope(config, this.GetTypeName(), nameof(OnAdded));
             if (scope == null)
                 return;
             using (scope)
             {
-                OnAdded(config);
+                OnAdded(parent);
             }
         }
 
         /// <summary>
         /// 加入事件处理
         /// </summary>
-        /// <param name="config"></param>
-        void OnAdded(object config)
+        /// <param name="parent"></param>
+        void OnAdded(object parent)
         {
         }
 
@@ -147,20 +148,20 @@ namespace Agebull.EntityModel
         /// <param name="parent"></param>
         void OnRemoved(object parent, object config)
         {
-            Target = parent;
+            Target = config;
             var scope = NameEventScope.CreateScope(config, this.GetTypeName(), nameof(OnRemoved));
             if (scope == null)
                 return;
             using (scope)
             {
-                OnRemoved(config);
+                OnRemoved(parent);
             }
         }
         /// <summary>
         /// 删除事件处理
         /// </summary>
-        /// <param name="config"></param>
-        void OnRemoved(object config)
+        /// <param name="parent"></param>
+        void OnRemoved(object parent)
         {
         }
 
@@ -176,7 +177,14 @@ namespace Agebull.EntityModel
                 return;
             using (scope)
             {
-                Regularize();
+                try
+                {
+                    Regularize();
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine(ex, "规整对象");
+                }
             }
         }
 

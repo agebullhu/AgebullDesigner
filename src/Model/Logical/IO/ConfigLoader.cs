@@ -29,7 +29,7 @@ namespace Agebull.EntityModel.Designer
             GlobalConfig.ClearConfigDictionary();
             GlobalConfig.GlobalSolution = LoadSolution(GlobalConfig.CheckPath(GlobalConfig.RootPath, "Global"), "global.json", true);
 
-            GlobalConfig.GlobalSolution.Look(GlobalConfig.AddNormalConfig);
+            GlobalConfig.GlobalSolution.Preorder<ConfigBase>(GlobalConfig.AddNormalConfig);
 
             GlobalTrigger.OnLoad(GlobalConfig.GlobalSolution);
             var re = GlobalConfig.GlobalSolution;
@@ -37,19 +37,17 @@ namespace Agebull.EntityModel.Designer
             {
                 var solution = LoadSolution(Path.GetDirectoryName(sluFile), Path.GetFileName(sluFile), false);
 
-                solution.Look(GlobalConfig.AddNormalConfig);
+                solution.Preorder<ConfigBase>(GlobalConfig.AddNormalConfig);
+
                 GlobalTrigger.OnLoad(solution);
-                solution.Look(First);
+
+                solution.ResetStatus();
                 re = GlobalConfig.LocalSolution = solution;
             }
-            GlobalConfig.GlobalSolution.Look(First);
+            GlobalConfig.GlobalSolution.ResetStatus();
             return re;
         }
 
-        public static void First(ConfigBase cfg)
-        {
-            cfg.ResetModify(true);
-        }
 
         public static SolutionConfig LoadSolution(string directory, string file, bool isGlobal)
         {

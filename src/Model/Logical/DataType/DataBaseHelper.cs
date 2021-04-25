@@ -40,7 +40,7 @@ namespace Agebull.EntityModel.Config
         public static string ToDbFieldName(IPropertyConfig field)
         {
             var style = CodeStyleManager.GetDatabaseStyle(field.Parent.Project.CodeStyle, field.Parent.Project.DbType);
-            return style.FormatFieldName(field);
+            return style?.FormatFieldName(field);
         }
 
         /// <summary>

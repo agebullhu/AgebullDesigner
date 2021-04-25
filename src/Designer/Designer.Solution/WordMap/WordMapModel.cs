@@ -184,31 +184,33 @@ namespace Agebull.EntityModel.Designer
 
         public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            commands.Append(new CommandItem
+            commands.Append(new SimpleCommandItem
             {
                 Name = "Reload",
                 IsButton = true,
+
+                DoConfirm = true,
                 Caption = "重新载入",
-                Action = p => Reload(),
+                Action = Reload ,
                 IconName = "载入"
             },
-            new CommandItem
+            new SimpleCommandItem
             {
                 Name = "New",
                 Caption = "新增",
                 IsButton = true,
-                Action = arg => NewWord(),
+                Action = NewWord,
                 IconName = "新增"
             },
-            new CommandItem
+            new SimpleCommandItem
             {
                 Name = "Remove",
                 Caption = "清理并保存",
                 IsButton = true,
-                Action = arg => Clear(wordItems.Count == 0 ? null : wordItems.ToList(), true),
+                Action = Clear,
                 IconName = "清理"
             },
-            new CommandItem
+            new SimpleCommandItem
             {
                 IsButton = true,
                 Action = DeleteColumns,
@@ -280,7 +282,7 @@ namespace Agebull.EntityModel.Designer
                 Trace.WriteLine(e);
             }
         }
-        public void DeleteColumns(object arg)
+        public void DeleteColumns()
         {
             if (SelectColumns == null || SelectColumns.Count == 0 ||
                 MessageBox.Show("确认删除吗?", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
@@ -294,6 +296,10 @@ namespace Agebull.EntityModel.Designer
             SelectColumns = null;
         }
 
+        private static void Clear()
+        {
+            Clear(wordItems.Count == 0 ? null : wordItems.ToList(), true);
+        }
         private static void Clear(List<WordItem> items, bool save = false)
         {
             wordItems.Clear();

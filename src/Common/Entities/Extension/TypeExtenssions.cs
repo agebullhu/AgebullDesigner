@@ -11,6 +11,20 @@ namespace Agebull.EntityModel
     public static class TypeExtenssions
     {
         /// <summary>
+        /// 是否指定类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsType(this object obj, Type type)
+        {
+            if (obj == null)
+                return false;
+            var me = obj.GetType();
+            return type == me || me.IsSubclassOf(type) || me.IsSupperInterface(type);
+        }
+
+
+        /// <summary>
         /// 是否等于其中之一
         /// </summary>
         public static bool IsOnce(this string array, params string[] strs) => array != null && strs.Length > 0 && strs.Any(p => array.IsMe(p));

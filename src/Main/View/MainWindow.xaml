@@ -5,11 +5,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:EfMove="clr-namespace:Gboxt.Design.EFMove"
         mc:Ignorable="d"
-        Title="实体模型编辑"
+        Title="ZeroCoder 零代码时代探路者"
         d:DesignHeight="350"
         d:DesignWidth="525"
         WindowState="Maximized" Icon="/icon.ico" >
-    <Border BorderThickness="1" Margin="0" Padding="0">
-        <EfMove:MainPage VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
-    </Border>
+    <EfMove:MainPage VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
 </Window>

@@ -437,6 +437,7 @@ namespace Agebull.EntityModel.Config
             _customType = null;
             if (_csType == null)
                 return null;
+
             if (_csType.Contains("["))
             {
                 CsType = _csType.Split('[')[0];
@@ -444,10 +445,11 @@ namespace Agebull.EntityModel.Config
             }
             if (IsArray)
                 return $"{_csType}[]";
-            if (string.Equals(_csType, "string", StringComparison.OrdinalIgnoreCase))
+            if (_csType.IsMe("string"))
                 return _csType;
-            return Nullable ? $"{_csType}?" : _csType;
+            return Nullable ? $"Nullable<{_csType}>" : _csType;
         }
+
         /// <summary>
         /// 可空类型(C#)的说明文字
         /// </summary>
@@ -2059,9 +2061,9 @@ namespace Agebull.EntityModel.Config
                 if (CsType == "string")
                 {
                     string max = Max;
-                    if(!NoStorage)
+                    if (!NoStorage)
                     {
-                        if (!DataBaseField. IsBlob && !DataBaseField.IsText && DataBaseField.Datalen > 0)
+                        if (!DataBaseField.IsBlob && !DataBaseField.IsText && DataBaseField.Datalen > 0)
                         {
                             decs.Append($"可存储{DataBaseField.Datalen}个字符.");
                             if ((int.TryParse(max, out var len) && len > DataBaseField.Datalen))

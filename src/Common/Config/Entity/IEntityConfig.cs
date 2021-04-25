@@ -530,6 +530,23 @@ namespace Agebull.EntityModel.Config
             set;
         }
         /// <summary>
+        /// 页面组件名称
+        /// </summary>
+        string ComponentName
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 页面路径
+        /// </summary>
+        string PagePath
+        {
+            get;
+        }
+
+        /// <summary>
         /// 页面文件夹名称
         /// </summary>
         string PageFolder

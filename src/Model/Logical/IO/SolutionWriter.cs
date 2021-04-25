@@ -30,7 +30,8 @@ namespace Agebull.EntityModel.Designer
                 SaveSolution(solution);
             }
             GlobalConfig.ClearConfigDictionary();
-            solution.Look(GlobalConfig.AddNormalConfig);
+            solution.Preorder<ConfigBase>(GlobalConfig.AddNormalConfig);
+            solution.ResetStatus();
         }
 
         /// <summary>
@@ -68,7 +69,7 @@ namespace Agebull.EntityModel.Designer
                 SaveConfig(Solution.SaveFileName, Solution, true);
             }
 
-            Solution.Look(p => p.ResetModify(true));
+            Solution.ResetStatus();
             //VersionControlItem.Current.TfsCheckIn();
         }
 

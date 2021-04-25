@@ -21,7 +21,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "清除文件相关的扩展信息",
                 Catalog = "工具",
                 SignleSoruce = false,
-
+                DoConfirm=true,
                 IconName = "清除"
             });
             commands.Add(new CommandItemBuilder<ConfigBase>
@@ -30,7 +30,7 @@ namespace Agebull.EntityModel.Designer
                 Caption = "清除所有扩展信息",
                 Catalog = "工具",
                 SignleSoruce = false,
-
+                DoConfirm = true,
                 IconName = "清除"
             });
             commands.Add(new CommandItemBuilder<ConfigBase>

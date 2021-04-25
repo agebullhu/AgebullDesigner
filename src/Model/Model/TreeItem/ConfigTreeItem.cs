@@ -148,12 +148,12 @@ namespace Agebull.EntityModel.Designer
         protected override void CreateCommandList(List<CommandItemBase> commands)
         {
             var treeItem = Parent as TreeItem;
-            commands.Add(new CommandItem
+            commands.Add(new SimpleCommandItem
             {
                 Source = this,
                 Caption = "刷新",
                 Catalog = "视图",
-                Action = arg => ReBuildChild(),
+                Action = ReBuildChild,
                 IconName = "刷新"
             });
             base.CreateCommandList(commands);

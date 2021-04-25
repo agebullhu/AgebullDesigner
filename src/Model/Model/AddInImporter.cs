@@ -50,6 +50,7 @@ namespace Agebull.EntityModel.Designer
             var path = Path.Combine(GlobalConfig.RootPath, "AddIn");
             if (!Directory.Exists(path))
             {
+                Registers = new List<IAutoRegister>();
                 return;
             }
             var bin = Path.Combine(path, "Bin");

@@ -535,19 +535,19 @@ namespace {NameSpace}.WebApi
                 data.{pro.Name}_Base64 = {pro.Name};");
                             continue;
                     }
-                    if (pro.IsEnum && !string.IsNullOrWhiteSpace(pro.CustomType))
+                    if (pro.IsEnum && pro.CustomType.IsPresent())
                     {
                         code.Append($@"convert.TryGetEnum(""{pro.JsonName}"" , out {pro.CustomType} {pro.Name}))
                 data.{pro.Name} = {pro.Name};");
                     }
-                    else if (!string.IsNullOrWhiteSpace(pro.CustomType))
+                    else if (pro.CustomType.IsPresent())
                     {
                         code.Append($@"convert.TryGetValue(""{pro.JsonName}"" , out {pro.CsType} {pro.Name}))
                 data.{pro.Name} = ({pro.CustomType}){pro.Name};");
                     }
                     else
                     {
-                        code.Append($@"convert.TryGetValue(""{pro.JsonName}"" , out {pro.CsType} {pro.Name}))
+                        code.Append($@"convert.TryGetValue(""{pro.JsonName}"" , out {pro.LastCsType} {pro.Name}))
                 data.{pro.Name} = {pro.Name};");
                     }
                 }

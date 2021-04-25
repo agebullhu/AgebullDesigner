@@ -16,6 +16,8 @@ namespace Agebull.Common.Mvvm
             get;
             set;
         }
+
+
         /// <summary>
         /// 标识
         /// </summary>
@@ -66,11 +68,6 @@ namespace Agebull.Common.Mvvm
             get;
             set;
         }
-
-        /// <summary>
-        ///     不显示为按钮
-        /// </summary>
-        public bool NoButton => !IsButton;
 
         /// <summary>
         ///     图标
@@ -166,13 +163,27 @@ namespace Agebull.Common.Mvvm
         public string ConfirmMessage { get; set; }
 
         /// <summary>
-        /// 无需确认
+        ///     不显示为按钮
         /// </summary>
-        public bool NoConfirm { get; set; }
+        public bool NoButton => !IsButton;
+
+
+        /// <summary>
+        ///     显示结果消息
+        /// </summary>
+        public bool ShowResultMessage
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// 需确认
         /// </summary>
-        public bool DoConfirm => !string.IsNullOrWhiteSpace(ConfirmMessage);
+        public bool DoConfirm
+        {
+            get;
+            set;
+        }
     }
 }

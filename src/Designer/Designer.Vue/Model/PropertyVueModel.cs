@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Text;
 
@@ -29,7 +30,6 @@ namespace Agebull.EntityModel.Config
             if (property.IsPrimaryKey && field.IsIdentity)
             {
                 property.NoneDetails = true;
-                property.ExtendConfigListBool["easyui", "userFormHide"] = true;
             }
             if (property.InputType == "editor")
             {
@@ -71,6 +71,7 @@ namespace Agebull.EntityModel.Config
                 property.FormOption = null;
                 property.ComboBoxUrl = null;
             }
+            CheckGridAlign(property);
         }
 
         public void CheckSize(IPropertyConfig property, SizeOption option)
@@ -132,11 +133,11 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public void CheckFieldShow(IPropertyConfig property)
         {
-            var field = property.DataBaseField;
-            if (property.IsPrimaryKey || field.IsLinkKey)
-            {
-                property.GridDetails = true;
-            }
+            //var field = property.DataBaseField;
+            //if (field.IsPrimaryKey || field.IsLinkKey)
+            //{
+            //    property.GridDetails = true;
+            //}
             if (property.Name.ToLower().Contains("memo") || property.Name.ToLower().Contains("remark"))
             {
                 property.MulitLine = true;
@@ -149,12 +150,7 @@ namespace Agebull.EntityModel.Config
                 property.FormCloumnSapn = 2;
                 property.Index = 999;
             }
-
-            if (field.IsLinkKey && !property.NoneGrid)
-            {
-                property.GridDetails = true;
-                property.NoneGrid = true;
-            }
+            CheckGridAlign(property);
             CheckKeyShow(property);
         }
 
@@ -166,16 +162,20 @@ namespace Agebull.EntityModel.Config
         public void CheckKeyShow(IPropertyConfig property)
         {
             var field = property.DataBaseField;
+            if (property.GridAlign.IsMissing())
+            {
+                property.GridAlign = "left";
+            }
             if (property.IsPrimaryKey)
             {
                 property.NoneGrid = true;
                 property.NoneDetails = true;
             }
+
             if (field.IsLinkKey)
             {
                 property.NoneGrid = true;
                 property.NoneDetails = false;
-                property.ExtendConfigListBool["easyui", "userFormHide"] = true;
             }
             if (field.IsLinkCaption)
             {
@@ -204,7 +204,23 @@ namespace Agebull.EntityModel.Config
             property.NoneDetails = false;
             ResetInputType(property);
         }
-
+        /// <summary>
+        ///     检查表格对齐
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public static void CheckGridAlign(IPropertyConfig property)
+        {
+            if (property.GridAlign.IsPresent())
+                return;
+            if (property.LastCsType.IsNumberType())
+                property.GridAlign = "right";
+            else if (property.LastCsType == "bool")
+                property.GridAlign = "middle";
+            else
+                property.GridAlign = "left";
+        }
+        
         private static void ResetInputType(IPropertyConfig property)
         {
             if (property.MulitLine || property.InputType == "editor")

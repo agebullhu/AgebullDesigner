@@ -8,8 +8,40 @@ namespace Agebull.EntityModel.Designer
     /// <summary>
     /// 表示一个命令生成器
     /// </summary>
+    public class SimpleCommandItemBuilder : CommandConfig, ICommandItemBuilder
+    {
+        /// <summary>
+        /// 命令
+        /// </summary>
+        public Action Action { get; set; }
+
+        /// <summary>
+        /// 转为命令对象
+        /// </summary>
+        /// <returns>命令对象</returns>
+        public CommandItemBase ToCommand(string key, object arg, Func<object, IEnumerator> enumerator)
+        {
+            Key = key;
+            var item = new SimpleCommandItem
+            {
+                Source = arg,
+                Action = Action
+            };
+            item.CopyFrom(this);
+            return item;
+        }
+    }
+
+    /// <summary>
+    /// 表示一个命令生成器
+    /// </summary>
     public class CommandItemBuilder : CommandConfig, ICommandItemBuilder
     {
+        /// <summary>
+        /// 构造
+        /// </summary>
+        public CommandItemBuilder() { }
+
         /// <summary>
         /// 命令
         /// </summary>
@@ -73,7 +105,6 @@ namespace Agebull.EntityModel.Designer
         }
     }
 
-
     /// <summary>
     /// 表示一个迭代命令生成器
     /// </summary>
@@ -135,6 +166,7 @@ namespace Agebull.EntityModel.Designer
             SignleSoruce = false;
             TargetType = typeof(TParameter);
         }
+
         /// <summary>
         /// 转为命令对象
         /// </summary>
@@ -151,6 +183,5 @@ namespace Agebull.EntityModel.Designer
             return item;
         }
     }
-
 
 }

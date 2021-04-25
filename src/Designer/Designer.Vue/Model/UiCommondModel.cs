@@ -36,7 +36,7 @@ namespace Agebull.EntityModel.Designer
                     Action = VueModel.CheckUi,
                     WorkView = "entity",
                     CanButton=true,
-                    ConfirmMessage = "是否继续?"
+                Editor = "VUE",
                 },
                 new CommandItemBuilder<IEntityConfig>
                 {
@@ -45,7 +45,7 @@ namespace Agebull.EntityModel.Designer
                     WorkView = "entity",
                     Catalog = "用户界面",
                     CanButton=true,
-                    ConfirmMessage = "是否继续?"
+                Editor = "VUE",
                 },
                 new CommandItemBuilder<IEntityConfig>
                 {
@@ -82,7 +82,7 @@ namespace Agebull.EntityModel.Designer
                     WorkView = "entity",
                     CanButton=true,
                     Caption = "按文字计算宽度",
-                    ConfirmMessage = "是否继续?"
+                    
                 },
                 new CommandItemBuilder<IEntityConfig>
                 {
@@ -92,17 +92,16 @@ namespace Agebull.EntityModel.Designer
                     WorkView = "entity",
                     CanButton=true,
                     Caption = "自适应宽度",
-                    ConfirmMessage = "是否继续?"
+                    
                 },
                 new CommandItemBuilder<IEntityConfig>
                 {
                     Action = VueModel.CheckExport,
                     Caption = "导出导出初始化",
-                    NoConfirm=true,
                     WorkView = "entity",
                     Catalog = "用户界面",
                     Editor = "Vue",
-                    ConfirmMessage = "是否继续?"
+                    
                 }
             });
         }

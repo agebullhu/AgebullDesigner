@@ -44,23 +44,22 @@ namespace Agebull.EntityModel.Designer
         void IEventTrigger.OnCodeGeneratorBegin(object obj)
         {
             Target = (ConfigBase)obj;
-            Target.Foreach<IEntityConfig>(CreateLast);
+            Target.Preorder<IEntityConfig>(CodeGeneratorBegin);
         }
+
         /// <summary>
         /// 完成代码生成
         /// </summary>
         void IEventTrigger.OnCodeGeneratorEnd()
         {
-            Target.Foreach<IEntityConfig>(ClearLast);
+            Target.Preorder<IEntityConfig>(OnCodeGeneratorEnd);
         }
-
 
         /// <summary>
         /// 开始代码生成
         /// </summary>
-        public void CreateLast(IEntityConfig entity)
+        void CodeGeneratorBegin(IEntityConfig entity)
         {
-
             entity.LastProperties = new List<IPropertyConfig>();
             int idx = 0;
             foreach (var property in entity.Properties.OrderBy(p => p.Index))
@@ -75,21 +74,18 @@ namespace Agebull.EntityModel.Designer
             InterfaceHelper.CheckLastInterface(entity, idx);
             foreach (var field in entity.DataTable.Fields.ToArray())
             {
-                if (field.Property == null || field.Property.IsDelete || field.Property.IsDiscard || !entity.LastProperties.Any(pro => pro == field.Property))
-                {
-                    field.IsDiscard = true;
-                }
-                else
-                {
-                    field.IsDiscard = false;
-                }
+                GlobalTrigger.Regularize(field);
+            }
+            foreach (var property in entity.LastProperties)
+            {
+                GlobalTrigger.Regularize(property);
             }
         }
 
         /// <summary>
-        /// 开始代码生成
+        /// 结束代码生成
         /// </summary>
-        public void ClearLast(IEntityConfig entity)
+        void OnCodeGeneratorEnd(IEntityConfig entity)
         {
             if (entity.LastProperties == null)
                 return;

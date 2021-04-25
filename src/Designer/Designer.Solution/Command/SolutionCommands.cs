@@ -51,6 +51,7 @@ namespace Agebull.EntityModel.Designer
             {
                 Catalog = "编辑",
                 IsButton = true,
+                DoConfirm = true,
                 SignleSoruce = true,
                 Caption = "生成解决方案",
                 Action = arg => new SolutionAnalysis().SyncSolutionFile(),
@@ -64,8 +65,9 @@ namespace Agebull.EntityModel.Designer
         public void AddProject(object arg)
         {
             if (Model.CreateNew("新增项目", out ProjectConfig config))
+            {
                 Context.Solution.Add(config);
+            }
         }
-
     }
 }

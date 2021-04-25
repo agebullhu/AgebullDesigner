@@ -382,10 +382,12 @@ namespace {Project.NameSpace}.DataAccess
                     code.Append($@"
             case ""{name}"":");
 
+                var type = property.CustomType.IsMissing() ? property.CsType : property.CustomType;
+
                 code.Append($@"
                 if (value == null)
                      entity.{property.Name} = default;
-                else if(value is {property.LastCsType} {varName})
+                else if(value is {type} {varName})
                     entity.{property.Name} = {varName};");
 
                 switch (property.CsType)
@@ -407,17 +409,23 @@ namespace {Project.NameSpace}.DataAccess
                         break;
                 }
 
-                if (!string.IsNullOrWhiteSpace(property.CustomType))
+                if (property.CustomType.IsPresent())
                 {
                     code.Append($@"
                 else if(value is int i{property.Name})
                     entity.{property.Name} = ({property.CustomType})i{property.Name};
                 else if (int.TryParse(value.ToString(), out i{property.Name}))
-                    entity.{property.Name} = ({property.CustomType})i{property.Name};");
+                    entity.{property.Name} = ({property.CustomType})i{property.Name};
+                else if (value is string s_{varName} && Enum.TryParse<{property.CustomType}>(s_{varName}, out {varName}))
+                    entity.{property.Name} = {varName};");
+                }
+                else
+                {
+                    code.AppendLine($@"
+                else if (value is string s_{varName} && {property.CsType}.TryParse(s_{varName}, out {varName}))
+                    entity.{property.Name} = {varName};");
                 }
                 code.AppendLine($@"
-                else if ({property.LastCsType}.TryParse(value.ToString(), out {varName}))
-                    entity.{property.Name} = {varName};
                 else
                     entity.{property.Name} = default;
                 return;");

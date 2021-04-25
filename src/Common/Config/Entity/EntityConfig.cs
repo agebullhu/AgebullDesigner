@@ -551,7 +551,9 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public FieldConfig Find(string name)
         {
-            return Properties.FirstOrDefault(p =>
+            return name.IsMissing()
+                ? null
+                : Properties.FirstOrDefault(p =>
                 name.Equals(p.Name, StringComparison.OrdinalIgnoreCase) ||
                 name.Equals(p.DataBaseField?.DbFieldName, StringComparison.OrdinalIgnoreCase));
         }
@@ -642,7 +644,7 @@ namespace Agebull.EntityModel.Config
         /// <returns></returns>
         public bool Exist(params string[] names)
         {
-            return Properties.Any(p => names.Exist(p.Name, p.DataBaseField ? .DbFieldName));
+            return Properties.Any(p => names.Exist(p.Name, p.DataBaseField?.DbFieldName));
         }
         #endregion
 

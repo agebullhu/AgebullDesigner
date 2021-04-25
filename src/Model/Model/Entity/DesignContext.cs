@@ -157,6 +157,7 @@ namespace Agebull.EntityModel.Designer
                     return;
                 PreSelectConfig = _selectConfig;
                 _selectConfig = value;
+                ValueRecords = value?.ValueRecords;
                 RaisePropertyChanged(nameof(SelectConfig));
             }
         }

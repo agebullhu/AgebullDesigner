@@ -9,14 +9,14 @@ namespace Agebull.EntityModel.Designer
     {
         public override void CreateCommands(IList<CommandItemBase> commands)
         {
-            commands.Append(new CommandItem
+            commands.Append(new SimpleCommandItem
             {
                 IsButton = true,
                 Action = Model.DoCheckFieldes,
                 Caption = "分析文本(Value Name Caption Description)",
                 IconName = "分析"
             },
-            new CommandItem
+            new SimpleCommandItem
             {
                 IsButton = true,
                 Action = Model.DoFormatCSharp,

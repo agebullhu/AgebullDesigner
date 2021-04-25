@@ -32,35 +32,4 @@ namespace Agebull.EntityModel
         }
 
     }
-
-    /// <summary>
-    /// 修复范围
-    /// </summary>
-    public class RepairScope : ScopeBase
-    {
-        readonly WorkModel oldModel;
-        RepairScope()
-        {
-            oldModel = WorkContext.WorkModel;
-            WorkContext._workModel = WorkModel.Repair;
-        }
-
-        /// <summary>
-        /// 生成范围
-        /// </summary>
-        /// <returns></returns>
-        public static IDisposable CreateScope(object cfg)
-        {
-            var scope =  new RepairScope();
-            GlobalTrigger.Regularize(cfg);
-            return scope;
-        }
-
-        /// <inheritdoc />
-        protected override void OnDispose()
-        {
-            WorkContext._workModel = oldModel;
-        }
-
-    }
 }

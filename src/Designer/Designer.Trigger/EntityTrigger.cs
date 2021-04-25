@@ -14,15 +14,13 @@ namespace Agebull.EntityModel.Designer
     public sealed class EntityTrigger : EventTrigger<EntityConfigBase>, IEventTrigger
     {
 
-        public override void OnAdded(object config)
+        public override void OnAdded(object parent)
         {
             if (TargetConfig.DataTable == null)
             {
                 TargetConfig.DataTable = new DataTableConfig();
                 TargetConfig.DataTable.Upgrade();
             }
-            var property = config as IPropertyConfig;
-            CheckDbField(property);
         }
 
         public override void OnLoad()
@@ -35,6 +33,13 @@ namespace Agebull.EntityModel.Designer
             TargetConfig.IEntity.MaxIdentity = TargetConfig.IEntity.Properties.Any() ? TargetConfig.IEntity.Properties.Max(p => p.Identity) : 0;
         }
 
+        void CheckDbFields()
+        {
+            foreach (var property in TargetConfig.IEntity.Properties)
+            {
+                PropertyTrigger.CheckDbField(TargetConfig.IEntity, property);
+            }
+        }
         /// <summary>
         /// 属性事件处理
         /// </summary>
@@ -69,43 +74,6 @@ namespace Agebull.EntityModel.Designer
                     break;
             }
         }
-        void CheckDbFields()
-        {
-            foreach(var property in TargetConfig.IEntity.Properties)
-            {
-                CheckDbField(property);
-            }
-        }
-        private void CheckDbField(IPropertyConfig property)
-        {
-            if (property.DataBaseField == null)
-            {
-                TargetConfig.DataTable.Add(property.DataBaseField = new DataBaseFieldConfig
-                {
-                    Property = property,
-                    Parent = TargetConfig.DataTable,
-                    DbFieldName = DataBaseHelper.ToDbFieldName(property)
-                });
-                property.DataBaseField.Copy(property.Field);
-                DataTypeHelper.StandardDataType(property);
-            }
-            else
-            {
-                if (property.DataBaseField.DbFieldName.IsMissing())
-                {
-                    property.DataBaseField.DbFieldName = DataBaseHelper.ToDbFieldName(property);
-                }
-                if (property.DataBaseField.FieldType.IsMissing())
-                {
-                    DataTypeHelper.StandardDataType(property);
-                }
-            }
-            if (!TargetConfig.EnableDataBase)
-            {
-                property.DataBaseField.IsDiscard = true;
-            }
-        }
-
 
         /// <summary>
         ///     发出属性修改前事件

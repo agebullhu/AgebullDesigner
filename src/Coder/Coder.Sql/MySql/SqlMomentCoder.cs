@@ -317,20 +317,18 @@ VALUES(2,'{dataTable.Name}','{dataTable.Caption}','/{dataTable.Project.Name}/{da
         #region ±í½á¹¹
 
 
-        public static string CreateTableCode(DataTableConfig dataTable, bool signle = false)
+        public static string CreateTableCode(DataTableConfig dataTable)
         {
-            if (dataTable == null)
+            if (dataTable == null || !dataTable.Entity.EnableDataBase)
                 return "";
 
             var code = new StringBuilder();
-            code.AppendFormat(@"
-/*{1}*/
-CREATE TABLE `{0}`("
-                , dataTable.SaveTableName
-                , dataTable.Caption);
+            code.Append($@"
+/*{dataTable.Caption}*/
+CREATE TABLE `{dataTable.SaveTableName}`(");
 
             bool isFirst = true;
-            foreach (var field in dataTable.FindLastAndToArray(p => !p.IsReadonly))
+            foreach (var field in dataTable.Last())
             {
                 code.Append($@"
    {(isFirst ? "" : ",")}{FieldDefault(field)}");
@@ -372,7 +370,7 @@ CREATE TABLE `{0}`("
 /*{dataTable.Caption}*/
 ALTER TABLE `{dataTable.SaveTableName}`");
             bool isFirst = true;
-            foreach (var col in dataTable.FindLastAndToArray(p => !p.IsReadonly))
+            foreach (var col in dataTable.Last())
             {
                 if (isFirst)
                     isFirst = false;

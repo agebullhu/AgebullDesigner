@@ -46,6 +46,16 @@ namespace Agebull.EntityModel.Config
                 BeforePropertyChange(nameof(Option), null, _option);
                 return _option;
             }
+            set
+            {
+                if (value == null)
+                    return;
+                BeforePropertyChange(nameof(Option), _option, value);
+                _option = value;
+                _option.Config = this;
+                ValueRecords.Add(nameof(Option), _option);
+                OnPropertyChanged(nameof(Option));
+            }
         }
 
         /// <summary>

@@ -36,7 +36,6 @@ namespace Agebull.EntityModel.Designer
             {
                 Catalog = "枚举",
                 Action = CheckEnum,
-                NoConfirm = true,
                 SoruceView = "entity",
                 TargetType = type,
                 Caption = "刷新枚举引用",
@@ -45,7 +44,6 @@ namespace Agebull.EntityModel.Designer
             commands.Add(new CommandItemBuilder<IPropertyConfig>
             {
                 Catalog = "枚举",
-                NoConfirm = true,
                 Action = BindEnum,
                 TargetType = type,
                 Caption = "绑定或新增枚举",
@@ -57,6 +55,7 @@ namespace Agebull.EntityModel.Designer
             {
                 Catalog = "枚举",
                 SoruceView = "entity",
+                DoConfirm = true,
                 Action = DeleteEnum,
                 TargetType = type,
                 Caption = "清除枚举绑定",

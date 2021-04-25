@@ -106,10 +106,9 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="arg"></param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public void DoFormatCSharp(object arg)
+        public void DoFormatCSharp()
         {
             if (Config == null || string.IsNullOrWhiteSpace(Fields))
                 return;
@@ -201,7 +200,7 @@ namespace Agebull.EntityModel.Designer
             RaisePropertyChanged(() => Items);
         }
 
-        public void DoCheckFieldes(object arg)
+        public void DoCheckFieldes()
         {
             if (Config == null || string.IsNullOrWhiteSpace(Fields))
                 return;

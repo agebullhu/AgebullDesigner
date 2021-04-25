@@ -21,6 +21,12 @@ namespace Agebull.EntityModel
     /// </summary>
     public class ValueRecordItem
     {
+        /// <summary>
+        /// 构造
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="name"></param>
+        /// <param name="record"></param>
         public ValueRecordItem(int type,string name, ModifyRecord record)
         {
             Type = type;
@@ -28,12 +34,42 @@ namespace Agebull.EntityModel
             Name = name;
         }
 
-        public int Type;
+        public int Type { get; set; }
 
         public ModifyRecord Record { get; set; }
 
-        public string Name;
+        public string Name { get; set; }
 
+        public string OriginalValue
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case 3:
+                        return Original3.ToString();
+                    case 2:
+                        return Original2;
+                    default:
+                        return Original?.ToString();
+                }
+            }
+        }
+        public string CurrentValue
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case 3:
+                        return Current3.ToString();
+                    case 2:
+                        return Current2;
+                    default:
+                        return Current?.ToString();
+                }
+            }
+        }
 
         private object original;
 

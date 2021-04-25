@@ -26,7 +26,7 @@ namespace Agebull.Common.Mvvm
     /// </summary>
     /// <typeparam name="TParameter">参数类型</typeparam>
     /// <typeparam name="TResult">命令返回值</typeparam>
-    public class AsyncCommand<TParameter, TResult> : IAsyncCommand
+    public class AsyncCommand<TParameter, TResult> : CommandBase,IAsyncCommand
     {
         #region 能否执行处理
 
@@ -49,34 +49,7 @@ namespace Agebull.Common.Mvvm
                 CanExecute(value);
             }
         }
-        private INotifyPropertyChanged _detect;
 
-        /// <summary>
-        ///     侦测可执行状态变化的对象
-        /// </summary>
-        public INotifyPropertyChanged Detect
-        {
-            get => _detect;
-            set
-            {
-                if (_detect != null)
-                {
-                    _detect.PropertyChanged += OnDetectPropertyChanged;
-                }
-                if (Equals(_detect, value))
-                {
-                    return;
-                }
-                _detect = value;
-                value.PropertyChanged += OnDetectPropertyChanged;
-                OnCanExecuteChanged();
-            }
-        }
-
-        private void OnDetectPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            OnCanExecuteChanged();
-        }
 
         /// <summary>
         /// 定义用于确定此命令是否可以在其当前状态下执行的方法。
@@ -115,71 +88,6 @@ namespace Agebull.Common.Mvvm
 
 
         /// <summary>
-        ///     在UI线程中执行
-        /// </summary>
-        /// <param name="action"></param>
-        /// <param name="args"></param>
-        private void InvokeInUiThread<T>(Action<T> action, T args)
-        {
-            if (Synchronous == null)
-            {
-                action(args);
-            }
-            else
-            {
-                Synchronous.BeginInvokeInUiThread(action, args);
-            }
-        }
-
-        /// <summary>
-        ///     属性修改事件(属性为空表示删除)
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged
-        {
-            add
-            {
-                propertyChanged -= value;
-                propertyChanged += value;
-            }
-            remove => propertyChanged -= value;
-        }
-
-        /// <summary>
-        ///     属性修改事件
-        /// </summary>
-        private event PropertyChangedEventHandler propertyChanged;
-
-        /// <summary>
-        ///     发出属性修改事件(不受阻止模式影响)
-        /// </summary>
-        /// <param name="propertyName">属性</param>
-        private void RaisePropertyChanged(string propertyName)
-        {
-            if (propertyChanged == null)
-            {
-                return;
-            }
-            InvokeInUiThread(RaisePropertyChangedInner, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
-        ///     发出属性修改事件
-        /// </summary>
-        /// <param name="args">属性</param>
-        private void RaisePropertyChangedInner(PropertyChangedEventArgs args)
-        {
-            try
-            {
-                var onPropertyChanged = propertyChanged;
-                onPropertyChanged?.Invoke(this, args);
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine(ex);
-            }
-        }
-
-        /// <summary>
         ///     Determines if the command can execute with the provided parameter by invoing the <see cref="Func{T,TResult}" />
         ///     supplied during construction.
         /// </summary>
@@ -198,60 +106,10 @@ namespace Agebull.Common.Mvvm
             }
         }
 
-        /// <summary>
-        ///     发出可执行状态变化的消息
-        /// </summary>
-        private void OnCanExecuteChanged()
-        {
-            if (_canExecuteChanged == null)
-            {
-                return;
-            }
-            InvokeInUiThread(OnCanExecuteChangedInner, this);
-        }
-
-        /// <summary>
-        ///     发出可执行状态变化的消息
-        /// </summary>
-        private void OnCanExecuteChangedInner(object par)
-        {
-            try
-            {
-                _canExecuteChanged(this, EventArgs.Empty);
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine(ex);
-            }
-        }
-
         #endregion
 
         #region 构造
 
-        /// <summary>
-        /// 同步上下文
-        /// </summary>
-        public ISynchronousContext Synchronous => WorkContext.SynchronousContext;
-
-        private Visibility _visibility;
-
-        /// <summary>
-        ///     图标
-        /// </summary>
-        public Visibility Visibility
-        {
-            get => _visibility;
-            set
-            {
-                if (_visibility == value)
-                {
-                    return;
-                }
-                _visibility = value;
-                RaisePropertyChanged(nameof(Visibility));
-            }
-        }
 
         /// <summary>
         ///     结束时执行的方法
@@ -374,34 +232,10 @@ namespace Agebull.Common.Mvvm
 
         private TParameter _parameter;
 
-        private CommandStatus _status;
-
         private Task<TResult> _task;
 
         private CancellationToken _token;
 
-        /// <summary>
-        ///     当前状态
-        /// </summary>
-        public CommandStatus Status
-        {
-            get => _status;
-            set
-            {
-                if (_status == value)
-                {
-                    return;
-                }
-                _status = value;
-                RaisePropertyChanged(nameof(Status));
-                RaisePropertyChanged(nameof(IsBusy));
-            }
-        }
-
-        /// <summary>
-        ///     是否正忙
-        /// </summary>
-        public bool IsBusy => Status == CommandStatus.Executing;
 
         void ICommand.Execute(object parameter)
         {

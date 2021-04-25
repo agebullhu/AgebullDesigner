@@ -88,6 +88,9 @@ namespace Agebull.EntityModel
         }
 
         public event EventHandler SelectItemChanged;
+
+
+
         #endregion
 
         #region Ñ¡Ôñ

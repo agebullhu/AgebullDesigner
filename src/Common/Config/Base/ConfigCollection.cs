@@ -32,7 +32,7 @@ namespace Agebull.EntityModel
         {
             Name = name;
             Parent = parent;
-            Parent.ValueRecords.Add(Name, false);
+            Parent.ValueRecords.Add(Name, this);
         }
 
         #endregion
@@ -74,7 +74,8 @@ namespace Agebull.EntityModel
         /// </summary>
         /// <typeparam name="TDest"></typeparam>
         /// <returns></returns>
-        public void DoForeach<T>(Action<T> action, bool doAction)
+        public void ForeachChild<T>(Action<T> action, bool doAction)
+            where T : class
         {
             if (doAction && this is T t)
             {
@@ -86,6 +87,24 @@ namespace Agebull.EntityModel
             }
         }
 
+        /// <summary>
+        /// 向下遍历
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <param name="preorder">true:先根遍历 false:后根遍历</param>
+        public void DoForeachDown<T>(Action<T> action, bool preorder)
+            where T : class
+        {
+            if (preorder && this is T t1)
+                action(t1);
+            foreach (var item in this)
+            {
+                item.Foreach(action, preorder);
+            }
+            if (!preorder && this is T t2)
+                action(t2);
+        }
 
         /// <summary>
         /// 遍历
@@ -95,13 +114,13 @@ namespace Agebull.EntityModel
         {
             Name = name;
             Parent = parent;
-            foreach (var item in this)
+            foreach (var item in this.ToArray())
             {
                 item.Parent = parent;
                 item.IsModifyChanged += OnItemIsModifyChanged;
                 item.OnLoad();
             }
-            Parent.ValueRecords.Add(Name, false);
+            Parent.ValueRecords.Add(Name, this);
         }
 
 
@@ -122,20 +141,23 @@ namespace Agebull.EntityModel
                 haseNewOrRemove = true;
                 GlobalTrigger.OnLoad(Parent);
                 CheckModify();
-                return;
             }
-            if (e.NewItems != null)
+            else
             {
-                foreach (var item in e.NewItems.OfType<TConfig>())
+                if (e.NewItems != null)
                 {
-                    OnAdd(item);
+                    foreach (var item in e.NewItems.OfType<TConfig>())
+                    {
+                        OnAdd(item);
+                    }
                 }
-            }
-            if (e.OldItems == null)
-                return;
-            foreach (var item in e.OldItems.OfType<TConfig>())
-            {
-                OnRemove(item);
+                if (e.OldItems != null)
+                {
+                    foreach (var item in e.OldItems.OfType<TConfig>())
+                    {
+                        OnRemove(item);
+                    }
+                }
             }
             base.OnCollectionChanged(e);
         }

@@ -18,11 +18,16 @@ namespace Agebull.EntityModel
         /// </summary>
         public ViewModelBase ViewModel { get; set; }
 
+        bool isInitialized;
+
         /// <summary>
         /// 初始化
         /// </summary>
         public void Initialize()
         {
+            if (isInitialized)
+                return;
+            isInitialized = true;
             DoInitialize();
         }
 

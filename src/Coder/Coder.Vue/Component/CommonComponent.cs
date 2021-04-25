@@ -25,10 +25,11 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
 
         public string ScriptCode()
         {
-            return $@"EntityComponents.components['{model.Project.PageFolder}-{model.PageFolder}'].common = {{
+            return $@"EntityComponents.components['{model.ComponentName}'].common = {{
     default: {{
         idField : '{model.PrimaryColumn.JsonName}',
-        apiPrefix : '/{model.Project.ApiName}/{model.ApiName}/v1'
+        apiPrefix : '/{model.Project.ApiName}/{model.ApiName}/v1',
+        url:'http://localhost'
     }},{Options().LinkToString(',')}
 }};";
         }
@@ -118,12 +119,12 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
         void EnumScript()
         {
             var enums = new List<EnumConfig>();
-            enums.AddRange(model.ClientProperty.Where(p => p.EnumConfig != null).Select(p => p.EnumConfig));
+            enums.AddRange(model.Properties.Where(p => p.EnumConfig != null).Select(p => p.EnumConfig));
             if (model is ModelConfig mc)
             {
                 foreach (var ch in mc.Releations)
                 {
-                    enums.AddRange(ch.ForeignEntity.ClientProperty.Where(p => p.EnumConfig != null).Select(p => p.EnumConfig));
+                    enums.AddRange(ch.ForeignEntity.Properties.Where(p => p.EnumConfig != null).Select(p => p.EnumConfig));
                 }
             }
             if (enums.Count == 0)
@@ -159,7 +160,7 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
             {
                 foreach (var ch in mc.Releations)
                 {
-                    enums.AddRange(ch.ForeignEntity.ClientProperty.Where(p => p.EnumConfig != null).Select(p => p.EnumConfig));
+                    enums.AddRange(ch.ForeignEntity.Properties.Where(p => p.EnumConfig != null).Select(p => p.EnumConfig));
                 }
             }
             foreach (var enu in enums.Distinct())
@@ -449,7 +450,7 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
                 }
                 else if (field.IsEnum)
                 {
-                    code.Append($"'{field.EnumConfig.Items.FirstOrDefault()?.Name}';");
+                    code.Append($"'{field.EnumConfig?.Items.FirstOrDefault()?.Name}';");
                 }
                 else
                 {
@@ -484,7 +485,7 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
                 }
                 else if (field.IsEnum)
                 {
-                    code.Append($"'{field.EnumConfig.Items.FirstOrDefault()?.Name}';");
+                    code.Append($"'{field.EnumConfig?.Items.FirstOrDefault()?.Name}';");
                 }
                 else
                 {

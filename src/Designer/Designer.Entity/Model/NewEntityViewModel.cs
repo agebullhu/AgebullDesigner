@@ -41,16 +41,16 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        public CommandItemBase CancelCommand => new CommandItem
+        public CommandItemBase CancelCommand => new SimpleCommandItem
         {
-            Action = arg => DoCancel(),
+            Action = DoCancel,
             Caption = "取消",
             IconName = "取消"
         };
 
-        public CommandItemBase OkCommand => new CommandItem
+        public CommandItemBase OkCommand => new SimpleCommandItem
         {
-            Action = arg => DoClose(),
+            Action = DoClose,
             Caption = "完成",
             IconName  = "编辑成功"
         };
