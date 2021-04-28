@@ -19,7 +19,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <returns></returns>
         public static string CreateCode(ConfigBase config, Func<IEntityConfig, string> coder)
         {
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
 
             GlobalTrigger.Regularize(GlobalConfig.CurrentSolution);
             config.Preorder<IEntityConfig>(arg =>
@@ -48,7 +48,7 @@ namespace Agebull.EntityModel.RobotCoder
             where TConfig : ConfigBase
         {
             GlobalTrigger.Regularize(GlobalConfig.CurrentSolution);
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
             config.Preorder<TConfig>(arg =>
             {
                 using var scope = CodeGeneratorScope.CreateScope(arg, true);
@@ -68,7 +68,7 @@ namespace Agebull.EntityModel.RobotCoder
             where TConfig : ConfigBase
         {
             GlobalTrigger.Regularize(GlobalConfig.CurrentSolution);
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
             config.Preorder<TConfig>(arg =>
             {
                 using var scope = CodeGeneratorScope.CreateScope(arg, true);

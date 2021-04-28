@@ -189,7 +189,7 @@ namespace Agebull.EntityModel.Designer
             ConfigIo.OnSolutionChanged();
             Tree.OnSolutionChanged();
 
-            FirstSelect();
+            //FirstSelect();
 
             Context.Solution.ResetStatus();
         }

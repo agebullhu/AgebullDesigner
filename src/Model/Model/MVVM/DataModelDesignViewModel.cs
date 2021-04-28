@@ -39,9 +39,9 @@ namespace Agebull.EntityModel.Designer
 
         #region 扩展
 
-        public DelegateCommand SaveCommand => new DelegateCommand(Model.ConfigIo.SaveProject);
+        public DelegateCommand SaveCommand => new(Model.ConfigIo.SaveProject);
 
-        public DependencyAction ExtendEditorBehavior => new DependencyAction
+        public DependencyAction ExtendEditorBehavior => new()
         {
             AttachAction = obj => EditorManager.ExtendEditorPanel = (Border)obj
         };

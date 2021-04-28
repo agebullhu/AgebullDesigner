@@ -11,7 +11,7 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 当前正在处理的事件
         /// </summary>
-        private static readonly Dictionary<string, List<object>> Events = new Dictionary<string, List<object>>();
+        private static readonly Dictionary<string, List<object>> Events = new();
         /// <summary>
         /// 当前配置
         /// </summary>

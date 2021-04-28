@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Agebull.EntityModel.Designer
 {
@@ -29,5 +30,12 @@ namespace Agebull.EntityModel.Designer
         ///最后一次打开的文件
         /// </summary>
         public string LastFile { get; set; }
+
+
+        /// <summary>
+        ///最后一次选择
+        /// </summary>
+        public List<string> LastSelect { get; set; }
+
     }
 }

@@ -11,7 +11,8 @@ namespace Agebull.EntityModel.RobotCoder.UniAppComponents
         const string folder = "uni-app";
         void IAutoRegister.AutoRegist()
         {
-            CoderManager.RegisteCoder(folder, "details.vue", "html", UniAppDetailsComponent.HtmlCode);
+            CoderManager.RegisteCoder(folder, "form", "html", UniAppDetailsComponent.FormCode);
+            CoderManager.RegisteCoder(folder, "rules", "js", UniAppDetailsComponent.RulesCode);
         }
 
         #endregion

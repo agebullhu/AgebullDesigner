@@ -88,7 +88,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         #region ≤‚ ‘∆¨∂œ
 
-        private static readonly Random random = new Random((int)(DateTime.Now.Ticks % int.MaxValue));
+        private static readonly Random random = new((int)(DateTime.Now.Ticks % int.MaxValue));
 
         private static string GetTestValue(string type)
         {

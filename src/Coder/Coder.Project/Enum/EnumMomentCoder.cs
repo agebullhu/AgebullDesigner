@@ -68,7 +68,7 @@ namespace Agebull.EntityModel.RobotCoder
                     project.Enums.Foreach(p => EnumCode(code, p));
                     break;
                 case EntityConfig entity:
-                    List<EnumConfig> enums = new List<EnumConfig>();
+                    List<EnumConfig> enums = new();
                     GlobalTrigger.DoRegularize(entity);
                     using (CodeGeneratorScope.CreateScope(entity,false))
                     {

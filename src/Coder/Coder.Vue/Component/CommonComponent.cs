@@ -37,14 +37,14 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
 
         #region 构建节点
 
-        readonly List<string> types = new List<string>();
+        readonly List<string> types = new();
 
-        readonly List<string> filters = new List<string>();
+        readonly List<string> filters = new();
 
-        readonly List<string> datas = new List<string>();
+        readonly List<string> datas = new();
 
 
-        readonly List<string> overrides = new List<string>();
+        readonly List<string> overrides = new();
 
 
         List<string> Options()
@@ -57,7 +57,7 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
             EnumScript();
             Filter();
 
-            List<string> options = new List<string>();
+            List<string> options = new();
 
             void Join(List<string> codes, string fmt, bool canEmpty = true)
             {
@@ -170,7 +170,7 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
         }
         string Filter(EnumConfig config)
         {
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
             code.Append($@"
         //{config.Caption}枚举转文本
         {config.Name.ToLWord()}Formater(val) {{
@@ -194,7 +194,7 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
 
         #region 规则
 
-        readonly List<string> rules = new List<string>();
+        readonly List<string> rules = new();
         /// <summary>
         ///     生成Form录入字段界面
         /// </summary>

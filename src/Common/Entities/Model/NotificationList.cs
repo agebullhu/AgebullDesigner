@@ -70,7 +70,7 @@ namespace Agebull.EntityModel
 
         #region 线程完全
 
-        private readonly SimpleMonitor _monitor = new SimpleMonitor();
+        private readonly SimpleMonitor _monitor = new();
 
 
         /// <summary>不允许可重入的更改此集合的尝试。</summary>

@@ -25,7 +25,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         private static string Makedown(EntityConfig config)
         {
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
             code.AppendLine(@"|参数名|类型|必须|标题|说明|示例|
 |:-|:-|:-|:-|");
             foreach (var field in config.Properties)
@@ -47,7 +47,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         private static string Makedown2(EntityConfig config)
         {
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
             code.AppendLine(@"|参数名|类型|标题|说明|
 |:-|:-|:-|:-|");
             foreach (var field in config.Properties)
@@ -69,7 +69,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         private static string Json(EntityConfig config)
         {
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
             bool first = true;
             foreach (var field in config.Properties)
             {

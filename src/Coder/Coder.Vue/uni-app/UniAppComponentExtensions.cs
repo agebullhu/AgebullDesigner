@@ -64,47 +64,47 @@ namespace Agebull.EntityModel.RobotCoder.UniAppComponents
             var description = property.Description;
 
             code.Append($@"
-            <uni-forms-item required name='{property.JsonName}' label='{caption}'>
-				<view v-if='readonly' class='form-text'>
-					<text>{{{model}.{property.JsonName}}}</text>
-				</view>
-				<view v-else>");
+                    <uni-forms-item required name='{property.JsonName}' label='{caption}'>
+				        <view v-if='readonly' class='form-text'>
+					        <text>{{{{{model}.{property.JsonName}}}}}</text>
+				        </view>
+				        <view v-else>");
 
             if (property.EnumConfig != null)
             {
                 code.Append($@"
-                        <picker :value='{model}.{property.JsonName}' :range='types.{property.EnumConfig.Name.ToLWord()}' @change='binddata('{property.JsonName}', $event.detail.value)'>
-							<view>{{ {model}.{property.JsonName} ? types.{property.EnumConfig.Name.ToLWord()}[{model}.{property.JsonName}] : '«Î—°‘Ò{caption}' }}</view>
-						</picker>");
+                            <picker :value='{model}.{property.JsonName}' :range='types.{property.EnumConfig.Name.ToLWord()}' @change='binddata('{property.JsonName}', $event.detail.value)'>
+							    <view>{{{{ {model}.{property.JsonName} ? types.{property.EnumConfig.Name.ToLWord()}[{model}.{property.JsonName}] : '«Î—°‘Ò{caption}' }}}}</view>
+						    </picker>");
             }
             else if (!property.NoStorage && property.DataBaseField.IsLinkKey)
             {
                 var name = GlobalConfig.GetEntity(property.DataBaseField.LinkTable)?.Name.ToLWord().ToPluralism();
 
                 code.Append($@"
-                        <picker :value='{model}.{property.JsonName}' :range='types.{property.EnumConfig.Name.ToLWord()}' @change='binddata('{property.JsonName}', $event.detail.value)'>
-							<view>{{ {model}.{property.JsonName} ? types.{property.EnumConfig.Name.ToLWord()}[{model}.{property.JsonName}] : '«Î—°‘Ò{caption}' }}</view>
-						</picker>");
+                            <picker :value='{model}.{property.JsonName}' :range='types.{property.EnumConfig.Name.ToLWord()}' @change='binddata('{property.JsonName}', $event.detail.value)'>
+							    <view>{{{{ {model}.{property.JsonName} ? types.{property.EnumConfig.Name.ToLWord()}[{model}.{property.JsonName}] : '«Î—°‘Ò{caption}' }}}}</view>
+						    </picker>");
             }
             else if (property.CsType == "bool")
             {
                 code.Append($@"
-                    <switch :checked='{model}.{property.JsonName}' @change='this.{model}.{property.JsonName}=$event.detail.value'></switch>");
+                            <switch :checked='{model}.{property.JsonName}' @change='this.{model}.{property.JsonName}=$event.detail.value'></switch>");
             }
             else if (property.CsType == nameof(DateTime))
             {
                 var type = property.IsTime ? "datetime" : "date";
                 code.Append($@"
-					<uni-datetime-picker type='{type}' v-model='{model}.{property.JsonName}'></uni-datetime-picker>");
+					        <uni-datetime-picker type='{type}' v-model='{model}.{property.JsonName}'></uni-datetime-picker>");
             }
             else
             {
                 code.Append($@"
-                    <uni-easyinput v-model='{model}.{property.JsonName}' placeholder='{description}'></uni-easyinput>");
+                            <uni-easyinput v-model='{model}.{property.JsonName}' placeholder='{description}'></uni-easyinput>");
             }
             code.Append($@"
-				</view>
-			</uni-forms-item>");
+				        </view>
+			        </uni-forms-item>");
         }
 
         #endregion

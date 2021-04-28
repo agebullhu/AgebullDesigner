@@ -17,7 +17,7 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 表明未载入的子节点
         /// </summary>
-        protected static readonly TreeItem LodingItem = new TreeItem("...");
+        protected static readonly TreeItem LodingItem = new("...");
 
 
         /// <summary>
@@ -527,7 +527,10 @@ namespace Agebull.EntityModel
             {
                 SelectPath = null;
             }
-            Parent?.OnChildIsSelectChanged(IsSelected, this, this);
+            else
+            {
+                Parent?.OnChildIsSelectChanged(IsSelected, this, this);
+            }
         }
 
         /// <summary>
@@ -538,12 +541,12 @@ namespace Agebull.EntityModel
         /// <param name="selectItem">选中的对象</param>
         protected internal sealed override void OnChildIsSelectChanged(bool select, TreeItemBase child, TreeItemBase selectItem)
         {
-            SelectPath = IsSelected ? null : Header + " > " + child.SelectPath;
-            if (isSelected != select)
-            {
-                isSelected = select;
-                RaisePropertyChanged(() => IsSelected);
-            }
+            //SelectPath = IsSelected ? null : Header + " > " + child.SelectPath;
+            //if (isSelected != select)
+            //{
+            //    isSelected = select;
+            //    RaisePropertyChanged(() => IsSelected);
+            //}
             Parent?.OnChildIsSelectChanged(IsSelected, this, selectItem);
         }
 

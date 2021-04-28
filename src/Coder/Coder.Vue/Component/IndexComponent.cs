@@ -49,8 +49,8 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
         }
 
         string trees;
-        readonly List<string> commands = new List<string>();
-        readonly List<string> readys = new List<string>();
+        readonly List<string> commands = new();
+        readonly List<string> readys = new();
 
 
         #region 下拉列表支持
@@ -314,7 +314,7 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
 
         string ToolbarButton(int level)
         {
-            StringBuilder exButton = new StringBuilder();
+            StringBuilder exButton = new();
             exButton.Append(@"
 <div class='toolRange'>
     <el-button-group v-if='!detailsVisiable'>");
@@ -416,7 +416,7 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
 
         public string FormQueryCode(int level)
         {
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
             code.Append($@"
 <div class='region-body'>
     <el-form ref='queryForm' :model='query' label-width='100px' label-position='left' @submit.native.prevent>");
@@ -441,7 +441,7 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
             {
                 return null;
             }
-            StringBuilder quButton = new StringBuilder();
+            StringBuilder quButton = new();
             var fields = model.DataTable.FindLastAndToArray(p => p.Property.CanUserQuery && p.Property.UserSee && !p.NoStorage && !p.IsLinkKey && !p.Property.IsPrimaryKey);
             //if (Entity.Interfaces.Contains("IStateData"))
             //{

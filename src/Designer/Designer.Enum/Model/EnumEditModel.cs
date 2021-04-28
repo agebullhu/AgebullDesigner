@@ -37,7 +37,7 @@ namespace Agebull.EntityModel.Designer
             }
             else
             {
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
                 Items = Config.Items;
                 foreach (var item in Items.OrderBy(p => p.Number))
                 {
@@ -113,7 +113,7 @@ namespace Agebull.EntityModel.Designer
             if (Config == null || string.IsNullOrWhiteSpace(Fields))
                 return;
 
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
             var columns = new List<EnumItem>();
             var lines = Fields.Split(new[] { '\r', '\n', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             string descript = null, caption = null;
@@ -205,7 +205,7 @@ namespace Agebull.EntityModel.Designer
             if (Config == null || string.IsNullOrWhiteSpace(Fields))
                 return;
 
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
             var columns = new List<EnumItem>();
             string[] lines = Fields.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             bool error = false;

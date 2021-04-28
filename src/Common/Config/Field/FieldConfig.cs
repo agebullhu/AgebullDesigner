@@ -2034,7 +2034,7 @@ namespace Agebull.EntityModel.Config
         {
             get
             {
-                StringBuilder decs = new StringBuilder();
+                StringBuilder decs = new();
                 bool checkNull;
                 switch (CsType?.ToLower() ?? "string")
                 {

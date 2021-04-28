@@ -32,7 +32,7 @@ namespace Agebull.EntityModel.RobotCoder.Upgrade
         /// <returns></returns>
         private static string GetCopy(EntityConfig entity)
         {
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
 
 
             code.Append($@"

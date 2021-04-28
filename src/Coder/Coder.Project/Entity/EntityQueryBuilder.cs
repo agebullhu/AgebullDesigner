@@ -25,7 +25,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         private string GetQueryCode()
         {
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
             if (Project.ReadOnly)
                 code.AppendFormat(@"
         #region IEntityPoolSetting接口

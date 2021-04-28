@@ -227,7 +227,7 @@ namespace Agebull.EntityModel.Designer
         /// <param name="colend">结束列的索引</param>
         public static void SetCellRangeAddress(ISheet sheet, int rowstart, int rowend, int colstart, int colend)
         {
-            CellRangeAddress cellRangeAddress = new CellRangeAddress(rowstart, rowend, colstart, colend);
+            CellRangeAddress cellRangeAddress = new(rowstart, rowend, colstart, colend);
             sheet.AddMergedRegion(cellRangeAddress);
         }
 
@@ -242,7 +242,7 @@ namespace Agebull.EntityModel.Designer
         /// <param name="colend">结束列的索引</param>
         public static void SetCellRangeAddress(ISheet sheet, ICellStyle style, int rowstart, int rowend, int colstart, int colend)
         {
-            CellRangeAddress cellRangeAddress = new CellRangeAddress(rowstart, rowend, colstart, colend);
+            CellRangeAddress cellRangeAddress = new(rowstart, rowend, colstart, colend);
             sheet.AddMergedRegion(cellRangeAddress);
             for (int row = rowstart; row <= rowend; row++)
             {

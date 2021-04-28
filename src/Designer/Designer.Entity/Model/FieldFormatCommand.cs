@@ -32,7 +32,7 @@ Memo,s,备注";
 
 
         #region 规整文本(CSharp 类型 名称)
-        static readonly List<string> CSharpKeyWords = new List<string> { "public", "private", "protected", "internal", "readonly", "readonly" };
+        static readonly List<string> CSharpKeyWords = new() { "public", "private", "protected", "internal", "readonly", "readonly" };
         List<NameValue> ToCSharpWord(string code)
         {
             var words = new List<NameValue>();

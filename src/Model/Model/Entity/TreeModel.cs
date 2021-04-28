@@ -57,6 +57,8 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public void CreateTree()
         {
+            var last = DataModelDesignModel.Screen.LastSelect;
+            var editor = DataModelDesignModel.Screen.NowEditor;
             TreeRoot.SelectItemChanged -= OnTreeSelectItemChanged;
             TreeRoot.ClearItems();
 
@@ -71,6 +73,16 @@ namespace Agebull.EntityModel.Designer
                 SoruceTypeIconName = "解决方案"
             });
             TreeRoot.SelectItemChanged += OnTreeSelectItemChanged;
+            if (last != null)
+            {
+                var (_, sel) = Select(0, last, TreeRoot);
+                SetSelect(sel as TreeItem);
+            }
+
+            Context.Editor.ExtendEditorManager.OnEditorSelect(editor);
+            DataModelDesignModel.Screen.LastSelect = last;
+            DataModelDesignModel.Screen.NowEditor = editor;
+            DataModelDesignModel.SaveUserScreen();
         }
 
         #endregion
@@ -105,6 +117,7 @@ namespace Agebull.EntityModel.Designer
                 if (project.NoClassify)
                     items.Add(new ConfigTreeItem<ProjectConfig>(project)
                     {
+                        Key = $"{project.Key}-entity",
                         IsAssist = true,
                         Header = "实体",
                         SoruceView = "entity",
@@ -117,6 +130,7 @@ namespace Agebull.EntityModel.Designer
                 else
                     items.Add(new ConfigTreeItem<ProjectConfig>(project)
                     {
+                        Key = $"{project.Key}-entity",
                         IsAssist = true,
                         Header = "实体",
                         SoruceView = "entity",
@@ -129,6 +143,7 @@ namespace Agebull.EntityModel.Designer
 
                 items.Add(new ConfigTreeItem<ProjectConfig>(project)
                 {
+                    Key = $"{project.Key}-model",
                     IsAssist = true,
                     Header = "模型",
                     Tag = nameof(ModelConfig),
@@ -141,6 +156,7 @@ namespace Agebull.EntityModel.Designer
                 //Model.CppModel.AddCppApiNode(node);
                 items.Add(new ConfigTreeItem<ProjectConfig>(project)
                 {
+                    Key = $"{project.Key}-enum",
                     IsAssist = true,
                     //IsExpanded = true,
                     Header = "枚举",
@@ -210,7 +226,7 @@ namespace Agebull.EntityModel.Designer
             return new ConfigTreeItem<EntityConfig>(entity)
             {
                 Tag = nameof(EntityConfig),
-                
+
                 SoruceView = "entity",
                 CreateChildFunc = CreateFieldTreeItem,
                 SoruceTypeIconName = "实体",
@@ -319,7 +335,7 @@ namespace Agebull.EntityModel.Designer
 
         private void Property_PropertyChanged(TreeItem item, NotificationObject arg, string name)
         {
-            var property = (IPropertyConfig)arg ;
+            var property = (IPropertyConfig)arg;
             switch (name)
             {
                 case null:
@@ -365,7 +381,7 @@ namespace Agebull.EntityModel.Designer
             if (property.DataBaseField.IsLinkKey)
                 return "外键列";
             if (property.DataBaseField.IsLinkField)
-                return "链接列"; 
+                return "链接列";
             if (property.IsInterfaceField)
                 return "接口列";
             if (property.DataBaseField.IsText || property.DataBaseField.IsBlob)
@@ -380,10 +396,10 @@ namespace Agebull.EntityModel.Designer
                 return "布尔列";
             if (property.IsImage)
                 return "图像列";
-            if (property.DataType?.Contains("Int")==true || property.DataType.IsMe(nameof(Decimal)) || property.DataType.IsMe(nameof(Double)) || property.DataType.IsMe(nameof(Single)))
+            if (property.DataType?.Contains("Int") == true || property.DataType.IsMe(nameof(Decimal)) || property.DataType.IsMe(nameof(Double)) || property.DataType.IsMe(nameof(Single)))
                 return "数字列";
             else
-                return  "普通列";
+                return "普通列";
         }
         /*
         private void ModelPropertyChanged(TreeItem item, NotificationObject arg, string name)
@@ -552,6 +568,16 @@ namespace Agebull.EntityModel.Designer
             Model.Context.OnTreeSelectItemChanged(item);
             Editor.SyncMenu(item);
             RaisePropertyChanged(nameof(SelectItem));
+            DataModelDesignModel.Screen.LastSelect = new List<string>();
+            if (item != null)
+                SelectPath(item);
+        }
+
+        void SelectPath(TreeItemBase item)
+        {
+            DataModelDesignModel.Screen.LastSelect.Insert(0, item.Key);
+            if (item.Parent != TreeRoot)
+                SelectPath(item.Parent);
         }
 
         #endregion
@@ -569,8 +595,33 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 查找
         /// </summary>
-        public bool Like(string dest, params string[] srcs) => srcs.Any(src => src != null && src.IndexOf(dest, 0, StringComparison.OrdinalIgnoreCase) >= 0);
+        public static bool Like(string dest, params string[] srcs) => srcs.Any(src => src != null && src.IndexOf(dest, 0, StringComparison.OrdinalIgnoreCase) >= 0);
 
+        /// <summary>
+        /// 查找
+        /// </summary>
+        public (bool last, TreeItemBase sel) Select(int idx, List<string> paths, TreeItemBase node)
+        {
+            if (idx >= paths.Count)
+                return (true, null);
+            foreach (var item in node.Items)
+            {
+                if (item.Key == paths[idx])
+                {
+                    item.IsExpanded = true;
+                    var (last, sel) = Select(idx + 1, paths, item);
+                    if (last)
+                    {
+                        if (sel == null)
+                            sel = item;
+                        item.IsUiSelected = true;
+                        return (true, sel);
+                    }
+                    return (false, sel);
+                }
+            }
+            return (true, null);
+        }
         /// <summary>
         /// 查找
         /// </summary>

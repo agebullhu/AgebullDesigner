@@ -188,7 +188,7 @@ namespace Agebull.EntityModel.Config
         ///     配置查找表
         /// </summary>
         [JsonIgnore]
-        public static Dictionary<string, ConfigBase> ConfigDictionary = new Dictionary<string, ConfigBase>();
+        public static Dictionary<string, ConfigBase> ConfigDictionary = new();
 
         /// <summary>
         /// 清除
@@ -766,7 +766,7 @@ namespace Agebull.EntityModel.Config
                 return null;
             if (floders == null || floders.Length == 0)
                 return root;
-            List<string> stringList = new List<string>();
+            List<string> stringList = new();
             foreach (string floder in floders)
                 stringList.AddRange(floder.Split('\\').Where(p => !string.IsNullOrWhiteSpace(p)).Select(s => s.Trim()));
             foreach (string path2 in stringList)

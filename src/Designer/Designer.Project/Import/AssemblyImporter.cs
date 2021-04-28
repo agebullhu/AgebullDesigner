@@ -30,7 +30,7 @@ namespace Agebull.EntityModel.Designer
         public bool IncludeBaseType { get; set; }
         #region 程序集
 
-        private static readonly Dictionary<string, Assembly> loaded = new Dictionary<string, Assembly>();
+        private static readonly Dictionary<string, Assembly> loaded = new();
         void LoadAssembly(string path, string name)
         {
             if (loaded.ContainsKey(name))
@@ -122,7 +122,7 @@ namespace Agebull.EntityModel.Designer
         }
 
         private Assembly _assembly;
-        private readonly List<Type> _types = new List<Type>();
+        private readonly List<Type> _types = new();
 
         /// <summary>
         ///     读取实体结构

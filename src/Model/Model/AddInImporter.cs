@@ -37,7 +37,7 @@ namespace Agebull.EntityModel.Designer
         {
             if (_isDoit)
                 return;
-            AddInImporter importer = new AddInImporter();
+            AddInImporter importer = new();
             importer.Prepare();
             importer.AutoRegist();
         }
@@ -81,7 +81,7 @@ namespace Agebull.EntityModel.Designer
             if (index <= 0)
                 return;
             // 通过容器对象将宿主和部件组装到一起。 
-            DirectoryCatalog directoryCatalog = new DirectoryCatalog(runtime);
+            DirectoryCatalog directoryCatalog = new(runtime);
             var container = new CompositionContainer(directoryCatalog);
             container.ComposeParts(this);
         }

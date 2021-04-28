@@ -24,14 +24,14 @@ namespace Agebull.EntityModel.RobotCoder
 
         string CreateCode(EntityConfig entity)
         {
-            StringBuilder code1 = new StringBuilder();
+            StringBuilder code1 = new();
             foreach (var property in entity.PublishProperty.Where(p => !p.NoneJson))
             {
                 code1.AppendFormat(@"
         public const byte Index_{0} = {1};", property.Name, property.Identity);
             }
 
-            StringBuilder code2 = new StringBuilder();
+            StringBuilder code2 = new();
             foreach (var property in entity.PublishProperty.Where(p => !p.NoneJson))
             {
                 if (property.IsEnum)
@@ -50,7 +50,7 @@ namespace Agebull.EntityModel.RobotCoder
                     code2.Append($@"
             serializer.Write(Index_{property.Name}, data.{property.Name});");
             }
-            StringBuilder code3 = new StringBuilder();
+            StringBuilder code3 = new();
             foreach (var property in entity.PublishProperty.Where(p => !p.NoneJson))
             {
                 if (property.IsEnum)

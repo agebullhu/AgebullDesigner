@@ -206,7 +206,7 @@ namespace {Project.NameSpace}.DataAccess
         #region 数据结构
         private string AccessCreate()
         {
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
 
             code.Append(@"
         /// <summary>
@@ -283,7 +283,7 @@ namespace {Project.NameSpace}.DataAccess
 
         private string EntityStruct()
         {
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
 
             foreach (var entity in Project.Entities)
             {
@@ -545,7 +545,7 @@ namespace {Project.NameSpace}.DataAccess
         #region 数据访问对象构造
         private string ProviderHelper()
         {
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
             code.Append(@"
         internal static DataAccessOption GetOption(string name)
         {
@@ -597,7 +597,7 @@ namespace {Project.NameSpace}.DataAccess
             code.Append($@"
         #region 快捷访问");
 
-            List<IEntityConfig> noEntities = new List<IEntityConfig>();
+            List<IEntityConfig> noEntities = new();
             foreach (var model in Project.Models)
             {
                 FastDo(model, code);

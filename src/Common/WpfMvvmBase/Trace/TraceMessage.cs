@@ -23,9 +23,9 @@ namespace Agebull.EntityModel
     public sealed class TraceMessage : NotificationObject
     {
 
-        private readonly Dictionary<int, int> _threadIndex = new Dictionary<int, int>();
+        private readonly Dictionary<int, int> _threadIndex = new();
 
-        private readonly NotificationList<string> _trace = new NotificationList<string>();
+        private readonly NotificationList<string> _trace = new();
 
         private bool _doTrace = true;
 

@@ -21,7 +21,7 @@ namespace Agebull.EntityModel.Config
         /// </summary>
         public const string Succinct = "精简风格";
 
-        static readonly List<ICodeStyle> CodeStyles = new List<ICodeStyle>();
+        static readonly List<ICodeStyle> CodeStyles = new();
 
         /// <summary>
         /// 注册

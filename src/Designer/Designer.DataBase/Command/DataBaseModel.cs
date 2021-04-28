@@ -181,7 +181,7 @@ namespace Agebull.EntityModel.Designer
         {
             using (ObjectWrokModelScope.CreateScope(entity, WorkModel.Repair))
             {
-                DataTableApplication business = new DataTableApplication
+                DataTableApplication business = new()
                 {
                     DataTable = entity.DataTable
                 };

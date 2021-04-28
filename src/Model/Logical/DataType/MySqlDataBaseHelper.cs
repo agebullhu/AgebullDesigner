@@ -13,7 +13,7 @@ namespace Agebull.EntityModel.Config.Mysql
         /// <summary>
         /// 主页面类型类型的列表
         /// </summary>
-        public static List<ComboItem<string>> DataTypeList = new List<ComboItem<string>>
+        public static List<ComboItem<string>> DataTypeList = new()
         {
             new ComboItem<string>
             {

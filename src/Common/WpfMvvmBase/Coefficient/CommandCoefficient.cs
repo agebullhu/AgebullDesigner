@@ -10,7 +10,7 @@ namespace Agebull.Common.Mvvm
     /// </summary>
     public class CommandCoefficient
     {
-        private static readonly Dictionary<Type, List<Func<IEnumerable<ICommandItemBuilder>>>> CommandBuilders = new Dictionary<Type, List<Func<IEnumerable<ICommandItemBuilder>>>>();
+        private static readonly Dictionary<Type, List<Func<IEnumerable<ICommandItemBuilder>>>> CommandBuilders = new();
 
         /// <summary>
         /// 注册命令
@@ -48,7 +48,7 @@ namespace Agebull.Common.Mvvm
             Commands.Clear();
             FriendCommands.Clear();
         }
-        private static readonly Dictionary<string, List<CommandItemBase>> Commands = new Dictionary<string, List<CommandItemBase>>();
+        private static readonly Dictionary<string, List<CommandItemBase>> Commands = new();
 
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace Agebull.Common.Mvvm
             return commands;
         }
 
-        private static readonly Dictionary<object, NotificationList<CommandItemBase>> FriendCommands = new Dictionary<object, NotificationList<CommandItemBase>>();
+        private static readonly Dictionary<object, NotificationList<CommandItemBase>> FriendCommands = new();
 
 
         #region 类型过滤

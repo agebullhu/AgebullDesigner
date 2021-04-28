@@ -22,6 +22,7 @@ namespace Agebull.EntityModel.Designer
         public ConfigTreeItem(TModel model)
             : base(model)
         {
+            Key = model.Key;
             InitDef();
         }
 

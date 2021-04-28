@@ -10,7 +10,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 主页面类型类型的列表
         /// </summary>
-        public static List<ComboItem<string>> AlignList = new List<ComboItem<string>>
+        public static List<ComboItem<string>> AlignList = new()
         {
             new ComboItem<string>
             {
@@ -32,7 +32,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 主页面类型类型的列表
         /// </summary>
-        public static List<ComboItem<bool>> BoolList = new List<ComboItem<bool>>
+        public static List<ComboItem<bool>> BoolList = new()
         {
             new ComboItem<bool>
             {
@@ -49,7 +49,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 主页面类型类型的列表
         /// </summary>
-        public static List<ComboItem<PanelType>> PanelTypeList = new List<ComboItem<PanelType>>
+        public static List<ComboItem<PanelType>> PanelTypeList = new()
         {
             new ComboItem<PanelType>
             {
@@ -70,7 +70,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 字段使用范围类型类型的列表
         /// </summary>
-        public static List<ComboItem<AccessScopeType>> AccessScopeTypeList = new List<ComboItem<AccessScopeType>>
+        public static List<ComboItem<AccessScopeType>> AccessScopeTypeList = new()
         {
             new ComboItem<AccessScopeType>
             {
@@ -96,7 +96,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 存储场景类型类型的列表
         /// </summary>
-        public static List<ComboItem<StorageScreenType>> StorageScreenTypeList = new List<ComboItem<StorageScreenType>>
+        public static List<ComboItem<StorageScreenType>> StorageScreenTypeList = new()
         {
             new ComboItem<StorageScreenType>
             {
@@ -142,7 +142,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 数据库类型类型的列表
         /// </summary>
-        public static List<ComboItem<DataBaseType>> DataBaseTypeList = new List<ComboItem<DataBaseType>>
+        public static List<ComboItem<DataBaseType>> DataBaseTypeList = new()
         {
             new ComboItem<DataBaseType>
             {
@@ -163,7 +163,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 配置状态类型类型的列表
         /// </summary>
-        public static List<ComboItem<ConfigStateType>> ConfigStateTypeList = new List<ComboItem<ConfigStateType>>
+        public static List<ComboItem<ConfigStateType>> ConfigStateTypeList = new()
         {
             new ComboItem<ConfigStateType>
             {
@@ -194,7 +194,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 解决方案类型类型的列表
         /// </summary>
-        public static List<ComboItem<SolutionType>> SolutionTypeList = new List<ComboItem<SolutionType>>
+        public static List<ComboItem<SolutionType>> SolutionTypeList = new()
         {
             new ComboItem<SolutionType>
             {

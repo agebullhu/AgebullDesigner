@@ -150,7 +150,7 @@ namespace Agebull.EntityModel.RobotCoder
 
             if (File.Exists(file))
             {
-                FileInfo f = new FileInfo(file);
+                FileInfo f = new(file);
                 if (f.IsReadOnly)
                 {
                     f.IsReadOnly = false;
@@ -169,7 +169,7 @@ namespace Agebull.EntityModel.RobotCoder
             {
                 GlobalConfig.CheckPaths(Path.GetDirectoryName(file));
             }
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             if (overWirte)
             {
                 // ReSharper disable once PossibleNullReferenceException

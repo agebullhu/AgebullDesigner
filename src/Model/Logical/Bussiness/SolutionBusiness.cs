@@ -242,7 +242,7 @@ namespace Agebull.EntityModel.Config
             "通知"
         };
 
-        private readonly Dictionary<string, string> repairs = new Dictionary<string, string>
+        private readonly Dictionary<string, string> repairs = new()
         {
             {"没有","编号"},
             {"无","编号"}

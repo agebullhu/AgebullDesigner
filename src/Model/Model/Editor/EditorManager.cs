@@ -16,9 +16,9 @@ namespace Agebull.EntityModel.Designer
     {
         #region 对象注册
 
-        internal static readonly Dictionary<Type, Dictionary<string, EditorOption>> Editors = new Dictionary<Type, Dictionary<string, EditorOption>>();
+        internal static readonly Dictionary<Type, Dictionary<string, EditorOption>> Editors = new();
 
-        internal static readonly Dictionary<string, EditorOption> GlobalEditors = new Dictionary<string, EditorOption>();
+        internal static readonly Dictionary<string, EditorOption> GlobalEditors = new();
 
         /// <summary>
         /// 注册扩展
@@ -118,12 +118,12 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 菜单
         /// </summary>
-        internal NotificationList<CommandItemBase> ExtendEditors = new NotificationList<CommandItemBase>();
+        internal NotificationList<CommandItemBase> ExtendEditors = new();
 
         /// <summary>
         /// 菜单
         /// </summary>
-        readonly List<CommandItemBase> editors = new List<CommandItemBase>();
+        readonly List<CommandItemBase> editors = new();
 
         internal EditorModel Model { get; set; }
 
@@ -180,14 +180,16 @@ namespace Agebull.EntityModel.Designer
         /// <summary>
         /// 历史对应
         /// </summary>
-        readonly Dictionary<Type, string> history = new Dictionary<Type, string>();
+        readonly Dictionary<Type, string> history = new();
 
         internal void OnEditorSelect(string editor)
         {
-            if (CurrentConfig == null)
+            if (CurrentConfig == null || editor.IsMissing())
                 return;
             currentEditorName = editor;
             FindEditor();
+
+            DataModelDesignModel.SaveUserScreen();
         }
 
         /// <summary>
@@ -237,7 +239,7 @@ namespace Agebull.EntityModel.Designer
             {
                 ReadEditors(type, exts.Key, exts.Value, 0);
             }
-            if (Model.Context.SelectConfig.Friend != null)
+            if (Model.Context.SelectConfig?.Friend != null)
             {
                 type = Model.Context.SelectConfig.Friend.GetType();
                 foreach (var exts in Editors)

@@ -93,7 +93,7 @@ namespace Agebull.EntityModel.Config
         {
             get
             {
-                List<string> names = new List<string>();
+                List<string> names = new();
                 foreach (var item in Items)
                 {
                     if (item.Value == null)

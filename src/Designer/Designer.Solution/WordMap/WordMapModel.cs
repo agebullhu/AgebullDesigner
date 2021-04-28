@@ -45,8 +45,8 @@ namespace Agebull.EntityModel.Designer
         {
             wordItems.CollectionChanged += WordItems_CollectionChanged;
         }
-        public static readonly Dictionary<string, WordItem> Maps = new Dictionary<string, WordItem>(StringComparer.OrdinalIgnoreCase);
-        private static readonly NotificationList<WordItem> wordItems = new NotificationList<WordItem>();
+        public static readonly Dictionary<string, WordItem> Maps = new(StringComparer.OrdinalIgnoreCase);
+        private static readonly NotificationList<WordItem> wordItems = new();
 
         private static void WordItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -221,7 +221,7 @@ namespace Agebull.EntityModel.Designer
         }
         internal static void NewWord()
         {
-            NewConfigWindow window = new NewConfigWindow
+            NewConfigWindow window = new()
             {
                 Title = "新增字典"
             };
@@ -398,8 +398,8 @@ namespace Agebull.EntityModel.Designer
                 }
 
                 List<string> w = GlobalConfig.ToWords(str);
-                List<string> words = new List<string>();
-                StringBuilder sb = new StringBuilder();
+                List<string> words = new();
+                StringBuilder sb = new();
                 w.ForEach(p =>
                 {
                     if (p.Length == 1)
@@ -464,7 +464,7 @@ namespace Agebull.EntityModel.Designer
                 }
 
                 List<string> words = GlobalConfig.ToWords(str);
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
                 words.ForEach(word =>
                 {
                     if (Maps.TryGetValue(word, out WordItem i))

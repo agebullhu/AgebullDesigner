@@ -353,7 +353,7 @@ namespace Agebull.EntityModel.Designer
                 sub.Items.Add(cmd);
             }
 
-            List<CommandItemBase> buttons = new List<CommandItemBase>();
+            List<CommandItemBase> buttons = new();
             foreach (var menu in menus)
             {
                 foreach (var cmd in menu.Items.Where(p => !p.IsLine && !p.NoButton))
@@ -433,13 +433,6 @@ namespace Agebull.EntityModel.Designer
         public void ShowTrace()
         {
             ExtendEditorManager.OnEditorSelect("跟踪信息");
-        }
-        /// <summary>
-        /// 临时显示代码窗口
-        /// </summary>
-        public void ShowCode()
-        {
-            ExtendEditorManager.OnEditorSelect("代码生成");
         }
 
         #endregion

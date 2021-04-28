@@ -358,6 +358,7 @@ namespace Agebull.EntityModel.Designer
             SelectTag = item?.Tag;
             SetSelect(cfg);
             RaisePropertyChanged(() => SelectTag);
+            DataModelDesignModel.SaveUserScreen();
         }
         public string SelectTag { get; set; }
 

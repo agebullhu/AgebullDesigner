@@ -25,7 +25,7 @@ namespace Agebull.EntityModel.Config
                 return;
             }
             type = type.Trim();
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
             string valueType = "type";
             foreach (var t in type)
             {

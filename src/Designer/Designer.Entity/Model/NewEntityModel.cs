@@ -40,7 +40,7 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        internal readonly FieldFormatCommand Format = new FieldFormatCommand();
+        internal readonly FieldFormatCommand Format = new();
         /// <summary>
         ///     当前文件名
         /// </summary>

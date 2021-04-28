@@ -173,7 +173,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         public string DataRuleCode(FieldConfig property)
         {
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
             var re = code.ToString();
             code.Append(@"
         DataRule(");
@@ -206,7 +206,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         public string DataRuleCode(IPropertyConfig property)
         {
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
             var re = code.ToString();
             code.Append("DataRule(");
             bool has = false;
@@ -238,7 +238,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         public static string HelloCode(IEntityConfig model)
         {
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
             bool first = true;
             code.Append($@"new {model.Name}
             {{");
@@ -288,7 +288,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         public static string HelloCode(IEntityConfig model, string name)
         {
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
             foreach (var property in model.ClientProperty.Select(p => p))
             {
                 var value = HelloCode(property);

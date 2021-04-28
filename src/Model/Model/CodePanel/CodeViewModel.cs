@@ -28,7 +28,7 @@ namespace Agebull.EntityModel.Designer
             EditorName = "Code";
         }
 
-        public DependencyAction WebBrowserBehavior => new DependencyAction
+        public DependencyAction WebBrowserBehavior => new()
         {
             AttachAction = obj =>
             {

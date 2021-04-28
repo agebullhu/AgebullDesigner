@@ -27,7 +27,7 @@ namespace Agebull.EntityModel
     public sealed class DependencyObjects
     {
         [DataMember]
-        private readonly Dictionary<Type, object> _dictionary = new Dictionary<Type, object>();
+        private readonly Dictionary<Type, object> _dictionary = new();
 
         /// <summary>
         ///     附加一种类型对象
@@ -65,7 +65,7 @@ namespace Agebull.EntityModel
             {
                 return value1 as T;
             }
-            T value = new T();
+            T value = new();
             _dictionary.Add(typeof(T), value);
             return value;
         }

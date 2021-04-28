@@ -171,7 +171,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         private string SerializeCode(IEntityConfig entity)
         {
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
             foreach (var field in entity.UserProperty)
             {
                 if (!field.CanGet)
@@ -203,7 +203,7 @@ namespace Agebull.EntityModel.RobotCoder
 
         private string DeserializeCode(IEntityConfig entity)
         {
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
             foreach (var field in entity.UserProperty)
             {
                 if (!field.CanSet)

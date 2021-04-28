@@ -348,7 +348,7 @@ namespace {NameSpace}
         {
             if (!(Model is ModelConfig model))
                 return null;
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
             code.Append(@"
         ///<inheritdoc/>
         protected override async Task<bool> DoDelete(long id)

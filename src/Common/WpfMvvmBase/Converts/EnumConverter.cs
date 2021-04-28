@@ -82,7 +82,7 @@ namespace Agebull.Common.Mvvm
 
             string[] sWords = sValue.Split(',', ' ', ';', '.', '\r', '\n', '\t');
 
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
 
             foreach (var word in sWords.Where(p => !string.IsNullOrWhiteSpace(p)))
             {
@@ -119,7 +119,7 @@ namespace Agebull.Common.Mvvm
 
             string[] sWords = sValue.Split(',', ' ', ';', '.', '\r', '\n', '\t');
 
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             foreach (var word in sWords.Where(p => !string.IsNullOrWhiteSpace(p)))
             {
                 EnumInfomation<TE> ei = EnumValues.FirstOrDefault(p => p.Caption == word);
@@ -273,7 +273,7 @@ namespace Agebull.Common.Mvvm
             if (l <= 0)
                 return default(TE);
 
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             foreach (var ev in EnumValues)
             {
                 if ((l & ev.LValue) != ev.LValue)

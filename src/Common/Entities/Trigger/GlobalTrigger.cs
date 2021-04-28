@@ -21,12 +21,12 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 触发器
         /// </summary>
-        private static readonly List<Func<IEventTrigger>> TriggerCreaters = new List<Func<IEventTrigger>>();
+        private static readonly List<Func<IEventTrigger>> TriggerCreaters = new();
 
         /// <summary>
         /// 触发器
         /// </summary>
-        private static readonly List<IEventTrigger> Triggers = new List<IEventTrigger>();
+        private static readonly List<IEventTrigger> Triggers = new();
 
         /// <summary>
         /// 注册触发器
@@ -263,7 +263,7 @@ namespace Agebull.EntityModel
             }
         }
 
-        private static readonly object My = new object();
+        private static readonly object My = new();
 
         /// <summary>
         /// 完成代码生成

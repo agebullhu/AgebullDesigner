@@ -19,7 +19,7 @@ namespace Agebull.EntityModel
 {
     public class ModifyRecord
     {
-        public readonly Dictionary<string, ValueRecordItem> valueRecords = new Dictionary<string, ValueRecordItem>();
+        public readonly Dictionary<string, ValueRecordItem> valueRecords = new();
         
         private bool isModify;
 

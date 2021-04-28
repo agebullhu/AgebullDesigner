@@ -16,7 +16,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <summary>
         /// 注册的项目代码生成器
         /// </summary>
-        public static readonly Dictionary<string, Cmd> Builders = new Dictionary<string, Cmd>(StringComparer.OrdinalIgnoreCase);
+        public static readonly Dictionary<string, Cmd> Builders = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// 注册的项目生成器
@@ -46,7 +46,7 @@ namespace Agebull.EntityModel.RobotCoder
         //private static readonly List<string> types = new List<string>();
 
         //public static readonly Dictionary<string, CoderDefine> FindDictionary = new Dictionary<string, CoderDefine>();
-        public static readonly Dictionary<string, Dictionary<string, CoderDefine>> MomentCoders = new Dictionary<string, Dictionary<string, CoderDefine>>();
+        public static readonly Dictionary<string, Dictionary<string, CoderDefine>> MomentCoders = new();
         //public static List<string> Types => types;
 
 

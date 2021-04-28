@@ -30,7 +30,7 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 绑定视图对象的行为
         /// </summary>
-        public DependencyAction ViewBehavior => new DependencyAction
+        public DependencyAction ViewBehavior => new()
         {
             AttachAction = BindingView
         };

@@ -49,7 +49,7 @@ namespace Agebull.EntityModel.RobotCoder
             if (string.IsNullOrWhiteSpace(str))
                 return null;
             var sp = str.Split(new[] { '\n', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             bool isFirst = true;
             foreach (var line in sp)
             {

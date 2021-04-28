@@ -14,7 +14,7 @@ namespace Agebull.EntityModel.Designer
         /// </summary>
         public override void OnLoad()
         {
-            SolutionModel model = new SolutionModel
+            SolutionModel model = new()
             {
                 Solution = TargetConfig
             };
@@ -59,7 +59,7 @@ namespace Agebull.EntityModel.Designer
             switch (property)
             {
                 case nameof(TargetConfig.RootPath):
-                    SolutionModel model = new SolutionModel
+                    SolutionModel model = new()
                     {
                         Solution = TargetConfig
                     };

@@ -17,7 +17,7 @@ namespace Agebull.Common.LUA
         {
             if (string.IsNullOrWhiteSpace(str))
                 return str;
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
             foreach (var ch in str)
             {
                 if (ch > 255 || ch == '\\' || ch == '\'' || ch == '\"' || ch == '{' || ch == '}')
@@ -40,9 +40,9 @@ namespace Agebull.Common.LUA
         {
             if (string.IsNullOrWhiteSpace(str))
                 return str;
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
             int u = 0;
-            StringBuilder ubuilder = new StringBuilder();
+            StringBuilder ubuilder = new();
             foreach (var ch in str)
             {
                 switch (ch)

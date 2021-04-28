@@ -50,7 +50,7 @@ namespace System.Text
             try
             {
                 var words = ToWords(str);
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
                 words.ForEach(p =>
                 {
                     if (p != null)
@@ -75,7 +75,7 @@ namespace System.Text
             try
             {
                 var words = ToWords(str);
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
                 sb.Append(head);
                 sb.Append(words[0].ToLower());
                 for (var index = 1; index < words.Count; index++)
@@ -102,7 +102,7 @@ namespace System.Text
             try
             {
                 var words = ToWords(str);
-                StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new();
                 bool preEn = words[0][0] < 255;
                 sb.Append(uWord ? words[0].ToUWord() : words[0].ToLower());
                 for (var index = 1; index < words.Count; index++)
@@ -143,7 +143,7 @@ namespace System.Text
         {
             if (words.Count == 0)
                 return string.Empty;
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             bool preEn = words[0][0] < 255;
             sb.Append(uWord ? words[0].ToUWord() : words[0].ToLower());
             for (var index = 1; index < words.Count; index++)
@@ -168,7 +168,7 @@ namespace System.Text
             if (string.IsNullOrWhiteSpace(str))
                 return words;
             var baseWords = str.Split(NoneLanguageChar, StringSplitOptions.RemoveEmptyEntries);
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             foreach (var word in baseWords)
             {
                 if (word.All(c => c > 255))
@@ -252,7 +252,7 @@ namespace System.Text
 
         public static string RemCode(SimpleConfig config, int space = 8)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             sb.AppendLine();
             sb.Append(' ', space);
             sb.Append("/// <summary>");
@@ -288,7 +288,7 @@ namespace System.Text
             if (string.IsNullOrWhiteSpace(str))
                 return null;
             var sp = str.Split(new[] { '\n', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             bool isFirst = true;
             foreach (var line in sp)
             {

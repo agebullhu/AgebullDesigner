@@ -30,13 +30,13 @@ namespace Agebull.EntityModel
         /// 有名称的方法字典
         /// </summary>
         [JsonIgnore]
-        private readonly Dictionary<string, object> _nameDictionary = new Dictionary<string, object>();
+        private readonly Dictionary<string, object> _nameDictionary = new();
 
         /// <summary>
         /// 依赖字典
         /// </summary>
         [JsonIgnore]
-        private readonly Dictionary<Type, object> _dependencyDictionary = new Dictionary<Type, object>();
+        private readonly Dictionary<Type, object> _dependencyDictionary = new();
 
         /// <summary>
         ///     附加方法

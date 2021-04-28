@@ -161,7 +161,7 @@ GO";
 
         private static string PageInsertSql(ProjectConfig project)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             sb.Append(
                 $@"
 /*{project.Caption}*/

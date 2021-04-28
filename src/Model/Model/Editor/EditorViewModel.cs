@@ -52,7 +52,7 @@ namespace Agebull.EntityModel.Designer
             }
         }
 
-        public DependencyAction PropertyGridHostBehavior => new DependencyAction
+        public DependencyAction PropertyGridHostBehavior => new()
         {
             AttachAction = GetPropertyGrid
         };

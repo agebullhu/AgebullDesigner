@@ -37,7 +37,7 @@ namespace Agebull.EntityModel
         /// <summary>
         /// 全局配置
         /// </summary>
-        public readonly Dictionary<string, object> GlobalConfig = new Dictionary<string, object>();
+        public readonly Dictionary<string, object> GlobalConfig = new();
 
         /// <summary>
         /// 找对应节点
@@ -103,12 +103,12 @@ namespace Agebull.EntityModel
         /// <param name="selectItem">选中的对象</param>
         protected internal override void OnChildIsSelectChanged(bool select, TreeItemBase child, TreeItemBase selectItem)
         {
-            SelectPath = IsSelected ? null : child.SelectPath;
-            if (isSelected != select)
-            {
-                isSelected = select;
-                RaisePropertyChanged(() => IsSelected);
-            }
+            //SelectPath = IsSelected ? null : child.SelectPath;
+            //if (isSelected != select)
+            //{
+            //    isSelected = select;
+            //    RaisePropertyChanged(() => IsSelected);
+            //}
             SelectItem = selectItem as TreeItem;
         }
 

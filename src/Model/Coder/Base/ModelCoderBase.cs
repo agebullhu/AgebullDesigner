@@ -54,7 +54,7 @@ namespace Agebull.EntityModel.RobotCoder
         /// <returns></returns>
         protected string DefaultValueCode()
         {
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
             foreach (var property in ReadWriteColumns.Select(p => p).Where(p => !string.IsNullOrWhiteSpace(p.Initialization)))
             {
                 if (property.NoProperty)

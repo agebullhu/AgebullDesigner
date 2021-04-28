@@ -67,7 +67,7 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
 
         public static string HtmlCode(IEntityConfig model)
         {
-            StringBuilder code = new StringBuilder();
+            StringBuilder code = new();
             code.Append($@"
 <el-form ref='dataForm' :rules='form.rules' :model='form.data' label-width='100px' label-position='left' @submit.native.prevent>");
             foreach (var property in model.ClientProperty.Where(p => !p.NoneDetails).ToArray())

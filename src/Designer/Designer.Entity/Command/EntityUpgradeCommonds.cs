@@ -269,7 +269,7 @@ namespace Agebull.EntityModel.Designer
                 return;
             }
 
-            EntityBusinessModel business = new EntityBusinessModel
+            EntityBusinessModel business = new()
             {
                 Entity = entity
             };

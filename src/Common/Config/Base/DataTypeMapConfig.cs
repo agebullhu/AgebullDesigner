@@ -17,7 +17,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         ///     基本数据类型列表
         /// </summary>
-        public static List<DataTypeMapConfig> DataTypeMap = new List<DataTypeMapConfig>
+        public static List<DataTypeMapConfig> DataTypeMap = new()
         {
             /* Boolean*/
             new DataTypeMapConfig

@@ -30,7 +30,7 @@ namespace Agebull.EntityModel
         ///     依赖方法字典
         /// </summary>
         [JsonIgnore]
-        private readonly Dictionary<Type, object> _dictionary = new Dictionary<Type, object>();
+        private readonly Dictionary<Type, object> _dictionary = new();
 
         /// <summary>
         ///     附加方法

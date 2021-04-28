@@ -84,7 +84,7 @@ namespace Agebull.EntityModel.Designer
         {
             _trace.Message1 = "连接数据库";
             _trace.Track = _connectionString;
-            using MySqlConnection connection = new MySqlConnection(_connectionString);
+            using MySqlConnection connection = new(_connectionString);
 
             _trace.Track = "正在连接...";
             connection.Open();

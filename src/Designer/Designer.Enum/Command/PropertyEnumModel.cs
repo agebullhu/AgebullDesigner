@@ -105,8 +105,8 @@ namespace Agebull.EntityModel.Designer
             string desc = column.Description ?? column.Caption ?? column.Name;
             var line = desc.Trim(NameHelper.NoneLanguageChar) ?? "";
 
-            StringBuilder sb = new StringBuilder();
-            StringBuilder caption = new StringBuilder();
+            StringBuilder sb = new();
+            StringBuilder caption = new();
             bool preIsNumber = false;
             bool startEnum = false;
             bool isNew = false;
@@ -134,7 +134,7 @@ namespace Agebull.EntityModel.Designer
                 ec.Items.Clear();
             }
 
-            EnumItem ei = new EnumItem();
+            EnumItem ei = new();
             foreach (var c in line)
             {
                 if (c >= '0' && c <= '9')

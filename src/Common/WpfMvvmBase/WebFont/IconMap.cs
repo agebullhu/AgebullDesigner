@@ -5,7 +5,7 @@ namespace Agebull.Common.Mvvm
 {
     public class IconMap
     {
-        public static Dictionary<string, string> map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        public static Dictionary<string, string> map = new(StringComparer.OrdinalIgnoreCase)
         {
             {"向上","\uf062" },
             {"向下","\uf063" },
@@ -143,7 +143,7 @@ namespace Agebull.Common.Mvvm
             {"正常状态","" },//\uf05d
         };
 
-        public static IconMap Instance = new IconMap();
+        public static IconMap Instance = new();
 
         public string this[string name]
         {
