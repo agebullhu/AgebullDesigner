@@ -8,6 +8,7 @@
 *****************************************************/
 
 using Newtonsoft.Json;
+using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 
@@ -85,7 +86,7 @@ namespace Agebull.EntityModel.Config
                 if (_value == value)
                     return;
                 BeforePropertyChange(nameof(Value), _value, value);
-                _value = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _value = value.SafeTrim();
                 OnPropertyChanged(nameof(Value));
             }
         }

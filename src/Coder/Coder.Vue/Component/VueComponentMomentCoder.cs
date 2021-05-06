@@ -19,6 +19,7 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
             CoderManager.RegisteCoder(folder, "form.js", "js", FormComponent.JsCode);
             CoderManager.RegisteCoder(folder, "list.htm", "html", ListComponent.HtmlCode);
             CoderManager.RegisteCoder(folder, "list.js", "js", ListComponent.JsCode);
+            CoderManager.RegisteCoder(folder, "menu", "js", VueComponentExtensions.HtmlMenu);
         }
 
         #endregion

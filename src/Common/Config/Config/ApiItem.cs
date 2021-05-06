@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 
@@ -84,7 +85,7 @@ namespace Agebull.EntityModel.Config
                 if (_callArg == value)
                     return;
                 BeforePropertyChange(nameof(CallArg), _callArg, value);
-                _callArg = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _callArg = value.SafeTrim();
                 OnPropertyChanged(nameof(CallArg));
                 OnPropertyChanged(nameof(Argument));
             }
@@ -111,7 +112,7 @@ namespace Agebull.EntityModel.Config
                 if (_code == value)
                     return;
                 BeforePropertyChange(nameof(Code), _code, value);
-                _code = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _code = value.SafeTrim();
                 OnPropertyChanged(nameof(Code));
             }
         }
@@ -138,7 +139,7 @@ namespace Agebull.EntityModel.Config
                 if (_resultArg == value)
                     return;
                 BeforePropertyChange(nameof(ResultArg), _resultArg, value);
-                _resultArg = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _resultArg = value.SafeTrim();
                 OnPropertyChanged(nameof(ResultArg));
                 OnPropertyChanged(nameof(Result));
             }

@@ -25,13 +25,17 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
 
         public string ScriptCode()
         {
+            var prefix = model.Project.ApiPrefix.IsMissing()
+                ? model.Project.ServiceName
+                : $"{model.Project.ApiPrefix}/{model.Project.ServiceName}";
+
             return $@"EntityComponents.components['{model.ComponentName}'].common = {{
     default: {{
         idField : '{model.PrimaryColumn.JsonName}',
-        apiPrefix : '/{model.Project.ApiName}/{model.ApiName}/v1',
-        url:'http://localhost'
+        apiPrefix : '/{prefix}/{model.ApiName}/v1',
+        url:'{model.Project.TestAddress}'
     }},{Options().LinkToString(',')}
-}};";
+}};"; 
         }
 
 
@@ -142,12 +146,12 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
                     if (first)
                         first = false;
                     else
-                        code.Append(",");
+                        code.Append(',');
                     code.Append($@"{{
             key: '{item.Value}', value: '{item.Name}', label: '{item.Caption}'
         }}");
                 }
-                code.Append(@"]");
+                code.Append(']');
                 types.Add(code.ToString());
             }
         }
@@ -362,6 +366,7 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
             }
         }
         #endregion
+
         #region Êý¾Ý
 
         void DataCheckMethod()

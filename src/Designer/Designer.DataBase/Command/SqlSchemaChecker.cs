@@ -148,7 +148,8 @@ SELECT {0}", pri.DbFieldName);
                 property.IsPrimaryKey = !reader.IsDBNull(8);
                 property.DataBaseField = field;
                 field.IsIdentity = reader.GetBoolean(9);
-                field.IsReadonly = reader.GetBoolean(10);
+                if (reader.GetBoolean(10))
+                    field.CanUpdate = field.CanInsert = false;
                 if (field.CsType == null)
                     DataTypeHelper.ToStandardByDbType(field, field.FieldType);
 

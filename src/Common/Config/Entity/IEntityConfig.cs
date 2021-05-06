@@ -405,7 +405,7 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// 页面代码路径
         /// </summary>
-        string PagePath(char sp = '\\')
+        string GetPagePath(char sp = '\\')
         {
             if (!PageFolder.IsMissing())
                 return PageFolder;
@@ -538,6 +538,15 @@ namespace Agebull.EntityModel.Config
             set;
         }
 
+        /// <summary>
+        /// 图标名称
+        /// </summary>
+        string Icon
+        {
+            get;
+            set;
+        }
+        
         /// <summary>
         /// 页面路径
         /// </summary>

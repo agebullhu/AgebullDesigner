@@ -32,7 +32,7 @@ namespace Agebull.EntityModel.Config
                     return;
                 }
                 BeforePropertyChange(nameof(SaveFileName), _fileName, value);
-                _fileName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _fileName = value.SafeTrim();
                 RaisePropertyChanged(() => SaveFileName);
             }
         }

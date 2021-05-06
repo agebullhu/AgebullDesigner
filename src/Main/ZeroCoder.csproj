@@ -39,6 +39,7 @@
 
   <ItemGroup>
     <Compile Remove="Editor\PropertyPage.xaml.cs" />
+    <Compile Remove="Editor\RepairPanel.xaml.cs" />
     <Compile Remove="View\DesignEditPanel.xaml.cs" />
   </ItemGroup>
 
@@ -48,6 +49,7 @@
 
   <ItemGroup>
     <Page Remove="Editor\PropertyPage.xaml" />
+    <Page Remove="Editor\RepairPanel.xaml" />
     <Page Remove="View\DesignEditPanel.xaml" />
   </ItemGroup>
 
@@ -60,9 +62,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Model\Model\Agebull.EntityModel.Designer.Model.csproj" />
-    <PackageReference Include="ZeroTeam.MessageMVC.ApiContract" Version="1.1.5.11" />
-    <PackageReference Include="ZeroTeam.MessageMVC.Core" Version="1.1.5.11" />
-    <PackageReference Include="ZeroTeam.MessageMVC.FastHttpApi" Version="1.1.5.11" />
+    <PackageReference Include="ZeroTeam.MessageMVC.ApiContract" Version="1.1.6.10" />
+    <PackageReference Include="ZeroTeam.MessageMVC.Core" Version="1.1.6.10" />
+    <PackageReference Include="ZeroTeam.MessageMVC.FastHttpApi" Version="1.1.6.10" />
   </ItemGroup>
 
   <ItemGroup>

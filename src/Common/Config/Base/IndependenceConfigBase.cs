@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Text;
@@ -27,13 +28,13 @@ namespace Agebull.EntityModel.Config
         [Category(@"设计器支持"), DisplayName(@"简称"), Description(@"简称")]
         public string Abbreviation
         {
-            get => WorkContext.InCoderGenerating ? _abbreviation ?? Name.ToLWord() : _abbreviation;
+            get => _abbreviation ?? Name.ToLWord();
             set
             {
                 if (_abbreviation == value)
                     return;
                 BeforePropertyChange(nameof(Abbreviation), _abbreviation, value);
-                _abbreviation = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _abbreviation = value.SafeTrim();
                 OnPropertyChanged(nameof(Abbreviation));
             }
         }

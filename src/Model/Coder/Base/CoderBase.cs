@@ -200,7 +200,7 @@ namespace Agebull.EntityModel.RobotCoder
             }
             if (!has)
                 return re;
-            code.Append(")");
+            code.Append(')');
             return code.ToString();
         }
 
@@ -232,7 +232,7 @@ namespace Agebull.EntityModel.RobotCoder
             }
             if (!has)
                 return re;
-            code.Append(")");
+            code.Append(')');
             return code.ToString();
         }
 

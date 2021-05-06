@@ -99,9 +99,9 @@ ALTER TABLE  `{dataTable.SaveTableName}`");
                     else code.Append(',');
                     code.Append($"`{field.DbFieldName}`");
                 }
-                code.Append(")");
+                code.Append(')');
             }
-            code.Append(";");
+            code.Append(';');
             return code.ToString();
         }
 
@@ -144,9 +144,9 @@ ALTER TABLE  `{dataTable.SaveTableName}`");
                     else code.Append(',');
                     code.Append($"`{field.DbFieldName}`");
                 }
-                code.Append(")");
+                code.Append(')');
             }
-            code.Append(";");
+            code.Append(';');
             return code.ToString();
         }
 
@@ -180,7 +180,7 @@ ALTER TABLE  `{dataTable.SaveTableName}`");
         REFERENCES `{rela.SaveTableName}` (`{rela.PrimaryField.DbFieldName}`)");
 
             }
-            code.Append(";");
+            code.Append(';');
             return code.ToString();
         }
 
@@ -357,7 +357,7 @@ CREATE TABLE `{dataTable.SaveTableName}`(");
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci COMMENT '{dataTable.Caption}'");
             //if (dataTable.PrimaryColumn.IsIdentity)
             //    code.Append(@" AUTO_INCREMENT=1");
-            code.Append(@";");
+            code.Append(';');
             return code.ToString();
         }
 
@@ -379,7 +379,7 @@ ALTER TABLE `{dataTable.SaveTableName}`");
                 code.Append($@"
     ADD COLUMN {FieldDefault(col)}");
             }
-            code.Append(@";");
+            code.Append(';');
             return code.ToString();
         }
 
@@ -414,7 +414,7 @@ ALTER TABLE `{dataTable.SaveTableName}`");
                 code.Append($@"
     CHANGE COLUMN `{col.DbFieldName}` {FieldDefault(col)}");
             }
-            code.Append(@";");
+            code.Append(';');
         }
 
         private string ChangeColumnName2(DataTableConfig dataTable)
@@ -450,7 +450,7 @@ ALTER TABLE `{dataTable.SaveTableName}`");
                 code.Append($@"
     CHANGE COLUMN `{col.OldName}` {FieldDefault(col)}");
             }
-            code.Append(@";");
+            code.Append(';');
             return code.ToString();
         }
 
@@ -472,7 +472,7 @@ ALTER TABLE `{dataTable.SaveTableName}`");
                 code.Append($@"
     CHANGE COLUMN `{col.DbFieldName}` {FieldDefault(col)}");
             }
-            code.Append(@";");
+            code.Append(';');
             return code.ToString();
         }
 
@@ -510,9 +510,9 @@ ALTER TABLE `{dataTable.SaveTableName}`
             {
                 if (col.DbNullable)
                     return null;
-                return col.Property.CsType == "string"
-                    ? $"DEFAULT ''"
-                    : $"DEFAULT 0";
+                if (col.Property.CsType.IsNumberType())
+                    return "DEFAULT 0";
+                return null;
             }
             return col.Property.CsType == "string" ? $"DEFAULT '{col.Property.Initialization}'" : $"DEFAULT {col.Property.Initialization}";
         }
@@ -558,11 +558,11 @@ ALTER TABLE `{dataTable.SaveTableName}`
                 }
                 else
                 {
-                    sql.Append(",");
+                    sql.Append(',');
                 }
                 var head = all
                     ? ""
-                    : $"`{((DataTableConfig)field.Parent).ReadTableName}`.";
+                    : $"`{field.Entity.DataTable.ReadTableName}`.";
                 if (!IsNullOrEmpty(field.Function))
                 {
                     sql.Append($"{field.Function}({head}`{field.DbFieldName}`) AS `{field.DbFieldName}`");
@@ -601,11 +601,11 @@ ALTER TABLE `{dataTable.SaveTableName}`
                 }
                 else
                 {
-                    sql.Append(",");
+                    sql.Append(',');
                 }
                 var head = all
                     ? ""
-                    : $"`{field.Parent.ReadTableName}`.";
+                    : $"`{field.Entity.DataTable.ReadTableName}`.";
                 sql.Append($"`{field.Function}({head}`{field.DbFieldName}`) {field.Having}");
             }
             return isFirst ? "null" : $"\"\\nHAVING {sql}\"";
@@ -627,11 +627,11 @@ ALTER TABLE `{dataTable.SaveTableName}`
                 }
                 else
                 {
-                    sql.Append(",");
+                    sql.Append(',');
                 }
                 var head = all
                     ? ""
-                    : $"`{field.Parent.ReadTableName}`.";
+                    : $"`{field.Entity.DataTable.ReadTableName}`.";
                 sql.Append($"{head}.`{field.DbFieldName}`");
             }
             return isFirst ? "null" : $"\"\\nGROUP BY {sql}\"";

@@ -23,14 +23,14 @@ namespace Agebull.EntityModel.RobotCoder
             if (field == null)
                 return;
             var link = field.IsLinkField ? entity.Project.Find(field.LinkTable) : null;
-            var linkField = link?.Find(field.LinkField);
+            var linkField = field.IsLinkKey ? link.PrimaryColumn : link?.Find(field.LinkField);
             if (linkField != null)
             {
-                property.Option.ReferenceConfig = linkField;
+                property.Option.ReferenceConfig = (ConfigBase)linkField;
                 property.Option.IsLink = true;
                 return;
             }
-            field.IsReadonly = false;
+            field.KeepStorageScreen = StorageScreenType.None;
             field.IsLinkCaption = false;
             field.IsLinkField = false;
             field.IsLinkKey = false;

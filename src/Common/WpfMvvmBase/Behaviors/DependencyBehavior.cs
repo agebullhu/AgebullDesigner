@@ -49,7 +49,7 @@ namespace Agebull.Common.Mvvm
 
         private static void OnBehaviorActionPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (!(d is DependencyBehavior<TDependency> eb) || !eb._isAttached || Equals(e.OldValue, e.NewValue))
+            if (d is not DependencyBehavior<TDependency> eb || !eb._isAttached || Equals(e.OldValue, e.NewValue))
             {
                 return;
             }

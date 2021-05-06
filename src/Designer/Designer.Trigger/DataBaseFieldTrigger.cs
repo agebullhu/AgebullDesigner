@@ -60,18 +60,20 @@ namespace Agebull.EntityModel.Designer
             }
             if (!TargetConfig.FieldType.IsOnce("decimal", "number"))
                 TargetConfig.Scale = 0;
-            if (TargetConfig.IsIdentity)
-                TargetConfig.IsReadonly = true;
             #endregion
 
 
             #region KeepStorageScreen
+
+
             if (TargetConfig.DbInnerField)
-                TargetConfig.KeepStorageScreen = StorageScreenType.Read | StorageScreenType.Insert | StorageScreenType.Update;
-            else if (TargetConfig.CustomWrite || TargetConfig.IsIdentity || TargetConfig.IsReadonly)
-                TargetConfig.KeepStorageScreen |= StorageScreenType.Insert | StorageScreenType.Update;
-            else if (TargetConfig.UniqueIndex || TargetConfig.IsPrimaryKey)
+                TargetConfig.KeepStorageScreen = StorageScreenType.All;
+            else if (TargetConfig.CustomWrite || TargetConfig.IsIdentity)
+                TargetConfig.KeepStorageScreen |= StorageScreenType.Save;
+            else if (TargetConfig.UniqueIndex || TargetConfig.IsPrimaryKey || TargetConfig.IsLinkKey)
                 TargetConfig.KeepStorageScreen |= StorageScreenType.Update;
+            else if (TargetConfig.IsLinkField)
+                TargetConfig.KeepStorageScreen |= StorageScreenType.Save;
 
             #endregion
 
@@ -162,8 +164,8 @@ namespace Agebull.EntityModel.Designer
             TargetConfig.Option.State = TargetConfig.Property.Option.State;
 
 
-            TargetConfig.IsDiscard = TargetConfig.Property == null || TargetConfig.Property.IsDelete || TargetConfig.Property.IsDiscard ||
-                !TargetConfig.Entity.LastProperties.Any(pro => pro == TargetConfig.Property);
+            TargetConfig.IsDiscard = TargetConfig.Property == null || TargetConfig.Property.IsDelete || TargetConfig.Property.IsDiscard
+               ;//|| !TargetConfig.Entity.LastProperties.Any(pro => pro == TargetConfig.Property )
             #endregion
         }
     }

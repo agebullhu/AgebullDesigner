@@ -398,7 +398,7 @@ namespace {Project.NameSpace}.DataAccess
             str.Append($", {idx++}");
             if (isOutField)
                 str.Append($", \"{property.Name}\", \"{property.Entity.DataTable.SaveTableName}\", \"{property.DataBaseField?.DbFieldName}\", {ReadWrite(property.DataBaseField)}, {PropertyFeature(property)}");
-            str.Append(")");
+            str.Append(')');
             return str.ToString();
         }
 

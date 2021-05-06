@@ -80,7 +80,7 @@
         bool IsExtendValue { get; set; }// Field.Nullable;
 
         /// <summary>
-        /// 内部字段
+        /// 内部字段,用户不可见
         /// </summary>
         bool InnerField { get; set; }// Field.InnerField;
 

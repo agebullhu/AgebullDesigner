@@ -199,6 +199,33 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
+        /// 测试地址
+        /// </summary>
+        [DataMember, JsonProperty("testAddress", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal string testAddress;
+
+        /// <summary>
+        /// 服务名称
+        /// </summary>
+        /// <remark>
+        /// 接口名称
+        /// </remark>
+        [JsonIgnore]
+        [Category(@"解决方案"), DisplayName(@"测试地址"), Description("测试地址")]
+        public string TestAddress
+        {
+            get => testAddress;
+            set
+            {
+                if (testAddress == value)
+                    return;
+                BeforePropertyChange(nameof(TestAddress), testAddress, value);
+                testAddress = value.SafeTrim();
+                OnPropertyChanged(nameof(TestAddress));
+            }
+        }
+
+        /// <summary>
         /// 服务名称
         /// </summary>
         [DataMember, JsonProperty("serviceName", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
@@ -228,10 +255,10 @@ namespace Agebull.EntityModel.Config
         }
 
         /// <summary>
-        /// 接口名称
+        /// 接口前缀
         /// </summary>
-        [DataMember, JsonProperty("_apiName", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal string _apiName;
+        [DataMember, JsonProperty("apiPrefix", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal string _apiPrefix;
 
         /// <summary>
         /// 接口名称
@@ -241,18 +268,18 @@ namespace Agebull.EntityModel.Config
         /// </remark>
         [JsonIgnore]
         [Category(@"解决方案"), DisplayName(@"接口名称"), Description("接口名称")]
-        public string ApiName
+        public string ApiPrefix
         {
-            get => WorkContext.InCoderGenerating ? _apiName ?? $"api/{Abbreviation}" : _apiName;
+            get => WorkContext.InCoderGenerating ? _apiPrefix ?? "api" : _apiPrefix;
             set
             {
-                if (_apiName == value)
+                if (_apiPrefix == value)
                     return;
                 if (value == Name)
                     value = null;
-                BeforePropertyChange(nameof(ApiName), _apiName, value);
-                _apiName = string.IsNullOrWhiteSpace(value) ? null : value.Trim('\\', '/').Trim();
-                OnPropertyChanged(nameof(ApiName));
+                BeforePropertyChange(nameof(ApiPrefix), _apiPrefix, value);
+                _apiPrefix = string.IsNullOrWhiteSpace(value) ? null : value.Trim('\\', '/').Trim();
+                OnPropertyChanged(nameof(ApiPrefix));
             }
         }
 
@@ -368,7 +395,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"解决方案"), DisplayName(@"WEB页面主文件夹"), Description("WEB页面主文件夹")]
         public string PageFolder
         {
-            get => (_pageFolder ?? Name).ToLWord();
+            get => (_pageFolder ?? Abbreviation);
             set
             {
                 if (_pageFolder == value)
@@ -401,7 +428,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"解决方案"), DisplayName(@"子级文件夹"), Description("子级文件夹")]
         public string BranchFolder
         {
-            get => _branchFolder ?? Name;
+            get => _branchFolder;
             set
             {
                 if (_branchFolder == value)
@@ -484,13 +511,14 @@ namespace Agebull.EntityModel.Config
             };
             if (!isRoot)
             {
+                if(BranchFolder.IsPresent())
                 folders.Add(BranchFolder);
             }
-            if (!end.IsMissing())
+            if (end.IsPresent())
             {
                 folders.Add(end);
             }
-            if (!string.IsNullOrWhiteSpace(Solution.RootPath))
+            if (Solution.RootPath.IsPresent())
                 return IOHelper.CheckPath(Solution.RootPath, folders.ToArray());
             return folders.LinkToString("\\");
         }
@@ -644,7 +672,7 @@ namespace Agebull.EntityModel.Config
                 if (_dbHost == value)
                     return;
                 BeforePropertyChange(nameof(DbHost), _dbHost, value);
-                _dbHost = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _dbHost = value.SafeTrim();
                 OnPropertyChanged(nameof(DbHost));
             }
         }
@@ -671,7 +699,7 @@ namespace Agebull.EntityModel.Config
                 if (_dbSoruce == value)
                     return;
                 BeforePropertyChange(nameof(DbSoruce), _dbSoruce, value);
-                _dbSoruce = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _dbSoruce = value.SafeTrim();
                 OnPropertyChanged(nameof(DbSoruce));
             }
         }
@@ -698,7 +726,7 @@ namespace Agebull.EntityModel.Config
                 if (_dbPassWord == value)
                     return;
                 BeforePropertyChange(nameof(DbPassWord), _dbPassWord, value);
-                _dbPassWord = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _dbPassWord = value.SafeTrim();
                 OnPropertyChanged(nameof(DbPassWord));
             }
         }
@@ -753,7 +781,7 @@ namespace Agebull.EntityModel.Config
                 if (_dbUser == value)
                     return;
                 BeforePropertyChange(nameof(DbUser), _dbUser, value);
-                _dbUser = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _dbUser = value.SafeTrim();
                 OnPropertyChanged(nameof(DbUser));
             }
         }
@@ -781,7 +809,7 @@ namespace Agebull.EntityModel.Config
                 if (_appId == value)
                     return;
                 BeforePropertyChange(nameof(AppId), _appId, value);
-                _appId = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _appId = value.SafeTrim();
                 OnPropertyChanged(nameof(AppId));
             }
         }
@@ -808,7 +836,7 @@ namespace Agebull.EntityModel.Config
                 if (_projectType == value)
                     return;
                 BeforePropertyChange(nameof(ProjectType), _projectType, value);
-                _projectType = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _projectType = value.SafeTrim();
                 OnPropertyChanged(nameof(ProjectType));
             }
         }
@@ -891,7 +919,7 @@ namespace Agebull.EntityModel.Config
                     value = words.Length == 0 ? null : words.LinkToString(";\r\n") + ";";
                 }
                 BeforePropertyChange(nameof(UsingNameSpaces), _usingNameSpaces, value);
-                _usingNameSpaces = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _usingNameSpaces = value.SafeTrim();
                 OnPropertyChanged(nameof(UsingNameSpaces));
             }
         }
@@ -920,7 +948,7 @@ namespace Agebull.EntityModel.Config
                 if (value == Solution.NameSpace)
                     value = null;
                 BeforePropertyChange(nameof(NameSpace), _nameSpace, value);
-                _nameSpace = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _nameSpace = value.SafeTrim();
                 OnPropertyChanged(nameof(NameSpace));
             }
         }
@@ -949,7 +977,7 @@ namespace Agebull.EntityModel.Config
                 if (value == Name)
                     value = null;
                 BeforePropertyChange(nameof(DataBaseObjectName), _dataBaseObjectName, value);
-                _dataBaseObjectName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _dataBaseObjectName = value.SafeTrim();
                 OnPropertyChanged(nameof(DataBaseObjectName));
             }
         }

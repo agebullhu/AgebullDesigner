@@ -19,6 +19,53 @@
         }
 
         /// <summary>
+        /// 是否布尔类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsDateTimeType(this string type)
+        {
+            if (type == null)
+                return false;
+            return type.ToLower() switch
+            {
+                "datetime" => true,
+                _ => false,
+            };
+        }
+
+        /// <summary>
+        /// 是否布尔类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsBooleanType(this string type)
+        {
+            if (type == null)
+                return false;
+            return type.ToLower() switch
+            {
+                "bool" or "boolean" => true,
+                _ => false,
+            };
+        }
+        /// <summary>
+        /// 是否数字类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsStringType(this string type)
+        {
+            if (type == null)
+                return false;
+            return type.ToLower() switch
+            {
+                "string" => true,
+                _ => false,
+            };
+        }
+
+        /// <summary>
         /// 是否数字类型
         /// </summary>
         /// <param name="type"></param>
@@ -27,30 +74,11 @@
         {
             if (type == null)
                 return false;
-            switch (type.ToLower())
+            return type.ToLower() switch
             {
-                case "byte":
-                case "sbyte":
-                case "int16":
-                case "int32":
-                case "int64":
-                case "uint16":
-                case "uint32":
-                case "uint64":
-                case "single":
-                case "float":
-                case "double":
-                case "decimal":
-                case "long":
-                case "ulong":
-                case "short":
-                case "ushort":
-                case "int":
-                case "uint":
-                    return true;
-                default:
-                    return false;
-            }
+                "byte" or "sbyte" or "int16" or "int32" or "int64" or "uint16" or "uint32" or "uint64" or "single" or "float" or "double" or "decimal" or "long" or "ulong" or "short" or "ushort" or "int" or "uint" => true,
+                _ => false,
+            };
         }
     }
 }

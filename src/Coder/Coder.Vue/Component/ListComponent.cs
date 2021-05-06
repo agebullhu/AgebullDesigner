@@ -113,7 +113,7 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
                 code.Append($" width={property.GridWidth}");
             code.Append($@">
         <template slot-scope='scope'>
-            <span style='margin-left: 3px'>{property.Prefix}{{{{scope.row.{property.JsonName}{property.Formater()}}}}}{property.Suffix}</span>
+            <span style='margin-left: 3px'>{property.FieldText("scope.row")}</span>
         </template>
     </el-table-column>");
         }
@@ -161,29 +161,7 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
                 else
                 {
                     code.Append($@"
-                <span class='expand_value'>{property.Prefix}{{{{props.row.{property.JsonName}");
-                    if (property.EnumConfig != null)
-                    {
-                        code.Append($@" | {property.EnumConfig.Name.ToLWord()}Formater");
-                    }
-                    else if (property.CsType == nameof(DateTime))
-                    {
-                        var fmt = property.IsTime ? "formatTime" : "formatDate";
-                        code.Append($@" | {fmt}");
-                    }
-                    else if (property.CsType == "bool")
-                    {
-                        code.Append(@" | boolFormater");
-                    }
-                    else if (property.IsMoney)
-                    {
-                        code.Append(@" | formatMoney");
-                    }
-                    else if (property.CsType == "decimal")
-                    {
-                        code.Append(@" | thousandsNumber");
-                    }
-                    code.Append($@"}}}}{property.Suffix}</span>");
+                <span class='expand_value'>{property.FieldText("props.row")}</span>");
                 }
                 code.Append($@"
             </div>");

@@ -134,7 +134,6 @@ CREATE VIEW [{viewName}] AS
             if (entity == null)
                 return "";
 
-            return $"{entity.Caption} : 设置为普通类(EnableDataBase=true)，无法生成SQL";
             return $@"
 /*******************************{entity.Caption}*******************************/
 DROP TABLE [{entity.SaveTableName}];
@@ -230,7 +229,6 @@ EXECUTE sp_addextendedproperty N'MS_Description', @v, N'SCHEMA', N'dbo', N'TABLE
             if (entity == null)
                 return "";
 
-            return $"{entity.Caption} : 设置为普通类(EnableDataBase=true)，无法生成SQL";
             var code = new StringBuilder();
             code.Append($@"
 /*{entity.Caption}*/
@@ -267,7 +265,7 @@ ALTER TABLE [{entity.SaveTableName}]");
                 code.Append($@"
     ALTER COLUMN [{field.DbFieldName}] {FieldDefault(field)}");
             }
-            code.Append(@";");
+            code.Append(';');
             MemCode(entity, code);
             return code.ToString();
         }

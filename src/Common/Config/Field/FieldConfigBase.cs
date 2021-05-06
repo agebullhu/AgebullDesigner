@@ -74,7 +74,7 @@ namespace Agebull.EntityModel.Config
         internal bool _innerField;
 
         /// <summary>
-        /// 内部字段
+        /// 内部字段,用户不可见
         /// </summary>
         /// <remark>
         /// 是否内部字段,即非用户字段,不呈现给用户
@@ -83,7 +83,7 @@ namespace Agebull.EntityModel.Config
         [Category(@"模型设计"), DisplayName(@"内部字段"), Description("是否内部字段,即非用户字段,不呈现给用户")]
         public bool InnerField
         {
-            get => !Me.EnableUI || _innerField;
+            get => _innerField;
             set
             {
                 if (_innerField == value)
@@ -123,13 +123,13 @@ namespace Agebull.EntityModel.Config
 
 
         /// <summary>
-        /// 数据库的读写忽略这个字段
+        /// 是否外部链接字段
         /// </summary>
         /// <remark>
-        /// 是否非数据库字段,如果为真,数据库的读写均忽略这个字段
+        /// 是否外部链接字段,如果为真,此字段也在其它表中
         /// </remark>
         [JsonIgnore]
-        [Category(@"数据库"), DisplayName(@"非数据库字段"), Description(@"是否非数据库字段,如果为真,数据库的读写均忽略这个字段")]
+        [Category(@"数据库"), DisplayName(@"是否外部链接字段"), Description(@"是否外部链接字段,如果为真,此字段也在其它表中")]
         public bool IsLinkField
         {
             get => Me.EnableDataBase && _dataBaseField != null && _dataBaseField.IsLinkField;

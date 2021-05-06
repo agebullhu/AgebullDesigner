@@ -308,7 +308,7 @@ namespace {NameSpace}.WebApi
 
         private string ExtendCode()
         {
-            var page = $"/{Model.Project.PageRoot}/{Model.PagePath('/')}/index.htm".CheckUrlPath();
+            var page = $"/{Model.Project.PageRoot}/{Model.GetPagePath('/')}/index.htm".CheckUrlPath();
 
             var baseClass = "ApiController";
             if (Model.Interfaces != null)
@@ -498,9 +498,8 @@ namespace {NameSpace}.WebApi
                 foreach (var pro in group.OrderBy(p => p.Index))
                 {
                     var field = pro.DataBaseField;
-                    if (!pro.NoStorage && field.KeepStorageScreen.HasFlag(StorageScreenType.Insert | StorageScreenType.Update))
-                        continue;
-                    if (!pro.NoStorage && pro.DataBaseField.IsIdentity)
+
+                    if (pro.DataBaseField.IsReadonly)
                     {
                         continue;
                     }
@@ -509,9 +508,9 @@ namespace {NameSpace}.WebApi
                     if (!pro.NoStorage)
                     {
                         if (field.KeepStorageScreen.HasFlag(StorageScreenType.Insert))
-                            code.Append(@"!convert.IsIsInsert && ");
+                            code.Append(@"convert.IsUpdata && ");
                         else if (field.KeepStorageScreen.HasFlag(StorageScreenType.Update))
-                            code.Append(@"!convert.IsIsInsert && ");
+                            code.Append(@"!convert.IsUpdata && ");
                     }
                     switch (pro.DataType)
                     {

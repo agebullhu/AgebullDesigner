@@ -55,7 +55,7 @@
             <Trigger Property="IsEnabled" Value="True">
                 <Setter Property="Foreground" TargetName="ctrIcon" Value="Black" />
             </Trigger>
-            <DataTrigger Binding="{Binding Command.IsBusy}" Value="True">
+            <!--DataTrigger Binding="{Binding Command.IsBusy}" Value="True">
                 <Setter Property="Visibility" TargetName="ctrIcon" Value="Collapsed" />
                 <Setter Property="Visibility" TargetName="ctrBusy" Value="Visible" />
                 <DataTrigger.EnterActions>
@@ -84,7 +84,7 @@
                 <DataTrigger.ExitActions>
                     <StopStoryboard BeginStoryboardName="_beginStoryboard1" />
                 </DataTrigger.ExitActions>
-            </DataTrigger>
+            </DataTrigger-->
             <DataTrigger Binding="{Binding Command.IsBusy}" Value="False">
                 <Setter Property="Visibility" TargetName="ctrIcon" Value="Visible" />
                 <Setter Property="Visibility" TargetName="ctrBusy" Value="Collapsed" />
@@ -309,7 +309,7 @@
                         <Trigger Property="IsEnabled" Value="True">
                             <Setter Property="Foreground" TargetName="ctrIcon" Value="Black" />
                         </Trigger>
-                        <DataTrigger Binding="{Binding Command.IsBusy}" Value="True">
+                        <!--DataTrigger Binding="{Binding Command.IsBusy}" Value="True">
                             <Setter Property="Visibility" TargetName="ctrIcon" Value="Collapsed" />
                             <Setter Property="Visibility" TargetName="ctrBusy" Value="Visible" />
                             <DataTrigger.EnterActions>
@@ -350,7 +350,7 @@
                             <DataTrigger.ExitActions>
                                 <StopStoryboard BeginStoryboardName="_beginStoryboard1" />
                             </DataTrigger.ExitActions>
-                        </DataTrigger>
+                        </DataTrigger-->
                         <DataTrigger Binding="{Binding Command.IsBusy}"
                                          Value="False">
                             <Setter Property="Visibility"
@@ -435,7 +435,7 @@
                         <Trigger Property="IsEnabled" Value="True">
                             <Setter Property="Foreground" TargetName="ctrIcon" Value="Black" />
                         </Trigger>
-                        <DataTrigger Binding="{Binding Command.IsBusy}"
+                        <!--DataTrigger Binding="{Binding Command.IsBusy}"
                                          Value="True">
                             <Setter Property="Visibility"
                                         TargetName="ctrIcon"
@@ -481,7 +481,7 @@
                             <DataTrigger.ExitActions>
                                 <StopStoryboard BeginStoryboardName="_beginStoryboard1" />
                             </DataTrigger.ExitActions>
-                        </DataTrigger>
+                        </DataTrigger!-->
                         <DataTrigger Binding="{Binding Command.IsBusy}"
                                          Value="False">
                             <Setter Property="Visibility"

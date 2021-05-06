@@ -346,7 +346,7 @@ namespace {NameSpace}
 
         private string ModelDeleteCode()
         {
-            if (!(Model is ModelConfig model))
+            if (Model is not ModelConfig model)
                 return null;
             StringBuilder code = new();
             code.Append(@"

@@ -192,7 +192,7 @@ namespace Agebull.EntityModel.Config
                 if (_redisKey == value)
                     return;
                 BeforePropertyChange(nameof(RedisKey), _redisKey, value);
-                _redisKey = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _redisKey = value.SafeTrim();
                 OnPropertyChanged(nameof(RedisKey));
             }
         }
@@ -224,7 +224,7 @@ namespace Agebull.EntityModel.Config
                 if (_entityName == value)
                     return;
                 BeforePropertyChange(nameof(EntityName), _entityName, value);
-                _entityName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _entityName = value.SafeTrim();
                 OnPropertyChanged(nameof(EntityName));
             }
         }
@@ -250,7 +250,7 @@ namespace Agebull.EntityModel.Config
                 if (_referenceType == value)
                     return;
                 BeforePropertyChange(nameof(ReferenceType), _referenceType, value);
-                _referenceType = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _referenceType = value.SafeTrim();
                 OnPropertyChanged(nameof(ReferenceType));
             }
         }
@@ -277,7 +277,7 @@ namespace Agebull.EntityModel.Config
                 if (_modelInclude == value)
                     return;
                 BeforePropertyChange(nameof(ModelInclude), _modelInclude, value);
-                _modelInclude = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _modelInclude = value.SafeTrim();
                 OnPropertyChanged(nameof(ModelInclude));
             }
         }
@@ -304,7 +304,7 @@ namespace Agebull.EntityModel.Config
                 if (_modelBase == value)
                     return;
                 BeforePropertyChange(nameof(ModelBase), _modelBase, value);
-                _modelBase = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _modelBase = value.SafeTrim();
                 OnPropertyChanged(nameof(ModelBase));
             }
         }
@@ -370,7 +370,7 @@ namespace Agebull.EntityModel.Config
                 if (_interfaces == value)
                     return;
                 BeforePropertyChange(nameof(Interfaces), _interfaces, value);
-                _interfaces = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _interfaces = value.SafeTrim();
                 OnPropertyChanged(nameof(Interfaces));
             }
         }

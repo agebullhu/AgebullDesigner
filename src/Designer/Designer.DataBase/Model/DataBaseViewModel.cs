@@ -26,7 +26,6 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
 
     internal class DataBaseModel : EntityExtendModel<DataTableConfig, DataBaseFieldConfig>
     {
-
         /// <summary>
         /// ³õÊ¼»¯
         /// </summary>
@@ -34,7 +33,6 @@ namespace Agebull.Common.Config.Designer.DataBase.Mysql
         {
             base.DoInitialize();
             Extend = Entity?.DataTable;
-
         }
         #region ²Ù×÷ÃüÁî
 

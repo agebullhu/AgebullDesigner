@@ -188,7 +188,7 @@ namespace Agebull.EntityModel.Config
                 if (_jsonName == value)
                     return;
                 BeforePropertyChange(nameof(JsonName), _jsonName, value);
-                _jsonName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _jsonName = value.SafeTrim();
                 OnPropertyChanged(nameof(JsonName));
             }
         }
@@ -215,7 +215,7 @@ namespace Agebull.EntityModel.Config
                 if (_dataType == value)
                     return;
                 BeforePropertyChange(nameof(DataType), _dataType, value);
-                _dataType = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _dataType = value.SafeTrim();
                 OnPropertyChanged(nameof(DataType));
             }
         }
@@ -242,7 +242,7 @@ namespace Agebull.EntityModel.Config
                 if (string.Equals(_csType, value, StringComparison.OrdinalIgnoreCase))
                     return;
                 BeforePropertyChange(nameof(CsType), _csType, value);
-                _csType = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _csType = value.SafeTrim();
                 OnPropertyChanged(nameof(CsType));
             }
         }
@@ -274,7 +274,7 @@ namespace Agebull.EntityModel.Config
                 if (_initialization == value)
                     return;
                 BeforePropertyChange(nameof(Initialization), _initialization, value);
-                _initialization = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _initialization = value.SafeTrim();
                 OnPropertyChanged(nameof(Initialization));
             }
         }
@@ -304,7 +304,7 @@ namespace Agebull.EntityModel.Config
                 if (_cppType == value)
                     return;
                 BeforePropertyChange(nameof(CppType), _cppType, value);
-                _cppType = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _cppType = value.SafeTrim();
                 OnPropertyChanged(nameof(CppType));
             }
         }
@@ -333,7 +333,7 @@ namespace Agebull.EntityModel.Config
                 if (value == Name)
                     value = null;
                 BeforePropertyChange(nameof(CppName), _cppName, value);
-                _cppName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _cppName = value.SafeTrim();
                 OnPropertyChanged(nameof(CppName));
             }
         }
@@ -360,7 +360,7 @@ namespace Agebull.EntityModel.Config
                 if (_cppLastType == value)
                     return;
                 BeforePropertyChange(nameof(CppLastType), _cppLastType, value);
-                _cppLastType = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _cppLastType = value.SafeTrim();
                 OnPropertyChanged(nameof(CppLastType));
             }
         }
@@ -418,7 +418,7 @@ namespace Agebull.EntityModel.Config
                 if (_computeGetCode == value)
                     return;
                 BeforePropertyChange(nameof(ComputeGetCode), _computeGetCode, value);
-                _computeGetCode = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _computeGetCode = value.SafeTrim();
                 OnPropertyChanged(nameof(ComputeGetCode));
             }
         }
@@ -445,7 +445,7 @@ namespace Agebull.EntityModel.Config
                 if (_computeSetCode == value)
                     return;
                 BeforePropertyChange(nameof(ComputeSetCode), _computeSetCode, value);
-                _computeSetCode = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _computeSetCode = value.SafeTrim();
                 OnPropertyChanged(nameof(ComputeSetCode));
             }
         }
@@ -533,7 +533,7 @@ namespace Agebull.EntityModel.Config
                 if (_apiArgumentName == value)
                     return;
                 BeforePropertyChange(nameof(ApiArgumentName), _apiArgumentName, value);
-                _apiArgumentName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _apiArgumentName = value.SafeTrim();
                 OnPropertyChanged(nameof(ApiArgumentName));
             }
         }
@@ -583,7 +583,7 @@ namespace Agebull.EntityModel.Config
                 if (_helloCode == value)
                     return;
                 BeforePropertyChange(nameof(HelloCode), _helloCode, value);
-                _helloCode = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _helloCode = value.SafeTrim();
                 OnPropertyChanged(nameof(HelloCode));
             }
         }
@@ -618,7 +618,7 @@ namespace Agebull.EntityModel.Config
                 if (_group == value)
                     return;
                 BeforePropertyChange(nameof(Group), _group, value);
-                _group = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _group = value.SafeTrim();
                 OnPropertyChanged(nameof(Group));
             }
         }

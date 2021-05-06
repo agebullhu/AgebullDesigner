@@ -19,12 +19,16 @@
   <ItemGroup>
     <Compile Remove="Model\**" />
     <Compile Remove="Remove\**" />
+    <Compile Remove="Repair\**" />
     <EmbeddedResource Remove="Model\**" />
     <EmbeddedResource Remove="Remove\**" />
+    <EmbeddedResource Remove="Repair\**" />
     <None Remove="Model\**" />
     <None Remove="Remove\**" />
+    <None Remove="Repair\**" />
     <Page Remove="Model\**" />
     <Page Remove="Remove\**" />
+    <Page Remove="Repair\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,7 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.705.50" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.818.41" />
     <PackageReference Include="System.ComponentModel.Composition" Version="5.0.0" />
   </ItemGroup>
 

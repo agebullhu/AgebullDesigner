@@ -674,28 +674,10 @@ namespace Agebull.EntityModel.Config.V2021
         /// </summary>/// <remarks>
         /// 指数据只可读,无法写入的场景,如此字段为汇总字段
         /// </remarks>
-        [DataMember, JsonProperty("isReadonly", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        internal bool _isReadonly;
-
-        /// <summary>
-        /// 是否只读
-        /// </summary>/// <remarks>
-        /// 指数据只可读,无法写入的场景,如此字段为汇总字段
-        /// </remarks>
         [JsonIgnore]
         [DisplayName(@"是否只读"), Description(@"指数据只可读,无法写入的场景,如此字段为汇总字段")]
-        public bool IsReadonly
-        {
-            get => _isReadonly;
-            set
-            {
-                if (_isReadonly == value)
-                    return;
-                BeforePropertyChange(nameof(IsReadonly), _isReadonly, value);
-                _isReadonly = value;
-                OnPropertyChanged(nameof(IsReadonly));
-            }
-        }
+        public bool IsReadonly => !CanInsert && !CanUpdate || IsIdentity;
+
         #endregion 字段
 
         #region 扩展
@@ -829,7 +811,6 @@ namespace Agebull.EntityModel.Config.V2021
             IsLinkKey = dest.IsLinkKey;
             IsLinkCaption = dest.IsLinkCaption;
             LinkField = dest.LinkField;
-            IsReadonly = dest.IsReadonly;
         }
 
 
@@ -868,10 +849,10 @@ namespace Agebull.EntityModel.Config.V2021
             IsParent = dest._isParent;
             IsLinkKey = dest._isLinkKey;
             IsLinkCaption = dest._isLinkCaption;
-
+            
             NoStorage = DbFieldName.IsMissing();
             IsLinkField = dest.IsParent || dest._isLinkKey || dest._isLinkCaption || LinkField.IsPresent();
-            IsReadonly = IsLinkField;
+
         }
 
         /// <summary>

@@ -395,7 +395,7 @@ namespace Agebull.EntityModel
                     Source = null;
                     return;
                 }
-                if (!(value.Body is MemberExpression mb))
+                if (value.Body is not MemberExpression mb)
                 {
                     _soruceItemsName = null;
                     GetSoruceItems = null;

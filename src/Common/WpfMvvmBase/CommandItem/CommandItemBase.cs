@@ -150,7 +150,7 @@ namespace Agebull.Common.Mvvm
 
         protected void OnCommandPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (!(sender is IStatusCommand cmd))
+            if (sender is not IStatusCommand cmd)
                 return;
             switch (e.PropertyName)
             {

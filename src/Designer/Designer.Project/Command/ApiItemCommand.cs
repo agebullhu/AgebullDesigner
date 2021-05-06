@@ -43,7 +43,7 @@ namespace Agebull.EntityModel.Designer
 
         public void AddResult(object arg)
         {
-            if (!(arg is ApiItem cls))
+            if (arg is not ApiItem cls)
             {
                 MessageBox.Show("返回值已存在");
                 return;
@@ -71,7 +71,7 @@ namespace Agebull.EntityModel.Designer
 
         public void AddArgument(object arg)
         {
-            if (!(arg is ApiItem cls))
+            if (arg is not ApiItem cls)
             {
                 MessageBox.Show("参数已存在");
                 return;

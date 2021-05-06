@@ -13,5 +13,6 @@ namespace Agebull.Common.Mvvm
         /// </summary>
         /// <returns>ÃüÁî¶ÔÏó</returns>
         CommandItemBase ToCommand(string key, object arg, Func<object, IEnumerator> enumerator);
+
     }
 }

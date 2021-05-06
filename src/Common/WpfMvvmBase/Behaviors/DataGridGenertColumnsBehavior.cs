@@ -36,7 +36,7 @@ namespace Agebull.Common.Mvvm
 
         private void AssociatedObject_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
-            if (!(e.PropertyDescriptor is MemberDescriptor descriptor))
+            if (e.PropertyDescriptor is not MemberDescriptor descriptor)
                 return;
             if (!descriptor.IsBrowsable)
             {

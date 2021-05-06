@@ -41,7 +41,7 @@ namespace Agebull.EntityModel.Config
                 if (string.IsNullOrWhiteSpace(key))
                     return;
                 var mv = Items.FirstOrDefault(p => p.Name == key);
-                value = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                value = value.SafeTrim();
                 if (mv == null)
                 {
                     Items.Add(new ConfigItem { Name = key, Value = value });

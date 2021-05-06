@@ -8,6 +8,7 @@
 *****************************************************/
 
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -328,7 +329,7 @@ namespace Agebull.EntityModel.Config
                 if (_rootPath == value)
                     return;
                 BeforePropertyChange(nameof(RootPath), _rootPath, value);
-                _rootPath = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _rootPath = value.SafeTrim();
                 OnPropertyChanged(nameof(RootPath));
                 OnPropertyChanged(nameof(AutoPagePath));
             }
@@ -353,7 +354,7 @@ namespace Agebull.EntityModel.Config
                 if (_pagePath == value)
                     return;
                 BeforePropertyChange(nameof(PagePath), _pagePath, value);
-                _pagePath = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _pagePath = value.SafeTrim();
                 OnPropertyChanged(nameof(PagePath));
             }
         }
@@ -439,7 +440,7 @@ namespace Agebull.EntityModel.Config
                 if (_nameSpace == value)
                     return;
                 BeforePropertyChange(nameof(NameSpace), _nameSpace, value);
-                _nameSpace = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _nameSpace = value.SafeTrim();
                 OnPropertyChanged(nameof(NameSpace));
             }
         }

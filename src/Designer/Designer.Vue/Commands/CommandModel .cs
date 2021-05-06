@@ -10,6 +10,7 @@
 
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Text;
@@ -32,6 +33,15 @@ namespace Agebull.EntityModel.Designer
             {
                 Action = PageName,
                 Caption = "页面名称小驼峰",
+                Catalog = "用户界面",
+                Editor = "VUE",
+                IconName = "格式",
+                SoruceView = "entity"
+            });
+            commands.Add(new CommandItemBuilder<IEntityConfig>
+            {
+                Action = ComponentName,
+                Caption = "标准化组件名称",
                 Catalog = "用户界面",
                 Editor = "VUE",
                 IconName = "格式",
@@ -72,11 +82,15 @@ namespace Agebull.EntityModel.Designer
             entity.PageFolder = entity.Name.ToLWord();
         }
 
+        public void ComponentName(IEntityConfig entity)
+        {
+            entity.ComponentName = $"{entity.Project.PageFolder ?? entity.Project.Abbreviation}-{entity.ApiName ?? entity.Abbreviation}";
+        }
+
 
         public void ServiceName(IEntityConfig entity)
         {
             entity.ApiName = entity.Name.ToName('-');
         }
-
     }
 }

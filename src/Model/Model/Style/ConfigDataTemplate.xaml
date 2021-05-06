@@ -124,13 +124,17 @@
                     </WrapPanel>
                     <WrapPanel Orientation="Horizontal" Margin="0">
                         <StackPanel Style="{StaticResource FieldPanel}">
-                            <Label Content="接口名称" />
-                            <TextBox Text="{Binding ApiName,Mode=TwoWay}" Tag="{Binding Abbreviation,Mode=OneWay}" />
-                        </StackPanel>
-                        <StackPanel Style="{StaticResource FieldPanel}">
-                            <Label Content="服务名称" />
+                            <Label Content="服务接口名称" />
                             <TextBox Text="{Binding ServiceName,Mode=TwoWay}" Tag="{Binding Abbreviation,Mode=OneWay}" />
                         </StackPanel>
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="接口地址前缀" />
+                            <TextBox Text="{Binding ApiPrefix,Mode=TwoWay}" Tag="api" />
+                        </StackPanel>
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="测试地址" />
+                            <TextBox Text="{Binding TestAddress,Mode=TwoWay}"/>
+                        </StackPanel> 
                     </WrapPanel>
                     <StackPanel Style="{StaticResource AdvFieldPanel}">
                         <Label Content="说明" />
@@ -252,6 +256,10 @@
                             <Label Content="名称" />
                             <TextBox IsReadOnly="{Binding Solution.GodMode,Converter={StaticResource BoolReversalConverter}}" Text="{Binding Name,Mode=TwoWay}" />
                         </StackPanel>
+                        <StackPanel Style="{StaticResource FieldPanel}">
+                            <Label Content="图标" />
+                            <TextBox Text="{Binding Icon,Mode=TwoWay}" />
+                        </StackPanel> 
                         <StackPanel Style="{StaticResource FieldPanel}">
                             <Label Content="实体名称" />
                             <TextBox Text="{Binding EntityName,Mode=TwoWay}" Tag="{Binding Name,Mode=OneWay}" />

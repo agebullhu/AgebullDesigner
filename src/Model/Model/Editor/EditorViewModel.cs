@@ -13,6 +13,7 @@ namespace Agebull.EntityModel.Designer
     {
 
     }
+
     /// <summary>
     /// 扩展ViewModel基类
     /// </summary>

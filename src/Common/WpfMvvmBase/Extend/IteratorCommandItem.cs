@@ -67,7 +67,7 @@ namespace Agebull.EntityModel.Designer
         {
             if (SignleSoruce)
             {
-                if (!(para is TTargetType config))
+                if (para is not TTargetType config)
                 {
                     ShowMessageBox($"参数为空或不是目标类型{typeof(TTargetType)}");
                     return false;

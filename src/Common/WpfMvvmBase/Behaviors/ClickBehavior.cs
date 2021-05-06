@@ -82,7 +82,7 @@ namespace Agebull.Common.Mvvm
 
         private static void OnCommandPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (!(d is ClickBehavior eb) || Equals(e.OldValue, e.NewValue))
+            if (d is not ClickBehavior eb || Equals(e.OldValue, e.NewValue))
             {
                 return;
             }

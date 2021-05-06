@@ -11,7 +11,7 @@
         protected override void CopyFrom(SimpleConfig dest)
         {
             base.CopyFrom(dest);
-            if (!(dest is ConfigBase cfg))
+            if (dest is not ConfigBase cfg)
                 return;
             Option.Copy(cfg.Option, false);//配置
         }
@@ -508,7 +508,8 @@
             Models = dest.Models;
             Entities = dest.Entities;
             ApiItems = dest.ApiItems;
-            ApiName = dest.ApiName;
+            ApiPrefix = dest.ApiPrefix;
+            ServiceName = dest.ServiceName;
             Enums = dest.Enums;
             ApiFolder = dest.ApiFolder;
             ModelFolder = dest.ModelFolder;

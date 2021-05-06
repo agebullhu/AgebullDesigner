@@ -134,7 +134,7 @@ namespace Agebull.EntityModel.Config
                 if (_classify == value)
                     return;
                 BeforePropertyChange(nameof(Classify), _classify, value);
-                _classify = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _classify = value.SafeTrim();
                 OnPropertyChanged(nameof(Classify));
             }
         }
@@ -345,7 +345,7 @@ namespace Agebull.EntityModel.Config
                 if (value == Name)
                     value = null;
                 BeforePropertyChange(nameof(ApiName), _apiName, value);
-                _apiName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _apiName = value.SafeTrim();
                 OnPropertyChanged(nameof(ApiName));
             }
         }
@@ -396,7 +396,7 @@ namespace Agebull.EntityModel.Config
                 if (_pageFolder == value)
                     return;
                 BeforePropertyChange(nameof(PageFolder), _pageFolder, value);
-                _pageFolder = string.IsNullOrWhiteSpace(value) || value == Name ? null : value.Trim();
+                _pageFolder = value.SafeTrim();
                 OnPropertyChanged(nameof(PageFolder));
                 OnPropertyChanged(nameof(PagePath));
             }
@@ -410,7 +410,7 @@ namespace Agebull.EntityModel.Config
         public string PagePath => $"{Project.PagePath}\\{PageFolder}";
 
         /// <summary>
-        /// 页面文件夹名称
+        /// 页面组件名称
         /// </summary>
         [DataMember, JsonProperty("componentName", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
         internal string _componentName;
@@ -431,8 +431,32 @@ namespace Agebull.EntityModel.Config
                 if (_componentName == value)
                     return;
                 BeforePropertyChange(nameof(ComponentName), _componentName, value);
-                _componentName = string.IsNullOrWhiteSpace(value) || value == Name ? null : value.Trim();
+                _componentName = value.SafeTrim();
                 OnPropertyChanged(nameof(ComponentName));
+            }
+        }
+
+        /// <summary>
+        /// 图标名称
+        /// </summary>
+        [DataMember, JsonProperty("icon", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        internal string icon;
+
+        /// <summary>
+        /// 图标名称
+        /// </summary>
+        [JsonIgnore]
+        [Category(@"用户界面"), DisplayName(@"图标名称"), Description("图标名称")]
+        public string Icon
+        {
+            get => icon;
+            set
+            {
+                if (icon == value)
+                    return;
+                BeforePropertyChange(nameof(Icon), icon, value);
+                icon =value.SafeTrim();
+                OnPropertyChanged(nameof(Icon));
             }
         }
 
@@ -653,7 +677,7 @@ namespace Agebull.EntityModel.Config
                 if (_cppName == value)
                     return;
                 BeforePropertyChange(nameof(CppName), _cppName, value);
-                _cppName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _cppName = value.SafeTrim();
                 OnPropertyChanged(nameof(CppName));
             }
         }

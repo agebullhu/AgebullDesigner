@@ -54,7 +54,7 @@ namespace Agebull.Common.Mvvm
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null || !(value is string str) || str.IsMissing())
+            if (value == null || value is not string str || str.IsMissing())
             {
                 return Visibility.Collapsed;
             }

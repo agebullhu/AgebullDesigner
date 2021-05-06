@@ -209,7 +209,7 @@ namespace Agebull.EntityModel.Designer
 
         public static void LoadFieldInfos(HSSFWorkbook workbook, EntityConfig entity)
         {
-            if (!(workbook.GetSheet(entity.Name) is HSSFSheet sheet))
+            if (workbook.GetSheet(entity.Name) is not HSSFSheet sheet)
                 return;
             for (int idx = 0; idx < 255; idx++)
             {

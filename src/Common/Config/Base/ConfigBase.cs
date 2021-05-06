@@ -85,7 +85,7 @@ namespace Agebull.EntityModel.Config
                 if (_alias == value)
                     return;
                 BeforePropertyChange(nameof(Alias), _alias, value);
-                _alias = string.IsNullOrWhiteSpace(value) || value == Name ? null : value.Trim();
+                _alias = value.SafeTrim();
                 OnPropertyChanged(nameof(Alias));
             }
         }

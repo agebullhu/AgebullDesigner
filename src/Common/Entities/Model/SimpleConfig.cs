@@ -131,7 +131,7 @@ namespace Agebull.EntityModel.Config
                     return;
                 }
                 BeforePropertyChange(nameof(Description), _description, now);
-                _remark = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _remark = value.SafeTrim();
                 RaisePropertyChanged(nameof(Description));
             }
         }

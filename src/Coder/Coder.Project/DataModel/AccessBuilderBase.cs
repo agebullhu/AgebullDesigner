@@ -381,7 +381,17 @@ namespace {Project.NameSpace}.DataAccess
                 foreach (var name in Names(property))
                     code.Append($@"
             case ""{name}"":");
-
+                if(property.CustomType.IsMissing())
+                {
+                    code.Append($@"
+                entity.{property.Name} = value == null || value == DBNull.Value 
+                    ? default 
+                    : value is {property.CsType} t{property.Name} 
+                        ? t{property.Name} 
+                        : Convert.To{property.DataType}(value);
+                    return;");
+                    continue;
+                }
                 var type = property.CustomType.IsMissing() ? property.CsType : property.CustomType;
 
                 code.Append($@"
@@ -444,6 +454,7 @@ namespace {Project.NameSpace}.DataAccess
             names.Add(property.DataBaseField?.DbFieldName);
             return names.Where(p => p.IsPresent()).Select(p => p.ToLower()).Distinct().ToArray();
         }
+
         #endregion
     }
 }

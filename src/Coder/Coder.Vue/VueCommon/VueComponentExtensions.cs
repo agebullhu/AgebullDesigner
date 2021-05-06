@@ -2,11 +2,57 @@ using Agebull.EntityModel.Config;
 using System;
 using System.Text;
 
-namespace Agebull.EntityModel.RobotCoder.VueComponents
+namespace Agebull.EntityModel.RobotCoder
 {
 
-    public static class VueComponentExtensions
+    public static class VueExtensions
     {
+        #region ¸ñÊ½»¯Æ÷
+
+        public static string Formater(this IPropertyConfig property)
+        {
+            var field = property.DataBaseField;
+            if (property.DataFormater != null)
+            {
+                return $" | {property.DataFormater}";
+            }
+            if (property.EnumConfig != null)
+            {
+                return $" | {property.EnumConfig.Name.ToLWord()}Formater";
+            }
+            else if (field.IsLinkKey)
+            {
+                return $" | {field.LinkTable.ToLWord()}Formater(data_self)";
+            }
+            else if (property.CsType == nameof(DateTime))
+            {
+                return property.IsTime ? "| formatTime" : "| formatDate";
+            }
+            else if (property.CsType == "bool")
+            {
+                return " | boolFormater";
+            }
+            else if (property.IsMoney)
+            {
+                return " | formatMoney";
+            }
+            else if (property.CsType == "decimal")
+            {
+                return " | thousandsNumber";
+            }
+            else if (property.CsType.IsNumberType())
+            {
+                return " | formatNumber0";
+            }
+            return null;
+        }
+
+        public static string FieldText(this IPropertyConfig property,string head)
+        {
+            return $"{property.Prefix}{{{{{head}.{property.JsonName}{property.Formater()}}}}}{property.Suffix}";
+        }
+        #endregion
+
         #region Helper
 
         public static string HtmlAttribute(this string attr, string value)
@@ -72,7 +118,7 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
         static void ReadonlyField(StringBuilder code, string model, IPropertyConfig property)
         {
             code.Append($@"
-        <span>{property.FieldText(model)}</span>");
+        <span>{property.Prefix}{{{{{model}.{property.JsonName}{property.Formater()}}}}}{property.Suffix}</span>");
         }
         static void EditField(StringBuilder code, string model, bool isEdit, IPropertyConfig property, string description)
         {
@@ -156,16 +202,5 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
             }
         }
         #endregion
-
-
-        public static string HtmlMenu(IEntityConfig entity)
-        {
-            return $@",{{
-        path: '{entity.PageFolder}',
-        title: '{entity.Caption}',
-        icon: '{entity.Icon}',
-        component:'{entity.ComponentName}'
-    }}";
-        }
     }
 }

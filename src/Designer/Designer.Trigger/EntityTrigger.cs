@@ -25,7 +25,7 @@ namespace Agebull.EntityModel.Designer
 
         public override void OnLoad()
         {
-            CheckDbFields();
+            //CheckDbFields();
             foreach (var field in TargetConfig.IEntity.Properties)
             {
                 GlobalTrigger.OnLoad(field);

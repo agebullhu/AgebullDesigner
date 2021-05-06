@@ -277,7 +277,7 @@ namespace Agebull.EntityModel.Designer
         }
         public void SplitTable(IEntityConfig entity)
         {
-            if (!(Context.SelectEntity is IEntityConfig oldTable) ||
+            if (Context.SelectEntity is not IEntityConfig oldTable ||
                 Context.SelectColumns == null || Context.SelectColumns.Count == 0)
             {
                 return;

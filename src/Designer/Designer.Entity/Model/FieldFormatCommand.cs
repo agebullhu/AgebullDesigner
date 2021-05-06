@@ -562,7 +562,7 @@ Memo,s,±¸×¢";
                 var def = words.FirstOrDefault(p => p.IndexOf("default", StringComparison.OrdinalIgnoreCase) >= 0);
                 var defs = def?.Split(new[] { '(', ')' }, StringSplitOptions.RemoveEmptyEntries);
                 if (defs?.Length > 1) code.Append($"-{defs[1]}");
-                code.Append(",");
+                code.Append(',');
                 var desc = words.FirstOrDefault(p => p.IndexOf("--", StringComparison.OrdinalIgnoreCase) >= 0);
                 code.Append(desc?.Trim('-') ?? words[0]);
                 code.AppendLine();
@@ -630,7 +630,7 @@ Memo,s,±¸×¢";
                 {
                     if (string.Equals(words[i], "COMMENT", StringComparison.OrdinalIgnoreCase) && i + 1 < words.Length)
                     {
-                        code.Append(",");
+                        code.Append(',');
                         code.Append(words[i + 1].Trim('\''));
                     }
                 }

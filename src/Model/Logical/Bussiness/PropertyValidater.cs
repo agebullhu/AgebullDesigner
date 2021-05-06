@@ -88,11 +88,7 @@ namespace Agebull.EntityModel.Config
                 Message.Track = "====>字段存储类型不正确" + field.FieldType;
             }
 
-            if (field.IsLinkKey)
-                field.DbNullable = false;
-            if (field.IsReadonly)
-                field.DbNullable = true;
-            if (field.IsPrimaryKey)
+            if (field.IsLinkKey || field.IsPrimaryKey)
                 field.DbNullable = false;
             //if (Property.CreateIndex && Property.Nullable)
             //{

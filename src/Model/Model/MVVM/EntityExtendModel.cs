@@ -28,7 +28,6 @@ namespace Agebull.EntityModel.Designer
         {
             base.DoInitialize();
             iEntity = DesignModel as IEntityConfig;
-
         }
 
         IEntityConfig iEntity;

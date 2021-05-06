@@ -8,6 +8,7 @@
 *****************************************************/
 
 using Newtonsoft.Json;
+using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Text;
@@ -55,7 +56,7 @@ namespace Agebull.EntityModel.Config
                 if (_button == value)
                     return;
                 BeforePropertyChange(nameof(Button), _button, value);
-                _button = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _button = value.SafeTrim();
                 OnPropertyChanged(nameof(Button));
             }
         }
@@ -82,7 +83,7 @@ namespace Agebull.EntityModel.Config
                 if (_icon == value)
                     return;
                 BeforePropertyChange(nameof(Icon), _icon, value);
-                _icon = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _icon = value.SafeTrim();
                 OnPropertyChanged(nameof(Icon));
             }
         }
@@ -189,7 +190,7 @@ namespace Agebull.EntityModel.Config
                 if (jsMethod == value)
                     return;
                 BeforePropertyChange(nameof(JsMethod), jsMethod, value);
-                jsMethod = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                jsMethod = value.SafeTrim();
                 OnPropertyChanged(nameof(JsMethod));
             }
         }
@@ -215,7 +216,7 @@ namespace Agebull.EntityModel.Config
                 if (api == value)
                     return;
                 BeforePropertyChange(nameof(Api), api, value);
-                api = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                api = value.SafeTrim();
                 OnPropertyChanged(nameof(Api));
             }
         }
@@ -240,7 +241,7 @@ namespace Agebull.EntityModel.Config
                 if (serviceCommand == value)
                     return;
                 BeforePropertyChange(nameof(ServiceCommand), serviceCommand, value);
-                serviceCommand = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                serviceCommand = value.SafeTrim();
                 OnPropertyChanged(nameof(ServiceCommand));
             }
         }

@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -119,7 +120,7 @@ namespace Agebull.EntityModel.Config.V2021
                     return;
                 BeforePropertyChange(nameof(PrimaryTable), _primaryTable, value);
                 _primary = null; _primaryField = null;
-                _primaryTable = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _primaryTable = value.SafeTrim();
                 OnPropertyChanged(nameof(PrimaryTable));
             }
         }
@@ -147,7 +148,7 @@ namespace Agebull.EntityModel.Config.V2021
                     return;
                 BeforePropertyChange(nameof(PrimaryKey), _primaryKey, value);
                 _primaryField = null;
-                _primaryKey = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _primaryKey = value.SafeTrim();
                 OnPropertyChanged(nameof(PrimaryKey));
             }
         }
@@ -175,7 +176,7 @@ namespace Agebull.EntityModel.Config.V2021
                     return;
                 BeforePropertyChange(nameof(ForeignTable), _foreignTable, value);
                 _foreign = null; _foreignField = null;
-                _foreignTable = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _foreignTable = value.SafeTrim();
                 OnPropertyChanged(nameof(ForeignTable));
             }
         }
@@ -203,7 +204,7 @@ namespace Agebull.EntityModel.Config.V2021
                     return;
                 BeforePropertyChange(nameof(ForeignKey), _foreignKey, value);
                 _foreignField = null;
-                _foreignKey = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _foreignKey = value.SafeTrim();
                 OnPropertyChanged(nameof(ForeignKey));
             }
         }
@@ -230,7 +231,7 @@ namespace Agebull.EntityModel.Config.V2021
                 if (_Condition == value)
                     return;
                 BeforePropertyChange(nameof(Condition), _Condition, value);
-                _Condition = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+                _Condition = value.SafeTrim();
                 OnPropertyChanged(nameof(Condition));
             }
         }

@@ -83,7 +83,7 @@ namespace Agebull.EntityModel.Designer
         {
             if (Context.CopyColumns == null || Context.CopyColumns.Count == 0 ||
                     Context.CopiedTable == null || Context.CopiedTable == Context.SelectEntity ||
-                    !(Context.SelectEntity is EntityConfig entity))
+                    Context.SelectEntity is not EntityConfig entity)
             {
                 Context.StateMessage = "没可粘贴的行";
                 return;
@@ -99,7 +99,7 @@ namespace Agebull.EntityModel.Designer
         }
         public void ClearColumns()
         {
-            if (!(Context.SelectEntity is EntityConfig entity) ||
+            if (Context.SelectEntity is not EntityConfig entity ||
                 MessageBox.Show("确认删除所有字段吗?", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
             {
                 return;
@@ -110,7 +110,7 @@ namespace Agebull.EntityModel.Designer
 
         public void DeleteColumns()
         {
-            if (!(Context.SelectEntity is EntityConfig entity) || Context.SelectColumns == null ||
+            if (Context.SelectEntity is not EntityConfig entity || Context.SelectColumns == null ||
                 MessageBox.Show("确认删除所选字段吗?", "对象编辑", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
             {
                 return;
@@ -151,7 +151,7 @@ namespace Agebull.EntityModel.Designer
                         }
                     }
                 }
-                var field = newProperty?.DataBaseField;
+                var newField = newProperty?.DataBaseField;
                 if (newProperty == null)
                 {
                     newProperty = new FieldConfig
@@ -165,8 +165,8 @@ namespace Agebull.EntityModel.Designer
                     newProperty.Entity = source;
                     Entity.Add(newProperty);
 
-                    field = newProperty.DataBaseField;
-                    field.CopyProperty(copyProperty);
+                    newField = newProperty.DataBaseField;
+                    newField.CopyProperty(copyProperty);
 
                     if (refe && !copyProperty.IsLinkField)
                     {
@@ -174,7 +174,7 @@ namespace Agebull.EntityModel.Designer
                         {
                             newProperty.Name = copyProperty.Entity.Name + "Id";
                             newProperty.Caption = copyProperty.Entity.Caption + "ID";
-                            field.DbFieldName = copyProperty.Name.ToLinkWordName("_", false) + "_id";
+                            newField.DbFieldName = copyProperty.Name.ToLinkWordName("_", false) + "_id";
                         }
                         else if (copyProperty.IsCaption)
                         {
@@ -183,7 +183,7 @@ namespace Agebull.EntityModel.Designer
                         }
                         newProperty.Option.IsLink = true;
                         newProperty.Option.ReferenceConfig = copyProperty;
-                        field.DbFieldName = DataBaseHelper.ToDbFieldName(newProperty);
+                        newField.DbFieldName = DataBaseHelper.ToDbFieldName(newProperty);
                         newProperty.JsonName = newProperty.Name.ToLWord();
                     }
                 }
@@ -191,6 +191,7 @@ namespace Agebull.EntityModel.Designer
                 {
                     if (copyProperty.IsLinkField)
                     {
+                        newProperty.IsReadonly = false;
                         newProperty.Option.IsLink = true;
                         newProperty.Option.ReferenceConfig = copyProperty.Option.ReferenceConfig;
                     }
@@ -198,25 +199,22 @@ namespace Agebull.EntityModel.Designer
                     {
                         newProperty.IsLinkField = true;
                         newProperty.Option.ReferenceConfig = copyProperty;
-                        field.LinkTable = source.Name;
-                        field.LinkField = copyProperty.Name;
-                        if (field.IsLinkKey || copyProperty.IsPrimaryKey)
+                        newField.LinkTable = source.Name;
+                        newField.LinkField = copyProperty.Name;
+                        if (newField.IsLinkKey || copyProperty.IsPrimaryKey)
                         {
-                            field.IsLinkKey = true;
-                            field.CanUpdate = false;
+                            newField.IsLinkKey = true;
+                            newField.CanUpdate = false;
                         }
                         else if (copyProperty.IsCaption)
                         {
-                            field.IsLinkCaption = true;
-                            field.IsReadonly = true;
+                            newField.IsLinkCaption = true;
+                            newField.KeepStorageScreen = StorageScreenType.Update;
                         }
                     }
                 }
                 newProperty.Entity = Entity;
                 newProperty.IsPrimaryKey = false;
-                newProperty.IsCaption = false;
-                if (field.IsLinkKey)
-                    newProperty.NoneApiArgument = true;
             }
         }
 

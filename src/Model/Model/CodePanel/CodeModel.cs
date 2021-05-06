@@ -158,7 +158,7 @@ namespace Agebull.EntityModel.Designer
 
         private void OnMomentSelectItemChanged(object sender, EventArgs e)
         {
-            if (!(sender is TreeItem<CoderDefine> value))
+            if (sender is not TreeItem<CoderDefine> value)
                 return;
             _codeType = value.Model.Lang;
             MomentCodeModel = value.Model.Func;

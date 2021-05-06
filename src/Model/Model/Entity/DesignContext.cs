@@ -1,6 +1,7 @@
 using Agebull.CodeRefactor.CodeRefactor;
 using Agebull.Common.Mvvm;
 using Agebull.EntityModel.Config;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -359,7 +360,11 @@ namespace Agebull.EntityModel.Designer
             SetSelect(cfg);
             RaisePropertyChanged(() => SelectTag);
             DataModelDesignModel.SaveUserScreen();
+
+            OnSelectChanged?.Invoke(this, EventArgs.Empty);
         }
+
+        public event EventHandler OnSelectChanged;
         public string SelectTag { get; set; }
 
         private FieldConfig _selectRelationColumn;

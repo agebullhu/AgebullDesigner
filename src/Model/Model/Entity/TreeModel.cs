@@ -218,7 +218,7 @@ namespace Agebull.EntityModel.Designer
 
         internal TreeItem CreateEntityTreeItem(object arg)
         {
-            if (!(arg is EntityConfig entity))
+            if (arg is not EntityConfig entity)
                 return new TreeItem(arg);
 
             foreach (var col in entity.Properties)
@@ -254,7 +254,7 @@ namespace Agebull.EntityModel.Designer
 
         private TreeItem CreateFieldTreeItem(object arg)
         {
-            if (!(arg is FieldConfig field))
+            if (arg is not FieldConfig field)
                 return new TreeItem(arg);
 
             return new ConfigTreeItem<FieldConfig>(field)
@@ -284,7 +284,7 @@ namespace Agebull.EntityModel.Designer
 
         internal TreeItem CreateModelTreeItem(object arg)
         {
-            if (!(arg is ModelConfig entity))
+            if (arg is not ModelConfig entity)
                 return new TreeItem(arg);
 
             foreach (var col in entity.Properties)
@@ -302,7 +302,7 @@ namespace Agebull.EntityModel.Designer
         }
         private TreeItem CreateCommandTreeItem(object arg)
         {
-            if (!(arg is UserCommandConfig cmd))
+            if (arg is not UserCommandConfig cmd)
                 return new TreeItem(arg);
 
             var colItem = new ConfigTreeItem<UserCommandConfig>(cmd)
@@ -319,7 +319,7 @@ namespace Agebull.EntityModel.Designer
 
         private TreeItem CreatePropertyTreeItem(object arg)
         {
-            if (!(arg is PropertyConfig property))
+            if (arg is not PropertyConfig property)
                 return new TreeItem(arg);
 
             return new ConfigTreeItem<PropertyConfig>(property)
@@ -421,7 +421,7 @@ namespace Agebull.EntityModel.Designer
 
         private TreeItem CreateEnumTreeItem(object arg)
         {
-            if (!(arg is EnumConfig enumConfig))
+            if (arg is not EnumConfig enumConfig)
                 return new TreeItem(arg);
 
             return new ConfigTreeItem<EnumConfig>(enumConfig)
@@ -434,7 +434,7 @@ namespace Agebull.EntityModel.Designer
         }
         private TreeItem CreateEnumItem(object arg)
         {
-            if (!(arg is EnumItem enumConfig))
+            if (arg is not EnumItem enumConfig)
                 return new TreeItem(arg);
 
             return new ConfigTreeItem<EnumItem>(enumConfig)
@@ -451,7 +451,7 @@ namespace Agebull.EntityModel.Designer
 
         public TreeItem CreateApiItemTreeItem(object arg)
         {
-            if (!(arg is ApiItem child))
+            if (arg is not ApiItem child)
                 return new TreeItem(arg);
 
             var item = new ConfigTreeItem<ApiItem>(child)

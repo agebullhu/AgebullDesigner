@@ -144,7 +144,7 @@ namespace Agebull.EntityModel.RobotCoder
                 }
                 else
                 {
-                    sql.Append(",");
+                    sql.Append(',');
                 }
                 sql.Append($@"
        `{property.DbFieldName}` = ?{property.Name}");
@@ -175,17 +175,12 @@ namespace Agebull.EntityModel.RobotCoder
                 if (!string.IsNullOrWhiteSpace(field.Property.CustomType))
                 {
                     code.Append($@"
-            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"", ({field.CsType})entity.{field.Name}));");
-                }
-                else if (field.CsType.Equals("bool", StringComparison.OrdinalIgnoreCase))
-                {
-                    code.Append($@"
-            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"", entity.{field.Name} ? (byte)1 : (byte)0));");
+            cmd.Parameters.Add(new MySqlParameter(nameof({Model.EntityName}.{field.Name}), ({field.CsType})entity.{field.Name}));");
                 }
                 else
                 {
                     code.Append($@"
-            cmd.Parameters.Add(new MySqlParameter(""{field.Name}"", entity.{field.Name}));");
+            cmd.Parameters.Add(entity.{field.Name}.ToDbParameter(nameof({Model.EntityName}.{field.Name})));");
                 }
             }
             code.Append(@"
@@ -248,7 +243,7 @@ namespace Agebull.EntityModel.RobotCoder
             }
             code.Append(@"
         }");
-            if (!(Model is ModelConfig model))
+            if (Model is not ModelConfig model)
             {
                 return code.ToString();
             }

@@ -48,7 +48,7 @@ namespace Agebull.EntityModel.Designer
                 MessageBox.Show("剪贴板为空");
                 return;
             }
-            if (!(arg is EntityClassify cls))
+            if (arg is not EntityClassify cls)
             {
                 MessageBox.Show("请选择一个项目或类目");
                 return;
@@ -74,7 +74,7 @@ namespace Agebull.EntityModel.Designer
 
         public void AddEntity(object arg)
         {
-            if (!(arg is EntityClassify cls))
+            if (arg is not EntityClassify cls)
             {
                 MessageBox.Show("请选择一个项目或类目");
                 return;

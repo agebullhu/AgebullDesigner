@@ -59,6 +59,14 @@ namespace Agebull.EntityModel.Config
         /// <summary>
         /// ¶Á
         /// </summary>
-        Read = 0x4
+        Read = 0x4,
+        /// <summary>
+        /// ±£´æ
+        /// </summary>
+        Save = Insert | Update,
+        /// <summary>
+        /// È«²¿
+        /// </summary>
+        All = Insert| Update | Read
     }
 }

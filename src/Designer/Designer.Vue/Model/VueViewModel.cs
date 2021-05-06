@@ -54,7 +54,7 @@ namespace Agebull.EntityModel.Designer
         static void CheckModel(IEntityConfig entity,bool repair)
         {
             entity.EnableUI = true;
-            var cls = entity.Project.Classifies.FirstOrDefault(p => p.Name == entity.Classify);
+            var cls = entity.Project.NoClassify ? null : entity.Project.Classifies.FirstOrDefault(p => p.Name == entity.Classify);
             if (repair || entity.ComponentName.IsMissing())
             {
                 if (cls != null)
@@ -70,11 +70,11 @@ namespace Agebull.EntityModel.Designer
             {
                 if (cls != null)
                 {
-                    entity.ApiName = $"{entity.Project.Abbreviation}\\{cls.Abbreviation}\\{entity.Abbreviation}";
+                    entity.ApiName = $"{cls.Abbreviation}/{entity.Abbreviation}";
                 }
                 else
                 {
-                    entity.ApiName = $"{entity.Project.Abbreviation}\\{entity.Abbreviation}";
+                    entity.ApiName = entity.Abbreviation;
                 }
             }
             if (repair || entity.PageFolder.IsMissing())

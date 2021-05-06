@@ -193,7 +193,7 @@ namespace Agebull.EntityModel.Config
             if (_extendRole == value)
                 return;
             BeforePropertyChange(nameof(ExtendRole), _extendRole, value);
-            _extendRole = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+            _extendRole = value.SafeTrim();
             OnPropertyChanged(nameof(ExtendRole));
         }
     }
@@ -220,7 +220,7 @@ namespace Agebull.EntityModel.Config
             if (_valueSeparate == value)
                 return;
             BeforePropertyChange(nameof(ValueSeparate), _valueSeparate, value);
-            _valueSeparate = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+            _valueSeparate = value.SafeTrim();
             OnPropertyChanged(nameof(ValueSeparate));
         }
     }
@@ -247,7 +247,7 @@ namespace Agebull.EntityModel.Config
             if (_arraySeparate == value)
                 return;
             BeforePropertyChange(nameof(ArraySeparate), _arraySeparate, value);
-            _arraySeparate = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+            _arraySeparate = value.SafeTrim();
             OnPropertyChanged(nameof(ArraySeparate));
         }
     }
@@ -378,7 +378,7 @@ namespace Agebull.EntityModel.Config
             if (_extendPropertyName == value)
                 return;
             BeforePropertyChange(nameof(ExtendPropertyName), _extendPropertyName, value);
-            _extendPropertyName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+            _extendPropertyName = value.SafeTrim();
             OnPropertyChanged(nameof(ExtendPropertyName));
         }
     }
@@ -405,7 +405,7 @@ namespace Agebull.EntityModel.Config
             if (_extendClassName == value)
                 return;
             BeforePropertyChange(nameof(ExtendClassName), _extendClassName, value);
-            _extendClassName = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+            _extendClassName = value.SafeTrim();
             OnPropertyChanged(nameof(ExtendClassName));
         }
     }

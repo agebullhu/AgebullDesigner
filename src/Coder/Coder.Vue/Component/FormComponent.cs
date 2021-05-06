@@ -21,12 +21,16 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
             {
                 var load = new StringBuilder();
 
+                var prefix = model.Project.ApiPrefix.IsMissing()
+                    ? model.Project.ServiceName
+                    : $"{model.Project.ApiPrefix}/{model.Project.ServiceName}";
+
                 foreach (var ch in model.DataTable.WhereLast(p => p.IsLinkKey && p.Property.UserSee))
                 {
                     var entity = GlobalConfig.Find(ch.LinkTable);
                     var name = ch.Name.ToLWord().ToPluralism();
                     load.Append($@"
-            this.ajax.load('{ch.Caption}','/{entity.Project.ApiName}/{entity.ApiName}/v1/edit/list',{{
+            this.ajax.load('{ch.Caption}','/{prefix}/{entity.ApiName}/v1/edit/list',{{
                 _size_ : 999
             }},data => that.form.{name} = data.rows);");
                 }
@@ -45,7 +49,7 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
                         }
                         var name = ch.Name.ToLWord().ToPluralism();
                         load.Append($@"
-            this.ajax.load('{ch.Caption}','/{mc.Project.ApiName}/{ch.ForeignEntity.ApiName}/v1/edit/list',{{
+            this.ajax.load('{ch.Caption}','/{prefix}/{ch.ForeignEntity.ApiName}/v1/edit/list',{{
                 {ch.ForeignField.JsonName}:row.id,
                 _size_ : 999
             }},data => that.form.{name} = data.rows);");

@@ -29,8 +29,8 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
         title: '{model.Caption}',
         stateData: { (model.Interfaces != null && model.Interfaces.IndexOf("IStateData") >= 0 ? "true" : "false")},
         auditData: { (model.Interfaces != null && model.Interfaces.IndexOf("IAuditData") >= 0 ? "true" : "false")},
-        enableList: true,
-        enableDetails: true,
+        list: 'component',
+        details: 'component',
         css: '{path}/index.css',
         mounted() {{
             let that = this;{com.readys.LinkToString(@"
@@ -67,12 +67,16 @@ namespace Agebull.EntityModel.RobotCoder.VueComponents
                 .Distinct().ToArray();
             if (array.Length == 0)
                 return;
+            var prefix = model.Project.ApiPrefix.IsMissing()
+                ? model.Project.ServiceName
+                : $"{model.Project.ApiPrefix}/{model.Project.ServiceName}";
+
             foreach (var entity in array.Where(p => p.CaptionColumn != null))
             {
                 var comboName = entity.Name.ToLWord().ToPluralism();
 
                 readys.Add($@"
-        this.ajax.load('ÔØÈë{entity.Caption}','/{entity.Project.ApiName}/{entity.ApiName}/v1/edit/combo',null, d => v.combos.{comboName} = d);");
+        this.ajax.load('ÔØÈë{entity.Caption}','/{prefix}/{entity.ApiName}/v1/edit/combo',null, d => v.combos.{comboName} = d);");
 
             }
         }

@@ -54,7 +54,7 @@ namespace Agebull.EntityModel
 
         public T FindParentModel<T>() where T : class
         {
-            if (!(Parent is TreeItem itemModel))
+            if (Parent is not TreeItem itemModel)
                 return null;
             var model = itemModel.Source as T;
             return model ?? itemModel.FindParentModel<T>();

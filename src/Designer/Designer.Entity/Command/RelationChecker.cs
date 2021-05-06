@@ -36,7 +36,6 @@ namespace Agebull.EntityModel.Designer
                     {
                         continue;
                     }
-                    field.IsReadonly = false;
                     field.IsLinkCaption = false;
                     field.IsLinkField = true;
                     field.LinkTable = re.Name;
@@ -90,7 +89,7 @@ namespace Agebull.EntityModel.Designer
                     field.IsLinkField = false;
                     field.Option.ReferenceConfig = null;
                     field.Option.IsLink = false;
-                    field.IsReadonly = false;
+                    field.CanInsert=field.CanUpdate = true;
                 }
             }
             catch (Exception e)
@@ -122,7 +121,7 @@ namespace Agebull.EntityModel.Designer
                     linkKey.IsLinkKey = true;
                     linkKey.Option.ReferenceConfig = linkTable.PrimaryColumn.Field;
                     linkKey.Option.IsLink = true;
-                    linkKey.IsReadonly = true;
+                    
                     var linkCaption = dataTable.Find(p => p.LinkField == caption.Name && p.LinkTable == linkTable.Name);
                     if (linkCaption == null)
                     {
@@ -140,7 +139,6 @@ namespace Agebull.EntityModel.Designer
                     linkCaption.NoStorage = false;
                     linkCaption.Caption = $"{linkTable.Caption}{caption.Caption}";
                     linkCaption.Index = linkKey.Index;
-                    linkCaption.IsReadonly = false;
                     linkCaption.IsLinkCaption = true;
                     linkCaption.IsLinkKey = false;
                     linkCaption.Option.ReferenceConfig = caption.Field;
